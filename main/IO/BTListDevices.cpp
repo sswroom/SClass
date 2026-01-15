@@ -7,10 +7,10 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Data::ArrayListNN<IO::BTController> btCtrlList;
 	Data::ArrayListNN<IO::BTController::BTDevice> btDevList;
 	NN<IO::BTController> btCtrl;
@@ -22,7 +22,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::BTManager btMgr;
 	btMgr.CreateControllers(btCtrlList);
 	i = btCtrlList.GetCount();
-	sb.AppendUOSInt(i);
+	sb.AppendUIntOS(i);
 	sb.AppendC(UTF8STRC(" controller found:"));
 	j = 0;
 	console.WriteLine(sb.ToCString());
@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Controller "));
-		sb.AppendUOSInt(j);
+		sb.AppendUIntOS(j);
 		sb.AppendC(UTF8STRC(":"));
 		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
@@ -62,7 +62,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Controller "));
-		sb.AppendUOSInt(j);
+		sb.AppendUIntOS(j);
 		sb.AppendC(UTF8STRC(" - Devices:"));
 		console.WriteLine(sb.ToCString());
 
@@ -74,9 +74,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			btDev = btDevList.GetItemNoCheck(k);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Controller "));
-			sb.AppendUOSInt(j);
+			sb.AppendUIntOS(j);
 			sb.AppendC(UTF8STRC(" Device "));
-			sb.AppendUOSInt(k);
+			sb.AppendUIntOS(k);
 			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Name: "));

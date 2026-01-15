@@ -33,7 +33,7 @@ namespace SSWR
 
 			static void __stdcall OnPasteDataClicked(AnyType userObj);
 			static void __stdcall OnGenerateClicked(AnyType userObj);
-			static void __stdcall OnColumnsDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnColumnsDblClk(AnyType userObj, UIntOS index);
 
 			void UpdateClassDisp();
 			void PasteData(Bool showError);

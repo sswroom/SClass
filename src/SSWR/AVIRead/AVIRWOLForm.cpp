@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 	UInt8 macBuff[16];
 	Net::WOLClient *cli;
 	Text::StringBuilderUTF8 sb;
-	UInt32 ip = (UInt32)me->cboAdapter->GetSelectedItem().GetUOSInt();
+	UInt32 ip = (UInt32)me->cboAdapter->GetSelectedItem().GetUIntOS();
 	if (ip == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select an adapter"), CSTR("WOL"), me);
@@ -65,9 +65,9 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 				if (ip == 0)
 					break;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboAdapter->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+				this->cboAdapter->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 				k++;
 			}
 		}

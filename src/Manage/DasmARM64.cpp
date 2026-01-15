@@ -15,7 +15,7 @@ https://developer.arm.com/documentation/ddi0602/2022-12/Base-Instructions/TBNZ--
 
 */
 
-Int32 DasmARM64_ExtractSigned(UInt32 val, UOSInt startBit, UOSInt bitCnt)
+Int32 DasmARM64_ExtractSigned(UInt32 val, UIntOS startBit, UIntOS bitCnt)
 {
 	Int32 ival = (Int32)(val >> startBit);
 	Int32 mask = 1 << (bitCnt - 1);
@@ -29,7 +29,7 @@ Int32 DasmARM64_ExtractSigned(UInt32 val, UOSInt startBit, UOSInt bitCnt)
 	}
 }
 
-Bool __stdcall DasmARM64_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UOSInt nameLen)
+Bool __stdcall DasmARM64_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UIntOS nameLen)
 {
 	if (Text::StrEndsWithC(funcName, nameLen, UTF8STRC("ExitThread")))
 	{
@@ -460,7 +460,7 @@ Bool __stdcall DasmARM64_14(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	sess->jmpAddrs->Add(sess->regs.PC);
 	sess->endType = Manage::DasmARM64::ET_JMP;
 	sess->retAddr = sess->regs.PC;
-	UOSInt i = sess->jmpAddrs->GetCount();
+	UIntOS i = sess->jmpAddrs->GetCount();
 	while (i-- > 0)
 	{
 		UInt64 addr = sess->jmpAddrs->GetItem(i);
@@ -978,7 +978,7 @@ Bool __stdcall DasmARM64_54(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 			UnsafeArray<UTF8Char> sptr = sess->sbuff;
 			sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
-			if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
+			if (DasmARM64_IsEndFunc(sptr, (UIntOS)(sess->sbuff - sptr)))
 			{
 				sess->endType = Manage::DasmARM64::ET_EXIT;
 				sess->retAddr = sess->regs.PC;
@@ -1437,7 +1437,7 @@ Bool __stdcall DasmARM64_94(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 		sptr = sess->sbuff;
 		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
-		if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
+		if (DasmARM64_IsEndFunc(sptr, (UIntOS)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM64::ET_EXIT;
 			sess->retAddr = sess->regs.PC;
@@ -2553,7 +2553,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 	UInt64 oriPC;
 	DasmARM64_Sess sess;
 	Text::StringBuilderUTF8 outStr;
-	UOSInt initJmpCnt = jmpAddrs->GetCount();
+	UIntOS initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmARM64::DasmARM64_Regs));
@@ -2656,7 +2656,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 		}
 		if (!ret)
 		{
-			UOSInt buffSize;
+			UIntOS buffSize;
 			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
@@ -2671,7 +2671,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
-			UOSInt i;
+			UIntOS i;
 			UInt64 minAddr = (UInt64)(Int64)-1;
 			UInt64 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -2739,7 +2739,7 @@ void Manage::DasmARM64::DeleteSess(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	MemFreeNN(sess);
 }
 
-Bool Manage::DasmARM64::DasmNext(NN<Manage::DasmARM64::DasmARM64_Sess> sess, UnsafeArray<UTF8Char> buff, OSInt *outBuffSize)
+Bool Manage::DasmARM64::DasmNext(NN<Manage::DasmARM64::DasmARM64_Sess> sess, UnsafeArray<UTF8Char> buff, IntOS *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

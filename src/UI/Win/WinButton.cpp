@@ -12,9 +12,9 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt UI::Win::WinButton::nextId = 100;
+IntOS UI::Win::WinButton::nextId = 100;
 
-OSInt __stdcall UI::Win::WinButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam)
 {
 	UI::Win::WinButton *me = (UI::Win::WinButton*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
@@ -52,18 +52,18 @@ UI::Win::WinButton::WinButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, T
 #endif
 
 #ifdef _WIN32_WCE
-	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)BTNWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (IntOS)BTNWndProc);
 #else
-	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)BTNWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)BTNWndProc);
 #endif
 }
 
 UI::Win::WinButton::~WinButton()
 {
 #ifdef _WIN32_WCE
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (IntOS)this->oriWndProc);
 #else
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)this->oriWndProc);
 #endif
 }
 
@@ -87,7 +87,7 @@ void UI::Win::WinButton::SetFont(Text::CString fontName, Double fontHeightPt, Bo
 	InitFont();
 }
 
-OSInt UI::Win::WinButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinButton::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -110,7 +110,7 @@ OSInt UI::Win::WinButton::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-OSInt UI::Win::WinButton::GetBtnId()
+IntOS UI::Win::WinButton::GetBtnId()
 {
 	return this->btnId;
 }

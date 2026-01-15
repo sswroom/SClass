@@ -36,7 +36,7 @@ namespace IO
 			Bool Pair(const UTF8Char *key);
 			Bool Unpair();
 
-			UOSInt QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList);
+			UIntOS QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList);
 			void FreeServices(NN<Data::ArrayListNN<Data::UUID>> guidList);
 			Bool EnableService(NN<Data::UUID> guid, Bool toEnable);
 		};
@@ -59,7 +59,7 @@ namespace IO
 		BTController(void *internalData, void *hand);
 		~BTController();
 
-		OSInt CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch);
+		IntOS CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch);
 
 		UInt8 *GetAddress();
 		NN<Text::String> GetName() const;

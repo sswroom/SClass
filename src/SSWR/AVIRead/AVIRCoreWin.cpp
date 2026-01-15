@@ -112,7 +112,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::Stream:
 		{
 			UInt64 totalSize = 0;
-			UOSInt thisSize;
+			UIntOS thisSize;
 			IO::Stream *stm = (IO::Stream *)pobj.Ptr();
 			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream());
@@ -301,9 +301,9 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 
 void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, UnsafeArray<const WChar> dialogName)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Data::ArrayListNN<IO::FileExporter> exp;
 	this->exporters.GetSupportedExporters(exp, pobj);
 	if (exp.GetCount() == 0)
@@ -336,7 +336,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 			i++;
 		}
 		sptr = pobj->GetSourceName(sbuff3);
-		if ((i = Text::StrLastIndexOfCharC(sbuff3, (UOSInt)(sptr - sbuff3), '.')) != INVALID_INDEX)
+		if ((i = Text::StrLastIndexOfCharC(sbuff3, (UIntOS)(sptr - sbuff3), '.')) != INVALID_INDEX)
 		{
 			sbuff3[i] = 0;
 			sptr = &sbuff3[i];
@@ -345,7 +345,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{
 			IO::FileExporter::SupportType suppType;
-			fileExp = exp2.GetItemNoCheck((UOSInt)sfd->GetFilterIndex());
+			fileExp = exp2.GetItemNoCheck((UIntOS)sfd->GetFilterIndex());
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{

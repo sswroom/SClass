@@ -16,9 +16,9 @@
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
-	UOSInt i = 0;
-	UOSInt j;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j;
+	UIntOS nFiles = files.GetCount();
 	NN<FileQueue> file;
 	while (i < nFiles)
 	{
@@ -145,7 +145,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType user
 
 void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<FileQueue> file;
 	Sync::MutexUsage mutUsage(this->fileMut);
 	i = this->fileList.GetCount();
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::~AVIRVideoCheckerForm()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	UOSInt i = this->updateList.GetCount();
+	UIntOS i = this->updateList.GetCount();
 	NN<UpdateQueue> update;
 	while (i-- > 0)
 	{

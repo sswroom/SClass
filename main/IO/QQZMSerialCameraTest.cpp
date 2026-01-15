@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt32 portNum = 1;
 	UInt32 baudRate = 115200;
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

@@ -14,8 +14,8 @@ namespace UI
 		class VideoDObjHandler : public ImageDObjHandler, public Media::VideoRenderer
 		{
 		protected:
-			Math::Coord2D<OSInt> videoTL;
-			Math::Size2D<UOSInt> videoSize;
+			Math::Coord2D<IntOS> videoTL;
+			Math::Size2D<UIntOS> videoSize;
 
 			NN<UI::GUIForm> ownerFrm;
 			NN<UI::GUITimer> tmr;
@@ -33,12 +33,12 @@ namespace UI
 			void DrawVideo(NN<Media::DrawImage> dimg);
 
 			virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
-			virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
+			virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn);
 		public:
-			VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
+			VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<IntOS> videoTL, Math::Size2D<UIntOS> videoSize, Text::CStringNN videoFileName);
 			virtual ~VideoDObjHandler();
 
-			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);
+			void UpdateVideoArea(Math::Coord2D<IntOS> videoTL, Math::Size2D<UIntOS> videoSize);
 
 			virtual void SetRotateType(Media::RotateType rotateType);
 			virtual Media::RotateType GetRotateType() const;

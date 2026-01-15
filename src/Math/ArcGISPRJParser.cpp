@@ -10,9 +10,9 @@
 #include <stdio.h>
 #endif
 
-Bool Math::ArcGISPRJParser::ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UOSInt> strSize)
+Bool Math::ArcGISPRJParser::ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UIntOS> strSize)
 {
-	UOSInt i;
+	UIntOS i;
 	UTF8Char c;
 	if (prjBuff[0] != '\"')
 		return false;
@@ -45,7 +45,7 @@ Math::ArcGISPRJParser::~ArcGISPRJParser()
 Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
 {
 	UInt8 buff[1024];
-	UOSInt buffSize;
+	UIntOS buffSize;
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		if (fs.IsError())
@@ -69,16 +69,16 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStri
 	return ParsePRJBuff(fileName, UARR(buff), buffSize, buffSize);
 }
 
-Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UOSInt buffSize, OptOut<UOSInt> parsedSize)
+Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt nameOfst;
-	UOSInt nameLen;
-	UOSInt datumOfst = 0;
-	UOSInt datumLen = 0;
-	UOSInt spIndex = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS nameOfst;
+	UIntOS nameLen;
+	UIntOS datumOfst = 0;
+	UIntOS datumLen = 0;
+	UIntOS spIndex = 0;
 	Double a = 0;
 	Double f_1 = 0;
 	Math::CoordinateSystem *csys = 0;
@@ -159,14 +159,14 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 								}
 								prjBuff[i + j - 1] = 0;
 								i += j;
-								j = (UOSInt)-1;
+								j = (UIntOS)-1;
 								spIndex = 1;
 								while (true)
 								{
 									c = prjBuff[i];
 									if (c == ']' || c == ',')
 									{
-										if ((OSInt)j >= 0)
+										if ((IntOS)j >= 0)
 										{
 											prjBuff[i] = 0;
 											if (spIndex == 1)
@@ -207,7 +207,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 									c = prjBuff[i];
 									if (c == ']' || c == ',')
 									{
-										if ((OSInt)j >= 0)
+										if ((IntOS)j >= 0)
 										{
 											prjBuff[i] = 0;
 											if (k == 1)
@@ -434,9 +434,9 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		Double centralMeridian = NAN;
 		Double scaleFactor = NAN;
 		Double latitudeOfOrigin = NAN;
-		UOSInt nOfst;
-		UOSInt nLen;
-		UOSInt vOfst;
+		UIntOS nOfst;
+		UIntOS nLen;
+		UIntOS vOfst;
 		Bool commaFound;
 
 		i = 7;

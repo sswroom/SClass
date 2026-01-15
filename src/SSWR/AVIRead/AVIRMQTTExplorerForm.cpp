@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType use
 		me->cliCert.Delete();
 		me->cliCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 		NN<Text::String> s = dlg->GetFileName();
-		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
 	dlg.Delete();
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType user
 		me->cliKey.Delete();
 		me->cliKey = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		NN<Text::String> s = dlg->GetFileName();
-		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
 	dlg.Delete();
@@ -311,8 +311,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
@@ -334,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 			}
 			me->lvRecvTopic->AddItem(topicSt->topic, topicSt);
 			me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
-			sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+			sptr = Text::StrUIntOS(sbuff, topicSt->recvCnt);
 			me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			sptr = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 			me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
@@ -350,7 +350,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 			{
 				topicSt->updated = false;
 				me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
-				sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+				sptr = Text::StrUIntOS(sbuff, topicSt->recvCnt);
 				me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				sptr = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 				me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
@@ -431,7 +431,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 		topicSt->lastRecvTime = ts.inst;
 	}
 	Double dVal;
-	UOSInt i;
+	UIntOS i;
 	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr());
 	if (Text::StrToDouble(topicSt->currValue, dVal))
 	{
@@ -444,7 +444,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 		if (i != INVALID_INDEX && i > 0)
 		{
 			sb.ClearStr();
-			sb.AppendC(topicSt->currValue, (UOSInt)i);
+			sb.AppendC(topicSt->currValue, (UIntOS)i);
 			Text::StrToDouble(sb.ToString(), dVal);
 		}
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
@@ -455,7 +455,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 {
 	Optional<Media::DrawImage> dimg;
 	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Math::Size2D<UOSInt> sz = this->pbRecvTopic->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbRecvTopic->GetSizeP();
 	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
@@ -482,17 +482,17 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 			{
 				if (currTopic->recvCnt < 256)
 				{
-					UOSInt recvCnt = currTopic->recvCnt;
+					UIntOS recvCnt = currTopic->recvCnt;
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					;
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewData(currTopic->dateList, recvCnt), 0xFFFF0000);
-					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 					DEL_CLASS(chart);
 				}
 				else
 				{
-					UOSInt recvCnt = currTopic->recvCnt;
+					UIntOS recvCnt = currTopic->recvCnt;
 					Int64 *dateList = MemAlloc(Int64, 256);
 					Double *valueList = MemAlloc(Double, 256);
 					if (recvCnt & 255)
@@ -511,7 +511,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewData(currTopic->dateList, 256), 0xFFFF0000);
-					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 					DEL_CLASS(chart);
 					MemFree(dateList);
 					MemFree(valueList);
@@ -531,7 +531,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ServerStop()
 
 void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
 	topicList = this->topicMap.GetValues();

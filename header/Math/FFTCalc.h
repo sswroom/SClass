@@ -24,17 +24,17 @@ namespace Math
 			ST_I24
 		} SampleType;
 	private:
-		UOSInt sampleCount;
+		UIntOS sampleCount;
 		WindowType wtype;
 		UnsafeArray<Double> sampleWindow;
 		UnsafeArray<Double> sampleTemp;
 
 		void BuildSampleWin();
 	public:
-		FFTCalc(UOSInt sampleCount, WindowType wtype);
+		FFTCalc(UIntOS sampleCount, WindowType wtype);
 		~FFTCalc();
 
-		Bool ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, SampleType sampleType, UOSInt nChannels, Double magnify);
+		Bool ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, SampleType sampleType, UIntOS nChannels, Double magnify);
 	};
 }
 #endif

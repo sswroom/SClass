@@ -26,13 +26,13 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	table->geometryType = fieldDesc[4];
 	table->tableFlags = fieldDesc[5];
 	table->geometryFlags = fieldDesc[7];
-	UOSInt fieldCnt = ReadUInt16(&fieldDesc[8]);
-	UOSInt ofst = 10;
+	UIntOS fieldCnt = ReadUInt16(&fieldDesc[8]);
+	UIntOS ofst = 10;
 	Bool valid = true;
 	UnsafeArray<UInt8> valArr;
 	while (fieldCnt-- > 0)
 	{
-		if (fieldDesc[ofst] == 0 || (ofst + 1 + (UOSInt)fieldDesc[ofst] * 2) > descSize)
+		if (fieldDesc[ofst] == 0 || (ofst + 1 + (UIntOS)fieldDesc[ofst] * 2) > descSize)
 		{
 			valid = false;
 			break;
@@ -40,12 +40,12 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		field = MemAllocNN(FileGDBFieldInfo);
 		field.ZeroContent();
 		field->name = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
-		ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
+		ofst += 1 + (UIntOS)fieldDesc[ofst] * 2;
 		if (fieldDesc[ofst] == 0)
 		{
 			ofst += 1;
 		}
-		else if ((ofst + 1 + (UOSInt)fieldDesc[ofst] * 2) > descSize)
+		else if ((ofst + 1 + (UIntOS)fieldDesc[ofst] * 2) > descSize)
 		{
 			FreeFieldInfo(field);
 			valid = false;
@@ -54,7 +54,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		else
 		{
 			field->alias = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
-			ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
+			ofst += 1 + (UIntOS)fieldDesc[ofst] * 2;
 		}
 		field->fieldType = fieldDesc[ofst];
 		if (field->fieldType == 4)
@@ -87,13 +87,13 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		}
 		if (field->fieldType == 7)
 		{
-			UOSInt srsLen = ReadUInt16(&fieldDesc[ofst]);
+			UIntOS srsLen = ReadUInt16(&fieldDesc[ofst]);
 			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
 			*sptr = 0;
 			field->srsSize = srsLen;
 			field->srsValue = valArr = MemAllocArr(UInt8, srsLen);
 			MemCopyNO(valArr.Ptr(), &fieldDesc[ofst + 2], srsLen);
-			UOSInt csysLen = (UOSInt)(sptr - sbuff);
+			UIntOS csysLen = (UIntOS)(sptr - sbuff);
 			table->csys = prjParser->ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, csysLen);
 			ofst += 2 + srsLen;
 			UInt8 flags = fieldDesc[ofst];
@@ -143,8 +143,8 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 				table->mMax = ReadDouble(&fieldDesc[ofst + 8]);
 				ofst += 16;
 			}
-			UOSInt gridCnt = ReadUInt32(&fieldDesc[ofst + 1]);
-			UOSInt i = 0;
+			UIntOS gridCnt = ReadUInt32(&fieldDesc[ofst + 1]);
+			UIntOS i = 0;
 			ofst += 5;
 			while (i < gridCnt)
 			{
@@ -175,7 +175,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 			{
 				MemCopyNO(valArr.Ptr(), &fieldDesc[ofst + 1], field->defSize);
 			}
-			ofst += 1 + (UOSInt)field->defSize;
+			ofst += 1 + (UIntOS)field->defSize;
 		}
 		table->fields->Add(field);
 		if (ofst < descSize && fieldDesc[ofst] == 0)
@@ -252,8 +252,8 @@ NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGD
 		newTable->csys = csys->Clone();
 	}
 	NEW_CLASSNN(newTable->fields, Data::ArrayListNN<FileGDBFieldInfo>());
-	UOSInt i = 0;
-	UOSInt j = tableInfo->fields->GetCount();
+	UIntOS i = 0;
+	UIntOS j = tableInfo->fields->GetCount();
 	while (i < j)
 	{
 		newTable->fields->Add(FieldInfoClone(tableInfo->fields->GetItemNoCheck(i)));
@@ -262,11 +262,11 @@ NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGD
 	return newTable;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<UInt64> val)
+UIntOS Map::ESRI::FileGDBUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<UInt64> val)
 {
 	UInt64 v = 0;
-	UOSInt i = 0;
-	UOSInt currV;
+	UIntOS i = 0;
+	UIntOS currV;
 	while (true)
 	{
 		currV = buff[ofst];
@@ -282,11 +282,11 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<Int64> val)
+UIntOS Map::ESRI::FileGDBUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int64 currV;
 	currV = buff[ofst];
 	ofst++;
@@ -310,11 +310,11 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt 
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val)
+UIntOS Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UIntOS ofst, OutParam<UInt64> val)
 {
 	UInt64 v = 0;
-	UOSInt i = 0;
-	UOSInt currV;
+	UIntOS i = 0;
+	UIntOS currV;
 	while (true)
 	{
 		currV = buff[ofst];
@@ -330,12 +330,12 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, O
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val)
+UIntOS Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UIntOS ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 currV = buff[ofst];
 	Int64 v = currV & 0x3f;
-	UOSInt i = 6;
+	UIntOS i = 6;
 	ofst++;
 	while (currV & 0x80)
 	{
@@ -366,7 +366,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 	UInt32 srid = buff.ReadU32(12);
 	UInt32 pointLen = buff.ReadU32(16);
 	UInt32 nParts = buff.ReadU32(20);
-	UOSInt ofst = 24;
+	UIntOS ofst = 24;
 	Int64 iv;
 	Double ratio = 1 / 1000000000.0;
 	Double dx = -400;
@@ -410,11 +410,11 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 	}
 	else if (type1 == 4 && type2 == 12)
 	{
-		UOSInt tmpV;
+		UIntOS tmpV;
 		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
 		UnsafeArray<Math::Coord2DDbl> ptList = lineString->GetPointList(tmpV);
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < nPoints)
 		{
 			ofst = ReadVarInt(buff, ofst, iv);

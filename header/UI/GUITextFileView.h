@@ -15,7 +15,7 @@ namespace UI
 	class GUITextFileView : public GUITextView
 	{
 	public:
-		typedef void (CALLBACKFUNC TextPosEvent)(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
+		typedef void (CALLBACKFUNC TextPosEvent)(AnyType userObj, UInt32 textPosX, UIntOS textPosY);
 	private:
 		enum class LoadFileType
 		{
@@ -29,13 +29,13 @@ namespace UI
 		IO::SeekableStream *fs;
 		UInt32 codePage;
 //		AnyType drawFont;
-		UOSInt lastLineCnt;
+		UIntOS lastLineCnt;
 
 		NN<Text::String> fileName;
 		IO::StreamData *fileData;
 		Data::ByteBuffer readBuff;
 		UInt64 readBuffOfst;
-		UOSInt readBuffSize;
+		UIntOS readBuffSize;
 		Data::ArrayListUInt64 lineOfsts;
 		UInt32 fileCodePage;
 		UInt64 fileSize;
@@ -48,17 +48,17 @@ namespace UI
 		Bool readingFile;
 		UInt32 dispLineNumW;
 		UInt32 selStartX;
-		UOSInt selStartY;
+		UIntOS selStartY;
 		UInt32 selEndX;
-		UOSInt selEndY;
+		UIntOS selEndY;
 		UInt32 selLastX;
-		UOSInt selLastY;
+		UIntOS selLastY;
 		Bool mouseDown;
 		Bool isSearching;
 		Optional<Text::String> srchText;
 
 		UInt32 caretX;
-		UOSInt caretY;
+		UIntOS caretY;
 		Int32 caretDispX;
 		Int32 caretDispY;
 
@@ -67,8 +67,8 @@ namespace UI
 		void EnsureCaretVisible();
 		void UpdateCaretSel(Bool noRedraw);
 		void CopySelected();
-		UOSInt GetLineCharCnt(UOSInt lineNum);
-		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY);
+		UIntOS GetLineCharCnt(UIntOS lineNum);
+		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UIntOS *txtPosY);
 
 		void EventTextPosUpdated();
 		void ClearFileStatus();
@@ -87,23 +87,23 @@ namespace UI
 		virtual void EventLineBegin();
 		virtual void EventLineEnd();
 		virtual void EventCopy();
-		virtual void EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void EventMouseMove(OSInt scnX, OSInt scnY);
+		virtual void EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn);
+		virtual void EventMouseUp(IntOS scnX, IntOS scnY, MouseButton btn);
+		virtual void EventMouseMove(IntOS scnX, IntOS scnY);
 		virtual void EventTimerTick();
 		virtual void DrawImage(NN<Media::DrawImage> dimg);
 		virtual void UpdateCaretPos();
 
 		Bool IsLoading();
-		UOSInt GetLineCount();
+		UIntOS GetLineCount();
 		void SetCodePage(UInt32 codePage);
 		Bool LoadFile(NN<Text::String> fileName);
 		Bool LoadStreamData(NN<IO::StreamData> fd);
 		NN<Text::String> GetFileName() const;
-		void GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt32> textPosX, OutParam<UOSInt> textPosY);
-		UOSInt GetTextPosY();
+		void GetTextPos(IntOS scnPosX, IntOS scnPosY, OutParam<UInt32> textPosX, OutParam<UIntOS> textPosY);
+		UIntOS GetTextPosY();
 		UInt32 GetTextPosX();
-		void GoToText(UOSInt newPosY, UInt32 newPosX);
+		void GoToText(UIntOS newPosY, UInt32 newPosX);
 		void SearchText(Text::CStringNN txt);
 
 		void HandleTextPosUpdate(TextPosEvent hdlr, AnyType obj);

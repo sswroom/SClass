@@ -52,7 +52,7 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::Sock
 	}
 }
 
-void SSWR::SMonitor::SMonitorRedir::CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> crcVal)
+void SSWR::SMonitor::SMonitorRedir::CalcCRC(UnsafeArray<const UInt8> buff, UIntOS size, UnsafeArray<UInt8> crcVal)
 {
 	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC.Clear();
@@ -107,7 +107,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::S
 	buff[37] = (UInt8)rec->ndigital;
 	buff[38] = (UInt8)rec->nOutput;
 	buff[39] = 0;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < rec->nreading)
 	{
 		WriteNInt64(&buff[40 + 16 * i], ReadNInt64(rec->readings[i].status));
@@ -128,15 +128,15 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::S
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UIntOS nameLen)
 {
 	UInt8 buff[1024];
-	UOSInt size;
+	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 16);
 	WriteInt64(&buff[4], cliId);
-	size = (UOSInt)(Text::StrConcatC(&buff[12], name, nameLen) - buff);
+	size = (UIntOS)(Text::StrConcatC(&buff[12], name, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -150,15 +150,15 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, UnsafeArray<const U
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UIntOS nameLen)
 {
 	UInt8 buff[1024];
-	UOSInt size;
+	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 18);
 	WriteInt64(&buff[4], cliId);
-	size = (UOSInt)(Text::StrConcatC(&buff[12], platform, nameLen) - buff);
+	size = (UIntOS)(Text::StrConcatC(&buff[12], platform, nameLen) - buff);
 	UInt8 calcVal[2];
 	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC.Clear();
@@ -176,15 +176,15 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, UnsafeArray<con
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UIntOS nameLen)
 {
 	UInt8 buff[1024];
-	UOSInt size;
+	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 20);
 	WriteInt64(&buff[4], cliId);
-	size = (UOSInt)(Text::StrConcatC(&buff[12], cpuName, nameLen) - buff);
+	size = (UIntOS)(Text::StrConcatC(&buff[12], cpuName, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -198,10 +198,10 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, UnsafeArray<cons
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UIntOS index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UIntOS nameLen)
 {
 	UInt8 buff[1024];
-	UOSInt size;
+	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 22);
@@ -209,7 +209,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index
 	WriteUInt32(&buff[12], (UInt32)index);
 	WriteInt16(&buff[16], sensorId);
 	WriteInt16(&buff[18], readingId);
-	size = (UOSInt)(Text::StrConcatC(&buff[20], readingName, nameLen) - buff);
+	size = (UIntOS)(Text::StrConcatC(&buff[20], readingName, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
 	buff[size] = calcVal[0] ^ 0x12;
@@ -226,7 +226,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index
 Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersion)
 {
 	UInt8 buff[30];
-	UOSInt size;
+	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
 	WriteInt16(&buff[2], 24);

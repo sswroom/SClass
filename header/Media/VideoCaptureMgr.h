@@ -12,7 +12,7 @@ namespace Media
 		typedef struct
 		{
 			Int32 devType;
-			UOSInt devId;
+			UIntOS devId;
 			UnsafeArray<const UTF8Char> devName;
 		} DeviceInfo;
 	private:
@@ -22,9 +22,9 @@ namespace Media
 		VideoCaptureMgr();
 		~VideoCaptureMgr();
 
-		UOSInt GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
+		UIntOS GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
 		void FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
-		Optional<Media::VideoCapturer> CreateDevice(Int32 devType, UOSInt devId);
+		Optional<Media::VideoCapturer> CreateDevice(Int32 devType, UIntOS devId);
 
 		Text::CStringNN GetDevTypeName(Int32 devType);
 	};

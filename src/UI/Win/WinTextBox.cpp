@@ -58,7 +58,7 @@ void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 
 UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
+	UIntOS leng = (UIntOS)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)(leng + 1));
 	buff = Text::StrWChar_UTF8(buff, wptr);
@@ -68,7 +68,7 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff
 
 Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
+	UIntOS leng = (UIntOS)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
 	sb->AppendW(wptr);
@@ -76,7 +76,7 @@ Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-OSInt UI::Win::WinTextBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTextBox::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{

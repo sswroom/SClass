@@ -37,7 +37,7 @@ void Map::TileMapServiceSource::LoadXML()
 			NN<Text::XMLAttrib> attr;
 			NN<Text::String> aname;
 			NN<Text::String> avalue;
-			UOSInt i;
+			UIntOS i;
 			while (reader.NextElementName().SetTo(nodeText))
 			{
 				if (nodeText->Equals(UTF8STRC("Title")))
@@ -215,7 +215,7 @@ void Map::TileMapServiceSource::LoadXML()
 							NN<TileLayer> lyr;
 							Text::String *href = 0;
 							Double unitPerPixel= 0;
-							UOSInt order = INVALID_INDEX;
+							UIntOS order = INVALID_INDEX;
 
 							i = reader.GetAttribCount();
 							while (i-- > 0)
@@ -247,7 +247,7 @@ void Map::TileMapServiceSource::LoadXML()
 								}
 								else if (aname->Equals(UTF8STRC("order")) && attr->value.SetTo(avalue))
 								{
-									order = avalue->ToUOSInt();
+									order = avalue->ToUIntOS();
 #if defined(VERBOSE)
 									printf("tileOrder = %d\r\n", (UInt32)order);
 #endif
@@ -313,7 +313,7 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	this->cacheDir->Release();
 	this->csys.Delete();
 	NN<TileLayer> layer;
-	UOSInt i = this->layers.GetCount();
+	UIntOS i = this->layers.GetCount();
 	while (i-- > 0)
 	{
 		layer = this->layers.GetItemNoCheck(i);
@@ -337,17 +337,17 @@ Map::TileMap::TileType Map::TileMapServiceSource::GetTileType() const
 	return Map::TileMap::TT_TMS;
 }
 
-UOSInt Map::TileMapServiceSource::GetMinLevel() const
+UIntOS Map::TileMapServiceSource::GetMinLevel() const
 {
 	return 0;
 }
 
-UOSInt Map::TileMapServiceSource::GetMaxLevel() const
+UIntOS Map::TileMapServiceSource::GetMaxLevel() const
 {
 	return this->layers.GetCount() - 1;
 }
 
-Double Map::TileMapServiceSource::GetLevelScale(UOSInt level) const
+Double Map::TileMapServiceSource::GetLevelScale(UIntOS level) const
 {
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
@@ -358,11 +358,11 @@ Double Map::TileMapServiceSource::GetLevelScale(UOSInt level) const
 	return layer->unitPerPixel / scaleDiv;
 }
 
-UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale) const
+UIntOS Map::TileMapServiceSource::GetNearestLevel(Double scale) const
 {
 	Double minDiff = 1.0E+100;
-	UOSInt minLevel = 0;
-	UOSInt i = this->layers.GetCount();
+	UIntOS minLevel = 0;
+	UIntOS i = this->layers.GetCount();
 	NN<TileLayer> layer;
 	Double layerScale;
 	Double thisDiff;
@@ -385,7 +385,7 @@ UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale) const
 	return minLevel;
 }
 
-UOSInt Map::TileMapServiceSource::GetConcurrentCount() const
+UIntOS Map::TileMapServiceSource::GetConcurrentCount() const
 {
 	return this->concurrCnt;
 }
@@ -406,7 +406,7 @@ Bool Map::TileMapServiceSource::IsMercatorProj() const
 	return false;
 }
 
-UOSInt Map::TileMapServiceSource::GetTileSize() const
+UIntOS Map::TileMapServiceSource::GetTileSize() const
 {
 	return this->tileWidth;
 }
@@ -416,7 +416,7 @@ Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
 	return this->imgType;
 }
 
-UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
+UIntOS Map::TileMapServiceSource::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
@@ -425,11 +425,11 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	}
 	
 	rect = rect.OverlapArea(this->bounds);
-	UOSInt ret = 0;
-	Int32 minX = (Int32)((rect.min.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
-	Int32 maxX = (Int32)((rect.max.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
-	Int32 minY = (Int32)((rect.min.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
-	Int32 maxY = (Int32)((rect.max.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
+	UIntOS ret = 0;
+	Int32 minX = (Int32)((rect.min.x - this->csysOrigin.x) / (layer->unitPerPixel * UIntOS2Double(this->tileWidth)));
+	Int32 maxX = (Int32)((rect.max.x - this->csysOrigin.x) / (layer->unitPerPixel * UIntOS2Double(this->tileWidth)));
+	Int32 minY = (Int32)((rect.min.y - this->csysOrigin.y) / (layer->unitPerPixel * UIntOS2Double(this->tileHeight)));
+	Int32 maxY = (Int32)((rect.max.y - this->csysOrigin.y) / (layer->unitPerPixel * UIntOS2Double(this->tileHeight)));
 	Int32 i = minY;
 	Int32 j;
 	while (i <= maxY)
@@ -446,7 +446,7 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return ret;
 }
 
-Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NN<IO::StreamData> fd;
@@ -470,7 +470,7 @@ Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UOSInt level
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	NN<TileLayer> layer;
 	if (this->layers.GetItem(level).SetTo(layer))
@@ -487,7 +487,7 @@ UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<
 	return nullptr;
 }
 
-Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	NN<TileLayer> layer;
 	if (this->layers.GetItem(level).SetTo(layer))
@@ -504,7 +504,7 @@ Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 	return false;
 }
 
-Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -519,10 +519,10 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
 		return nullptr;
-	Double x1 = tileId.x * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
-	Double y1 = tileId.y * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
-	Double x2 = (tileId.x + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
-	Double y2 = (tileId.y + 1) * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
+	Double x1 = tileId.x * layer->unitPerPixel * UIntOS2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y1 = tileId.y * layer->unitPerPixel * UIntOS2Double(this->tileHeight) + this->csysOrigin.y;
+	Double x2 = (tileId.x + 1) * layer->unitPerPixel * UIntOS2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y2 = (tileId.y + 1) * layer->unitPerPixel * UIntOS2Double(this->tileHeight) + this->csysOrigin.y;
 
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
@@ -536,7 +536,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	sptru = this->cacheDir->ConcatTo(filePathU);
 	if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-	sptru = Text::StrUOSInt(sptru, level);
+	sptru = Text::StrUIntOS(sptru, level);
 	*sptru++ = IO::Path::PATH_SEPERATOR;
 	sptru = Text::StrInt32(sptru, tileId.x);
 	IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
@@ -544,7 +544,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	sptru = Text::StrInt32(sptru, tileId.y);
 	*sptru++ = '.';
 	sptru = this->tileExt->ConcatTo(sptru);
-	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		currTime.SetCurrTimeUTC();
@@ -588,7 +588,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	if (status == 304)
 	{
-		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
 		fs.SetFileTimes(&dt, nullptr, nullptr);
 	}
@@ -597,7 +597,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 		IO::MemoryStream mstm;
 		if (cli->ReadAllContent(mstm, 16384, 10485760))
 		{
-			IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+			IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			fs.Write(mstm.GetArray());
 			if (cli->GetLastModified(dt))
 			{
@@ -619,7 +619,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	}
 	cli.Delete();
 
-	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		it.Set(IT_PNG);
@@ -629,7 +629,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	return nullptr;
 }
 
-void Map::TileMapServiceSource::SetConcurrentCount(UOSInt concurrCnt)
+void Map::TileMapServiceSource::SetConcurrentCount(UIntOS concurrCnt)
 {
 	this->concurrCnt = concurrCnt;
 }

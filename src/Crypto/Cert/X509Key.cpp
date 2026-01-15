@@ -28,7 +28,7 @@ void Crypto::Cert::X509Key::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(KeyTypeGetName(this->keyType));
 	sb->AppendUTF8Char(' ');
-	sb->AppendUOSInt(this->GetKeySizeBits());
+	sb->AppendUIntOS(this->GetKeySizeBits());
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
@@ -54,7 +54,7 @@ void Crypto::Cert::X509Key::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->keyType == KeyType::RSA)
 	{
 		UnsafeArray<const UInt8> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		if (this->GetRSAModulus(buffSize).SetTo(buff))
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -131,7 +131,7 @@ void Crypto::Cert::X509Key::ToString(NN<Text::StringBuilderUTF8> sb) const
 	else if (this->keyType == KeyType::RSAPublic)
 	{
 		UnsafeArray<const UInt8> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		if (this->GetRSAModulus(buffSize).SetTo(buff))
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -154,7 +154,7 @@ void Crypto::Cert::X509Key::ToString(NN<Text::StringBuilderUTF8> sb) const
 	else if (this->keyType == KeyType::ECPublic)
 	{
 		UnsafeArray<const UInt8> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		ECName ecName = this->GetECName();
 		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 		found = true;
@@ -176,7 +176,7 @@ void Crypto::Cert::X509Key::ToString(NN<Text::StringBuilderUTF8> sb) const
 	else if (this->keyType == KeyType::ECDSA)
 	{
 		UnsafeArray<const UInt8> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		ECName ecName = this->GetECName();
 		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 		found = true;
@@ -242,7 +242,7 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType() const
 	return this->keyType;
 }
 
-UOSInt Crypto::Cert::X509Key::GetKeySizeBits() const
+UIntOS Crypto::Cert::X509Key::GetKeySizeBits() const
 {
 	return KeyGetLeng(this->buff.Arr(), this->buff.ArrEnd(), this->keyType);
 }
@@ -272,9 +272,9 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::ExtractPublicKey() const
 	}
 	else if (this->keyType == KeyType::RSA)
 	{
-		UOSInt modulusSize;
+		UIntOS modulusSize;
 		UnsafeArray<const UInt8> modulus;
-		UOSInt publicExponentSize;
+		UIntOS publicExponentSize;
 		UnsafeArray<const UInt8> publicExponent;
 		if (!this->GetRSAModulus(modulusSize).SetTo(modulus)) return nullptr;
 		if (!this->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent)) return nullptr;
@@ -308,12 +308,12 @@ Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 	return false;
 }
 
-UOSInt Crypto::Cert::X509Key::GetDataBlockSize() const
+UIntOS Crypto::Cert::X509Key::GetDataBlockSize() const
 {
 	return GetKeySizeBits() / 8;
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAModulus(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAModulus(OptOut<UIntOS> size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -329,7 +329,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAModulus(OptOut<UOSInt> 
 	}
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPublicExponent(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPublicExponent(OptOut<UIntOS> size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -345,25 +345,25 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPublicExponent(OptOut<U
 	}
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrivateExponent(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrivateExponent(OptOut<UIntOS> size) const
 {
 	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.4", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime1(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime1(OptOut<UIntOS> size) const
 {
 	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.5", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime2(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime2(OptOut<UIntOS> size) const
 {
 	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.6", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UIntOS> size) const
 {
 	// e1 = d % p
 	// d = private Exponent
@@ -372,7 +372,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UOSInt
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.7", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UIntOS> size) const
 {
 	// e2 = d % q
 	// d = private Exponent
@@ -381,13 +381,13 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UOSInt
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.8", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSACoefficient(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSACoefficient(OptOut<UIntOS> size) const
 {
 	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.9", size, 0);
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPrivate(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPrivate(OptOut<UIntOS> size) const
 {
 	if (this->keyType == KeyType::ECDSA)
 	{
@@ -398,10 +398,10 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPrivate(OptOut<UOSInt> s
 		return nullptr;
 	}
 }
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UIntOS> size) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArray<const UInt8> itemPDU;
 	if (this->keyType == KeyType::ECPublic)
 	{
@@ -445,7 +445,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	if (this->keyType == KeyType::ECPublic)
 	{
 		Net::ASN1Util::ItemType itemType;
-		UOSInt size;
+		UIntOS size;
 		UnsafeArray<const UInt8> itemPDU;
 		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", size, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_OID)
 		{
@@ -455,7 +455,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	else if (this->keyType == KeyType::ECDSA)
 	{
 		Net::ASN1Util::ItemType itemType;
-		UOSInt size;
+		UIntOS size;
 		UnsafeArray<const UInt8> itemPDU;
 		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.3", size, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
@@ -497,25 +497,25 @@ NN<Crypto::Cert::X509Key> Crypto::Cert::X509Key::CreateRSAPublicKey(Text::CStrin
 
 Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromRSAKey(NN<RSAKey> key)
 {
-	UOSInt modulusSize;
+	UIntOS modulusSize;
 	UnsafeArray<const UInt8> modulus;
-	UOSInt publicExponentSize;
+	UIntOS publicExponentSize;
 	UnsafeArray<const UInt8> publicExponent;
 	if (!key->GetRSAModulus(modulusSize).SetTo(modulus) || !key->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent))
 	{
 		return nullptr;
 	}
-	UOSInt privateExponentSize;
+	UIntOS privateExponentSize;
 	UnsafeArray<const UInt8> privateExponent;
-	UOSInt prime1Size;
+	UIntOS prime1Size;
 	UnsafeArray<const UInt8> prime1;
-	UOSInt prime2Size;
+	UIntOS prime2Size;
 	UnsafeArray<const UInt8> prime2;
-	UOSInt exponent1Size;
+	UIntOS exponent1Size;
 	UnsafeArray<const UInt8> exponent1;
-	UOSInt exponent2Size;
+	UIntOS exponent2Size;
 	UnsafeArray<const UInt8> exponent2;
-	UOSInt coefficientSize;
+	UIntOS coefficientSize;
 	UnsafeArray<const UInt8> coefficient;
 
 	Net::ASN1PDUBuilder pdu;

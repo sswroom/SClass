@@ -22,10 +22,10 @@
 UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 {
 	NN<Net::LDAPClient> me = userObj.GetNN<Net::LDAPClient>();
-	UOSInt buffSize;
-	UOSInt recvSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS buffSize;
+	UIntOS recvSize;
+	UIntOS i;
+	UIntOS j;
 	Double t;
 	me->recvRunning = true;
 	{
@@ -153,7 +153,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt msgLen)
+void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UIntOS msgLen)
 {
 	UInt32 msgId;
 	UnsafeArray<const UInt8> msgEnd = msgBuff + msgLen;
@@ -424,7 +424,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			}
 			else if (filter[0] == '=')
 			{
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter++;
 				break;
 			}
@@ -435,7 +435,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				pdu->EndLevel();
 				return filter + 1;
 			}
@@ -468,41 +468,41 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			}
 			else if (filter[0] == '=' && filter[1] == '*' && filter[2] == ')')
 			{
-				pdu->AppendOther(complex?0xA7:0x87, filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOther(complex?0xA7:0x87, filterStart, (UIntOS)(filter - filterStart));
 				return filter + 3;
 			}
 			else if (filter[0] == '=' && filter[1] == '*')
 			{
 				pdu->BeginOther(complex?0xA4:0x84);
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '=')
 			{
 				pdu->BeginOther(complex?0xA3:0x83);
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter += 1;
 				break;
 			}
 			else if (filter[0] == '>' && filter[1] == '=')
 			{
 				pdu->BeginOther(complex?0xA5:0x85);
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '<' && filter[1] == '=')
 			{
 				pdu->BeginOther(complex?0xA6:0x86);
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter += 2;
 				break;
 			}
 			else if (filter[0] == '~' && filter[1] == '=')
 			{
 				pdu->BeginOther(complex?0xA8:0x88);
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				filter += 2;
 				break;
 			}
@@ -513,7 +513,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 		{
 			if (filter[0] == ')')
 			{
-				pdu->AppendOctetString(filterStart, (UOSInt)(filter - filterStart));
+				pdu->AppendOctetString(filterStart, (UIntOS)(filter - filterStart));
 				pdu->EndLevel();
 				return filter + 1;
 			}
@@ -566,7 +566,7 @@ Bool Net::LDAPClient::IsError()
 Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 {
 	Net::ASN1PDUBuilder *pdu;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Bool valid;
@@ -627,7 +627,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 Bool Net::LDAPClient::Unbind()
 {
 	Net::ASN1PDUBuilder *pdu;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
@@ -654,7 +654,7 @@ Bool Net::LDAPClient::Unbind()
 Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, UnsafeArrayOpt<const UTF8Char> filter, NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
 	Net::ASN1PDUBuilder *pdu;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> resObjs;
@@ -747,7 +747,7 @@ void __stdcall Net::LDAPClient::SearchResObjectFree(NN<Net::LDAPClient::SearchRe
 	if (obj->items.SetTo(items))
 	{
 		NN<Net::LDAPClient::SearchResItem> item;
-		UOSInt i = items->GetCount();
+		UIntOS i = items->GetCount();
 		while (i-- > 0)
 		{
 			item = items->GetItemNoCheck(i);

@@ -3,10 +3,10 @@
 #include "IO/Device/DS18B20.h"
 #include "Sync/ThreadUtil.h"
 
-UInt8 IO::Device::DS18B20::CalcCRC(UnsafeArray<const UInt8> buff, OSInt size)
+UInt8 IO::Device::DS18B20::CalcCRC(UnsafeArray<const UInt8> buff, IntOS size)
 {
 	UInt8 v = 0;
-	OSInt i;
+	IntOS i;
 	while (size-- > 0)
 	{
 		v = v ^ (*buff++);

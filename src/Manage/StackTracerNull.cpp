@@ -28,16 +28,16 @@ UInt64 Manage::StackTracer::GetCurrentAddr()
 {
 	if (this->addrArr == 0)
 		return 0;
-	return this->addrArr->GetItem((OSInt)this->stackFrame);
+	return this->addrArr->GetItem((IntOS)this->stackFrame);
 }
 
 Bool Manage::StackTracer::GoToNextLevel()
 {
 	if (this->addrArr == 0)
 		return false;
-	if ((OSInt)this->stackFrame >= this->addrArr->GetCount() - 1)
+	if ((IntOS)this->stackFrame >= this->addrArr->GetCount() - 1)
 		return false;
-	this->stackFrame = (void*)(1 + (OSInt)this->stackFrame);
+	this->stackFrame = (void*)(1 + (IntOS)this->stackFrame);
 	return true;
 }
 

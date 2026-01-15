@@ -12,7 +12,7 @@ namespace Core
 		Bool ending;
 		Bool ended;
 
-		UOSInt argc;
+		UIntOS argc;
 		UnsafeArrayOpt<UnsafeArray<UTF8Char>> argv;
 	};		
 }

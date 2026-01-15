@@ -16,7 +16,7 @@
 #endif
 
 
-OSInt __stdcall UI::Win::WinGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinGroupBox::GBWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
 	UI::Win::WinGroupBox *me = (UI::Win::WinGroupBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
@@ -59,7 +59,7 @@ UI::Win::WinGroupBox::WinGroupBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> p
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", text.v, style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
-	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)GBWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)GBWndProc);
 }
 
 Math::Coord2DDbl UI::Win::WinGroupBox::GetClientOfst()
@@ -74,5 +74,5 @@ Math::Size2DDbl UI::Win::WinGroupBox::GetClientSize()
 
 UI::Win::WinGroupBox::~WinGroupBox()
 {
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)this->oriWndProc);
 }

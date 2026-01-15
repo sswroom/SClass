@@ -8,7 +8,7 @@ void Crypto::Hash::AESCMAC::GenSubKey()
 {
 	UInt8 zero[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	UInt8 l[16];
-	UOSInt i;
+	UIntOS i;
 	this->aes.EncryptBlock(zero, l);
 	i = 0;
 	while (i < 15)
@@ -71,7 +71,7 @@ void Crypto::Hash::AESCMAC::Clear()
 	this->buffSize = 0;
 }
 
-void Crypto::Hash::AESCMAC::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::AESCMAC::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (this->buffSize != 0)
 	{
@@ -108,7 +108,7 @@ void Crypto::Hash::AESCMAC::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 void Crypto::Hash::AESCMAC::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 y[16];
-	UOSInt i;
+	UIntOS i;
 	if (this->buffSize == 0)
 	{
 		WriteNUInt64(&y[0], 0);
@@ -140,12 +140,12 @@ void Crypto::Hash::AESCMAC::GetValue(UnsafeArray<UInt8> buff) const
 	}
 }
 
-UOSInt Crypto::Hash::AESCMAC::GetBlockSize() const
+UIntOS Crypto::Hash::AESCMAC::GetBlockSize() const
 {
 	return 16;
 }
 
-UOSInt Crypto::Hash::AESCMAC::GetResultSize() const
+UIntOS Crypto::Hash::AESCMAC::GetResultSize() const
 {
 	return 16;
 }

@@ -30,12 +30,12 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 	IO::LogTool log;
 	NN<IO::Stream> stm;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::XMLAttrib> attr;
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Crypto::Cert::X509File> file;
 	if (!Net::URL::OpenStream(path, 0, clif, ssl, 10000, log).SetTo(stm))
 	{
@@ -57,7 +57,7 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 				NN<Text::String> nnlogoutLocation;
 				Optional<Crypto::Cert::X509Cert> encryptionCert = nullptr;
 				Optional<Crypto::Cert::X509Cert> signingCert = nullptr;
-				UOSInt type;
+				UIntOS type;
 				i = 0;
 				j = reader.GetAttribCount();
 				while (i < j)

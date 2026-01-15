@@ -2,13 +2,13 @@
 
 extern "C"
 {
-void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops)
+void MediaPlayer_VideoCropImageY(UInt8 *yptr, UIntOS w, UIntOS h, UIntOS ySplit, UIntOS *crops)
 {
 	UInt8 *ptr;
 	UInt8 *ptr2;
-	UOSInt i;
-	UOSInt j;
-	UOSInt v;
+	UIntOS i;
+	UIntOS j;
+	UIntOS v;
 	Bool found;
 	if (crops[1] != 0)
 	{

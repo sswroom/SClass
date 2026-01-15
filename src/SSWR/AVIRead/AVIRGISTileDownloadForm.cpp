@@ -14,7 +14,7 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (!me->selecting)
@@ -25,7 +25,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(Any
 	return UI::EventState::StopEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
@@ -51,7 +51,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyTy
 
 		Math::Geometry::LinearRing *lr;
 		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0].x = me->sel1.x;
 		ptList[0].y = me->sel1.y;
@@ -68,10 +68,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyTy
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
 		NN<Map::TileMap> tileMap = me->lyr->GetTileMap();
-		UOSInt maxLevel = tileMap->GetMaxLevel();
-		UOSInt currLyr = tileMap->GetMinLevel();
+		UIntOS maxLevel = tileMap->GetMaxLevel();
+		UIntOS currLyr = tileMap->GetMinLevel();
 		Data::ArrayListT<Math::Coord2D<Int32>> imgIdList;
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		while (currLyr <= maxLevel)
 		{
 			imgIdList.Clear();
@@ -79,7 +79,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyTy
 			cnt += imgIdList.GetCount();
 			currLyr++;
 		}
-		sptr = Text::StrUOSInt(sbuff, cnt);
+		sptr = Text::StrUIntOS(sbuff, cnt);
 		me->txtTotalImages->SetText(CSTRP(sbuff, sptr));
 
 		return UI::EventState::StopEvent;
@@ -87,7 +87,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyTy
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
@@ -110,7 +110,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(Any
 
 		Math::Geometry::LinearRing *lr;
 		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0].x = mapPt1.x;
 		ptList[0].y = mapPt1.y;
@@ -137,8 +137,8 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
-	UOSInt minLevel;
-	UOSInt maxLevel;
+	UIntOS minLevel;
+	UIntOS maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
@@ -155,8 +155,8 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
-	UOSInt minLevel;
-	UOSInt maxLevel;
+	UIntOS minLevel;
+	UIntOS maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
@@ -179,11 +179,11 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(AnyType use
 	me->stopDownload = true;
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folderName, UIntOS userMinLevel, UIntOS userMaxLevel)
 {
 	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
-	UOSInt tileMinLevel = tileMap->GetMinLevel();
-	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
+	UIntOS tileMinLevel = tileMap->GetMinLevel();
+	UIntOS tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
 		return;
 	if (userMinLevel < tileMinLevel)
@@ -194,11 +194,11 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folder
 	WriteTiles(writer, userMinLevel, userMaxLevel);
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName, UIntOS fileType, UIntOS userMinLevel, UIntOS userMaxLevel)
 {
 	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
-	UOSInt tileMinLevel = tileMap->GetMinLevel();
-	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
+	UIntOS tileMinLevel = tileMap->GetMinLevel();
+	UIntOS tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
 		return;
 	if (userMinLevel < tileMinLevel)
@@ -222,17 +222,17 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	writer.Delete();
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> writer, UIntOS userMinLevel, UIntOS userMaxLevel)
 {
 	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt currLyr;
+	UIntOS currLyr;
 	Data::ArrayListT<Math::Coord2D<Int32>> imgIdList;
-	UOSInt i;
-	UOSInt j;
-	UOSInt cnt;
-	OSInt err = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS cnt;
+	IntOS err = 0;
 	Bool found;
 	this->errCnt = 0;
 	this->txtError->SetText(CSTR("0"));
@@ -241,7 +241,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 	currLyr = userMinLevel;
 	while (currLyr <= userMaxLevel)
 	{
-		sptr = Text::StrUOSInt(sbuff, currLyr);
+		sptr = Text::StrUIntOS(sbuff, currLyr);
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 		writer->BeginLevel(currLyr);
 
@@ -251,7 +251,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 		i = cnt;
 		while (i-- > 0)
 		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
+			sptr = Text::StrUIntOS(Text::StrConcatC(Text::StrUIntOS(sbuff, cnt - i), UTF8STRC("/")), cnt);
 			this->txtImages->SetText(CSTRP(sbuff, sptr));
 			this->ui->ProcessMessages();
 			Math::Coord2D<Int32> imageId = imgIdList.GetItem(i);
@@ -282,7 +282,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 			if (err != this->errCnt)
 			{
 				err = this->errCnt;
-				sptr = Text::StrOSInt(sbuff, err);
+				sptr = Text::StrIntOS(sbuff, err);
 				this->txtError->SetText(CSTRP(sbuff, sptr));
 			}
 			if (this->stopDownload)
@@ -310,7 +310,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel)
+Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UIntOS> minLevel, OutParam<UIntOS> maxLevel)
 {
 	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UInt32 userMinLevel;
@@ -347,7 +347,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;
 	UInt64 fileSize;
-	OSInt j;
+	IntOS j;
 
 	stat->threadStat = 1;
 	{
@@ -369,14 +369,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 					fileSize = fd->GetDataSize();
 					if (fileSize > fileBuff.GetSize())
 					{
-						fileBuff.ChangeSizeAndClear((UOSInt)fileSize);
+						fileBuff.ChangeSizeAndClear((UIntOS)fileSize);
 					}
-					if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
+					if (fd->GetRealData(0, (UIntOS)fileSize, fileBuff) == fileSize)
 					{
 						NN<Map::TileMapWriter> writer;
 						if (stat->writer.SetTo(writer))
 						{
-							writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UOSInt)fileSize), it);
+							writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UIntOS)fileSize), it);
 						}
 					}
 					DEL_CLASS(fd);
@@ -413,7 +413,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUI
 	this->SetNoResize(true);
 	this->selecting = false;
 	this->isDown = false;
-	this->downPos = Math::Coord2D<OSInt>(0, 0);
+	this->downPos = Math::Coord2D<IntOS>(0, 0);
 	this->sel1 = Math::Coord2DDbl(0, 0);
 	this->sel2 = Math::Coord2DDbl(0, 0);
 	this->stopDownload = false;
@@ -458,17 +458,17 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUI
 	this->txtError->SetRect(104, 156, 100, 23, false);
 
 	sb.ClearStr();
-	sb.AppendUOSInt(this->lyr->GetTileMap()->GetMinLevel());
+	sb.AppendUIntOS(this->lyr->GetTileMap()->GetMinLevel());
 	this->txtMinLevel->SetText(sb.ToCString());
 	sb.ClearStr();
-	sb.AppendUOSInt(this->lyr->GetTileMap()->GetMaxLevel());
+	sb.AppendUIntOS(this->lyr->GetTileMap()->GetMaxLevel());
 	this->txtMaxLevel->SetText(sb.ToCString());
 
 	this->navi->HandleMapMouseLDown(OnMouseDown, this);
 	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 
-	UOSInt i;
+	UIntOS i;
 	this->threadCnt = this->lyr->GetTileMap()->GetConcurrentCount();
 	if (this->threadCnt <= 0)
 	{
@@ -511,7 +511,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 {
 	this->navi->UnhandleMapMouse(this);
 
-	UOSInt i;
+	UIntOS i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{

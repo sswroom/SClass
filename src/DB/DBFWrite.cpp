@@ -15,7 +15,7 @@ DB::DBFWrite::DBFWrite(Int32 nCol, const UTF8Char **colNames, Int32 outputCodePa
 	this->colCnt = nCol;
 	i = nCol;
 	this->cols = MemAlloc(const UTF8Char*, nCol);
-	this->strSize = MemAlloc(OSInt, nCol);
+	this->strSize = MemAlloc(IntOS, nCol);
 	this->colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
 	this->colSizes = MemAlloc(Int32, nCol);
 	while (i-- > 0)
@@ -29,7 +29,7 @@ DB::DBFWrite::DBFWrite(Int32 nCol, const UTF8Char **colNames, Int32 outputCodePa
 
 DB::DBFWrite::~DBFWrite()
 {
-	OSInt i = this->values.GetCount();
+	IntOS i = this->values.GetCount();
 	Int32 j;
 	Char **val;
 	while (i-- > 0)
@@ -57,7 +57,7 @@ DB::DBFWrite::~DBFWrite()
 void DB::DBFWrite::AddRecord(const UTF8Char **rowValues)
 {
 	UInt8 buff[1024];
-	OSInt colSize;
+	IntOS colSize;
 	Int32 i = this->colCnt;
 	const UTF8Char *wPtr;
 	Char **row;
@@ -92,8 +92,8 @@ void DB::DBFWrite::Save(IO::Stream *stm)
 	byteBuff[3] = dt.GetDay();
 	*(Int32*)&byteBuff[4] = (Int32)this->values.GetCount();
 	*(Int16*)&byteBuff[8] = (this->colCnt << 5) + 33;
-	OSInt i = 0;
-	OSInt j = this->colCnt;
+	IntOS i = 0;
+	IntOS j = this->colCnt;
 	while (j-- > 0)
 	{
 		i += strSize[j];
@@ -110,7 +110,7 @@ void DB::DBFWrite::Save(IO::Stream *stm)
 	j = this->colCnt;
 	while (i < j)
 	{
-		OSInt retSize;
+		IntOS retSize;
 		retSize = this->enc.UTF8ToBytes(byteBuff, cols[i]);
 		if (retSize > 10)
 			retSize = 10;
@@ -159,8 +159,8 @@ void DB::DBFWrite::Save(IO::Stream *stm)
 	byteBuff[0] = 13;
 	stm->Write(byteBuff,  1);
 
-	OSInt k;
-	OSInt l;
+	IntOS k;
+	IntOS l;
 	i = 0;
 	while (i < this->values.GetCount())
 	{

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType use
 	Text::StringBuilderUTF8 sbResult;
 	if (sb.StartsWith(CSTR("https://")))
 	{
-		UOSInt i = sb.IndexOf(CSTR("SAMLRequest="));
+		UIntOS i = sb.IndexOf(CSTR("SAMLRequest="));
 		if (i == INVALID_INDEX)
 		{
 			me->ui->ShowMsgOK(CSTR("Response format not supported"), CSTR("SAML Request Decode"), me);

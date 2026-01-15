@@ -52,18 +52,18 @@ IO::SeleniumIDERunner::~SeleniumIDERunner()
 
 Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj)
 {
-	UOSInt currIndex = INVALID_INDEX;
+	UIntOS currIndex = INVALID_INDEX;
 	NN<IO::SeleniumCommand> command;
 	NN<Text::String> s;
-	UOSInt i;
+	UIntOS i;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	struct {
 		CondType type;
-		UOSInt index;
-		UOSInt param;
+		UIntOS index;
+		UIntOS param;
 	} cond[16];
-	UOSInt condCnt = 0;
+	UIntOS condCnt = 0;
 	NN<GPSPosition> nnlocation;
 	try
 	{
@@ -244,7 +244,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 			{
 				cond[condCnt].type = CondType::Times;
 				cond[condCnt].index = currIndex;
-				cond[condCnt].param = Text::String::OrEmpty(command->GetTarget())->ToUOSInt();
+				cond[condCnt].param = Text::String::OrEmpty(command->GetTarget())->ToUIntOS();
 				skip = cond[condCnt].param == 0;
 				condCnt++;
 			}

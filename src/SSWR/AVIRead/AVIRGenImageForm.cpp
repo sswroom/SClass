@@ -19,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 		return;
 	}
 
-	UOSInt i = me->cboGenerator->GetSelectedIndex();
+	UIntOS i = me->cboGenerator->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		NN<Media::ImageGenerator> imgGen = me->cboGenerator->GetItem(i).GetNN<Media::ImageGenerator>();
-		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)me->cboColorProfile->GetSelectedItem().GetOSInt());
+		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)me->cboColorProfile->GetSelectedItem().GetIntOS());
 
 		NN<Media::RasterImage> img;
-		if (imgGen->GenerateImage(colorProfile, Math::Size2D<UOSInt>(width, height)).SetTo(img))
+		if (imgGen->GenerateImage(colorProfile, Math::Size2D<UIntOS>(width, height)).SetTo(img))
 		{
 			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(imgGen->GetName()));
@@ -88,8 +88,8 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl>
 	this->SetDefaultButton(btnGenerate);
 	this->SetCancelButton(btnCancel);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASSNN(this->imgGenMgr, Media::ImageGen::ImageGenMgr());
 	i = 0;
 	j = this->imgGenMgr->GetCount();

@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Bool Net::PacketAnalyzerEthernet::PacketNullGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketNullGetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 packetType = ReadMUInt32(&packet[0]);
 	switch (packetType)
@@ -30,17 +30,17 @@ Bool Net::PacketAnalyzerEthernet::PacketNullGetName(UnsafeArray<const UInt8> pac
 	return false;
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketEthernetGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketEthernetGetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	return PacketEthernetDataGetName(ReadMUInt16(&packet[12]), &packet[14], packetSize - 14, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketLinuxGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketLinuxGetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	return PacketEthernetDataGetName(ReadMUInt16(&packet[14]), &packet[16], packetSize - 16, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (etherType)
 	{
@@ -65,7 +65,7 @@ Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, Un
 	}
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -77,7 +77,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(UnsafeArray<const UInt8> pac
 	UInt32 srcIP = ReadNUInt32(&packet[12]);
 	UInt32 destIP = ReadNUInt32(&packet[16]);
 	const UInt8 *ipData;
-	UOSInt ipDataSize;
+	UIntOS ipDataSize;
 
 	if ((packet[0] & 0xf) <= 5)
 	{
@@ -91,15 +91,15 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(UnsafeArray<const UInt8> pac
 	}
 
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[9], ipData, ipDataSize, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -113,15 +113,15 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(UnsafeArray<const UInt8> pac
 	Net::SocketUtil::SetAddrInfoV6(srcAddr, &packet[8], 0);
 	Net::SocketUtil::SetAddrInfoV6(destAddr, &packet[24], 0);
 	sptr = Net::SocketUtil::GetAddrName(sbuff, srcAddr).Or(sbuff);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, destAddr).Or(sbuff);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (protocol)
 	{
@@ -174,79 +174,79 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, UnsafeArra
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketNullGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketNullGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketEthernetDataGetDetail(etherType, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIEEE802_2LLCGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPv4GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPv6GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPDataGetDetail(protocol, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketUDPGetDetail(srcPort, destPort, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketDNSGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketLoRaMACGetDetail(packet, packetSize, 0, frame);
 }
 
-UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+UIntOS Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	return HeaderIPv4GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketNullGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketNullGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UInt32 packetType = ReadMUInt32(&packet[0]);
 	frame->AddUInt(frameOfst, 4, CSTR("Packet Type"), packetType);
@@ -263,7 +263,7 @@ void Net::PacketAnalyzerEthernet::PacketNullGetDetail(UnsafeArray<const UInt8> p
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	frame->AddMACAddr(frameOfst + 0, CSTR("DestMAC"), &packet[0], true);
 	frame->AddMACAddr(frameOfst + 6, CSTR("SrcMAC"), &packet[6], true);
@@ -272,7 +272,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(UnsafeArray<const UInt
 	PacketEthernetDataGetDetail(etherType, &packet[14], packetSize - 14, frameOfst + 14, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UInt16 v;
@@ -337,7 +337,7 @@ void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(UnsafeArray<const UInt8> 
 	PacketEthernetDataGetDetail(etherType, &packet[16], packetSize - 16, frameOfst + 16, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	switch (etherType)
 	{
@@ -371,7 +371,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UTF8Char sbuff[32];
@@ -464,7 +464,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(UnsafeArray<const 
 
 }
 
-void Net::PacketAnalyzerEthernet::PacketARPGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketARPGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	if (packetSize < 22)
 	{
@@ -513,7 +513,7 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(UnsafeArray<const UInt8> pa
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	if ((packet[0] & 0xf0) != 0x40 || packetSize < 20)
 	{
@@ -523,7 +523,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> p
 	}
 
 	const UInt8 *ipData;
-	UOSInt ipDataSize;
+	UIntOS ipDataSize;
 	ipDataSize = HeaderIPv4GetDetail(packet, packetSize, frameOfst, frame);
 	ipData = &packet[ipDataSize];
 	frameOfst += (UInt32)ipDataSize;
@@ -532,7 +532,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(UnsafeArray<const UInt8> p
 	PacketIPDataGetDetail(packet[9], ipData, ipDataSize, frameOfst, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -559,7 +559,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(UnsafeArray<const UInt8> p
 	PacketIPDataGetDetail(packet[6], &packet[40], packetSize - 40, frameOfst + 40, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -570,7 +570,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 		frame->AddText(frameOfst, CSTR("ICMP:"));
 		if (packetSize >= 4)
 		{
-			UOSInt i = 4;
+			UIntOS i = 4;
 			vName = nullptr;
 			switch (packet[0])
 			{
@@ -803,18 +803,18 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 					frame->AddUInt(frameOfst + 9, 1, CSTR("QQIC"), packet[9]);
 					n = ReadMUInt16(&packet[10]);
 					frame->AddUInt(frameOfst + 10, 2, CSTR("QQIC"), n);
-					if (packetSize >= 12 + (UOSInt)n * 4)
+					if (packetSize >= 12 + (UIntOS)n * 4)
 					{
 						UInt16 i = 0;
 						while (i < n)
 						{
 							sptr = Text::StrConcatC(Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("Source Address[")), i), UTF8STRC("]"));
-							frame->AddIPv4(frameOfst + 12 + (UOSInt)i * 4, CSTRP(sbuff, sptr), &packet[12 + i * 4]);
+							frame->AddIPv4(frameOfst + 12 + (UIntOS)i * 4, CSTRP(sbuff, sptr), &packet[12 + i * 4]);
 							i++;
 						}
-						if (packetSize > 12 + (UOSInt)n * 4)
+						if (packetSize > 12 + (UIntOS)n * 4)
 						{
-							frame->AddTextHexBuff(frameOfst + 12 + (UOSInt)n * 4, packetSize - 12 - (UInt32)n * 4, &packet[12 + n * 4], true);
+							frame->AddTextHexBuff(frameOfst + 12 + (UIntOS)n * 4, packetSize - 12 - (UInt32)n * 4, &packet[12 + n * 4], true);
 						}
 					}
 				}
@@ -884,11 +884,11 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 			frame->AddUInt(frameOfst + 14, 2, CSTR("Window Size"), ReadMUInt16(&packet[14]));
 			frame->AddHex16(frameOfst + 16, CSTR("Checksum"), ReadMUInt16(&packet[16]));
 			frame->AddHex16(frameOfst + 18, CSTR("Urgent Pointer"), ReadMUInt16(&packet[18]));
-			UOSInt headerLen = (UOSInt)(packet[12] >> 4) * 4;
+			UIntOS headerLen = (UIntOS)(packet[12] >> 4) * 4;
 			if (headerLen > 20)
 			{
 				frame->AddText(frameOfst + 20, CSTR("Options:"));
-				UOSInt i = 20;
+				UIntOS i = 20;
 				while (i < headerLen)
 				{
 					vName = nullptr;
@@ -931,7 +931,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 						{
 							frame->AddUInt(frameOfst + i + 2, 2, CSTR("Value"), ReadMUInt16(&packet[i + 2]));
 						}
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					case 3:
 						frame->AddUInt(frameOfst + i + 1, 1, CSTR("Length"), packet[i + 1]);
@@ -939,11 +939,11 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 						{
 							frame->AddUInt(frameOfst + i + 2, 1, CSTR("Value"), packet[i + 2]);
 						}
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					case 4:
 						frame->AddUInt(frameOfst + i + 1, 1, CSTR("Length"), packet[i + 1]);
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					case 5:
 						frame->AddUInt(frameOfst + i + 1, 1, CSTR("Length"), packet[i + 1]);
@@ -952,7 +952,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 							frame->AddUInt(frameOfst + i + 2, 4, CSTR("Left Edge"), ReadMUInt32(&packet[i + 2]));
 							frame->AddUInt(frameOfst + i + 6, 4, CSTR("Right Edge"), ReadMUInt32(&packet[i + 6]));
 						}
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					case 8:
 						frame->AddUInt(frameOfst + i + 1, 1, CSTR("Length"), packet[i + 1]);
@@ -961,11 +961,11 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 							frame->AddUInt(frameOfst + i + 2, 4, CSTR("Timestamp value"), ReadMUInt32(&packet[i + 2]));
 							frame->AddUInt(frameOfst + i + 6, 4, CSTR("Timestamp echo reply"), ReadMUInt32(&packet[i + 6]));
 						}
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					default:
 						frame->AddUInt(frameOfst + i + 1, 1, CSTR("Length"), packet[i + 1]);
-						i += (UOSInt)packet[i + 1] - 1;
+						i += (UIntOS)packet[i + 1] - 1;
 						break;
 					}
 					i++;
@@ -982,7 +982,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 	{
 		UInt16 srcPort = 0;
 		UInt16 destPort = 0;
-		UOSInt udpLen = packetSize;
+		UIntOS udpLen = packetSize;
 		frame->AddText(frameOfst, CSTR("UDP:"));
 		
 		if (packetSize >= 2)
@@ -1246,7 +1246,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 					frame->AddUInt(frameOfst + 6, 2, CSTR("Router Lifetime"), ReadMUInt16(&packet[6]));
 					frame->AddUInt(frameOfst + 8, 4, CSTR("Reachable Timer"), ReadMUInt32(&packet[8]));
 					frame->AddUInt(frameOfst + 12, 4, CSTR("Retains Timer"), ReadMUInt32(&packet[12]));
-					UOSInt i = 16;
+					UIntOS i = 16;
 					while (i + 7 < packetSize)
 					{
 						vName = nullptr;
@@ -1280,7 +1280,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 							frame->AddUInt(frameOfst + i + 4, 4, CSTR("MTU"), ReadMUInt32(&packet[i + 4]));
 							break;
 						}
-						i += (UOSInt)packet[i + 1] * 8;
+						i += (UIntOS)packet[i + 1] * 8;
 					}
 				}
 				else
@@ -1293,7 +1293,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 				{
 					frame->AddHex32(frameOfst + 4, CSTR("Reserved"), ReadMUInt32(&packet[4]));
 					frame->AddIPv4(frameOfst + 8, CSTR("Target Address"), &packet[8]);
-					UOSInt i = 24;
+					UIntOS i = 24;
 					while (i < packetSize)
 					{
 						vName = nullptr;
@@ -1329,7 +1329,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, UnsafeAr
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UTF8Char sbuff[64];
@@ -1428,10 +1428,10 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				else if (t == 6 && len > 0 && (len & 3) == 0)
 				{
 
-					OSInt i = 0;
+					IntOS i = 0;
 					while (i < len)
 					{
-						sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("DNS")), i >> 2);
+						sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("DNS")), i >> 2);
 						frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), CSTRP(sbuff, sptr), &currPtr[i]);
 						i += 4;
 					}
@@ -1478,12 +1478,12 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				}
 				else if (t == 55 && len > 0)
 				{
-					OSInt i;
+					IntOS i;
 					frame->AddText(frameOfst + (UInt32)(currPtr - packet), CSTR("\r\nParameter Request List:"));
 					i = 0;
 					while (i < len)
 					{
-						sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Parameter Request ")), i);
+						sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("Parameter Request ")), i);
 						frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet + i), 1, CSTRP(sbuff, sptr), currPtr[i], DHCPOptionGetName(currPtr[i]));
 						i++;
 					}
@@ -1509,7 +1509,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet), 1, CSTR("Client ID Type"), currPtr[0]);
 					if (len > 1)
 					{
-						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UOSInt)len - 1, CSTR("Client ID"), &currPtr[1], ':', false);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UIntOS)len - 1, CSTR("Client ID"), &currPtr[1], ':', false);
 					}
 				}
 				else if (t == 66 && len >= 1)
@@ -1523,7 +1523,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddUInt(frameOfst + (UInt32)(currPtr - packet) + 2, 1, CSTR("RCODE2"), currPtr[2]);
 					if (len > 3)
 					{
-						frame->AddStrC(frameOfst + (UInt32)(currPtr - packet + 3), (UOSInt)len - 3, CSTR("Domain Name"), &currPtr[3]);
+						frame->AddStrC(frameOfst + (UInt32)(currPtr - packet + 3), (UIntOS)len - 3, CSTR("Domain Name"), &currPtr[3]);
 					}
 				}
 				else if (t == 120 && len >= 1)
@@ -1535,7 +1535,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len > 1)
 					{
-						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UOSInt)len - 1, CSTR("Unknown"), &currPtr[1], true);
+						frame->AddHexBuff(frameOfst + (UInt32)(currPtr - packet) + 1, (UIntOS)len - 1, CSTR("Unknown"), &currPtr[1], true);
 					}
 				}
 				else
@@ -1554,8 +1554,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	else if (srcPort == 69 || destPort == 69)
 	{
 		UInt16 opcode = ReadMUInt16(packet);
-		UOSInt i = 2;
-		UOSInt len;
+		UIntOS i = 2;
+		UIntOS len;
 		frame->AddText(frameOfst, CSTR("TFTP:"));
 		vName = nullptr;
 		switch (opcode)
@@ -1594,17 +1594,17 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddField(frameOfst + (UInt32)i, (UInt32)len + 1, CSTR("Mode"), {&packet[i], len});
 					i += len + 1;
 				}
-				OSInt optId = 0;
+				IntOS optId = 0;
 				while (i < packetSize)
 				{
 					len = Text::StrCharCnt(&packet[i]);
 					if (optId & 1)
 					{
-						sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Value")), 1 + (optId >> 1));
+						sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("Value")), 1 + (optId >> 1));
 					}
 					else
 					{
-						sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Option")), 1 + (optId >> 1));
+						sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("Option")), 1 + (optId >> 1));
 					}
 					frame->AddField(frameOfst + (UInt32)i, (UInt32)len + 1, CSTRP(sbuff, sptr), {&packet[i], len});
 					i += len + 1;
@@ -1650,7 +1650,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				vName = CSTR("Unknown");
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, CSTR("Leap Indicator"), (UOSInt)packet[0] >> 6, vName);
+			frame->AddUIntName(frameOfst + 0, 1, CSTR("Leap Indicator"), (UIntOS)packet[0] >> 6, vName);
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Version Number"), (packet[0] >> 3) & 7);
 			vName = nullptr;
 			switch (packet[0] & 7)
@@ -1771,8 +1771,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		frame->AddUInt(frameOfst + 6, 2, CSTR("ANCOUNT"), ancount);
 		frame->AddUInt(frameOfst + 8, 2, CSTR("NSCOUNT"), nscount);
 		frame->AddUInt(frameOfst + 10, 2, CSTR("ARCOUNT"), arcount);
-		UOSInt i;
-		UOSInt k;
+		UIntOS i;
+		UIntOS k;
 		UInt8 j;
 		UInt16 qType;
 		UInt16 qClass;
@@ -1847,22 +1847,22 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 			else if (rrType == 0x21 && rdLength >= 1)
 			{
-				UOSInt nName = packet[i];
+				UIntOS nName = packet[i];
 				if (nName * 18 + 43 <= rdLength)
 				{
-					UOSInt k;
+					UIntOS k;
 					frame->AddUInt(frameOfst + i, 1, CSTR("Number_of_name"), nName);
 					k = 0;
 					while (k < nName)
 					{
-						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Name")), k);
+						sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Name")), k);
 						MemCopyNO(sbuff2, &packet[i + 1 + k * 18], 15);
 						sbuff2[15] = 0;
 						sptr2 = Text::StrRTrim(sbuff2);
 						frame->AddField(frameOfst + (UInt32)i + 1 + (UInt32)k * 18, 15, CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
-						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Type")), k);
+						sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Type")), k);
 						frame->AddUIntName(frameOfst + i + 1 + k * 18 + 15, 1, CSTRP(sbuff, sptr), packet[i + 1 + k * 18 + 15], Net::NetBIOSUtil::NameTypeGetName(packet[i + 1 + k * 18 + 15]));
-						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Flags")), k);
+						sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Flags")), k);
 						frame->AddHex16(frameOfst + i + 1 + k * 18 + 16, CSTRP(sbuff, sptr), ReadMUInt16(&packet[i + 1 + k * 18 + 16]));
 						k++;
 					}
@@ -1940,8 +1940,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		frame->AddUInt(frameOfst + 2, 2, CSTR("DGM_ID"), ReadMUInt16(&packet[2]));
 		frame->AddIPv4(frameOfst + 4, CSTR("SOURCE_IP"), &packet[4]);
 		frame->AddUInt(frameOfst + 8, 2, CSTR("SOURCE_PORT"), ReadMUInt16(&packet[8]));
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 10;
 		switch (msgType)
 		{
@@ -1999,7 +1999,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, CSTR("SNMP:"));
 			Net::SNMPInfo snmp;
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = snmp.PDUGetDetail(CSTR("Message"), Data::ByteArrayR(packet, packetSize), 0, sb);
+			UIntOS i = snmp.PDUGetDetail(CSTR("Message"), Data::ByteArrayR(packet, packetSize), 0, sb);
 			frame->AddField(frameOfst, (UInt32)i, sb.ToCString(), nullptr);
 			if (packetSize > i)
 			{
@@ -2009,7 +2009,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	}
 	else if (srcPort == 427 || destPort == 427) //RFC 2165/2608
 	{
-		UOSInt i;
+		UIntOS i;
 		frame->AddText(frameOfst, CSTR("Service Location Protocol:"));
 		frame->AddUInt(frameOfst + 0, 1, CSTR("Version"), packet[0]);
 		vName = nullptr;
@@ -2077,12 +2077,12 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len2 + i <= len)
 					{
-						frame->AddStrC(frameOfst + i - 2, 2 + (UOSInt)len2, CSTR("Previous Responders"), &packet[i]);
+						frame->AddStrC(frameOfst + i - 2, 2 + (UIntOS)len2, CSTR("Previous Responders"), &packet[i]);
 						i += len2;
 					}
 					else
 					{
-						frame->AddStrC(frameOfst + i - 2, (UOSInt)len - i + 2, CSTR("Previous Responders"), &packet[i]);
+						frame->AddStrC(frameOfst + i - 2, (UIntOS)len - i + 2, CSTR("Previous Responders"), &packet[i]);
 						i = len;
 					}
 				}
@@ -2096,7 +2096,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					}
 					else if (len2 + i <= len)
 					{
-						frame->AddStrC(frameOfst + i - 2, 2 + (UOSInt)len2, CSTR("Service Request"), &packet[i]);
+						frame->AddStrC(frameOfst + i - 2, 2 + (UIntOS)len2, CSTR("Service Request"), &packet[i]);
 						i += len2;
 					}
 					else
@@ -2164,8 +2164,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 							{
 								Text::TextBinEnc::Base64Enc b64;
 								NN<Text::JSONArray> jarr = NN<Text::JSONArray>::ConvertFrom(jbase);
-								UOSInt i;
-								UOSInt j;
+								UIntOS i;
+								UIntOS j;
 								i = 0;
 								j = jarr->GetArrayLength();
 								while (i < j)
@@ -2176,7 +2176,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 										if (jobj->GetObjectValue(CSTR("data")).SetTo(jbase) && jbase->GetType() == Text::JSONType::String)
 										{
 											NN<Text::JSONString> jstr = NN<Text::JSONString>::ConvertFrom(jbase);
-											UOSInt dataLen;
+											UIntOS dataLen;
 											UInt8 *dataBuff;
 											NN<Text::String> dataStr = jstr->GetValue();
 											sb.ClearStr();
@@ -2313,7 +2313,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -2380,9 +2380,9 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 	frame->AddUInt(frameOfst + 6, 2, CSTR("ANCOUNT"), ancount);
 	frame->AddUInt(frameOfst + 8, 2, CSTR("NSCOUNT"), nscount);
 	frame->AddUInt(frameOfst + 10, 2, CSTR("ARCOUNT"), arcount);
-	UOSInt i = 12;
+	UIntOS i = 12;
 	UInt16 j;
-	UOSInt k;
+	UIntOS k;
 	UInt16 t;
 	j = 0;
 	while (j < qdcount)
@@ -2404,8 +2404,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 		UInt16 rrType;
 		UInt16 rrClass;
 		UInt16 rdLength;
-		UOSInt k;
-		UOSInt l;
+		UIntOS k;
+		UIntOS l;
 
 		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("NAME"), CSTRP(sbuff, sptr));
@@ -2450,7 +2450,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 			}
 			else if (k < i + rdLength)
 			{
-				frame->AddTextHexBuff(frameOfst + k , i + (UOSInt)rdLength - k, &packet[k], true);
+				frame->AddTextHexBuff(frameOfst + k , i + (UIntOS)rdLength - k, &packet[k], true);
 			}
 			break;
 		case 15: // MX - mail exchange
@@ -2460,17 +2460,17 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 			break;
 		case 16: // TXT - text strings
 			{
-				UOSInt k = 0;
+				UIntOS k = 0;
 				while (k < rdLength)
 				{
-					if ((UOSInt)packet[i + k] + 1 + k > rdLength)
+					if ((UIntOS)packet[i + k] + 1 + k > rdLength)
 					{
 						frame->AddTextHexBuff(frameOfst + i + k, rdLength - k, &packet[i + k], false);
 						break;
 					}
 					frame->AddUInt(frameOfst + i + k, 1, CSTR("StrLen"), packet[i + k]);
 					frame->AddStrC(frameOfst + i + k + 1, packet[i + k], CSTR("RDATA"), &packet[i + k + 1]);
-					k += (UOSInt)packet[i + k] + 1;
+					k += (UIntOS)packet[i + k] + 1;
 				}
 			}
 			break;
@@ -2512,14 +2512,14 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 				frame->AddUInt(frameOfst + i + 8, 4, CSTR("Signature Expiration"), ReadMUInt32(&packet[i + 8]));
 				frame->AddUInt(frameOfst + i + 12, 4, CSTR("Signature Inception"), ReadMUInt32(&packet[i + 12]));
 				frame->AddUInt(frameOfst + i + 16, 2, CSTR("Key Tag"), ReadMUInt16(&packet[i + 16]));
-				UOSInt nameLen = Text::StrCharCnt(&packet[i + 18]);
+				UIntOS nameLen = Text::StrCharCnt(&packet[i + 18]);
 				frame->AddField(frameOfst + (UInt32)i + 18, (UInt32)nameLen + 1, CSTR("Signer's Name"), {&packet[i + 18], nameLen});
-				frame->AddHexBuff(frameOfst + i + 19 + nameLen, (UOSInt)rdLength - 19 - nameLen, CSTR("Signature"), &packet[i + 19 + nameLen], false);
+				frame->AddHexBuff(frameOfst + i + 19 + nameLen, (UIntOS)rdLength - 19 - nameLen, CSTR("Signature"), &packet[i + 19 + nameLen], false);
 			}
 			break;
 		case 47: // NSEC - Next Secure record
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
+				UIntOS k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Next Domain Name"), CSTRP(sbuff, sptr));
 				if (k < i + rdLength)
 				{
@@ -2532,12 +2532,12 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 				frame->AddUInt(frameOfst + i, 2, CSTR("Flags"), ReadMUInt16(&packet[i]));
 				frame->AddUInt(frameOfst + i + 2, 1, CSTR("Protocol"), packet[i + 2]);
 				frame->AddUInt(frameOfst + i + 3, 1, CSTR("Algorithm"), packet[i + 3]);
-				frame->AddHexBuff(frameOfst + i + 4, (UOSInt)rdLength - 4, CSTR("Public Key"), &packet[i + 4], false);
+				frame->AddHexBuff(frameOfst + i + 4, (UIntOS)rdLength - 4, CSTR("Public Key"), &packet[i + 4], false);
 			}
 			break;
 		case 250: // TSIG
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
+				UIntOS k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Algorithm"), CSTRP(sbuff, sptr));
 				if (k + 10 < i + rdLength)
 				{
@@ -2547,7 +2547,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 					sptr = dt.ToString(sbuff, CHSTR("yyyy-MM-dd HH:mm:ss zzzz"));
 					frame->AddField(frameOfst + (UInt32)k, 6, CSTR("Time Signed"), CSTRP(sbuff, sptr));
 					frame->AddUInt(frameOfst + k + 6, 2, CSTR("Fudge"), ReadMUInt16(&packet[k + 6]));
-					UOSInt macSize = ReadMUInt16(&packet[k + 8]);
+					UIntOS macSize = ReadMUInt16(&packet[k + 8]);
 					frame->AddUInt(frameOfst + k + 8, 2, CSTR("MAC Size"), macSize);
 					k += 10;
 					if (macSize > 0 && k + macSize <= i + rdLength)
@@ -2589,7 +2589,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(UnsafeArray<const UInt8> pa
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName = nullptr;
 	switch (packet[0] >> 5)
@@ -2661,7 +2661,7 @@ void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8
 }
 
 
-UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+UIntOS Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	frame->AddField(frameOfst + 0, 1, CSTR("Version"), CSTR("4"));
 	frame->AddUInt(frameOfst + 0, 1, CSTR("Internet Header Length"), (UInt16)packet[0] & 0xf);

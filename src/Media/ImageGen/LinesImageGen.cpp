@@ -18,14 +18,14 @@ Text::CStringNN Media::ImageGen::LinesImageGen::GetName() const
 	return CSTR("Lines Image");
 }
 
-Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
 	Media::StaticImage *outImage;
 	UnsafeArray<Int64> imgPtr;
 	UnsafeArray<UInt8> imgPtr2;
 	UInt16 c[4];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double v;
 	if (size.x < 8 || size.y < 4)
 		return nullptr;
@@ -43,7 +43,7 @@ Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<co
 		i = 0;
 		while (i < size.x)
 		{
-			v = 0.5 + Math_Sin(UOSInt2Double(i)) * 0.25 + Math_Sin(UOSInt2Double(j)) * 0.25;
+			v = 0.5 + Math_Sin(UIntOS2Double(i)) * 0.25 + Math_Sin(UIntOS2Double(j)) * 0.25;
 			c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);
 			c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(v) * 65535.0);
 			c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(v) * 65535.0);

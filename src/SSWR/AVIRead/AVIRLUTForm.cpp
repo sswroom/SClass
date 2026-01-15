@@ -13,11 +13,11 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt currCh = this->cboChannels->GetSelectedItem().GetUOSInt();
-	UOSInt inputLev = this->lut->GetInputLevel();
-	UOSInt outputCh = this->lut->GetOutputCh();
+	UIntOS i;
+	UIntOS j;
+	UIntOS currCh = this->cboChannels->GetSelectedItem().GetUIntOS();
+	UIntOS inputLev = this->lut->GetInputLevel();
+	UIntOS outputCh = this->lut->GetOutputCh();
 	Media::LUT::DataFormat fmt = this->lut->GetFormat();
 	UInt32 inputValues[4];
 	inputValues[0] = 0;
@@ -28,14 +28,14 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		UInt8 values[4];
-		if (currCh == (UOSInt)-1)
+		if (currCh == (UIntOS)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt8(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -57,7 +57,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			{
 				this->lut->GetValueUInt8(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[currCh]);
 				i = 1;
 				while (i < outputCh)
 				{
@@ -73,14 +73,14 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	else if (fmt == Media::LUT::DF_UINT16)
 	{
 		UInt16 values[4];
-		if (currCh == (UOSInt)-1)
+		if (currCh == (UIntOS)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt16(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -102,7 +102,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			{
 				this->lut->GetValueUInt16(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -118,14 +118,14 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	else if (fmt == Media::LUT::DF_SINGLE)
 	{
 		Single values[4];
-		if (currCh == (UOSInt)-1)
+		if (currCh == (UIntOS)-1)
 		{
 			currCh = this->lut->GetInputCh();
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueSingle(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -147,7 +147,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			{
 				this->lut->GetValueSingle(inputValues, values);
 				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -166,8 +166,8 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, N
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->lut = lut;
 	sptr = lut->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LUT Viewer - ")));
 	this->SetText(CSTRP(sbuff, sptr));
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, N
 	j = this->lut->GetInputCh();
 	while (i < j)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
 		this->cboChannels->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		this->lvValues->AddColumn(CSTRP(sbuff, sptr), 60);
 		i++;

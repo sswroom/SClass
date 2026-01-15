@@ -115,8 +115,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	NN<Net::TCPClient> cli;
 	UInt8 *sendBuff;
-	UOSInt sendSize;
-	UOSInt sendBuffSize = SENDBUFFSIZE;
+	UIntOS sendSize;
+	UIntOS sendBuffSize = SENDBUFFSIZE;
 	me->procRunning = true;
 	me->mainEvt.Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
@@ -152,7 +152,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	NN<Net::TCPClient> cli;
-	UOSInt recvSize;
+	UIntOS recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();
 	{

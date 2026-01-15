@@ -10,10 +10,10 @@ namespace UI
 	{
 	private:
 		NN<UI::GUITabControl> ctrl;
-		UOSInt index;
+		UIntOS index;
 		void *custObj;
 	public:
-		GUITabPage(NN<GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UOSInt index);
+		GUITabPage(NN<GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UIntOS index);
 		virtual ~GUITabPage();
 
 		virtual void *GetFont();
@@ -21,7 +21,7 @@ namespace UI
 		virtual Bool IsFormFocused();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual Optional<GUIClientControl> GetParent();
 
 		void SetCustObj(void *custObj);

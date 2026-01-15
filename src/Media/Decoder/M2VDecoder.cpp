@@ -6,7 +6,7 @@
 #include "Media/Decoder/M2VDecoder.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
@@ -30,8 +30,8 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			}
 		}
 	}
-	UOSInt endSize = dataSize - 4;
-	UOSInt i = 0;
+	UIntOS endSize = dataSize - 4;
+	UIntOS i = 0;
 	while (i < endSize)
 	{
 		if (*(Int32*)&imgData[0][i] == srch)
@@ -108,7 +108,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 Media::Decoder::M2VDecoder::M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
-	UOSInt size;
+	UIntOS size;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	this->discTime = true;
@@ -149,7 +149,7 @@ Bool Media::Decoder::M2VDecoder::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::Decoder::M2VDecoder::GetFrameCount()
+UIntOS Media::Decoder::M2VDecoder::GetFrameCount()
 {
 	if (this->sourceVideo)
 	{
@@ -158,7 +158,7 @@ UOSInt Media::Decoder::M2VDecoder::GetFrameCount()
 	return 0;
 }
 
-Data::Duration Media::Decoder::M2VDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::M2VDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	if (this->sourceVideo)
 	{
@@ -185,7 +185,7 @@ void Media::Decoder::M2VDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType us
 	}*/
 }
 
-UOSInt Media::Decoder::M2VDecoder::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::Decoder::M2VDecoder::GetFrameSize(UIntOS frameIndex)
 {
 	if (this->sourceVideo)
 	{
@@ -194,7 +194,7 @@ UOSInt Media::Decoder::M2VDecoder::GetFrameSize(UOSInt frameIndex)
 	return 0;
 }
 
-UOSInt Media::Decoder::M2VDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::Decoder::M2VDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo)
 	{
@@ -203,7 +203,7 @@ UOSInt Media::Decoder::M2VDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt
 	return 0;
 }
 
-Bool Media::Decoder::M2VDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::M2VDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

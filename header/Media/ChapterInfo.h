@@ -20,11 +20,11 @@ namespace Media
 		~ChapterInfo();
 
 		void AddChapter(UInt32 chapterTime, Text::CStringNN chapterName, Text::CString chapterArtist);
-		UOSInt GetChapterIndex(Data::Duration currTime);
-		UInt32 GetChapterTime(UOSInt index);
-		UOSInt GetChapterCnt();
-		Optional<Text::String> GetChapterName(UOSInt index);
-		Optional<Text::String> GetChapterArtist(UOSInt index);
+		UIntOS GetChapterIndex(Data::Duration currTime);
+		UInt32 GetChapterTime(UIntOS index);
+		UIntOS GetChapterCnt();
+		Optional<Text::String> GetChapterName(UIntOS index);
+		Optional<Text::String> GetChapterArtist(UIntOS index);
 	};
 }
 #endif

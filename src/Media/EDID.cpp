@@ -53,14 +53,14 @@ Bool Media::EDID::Parse(UnsafeArray<const UInt8> edidBuff, NN<Media::EDID::EDIDI
 	info->dispPhysicalH_mm = (UInt32)edidBuff[0x16] * 10;
 	info->gamma = (edidBuff[0x17] + 100) * 0.01;
 
-	info->r.x = OSInt2Double((((OSInt)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
-	info->r.y = OSInt2Double((((OSInt)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
-	info->g.x = OSInt2Double((((OSInt)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
-	info->g.y = OSInt2Double((((OSInt)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
-	info->b.x = OSInt2Double((((OSInt)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
-	info->b.y = OSInt2Double((((OSInt)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
-	info->w.x = OSInt2Double((((OSInt)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
-	info->w.y = OSInt2Double((((OSInt)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
+	info->r.x = IntOS2Double((((IntOS)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
+	info->r.y = IntOS2Double((((IntOS)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
+	info->g.x = IntOS2Double((((IntOS)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
+	info->g.y = IntOS2Double((((IntOS)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
+	info->b.x = IntOS2Double((((IntOS)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
+	info->b.y = IntOS2Double((((IntOS)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
+	info->w.x = IntOS2Double((((IntOS)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
+	info->w.y = IntOS2Double((((IntOS)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
 	info->monitorName[0] = 0;
 	info->monitorSN[0] = 0;
 	info->monitorOther[0] = 0;
@@ -73,7 +73,7 @@ Bool Media::EDID::Parse(UnsafeArray<const UInt8> edidBuff, NN<Media::EDID::EDIDI
 
 void Media::EDID::ParseDescriptor(NN<EDIDInfo> info, const UInt8 *descriptor)
 {
-	OSInt i;
+	IntOS i;
 	UTF8Char *sptr;
 	const UInt8 *buffPtr;
 	UInt8 b;

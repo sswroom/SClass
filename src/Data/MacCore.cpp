@@ -238,9 +238,9 @@ const UInt8 *Data::MacData::Ptr() const
 	return CFDataGetBytePtr((CFDataRef)this->val);
 }
 
-UOSInt Data::MacData::GetSize() const
+UIntOS Data::MacData::GetSize() const
 {
-	return (UOSInt)CFDataGetLength((CFDataRef)this->val);
+	return (UIntOS)CFDataGetLength((CFDataRef)this->val);
 }
 
 Data::ByteArrayR Data::MacData::GetArray() const
@@ -261,20 +261,20 @@ Data::MacArray::~MacArray()
 {
 }
 
-CFTypeRef Data::MacArray::GetItem(UOSInt i) const
+CFTypeRef Data::MacArray::GetItem(UIntOS i) const
 {
 	return CFArrayGetValueAtIndex((CFArrayRef)this->val, (CFIndex)i);
 }
 
-UOSInt Data::MacArray::GetCount() const
+UIntOS Data::MacArray::GetCount() const
 {
-	return (UOSInt)CFArrayGetCount((CFArrayRef)this->val);
+	return (UIntOS)CFArrayGetCount((CFArrayRef)this->val);
 }
 
 void Data::MacArray::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->GetCount();
 	sb->AppendUTF8Char('[');
 	while (i < j)
 	{
@@ -309,15 +309,15 @@ CFTypeRef Data::MacDictionary::Get(CFStringRef name) const
 	return CFDictionaryGetValue((CFDictionaryRef)this->val, name);
 }
 
-UOSInt Data::MacDictionary::GetCount() const
+UIntOS Data::MacDictionary::GetCount() const
 {
-	return (UOSInt)CFDictionaryGetCount((CFDictionaryRef)this->val); 
+	return (UIntOS)CFDictionaryGetCount((CFDictionaryRef)this->val); 
 }
 
 void Data::MacDictionary::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt cnt = this->GetCount();
+	UIntOS i = 0;
+	UIntOS cnt = this->GetCount();
 	sb->AppendUTF8Char('{');
 	if (cnt > 0)
 	{

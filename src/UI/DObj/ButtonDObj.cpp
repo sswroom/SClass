@@ -11,7 +11,7 @@ UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(AnyType userObj)
 	return 0;
 }
 
-UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
+UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<IntOS> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -110,7 +110,7 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 	if (!this->isVisible)
 		return;
 
-	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	Math::Coord2D<IntOS> tl = this->GetCurrPos();
 	this->dispTL = tl;
 	NN<Media::DrawImage> bmpUnclick;
 	NN<Media::DrawImage> bmpClicked;
@@ -157,13 +157,13 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 				UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
 				UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
 				UInt8 *ptrD = (UInt8*)bmpTmp->bmpBits;
-	//			OSInt bpl = bmpS1->GetWidth() * 4;
-	//			OSInt w = bmpS1->GetWidth();
-	//			OSInt h = bmpS1->GetHeight();
-				OSInt pxCnt = bmpS1->GetWidth() * bmpS1->GetHeight();
-				OSInt a1 = Double2Int32(this->alpha * 32767);
-				OSInt a2 = Double2Int32((1 - this->alpha) * 32767);
-				if ((((OSInt)ptrD) & 15) != 0 || (pxCnt & 3) != 0)
+	//			IntOS bpl = bmpS1->GetWidth() * 4;
+	//			IntOS w = bmpS1->GetWidth();
+	//			IntOS h = bmpS1->GetHeight();
+				IntOS pxCnt = bmpS1->GetWidth() * bmpS1->GetHeight();
+				IntOS a1 = Double2Int32(this->alpha * 32767);
+				IntOS a2 = Double2Int32((1 - this->alpha) * 32767);
+				if ((((IntOS)ptrD) & 15) != 0 || (pxCnt & 3) != 0)
 				{
 					_asm
 					{
@@ -253,9 +253,9 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 				UnsafeArray<UInt8> ptrD;
 				if (bmpS1->GetImgBits(revOrder).SetTo(ptrS1) && bmpS2->GetImgBits(revOrder).SetTo(ptrS2) && bmpTmp->GetImgBits(revOrder).SetTo(ptrD))
 				{
-					UOSInt lineBytes = bmpS1->GetWidth() * 4;
-					UOSInt i;
-					UOSInt j = bmpS1->GetHeight();
+					UIntOS lineBytes = bmpS1->GetWidth() * 4;
+					UIntOS i;
+					UIntOS j = bmpS1->GetHeight();
 					Double a1 = this->alpha;
 					Double a2 = 1 - this->alpha; 
 					while (j-- > 0)
@@ -290,7 +290,7 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 }
 
-Bool UI::DObj::ButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::ButtonDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	if (scnPos.x < this->dispTL.x || scnPos.y < this->dispTL.y || !this->isVisible)
 		return false;
@@ -300,7 +300,7 @@ Bool UI::DObj::ButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 		if (!this->bmpClicked.SetTo(bmpChk))
 			return false;
 	}
-	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= scnPos.y)
+	if (this->dispTL.x + (IntOS)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->GetHeight() <= scnPos.y)
 		return false;
 	if (this->rectMode)
 		return true;

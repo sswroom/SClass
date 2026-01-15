@@ -16,18 +16,18 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Media::ColorConv> colorConv;
 			NN<Map::MapEnv> env;
-			UOSInt currLineStyle;
+			UIntOS currLineStyle;
 
 			Optional<UI::GUIPopupMenu> mnuLayers;
 
 		private:
 			static void __stdcall OnResized(AnyType userObj);
 			virtual void OnDraw(NN<Media::DrawImage> img);
-			virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+			virtual void OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initLineStyle, NN<Media::ColorManagerSess> colorSess);
+			AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UIntOS initLineStyle, NN<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRLineSelector();
 
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
@@ -36,7 +36,7 @@ namespace SSWR
 			void SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers);
 
 			void UpdateLineStyles();
-			UOSInt GetSelectedLineStyle();
+			UIntOS GetSelectedLineStyle();
 		};
 	}
 }

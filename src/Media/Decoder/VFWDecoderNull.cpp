@@ -15,7 +15,7 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUI
 	return true;
 }
 
-void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 
 }
@@ -43,7 +43,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Med
 	
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	Media::FrameInfo frameInfo;
 	if (!sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return;
@@ -66,7 +66,7 @@ Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 	return CSTR("VFWDecoder");
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;
@@ -95,12 +95,12 @@ Bool Media::Decoder::VFWDecoder::HasFrameCount()
 	return this->sourceVideo->HasFrameCount();
 }
 
-UOSInt Media::Decoder::VFWDecoder::GetFrameCount()
+UIntOS Media::Decoder::VFWDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
 
-Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }

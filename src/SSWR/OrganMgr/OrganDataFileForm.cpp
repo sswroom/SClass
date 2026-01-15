@@ -7,8 +7,8 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(AnyType userObj, Da
 {
 	NN<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	Bool chg = false;
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->env->AddDataFile(files[i]->ToCString()))
@@ -23,7 +23,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(AnyType userObj, Da
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	NN<DataFileInfo> dataFile;
@@ -74,9 +74,9 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 
 	NN<Data::ArrayListNN<DataFileInfo>> dataFiles = this->env->GetDataFiles();
 	NN<DataFileInfo> dataFile;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	i = 0;

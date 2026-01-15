@@ -25,7 +25,7 @@ global _CSRGB16_LRGBC_ConvertW16
 global CSRGB16_LRGBC_ConvertA2B10G10R10
 global _CSRGB16_LRGBC_ConvertA2B10G10R10
 
-;void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -69,7 +69,7 @@ cbgra16lop2:
 	pop rbx
 	ret
 
-;void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -113,7 +113,7 @@ crgba16lop2:
 	pop rbx
 	ret
 
-;void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -158,7 +158,7 @@ cbgr16lop2:
 	pop rbx
 	ret
 
-;void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -203,7 +203,7 @@ crgb16lop2:
 	pop rbx
 	ret
 
-;void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -246,7 +246,7 @@ cwa16lop2:
 	pop rbx
 	ret
 	
-;void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr
@@ -289,7 +289,7 @@ cw16lop2:
 	pop rbx
 	ret
 
-;void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcNBits, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
 ;rdi srcPtr

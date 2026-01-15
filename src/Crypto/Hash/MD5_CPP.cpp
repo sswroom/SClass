@@ -6,7 +6,7 @@
 #define F4(x, y, z) (y ^ (x | ~z))
 #define MD5STEP(f, w, x, y, z, data, s) (w += data + f(x, y, z), w = w<<s | w>>(32-s),  w += x)
 
-extern "C" void MD5_CalcBlock(UInt32 *hVals, const UInt8 *block, UOSInt blockCnt)
+extern "C" void MD5_CalcBlock(UInt32 *hVals, const UInt8 *block, UIntOS blockCnt)
 {
 	UInt32 *blk = (UInt32*)block;
 	UInt32 a = hVals[0];

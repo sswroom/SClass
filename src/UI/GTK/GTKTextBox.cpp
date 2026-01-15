@@ -144,7 +144,7 @@ void UI::GTK::GTKTextBox::SetPasswordChar(UTF32Char c)
 
 void UI::GTK::GTKTextBox::SetText(Text::CStringNN lbl)
 {
-	UOSInt lblLeng = lbl.leng;
+	UIntOS lblLeng = lbl.leng;
 	if (this->multiLine)
 	{
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->widget);
@@ -208,7 +208,7 @@ Bool UI::GTK::GTKTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-OSInt UI::GTK::GTKTextBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTextBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

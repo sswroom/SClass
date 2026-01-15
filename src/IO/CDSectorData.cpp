@@ -3,14 +3,14 @@
 #include "MyMemory.h"
 #include "IO/CDSectorData.h"
 
-IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
+IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UIntOS userOfst, UIntOS userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(startSector, sectorCount);
 	this->userOfst = userOfst;
 	this->userDataSize = userDataSize;
 }
 
-IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UOSInt userOfst, UOSInt userDataSize) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
+IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UIntOS userOfst, UIntOS userDataSize) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(0, data->GetSectorCount());
 	this->userOfst = userOfst;
@@ -27,7 +27,7 @@ UInt64 IO::CDSectorData::GetSectorCount() const
 	return this->data->GetSectorCount();
 }
 
-UOSInt IO::CDSectorData::GetBytesPerSector() const
+UIntOS IO::CDSectorData::GetBytesPerSector() const
 {
 	return this->userDataSize;
 }
@@ -59,12 +59,12 @@ NN<IO::StreamData> IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 da
 	return data;
 }
 
-UOSInt IO::CDSectorData::GetSeekCount() const
+UIntOS IO::CDSectorData::GetSeekCount() const
 {
 	return this->data->GetSeekCount();
 }
 
-IO::CDSectorStreamData::CDSectorStreamData(NN<IO::SectorData> data, UOSInt sectorOfst, UInt64 dataSize) : sectorBuff(data->GetBytesPerSector())
+IO::CDSectorStreamData::CDSectorStreamData(NN<IO::SectorData> data, UIntOS sectorOfst, UInt64 dataSize) : sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data;
 	this->sectorOfst = sectorOfst;
@@ -76,14 +76,14 @@ IO::CDSectorStreamData::~CDSectorStreamData()
 	this->data.Delete();
 }
 
-UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::CDSectorStreamData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
-	UOSInt retSize = 0;
+	UIntOS retSize = 0;
 	offset += this->sectorOfst;
-	UOSInt sectorSize = this->data->GetBytesPerSector();
+	UIntOS sectorSize = this->data->GetBytesPerSector();
 	UInt64 sectorStart = offset / sectorSize;
-	UOSInt sectorOfst = (UOSInt)(offset % sectorSize);
-	UOSInt thisSize;
+	UIntOS sectorOfst = (UIntOS)(offset % sectorSize);
+	UIntOS thisSize;
 	while (length > 0)
 	{
 		if (!this->data->ReadSector(sectorStart, this->sectorBuff))
@@ -133,13 +133,13 @@ NN<IO::StreamData> IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 
 	{
 		endOfst = (this->dataSize + this->sectorOfst);
 	}
-	UOSInt sectorSize = this->data->GetBytesPerSector();
+	UIntOS sectorSize = this->data->GetBytesPerSector();
 	UInt64 rawOfst = offset + this->sectorOfst;
 	UInt64 startSector = rawOfst / sectorSize;
 	UInt64 endSector = (endOfst + sectorSize - 1) / sectorSize;
 
 	NN<IO::StreamData> data;
-	NEW_CLASSNN(data, CDSectorStreamData(this->data->GetPartialData(startSector, endSector - startSector), (UOSInt)(rawOfst % sectorSize), endOfst - rawOfst));
+	NEW_CLASSNN(data, CDSectorStreamData(this->data->GetPartialData(startSector, endSector - startSector), (UIntOS)(rawOfst % sectorSize), endOfst - rawOfst));
 	return data;
 }
 
@@ -153,7 +153,7 @@ Bool IO::CDSectorStreamData::IsLoading() const
 	return false;
 }
 
-UOSInt IO::CDSectorStreamData::GetSeekCount() const
+UIntOS IO::CDSectorStreamData::GetSeekCount() const
 {
 	return 0;
 }

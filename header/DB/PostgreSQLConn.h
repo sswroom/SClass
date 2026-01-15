@@ -42,7 +42,7 @@ namespace DB
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
@@ -53,9 +53,9 @@ namespace DB
 		virtual void Commit(NN<DB::DBTransaction> tran);
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QuerySchemaNames(NN<Data::ArrayListStringNN> names);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 
 		Bool IsConnError();
 		NN<Text::String> GetConnServer() const;
@@ -70,7 +70,7 @@ namespace DB
 		UInt32 GetCitextOid() const;
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
-		static Text::CString ExecStatusTypeGetName(OSInt status);
+		static Text::CString ExecStatusTypeGetName(IntOS status);
 		static Optional<DBTool> CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};

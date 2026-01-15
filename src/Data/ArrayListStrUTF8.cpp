@@ -7,7 +7,7 @@ Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayListObj<UnsafeAr
 {
 }
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayListObj<UnsafeArrayOpt<const UTF8Char>>(capacity)
+Data::ArrayListStrUTF8::ArrayListStrUTF8(UIntOS capacity) : Data::SortableArrayListObj<UnsafeArrayOpt<const UTF8Char>>(capacity)
 {
 }
 
@@ -19,17 +19,17 @@ NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListStrUTF8::C
 	return newArr;
 }
 
-OSInt Data::ArrayListStrUTF8::Compare(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
+IntOS Data::ArrayListStrUTF8::Compare(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
 {
 	return Text::StrCompare(obj1.Ptr(), obj2.Ptr());
 }
 
 UnsafeArray<const UTF8Char> Data::ArrayListStrUTF8::JoinNewStr() const
 {
-	UOSInt j;
-	UOSInt k;
+	UIntOS j;
+	UIntOS k;
 	k = j = this->objCnt;
-	UOSInt strSize = 0;
+	UIntOS strSize = 0;
 	UnsafeArray<const UTF8Char> nns;
 	while (j-- > 0)
 	{
@@ -50,8 +50,8 @@ UnsafeArray<const UTF8Char> Data::ArrayListStrUTF8::JoinNewStr() const
 
 void Data::ArrayListStrUTF8::DeleteAll()
 {
-	UOSInt i = 0;
-	UOSInt j = this->objCnt;
+	UIntOS i = 0;
+	UIntOS j = this->objCnt;
 	while (i < j)
 	{
 		UnsafeArray<const UTF8Char> nns;

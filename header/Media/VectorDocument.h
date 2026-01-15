@@ -11,7 +11,7 @@ namespace Media
 	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Optional<Media::VectorGraph>>, public Media::PrintHandler
 	{
 	private:
-		UOSInt currGraph;
+		UIntOS currGraph;
 		Data::ArrayListNN<Media::VectorGraph> items;
 		Optional<Media::PrintDocument> currDoc;
 		NN<Media::DrawEngine> refEng;
@@ -49,8 +49,8 @@ namespace Media
 		void SetProducer(UnsafeArrayOpt<const UTF8Char> producer);
 		UnsafeArrayOpt<const UTF8Char> GetProducer() const;
 
-		virtual UOSInt GetCount() const;
-		virtual Optional<Media::VectorGraph> GetItem(UOSInt index) const;
+		virtual UIntOS GetCount() const;
+		virtual Optional<Media::VectorGraph> GetItem(UIntOS index) const;
 
 		virtual Bool BeginPrint(NN<PrintDocument> doc);
 		virtual Bool PrintPage(NN<Media::DrawImage> printPage); //return has more pages 

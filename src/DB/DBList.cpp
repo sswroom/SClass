@@ -39,9 +39,9 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 {
 	Optional<DBInfo> dbInfo;
 	NN<DBInfo> nndbInfo;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	if (this->dbList.GetCount() <= 0)
 		return nullptr;
 
@@ -75,7 +75,7 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 
 void DB::DBList::UnuseDB(NN<DB::DBTool> db)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList.GetCount();
@@ -90,7 +90,7 @@ void DB::DBList::UnuseDB(NN<DB::DBTool> db)
 	}
 }
 
-UOSInt DB::DBList::GetCount() const
+UIntOS DB::DBList::GetCount() const
 {
 	return this->dbList.GetCount();
 }

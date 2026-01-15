@@ -73,9 +73,9 @@ namespace Net
 		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
 		Optional<Net::HTTPClient> ACMEPost(NN<Text::String> url, Text::CStringNN data);
-		Optional<Order> OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Optional<Order> OrderParse(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		Optional<Challenge> ChallengeJSON(NN<Text::JSONBase> json);
-		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	public:
 		ACMEConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port);
 		~ACMEConn();
@@ -89,7 +89,7 @@ namespace Net
 		Bool AccountNew();
 		Bool AccountRetr();
 
-		Optional<Order> OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen); //comma seperated
+		Optional<Order> OrderNew(UnsafeArray<const UTF8Char> domainNames, UIntOS namesLen); //comma seperated
 		Optional<Challenge> OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
 		Optional<Order> OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
 		Optional<Order> OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, NN<Crypto::Cert::X509CertReq> csr);

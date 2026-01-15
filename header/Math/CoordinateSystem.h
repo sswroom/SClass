@@ -48,7 +48,7 @@ namespace Math
 		{
 			UInt32 srid;
 			UnsafeArray<const UTF8Char> name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 			NN<Math::EarthEllipsoid> ellipsoid;
 		};
 		
@@ -57,7 +57,7 @@ namespace Math
 			UInt32 srid;
 			SpheroidData spheroid;
 			UnsafeArray<const UTF8Char> name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 			Double x0;
 			Double y0;
 			Double z0;
@@ -96,7 +96,7 @@ namespace Math
  
 		static Math::Coord2DDbl Convert(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
 		static Math::Vector3 Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
-		static void ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints);
+		static void ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints);
 		static Math::Vector3 ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
 		static void DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN CoordinateSystemTypeGetName(CoordinateSystemType csysType);

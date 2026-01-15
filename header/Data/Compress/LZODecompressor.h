@@ -12,7 +12,7 @@ namespace Data
 			LZODecompressor();
 			virtual ~LZODecompressor();
 
-			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff);
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff);
 			virtual Bool Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData);
 		};
 	}

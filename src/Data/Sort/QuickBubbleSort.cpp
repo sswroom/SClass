@@ -5,10 +5,10 @@
 #include "Data/Sort/BubbleSort_C.h"
 #include "Data/Sort/QuickBubbleSort.h"
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Int32 pivot;
 	Int32 tmp;
 	Int32 *tmparr;
@@ -69,10 +69,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int32> arr, OSInt firstIndex,
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	UInt32 pivot;
 	UInt32 tmp;
 	UInt32 *tmparr;
@@ -133,10 +133,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<UInt32> arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Double> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Double pivot;
 	Double tmp;
 	Double *tmparr;
@@ -197,10 +197,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Double> arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Single pivot;
 	Single tmp;
 	Single *tmparr;
@@ -261,10 +261,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	NN<Data::Comparable> pivot;
 	NN<Data::Comparable> tmp;
 	UnsafeArray<NN<Data::Comparable>> tmparr;
@@ -325,10 +325,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<NN<Data::Comparable>> arr, OS
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int64> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Int64 pivot;
 	Int64 tmp;
 	Int64 *tmparr;
@@ -389,10 +389,10 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int64> arr, OSInt firstIndex,
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Int32 pivot;
 	Int32 tmp;
 	Int32 *tmparr;
@@ -453,10 +453,10 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int32> arr, OSInt firstInd
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	UInt32 pivot;
 	UInt32 tmp;
 	UInt32 *tmparr;
@@ -517,10 +517,10 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<UInt32> arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Double> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Double pivot;
 	Double tmp;
 	Double *tmparr;
@@ -581,10 +581,10 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Double> arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Single pivot;
 	Single tmp;
 	Single *tmparr;
@@ -645,10 +645,10 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	NN<Data::Comparable> pivot;
 	NN<Data::Comparable> tmp;
 	UnsafeArray<NN<Data::Comparable>> tmparr;
@@ -709,10 +709,10 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<NN<Data::Comparable>> arr,
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int64> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
+	IntOS lo = firstIndex;
+	IntOS hi = lastIndex;
 	Int64 pivot;
 	Int64 tmp;
 	Int64 *tmparr;

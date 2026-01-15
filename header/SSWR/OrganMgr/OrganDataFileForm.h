@@ -21,7 +21,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnStartTime;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnFilesDblClk(AnyType userObj, UIntOS itemIndex);
 			static void __stdcall OnDeleteClicked(AnyType userObj);
 			static void __stdcall OnStartTimeClicked(AnyType userObj);
 			void UpdateFileList();

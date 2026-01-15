@@ -18,8 +18,8 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[32];
-	UOSInt currColOfst;
-	UOSInt i;
+	UIntOS currColOfst;
+	UIntOS i;
 	UInt64 currOfst;
 	NEW_CLASSNN(this->stmData, IO::StmData::BufferedStreamData(stmData->GetPartialData(0, stmData->GetDataSize())));
 
@@ -27,7 +27,7 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	this->stmData->GetRealData(0, 32, BYTEARR(buff));
 	refPos = ReadUInt16(&buff[8]);
 	rowSize = ReadUInt32(&buff[10]);
-	colCnt = (UOSInt)(ReadUInt16(&buff[8]) >> 5) - 1;
+	colCnt = (UIntOS)(ReadUInt16(&buff[8]) >> 5) - 1;
 	rowCnt = ReadUInt32(&buff[4]);
 	this->cols = MemAllocArr(DBFCol, colCnt);
 	
@@ -50,7 +50,7 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	}
 
 	sptr = this->stmData->GetShortName().OrEmpty().ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
@@ -61,7 +61,7 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 
 DB::DBFFile::~DBFFile()
 {
-	UOSInt i = colCnt;
+	UIntOS i = colCnt;
 	while (i-- > 0)
 	{
 		this->cols[i].name->Release();
@@ -71,7 +71,7 @@ DB::DBFFile::~DBFFile()
 	this->stmData.Delete();
 }
 
-UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -79,7 +79,7 @@ UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 1;
 }
 
-Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	if (this->colCnt > 0)
 	{
@@ -97,8 +97,8 @@ Optional<DB::TableDef> DB::DBFFile::GetTableDef(Text::CString schemaName, Text::
 {
 	NN<DB::ColDef> col;
 	DB::TableDef *tab;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->GetColCount();
@@ -136,25 +136,25 @@ UInt32 DB::DBFFile::GetCodePage()
 	return this->enc.GetEncCodePage();
 }
 
-UOSInt DB::DBFFile::GetColSize(UOSInt colIndex)
+UIntOS DB::DBFFile::GetColSize(UIntOS colIndex)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
 	return this->cols[colIndex].colSize;
 }
 
-OSInt DB::DBFFile::GetColIndex(UnsafeArray<const UTF8Char> name)
+IntOS DB::DBFFile::GetColIndex(UnsafeArray<const UTF8Char> name)
 {
-	UOSInt i = this->colCnt;
+	UIntOS i = this->colCnt;
 	while (i-- > 0)
 	{
 		if (Text::StrCompareICase(name, this->cols[i].name->v) == 0)
-			return (OSInt)i;
+			return (IntOS)i;
 	}
 	return -1;
 }
 
-UnsafeArrayOpt<WChar> DB::DBFFile::GetRecord(UnsafeArray<WChar> buff, UOSInt row, UOSInt col)
+UnsafeArrayOpt<WChar> DB::DBFFile::GetRecord(UnsafeArray<WChar> buff, UIntOS row, UIntOS col)
 {
 	if (col >= this->colCnt)
 		return nullptr;
@@ -166,7 +166,7 @@ UnsafeArrayOpt<WChar> DB::DBFFile::GetRecord(UnsafeArray<WChar> buff, UOSInt row
 	return ret;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetRecord(UnsafeArray<UTF8Char> buff, UOSInt row, UOSInt col)
+UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetRecord(UnsafeArray<UTF8Char> buff, UIntOS row, UIntOS col)
 {
 	if (col >= this->colCnt)
 		return nullptr;
@@ -187,7 +187,7 @@ UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetRecord(UnsafeArray<UTF8Char> buff, UOSI
 	}
 }
 
-Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col)
+Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UIntOS row, UIntOS col)
 {
 	if (col >= this->colCnt)
 		return false;
@@ -195,7 +195,7 @@ Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt c
 	if (this->enc.IsUTF8())
 	{
 		sb->AllocLeng(this->cols[col].colSize);
-		UOSInt readSize = this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(sb->GetEndPtr(), this->cols[col].colSize));
+		UIntOS readSize = this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(sb->GetEndPtr(), this->cols[col].colSize));
 		sb->SetEndPtr(sb->GetEndPtr() + readSize);
 		sb->GetEndPtr()[0] = 0;
 		return true;
@@ -204,7 +204,7 @@ Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt c
 	{
 		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
 		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
-		UOSInt size = this->enc.CountUTF8Chars(cbuff, this->cols[col].colSize);
+		UIntOS size = this->enc.CountUTF8Chars(cbuff, this->cols[col].colSize);
 		sb->AllocLeng(size);
 		UnsafeArray<UTF8Char> ret = this->enc.UTF8FromBytes(sb->GetEndPtr(), cbuff, this->cols[col].colSize, 0);
 		MemFree(cbuff);
@@ -213,24 +213,24 @@ Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt c
 	}
 }
 
-UOSInt DB::DBFFile::GetColCount()
+UIntOS DB::DBFFile::GetColCount()
 {
 	return this->colCnt;
 }
 
-UOSInt DB::DBFFile::GetRowCnt()
+UIntOS DB::DBFFile::GetRowCnt()
 {
 	return this->rowCnt;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetColumnName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetColumnName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->colCnt)
 		return nullptr;
 	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::DBFFile::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (colIndex >= this->colCnt)
 	{
@@ -300,7 +300,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, OptOut<UOSInt> c
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::DBFFile::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex >= this->colCnt)
 	{
@@ -318,7 +318,7 @@ Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	return true;
 }
 
-Bool DB::DBFFile::ReadRowData(UOSInt row, UnsafeArray<UInt8> recordBuff)
+Bool DB::DBFFile::ReadRowData(UIntOS row, UnsafeArray<UInt8> recordBuff)
 {
 	return this->rowSize == this->stmData->GetRealData(this->refPos + this->rowSize * row, this->rowSize, Data::ByteArray(recordBuff, this->rowSize));
 }
@@ -525,7 +525,7 @@ UInt8 DB::DBFFile::GetLangDriver(UInt32 codePage)
 	}
 }
 
-DB::DBFReader::DBFReader(NN<DB::DBFFile> dbf, UOSInt colCnt, UnsafeArray<DB::DBFFile::DBFCol> cols, UOSInt rowSize, NN<Text::Encoding> enc)
+DB::DBFReader::DBFReader(NN<DB::DBFFile> dbf, UIntOS colCnt, UnsafeArray<DB::DBFFile::DBFCol> cols, UIntOS rowSize, NN<Text::Encoding> enc)
 {
 	this->dbf = dbf;
 	this->enc = enc;
@@ -545,32 +545,32 @@ DB::DBFReader::~DBFReader()
 
 Bool DB::DBFReader::ReadNext()
 {
-	if ((UOSInt)(this->currIndex + 1) < this->rowCnt)
+	if ((UIntOS)(this->currIndex + 1) < this->rowCnt)
 	{
 		this->currIndex++;
 		this->recordExist = true;
-		this->dbf->ReadRowData((UOSInt)this->currIndex, this->recordData);
+		this->dbf->ReadRowData((UIntOS)this->currIndex, this->recordData);
 		return true;
 	}
 	else
 	{
-		this->currIndex = (OSInt)this->rowCnt;
+		this->currIndex = (IntOS)this->rowCnt;
 		this->recordExist = false;
 		return false;
 	}
 }
 
-UOSInt DB::DBFReader::ColCount()
+UIntOS DB::DBFReader::ColCount()
 {
 	return this->colCnt;
 }
 
-OSInt DB::DBFReader::GetRowChanged()
+IntOS DB::DBFReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 DB::DBFReader::GetInt32(UOSInt colIndex)
+Int32 DB::DBFReader::GetInt32(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return 0;
@@ -583,7 +583,7 @@ Int32 DB::DBFReader::GetInt32(UOSInt colIndex)
 	return Text::StrToInt32Ch(buff);
 }
 
-Int64 DB::DBFReader::GetInt64(UOSInt colIndex)
+Int64 DB::DBFReader::GetInt64(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return 0;
@@ -596,7 +596,7 @@ Int64 DB::DBFReader::GetInt64(UOSInt colIndex)
 	return Text::StrToInt64Ch(buff);
 }
 
-UnsafeArrayOpt<WChar> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::DBFReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (!this->recordExist)
 		return nullptr;
@@ -613,13 +613,13 @@ UnsafeArrayOpt<WChar> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> 
 	}
 }
 
-Bool DB::DBFReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::DBFReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!this->recordExist)
 		return false;
 	if (colIndex >= this->colCnt)
 		return false;
-	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
+	UIntOS strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, strLen + 1);
 	this->enc->UTF8FromBytes(sbuff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	sbuff[strLen] = 0;
@@ -628,19 +628,19 @@ Bool DB::DBFReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Optional<Text::String> DB::DBFReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::DBFReader::GetNewStr(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return nullptr;
 	if (colIndex >= this->colCnt)
 		return nullptr;
-	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
+	UIntOS strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	NN<Text::String> s = Text::String::New(strLen);
 	this->enc->UTF8FromBytes(s->v, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	return s;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (!this->recordExist)
 		return nullptr;
@@ -657,7 +657,7 @@ UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8
 	}
 }
 
-Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::DBFReader::GetTimestamp(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return Data::Timestamp(0);
@@ -690,7 +690,7 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), 0);
 }
 
-Double DB::DBFReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::DBFReader::GetDblOrNAN(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return NAN;
@@ -703,7 +703,7 @@ Double DB::DBFReader::GetDblOrNAN(UOSInt colIndex)
 	return Text::StrToDoubleOrNANCh(buff);
 }
 
-Bool DB::DBFReader::GetBool(UOSInt colIndex)
+Bool DB::DBFReader::GetBool(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return false;
@@ -729,7 +729,7 @@ Bool DB::DBFReader::GetBool(UOSInt colIndex)
 		return Text::StrToInt32Ch(buff) != 0;
 }
 
-UOSInt DB::DBFReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::DBFReader::GetBinarySize(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return 0;
@@ -738,7 +738,7 @@ UOSInt DB::DBFReader::GetBinarySize(UOSInt colIndex)
 	return this->cols[colIndex].colSize;
 }
 
-UOSInt DB::DBFReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::DBFReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	if (!this->recordExist)
 		return 0;
@@ -748,17 +748,17 @@ UOSInt DB::DBFReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	return this->cols[colIndex].colSize;
 }
 
-Optional<Math::Geometry::Vector2D> DB::DBFReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::DBFReader::GetVector(UIntOS colIndex)
 {
 	return nullptr;
 }
 
-Bool DB::DBFReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::DBFReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool DB::DBFReader::IsNull(UOSInt colIndex)
+Bool DB::DBFReader::IsNull(UIntOS colIndex)
 {
 	if (!this->recordExist)
 		return true;
@@ -766,7 +766,7 @@ Bool DB::DBFReader::IsNull(UOSInt colIndex)
 		return true;
 
 	UInt8 *buff = &this->recordData[this->cols[colIndex].colOfst];
-	UOSInt buffSize = this->cols[colIndex].colSize;
+	UIntOS buffSize = this->cols[colIndex].colSize;
 	Bool isEmpty = true;
 	if (this->cols[colIndex].type == DB::DBUtil::CT_Bool && buff[0] == '?')
 		return true;
@@ -781,26 +781,26 @@ Bool DB::DBFReader::IsNull(UOSInt colIndex)
 	return isEmpty;
 }
 
-/*WChar *DB::DBFReader::GetName(OSInt colIndex)
+/*WChar *DB::DBFReader::GetName(IntOS colIndex)
 {
 	if (colIndex < 0 || colIndex >= this->colCnt)
 		return 0;
 	return this->cols[colIndex].name;
 }*/
 
-UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->colCnt)
 		return nullptr;
 	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::DBFReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool DB::DBFReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::DBFReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }

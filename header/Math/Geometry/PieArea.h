@@ -30,13 +30,13 @@ namespace Math
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const;
 			virtual void Convert(NN<Math::CoordinateConverter> converter);
 			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const;
-			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
+			virtual UIntOS GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
-			virtual UOSInt GetPointCount() const;
+			virtual UIntOS GetPointCount() const;
 			virtual Bool HasArea() const;
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const;
+			virtual UIntOS CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const;
 			virtual Math::Coord2DDbl GetDisplayCenter() const;
 
 			Double GetCX() const;

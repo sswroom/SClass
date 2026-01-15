@@ -9,7 +9,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::SerialPort serial(1, 115200, IO::SerialPort::PARITY_NONE, false);	
 	UInt8 buff[64];
 	UTF8Char *sptr;
-	OSInt readSize;
+	IntOS readSize;
 	UInt16 tmpVal = (UInt16)(((F_CPU / 8 / 115200) - 1) >> 1);
 	sptr = Text::StrConcatC(buff, UTF8STRC("UBBR0 = "));
 	sptr = Text::StrUInt16(sptr, tmpVal);

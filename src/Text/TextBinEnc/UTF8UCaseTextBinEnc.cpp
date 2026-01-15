@@ -10,10 +10,10 @@ Text::TextBinEnc::UTF8UCaseTextBinEnc::~UTF8UCaseTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	UTF8Char c;
-	UOSInt i = buffSize;
+	UIntOS i = buffSize;
 	while (i-- > 0)
 	{
 		c = *dataBuff++;
@@ -29,12 +29,12 @@ UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUT
 	return buffSize;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(Text::CStringNN str) const
 {
 	return str.leng;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	MemCopyNO(dataBuff.Ptr(), str.v.Ptr(), str.leng);
 	return str.leng;

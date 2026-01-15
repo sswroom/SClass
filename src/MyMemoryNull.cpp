@@ -7,7 +7,7 @@
 Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
-OSInt mcBreakPt = 0;
+IntOS mcBreakPt = 0;
 const WChar *mcLogFile = 0;
 Sync::MutexData mcMut;
 
@@ -32,7 +32,7 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
+void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
 {
 }
 
@@ -44,7 +44,7 @@ void MemUnlock()
 {
 }
 
-void *MAlloc(OSInt cnt)
+void *MAlloc(IntOS cnt)
 {
 	return malloc(cnt);
 }
@@ -79,7 +79,7 @@ Int32 MemCountBlks()
 }
 
 #if defined(AVR)
-extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, OSInt len)
+extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, IntOS len)
 {
 	Char *dPtr = (Char*)destPtr;
 	const Char *sPtr = (const Char*)srcPtr;
@@ -89,7 +89,7 @@ extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, OSInt len)
 	}
 }
 
-extern "C" void MemClear(void *buff, OSInt count)
+extern "C" void MemClear(void *buff, IntOS count)
 {
 	Char *p = (Char*)buff;
 	while (count-- > 0)
@@ -98,7 +98,7 @@ extern "C" void MemClear(void *buff, OSInt count)
 	}
 }
 
-void *operator new(UOSInt size)
+void *operator new(UIntOS size)
 {
 	return MAlloc(size);
 }

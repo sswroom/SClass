@@ -180,8 +180,8 @@ void Net::WebDriverChromeOptions::SetMobileDeviceName(Text::CStringNN mobileDevi
 void Net::WebDriverChromeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 {
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->BuildW3CJSON(builder);
 	if (this->args.GetCount() > 0 || this->mobileDeviceName.NotNull())
 	{
@@ -233,8 +233,8 @@ void Net::WebDriverMSEdgeOptions::SetMobileDeviceName(Text::CStringNN mobileDevi
 void Net::WebDriverMSEdgeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 {
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->BuildW3CJSON(builder);
 	if (this->args.GetCount() > 0 || this->mobileDeviceName.NotNull())
 	{
@@ -277,8 +277,8 @@ void Net::WebDriverFirefoxOptions::AddArgs(Text::CStringNN arg)
 
 void Net::WebDriverFirefoxOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->BuildW3CJSON(builder);
 	if (this->args.GetCount() > 0)
 	{
@@ -315,8 +315,8 @@ void Net::WebDriverWebKitGTKOptions::AddArgs(Text::CStringNN arg)
 
 void Net::WebDriverWebKitGTKOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->BuildW3CJSON(builder);
 	if (this->args.GetCount() > 0)
 	{
@@ -364,8 +364,8 @@ void Net::WebDriverCapabilities::BuildJSON(NN<Text::JSONBuilder> builder) const
 {
 	NN<WebDriverBrowserOptions> browser;
 	builder->ObjectBeginArray(CSTR("firstMatch"));
-	UOSInt i = 0;
-	UOSInt j = this->firstMatch.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->firstMatch.GetCount();
 	while (i < j)
 	{
 		browser = this->firstMatch.GetItemNoCheck(i);
@@ -401,18 +401,18 @@ Optional<Net::WebDriverNode> Net::WebDriverNode::Parse(NN<Text::JSONObject> obj)
 	NEW_CLASSNN(node, WebDriverNode());
 	node->id = id->Clone();
 	node->uri = uri->Clone();
-	node->maxSessions = (UOSInt)maxSessions;
-	node->sessionTimeout = (UOSInt)sessionTimeout;
+	node->maxSessions = (UIntOS)maxSessions;
+	node->sessionTimeout = (UIntOS)sessionTimeout;
 	node->osinfo = osinfo;
-	node->heartbeatPeriod = (UOSInt)heartbeatPeriod;
+	node->heartbeatPeriod = (UIntOS)heartbeatPeriod;
 	node->availability = availability->Clone();
 	node->version = version->Clone();
 	NN<Text::JSONArray> slots;
 	NN<Text::JSONObject> slotObj;
 	if (obj->GetValueArray(CSTR("slots")).SetTo(slots))
 	{
-		UOSInt i = 0;
-		UOSInt j = slots->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = slots->GetArrayLength();
 		while (i < j)
 		{
 			if (slots->GetArrayObject(i).SetTo(slotObj) && WebDriverSlot::Parse(slotObj).SetTo(slot))
@@ -824,8 +824,8 @@ Bool Net::WebDriverSession::FindElements(NN<WebDriverBy> by, NN<Data::ArrayListS
 		if (obj->GetType() == Text::JSONType::Array)
 		{
 			valueObj = NN<Text::JSONArray>::ConvertFrom(obj);
-			UOSInt i = 0;
-			UOSInt j = valueObj->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = valueObj->GetArrayLength();
 			while (i < j)
 			{
 				if (valueObj->GetArrayString(i).SetTo(s))
@@ -890,8 +890,8 @@ Bool Net::WebDriverSession::FindElementsFromElement(Text::CStringNN elementId, N
 		if (obj->GetType() == Text::JSONType::Array)
 		{
 			valueObj = NN<Text::JSONArray>::ConvertFrom(obj);
-			UOSInt i = 0;
-			UOSInt j = valueObj->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = valueObj->GetArrayLength();
 			while (i < j)
 			{
 				if (valueObj->GetArrayString(i).SetTo(s))
@@ -1004,7 +1004,7 @@ Optional<IO::MemoryStream> Net::WebDriverSession::TakeScreenshot()
 	}
 	Text::TextBinEnc::Base64Enc b64Enc;
 	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, b64->leng);
-	UOSInt buffLen;
+	UIntOS buffLen;
 	buffLen = b64Enc.DecodeBin(b64->ToCString(), tmpBuff);
 	NN<IO::MemoryStream> mstm;
 	NEW_CLASSNN(mstm, IO::MemoryStream(buffLen));
@@ -1042,8 +1042,8 @@ Bool Net::WebDriver::UpdateStatus()
 		if (obj->GetValueArray(CSTR("nodes")).SetTo(nodesArr))
 		{
 			NN<Text::JSONObject> nodeObj;
-			UOSInt i = 0;
-			UOSInt j = nodesArr->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = nodesArr->GetArrayLength();
 			while (i < j)
 			{
 				if (nodesArr->GetArrayObject(i).SetTo(nodeObj) && WebDriverNode::Parse(nodeObj).SetTo(node))

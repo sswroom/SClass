@@ -60,7 +60,7 @@ Bool Net::UDPServerStream::IsDown() const
 	return this->svr == 0;
 }
 
-UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
+UIntOS Net::UDPServerStream::Read(const Data::ByteArray &buff)
 {
 	while (this->svr != 0 && this->buffSize == 0)
 	{
@@ -68,7 +68,7 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 	}
 	if (this->svr == 0 || this->buffSize == 0)
 		return 0;
-	UOSInt ret;
+	UIntOS ret;
 	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->buffSize > buff.GetSize())
 	{
@@ -86,7 +86,7 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 	return ret;
 }
 
-UOSInt Net::UDPServerStream::Write(Data::ByteArrayR buff)
+UIntOS Net::UDPServerStream::Write(Data::ByteArrayR buff)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->lastAddr.addrType == Net::AddrType::Unknown)

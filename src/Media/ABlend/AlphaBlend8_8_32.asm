@@ -3,7 +3,7 @@ section .text
 global _AlphaBlend8_8_DoBlend
 global _AlphaBlend8_8_DoBlendPA
 
-;void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+;void AlphaBlend8_8_DoBlend(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 
 ;0 edi
 ;4 esi
@@ -295,7 +295,7 @@ iadbldexit:
 	pop ebp
 	ret
 	
-;void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+;void AlphaBlend8_8_DoBlendPA(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 
 ;0 edi
 ;4 esi

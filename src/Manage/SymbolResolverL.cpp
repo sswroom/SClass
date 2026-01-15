@@ -23,8 +23,8 @@ char **backtrace_symbols(void **addrArr, int cnt)
 
 Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 {
-	UOSInt baseAddr;
-	UOSInt size;
+	UIntOS baseAddr;
+	UIntOS size;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	this->proc = proc;
@@ -37,7 +37,7 @@ Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 		NN<Manage::ModuleInfo> mod = it.Next();
 
 		sptr = mod->GetModuleFileName(sbuff);
-		this->modNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		this->modNames.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		mod->GetModuleAddress(baseAddr, size);
 		this->modBaseAddrs.Add(baseAddr);
 		this->modSizes.Add(size);
@@ -48,7 +48,7 @@ Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 
 Manage::SymbolResolver::~SymbolResolver()
 {
-	UOSInt i = this->modNames.GetCount();
+	UIntOS i = this->modNames.GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->modNames.GetItem(i));
@@ -57,7 +57,7 @@ Manage::SymbolResolver::~SymbolResolver()
 
 UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address)
 {
-	void *addr = (void*)(OSInt)address;
+	void *addr = (void*)(IntOS)address;
 	char **name = backtrace_symbols(&addr, 1);
 	if (name)
 	{
@@ -77,22 +77,22 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 	return nullptr;
 }
 
-UOSInt Manage::SymbolResolver::GetModuleCount()
+UIntOS Manage::SymbolResolver::GetModuleCount()
 {
 	return this->modNames.GetCount();
 }
 
-Optional<Text::String> Manage::SymbolResolver::GetModuleName(UOSInt index)
+Optional<Text::String> Manage::SymbolResolver::GetModuleName(UIntOS index)
 {
 	return this->modNames.GetItem(index);
 }
 
-UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
+UInt64 Manage::SymbolResolver::GetModuleAddr(UIntOS index)
 {
 	return this->modBaseAddrs.GetItem(index);
 }
 
-UInt64 Manage::SymbolResolver::GetModuleSize(UOSInt index)
+UInt64 Manage::SymbolResolver::GetModuleSize(UIntOS index)
 {
 	return this->modSizes.GetItem(index);
 }

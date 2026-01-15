@@ -105,7 +105,7 @@ namespace SSWR
 
 			void CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group);
 			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Optional<Text::String>, SpeciesInfo>> spMap, Optional<WebUserInfo> user);
-			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, UnsafeArray<const UTF8Char> searchStr, UOSInt searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, Optional<WebUserInfo> user);
+			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, UnsafeArray<const UTF8Char> searchStr, UIntOS searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, Optional<WebUserInfo> user);
 			Bool GroupIsAdmin(NN<GroupInfo> group);
 			UnsafeArray<UTF8Char> PasswordEnc(UnsafeArray<UTF8Char> buff, Text::CStringNN pwd);
 
@@ -138,7 +138,7 @@ namespace SSWR
 			Optional<UserFileInfo> UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut);
 			Optional<UserFileInfo> UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UnsafeArray<UTF8Char> UserfileGetPath(UnsafeArray<UTF8Char> sbuff, NN<const UserFileInfo> userfile);
-			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Optional<Text::String> location);
+			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UIntOS fileSize, Bool mustHaveCamera, Optional<Text::String> location);
 			Bool UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
@@ -146,9 +146,9 @@ namespace SSWR
 			Bool SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN speciesName, NN<Text::StringBuilderUTF8> bookNameOut);
 			void UserFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, NN<UserFileInfo> userFile);
 			void WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, NN<WebFileInfo> userFile);
-			Bool GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
+			Bool GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, UnsafeArray<const UInt8> fileCont, UIntOS fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
 
-			Bool DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
+			Bool DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, UnsafeArray<const UInt8> fileCont, UIntOS fileSize, OutParam<Text::CString> errMsg);
 			Optional<IO::ParsedObject> DataFileParse(NN<DataFileInfo> dataFile);
 			Optional<DataFileInfo> DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
@@ -157,7 +157,7 @@ namespace SSWR
 			Bool GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN descr, Int32 groupTypeId, GroupFlags flags);
 			Bool GroupDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Bool GroupMove(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId);
-			Bool GroupAddCounts(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
+			Bool GroupAddCounts(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, UIntOS totalCount, UIntOS photoCount, UIntOS myPhotoCount);
 			Bool GroupSetPhotoSpecies(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoSpeciesId);
 			Bool GroupSetPhotoGroup(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoGroupId);
 			Bool GroupIsPublic(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId);
@@ -166,7 +166,7 @@ namespace SSWR
 			Optional<CategoryInfo> CateGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
 			NN<Data::ReadingListNN<CategoryInfo>> CateGetList(NN<Sync::RWMutexUsage> mutUsage);
 
-			UOSInt PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<PeakInfo>> peaks);
+			UIntOS PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<PeakInfo>> peaks);
 			Bool PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
 			void PeakFreeAll(NN<Data::ArrayListNN<PeakInfo>> peaks);
 

@@ -39,7 +39,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 {
 	UInt8 icoImageHdr[16];
 	UInt32 icoCnt;
-	UOSInt i;
+	UIntOS i;
 	Media::ImageList *imgList;
 	NN<Media::StaticImage> currImg;
 	UInt32 imgWidth;
@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	UInt8 *pal;
 	UnsafeArray<UInt8> imgPal;
 	UnsafeArray<UInt8> dbits;
-	OSInt dbpl;
+	IntOS dbpl;
 	UInt16 fileType;
 
 	if (ReadUInt16(&hdr[0]) != 0)
@@ -102,10 +102,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				UInt8 *sptr = 8 + (UInt8*)pal;
 				UInt8 *maskPtr;
 				UnsafeArray<UInt8> currPtr;
-				UOSInt i;
-				UOSInt dataSize = (imgWidth + 7) >> 3;
-				UOSInt dataAdd;
-				dbpl = (OSInt)dataSize * 2;
+				UIntOS i;
+				UIntOS dataSize = (imgWidth + 7) >> 3;
+				UIntOS dataAdd;
+				dbpl = (IntOS)dataSize * 2;
 				if ((dataAdd = (dataSize & 3)) != 0)
 				{
 					dataAdd = 4 - dataAdd;
@@ -118,14 +118,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					return nullptr;
 				}
 
-				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				if (currImg->pal.SetTo(imgPal))
 				{
 					MemCopyNO(imgPal.Ptr(), pal, 8);
 				}
 
-				dbits += dbpl * (OSInt)imgHeight;
+				dbits += dbpl * (IntOS)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -150,12 +150,12 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				UInt8 *sptr = 64 + (UInt8*)pal;
 				UInt8 *maskPtr;;
 				UnsafeArray<UInt8> currPtr;
-				UOSInt i;
-				UOSInt maskByteSize = (imgWidth + 7) >> 3;
-				UOSInt imgByteSize = (imgWidth + 1) >> 1;
-				UOSInt maskByteAdd;
-				UOSInt imgByteAdd;
-				dbpl = (OSInt)(maskByteSize + imgByteSize);
+				UIntOS i;
+				UIntOS maskByteSize = (imgWidth + 7) >> 3;
+				UIntOS imgByteSize = (imgWidth + 1) >> 1;
+				UIntOS maskByteAdd;
+				UIntOS imgByteAdd;
+				dbpl = (IntOS)(maskByteSize + imgByteSize);
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -173,14 +173,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					return nullptr;
 				}
 
-				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				if (currImg->pal.SetTo(imgPal))
 				{
 					MemCopyNO(imgPal.Ptr(), pal, 64);
 				}
 
-				dbits += dbpl * (OSInt)imgHeight;
+				dbits += dbpl * (IntOS)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -205,11 +205,11 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				UInt8 *sptr = 1024 + (UInt8*)pal;
 				UInt8 *maskPtr;
 				UnsafeArray<UInt8> currPtr;
-				UOSInt i;
-				UOSInt maskByteSize = (imgWidth + 7) >> 3;
-				UOSInt maskByteAdd;
-				UOSInt imgByteAdd;
-				dbpl = (OSInt)(maskByteSize + imgWidth);
+				UIntOS i;
+				UIntOS maskByteSize = (imgWidth + 7) >> 3;
+				UIntOS maskByteAdd;
+				UIntOS imgByteAdd;
+				dbpl = (IntOS)(maskByteSize + imgWidth);
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -227,14 +227,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					return nullptr;
 				}
 
-				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				if (currImg->pal.SetTo(imgPal))
 				{
 					MemCopyNO(imgPal.Ptr(), pal, 1024);
 				}
 
-				dbits += dbpl * (OSInt)imgHeight;
+				dbits += dbpl * (IntOS)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -259,11 +259,11 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				UInt8 *sptr = (UInt8*)pal;
 				UInt8 *maskPtr;
 				UnsafeArray<UInt8> currPtr;
-				UOSInt i;
-				OSInt maskByteSize = (OSInt)(imgWidth + 7) >> 3;
-				OSInt maskByteAdd;
-				OSInt imgByteAdd;
-				dbpl = (OSInt)imgWidth * 4;
+				UIntOS i;
+				IntOS maskByteSize = (IntOS)(imgWidth + 7) >> 3;
+				IntOS maskByteAdd;
+				IntOS imgByteAdd;
+				dbpl = (IntOS)imgWidth * 4;
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -273,18 +273,18 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				{
 					imgByteAdd = 4 - imgByteAdd;
 				}
-				maskPtr = sptr + ((OSInt)imgWidth * 3 + imgByteAdd) * (OSInt)imgHeight;
+				maskPtr = sptr + ((IntOS)imgWidth * 3 + imgByteAdd) * (IntOS)imgHeight;
 
-				if ((OSInt)thisSize != ((OSInt)imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
+				if ((IntOS)thisSize != ((IntOS)imgWidth * 3 + (IntOS)imgByteAdd + maskByteSize + maskByteAdd) * (IntOS)imgHeight + 40)
 				{
 					DEL_CLASS(imgList);
 					return nullptr;
 				}
 
-				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 
-				dbits += dbpl * (OSInt)imgHeight;
+				dbits += dbpl * (IntOS)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -335,8 +335,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			break;
 		case 32:
 			{
-				UOSInt maskByteSize = (imgWidth + 7) >> 3;
-				UOSInt maskByteAdd;
+				UIntOS maskByteSize = (imgWidth + 7) >> 3;
+				UIntOS maskByteAdd;
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
 					maskByteAdd = 4 - maskByteAdd;
@@ -347,9 +347,9 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					return nullptr;
 				}
 
-				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits.Ptr(), imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, (OSInt)imgWidth * 4);
+				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits.Ptr(), imgWidth * 4, imgHeight, -(IntOS)imgWidth * 4, (IntOS)imgWidth * 4);
 			}
 			break;
 		default:

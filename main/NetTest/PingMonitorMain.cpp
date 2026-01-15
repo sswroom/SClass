@@ -28,9 +28,9 @@ IO::LogTool *logTool;
 UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UInt8 packetBuff[10240];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	UInt8 *buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	UInt16 etherType;
@@ -58,7 +58,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 					if ((buff[0] & 0xf0) == 0x40)
 					{
 						UInt8 *ipData;
-						UOSInt ipDataSize;
+						UIntOS ipDataSize;
 
 						if ((buff[0] & 0xf) <= 5)
 						{
@@ -81,7 +81,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 								sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
 								sb.AppendP(sbuff, sptr);
 								sb.AppendC(UTF8STRC(", Size = "));
-								sb.AppendUOSInt(ipDataSize);
+								sb.AppendUIntOS(ipDataSize);
 								logTool->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 	//							console->WriteLineC(sb->ToString(), sb->GetLength());
 							}
@@ -119,7 +119,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	OSInt i;
+	IntOS i;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	threadCnt = 0;

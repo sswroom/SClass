@@ -13,7 +13,7 @@ namespace Media
 			Double par;
 			Bool discTime;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelease);
 			virtual ~M2VDecoder();
@@ -21,13 +21,13 @@ namespace Media
 			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool HasFrameCount();
-			virtual UOSInt GetFrameCount();
-			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+			virtual UIntOS GetFrameCount();
+			virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
-			virtual UOSInt GetFrameSize(UOSInt frameIndex);
-			virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
+			virtual UIntOS GetFrameSize(UIntOS frameIndex);
+			virtual UIntOS ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff);
 
-			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		};
 	}
 }

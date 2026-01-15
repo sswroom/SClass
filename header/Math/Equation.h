@@ -18,12 +18,12 @@ namespace Math
 		// Type, Value, Type = 0: Int value, 1: Float value, 2: Variable, 3: Function, 4:Operators
 		// Operators: 0 = +, 1 = -, 2 = *, 3 = /, 4 = Neg
 
-		Int32 ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos);
+		Int32 ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, IntOS nChars, UTF8Char **endPos);
 	public:
 		Equation();
 		~Equation();
 
-		UOSInt AddEquation(UTF8Char *equation); //Index
+		UIntOS AddEquation(UTF8Char *equation); //Index
 		void Solve(UTF8Char *variName, UTF8Char *outBuff);
 		UTF8Char *GetEquationStr(UTF8Char *buff, Int32 index);
 	};

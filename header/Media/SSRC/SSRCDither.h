@@ -45,7 +45,7 @@ namespace Media
 
 			Bool error;
 			UInt32 fs;
-			UOSInt shaperIndex;
+			UIntOS shaperIndex;
 			PDFID pdfID;
 			Double noisePeak;
 
@@ -65,7 +65,7 @@ namespace Media
 			Bool IsError();
 			void GetPeaks(Double *peaks);
 			Double GetMaxNoiseStrength();
-			void QuantizeDouble(Int32 *out, const Double *in, UOSInt nSamples, Double gain);
+			void QuantizeDouble(Int32 *out, const Double *in, UIntOS nSamples, Double gain);
 		};
 	}
 }

@@ -9,7 +9,7 @@ namespace UI
 		class WinFolderDialog : public UI::GUIFolderDialog
 		{
 		private:
-			static Int32 __stdcall BrowseCB(void *hwnd, UInt32 uMsg, OSInt lParam, OSInt lpData);
+			static Int32 __stdcall BrowseCB(void *hwnd, UInt32 uMsg, IntOS lParam, IntOS lpData);
 		public:
 			WinFolderDialog();
 			virtual ~WinFolderDialog();

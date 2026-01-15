@@ -16,7 +16,7 @@ namespace Net
 			Data::Timestamp recvTime;
 			UInt8 msgType;
 			UnsafeArray<UInt8> msg;
-			UOSInt msgSize;
+			UIntOS msgSize;
 		};
 
 		struct GWInfo
@@ -30,8 +30,8 @@ namespace Net
 			Data::Timestamp lastSeenTime;
 			Bool updated;
 			Optional<DataPacket> lastData[16];
-			UOSInt lastDataBegin;
-			UOSInt lastDataEnd;
+			UIntOS lastDataBegin;
+			UIntOS lastDataEnd;
 		};
 	private:
 		NN<Net::SocketFactory> sockf;
@@ -45,10 +45,10 @@ namespace Net
 		Sync::Mutex gwMut;
 		Data::UInt64FastMapNN<GWInfo> gwMap;
 
-		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
-		void OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
+		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize);
+		void OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UIntOS msgSize);
 		NN<GWInfo> GetGWOrCreate(UInt64 gweui);
-		void GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
+		void GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UIntOS msgSize);
 		void LoadDB();
 		void SaveGWList();
 		static void __stdcall FreeGW(NN<GWInfo> gw);

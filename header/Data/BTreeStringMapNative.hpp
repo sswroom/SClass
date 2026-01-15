@@ -18,7 +18,7 @@ namespace Data
 		Optional<BTreeStringNativeNode<T>> rightNode;
 		T nodeVal;
 		UInt32 nodeHash;
-		UOSInt keyLen;
+		UIntOS keyLen;
 		UTF8Char nodeKey[1];
 	};
 
@@ -36,7 +36,7 @@ namespace Data
 		Optional<BTreeStringNativeNode<T>> RemoveNode(NN<BTreeStringNativeNode<T>> node);
 		void FillArr(UnsafeArray<T> *arr, Optional<BTreeStringNativeNode<T>> node);
 		void FillNameArr(UnsafeArray<Text::CStringNN> *arr, Optional<BTreeStringNativeNode<T>> node);
-		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
+		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UIntOS keyLen) const;
 	public:
 		BTreeStringMapNative();
 		virtual ~BTreeStringMapNative();
@@ -45,8 +45,8 @@ namespace Data
 		virtual T Get(Text::CStringNN key) const;
 		virtual T Remove(Text::CStringNN key);
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<T> ToArray(OutParam<UOSInt> objCnt);
-		virtual UnsafeArray<Text::CStringNN> ToNameArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<T> ToArray(OutParam<UIntOS> objCnt);
+		virtual UnsafeArray<Text::CStringNN> ToNameArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -115,7 +115,7 @@ namespace Data
 		NN<BTreeStringNativeNode<T>> leftNode;
 		NN<BTreeStringNativeNode<T>> rightNode;
 		T retVal;
-		OSInt i;
+		IntOS i;
 		if (node->nodeHash == hash)
 		{
 			i = Text::StrCompareFastC(node->nodeKey, node->keyLen, key.v, key.leng);
@@ -356,7 +356,7 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 BTreeStringMapNative<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
+	template <class T> UInt32 BTreeStringMapNative<T>::CalHash(UnsafeArray<const UTF8Char> key, UIntOS keyLen) const
 	{
 		return this->crc->CalcDirect(key, keyLen);
 	}
@@ -424,7 +424,7 @@ namespace Data
 		NN<BTreeStringNativeNode<T>> nnnode;
 		while (node.SetTo(nnnode))
 		{
-			OSInt i;
+			IntOS i;
 			if (nnnode->nodeHash == hash)
 			{
 				i = Text::StrCompareFastC(nnnode->nodeKey, nnnode->keyLen, key.v, key.leng);
@@ -472,7 +472,7 @@ namespace Data
 			NN<BTreeStringNativeNode<T>> parNode = rootNode;
 			while (node.SetTo(nnnode))
 			{
-				OSInt i;
+				IntOS i;
 				if (nnnode->nodeHash == hash)
 				{
 					i = Text::StrCompareFastC(nnnode->nodeKey, nnnode->keyLen, key.v, key.leng);
@@ -518,13 +518,13 @@ namespace Data
 		return this->rootNode.IsNull();
 	}
 
-	template <class T> UnsafeArray<T> BTreeStringMapNative<T>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<T> BTreeStringMapNative<T>::ToArray(OutParam<UIntOS> objCnt)
 	{
 		NN<BTreeStringNativeNode<T>> rootNode;
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		if (this->rootNode.SetTo(rootNode))
 		{
-			cnt = (UOSInt)rootNode->nodeCnt + 1;
+			cnt = (UIntOS)rootNode->nodeCnt + 1;
 		}
 		UnsafeArray<T> outArr = MemAllocArr(T, cnt);
 		UnsafeArray<T> tmpArr = outArr;
@@ -533,13 +533,13 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T> UnsafeArray<Text::CStringNN> BTreeStringMapNative<T>::ToNameArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<Text::CStringNN> BTreeStringMapNative<T>::ToNameArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		NN<BTreeStringNativeNode<T>> rootNode;
 		if (this->rootNode.SetTo(rootNode))
 		{
-			cnt = (UOSInt)rootNode->nodeCnt + 1;
+			cnt = (UIntOS)rootNode->nodeCnt + 1;
 		}
 		UnsafeArray<Text::CStringNN> outArr = MemAllocArr(Text::CStringNN, cnt);
 		UnsafeArray<Text::CStringNN> tmpArr = outArr;

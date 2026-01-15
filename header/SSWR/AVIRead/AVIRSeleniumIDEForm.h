@@ -24,7 +24,7 @@ namespace SSWR
 			struct RunStepStatus
 			{
 				Data::Timestamp ts;
-				UOSInt index;
+				UIntOS index;
 				Data::Duration dur;
 			};
 
@@ -82,7 +82,7 @@ namespace SSWR
 			static void __stdcall OnCommandSelChg(AnyType userObj);
 			static void __stdcall OnTestSelChg(AnyType userObj);
 			static void __stdcall OnTestRunClicked(AnyType userObj);
-			static void __stdcall OnStepStatus(AnyType userObj, UOSInt index, Data::Duration dur);
+			static void __stdcall OnStepStatus(AnyType userObj, UIntOS index, Data::Duration dur);
 			void DisplayTest();
 			void DisplayStatus();
 		public:

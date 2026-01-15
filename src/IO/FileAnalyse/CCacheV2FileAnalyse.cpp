@@ -37,12 +37,12 @@ void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread
 	UInt8 index[0x20000];
 	if (me->fd.SetTo(fd) && fd->GetRealData(64, 0x20000, BYTEARR(index)) == 0x20000)
 	{
-		UOSInt ofst;
+		UIntOS ofst;
 		UInt64 idx;
 		UInt64 tileOfst;
-		UOSInt tileSize;
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS tileSize;
+		UIntOS i = 0;
+		UIntOS j;
 		while (i < 128)
 		{
 			j = 0;
@@ -51,7 +51,7 @@ void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread
 				ofst = i * 1024 + j * 8;
 				idx = ReadUInt64(&index[ofst]);
 				tileOfst = idx % 0x10000000000LL;
-				tileSize = (UOSInt)(idx / 0x10000000000LL);
+				tileSize = (UIntOS)(idx / 0x10000000000LL);
 				if (tileSize != 0)
 				{
 					tag = MemAllocNN(IO::FileAnalyse::CCacheV2FileAnalyse::TagInfo);
@@ -100,12 +100,12 @@ Text::CStringNN IO::FileAnalyse::CCacheV2FileAnalyse::GetFormatName()
 	return CSTR("Compact Cache V2");
 }
 
-UOSInt IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::CCacheV2FileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -114,20 +114,20 @@ Bool IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameName(UOSInt index, NN<Text::S
 	sb->AppendC(UTF8STRC(": Type="));
 	sb->Append(TagTypeGetName(tag->tagType));
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	return true;
 }
 
-UOSInt IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<TagInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -138,13 +138,13 @@ UOSInt IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
@@ -181,10 +181,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 		frame->AddUInt(16, 4, CSTR("Legacy4"), ReadUInt32(&tagData[16]));
 		frame->AddUInt(20, 4, CSTR("Index Size"), ReadUInt32(&tagData[20]));
 		UInt64 idx;
-		UOSInt ofst;
+		UIntOS ofst;
 		Text::StringBuilderUTF8 sb;
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		while (i < 128)
 		{
 			j = 0;
@@ -194,9 +194,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 				idx = ReadUInt64(&tagData[ofst]);
 				sb.ClearStr();
 				sb.AppendUTF8Char('R');
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendUTF8Char('C');
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.Append(CSTR("TileOffset"));
 				frame->AddUInt64(ofst, sb.ToCString(), idx % 0x10000000000LL);
 				sb.RemoveChars(10);

@@ -51,7 +51,7 @@ namespace SSWR
 			Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
 			Bool OpenVideo(NN<Media::MediaFile> mf);
 		private:
-			void SwitchAudio(UOSInt audIndex);
+			void SwitchAudio(UIntOS audIndex);
 			void CloseFile();
 
 		public:

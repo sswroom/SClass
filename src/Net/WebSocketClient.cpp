@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<Net::TCPClient> cli;
 	if (!this->cli.SetTo(cli))
@@ -17,7 +17,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 	UInt8 packetBuff[130];
 	Sync::MutexUsage mutUsage(this->sendMut);
 	UInt32 mask;
-	UOSInt i;
+	UIntOS i;
 	if (buffSize < 126)
 	{
 		packetBuff[0] = (UInt8)(0x80 | (opcode));
@@ -127,12 +127,12 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 	}
 }
 
-UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opcode, OutParam<UOSInt> packetSize)
+UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opcode, OutParam<UIntOS> packetSize)
 {
 	NN<Net::TCPClient> cli;
 	UInt8 pkSize;
 	UInt64 usedSize;
-	UOSInt ofst;
+	UIntOS ofst;
 	while (true)
 	{
 		if (this->recvSize - this->recvParseOfst >= 2)
@@ -164,7 +164,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 			}
 			else
 			{
-				usedSize = (UOSInt)pkSize + 2;
+				usedSize = (UIntOS)pkSize + 2;
 				ofst = this->recvParseOfst + 2;
 			}
 			if (this->recvBuff[this->recvParseOfst + 1] & 0x80)
@@ -172,12 +172,12 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 				usedSize += 4;
 				if (usedSize <= this->recvSize - this->recvParseOfst)
 				{
-					UOSInt pSize = this->recvParseOfst + usedSize - ofst - 4;
+					UIntOS pSize = this->recvParseOfst + usedSize - ofst - 4;
 					packetSize.Set(pSize);
 					UInt8 *buff = &this->recvBuff[ofst];
 					UInt32 mask = ReadNUInt32(buff);
 					buff += 4;
-					UOSInt i = pSize;
+					UIntOS i = pSize;
 					while (i >= 4)
 					{
 						WriteNUInt32(buff, mask ^ ReadNUInt32(buff));
@@ -240,14 +240,14 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 		}
 		if (!this->cli.SetTo(cli))
 			return nullptr;
-		UOSInt readSize = cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
+		UIntOS readSize = cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
 		if (readSize == 0)
 			return nullptr;
 		this->recvSize += readSize;
 	}
 }
 
-UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, OutParam<UOSInt> packetSize)
+UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, OutParam<UIntOS> packetSize)
 {
 	NN<Net::TCPClient> cli;
 	mutUsage->ReplaceMutex(this->recvMut);
@@ -255,7 +255,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 		return nullptr;
 
 	UInt8 opcode;
-	UOSInt pSize;
+	UIntOS pSize;
 	UnsafeArray<const UInt8> buff;
 	while (true)
 	{
@@ -379,7 +379,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<N
 		}
 		sb.ClearStr();
 		sb.AllocLeng(4096);
-		UOSInt readSize = cli->Read(Data::ByteArray(sb.v, 4096));
+		UIntOS readSize = cli->Read(Data::ByteArray(sb.v, 4096));
 		if (readSize <= 0)
 		{
 #if defined(VERBOSE)
@@ -479,7 +479,7 @@ Bool Net::WebSocketClient::IsDown() const
 	return true;
 }
 
-UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
+UIntOS Net::WebSocketClient::Read(const Data::ByteArray &buff)
 {
 	Sync::MutexUsage mutUsage(this->recvMut);
 	if (this->recvDataOfst < this->recvDataSize)
@@ -492,13 +492,13 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 		}
 		else
 		{
-			UOSInt size = this->recvDataSize - this->recvDataOfst;
+			UIntOS size = this->recvDataSize - this->recvDataOfst;
 			buff.CopyFrom(Data::ByteArrayR(&this->recvData[this->recvDataOfst], size));
 			this->recvDataOfst = this->recvDataSize;
 			return size;
 		}
 	}
-	UOSInt packetSize;
+	UIntOS packetSize;
 	UnsafeArray<const UInt8> packetBuff;
 	if (!this->NextPacket(mutUsage, packetSize).SetTo(packetBuff))
 		return 0;
@@ -521,7 +521,7 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 	return buff.GetSize();
 }
 
-UOSInt Net::WebSocketClient::Write(Data::ByteArrayR buff)
+UIntOS Net::WebSocketClient::Write(Data::ByteArrayR buff)
 {
 	if (SendPacket(2, buff.Arr(), buff.GetSize()))
 		return buff.GetSize();
@@ -568,17 +568,17 @@ Bool Net::WebSocketClient::Shutdown()
 	return false;
 }
 
-Bool Net::WebSocketClient::SendPing(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPing(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	return this->SendPacket(9, buff, buffSize);
 }
 
-Bool Net::WebSocketClient::SendPong(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPong(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	return this->SendPacket(10, buff, buffSize);
 }
 
-Bool Net::WebSocketClient::SendClose(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendClose(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	return this->SendPacket(8, buff, buffSize);
 }

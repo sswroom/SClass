@@ -6,7 +6,7 @@ global ImageCopy_ImgCopy
 extern CPUBrand
 extern UseAVX
 
-;void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+;void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UIntOS copySize, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown);
 ;0 retAddr
 ;rcx inPt r10
 ;rdx outPt r11
@@ -26,7 +26,7 @@ ImageCopy_ImgCopyR:
 	lea rdx,[r11+rax]
 	jmp ImageCopy_ImgCopy
 
-;void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, OSInt copySize, OSInt height, OSInt sstep, OSInt dstep);
+;void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, IntOS copySize, IntOS height, IntOS sstep, IntOS dstep);
 
 ;0 rsi
 ;8 retAddr

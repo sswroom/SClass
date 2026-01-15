@@ -15,7 +15,7 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::WebRequest
 	UTF8Char tmpBuff[256];
 	UnsafeArray<UTF8Char> sbuff;
 	UTF8Char c;
-	UOSInt i = 1;
+	UIntOS i = 1;
 	Optional<Net::WebServer::WebStandardHandler> subHdlr;
 	NN<Net::WebServer::WebStandardHandler> nnsubHdlr;
 
@@ -78,7 +78,7 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::W
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, OSInt cacheAge, Text::CStringNN json)
+Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
 {
 	Text::CStringNN mime = CSTR("application/json");
 	this->AddResponseHeaders(req, resp);
@@ -87,7 +87,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebR
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, json);
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UOSInt maxAge, Text::CStringNN options)
+Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UIntOS maxAge, Text::CStringNN options)
 {
 	Text::StringBuilderUTF8 sb;
 	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && !this->allowOrigin.IsNull())
@@ -106,7 +106,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 		}
 		resp->AddHeader(CSTR("Access-Control-Allow-Methods"), options);
 		sb.ClearStr();
-		sb.AppendUOSInt(maxAge);
+		sb.AppendUIntOS(maxAge);
 		resp->AddHeader(CSTR("Access-Control-Max-Age"), sb.ToCString());
 		resp->Write(Data::ByteArrayR(U8STR(""), 0));
 		return true;
@@ -131,7 +131,7 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
 {
-	UOSInt i = this->relHdlrs.GetCount();
+	UIntOS i = this->relHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->relHdlrs.GetItem(i).Delete();
@@ -207,7 +207,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 		}
 		return;
 	}
-	UOSInt i = relativePath.IndexOf('/', 1);
+	UIntOS i = relativePath.IndexOf('/', 1);
 	UnsafeArray<UTF8Char> sbuff;
 	if (i == INVALID_INDEX)
 	{

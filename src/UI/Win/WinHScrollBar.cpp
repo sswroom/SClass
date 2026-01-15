@@ -14,9 +14,9 @@ Int32 UI::Win::WinHScrollBar::useCnt = 0;
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::Win::WinHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::Win::WinHScrollBar *me = (UI::Win::WinHScrollBar*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::Win::WinHScrollBar *me = (UI::Win::WinHScrollBar*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	SCROLLINFO si;
 	Bool noChg = false;
 	switch (msg)
@@ -109,7 +109,7 @@ UI::Win::WinHScrollBar::~WinHScrollBar()
 	}
 }
 
-void UI::Win::WinHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
+void UI::Win::WinHScrollBar::InitScrollBar(UIntOS minVal, UIntOS maxVal, UIntOS currVal, UIntOS largeChg)
 {
 	SCROLLINFO info;
 	info.cbSize = sizeof(SCROLLINFO);
@@ -122,15 +122,15 @@ void UI::Win::WinHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt 
 	this->EventPosChanged(this->GetPos());
 }
 
-void UI::Win::WinHScrollBar::SetPos(UOSInt pos)
+void UI::Win::WinHScrollBar::SetPos(UIntOS pos)
 {
-	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)pos, TRUE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(IntOS)pos, TRUE);
 	this->EventPosChanged(this->GetPos());
 }
 
-UOSInt UI::Win::WinHScrollBar::GetPos()
+UIntOS UI::Win::WinHScrollBar::GetPos()
 {
-	return (UOSInt)(OSInt)GetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ);
+	return (UIntOS)(IntOS)GetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ);
 }
 
 void UI::Win::WinHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -159,7 +159,7 @@ void UI::Win::WinHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	this->OnSizeChanged(updateScn);
 }
 
-void UI::Win::WinHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::Win::WinHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn)
 {
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	NN<UI::GUIClientControl> nnparent;
@@ -167,23 +167,23 @@ void UI::Win::WinHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	{
 		ofst = nnparent->GetClientOfst();
 	}
-	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = IntOS2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = IntOS2Double(top) * this->ddpi / this->hdpi;
 	Int32 minSize = GetSystemMetrics(SM_CYHSCROLL) + 1;
 	Int32 newSize = (Int32)(bottom - top);
 	if (newSize < minSize)
 		newSize = minSize;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), Double2Int32(IntOS2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(IntOS2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd.OrNull(), &rect);
-	this->lxPos2 = OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
-	this->lyPos2 = OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
+	this->lxPos2 = IntOS2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
+	this->lyPos2 = IntOS2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
 }
 
-OSInt UI::Win::WinHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	if (code == WM_HSCROLL)
 	{

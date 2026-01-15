@@ -50,27 +50,27 @@ void UI::JavaUI::JUIComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::JavaUI::JUIComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::JavaUI::JUIComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::JavaUI::JUIComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::JavaUI::JUIComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::JavaUI::JUIComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::JavaUI::JUIComboBox::InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::JavaUI::JUIComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::JavaUI::JUIComboBox::InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-AnyType UI::JavaUI::JUIComboBox::RemoveItem(UOSInt index)
+AnyType UI::JavaUI::JUIComboBox::RemoveItem(UIntOS index)
 {
 	return 0;
 }
@@ -79,16 +79,16 @@ void UI::JavaUI::JUIComboBox::ClearItems()
 {
 }
 
-UOSInt UI::JavaUI::JUIComboBox::GetCount()
+UIntOS UI::JavaUI::JUIComboBox::GetCount()
 {
 	return this->itemTexts.GetCount();
 }
 
-void UI::JavaUI::JUIComboBox::SetSelectedIndex(UOSInt index)
+void UI::JavaUI::JUIComboBox::SetSelectedIndex(UIntOS index)
 {
 }
 
-UOSInt UI::JavaUI::JUIComboBox::GetSelectedIndex()
+UIntOS UI::JavaUI::JUIComboBox::GetSelectedIndex()
 {
 	return 0;
 }
@@ -98,7 +98,7 @@ AnyType UI::JavaUI::JUIComboBox::GetSelectedItem()
 	return 0;
 }
 
-AnyType UI::JavaUI::JUIComboBox::GetItem(UOSInt index)
+AnyType UI::JavaUI::JUIComboBox::GetItem(UIntOS index)
 {
 	return 0;
 }
@@ -116,7 +116,7 @@ void UI::JavaUI::JUIComboBox::SetArea(Double left, Double top, Double right, Dou
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-OSInt UI::JavaUI::JUIComboBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIComboBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -126,6 +126,6 @@ void UI::JavaUI::JUIComboBox::UpdatePos(Bool redraw)
 	/////////////////////////	
 }
 
-void UI::JavaUI::JUIComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
+void UI::JavaUI::JUIComboBox::SetTextSelection(UIntOS startPos, UIntOS endPos)
 {
 }

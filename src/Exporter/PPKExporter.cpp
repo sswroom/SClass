@@ -45,7 +45,7 @@ IO::FileExporter::SupportType Exporter::PPKExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::PPKExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PPKExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -74,17 +74,17 @@ Bool Exporter::PPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
 		{
 			UnsafeArray<const UInt8> modulus;
-			UOSInt modulusSize;
+			UIntOS modulusSize;
 			UnsafeArray<const UInt8> publicExponent;
-			UOSInt publicExponentSize;
+			UIntOS publicExponentSize;
 			UnsafeArray<const UInt8> privateExponent;
-			UOSInt privateExponentSize;
+			UIntOS privateExponentSize;
 			UnsafeArray<const UInt8> prime1;
-			UOSInt prime1Size;
+			UIntOS prime1Size;
 			UnsafeArray<const UInt8> prime2;
-			UOSInt prime2Size;
+			UIntOS prime2Size;
 			UnsafeArray<const UInt8> coefficient;
-			UOSInt coefficientSize;
+			UIntOS coefficientSize;
 			UInt8 hash[32];
 			if (key->GetRSAModulus(modulusSize).SetTo(modulus) &&
 				key->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent) &&
@@ -97,7 +97,7 @@ Bool Exporter::PPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				Crypto::Hash::HMAC hmac(sha256, UTF8STRC(""));
 				Bool succ;
 				Text::StringBuilderUTF8 sb;
-				UOSInt i;
+				UIntOS i;
 				Text::CStringNN name;
 				sb.Append(CSTR("PuTTY-User-Key-File-3: ssh-rsa\n"));
 				sb.Append(CSTR("Encryption: none\n"));
@@ -128,7 +128,7 @@ Bool Exporter::PPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				sb.AppendUTF8Char('\n');
 				Text::TextBinEnc::Base64Enc b64;
 				UnsafeArray<UInt8> buff;
-				UOSInt buffSize = 11 + modulusSize + 4 + publicExponentSize + 4;
+				UIntOS buffSize = 11 + modulusSize + 4 + publicExponentSize + 4;
 				buff = MemAllocArr(UInt8, buffSize);
 				WriteMUInt32(&buff[0], 7);
 				MemCopyNO(&buff[4], "ssh-rsa", 7);
@@ -140,7 +140,7 @@ Bool Exporter::PPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				MemCopyNO(&buff[i + 4], modulus.Ptr(), modulusSize);
 				i += 4 + modulusSize;
 				sb.Append(CSTR("Public-Lines: "));
-				sb.AppendUOSInt(i / 48 + ((i % 48)?1:0));
+				sb.AppendUIntOS(i / 48 + ((i % 48)?1:0));
 				sb.AppendUTF8Char('\n');
 				b64.EncodeBin(sb, buff, i, Text::LineBreakType::LF, 64);
 				WriteMUInt32(hash, i);
@@ -165,7 +165,7 @@ Bool Exporter::PPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				MemCopyNO(&buff[i + 4], coefficient.Ptr(), coefficientSize);
 				i += 4 + coefficientSize;
 				sb.Append(CSTR("Private-Lines: "));
-				sb.AppendUOSInt(i / 48 + ((i % 48)?1:0));
+				sb.AppendUIntOS(i / 48 + ((i % 48)?1:0));
 				sb.AppendUTF8Char('\n');
 				b64.EncodeBin(sb, buff, i, Text::LineBreakType::LF, 64);
 				WriteMUInt32(hash, i);

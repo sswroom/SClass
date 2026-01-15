@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWFSURL->GetText(sb);
 	me->wfs.Delete();
-	NEW_CLASSNN(wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), nullptr, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetOSInt()));
+	NEW_CLASSNN(wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), nullptr, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetIntOS()));
 	me->wfs = wfs;
 	if (wfs->IsError())
 	{
@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 	{
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListStringNN nameList;
-		UOSInt i = 0;
-		UOSInt j = wfs->GetFeatureNames(&nameList);
+		UIntOS i = 0;
+		UIntOS j = wfs->GetFeatureNames(&nameList);
 		me->cboFeature->ClearItems();
 		while (i < j)
 		{

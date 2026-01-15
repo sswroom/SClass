@@ -38,7 +38,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<IO::FileAnalyse::FileAnalyser> file;
-			UOSInt lastPackCount;
+			UIntOS lastPackCount;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnFileClicked(AnyType userObj);

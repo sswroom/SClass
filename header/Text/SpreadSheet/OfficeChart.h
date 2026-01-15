@@ -76,17 +76,17 @@ namespace Text
 			void InitLineChart(Text::CString leftAxisName, Text::CString bottomAxisName, AxisType bottomAxisType);
 			ChartType GetChartType();
 			NN<OfficeChartAxis> CreateAxis(AxisType axisType, AxisPosition axisPos);
-			UOSInt GetAxisCount();
-			Optional<OfficeChartAxis> GetAxis(UOSInt index);
-			UOSInt GetAxisIndex(NN<OfficeChartAxis> axis);
+			UIntOS GetAxisCount();
+			Optional<OfficeChartAxis> GetAxis(UIntOS index);
+			UIntOS GetAxisIndex(NN<OfficeChartAxis> axis);
 			Optional<OfficeChartAxis> GetCategoryAxis();
 			Optional<OfficeChartAxis> GetValueAxis();
 
 			void AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Optional<Text::String> name, Bool showMarker);
 			void AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Text::CString name, Bool showMarker);
-			UOSInt GetSeriesCount() const;
-			NN<OfficeChartSeries> GetSeriesNoCheck(UOSInt index) const;
-			Optional<OfficeChartSeries> GetSeries(UOSInt index) const;
+			UIntOS GetSeriesCount() const;
+			NN<OfficeChartSeries> GetSeriesNoCheck(UIntOS index) const;
+			Optional<OfficeChartSeries> GetSeries(UIntOS index) const;
 		};
 	}
 }

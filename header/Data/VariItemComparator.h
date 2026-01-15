@@ -17,7 +17,7 @@ namespace Data
 		{
 		}
 
-		virtual OSInt Compare(NN<Data::VariItem> a, NN<Data::VariItem> b) const
+		virtual IntOS Compare(NN<Data::VariItem> a, NN<Data::VariItem> b) const
 		{
 			if (a->GetItemType() != b->GetItemType())
 				return 0;
@@ -82,7 +82,7 @@ namespace Data
 		{
 		}
 
-		virtual OSInt Compare(NN<Data::VariItem> b, NN<Data::VariItem> a) const
+		virtual IntOS Compare(NN<Data::VariItem> b, NN<Data::VariItem> a) const
 		{
 			if (a->GetItemType() != b->GetItemType())
 				return 0;

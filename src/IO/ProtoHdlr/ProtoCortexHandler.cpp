@@ -20,11 +20,11 @@ void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NN<IO::Stream> stm, Any
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UIntOS IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt8 cmdSize;
 	UInt8 chk;
 	i = 0;
@@ -69,10 +69,10 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	UInt8 chk;
-	UOSInt i;
+	UIntOS i;
 	buff[0] = 0xff;
 	buff[1] = (UInt8)(cmdType & 0xff);
 	buff[2] = (UInt8)(cmdSize & 0xff);

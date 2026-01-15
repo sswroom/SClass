@@ -11,7 +11,7 @@ namespace Text
 	{
 	public:
 		static void ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str);
-		static void ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str, UOSInt leng);
+		static void ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str, UIntOS leng);
 		static void FromCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str);
 
 		static Bool ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CStringNN cppEnumStr, NN<Text::StringBuilderUTF8> sbPrefix);

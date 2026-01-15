@@ -70,7 +70,7 @@ namespace SSWR
 			Optional<Net::UDPServer> svr;
 
 			Bool packetsChg;
-			OSInt packetCurr;
+			IntOS packetCurr;
 			UnsafeArray<PacketInfo> packets;
 			Sync::Mutex packetMut;
 
@@ -78,7 +78,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDataSelChg(AnyType userObj);
-			static void __stdcall OnPortsDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnPortsDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 			static void __stdcall OnMulticastClicked(AnyType userObj);
 			static void __stdcall OnMulticastDoubleClk(AnyType userObj);

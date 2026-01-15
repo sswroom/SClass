@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptrEnd;
 	UInt8 buff[512];
-	UOSInt i;
+	UIntOS i;
 	UInt64 currOfst;
 	UInt64 fileSize;
 	UInt64 itemSize;
@@ -111,8 +111,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 						if (sptr[0] != 0)
 						{
 							sb.AppendC(UTF8STRC("\\"));
-							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-							if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
+							sb.AppendC(sptr, (UIntOS)(sptrEnd - sptr));
+							if (!pf2->GetPackFile({sptr, (UIntOS)(sptrEnd - sptr)}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);

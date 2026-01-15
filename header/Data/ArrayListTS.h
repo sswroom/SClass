@@ -8,7 +8,7 @@ namespace Data
 	{
 	public:
 		ArrayListTS();
-		ArrayListTS(UOSInt capacity);
+		ArrayListTS(UIntOS capacity);
 
 		virtual NN<ArrayListNative<Data::Timestamp>> Clone() const;
 	};

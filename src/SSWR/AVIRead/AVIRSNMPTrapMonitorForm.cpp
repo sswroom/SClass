@@ -27,8 +27,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 	}
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	me->txtCommunity->SetText({packet->trap.community, Text::StrCharCnt(packet->trap.community)});
@@ -81,8 +81,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
-	UOSInt i = me->lbResults->GetCount();
-	UOSInt j = me->packetList.GetCount();
+	UIntOS i = me->lbResults->GetCount();
+	UIntOS j = me->packetList.GetCount();
 	NN<SNMPPacket> packet;
 	if (i < j)
 	{
@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 {
 	this->mon.Delete();
 	NN<SNMPPacket> packet;
-	UOSInt i = this->packetList.GetCount();
+	UIntOS i = this->packetList.GetCount();
 	while (i-- > 0)
 	{
 		packet = this->packetList.GetItemNoCheck(i);

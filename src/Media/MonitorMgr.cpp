@@ -17,7 +17,7 @@ Media::MonitorMgr::MonitorMgr()
 
 Media::MonitorMgr::~MonitorMgr()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<MonitorSetting> mon;
 	i = this->monMap.GetCount();
 	while (i-- > 0)
@@ -73,7 +73,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(Optional<MonitorHandle> hMonitor)
 		else
 		{
 			Media::DDCReader reader(hMonitor);
-			UOSInt size;
+			UIntOS size;
 			UnsafeArray<UInt8> edid;
 			if (reader.GetEDID(size).SetTo(edid))
 			{

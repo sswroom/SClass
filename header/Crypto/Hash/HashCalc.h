@@ -18,7 +18,7 @@ namespace Crypto
 			HashCalc(NN<Crypto::Hash::HashAlgorithm> hash); //hash will be released
 			~HashCalc();
 
-			void Calc(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal);
+			void Calc(UnsafeArray<const UInt8> buff, UIntOS size, UnsafeArray<UInt8> hashVal);
 			void CalcStr(Text::CStringNN s, UnsafeArray<UInt8> hashVal);
 		};
 	}

@@ -5,7 +5,7 @@
 #include "IO/BitReaderMSB.h"
 #include "Net/TETRALIP.h"
 
-Bool Net::TETRALIP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *recvTime, Map::GPSTrack::GPSRecord *record, Int32 *reason)
+Bool Net::TETRALIP::ParseProtocol(UInt8 *buff, IntOS buffSize, Data::DateTime *recvTime, Map::GPSTrack::GPSRecord *record, Int32 *reason)
 {
 	if ((buff[0] & 0xc0) == 0)
 	{
@@ -278,7 +278,7 @@ Bool Net::TETRALIP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *r
 	}
 }
 
-OSInt Net::TETRALIP::GenLocReq(UInt8 *buff)
+IntOS Net::TETRALIP::GenLocReq(UInt8 *buff)
 {
 	/*
 	0	PDU type							1

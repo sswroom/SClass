@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<IO::Watchdog> nnwd;
 	Int32 wdId;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
-	UOSInt argc;
+	UIntOS argc;
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
 	{

@@ -12,23 +12,23 @@ namespace Crypto
 			NN<Crypto::Hash::HashAlgorithm> hashInner;
 			NN<Crypto::Hash::HashAlgorithm> hashOuter;
 			UnsafeArray<UInt8> key;
-			UOSInt keySize;
+			UIntOS keySize;
 
 			UnsafeArray<UInt8> iPad;
 			UnsafeArray<UInt8> oPad;
-			UOSInt padSize;
+			UIntOS padSize;
 
 		public:
-			HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const UInt8> key, UOSInt keySize);
+			HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const UInt8> key, UIntOS keySize);
 			virtual ~HMAC();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
-			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
-			virtual UOSInt GetBlockSize() const;
-			virtual UOSInt GetResultSize() const;
+			virtual UIntOS GetBlockSize() const;
+			virtual UIntOS GetResultSize() const;
 		};
 	}
 }

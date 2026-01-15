@@ -165,9 +165,9 @@ namespace Math
 			return this->min.IsZero() && this->max.IsZero();
 		}
 
-		static RectAreaDbl GetRectArea(Coord2DDbl *points, UOSInt nPoints)
+		static RectAreaDbl GetRectArea(Coord2DDbl *points, UIntOS nPoints)
 		{
-			UOSInt i = nPoints - 1;
+			UIntOS i = nPoints - 1;
 			Coord2DDbl min = points[i];
 			Coord2DDbl max = min;
 			while (i-- > 0)

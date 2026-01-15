@@ -13,7 +13,7 @@
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
-	Data::ArrayListNative<UOSInt> selIndices;
+	Data::ArrayListNative<UIntOS> selIndices;
 	me->lvFiles->GetSelectedIndices(&selIndices);
 	if (selIndices.GetCount() <= 0)
 	{
@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Bool succ = true;
-			UOSInt i = 0;
-			UOSInt j = selIndices.GetCount();
+			UIntOS i = 0;
+			UIntOS j = selIndices.GetCount();
 			while (i < j)
 			{
 				NN<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(i)).GetNN<IO::CameraControl::FileInfo>();
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
 	NN<IO::CameraControl::FileInfo> file;
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 			if (me->camera->GetFile(file, mstm))
 			{
 				NN<IO::ParsedObject> pobj;
-				UOSInt size;
+				UIntOS size;
 				UnsafeArray<UInt8> buff = mstm.GetBuff(size);
 				IO::StmData::MemoryDataRef fd(buff, size);
 				if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	IO::MemoryStream mstm;
 	if (me->camera->GetThumbnailFile(file, mstm))
 	{
-		UOSInt size;
+		UIntOS size;
 		UnsafeArray<UInt8> buff = mstm.GetBuff(size);
 		IO::StmData::MemoryDataRef fd(buff, size);
 		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(previewImg))
@@ -210,8 +210,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 
 	Data::ArrayListStringNN nameList;
 	Data::ArrayListStringNN valueList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->camera->GetInfoList(nameList, valueList);
 	i = 0;
 	j = nameList.GetCount();
@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 	this->ClearChildren();
 	this->camera.Delete();
 	NN<const Data::ArrayListNN<Media::ImageList>> previewList = this->previewMap.GetValues();
-	UOSInt i = previewList->GetCount();
+	UIntOS i = previewList->GetCount();
 	NN<Media::ImageList> previewImg;
 	while (i-- > 0)
 	{

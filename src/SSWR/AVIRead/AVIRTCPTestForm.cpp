@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 	}
 	
 	UnsafeArray<NN<Sync::Thread>> threads;
-	UOSInt i;
+	UIntOS i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("AVIRTCPTest"));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		NEW_CLASSNN(threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
 		threads[i]->Start();
 	}
@@ -138,7 +138,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 	{
 		if (this->threadCurrCnt > 0)
 		{
-			UOSInt i = this->threadCnt;
+			UIntOS i = this->threadCnt;
 			while (i-- > 0)
 			{
 				threads[i]->BeginStop();
@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 				Sync::SimpleThread::Sleep(10);
 			}
 		}
-		UOSInt i = this->threadCnt;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			threads[i].Delete();

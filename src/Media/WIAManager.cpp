@@ -84,17 +84,17 @@ Media::WIAManager::~WIAManager()
 }
 
 
-UOSInt Media::WIAManager::GetDeviceCount()
+UIntOS Media::WIAManager::GetDeviceCount()
 {
 	return this->devNames->GetCount();
 }
 
-UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UIntOS index)
 {
 	return this->devNames->GetItem(index);
 }
 
-Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
+Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UIntOS index)
 {
 	UnsafeArray<const UTF8Char> devId;
 	if (!this->devIds->GetItem(index).SetTo(devId))

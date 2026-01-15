@@ -3,11 +3,11 @@
 #include "Media/CS/CSYUY2_RGB8.h"
 #include <arm_neon.h>
 
-extern "C" void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
+extern "C" void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
 {
-	OSInt wsize = (width >> 1) - 2;
-	OSInt dAdd = dbpl - (width << 2);
-	OSInt i;
+	IntOS wsize = (width >> 1) - 2;
+	IntOS dAdd = dbpl - (width << 2);
+	IntOS i;
 	int16x4_t cval;
 	int16x4_t rgbval;
 	int16x4_t rgbval2;

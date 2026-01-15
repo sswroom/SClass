@@ -26,7 +26,7 @@ Bool IO::Device::AM2315GPIO::I2CWriteByte(UInt8 b)
 {
 	Bool ret = false;
 	UInt8 v;
-	OSInt j;
+	IntOS j;
 	v = 0x80;
 	j = 8;
 	while (j-- > 0)
@@ -56,7 +56,7 @@ Bool IO::Device::AM2315GPIO::I2CReadByte(UInt8 *b, Bool isLast)
 {
 	UInt8 v;
 	UInt8 by;
-	OSInt j;
+	IntOS j;
 	this->sdaPin->SetPinOutput(false);
 	v = 0x80;
 	by = 0;
@@ -100,7 +100,7 @@ Bool IO::Device::AM2315GPIO::I2CEnd()
 	return true;
 }
 
-OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
+IntOS IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, IntOS readSize)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!this->I2CStart())
@@ -110,7 +110,7 @@ OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
 		this->I2CEnd();
 		return 0;
 	}
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < readSize)
 	{
 		this->I2CReadByte(&buff[i], i >= readSize - 1);
@@ -118,17 +118,17 @@ OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
 	}
 	this->I2CEnd();
 	sb.AppendC(UTF8STRC("Read size = "));
-	sb.AppendOSInt(i);
+	sb.AppendIntOS(i);
 	sb.AppendC(UTF8STRC(": "));
 	if (i > 0)
 	{
-		sb.AppendHexBuff(buff, (UOSInt)i, ' ', Text::LineBreakType::None);
+		sb.AppendHexBuff(buff, (UIntOS)i, ' ', Text::LineBreakType::None);
 	}
 	printf("%s\r\n", sb.ToPtr());
 	return i;
 }
 
-OSInt IO::Device::AM2315GPIO::DirectWrite(const UInt8 *buff, OSInt writeSize)
+IntOS IO::Device::AM2315GPIO::DirectWrite(const UInt8 *buff, IntOS writeSize)
 {
 	if (!this->I2CStart())
 		return 0;
@@ -137,7 +137,7 @@ OSInt IO::Device::AM2315GPIO::DirectWrite(const UInt8 *buff, OSInt writeSize)
 		this->I2CEnd();
 		return 0;
 	}
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < writeSize)
 	{
 		if (this->I2CWriteByte(buff[i]))

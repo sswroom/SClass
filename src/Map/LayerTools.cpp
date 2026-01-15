@@ -8,12 +8,12 @@
 
 Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layers, Optional<Text::String> lyrName)
 {
-	UOSInt layerCnt = layers->GetCount();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	OSInt si;
+	UIntOS layerCnt = layers->GetCount();
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	IntOS si;
 	NN<Map::MapDrawLayer> lyr;
 	UTF8Char sbuff[512];
 	NN<Text::String> sourceName;
@@ -34,8 +34,8 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListICaseStrUTF8 nameIndex;
 	Data::ArrayListNative<DB::DBUtil::ColType> colTypeArr;
-	Data::ArrayListNative<UOSInt> nameSizes;
-	Data::ArrayListNative<UOSInt> nameDPs;
+	Data::ArrayListNative<UIntOS> nameSizes;
+	Data::ArrayListNative<UIntOS> nameDPs;
 	DB::ColDef colDef(CSTR(""));
 	NN<DB::DBReader> r;
 
@@ -61,10 +61,10 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 				else
 				{
 					const UTF8Char *name = Text::StrCopyNew(sbuff).Ptr();
-					nameIndex.Insert((UOSInt)~si, name);
-					nameSizes.Insert((UOSInt)~si, colDef.GetColSize());
-					nameDPs.Insert((UOSInt)~si, colDef.GetColDP());
-					colTypeArr.Insert((UOSInt)~si, colDef.GetColType());
+					nameIndex.Insert((UIntOS)~si, name);
+					nameSizes.Insert((UIntOS)~si, colDef.GetColSize());
+					nameDPs.Insert((UIntOS)~si, colDef.GetColDP());
+					colTypeArr.Insert((UIntOS)~si, colDef.GetColType());
 					names.Add(name);
 				}
 				j++;
@@ -77,24 +77,24 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 
 	Map::VectorLayer *newLyr;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> namesArr;
-	UOSInt *ofsts;
+	UIntOS *ofsts;
 	DB::DBUtil::ColType *colTypes;
-	UOSInt *colSizes;
-	UOSInt *colDPs;
-	UOSInt nameCol = lyr->GetNameCol();
+	UIntOS *colSizes;
+	UIntOS *colDPs;
+	UIntOS nameCol = lyr->GetNameCol();
 	i = names.GetCount();
 	namesArr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, i);
-	ofsts = MemAlloc(UOSInt, i);
+	ofsts = MemAlloc(UIntOS, i);
 	colTypes = MemAlloc(DB::DBUtil::ColType, i);
-	colSizes = MemAlloc(UOSInt, i);
-	colDPs = MemAlloc(UOSInt, i);
+	colSizes = MemAlloc(UIntOS, i);
+	colDPs = MemAlloc(UIntOS, i);
 	while (i-- > 0)
 	{
 		namesArr[i] = names.GetItem(i);
 		si = nameIndex.SortedIndexOf(namesArr[i]);
-		colTypes[i] = colTypeArr.GetItem((UOSInt)si);
-		colSizes[i] = nameSizes.GetItem((UOSInt)si);
-		colDPs[i] = nameDPs.GetItem((UOSInt)si);
+		colTypes[i] = colTypeArr.GetItem((UIntOS)si);
+		colSizes[i] = nameSizes.GetItem((UIntOS)si);
+		colDPs[i] = nameDPs.GetItem((UIntOS)si);
 	}
 	NEW_CLASS(newLyr, Map::VectorLayer(lyrType, sourceName, names.GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
 	MemFree(colTypes);

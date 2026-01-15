@@ -30,10 +30,10 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::ChartPl
 	}
 }
 
-Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
+Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UIntOS colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
 {
 	TableCell *cols;
-	UOSInt i;
+	UIntOS i;
 	this->name = Text::String::New(name);
 	this->nameHAlign = Text::HAlignment::Unknown;
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
@@ -72,8 +72,8 @@ Text::ReportBuilder::~ReportBuilder()
 	UnsafeArray<TableCell> cols;
 	NN<HeaderInfo> header;
 	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	j = this->headers.GetCount();
 	while (j-- > 0)
 	{
@@ -171,7 +171,7 @@ void Text::ReportBuilder::AddPreHeader(Text::CStringNN name, Text::CStringNN val
 	AddPreHeader(name, 1, val, 1, false, false);
 }
 
-void Text::ReportBuilder::AddPreHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right)
+void Text::ReportBuilder::AddPreHeader(Text::CStringNN name, UIntOS nameCellCnt, Text::CStringNN val, UIntOS valCellCnt, Bool valUnderline, Bool right)
 {
 	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);
@@ -188,7 +188,7 @@ void Text::ReportBuilder::AddHeader(Text::CStringNN name, Text::CStringNN val)
 	AddHeader(name, 1, val, 1, false, false);
 }
 
-void Text::ReportBuilder::AddHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right)
+void Text::ReportBuilder::AddHeader(Text::CStringNN name, UIntOS nameCellCnt, Text::CStringNN val, UIntOS valCellCnt, Bool valUnderline, Bool right)
 {
 	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);
@@ -204,7 +204,7 @@ void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Ch
 {
 	UnsafeArray<TableCell> cols;
 	UnsafeArray<const UTF8Char> nns;
-	UOSInt i;
+	UIntOS i;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
@@ -227,7 +227,7 @@ void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Ch
 void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
 	TableCell *cols;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<const UTF8Char> nns;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
@@ -251,7 +251,7 @@ void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8C
 void Text::ReportBuilder::AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
 	TableCell *cols;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<const UTF8Char> nns;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
@@ -272,9 +272,9 @@ void Text::ReportBuilder::AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8C
 	this->tableRowType.Add(RT_SUMMARY);
 }
 
-void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CString name)
+void Text::ReportBuilder::AddIcon(UIntOS index, Text::CString fileName, Text::CString name)
 {
-	UOSInt cnt = this->tableContent.GetCount() - 1;
+	UIntOS cnt = this->tableContent.GetCount() - 1;
 	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
 	NN<Text::ReportBuilder::ColIcon> icon;
 	while (this->icons.GetCount() < cnt)
@@ -312,21 +312,21 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	iconList->Add(icon);
 }
 
-void Text::ReportBuilder::SetColumnWidthPts(UOSInt index, Double width)
+void Text::ReportBuilder::SetColumnWidthPts(UIntOS index, Double width)
 {
 	if (index >= this->colCount)
 		return;
 	this->colWidthPts[index] = width;
 }
 
-void Text::ReportBuilder::SetColumnType(UOSInt index, ColType colType)
+void Text::ReportBuilder::SetColumnType(UIntOS index, ColType colType)
 {
 	if (index >= this->colCount)
 		return;
 	this->colTypes[index] = colType;
 }
 
-void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos)
+void Text::ReportBuilder::SetColURLLatLon(UIntOS index, Math::Coord2DDbl pos)
 {
 	NN<ColURLLatLon> url;
 	url = MemAllocNN(ColURLLatLon);
@@ -337,7 +337,7 @@ void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos)
 	this->urlList.Add(url);
 }
 
-void Text::ReportBuilder::SetColHAlign(UOSInt index, HAlignment hAlign)
+void Text::ReportBuilder::SetColHAlign(UIntOS index, HAlignment hAlign)
 {
 	if (index >= this->colCount)
 		return;
@@ -352,12 +352,12 @@ Bool Text::ReportBuilder::HasChart()
 
 NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 k;
-	UOSInt l;
-	UOSInt m;
-	UOSInt urlAdd;
+	UIntOS l;
+	UIntOS m;
+	UIntOS urlAdd;
 	NN<Text::SpreadSheet::Workbook> wb;
 	NN<Text::SpreadSheet::Worksheet> ws;
 	NN<Text::SpreadSheet::Worksheet> dataSheet;
@@ -815,9 +815,9 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 			Text::SpreadSheet::CellStyle *intStyle = 0;
 			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General")).Ptr();
 
-			UOSInt i;
-			UOSInt j;
-			UOSInt colCount;
+			UIntOS i;
+			UIntOS j;
+			UIntOS colCount;
 			switch (chartParam->xData->GetType())
 			{
 			case Data::ChartPlotter::DataType::Time:
@@ -1007,12 +1007,12 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	UnsafeArray<TableCell> cols;
 	NN<HeaderInfo> header;
 	Bool lastRight;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
-	UOSInt n;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
+	UIntOS n;
 	Double *colMinWidth;
 	Double *colTotalWidth;
 	Double *colPos;
@@ -1139,7 +1139,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 
 					if (iconSt->dimg.SetTo(dimg))
 					{
-						colCurrX[icon->col] += fontHeightPt / UOSInt2Double(dimg->GetHeight()) * UOSInt2Double(dimg->GetWidth());
+						colCurrX[icon->col] += fontHeightPt / UIntOS2Double(dimg->GetHeight()) * UIntOS2Double(dimg->GetWidth());
 					}
 				}
 			}
@@ -1453,8 +1453,8 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 							NN<Media::DrawImage> dimg;
 							if (iconSt && iconSt->dimg.SetTo(dimg))
 							{
-								Double w = fontHeightMM * UOSInt2Double(dimg->GetWidth()) / UOSInt2Double(dimg->GetHeight());
-								Double dpi = UOSInt2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
+								Double w = fontHeightMM * UIntOS2Double(dimg->GetWidth()) / UIntOS2Double(dimg->GetHeight());
+								Double dpi = UIntOS2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
 								dimg->SetHDPI(dpi);
 								dimg->SetVDPI(dpi);
 								g->DrawImagePt(dimg, Math::Coord2DDbl(colCurrX[icon->col], currY));

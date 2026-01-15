@@ -6,7 +6,7 @@
 
 Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(Data::ByteArrayR pdu, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList)
 {
-	UOSInt i;
+	UIntOS i;
 	if (pdu[0] != 0x30)
 	{
 		reqId.Set(0);
@@ -14,7 +14,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(Data::ByteArrayR pdu, 
 	}
 	NN<BindingItem> item;
 	UInt32 bindingLen;
-	UOSInt bindingEnd;
+	UIntOS bindingEnd;
 	UInt32 pduLen;
 	UInt32 err;
 	i = Net::ASN1Util::PDUParseLen(pdu.Arr(), 1, pdu.GetSize(), pduLen);
@@ -202,14 +202,14 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(Data::ByteArrayR pdu, 
 
 Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(Data::ByteArrayR pdu, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList)
 {
-	UOSInt i;
+	UIntOS i;
 	if (pdu[0] != 0x30)
 	{
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
 	NN<BindingItem> item;
 	UInt32 bindingLen;
-	UOSInt bindingEnd;
+	UIntOS bindingEnd;
 	UInt32 pduLen;
 	i = Net::ASN1Util::PDUParseLen(pdu.Arr(), 1, pdu.GetSize(), pduLen);
 	if (i > pdu.GetSize())
@@ -486,7 +486,7 @@ Text::CStringNN Net::SNMPUtil::TypeGetName(UInt8 type)
 	}
 }
 
-Bool Net::SNMPUtil::ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, OutParam<Int32> outVal)
+Bool Net::SNMPUtil::ValueToInt32(UInt8 type, const UInt8 *pduBuff, UIntOS valLen, OutParam<Int32> outVal)
 {
 	switch (type)
 	{

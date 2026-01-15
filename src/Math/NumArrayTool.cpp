@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Math/NumArrayTool.h"
 
-void Math::NumArrayTool::GenerateNormalRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double average, Double stddev, UOSInt count)
+void Math::NumArrayTool::GenerateNormalRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double average, Double stddev, UIntOS count)
 {
 	while (count-- > 0)
 	{
@@ -13,7 +13,7 @@ void Math::NumArrayTool::GenerateNormalRandom(NN<Data::ArrayListDbl> out, NN<Dat
 }
 
 // https://numpy.org/doc/2.1/reference/random/generated/numpy.random.exponential.html
-void Math::NumArrayTool::GenerateExponentialRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double scale, UOSInt count)
+void Math::NumArrayTool::GenerateExponentialRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double scale, UIntOS count)
 {
 	Double inverseOfRate = -scale;
 	while (count-- > 0)

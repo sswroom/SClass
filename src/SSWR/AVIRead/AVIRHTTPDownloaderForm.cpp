@@ -63,8 +63,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptrEnd;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->threadRunning = true;
 	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!me->threadToStop)
@@ -82,7 +82,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 			}
 			i = currURL->LastIndexOf('/');
 			sptrEnd = Text::StrConcatC(sptr, &currURL->v[i + 1], currURL->leng - i - 1);
-			i = Text::StrIndexOfCharC(sptr, (UOSInt)(sptrEnd - sptr), '?');
+			i = Text::StrIndexOfCharC(sptr, (UIntOS)(sptrEnd - sptr), '?');
 			if (i == 0)
 			{
 				sptrEnd = Text::StrConcatC(sptr, UTF8STRC("download.dat"));
@@ -92,14 +92,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 				sptr[i] = 0;
 				sptrEnd = &sptr[i];
 			}
-			IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+			IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), me->ssl, nullptr, false, currURL->StartsWith(UTF8STRC("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, me->respTimeDNS, me->respTimeConn, false);
 			if (currHeader.SetTo(s))
 			{
 				sptr = s->ConcatTo(sbuff);
 				sarr[1].v = sbuff;
-				sarr[1].leng = (UOSInt)(sptr - sbuff);
+				sarr[1].leng = (UIntOS)(sptr - sbuff);
 				while (true)
 				{
 					i = Text::StrSplitP(sarr, 2, sarr[1], '\r');
@@ -131,7 +131,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 			while (i < j)
 			{
 				sptr = cli->GetRespHeader(i, buff).Or(buff);
-				me->respHeaders.Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
+				me->respHeaders.Add(Text::String::New(buff, (UIntOS)(sptr - buff)));
 				i++;
 			}
 			me->respHdrChanged = true;
@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(AnyType userOb
 
 void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->respHeaders.GetCount();
 	while (i-- > 0)
 	{
@@ -347,10 +347,10 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	sbuff[0] = 0;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

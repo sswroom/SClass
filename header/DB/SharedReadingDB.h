@@ -12,7 +12,7 @@ namespace DB
 		NN<DB::ReadingDB> db;
 		Sync::Mutex mutDB;
 		Sync::Mutex mutObj;
-		OSInt useCnt;
+		IntOS useCnt;
 
 	private:
 		~SharedReadingDB();

@@ -31,8 +31,8 @@ namespace IO
 		Data::FastMapNN<Int32, AddrResultCb> cbMap;
 
 		static UInt32 __stdcall ThreadProc(AnyType userObj);
-		void CalcCRC(UnsafeArray<UInt8> rtu, UOSInt rtuSize); // size include CRC
-		Bool IsCRCValid(UnsafeArray<UInt8> rtu, UOSInt rtuSize);
+		void CalcCRC(UnsafeArray<UInt8> rtu, UIntOS rtuSize); // size include CRC
+		Bool IsCRCValid(UnsafeArray<UInt8> rtu, UIntOS rtuSize);
 	public:
 		MODBUSRTUMaster(NN<IO::Stream> stm);
 		virtual ~MODBUSRTUMaster();

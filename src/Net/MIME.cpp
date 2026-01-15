@@ -151,10 +151,10 @@ Text::CStringNN Net::MIME::GetMIMEFromExt(Text::CStringNN ext)
 		return CSTR("application/octet-stream");
 	}
 	Text::StrToLowerC(sbuff, ext.v, ext.leng);
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(mimeList) / sizeof(mimeList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(mimeList) / sizeof(mimeList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -175,9 +175,9 @@ Text::CStringNN Net::MIME::GetMIMEFromExt(Text::CStringNN ext)
 	return CSTR("application/octet-stream");
 }
 
-Text::CStringNN Net::MIME::GetMIMEFromFileName(UnsafeArray<const UTF8Char> fileName, UOSInt nameLen)
+Text::CStringNN Net::MIME::GetMIMEFromFileName(UnsafeArray<const UTF8Char> fileName, UIntOS nameLen)
 {
-	UOSInt i = Text::StrLastIndexOfCharC(fileName, nameLen, '.');
+	UIntOS i = Text::StrLastIndexOfCharC(fileName, nameLen, '.');
 	if (i == INVALID_INDEX)
 	{
 		return CSTR("application/octet-stream");

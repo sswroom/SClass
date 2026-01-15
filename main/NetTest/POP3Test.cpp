@@ -17,8 +17,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		if (!client.IsError())
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = 0;
-			UOSInt j = client.GetMessageCount();
+			UIntOS i = 0;
+			UIntOS j = client.GetMessageCount();
 			while (i < j)
 			{
 				sb.ClearStr();

@@ -30,7 +30,7 @@ namespace IO
 		{
 			NN<Text::String> fileName;
 			UInt8 *fileBuff;
-			UOSInt fileSize;
+			UIntOS fileSize;
 			Data::Timestamp lastModTime;
 			Data::Timestamp lastAccessTime;
 			Data::Timestamp createTime;
@@ -39,7 +39,7 @@ namespace IO
 		};
 	private:
 		ZIPBuilder zip;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		Sync::Thread **threads;
 		Bool toStop;
 		Sync::Event mainEvt;

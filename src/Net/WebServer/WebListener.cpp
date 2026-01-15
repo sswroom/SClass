@@ -12,7 +12,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NN<Net::TCPClient> cli, 
 	NN<Net::WebServer::WebListener> me;
 	if (userObj.GetOpt<Net::WebServer::WebListener>().SetTo(me))
 	{
-		UOSInt i = me->nextCli;
+		UIntOS i = me->nextCli;
 		NN<Net::TCPClientMgr> cliMgr;
 		if (me->cliMgrs.GetItem(i).SetTo(cliMgr))
 		{
@@ -108,16 +108,16 @@ void __stdcall Net::WebServer::WebListener::ProxyTimeout(NN<Net::TCPClient> cli,
 
 }
 
-void __stdcall Net::WebServer::WebListener::OnDataSent(AnyType userObj, UOSInt buffSize)
+void __stdcall Net::WebServer::WebListener::OnDataSent(AnyType userObj, UIntOS buffSize)
 {
 	NN<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
+Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UIntOS mgrCnt, UIntOS workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
 {
 	this->hdlr = hdlr;
-	UOSInt i = mgrCnt;
+	UIntOS i = mgrCnt;
 	if (i == 0)
 		i = 1;
 	while (i-- > 0)
@@ -166,7 +166,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optiona
 Net::WebServer::WebListener::~WebListener()
 {
 	this->svr.Delete();
-	UOSInt i = this->cliMgrs.GetCount();
+	UIntOS i = this->cliMgrs.GetCount();
 	while (i-- > 0)
 	{
 		this->cliMgrs.GetItem(i).Delete();
@@ -236,7 +236,7 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::WebRequest> req, 
 		if (!Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).SetTo(sptr))
 			sb.AppendC(UTF8STRC("?"));
 		else
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC(" "));
 		Text::CStringNN reqMeth = req->GetReqMethodStr();
 		sb.AppendC(reqMeth.v, reqMeth.leng);
@@ -288,7 +288,7 @@ void Net::WebServer::WebListener::LogMessageC(Optional<Net::WebServer::WebReques
 		{
 			Text::StringBuilderUTF8 sb;
 			UnsafeArray<UTF8Char> sptr = Net::SocketUtil::GetAddrName(sbuff, nnreq->GetClientAddr(), nnreq->GetClientPort()).Or(sbuff);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" "));
 			sb.Append(msg);
 			accLog->LogMessage(sb.ToCString(), this->accLogLev);
@@ -334,9 +334,9 @@ void Net::WebServer::WebListener::GetStatus(NN<SERVER_STATUS> status)
 	status->currConn = (UInt32)this->GetClientCount();
 }
 
-UOSInt Net::WebServer::WebListener::GetClientCount() const
+UIntOS Net::WebServer::WebListener::GetClientCount() const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	Data::ArrayIterator<NN<Net::TCPClientMgr>> it = this->cliMgrs.Iterator();
 	while (it.HasNext())
 	{

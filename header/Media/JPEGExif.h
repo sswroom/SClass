@@ -35,8 +35,8 @@ namespace Media
 		static void FreeExif(NN<ExifValue> exif);
 		NN<ExifValue> DupExif(NN<ExifValue> exif);
 		NN<ExifValue> GetExif(Optional<ExifValue> grp, Int32 id);
-		void CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UOSInt> size, OutParam<UOSInt> endOfst);
-		void GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UOSInt> startOfst, InOutParam<UOSInt> otherOfst);
+		void CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UIntOS> size, OutParam<UIntOS> endOfst);
+		void GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UIntOS> startOfst, InOutParam<UIntOS> otherOfst);
 	public:
 		JPEGExif();
 		~JPEGExif();

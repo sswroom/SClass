@@ -20,7 +20,7 @@ namespace Text
 
 		void AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CStringNN s);
 		void AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *s);
-		static Optional<Text::MIMEObject> ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath);
+		static Optional<Text::MIMEObject> ParseContentHTML(UnsafeArray<const UInt8> buff, UIntOS buffSize, UInt32 codePage, Text::CStringNN htmlPath);
 	public:
 		MailCreator();
 		~MailCreator();

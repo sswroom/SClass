@@ -46,7 +46,7 @@ struct JP2Session
 OPJ_SIZE_T JP2Parser_Read(void * p_buffer, OPJ_SIZE_T p_nb_bytes, void * p_user_data)
 {
 	JP2Session *sess = (JP2Session*)p_user_data;
-	UOSInt readSize = sess->fd->GetRealData(sess->currOfst, (UOSInt)p_nb_bytes, Data::ByteArray((UInt8*)p_buffer, p_nb_bytes));
+	UIntOS readSize = sess->fd->GetRealData(sess->currOfst, (UIntOS)p_nb_bytes, Data::ByteArray((UInt8*)p_buffer, p_nb_bytes));
 	sess->currOfst += readSize;
 	if (readSize == 0 && p_nb_bytes != 0)
 	{
@@ -103,12 +103,12 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 	Media::ImageList *imgList = nullptr;
 #if 1
 	NN<Media::StaticImage> img;
-	UOSInt w = (UInt32)(imgInfo->x1 - imgInfo->x0);
-	UOSInt h = (UInt32)(imgInfo->y1 - imgInfo->y0);
+	UIntOS w = (UInt32)(imgInfo->x1 - imgInfo->x0);
+	UIntOS h = (UInt32)(imgInfo->y1 - imgInfo->y0);
 	UInt32 dataSize = (UInt32)(w * h * 3);
-	NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	UInt8 *dataBuff = 0;
-	UOSInt dataBuffSize = 0;
+	UIntOS dataBuffSize = 0;
 	while (true)
 	{
 		UInt32 tileIndex;
@@ -160,14 +160,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 #endif
 			break;
 		}
-		UOSInt tileW = (UInt32)(x1 - x0);
-		UOSInt tileH = (UInt32)(y1 - y0);
-		UInt8 *dptr = &img->data[y0 * (OSInt)img->GetDataBpl() + x0 * 3];
+		UIntOS tileW = (UInt32)(x1 - x0);
+		UIntOS tileH = (UInt32)(y1 - y0);
+		UInt8 *dptr = &img->data[y0 * (IntOS)img->GetDataBpl() + x0 * 3];
 		UInt8 *rptr = dataBuff;
 		UInt8 *gptr = rptr + tileW * tileH;
 		UInt8 *bptr = gptr + tileW * tileH;
-		UOSInt i;
-		UOSInt dAdd = img->GetDataBpl() - tileW * 3;
+		UIntOS i;
+		UIntOS dAdd = img->GetDataBpl() - tileW * 3;
 		while (tileH-- > 0)
 		{
 			i = tileW;
@@ -226,17 +226,17 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 		printf("Color space = %d, (%d, %d), (%d, %d), ncomp = %d, icc_len = %d\r\n", imgInfo->color_space, imgInfo->x0, imgInfo->y0, imgInfo->x1, imgInfo->y1, imgInfo->numcomps, imgInfo->icc_profile_len);
 #endif
 		Media::StaticImage *img;
-		UOSInt w = (UInt32)(imgInfo->x1 - imgInfo->x0);
-		UOSInt h = (UInt32)(imgInfo->y1 - imgInfo->y0);
+		UIntOS w = (UInt32)(imgInfo->x1 - imgInfo->x0);
+		UIntOS h = (UInt32)(imgInfo->y1 - imgInfo->y0);
 		if (imgInfo->color_space == OPJ_CLRSPC_SRGB && imgInfo->numcomps == 3)
 		{
-			UOSInt dataSize = (w * h * 3);
+			UIntOS dataSize = (w * h * 3);
 			Int32 *rptr = imgInfo->comps[0].data;
 			Int32 *gptr = imgInfo->comps[1].data;	
 			Int32 *bptr = imgInfo->comps[2].data;	
 			NEW_CLASS(img, Media::StaticImage(w, h, 0, 24, Media::PF_B8G8R8, dataSize, 0, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			UInt8 *dptr = img->data;
-			UOSInt i;
+			UIntOS i;
 			while (h-- > 0)
 			{
 				i = w;

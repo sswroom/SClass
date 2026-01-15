@@ -10,12 +10,12 @@ void UI::GUIFileDialog::ClearFileNames()
 
 UI::GUIFileDialog::GUIFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave)
 {
-	UOSInt i;
+	UIntOS i;
 	WChar buff[256];
 	UnsafeArray<WChar> wptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
-	this->filterIndex = (UOSInt)-1;
+	this->filterIndex = (UIntOS)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAllocArr(WChar, i + 7);
@@ -51,7 +51,7 @@ void UI::GUIFileDialog::AddFilter(Text::CStringNN pattern, Text::CStringNN name)
 	this->names.Add(Text::String::New(name));
 }
 
-UOSInt UI::GUIFileDialog::GetFilterIndex()
+UIntOS UI::GUIFileDialog::GetFilterIndex()
 {
 	return this->filterIndex;
 }
@@ -67,9 +67,9 @@ NN<Text::String> UI::GUIFileDialog::GetFileName() const
 	return Text::String::OrEmpty(this->fileName);
 }
 
-UOSInt UI::GUIFileDialog::GetFileNameCount()
+UIntOS UI::GUIFileDialog::GetFileNameCount()
 {
-	UOSInt cnt = this->fileNames.GetCount();
+	UIntOS cnt = this->fileNames.GetCount();
 	if (cnt)
 		return cnt;
 	if (!this->fileName.IsNull())
@@ -77,7 +77,7 @@ UOSInt UI::GUIFileDialog::GetFileNameCount()
 	return 0;
 }
 
-Optional<Text::String> UI::GUIFileDialog::GetFileNames(UOSInt index)
+Optional<Text::String> UI::GUIFileDialog::GetFileNames(UIntOS index)
 {
 	if (index == 0 && this->fileNames.GetCount() == 0)
 		return this->fileName;

@@ -37,8 +37,8 @@ void __stdcall OnMenuEvent(AnyType userObj, UInt16 cmdId)
 void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	Text::StringBuilderUTF8 sb;
 	i = 0;
 	while (i < nFiles)

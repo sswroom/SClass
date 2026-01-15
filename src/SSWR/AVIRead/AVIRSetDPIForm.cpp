@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Desktop DPI is not valid"), CSTR("Error"), me);
 		return;
 	}
-	hdpi = UOSInt2Double(me->hsbDPI->GetPos()) * 0.1;
+	hdpi = UIntOS2Double(me->hsbDPI->GetPos()) * 0.1;
 	if (ddpi > hdpi)
 	{
 		if (!me->ui->ShowMsgYesNo(CSTR("Are you sure to set larger desktop DPI (reducing object size)?"), CSTR("Confirm"), me))
@@ -48,12 +48,12 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnPreviewChanged(AnyType userObj)
 	me->UpdatePreview();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UIntOS newVal)
 {
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
+	sptr = Text::StrDouble(sbuff, UIntOS2Double(newVal) * 0.1);
 	me->lblDPIV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnEDIDClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
-	UOSInt edidSize;
+	UIntOS edidSize;
 	UnsafeArray<UInt8> edidSrc;
 	Optional<MonitorHandle> hMon = me->GetHMonitor();
 
@@ -95,15 +95,15 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnEDIDClicked(AnyType userObj)
 		Double vdpi = info.pixelH / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, info.dispPhysicalH_mm);
 		Double dpi = (hdpi + vdpi) * 5;
 		dpi = Math_Round(dpi);
-		me->hsbDPI->SetPos((UOSInt)Double2OSInt(hdpi * 10));
+		me->hsbDPI->SetPos((UIntOS)Double2IntOS(hdpi * 10));
 		OnDPIChanged(me, me->hsbDPI->GetPos());
 	}
 }
 
 void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 {
-	Math::Size2D<UOSInt> usz;
-	UOSInt v;
+	Math::Size2D<UIntOS> usz;
+	UIntOS v;
 	Int32 currV;
 	Double initX;
 	Double currX;
@@ -130,7 +130,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 
-			f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = gimg->NewFontPx(CSTR("Arial"), 12 * UIntOS2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			p = gimg->NewPenARGB(0xff000000, 1, nullptr, 0);
 			b = gimg->NewBrushARGB(0xff000000);
 			currV = 0;
@@ -139,16 +139,16 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 			lastX = initX - 20.0;
 			while (true)
 			{
-				currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UOSInt2Double(v) * 0.1 + initX;
-				if (currX > UOSInt2Double(usz.x))
+				currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UIntOS2Double(v) * 0.1 + initX;
+				if (currX > UIntOS2Double(usz.x))
 					break;
 
 				if (currX >= lastX + 20)
 				{
 					sptr = Text::StrInt32(sbuff, currV);
 					sz = gimg->GetTextSize(f, CSTRP(sbuff, sptr));
-					gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.y) - sz.y, p);
-					gimg->DrawString(Math::Coord2DDbl(currX - sz.x * 0.5, UOSInt2Double(usz.y) - sz.y), CSTRP(sbuff, sptr), f, b);
+					gimg->DrawLine(currX, 0, currX, UIntOS2Double(usz.y) - sz.y, p);
+					gimg->DrawString(Math::Coord2DDbl(currX - sz.x * 0.5, UIntOS2Double(usz.y) - sz.y), CSTRP(sbuff, sptr), f, b);
 					lastX = currX;
 				}
 				currV++;
@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 	this->lblDPIV->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->hsbDPI = ui->NewHScrollBar(this->pnlDPI, ui->GetScrollBarSize());
 	this->hsbDPI->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->hsbDPI->InitScrollBar(100, 4010, (UOSInt)Double2OSInt(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
+	this->hsbDPI->InitScrollBar(100, 4010, (UIntOS)Double2IntOS(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);
 	this->lblMagnifyRatio = ui->NewLabel(this->pnlBtn, CSTR("OS Magnify Ratio"));
 	this->lblMagnifyRatio->SetRect(4, 4, 150, 23, false);
@@ -248,7 +248,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::OnMonitorChanged()
 	this->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, r);
 	this->txtMagnifyRatio->SetText(CSTRP(sbuff, sptr));
-	this->hsbDPI->SetPos((UOSInt)Double2OSInt(hdpi * 10));
+	this->hsbDPI->SetPos((UIntOS)Double2IntOS(hdpi * 10));
 	this->SetDPI(hdpi, ddpi);
 	OnDPIChanged(this, this->hsbDPI->GetPos());
 }

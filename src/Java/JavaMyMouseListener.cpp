@@ -12,11 +12,11 @@ JNIEXPORT void JNICALL Java_MyMouseListener_mouseClicked(JNIEnv *env, jobject ob
 	jmethodID mid = env->GetMethodID(cls, "getMouseClickedHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::GUIControl::MouseEventHandler hdlr = (UI::GUIControl::MouseEventHandler)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr)
 	{
 		Java::JavaMouseEvent evt(e);
-		hdlr(userObj, Math::Coord2D<OSInt>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
+		hdlr(userObj, Math::Coord2D<IntOS>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
 	}
 }
 
@@ -26,11 +26,11 @@ JNIEXPORT void JNICALL Java_MyMouseListener_mouseEntered(JNIEnv *env, jobject ob
 	jmethodID mid = env->GetMethodID(cls, "getMouseEnteredHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::GUIControl::MouseEventHandler hdlr = (UI::GUIControl::MouseEventHandler)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr)
 	{
 		Java::JavaMouseEvent evt(e);
-		hdlr(userObj, Math::Coord2D<OSInt>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
+		hdlr(userObj, Math::Coord2D<IntOS>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
 	}
 }
 
@@ -40,11 +40,11 @@ JNIEXPORT void JNICALL Java_MyMouseListener_mouseExited(JNIEnv *env, jobject obj
 	jmethodID mid = env->GetMethodID(cls, "getMouseExitedHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::GUIControl::MouseEventHandler hdlr = (UI::GUIControl::MouseEventHandler)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr)
 	{
 		Java::JavaMouseEvent evt(e);
-		hdlr(userObj, Math::Coord2D<OSInt>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
+		hdlr(userObj, Math::Coord2D<IntOS>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
 	}
 }
 
@@ -54,11 +54,11 @@ JNIEXPORT void JNICALL Java_MyMouseListener_mousePressed(JNIEnv *env, jobject ob
 	jmethodID mid = env->GetMethodID(cls, "getMousePressedHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::GUIControl::MouseEventHandler hdlr = (UI::GUIControl::MouseEventHandler)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr)
 	{
 		Java::JavaMouseEvent evt(e);
-		hdlr(userObj, Math::Coord2D<OSInt>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
+		hdlr(userObj, Math::Coord2D<IntOS>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
 	}
 }
 
@@ -68,11 +68,11 @@ JNIEXPORT void JNICALL Java_MyMouseListener_mouseReleased(JNIEnv *env, jobject o
 	jmethodID mid = env->GetMethodID(cls, "getMouseReleasedHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::GUIControl::MouseEventHandler hdlr = (UI::GUIControl::MouseEventHandler)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr)
 	{
 		Java::JavaMouseEvent evt(e);
-		hdlr(userObj, Math::Coord2D<OSInt>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
+		hdlr(userObj, Math::Coord2D<IntOS>(evt.GetXOnScreen(), evt.GetYOnScreen()), Java::JavaMouseEvent::Button2MouseButton(evt.GetButton()));
 	}
 }
 }
@@ -129,5 +129,5 @@ jobject Java::JavaMyMouseListener::NewObject(AnyType userObj)
 {
 	jclass cls = GetClass();
 	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(J)V");
-	return jniEnv->NewObject(cls, mid, (Int64)userObj.GetOSInt());
+	return jniEnv->NewObject(cls, mid, (Int64)userObj.GetIntOS());
 }

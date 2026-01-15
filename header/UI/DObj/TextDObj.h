@@ -24,28 +24,28 @@ namespace UI
 			TextAlign talign;
 			UInt32 fontColor;
 			UInt32 codePage;
-			Math::Size2D<UOSInt> size;
+			Math::Size2D<UIntOS> size;
 			Double lineHeight;
 			UInt32 currPage;
 			Bool pageChg;
 			Data::ArrayListStringNN lines;
 
 		public:
-			TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);
+			TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size);
 			virtual ~TextDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();
 			virtual void OnMouseClick();
 
 			void SetTextAlign(TextAlign talign);
-			UOSInt GetPageCount();
+			UIntOS GetPageCount();
 			UInt32 GetCurrPage();
 			void SetCurrPage(UInt32 currPage);
 		};

@@ -54,7 +54,7 @@ namespace SSWR
 
 		public:
 			typedef void (CALLBACKFUNC DispImageChanged)(AnyType userObj, Text::CString fileName, Optional<const ImageSetting> setting);
-			typedef void (CALLBACKFUNC ProgressUpdated)(AnyType userObj, UOSInt finCnt);
+			typedef void (CALLBACKFUNC ProgressUpdated)(AnyType userObj, UIntOS finCnt);
 			typedef void (CALLBACKFUNC KeyDownHandler)(AnyType userObj, UI::GUIControl::GUIKey key);
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -72,7 +72,7 @@ namespace SSWR
 			Bool imgMapUpdated;
 			Bool imgUpdated;
 			UInt32 previewSize;
-			UOSInt currSel;
+			UIntOS currSel;
 			Optional<ImageStatus> dispImg;
 			Bool dispImgChg;
 			Sync::Mutex filterMut;
@@ -82,7 +82,7 @@ namespace SSWR
 			ProgressUpdated progHdlr;
 			AnyType progHdlrObj;
 			Data::SyncLinkedList exportList;
-			UOSInt exportCurrCnt;
+			UIntOS exportCurrCnt;
 			Sync::Mutex exportMut;
 			ExportFormat exportFmt;
 			KeyDownHandler keyHdlr;
@@ -109,7 +109,7 @@ namespace SSWR
 			virtual ~AVIRImageControl();
 
 			virtual Text::CStringNN GetObjectClass() const;
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
@@ -117,7 +117,7 @@ namespace SSWR
 			virtual void SetDPI(Double hdpi, Double ddpi);
 
 			virtual void OnDraw(NN<Media::DrawImage> img);
-			virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+			virtual void OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
 			void SetFolder(Text::CString folderPath);
@@ -132,7 +132,7 @@ namespace SSWR
 			void UpdateImgSetting(NN<ImageSetting> setting);
 			Bool IsLoadingDir();
 			void SetExportFormat(ExportFormat fmt);
-			UOSInt ExportSelected();
+			UIntOS ExportSelected();
 			void MoveUp();
 			void MoveDown();
 			void SelectAll();

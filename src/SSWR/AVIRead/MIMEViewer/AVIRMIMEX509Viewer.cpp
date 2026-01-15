@@ -18,7 +18,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NN<SSWR::AVIRe
 	this->txtASN1 = ui->NewTextBox(this->tpASN1, CSTR(""), true);
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UOSInt dataSize;
+	UIntOS dataSize;
 	UnsafeArray<const UInt8> data = this->obj->GetRAWData(dataSize);
 	NN<Crypto::Cert::X509File> asn1;
 	if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), obj->GetSourceNameObj()).SetTo(asn1))

@@ -16,7 +16,7 @@ public:
 	AVIRBandwidthLogFormComparator(){}
 	virtual ~AVIRBandwidthLogFormComparator(){}
 
-	virtual OSInt Compare(NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> a, NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> b) const
+	virtual IntOS Compare(NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> a, NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> b) const
 	{
 		if (a->startTime > b->startTime)
 			return 1;
@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::DropFilesHandler(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRBandwidthLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBandwidthLogForm>();
 	NN<Text::String> file;
-	UOSInt i = 0;
-	UOSInt j = files.GetSize();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = files.GetSize();
+	UIntOS k;
 	while (i < j)
 	{
 		file = files[i];
@@ -89,8 +89,8 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 				Int64 currTime = me->startTime;
 				Int64 endTime = me->endTime;
 				NN<ThreadStatus> thread;
-				UOSInt threadI;
-				UOSInt threadJ;
+				UIntOS threadI;
+				UIntOS threadJ;
 				allThreads.AddAll(me->jmeterThreadList);
 				allThreads.AddAll(me->sideThreadList);
 				AVIRBandwidthLogFormComparator comparator;
@@ -109,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 						threads.Add(thread);
 					threadI++;
 				}
-				UOSInt k;
-				UOSInt i = 0;
-				UOSInt j = ipItem->items.GetCount();
+				UIntOS k;
+				UIntOS i = 0;
+				UIntOS j = ipItem->items.GetCount();
 				while (currTime <= endTime)
 				{
 					sb.ClearStr();
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 						threads.Add(thread);
 						threadI++;
 					}
-					sb.AppendUOSInt(threads.GetCount());
+					sb.AppendUIntOS(threads.GetCount());
 					sb.Append(CSTR("\r\n"));
 					stm.Write(sb.ToByteArray());
 					currTime++;
@@ -196,8 +196,8 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnThreadsExportClicked(AnyTy
 				IO::BufferedOutputStream stm(fs, 8192);
 				stm.Write(CSTR("Name,Start Time,End Time,Dur(second)\r\n").ToByteArray());
 				NN<Text::String> s;
-				UOSInt i = 0;
-				UOSInt j = me->jmeterThreadList.GetCount();
+				UIntOS i = 0;
+				UIntOS j = me->jmeterThreadList.GetCount();
 				while (i < j)
 				{
 					thread = me->jmeterThreadList.GetItemNoCheck(i);
@@ -317,8 +317,8 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadBandwidthLog(Text::CStringNN fileN
 				this->startTime = startTime;
 				this->endTime = endTime;
 				this->cboIP->ClearItems();
-				UOSInt i = 0;
-				UOSInt j = this->bandwidthMap.GetCount();
+				UIntOS i = 0;
+				UIntOS j = this->bandwidthMap.GetCount();
 				while (i < j)
 				{
 					this->cboIP->AddItem(this->bandwidthMap.GetItemNoCheck(i)->ip, 0);
@@ -398,7 +398,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadJMeterLog(Text::CStringNN fileName
 		this->txtJMeterLog->SetText(fileName);
 		this->jmeterThreadList.AddAll(logList);
 		sb.ClearStr();
-		sb.AppendUOSInt(logList.GetCount() + this->sideThreadList.GetCount());
+		sb.AppendUIntOS(logList.GetCount() + this->sideThreadList.GetCount());
 		this->txtThreadsCount->SetText(sb.ToCString());
 	}
 }
@@ -481,7 +481,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadSIDELog(Text::CStringNN filePath)
 		this->txtSIDELog->SetText(filePath);
 		this->sideThreadList.AddAll(logList);
 		sb.ClearStr();
-		sb.AppendUOSInt(logList.GetCount() + this->jmeterThreadList.GetCount());
+		sb.AppendUIntOS(logList.GetCount() + this->jmeterThreadList.GetCount());
 		this->txtThreadsCount->SetText(sb.ToCString());
 	}
 }
@@ -489,8 +489,8 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadSIDELog(Text::CStringNN filePath)
 void SSWR::AVIRead::AVIRBandwidthLogForm::ClearBandwidthLog()
 {
 	NN<BandwidthIP> ip;
-	UOSInt i = 0;
-	UOSInt j = this->bandwidthMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->bandwidthMap.GetCount();
 	while (i < j)
 	{
 		ip = this->bandwidthMap.GetItemNoCheck(i);

@@ -22,13 +22,13 @@ namespace SSWR
 			{
 				Manage::OSInfo::OSType os;
 				UnsafeArrayOpt<const UTF8Char> osVer;
-				UOSInt osVerLen;
+				UIntOS osVerLen;
 			} OSItem;
 			
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			UnsafeArray<const UTF8Char> currUserAgent;
-			UOSInt currUserAgentLen;
+			UIntOS currUserAgentLen;
 			Data::ArrayListNN<OSItem> osList;
 
 			NN<UI::GUIPanel> pnlFilter;
@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnFilterChg(AnyType userObj);
 			static void __stdcall OnUserAgentSelChg(AnyType userObj);
-			static void __stdcall OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnUserAgentDblClk(AnyType userObj, UIntOS itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
 			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN currUserAgent);

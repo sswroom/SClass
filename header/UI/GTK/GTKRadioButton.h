@@ -18,7 +18,7 @@ namespace UI
 			GTKRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~GTKRadioButton();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual Bool IsSelected();
 			virtual void Select();
 		};

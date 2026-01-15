@@ -4,9 +4,9 @@
 #include <time.h>
 #include <unistd.h>
 
-void Sync::SimpleThread::Sleep(UOSInt ms)
+void Sync::SimpleThread::Sleep(UIntOS ms)
 {
-	UOSInt s = ms / 1000;
+	UIntOS s = ms / 1000;
 	ms = ms % 1000;
 	if (s)
 		if (!sleep((UInt32)s))
@@ -16,7 +16,7 @@ void Sync::SimpleThread::Sleep(UOSInt ms)
 			return;
 }
 
-void Sync::SimpleThread::Sleepus(UOSInt us)
+void Sync::SimpleThread::Sleepus(UIntOS us)
 {
 	struct timeval tNow, tLong, tEnd;
 	gettimeofday (&tNow, 0) ;

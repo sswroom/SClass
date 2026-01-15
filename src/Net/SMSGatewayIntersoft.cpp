@@ -72,21 +72,21 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CStringNN userName, Text::CStringNN
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("https://login.speedfax.net/SMSWS/sms.asmx/AddMessage?UserName="));
 	sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, userName.v);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("&Password="));
 	sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, password.v);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("&MobileNumber="));
 	sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, &targetNum.v[4]);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("&Message="));
 	sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, msg.v);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("&ScheduleTime="));
 
 	NN<IO::LogTool> log;
 	UInt8 dataBuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	Text::StringBuilderUTF8 sbMsg;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())

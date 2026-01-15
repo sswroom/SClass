@@ -15,8 +15,8 @@ void SSWR::AVIRead::AVIRHKOWarningSummaryForm::Reload()
 	this->lvWarning->ClearItems();
 	if (Net::HKOWeather::GetWarningSummary(this->core->GetTCPClientFactory(), this->ssl, warnings))
 	{
-		UOSInt i = 0;
-		UOSInt j = warnings.GetCount();
+		UIntOS i = 0;
+		UIntOS j = warnings.GetCount();
 		while (i < j)
 		{
 			warning = warnings.GetItemNoCheck(i);

@@ -35,7 +35,7 @@ void Sync::EventPool::AddEvent(NN<Sync::Event> evt, AnyType obj)
 
 void Sync::EventPool::RemoveEvent(NN<Sync::Event> evt)
 {
-	OSInt i;
+	IntOS i;
 	this->state = 1;
 	this->mainEvt.Set();
 	this->mut.Lock();
@@ -57,7 +57,7 @@ void Sync::EventPool::RemoveEvent(NN<Sync::Event> evt)
 
 void *Sync::EventPool::Wait(Int32 timeout)
 {
-	UOSInt cnt;
+	UIntOS cnt;
 	void **handArr;
 	DWORD ret;
 	while (true)

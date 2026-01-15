@@ -7,7 +7,7 @@
 #include "Sync/SimpleThread.h"
 #include <stdio.h>
 
-void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
+void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UIntOS resultSize)
 {
 	if (resultSize == 4)
 	{

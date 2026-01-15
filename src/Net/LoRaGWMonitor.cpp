@@ -2,24 +2,24 @@
 #include "Net/LoRaGWMonitor.h"
 #include "Net/PacketExtractorEthernet.h"
 
-void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
+void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize)
 {
 	NN<Net::LoRaGWMonitor> me = userData.GetNN<Net::LoRaGWMonitor>();
 	Net::PacketExtractorEthernet::IPv4Header ipv4Hdr;
 	Net::PacketExtractorEthernet::UDPHeader udpHdr;
 	Net::PacketExtractorEthernet::EthernetHeader etherHdr;
-	UOSInt udpSize;
+	UIntOS udpSize;
 	UnsafeArray<const UInt8> udpData;
 	if (Net::PacketExtractorEthernet::EthernetExtractUDP(packetData, packetSize, udpSize, etherHdr, ipv4Hdr, udpHdr).SetTo(udpData) &&
-		udpSize >= ((UOSInt)udpHdr.leng - 8) && udpHdr.leng >= 12)
+		udpSize >= ((UIntOS)udpHdr.leng - 8) && udpHdr.leng >= 12)
 	{
 		if (udpHdr.srcPort == me->port)
 		{
-			me->msgHdlr(me->msgHdlrObj, false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
+			me->msgHdlr(me->msgHdlrObj, false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UIntOS)udpHdr.leng - 4 - 8);
 		}
 		else if (udpHdr.destPort == me->port)
 		{
-			me->msgHdlr(me->msgHdlrObj, true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
+			me->msgHdlr(me->msgHdlrObj, true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UIntOS)udpHdr.leng - 4 - 8);
 		}
 	}
 }

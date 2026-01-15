@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 		return;
 	}
 	NN<Map::OSM::OSMCacheHandler> hdlr;
-	UOSInt selItem = me->cboMapType->GetSelectedIndex();
+	UIntOS selItem = me->cboMapType->GetSelectedIndex();
 	switch (selItem)
 	{
 	default:

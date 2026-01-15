@@ -83,7 +83,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	if (readSize > 0)
 	{
 		NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-		pobjCert = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).WithSize((UOSInt)readSize), fileName);
+		pobjCert = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).WithSize((UIntOS)readSize), fileName);
 		if (pobjCert.SetTo(nncert))
 		{
 			if (nncert->GetFileType() == Crypto::Cert::X509File::FileType::Cert)

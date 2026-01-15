@@ -11,8 +11,8 @@ namespace Media
 		struct ThreadStatus
 		{
 			UnsafeArray<UInt8> imgPtr;
-			UOSInt w;
-			UOSInt h;
+			UIntOS w;
+			UIntOS h;
 		};
 	private:
 		Sync::ParallelTask ptask;
@@ -22,7 +22,7 @@ namespace Media
 		LRGBLimiter();
 		~LRGBLimiter();
 
-		void LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h);
+		void LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UIntOS w, UIntOS h);
 	};
 }
 #endif

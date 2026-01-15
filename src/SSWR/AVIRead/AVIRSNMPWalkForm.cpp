@@ -41,8 +41,8 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 	{
 		Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 		Net::SNMPUtil::ErrorStatus err;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<Net::SNMPUtil::BindingItem> item;
 		err = cli->V1Walk(addr, community, CSTR("1.3.6.1.2.1"), itemList);

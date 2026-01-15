@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt32 pxSize;
 	Text::CStringNN srcFile;
 	Text::CStringNN destFile;
-	//UOSInt cmdCnt;
+	//UIntOS cmdCnt;
 	Int32 ret = 1;
 	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 /*	if (cmdCnt != 4)
@@ -70,7 +70,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
 				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 4, simg->info.color, simg->info.color, nullptr, simg->info.atype);
-				resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
+				resizer.SetTargetSize(Math::Size2D<UIntOS>(pxSize, pxSize));
 				if (!resizer.IsSupported(simg->info))
 				{
 					simg->ToB8G8R8A8();

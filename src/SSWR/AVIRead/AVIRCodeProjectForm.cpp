@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 			sptr = me->proj->GetSourceName(sbuff);
 			s = file->GetFileName();
 			sptr = IO::Path::AppendPath(sbuff, sptr, s->ToCString());
-			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".CPP")))
+			if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN errMsgs;
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				DEL_CLASS(parser);
 				DEL_CLASS(env);
 			}
-			else if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".C")))
+			else if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN errMsgs;
@@ -98,8 +98,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 
 void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF8> sb, NN<Text::Cpp::CppParseStatus> status)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	j = status->GetFileCount();
 	if (j > 0)
 	{
@@ -148,9 +148,9 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::Tr
 	Optional<UI::GUITreeView::TreeItem> tviLast = nullptr;
 	NN<UI::GUITreeView::TreeItem> tvi;
 	NN<Text::CodeObject> obj;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	i = 0;
 	j = container->GetChildCount();
 	while (i < j)
@@ -210,8 +210,8 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 		AddTreeObj(tvi, proj);
 		this->tvMain->ExpandItem(tvi);
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::CodeProjectCfg> cfg;
 	i = 0;
 	j = this->proj->GetConfigCnt();

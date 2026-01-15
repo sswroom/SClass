@@ -83,12 +83,12 @@ Text::CStringNN IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
 	return CSTR("pcap");
 }
 
-UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 {
 	return 1 + this->ofstList.GetCount();
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	if (index == 0)
@@ -111,7 +111,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
-	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
+	fd->GetRealData(ofst, (UIntOS)size, this->packetBuff);
 	sb->AppendU64(ofst);
 	sb->AppendC(UTF8STRC(", psize="));
 	if (this->isBE)
@@ -131,7 +131,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
@@ -198,7 +198,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
-	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
+	fd->GetRealData(ofst, (UIntOS)size, this->packetBuff);
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(ofst);
 	sb->AppendC(UTF8STRC("\r\nTotalSize="));
@@ -221,44 +221,44 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	dt.ToLocalTime();
 	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 	sb->AppendC(UTF8STRC("\r\nTime="));
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC("\r\nPacketSize="));
 	sb->AppendU32(psize);
 	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
 	return true;
 }
 
-UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst < 24)
 	{
 		return 0;
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)this->ofstList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->ofstList.GetCount() - 1;
+	IntOS k;
 	UInt64 packOfst;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		packOfst = this->ofstList.GetItem((UOSInt)k);
+		packOfst = this->ofstList.GetItem((UIntOS)k);
 		if (ofst < packOfst)
 		{
 			j = k - 1;
 		}
-		else if (ofst >= packOfst + this->sizeList.GetItem((UOSInt)k))
+		else if (ofst >= packOfst + this->sizeList.GetItem((UIntOS)k))
 		{
 			i = k + 1;
 		}
 		else
 		{
-			return (UOSInt)k + 1;
+			return (UIntOS)k + 1;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
@@ -321,7 +321,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(ofst, size));
-	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
+	fd->GetRealData(ofst, (UIntOS)size, this->packetBuff);
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	Data::DateTime dt;

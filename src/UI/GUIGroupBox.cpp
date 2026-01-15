@@ -22,7 +22,7 @@ Text::CStringNN UI::GUIGroupBox::GetObjectClass() const
 	return CSTR("GroupBox");
 }
 
-OSInt UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -30,7 +30,7 @@ OSInt UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
 void UI::GUIGroupBox::OnSizeChanged(Bool updateScn)
 {
 	this->UpdateChildrenSize(updateScn);
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);

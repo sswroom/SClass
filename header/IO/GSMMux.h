@@ -44,15 +44,15 @@ namespace IO
 		Bool closing;
 
 		GSMMux();
-		Int32 SendATCommand(UnsafeArray<UInt8> buffer, Int32 buffSize, UnsafeArrayOpt<UInt8> outBuffer, OptOut<UOSInt> outSize); //0 = OK, 1 = ERROR, 2 = Stream Error
-		UInt8 CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Int32 SendATCommand(UnsafeArray<UInt8> buffer, Int32 buffSize, UnsafeArrayOpt<UInt8> outBuffer, OptOut<UIntOS> outSize); //0 = OK, 1 = ERROR, 2 = Stream Error
+		UInt8 CalCheck(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	public:
 		GSMMux(NN<IO::Stream> stm, Int32 baudRate);
 		~GSMMux();
 		Optional<GSMMuxPort> OpenVPort();
 		void CloseVPort(NN<GSMMuxPort> port);
 		Bool IsError(); // Check if the mux engime get error
-		Int32 SendFrame(Int32 channel, UnsafeArray<const UInt8> buffer, UOSInt size, GSMFrType frType); //0 = Succeed, 1 = Stream Error
+		Int32 SendFrame(Int32 channel, UnsafeArray<const UInt8> buffer, UIntOS size, GSMFrType frType); //0 = Succeed, 1 = Stream Error
 
 		Bool CheckEvents(Int32 timeout); // Call periodically, return true = error
 		void ParseCommData();
@@ -72,14 +72,14 @@ namespace IO
 		Int32 GetChannel();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
-		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual UIntOS EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(NN<StreamReadReq> reqData);
 		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
-		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual UIntOS EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
 		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 		
 		virtual Int32 Flush();

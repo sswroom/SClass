@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(AnyType userObj, 
 {
 	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{
@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
 	dlg->SetAllowMultiSel(true);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MediaFile);
@@ -119,7 +119,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UnsafeArray<UTF8Char> folder
 			if (pt == IO::Path::PathType::File)
 			{
 				Bool toSkip = false;
-				if (Text::StrEndsWithICaseC(folderBuffEnd, (UOSInt)(sptr - folderBuffEnd), UTF8STRC(".vob")))
+				if (Text::StrEndsWithICaseC(folderBuffEnd, (UIntOS)(sptr - folderBuffEnd), UTF8STRC(".vob")))
 				{
 					if (sptr[-6] == '_' && sptr[-5] >= '2' && sptr[-5] <= '9')
 					{
@@ -129,7 +129,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UnsafeArray<UTF8Char> folder
 				
 				if (!toSkip)
 				{
-					if (this->playlist->AddFile({folderBuff, (UOSInt)(sptr - folderBuff)}))
+					if (this->playlist->AddFile({folderBuff, (UIntOS)(sptr - folderBuff)}))
 					{
 						changed = true;
 					}
@@ -156,8 +156,8 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UnsafeArray<UTF8Char> folder
 
 void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->lbPlaylist->ClearItems();
 	i = 0;
 	j = this->playlist->GetCount();

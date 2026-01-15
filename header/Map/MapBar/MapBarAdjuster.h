@@ -16,7 +16,7 @@ namespace Map
 			MapBarAdjuster(NN<Net::SocketFactory> sockf, IO::Writer *errWriter);
 			virtual ~MapBarAdjuster();
 
-			Bool AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, OSInt nPoints);
+			Bool AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, IntOS nPoints);
 		};
 	}
 }

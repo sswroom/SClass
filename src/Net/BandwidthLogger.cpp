@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "Net/BandwidthLogger.h"
 
-void __stdcall Net::BandwidthLogger::OnDataPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
+void __stdcall Net::BandwidthLogger::OnDataPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize)
 {
 	NN<Net::BandwidthLogger> me = userData.GetNN<Net::BandwidthLogger>();
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis() / 1000;
@@ -37,7 +37,7 @@ void __stdcall Net::BandwidthLogger::OnDataPacket(AnyType userData, UnsafeArray<
 			if (packetData[14 + 9] == 17)
 			{
 				UnsafeArray<const UInt8> ipData;
-				UOSInt ipDataSize;
+				UIntOS ipDataSize;
 				if ((packetData[14] & 0xf) <= 5)
 				{
 					ipData = &packetData[14 + 20];
@@ -66,7 +66,7 @@ void __stdcall Net::BandwidthLogger::OnDataPacket(AnyType userData, UnsafeArray<
 							answer = answers.GetItemNoCheck(answers.GetCount() - 1);
 							if (answer->recType == 1)
 							{
-								UOSInt i;
+								UIntOS i;
 								UInt32 sortIP;
 								i = answers.GetCount();
 								while (i-- > 0)
@@ -132,15 +132,15 @@ void Net::BandwidthLogger::BandwidthStatTime(NN<Net::EthernetAnalyzer::Bandwidth
 			*sptr++ = ',';
 			sptr = Text::StrInt64(sptr, stat->lastStat.time);
 			*sptr++ = ',';
-			sptr = Text::StrUOSInt(sptr, stat->lastStat.recvCnt);
+			sptr = Text::StrUIntOS(sptr, stat->lastStat.recvCnt);
 			*sptr++ = ',';
 			sptr = Text::StrUInt64(sptr, stat->lastStat.recvBytes);
 			*sptr++ = ',';
-			sptr = Text::StrUOSInt(sptr, stat->lastStat.sendCnt);
+			sptr = Text::StrUIntOS(sptr, stat->lastStat.sendCnt);
 			*sptr++ = ',';
 			sptr = Text::StrUInt64(sptr, stat->lastStat.sendBytes);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-			stm->WriteCont(sbuff, (UOSInt)(sptr - sbuff));
+			stm->WriteCont(sbuff, (UIntOS)(sptr - sbuff));
 		}
 	}
 }
@@ -199,8 +199,8 @@ void Net::BandwidthLogger::EndLogFile()
 		Int64 logTime = this->logBeginTime;
 		NN<Net::EthernetAnalyzer::BandwidthStat> stat;
 		Sync::MutexUsage mutUsage(this->mut);
-		UOSInt i = 0;
-		UOSInt j = this->ipStats.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->ipStats.GetCount();
 		while (i < j)
 		{
 			stat = this->ipStats.GetItemNoCheck(i);
@@ -215,15 +215,15 @@ void Net::BandwidthLogger::EndLogFile()
 				*sptr++ = ',';
 				sptr = Text::StrInt64(sptr, stat->currStat.time);
 				*sptr++ = ',';
-				sptr = Text::StrUOSInt(sptr, stat->currStat.recvCnt);
+				sptr = Text::StrUIntOS(sptr, stat->currStat.recvCnt);
 				*sptr++ = ',';
 				sptr = Text::StrUInt64(sptr, stat->currStat.recvBytes);
 				*sptr++ = ',';
-				sptr = Text::StrUOSInt(sptr, stat->currStat.sendCnt);
+				sptr = Text::StrUIntOS(sptr, stat->currStat.sendCnt);
 				*sptr++ = ',';
 				sptr = Text::StrUInt64(sptr, stat->currStat.sendBytes);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-				stm->WriteCont(sbuff, (UOSInt)(sptr - sbuff));
+				stm->WriteCont(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			i++;
 		}

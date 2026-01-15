@@ -24,7 +24,7 @@ static UInt8 URIAllowRes[] = {
 
 UnsafeArray<UTF8Char> Text::TextBinEnc::URIEncoding::URIEncode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri)
 {
-	UOSInt b;
+	UIntOS b;
 	UnsafeArray<UTF8Char> dest;
 
 	dest = buff;
@@ -126,10 +126,10 @@ Text::TextBinEnc::URIEncoding::~URIEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	UInt8 b;
-	UOSInt initLen = sb->GetCharCnt();
+	UIntOS initLen = sb->GetCharCnt();
 
 	while (buffSize-- > 0)
 	{
@@ -148,11 +148,11 @@ UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, 
 
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(Text::CStringNN s) const
+UIntOS Text::TextBinEnc::URIEncoding::CalcBinSize(Text::CStringNN s) const
 {
 	UTF8Char c;
-	UOSInt retSize = 0;
-	UOSInt strLen = s.leng;
+	UIntOS retSize = 0;
+	UIntOS strLen = s.leng;
 	UnsafeArray<const UTF8Char> str = s.v;
 	while (strLen-- > 0)
 	{
@@ -176,13 +176,13 @@ UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(Text::CStringNN s) const
 
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::URIEncoding::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;
-	UOSInt retSize = 0;
+	UIntOS retSize = 0;
 	UnsafeArray<const UTF8Char> str = s.v;
-	UOSInt strLen = s.leng;
+	UIntOS strLen = s.leng;
 
 	while (strLen-- > 0)
 	{

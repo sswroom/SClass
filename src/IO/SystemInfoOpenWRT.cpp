@@ -18,7 +18,7 @@ struct IO::SystemInfo::ClassData
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
+	UIntOS i;
 
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
@@ -127,7 +127,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_PERIPHERAL;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	return 0;
 }

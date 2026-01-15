@@ -67,8 +67,8 @@ namespace SSWR
 			Bool pingIPContUpdated;
 			Optional<PingIPInfo> currPingIP;
 			Data::FastMapNN<UInt32, IPTranInfo> ipTranMap;
-			UOSInt ipTranCnt;
-			UOSInt tcp4synLastIndex;
+			UIntOS ipTranCnt;
+			UIntOS tcp4synLastIndex;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblInfo;
@@ -194,9 +194,9 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 			NN<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
-			static void __stdcall OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize);
-			static void __stdcall OnIPv4Data(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize);
+			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UIntOS packetSize);
+			static void __stdcall OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UIntOS packetSize);
+			static void __stdcall OnIPv4Data(AnyType userData, UnsafeArray<const UInt8> rawData, UIntOS packetSize);
 			static void __stdcall OnInfoClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnPLogClicked(AnyType userObj);
@@ -213,7 +213,7 @@ namespace SSWR
 			static void __stdcall OnIPLogSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDeviceSelChg(AnyType userObj);
-			static void __stdcall OnDeviceDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnDeviceDblClk(AnyType userObj, UIntOS itemIndex);
 
 		public:
 			AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::EthernetAnalyzer> analyzer);

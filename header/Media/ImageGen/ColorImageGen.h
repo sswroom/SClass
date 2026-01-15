@@ -13,7 +13,7 @@ namespace Media
 			virtual ~ColorImageGen();
 
 			virtual Text::CStringNN GetName() const;
-			virtual Optional<Media::RasterImage> GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size);
+			virtual Optional<Media::RasterImage> GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size);
 		};
 	}
 }

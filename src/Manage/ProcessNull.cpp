@@ -11,7 +11,7 @@
 #include "Text/StringBuilderW.h"
 #include "Text/UTF8Reader.h"
 
-Manage::Process::Process(UOSInt procId, Bool controlRight)
+Manage::Process::Process(UIntOS procId, Bool controlRight)
 {
 	this->procId = procId;
 	this->needRelease = true;
@@ -32,12 +32,12 @@ Manage::Process::~Process()
 {
 }
 
-UOSInt Manage::Process::GetCurrProcId()
+UIntOS Manage::Process::GetCurrProcId()
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetProcId()
+UIntOS Manage::Process::GetProcId()
 {
 	return this->procId;
 }
@@ -62,17 +62,17 @@ Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UOSInt Manage::Process::GetMemorySize()
+UIntOS Manage::Process::GetMemorySize()
 {
 	return 0;
 }
 
-Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
+Bool Manage::Process::SetMemorySize(UIntOS minSize, UIntOS maxSize)
 {
 	return false;
 }
 
-UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UIntOS Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
 {
 	return 0;
 }
@@ -83,22 +83,22 @@ void *Manage::Process::GetHandle()
 }
 
 
-UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UIntOS Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
+UIntOS Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
+UIntOS Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
+UIntOS Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UIntOS maxCount)
 {
 	return 0;
 
@@ -113,12 +113,12 @@ Data::Timestamp Manage::Process::GetStartTime()
 	return Data::Timestamp(0);
 }
 
-Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
+Bool Manage::Process::GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize)
 {
 	return false;
 }
 
-Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(UIntOS *pageFault, UIntOS *workingSetSize, UIntOS *pagedPoolUsage, UIntOS *nonPagedPoolUsage, UIntOS *pageFileUsage)
 {
 	return false;
 }
@@ -167,7 +167,7 @@ Manage::ThreadContext::ContextType Manage::Process::GetContextType()
 UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)
 {
 	UInt8 buff[1];
-	OSInt size = this->ReadMemory(addr, buff, 1);
+	IntOS size = this->ReadMemory(addr, buff, 1);
 	if (size == 1)
 		return buff[0];
 	return 0;
@@ -176,7 +176,7 @@ UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)
 UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
 {
 	UInt8 buff[2];
-	OSInt size = this->ReadMemory(addr, buff, 2);
+	IntOS size = this->ReadMemory(addr, buff, 2);
 	if (size == 2)
 		return ReadUInt16(&buff[0]);
 	return 0;
@@ -185,7 +185,7 @@ UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
 UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
 {
 	UInt8 buff[4];
-	OSInt size = this->ReadMemory(addr, buff, 4);
+	IntOS size = this->ReadMemory(addr, buff, 4);
 	if (size == 4)
 		return ReadUInt32(&buff[0]);
 	return 0;
@@ -194,15 +194,15 @@ UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
 UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 {
 	UInt8 buff[8];
-	OSInt size = this->ReadMemory(addr, buff, 8);
+	IntOS size = this->ReadMemory(addr, buff, 8);
 	if (size == 8)
 		return ReadUInt64(&buff[0]);
 	return 0;
 }
 
-UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
+UIntOS Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UIntOS reqSize)
 {
-	const UInt8 *srcPtr = (const UInt8*)(UOSInt)addr;
+	const UInt8 *srcPtr = (const UInt8*)(UIntOS)addr;
 	MemCopyNO(buff, srcPtr, reqSize);
 	return reqSize;
 }

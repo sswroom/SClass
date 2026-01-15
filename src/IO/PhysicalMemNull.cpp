@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/PhysicalMem.h"
 
-IO::PhysicalMem::PhysicalMem(OSInt addr, OSInt size)
+IO::PhysicalMem::PhysicalMem(IntOS addr, IntOS size)
 {
 	this->clsData = (void*)addr;
 }

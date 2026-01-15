@@ -16,10 +16,10 @@ struct Media::DRMMonitorSurfaceMgr::ClassData
 	
 };
 
-Bool Media::DRMMonitorSurfaceMgr::OpenCard(UOSInt cardNum)
+Bool Media::DRMMonitorSurfaceMgr::OpenCard(UIntOS cardNum)
 {
 	Char sbuff[64];
-	Text::StrUOSInt(Text::StrConcat(sbuff, "/dev/dri/card"), cardNum);
+	Text::StrUIntOS(Text::StrConcat(sbuff, "/dev/dri/card"), cardNum);
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
 	if (this->clsData->fd < 0)
@@ -39,7 +39,7 @@ Bool Media::DRMMonitorSurfaceMgr::OpenCard(UOSInt cardNum)
 	return true;
 }
 
-Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UOSInt cardNum, NN<UI::GUICore> ui, Media::ColorManagerSess *colorSess)
+Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UIntOS cardNum, NN<UI::GUICore> ui, Media::ColorManagerSess *colorSess)
 {
 	this->monMgr = 0;
 	this->colorMgr = 0;
@@ -48,7 +48,7 @@ Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UOSInt cardNum, NN<UI::GUICore
 	this->OpenCard(cardNum);
 }
 
-Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UOSInt cardNum, Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UIntOS cardNum, Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
@@ -126,7 +126,7 @@ void Media::DRMMonitorSurfaceMgr::WaitForVBlank(MonitorHandle *hMon)
 
 UInt32 Media::DRMMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
 {
-	OSInt index = -1 + (OSInt)hMon;
+	IntOS index = -1 + (IntOS)hMon;
 	drmModeResPtr resources = drmModeGetResources(this->clsData->fd);
 	if (resources == 0)
 	{
@@ -134,9 +134,9 @@ UInt32 Media::DRMMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
 	}
 	UInt32 refreshRate = 0;
 	drmModeConnectorPtr connector;
-	OSInt cnt = 0;
-	UOSInt i = 0;
-	UOSInt j = (UInt32)resources->count_connectors;
+	IntOS cnt = 0;
+	UIntOS i = 0;
+	UIntOS j = (UInt32)resources->count_connectors;
 	while (i < j)
 	{
 		connector = drmModeGetConnector(this->clsData->fd, resources->connectors[i]);
@@ -158,12 +158,12 @@ UInt32 Media::DRMMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
 	return refreshRate;
 }
 
-MonitorHandle *Media::DRMMonitorSurfaceMgr::GetMonitorHandle(UOSInt monIndex)
+MonitorHandle *Media::DRMMonitorSurfaceMgr::GetMonitorHandle(UIntOS monIndex)
 {
 	return (MonitorHandle*)(1 + monIndex);
 }
 
-UOSInt Media::DRMMonitorSurfaceMgr::GetMonitorCount()
+UIntOS Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 {
 	drmModeResPtr resources = drmModeGetResources(this->clsData->fd);
 	if (resources == 0)
@@ -171,9 +171,9 @@ UOSInt Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 		return 0;
 	}
 	drmModeConnectorPtr connector;
-	UOSInt cnt = 0;
-	UOSInt i = 0;
-	UOSInt j = (UInt32)resources->count_connectors;
+	UIntOS cnt = 0;
+	UIntOS i = 0;
+	UIntOS j = (UInt32)resources->count_connectors;
 	while (i < j)
 	{
 		connector = drmModeGetConnector(this->clsData->fd, resources->connectors[i]);
@@ -191,7 +191,7 @@ UOSInt Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 	return cnt;
 }
 
-Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));

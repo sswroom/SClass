@@ -55,7 +55,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NN<Net::WebServer::WebReque
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	UOSInt dataSize;
+	UIntOS dataSize;
 	UnsafeArray<const UInt8> reqData;
 	if (req->GetReqData(dataSize).SetTo(reqData) && dataSize > 0)
 	{
@@ -97,8 +97,8 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NN<Net::WebServer::WebRequ
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int32 progId;
 	Int64 ts;
 	sb.AppendC(UTF8STRC("<html><head><title>Prog List</title></head><body>\r\n"));
@@ -152,8 +152,8 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NN<Net::WebServer::WebRequ
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sb.AppendC(UTF8STRC("<html><head><title>Item List</title></head><body>\r\n"));
 	sb.AppendC(UTF8STRC("<h2>Prog Id: "));
 	sb.AppendI32(progId);

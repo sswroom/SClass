@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 	{
 		return;
 	}
-	UOSInt cnt = macArr->GetCount();
+	UIntOS cnt = macArr->GetCount();
 	Net::MACInfo::MACEntry *ent = macArr->GetItem((irand >> 24) % cnt);
 	iMAC = (ent->rangeStart & 0xffffff000000) | (irand & 0xffffff);
 	WriteMUInt64(macBuff, iMAC);
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(AnyType userOb
 	}	
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2)
+IntOS __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2)
 {
 	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> nnlist1;
 	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> nnlist2;
@@ -111,8 +111,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 
 	UnsafeArray<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macList;
 	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> macArr;
-	UOSInt macCnt;
-	UOSInt i;
+	UIntOS macCnt;
+	UIntOS i;
 	UnsafeArray<Net::MACInfo::MACEntry> entList;
 	entList = Net::MACInfo::GetMACEntryList(macCnt);
 	i = 1;
@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	}
 
 	macList = this->macMap.ToArray(macCnt);
-	Data::Sort::ArtificialQuickSortFunc<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>>::Sort(macList, ListCompare, 0, (OSInt)macCnt - 1);
+	Data::Sort::ArtificialQuickSortFunc<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>>::Sort(macList, ListCompare, 0, (IntOS)macCnt - 1);
 	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> mList;
 	i = 0;
 	while (i < macCnt)
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt j;
+	UIntOS j;
 	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
@@ -179,8 +179,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 SSWR::AVIRead::AVIRMACGenForm::~AVIRMACGenForm()
 {
 	UnsafeArray<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macList;
-	UOSInt macCnt;
-	UOSInt i;
+	UIntOS macCnt;
+	UIntOS i;
 	macList = this->macMap.ToArray(macCnt);
 	i = 0;
 	while (i < macCnt)

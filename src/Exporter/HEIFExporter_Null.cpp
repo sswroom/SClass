@@ -19,7 +19,7 @@ IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::HEIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -35,7 +35,7 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	return false;
 }
 
-UOSInt Exporter::HEIFExporter::GetParamCnt()
+UIntOS Exporter::HEIFExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -56,7 +56,7 @@ void Exporter::HEIFExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::HEIFExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -68,7 +68,7 @@ Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -83,7 +83,7 @@ Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 	return false;
 }
 
-Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

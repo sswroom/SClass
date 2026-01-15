@@ -20,7 +20,7 @@ namespace Net
 			typedef struct
 			{
 				UInt8 buff[4096];
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Text::String *cliName;
 				Text::String *mailFrom;
 				Data::ArrayListObj<Text::String *> rcptTo;
@@ -55,9 +55,9 @@ namespace Net
 			static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
-			UOSInt WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg);
-			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Text::LineBreakType lbt);
+			UIntOS WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg);
+			//static IntOS WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
+			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Text::LineBreakType lbt);
 		public:
 			SMTPServer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NN<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart);
 			~SMTPServer();

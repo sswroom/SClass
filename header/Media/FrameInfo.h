@@ -105,12 +105,12 @@ namespace Media
 	class FrameInfo
 	{
 	public:
-		Math::Size2D<UOSInt> storeSize;
-		Math::Size2D<UOSInt> dispSize;
+		Math::Size2D<UIntOS> storeSize;
+		Math::Size2D<UIntOS> dispSize;
 		UInt32 fourcc; // see FFMT_xxxx
 		UInt32 storeBPP;
 		PixelFormat pf;
-		UOSInt byteSize; //valid only if bpp = 0
+		UIntOS byteSize; //valid only if bpp = 0
 		Double par2; // def = 1;
 		Double hdpi;
 		Double vdpi;

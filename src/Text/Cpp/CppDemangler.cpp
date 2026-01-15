@@ -38,7 +38,7 @@ DnE = Destructor
 void Text::Cpp::CppDemangler::AppendStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->substr[env->strId].v = strStart;
-	env->substr[env->strId].leng = (UOSInt)(env->sbuff - strStart);
+	env->substr[env->strId].leng = (UIntOS)(env->sbuff - strStart);
 #if defined(PRINTDEBUG)
 	UTF8Char debugBuff[256];
 	env->substr[env->strId].ConcatTo(debugBuff);
@@ -50,7 +50,7 @@ void Text::Cpp::CppDemangler::AppendStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> 
 void Text::Cpp::CppDemangler::AppendNStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->nstr[env->nstrId].v = strStart;
-	env->nstr[env->nstrId].leng = (UOSInt)(env->sbuff - strStart);
+	env->nstr[env->nstrId].leng = (UIntOS)(env->sbuff - strStart);
 #if defined(PRINTDEBUG)
 	UTF8Char debugBuff[256];
 	env->nstr[env->nstrId].ConcatTo(debugBuff);
@@ -62,7 +62,7 @@ void Text::Cpp::CppDemangler::AppendNStr(NN<ParseEnv> env, UnsafeArray<UTF8Char>
 void Text::Cpp::CppDemangler::AppendTpl(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->tplstr[env->tplId].v = strStart;
-	env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - strStart);
+	env->tplstr[env->tplId].leng = (UIntOS)(env->sbuff - strStart);
 #if defined(PRINTDEBUG)
 	UTF8Char debugBuff[256];
 	env->tplstr[env->tplId].ConcatTo(debugBuff);
@@ -73,10 +73,10 @@ void Text::Cpp::CppDemangler::AppendTpl(NN<ParseEnv> env, UnsafeArray<UTF8Char> 
 
 Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 {
-	UOSInt ptrCnt = 0;
+	UIntOS ptrCnt = 0;
 	Bool constVal = false;
 	Bool refVal = false;
-	UOSInt i;
+	UIntOS i;
 	UTF8Char c;
 	Bool foundName;
 	UnsafeArray<UTF8Char> clsName = env->sbuff;
@@ -130,7 +130,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 			nStart = env->sbuff;
 		}
 		c = *env->funcName++;
-		i = (UOSInt)(c - '0');
+		i = (UIntOS)(c - '0');
 		c = *env->funcName++;
 		if (c >= '0' && c <= '9')
 		{
@@ -187,7 +187,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 			case '7':
 			case '8':
 			case '9':
-				i = (UOSInt)(c - '0');
+				i = (UIntOS)(c - '0');
 				if (foundName)
 				{
 					AppendNStr(env, nStart);
@@ -606,7 +606,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 				case '7':
 				case '8':
 				case '9':
-					i = (UOSInt)env->funcName[0] - '0' + 1;
+					i = (UIntOS)env->funcName[0] - '0' + 1;
 					if (env->funcName[1] != '_' || env->nstrId <= i)
 					{
 #if defined(VERBOSE)
@@ -627,7 +627,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 				case 'D':
 				case 'E':
 				case 'F':
-					i = (UOSInt)env->funcName[0] - '7' + 1;
+					i = (UIntOS)env->funcName[0] - '7' + 1;
 					if (env->funcName[1] != '_' || env->nstrId <= i)
 					{
 #if defined(VERBOSE)
@@ -939,7 +939,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 		case '7':
 		case '8':
 		case '9':
-			i = (UOSInt)env->funcName[1] - '0' + 1;
+			i = (UIntOS)env->funcName[1] - '0' + 1;
 			if (env->funcName[2] != '_' || env->tplId <= i)
 			{
 #if defined(VERBOSE)
@@ -997,7 +997,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 		case '7':
 		case '8':
 		case '9':
-			i = (UOSInt)env->funcName[1] - '0' + 1;
+			i = (UIntOS)env->funcName[1] - '0' + 1;
 			if (env->funcName[2] != '_' || env->strId <= i)
 			{
 #if defined(VERBOSE)
@@ -1021,7 +1021,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 		case 'D':
 		case 'E':
 		case 'F':
-			i = (UOSInt)env->funcName[1] - '7' + 1;
+			i = (UIntOS)env->funcName[1] - '7' + 1;
 			if (env->funcName[2] != '_' || env->strId <= i)
 			{
 #if defined(VERBOSE)
@@ -1101,7 +1101,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 				if (firstPart)
 				{
 					env->tplstr[env->tplId].v = nStart3;
-					env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - nStart3);
+					env->tplstr[env->tplId].leng = (UIntOS)(env->sbuff - nStart3);
 					env->tplId++;
 					AppendStr(env, nStart3);
 				}
@@ -1176,11 +1176,11 @@ UnsafeArray<UTF8Char> Text::Cpp::CppDemangler::ToFuncName(UnsafeArray<UTF8Char> 
 			{
 				if (env.sbuff[-1] == '>' && env.funcName[0] == 'v')
 				{
-					MemCopyO(sbuff.Ptr() + 5, sbuff.Ptr(), (UOSInt)(env.sbuff - sbuff));
+					MemCopyO(sbuff.Ptr() + 5, sbuff.Ptr(), (UIntOS)(env.sbuff - sbuff));
 					env.sbuff += 5;
 					MemCopyNO(sbuff.Ptr(), "void ", 5);
 					env.funcName++;
-					UOSInt i = env.tplId;
+					UIntOS i = env.tplId;
 					while (i-- > 0)
 					{
 						env.tplstr[i].v += 5;

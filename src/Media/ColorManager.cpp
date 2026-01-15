@@ -79,7 +79,7 @@ Media::MonitorColorManager::MonitorColorManager(Text::CString profileName)
 
 Media::MonitorColorManager::~MonitorColorManager()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
@@ -600,12 +600,12 @@ void Media::MonitorColorManager::AddSess(NN<Media::ColorManagerSess> colorSess)
 
 void Media::MonitorColorManager::RemoveSess(NN<Media::ColorManagerSess> colorSess)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(this->sessMut);
 	i = this->sessList.IndexOf(colorSess);
 	if (i != INVALID_INDEX)
 	{
-		this->sessList.RemoveAt((UOSInt)i);
+		this->sessList.RemoveAt((UIntOS)i);
 	}
 }
 
@@ -617,7 +617,7 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NN<Text::String> fileName)
 	if (fileSize > 0 && fileSize < 1048576)
 	{
 		NN<Media::ICCProfile> profile;
-		Data::ByteBuffer fileBuff((UOSInt)fileSize);
+		Data::ByteBuffer fileBuff((UIntOS)fileSize);
 		if (fs.Read(fileBuff) == fileSize)
 		{
 			if (Media::ICCProfile::Parse(fileBuff).SetTo(profile))
@@ -645,7 +645,7 @@ void Media::MonitorColorManager::SetOSProfile()
 	DISPLAY_DEVICEW dev;
 	NN<Text::String> s;
 	UInt32 i = 0;
-	UOSInt j;
+	UIntOS j;
 	dev.cb = sizeof(DISPLAY_DEVICEW);
 	if (this->profileName.SetTo(s))
 	{
@@ -695,7 +695,7 @@ void Media::MonitorColorManager::SetEDIDProfile()
 	if (this->profileName.SetTo(s))
 	{
 		Media::DDCReader ddc(s->v);
-		UOSInt edidSize;
+		UIntOS edidSize;
 		UnsafeArray<UInt8> edid;
 		if (ddc.GetEDID(edidSize).SetTo(edid))
 		{
@@ -747,7 +747,7 @@ Media::ColorManager::ColorManager()
 Media::ColorManager::~ColorManager()
 {
 	NN<MonitorColorManager> monColor;
-	UOSInt i = this->monColor.GetCount();
+	UIntOS i = this->monColor.GetCount();
 	while (i-- > 0)
 	{
 		monColor = this->monColor.GetItemNoCheck(i);
@@ -935,10 +935,10 @@ void Media::ColorManagerSess::AddHandler(NN<Media::ColorHandler> hdlr)
 void Media::ColorManagerSess::RemoveHandler(NN<Media::ColorHandler> hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt index = this->hdlrs.IndexOf(hdlr);
+	UIntOS index = this->hdlrs.IndexOf(hdlr);
 	if (index != INVALID_INDEX)
 	{
-		this->hdlrs.RemoveAt((UOSInt)index);
+		this->hdlrs.RemoveAt((UIntOS)index);
 	}
 }
 

@@ -18,8 +18,8 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(AnyType userObj, Data::D
 	NN<SSWR::DiscDB::DiscDBMainForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBMainForm>();
 	Bool succ;
 	Bool failed = false;
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		succ = false;

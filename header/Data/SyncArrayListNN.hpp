@@ -16,25 +16,25 @@ namespace Data
 
 	public:
 		SyncArrayListNN();
-		SyncArrayListNN(UOSInt capacity);
+		SyncArrayListNN(UIntOS capacity);
 		virtual ~SyncArrayListNN();
 
-		virtual UOSInt Add(NN<T> val);
-		virtual UOSInt AddRange(UnsafeArray<const NN<T>> arr, UOSInt cnt);
+		virtual UIntOS Add(NN<T> val);
+		virtual UIntOS AddRange(UnsafeArray<const NN<T>> arr, UIntOS cnt);
 		virtual Bool Remove(NN<T> val);
-		virtual Optional<T> RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, NN<T> val);
-		virtual UOSInt IndexOf(NN<T> val) const;
+		virtual Optional<T> RemoveAt(UIntOS index);
+		virtual void Insert(UIntOS index, NN<T> val);
+		virtual UIntOS IndexOf(NN<T> val) const;
 		virtual void Clear();
 		Optional<T> RemoveLast();
 		NN<SyncArrayListNN> Clone() const;
 
-		virtual UOSInt GetCount() const;
-		virtual UOSInt GetCapacity() const;
+		virtual UIntOS GetCount() const;
+		virtual UIntOS GetCapacity() const;
 
-		virtual Optional<T> GetItem(UOSInt index) const;
-		virtual NN<T> GetItemNoCheck(UOSInt index) const;
-		virtual void SetItem(UOSInt index, T val);
+		virtual Optional<T> GetItem(UIntOS index) const;
+		virtual NN<T> GetItemNoCheck(UIntOS index) const;
+		virtual void SetItem(UIntOS index, T val);
 		NN<Data::ArrayListNN<T>> GetArrayList(NN<Sync::MutexUsage> mutUsage);
 
 		void DeleteAll();
@@ -47,7 +47,7 @@ namespace Data
 	{
 	}
 
-	template <class T> SyncArrayListNN<T>::SyncArrayListNN(UOSInt capacity) : arr(capacity)
+	template <class T> SyncArrayListNN<T>::SyncArrayListNN(UIntOS capacity) : arr(capacity)
 	{
 	}
 
@@ -55,13 +55,13 @@ namespace Data
 	{
 	}
 
-	template <class T> UOSInt SyncArrayListNN<T>::Add(NN<T> val)
+	template <class T> UIntOS SyncArrayListNN<T>::Add(NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.Add(val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::AddRange(UnsafeArray<const NN<T>> arr, UOSInt cnt)
+	template <class T> UIntOS Data::SyncArrayListNN<T>::AddRange(UnsafeArray<const NN<T>> arr, UIntOS cnt)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.AddRange(arr, cnt);
@@ -73,19 +73,19 @@ namespace Data
 		return this->arr.Remove(val);
 	}
 
-	template <class T> Optional<T> Data::SyncArrayListNN<T>::RemoveAt(UOSInt index)
+	template <class T> Optional<T> Data::SyncArrayListNN<T>::RemoveAt(UIntOS index)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.RemoveAt(index);
 	}
 
-	template <class T> void Data::SyncArrayListNN<T>::Insert(UOSInt index, NN<T> val)
+	template <class T> void Data::SyncArrayListNN<T>::Insert(UIntOS index, NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.Insert(index, val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::IndexOf(NN<T> val) const
+	template <class T> UIntOS Data::SyncArrayListNN<T>::IndexOf(NN<T> val) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.IndexOf(val);
@@ -100,7 +100,7 @@ namespace Data
 	template <class T> Optional<T> Data::SyncArrayListNN<T>::RemoveLast()
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		UOSInt i = this->arr.GetCount();
+		UIntOS i = this->arr.GetCount();
 		if (i > 0)
 		{
 			return this->arr.RemoveAt(i - 1);
@@ -117,29 +117,29 @@ namespace Data
 		return newArr;
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::GetCount() const
+	template <class T> UIntOS Data::SyncArrayListNN<T>::GetCount() const
 	{
 		return this->arr.GetCount();
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::GetCapacity() const
+	template <class T> UIntOS Data::SyncArrayListNN<T>::GetCapacity() const
 	{
 		return this->arr.GetCapacity();
 	}
 
-	template <class T> Optional<T> Data::SyncArrayListNN<T>::GetItem(UOSInt index) const
+	template <class T> Optional<T> Data::SyncArrayListNN<T>::GetItem(UIntOS index) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.GetItem(index);
 	}
 
-	template <class T> NN<T> Data::SyncArrayListNN<T>::GetItemNoCheck(UOSInt index) const
+	template <class T> NN<T> Data::SyncArrayListNN<T>::GetItemNoCheck(UIntOS index) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.GetItemNoCheck(index);
 	}
 
-	template <class T> void Data::SyncArrayListNN<T>::SetItem(UOSInt index, T val)
+	template <class T> void Data::SyncArrayListNN<T>::SetItem(UIntOS index, T val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.SetItem(index, val);

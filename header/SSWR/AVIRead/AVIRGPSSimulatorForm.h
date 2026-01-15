@@ -43,7 +43,7 @@ namespace SSWR
 			Math::Coord2DDbl currPos;
 			Double speed;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnStreamClicked(AnyType userObj);
 			static void __stdcall OnSpeedClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);

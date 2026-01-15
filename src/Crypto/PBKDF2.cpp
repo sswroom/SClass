@@ -3,10 +3,10 @@
 #include "Crypto/PBKDF2.h"
 #include "Core/ByteTool_C.h"
 
-UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UIntOS saltLen, UIntOS iterationCount, UInt32 i, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 tmpBuff[64];
-	UOSInt resSize = hashFunc->GetResultSize();
+	UIntOS resSize = hashFunc->GetResultSize();
 	UInt8 iBuff[4];
 	WriteMUInt32(iBuff, i);
 	hashFunc->Clear();
@@ -26,11 +26,11 @@ UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt i
 	return resSize;
 }
 
-UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UIntOS saltLen, UIntOS iterationCount, UIntOS dkLen, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 blockBuff[64];
-	UOSInt retLen = dkLen;
-	UOSInt resSize = hashFunc->GetResultSize();
+	UIntOS retLen = dkLen;
+	UIntOS resSize = hashFunc->GetResultSize();
 	UInt32 i = 1;
 	while (dkLen > 0)
 	{

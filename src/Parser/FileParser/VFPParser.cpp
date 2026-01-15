@@ -40,8 +40,8 @@ Optional<IO::ParsedObject> Parser::FileParser::VFPParser::ParseFileHdr(NN<IO::St
 	{
 		Media::MediaFile *file;
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-		UOSInt i = 0;
-		UOSInt j = mediaArr.GetCount();
+		UIntOS i = 0;
+		UIntOS j = mediaArr.GetCount();
 		while (i < j)
 		{
 			file->AddSource(mediaArr.GetItemNoCheck(i++), 0);

@@ -15,9 +15,9 @@ namespace Net
 		WhoisRecord(UInt32 recordIP);
 		~WhoisRecord();
 
-		void AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen);
-		UOSInt GetCount() const;
-		Optional<Text::String> GetItem(UOSInt index) const;
+		void AddItem(UnsafeArray<const UTF8Char> item, UIntOS itemLen);
+		UIntOS GetCount() const;
+		Optional<Text::String> GetItem(UIntOS index) const;
 		Data::ArrayIterator<NN<Text::String>> Iterator() const;
 
 		UnsafeArrayOpt<UTF8Char> GetNetworkName(UnsafeArray<UTF8Char> buff);

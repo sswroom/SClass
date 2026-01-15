@@ -27,9 +27,9 @@ void Media::AFilter::AudioSweepFilter::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 
 	Double startFreq;
 	Double endFreq;
@@ -48,10 +48,10 @@ UOSInt Media::AFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 	if (this->format.bitpersample == 16)
 	{
 
-		UOSInt i = 0;
-		UOSInt j = readSize;
-		OSInt k;
-		UOSInt nSamples = readSize / ((UOSInt)this->format.nChannels << 1);
+		UIntOS i = 0;
+		UIntOS j = readSize;
+		IntOS k;
+		UIntOS nSamples = readSize / ((UIntOS)this->format.nChannels << 1);
 		UInt32 pos = currSample;
 		Double freq;
 		Double t;
@@ -62,7 +62,7 @@ UOSInt Media::AFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 		if (currSample + nSamples > endSample)
 		{
 			nSamples = endSample - currSample;
-			j = nSamples * ((UOSInt)this->format.nChannels << 1);
+			j = nSamples * ((UIntOS)this->format.nChannels << 1);
 		}
 		while (i < j)
 		{

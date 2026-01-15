@@ -14,11 +14,11 @@ namespace IO
 			Optional<Text::String> name;
 
 		public:
-			MemoryDataRef(UnsafeArray<const UInt8> data, UOSInt dataLength);
+			MemoryDataRef(UnsafeArray<const UInt8> data, UIntOS dataLength);
 			MemoryDataRef(const Data::ByteArrayR &data);
 			virtual ~MemoryDataRef();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
+			virtual UIntOS GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer);
 			virtual NN<Text::String> GetFullName() const;
 			virtual Text::CString GetShortName() const;
 			virtual void SetFullName(Text::CStringNN fullName);
@@ -28,7 +28,7 @@ namespace IO
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile() const;
 			virtual Bool IsLoading() const;
-			virtual UOSInt GetSeekCount() const;
+			virtual UIntOS GetSeekCount() const;
 
 			void SetName(Text::CStringNN name);
 			void SetName(NN<Text::String> name);

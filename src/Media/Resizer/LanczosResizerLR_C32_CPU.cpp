@@ -8,22 +8,22 @@
 
 extern "C"
 {
-	void LanczosResizerLR_C32_CPU_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizerLR_C32_CPU_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizerLR_C32_CPU_vertical_filter_na(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizerLR_C32_CPU_hv_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UInt8 *buffPt);
-	void LanczosResizerLR_C32_CPU_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizerLR_C32_CPU_collapse_na(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizerLR_C32_CPU_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable);
+	void LanczosResizerLR_C32_CPU_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable);
+	void LanczosResizerLR_C32_CPU_vertical_filter_na(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable);
+	void LanczosResizerLR_C32_CPU_hv_filter(const UInt8 *inPt, UInt8 *outPt, UIntOS dwidth, UIntOS dheight, UIntOS swidth, UIntOS htap, IntOS *hindex, Int64 *hweight, UIntOS vtap, IntOS *vindex, Int64 *vweight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, UInt8 *buffPt);
+	void LanczosResizerLR_C32_CPU_collapse(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable);
+	void LanczosResizerLR_C32_CPU_collapse_na(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable);
 }
 
 typedef struct
 {
-	UOSInt tap;
-	UnsafeArray<OSInt> index;
+	UIntOS tap;
+	UnsafeArray<IntOS> index;
 	UnsafeArray<Int64> weight;
 } FilterParam;
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep)
 {
 	Manage::HiResClock clk;
 	if (this->nThread == 1 || height < this->nThread)
@@ -32,14 +32,14 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(UnsafeArray<
 	}
 	else
 	{
-		UOSInt currHeight;
-		UOSInt lastHeight = height;
-		UOSInt i = this->nThread;
+		UIntOS currHeight;
+		UIntOS lastHeight = height;
+		UIntOS i = this->nThread;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
-			this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
-			this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+			this->params[i].inPt = inPt + (IntOS)currHeight * sstep;
+			this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 			this->params[i].width = width;
 			this->params[i].height = lastHeight - currHeight;
 			this->params[i].tap = tap;
@@ -58,7 +58,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(UnsafeArray<
 	this->hTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	Manage::HiResClock clk;
 	if (this->nThread == 1 || height < this->nThread)
@@ -74,10 +74,10 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<co
 	}
 	else
 	{
-		UOSInt currHeight;
-		UOSInt lastHeight = height;
-		UOSInt i = this->nThread;
-		UOSInt wTap;
+		UIntOS currHeight;
+		UIntOS lastHeight = height;
+		UIntOS i = this->nThread;
+		UIntOS wTap;
 		Int32 procStatus = 5;
 		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
@@ -95,7 +95,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<co
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
 			this->params[i].inPt = inPt;
-			this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+			this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 			this->params[i].width = width;
 			this->params[i].height = lastHeight - currHeight;
 			this->params[i].tap = tap;
@@ -114,7 +114,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<co
 	this->vTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, UnsafeArray<OSInt> hindex, UnsafeArray<Int64> hweight, UOSInt vtap, UnsafeArray<OSInt> vindex, UnsafeArray<Int64> vweight, OSInt sstep, OSInt dstep, UnsafeArray<UInt8> buffPt, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS dheight, UIntOS swidth, UIntOS htap, UnsafeArray<IntOS> hindex, UnsafeArray<Int64> hweight, UIntOS vtap, UnsafeArray<IntOS> vindex, UnsafeArray<Int64> vweight, IntOS sstep, IntOS dstep, UnsafeArray<UInt8> buffPt, Media::AlphaType srcAlphaType)
 {
 	if (this->nThread == 1 || dheight < this->nThread)
 	{
@@ -122,15 +122,15 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(UnsafeArray<const UI
 	}
 	else
 	{
-		UOSInt currHeight;
-		UOSInt lastHeight = dheight;
-		UOSInt i = this->nThread;
+		UIntOS currHeight;
+		UIntOS lastHeight = dheight;
+		UIntOS i = this->nThread;
 		Int32 procStatus = 14;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(i, dheight, this->nThread);
 			this->params[i].inPt = inPt;
-			this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+			this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 			this->params[i].width = dwidth;
 			this->params[i].height = lastHeight - currHeight;
 			this->params[i].width0 = swidth;
@@ -152,7 +152,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(UnsafeArray<const UI
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	if (this->nThread == 1 || height < this->nThread)
 	{
@@ -167,19 +167,19 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UIn
 	}
 	else
 	{
-		UOSInt currHeight;
-		UOSInt lastHeight = height;
+		UIntOS currHeight;
+		UIntOS lastHeight = height;
 		Int32 procStatus = 9;
 		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
 			procStatus = 13;
 		}
-		UOSInt i = this->nThread;
+		UIntOS i = this->nThread;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
-			this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
-			this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+			this->params[i].inPt = inPt + (IntOS)currHeight * sstep;
+			this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 			this->params[i].width = width;
 			this->params[i].height = lastHeight - currHeight;
 			this->params[i].sstep = sstep;
@@ -224,7 +224,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoTask(AnyType obj)
 
 Media::Resizer::LanczosResizerLR_C32_CPU::LanczosResizerLR_C32_CPU()
 {
-	UOSInt i;
+	UIntOS i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 4)
 	{
@@ -261,7 +261,7 @@ Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS sheight, UIntOS dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
@@ -277,11 +277,11 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(Unsafe
 		this->buffSize = (sheight * dwidth << 3);
 		this->buffPtr = buffPtr = MemAllocA64(UInt8, buffSize);
 	}
-	this->mt_horizontal_filter(inPt, buffPtr, dwidth, sheight, hparam->tap, hparam->index, hparam->weight, sstep, (OSInt)dwidth << 3);
-	this->mt_vertical_filter(buffPtr, outPt, dwidth, dheight, vparam->tap, vparam->index, vparam->weight, (OSInt)dwidth << 3, dstep, srcAlphaType);
+	this->mt_horizontal_filter(inPt, buffPtr, dwidth, sheight, hparam->tap, hparam->index, hparam->weight, sstep, (IntOS)dwidth << 3);
+	this->mt_vertical_filter(buffPtr, outPt, dwidth, dheight, vparam->tap, vparam->index, vparam->weight, (IntOS)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS sheight, NN<HoriFilter> hFilter, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	UnsafeArray<UInt8> buffPtr;
@@ -295,17 +295,17 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(Unsafe
 		this->buffSize = (sheight * dwidth << 3);
 		this->buffPtr = buffPtr = MemAllocA64(UInt8, buffSize);
 	}
-	this->mt_horizontal_filter(inPt, buffPtr, dwidth, sheight, hparam->tap, hparam->index, hparam->weight, sstep, (OSInt)dwidth << 3);
-	this->mt_collapse(buffPtr, outPt, dwidth, sheight, (OSInt)dwidth << 3, dstep, srcAlphaType);
+	this->mt_horizontal_filter(inPt, buffPtr, dwidth, sheight, hparam->tap, hparam->index, hparam->weight, sstep, (IntOS)dwidth << 3);
+	this->mt_collapse(buffPtr, outPt, dwidth, sheight, (IntOS)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS swidth, UIntOS sheight, UIntOS dheight, NN<VertFilter> vFilter, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 	this->mt_vertical_filter(inPt, outPt, swidth, dheight, vparam->tap, vparam->index, vparam->weight, sstep, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS swidth, UIntOS sheight, IntOS sstep, IntOS dstep, Media::AlphaType srcAlphaType)
 {
 	this->mt_collapse(inPt, outPt, swidth, sheight, sstep, dstep, srcAlphaType);
 }
@@ -315,7 +315,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::UpdateRGBTable(UnsafeArray<UInt8>
 	this->rgbTable = rgbTable;
 }
 
-NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateHoriFilter(UOSInt htap, UnsafeArray<OSInt> hIndex, UnsafeArray<Int64> hWeight, UOSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateHoriFilter(UIntOS htap, UnsafeArray<IntOS> hIndex, UnsafeArray<Int64> hWeight, UIntOS length)
 {
 	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = htap;
@@ -330,7 +330,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DestroyHoriFilter(NN<Media::Resiz
 	MemFreeNN(param);
 }
 
-NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateVertFilter(UOSInt vtap, UnsafeArray<OSInt> vIndex, UnsafeArray<Int64> vWeight, UOSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateVertFilter(UIntOS vtap, UnsafeArray<IntOS> vIndex, UnsafeArray<Int64> vWeight, UIntOS length)
 {
 	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = vtap;
@@ -350,7 +350,7 @@ Double Media::Resizer::LanczosResizerLR_C32_CPU::GetHAvgTime()
 	if (this->hTotCount <= 0)
 		return 0;
 	else
-		return this->hTotTime / UOSInt2Double(this->hTotCount);
+		return this->hTotTime / UIntOS2Double(this->hTotCount);
 }
 
 Double Media::Resizer::LanczosResizerLR_C32_CPU::GetVAvgTime()
@@ -358,5 +358,5 @@ Double Media::Resizer::LanczosResizerLR_C32_CPU::GetVAvgTime()
 	if (this->vTotCount <= 0)
 		return 0;
 	else
-		return this->vTotTime / UOSInt2Double(this->vTotCount);
+		return this->vTotTime / UIntOS2Double(this->vTotCount);
 }

@@ -13,7 +13,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(AnyType userObj)
 {
 	NN<IO::TVCtrl::NECTVControl> me = userObj.GetNN<IO::TVCtrl::NECTVControl>();
 	UInt8 buff[256];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
@@ -51,8 +51,8 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CStringNN cmd, UnsafeArray<UTF8
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
-	UOSInt cmdLen;
-	UOSInt i;
+	UIntOS cmdLen;
+	UIntOS i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
 	if (dt.CompareTo(this->nextTime) < 0)
@@ -107,7 +107,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CStringNN cmd, UnsafeArray<UTF8
 			break;
 		if (this->recvSize > 0)
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)
@@ -144,8 +144,8 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
-	OSInt cmdLen;
-	OSInt i;
+	IntOS cmdLen;
+	IntOS i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
 	if (dt.CompareTo(this->nextTime) < 0)
@@ -198,7 +198,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			break;
 		if (this->recvSize > 0)
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)
@@ -239,8 +239,8 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
-	OSInt cmdLen;
-	OSInt i;
+	IntOS cmdLen;
+	IntOS i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
 	if (dt.CompareTo(this->nextTime) < 0)
@@ -295,7 +295,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			break;
 		if (this->recvSize > 0)
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->recvSize)
 			{
 				if (this->recvBuff[i] == 13)
@@ -598,7 +598,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, Unsafe
 			return false;
 		{
 			UInt8 serialNo[16];
-			UOSInt i;
+			UIntOS i;
 			*val = 0;
 			i = Text::StrHex2Bytes(&buff[4], serialNo);
 			sbuff[i] = 0;
@@ -613,7 +613,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, Unsafe
 			return false;
 		{
 			UInt8 model[16];
-			UOSInt i;
+			UIntOS i;
 			*val = 0;
 			i = Text::StrHex2Bytes(&buff[4], model);
 			sbuff[i] = 0;

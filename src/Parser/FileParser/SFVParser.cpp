@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 	IO::FileCheck *fchk;
 	Crypto::Hash::HashType ctype;
 	UInt8 chk[8];
-	UOSInt chkSize;
+	UIntOS chkSize;
 
 	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".SFV")))
 	{
@@ -56,17 +56,17 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
 	while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 	{
-		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)
+		if (sptr - sbuff > (IntOS)(chkSize << 1) + 2)
 		{
 			if (sbuff[0] == ';')
 			{
 			}
-			else if (sptr[-(OSInt)(chkSize << 1) - 1] == ' ')
+			else if (sptr[-(IntOS)(chkSize << 1) - 1] == ' ')
 			{
-				sptr[-(OSInt)(chkSize << 1) - 1] = 0;
-				if (Text::StrHex2Bytes(&sptr[-(OSInt)(chkSize << 1)], chk) == chkSize)
+				sptr[-(IntOS)(chkSize << 1) - 1] = 0;
+				if (Text::StrHex2Bytes(&sptr[-(IntOS)(chkSize << 1)], chk) == chkSize)
 				{
-					fchk->AddEntry(CSTRP(sbuff, &sptr[-(OSInt)(chkSize << 1) - 1]), chk);
+					fchk->AddEntry(CSTRP(sbuff, &sptr[-(IntOS)(chkSize << 1) - 1]), chk);
 				}
 			}
 		}

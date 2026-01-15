@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		me->resizer->ProcessFile(files[i]->ToCString());
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
-	UOSInt i = me->lbProfile->GetSelectedIndex();
+	UIntOS i = me->lbProfile->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		me->lbProfile->RemoveItem(i);
@@ -202,8 +202,8 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 {
 	NN<const Media::ProfiledResizer::ResizeProfile> profile;
-	UOSInt i = 0;
-	UOSInt j = this->resizer->GetProfileCount();
+	UIntOS i = 0;
+	UIntOS j = this->resizer->GetProfileCount();
 	this->lbProfile->ClearItems();
 	while (i < j)
 	{

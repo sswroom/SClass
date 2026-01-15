@@ -31,7 +31,7 @@ namespace IO
 
 		IO::Stream *OpenHID();
 
-		static OSInt GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList);
+		static IntOS GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList);
 	};
 };
 

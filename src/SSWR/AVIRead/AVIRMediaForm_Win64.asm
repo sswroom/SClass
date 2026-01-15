@@ -2,7 +2,7 @@ section .text
 
 global AVIRMediaForm_VideoCropImageY
 
-;AVIRMediaForm_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+;AVIRMediaForm_VideoCropImageY(UInt8 *yptr, IntOS w, IntOS h, IntOS ySplit, IntOS *crops)
 
 ;0 rdi
 ;8 rbx

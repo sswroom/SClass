@@ -17,8 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 		Int64 latestTime;
 		Bool progGroup;
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<const IO::SMake::ProgramItem> prog;
 		me->smake->ParseProg(objList, liblist, procList, headerList, latestTime, progGroup, progName);
 		procList.Clear();
@@ -74,8 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(AnyType userObj)
 		NN<const IO::SMake::ProgramItem> prog;
 		if (me->smake->GetProgItem(progName->ToCString()).SetTo(prog))
 		{
-			UOSInt i = 0;
-			UOSInt j = prog->subItems.GetCount();
+			UIntOS i = 0;
+			UIntOS j = prog->subItems.GetCount();
 			while (i < j)
 			{
 				me->lbProgGroupItems->AddItem(Text::String::OrEmpty(prog->subItems.GetItem(i)), 0);
@@ -151,8 +151,8 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 
 	Data::ArrayListNN<Text::String> progList;
 	NN<Text::String> progName;
-	UOSInt i = 0;
-	UOSInt j = this->smake->GetProgList(progList);
+	UIntOS i = 0;
+	UIntOS j = this->smake->GetProgList(progList);
 	while (i < j)
 	{
 		progName = Text::String::OrEmpty(progList.GetItem(i));

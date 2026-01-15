@@ -14,8 +14,8 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 	Optional<Net::WebServer::MemoryWebSession> sess;
 	NN<MemoryWebSession> nnsess;
 	Int64 sessId;
-	UOSInt i;
-	OSInt j;
+	UIntOS i;
+	IntOS j;
 
 	{
 		Data::DateTime lastChkTime;
@@ -47,8 +47,8 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 						{
 							mutUsage.BeginUse();
 							j = me->sessIds.SortedIndexOf(sessId);
-							me->sessIds.RemoveAt((UOSInt)j);
-							sess = me->sesses.RemoveAt((UOSInt)j);
+							me->sessIds.RemoveAt((UIntOS)j);
+							sess = me->sesses.RemoveAt((UIntOS)j);
 							mutUsage.EndUse();
 
 							nnsess->BeginUse();
@@ -70,7 +70,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::WebR
 {
 	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
-	UOSInt strCnt = 2;
+	UIntOS strCnt = 2;
 	Int64 sessId = 0;
 
 	NN<Text::String> cookie;
@@ -174,7 +174,7 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 	Int64 sessId = this->GenSessId(req);
 	sptr = Text::StrInt64(sbuff, sessId);
 	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, this->forceSecure || req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	if (this->checkReferer)
 	{
@@ -192,7 +192,7 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Int64 sessId = GetSessId(req);
-	OSInt i;
+	IntOS i;
 	Optional<Net::WebServer::MemoryWebSession> sess;
 	NN<MemoryWebSession> nnsess;
 	if (sessId != 0)
@@ -202,8 +202,8 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::W
 		i = this->sessIds.SortedIndexOf(sessId);
 		if (i >= 0)
 		{
-			sess = this->sesses.RemoveAt((UOSInt)i);
-			this->sessIds.RemoveAt((UOSInt)i);
+			sess = this->sesses.RemoveAt((UIntOS)i);
+			this->sessIds.RemoveAt((UIntOS)i);
 		}
 		mutUsage.EndUse();
 		if (sess.SetTo(nnsess))
@@ -255,18 +255,18 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::WebR
 
 NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId, Text::CStringNN origin)
 {
-	OSInt si;
+	IntOS si;
 	NN<Net::WebServer::MemoryWebSession> sess;
 	Sync::MutexUsage mutUsage(this->mut);
 	si = this->sessIds.SortedIndexOf(sessId);
-	if (si >= 0 && this->sesses.GetItem((UOSInt)si).SetTo(sess))
+	if (si >= 0 && this->sesses.GetItem((UIntOS)si).SetTo(sess))
 	{
 
 	}
 	else
 	{
 		NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, Net::BrowserInfo::BT_UNKNOWN, Manage::OSInfo::OT_UNKNOWN, origin));
-		UOSInt i = this->sessIds.SortedInsert(sessId);
+		UIntOS i = this->sessIds.SortedInsert(sessId);
 		this->sesses.Insert(i, NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
 	}
 	mutUsage.EndUse();
@@ -277,13 +277,13 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::GetSession(Int64 sessId)
 {
 	Optional<Net::WebServer::WebSession> sess;
-	OSInt i;
+	IntOS i;
 	sess = nullptr;
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
 	{
-		sess = this->sesses.GetItem((UOSInt)i);
+		sess = this->sesses.GetItem((UIntOS)i);
 	}
 	mutUsage.EndUse();
 	if (!sess.IsNull())
@@ -295,7 +295,7 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 
 void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 {
-	OSInt i;
+	IntOS i;
 	Optional<Net::WebServer::MemoryWebSession> sess;
 	NN<MemoryWebSession> nnsess;
 	sess = nullptr;
@@ -303,8 +303,8 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
 	{
-		sess = this->sesses.RemoveAt((UOSInt)i);
-		this->sessIds.RemoveAt((UOSInt)i);
+		sess = this->sesses.RemoveAt((UIntOS)i);
+		this->sessIds.RemoveAt((UIntOS)i);
 	}
 	mutUsage.EndUse();
 	if (sess.SetTo(nnsess))

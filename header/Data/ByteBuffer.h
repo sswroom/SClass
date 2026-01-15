@@ -14,7 +14,7 @@ namespace Data
 			this->deleted = false;
 		}
 
-		ByteBuffer(UOSInt buffSize) : ByteArray(MemAllocArr(UInt8, buffSize), buffSize)
+		ByteBuffer(UIntOS buffSize) : ByteArray(MemAllocArr(UInt8, buffSize), buffSize)
 		{
 			this->deleted = false;
 		}
@@ -50,7 +50,7 @@ namespace Data
 			}
 		}
 
-		void ChangeSizeAndClear(UOSInt buffSize)
+		void ChangeSizeAndClear(UIntOS buffSize)
 		{
 			if (!this->deleted)
 				MemFreeArr(this->buff);
@@ -62,7 +62,7 @@ namespace Data
 #endif
 		}
 
-		void ChangeSizeAndKeep(UOSInt buffSize)
+		void ChangeSizeAndKeep(UIntOS buffSize)
 		{
 			if (this->deleted)
 			{

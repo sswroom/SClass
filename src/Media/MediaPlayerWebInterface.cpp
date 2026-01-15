@@ -10,7 +10,7 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(NN<VideoFileInfo> file1, NN<VideoFileInfo> file2)
+IntOS __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(NN<VideoFileInfo> file1, NN<VideoFileInfo> file2)
 {
 	return Text::StrCompare(file1->fileName->v, file2->fileName->v);
 }
@@ -40,10 +40,10 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::WebRequest
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sptr = openedFile->GetSourceNameObj()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
 	if (fname.SetTo(s))
@@ -59,7 +59,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::WebRequest
 	IO::Path::PathType pt;
 	NN<IO::Path::FindFileSession> sess;
 	UnsafeArray<UInt8> buff;
-	UOSInt size;
+	UIntOS size;
 	UInt64 fileSize;
 
 	IO::MemoryStream mstm;
@@ -91,7 +91,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::WebRequest
 				if (pt == IO::Path::PathType::File)
 				{
 					vfile = MemAllocNN(VideoFileInfo);
-					vfile->fileName = Text::String::New(sptr, (UOSInt)(sptr2 - sptr));
+					vfile->fileName = Text::String::New(sptr, (UIntOS)(sptr2 - sptr));
 					vfile->fileSize = fileSize;
 					fileList.Add(vfile);
 				}
@@ -200,7 +200,7 @@ void Media::MediaPlayerWebInterface::DoWebRequest(NN<Net::WebServer::WebRequest>
 	}
 	UnsafeArray<UInt8> buff;
 	NN<Text::String> s;
-	UOSInt size;
+	UIntOS size;
 
 	IO::MemoryStream mstm;
 	{
@@ -276,7 +276,7 @@ void Media::MediaPlayerWebInterface::DoWebRequest(NN<Net::WebServer::WebRequest>
 			sb.AppendI32(status.avOfst);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Seek Count: "));
-			sb.AppendUOSInt(status.seekCnt);
+			sb.AppendUIntOS(status.seekCnt);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Frame Displayed: "));
 			sb.AppendU32(status.frameDispCnt);
@@ -302,14 +302,14 @@ void Media::MediaPlayerWebInterface::DoWebRequest(NN<Net::WebServer::WebRequest>
 			sb.AppendI32(status.buffReady);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Src Size: "));
-			sb.AppendUOSInt(status.srcSize.x);
+			sb.AppendUIntOS(status.srcSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(status.srcSize.y);
+			sb.AppendUIntOS(status.srcSize.y);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Disp Size: "));
-			sb.AppendUOSInt(status.dispSize.x);
+			sb.AppendUIntOS(status.dispSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(status.dispSize.y);
+			sb.AppendUIntOS(status.dispSize.y);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("PAR: "));
 			sb.AppendDouble(status.par);

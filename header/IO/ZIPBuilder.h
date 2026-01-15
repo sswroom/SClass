@@ -81,7 +81,7 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		ZIPBuilder(NN<IO::SeekableStream> stm, ZIPOS os);
 		~ZIPBuilder();
 
-		Bool AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
 		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 		Bool AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 	};

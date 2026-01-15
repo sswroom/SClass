@@ -30,12 +30,12 @@ UnsafeArray<UTF8Char> Manage::ModuleInfo::GetModuleFileName(UnsafeArray<UTF8Char
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size)
+Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UIntOS> baseAddr, OutParam<UIntOS> size)
 {
 	MODULEINFO modInfo;
 	if (GetModuleInformation((HANDLE)this->hProc, (HMODULE)this->hMod, &modInfo, sizeof(MODULEINFO)))
 	{
-		baseAddr.Set((UOSInt)modInfo.lpBaseOfDll);
+		baseAddr.Set((UIntOS)modInfo.lpBaseOfDll);
 		size.Set(modInfo.SizeOfImage);
 		return true;
 	}

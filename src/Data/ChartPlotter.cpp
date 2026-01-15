@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::Timestamp> timeArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < dataCnt)
 	{
 		this->dataArr[i] = timeArr[i].inst;
@@ -16,9 +16,9 @@ Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::Timestamp> timeArr, UOS
 	}
 }
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::TimeInstant> timeArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < dataCnt)
 	{
 		this->dataArr[i] = timeArr[i];
@@ -26,9 +26,9 @@ Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::TimeInstant> timeArr, U
 	}
 }
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Int64> ticksArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < dataCnt)
 	{
 		this->dataArr[i] = Data::TimeInstant::FromTicks(ticksArr[i]);
@@ -38,7 +38,7 @@ Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataC
 
 Data::ChartPlotter::TimeData::TimeData(NN<ReadingList<Timestamp>> timeArr) : ArrayChartData(timeArr->GetCount())
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < this->dataCnt)
 	{
 		this->dataArr[i] = timeArr->GetItem(i).inst;
@@ -62,15 +62,15 @@ NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::TimeData::Clone() const
 	return newData;
 }
 
-Data::ChartPlotter::Int32Data::Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::Int32Data::Int32Data(UnsafeArray<Int32> intArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
 	MemCopyNO(this->dataArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(Int32));
 }
 
 Data::ChartPlotter::Int32Data::Int32Data(NN<ReadingList<Int32>> intArr) : ArrayChartData(intArr->GetCount())
 {
-	UOSInt i = 0;
-	UOSInt j = dataCnt;
+	UIntOS i = 0;
+	UIntOS j = dataCnt;
 	while (i < j)
 	{
 		this->dataArr[i] = intArr->GetItem(i);
@@ -94,15 +94,15 @@ NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::Int32Data::Clone() const
 	return newData;
 }
 
-Data::ChartPlotter::UInt32Data::UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::UInt32Data::UInt32Data(UnsafeArray<UInt32> intArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
 	MemCopyNO(this->dataArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(UInt32));
 }
 
 Data::ChartPlotter::UInt32Data::UInt32Data(NN<ReadingList<UInt32>> intArr) : ArrayChartData(intArr->GetCount())
 {
-	UOSInt i = 0;
-	UOSInt j = dataCnt;
+	UIntOS i = 0;
+	UIntOS j = dataCnt;
 	while (i < j)
 	{
 		this->dataArr[i] = intArr->GetItem(i);
@@ -126,15 +126,15 @@ NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::UInt32Data::Clone() const
 	return newData;
 }
 
-Data::ChartPlotter::DoubleData::DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
+Data::ChartPlotter::DoubleData::DoubleData(UnsafeArray<Double> dblArr, UIntOS dataCnt) : ArrayChartData(dataCnt)
 {
 	MemCopyNO(this->dataArr.Ptr(), dblArr.Ptr(), dataCnt * sizeof(Double));
 }
 
 Data::ChartPlotter::DoubleData::DoubleData(NN<ReadingList<Double>> dblArr) : ArrayChartData(dblArr->GetCount())
 {
-	UOSInt i = 0;
-	UOSInt j = this->dataCnt;
+	UIntOS i = 0;
+	UIntOS j = this->dataCnt;
 	while (i < j)
 	{
 		this->dataArr[i] = dblArr->GetItem(i);
@@ -160,7 +160,7 @@ NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::DoubleData::Clone() const
 
 NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::DoubleData::Invert()
 {
-	UOSInt i = this->dataCnt;
+	UIntOS i = this->dataCnt;
 	while (i-- > 0)
 	{
 		this->dataArr[i] = 1 / this->dataArr[i];
@@ -203,8 +203,8 @@ void Data::ChartPlotter::TimeAxis::CalcX(NN<ChartData> data, UnsafeArray<Math::C
 	{
 		Double leng = (maxX - minX);
 		Double ratio = leng / max.DiffSecDbl(min);
-		UOSInt i = 0;
-		UOSInt j = data->GetCount();
+		UIntOS i = 0;
+		UIntOS j = data->GetCount();
 		UnsafeArray<Data::TimeInstant> tArr = NN<TimeData>::ConvertFrom(data)->GetData();
 		while (i < j)
 		{
@@ -220,8 +220,8 @@ void Data::ChartPlotter::TimeAxis::CalcY(NN<ChartData> data, UnsafeArray<Math::C
 	{
 		Double leng = (maxY - minY);
 		Double ratio = leng / max.DiffSecDbl(min);
-		UOSInt i = 0;
-		UOSInt j = data->GetCount();
+		UIntOS i = 0;
+		UIntOS j = data->GetCount();
 		UnsafeArray<Data::TimeInstant> tArr = NN<TimeData>::ConvertFrom(data)->GetData();
 		while (i < j)
 		{
@@ -235,8 +235,8 @@ void Data::ChartPlotter::TimeAxis::ExtendRange(NN<TimeData> data)
 {
 	UnsafeArray<Data::TimeInstant> dataArr = data->GetData();
 	Data::TimeInstant v;
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	while (i < j)
 	{
 		v = dataArr[i];
@@ -280,8 +280,8 @@ void Data::ChartPlotter::Int32Axis::CalcX(NN<ChartData> data, UnsafeArray<Math::
 {
 	Double leng = (maxX - minX);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<Int32> iArr = NN<Int32Data>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -294,8 +294,8 @@ void Data::ChartPlotter::Int32Axis::CalcY(NN<ChartData> data, UnsafeArray<Math::
 {
 	Double leng = (maxY - minY);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<Int32> iArr = NN<Int32Data>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -308,8 +308,8 @@ void Data::ChartPlotter::Int32Axis::ExtendRange(NN<Int32Data> data)
 {
 	UnsafeArray<Int32> dataArr = data->GetData();
 	Int32 v;
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	while (i < j)
 	{
 		v = dataArr[i];
@@ -353,8 +353,8 @@ void Data::ChartPlotter::UInt32Axis::CalcX(NN<ChartData> data, UnsafeArray<Math:
 {
 	Double leng = (maxX - minX);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<UInt32> iArr = NN<UInt32Data>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -367,8 +367,8 @@ void Data::ChartPlotter::UInt32Axis::CalcY(NN<ChartData> data, UnsafeArray<Math:
 {
 	Double leng = (maxY - minY);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<UInt32> iArr = NN<UInt32Data>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -381,8 +381,8 @@ void Data::ChartPlotter::UInt32Axis::ExtendRange(NN<UInt32Data> data)
 {
 	UnsafeArray<UInt32> dataArr = data->GetData();
 	UInt32 v;
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	while (i < j)
 	{
 		v = dataArr[i];
@@ -427,8 +427,8 @@ void Data::ChartPlotter::DoubleAxis::CalcX(NN<ChartData> data, UnsafeArray<Math:
 {
 	Double leng = (maxX - minX);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<Double> dArr = NN<DoubleData>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -441,8 +441,8 @@ void Data::ChartPlotter::DoubleAxis::CalcY(NN<ChartData> data, UnsafeArray<Math:
 {
 	Double leng = (maxY - minY);
 	Double ratio = leng / (Double)(max - min);
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	UnsafeArray<Double> dArr = NN<DoubleData>::ConvertFrom(data)->GetData();
 	while (i < j)
 	{
@@ -455,8 +455,8 @@ void Data::ChartPlotter::DoubleAxis::ExtendRange(NN<DoubleData> data)
 {
 	UnsafeArray<Double> dataArr = data->GetData();
 	Double v;
-	UOSInt i = 0;
-	UOSInt j = data->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->GetCount();
 	while (i < j)
 	{
 		v = dataArr[i];
@@ -501,7 +501,7 @@ Data::ChartPlotter::ChartParam::~ChartParam()
 	UnsafeArray<Optional<Text::String>> labels;
 	if (this->labels.SetTo(labels))
 	{
-		UOSInt i = this->yData->GetCount();
+		UIntOS i = this->yData->GetCount();
 		while (i-- > 0)
 		{
 			OPTSTR_DEL(labels[i]);
@@ -857,18 +857,18 @@ Bool Data::ChartPlotter::AddScatter(Text::CStringNN name, NN<ChartData> yData, N
 	return true;
 }
 
-Bool Data::ChartPlotter::AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UOSInt barCount, UInt32 lineColor, UInt32 fillColor)
+Bool Data::ChartPlotter::AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UIntOS barCount, UInt32 lineColor, UInt32 fillColor)
 {
 	NN<ChartData> xData;
 	NN<ChartData> yData;
-	UOSInt i;
+	UIntOS i;
 	Double dmin;
 	Double dmax;
 	if (data->GetType() == DataType::Integer)
 	{
 		NN<Int32Data> vdata = NN<Int32Data>::ConvertFrom(data);
 		UnsafeArray<Int32> dataArr = vdata->GetData();
-		UOSInt dataCnt = vdata->GetCount();
+		UIntOS dataCnt = vdata->GetCount();
 		Int32 min = dataArr[0];
 		Int32 max = min;
 		i = 1;
@@ -908,7 +908,7 @@ Bool Data::ChartPlotter::AddHistogramCount(Text::CStringNN name, NN<ChartData> d
 	{
 		NN<UInt32Data> vdata = NN<UInt32Data>::ConvertFrom(data);
 		UnsafeArray<UInt32> dataArr = vdata->GetData();
-		UOSInt dataCnt = vdata->GetCount();
+		UIntOS dataCnt = vdata->GetCount();
 		UInt32 min = dataArr[0];
 		UInt32 max = min;
 		i = 1;
@@ -949,7 +949,7 @@ Bool Data::ChartPlotter::AddHistogramCount(Text::CStringNN name, NN<ChartData> d
 	{
 		NN<DoubleData> vdata = NN<DoubleData>::ConvertFrom(data);
 		UnsafeArray<Double> dataArr = vdata->GetData();
-		UOSInt dataCnt = vdata->GetCount();
+		UIntOS dataCnt = vdata->GetCount();
 		dmin = dataArr[0];
 		dmax = dmin;
 		i = 1;
@@ -1100,7 +1100,7 @@ void Data::ChartPlotter::SetDblFormat(Text::CStringNN format)
 {
 	this->dblFormat->Release();
 	this->dblFormat = Text::String::New(format);
-	UOSInt i = format.IndexOf('.');
+	UIntOS i = format.IndexOf('.');
 	if (i == INVALID_INDEX)
 	{
 		this->minDblVal = 1.0;
@@ -1182,12 +1182,12 @@ Data::ChartPlotter::DataType Data::ChartPlotter::GetXAxisType() const
 	return DataType::None;
 }
 
-UOSInt Data::ChartPlotter::GetChartCount() const
+UIntOS Data::ChartPlotter::GetChartCount() const
 {
 	return this->charts.GetCount();
 }
 
-Optional<Data::ChartPlotter::ChartParam> Data::ChartPlotter::GetChart(UOSInt index) const
+Optional<Data::ChartPlotter::ChartParam> Data::ChartPlotter::GetChart(UIntOS index) const
 {
 	return this->charts.GetItem(index);
 }
@@ -1212,8 +1212,8 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 
@@ -1242,7 +1242,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	}
 
 	Double minXInt = fntH;
-	UOSInt xMode;
+	UIntOS xMode;
 	Double labelRotate = xAxis->GetLabelRotate();
 	if (labelRotate < 45)
 	{
@@ -1732,7 +1732,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 
 //	System::Drawing::PointF currPos[];
 	Math::Coord2DDbl *currPos;
-	UOSInt currPosLen;
+	UIntOS currPosLen;
     
 	i = 0;
 	while (i < this->charts.GetCount())
@@ -2012,12 +2012,12 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	img->DelPen(refLinePen);
 }
 
-UOSInt Data::ChartPlotter::GetLegendCount() const
+UIntOS Data::ChartPlotter::GetLegendCount() const
 {
 	return this->charts.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UIntOS index) const
 {
 	NN<ChartParam> cdata;
 	if (!this->charts.GetItem(index).SetTo(cdata))
@@ -2026,7 +2026,7 @@ UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
 
-Bool Data::ChartPlotter::SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt> size, Text::CStringNN fileName)
+Bool Data::ChartPlotter::SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UIntOS> size, Text::CStringNN fileName)
 {
 	NN<Media::DrawImage> img;
 	if (!deng->CreateImage32(size, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(img))
@@ -2039,7 +2039,7 @@ Bool Data::ChartPlotter::SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt
 		deng->DeleteImage(img);
 		return false;
 	}
-	this->Plot(img, 0, 0, UOSInt2Double(size.GetWidth()), UOSInt2Double(size.GetHeight()));
+	this->Plot(img, 0, 0, UIntOS2Double(size.GetWidth()), UIntOS2Double(size.GetHeight()));
 	if (img->SavePng(fs) > 0)
 	{
 		deng->DeleteImage(img);
@@ -2049,9 +2049,9 @@ Bool Data::ChartPlotter::SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt
 	return false;
 }
 
-UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
+UIntOS Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
-	UOSInt retCnt = 2;
+	UIntOS retCnt = 2;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	Double scale;
@@ -2064,7 +2064,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<
 	locations->Add(0);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 
 	scale = minLeng * (max - min) / leng;
 	lScale = (Int32)(Math_Log10(scale));
@@ -2091,7 +2091,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<
 				locations->Add(pos);
 				if (unit.SetTo(s))
 					sptr = s->ConcatTo(sptr);
-				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				retCnt++;
 			}
 			scale += dScale;
@@ -2102,13 +2102,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<
 	locations->Add(leng);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
+UIntOS Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
 {
-	UOSInt retCnt = 2;
+	UIntOS retCnt = 2;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Double scale;
@@ -2121,7 +2121,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<
 	locations->Add(0);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 
 	scale = minLeng * (Double)(max - min) / leng;
 	lScale = (Int32)(Math_Log10(scale));
@@ -2148,7 +2148,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<
 			locations->Add(pos);
 			if (unit.SetTo(s))
 				sptr = s->ConcatTo(sptr);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 			retCnt++;
 		}
 		scale += dScale;
@@ -2158,13 +2158,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<
 	locations->Add(leng);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit)
+UIntOS Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit)
 {
-	UOSInt retCnt = 2;
+	UIntOS retCnt = 2;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Double scale;
@@ -2177,7 +2177,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN
 	locations->Add(0);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 
 	scale = minLeng * (Double)(max - min) / leng;
 	lScale = (Int32)(Math_Log10(scale));
@@ -2204,7 +2204,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN
 			locations->Add(pos);
 			if (unit.SetTo(s))
 				sptr = s->ConcatTo(sptr);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 			retCnt++;
 		}
 		scale += dScale;
@@ -2214,13 +2214,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN
 	locations->Add(leng);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
-	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
+UIntOS Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
 {
-	UOSInt retCnt = 2;
+	UIntOS retCnt = 2;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Int64 timeDif;
@@ -2245,7 +2245,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 	{
 		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		
 		Double lastPos = 0;
 		currDate = min;
@@ -2259,20 +2259,20 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 			{
 				sptr = currDate.ToString(sbuff, dateFormat);
 				locations->Add(pos);
-				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				retCnt++;
 			}
 		}
 
 		sptr = max->ToString(sbuff, dateFormat);
 		locations->Add(leng);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	}
 	else if (!timeFormat.SetTo(nntimeFormat) || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
 	{
 		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 
 		scale = Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng;
 		lScale = (Int32)(Math_Log10(scale));
@@ -2298,7 +2298,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 			{
 				sptr = currDate.ToString(sbuff, dateFormat);
 				locations->Add(pos);
-				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				retCnt++;
 			}
 			currDate.AddDay(iScale);
@@ -2306,7 +2306,7 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 
 		sptr = max->ToString(sbuff, dateFormat);
 		locations->Add(leng);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	}
 	else if (Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng >= 1)
 	{
@@ -2314,13 +2314,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		
 		scale = Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng;
@@ -2347,13 +2347,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 				{
 					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				else
 				{
 					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -2364,13 +2364,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 	}
 	else if (!hasSecond || Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng >= 1)
@@ -2379,13 +2379,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 
 		scale = Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng;
@@ -2416,13 +2416,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 				{
 					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				else
 				{
 					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -2433,13 +2433,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 	}
 	else if (Data::DateTimeUtil::MS2Seconds(timeDif) >= 1)
@@ -2448,13 +2448,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 
 		scale = Data::DateTimeUtil::MS2Seconds(timeDif) * minLeng / leng;
@@ -2485,13 +2485,13 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 				{
 					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				else
 				{
 					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
-					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -2502,57 +2502,57 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 		{
 			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		else
 		{
 			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
-			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 	}
 	else
 	{
 		sptr = min->ToString(sbuff, nntimeFormat);
 		locations->Add(0);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 
 		sptr = max->ToString(sbuff, nntimeFormat);
 		locations->Add(leng);
-		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 	}
 	return retCnt;
 }
 
-NN<Data::ChartPlotter::TimeData> Data::ChartPlotter::NewData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt)
+NN<Data::ChartPlotter::TimeData> Data::ChartPlotter::NewData(UnsafeArray<Data::Timestamp> data, UIntOS dataCnt)
 {
 	NN<TimeData> d;
 	NEW_CLASSNN(d, TimeData(data, dataCnt));
 	return d;
 }
 
-NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewData(UnsafeArray<Int32> data, UOSInt dataCnt)
+NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewData(UnsafeArray<Int32> data, UIntOS dataCnt)
 {
 	NN<Int32Data> d;
 	NEW_CLASSNN(d, Int32Data(data, dataCnt));
 	return d;
 }
 
-NN<Data::ChartPlotter::UInt32Data> Data::ChartPlotter::NewData(UnsafeArray<UInt32> data, UOSInt dataCnt)
+NN<Data::ChartPlotter::UInt32Data> Data::ChartPlotter::NewData(UnsafeArray<UInt32> data, UIntOS dataCnt)
 {
 	NN<UInt32Data> d;
 	NEW_CLASSNN(d, UInt32Data(data, dataCnt));
 	return d;
 }
 
-NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(UnsafeArray<Double> data, UOSInt dataCnt)
+NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(UnsafeArray<Double> data, UIntOS dataCnt)
 {
 	NN<DoubleData> d;
 	NEW_CLASSNN(d, DoubleData(data, dataCnt));
 	return d;
 }
 
-NN<Data::ChartPlotter::TimeData> Data::ChartPlotter::NewDataDate(UnsafeArray<Int64> ticksData, UOSInt dataCnt)
+NN<Data::ChartPlotter::TimeData> Data::ChartPlotter::NewDataDate(UnsafeArray<Int64> ticksData, UIntOS dataCnt)
 {
 	NN<TimeData> d;
 	NEW_CLASSNN(d, TimeData(ticksData, dataCnt));
@@ -2587,10 +2587,10 @@ NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(NN<Data::ReadingL
 	return d;
 }
 
-NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewDataSeq(Int32 startSeq, UOSInt count)
+NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewDataSeq(Int32 startSeq, UIntOS count)
 {
 	UnsafeArray<Int32> iArr = MemAllocArr(Int32, count);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < count)
 	{
 		iArr[i] = startSeq;

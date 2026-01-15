@@ -16,14 +16,14 @@ namespace DB
 		{
 			NN<Text::String> tableName;
 			NN<TableDef> def;
-			UOSInt dataCnt;
+			UIntOS dataCnt;
 		} TableInfo;
 	private:
 		NN<DB::DBTool> db;
 		NN<DB::DBModel> model;
 		Sync::Mutex tableMut;
 		Data::ICaseStringMapNN<TableInfo> tableMap;
-		UOSInt cacheCnt;
+		UIntOS cacheCnt;
 
 		Optional<TableInfo> GetTableInfo(Text::CStringNN tableName);
 		Optional<TableInfo> GetTableInfo(NN<TableDef> tableDef);
@@ -31,8 +31,8 @@ namespace DB
         DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db);
         ~DBCache();
 
-		OSInt GetRowCount(Text::CStringNN tableName); //-1 = table not found
-		UOSInt QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page);
+		IntOS GetRowCount(Text::CStringNN tableName); //-1 = table not found
+		UIntOS QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page);
 		DB::DBRow *GetTableItem(Text::CStringNN tableName, Int64 pk);
 		void FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows);
 		void FreeTableItem(NN<DB::DBRow> row);

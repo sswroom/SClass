@@ -62,12 +62,12 @@ jclass Java::JavaMouseEvent::GetClass()
 
 UI::GUIControl::MouseButton Java::JavaMouseEvent::Button2MouseButton(Button btn)
 {
-	if ((OSInt)btn == 0)
+	if ((IntOS)btn == 0)
 	{
 		return UI::GUIControl::MBTN_LEFT;
 	}
 	else
 	{
-		return (UI::GUIControl::MouseButton)((OSInt)btn - 1);
+		return (UI::GUIControl::MouseButton)((IntOS)btn - 1);
 	}
 }

@@ -50,8 +50,8 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 {
 	Double ldiff;
 	Double minDiff;
-	UOSInt minInd;
-	UOSInt i;
+	UIntOS minInd;
+	UIntOS i;
 	Double logResol = Math_Log10(scale);
 	minInd = 0;
 	minDiff = 100000.0;
@@ -128,7 +128,7 @@ Bool Map::LeveledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::LeveledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
+Bool Map::LeveledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints, Math::Coord2DDbl ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -168,7 +168,7 @@ Bool Map::LeveledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> sr
 	return (imaxX >= 0) && (iminX < scnSize.x) && (imaxY >= 0) && (iminY < scnSize.y);
 }
 
-Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
+Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UIntOS nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -207,7 +207,7 @@ Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
+	return (imaxX >= 0) && (iminX < (IntOS)scnSize.x) && (imaxY >= 0) && (iminY < (IntOS)scnSize.y);
 }
 
 Math::Coord2DDbl Map::LeveledMapView::MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const

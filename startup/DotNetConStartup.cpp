@@ -59,16 +59,16 @@ void __stdcall ConsoleControl_SignalExit(NN<Core::ProgControl> progCtrl)
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	if (ctrl->argv == 0)
 	{
 		Int32 argc;
-		OSInt i;
+		IntOS i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 		ctrl->argv = MemAlloc(UTF8Char *, argc);
-		ctrl->argc = (UOSInt)(OSInt)argc;
+		ctrl->argc = (UIntOS)(IntOS)argc;
 		i = argc;
 		while (i-- > 0)
 		{
@@ -109,7 +109,7 @@ void ConsoleControl_Destroy(Core::ConsoleControl *ctrl)
 	DEL_CLASS(ctrl->evt);
 	if (ctrl->argv)
 	{
-		OSInt i = ctrl->argc;
+		IntOS i = ctrl->argc;
 		while (i-- > 0)
 		{
 			Text::StrDelNew(ctrl->argv[i]);

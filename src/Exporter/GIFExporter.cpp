@@ -34,7 +34,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 	{
 		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 			return IO::FileExporter::SupportType::NormalStream;
-		OSInt i;
+		IntOS i;
 		Bool found = false;
 		UnsafeArray<UInt8> pal;
 		if (img->pal.SetTo(pal))
@@ -63,7 +63,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::GIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -88,9 +88,9 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UnsafeArray<UInt8> pal;
 	if (!imgList->GetImage(0, 0).SetTo(img) || !img->pal.SetTo(pal))
 		return false;
-	UOSInt transparentIndex = INVALID_INDEX;
-	UOSInt i;
-	UOSInt j;
+	UIntOS transparentIndex = INVALID_INDEX;
+	UIntOS i;
+	UIntOS j;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
 		if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
@@ -163,7 +163,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		stm->Write(Data::ByteArrayR(buff, 11));
 
 		UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, img->info.dispSize.CalcArea());
-		UOSInt imgSize;
+		UIntOS imgSize;
 		Data::Compress::LZWEncStream2 *lzw;
 		imgSize = img->info.dispSize.CalcArea() >> 1;
 		if (imgSize < 4096)
@@ -189,7 +189,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				buff[0] = (UInt8)(imgSize - i);
 				MemCopyNO(&buff[1], &imgData[i], buff[0]);
-				stm->Write(Data::ByteArrayR(buff, (UOSInt)buff[0] + 1));
+				stm->Write(Data::ByteArrayR(buff, (UIntOS)buff[0] + 1));
 				i += buff[0];
 			}
 		}

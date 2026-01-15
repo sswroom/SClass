@@ -4,13 +4,13 @@
 
 extern "C"
 {
-void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	UOSInt i;
-	UOSInt j;
-	OSInt *iindex;
+	UIntOS i;
+	UIntOS j;
+	IntOS *iindex;
 	Int64 *wweight;
 	Int32x4 v1;
 	Int32x4 v2;
@@ -56,13 +56,13 @@ void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt
 	}
 }
 
-void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	UOSInt i;
-	UOSInt j;
-	OSInt *iindex;
+	UIntOS i;
+	UIntOS j;
+	IntOS *iindex;
 	Int64 *wweight;
 	Int32x4 v1;
 	Int32x4 v2;
@@ -113,13 +113,13 @@ void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, 
 	}
 }
 
-void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	UInt8 *sptr;
 	UInt8 *dptr;
-	UOSInt i;
-	UOSInt j;
-	OSInt *iindex;
+	UIntOS i;
+	UIntOS j;
+	IntOS *iindex;
 	Int64 *wweight;
 	Int32x4 v1;
 	Int32x4 v2;

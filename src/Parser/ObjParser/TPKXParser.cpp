@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::TPKXParser::ParseObject(NN<IO::Par
 	{
 		return 0;
 	}
-	UOSInt rootLen = (UOSInt)rootFD->GetDataSize();
+	UIntOS rootLen = (UIntOS)rootFD->GetDataSize();
 	if (rootLen < 2 && rootLen > 1048576)
 	{
 		rootFD.Delete();

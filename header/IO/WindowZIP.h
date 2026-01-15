@@ -15,7 +15,7 @@ namespace IO
 		~WindowZIP();
 
 		Bool AddFile(const WChar *sourceFile);
-		OSInt GetFileList(Data::ArrayList<const WChar *> *fileList);
+		IntOS GetFileList(Data::ArrayList<const WChar *> *fileList);
 		void FreeFileList(Data::ArrayList<const WChar *> *fileList);
 		Bool ExtractFile(const WChar *fileName, const WChar *destPath);
 	};

@@ -135,7 +135,7 @@ namespace Net
 			this->json->EndUse();
 		}
 
-		Optional<T> GetNewItem(UOSInt index)
+		Optional<T> GetNewItem(UIntOS index)
 		{
 			NN<Text::JSONBase> json;
 			NN<T> t;
@@ -152,7 +152,7 @@ namespace Net
 			return nullptr;
 		}
 
-		UOSInt GetCount() const
+		UIntOS GetCount() const
 		{
 			if (this->json->GetType() == Text::JSONType::Array)
 			{
@@ -169,8 +169,8 @@ namespace Net
 			}
 			NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(this->json);
 			NN<Text::JSONBase> o;
-			UOSInt i = 0;
-			UOSInt j = arr->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = arr->GetArrayLength();
 			while (i < j)
 			{
 				if (!arr->GetArrayValue(i).SetTo(o))
@@ -192,8 +192,8 @@ namespace Net
 				NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(this->json);
 				Text::StringBuilderUTF8 sbPrefix;
 				NN<Text::JSONBase> obj;
-				UOSInt i = 0;
-				UOSInt j = arr->GetArrayLength();
+				UIntOS i = 0;
+				UIntOS j = arr->GetArrayLength();
 				while (i < j)
 				{
 					if (arr->GetArrayValue(i).SetTo(obj))
@@ -201,7 +201,7 @@ namespace Net
 						sbPrefix.ClearStr();
 						sbPrefix.Append(linePrefix);
 						sbPrefix.AppendUTF8Char('[');
-						sbPrefix.AppendUOSInt(i);
+						sbPrefix.AppendUIntOS(i);
 						sbPrefix.AppendUTF8Char(']');
 						T t(obj);
 						t.ToString(sb, sbPrefix.ToCString());
@@ -268,8 +268,8 @@ namespace Net
 	{ \
 		NEW_CLASSNN(field, ArrayNNField<className>(CSTR(name), optional, allowNull)); \
 		NN<Text::JSONObject> val; \
-		UOSInt i = 0; \
-		UOSInt j = arr->GetArrayLength(); \
+		UIntOS i = 0; \
+		UIntOS j = arr->GetArrayLength(); \
 		while (i < j) \
 		{ \
 			if (!arr->GetArrayObject(i).SetTo(val)) \

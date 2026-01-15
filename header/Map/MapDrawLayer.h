@@ -45,7 +45,7 @@ namespace Map
 			Double objDist;
 		};
 	protected:
-		UOSInt nameCol;
+		UIntOS nameCol;
 		NN<Math::CoordinateSystem> csys;
 		Optional<Text::String> layerName;
 
@@ -53,11 +53,11 @@ namespace Map
 		UInt32 lineColor;
 		Double lineWidth;
 		Optional<Media::SharedImage> iconImg;
-		OSInt iconSpotX;
-		OSInt iconSpotY;
+		IntOS iconSpotX;
+		IntOS iconSpotY;
 		Int32 flags;
 
-		static OSInt __stdcall ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2);
+		static IntOS __stdcall ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2);
 	public:
 		enum class MixedData
 		{
@@ -90,8 +90,8 @@ namespace Map
 
 		typedef void (CALLBACKFUNC UpdatedHandler)(AnyType userObj);
 
-		MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys);
-		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys);
+		MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys);
+		MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys);
 		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -102,17 +102,17 @@ namespace Map
 
 		virtual DrawLayerType GetLayerType() const = 0;
 		virtual void SetMixedData(MixedData MixedData);
-		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr) = 0;
-		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
+		virtual UIntOS GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr) = 0;
+		virtual UIntOS GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UIntOS GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() const = 0;
-		virtual UOSInt GetRecordCnt() const = 0;
+		virtual UIntOS GetRecordCnt() const = 0;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr) = 0;
-		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex) = 0;
-		virtual UOSInt GetColumnCnt() const = 0;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const = 0;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const = 0;
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const = 0;
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex) = 0;
+		virtual UIntOS GetColumnCnt() const = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const = 0;
+		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const = 0;
+		virtual Bool GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const = 0;
 		virtual UInt32 GetCodePage() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
@@ -125,16 +125,16 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		virtual UOSInt GetNameCol() const;
-		virtual void SetNameCol(UOSInt nameCol);
-		virtual UOSInt GetGeomCol() const = 0;
+		virtual UIntOS GetNameCol() const;
+		virtual void SetNameCol(UIntOS nameCol);
+		virtual UIntOS GetGeomCol() const = 0;
 
 		virtual ObjectClass GetObjectClass() const = 0;
 		NN<Text::String> GetName() const;
@@ -146,34 +146,34 @@ namespace Map
 		void SetLayerName(Text::CString name);
 
 		virtual Bool IsError() const;
-		virtual Bool GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
-		virtual Bool GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
+		virtual Bool GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UIntOS strIndex);
+		virtual Bool GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UIntOS strIndex);
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 
 		Int64 GetNearestObjectId(NN<GetObjectSess> session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
 		void GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayListNative<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt);
-		OSInt GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
+		IntOS GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList);
 		NN<Map::VectorLayer> CreateEditableLayer();
 
-		Optional<Text::SearchIndexer> CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex);
-		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UOSInt maxResult, UOSInt strIndex);
+		Optional<Text::SearchIndexer> CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UIntOS strIndex);
+		UIntOS SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UIntOS maxResult, UIntOS strIndex);
 		void ReleaseSearchStr(NN<Data::ArrayListString> strArr);
-		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex);
+		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UIntOS strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();
 		Bool HasIconStyle();
 		void SetLineStyle(UInt32 lineColor, Double lineWidth);
 		void SetPGStyle(UInt32 pgColor);
-		void SetIconStyle(NN<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY);
+		void SetIconStyle(NN<Media::SharedImage> iconImg, IntOS iconSpotX, IntOS iconSpotY);
 		UInt32 GetLineStyleColor();
 		Double GetLineStyleWidth();
 		UInt32 GetPGStyleColor();
 		Optional<Media::SharedImage> GetIconStyleImg();
-		OSInt GetIconStyleSpotX();
-		OSInt GetIconStyleSpotY();
+		IntOS GetIconStyleSpotX();
+		IntOS GetIconStyleSpotY();
 		Bool IsLabelVisible();
 		void SetLabelVisible(Bool labelVisible);
 
@@ -186,40 +186,40 @@ namespace Map
 		NN<MapDrawLayer> layer;
 		Data::ArrayListInt64 objIds; 
 		Optional<NameArray> nameArr;
-		OSInt currIndex;
+		IntOS currIndex;
 
 		Int64 GetCurrObjId();
-		UOSInt RemapColIndex(UOSInt colIndex);
+		UIntOS RemapColIndex(UIntOS colIndex);
 	public:
 		MapLayerReader(NN<MapDrawLayer> layer);
 		~MapLayerReader();
 
 		virtual Bool ReadNext();
-		virtual UOSInt ColCount();
-		virtual OSInt GetRowChanged();
+		virtual UIntOS ColCount();
+		virtual IntOS GetRowChanged();
 
-		virtual Int32 GetInt32(UOSInt colIndex);
-		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDblOrNAN(UOSInt colIndex);
-		virtual Bool GetBool(UOSInt colIndex);
-		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Int32 GetInt32(UIntOS colIndex);
+		virtual Int64 GetInt64(UIntOS colIndex);
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff);
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb);
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex);
+		virtual Double GetDblOrNAN(UIntOS colIndex);
+		virtual Bool GetBool(UIntOS colIndex);
+		virtual UIntOS GetBinarySize(UIntOS colIndex);
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
 
-		virtual Bool IsNull(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual Bool IsNull(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 
 		static void GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::MapDrawLayer> layer);
-		static UOSInt GetShapeColSize(Map::DrawLayerType layerType);
-		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
+		static UIntOS GetShapeColSize(Map::DrawLayerType layerType);
+		static Bool GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
 	};
 }
 #endif

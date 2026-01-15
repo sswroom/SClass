@@ -12,9 +12,9 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 {
 	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> me = thread->GetUserObj().GetNN<IO::ProgCtrl::BluetoothCtlProgCtrl>();
 	UInt8 buff[512];
-	UOSInt readSize;
+	UIntOS readSize;
 	Text::PString sarr[2];
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> lastCmd;
 	NN<IO::BTScanLog::ScanRecord3> dev;
 
@@ -304,12 +304,12 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 				}
 				me->cmdReady = true;
 			}
-			sbBuff.SetSubstr((UOSInt)(sarr[0].v - sb.v));
+			sbBuff.SetSubstr((UIntOS)(sarr[0].v - sb.v));
 		}
 	}
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	if (!this->thread.IsRunning())
 	{

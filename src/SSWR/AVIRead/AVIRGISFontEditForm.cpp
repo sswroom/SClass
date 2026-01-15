@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 	dlg.Delete();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
@@ -48,14 +48,14 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(An
 	return UI::EventState::ContinueEvent;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType userObj, UIntOS scrollPos)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	me->currBuffSize = scrollPos;
 	me->UpdateFontPreview();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
@@ -110,7 +110,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Math::Size2DDbl sz;
-	Math::Size2D<UOSInt> usz;
+	Math::Size2D<UIntOS> usz;
 	NN<Media::DrawImage> dimg;
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 			if (this->currBuffSize > 0)
 			{
 				b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
-				dimg->DrawStringB((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b, (UOSInt)Double2Int32(UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
+				dimg->DrawStringB((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b, (UIntOS)Double2Int32(UIntOS2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
 				dimg->DelBrush(b);
 			}
 			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
@@ -183,7 +183,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	this->pbBufferColor->SetBGColor(this->colorConv->ConvRGB8(this->currBuffColor));
 }
 
-SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS fontStyle) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;

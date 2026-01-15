@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 		return;
 	}
 	NN<CaptureFormat> fmt;
-	if (!me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex()).GetOpt<CaptureFormat>().SetTo(fmt))
+	if (!me->cboFormat->GetItem((UIntOS)me->cboFormat->GetSelectedIndex()).GetOpt<CaptureFormat>().SetTo(fmt))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
 		return;
@@ -58,13 +58,13 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		Text::StringBuilderUTF8 sb;
 		Media::VideoCapturer::VideoFormat fmts[80];
 		NN<SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat> cfmt;
-		UOSInt bestSize = 0;
+		UIntOS bestSize = 0;
 		UInt32 bestFmt = 0;
-		UOSInt bestBPP = 0;
-		UOSInt bestIndex = 0;
-		UOSInt currSize;
-		UOSInt fmtCnt;
-		UOSInt i;
+		UIntOS bestBPP = 0;
+		UIntOS bestIndex = 0;
+		UIntOS currSize;
+		UIntOS fmtCnt;
+		UIntOS i;
 		Media::CS::CSConverter::GetSupportedCS(supportedCS);
 
 		devInfo.AppendC(UTF8STRC("Name: "));
@@ -107,9 +107,9 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 			}
 			
 			sb.ClearStr();
-			sb.AppendUOSInt(cfmt->size.x);
+			sb.AppendUIntOS(cfmt->size.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(cfmt->size.y);
+			sb.AppendUIntOS(cfmt->size.y);
 			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -130,9 +130,9 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
 			me->currFormats.Add(cfmt);
 
-			devInfo.AppendUOSInt(cfmt->size.x);
+			devInfo.AppendUIntOS(cfmt->size.x);
 			devInfo.AppendC(UTF8STRC(" x "));
-			devInfo.AppendUOSInt(cfmt->size.y);
+			devInfo.AppendUIntOS(cfmt->size.y);
 			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -198,12 +198,12 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientCont
 	this->currCapture = nullptr;
 	this->capture = nullptr;
 	this->captureMgr.GetDeviceList(this->devInfoList);
-	UOSInt cnt = this->devInfoList.GetCount();
+	UIntOS cnt = this->devInfoList.GetCount();
 	if (cnt == 0)
 	{
 		return;
 	}
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < cnt)
 	{

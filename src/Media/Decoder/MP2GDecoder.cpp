@@ -6,14 +6,14 @@
 #include "Media/Decoder/MP2GDecoder.h"
 #include "Sync/SimpleThread.h"
 
-void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
-	UOSInt endSize = dataSize - 4;
-	UOSInt i;
+	UIntOS endSize = dataSize - 4;
+	UIntOS i;
 	UInt32 fieldOfst;
-	UOSInt endOfst;
-	UOSInt startOfst;
+	UIntOS endOfst;
+	UIntOS startOfst;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
 	Data::ArrayListUInt32 frames;
 	if (ReadMInt32(imgData[0].Ptr()) == 0x000001b3)
@@ -99,7 +99,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	{
 /*		if (ftype == Media::FT_INTERLACED_BFF)
 		{
-			OSInt j = startOfst;
+			IntOS j = startOfst;
 			Int32 srchI;
 			WriteMInt32((UInt8*)&srchI, 0x000001b5);
 			while (*(Int32*)&imgData[0][j] != srchI)
@@ -322,7 +322,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 Media::Decoder::MP2GDecoder::MP2GDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
-	UOSInt size;
+	UIntOS size;
 	this->toRelease = toRelease;
 	this->finfoMode = false;
 	if (!sourceVideo->GetVideoInfo(info, this->frameRateNorm, this->frameRateDenorm, size))
@@ -362,12 +362,12 @@ Bool Media::Decoder::MP2GDecoder::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::Decoder::MP2GDecoder::GetFrameCount()
+UIntOS Media::Decoder::MP2GDecoder::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Media::Decoder::MP2GDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::MP2GDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -386,7 +386,7 @@ void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 	this->finfoMode = false;
 }
 
-Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

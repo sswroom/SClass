@@ -20,8 +20,8 @@ Bool IO::Device::DHT22::ReadData(OutParam<Double> temp, OutParam<Double> rh)
 	Bool laststate = true;
 	UInt32 counter = 0;
 	UInt8 dhtBuff[5];
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 mask;
 	Manage::HiResClock clk;
 	Double t;

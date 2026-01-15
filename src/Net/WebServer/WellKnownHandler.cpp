@@ -53,7 +53,7 @@ Net::WebServer::WellKnownHandler::WellKnownHandler()
 
 Net::WebServer::WellKnownHandler::~WellKnownHandler()
 {
-	UOSInt i = this->acmeMap.GetCount();
+	UIntOS i = this->acmeMap.GetCount();
 	while (i-- > 0)
 	{
 		this->acmeMap.GetItemNoCheck(i)->Release();

@@ -36,8 +36,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
@@ -472,8 +472,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->ParseRequestEnv(req, resp, env, false);
 
 	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
@@ -789,8 +789,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
 		UnsafeArray<UTF8Char> sptr;
@@ -1033,7 +1033,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				{
 					writer.Write(CSTR("<td>"));
 				}
-				sptr = Text::StrUOSInt(sbuff, i + 1);
+				sptr = Text::StrUIntOS(sbuff, i + 1);
 				writer.Write(CSTRP(sbuff, sptr));
 				writer.Write(CSTR("</td>"));
 				i++;
@@ -1154,10 +1154,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
+					if (Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".TIF")))
 					{
 						sptr2[-4] = 0;
-						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+						fileNameList.SortedInsert(Text::String::New(sptr, (UIntOS)(sptr2 - sptr - 4)));
 					}
 				}
 			}
@@ -1181,20 +1181,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
-					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
+					i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
 						sptr2 = &sptr[i];
 					}
-					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)));
+					fileNameList.Add(Text::String::New(sptr, (UIntOS)(sptr2 - sptr)));
 				}
 				sb.ClearStr();
 			}
 		}
 
-		UOSInt colCount = env.scnWidth / GetPreviewSize();
-		UOSInt colWidth = 100 / colCount;
+		UIntOS colCount = env.scnWidth / GetPreviewSize();
+		UIntOS colWidth = 100 / colCount;
 		UInt32 currColumn;
 		if (fileNameList.GetCount() > 0 || species->files.GetCount() > 0 || species->wfiles.GetCount() > 0)
 		{
@@ -1230,7 +1230,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
+				sb.AppendUIntOS(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
 				writer.WriteLine(sb.ToCString());
 				sb.ClearStr();
@@ -1255,9 +1255,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
 				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&fileId="));
 				sb.AppendI32(userFile->id);
 				s = Text::XML::ToNewAttrText(sb.ToString());
@@ -1355,7 +1355,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
+				sb.AppendUIntOS(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
 				writer.WriteLine(sb.ToCString());
 				sb.ClearStr();
@@ -1380,9 +1380,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
 				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&fileWId="));
 				sb.AppendI32(wfile->id);
 				s = Text::XML::ToNewAttrText(sb.ToString());
@@ -1428,7 +1428,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
+				sb.AppendUIntOS(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
 				writer.WriteLine(sb.ToCString());
 				sb.ClearStr();
@@ -1437,7 +1437,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
 				sb.AppendC(UTF8STRC("&file="));
-				sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+				sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<center><a href="));
@@ -1453,11 +1453,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
 				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendUIntOS(GetPreviewSize());
 				sb.AppendC(UTF8STRC("&file="));
-				sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+				sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer.Write(s->ToCString());
 				s->Release();
@@ -1479,7 +1479,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
+				sb.AppendUIntOS(colWidth);
 				sb.AppendC(UTF8STRC("%\"></td>"));
 				while (currColumn < colCount)
 				{
@@ -1888,8 +1888,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 	{
 		Bool imageOnly = subReq.Equals(UTF8STRC("/listimage.html"));
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
@@ -1961,7 +1961,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 			}
 			spList = speciesTmp;
 		}
-		UOSInt perPage = GetPerPage(env.isMobile);
+		UIntOS perPage = GetPerPage(env.isMobile);
 		i = page * perPage;
 		j = i + perPage;
 		if (j > spList->GetCount())
@@ -1992,7 +1992,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
 				sb.Append(LangGetValue(lang, CSTR("Previous")));
-				sb.AppendUOSInt(perPage);
+				sb.AppendUIntOS(perPage);
 				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLine(sb.ToCString());
@@ -2008,7 +2008,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
 				sb.Append(LangGetValue(lang, CSTR("Next")));
-				sb.AppendUOSInt(perPage);
+				sb.AppendUIntOS(perPage);
 				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer.WriteLine(sb.ToCString());
@@ -2027,7 +2027,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
 				sb.Append(LangGetValue(lang, CSTR("Previous")));
-				sb.AppendUOSInt(perPage);
+				sb.AppendUIntOS(perPage);
 				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLine(sb.ToCString());
@@ -2043,7 +2043,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
 				sb.Append(LangGetValue(lang, CSTR("Next")));
-				sb.AppendUOSInt(perPage);
+				sb.AppendUIntOS(perPage);
 				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer.WriteLine(sb.ToCString());
@@ -2088,8 +2088,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		UnsafeArray<UTF8Char> fileNameEnd;
 		Int32 fileId;
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
 		UnsafeArray<UTF8Char> sptr;
@@ -2232,10 +2232,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
+								if (Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+									fileNameList.SortedInsert(Text::String::New(sptr, (UIntOS)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2250,14 +2250,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
 						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
-						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+							IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
@@ -2269,7 +2269,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 									sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 									sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
-									i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
+									i = Text::StrLastIndexOfCharC(sbuff2, (UIntOS)(sptr2 - sbuff2), '.');
 									if (i != INVALID_INDEX)
 									{
 										sbuff2[i] = 0;
@@ -2284,7 +2284,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -2292,7 +2292,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -2529,7 +2529,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
 				writer.WriteLine(CSTR("<tr><td align=\"center\">"));
 
-				i = (UOSInt)species->wfiles.GetIndex(fileId);
+				i = (UIntOS)species->wfiles.GetIndex(fileId);
 				j = species->wfiles.GetCount();
 				if (i + 1 < j)
 				{
@@ -2553,10 +2553,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
+								if (Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+									fileNameList.SortedInsert(Text::String::New(sptr, (UIntOS)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2571,14 +2571,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
 						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
-						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+							IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
@@ -2590,7 +2590,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 									sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 									sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
-									i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
+									i = Text::StrLastIndexOfCharC(sbuff2, (UIntOS)(sptr2 - sbuff2), '.');
 									if (i != INVALID_INDEX)
 									{
 										sbuff2[i] = 0;
@@ -2605,7 +2605,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -2613,7 +2613,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -2718,7 +2718,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		}
 		else if (req->GetQueryValueStr(CSTR("file"), fileName, 512).SetTo(fileNameEnd))
 		{
-			if (Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), UTF8STRC("web")) && fileName[3] == IO::Path::PATH_SEPERATOR)
+			if (Text::StrStartsWithC(fileName, (UIntOS)(fileNameEnd - fileName), UTF8STRC("web")) && fileName[3] == IO::Path::PATH_SEPERATOR)
 			{
 				Text::String *srcURL = 0;
 				Text::String *imgURL = 0;
@@ -2727,8 +2727,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				{
 					sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 					sptr2 = Text::StrConcatC(Text::StrConcat(sbuff2, &fileName[4]), UTF8STRC("."));
-					Text::StrToUpperC(sbuff2, sbuff2, (UOSInt)(sptr2 - sbuff2));
-					IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+					Text::StrToUpperC(sbuff2, sbuff2, (UIntOS)(sptr2 - sbuff2));
+					IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					found = false;
@@ -2746,7 +2746,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							else
 							{
 								Text::StrToUpperC(sarr[0].v, sarr[0].v, sarr[0].leng);
-								if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, sbuff2, (UOSInt)(sptr2 - sbuff2)))
+								if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, sbuff2, (UIntOS)(sptr2 - sbuff2)))
 								{
 									found = true;
 									foundNext = false;
@@ -2793,11 +2793,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sptr2 = Text::StrConcatC(sbuff, UTF8STRC("web"));
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
 						sptr2 = Text::StrConcat(sptr2, sbuff2);
-						i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff), '.');
+						i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr2 - sbuff), '.');
 						if (i != INVALID_INDEX)
 							sbuff[i] = 0;
 						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
-						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 					}
 					else
 					{
@@ -2895,16 +2895,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					{
 						if (pt == IO::Path::PathType::File)
 						{
-							if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
+							if (Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC(".TIF")))
 							{
 								sptr2[-4] = 0;
-								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+								fileNameList.SortedInsert(Text::String::New(sptr, (UIntOS)(sptr2 - sptr - 4)));
 							}
 						}
 					}
 					IO::Path::FindFileClose(sess);
-					i = (UOSInt)fileNameList.SortedIndexOfC(Text::CStringNN(fileName, (UOSInt)(fileNameEnd - fileName)));
-					if ((OSInt)i < 0)
+					i = (UIntOS)fileNameList.SortedIndexOfC(Text::CStringNN(fileName, (UIntOS)(fileNameEnd - fileName)));
+					if ((IntOS)i < 0)
 					{
 						fileNameList.FreeAll();
 						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -2942,14 +2942,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
 						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(i + 1)->v);
-						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+							IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
@@ -2961,7 +2961,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 									sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 									sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
-									i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
+									i = Text::StrLastIndexOfCharC(sbuff2, (UIntOS)(sptr2 - sbuff2), '.');
 									if (i != INVALID_INDEX)
 									{
 										sbuff2[i] = 0;
@@ -2976,7 +2976,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -2984,7 +2984,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -3026,7 +3026,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 
 					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
 					{
-						IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
+						IO::StmData::FileData fd({sbuff, (UIntOS)(sptrEnd - sbuff)}, false);
 						Media::PhotoInfo info(fd);
 						if (info.HasInfo())
 						{
@@ -3103,8 +3103,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		req->GetHTTPFormStr(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
@@ -3211,7 +3211,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 				sb.AppendI32(group->cateId);
 				sb.AppendC(UTF8STRC("&pageNo=1"));
 				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer.Write(s->ToCString());
 				s->Release();
@@ -3251,7 +3251,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(group->cateId);
 					sb.AppendC(UTF8STRC("&searchStr="));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					s = Text::XML::ToNewAttrText(sb.ToString());
 					writer.Write(s->ToCString());
 					s->Release();
@@ -3304,8 +3304,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
@@ -3410,7 +3410,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 				sb.AppendC(UTF8STRC("&pageNo="));
 				sb.AppendU32(pageNo - 1);
 				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer.Write(s->ToCString());
 				s->Release();
@@ -3428,7 +3428,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 				sb.AppendC(UTF8STRC("&pageNo="));
 				sb.AppendU32(pageNo + 1);
 				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer.Write(s->ToCString());
 				s->Release();
@@ -3480,8 +3480,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
@@ -3588,7 +3588,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 					sb.AppendC(UTF8STRC("&pageNo="));
 					sb.AppendU32(pageNo - 1);
 					sb.AppendC(UTF8STRC("&searchStr="));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					s = Text::XML::ToNewAttrText(sb.ToString());
 					writer.Write(s->ToCString());
 					s->Release();
@@ -3606,7 +3606,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 					sb.AppendC(UTF8STRC("&pageNo="));
 					sb.AppendU32(pageNo + 1);
 					sb.AppendC(UTF8STRC("&searchStr="));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					s = Text::XML::ToNewAttrText(sb.ToString());
 					writer.Write(s->ToCString());
 					s->Release();

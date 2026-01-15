@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		options.implicitTimeout = timeoutImplicit;
 		options.cmdTimeout = timeoutCommand;
 		NN<Net::WebDriverSession> sess;
-		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, nullptr, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
+		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetIntOS(), mobile, nullptr, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
 		{
 			if (runner.RunTest(sess, test, Text::String::OrEmpty(me->side->GetURL())->ToCString(), OnStepStatus, me))
 			{
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 				me->DisplayStatus();
 				Text::StringBuilderUTF8 sb;
 				sb.Append(CSTR("Test Run failed: Error Index = "));
-				sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+				sb.AppendIntOS((IntOS)runner.GetLastErrorIndex());
 				sb.Append(CSTR("\r\n"));
 				sb.AppendOpt(runner.GetLastErrorMsg());
 				me->ui->ShowMsgOK(sb.ToCString(), CSTR("Selenium IDE"), me);
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnStepStatus(AnyType userObj, UOSInt index, Data::Duration dur)
+void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnStepStatus(AnyType userObj, UIntOS index, Data::Duration dur)
 {
 	NN<SSWR::AVIRead::AVIRSeleniumIDEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSeleniumIDEForm>();
 	NN<RunStepStatus> status = MemAllocNN(RunStepStatus);
@@ -159,11 +159,11 @@ void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayTest()
 		UnsafeArray<UTF8Char> sptr;
 		NN<IO::SeleniumCommand> command;
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		while (test->GetCommand(i).SetTo(command))
 		{
-			sptr = Text::StrUOSInt(sbuff, i);
+			sptr = Text::StrUIntOS(sbuff, i);
 			j = this->lvCommand->AddItem(CSTRP(sbuff, sptr), command);
 			if (command->GetCommand().SetTo(s)) this->lvCommand->SetSubItem(j, 1, s);
 			if (command->GetTarget().SetTo(s)) this->lvCommand->SetSubItem(j, 2, s);
@@ -179,14 +179,14 @@ void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayStatus()
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<RunStepStatus> status;
-	UOSInt i = 0;
-	UOSInt j = this->statusList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->statusList.GetCount();
 	while (i < j)
 	{
 		status = this->statusList.GetItemNoCheck(i);
 		sptr = status->ts.ToStringNoZone(sbuff);
 		this->lvRunLog->AddItem(CSTRP(sbuff, sptr), 0);
-		sptr = Text::StrUOSInt(sbuff, status->index);
+		sptr = Text::StrUIntOS(sbuff, status->index);
 		this->lvRunLog->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, status->dur.GetTotalSec());
 		this->lvRunLog->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->txtTimeoutCommand->SetRect(104, 76, 150, 23, false);
 
 	NN<IO::SeleniumTest> test;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (side->GetTest(i).SetTo(test))
 	{
 		this->lbTest->AddItem(Text::String::OrEmpty(test->GetName()), test);

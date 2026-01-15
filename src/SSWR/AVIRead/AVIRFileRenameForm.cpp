@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(AnyType userOb
 		return;
 	}
 	sbPath.Append(me->fileName);
-	UOSInt i = sbPath.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = sbPath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sbPath.TrimToLength(i + 1);
 	sbPath.Append(sbName);
 	if (sbExt.GetLength() > 0)
@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(Optional<UI::GUIClientCont
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->fileName = fileName->Clone();
-	UOSInt i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("File rename - "));
 	Text::CStringNN shortName = this->fileName->ToCString().Substring(i + 1);

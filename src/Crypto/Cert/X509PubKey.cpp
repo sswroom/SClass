@@ -25,7 +25,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PubKey::GetFileType() const
 
 void Crypto::Cert::X509PubKey::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt oidLen;
+	UIntOS oidLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> oidPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", oidLen, itemType).SetTo(oidPDU) || itemType != Net::ASN1Util::IT_OID)
@@ -33,13 +33,13 @@ void Crypto::Cert::X509PubKey::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 		return;
 	}
 	KeyType keyType = KeyTypeFromOID(Data::ByteArrayR(oidPDU, oidLen), true);
-	UOSInt keyLen;
+	UIntOS keyLen;
 	UnsafeArray<const UInt8> keyPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2", keyLen, itemType).SetTo(keyPDU) && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
 		sb->Append(KeyTypeGetName(keyType));
 		sb->AppendUTF8Char(' ');
-		sb->AppendUOSInt(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
+		sb->AppendUIntOS(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
 		sb->AppendC(UTF8STRC(" bits"));
 	}
 }
@@ -74,8 +74,8 @@ NN<Net::ASN1Names> Crypto::Cert::X509PubKey::CreateNames() const
 Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt keyTypeLen;
-	UOSInt keyDataLen;
+	UIntOS keyTypeLen;
+	UIntOS keyDataLen;
 	UnsafeArray<const UInt8> keyTypeOID;
 	UnsafeArray<const UInt8> keyData;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", keyTypeLen, itemType).SetTo(keyTypeOID) &&
@@ -96,7 +96,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509PubKey::GetKeyType() const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt keyTypeLen;
+	UIntOS keyTypeLen;
 	UnsafeArray<const UInt8> keyTypeOID;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", keyTypeLen, itemType).SetTo(keyTypeOID))
 	{
@@ -117,7 +117,7 @@ Bool Crypto::Cert::X509PubKey::GetKeyId(const Data::ByteArray &keyId) const
 	return false;
 }
 
-NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Text::String> sourceName)
+NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Text::String> sourceName)
 {
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();
@@ -132,7 +132,7 @@ NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType
 	}
 	else if (keyType == KeyType::ECDSA)
 	{
-		UOSInt pduLen;
+		UIntOS pduLen;
 		Net::ASN1Util::ItemType pduType;
 		UnsafeArray<const UInt8> pdu;
 		if (Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "1.3.1", pduLen, pduType).SetTo(pdu) && pduType == Net::ASN1Util::ItemType::IT_OID)

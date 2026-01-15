@@ -15,9 +15,9 @@ namespace Media
 			ImageGenMgr();
 			virtual ~ImageGenMgr();
 
-			virtual UOSInt GetCount() const;
-			virtual NN<Media::ImageGenerator> GetItemNoCheck(UOSInt index) const;
-			virtual Optional<Media::ImageGenerator> GetItem(UOSInt index) const;
+			virtual UIntOS GetCount() const;
+			virtual NN<Media::ImageGenerator> GetItemNoCheck(UIntOS index) const;
+			virtual Optional<Media::ImageGenerator> GetItem(UIntOS index) const;
 		};
 	}
 }

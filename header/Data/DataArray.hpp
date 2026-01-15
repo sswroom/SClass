@@ -13,12 +13,12 @@ namespace Data
 	{
 	protected:
 		UnsafeArray<T> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 #if defined(CHECK_RANGE)
-		UOSInt prevSize;
+		UIntOS prevSize;
 #endif
 
-		void CheckError(UOSInt ofst) const
+		void CheckError(UIntOS ofst) const
 		{
 #if defined(CHECK_RANGE)
 			if (ofst > buffSize)
@@ -26,7 +26,7 @@ namespace Data
 #endif			
 		}
 
-		void CheckErrorPrev(UOSInt ofst) const
+		void CheckErrorPrev(UIntOS ofst) const
 		{
 #if defined(CHECK_RANGE)
 			if (ofst > prevSize)
@@ -41,7 +41,7 @@ namespace Data
 			this->buffSize = 0;
 		}
 
-		DataArray(UnsafeArray<T> buff, UOSInt buffSize)
+		DataArray(UnsafeArray<T> buff, UIntOS buffSize)
 		{
 			this->buff = buff;
 			this->buffSize = buffSize;
@@ -50,19 +50,19 @@ namespace Data
 #endif			
 		}
 
-		T &operator[](UOSInt index) const
+		T &operator[](UIntOS index) const
 		{
 			CheckError(index + 1);
 			return buff[index];
 		}
 
-		T &operator[](OSInt index) const
+		T &operator[](IntOS index) const
 		{
 #if defined(CHECK_RANGE)
 			if (index < 0)
-				CheckErrorPrev((UOSInt)-index);
+				CheckErrorPrev((UIntOS)-index);
 			else
-				CheckError((UOSInt)index + 1);
+				CheckError((UIntOS)index + 1);
 #endif
 			return buff[index];
 		}
@@ -78,9 +78,9 @@ namespace Data
 		{
 #if defined(CHECK_RANGE)
 			if (index < 0)
-				CheckErrorPrev((UOSInt)-index);
+				CheckErrorPrev((UIntOS)-index);
 			else
-				CheckError((UOSInt)index + 1);
+				CheckError((UIntOS)index + 1);
 #endif
 			return buff[index];
 		}
@@ -101,30 +101,30 @@ namespace Data
 			return this->buff.Ptr();
 		}
 
-		UOSInt GetSize() const
+		UIntOS GetSize() const
 		{
 			return this->buffSize;
 		}
 
 #if defined(CHECK_RANGE)
-		UOSInt GetPrevSize() const
+		UIntOS GetPrevSize() const
 		{
 			return this->prevSize;
 		}
 #endif
 
-		virtual UOSInt GetCount() const
+		virtual UIntOS GetCount() const
 		{
 			return this->buffSize;
 		}
 
-		virtual T GetItem(UOSInt index) const
+		virtual T GetItem(UIntOS index) const
 		{
 			CheckError(index + 1);
 			return buff[index];
 		}
 
-		Data::DataArray<T> SubArray(UOSInt index) const
+		Data::DataArray<T> SubArray(UIntOS index) const
 		{
 			CheckError(index);
 			return DataArray<T>(&buff[index], this->buffSize - index);
@@ -135,7 +135,7 @@ namespace Data
 			return this->buff == ptr.buff && this->buffSize == ptr.buffSize;
 		}
 
-		static Data::DataArray<T> Alloc(UOSInt cnt)
+		static Data::DataArray<T> Alloc(UIntOS cnt)
 		{
 			return Data::DataArray<T>(MemAllocArr(T, cnt), cnt);
 		}

@@ -138,7 +138,7 @@ crc16ritlop4:
 	pop rbx
 	ret
 
-;UInt16 CRC16R_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal)
+;UInt16 CRC16R_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, UInt16 currVal)
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize

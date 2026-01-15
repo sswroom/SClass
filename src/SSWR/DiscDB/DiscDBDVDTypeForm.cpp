@@ -6,9 +6,9 @@ void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("You are viewing "));
-	sptr = Text::StrUOSInt(sptr, this->currIndex + 1);
+	sptr = Text::StrUIntOS(sptr, this->currIndex + 1);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" of "));
-	sptr = Text::StrUOSInt(sptr, this->env->GetDVDTypeCount());
+	sptr = Text::StrUIntOS(sptr, this->env->GetDVDTypeCount());
 	this->lblDisplay->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -61,7 +61,7 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 		{
 			this->newRec = false;
 			this->txtID->SetReadOnly(true);
-			this->currIndex = (UOSInt)this->env->GetDVDTypeIndex(sbID.ToCString());
+			this->currIndex = (UIntOS)this->env->GetDVDTypeIndex(sbID.ToCString());
 			this->currRec = newRec;
 			this->btnCancel->SetVisible(false);
 			this->ShowStatus();

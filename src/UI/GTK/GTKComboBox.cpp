@@ -59,7 +59,7 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 	}
 	else
 	{
-		UOSInt i = this->itemTexts.GetCount();
+		UIntOS i = this->itemTexts.GetCount();
 		NN<Text::String> s;
 		while (i-- > 0)
 		{
@@ -112,9 +112,9 @@ void UI::GTK::GTKComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
-	UOSInt cnt = this->itemTexts.GetCount();
+	UIntOS cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(itemText->Clone());
 	this->items.Add(itemObj);
 	if (!this->autoComplete)
@@ -124,9 +124,9 @@ UOSInt UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	return cnt;
 }
 
-UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
-	UOSInt cnt = this->itemTexts.GetCount();
+	UIntOS cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(Text::String::New(itemText));
 	this->items.Add(itemObj);
 	if (this->model)
@@ -146,9 +146,9 @@ UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	return cnt;
 }
 
-UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKComboBox::InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj)
 {
-	UOSInt cnt = this->itemTexts.GetCount();
+	UIntOS cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		index = cnt;
 	this->itemTexts.Insert(index, itemText->Clone());
@@ -157,9 +157,9 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NN<Text::String> itemText,
 	return index;
 }
 
-UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKComboBox::InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj)
 {
-	UOSInt cnt = this->itemTexts.GetCount();
+	UIntOS cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		index = cnt;
 	this->itemTexts.Insert(index, Text::String::New(itemText));
@@ -168,9 +168,9 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, 
 	return index;
 }
 
-AnyType UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
+AnyType UI::GTK::GTKComboBox::RemoveItem(UIntOS index)
 {
-	UOSInt cnt = this->itemTexts.GetCount();
+	UIntOS cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		return 0;
 	Optional<Text::String> s = this->itemTexts.RemoveAt(index);
@@ -182,7 +182,7 @@ AnyType UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
 
 void UI::GTK::GTKComboBox::ClearItems()
 {
-	UOSInt i = this->itemTexts.GetCount();
+	UIntOS i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
 		this->itemTexts.GetItemNoCheck(i)->Release();
@@ -192,19 +192,19 @@ void UI::GTK::GTKComboBox::ClearItems()
 	gtk_combo_box_text_remove_all((GtkComboBoxText*)this->hwnd.OrNull());
 }
 
-UOSInt UI::GTK::GTKComboBox::GetCount()
+UIntOS UI::GTK::GTKComboBox::GetCount()
 {
 	return this->itemTexts.GetCount();
 }
 
-void UI::GTK::GTKComboBox::SetSelectedIndex(UOSInt index)
+void UI::GTK::GTKComboBox::SetSelectedIndex(UIntOS index)
 {
 	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd.OrNull(), (gint)index);
 }
 
-UOSInt UI::GTK::GTKComboBox::GetSelectedIndex()
+UIntOS UI::GTK::GTKComboBox::GetSelectedIndex()
 {
-	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd.OrNull());
+	return (UIntOS)(IntOS)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd.OrNull());
 }
 
 AnyType UI::GTK::GTKComboBox::GetSelectedItem()
@@ -212,7 +212,7 @@ AnyType UI::GTK::GTKComboBox::GetSelectedItem()
 	return this->items.GetItem(this->GetSelectedIndex());
 }
 
-AnyType UI::GTK::GTKComboBox::GetItem(UOSInt index)
+AnyType UI::GTK::GTKComboBox::GetItem(UIntOS index)
 {
 	return this->items.GetItem(index);
 }
@@ -234,7 +234,7 @@ void UI::GTK::GTKComboBox::SetArea(Double left, Double top, Double right, Double
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-OSInt UI::GTK::GTKComboBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKComboBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -244,7 +244,7 @@ void UI::GTK::GTKComboBox::UpdatePos(Bool redraw)
 	/////////////////////////	
 }
 
-void UI::GTK::GTKComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
+void UI::GTK::GTKComboBox::SetTextSelection(UIntOS startPos, UIntOS endPos)
 {
 	if (this->allowEdit)
 	{

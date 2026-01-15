@@ -30,51 +30,51 @@ namespace Media
 				FuncType funcType;
 				UnsafeArray<const UInt8> inPt;
 				UnsafeArray<UInt8> outPt;
-				UOSInt swidth;
-				UOSInt dwidth;
-				UOSInt height;
-				UOSInt tap;
-				UnsafeArray<OSInt> index;
+				UIntOS swidth;
+				UIntOS dwidth;
+				UIntOS height;
+				UIntOS tap;
+				UnsafeArray<IntOS> index;
 				UnsafeArray<Int16> weight;
-				OSInt sstep;
-				OSInt dstep;
+				IntOS sstep;
+				IntOS dstep;
 				UnsafeArrayOpt<UInt8> tmpbuff;
-				UOSInt tmpbuffSize;
+				UIntOS tmpbuffSize;
 			} TaskParam;
 
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				UnsafeArray<Int16> weight;
-				UnsafeArray<OSInt> index;
-				UOSInt tap;
+				UnsafeArray<IntOS> index;
+				UIntOS tap;
 			} LRHPARAMETER;
 
 		private:
-			UOSInt hnTap;
-			UOSInt vnTap;
+			UIntOS hnTap;
+			UIntOS vnTap;
 			Sync::Mutex mut;
 			UnsafeArray<TaskParam> params;
-			UOSInt nThread;
+			UIntOS nThread;
 			NN<Sync::ParallelTask> ptask;
 
 			Double hsSize;
 			Double hsOfst;
-			UOSInt hdSize;
-			UnsafeArrayOpt<OSInt> hIndex;
+			UIntOS hdSize;
+			UnsafeArrayOpt<IntOS> hIndex;
 			UnsafeArrayOpt<Int16> hWeight;
-			UOSInt hTap;
+			UIntOS hTap;
 
 			Double vsSize;
 			Double vsOfst;
-			UOSInt vdSize;
-			OSInt vsStep;
-			UnsafeArrayOpt<OSInt> vIndex;
+			UIntOS vdSize;
+			IntOS vsStep;
+			UnsafeArrayOpt<IntOS> vIndex;
 			UnsafeArrayOpt<Int16> vWeight;
-			UOSInt vTap;
+			UIntOS vTap;
 
-			UOSInt buffW;
-			OSInt buffH;
+			UIntOS buffW;
+			IntOS buffH;
 			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Media::PixelFormat srcPF;
@@ -85,16 +85,16 @@ namespace Media
 			Bool rgbChanged;
 			UnsafeArrayOpt<UInt8> rgbTable;
 
-			void SetupInterpolationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupDecimationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupInterpolationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupDecimationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameterV(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			void SetupDecimationParameterV(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			void SetupInterpolationParameterH(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			void SetupDecimationParameterH(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
 
-			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int16> weight, OSInt sstep, OSInt dstep, UOSInt swidth);
-			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int16> weight, OSInt sstep, OSInt dstep);
-			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int16> weight, IntOS sstep, IntOS dstep, UIntOS swidth);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int16> weight, IntOS sstep, IntOS dstep);
+			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep);
+			void MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep);
 
 			void UpdateRGBTable();
 
@@ -102,10 +102,10 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerW8_8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess);
+			LanczosResizerW8_8(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~LanczosResizerW8_8();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight);
 			virtual Bool Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg);
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);

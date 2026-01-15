@@ -33,8 +33,8 @@ namespace Map
 
 		NN<Text::String> GetSourceNameObj();
 
-		UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		void CloseReader(NN<DB::DBReader> r);
 		void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);

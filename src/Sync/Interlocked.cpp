@@ -21,7 +21,7 @@ UInt64 Sync::Interlocked::IncrementU64(NN<UInt64> val)
 	return Interlocked_IncrementU64(val.Ptr());
 }
 
-OSInt Sync::Interlocked::IncrementOS(NN<OSInt> val)
+IntOS Sync::Interlocked::IncrementOS(NN<IntOS> val)
 {
 #if _OSINT_SIZE == 64
 	return Interlocked_IncrementI64(val.Ptr());
@@ -30,7 +30,7 @@ OSInt Sync::Interlocked::IncrementOS(NN<OSInt> val)
 #endif
 }
 
-UOSInt Sync::Interlocked::IncrementUOS(NN<UOSInt> val)
+UIntOS Sync::Interlocked::IncrementUOS(NN<UIntOS> val)
 {
 #if _OSINT_SIZE == 64
 	return Interlocked_IncrementU64(val.Ptr());
@@ -59,7 +59,7 @@ UInt64 Sync::Interlocked::DecrementU64(NN<UInt64> val)
 	return Interlocked_DecrementU64(val.Ptr());
 }
 
-OSInt Sync::Interlocked::DecrementOS(NN<OSInt> val)
+IntOS Sync::Interlocked::DecrementOS(NN<IntOS> val)
 {
 #if _OSINT_SIZE == 64
 	return Interlocked_DecrementI64(val.Ptr());
@@ -68,7 +68,7 @@ OSInt Sync::Interlocked::DecrementOS(NN<OSInt> val)
 #endif
 }
 
-UOSInt Sync::Interlocked::DecrementUOS(NN<UOSInt> val)
+UIntOS Sync::Interlocked::DecrementUOS(NN<UIntOS> val)
 {
 #if _OSINT_SIZE == 64
 	return Interlocked_DecrementU64(val.Ptr());

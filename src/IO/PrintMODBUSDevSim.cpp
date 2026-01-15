@@ -16,22 +16,22 @@ Text::CStringNN IO::PrintMODBUSDevSim::GetName()
 	return CSTR("Debug Print");
 }
 
-UOSInt IO::PrintMODBUSDevSim::GetValueCount()
+UIntOS IO::PrintMODBUSDevSim::GetValueCount()
 {
 	return 0;
 }
 
-Text::CString IO::PrintMODBUSDevSim::GetValueName(UOSInt index)
+Text::CString IO::PrintMODBUSDevSim::GetValueName(UIntOS index)
 {
 	return nullptr;
 }
 
-Bool IO::PrintMODBUSDevSim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::PrintMODBUSDevSim::GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
 
-Bool IO::PrintMODBUSDevSim::ToggleValue(UOSInt index)
+Bool IO::PrintMODBUSDevSim::ToggleValue(UIntOS index)
 {
 	return false;
 }

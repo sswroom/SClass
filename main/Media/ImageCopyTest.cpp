@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::HiResClock clk;
 	UInt8 *imgBuff1;
 	UInt8 *imgBuff2;
-	OSInt i;
+	IntOS i;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(imgCopy, Media::ImageCopy());
 	imgBuff1 = MemAllocA(UInt8, WIDTH * HEIGHT * 4);

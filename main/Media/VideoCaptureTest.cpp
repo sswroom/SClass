@@ -23,7 +23,7 @@ void __stdcall FrameChangeHdlr(Media::VideoSource::FrameChange frChg, AnyType us
 {
 }
 
-void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 fnum = frameCnt;
 	if (fnum == 1)
@@ -39,7 +39,7 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArra
 		NN<Media::CS::CSConverter> nnconverter;
 		if (converter.SetTo(nnconverter))
 		{
-			nnconverter->ConvertV2(imgData, simg->data, info.dispSize.x, info.dispSize.y, info.storeSize.x, info.storeSize.y, (OSInt)info.storeSize.x * 4, frameType, info.ycOfst);
+			nnconverter->ConvertV2(imgData, simg->data, info.dispSize.x, info.dispSize.y, info.storeSize.x, info.storeSize.y, (IntOS)info.storeSize.x * 4, frameType, info.ycOfst);
 		}
 		{
 			IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -56,10 +56,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Media::ColorManagerSess> colorSess;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 	NN<Media::VideoCaptureMgr::DeviceInfo> devInfo;
-	UOSInt cnt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt devNo;
+	UIntOS cnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS devNo;
 	Bool succ;
 	Text::StringBuilderUTF8 sb;
 	Bool isRunning;
@@ -69,7 +69,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 tmpBuff[4];
 	UInt32 prefFmt = 0;
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
@@ -104,7 +104,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Device Count = "));
-		sb.AppendUOSInt(cnt);
+		sb.AppendUIntOS(cnt);
 		console->WriteLine(sb.ToCString());
 		i = 0;
 		while (i < cnt)
@@ -114,7 +114,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("Type = "));
 			sb.AppendI32(devInfo->devType);
 			sb.AppendC(UTF8STRC(", Index "));
-			sb.AppendUOSInt(devInfo->devId);
+			sb.AppendUIntOS(devInfo->devId);
 			sb.AppendC(UTF8STRC(", Name = "));
 			sb.AppendSlow(devInfo->devName);
 			console->WriteLine(sb.ToCString());
@@ -133,16 +133,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				UInt32 maxFmt = 0;
 				UInt32 maxBpp = 0;
-				UOSInt maxWidth = 0;
-				UOSInt maxHeight = 0;
-				UOSInt maxSize = 0;
+				UIntOS maxWidth = 0;
+				UIntOS maxHeight = 0;
+				UIntOS maxSize = 0;
 				UInt32 maxRateNumer = 0;
 				UInt32 maxRateDenom = 0;
-				UOSInt thisSize;
+				UIntOS thisSize;
 				
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
-				UOSInt frameMaxSize;
+				UIntOS frameMaxSize;
 				Media::VideoCapturer::VideoFormat *formats;
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 
@@ -180,9 +180,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						sb.AppendC((const UTF8Char*)&formats[i].info.fourcc, 4);
 					}
 					sb.AppendC(UTF8STRC(", Size = "));
-					sb.AppendUOSInt(formats[i].info.dispSize.x);
+					sb.AppendUIntOS(formats[i].info.dispSize.x);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendUOSInt(formats[i].info.dispSize.y);
+					sb.AppendUIntOS(formats[i].info.dispSize.y);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(formats[i].info.storeBPP);
 					sb.AppendC(UTF8STRC(", rate = "));
@@ -238,13 +238,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						sb.AppendC((const UTF8Char*)&maxFmt, 4);
 					}
 					sb.AppendC(UTF8STRC(", Size = "));
-					sb.AppendUOSInt(maxWidth);
+					sb.AppendUIntOS(maxWidth);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendUOSInt(maxHeight);
+					sb.AppendUIntOS(maxHeight);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(maxBpp);
 					console->WriteLine(sb.ToCString());
-					capture->SetPreferSize(Math::Size2D<UOSInt>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
+					capture->SetPreferSize(Math::Size2D<UIntOS>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 				}
 
 				i = 0;
@@ -272,9 +272,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						sb.AppendC((const UTF8Char*)&info.fourcc, 4);
 					}
 					sb.AppendC(UTF8STRC(", Size = "));
-					sb.AppendUOSInt(info.dispSize.x);
+					sb.AppendUIntOS(info.dispSize.x);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendUOSInt(info.dispSize.y);
+					sb.AppendUIntOS(info.dispSize.y);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(info.storeBPP);
 					sb.AppendC(UTF8STRC(", rate = "));

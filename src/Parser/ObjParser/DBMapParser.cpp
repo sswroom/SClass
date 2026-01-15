@@ -42,11 +42,11 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 	///////////////////////////
 /*	Map::MapLayerCollection *layerColl;
 	Data::ArrayList<Text::String *> tableNames;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt xCol;
-	OSInt yCol;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS xCol;
+	IntOS yCol;
 	DB::SharedDBConn *sdb;
 
 	//NEW_CLASS(sdb, DB::SharedDBConn(db

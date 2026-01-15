@@ -2304,9 +2304,9 @@ IO::DeviceDB::SDCardInfo IO::DeviceDB::emmcList[] = {
 
 Optional<const IO::DeviceDB::USBDeviceInfo> IO::DeviceDB::GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(usbList) / sizeof(usbList[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(usbList) / sizeof(usbList[0])) - 1;
+	IntOS k;
 	USBDeviceInfo *usb;
 	if (bcdDevice == 0xffff)
 	{
@@ -2377,9 +2377,9 @@ Optional<const IO::DeviceDB::USBDeviceInfo> IO::DeviceDB::GetUSBInfo(UInt16 vend
 
 Optional<const IO::DeviceDB::DeviceInfo> IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(pciList) / sizeof(pciList[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(pciList) / sizeof(pciList[0])) - 1;
+	IntOS k;
 	DeviceInfo *pci;
 
 	while (i <= j)
@@ -2412,9 +2412,9 @@ Optional<const IO::DeviceDB::DeviceInfo> IO::DeviceDB::GetPCIInfo(UInt16 vendorI
 
 Text::CStringNN IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(usbVendors) / sizeof(usbVendors[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(usbVendors) / sizeof(usbVendors[0])) - 1;
+	IntOS k;
 	VendorInfo *vendor;
 
 	while (i <= j)
@@ -2439,9 +2439,9 @@ Text::CStringNN IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)
 
 Text::CStringNN IO::DeviceDB::GetPCIVendorName(UInt16 vendorId)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(pciVendors) / sizeof(pciVendors[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(pciVendors) / sizeof(pciVendors[0])) - 1;
+	IntOS k;
 	VendorInfo *vendor;
 
 	while (i <= j)

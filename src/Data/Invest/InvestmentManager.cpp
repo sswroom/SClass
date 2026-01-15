@@ -12,7 +12,7 @@
 #define ASSETSFILE CSTR("Assets.csv")
 #define TRADEFILE CSTR("Trade.csv")
 
-OSInt Data::Invest::TradeDetailComparator::Compare(NN<TradeDetail> a, NN<TradeDetail> b) const
+IntOS Data::Invest::TradeDetailComparator::Compare(NN<TradeDetail> a, NN<TradeDetail> b) const
 {
 	return a->tranBeginDate.CompareTo(b->tranBeginDate);
 }
@@ -65,7 +65,7 @@ Bool Data::Invest::InvestmentManager::LoadAsset(NN<Asset> ass)
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->path);
 	sb.Append(CSTR("Asset_"));
-	sb.AppendUOSInt(ass->index);
+	sb.AppendUIntOS(ass->index);
 	sb.Append(CSTR(".csv"));
 	DB::CSVFile csv(sb.ToCString(), 65001);
 	NN<DB::DBReader> r;
@@ -121,14 +121,14 @@ Data::Timestamp Data::Invest::InvestmentManager::ParseTime(NN<Text::String> s, D
 
 void Data::Invest::InvestmentManager::AddTradeEntry(NN<TradeEntry> ent)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tradeList.GetCount() - 1;
-	OSInt k; 
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tradeList.GetCount() - 1;
+	IntOS k; 
 	NN<TradeEntry> e;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		e = this->tradeList.GetItemNoCheck((UOSInt)k);
+		e = this->tradeList.GetItemNoCheck((UIntOS)k);
 		if (e->fromDetail.tranBeginDate > ent->fromDetail.tranBeginDate)
 		{
 			j = k - 1;
@@ -142,18 +142,18 @@ void Data::Invest::InvestmentManager::AddTradeEntry(NN<TradeEntry> ent)
 			i++;
 			while (i <= j)
 			{
-				e = this->tradeList.GetItemNoCheck((UOSInt)i);
+				e = this->tradeList.GetItemNoCheck((UIntOS)i);
 				if (e->fromDetail.tranBeginDate > ent->fromDetail.tranBeginDate)
 				{
 					break;
 				}
 				i++;
 			}
-			this->tradeList.Insert((UOSInt)i, ent);
+			this->tradeList.Insert((UIntOS)i, ent);
 			return;
 		}
 	}
-	this->tradeList.Insert((UOSInt)i, ent);
+	this->tradeList.Insert((UIntOS)i, ent);
 	return;
 }
 
@@ -281,7 +281,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 					{
 						priceTime = 0;
 					}
-					this->AddTransactionAsset(startTime, endTime, priceTime, (UOSInt)r->GetInt64(6), r->GetDblOrNAN(8), r->GetDblOrNAN(5));
+					this->AddTransactionAsset(startTime, endTime, priceTime, (UIntOS)r->GetInt64(6), r->GetDblOrNAN(8), r->GetDblOrNAN(5));
 				}
 				else if (type == TradeType::AssetInterest)
 				{
@@ -291,7 +291,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 					{
 						endTime = 0;
 					}
-					this->AddTransactionAInterest(startTime, endTime, (UOSInt)r->GetInt64(3), r->GetDblOrNAN(8));
+					this->AddTransactionAInterest(startTime, endTime, (UIntOS)r->GetInt64(3), r->GetDblOrNAN(8));
 				}
 				else if (type == TradeType::AccountInterest)
 				{
@@ -308,7 +308,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 Data::Invest::InvestmentManager::~InvestmentManager()
 {
 	this->path->Release();
-	UOSInt i = this->currMap.GetCount();
+	UIntOS i = this->currMap.GetCount();
 	NN<Currency> curr;
 	while (i-- > 0)
 	{
@@ -363,8 +363,8 @@ Bool Data::Invest::InvestmentManager::SaveAssets() const
 	sb.Append(CSTR("Currency,ShortName,FullName\r\n"));
 	NN<Asset> ass;
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt j = this->assetList.GetCount();;
+	UIntOS i = 0;
+	UIntOS j = this->assetList.GetCount();;
 	while (i < j)
 	{
 		ass = this->assetList.GetItemNoCheck(i);
@@ -405,8 +405,8 @@ Bool Data::Invest::InvestmentManager::SaveCurrency(NN<Currency> curr) const
 		return false;
 	sb.ClearStr();
 	sb.Append(CSTR("Time,Value\r\n"));
-	UOSInt i = 0;
-	UOSInt j = curr->tsList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = curr->tsList.GetCount();
 	while (i < j)
 	{
 		sb.AppendI64(curr->tsList.GetItem(i).ToTicks());
@@ -432,15 +432,15 @@ Bool Data::Invest::InvestmentManager::SaveAsset(NN<Asset> ass) const
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->path);
 	sb.Append(CSTR("Asset_"));
-	sb.AppendUOSInt(ass->index);
+	sb.AppendUIntOS(ass->index);
 	sb.Append(CSTR(".csv"));
 	IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 		return false;
 	sb.ClearStr();
 	sb.Append(CSTR("Time,Value,Div\r\n"));
-	UOSInt i = 0;
-	UOSInt j = ass->tsList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = ass->tsList.GetCount();
 	while (i < j)
 	{
 		sb.AppendI64(ass->tsList.GetItem(i).ToTicks());
@@ -478,24 +478,24 @@ Bool Data::Invest::InvestmentManager::SaveTransactions() const
 	sb.ClearStr();
 	sb.Append(CSTR("Type,FromDate,ToDate,FromIndex,FromPriceDate,FromAmount,ToIndex,ToPriceDate,ToAmount,RefRate\r\n"));
 	NN<TradeEntry> ent;
-	UOSInt i = 0;
-	UOSInt j = this->tradeList.GetCount();;
+	UIntOS i = 0;
+	UIntOS j = this->tradeList.GetCount();;
 	while (i < j)
 	{
 		ent = this->tradeList.GetItemNoCheck(i);
-		sb.AppendUOSInt((UOSInt)ent->type);
+		sb.AppendUIntOS((UIntOS)ent->type);
 		sb.AppendUTF8Char(',');
 		sb.AppendI64(ent->fromDetail.tranBeginDate.ToTicks());
 		sb.AppendUTF8Char(',');
 		sb.AppendI64(ent->toDetail.tranEndDate.ToTicks());
 		sb.AppendUTF8Char(',');
-		sb.AppendUOSInt(ent->fromIndex);
+		sb.AppendUIntOS(ent->fromIndex);
 		sb.AppendUTF8Char(',');
 		sb.AppendI64(ent->fromDetail.priceDate.ToTicks());
 		sb.AppendUTF8Char(',');
 		sb.AppendDouble(ent->fromDetail.amount);
 		sb.AppendUTF8Char(',');
-		sb.AppendUOSInt(ent->toIndex);
+		sb.AppendUIntOS(ent->toIndex);
 		sb.AppendUTF8Char(',');
 		sb.AppendI64(ent->toDetail.priceDate.ToTicks());
 		sb.AppendUTF8Char(',');
@@ -517,12 +517,12 @@ Bool Data::Invest::InvestmentManager::SaveTransactions() const
 	return true;
 }
 
-Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt, Bool invert) const
+Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt, Bool invert) const
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
-	UOSInt colCnt = r->ColCount();
+	UIntOS colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
 	{
 		db->CloseReader(r);
@@ -552,12 +552,12 @@ Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::R
 			{
 				value = 1 / value;
 			}
-			OSInt index = curr->tsList.SortedIndexOf(ts);
-			UOSInt i;
+			IntOS index = curr->tsList.SortedIndexOf(ts);
+			UIntOS i;
 			if (index >= 0)
 			{
-				curr->valList.SetItem((UOSInt)index, value);
-				if ((UOSInt)index == curr->valList.GetCount() - 1)
+				curr->valList.SetItem((UIntOS)index, value);
+				if ((UIntOS)index == curr->valList.GetCount() - 1)
 				{
 					curr->current = value;
 				}
@@ -589,18 +589,18 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 	{
 		curr->invert = (value <= 0.001);
 	}
-	OSInt i = curr->tsList.SortedIndexOf(ts);
+	IntOS i = curr->tsList.SortedIndexOf(ts);
 	if (i >= 0)
 	{
-		curr->valList.SetItem((UOSInt)i, value);
-		if ((UOSInt)i == curr->valList.GetCount() - 1)
+		curr->valList.SetItem((UIntOS)i, value);
+		if ((UIntOS)i == curr->valList.GetCount() - 1)
 		{
 			curr->current = value;
 		}
 	}
 	else
 	{
-		UOSInt ui = curr->tsList.SortedInsert(ts);
+		UIntOS ui = curr->tsList.SortedInsert(ts);
 		curr->valList.Insert(ui, value);
 		if (ui == curr->valList.GetCount() - 1)
 		{
@@ -629,9 +629,9 @@ void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data
 	Data::Timestamp endTS = Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr());
 	Data::ArrayListNN<TradeEntry> depositList;
 	NN<TradeEntry> ent;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	i = 0;
 	j = this->tradeList.GetCount();
 	while (i < j)
@@ -710,10 +710,10 @@ void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data
 
 Double Data::Invest::InvestmentManager::CurrencyGetRate(NN<Currency> curr, Data::Timestamp ts)
 {
-	OSInt i = curr->tsList.SortedIndexOf(ts);
+	IntOS i = curr->tsList.SortedIndexOf(ts);
 	if (i >= 0)
 	{
-		return curr->valList.GetItem((UOSInt)i);
+		return curr->valList.GetItem((UIntOS)i);
 	}
 	else if (i == -1)
 	{
@@ -724,7 +724,7 @@ Double Data::Invest::InvestmentManager::CurrencyGetRate(NN<Currency> curr, Data:
 	}
 	else
 	{
-		return curr->valList.GetItem((UOSInt)~i - 1);
+		return curr->valList.GetItem((UIntOS)~i - 1);
 	}
 }
 
@@ -743,12 +743,12 @@ Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text:
 	return ass;
 }
 
-Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
+Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
-	UOSInt colCnt = r->ColCount();
+	UIntOS colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
 	{
 		db->CloseReader(r);
@@ -769,12 +769,12 @@ Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingD
 		value = valStr->ToDoubleOrNAN();
 		if (!ts.IsNull() && !Math::IsNAN(value))
 		{
-			OSInt index = ass->tsList.SortedIndexOf(ts);
-			UOSInt i;
+			IntOS index = ass->tsList.SortedIndexOf(ts);
+			UIntOS i;
 			if (index >= 0)
 			{
-				ass->valList.SetItem((UOSInt)index, value);
-				if ((UOSInt)index == ass->valList.GetCount() - 1)
+				ass->valList.SetItem((UIntOS)index, value);
+				if ((UIntOS)index == ass->valList.GetCount() - 1)
 				{
 					ass->current = value;
 				}
@@ -802,12 +802,12 @@ Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingD
 }
 
 
-Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
+Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
-	UOSInt colCnt = r->ColCount();
+	UIntOS colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
 	{
 		db->CloseReader(r);
@@ -828,10 +828,10 @@ Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::Readi
 		value = valStr->ToDoubleOrNAN();
 		if (!ts.IsNull() && !Math::IsNAN(value))
 		{
-			OSInt index = ass->tsList.SortedIndexOf(ts);
+			IntOS index = ass->tsList.SortedIndexOf(ts);
 			if (index >= 0)
 			{
-				ass->divList.SetItem((UOSInt)index, value);
+				ass->divList.SetItem((UIntOS)index, value);
 				found = true;
 			}
 		}
@@ -848,19 +848,19 @@ Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::Readi
 
 Bool Data::Invest::InvestmentManager::UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue)
 {
-	OSInt i = ass->tsList.SortedIndexOf(ts);
+	IntOS i = ass->tsList.SortedIndexOf(ts);
 	if (i >= 0)
 	{
-		ass->valList.SetItem((UOSInt)i, value);
-		ass->divList.SetItem((UOSInt)i, divValue);
-		if ((UOSInt)i == ass->valList.GetCount() - 1)
+		ass->valList.SetItem((UIntOS)i, value);
+		ass->divList.SetItem((UIntOS)i, divValue);
+		if ((UIntOS)i == ass->valList.GetCount() - 1)
 		{
 			ass->current = value;
 		}
 	}
 	else
 	{
-		UOSInt ui = ass->tsList.SortedInsert(ts);
+		UIntOS ui = ass->tsList.SortedInsert(ts);
 		ass->valList.Insert(ui, value);
 		ass->divList.Insert(ui, divValue);
 		if (ui == ass->valList.GetCount() - 1)
@@ -874,10 +874,10 @@ Bool Data::Invest::InvestmentManager::UpdateAsset(NN<Asset> ass, Data::Timestamp
 
 Double Data::Invest::InvestmentManager::AssetGetPrice(NN<Asset> ass, Data::Timestamp ts) const
 {
-	OSInt i = ass->tsList.SortedIndexOf(ts);
+	IntOS i = ass->tsList.SortedIndexOf(ts);
 	if (i >= 0)
 	{
-		return ass->valList.GetItem((UOSInt)i);
+		return ass->valList.GetItem((UIntOS)i);
 	}
 	else
 	{
@@ -886,7 +886,7 @@ Double Data::Invest::InvestmentManager::AssetGetPrice(NN<Asset> ass, Data::Times
 		{
 			return 0;
 		}
-		return ass->valList.GetItem((UOSInt)i - 1);
+		return ass->valList.GetItem((UIntOS)i - 1);
 	}
 }
 
@@ -894,8 +894,8 @@ Double Data::Invest::InvestmentManager::AssetGetAmount(NN<Asset> ass, Data::Time
 {
 	NN<TradeDetail> t;
 	Double total = 0;
-	UOSInt i = 0;
-	UOSInt j = ass->trades.GetCount();
+	UIntOS i = 0;
+	UIntOS j = ass->trades.GetCount();
 	while (i < j)
 	{
 		t = ass->trades.GetItemNoCheck(i);
@@ -923,9 +923,9 @@ void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date 
 	Data::Timestamp endTS = Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr());
 	Double totalAmount = 0;
 	NN<TradeDetail> t;
-	OSInt si;
-	UOSInt i = 0;
-	UOSInt j = ass->trades.GetCount();
+	IntOS si;
+	UIntOS i = 0;
+	UIntOS j = ass->trades.GetCount();
 	while (i < j)
 	{
 		t = ass->trades.GetItemNoCheck(i);
@@ -939,19 +939,19 @@ void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date 
 	si = ass->tsList.SortedIndexOf(startTS.AddDay(-1));
 	if (si >= 0)
 	{
-		initValue.Set(totalAmount * ass->valList.GetItem((UOSInt)si));
+		initValue.Set(totalAmount * ass->valList.GetItem((UIntOS)si));
 	}
 	else if (si == -1)
 	{
 		initValue.Set(totalAmount);
 	}
-	else if ((UOSInt)~si >= ass->valList.GetCount())
+	else if ((UIntOS)~si >= ass->valList.GetCount())
 	{
 		initValue.Set(totalAmount * ass->valList.GetItem(ass->valList.GetCount() - 1));
 	}
 	else
 	{
-		initValue.Set(totalAmount * ass->valList.GetItem((UOSInt)~si - 1));
+		initValue.Set(totalAmount * ass->valList.GetItem((UIntOS)~si - 1));
 	}
 	while (startDate < endDate)
 	{
@@ -970,19 +970,19 @@ void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date 
 		si = ass->tsList.SortedIndexOf(startTS);
 		if (si >= 0)
 		{
-			valueList->Add(totalAmount * ass->valList.GetItem((UOSInt)si));
+			valueList->Add(totalAmount * ass->valList.GetItem((UIntOS)si));
 		}
 		else if (si == -1)
 		{
 			valueList->Add(totalAmount);
 		}
-		else if ((UOSInt)~si >= ass->valList.GetCount())
+		else if ((UIntOS)~si >= ass->valList.GetCount())
 		{
 			valueList->Add(totalAmount * ass->valList.GetItem(ass->valList.GetCount() - 1));
 		}
 		else
 		{
-			valueList->Add(totalAmount * ass->valList.GetItem((UOSInt)~si - 1));
+			valueList->Add(totalAmount * ass->valList.GetItem((UIntOS)~si - 1));
 		}
 		startDate = startDate.AddDay(1);
 		wd = startDate.GetWeekday();
@@ -999,7 +999,7 @@ void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date 
 
 Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt32 curr1, Double value1, UInt32 curr2, Double value2, Double refRate)
 {
-	UOSInt negCnt = 0;
+	UIntOS negCnt = 0;
 	if (value1 < 0)
 	{
 		negCnt++;
@@ -1020,8 +1020,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 		{
 			c = this->LoadCurrency(curr1);
 			Double sum = 0;
-			UOSInt i = 0;
-			UOSInt j = c->trades.GetCount();
+			UIntOS i = 0;
+			UIntOS j = c->trades.GetCount();
 			while (i < j)
 			{
 
@@ -1044,8 +1044,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 		{
 			c = this->LoadCurrency(curr2);
 			Double sum = 0;
-			UOSInt i = 0;
-			UOSInt j = c->trades.GetCount();
+			UIntOS i = 0;
+			UIntOS j = c->trades.GetCount();
 			while (i < j)
 			{
 
@@ -1148,8 +1148,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionDeposit(Data::Timestamp star
 	{
 		return false;
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (curr != this->localCurrency)
 	{
 		NN<TradeDetail> t;
@@ -1194,7 +1194,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionDeposit(Data::Timestamp star
 	return true;
 }
 
-Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UOSInt assetIndex, Double assetAmount, Double currencyValue)
+Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UIntOS assetIndex, Double assetAmount, Double currencyValue)
 {
 	if (endTime.NotNull())
 	{
@@ -1215,7 +1215,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 	{
 		return false;
 	}
-	UOSInt negCnt = 0;
+	UIntOS negCnt = 0;
 	if (assetAmount < 0)
 	{
 		negCnt++;
@@ -1231,8 +1231,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 
 	NN<TradeDetail> t;
 	NN<Currency> c;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (assetAmount < 0)
 	{
 		Double totalAmount = 0;
@@ -1324,7 +1324,7 @@ Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent,
 	{
 		return false;
 	}
-	UOSInt negCnt = 0;
+	UIntOS negCnt = 0;
 	if (assetAmount < 0)
 	{
 		negCnt++;
@@ -1340,8 +1340,8 @@ Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent,
 
 	NN<TradeDetail> t;
 	NN<Currency> c;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (assetAmount < 0)
 	{
 		Double totalAmount = 0;
@@ -1395,7 +1395,7 @@ Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent,
 	return true;
 }
 
-Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue)
+Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UIntOS assetIndex, Double currencyValue)
 {
 	if (endTime.NotNull())
 	{

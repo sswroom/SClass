@@ -2,7 +2,7 @@
 #include "Math/Math_C.h"
 #include "UI/DObj/DirectObject.h"
 
-UI::DObj::DirectObject::DirectObject(Math::Coord2D<OSInt> tl)
+UI::DObj::DirectObject::DirectObject(Math::Coord2D<IntOS> tl)
 {
 	this->tl = tl;
 	this->currMoveType = MT_NONE;
@@ -13,7 +13,7 @@ UI::DObj::DirectObject::~DirectObject()
 }
 
 
-Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
+Math::Coord2D<IntOS> UI::DObj::DirectObject::GetCurrPos()
 {
 	if (this->currMoveType == MT_NONE)
 	{
@@ -40,13 +40,13 @@ Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
 			if (this->currMoveType == MT_CONSTANT)
 			{
 				Math::Coord2DDbl diff = (this->destTL - this->tl).ToDouble() * dur / this->moveDur;
-				return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
+				return this->tl + Math::Coord2D<IntOS>(Double2IntOS(diff.x), Double2IntOS(diff.y));
 			}
 			else if (this->currMoveType == MT_ACC)
 			{
 				Double currDur = dur;
 				Math::Coord2DDbl diff = (this->destTL - this->tl).ToDouble() / this->moveDur / this->moveDur * currDur * currDur;
-				return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
+				return this->tl + Math::Coord2D<IntOS>(Double2IntOS(diff.x), Double2IntOS(diff.y));
 			}
 			else if (this->currMoveType == MT_ACCDEACC)
 			{
@@ -56,17 +56,17 @@ Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
 				{
 					currDur = this->moveDur - currDur;
 					diff = diff * currDur * currDur;
-					return this->destTL - Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
+					return this->destTL - Math::Coord2D<IntOS>(Double2IntOS(diff.x), Double2IntOS(diff.y));
 				}
 				else
 				{
 					diff = diff * currDur * currDur;
-					return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
+					return this->tl + Math::Coord2D<IntOS>(Double2IntOS(diff.x), Double2IntOS(diff.y));
 				}
 			}
 			else
 			{
-				return Math::Coord2D<OSInt>(0, 0);
+				return Math::Coord2D<IntOS>(0, 0);
 			}
 		}
 	}
@@ -77,9 +77,9 @@ Bool UI::DObj::DirectObject::IsMoving()
 	return this->currMoveType != MT_NONE;
 }
 
-void UI::DObj::DirectObject::MoveToPos(Math::Coord2D<OSInt> destTL, Double dur, MoveType mType)
+void UI::DObj::DirectObject::MoveToPos(Math::Coord2D<IntOS> destTL, Double dur, MoveType mType)
 {
-	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	Math::Coord2D<IntOS> tl = this->GetCurrPos();
 	this->tl = tl;
 	this->destTL = destTL;
 	this->moveDur = dur;

@@ -1,19 +1,19 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 
-extern "C" Bool ByteCountingSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" Bool ByteCountingSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
 	arr += firstIndex;
-	UOSInt arrLen = (UOSInt)(lastIndex - firstIndex + 1);
+	UIntOS arrLen = (UIntOS)(lastIndex - firstIndex + 1);
 	UInt32 *arr2 = MemAlloc(UInt32, arrLen);
 	if (arr2 == 0)
 		return false;
 	UInt32 *arrTmp;
-	UOSInt dynArr3[4][256] = {{0}};
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt m;
+	UIntOS dynArr3[4][256] = {{0}};
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS m;
 	i = 0;
 	while (i < arrLen)
 	{

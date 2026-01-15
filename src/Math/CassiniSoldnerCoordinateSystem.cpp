@@ -40,7 +40,7 @@ Math::Coord2DDbl Math::CassiniSoldnerCoordinateSystem::ToGeographicCoordinateRad
 	Double e = ellipsoid->GetEccentricity();
 	Double e2 = e * e;
 	Double tmpV;
-	UOSInt i = 20;
+	UIntOS i = 20;
 	while (i-- > 0)
 	{
 		tmpV = yMeter - this->CalcM(rLatL);

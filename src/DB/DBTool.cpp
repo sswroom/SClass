@@ -43,7 +43,7 @@ Optional<Net::SSHClient> DB::DBTool::GetSSHClient() const
 	return this->sshCli;
 }
 
-OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
+IntOS DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
@@ -54,7 +54,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
 	Data::Timestamp t2 = Data::Timestamp::UtcNow();
-	OSInt i = this->db->ExecuteNonQuery(sqlCmd);
+	IntOS i = this->db->ExecuteNonQuery(sqlCmd);
 	if (i < -1 && !this->db->IsLastDataError())
 	{
 		this->db->Reconnect();

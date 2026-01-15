@@ -718,10 +718,10 @@ const Map::HKTrafficLayer::NodeInfo Map::HKTrafficLayer::nodeTable[] = {
 
 Optional<const Map::HKTrafficLayer::NodeInfo> Map::HKTrafficLayer::GetNodeInfo(Int32 nodeId)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(nodeTable) / sizeof(nodeTable[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(nodeTable) / sizeof(nodeTable[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -862,7 +862,7 @@ Map::HKTrafficLayer::HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net
 
 Map::HKTrafficLayer::~HKTrafficLayer()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<RoadInfo> road;
 	i = this->roadMap.GetCount();
 	while (i-- > 0)
@@ -894,10 +894,10 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 	Data::ArrayListInt64 idArr;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sarr[3];
-	UOSInt colCnt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt idCol = (UOSInt)-1;
+	UIntOS colCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS idCol = (UIntOS)-1;
 	Int32 fromId;
 	Int32 toId;
 	Int64 id;
@@ -924,7 +924,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 		}
 		i++;
 	}
-	if (idCol != (UOSInt)-1)
+	if (idCol != (UIntOS)-1)
 	{
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -1007,7 +1007,7 @@ void Map::HKTrafficLayer::EndInit()
 void Map::HKTrafficLayer::ReloadData()
 {
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	NN<IO::Stream> stm;
 //	printf("Reloading traffic data...");
 	if (this->OpenURLStream().SetTo(stm))
@@ -1029,9 +1029,9 @@ void Map::HKTrafficLayer::ReloadData()
 		if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
 		{
 //			printf("success\r\n");
-			UOSInt i = 0;
-			UOSInt j = doc.GetChildCnt();
-			UOSInt k;
+			UIntOS i = 0;
+			UIntOS j = doc.GetChildCnt();
+			UIntOS k;
 			Text::StringBuilderUTF8 sb;
 			UnsafeArray<UTF8Char> sarr[2];
 			while (i < j)
@@ -1120,11 +1120,11 @@ Map::DrawLayerType Map::HKTrafficLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt ret = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS ret = 0;
+	UIntOS i;
+	UIntOS j;
 	NN<RoadInfo> road;
 	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
@@ -1142,17 +1142,17 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Opt
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::HKTrafficLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	NN<RoadInfo> road;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	rect = rect.Reorder();
 	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
@@ -1176,7 +1176,7 @@ Int64 Map::HKTrafficLayer::GetObjectIdMax() const
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
-UOSInt Map::HKTrafficLayer::GetRecordCnt() const
+UIntOS Map::HKTrafficLayer::GetRecordCnt() const
 {
 	return this->roadMap.GetCount();
 }
@@ -1185,30 +1185,30 @@ void Map::HKTrafficLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::HKTrafficLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKTrafficLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	return false;
 }
 
-UOSInt Map::HKTrafficLayer::GetColumnCnt() const
+UIntOS Map::HKTrafficLayer::GetColumnCnt() const
 {
 	////////////////////////////
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	////////////////////////////
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	////////////////////////////
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::HKTrafficLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	////////////////////////////
 	return false;
@@ -1259,7 +1259,7 @@ Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer::GetNewVectorById(NN<GetO
 	return vec;
 }
 
-UOSInt Map::HKTrafficLayer::GetGeomCol() const
+UIntOS Map::HKTrafficLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -1280,8 +1280,8 @@ Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
 		return nullptr;
 	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
-	OSInt i = 0;
-	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);
+	IntOS i = 0;
+	IntOS j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)
 	{
 		NEW_CLASSNN(pt, Math::Geometry::Point(2326, nodeTable[i].x, nodeTable[i].y));

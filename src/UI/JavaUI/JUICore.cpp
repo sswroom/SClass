@@ -130,7 +130,7 @@ void UI::JavaUI::JUICore::Suspend()
 {
 }
 
-Math::Size2D<UOSInt> UI::JavaUI::JUICore::GetDesktopSize()
+Math::Size2D<UIntOS> UI::JavaUI::JUICore::GetDesktopSize()
 {
 	JNIEnv *env = jniEnv;
 	jclass cls;
@@ -141,16 +141,16 @@ Math::Size2D<UOSInt> UI::JavaUI::JUICore::GetDesktopSize()
 	cls = env->GetObjectClass(tk);
 	mid = env->GetMethodID(cls, "getScreenSize", "()Ljava/awt/Dimension");
 	jobject size = env->CallObjectMethod(tk, mid);
-	UOSInt w;
-	UOSInt h;
+	UIntOS w;
+	UIntOS h;
 	mid = env->GetMethodID(cls, "getWidth", "()D");
-	w = (UOSInt)Double2OSInt(env->CallDoubleMethod(size, mid));
+	w = (UIntOS)Double2IntOS(env->CallDoubleMethod(size, mid));
 	mid = env->GetMethodID(cls, "getHeight", "()D");
-	h = (UOSInt)Double2OSInt(env->CallDoubleMethod(size, mid));
-	return Math::Size2D<UOSInt>(w, h);
+	h = (UIntOS)Double2IntOS(env->CallDoubleMethod(size, mid));
+	return Math::Size2D<UIntOS>(w, h);
 }
 
-Math::Coord2D<OSInt> UI::JavaUI::JUICore::GetCursorPos()
+Math::Coord2D<IntOS> UI::JavaUI::JUICore::GetCursorPos()
 {
 	JNIEnv *env = jniEnv;
 	jclass cls;
@@ -162,13 +162,13 @@ Math::Coord2D<OSInt> UI::JavaUI::JUICore::GetCursorPos()
 	mid = env->GetMethodID(cls, "getLocation", "()Ljava/awt/Point;");
 	jobject loc = env->CallObjectMethod(pointer, mid);
 	cls = env->GetObjectClass(loc);
-	OSInt x;
-	OSInt y;
+	IntOS x;
+	IntOS y;
 	mid = env->GetMethodID(cls, "getX", "()D");
-	x = Double2OSInt(env->CallDoubleMethod(loc, mid));
+	x = Double2IntOS(env->CallDoubleMethod(loc, mid));
 	mid = env->GetMethodID(cls, "getY", "()D");
-	y = Double2OSInt(env->CallDoubleMethod(loc, mid));
-	return Math::Coord2D<OSInt>(x, y);
+	y = Double2IntOS(env->CallDoubleMethod(loc, mid));
+	return Math::Coord2D<IntOS>(x, y);
 }
 
 void UI::JavaUI::JUICore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot)
@@ -311,7 +311,7 @@ NN<UI::GUIRadioButton> UI::JavaUI::JUICore::NewRadioButton(NN<GUIClientControl> 
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::JavaUI::JUICore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
+NN<UI::GUIRealtimeLineChart> UI::JavaUI::JUICore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::JavaUI::JUIRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::JavaUI::JUIRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
@@ -339,7 +339,7 @@ NN<UI::GUITextBox> UI::JavaUI::JUICore::NewTextBox(NN<GUIClientControl> parent, 
 	return ctrl;
 }
 
-NN<UI::GUITrackBar> UI::JavaUI::JUICore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::JavaUI::JUICore::NewTrackBar(NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal)
 {
 	NN<UI::JavaUI::JUITrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::JavaUI::JUITrackBar(*this, parent, minVal, maxVal, currVal));

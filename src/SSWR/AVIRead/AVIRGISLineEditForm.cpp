@@ -9,8 +9,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->lbLayer->ClearItems();
 	i = 0;
 	j = this->lineLayers.GetCount();
@@ -29,18 +29,18 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		return;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	UOSInt w = prevImage->GetWidth();
-	UOSInt h = prevImage->GetHeight();
+	UIntOS w = prevImage->GetWidth();
+	UIntOS h = prevImage->GetHeight();
 	Double dpi = prevImage->GetHDPI();
 
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	b = prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
-	prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), nullptr, b);
+	prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(w), UIntOS2Double(h)), nullptr, b);
 	prevImage->DelBrush(b);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int32 t;
 	NN<LineLayer> lyr;
 	i = 0;
@@ -48,13 +48,13 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	while (i < j)
 	{
 		lyr = this->lineLayers.GetItemNoCheck(i);
-		t = Double2Int32(UOSInt2Double(lyr->thick) * dpi / 96.0);
+		t = Double2Int32(UIntOS2Double(lyr->thick) * dpi / 96.0);
 		if (t <= 0)
 		{
 			t = 1;
 		}
 		p = prevImage->NewPenARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), lyr->color), t, lyr->pattern, lyr->nPattern);
-		prevImage->DrawLine(0, UOSInt2Double(h >> 1), UOSInt2Double(w), UOSInt2Double(h >> 1), p);
+		prevImage->DrawLine(0, UIntOS2Double(h >> 1), UIntOS2Double(w), UIntOS2Double(h >> 1), p);
 		prevImage->DelPen(p);
 		i++;
 	}
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userO
 	lyr->nPattern = 0;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = me->lineLayers.Add(lyr);
+	UIntOS i = me->lineLayers.Add(lyr);
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
 	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem(CSTRP(sbuff, sptr), lyr));
 	me->UpdatePreview();
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
-	UOSInt i = me->lbLayer->GetSelectedIndex();
+	UIntOS i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		me->currLayer = nullptr;
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
-	UOSInt i = me->lbLayer->GetSelectedIndex();
+	UIntOS i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
@@ -146,14 +146,14 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(AnyType userObj)
 			currLayer->thick = 0;
 		if (currLayer->thick >= 0 && currLayer->thick <= 20)
 		{
-			me->hsbThick->SetPos((UOSInt)Double2OSInt(currLayer->thick * 10));
+			me->hsbThick->SetPos((UIntOS)Double2IntOS(currLayer->thick * 10));
 		}
 		me->thickChging = false;
 		me->UpdatePreview();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> currLayer;
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userO
 	if (me->currLayer.SetTo(currLayer) && !me->thickChging)
 	{
 		me->thickChging = true;
-		currLayer->thick = UOSInt2Double(newPos) * 0.1;
+		currLayer->thick = UIntOS2Double(newPos) * 0.1;
 		sptr = Text::StrDouble(sbuff, currLayer->thick);
 		me->txtThick->SetText(CSTRP(sbuff, sptr));
 		me->thickChging = false;
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userO
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> currLayer;
@@ -196,7 +196,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
-	UOSInt npattern;
+	UIntOS npattern;
 	NN<LineLayer> currLayer;
 	UnsafeArray<UInt8> pattern;
 	UTF8Char sbuff[256];
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userOb
 	}
 	else
 	{
-		UOSInt i;
+		UIntOS i;
 		npattern = Text::StrSplit(sarr, 32, sbuff, ',');
 		i = npattern;
 		currLayer->pattern = pattern = MemAllocArr(UInt8, npattern);
@@ -237,8 +237,8 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> lyr;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = me->lineLayers.GetCount();
-	UOSInt j = me->env->GetLineStyleLayerCnt(me->lineStyle);
+	UIntOS i = me->lineLayers.GetCount();
+	UIntOS j = me->env->GetLineStyleLayerCnt(me->lineStyle);
 	while (j > i)
 	{
 		me->env->RemoveLineStyleLayer(me->lineStyle, --j);
@@ -279,7 +279,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(NN<LineLayer> lyr)
 	MemFreeNN(lyr);
 }
 
-SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS lineStyle) : UI::GUIForm(parent, 462, 334, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->pnlLayer = ui->NewPanel(this->grpLayer);
 	this->pnlLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Math::Size2D<UOSInt> sz;
+	Math::Size2D<UIntOS> sz;
 	this->pbPreview = ui->NewPictureBox(this->pnlStyle, this->eng, false, false);
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -374,8 +374,8 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<LineLayer> lyr;
 	i = 0;
 	j = this->env->GetLineStyleLayerCnt(this->lineStyle);
@@ -386,7 +386,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 		UnsafeArrayOpt<UInt8> pattern = nullptr;
 		UnsafeArray<UInt8> nnpattern;
 		UnsafeArray<UInt8> lpattern;
-		UOSInt npattern;
+		UIntOS npattern;
 		this->env->GetLineStyleLayer(this->lineStyle, i, color, thick, pattern, npattern);
 
 		lyr = MemAllocNN(LineLayer);
@@ -441,7 +441,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	this->colorSess->ChangeMonitor(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbPreview->GetSizeP();
 	NN<Media::DrawImage> img;
 	if (this->prevImage.SetTo(img))
 	{

@@ -52,9 +52,9 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 
 	this->fileChk = fileChk;
 
-	UOSInt hashSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS hashSize;
+	UIntOS i;
+	UIntOS j;
 	hashSize = this->fileChk->GetHashSize();
 	hash = MemAlloc(UInt8, hashSize);
 	i = 0;
@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 		i++;
 	}
 	this->txtStatus->SetText(CSTR("Idle"));
-	sptr = Text::StrUOSInt(sbuff, this->fileChk->GetCount());
+	sptr = Text::StrUIntOS(sbuff, this->fileChk->GetCount());
 	this->txtTotalFiles->SetText(CSTRP(sbuff, sptr));
 	this->txtValidFiles->SetText(CSTR("0"));
 	MemFree(hash);
@@ -93,16 +93,16 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			this->txtStatus->SetText(CSTR("Checking"));
 			UTF8Char sbuff[128];
 			UnsafeArray<UTF8Char> sptr;
-			UOSInt hashSize;
+			UIntOS hashSize;
 			UInt8 *hash;
 			UInt8 *hash2;
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
 			Bool eq;
 			Data::Timestamp lastUpdateTime = Data::Timestamp::UtcNow();
 			Data::Timestamp now;
-			UOSInt validCnt = 0;
+			UIntOS validCnt = 0;
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderWriter writer(sb);
 			this->ui->ProcessMessages();
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 				if (now.Diff(lastUpdateTime).GetTotalSec() >= 1)
 				{
 					lastUpdateTime = now;
-					sptr = Text::StrUOSInt(sbuff, validCnt);
+					sptr = Text::StrUIntOS(sbuff, validCnt);
 					this->txtValidFiles->SetText(CSTRP(sbuff, sptr));
 					this->ui->ProcessMessages();
 				}
@@ -152,7 +152,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			}
 			MemFree(hash2);
 			MemFree(hash);
-			sptr = Text::StrUOSInt(sbuff, validCnt);
+			sptr = Text::StrUIntOS(sbuff, validCnt);
 			this->txtValidFiles->SetText(CSTRP(sbuff, sptr));
 			this->txtStatus->SetText(CSTR("Idle"));
 		}

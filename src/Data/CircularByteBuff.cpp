@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/CircularByteBuff.h"
 
-Data::CircularByteBuff::CircularByteBuff(UOSInt maxSize)
+Data::CircularByteBuff::CircularByteBuff(UIntOS maxSize)
 {
 	this->buffSize = maxSize + 1;
 	this->buff = MemAllocArr(UInt8, this->buffSize);
@@ -20,7 +20,7 @@ void Data::CircularByteBuff::Clear()
 	this->indexEnd = 0;
 }
 
-void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize >= this->buffSize - 1)
 	{
@@ -83,7 +83,7 @@ void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt b
 	}
 }
 
-UOSInt Data::CircularByteBuff::GetBytes(UnsafeArray<UInt8> buff)
+UIntOS Data::CircularByteBuff::GetBytes(UnsafeArray<UInt8> buff)
 {
 	if (this->indexBegin <= this->indexEnd)
 	{
@@ -109,7 +109,7 @@ void Data::CircularByteBuff::ToString(NN<Text::StringBuilderUTF8> sb)
 	}
 	else
 	{
-		UOSInt cnt = this->buffSize - this->indexBegin;
+		UIntOS cnt = this->buffSize - this->indexBegin;
 		sb->AppendHexBuff(&this->buff[this->indexBegin], cnt, ' ', Text::LineBreakType::CRLF);
 		if (this->indexEnd > 0)
 		{

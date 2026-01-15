@@ -159,7 +159,7 @@ namespace SSWR
 			static void __stdcall OnTransactionAssetClicked(AnyType userObj);
 			static void __stdcall OnTransactionAInterestClicked(AnyType userObj);
 			static void __stdcall OnTransactionCInterestClicked(AnyType userObj);
-			static void __stdcall OnTransactionDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnTransactionDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnMonthlySelChg(AnyType userObj);
 			static void __stdcall OnMonthlySizeChg(AnyType userObj);
 			static void __stdcall OnYearlySelChg(AnyType userObj);

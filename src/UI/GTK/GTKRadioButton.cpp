@@ -30,8 +30,8 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	this->selected = selected;
 
 	GUIRadioButton *radioBtn = 0;
-	UOSInt i = 0;
-	UOSInt j = parent->GetChildCount();
+	UIntOS i = 0;
+	UIntOS j = parent->GetChildCount();
 	while (i < j)
 	{
 		NN<UI::GUIControl> ctrl;
@@ -65,7 +65,7 @@ UI::GTK::GTKRadioButton::~GTKRadioButton()
 {
 }
 
-OSInt UI::GTK::GTKRadioButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -8,16 +8,16 @@
 #include "Text/StringBuilderUTF8.h"
 #include <float.h>
 
-void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt destSize, UOSInt nTap, Double sampleOfst)
+void LanczosResampler(Double *srcBuff, UIntOS srcSize, Double *destBuff, UIntOS destSize, UIntOS nTap, Double sampleOfst)
 {
 	if (destSize == srcSize)
 		return;
 	Math::LanczosFilter lanczos(nTap);
 	if (destSize > srcSize)
 	{
-		UOSInt i;
-		UOSInt j;
-		OSInt n;
+		UIntOS i;
+		UIntOS j;
+		IntOS n;
 		Double sum;
 		Double pos;
 		Double tval;
@@ -27,10 +27,10 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 		i = 0;
 		while (i < destSize)
 		{
-			pos = (UOSInt2Double(i) + 0.5) * UOSInt2Double(srcSize);
-			pos = pos / UOSInt2Double(destSize) + sampleOfst;
-			n = (OSInt)Math_Fix(pos - (UOSInt2Double(nTap) * 0.5 - 0.5));//2.5);
-			pos = (OSInt2Double(n) + 0.5 - pos);
+			pos = (UIntOS2Double(i) + 0.5) * UIntOS2Double(srcSize);
+			pos = pos / UIntOS2Double(destSize) + sampleOfst;
+			n = (IntOS)Math_Fix(pos - (UIntOS2Double(nTap) * 0.5 - 0.5));//2.5);
+			pos = (IntOS2Double(n) + 0.5 - pos);
 
 			sum = 0;
 			tval = 0;
@@ -42,7 +42,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 				{
 					v = srcBuff[0];
 				}
-				else if((UOSInt)n >= srcSize)
+				else if((UIntOS)n >= srcSize)
 				{
 					v = srcBuff[srcSize - 1];
 				}
@@ -65,10 +65,10 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 	}
 	else
 	{
-		UOSInt i;
-		UOSInt j;
-		OSInt n;
-		UOSInt effTap = (UOSInt)((nTap * (srcSize) + (destSize - 1)) / destSize);
+		UIntOS i;
+		UIntOS j;
+		IntOS n;
+		UIntOS effTap = (UIntOS)((nTap * (srcSize) + (destSize - 1)) / destSize);
 		Double sum;
 		Double pos;
 		Double tval;
@@ -79,8 +79,8 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 		i = 0;
 		while (i < destSize)
 		{
-			pos = (UOSInt2Double(i) - UOSInt2Double(nTap / 2) + 0.5) * UOSInt2Double(srcSize) / UOSInt2Double(destSize) + 0.5;
-			n = (OSInt)Math_Fix(pos + sampleOfst);
+			pos = (UIntOS2Double(i) - UIntOS2Double(nTap / 2) + 0.5) * UIntOS2Double(srcSize) / UIntOS2Double(destSize) + 0.5;
+			n = (IntOS)Math_Fix(pos + sampleOfst);
 
 			sum = 0;
 			tval = 0;
@@ -88,15 +88,15 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 			j = 0;
 			while (j < effTap)
 			{
-//				phase = (OSInt2Double(n) + 0.5) * UOSInt2Double(destSize);
-//				phase /= UOSInt2Double(srcSize);
-//				phase -= (UOSInt2Double(i) + 0.5);
+//				phase = (IntOS2Double(n) + 0.5) * UIntOS2Double(destSize);
+//				phase /= UIntOS2Double(srcSize);
+//				phase -= (UIntOS2Double(i) + 0.5);
 
 				if (n < 0)
 				{
 					v = srcBuff[0];
 				}
-				else if((UOSInt)n >= srcSize)
+				else if((UIntOS)n >= srcSize)
 				{
 					v = srcBuff[srcSize - 1];
 				}
@@ -123,7 +123,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Double inpVal[5];
 	Double outVal[20];
 	Double t;
-	OSInt i;
+	IntOS i;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;

@@ -120,10 +120,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			{
 				NN<Media::StaticImage> img;
 
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 48, Media::PF_LE_B16G16R16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 48, Media::PF_LE_B16G16R16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width * 6, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
+				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width * 6, bmpd.Height, (UIntOS)bmpd.Stride, img->GetDataBpl(), false);
 				bmp->UnlockBits(&bmpd);
 				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 				nnimgList->AddImage(img, 0);
@@ -152,7 +152,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			{
 				NN<Media::StaticImage> img;
 
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 64, Media::PF_LE_B16G16R16A16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 64, Media::PF_LE_B16G16R16A16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest.Ptr(), bmpd.Width << 3, bmpd.Height, bmpd.Stride, bmpd.Width << 3);
@@ -174,10 +174,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat24bppRGB, &bmpd)) == Gdiplus::Ok)
 			{
 				NN<Media::StaticImage> img;
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 24, Media::PF_B8G8R8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 24, Media::PF_B8G8R8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width * 3, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
+				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width * 3, bmpd.Height, (UIntOS)bmpd.Stride, img->GetDataBpl(), false);
 				bmp->UnlockBits(&bmpd);
 				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 				nnimgList->AddImage(img, 0);
@@ -197,10 +197,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			{
 				NN<Media::StaticImage> img;
 				Gdiplus::ColorPalette *pal;
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
+				ImageCopy_ImgCopyR(imgSrc, imgDest.Ptr(), bmpd.Width, bmpd.Height, (UIntOS)bmpd.Stride, img->GetDataBpl(), false);
 				bmp->UnlockBits(&bmpd);
 				Int32 size = bmp->GetPaletteSize();
 				pal = (Gdiplus::ColorPalette*)MemAlloc(UInt8, (UInt32)size);
@@ -222,7 +222,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 			{
 				NN<Media::StaticImage> img;
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest.Ptr(), bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);
@@ -257,7 +257,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 				if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 				{
 					NN<Media::StaticImage> img;
-					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 					UnsafeArray<UInt8> imgDest = img->data;
 					ImageCopy_ImgCopy(imgSrc, imgDest.Ptr(), bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);
@@ -365,8 +365,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(fd->GetFullFileName());
-			UOSInt i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
-			UOSInt j = sb.LastIndexOf('.');
+			UIntOS i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+			UIntOS j = sb.LastIndexOf('.');
 			if (j != INVALID_INDEX && (i == INVALID_INDEX || j > i))
 			{
 				sb.RemoveChars(sb.GetCharCnt() - j);
@@ -416,13 +416,13 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			Map::VectorLayer *lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
-			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
+			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));
-			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UIntOS2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UIntOS2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector2(vimg, (Text::String**)0);
 			simg.Delete();
 			

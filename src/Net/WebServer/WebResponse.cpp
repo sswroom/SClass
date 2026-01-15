@@ -45,7 +45,7 @@ Bool Net::WebServer::WebResponse::ResponseError(NN<Net::WebServer::WebRequest> r
 	return true;
 }
 
-Bool Net::WebServer::WebResponse::RedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, OSInt cacheAge)
+Bool Net::WebServer::WebResponse::RedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, IntOS cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
@@ -55,7 +55,7 @@ Bool Net::WebServer::WebResponse::RedirectURL(NN<Net::WebServer::WebRequest> req
 	return true;
 }
 
-Bool Net::WebServer::WebResponse::VirtualRedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, OSInt cacheAge)
+Bool Net::WebServer::WebResponse::VirtualRedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, IntOS cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);
@@ -76,7 +76,7 @@ Bool Net::WebServer::WebResponse::VirtualRedirectURL(NN<Net::WebServer::WebReque
 	return true;
 }
 
-Bool Net::WebServer::WebResponse::ResponseNotModified(NN<Net::WebServer::WebRequest> req, OSInt cacheAge)
+Bool Net::WebServer::WebResponse::ResponseNotModified(NN<Net::WebServer::WebRequest> req, IntOS cacheAge)
 {
 	this->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 	this->AddDefHeaders(req);

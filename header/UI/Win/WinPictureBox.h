@@ -12,7 +12,7 @@ namespace UI
 			static Int32 useCnt;
 			Optional<Media::DrawImage> prevImageD;
 
-			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+			static IntOS __stdcall PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam);
 			void OnPaint();
 			void Init(Optional<InstanceHandle> hInst);
 			void Deinit(Optional<InstanceHandle> hInst);
@@ -21,7 +21,7 @@ namespace UI
 			WinPictureBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 			virtual ~WinPictureBox();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 		};
 	}
 }

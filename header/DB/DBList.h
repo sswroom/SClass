@@ -20,7 +20,7 @@ namespace DB
 		Data::ArrayListNN<DBInfo> dbList;
 		Sync::Mutex dbMut;
 		Sync::Event dbEvt;
-		UOSInt nextIndex;
+		UIntOS nextIndex;
 
 	public:
 		DBList();
@@ -30,7 +30,7 @@ namespace DB
 		void AddDB(NN<DB::DBTool> db);
 		Optional<DB::DBTool> UseDB();
 		void UnuseDB(NN<DB::DBTool> db);
-		UOSInt GetCount() const;
+		UIntOS GetCount() const;
 	};
 }
 #endif

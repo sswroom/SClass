@@ -8,10 +8,10 @@
 
 extern "C"
 {
-	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sAdd, OSInt dAdd, UInt8 *lut, UInt32 bpp);
-	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sAdd, OSInt dAdd, UInt8 *lut, UInt32 bpp);
-	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sAdd, OSInt dAdd, UInt8 *lut, UInt32 bpp);
-	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sAdd, OSInt dAdd, UInt8 *lut, UInt32 bpp, UInt32 hdrLev);
+	void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sAdd, IntOS dAdd, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sAdd, IntOS dAdd, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sAdd, IntOS dAdd, UInt8 *lut, UInt32 bpp);
+	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sAdd, IntOS dAdd, UInt8 *lut, UInt32 bpp, UInt32 hdrLev);
 }
 
 UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
@@ -50,7 +50,7 @@ UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
 
 void Media::RGBColorFilter::WaitForThread(Int32 stat)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found = true;
 	while (found)
 	{
@@ -83,7 +83,7 @@ Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 #else
 	this->hasSSE41 = true;
 #endif
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	while (i-- > 0)
 	{
 		this->threadStats[i].threadStat = 0;
@@ -95,7 +95,7 @@ Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 
 Media::RGBColorFilter::~RGBColorFilter()
 {
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	while (i-- > 0)
 	{
 		this->threadStats[i].threadStat = 3;
@@ -134,7 +134,7 @@ Media::RGBColorFilter::~RGBColorFilter()
 	}
 }
 
-void Media::RGBColorFilter::SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UOSInt gammaCnt)
+void Media::RGBColorFilter::SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UIntOS gammaCnt)
 {
 	if (this->gammaParam)
 	{
@@ -169,7 +169,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		this->lut = 0;
 	}
 
-	UOSInt i;
+	UIntOS i;
 	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
@@ -187,18 +187,18 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		Double tmpD = 1 / 8192.0;
 		Int32 v;
 		Double lVal;
-		UOSInt j;
+		UIntOS j;
 		if (this->gammaParam != 0 && this->gammaCnt > 0)
 		{
-			Double gammaCntM1 = UOSInt2Double(this->gammaCnt - 1);
+			Double gammaCntM1 = UIntOS2Double(this->gammaCnt - 1);
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
+				lVal = rtFunc->InverseTransfer(UIntOS2Double(i) * tmp);
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (UInt32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - UOSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - UIntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
 				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
@@ -212,7 +212,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
+				lVal = rtFunc->InverseTransfer(UIntOS2Double(i) * tmp);
 				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
@@ -224,7 +224,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 65536;
 		while (i-- > 32768)
 		{
-			v = Double2Int32(rtFunc->ForwardTransfer(OSInt2Double((OSInt)i - 65536) * tmpD) * 255.0);
+			v = Double2Int32(rtFunc->ForwardTransfer(IntOS2Double((IntOS)i - 65536) * tmpD) * 255.0);
 			if (v >= 256)
 				v = 255;
 			else if (v < 0)
@@ -234,7 +234,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 32768;
 		while (i-- > 0)
 		{
-			v = Double2Int32(rtFunc->ForwardTransfer(UOSInt2Double(i) * tmpD) * 255.0);
+			v = Double2Int32(rtFunc->ForwardTransfer(UIntOS2Double(i) * tmpD) * 255.0);
 			if (v >= 256)
 				v = 255;
 			else if (v < 0)
@@ -254,18 +254,18 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		Int32 v;
 
 		Double lVal;
-		OSInt j;
+		IntOS j;
 		if (this->gammaParam != 0 && this->gammaCnt > 0)
 		{
-			Double gammaCntM1 = UOSInt2Double(this->gammaCnt - 1);
+			Double gammaCntM1 = UIntOS2Double(this->gammaCnt - 1);
 			i = 65536;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
+				lVal = rtFunc->InverseTransfer(UIntOS2Double(i) * tmp);
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (Int32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - OSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - IntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
 				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
@@ -279,7 +279,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 65536;
 			while (i-- > 0)
 			{
-				v = Double2Int32((Math_Pow(rtFunc->InverseTransfer(UOSInt2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Double2Int32((Math_Pow(rtFunc->InverseTransfer(UIntOS2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -290,12 +290,12 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 65536;
 		while (i-- > 32768)
 		{
-			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(OSInt2Double((OSInt)i - 65536) * tmpD) * 65535.0);
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(IntOS2Double((IntOS)i - 65536) * tmpD) * 65535.0);
 		}
 		i = 32768;
 		while (i-- > 0)
 		{
-			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(UOSInt2Double(i) * tmpD) * 65535.0);
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(UIntOS2Double(i) * tmpD) * 65535.0);
 		}
 	}
 	rtFunc.Delete();
@@ -303,31 +303,31 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	btFunc.Delete();
 }
 
-void Media::RGBColorFilter::ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+void Media::RGBColorFilter::ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown)
 {
 	if (this->lut == 0)
 		return;
 	if (this->bpp == 32 || this->bpp == 48)
 	{
-		OSInt sAdd = (OSInt)sbpl;
-		OSInt dAdd;
+		IntOS sAdd = (IntOS)sbpl;
+		IntOS dAdd;
 		if (upsideDown)
 		{
 			destPtr += dbpl * (height - 1);
-			dAdd = -(OSInt)dbpl;
+			dAdd = -(IntOS)dbpl;
 		}
 		else
 		{
-			dAdd = (OSInt)dbpl;
+			dAdd = (IntOS)dbpl;
 		}
-		UOSInt lastHeight = height;
-		UOSInt currHeight;
-		UOSInt i = this->nThread;
+		UIntOS lastHeight = height;
+		UIntOS currHeight;
+		UIntOS i = this->nThread;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
-			this->threadStats[i].srcPtr = srcPtr + (OSInt)currHeight * sAdd;
-			this->threadStats[i].destPtr = destPtr + (OSInt)currHeight * dAdd;
+			this->threadStats[i].srcPtr = srcPtr + (IntOS)currHeight * sAdd;
+			this->threadStats[i].destPtr = destPtr + (IntOS)currHeight * dAdd;
 			this->threadStats[i].width = width;
 			this->threadStats[i].height = lastHeight - currHeight;
 			this->threadStats[i].sAdd = sAdd;

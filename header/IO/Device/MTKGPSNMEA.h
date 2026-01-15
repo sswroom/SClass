@@ -51,7 +51,7 @@ namespace IO
 			Optional<Text::String> productMode;
 			Optional<Text::String> sdkVer;
 		private:
-			virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+			virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 		public:
 			MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm);
 			virtual ~MTKGPSNMEA();
@@ -67,9 +67,9 @@ namespace IO
 			Bool IsLogEnabled();
 			Bool DisableLog();
 			Bool EnableLog();
-			UOSInt CalLogBlockCount(UOSInt logSize);
-			Bool ReadLogPart(UOSInt addr, UnsafeArray<UInt8> buff); //1024 bytes
-			Bool ReadLogBlock(UOSInt addr, UnsafeArray<UInt8> buff); //65536 bytes
+			UIntOS CalLogBlockCount(UIntOS logSize);
+			Bool ReadLogPart(UIntOS addr, UnsafeArray<UInt8> buff); //1024 bytes
+			Bool ReadLogBlock(UIntOS addr, UnsafeArray<UInt8> buff); //65536 bytes
 			Bool ParseLog(NN<Map::GPSTrack> gps);
 			Bool DelLogData();
 			Bool SetLogFormat(LogFormat lf);
@@ -82,15 +82,15 @@ namespace IO
 			UInt32 GetLogDistance();
 			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
-			UOSInt GetLogSize(); //Bytes
-			Optional<Text::String> SendMTKCommand(UnsafeArray<const UInt8> cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout);
+			UIntOS GetLogSize(); //Bytes
+			Optional<Text::String> SendMTKCommand(UnsafeArray<const UInt8> cmdBuff, UIntOS cmdSize, UnsafeArray<const UTF8Char> resultStart, UIntOS resultStartLen, Data::Duration timeout);
 
 			Optional<Text::String> GetFirmwareRel();
 			Optional<Text::String> GetFirmwareBuild();
 			Optional<Text::String> GetProductMode();
 			Optional<Text::String> GetSDKVer();
 
-			static UOSInt GetMTKSerialPort();
+			static UIntOS GetMTKSerialPort();
 			static Bool ParseBlock(UnsafeArray<UInt8> block, NN<Map::GPSTrack> gps);
 		};
 	}

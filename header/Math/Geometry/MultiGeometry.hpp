@@ -29,7 +29,7 @@ namespace Math
 
 			virtual ~MultiGeometry()
 			{
-				UOSInt i = this->geometries.GetCount();
+				UIntOS i = this->geometries.GetCount();
 				while (i-- > 0)
 				{
 					this->geometries.GetItem(i).Delete();
@@ -41,12 +41,12 @@ namespace Math
 				this->geometries.Add(geometry);
 			}
 
-			UOSInt GetCount() const
+			UIntOS GetCount() const
 			{
 				return this->geometries.GetCount();
 			}
 
-			Optional<T> GetItem(UOSInt index) const
+			Optional<T> GetItem(UIntOS index) const
 			{
 				return this->geometries.GetItem(index);
 			}
@@ -185,8 +185,8 @@ namespace Math
 				if (!geom->GetZBounds(allMin, allMax))
 					return false;
 
-				UOSInt i = 1;
-				UOSInt j = this->geometries.GetCount();
+				UIntOS i = 1;
+				UIntOS j = this->geometries.GetCount();
 				while (i < j)
 				{
 					if (this->geometries.GetItem(i).SetTo(geom) && geom->GetZBounds(thisMin, thisMax))
@@ -215,8 +215,8 @@ namespace Math
 				if (!geom->GetMBounds(allMin, allMax))
 					return false;
 
-				UOSInt i = 1;
-				UOSInt j = this->geometries.GetCount();
+				UIntOS i = 1;
+				UIntOS j = this->geometries.GetCount();
 				while (i < j)
 				{
 					if (this->geometries.GetItem(i).SetTo(geom) && geom->GetMBounds(thisMin, thisMax))
@@ -267,7 +267,7 @@ namespace Math
 				}
 				NN<T> v;
 				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
-				UOSInt i = 0;
+				UIntOS i = 0;
 				while (it.HasNext())
 				{
 					if (!obj->GetItem(i).SetTo(v) || !it.Next()->Equals(v, sameTypeOnly, nearlyVal, no3DGeometry))
@@ -277,9 +277,9 @@ namespace Math
 				return true;
 			}
 
-			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+			virtual UIntOS GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 			{
-				UOSInt ret = 0;
+				UIntOS ret = 0;
 				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
@@ -327,9 +327,9 @@ namespace Math
 				}
 			}
 
-			virtual UOSInt GetPointCount() const
+			virtual UIntOS GetPointCount() const
 			{
-				UOSInt ret = 0;
+				UIntOS ret = 0;
 				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
@@ -345,11 +345,11 @@ namespace Math
 				return this->geometries.GetItemNoCheck(0)->HasArea();
 			}
 
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+			virtual UIntOS CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 			{
-				UOSInt initCnt = xList->GetCount();
-				UOSInt i = 0;
-				UOSInt j = this->geometries.GetCount();
+				UIntOS initCnt = xList->GetCount();
+				UIntOS i = 0;
+				UIntOS j = this->geometries.GetCount();
 				while (i < j)
 				{
 					this->geometries.GetItemNoCheck(i)->CalcHIntersacts(y, xList);
@@ -374,7 +374,7 @@ namespace Math
 						return Math::Coord2DDbl(0, 0);
 					}
 				}
-				ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (OSInt)xList.GetCount() - 1);
+				ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (IntOS)xList.GetCount() - 1);
 				if (this->HasArea())
 				{
 					Double x = LinearRing::GetIntersactsCenter(xList);

@@ -31,8 +31,8 @@ namespace Map
 			Bool supportData;
 
 			Math::Coord2DDbl tileOrigin;
-			UOSInt tileWidth;
-			UOSInt tileHeight;
+			UIntOS tileWidth;
+			UIntOS tileHeight;
 			Data::ArrayListDbl tileLevels;
 
 		public:
@@ -46,22 +46,22 @@ namespace Map
 			NN<Text::String> GetURL() const;
 			Math::RectAreaDbl GetBounds() const;
 
-			UOSInt TileGetLevelCount() const;
-			Double TileGetLevelResolution(UOSInt level) const;
-			UOSInt TileGetWidth() const;
-			UOSInt TileGetHeight() const;
+			UIntOS TileGetLevelCount() const;
+			Double TileGetLevelResolution(UIntOS level) const;
+			UIntOS TileGetWidth() const;
+			UIntOS TileGetHeight() const;
 			Math::Coord2DDbl TileGetOrigin() const;
-			UnsafeArray<UTF8Char> TileGetURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 tileX, Int32 tileY) const;
-			Bool TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const;
-			Bool TileLoadToStream(NN<IO::Stream> stm, UOSInt level, Int32 tileX, Int32 tileY) const;
-			Bool TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const;
+			UnsafeArray<UTF8Char> TileGetURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Int32 tileX, Int32 tileY) const;
+			Bool TileGetURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Int32 tileX, Int32 tileY) const;
+			Bool TileLoadToStream(NN<IO::Stream> stm, UIntOS level, Int32 tileX, Int32 tileY) const;
+			Bool TileLoadToFile(Text::CStringNN fileName, UIntOS level, Int32 tileX, Int32 tileY) const;
 
 			virtual NN<Text::String> GetName() const;
 			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Math::RectAreaDbl GetInitBounds() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 			virtual Bool CanQuery() const;
-			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
+			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 			virtual Optional<Media::ImageList> DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl);
 
 			static Optional<Math::Geometry::Vector2D> ParseGeometry(UInt32 srid, NN<Text::String> geometryType, NN<Text::JSONBase> geometry);

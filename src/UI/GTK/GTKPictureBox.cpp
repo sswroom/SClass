@@ -34,7 +34,7 @@ gboolean UI::GTK::GTKPictureBox::SignalButtonPress(GtkWidget *widget, GdkEvent  
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->EventButtonDown(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->EventButtonDown(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -65,7 +65,7 @@ gboolean UI::GTK::GTKPictureBox::SignalButtonRelease(GtkWidget *widget, GdkEvent
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->EventButtonUp(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->EventButtonUp(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -74,7 +74,7 @@ gboolean UI::GTK::GTKPictureBox::SignalMotionNotify(GtkWidget *widget, GdkEvent 
 {
 	UI::GUIPictureBox *me = (UI::GUIPictureBox*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
-	me->EventMouseMove(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
+	me->EventMouseMove(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 	return false;
 }
 
@@ -95,7 +95,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 			NN<Media::StaticImage> tmpImage;
 			if (resizer->ProcessToNew(img).SetTo(tmpImage))
 			{
-				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispSize.x, (int)(OSInt)tmpImage->info.dispSize.y, (int)(OSInt)tmpImage->info.storeSize.x << 2, 0, 0);
+				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(IntOS)tmpImage->info.dispSize.x, (int)(IntOS)tmpImage->info.dispSize.y, (int)(IntOS)tmpImage->info.storeSize.x << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
 				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
 				if (img->info.atype != Media::AT_ALPHA)
@@ -109,7 +109,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(img->data.Ptr(), GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(img->data.Ptr(), GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(IntOS)img->info.dispSize.x, (int)(IntOS)img->info.dispSize.y, (int)(IntOS)img->info.storeSize.x << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
 			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
 			if (img->info.atype != Media::AT_ALPHA)
@@ -151,7 +151,7 @@ UI::GTK::GTKPictureBox::~GTKPictureBox()
 	this->tmpImage.Delete();
 }
 
-OSInt UI::GTK::GTKPictureBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKPictureBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

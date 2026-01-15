@@ -9,7 +9,7 @@
 #include "Math/Geometry/PointM.h"
 #include "Math/Geometry/PointZM.h"
 
-Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize < 4)
 		return nullptr;
@@ -42,9 +42,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
+				UIntOS i;
+				UIntOS j;
+				UIntOS k;
 				UInt32 *ptOfsts;
 				UnsafeArray<Math::Coord2DDbl> points;
 				NN<Math::Geometry::LineString> lineString;
@@ -104,12 +104,12 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
+				UIntOS tmpV;
 				UnsafeArray<const UInt8> ptOfsts;
 				UnsafeArray<Math::Coord2DDbl> points;
-				UOSInt i = 0;
-				UOSInt j = 0;
-				UOSInt k;
+				UIntOS i = 0;
+				UIntOS j = 0;
+				UIntOS k;
 				buff += 44;
 				ptOfsts = buff;
 				buff += nPtOfst * 4;
@@ -178,9 +178,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 24)
 			{
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
+				UIntOS i;
+				UIntOS j;
+				UIntOS k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
@@ -263,9 +263,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 32)
 			{
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
+				UIntOS i;
+				UIntOS j;
+				UIntOS k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
@@ -355,7 +355,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt i;
+				UIntOS i;
 				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
 				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
 				Double *zArr = MemAlloc(Double, nPoint);
@@ -418,7 +418,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt i;
+				UIntOS i;
 				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
 				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
 				Double *zArr = MemAlloc(Double, nPoint);
@@ -481,9 +481,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
+				UIntOS i;
+				UIntOS j;
+				UIntOS k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
@@ -558,7 +558,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt i;
+				UIntOS i;
 				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
 				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
 				Double *mArr = MemAlloc(Double, nPoint);

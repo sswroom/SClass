@@ -5,7 +5,7 @@
 #include "Manage/ThreadContextARM64.h"
 #include <sys/ucontext.h>
 
-Manage::ThreadContextARM64::ThreadContextARM64(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextARM64::ThreadContextARM64(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -18,13 +18,13 @@ Manage::ThreadContextARM64::~ThreadContextARM64()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextARM64::GetRegisterCnt() const
+UIntOS Manage::ThreadContextARM64::GetRegisterCnt() const
 {
-	UOSInt cnt = 34;
+	UIntOS cnt = 34;
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM64::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM64::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 #if defined(__APPLE__)
 	switch (index)
@@ -319,9 +319,9 @@ void Manage::ThreadContextARM64::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -346,73 +346,73 @@ Manage::ThreadContext::ContextType Manage::ThreadContextARM64::GetType() const
 	return Manage::ThreadContext::ContextType::ARM64;
 }
 
-UOSInt Manage::ThreadContextARM64::GetThreadId() const
+UIntOS Manage::ThreadContextARM64::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextARM64::GetProcessId() const
+UIntOS Manage::ThreadContextARM64::GetProcessId() const
 {
 	return this->procId;
 }
 
 #if defined(__APPLE__)
-UOSInt Manage::ThreadContextARM64::GetInstAddr() const
+UIntOS Manage::ThreadContextARM64::GetInstAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext->__ss.__pc;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext->__ss.__pc;
 }
 
-UOSInt Manage::ThreadContextARM64::GetStackAddr() const
+UIntOS Manage::ThreadContextARM64::GetStackAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext->__ss.__sp;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext->__ss.__sp;
 }
 
-UOSInt Manage::ThreadContextARM64::GetFrameAddr() const
+UIntOS Manage::ThreadContextARM64::GetFrameAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext->__ss.__fp;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext->__ss.__fp;
 }
 
-void Manage::ThreadContextARM64::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextARM64::SetInstAddr(UIntOS instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__pc = instAddr;
 }
 
-void Manage::ThreadContextARM64::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextARM64::SetStackAddr(UIntOS stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__pc = stackAddr;
 }
 
-void Manage::ThreadContextARM64::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextARM64::SetFrameAddr(UIntOS frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__fp = frameAddr;
 }
 #else
-UOSInt Manage::ThreadContextARM64::GetInstAddr() const
+UIntOS Manage::ThreadContextARM64::GetInstAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext.pc;
 }
 
-UOSInt Manage::ThreadContextARM64::GetStackAddr() const
+UIntOS Manage::ThreadContextARM64::GetStackAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.sp;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext.sp;
 }
 
-UOSInt Manage::ThreadContextARM64::GetFrameAddr() const
+UIntOS Manage::ThreadContextARM64::GetFrameAddr() const
 {
-	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.pstate;
+	return (UIntOS)((ucontext_t*)this->context)->uc_mcontext.pstate;
 }
 
-void Manage::ThreadContextARM64::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextARM64::SetInstAddr(UIntOS instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pc = instAddr;
 }
 
-void Manage::ThreadContextARM64::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextARM64::SetStackAddr(UIntOS stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.sp = stackAddr;
 }
 
-void Manage::ThreadContextARM64::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextARM64::SetFrameAddr(UIntOS frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pstate = frameAddr;
 }

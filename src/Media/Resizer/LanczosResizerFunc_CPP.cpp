@@ -2,13 +2,13 @@
 #include "SIMD.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
@@ -243,13 +243,13 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8
 	}
 }
 
-extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x4 cvals;
 	Int32x4 cvals2;
@@ -340,13 +340,13 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *
 	}
 }
 
-extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
@@ -569,13 +569,13 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB8G8R8(UInt8 *inPt, UInt8 *ou
 	}
 }
 
-extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgba16Table, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgba16Table, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
@@ -798,13 +798,13 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 	}
 }
 
-extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgba16Table, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgba16Table, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
@@ -1027,13 +1027,13 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 	}
 }
 
-extern "C" void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *pal8Table, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *pal8Table, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
@@ -1238,14 +1238,14 @@ extern "C" void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outP
 	}
 }
 
-extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	if (width & 1)
 	{
-		OSInt *currIndex;
+		IntOS *currIndex;
 		Int16 *currWeight;
 		Int32x4 cvals;
 		UInt16x4 cvals2;
@@ -1286,12 +1286,12 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *ou
 		Int16x8 w0;
 		Int16x8 w1;
 		Int16x8 w2;
-		OSInt i0;
-		OSInt i1;
-		OSInt i2;
-		OSInt i3;
-		OSInt i4;
-		OSInt i5;
+		IntOS i0;
+		IntOS i1;
+		IntOS i2;
+		IntOS i3;
+		IntOS i4;
+		IntOS i5;
 		Int16x8 v1;
 		Int16x8 v2;
 		Int32x4 cvals1;
@@ -1347,7 +1347,7 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *ou
 	}
 	else
 	{
-		OSInt *currIndex;
+		IntOS *currIndex;
 		Int16 *currWeight;
 		Int16x8 v1;
 		Int16x8 v2;
@@ -1398,14 +1398,14 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *ou
 	}
 }
 
-extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	if (width & 1)
 	{
-		OSInt *currIndex;
+		IntOS *currIndex;
 		Int16 *currWeight;
 		Int32x4 cvals;
 		UInt16x4 cvals2;
@@ -1445,12 +1445,12 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outP
 		Int16x8 w0;
 		Int16x8 w1;
 		Int16x8 w2;
-		OSInt i0;
-		OSInt i1;
-		OSInt i2;
-		OSInt i3;
-		OSInt i4;
-		OSInt i5;
+		IntOS i0;
+		IntOS i1;
+		IntOS i2;
+		IntOS i3;
+		IntOS i4;
+		IntOS i5;
 		Int16x8 v1;
 		Int16x8 v2;
 		Int32x4 cvals1;
@@ -1504,7 +1504,7 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outP
 	}
 	else
 	{
-		OSInt *currIndex;
+		IntOS *currIndex;
 		Int16 *currWeight;
 		Int16x8 v1;
 		Int16x8 v2;
@@ -1553,9 +1553,9 @@ extern "C" void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outP
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width << 2;
 	dstep -= width << 3;
@@ -1580,9 +1580,9 @@ extern "C" void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, O
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width << 2;
 	dstep -= width << 3;
@@ -1605,9 +1605,9 @@ extern "C" void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSI
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ExpandB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width * 3;
 	dstep -= width << 3;
@@ -1629,9 +1629,9 @@ extern "C" void LanczosResizerFunc_ExpandB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *pal8Table)
+extern "C" void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *pal8Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width;
 	dstep -= width << 3;
@@ -1651,9 +1651,9 @@ extern "C" void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, OSInt w
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width * 6;
 	dstep -= width << 3;
@@ -1675,9 +1675,9 @@ extern "C" void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, OS
 	}
 }
 
-extern "C" void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width * 6;
 	dstep -= width << 3;
@@ -1699,9 +1699,9 @@ extern "C" void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, OS
 	}
 }
 
-extern "C" void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+extern "C" void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 {
-	OSInt i;
+	IntOS i;
 	sstep -= width << 3;
 	dstep -= width << 2;
 
@@ -1722,9 +1722,9 @@ extern "C" void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, O
 	}
 }
 
-extern "C" void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+extern "C" void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 {
-	OSInt i;
+	IntOS i;
 	sstep -= width << 3;
 	dstep -= width * 3;
 
@@ -1744,9 +1744,9 @@ extern "C" void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, OSI
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width << 2;
@@ -1773,9 +1773,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width << 2;
@@ -1803,9 +1803,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 3;
@@ -1832,9 +1832,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(UInt8 *inPt, UInt8 *ou
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
+extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width;
@@ -1859,9 +1859,9 @@ extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(UInt8 *inPt, UInt8 *outP
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 6;
@@ -1888,9 +1888,9 @@ extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 6;
@@ -1917,9 +1917,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width << 2;
@@ -1945,9 +1945,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *ou
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width << 2;
@@ -1974,9 +1974,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8(UInt8 *inPt, UInt8 *
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 3;
@@ -2002,9 +2002,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8(UInt8 *inPt, UInt8 *outP
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
+extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width;
@@ -2028,9 +2028,9 @@ extern "C" void LanczosResizerFunc_ImgCopyPal8_B8G8R8(UInt8 *inPt, UInt8 *outPt,
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 6;
@@ -2056,9 +2056,9 @@ extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *o
 	}
 }
 
-extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
+extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgba16Table)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 cvals2;
 	sstep -= width * 6;

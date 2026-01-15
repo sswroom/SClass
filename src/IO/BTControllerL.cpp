@@ -105,7 +105,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return false;
 }
 
-UOSInt IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
+UIntOS IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
 	///////////////////////////////
 	return 0;
@@ -187,7 +187,7 @@ UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 						Text::CString name = nullptr;
 						UInt8 len = ainfo->length;
 						UInt8 eirSize;
-						OSInt ofst = 0;
+						IntOS ofst = 0;
 						while (ofst < len)
 						{
 							eirSize = ainfo->data[ofst];
@@ -200,11 +200,11 @@ UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 							case 8: //EIR_NAME_SHORT
 								if (name.leng == 0)
 								{
-									name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1));
+									name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UIntOS)eirSize - 1));
 								}
 								break;
 							case 9: //EIR_NAME_COMPLETE
-								name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1));
+								name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UIntOS)eirSize - 1));
 								break;
 							case 10: //EIR_TX_POWER
 								break;
@@ -231,7 +231,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	char name[256];
 	BTControllerInfo *info;
 	info = MemAlloc(BTControllerInfo, 1);
-	info->devId = (int)(OSInt)hand;
+	info->devId = (int)(IntOS)hand;
 	info->dd = hci_open_dev(info->devId);
 	info->hciVer = 0;
 	info->hciRev = 0;
@@ -301,11 +301,11 @@ IO::BTController::~BTController()
 	this->name->Release();
 }
 
-OSInt IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
+IntOS IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	BTControllerInfo *info = (BTControllerInfo*)this->hand;
-	OSInt ret = 0;
-	OSInt i;
+	IntOS ret = 0;
+	IntOS i;
 	inquiry_info *ii;
 	BTDeviceInfo devInfo;
 	NN<BTDevice> dev;

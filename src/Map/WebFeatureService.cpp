@@ -34,7 +34,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 		return;
 	}
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	IO::MemoryStream mstm;
 	while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 	{
@@ -48,7 +48,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	{
 		if (nodeName->Equals(UTF8STRC("WFS_Capabilities")) || nodeName->EndsWith(UTF8STRC(":WFS_Capabilities")))
 		{
-			UOSInt i = reader.GetAttribCount();
+			UIntOS i = reader.GetAttribCount();
 			NN<Text::XMLAttrib> attr;
 			while (i-- > 0)
 			{
@@ -112,7 +112,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 			}
 		}
 	}
-	UOSInt errCode = reader.GetErrorCode();
+	UIntOS errCode = reader.GetErrorCode();
 	if (errCode != 0)
 	{
 		printf("WFS: XML Parse error: code = %d\r\n", (UInt32)errCode);
@@ -225,7 +225,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 		}
 		else if (nodeName->Equals(UTF8STRC("LatLongBoundingBox")))
 		{
-			UOSInt i = reader->GetAttribCount();
+			UIntOS i = reader->GetAttribCount();
 			NN<Text::XMLAttrib> attr;
 			NN<Text::String> aname;
 			NN<Text::String> avalue;
@@ -291,7 +291,7 @@ Map::WebFeatureService::~WebFeatureService()
 	this->wfsURL->Release();
 	OPTSTR_DEL(this->version);
 	NN<FeatureType> feature;
-	UOSInt i = this->features.GetCount();
+	UIntOS i = this->features.GetCount();
 	while (i-- > 0)
 	{
 		feature = this->features.GetItemNoCheck(i);
@@ -307,15 +307,15 @@ Bool Map::WebFeatureService::IsError() const
 	return this->features.GetCount() == 0;
 }
 
-void Map::WebFeatureService::SetFeature(UOSInt index)
+void Map::WebFeatureService::SetFeature(UIntOS index)
 {
 	this->currFeature = this->features.GetItem(index);
 }
 
-UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayListStringNN *nameList) const
+UIntOS Map::WebFeatureService::GetFeatureNames(Data::ArrayListStringNN *nameList) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->features.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->features.GetCount();
 	while (i < j)
 	{
 		nameList->Add(this->features.GetItemNoCheck(i)->name);

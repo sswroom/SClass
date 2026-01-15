@@ -17,7 +17,7 @@ UInt64 IO::CDXAData::GetSectorCount() const
 	return this->data->GetDataSize() / 2352;
 }
 
-UOSInt IO::CDXAData::GetBytesPerSector() const
+UIntOS IO::CDXAData::GetBytesPerSector() const
 {
 	return 2352;
 }
@@ -39,7 +39,7 @@ NN<IO::StreamData> IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSi
 	return this->data->GetPartialData(startSector * 2352, dataSize);
 }
 
-UOSInt IO::CDXAData::GetSeekCount() const
+UIntOS IO::CDXAData::GetSeekCount() const
 {
 	return this->data->GetSeekCount();
 }

@@ -16,7 +16,7 @@ Crypto::Cert::CertStore::CertStore(NN<Text::String> name)
 
 Crypto::Cert::CertStore::~CertStore()
 {
-	UOSInt i = this->certMap.GetCount();
+	UIntOS i = this->certMap.GetCount();
 	NN<Crypto::Cert::X509Cert> cert;
 	while (i-- > 0)
 	{
@@ -30,8 +30,8 @@ NN<Crypto::Cert::CertStore> Crypto::Cert::CertStore::Clone() const
 {
 	NN<Crypto::Cert::CertStore> newStore;
 	NEW_CLASSNN(newStore, Crypto::Cert::CertStore(this->storeName));
-	UOSInt i = 0;
-	UOSInt j = this->certMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->certMap.GetCount();
 	while (i < j)
 	{
 		newStore->certMap.Put(this->certMap.GetKey(i), NN<Crypto::Cert::X509Cert>::ConvertFrom(this->certMap.GetItemNoCheck(i)->Clone()));
@@ -139,8 +139,8 @@ void Crypto::Cert::CertStore::AddCert(NN<Crypto::Cert::X509Cert> cert)
 
 void Crypto::Cert::CertStore::FromPackageFile(NN<IO::PackageFile> pkg)
 {
-	UOSInt i = 0;
-	UOSInt j = pkg->GetCount();
+	UIntOS i = 0;
+	UIntOS j = pkg->GetCount();
 	while (i < j)
 	{
 		Bool needRelease;
@@ -178,17 +178,17 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetCertByCN(Text::CStr
 	return this->certMap.GetC(commonName);
 }
 
-UOSInt Crypto::Cert::CertStore::GetCount() const
+UIntOS Crypto::Cert::CertStore::GetCount() const
 {
 	return this->certMap.GetCount();
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItem(UOSInt index) const
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItem(UIntOS index) const
 {
 	return this->certMap.GetItem(index);
 }
 
-NN<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItemNoCheck(UOSInt index) const
+NN<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItemNoCheck(UIntOS index) const
 {
 	return this->certMap.GetItemNoCheck(index);
 }

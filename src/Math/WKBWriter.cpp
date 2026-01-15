@@ -16,10 +16,10 @@ Math::WKBWriter::~WKBWriter()
 Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec)
 {
 	UInt8 buff[64];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt nPoint;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS nPoint;
 	UInt32 geomType;
 	buff[0] = IS_BYTEORDER_LE;
 	switch (vec->GetVectorType())

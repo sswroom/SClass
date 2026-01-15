@@ -7,9 +7,9 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj,
 	NN<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UOSInt i = 0;
-	UOSInt fileCnt = files.GetCount();
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS fileCnt = files.GetCount();
+	UIntOS j;
 	while (i < fileCnt)
 	{
 		UInt64 fileSize = IO::Path::GetFileSize(files[i]->v);
@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnUploadClicked(AnyType use
 	Net::WebBrowser *browser;
 	Bool errorCont = me->chkErrorCont->IsChecked();
 	NN<FileItem> item;
-	UOSInt i = 0;
-	UOSInt j = me->items.GetCount();
+	UIntOS i = 0;
+	UIntOS j = me->items.GetCount();
 	while (i < j)
 	{
 		item = me->items.GetItemNoCheck(i);

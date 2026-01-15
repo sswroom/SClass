@@ -42,8 +42,8 @@ namespace Net
 		void Reconnect();
 
 		Bool IsConnected();
-		Bool SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, Int32 seqId);
-		Bool SendPacket(UInt8 *buff, OSInt buffSize);
+		Bool SendPacket(UInt8 *buff, IntOS buffSize, Int32 cmdType, Int32 seqId);
+		Bool SendPacket(UInt8 *buff, IntOS buffSize);
 	};
 }
 #endif

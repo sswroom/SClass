@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(AnyType us
 
 void SSWR::AVIRead::AVIRGCISClientForm::ClearCliCACerts()
 {
-	UOSInt i = this->cliCACerts.GetCount();
+	UIntOS i = this->cliCACerts.GetCount();
 	while (i-- > 0)
 	{
 		this->cliCACerts.GetItem(i).Delete();

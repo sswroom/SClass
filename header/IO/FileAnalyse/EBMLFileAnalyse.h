@@ -16,10 +16,10 @@ namespace IO
 		private:
 			typedef struct
 			{
-				UOSInt lev;
+				UIntOS lev;
 				UInt64 fileOfst;
-				UOSInt packSize;
-				UOSInt hdrSize;
+				UIntOS packSize;
+				UIntOS hdrSize;
 				UInt8 packType[4];
 			} PackInfo;
 
@@ -48,25 +48,25 @@ namespace IO
 
 			Bool pauseParsing;
 			Sync::Thread thread;
-			UOSInt maxLev;
+			UIntOS maxLev;
 
 			static ElementInfo elements[];
 
 			static UnsafeArray<const UInt8> ReadInt(UnsafeArray<const UInt8> buffPtr, OutParam<UInt64> val, OptOut<UInt32> intSize);
 			static Optional<const ElementInfo> GetElementInfo(UInt32 elementId);
-			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
+			void ParseRange(UIntOS lev, UInt64 ofst, UInt64 size);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
+			UIntOS GetFrameIndex(UIntOS lev, UInt64 ofst);
 		public:
 			EBMLFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~EBMLFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

@@ -25,14 +25,14 @@ Bool IO::WriteCacheStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt IO::WriteCacheStream::Read(const Data::ByteArray &buff)
+UIntOS IO::WriteCacheStream::Read(const Data::ByteArray &buff)
 {
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::WriteCacheStream::Write(Data::ByteArrayR buff)
+UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 {
-	UOSInt ret;
+	UIntOS ret;
 	UInt8 *newBuff;
 	if (this->cacheBuff == 0)
 	{
@@ -128,7 +128,7 @@ UOSInt IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 
 Int32 IO::WriteCacheStream::Flush()
 {
-	UOSInt writeSize;
+	UIntOS writeSize;
 	while (this->cacheSize > 0)
 	{
 		writeSize = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));

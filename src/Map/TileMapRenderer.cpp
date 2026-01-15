@@ -15,7 +15,7 @@ Map::TileMapRenderer::TileMapRenderer(NN<Media::DrawEngine> eng, Map::TileMap *m
 Map::TileMapRenderer::~TileMapRenderer()
 {
 	CachedImage *cimg;
-	OSInt i = this->lastImgs.GetCount();
+	IntOS i = this->lastImgs.GetCount();
 	while (i-- > 0)
 	{
 		cimg = this->lastImgs.GetItem(i);
@@ -32,11 +32,11 @@ void Map::TileMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 	Data::ArrayList<CachedImage *> *cacheImgs;
 
 	Data::ArrayListInt64 idList;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	Media::ImageList *imgList;
-	OSInt level = map->GetNearestLevel(view->GetMapScale());
+	IntOS level = map->GetNearestLevel(view->GetMapScale());
 
 	NEW_CLASS(cacheIds, Data::ArrayListInt64());
 	NEW_CLASS(cacheImgs, Data::ArrayList<CachedImage*>());

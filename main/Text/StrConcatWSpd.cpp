@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	WChar wbuff[32];
-	OSInt i = 100000000;
+	IntOS i = 100000000;
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	IO::ConsoleWriter *console;
 	Manage::HiResClock clk;

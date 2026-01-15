@@ -37,11 +37,11 @@ NN<IO::JMeterGroup> IO::JMeterLog::GetOrCreateGroup(Text::CStringNN label, Text:
 
 NN<Text::String> IO::JMeterLog::NewResponseCode(Text::CStringNN responseCode)
 {
-	OSInt i = this->responseCodes.SortedIndexOfC(responseCode);
+	IntOS i = this->responseCodes.SortedIndexOfC(responseCode);
 	if (i >= 0)
-		return this->responseCodes.GetItemNoCheck((UOSInt)i);
+		return this->responseCodes.GetItemNoCheck((UIntOS)i);
 	NN<Text::String> s = Text::String::New(responseCode);
-	this->responseCodes.Insert((UOSInt)~i, s);
+	this->responseCodes.Insert((UIntOS)~i, s);
 	return s;
 }
 
@@ -147,11 +147,11 @@ IO::JMeterLog::~JMeterLog()
 	this->responseCodes.FreeAll();
 }
 
-UOSInt IO::JMeterLog::GetConcurrCnt(Int64 ts) const
+UIntOS IO::JMeterLog::GetConcurrCnt(Int64 ts) const
 {
 	NN<JMeterLogItem> log;
-	UOSInt cnt = 0;
-	UOSInt i = this->logs.GetCount();
+	UIntOS cnt = 0;
+	UIntOS i = this->logs.GetCount();
 	while (i-- > 0)
 	{
 		log = this->logs.GetItemNoCheck(i);

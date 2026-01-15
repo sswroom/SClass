@@ -3,7 +3,7 @@
 #include "Math/Equation.h"
 #include "Text/MyString.h"
 
-Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos)
+Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, IntOS nChars, UTF8Char **endPos)
 {
 //	UTF8Char name[128];
 	UTF8Char *currPtr = equation;
@@ -67,7 +67,7 @@ Math::Equation::Equation()
 
 Math::Equation::~Equation()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->equationVari.GetCount();
 	while (i-- > 0)
 	{
@@ -78,7 +78,7 @@ Math::Equation::~Equation()
 	this->equationRight.DeleteAll();
 }
 
-UOSInt Math::Equation::AddEquation(UTF8Char *equation)
+UIntOS Math::Equation::AddEquation(UTF8Char *equation)
 {
 	UTF8Char *currPtr = equation;
 	UTF8Char *leftStart = currPtr;
@@ -157,7 +157,7 @@ UOSInt Math::Equation::AddEquation(UTF8Char *equation)
 		}
 	}
 
-	UOSInt ret = this->equationLeft.Add(left);
+	UIntOS ret = this->equationLeft.Add(left);
 	this->equationRight.Add(right);
 	this->equationSign.Add(sign);
 	return ret;

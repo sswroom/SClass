@@ -113,9 +113,9 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 	UTF8Char *sptr;
 	ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
-	UOSInt i;
+	UIntOS i;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
@@ -169,9 +169,9 @@ int main(int argc, char *argv[])
 	Core::CoreStart();
 	{
 		sptr = IO::Path::GetProcessFileName(tmpStr);
-		UOSInt i = Text::StrLastIndexOfCharC(tmpStr, (UOSInt)(sptr - tmpStr), IO::Path::PATH_SEPERATOR);
+		UIntOS i = Text::StrLastIndexOfCharC(tmpStr, (UIntOS)(sptr - tmpStr), IO::Path::PATH_SEPERATOR);
 		fileNameStart = &tmpStr[i + 1];
-		i = Text::StrIndexOfCharC(fileNameStart, (UOSInt)(sptr - fileNameStart), '.');
+		i = Text::StrIndexOfCharC(fileNameStart, (UIntOS)(sptr - fileNameStart), '.');
 		if (i != INVALID_INDEX)
 		{
 			fileNameStart[i] = 0;

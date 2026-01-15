@@ -35,8 +35,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(NN<SSWR::SDNSProx
 	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 	sbOut.AppendC(UTF8STRC("<tr><td>DNS List</td><td>"));
 	Data::ArrayListNative<UInt32> dnsList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->proxy->GetDNSList(dnsList);
 	i = 0;
 	j = dnsList.GetCount();
@@ -75,8 +75,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(NN<SSWR::SDNSProxy
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->proxy->GetReqv4List(nameList);
 
 	i = 0;
@@ -177,8 +177,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(NN<SSWR::SDNSProxy
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->proxy->GetReqv6List(nameList);
 
 	i = 0;
@@ -278,8 +278,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(NN<SSWR::SDNSProx
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->proxy->GetReqOthList(nameList);
 
 	i = 0;
@@ -379,10 +379,10 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProx
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::DNSProxy::TargetInfo> target;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 targetIP = 0;
-	OSInt targetIndex = -1;
+	IntOS targetIndex = -1;
 	req->GetQueryValueU32(CSTR("qry"), targetIP);
 	me->proxy->GetTargetList(targetList);
 
@@ -403,7 +403,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProx
 		sbOut.AppendC(UTF8STRC("</a>"));
 		if (target->ip == targetIP)
 		{
-			targetIndex = (OSInt)i;
+			targetIndex = (IntOS)i;
 		}
 
 		i++;
@@ -418,7 +418,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProx
 		sbOut.AppendP(sbuff, sptr);
 		sbOut.AppendC(UTF8STRC("</h3>\r\n"));
 
-		target = targetList.GetItemNoCheck((UOSInt)targetIndex);
+		target = targetList.GetItemNoCheck((UIntOS)targetIndex);
 		Sync::MutexUsage mutUsage(target->mut);
 		i = 0;
 		j = target->addrList.GetCount();
@@ -505,8 +505,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProx
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td valign=\"top\">\r\n"));
 
 	Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> cliList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 selCliId = 0;
@@ -587,12 +587,12 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProx
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[32];
-	UnsafeArray<UTF8Char> sptr = Text::StrUOSInt(sbuff, me->core->GetRequestPerMin());
+	UnsafeArray<UTF8Char> sptr = Text::StrUIntOS(sbuff, me->core->GetRequestPerMin());
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/plain"));
-	resp->AddContentLength((UOSInt)(sptr - sbuff));
-	resp->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
+	resp->AddContentLength((UIntOS)(sptr - sbuff));
+	resp->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 	return true;
 }
 

@@ -18,7 +18,7 @@ void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, 
 	tmpBuff[3] = ReadMUInt32(&initVal[12]);
 	tmpBuff[4] = ReadMUInt32(&initVal[16]);
 	tmpBuff[5] = ReadMUInt32(&initVal[20]);
-	UOSInt i = 64;
+	UIntOS i = 64;
 	while (i-- > 0)
 	{
 		bf.EncryptBlk(&tmpBuff[0]);
@@ -49,7 +49,7 @@ Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN passwor
 	}
 	UTF8Char hashBuff[64];
 	Text::PString sarr[4];
-	UOSInt sarrCnt; 
+	UIntOS sarrCnt; 
 	hash.Substring(1).ConcatTo(hashBuff);
 	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hash.leng - 1}, '$');
 	if (sarrCnt != 3)

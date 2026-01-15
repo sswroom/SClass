@@ -70,7 +70,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblEncryptOutput;
 			NN<UI::GUITextBox> txtEncryptOutput;
 
-			static UOSInt AddHash(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
+			static UIntOS AddHash(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
 			static void AddHashTypes(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType);
 			static Bool FileIsSign(NN<Text::String> fileName);
 			static void __stdcall OnVerifyClicked(AnyType userObj);
@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnEncryptEncryptClicked(AnyType userObj);
 			static void __stdcall OnEncryptDecryptClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			UOSInt ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> sign);
+			UIntOS ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> sign);
 			Optional<Crypto::Cert::X509Key> GetNewKey();
 		public:
 			AVIRASN1DataForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::ASN1Data> asn1);

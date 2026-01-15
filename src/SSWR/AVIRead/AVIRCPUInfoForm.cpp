@@ -131,9 +131,9 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 
 	Manage::CPUInfoDetail cpu;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = cpu.GetInfoCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = cpu.GetInfoCnt();
+	UIntOS k;
 	while (i < j)
 	{
 		sb.ClearStr();

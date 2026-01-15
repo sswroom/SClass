@@ -21,10 +21,10 @@ Net::WebSite::WebSite48IdolControl::~WebSite48IdolControl()
 	SDEL_STRING(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
+IntOS Net::WebSite::WebSite48IdolControl::GetTVPageItems(IntOS pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	if (pageNo <= 0)
 		return 0;
 	if (pageNo == 1)
@@ -35,7 +35,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::
 	{
 		sb.AppendC(UTF8STRC(TVBASEURL));
 		sb.AppendC(UTF8STRC("/page/"));
-		sb.AppendOSInt(pageNo);
+		sb.AppendIntOS(pageNo);
 	}
 	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
@@ -50,14 +50,14 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("main")) && reader.GetAttribCount() == 2)
 		{
-			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("id")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("main-content")))
+			if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("id")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("main-content")))
 			{
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("a")) && reader.GetAttribCount() == 4)
 					{
-						if (reader.GetAttrib((UOSInt)0).SetTo(attr) &&
+						if (reader.GetAttrib((UIntOS)0).SetTo(attr) &&
 							reader.GetAttrib(1).SetTo(attr1) &&
 							reader.GetAttrib(2).SetTo(attr2) &&
 							reader.GetAttrib(3).SetTo(attr3) &&
@@ -86,10 +86,10 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::
 	return retCnt;
 }
 
-OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
+IntOS Net::WebSite::WebSite48IdolControl::GetArcPageItems(IntOS pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	if (pageNo <= 0)
 		return 0;
 	if (pageNo == 1)
@@ -100,7 +100,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 	{
 		sb.AppendC(UTF8STRC(BASEURL));
 		sb.AppendC(UTF8STRC("videos?page="));
-		sb.AppendOSInt(pageNo);
+		sb.AppendIntOS(pageNo);
 	}
 	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
@@ -112,14 +112,14 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")))
 		{
-			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("post-des")))
+			if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("post-des")))
 			{
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				Bool lastIsH6 = false;
 				Int32 id = 0;
 				Int64 time = 0;
 				Text::String *title = 0;
-				UOSInt pullLeftLev = 0;
+				UIntOS pullLeftLev = 0;
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -130,9 +130,9 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 						}
 						else if (lastIsH6 && reader.GetNodeTextNN()->Equals(UTF8STRC("a")))
 						{
-							if (reader.GetAttribCount() == 1 && reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && Text::String::OrEmpty(attr->value)->StartsWith(UTF8STRC(BASEURL)))
+							if (reader.GetAttribCount() == 1 && reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && Text::String::OrEmpty(attr->value)->StartsWith(UTF8STRC(BASEURL)))
 							{
-								id = Text::StrToInt32(&Text::String::OrEmpty(attr->value)->v[(UOSInt)sizeof(BASEURL) + 5]);
+								id = Text::StrToInt32(&Text::String::OrEmpty(attr->value)->v[(UIntOS)sizeof(BASEURL) + 5]);
 								sb.ClearStr();
 								reader.ReadNodeText(sb);
 								SDEL_STRING(title);
@@ -144,7 +144,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 							lastIsH6 = false;
 							if (reader.GetNodeTextNN()->Equals(UTF8STRC("p")))
 							{
-								if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("pull-left")))
+								if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("pull-left")))
 								{
 									pullLeftLev = reader.GetPathLev();
 								}
@@ -190,7 +190,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 void Net::WebSite::WebSite48IdolControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
 	NN<ItemData> item;
-	UOSInt i = itemList->GetCount();
+	UIntOS i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItemNoCheck(i);
@@ -214,14 +214,14 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("button")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader.GetAttribNoCheck((UOSInt)0);
+			attr = reader.GetAttribNoCheck((UIntOS)0);
 			if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("id")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("ddb")))
 			{
 				if (reader.GetAttrib(1).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("onclick")) && Text::String::OrEmpty(attr->value)->StartsWith(UTF8STRC("window.open('")))
 				{
 					if (linkId == 0)
 					{
-						UOSInt i = Text::StrIndexOfChar(&Text::String::OrEmpty(attr->value)->v[13], '\'');
+						UIntOS i = Text::StrIndexOfChar(&Text::String::OrEmpty(attr->value)->v[13], '\'');
 						if (i != INVALID_INDEX)
 						{
 							link->AppendC(&Text::String::OrEmpty(attr->value)->v[13], i);
@@ -254,10 +254,10 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::St
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader.GetAttribNoCheck((UOSInt)0);
+			attr = reader.GetAttribNoCheck((UIntOS)0);
 			if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("post-title")))
 			{
-				UOSInt initLev = reader.GetPathLev();
+				UIntOS initLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > initLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("h2")))
@@ -275,7 +275,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::St
 
 void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NN<Text::String> title, NN<Text::StringBuilderUTF8> dispName)
 {
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(title);
 	sb.Trim();
@@ -317,7 +317,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NN<Text::String> titl
 		{
 			break;
 		}
-		sb.TrimToLength((UOSInt)i);
+		sb.TrimToLength((UIntOS)i);
 		sb.Trim();
 	}
 

@@ -83,7 +83,7 @@ void DB::PostgreSQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	return -2;
 }
@@ -142,9 +142,9 @@ void DB::PostgreSQLConn::Rollback(NN<DB::DBTransaction> tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
+UIntOS DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 {
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> r;
 	if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
 	{
@@ -157,14 +157,14 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 	return names->GetCount() - initCnt;
 }
 
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
 	DB::SQLBuilder sql(DB::SQLType::PostgreSQL, false, this->tzQhr);
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> r;
 	if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
@@ -179,7 +179,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -187,8 +187,8 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	Text::StringBuilderUTF8 sb;
 	NN<Data::ArrayListStringNN> nncolumnNames;
 	NN<Data::QueryConditions> nncondition;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sb.AppendC(UTF8STRC("select "));
 	if (!columnNames.SetTo(nncolumnNames) || nncolumnNames->GetCount() == 0)
 	{
@@ -203,7 +203,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 			if (found)
 				sb.AppendUTF8Char(',');
 			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::PostgreSQL);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			found = true;
 		}
 	}
@@ -218,7 +218,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 			sb.AppendP(sbuff, sptr);
 			break;
 		}
-		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
+		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UIntOS)j);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::SQLType::PostgreSQL);
 		sb.AppendP(sptr + 1, sptr2);
 		sb.AppendUTF8Char('.');
@@ -239,12 +239,12 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
-		sb.AppendUOSInt(maxCnt);
+		sb.AppendUIntOS(maxCnt);
 	}
 	if (ofst > 0)
 	{
 		sb.AppendC(UTF8STRC(" OFFSET "));
-		sb.AppendUOSInt(ofst);
+		sb.AppendUIntOS(ofst);
 	}
 	return this->ExecuteReader(sb.ToCString());
 }
@@ -284,7 +284,7 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CStringNN databaseName)
 	return false;
 }
 
-Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
+Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(IntOS status)
 {
 	return CSTR("Unknown");
 }

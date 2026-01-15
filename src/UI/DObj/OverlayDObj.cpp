@@ -3,7 +3,7 @@
 #include "Math/Math_C.h"
 #include "UI/DObj/OverlayDObj.h"
 
-UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<IntOS> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = true;
@@ -13,7 +13,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::D
 	this->clk = 0;
 }
 
-UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, NN<Parser::ParserList> parsers) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<IntOS> tl, NN<Parser::ParserList> parsers) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -64,11 +64,11 @@ Bool UI::DObj::OverlayDObj::IsChanged()
 		if (imgList->GetCount() <= 1)
 			return false;
 		Double t = clk->GetTimeDiff();
-		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-		while (i >= (OSInt)imgList->GetCount())
+		IntOS i = Double2Int32((t - this->startTime) * 1000 / IntOS2Double(this->frameDelay));
+		while (i >= (IntOS)imgList->GetCount())
 		{
-			i -= (OSInt)imgList->GetCount();
-			this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
+			i -= (IntOS)imgList->GetCount();
+			this->startTime += IntOS2Double(this->frameDelay * (IntOS)imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
 	}
@@ -91,7 +91,7 @@ void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 	else if (this->imgList.SetTo(imgList))
 	{
-		UOSInt frameNum;
+		UIntOS frameNum;
 		if (imgList->GetCount() <= 1)
 		{
 			frameNum = 0;
@@ -99,11 +99,11 @@ void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		else
 		{
 			Double t = clk->GetTimeDiff();
-			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
+			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / IntOS2Double(this->frameDelay));
 			while (frameNum >= imgList->GetCount())
 			{
 				frameNum -= imgList->GetCount();
-				this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
+				this->startTime += IntOS2Double(this->frameDelay * (IntOS)imgList->GetCount()) * 0.001;
 			}
 		}
 		imgList->ToStaticImage(frameNum);
@@ -116,7 +116,7 @@ void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 }
 
-Bool UI::DObj::OverlayDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::OverlayDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	return false;
 }
@@ -138,7 +138,7 @@ void UI::DObj::OverlayDObj::OnMouseClick()
 {
 }
 
-void UI::DObj::OverlayDObj::SetFrameDelay(OSInt frameDelay)
+void UI::DObj::OverlayDObj::SetFrameDelay(IntOS frameDelay)
 {
 	if (frameDelay > 0)
 	{

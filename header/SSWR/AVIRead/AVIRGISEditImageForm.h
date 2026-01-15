@@ -43,18 +43,18 @@ namespace SSWR
 			Math::Coord2DDbl imgMin;
 			Math::Coord2DDbl imgMax;
 			Int32 downType;
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 
 			NN<Map::VectorLayer> lyr;
 			NN<AVIRMapNavigator> navi;
 
 			static void __stdcall OnImageChg(AnyType userObj);
 			void UpdateImgStat();
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static void __stdcall OnAlphaScrolled(AnyType userObj, UOSInt scrollPos);
-			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static void __stdcall OnAlphaScrolled(AnyType userObj, UIntOS scrollPos);
+			Int32 CalcDownType(Math::Coord2D<IntOS> scnPos);
 		public:
 			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISEditImageForm();

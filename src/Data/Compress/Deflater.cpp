@@ -146,10 +146,10 @@ struct Data::Compress::DeflateCompressor
 	DeflateStatus m_prev_return_status;
 	const void *m_pIn_buf;
 	UInt8 *m_pOut_buf;
-	UOSInt *m_pIn_buf_size, *m_pOut_buf_size;
+	UIntOS *m_pIn_buf_size, *m_pOut_buf_size;
 	DeflateFlush m_flush;
 	const UInt8 *m_pSrc;
-	UOSInt m_src_buf_left, m_out_buf_ofs;
+	UIntOS m_src_buf_left, m_out_buf_ofs;
 	UInt8 m_dict[DEFLATER_LZ_DICT_SIZE + DEFLATER_MAX_MATCH_LEN - 1];
 	UInt16 m_huff_count[DEFLATER_MAX_HUFF_TABLES][DEFLATER_MAX_HUFF_SYMBOLS];
 	UInt16 m_huff_codes[DEFLATER_MAX_HUFF_TABLES][DEFLATER_MAX_HUFF_SYMBOLS];
@@ -221,7 +221,7 @@ const UInt8 Data::Compress::Deflater::s_tdefl_large_dist_extra[] = {
 
 UInt32 Data::Compress::Deflater::CreateCompFlagsFromParams(CompLevel level, Bool hasHeader, CompStrategy strategy)
 {
-	UInt32 comp_flags = s_tdefl_num_probes[((OSInt)level >= 0) ? Math_Min(10, (OSInt)level) : (OSInt)CompLevel::DefaultLevel] | (((OSInt)level <= 3) ? DEFLATER_GREEDY_PARSING_FLAG : 0);
+	UInt32 comp_flags = s_tdefl_num_probes[((IntOS)level >= 0) ? Math_Min(10, (IntOS)level) : (IntOS)CompLevel::DefaultLevel] | (((IntOS)level <= 3) ? DEFLATER_GREEDY_PARSING_FLAG : 0);
 	if (hasHeader)
 		comp_flags |= DEFLATER_WRITE_ZLIB_HEADER;
 
@@ -748,7 +748,7 @@ Bool Data::Compress::Deflater::CompressBlock(NN<DeflateCompressor> d, Bool stati
 Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 {
 	const UInt8 *pSrc = d->m_pSrc;
-	UOSInt src_buf_left = d->m_src_buf_left;
+	UIntOS src_buf_left = d->m_src_buf_left;
 	DeflateFlush flush = d->m_flush;
 
 	while ((src_buf_left) || ((flush != DeflateFlush::NoFlush) && (d->m_lookahead_size)))
@@ -894,12 +894,12 @@ Data::Compress::DeflateStatus Data::Compress::Deflater::FlushOutputBuffer(NN<Def
 {
 	if (d->m_pIn_buf_size)
 	{
-		*d->m_pIn_buf_size = (UOSInt)(d->m_pSrc - (const UInt8 *)d->m_pIn_buf);
+		*d->m_pIn_buf_size = (UIntOS)(d->m_pSrc - (const UInt8 *)d->m_pIn_buf);
 	}
 
 	if (d->m_pOut_buf_size)
 	{
-		UOSInt n = Math_Min(*d->m_pOut_buf_size - d->m_out_buf_ofs, d->m_output_flush_remaining);
+		UIntOS n = Math_Min(*d->m_pOut_buf_size - d->m_out_buf_ofs, d->m_output_flush_remaining);
 		memcpy(d->m_pOut_buf + d->m_out_buf_ofs, d->m_output_buf + d->m_output_flush_ofs, n);
 		d->m_output_flush_ofs += (UInt32)n;
 		d->m_output_flush_remaining -= (UInt32)n;
@@ -1042,7 +1042,7 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 	{
 		if (pOutput_buf_start == d->m_output_buf)
 		{
-			UOSInt bytes_to_copy = Math_Min((UOSInt)n, (UOSInt)(*d->m_pOut_buf_size - d->m_out_buf_ofs));
+			UIntOS bytes_to_copy = Math_Min((UIntOS)n, (UIntOS)(*d->m_pOut_buf_size - d->m_out_buf_ofs));
 			MemCopyNO((UInt8 *)d->m_pOut_buf + d->m_out_buf_ofs, d->m_output_buf, bytes_to_copy);
 			d->m_out_buf_ofs += bytes_to_copy;
 			if ((n -= (Int32)bytes_to_copy) != 0)
@@ -1053,14 +1053,14 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 		}
 		else
 		{
-			d->m_out_buf_ofs += (UOSInt)n;
+			d->m_out_buf_ofs += (UIntOS)n;
 		}
 	}
 
 	return (Int32)d->m_output_flush_remaining;
 }
 
-Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UOSInt *pIn_buf_size, UInt8 *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush)
+Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UIntOS *pIn_buf_size, UInt8 *pOut_buf, UIntOS *pOut_buf_size, DeflateFlush flush)
 {
 	d->m_pIn_buf = pIn_buf;
 	d->m_pIn_buf_size = pIn_buf_size;
@@ -1101,11 +1101,11 @@ Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompr
 	}
 
 	if ((d->m_flags & (DEFLATER_WRITE_ZLIB_HEADER | DEFLATER_COMPUTE_ADLER32)) && (pIn_buf))
-		d->m_adler32 = Adler32_Calc((const UInt8 *)pIn_buf, (UOSInt)(d->m_pSrc - (const UInt8 *)pIn_buf), d->m_adler32);
+		d->m_adler32 = Adler32_Calc((const UInt8 *)pIn_buf, (UIntOS)(d->m_pSrc - (const UInt8 *)pIn_buf), d->m_adler32);
 
 	if ((flush != DeflateFlush::NoFlush) && (!d->m_lookahead_size) && (!d->m_src_buf_left) && (!d->m_output_flush_remaining))
 	{
-		if ((OSInt)FlushBlock(d, flush) < 0)
+		if ((IntOS)FlushBlock(d, flush) < 0)
 			return d->m_prev_return_status;
 		d->m_finished = (flush == DeflateFlush::Finish);
 		if (flush == DeflateFlush::FullFlush)
@@ -1121,11 +1121,11 @@ Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompr
 
 Data::Compress::DeflateResult Data::Compress::Deflater::Deflate(DeflateFlush flush)
 {
-	UOSInt in_bytes, out_bytes;
+	UIntOS in_bytes, out_bytes;
 	UInt32 orig_total_in, orig_total_out;
 	DeflateResult mz_status = DeflateResult::Ok;
 
-	if (((OSInt)flush < 0) || ((OSInt)flush > (OSInt)DeflateFlush::Finish) || (!this->next_out))
+	if (((IntOS)flush < 0) || ((IntOS)flush > (IntOS)DeflateFlush::Finish) || (!this->next_out))
 		return DeflateResult::StreamError;
 	if (!this->avail_out)
 		return DeflateResult::BufError;
@@ -1151,7 +1151,7 @@ Data::Compress::DeflateResult Data::Compress::Deflater::Deflate(DeflateFlush flu
 		this->avail_out -= (UInt32)out_bytes;
 		this->total_out += (UInt32)out_bytes;
 
-		if ((OSInt)defl_status < 0)
+		if ((IntOS)defl_status < 0)
 		{
 			mz_status = DeflateResult::StreamError;
 			break;
@@ -1213,9 +1213,9 @@ Bool Data::Compress::Deflater::IsDown() const
 	return false;
 }
 
-UOSInt Data::Compress::Deflater::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::Deflater::Read(const Data::ByteArray &buff)
 {
-	UOSInt initSize = buff.GetSize();
+	UIntOS initSize = buff.GetSize();
 	DeflateResult ret;
 	NN<Crypto::Hash::HashAlgorithm> hash;
 	this->next_out = buff.Arr().Ptr();
@@ -1224,10 +1224,10 @@ UOSInt Data::Compress::Deflater::Read(const Data::ByteArray &buff)
 	{
 		if (this->avail_in == 0)
 		{
-			UOSInt readSize = DEFLATER_BUFF_SIZE;
+			UIntOS readSize = DEFLATER_BUFF_SIZE;
 			if (this->srcLeng < DEFLATER_BUFF_SIZE)
 			{
-				readSize = (UOSInt)this->srcLeng;
+				readSize = (UIntOS)this->srcLeng;
 				if (readSize == 0)
 				{
 					ret = this->Deflate(DeflateFlush::Finish);
@@ -1258,7 +1258,7 @@ UOSInt Data::Compress::Deflater::Read(const Data::ByteArray &buff)
 	return initSize - this->avail_out;
 }
 
-UOSInt Data::Compress::Deflater::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::Deflater::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -1283,14 +1283,14 @@ IO::StreamType Data::Compress::Deflater::GetStreamType() const
 	return IO::StreamType::Deflater;
 }
 
-Bool Data::Compress::Deflater::CompressDirect(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff, CompLevel level, Bool hasHeader)
+Bool Data::Compress::Deflater::CompressDirect(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff, CompLevel level, Bool hasHeader)
 {
 	UInt32 comp_flags = DEFLATER_COMPUTE_ADLER32 | CreateCompFlagsFromParams(level, hasHeader, CompStrategy::DefaultStrategy);
 	DeflateCompressor state;
 	DeflateInit(state, comp_flags);
 
-	UOSInt in_bytes, out_bytes;
-	UOSInt totalOut = 0;
+	UIntOS in_bytes, out_bytes;
+	UIntOS totalOut = 0;
 	DeflateStatus defl_status;
 	in_bytes = srcBuff.GetCount();
 	out_bytes = destBuff.GetCount();

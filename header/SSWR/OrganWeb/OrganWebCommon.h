@@ -206,9 +206,9 @@ namespace SSWR
 			Int32 cateId;
 			GroupFlags flags;
 
-			UOSInt photoCount;
-			UOSInt myPhotoCount;
-			UOSInt totalCount;
+			UIntOS photoCount;
+			UIntOS myPhotoCount;
+			UIntOS totalCount;
 			Optional<SpeciesInfo> photoSpObj;
 			Data::ArrayListNN<SpeciesInfo> species;
 			Data::ArrayListNN<GroupInfo> groups;
@@ -260,7 +260,7 @@ namespace SSWR
 		public:
 			virtual ~SpeciesSciNameComparator(){};
 
-			virtual OSInt Compare(NN<SpeciesInfo> a, NN<SpeciesInfo> b) const
+			virtual IntOS Compare(NN<SpeciesInfo> a, NN<SpeciesInfo> b) const
 			{
 				if (a->sciNameHash > b->sciNameHash)
 				{
@@ -281,7 +281,7 @@ namespace SSWR
 		{
 		public:
 			virtual ~UserFileTimeComparator(){};
-			virtual OSInt Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
+			virtual IntOS Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 			{
 				if (a->webuserId > b->webuserId)
 				{
@@ -316,7 +316,7 @@ namespace SSWR
 				this->env = env;
 			}
 			virtual ~UserFileDescComparator(){}
-			virtual OSInt Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
+			virtual IntOS Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 			{
 				Bool aDesc = false;
 				Bool bDesc = false;
@@ -332,7 +332,7 @@ namespace SSWR
 				}
 				if (aDesc && bDesc && a->descript.SetTo(aStr) && b->descript.SetTo(bStr))
 				{
-					OSInt ret = aStr->CompareTo(bStr);
+					IntOS ret = aStr->CompareTo(bStr);
 					if (ret != 0)
 						return ret;
 				}

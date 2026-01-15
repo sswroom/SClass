@@ -5,11 +5,11 @@
 extern "C"
 {
 
-void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt,IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
-	OSInt *currIndex;
+	IntOS i;
+	IntOS j;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32 bval;
 	Int32 gval;
@@ -70,12 +70,12 @@ void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt,OSInt widt
 	}
 }
 
-void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32 bval;
 	Int32 gval;
@@ -141,9 +141,9 @@ void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width
 	}
 }
 
-void LanczosResizerLR_C16_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+void LanczosResizerLR_C16_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	UInt16 v;
 	sstep = sstep - width * 8;
 	dstep = dstep - width * 2;

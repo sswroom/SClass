@@ -2,7 +2,7 @@ section .text
 
 global FNV1a_Calc
 
-;UInt32 FNV1a_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal)
+;UInt32 FNV1a_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal)
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize

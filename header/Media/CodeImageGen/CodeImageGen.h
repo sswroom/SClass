@@ -25,9 +25,9 @@ namespace Media
 			virtual ~CodeImageGen();
 
 			virtual CodeType GetCodeType() = 0;
-			virtual UOSInt GetMinLength() = 0;
-			virtual UOSInt GetMaxLength() = 0;
-			virtual Optional<Media::DrawImage> GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng) = 0;
+			virtual UIntOS GetMinLength() = 0;
+			virtual UIntOS GetMaxLength() = 0;
+			virtual Optional<Media::DrawImage> GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng) = 0;
 		public:
 			static Optional<CodeImageGen> CreateGenerator(CodeType codeType);
 			static Text::CStringNN GetCodeName(CodeType codeType);

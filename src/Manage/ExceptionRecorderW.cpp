@@ -135,7 +135,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #else
 #error "Unsupported CPU"
 #endif
-	Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UOSInt)info->ExceptionRecord->ExceptionAddress, tCont);
+	Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UIntOS)info->ExceptionRecord->ExceptionAddress, tCont);
 	tCont.Delete();
 
 	if (exAction == EA_CLOSE)

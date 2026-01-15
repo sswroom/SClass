@@ -60,7 +60,7 @@ namespace SSWR
 			static void __stdcall OnClearClicked(AnyType userObj);
 			static void __stdcall OnCopyAllClicked(AnyType userObj);
 			static void __stdcall OnConvFileClicked(AnyType userObj);
-			static void __stdcall OnCoordDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnCoordDblClk(AnyType userObj, UIntOS itemIndex);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 			void ClearItems(Bool updateList);

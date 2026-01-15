@@ -15,7 +15,7 @@ namespace Manage
 		Int32 model;
 		Int32 steppingId;
 
-		UOSInt infoCnt;
+		UIntOS infoCnt;
 		void *clsData;
 	public:
 		CPUInfo();
@@ -28,10 +28,10 @@ namespace Manage
 
 		Bool SupportIntelDTS(); //Digital Thermal Sensor
 
-		UOSInt GetInfoCnt();
-		Bool GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-		Bool GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-		UOSInt GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList);
+		UIntOS GetInfoCnt();
+		Bool GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+		Bool GetInfoValue(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+		UIntOS GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList);
 		void GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2);
 
 		UnsafeArrayOpt<UTF8Char> GetCPUName(UnsafeArray<UTF8Char> sbuff);
@@ -40,9 +40,9 @@ namespace Manage
 		Bool GetCPUTCC(OutParam<Double> temp);
 
 		static Text::CStringNN GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
-		static Text::CStringNN GetFeatureShortName(UOSInt index);
-		static Text::CStringNN GetFeatureName(UOSInt index);
-		static Text::CStringNN GetFeatureDesc(UOSInt index);
+		static Text::CStringNN GetFeatureShortName(UIntOS index);
+		static Text::CStringNN GetFeatureName(UIntOS index);
+		static Text::CStringNN GetFeatureDesc(UIntOS index);
 		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb);
 		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb);
 	};

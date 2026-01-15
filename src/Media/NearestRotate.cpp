@@ -236,12 +236,12 @@ Optional<Media::RasterImage> Media::NearestRotate::Rotate(NN<Media::RasterImage>
 		destHeight = simg->info.dispSize.y;
 	}
 
-	NEW_CLASS(destImg, Media::StaticImage(Math::Size2D<UOSInt>(destWidth, destHeight), 0, 32, simg->info.pf, destWidth * destHeight * 4, simg->info.color, simg->info.yuvType, simg->info.atype, simg->info.ycOfst));
+	NEW_CLASS(destImg, Media::StaticImage(Math::Size2D<UIntOS>(destWidth, destHeight), 0, 32, simg->info.pf, destWidth * destHeight * 4, simg->info.color, simg->info.yuvType, simg->info.atype, simg->info.ycOfst));
 	UnsafeArray<Int32> pBits = UnsafeArray<Int32>::ConvertFrom(destImg->data);
 	UnsafeArray<Int32> sBits = UnsafeArray<Int32>::ConvertFrom(simg->data);
 	Int32 lastHeight = destHeight;
 	Int32 thisHeight;
-	UOSInt i;
+	UIntOS i;
 	i = this->nThread;
 	while (i-- > 0)
 	{

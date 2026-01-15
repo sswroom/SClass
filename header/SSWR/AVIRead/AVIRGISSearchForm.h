@@ -27,7 +27,7 @@ namespace SSWR
 			Data::ArrayListString dispList;
 			Data::ArrayListInt64 objIds;
 			Optional<Map::NameArray> nameArr;
-			UOSInt strIndex;
+			UIntOS strIndex;
 			Int32 flags;
 
 		private:
@@ -36,7 +36,7 @@ namespace SSWR
 			void UpdateResults();
 
 		public:
-			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags);
+			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UIntOS strIndex, Int32 flags);
 			virtual ~AVIRGISSearchForm();
 
 			virtual void OnMonitorChanged();

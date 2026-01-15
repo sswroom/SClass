@@ -38,10 +38,10 @@ Text::CStringNN UI::GUICalendar::GetObjectClass()
 	return CSTR("Calendar");
 }
 
-OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
 {
 	Data::DateTime dt;
-	OSInt i;
+	IntOS i;
 	NMSELCHANGE *chg;
 	switch (code)
 	{

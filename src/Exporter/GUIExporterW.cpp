@@ -133,7 +133,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppRGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -141,7 +141,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -151,7 +151,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat24bppRGB, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
@@ -160,7 +160,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat16bppRGB565, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
@@ -169,7 +169,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat8bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -190,7 +190,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat4bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -211,7 +211,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 

@@ -8,7 +8,7 @@ global Base64_Encrypt
 global _Base64_Decrypt
 global Base64_Decrypt
 
-;OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
+;IntOS Base64_Encrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff);
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -132,7 +132,7 @@ b64eexit:
 	pop ebp
 	ret
 
-;OSInt Base64_Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
+;IntOS Base64_Decrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff);
 ;0 edi
 ;4 esi
 ;8 ebx

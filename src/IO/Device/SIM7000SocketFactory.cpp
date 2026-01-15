@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, UIntOS index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<IO::Device::SIM7000SocketFactory> me = userObj.GetNN<IO::Device::SIM7000SocketFactory>();
 	DataPacket *packet;
@@ -29,7 +29,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, 
 
 void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 {
-	UOSInt i = 8;
+	UIntOS i = 8;
 	NN<DataPacket> packet;
 	while (i-- > 0)
 	{
@@ -65,7 +65,7 @@ IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(NN<IO::Device::SIM7000> m
 	this->needRelease = needRelease;
 	this->apn = nullptr;
 	this->modem->SetReceiveHandler(OnReceiveData, this);
-	OSInt i = 8;
+	IntOS i = 8;
 	while (i-- > 0)
 	{
 		this->status[i].state = SocketState::Empty;
@@ -176,8 +176,8 @@ Optional<Socket> IO::Device::SIM7000SocketFactory::CreateTCPSocketv6()
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
 {
-	OSInt i = 0;
-	OSInt j = 8;
+	IntOS i = 0;
+	IntOS j = 8;
 	while (i < j)
 	{
 		if (this->status[i].state == SocketState::Empty)
@@ -224,7 +224,7 @@ Optional<Socket> IO::Device::SIM7000SocketFactory::CreateRAWSocket()
 
 void IO::Device::SIM7000SocketFactory::DestroySocket(NN<Socket> socket)
 {
-	UOSInt i = (UOSInt)socket.Ptr() - 1;
+	UIntOS i = (UIntOS)socket.Ptr() - 1;
 	NN<DataPacket> packet;
 	if (i >= 8)
 	{
@@ -257,7 +257,7 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(NN<Socket> socket)
 
 Bool IO::Device::SIM7000SocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port)
 {
-	UOSInt i = (UOSInt)socket.Ptr() - 1;
+	UIntOS i = (UIntOS)socket.Ptr() - 1;
 	if (i >= 8)
 	{
 		return false;
@@ -283,7 +283,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketBind(NN<Socket> socket, Optional<co
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex)
+Bool IO::Device::SIM7000SocketFactory::SocketBindRAWIf(NN<Socket> socket, UIntOS ifIndex)
 {
 	return false;
 }
@@ -313,7 +313,7 @@ Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(NN<Socket> socket, NN<Net::S
 	return false;
 }
 
-OSInt IO::Device::SIM7000SocketFactory::SocketGetFD(NN<Socket> socket)
+IntOS IO::Device::SIM7000SocketFactory::SocketGetFD(NN<Socket> socket)
 {
 	return false;
 }
@@ -366,22 +366,22 @@ void IO::Device::SIM7000SocketFactory::AddIPMembership(NN<Socket> socket, UInt32
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS IO::Device::SIM7000SocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-Optional<Net::SocketRecvSess> IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
 	return nullptr;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::Device::SIM7000SocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
 	return 0;
@@ -392,9 +392,9 @@ void IO::Device::SIM7000SocketFactory::CancelReceiveData(NN<Net::SocketRecvSess>
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UIntOS IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
-	OSInt i = -1 + (OSInt)socket.Ptr();
+	IntOS i = -1 + (IntOS)socket.Ptr();
 	if (i < 0 || i >= 8)
 	{
 		return false;
@@ -429,9 +429,9 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArr
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+UIntOS IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
-	UOSInt i = (UOSInt)socket.Ptr() - 1;
+	UIntOS i = (UIntOS)socket.Ptr() - 1;
 	if (i >= 8)
 	{
 		return false;
@@ -477,7 +477,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, UnsafeArray<c
 	}
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
+UIntOS IO::Device::SIM7000SocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	return 0;
 }
@@ -538,9 +538,9 @@ Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
+UIntOS IO::Device::SIM7000SocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
-	UOSInt i = dnsList->GetCount();
+	UIntOS i = dnsList->GetCount();
 	if (this->modem->NetGetDNSList(dnsList))
 	{
 		return dnsList->GetCount() - i;
@@ -553,12 +553,12 @@ Bool IO::Device::SIM7000SocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 	return true;
 }
 
-Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
+Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UIntOS ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
 {
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList)
+UIntOS IO::Device::SIM7000SocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList)
 {
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
@@ -603,9 +603,9 @@ Bool IO::Device::SIM7000SocketFactory::GetUDPInfo(NN<UDPInfo> info)
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId)
+UIntOS IO::Device::SIM7000SocketFactory::QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	UOSInt i = 8;
+	UIntOS i = 8;
 	if (protoType == PT_UDP)
 	{
 		while (i-- > 0)
@@ -634,9 +634,9 @@ void IO::Device::SIM7000SocketFactory::FreePortInfos(NN<Data::ArrayListNN<PortIn
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId)
+UIntOS IO::Device::SIM7000SocketFactory::QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	UOSInt i = 8;
+	UIntOS i = 8;
 	if (protoType == PT_UDP)
 	{
 		while (i-- > 0)

@@ -24,7 +24,7 @@ namespace Text
 		UnsafeArrayOpt<const UInt8> GetUDH();
 		UnsafeArray<const UTF16Char> GetMessage();
 
-		static UOSInt CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, UnsafeArray<const UTF8Char> smsMessage);
+		static UIntOS CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, UnsafeArray<const UTF8Char> smsMessage);
 		static Optional<Text::SMSUserData> CreateSMSTrim(UnsafeArray<const UTF16Char> smsMessage, UInt8 *udh);
 		static Optional<Text::SMSUserData> CreateSMSFromBytes(UnsafeArray<const UInt8> bytes, Bool hasUDH, Text::SMSUtil::DCS dcs);
 	};

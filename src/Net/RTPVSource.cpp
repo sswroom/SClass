@@ -23,7 +23,7 @@ Text::CStringNN Net::RTPVSource::GetFilterName()
 	return CSTR("RTPVSource");
 }
 
-Bool Net::RTPVSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Net::RTPVSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	return this->hdlr->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }
@@ -77,7 +77,7 @@ Bool Net::RTPVSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOu
 	return false;
 }
 
-UOSInt Net::RTPVSource::GetDataSeekCount()
+UIntOS Net::RTPVSource::GetDataSeekCount()
 {
 	return 0;
 }
@@ -87,12 +87,12 @@ Bool Net::RTPVSource::HasFrameCount()
 	return false;
 }
 
-UOSInt Net::RTPVSource::GetFrameCount()
+UIntOS Net::RTPVSource::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Net::RTPVSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Net::RTPVSource::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -101,7 +101,7 @@ void Net::RTPVSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 
-UOSInt Net::RTPVSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Net::RTPVSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return this->hdlr->ReadNextFrame(frameBuff, frameTime, ftype);
 }

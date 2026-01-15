@@ -13,7 +13,7 @@ namespace Media
 			Int32 align;
 
 			UInt8 *readBuff;
-			OSInt readBuffSize;
+			IntOS readBuffSize;
 		public:
 			G711muLawEncoder(AudioSource *sourceAudio);
 			virtual ~G711muLawEncoder();
@@ -26,8 +26,8 @@ namespace Media
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 			virtual void Stop();
-			virtual OSInt ReadBlock(UInt8 *buff, OSInt blkSize); //ret actual block size
-			virtual UOSInt GetMinBlockSize();
+			virtual IntOS ReadBlock(UInt8 *buff, IntOS blkSize); //ret actual block size
+			virtual UIntOS GetMinBlockSize();
 		};
 	};
 };

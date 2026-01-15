@@ -96,12 +96,12 @@ Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
 		return false;
 	}
 	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
-	UOSInt wpl = (UOSInt)pixGetWpl(pix);
+	UIntOS wpl = (UIntOS)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
 	img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, wpl * 4, false, Media::RotateType::None);
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
-		UOSInt wordCnt = wpl * img->info.dispSize.y;
+		UIntOS wordCnt = wpl * img->info.dispSize.y;
 		while (wordCnt-- > 0)
 		{
 			WriteMUInt32(data, ReadUInt32(data));
@@ -126,10 +126,10 @@ Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 		return false;
 	}
 	pixSetResolution(pix, 72.0, 72.0);
-	UOSInt wpl = (UOSInt)pixGetWpl(pix);
+	UIntOS wpl = (UIntOS)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
 	frame->GetImageData(data, 0, 0, frame->GetWidth(), frame->GetHeight(), wpl * 4, false, Media::RotateType::None);
-	UOSInt wordCnt = wpl * frame->GetHeight();
+	UIntOS wordCnt = wpl * frame->GetHeight();
 	while (wordCnt-- > 0)
 	{
 		WriteMUInt32(data, ReadUInt32(data));
@@ -144,9 +144,9 @@ Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 	return true;
 }
 
-Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence)
+Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UIntOS> area, OptOut<UIntOS> confidence)
 {
-	if (this->clsData->currImg == 0 || area.min.x >= area.max.x || area.min.y >= area.max.y || area.max.x > (UOSInt)pixGetWidth(this->clsData->currImg) || area.max.y > (UOSInt)pixGetHeight(this->clsData->currImg))
+	if (this->clsData->currImg == 0 || area.min.x >= area.max.x || area.min.y >= area.max.y || area.max.x > (UIntOS)pixGetWidth(this->clsData->currImg) || area.max.y > (UIntOS)pixGetHeight(this->clsData->currImg))
 	{
 		return nullptr;
 	}
@@ -157,7 +157,7 @@ Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt>
 	{
 		if (confidence.IsNotNull())
 		{
-			confidence.SetNoCheck((UOSInt)this->clsData->api.MeanTextConf());
+			confidence.SetNoCheck((UIntOS)this->clsData->api.MeanTextConf());
 		}
 		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText);
 		delete [] resultText;
@@ -196,7 +196,7 @@ Bool Media::OCREngine::ParseAllInImage()
 				if (this->hdlr)
 				{
 					NN<Text::String> res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
-					this->hdlr(this->hdlrObj, res, confidence, Math::RectArea<OSInt>(left, top, right - left, bottom - top));
+					this->hdlr(this->hdlrObj, res, confidence, Math::RectArea<IntOS>(left, top, right - left, bottom - top));
 					res->Release();
 				}
 			}

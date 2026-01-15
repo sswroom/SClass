@@ -16,18 +16,18 @@ namespace UI
 			void *widget;
 			void *context;
 			UInt32 time;
-			Data::StringMapNative<OSInt> targetMap;
+			Data::StringMapNative<IntOS> targetMap;
 			Data::FastMapNN<Int32, Text::String> targetText;
 
-			static void AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UOSInt slen);
+			static void AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UIntOS slen);
 
 			void LoadData();
 		public:
 			GTKDropData(void *widget, void *context, UInt32 time, Bool readData);
 			virtual ~GTKDropData();
 
-			virtual UOSInt GetCount();
-			virtual UnsafeArrayOpt<const UTF8Char> GetName(UOSInt index);
+			virtual UIntOS GetCount();
+			virtual UnsafeArrayOpt<const UTF8Char> GetName(UIntOS index);
 			virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb);
 			virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name);
 
@@ -53,9 +53,9 @@ namespace UI
 
 			void SetHandler(NN<UI::GUIDropHandler> hdlr);
 
-			Int32 EventDragMotion(void *context, OSInt x, OSInt y, UInt32 time);
+			Int32 EventDragMotion(void *context, IntOS x, IntOS y, UInt32 time);
 			void EventDragLeave();		
-			Bool EventDragDrop(void *context, OSInt x, OSInt y, UInt32 time);
+			Bool EventDragDrop(void *context, IntOS x, IntOS y, UInt32 time);
 		};
 	}
 }

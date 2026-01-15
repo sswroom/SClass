@@ -11,13 +11,13 @@ Optional<Text::String> Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, clif, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UIntOS minLevel, UIntOS maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, clif, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Optional<IO::SPackageFile> spkg, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(nullptr, minLevel, maxLevel, clif, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Optional<IO::SPackageFile> spkg, UIntOS minLevel, UIntOS maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(nullptr, minLevel, maxLevel, clif, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
@@ -34,7 +34,7 @@ void Map::OSM::OSMTileMap::AddAlternateURL(Text::CStringNN url)
 	this->urls.Add(Text::String::New(url));
 }
 
-Optional<Text::String> Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
+Optional<Text::String> Map::OSM::OSMTileMap::GetOSMURL(UIntOS index)
 {
 	return this->urls.GetItem(index);
 }
@@ -54,19 +54,19 @@ Map::TileMap::ImageType Map::OSM::OSMTileMap::GetImageType() const
 	return Map::TileMap::IT_PNG;
 }
 
-UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const
+UIntOS Map::OSM::OSMTileMap::GetConcurrentCount() const
 {
 	return 2 * this->urls.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::OSM::OSMTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::OSM::OSMTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> thisUrl;
 	if (this->GetNextURL().SetTo(thisUrl))
 	{
 		sptr = thisUrl->ConcatTo(sbuff);
-		sptr = Text::StrUOSInt(sptr, level);
+		sptr = Text::StrUIntOS(sptr, level);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 		sptr = Text::StrInt32(sptr, tileId.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -77,13 +77,13 @@ UnsafeArrayOpt<UTF8Char> Map::OSM::OSMTileMap::GetTileImageURL(UnsafeArray<UTF8C
 	return nullptr;
 }
 
-Bool Map::OSM::OSMTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::OSM::OSMTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	NN<Text::String> s;
 	if (this->GetNextURL().SetTo(s))
 	{
 		sb->Append(s);
-		sb->AppendUOSInt(level);
+		sb->AppendUIntOS(level);
 		sb->AppendUTF8Char('/');
 		sb->AppendI32(tileId.x);
 		sb->AppendUTF8Char('/');

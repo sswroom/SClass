@@ -32,7 +32,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) + 2;
 		tag->tagType = TagType::LinkTargetIDList;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -52,7 +52,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::NameString;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -62,7 +62,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::RelativePath;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -72,7 +72,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::WorkingDir;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -82,7 +82,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::CommandLineArguments;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -92,7 +92,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
-		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UIntOS)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::IconLocation;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -149,12 +149,12 @@ Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::GetFormatName()
 	return CSTR("SLNK");
 }
 
-UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::LNKFileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -163,20 +163,20 @@ Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	sb->AppendC(UTF8STRC(": Type="));
 	sb->Append(TagTypeGetName(tag->tagType));
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	return true;
 }
 
-UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<TagInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -187,13 +187,13 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
@@ -284,7 +284,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 	case TagType::LinkTargetIDList:
 	{
 		UInt16 val;
-		UOSInt ofst = 2;
+		UIntOS ofst = 2;
 		frame->AddUInt(0, 2, CSTR("IDListSize"), ReadUInt16(&tagData[0]));
 		while (ofst < tag->size)
 		{
@@ -302,7 +302,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 	case TagType::LinkInfo:
 	{
 		frame->AddUInt(0, 4, CSTR("LinkInfoSize"), ReadUInt32(&tagData[0]));
-		UOSInt linkInfoHeaderSize = ReadUInt32(&tagData[4]);
+		UIntOS linkInfoHeaderSize = ReadUInt32(&tagData[4]);
 		frame->AddUInt(4, 4, CSTR("LinkInfoHeaderSize"), linkInfoHeaderSize);
 		UInt32 linkInfoFlags = ReadUInt32(&tagData[8]);
 		frame->AddHex32(8, CSTR("LinkInfoFlags"), linkInfoFlags);
@@ -336,7 +336,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 			{
 				volumeLabelOffset = ReadUInt32(&tagData[volumeIDOffset + 16]);
 				frame->AddUInt(volumeIDOffset + 16, 4, CSTR("VolumeID.VolumeLabelOffsetUnicode"), volumeLabelOffset);
-				UOSInt strLen = Text::StrCharCnt((const UTF16Char*)&tagData[volumeIDOffset + volumeLabelOffset]);
+				UIntOS strLen = Text::StrCharCnt((const UTF16Char*)&tagData[volumeIDOffset + volumeLabelOffset]);
 				sptr = Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&tagData[volumeIDOffset + volumeLabelOffset]);
 				frame->AddField(volumeIDOffset + volumeLabelOffset, strLen * 2 + 2, CSTR("VolumeID.VolumeLabel"), CSTRP(sbuff, sptr));
 			}
@@ -462,12 +462,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 					frame->AddUInt(128, 4, CSTR("HistoryBufferSize"), ReadUInt32(&tagData[128]));
 					frame->AddUInt(132, 4, CSTR("NumberOfHistoryBuffers"), ReadUInt32(&tagData[132]));
 					frame->AddUInt(136, 4, CSTR("HistoryNoDup"), ReadUInt32(&tagData[136]));
-					UOSInt i = 0;
-					UOSInt j = 32;
+					UIntOS i = 0;
+					UIntOS j = 32;
 					while (i < j)
 					{
 						sptr = Text::StrConcatC(sbuff, UTF8STRC("ColorTable["));
-						sptr = Text::StrUOSInt(sptr, i);
+						sptr = Text::StrUIntOS(sptr, i);
 						*sptr++ = ']';
 						*sptr = 0;
 						frame->AddHex32(140 + i * 4, CSTRP(sbuff, sptr), ReadUInt32(&tagData[140 + i * 4]));

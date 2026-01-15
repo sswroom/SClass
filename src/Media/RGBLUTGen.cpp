@@ -258,13 +258,13 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UnsafeArray<UInt16> rgbTable, NN<const Media
 	NN<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
 	NN<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
 	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
-	UOSInt i;
+	UIntOS i;
 	i = 256;
 	while (i-- > 0)
 	{
-		rgbTable[i] = (UInt16)Double2Int32(irFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
-		rgbTable[i + 256] = (UInt16)Double2Int32(igFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
-		rgbTable[i + 512] = (UInt16)Double2Int32(ibFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i] = (UInt16)Double2Int32(irFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i + 256] = (UInt16)Double2Int32(igFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i + 512] = (UInt16)Double2Int32(ibFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal);
 	}
 	irFunc.Delete();
 	igFunc.Delete();
@@ -324,32 +324,32 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	Int16 v[4];
 	Double cV;
 
-	UOSInt i;
+	UIntOS i;
 	i = 256;
 	while (i-- > 0)
 	{
-		thisV = irFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = irFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
-		thisV = igFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = igFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 256] = *(Int64*)&v[0];
 
-		thisV = ibFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = ibFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 512] = *(Int64*)&v[0];
 
-		cV = UOSInt2Double(i) / 255.0 * maxRGBVal;
+		cV = UIntOS2Double(i) / 255.0 * maxRGBVal;
 		v[0] = 0;
 		v[1] = 0;
 		v[2] = 0;
@@ -400,33 +400,33 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 #if _OSINT_SIZE == 16
 	UInt32 i;
 #else
-	UOSInt i;
+	UIntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)
 	{
-		thisV = irFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = irFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
-		thisV = igFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = igFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 65536] = *(Int64*)&v[0];
 
-		thisV = ibFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = ibFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 131072] = *(Int64*)&v[0];
 
-		cV = UOSInt2Double(i) / 255.0 * maxRGBVal;
+		cV = UIntOS2Double(i) / 255.0 * maxRGBVal;
 		v[0] = 0;
 		v[1] = 0;
 		v[2] = 0;
@@ -535,7 +535,7 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UnsafeArray<UInt8> rgbTable, NN<const Media
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	
 	i = 65536;
@@ -665,7 +665,7 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UnsafeArray<UInt8> rgbTable, NN<const Media
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)
@@ -803,7 +803,7 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UnsafeArray<UInt8> rgbTable, NN<const
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)
@@ -941,7 +941,7 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UnsafeArray<UInt8> rgbTable, NN<cons
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)
@@ -1085,7 +1085,7 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UnsafeArray<UInt8> rgbTable, NN<const M
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)
@@ -1138,11 +1138,11 @@ void Media::RGBLUTGen::GenW8_L(UnsafeArray<UInt16> rgbTable, NN<const Media::CS:
 	this->SetSrcTran(tran, srcTran);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
 	NN<Media::CS::TransferFunc> tFunc = Media::CS::TransferFunc::CreateFunc(tran);
-	UOSInt i;
+	UIntOS i;
 	i = 256;
 	while (i-- > 0)
 	{
-		rgbTable[i] = (UInt16)Double2Int32(tFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i] = (UInt16)Double2Int32(tFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal);
 	}
 	tFunc.Delete();
 }
@@ -1204,7 +1204,7 @@ void Media::RGBLUTGen::GenL_W8(UnsafeArray<UInt8> rgbTable, NN<const Media::CS::
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
-	OSInt i;
+	IntOS i;
 #endif
 	i = 65536;
 	while (i-- > 0)

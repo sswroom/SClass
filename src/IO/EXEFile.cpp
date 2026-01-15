@@ -31,8 +31,8 @@ IO::EXEFile::~EXEFile()
 		MemFree(this->envDOS);
 		this->envDOS = 0;
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = this->propNames.GetCount();
 	while (i-- > 0)
 	{
@@ -86,22 +86,22 @@ void IO::EXEFile::AddProp(Text::CStringNN name, Text::CStringNN value)
 	}
 }
 
-UOSInt IO::EXEFile::GetPropCount() const
+UIntOS IO::EXEFile::GetPropCount() const
 {
 	return this->propNames.GetCount();
 }
 
-Optional<Text::String> IO::EXEFile::GetPropName(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetPropName(UIntOS index) const
 {
 	return this->propNames.GetItem(index);
 }
 
-Optional<Text::String> IO::EXEFile::GetPropValue(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetPropValue(UIntOS index) const
 {
 	return this->propValues.GetItem(index);
 }
 
-UOSInt IO::EXEFile::AddImportModule(Text::CStringNN moduleName)
+UIntOS IO::EXEFile::AddImportModule(Text::CStringNN moduleName)
 {
 	NN<ImportInfo> imp;
 	imp = MemAllocNN(ImportInfo);
@@ -110,7 +110,7 @@ UOSInt IO::EXEFile::AddImportModule(Text::CStringNN moduleName)
 	return this->importList.Add(imp);
 }
 
-void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CStringNN funcName)
+void IO::EXEFile::AddImportFunc(UIntOS modIndex, Text::CStringNN funcName)
 {
 	NN<ImportInfo> imp;
 	if (this->importList.GetItem(modIndex).SetTo(imp))
@@ -119,12 +119,12 @@ void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CStringNN funcName)
 	}
 }
 
-UOSInt IO::EXEFile::GetImportCount() const
+UIntOS IO::EXEFile::GetImportCount() const
 {
 	return this->importList.GetCount();
 }
 
-Optional<Text::String> IO::EXEFile::GetImportName(UOSInt modIndex) const
+Optional<Text::String> IO::EXEFile::GetImportName(UIntOS modIndex) const
 {
 	NN<ImportInfo> imp;
 	if (this->importList.GetItem(modIndex).SetTo(imp))
@@ -134,7 +134,7 @@ Optional<Text::String> IO::EXEFile::GetImportName(UOSInt modIndex) const
 	return nullptr;
 }
 
-UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
+UIntOS IO::EXEFile::GetImportFuncCount(UIntOS modIndex) const
 {
 	NN<ImportInfo> imp;
 	if (this->importList.GetItem(modIndex).SetTo(imp))
@@ -144,7 +144,7 @@ UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
 	return 0;
 }
 
-Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const
+Optional<Text::String> IO::EXEFile::GetImportFunc(UIntOS modIndex, UIntOS funcIndex) const
 {
 	NN<ImportInfo> imp;
 	if (this->importList.GetItem(modIndex).SetTo(imp))
@@ -161,12 +161,12 @@ void IO::EXEFile::AddExportFunc(Text::CStringNN funcName)
 	this->exportList.Add(exp);
 }
 
-UOSInt IO::EXEFile::GetExportCount() const
+UIntOS IO::EXEFile::GetExportCount() const
 {
 	return this->exportList.GetCount();
 }
 
-Optional<Text::String> IO::EXEFile::GetExportName(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetExportName(UIntOS index) const
 {
 	NN<ExportInfo> exp;
 	if (this->exportList.GetItem(index).SetTo(exp))
@@ -182,7 +182,7 @@ Bool IO::EXEFile::HasDOS() const
 	return this->envDOS != 0;
 }
 
-void IO::EXEFile::AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm)
+void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm)
 {
 	if (this->envDOS == 0)
 	{
@@ -196,7 +196,7 @@ void IO::EXEFile::AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b1
 	}
 }
 
-UInt8 *IO::EXEFile::GetDOSCodePtr(OutParam<UOSInt> codeLen) const
+UInt8 *IO::EXEFile::GetDOSCodePtr(OutParam<UIntOS> codeLen) const
 {
 	if (this->envDOS == 0)
 		return 0;
@@ -225,7 +225,7 @@ UInt16 IO::EXEFile::GetDOSCodeSegm() const
 	return this->envDOS->b16CodeSegm;
 }
 
-void IO::EXEFile::AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
+void IO::EXEFile::AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UIntOS dataSize, UInt32 codePage, ResourceType rt)
 {
 	NN<ResourceInfo> res = MemAllocNN(ResourceInfo);
 	res->name = Text::String::New(name);
@@ -237,12 +237,12 @@ void IO::EXEFile::AddResource(Text::CStringNN name, UnsafeArray<const UInt8> dat
 	this->resList.Add(res);
 }
 
-UOSInt IO::EXEFile::GetResourceCount() const
+UIntOS IO::EXEFile::GetResourceCount() const
 {
 	return this->resList.GetCount();
 }
 
-Optional<const IO::EXEFile::ResourceInfo> IO::EXEFile::GetResource(UOSInt index) const
+Optional<const IO::EXEFile::ResourceInfo> IO::EXEFile::GetResource(UIntOS index) const
 {
 	return this->resList.GetItem(index);
 }
@@ -547,10 +547,10 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				sb->AppendU16(ReadUInt16(&res->data[74]));
 				sb->AppendC(UTF8STRC("\r\nString File Key = "));
 				sb->AppendSlow((UTF8Char*)&res->data[76]);
-				UOSInt strLen = ReadUInt16(&res->data[92]);
-				UOSInt i;
+				UIntOS strLen = ReadUInt16(&res->data[92]);
+				UIntOS i;
 				sb->AppendC(UTF8STRC("\r\nString Table Length = "));
-				sb->AppendUOSInt(strLen);
+				sb->AppendUIntOS(strLen);
 				sb->AppendC(UTF8STRC("\r\nString Table Value Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->AppendC(UTF8STRC("\r\nString Table Key = "));
@@ -570,7 +570,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				sptr = Text::EncodingFactory::GetName(sbuff, v & 0xffff);
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sb->AppendC(UTF8STRC(")"));
 				}
 				Text::Encoding enc(v & 0xffff);
@@ -586,7 +586,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 					sb->AppendSlow((UTF8Char*)&res->data[i + 4]);
 					sptr = enc.UTF8FromBytes(sbuff, &res->data[i + v - v2], v2, 0);
 					sb->AppendC(UTF8STRC(" = "));
-					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					v2 = (v + 3) & (UInt32)~3;
 					i += v2;
 					strLen -= v2;

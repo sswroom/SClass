@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSyslogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSyslogServerForm>();
-	me->currIP = (UInt32)(UOSInt)me->lbClient->GetSelectedItem().p;
+	me->currIP = (UInt32)(UIntOS)me->lbClient->GetSelectedItem().p;
 	me->lbLog->ClearItems();
 	me->msgListUpd = true;
 }
@@ -92,8 +92,8 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRSyslogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSyslogServerForm>();
 	UTF8Char sbuff[20];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
@@ -169,7 +169,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 	this->svr.Delete();
 
 	NN<IPLog> ipLog;
-	UOSInt i = this->ipMap.GetCount();
+	UIntOS i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{
 		ipLog = this->ipMap.GetItemNoCheck(i);

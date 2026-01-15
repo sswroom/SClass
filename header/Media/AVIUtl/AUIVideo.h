@@ -30,7 +30,7 @@ namespace Media
 			Sync::Event threadEvt;
 			
 			static UInt32 __stdcall PlayThread(AnyType userObj);
-			UOSInt GetMaxFrameSize();
+			UIntOS GetMaxFrameSize();
 		public:
 			AUIVideo(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);
 			~AUIVideo();
@@ -38,7 +38,7 @@ namespace Media
 			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 			virtual Text::CStringNN GetFilterName();
 
-			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();
 			virtual void Stop();
@@ -50,14 +50,14 @@ namespace Media
 			virtual Bool IsRealTimeSrc();
 			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
-			virtual UOSInt GetDataSeekCount();
+			virtual UIntOS GetDataSeekCount();
 
 			virtual Bool HasFrameCount();
-			virtual UOSInt GetFrameCount();
-			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+			virtual UIntOS GetFrameCount();
+			virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype);
+			virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype);
 
 		};
 	}

@@ -7,7 +7,7 @@ namespace Net
 	class LoRaGWMonitor
 	{
 	public:
-		typedef void (CALLBACKFUNC GWMPMessage)(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
+		typedef void (CALLBACKFUNC GWMPMessage)(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UIntOS msgSize);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Optional<Socket> s;
@@ -16,7 +16,7 @@ namespace Net
 		GWMPMessage msgHdlr;
 		AnyType msgHdlrObj;
 
-		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
+		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize);
 	public:
 		LoRaGWMonitor(NN<Net::SocketFactory> sockf, UInt16 port, GWMPMessage msgHdlr, AnyType msgHdlrObj);
 		~LoRaGWMonitor();

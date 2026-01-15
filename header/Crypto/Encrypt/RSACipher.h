@@ -20,9 +20,9 @@ namespace Crypto
 				PKCS1_WithTLS
 			};
 
-			static UOSInt PaddingAppend(UnsafeArray<UInt8> destBuff, UOSInt destSize, UnsafeArray<const UInt8> message, UOSInt msgSize, Padding padding);
-			static UOSInt PaddingRemove(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> blockWithPadding, UOSInt blockSize, Padding padding);
-			static Bool MGF1(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType);
+			static UIntOS PaddingAppend(UnsafeArray<UInt8> destBuff, UIntOS destSize, UnsafeArray<const UInt8> message, UIntOS msgSize, Padding padding);
+			static UIntOS PaddingRemove(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> blockWithPadding, UIntOS blockSize, Padding padding);
+			static Bool MGF1(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> seed, UIntOS seedLen, UIntOS len, Crypto::Hash::HashType hashType);
 			static Text::CStringNN PaddingGetName(Padding padding);
 		};
 	}

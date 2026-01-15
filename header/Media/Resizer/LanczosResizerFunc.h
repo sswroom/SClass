@@ -10,16 +10,16 @@ namespace Media
 		public:
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				UnsafeArray<Int64> weight;
-				UnsafeArray<OSInt> index;
-				UOSInt tap;
+				UnsafeArray<IntOS> index;
+				UIntOS tap;
 			} Parameter;
 
-			static void SetupInterpolationParameterV(UOSInt nTap, Double sourceLength, OSInt sourceMaxPos, UOSInt result_length, NN<Parameter> out, OSInt indexSep, Double offsetCorr);
-			static void SetupDecimationParameterV(UOSInt nTap, Double sourceLength, OSInt sourceMaxPos, UOSInt result_length, NN<Parameter> out, OSInt indexSep, Double offsetCorr);
-			static void SetupInterpolationParameterH(UOSInt nTap, Double sourceLength, OSInt sourceMaxPos, UOSInt result_length, NN<Parameter> out, OSInt indexSep, Double offsetCorr);
-			static void SetupDecimationParameterH(UOSInt nTap, Double sourceLength, OSInt sourceMaxPos, UOSInt result_length, NN<Parameter> out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterV(UIntOS nTap, Double sourceLength, IntOS sourceMaxPos, UIntOS result_length, NN<Parameter> out, IntOS indexSep, Double offsetCorr);
+			static void SetupDecimationParameterV(UIntOS nTap, Double sourceLength, IntOS sourceMaxPos, UIntOS result_length, NN<Parameter> out, IntOS indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterH(UIntOS nTap, Double sourceLength, IntOS sourceMaxPos, UIntOS result_length, NN<Parameter> out, IntOS indexSep, Double offsetCorr);
+			static void SetupDecimationParameterH(UIntOS nTap, Double sourceLength, IntOS sourceMaxPos, UIntOS result_length, NN<Parameter> out, IntOS indexSep, Double offsetCorr);
 		};
 	}
 }

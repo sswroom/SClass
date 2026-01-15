@@ -30,7 +30,7 @@ UI::Win::WinProgressBar::~WinProgressBar()
 {
 }
 
-OSInt UI::Win::WinProgressBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinProgressBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -43,14 +43,14 @@ void UI::Win::WinProgressBar::ProgressStart(Text::CStringNN name, UInt64 count)
 
 void UI::Win::WinProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
-	UOSInt pos;
+	UIntOS pos;
 	if (totalCnt == 0)
 	{
 		pos = 0;
 	}
 	else
 	{
-		pos = (UOSInt)((currCount << 16) / this->totalCnt);
+		pos = (UIntOS)((currCount << 16) / this->totalCnt);
 	}
 	SendMessage((HWND)this->hwnd.OrNull(), PBM_SETPOS, pos, 0);
 }

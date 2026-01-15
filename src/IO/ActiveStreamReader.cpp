@@ -31,7 +31,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(AnyType obj)
 	return 0;
 }
 
-IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, AnyType userData, UOSInt buffSize)
+IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, AnyType userData, UIntOS buffSize)
 {
 	this->hdlr = hdlr;
 	this->buffSize = buffSize;
@@ -75,8 +75,8 @@ void IO::ActiveStreamReader::SetUserData(AnyType userData)
 void IO::ActiveStreamReader::ReadStream(NN<IO::Stream> stm, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Int32 i = this->currIndex;
-	UOSInt readSize = this->buffSize;
-	UOSInt actSize;
+	UIntOS readSize = this->buffSize;
+	UIntOS actSize;
 	this->bnt = bnt;
 	this->reading = true;
 	while (true)
@@ -108,8 +108,8 @@ void IO::ActiveStreamReader::ReadStreamData(NN<IO::StreamData> stmData, OptOut<B
 {
 	Int32 i = this->currIndex;
 	UInt64 currOfst = 0;
-	UOSInt readSize = this->buffSize;
-	UOSInt actSize;
+	UIntOS readSize = this->buffSize;
+	UIntOS actSize;
 	this->bnt = bnt;
 	this->reading = true;
 	while (true)

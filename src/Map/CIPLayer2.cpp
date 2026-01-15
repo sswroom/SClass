@@ -33,7 +33,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 		sptr = &sptr[-4];
 		*sptr = 0;
 	}
-	UOSInt i;
+	UIntOS i;
 	Int32 *currIds;
 	UInt32 totalCnt = 0;
 
@@ -51,7 +51,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	{
-		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file.IsError())
 		{
@@ -90,13 +90,13 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cix"));
 	{
-		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		if (!file.IsError())
 		{
-			i = (UOSInt)file.GetLength();
+			i = (UIntOS)file.GetLength();
 			this->ofsts = (UInt32*)MAlloc(i);
 			file.Read(Data::ByteArray((UInt8*)this->ofsts, i));
-			this->maxId = (OSInt)((i - 4) / 8) - 1;
+			this->maxId = (IntOS)((i - 4) / 8) - 1;
 		}
 	}
 
@@ -105,7 +105,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	{
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 		{
-			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			if (!file.IsError())
 			{
 				file.Read(Data::ByteArray((UInt8*)&i, 4));
@@ -119,7 +119,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		{
-			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			if (!file.IsError())
 			{
 				UInt32 buff[4];
@@ -154,7 +154,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 
 Map::CIPLayer2::~CIPLayer2()
 {
-	UOSInt i;
+	UIntOS i;
 /*	if (cip)
 	{
 		DEL_CLASS(cip);
@@ -208,12 +208,12 @@ Map::DrawLayerType Map::CIPLayer2::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt textSize;
-	UOSInt i;
-	UOSInt l = 0;
-	UOSInt k;
+	UIntOS textSize;
+	UIntOS i;
+	UIntOS l = 0;
+	UIntOS k;
 	
 	if (nameArr.IsNotNull())
 	{
@@ -224,7 +224,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 		UnsafeArray<UTF8Char> sptr;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		IO::FileStream cis({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream cis({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		
 		k = 0;
 		while (k < this->nblks)
@@ -240,7 +240,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 				{
 					if (buff[4])
 					{
-						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
+						strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[4] >> 1) + 1);
 						cis.Read(Data::ByteArray((UInt8*)strTmp, buff[4]));
 						strTmp[buff[4] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
@@ -278,10 +278,10 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 
 			k++;
 		}
-		UOSInt arrSize;
+		UIntOS arrSize;
 		Int64 lastId;
 		UnsafeArray<Int64> arr = outArr->GetArr(arrSize);
-		ArtificialQuickSort_SortInt64(arr.Ptr(), 0, (OSInt)arrSize - 1);
+		ArtificialQuickSort_SortInt64(arr.Ptr(), 0, (IntOS)arrSize - 1);
 		if (outArr->GetCount() > 0)
 		{
 			lastId = -1;
@@ -303,7 +303,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -319,11 +319,11 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 	topBlk = rect.min.y / blkScale;
 	bottomBlk = rect.max.y / blkScale;
 
-	UOSInt textSize;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	UOSInt l;
+	UIntOS textSize;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	UIntOS l;
 	if (this->nblks > 10)
 	{
 		i = 0;
@@ -374,9 +374,9 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 		IO::FileStream *cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
-		while ((UOSInt)k < this->nblks)
+		while ((UIntOS)k < this->nblks)
 		{
 			if (this->blks[k].blk.x > rightBlk)
 				break;
@@ -395,7 +395,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 					{
 						if (buff[4])
 						{
-							strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
+							strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[4] >> 1) + 1);
 							cis->Read(Data::ByteArray((UInt8*)strTmp, buff[4]));
 							strTmp[buff[4] >> 1] = 0;
 							outArr->Add(*(Int32*)buff);
@@ -431,7 +431,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 	{
 		Data::ArrayListInt32 *tmpArr;
 		NEW_CLASS(tmpArr, Data::ArrayListInt32());
-		while ((UOSInt)k < this->nblks)
+		while ((UIntOS)k < this->nblks)
 		{
 			if (this->blks[k].blk.x > rightBlk)
 				break;
@@ -442,11 +442,11 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 			}
 			k++;
 		}
-		UOSInt arrSize;
-		UOSInt k;
+		UIntOS arrSize;
+		UIntOS k;
 		Int64 lastId;
 		UnsafeArray<Int32> arr = tmpArr->GetArr(arrSize);
-		ArtificialQuickSort_SortInt32(arr.Ptr(), 0, (OSInt)arrSize - 1);
+		ArtificialQuickSort_SortInt32(arr.Ptr(), 0, (IntOS)arrSize - 1);
 		if (tmpArr->GetCount() > 0)
 		{
 			lastId = -1;
@@ -471,7 +471,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::CIPLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -483,9 +483,9 @@ Int64 Map::CIPLayer2::GetObjectIdMax() const
 	return this->maxId;
 }
 
-UOSInt Map::CIPLayer2::GetRecordCnt() const
+UIntOS Map::CIPLayer2::GetRecordCnt() const
 {
-	return (UOSInt)(this->maxId + 1);
+	return (UIntOS)(this->maxId + 1);
 }
 
 void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
@@ -493,7 +493,7 @@ void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<Data::FastMapObj<Int32, UTF16Char*>> tmpMap;
 	if (Optional<Data::FastMapObj<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap))
 	{
-		UOSInt i = tmpMap->GetCount();
+		UIntOS i = tmpMap->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(tmpMap->GetItem(i));
@@ -502,7 +502,7 @@ void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 	}
 }
 
-Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<Data::FastMapObj<Int32, UTF16Char*>> tmpMap;;
 	if (!Optional<Data::FastMapObj<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap) || strIndex != 0)
@@ -521,12 +521,12 @@ Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArra
 	}
 }
 
-UOSInt Map::CIPLayer2::GetColumnCnt() const
+UIntOS Map::CIPLayer2::GetColumnCnt() const
 {
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -539,7 +539,7 @@ UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buf
 }
 
 
-DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -553,7 +553,7 @@ DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt
 	}
 }
 
-Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::CIPLayer2::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex != 0)
 		return false;
@@ -591,7 +591,7 @@ Bool Map::CIPLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 		Math::Coord2D<Int32> maxBlk;
 		Math::Coord2D<Int32> minBlk;
 		maxBlk = minBlk = this->blks[0].blk;
-		UOSInt i = this->nblks;
+		UIntOS i = this->nblks;
 		while (i-- > 0)
 		{
 			if (this->blks[i].blk.x > maxBlk.x)
@@ -668,7 +668,7 @@ Optional<Map::CIPLayer2::CIPFileObject> Map::CIPLayer2::GetFileObject(NN<GetObje
 void Map::CIPLayer2::ReleaseFileObjs(NN<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> objs)
 {
 	NN<Map::CIPLayer2::CIPFileObject> obj;
-	UOSInt i = objs->GetCount();
+	UIntOS i = objs->GetCount();
 	while (i-- > 0)
 	{
 		obj = objs->GetItemNoCheck(i);
@@ -699,7 +699,7 @@ NN<Map::GetObjectSess> Map::CIPLayer2::BeginGetObject()
 		NEW_CLASSNN(objs, Data::Int32FastMapNN<Map::CIPLayer2::CIPFileObject>());
 		this->currObjs = objs;
 	}
-	NEW_CLASSNN(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(cip, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return NN<GetObjectSess>::ConvertFrom(cip);
 }
 
@@ -741,10 +741,10 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 		Math::Geometry::Polyline *pl;
 		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
-		UOSInt i = 0;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i = 0;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		UnsafeArray<Math::Coord2DDbl> tmpPoints;
 		while (i < fobj->nPtOfst)
 		{
@@ -773,10 +773,10 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 		Math::Geometry::Polygon *pg = 0;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> tmpPoints;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
 		j = 0;
 		i = 0;
@@ -803,7 +803,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	return nullptr;
 }
 
-UOSInt Map::CIPLayer2::GetGeomCol() const
+UIntOS Map::CIPLayer2::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }

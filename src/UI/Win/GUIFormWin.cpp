@@ -40,16 +40,16 @@
 #define HK_ESC 2
 Int32 UI::GUIForm::useCnt = 0;
 
-OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	Optional<UI::GUIForm> me = (UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	Optional<UI::GUIForm> me = (UI::GUIForm*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	NN<UI::GUIForm> nnme;
 	UI::GUIControl *ctrl;
 	NN<UI::GUIButton> btn;
 	NN<UI::GUIForm> currDialog;
 	RECT rc;
 	NMHDR *nmhdr;
-	UOSInt i;
+	UIntOS i;
 	switch (msg)
 	{
 	case WM_COMMAND:
@@ -86,7 +86,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		}
 		else
 		{
-			ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
+			ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
 			if (ctrl)
 			{
 				return ctrl->OnNotify(HIWORD(wParam), 0);
@@ -95,7 +95,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		break;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(nmhdr->code, (void *)lParam);
@@ -218,7 +218,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_CTLCOLORSTATIC:
 		{
 			UI::GUILabel *lbl;
-			lbl = (UI::GUILabel*)(OSInt)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
+			lbl = (UI::GUILabel*)(IntOS)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
 			if (lbl && lbl->GetObjectClass().Equals(CSTR("Label")))
 			{
 				if (lbl->HasTextColor())
@@ -474,7 +474,7 @@ void UI::GUIForm::UpdateHAcc()
 	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
-		UOSInt i;
+		UIntOS i;
 		ACCEL *accels;
 		Data::ArrayListNN<UI::GUIMenu::ShortcutKey> keys;
 		NN<UI::GUIMenu::ShortcutKey> key;
@@ -647,7 +647,7 @@ UI::GUIForm::~GUIForm()
 	}
 	else
 	{
-		UOSInt i = this->timers.GetCount();
+		UIntOS i = this->timers.GetCount();
 		while (i-- > 0)
 		{
 			this->timers.GetItem(i).Delete();
@@ -747,7 +747,7 @@ void UI::GUIForm::MakeActive()
 void UI::GUIForm::MakeForeground()
 {
 #ifdef _WIN32_WCE
-	SetForegroundWindow((HWND)(((OSInt)this->hwnd) | 1));
+	SetForegroundWindow((HWND)(((IntOS)this->hwnd) | 1));
 #else
 	SetForegroundWindow((HWND)this->hwnd.OrNull());
 #endif
@@ -770,12 +770,12 @@ void UI::GUIForm::SetText(Text::CStringNN text)
 	Text::StrDelNew(wptr);
 }
 
-Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
+Math::Size2D<UIntOS> UI::GUIForm::GetSizeP()
 {
 	RECT rect;
 	GetWindowRect((HWND)hwnd.OrNull(), &rect);
-	return Math::Size2D<UOSInt>((UOSInt)(OSInt)(rect.right - rect.left),
-		(UOSInt)(OSInt)(rect.bottom - rect.top));
+	return Math::Size2D<UIntOS>((UIntOS)(IntOS)(rect.right - rect.left),
+		(UIntOS)(IntOS)(rect.bottom - rect.top));
 }
 
 void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
@@ -806,7 +806,7 @@ NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, Any
 
 void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 {
-	UOSInt i = this->timers.GetCount();
+	UIntOS i = this->timers.GetCount();
 	while (i-- > 0)
 	{
 		if (tmr.Ptr() == this->timers.GetItem(i).OrNull())
@@ -877,7 +877,7 @@ Text::CStringNN UI::GUIForm::GetObjectClass() const
 	return CSTR("WinForm");
 }
 
-OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -894,7 +894,7 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
 	}
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -923,11 +923,11 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 			files[i] = Text::String::NewNotNull(wbuff);
 			i++;
 		}
-		UOSInt j = this->dropFileHandlers.GetCount();
+		UIntOS j = this->dropFileHandlers.GetCount();
 		while (j-- > 0)
 		{
 			Data::CallbackStorage<FileEvent> cb = this->dropFileHandlers.GetItem(j);
-			cb.func(cb.userObj, {files, (UOSInt)fileCnt});
+			cb.func(cb.userObj, {files, (UIntOS)fileCnt});
 		}
 		while (fileCnt-- > 0)
 		{
@@ -940,7 +940,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 
 void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -981,7 +981,7 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 #ifndef _WIN32_WCE
 	if (this->dropFileHandlers.GetCount() == 0)
 	{
-		OSInt style = GetWindowLongPtr((HWND)this->hwnd.OrNull(), GWL_EXSTYLE);
+		IntOS style = GetWindowLongPtr((HWND)this->hwnd.OrNull(), GWL_EXSTYLE);
 		UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_EXSTYLE, style | WS_EX_ACCEPTFILES);
 	}
 #endif
@@ -1042,7 +1042,7 @@ void UI::GUIForm::EventClosed()
 	}
 }
 
-void UI::GUIForm::EventTimer(UOSInt tmrId)
+void UI::GUIForm::EventTimer(UIntOS tmrId)
 {
 	NN<UI::GUITimer> tmr;
 	Data::ArrayIterator<NN<UI::GUITimer>> it = this->timers.Iterator();
@@ -1065,7 +1065,7 @@ void UI::GUIForm::OnFocusLost()
 {
 }
 
-void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
+void UI::GUIForm::OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight)
 {
 }
 

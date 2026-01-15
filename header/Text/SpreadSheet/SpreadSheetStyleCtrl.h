@@ -9,8 +9,8 @@ namespace Text
 		class SpreadSheetStyleCtrl
 		{
 		public:
-			virtual OSInt GetStyleIndex(NN<CellStyle> style) const = 0;
-			virtual Optional<CellStyle> GetStyle(UOSInt index) const = 0;
+			virtual IntOS GetStyleIndex(NN<CellStyle> style) const = 0;
+			virtual Optional<CellStyle> GetStyle(UIntOS index) const = 0;
 			virtual NN<CellStyle> FindOrCreateStyle(NN<const CellStyle> tmpStyle) = 0;
 		};
 	}

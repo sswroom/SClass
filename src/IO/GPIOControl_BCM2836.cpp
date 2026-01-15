@@ -35,12 +35,12 @@ Bool IO::GPIOControl::IsError()
 	return this->clsData->mem->IsError();
 }
 
-UOSInt IO::GPIOControl::GetPinCount()
+UIntOS IO::GPIOControl::GetPinCount()
 {
 	return 54;
 }
 
-Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinHigh(UIntOS pinNum)
 {
 	if (pinNum >= 54)
 	{
@@ -56,12 +56,12 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 	}
 }
 
-Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinOutput(UIntOS pinNum)
 {
 	return this->GetPinMode(pinNum) == 1;
 }
 
-UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
+UIntOS IO::GPIOControl::GetPinMode(UIntOS pinNum)
 {
 	if (pinNum < 10)
 	{
@@ -91,7 +91,7 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	return false;
 }
 
-Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
+Bool IO::GPIOControl::SetPinOutput(UIntOS pinNum, Bool isOutput)
 {
 	UInt32 val = isOutput?1:0;
 	switch (pinNum)
@@ -269,7 +269,7 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
+Bool IO::GPIOControl::SetPinState(UIntOS pinNum, Bool isHigh)
 {
 	if (pinNum >= 54)
 		return false;
@@ -298,7 +298,7 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
+Bool IO::GPIOControl::SetPullType(UIntOS pinNum, IO::IOPin::PullType pt)
 {
 	if (pinNum >= 54)
 		return false;
@@ -339,7 +339,7 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	return true;
 }
 
-void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnHigh(UIntOS pinNum, Bool enable)
 {
 	if (pinNum >= 54)
 		return;
@@ -367,7 +367,7 @@ void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
 	}
 }
 
-void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnLow(UIntOS pinNum, Bool enable)
 {
 	if (pinNum >= 54)
 		return;
@@ -395,7 +395,7 @@ void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
 	}
 }
 
-void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnRaise(UIntOS pinNum, Bool enable)
 {
 	if (pinNum >= 54)
 		return;
@@ -423,7 +423,7 @@ void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
 	}
 }
 
-void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnFall(UIntOS pinNum, Bool enable)
 {
 	if (pinNum >= 54)
 		return;
@@ -451,7 +451,7 @@ void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
 	}
 }
 
-Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
+Bool IO::GPIOControl::HasEvent(UIntOS pinNum)
 {
 	if (pinNum >= 54)
 		return false;
@@ -465,7 +465,7 @@ Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
 	}
 }
 
-void IO::GPIOControl::ClearEvent(UOSInt pinNum)
+void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 	if (pinNum >= 54)
 		return;
@@ -851,7 +851,7 @@ static Text::CStringNN GPIOControl_ALT5[] = {
 	CSTR("Unknown"),
 };
 
-Text::CStringNN IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

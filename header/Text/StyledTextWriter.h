@@ -12,7 +12,7 @@ namespace Text
 
 		virtual Bool Write(Text::CStringNN str)
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < str.leng)
 			{
 				if (!WriteChar(str.v[i])) return false;

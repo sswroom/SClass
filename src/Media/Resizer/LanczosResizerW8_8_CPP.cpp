@@ -1,17 +1,17 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void LanczosResizerW8_8_horizontal_filter(const UInt8 *inPt, UInt8 *outPt,UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int16 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UOSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizerW8_8_horizontal_filter(const UInt8 *inPt, UInt8 *outPt,UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int16 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, UIntOS swidth, UInt8 *tmpbuff)
 {
 	const UInt8 *currIn;
 	UInt8 *tmpPtr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int16 cvals;
 	Int32 cvals2;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
-	dstep -= (OSInt)width << 1;
+	dstep -= (IntOS)width << 1;
 
 	while (height-- != 0)
 	{
@@ -53,16 +53,16 @@ extern "C" void LanczosResizerW8_8_horizontal_filter(const UInt8 *inPt, UInt8 *o
 	}	
 }
 
-extern "C" void LanczosResizerW8_8_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int16 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerW8_8_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int16 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	const UInt8 *currIn;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32 cvals;
 	UInt16 cvals2;
-	dstep -= (OSInt)width;
+	dstep -= (IntOS)width;
 	while (height-- != 0)
 	{
 		currIn = inPt;
@@ -96,11 +96,11 @@ extern "C" void LanczosResizerW8_8_vertical_filter(const UInt8 *inPt, UInt8 *out
 	}
 }
 
-extern "C" void LanczosResizerW8_8_expand(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerW8_8_expand(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
-	sstep -= (OSInt)width;
-	dstep -= (OSInt)width * 2;
+	UIntOS i;
+	sstep -= (IntOS)width;
+	dstep -= (IntOS)width * 2;
 	while (height-- > 0)
 	{
 		i = width;
@@ -115,12 +115,12 @@ extern "C" void LanczosResizerW8_8_expand(const UInt8 *inPt, UInt8 *outPt, UOSIn
 	}	
 }
 
-extern "C" void LanczosResizerW8_8_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerW8_8_collapse(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt16 v;
-	sstep -= (OSInt)width * 2;
-	dstep -= (OSInt)width;
+	sstep -= (IntOS)width * 2;
+	dstep -= (IntOS)width;
 	while (height-- > 0)
 	{
 		i = width;
@@ -135,12 +135,12 @@ extern "C" void LanczosResizerW8_8_collapse(const UInt8 *inPt, UInt8 *outPt, UOS
 	}	
 }
 
-extern "C" void LanczosResizerW8_8_imgcopy(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerW8_8_imgcopy(const UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt16 v;
-	sstep -= (OSInt)width;
-	dstep -= (OSInt)width;
+	sstep -= (IntOS)width;
+	dstep -= (IntOS)width;
 	while (height-- > 0)
 	{
 		i = width;

@@ -11,7 +11,7 @@
 #include "Media/H264Parser.h"
 #include "IO/DebugWriter.h"
 
-void Media::Decoder::DSVDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::DSVDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 }
 
@@ -65,7 +65,7 @@ Bool Media::Decoder::DSVDecoder::CaptureImage(ImageCallback imgCb, void *userDat
 	return true;
 }
 
-Bool Media::Decoder::DSVDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::DSVDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;
@@ -98,12 +98,12 @@ void Media::Decoder::DSVDecoder::Stop()
 }
 
 
-OSInt Media::Decoder::DSVDecoder::GetFrameCount()
+IntOS Media::Decoder::DSVDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
 
-UInt32 Media::Decoder::DSVDecoder::GetFrameTime(UOSInt frameIndex)
+UInt32 Media::Decoder::DSVDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }

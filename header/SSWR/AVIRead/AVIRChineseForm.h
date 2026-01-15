@@ -91,7 +91,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtPronun4;
 			
 			static void __stdcall OnCharChg(AnyType userObj);
-			static UI::EventState __stdcall OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static UI::EventState __stdcall OnCharMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnPasteCharCodeClicked(AnyType userObj);
 			static void __stdcall OnCharPrevClicked(AnyType userObj);
 			static void __stdcall OnCharNextClicked(AnyType userObj);

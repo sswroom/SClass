@@ -9,7 +9,7 @@ namespace UI
 		class JUIRealtimeLineChart : public GUIRealtimeLineChart
 		{
 		public:
-			JUIRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+			JUIRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS);
 			virtual ~JUIRealtimeLineChart();
 		};
 	}

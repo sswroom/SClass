@@ -1014,15 +1014,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("FileGDB count = "));
-			sb.AppendUOSInt(lamppostList.GetCount());
+			sb.AppendUIntOS(lamppostList.GetCount());
 			sb.AppendC(UTF8STRC(", CSV count = "));
-			sb.AppendUOSInt(lamppostListCSV.GetCount());
+			sb.AppendUIntOS(lamppostListCSV.GetCount());
 			console.WriteLine(sb.ToCString());
 			
 /*			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
 			{
 				Lamppost *lamppost2;
-				UOSInt j;
+				UIntOS j;
 				clk.Start();	
 				i = 0;
 				j = lamppostList.GetCount();

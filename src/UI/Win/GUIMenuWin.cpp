@@ -440,9 +440,9 @@ UI::GUIMenu::~GUIMenu()
 	DestroyMenu((HMENU)this->hMenu);
 }
 
-UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UIntOS UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
-	UOSInt id = this->itemCnt++;
+	UIntOS id = this->itemCnt++;
 	if (shortcutKey)
 	{
 		WChar wbuff[256];
@@ -470,7 +470,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyM
 
 void UI::GUIMenu::AddSeperator()
 {
-	UOSInt id = this->itemCnt++;
+	UIntOS id = this->itemCnt++;
 	AppendMenuW((HMENU)this->hMenu, MF_SEPARATOR, id, 0);
 }
 
@@ -481,7 +481,7 @@ NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CStringNN name)
 	this->subMenus.Add(subMenu);
 	
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
-	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UOSInt)subMenu->hMenu, wptr.Ptr());
+	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UIntOS)subMenu->hMenu, wptr.Ptr());
 	Text::StrDelNew(wptr);
 
 	return subMenu;
@@ -492,13 +492,13 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
+UIntOS UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
 {
-	UOSInt keyCnt = this->keys.GetCount();
+	UIntOS keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
 	NN<GUIMenu> menu;
-	UOSInt j = this->subMenus.GetCount();
-	UOSInt i = 0;
+	UIntOS j = this->subMenus.GetCount();
+	UIntOS i = 0;
 	while (i < j)
 	{
 		if (this->subMenus.GetItem(i).SetTo(menu))
@@ -517,7 +517,7 @@ void UI::GUIMenu::SetItemEnabled(UInt16 cmdId, Bool enabled)
 
 void UI::GUIMenu::ClearItems()
 {
-	UOSInt i;
+	UIntOS i;
 	this->keys.MemFreeAll();
 	this->subMenus.DeleteAll();
 

@@ -8,7 +8,7 @@
 extern "C"
 {
 	void CRC32_InitTable(UInt32 *tab, UInt32 polynomial);
-	UInt32 CRC32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
+	UInt32 CRC32_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal);
 }
 
 Crypto::Hash::CRC32::CRC32(NN<const CRC32> crc)
@@ -58,7 +58,7 @@ void Crypto::Hash::CRC32::Clear()
 	currVal = 0;
 }
 
-void Crypto::Hash::CRC32::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::CRC32::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = CRC32_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), this->currVal);
 }
@@ -68,12 +68,12 @@ void Crypto::Hash::CRC32::GetValue(UnsafeArray<UInt8> buff) const
 	WriteMUInt32(buff.Ptr(), currVal);
 }
 
-UOSInt Crypto::Hash::CRC32::GetBlockSize() const
+UIntOS Crypto::Hash::CRC32::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC32::GetResultSize() const
+UIntOS Crypto::Hash::CRC32::GetResultSize() const
 {
 	return 4;
 }

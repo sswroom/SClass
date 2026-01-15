@@ -18,9 +18,9 @@ Bool IO::DataCaptureStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
+UIntOS IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt ret = this->stm->Read(buff);
+	UIntOS ret = this->stm->Read(buff);
 	if (ret > 0)
 	{
 		this->recvHdlr(this->hdlrObj, buff.WithSize(ret));
@@ -28,9 +28,9 @@ UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 	return ret;
 }
 
-UOSInt IO::DataCaptureStream::Write(Data::ByteArrayR buff)
+UIntOS IO::DataCaptureStream::Write(Data::ByteArrayR buff)
 {
-	UOSInt ret = this->stm->Write(buff);
+	UIntOS ret = this->stm->Write(buff);
 	if (ret > 0)
 	{
 		this->sendHdlr(this->hdlrObj, buff.WithSize(ret));

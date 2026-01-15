@@ -30,7 +30,7 @@ namespace Media
 		Int32 currId;
 		Sync::Event evtMain;
 		UnsafeArray<NROT_THREADSTAT> stats;
-		UOSInt nThread;
+		UIntOS nThread;
 
 		static void RotateTask(NN<NROT_THREADSTAT> stat);
 		static UInt32 WorkerThread(AnyType obj);

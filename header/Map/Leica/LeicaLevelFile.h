@@ -49,12 +49,12 @@ namespace Map
 			virtual FileType GetFileType();
 			virtual Bool ExportExcel(NN<IO::SeekableStream> stm, Text::CStringNN fileName);
 
-			UOSInt GetPointCnt();
-			Text::CString GetPointName(UOSInt index);
-			Optional<const Measurement> GetPointBack(UOSInt index);
-			Optional<const Measurement> GetPointInter(UOSInt index);
-			Optional<const Measurement> GetPointFore(UOSInt index);
-			Optional<const HeightMeasure> GetPointHeight(UOSInt index);
+			UIntOS GetPointCnt();
+			Text::CString GetPointName(UIntOS index);
+			Optional<const Measurement> GetPointBack(UIntOS index);
+			Optional<const Measurement> GetPointInter(UIntOS index);
+			Optional<const Measurement> GetPointFore(UIntOS index);
+			Optional<const HeightMeasure> GetPointHeight(UIntOS index);
 
 			Bool CalcPointLevs(NN<Data::ArrayList<Double>> calcLevs, NN<Data::ArrayList<Double>> adjLevS, NN<Data::ArrayList<Double>> adjLevD);
 

@@ -7,8 +7,8 @@
 
 Bool Net::Email::EmailTemplate::ParseTemplate(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NN<Data::FastStringMapNN<Text::String>> items, NN<IO::LogTool> log)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::StringBuilderUTF8 sbParam;
 	Text::StringBuilderUTF8 sb;
 	Text::CStringNN paramName;

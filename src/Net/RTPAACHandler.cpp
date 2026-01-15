@@ -61,7 +61,7 @@ Net::RTPAACHandler::~RTPAACHandler()
 	MemFree(this->buff);
 }
 
-void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
+void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UIntOS dataSize, UInt32 seqNum, UInt32 ts)
 {
 	NN<Sync::Event> evt;
 	UInt32 headerSize = ReadMUInt16(&buff[0]);
@@ -73,9 +73,9 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 	{
 		headerSize = headerSize >> 3;
 	}
-	UOSInt sizeLeft = dataSize - headerSize;
-	UOSInt ofst = headerSize + 2;
-	UOSInt i = 0;
+	UIntOS sizeLeft = dataSize - headerSize;
+	UIntOS ofst = headerSize + 2;
+	UIntOS i = 0;
 	UInt32 thisSize;
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -136,10 +136,10 @@ void Net::RTPAACHandler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
-	UOSInt i;
+	UIntOS i;
 	sptr = Text::StrConcat(sbuff, fmtStr);
 	sarr[1].v = sbuff;
-	sarr[1].leng = (UOSInt)(sptr - sbuff);
+	sarr[1].leng = (UIntOS)(sptr - sbuff);
 	while (true)
 	{
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
@@ -237,7 +237,7 @@ void Net::RTPAACHandler::GetFormat(NN<Media::AudioFormat> format)
 	format->bitRate = 128000;
 }
 
-Bool Net::RTPAACHandler::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Net::RTPAACHandler::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->evt = evt;
 	if (this->dataEvt)
@@ -254,7 +254,7 @@ void Net::RTPAACHandler::Stop()
 	SDEL_CLASS(this->dataEvt);
 }
 
-UOSInt Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
+UIntOS Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
 {
 	while (this->buffSize == 0 && this->dataEvt)
 	{
@@ -278,7 +278,7 @@ UOSInt Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
 	return blk.GetSize();
 }
 
-UOSInt Net::RTPAACHandler::GetMinBlockSize()
+UIntOS Net::RTPAACHandler::GetMinBlockSize()
 {
 	return 1;
 }

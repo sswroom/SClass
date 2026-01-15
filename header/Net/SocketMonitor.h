@@ -12,7 +12,7 @@ namespace Net
 	class SocketMonitor
 	{
 	public:
-		typedef void (CALLBACKFUNC RAWDataHdlr)(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
+		typedef void (CALLBACKFUNC RAWDataHdlr)(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize);
 
 	private:
 		NN<Net::SocketFactory> sockf;
@@ -20,13 +20,13 @@ namespace Net
 		Data::CallbackStorage<RAWDataHdlr> hdlr;
 
 		Sync::Thread **threads;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 
 	private:
 		static void __stdcall DataThread(NN<Sync::Thread> thread);
 
 	public:
-		SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UOSInt workerCnt);
+		SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UIntOS workerCnt);
 		~SocketMonitor();
 	};
 }

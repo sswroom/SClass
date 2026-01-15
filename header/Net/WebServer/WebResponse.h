@@ -23,7 +23,7 @@ namespace Net
 		class ProtocolHandler
 		{
 		public:
-			virtual void ProtocolData(UnsafeArray<const UInt8> data, UOSInt dataSize) = 0;
+			virtual void ProtocolData(UnsafeArray<const UInt8> data, UIntOS dataSize) = 0;
 			virtual void ConnectionClosed() = 0;
 		};
 
@@ -49,9 +49,9 @@ namespace Net
 			virtual Text::CStringNN GetRespHeaders() = 0;
 
 			Bool ResponseError(NN<Net::WebServer::WebRequest> req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, OSInt cacheAge);
-			Bool VirtualRedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, OSInt cacheAge);
-			Bool ResponseNotModified(NN<Net::WebServer::WebRequest> req, OSInt cacheAge);
+			Bool RedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, IntOS cacheAge);
+			Bool VirtualRedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, IntOS cacheAge);
+			Bool ResponseNotModified(NN<Net::WebServer::WebRequest> req, IntOS cacheAge);
 			Bool ResponseText(Text::CStringNN txt);
 			Bool ResponseText(Text::CStringNN txt, Text::CStringNN contentType);
 
@@ -60,7 +60,7 @@ namespace Net
 				return AddHeader(name, value->ToCString());
 			}
 
-			Bool AddCacheControl(OSInt cacheAge)
+			Bool AddCacheControl(IntOS cacheAge)
 			{
 				if (cacheAge < 0)
 				{
@@ -74,7 +74,7 @@ namespace Net
 				{
 					UTF8Char sbuff[256];
 					UnsafeArray<UTF8Char> sptr;
-					sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
+					sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
 					return this->AddHeader(CSTR("Cache-Control"), CSTRP(sbuff, sptr));
 				}
 				return true;

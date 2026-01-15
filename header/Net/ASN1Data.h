@@ -31,10 +31,10 @@ namespace Net
 
 		Bool ToASN1String(NN<Text::StringBuilderUTF8> sb) const;
 		UnsafeArray<const UInt8> GetASN1Buff() const;
-		UOSInt GetASN1BuffSize() const;
+		UIntOS GetASN1BuffSize() const;
 		Data::ByteArrayR GetASN1Array() const;
 
-		static void AppendInteger(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> pdu, UOSInt len);
+		static void AppendInteger(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> pdu, UIntOS len);
 	};
 }
 #endif

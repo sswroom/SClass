@@ -27,7 +27,7 @@ namespace UI
 		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> dblClkHdlrs;
 
 	private:
-		static OSInt __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+		static IntOS __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam);
 		void OnPaint();
 		void Init(Optional<InstanceHandle> hInst);
 		void Deinit(Optional<InstanceHandle> hInst);
@@ -40,20 +40,20 @@ namespace UI
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
 		virtual void OnDraw(NN<Media::DrawImage> img) = 0;
-		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+		virtual void OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 		virtual void OnKeyDown(UInt32 keyCode);
 
 		void HandleSelChg(UI::UIEvent hdlr, AnyType userObj);
 		void HandleDblClk(UI::UIEvent hdlr, AnyType userObj);
 		void EventSelChg();
 		void EventDblClk();
-		void SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize);
-		UOSInt GetVScrollPos();
-		Bool MakeVisible(UOSInt firstIndex, UOSInt lastIndex);
+		void SetVScrollBar(UIntOS min, UIntOS max, UIntOS pageSize);
+		UIntOS GetVScrollPos();
+		Bool MakeVisible(UIntOS firstIndex, UIntOS lastIndex);
 	};
 }
 #endif

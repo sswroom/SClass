@@ -45,13 +45,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(NN<IO::ConsoleWri
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char cbuff[12];
-	UOSInt currPos = 0;
-	UOSInt currSize = 0;
+	UIntOS currPos = 0;
+	UIntOS currSize = 0;
 	Int32 i;
-	UOSInt j;
+	UIntOS j;
 	if (showOriVal)
 	{
-		currSize = (UOSInt)(Text::StrInt32(cbuff, output.Get()) - cbuff);
+		currSize = (UIntOS)(Text::StrInt32(cbuff, output.Get()) - cbuff);
 		currPos = currSize;
 		console->Write(Text::CStringNN(cbuff, currSize));
 	}
@@ -272,13 +272,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(NN<IO::ConsoleWrit
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UOSInt nNames, InOutParam<UOSInt> selection)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UIntOS nNames, InOutParam<UIntOS> selection)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	UOSInt i;
-	UOSInt k;
-	UOSInt maxStrSize;
-	UOSInt j = 0;
+	UIntOS i;
+	UIntOS k;
+	UIntOS maxStrSize;
+	UIntOS j = 0;
 	if (nNames <= 0 || console->IsFileOutput())
 		return IRT_UNKNOWN;
 	maxStrSize = 0;
@@ -320,7 +320,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(NN<IO::ConsoleWr
 		}
 		console->SetCursorPos(state.currX, state.currY);
 
-		i = (UOSInt)IO::Console::GetKey();
+		i = (UIntOS)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -329,7 +329,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(NN<IO::ConsoleWr
 			break;
 		if (i == 0 || i == 0xe0)
 		{
-			i = (UOSInt)IO::Console::GetKey();
+			i = (UIntOS)IO::Console::GetKey();
 			if (i == 0x48)
 			{
 				if (k == 0)
@@ -630,11 +630,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(NN<IO::Console
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UOSInt buffSize, OutParam<UOSInt> inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UIntOS buffSize, OutParam<UIntOS> inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (console->IsFileOutput())
 	{
@@ -666,7 +666,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::Console
 	UInt32 currSize = 0;
 	while (true)
 	{
-		i = (UOSInt)IO::Console::GetKey();
+		i = (UIntOS)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -760,7 +760,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::Console
 		}
 		else if (i == 0 || i == 0xe0)
 		{
-			i = (UOSInt)IO::Console::GetKey();
+			i = (UIntOS)IO::Console::GetKey();
 			if (i == 0x4b)
 			{
 				if (currPos > 0)
@@ -810,11 +810,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::Console
 }
 
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, OutParam<UOSInt> inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UIntOS maxCharCnt, OutParam<UIntOS> inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (console->IsFileOutput())
 	{
@@ -822,7 +822,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWr
 		UnsafeArray<WChar> wptr;
 		if (console->ReadLine(wbuff, maxCharCnt).SetTo(wptr))
 		{
-			inputSize.Set((UOSInt)(Text::StrWChar_UTF8C(output, wbuff, (UOSInt)(wptr - wbuff)) - output));
+			inputSize.Set((UIntOS)(Text::StrWChar_UTF8C(output, wbuff, (UIntOS)(wptr - wbuff)) - output));
 			return IRT_ENTER;
 		}
 		else
@@ -854,7 +854,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWr
 	UInt32 currSize = 0;
 	while (true)
 	{
-		i = (UOSInt)IO::Console::GetKey();
+		i = (UIntOS)IO::Console::GetKey();
 		if (i == 0x1b)
 			break;
 		if (i == 0x0d)
@@ -887,7 +887,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWr
 		}
 		else if (i == 0 || i == 0xe0)
 		{
-			i = (UOSInt)IO::Console::GetKey();
+			i = (UIntOS)IO::Console::GetKey();
 			if (i == 0x4b)
 			{
 				if (currPos > 0)

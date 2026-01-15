@@ -9,24 +9,24 @@ namespace Media
 		class JasperReportElement
 		{
 		private:
-			UOSInt x;
-			UOSInt y;
-			UOSInt width;
-			UOSInt height;
+			UIntOS x;
+			UIntOS y;
+			UIntOS width;
+			UIntOS height;
 			Text::String *uuid;
 		public:
 			JasperReportElement();
 			~JasperReportElement();
 
-			void SetX(UOSInt x);
-			void SetY(UOSInt y);
-			void SetWidth(UOSInt width);
-			void SetHeight(UOSInt height);
+			void SetX(UIntOS x);
+			void SetY(UIntOS y);
+			void SetWidth(UIntOS width);
+			void SetHeight(UIntOS height);
 			void SetUUID(Text::String *uuid);
-			UOSInt GetX() const;
-			UOSInt GetY() const;
-			UOSInt GetWidth() const;
-			UOSInt GetHeight() const;
+			UIntOS GetX() const;
+			UIntOS GetY() const;
+			UIntOS GetWidth() const;
+			UIntOS GetHeight() const;
 			Text::String *GetUUID() const;
 		};
 	}

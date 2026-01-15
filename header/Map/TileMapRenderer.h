@@ -23,7 +23,7 @@ namespace Map
 		Map::TileMap *map;
 		NN<Parser::ParserList> parsers;
 
-		OSInt lastLevel;
+		IntOS lastLevel;
 		Data::ArrayListInt64 lastIds;
 		Data::ArrayList<CachedImage *> lastImgs;
 

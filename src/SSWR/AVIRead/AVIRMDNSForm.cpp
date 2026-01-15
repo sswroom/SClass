@@ -23,10 +23,10 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::DNSRecordRecv(AnyType userData, NN<c
 
 	Text::StringBuilderUTF8 sb;
 	NN<Net::DNSClient::RequestAnswer> ans;
-	UOSInt k;
+	UIntOS k;
 	Text::PString sarr[2];
-	UOSInt i = 0;
-	UOSInt j = answers->GetCount();
+	UIntOS i = 0;
+	UIntOS j = answers->GetCount();
 	while (i < j)
 	{
 		ans = answers->GetItemNoCheck(i);
@@ -154,9 +154,9 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::OnTimerTick(AnyType userData)
 		Text::StringBuilderUTF8 sb;
 		me->devUpdated = false;
 		me->lbDev->ClearItems();
-		UOSInt selIndex = INVALID_INDEX;
-		UOSInt i = 0;
-		UOSInt j = me->devMap.GetCount();
+		UIntOS selIndex = INVALID_INDEX;
+		UIntOS i = 0;
+		UIntOS j = me->devMap.GetCount();
 		while (i < j)
 		{
 			dev = me->devMap.GetItemNoCheck(i);
@@ -217,8 +217,8 @@ void SSWR::AVIRead::AVIRMDNSForm::DisplayServices()
 	{
 		Sync::MutexUsage mutUsage(this->devMut);
 		this->lvServices->ClearItems();
-		UOSInt i = 0;
-		UOSInt j = dev->svcMap.GetCount();
+		UIntOS i = 0;
+		UIntOS j = dev->svcMap.GetCount();
 		while (i < j)
 		{
 			svc = dev->svcMap.GetItemNoCheck(i);
@@ -243,8 +243,8 @@ void SSWR::AVIRead::AVIRMDNSForm::DisplayTXTList()
 	{
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage(this->devMut);
-		UOSInt i = 0;
-		UOSInt j = svc->txtList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = svc->txtList.GetCount();
 		while (i < j)
 		{
 			if (i > 0)

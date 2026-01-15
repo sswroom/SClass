@@ -95,7 +95,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		subReq = subReq.Substring(1);
-		UOSInt i = subReq.IndexOf('/');
+		UIntOS i = subReq.IndexOf('/');
 		if (i != INVALID_INDEX)
 		{
 			NN<DB::DBRow> row;
@@ -106,7 +106,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 				return true;
 			}
-			tableName = Text::String::New(subReq.v, (UOSInt)i);
+			tableName = Text::String::New(subReq.v, (UIntOS)i);
 			if (!row.Set(this->dbCache->GetTableItem(tableName->ToCString(), ikey)))
 			{
 				tableName->Release();
@@ -189,13 +189,13 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 				json.ArrayEnd();
 				json.ObjectEnd();
 
-				OSInt cnt = this->dbCache->GetRowCount(subReq);
+				IntOS cnt = this->dbCache->GetRowCount(subReq);
 				if (cnt < 0)
 				{
 					cnt = 0;
 				}
-				UOSInt pageCnt = (UOSInt)cnt / page->GetPageSize();
-				if (pageCnt * page->GetPageSize() < (UOSInt)cnt)
+				UIntOS pageCnt = (UIntOS)cnt / page->GetPageSize();
+				if (pageCnt * page->GetPageSize() < (UIntOS)cnt)
 				{
 					pageCnt++;
 				}
@@ -208,7 +208,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 					req->GetRequestURLBase(sbURI);
 					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page=0&size="));
-					sbURI.AppendUOSInt(page->GetPageSize());
+					sbURI.AppendUIntOS(page->GetPageSize());
 					json.ObjectBeginObject(CSTR("first"));
 					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
@@ -224,9 +224,9 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 						req->GetRequestURLBase(sbURI);
 						sbURI.AppendP(sbuff, sptr);
 						sbURI.AppendC(UTF8STRC("?page="));
-						sbURI.AppendUOSInt(page->GetPageNum() + 1);
+						sbURI.AppendUIntOS(page->GetPageNum() + 1);
 						sbURI.AppendC(UTF8STRC("&size="));
-						sbURI.AppendUOSInt(page->GetPageSize());
+						sbURI.AppendUIntOS(page->GetPageSize());
 						json.ObjectBeginObject(CSTR("next"));
 						json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 						json.ObjectEnd();
@@ -235,9 +235,9 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 					req->GetRequestURLBase(sbURI);
 					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page="));
-					sbURI.AppendUOSInt(pageCnt - 1);
+					sbURI.AppendUIntOS(pageCnt - 1);
 					sbURI.AppendC(UTF8STRC("&size="));
-					sbURI.AppendUOSInt(page->GetPageSize());
+					sbURI.AppendUIntOS(page->GetPageSize());
 					json.ObjectBeginObject(CSTR("last"));
 					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
@@ -298,8 +298,8 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer:
 		Text::StringBuilderUTF8 sb;
 		sb.Append(sort);
 		Text::PString sarr[2];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Bool desc;
 		sarr[1] = sb;
 		while (true)

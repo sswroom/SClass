@@ -5,14 +5,14 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	me->downPos = scnPos;
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	UTF8Char sbuff[32];
@@ -29,14 +29,14 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType
 				mapXY = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
 			}
 			me->points.Add(mapXY);
-			sptr = Text::StrUOSInt(sbuff, me->points.GetCount());
+			sptr = Text::StrUIntOS(sbuff, me->points.GetCount());
 			me->txtNPoints->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	if (me->status == 1)
@@ -45,11 +45,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyTy
 		{
 			if (me->points.GetCount() > 0)
 			{
-				UOSInt nPoints;
+				UIntOS nPoints;
 				NN<Math::Geometry::LineString> ls;
 				NEW_CLASSNN(ls, Math::Geometry::LineString(me->lyr->GetCoordinateSystem()->GetSRID(), me->points.GetCount() + 1, false, false));
 				UnsafeArray<Math::Coord2DDbl> ptList = ls->GetPointList(nPoints);
-				UOSInt i = 0;
+				UIntOS i = 0;
 				while (i < nPoints - 1)
 				{
 					ptList[i] = me->points.GetItem(i);
@@ -73,13 +73,13 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyTy
 void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
-	UOSInt selInd = me->lbObjects->GetSelectedIndex();
+	UIntOS selInd = me->lbObjects->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
 		Int64 objId;
 
 #if _OSINT_SIZE == 64
-		objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
+		objId = (Int64)(IntOS)me->lbObjects->GetItem(selInd).p;
 #else
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
@@ -106,13 +106,13 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsSelChg(AnyType use
 		return;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt selInd = me->lbObjects->GetSelectedIndex();
+	UIntOS selInd = me->lbObjects->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
 		Int64 objId;
 
 #if _OSINT_SIZE == 64
-		objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
+		objId = (Int64)(IntOS)me->lbObjects->GetItem(selInd).p;
 #else
 		sbuff[0] = 0;
 		sptr = me->lbObjects->GetItemText(sbuff, selInd).Or(sbuff);
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsSelChg(AnyType use
 		NN<Math::Geometry::Vector2D> vec;
 		if (me->lyr->GetNewVectorById(sess, objId).SetTo(vec))
 		{
-			sptr = Text::StrUOSInt(sbuff, vec->GetPointCount());
+			sptr = Text::StrUIntOS(sbuff, vec->GetPointCount());
 			me->lblNPoints->SetText(CSTRP(sbuff, sptr));
 			me->navi->SetSelectedVector(vec);
 		}
@@ -152,13 +152,13 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnNewClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnDeleteClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
-	UOSInt selInd = me->lbObjects->GetSelectedIndex();
+	UIntOS selInd = me->lbObjects->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
 		Int64 objId;
 
 #if _OSINT_SIZE == 64
-		objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
+		objId = (Int64)(IntOS)me->lbObjects->GetItem(selInd).p;
 #else
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
@@ -196,9 +196,9 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnEndClicked(AnyType userOb
 				NN<Math::Geometry::Polyline> pl;
 				NN<Math::Geometry::LineString> ls;
 				NEW_CLASSNN(ls, Math::Geometry::LineString(me->lyr->GetCoordinateSystem()->GetSRID(), me->points.GetCount(), false, false));
-				UOSInt nPoints;
+				UIntOS nPoints;
 				UnsafeArray<Math::Coord2DDbl> ptList = ls->GetPointList(nPoints);
-				UOSInt i = 0;
+				UIntOS i = 0;
 				while (i < nPoints)
 				{
 					ptList[i] = me->points.GetItem(i);
@@ -236,13 +236,13 @@ void SSWR::AVIRead::AVIRGISEditVectorForm::UpdateList()
 	Data::ArrayListInt64 idList;
 	Int64 id;
 	this->lyr->GetAllObjectIds(idList, 0);
-	UOSInt i = 0;
-	UOSInt j = idList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = idList.GetCount();
 	while (i < j)
 	{
 		id = idList.GetItem(i);
 		sptr = Text::StrInt64(sbuff, id);
-		this->lbObjects->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)id);
+		this->lbObjects->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)id);
 		i++;
 	}
 }
@@ -270,13 +270,13 @@ void SSWR::AVIRead::AVIRGISEditVectorForm::DisplaySnap()
 	}
 	else
 	{
-		sb.AppendUOSInt(this->snapLayers.GetCount());
+		sb.AppendUIntOS(this->snapLayers.GetCount());
 		sb.AppendC(UTF8STRC(" Layers"));
 	}
 	this->txtSnap->SetText(sb.ToCString());
 }
 
-Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<OSInt> scnXY)
+Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<IntOS> scnXY)
 {
 	Math::Coord2DDbl mapXY = this->navi->ScnXY2MapXY(scnXY);
 	Double scnDPI = this->navi->GetScnDPI();
@@ -294,7 +294,7 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<O
 		Math::Coord2DDbl nearPt = mapXY;
 		Double nearDist = -1;
 		Data::ArrayListA<Math::Coord2DDbl> vecPoints;
-		UOSInt j = this->snapLayers.GetCount();
+		UIntOS j = this->snapLayers.GetCount();
 		while (j-- > 0)
 		{
 			NN<Map::MapDrawLayer> snapLayer = this->snapLayers.GetItemNoCheck(j);
@@ -313,7 +313,7 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<O
 			objIds.Clear();
 			snapLayer->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(snapPt - lyrDist, snapPt + lyrDist), true);
 			lyrNearDist = -1;
-			UOSInt k = objIds.GetCount();
+			UIntOS k = objIds.GetCount();
 			while (k-- > 0)
 			{
 				Int64 objId = objIds.GetItem(k);
@@ -322,7 +322,7 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<O
 				{
 					vecPoints.Clear();
 					vec->GetCoordinates(vecPoints);
-					UOSInt l = vecPoints.GetCount();
+					UIntOS l = vecPoints.GetCount();
 					while (l-- > 0)
 					{
 						Math::Coord2DDbl vPt = vecPoints.GetItem(l);
@@ -354,8 +354,8 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<O
 		}
 		if (nearDist >= 0)
 		{
-			Math::Coord2D<OSInt> scnNearXY = this->navi->MapXY2ScnXY(nearPt);
-			Math::Coord2D<OSInt> scnDist = scnXY - scnNearXY;
+			Math::Coord2D<IntOS> scnNearXY = this->navi->MapXY2ScnXY(nearPt);
+			Math::Coord2D<IntOS> scnDist = scnXY - scnNearXY;
 			Double linearDist = Math_Sqrt(scnDist.x * scnDist.x + scnDist.y * scnDist.y);
 			if (linearDist <= adjDist)
 			{
@@ -417,15 +417,15 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	this->btnBack->SetRect(84, 100, 75, 23, false);
 	this->btnBack->HandleButtonClick(OnBackClicked, this);
 
-	UOSInt nameCol = lyr->GetNameCol();
+	UIntOS nameCol = lyr->GetNameCol();
 	Int64 objId;
 	Data::ArrayListInt64 objIds;
 	Optional<Map::NameArray> nameArr;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt cnt = lyr->GetColumnCnt();
-	UOSInt i;
-	UOSInt j;
+	UIntOS cnt = lyr->GetColumnCnt();
+	UIntOS i;
+	UIntOS j;
 	lyr->GetAllObjectIds(objIds, nameArr);
 	if (cnt > nameCol)
 	{
@@ -436,7 +436,7 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 			objId = objIds.GetItem(i);
 			sb.ClearStr();
 			lyr->GetString(sb, nameArr, objId, nameCol);
-			this->lbObjects->AddItem(sb.ToCString(), (void*)(OSInt)objId);
+			this->lbObjects->AddItem(sb.ToCString(), (void*)(IntOS)objId);
 			i++;
 		}
 	}
@@ -447,8 +447,8 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 		while (i < j)
 		{
 			objId = objIds.GetItem(i);
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Object ")), i);
-			this->lbObjects->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)objId);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Object ")), i);
+			this->lbObjects->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)objId);
 			i++;
 		}
 	}

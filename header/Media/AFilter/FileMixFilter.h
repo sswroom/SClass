@@ -23,7 +23,7 @@ namespace Media
 			virtual ~FileMixFilter();
 
 			virtual void GetFormat(NN<AudioFormat> format);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool LoadFile(NN<Text::String> fileName);
 			Bool StartMix();

@@ -8,7 +8,7 @@
 #include "Text/EnumFinder.hpp"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UIntOS privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	this->ssl = ssl;
 	this->alg = alg;
@@ -24,7 +24,7 @@ Crypto::Token::JWSignature::~JWSignature()
 	MemFreeArr(this->privateKey);
 }
 
-Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Crypto::Hash::HashAlgorithm *hash;
 	switch (alg)
@@ -89,7 +89,7 @@ Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt 
 	return true;
 }
 
-Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UInt8> signature, UOSInt signatureSize)
+Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UInt8> signature, UIntOS signatureSize)
 {
 	Crypto::Hash::HashAlgorithm *hash;
 	switch (alg)
@@ -175,7 +175,7 @@ UnsafeArray<const UInt8> Crypto::Token::JWSignature::GetSignature() const
 	return this->hashVal;
 }
 
-UOSInt Crypto::Token::JWSignature::GetSignatureLen() const
+UIntOS Crypto::Token::JWSignature::GetSignatureLen() const
 {
 	return this->hashValSize;
 }

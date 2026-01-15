@@ -21,7 +21,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 	else
 	{
 		Bool failed = false;
-		UOSInt dataSize;
+		UIntOS dataSize;
 		UnsafeArray<const UInt8> content = req->GetReqData(dataSize).Or((const UInt8*)&dataSize);
 		Optional<Text::JSONBase> optjson = nullptr;
 		NN<Text::JSONBase> json;
@@ -70,8 +70,8 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 				else
 				{
 					NN<Text::JSONObject> recipient;
-					UOSInt i = 0;
-					UOSInt j = recipientDetail->GetArrayLength();
+					UIntOS i = 0;
+					UIntOS j = recipientDetail->GetArrayLength();
 					while (i < j)
 					{
 						if (!recipientDetail->GetArrayObject(i).SetTo(recipient))
@@ -204,7 +204,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
 	NN<GCISNotifyHandler> me = NN<GCISNotifyHandler>::ConvertFrom(svcHdlr);
-	UOSInt size;
+	UIntOS size;
 	UnsafeArray<const UInt8> data = req->GetReqData(size).Or((const UInt8*)&size);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(data, size);

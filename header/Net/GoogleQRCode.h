@@ -9,10 +9,10 @@ namespace Net
 	{
 	private:
 		NN<Text::String> dataStr;
-		UOSInt width;
-		UOSInt height;		
+		UIntOS width;
+		UIntOS height;		
 	public:
-		GoogleQRCode(UOSInt width, UOSInt height, Text::CStringNN dataStr);
+		GoogleQRCode(UIntOS width, UIntOS height, Text::CStringNN dataStr);
 		~GoogleQRCode();
 
 		void GetImageURL(NN<Text::StringBuilderUTF8> sb);

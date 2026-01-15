@@ -12,7 +12,7 @@ typedef struct
 {
 	Int32 serverId;
 	AnyType stmData;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt8 buff[BUFFSIZE];
 } ClientData;
 
@@ -59,7 +59,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(NN<Net::TCPClient> cli, 
 	NN<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
 	NN<ClientData> data = cliData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
-	UOSInt sizeLeft;
+	UIntOS sizeLeft;
 	while (data->buffSize + buff.GetSize() > BUFFSIZE)
 	{
 		MemCopyNO(&data->buff[data->buffSize], buff.Arr().Ptr(), BUFFSIZE - data->buffSize);
@@ -112,8 +112,8 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 	Text::CStringNN nnsyncClients;
 	if (syncClients.SetTo(nnsyncClients) && nnsyncClients.leng > 0)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::PString sarr[2];
 		Text::PString sarr2[2];
 		NN<SyncClient> syncCli;
@@ -150,7 +150,7 @@ SSWR::DataSync::SyncServer::~SyncServer()
 {
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
-	UOSInt i;
+	UIntOS i;
 	NN<ServerInfo> svrInfo;
 	i = this->svrMap.GetCount();
 	while (i-- > 0)
@@ -178,33 +178,33 @@ Bool SSWR::DataSync::SyncServer::IsError()
 	return this->svr == 0 || this->svr->IsV4Error();
 }
 
-UOSInt SSWR::DataSync::SyncServer::GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList)
+UIntOS SSWR::DataSync::SyncServer::GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList)
 {
-	UOSInt i = svrList->GetCount();
+	UIntOS i = svrList->GetCount();
 	svrList->AddAll(this->svrMap);
 	return svrList->GetCount() - i;
 }
 
-void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UOSInt dataSize)
+void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UIntOS dataSize)
 {
-	UOSInt i = this->syncCliList.GetCount();
+	UIntOS i = this->syncCliList.GetCount();
 	while (i-- > 0)
 	{
 		this->syncCliList.GetItemNoCheck(i)->AddUserData(dataBuff, dataSize);
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 replyBuff[20];
-	UOSInt replySize;
+	UIntOS replySize;
 	switch (cmdType)
 	{
 	case 0: //register
 		{
 			NN<ServerInfo> svr;
-			if (data->serverId == 0 && cmdSize > 5 && (UOSInt)(cmd[4] + 4) <= cmdSize)
+			if (data->serverId == 0 && cmdSize > 5 && (UIntOS)(cmd[4] + 4) <= cmdSize)
 			{
 				Int32 serverId = ReadInt32(&cmd[0]);
 				Sync::RWMutexUsage svrMutUsage(this->svrMut, false);
@@ -250,6 +250,6 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::DataSync::SyncServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }

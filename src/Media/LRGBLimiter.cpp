@@ -18,13 +18,13 @@ Media::LRGBLimiter::~LRGBLimiter()
 {
 }
 
-void Media::LRGBLimiter::LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h)
+void Media::LRGBLimiter::LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UIntOS w, UIntOS h)
 {
 	ThreadStatus status[4];
-	UOSInt j = this->ptask.GetThreadCnt();
-	UOSInt i = j;
-	UOSInt lastH = h;
-	UOSInt thisH;
+	UIntOS j = this->ptask.GetThreadCnt();
+	UIntOS i = j;
+	UIntOS lastH = h;
+	UIntOS thisH;
 	while (i-- > 0)
 	{
 		thisH = MulDivUOS(h, i, j);

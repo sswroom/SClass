@@ -678,7 +678,7 @@ Media::DDCReader::DDCReader(void *hMon)
 	this->edidSize = 0;
 	this->hMon = hMon;
 
-	OSInt ret;
+	IntOS ret;
 	ret = vchi_initialise(&vchi_instance);
 	if (ret != 0)
 	{
@@ -695,10 +695,10 @@ Media::DDCReader::DDCReader(void *hMon)
 	vc_vchi_tv_init(vchi_instance, &vchi_connection, 1);
 
 	UInt8 buffer[128];
-	OSInt offset = 0;
-	OSInt i;
-	OSInt extensions;
-	OSInt siz = vc_tv_hdmi_ddc_read(offset, 128, buffer);
+	IntOS offset = 0;
+	IntOS i;
+	IntOS extensions;
+	IntOS siz = vc_tv_hdmi_ddc_read(offset, 128, buffer);
 	offset += 128;
 	if (siz == 128)
 	{
@@ -722,7 +722,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	this->edidSize = 0;
 	this->hMon = hMon;
 
-	OSInt ret;
+	IntOS ret;
 	ret = vchi_initialise(&vchi_instance);
 	if (ret != 0)
 	{
@@ -739,10 +739,10 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	vc_vchi_tv_init(vchi_instance, &vchi_connection, 1);
 
 	UInt8 buffer[128];
-	OSInt offset = 0;
-	OSInt i;
-	OSInt extensions;
-	OSInt siz = vc_tv_hdmi_ddc_read(offset, 128, buffer);
+	IntOS offset = 0;
+	IntOS i;
+	IntOS extensions;
+	IntOS siz = vc_tv_hdmi_ddc_read(offset, 128, buffer);
 	offset += 128;
 	if (siz == 128)
 	{
@@ -771,13 +771,13 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(OutParam<UOSInt> size)
+UInt8 *Media::DDCReader::GetEDID(OutParam<UIntOS> size)
 {
 	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
+UIntOS Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
 	NN<Media::DDCReader> reader;
 	NEW_CLASSNN(reader, Media::DDCReader((void*)0));

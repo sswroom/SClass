@@ -19,14 +19,14 @@ Optional<Map::Leica::LeicaGSIFile> Map::Leica::LeicaGSIFile::Parse(NN<IO::Stream
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[10];
-	OSInt colCount;
-	OSInt i;
+	IntOS colCount;
+	IntOS i;
 	Optional<Map::Leica::LeicaGSIFile> retFile = 0;
 	IO::StreamReader *reader;
 	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 	if (reader->ReadLine(sbuff, 511).SetTo(sptr))
 	{
-		colCount = Text::StrSplitP(sarr, 10, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ' ');
+		colCount = Text::StrSplitP(sarr, 10, Text::PString(sbuff, (UIntOS)(sptr - sbuff)), ' ');
 		if (sarr[0].StartsWith(UTF8STRC("410001+")))
 		{
 			if (sarr[0].Equals(UTF8STRC("410001+?......1")))
@@ -37,7 +37,7 @@ Optional<Map::Leica::LeicaGSIFile> Map::Leica::LeicaGSIFile::Parse(NN<IO::Stream
 
 				while (reader->ReadLine(sbuff, 511).SetTo(sptr))
 				{
-					colCount = Text::StrSplitP(sarr, 10, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ' ');
+					colCount = Text::StrSplitP(sarr, 10, Text::PString(sbuff, (UIntOS)(sptr - sbuff)), ' ');
 					if (sarr[0].v[0] == '1' && sarr[0].v[1] == '1')
 					{
 						Leica::LeicaLevelFile::Measurement point;
@@ -112,6 +112,6 @@ Optional<Map::Leica::LeicaGSIFile> Map::Leica::LeicaGSIFile::Parse(NN<IO::Stream
 	return retFile;
 }
 
-void Map::Leica::LeicaGSIFile::ParseHeader(UnsafeArray<Text::PString> sarr, UOSInt colCount, NN<Map::Leica::LeicaGSIFile> file)
+void Map::Leica::LeicaGSIFile::ParseHeader(UnsafeArray<Text::PString> sarr, UIntOS colCount, NN<Map::Leica::LeicaGSIFile> file)
 {
 }

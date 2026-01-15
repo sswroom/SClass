@@ -19,13 +19,13 @@ public:
 	{
 	}
 
-	virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+	virtual UIntOS GetExtraCount(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
-		UOSInt analogCnt = ReadUInt32(&buff[24]);
+		UIntOS analogCnt = ReadUInt32(&buff[24]);
 		return 18 + 2 * analogCnt;
 	}
 
-	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (extIndex < 18)
 		{
@@ -92,20 +92,20 @@ public:
 			if (extIndex & 1)
 			{
 				sb->AppendC(UTF8STRC("AnalogVal"));
-				sb->AppendUOSInt((extIndex - 8) >> 1);
+				sb->AppendUIntOS((extIndex - 8) >> 1);
 				return true;
 			}
 			else
 			{
 				sb->AppendC(UTF8STRC("AnalogId"));
-				sb->AppendUOSInt((extIndex - 8) >> 1);
+				sb->AppendUIntOS((extIndex - 8) >> 1);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
@@ -136,7 +136,7 @@ public:
 				return true;
 			case 6:
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&buff[28]), ReadUInt16(&buff[32]));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				return true;
 			case 7:
 				sb->AppendI32(ReadInt32(&buff[34]));
@@ -224,9 +224,9 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt ui;
-	UOSInt currPos;
+	UIntOS i;
+	UIntOS ui;
+	UIntOS currPos;
 	UInt64 fileSize;
 	Int32 t;
 	Int32 fileT;

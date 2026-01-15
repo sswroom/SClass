@@ -10,7 +10,7 @@ namespace Net
 		typedef struct
 		{
 			const Char *name;
-			UOSInt len;
+			UIntOS len;
 			const UInt8 oid[64];
 		} OIDInfo;
 

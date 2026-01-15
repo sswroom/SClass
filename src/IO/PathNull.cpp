@@ -9,7 +9,7 @@
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'/';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*";
-UOSInt IO::Path::ALL_FILES_LEN = 1;
+UIntOS IO::Path::ALL_FILES_LEN = 1;
 
 WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 {
@@ -36,7 +36,7 @@ Bool IO::Path::DeleteFileW(const WChar *fileName)
 	return false;
 }
 
-OSInt IO::Path::FileNameCompareW(const WChar *file1, const WChar *file2)
+IntOS IO::Path::FileNameCompareW(const WChar *file1, const WChar *file2)
 {
 	return Text::StrCompare(file1, file2);
 }
@@ -61,7 +61,7 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen)
+UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UIntOS extLen)
 {
 	UTF8Char *oldExt = 0;
 	UTF8Char c;
@@ -109,7 +109,7 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 
 WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 {
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
+	UIntOS i = Text::StrLastIndexOfChar(path, '/');
 	if (i != INVALID_INDEX)
 	{
 		path = &path[i + 1];
@@ -129,7 +129,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 {
 	if (toAppend[0] == '/')
 		return Text::StrConcat(path, toAppend);
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
+	UIntOS i = Text::StrLastIndexOfChar(path, '/');
 	if (GetPathTypeW(path) == IO::Path::PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
@@ -149,7 +149,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	return Text::StrConcat(&path[i + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UIntOS toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{
@@ -157,7 +157,7 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppe
 		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
-	UOSInt i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
+	UIntOS i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 	if (GetPathType(sb->ToCString()) == IO::Path::PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
@@ -207,7 +207,7 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 	return IO::Path::PathType::Unknown;
 }
 
-Bool IO::Path::PathExists(const UTF8Char *path, UOSInt pathLen)
+Bool IO::Path::PathExists(const UTF8Char *path, UIntOS pathLen)
 {
 	return false;
 }
@@ -222,10 +222,10 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	return Text::StrConcat(buff, path);
 }
 
-Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Char *searchPattern, UIntOS patternLen)
 {
 	UTF8Char sbuff[256];
-	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+	UIntOS i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	const UTF8Char *fileName = &path[i + 1];
 	Text::StrConcatC(sbuff, searchPattern, patternLen);
 	Bool isWC = false;
@@ -302,7 +302,7 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 {
 	WChar wbuff[256];
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
+	UIntOS i = Text::StrLastIndexOfChar(path, '/');
 	const WChar *fileName = &path[i + 1];
 	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;
@@ -432,7 +432,7 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
+UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UIntOS pathLen)
 {
 	return Text::StrConcatC(sbuff, path, pathLen);
 }

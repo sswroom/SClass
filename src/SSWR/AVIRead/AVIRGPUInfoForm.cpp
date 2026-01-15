@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 	{
 		WChar wbuff[32];
 		Double val;
-		UOSInt i;
+		UIntOS i;
 		me->lvMain->ClearItems();
 		if (gpu->GetTemperature(val))
 		{
@@ -66,8 +66,8 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 	this->lvMain->AddColumn(CSTR("Name"), 150);
 	this->lvMain->AddColumn(CSTR("Value"), 300);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::GPUControl> gpu;
 	i = 0;
 	j = this->gpuMgr->GetGPUCount();

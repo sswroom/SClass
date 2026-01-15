@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(NN<IO::USBInfo> item1, NN<IO::USBInfo> item2)
+IntOS __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(NN<IO::USBInfo> item1, NN<IO::USBInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -126,8 +126,8 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientContro
 	this->OnMonitorChanged();
 
 	NN<IO::USBInfo> usb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 

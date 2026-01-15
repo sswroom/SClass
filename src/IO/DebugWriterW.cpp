@@ -16,7 +16,7 @@ IO::DebugWriter::~DebugWriter()
 Bool IO::DebugWriter::Write(Text::CStringNN str)
 {
 
-	UOSInt strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
+	UIntOS strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
 	WChar *wstr = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WCharC(wstr, str.v, str.leng, 0);
 	wstr[strLen] = 0;
@@ -27,7 +27,7 @@ Bool IO::DebugWriter::Write(Text::CStringNN str)
 
 Bool IO::DebugWriter::WriteLine(Text::CStringNN str)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
+	UIntOS strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
 	Text::StrUTF8_WCharC(wstr, str.v, str.leng, 0);
 	wstr[strLen] = 13;
@@ -38,7 +38,7 @@ Bool IO::DebugWriter::WriteLine(Text::CStringNN str)
 	return true;
 }
 
-/*Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
+/*Bool IO::DebugWriter::WriteW(const WChar *str, UIntOS nChar)
 {
 	WChar wbuff[257];
 	while (nChar >= 256)
@@ -64,7 +64,7 @@ Bool IO::DebugWriter::WriteW(const WChar *str)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteLineW(const WChar *str, UOSInt nChar)
+Bool IO::DebugWriter::WriteLineW(const WChar *str, UIntOS nChar)
 {
 	WChar wbuff[259];
 	while (nChar >= 256)

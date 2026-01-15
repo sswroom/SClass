@@ -3,7 +3,7 @@
 #include "Core/ByteTool_C.h"
 #include "Media/ImgFilter/BWImgFilter.h"
 
-void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt)
+void BWImgFilter_ProcYUY2(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -12,7 +12,7 @@ void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcUYVY(UInt8 *imgData, UOSInt pxCnt)
+void BWImgFilter_ProcUYVY(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -21,7 +21,7 @@ void BWImgFilter_ProcUYVY(UInt8 *imgData, UOSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcAYUV(UInt8 *imgData, UOSInt pxCnt)
+void BWImgFilter_ProcAYUV(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
@@ -30,7 +30,7 @@ void BWImgFilter_ProcAYUV(UInt8 *imgData, UOSInt pxCnt)
 	}
 }
 
-void BWImgFilter_ProcY416(UInt8 *imgData, UOSInt pxCnt)
+void BWImgFilter_ProcY416(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{

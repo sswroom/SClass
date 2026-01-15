@@ -28,7 +28,7 @@ IO::ServiceInfo::RunStatus ServiceManager_CurrentState2RunStatus(DWORD dwCurrent
 
 }
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
+IntOS IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
 {
 	return a->name->CompareTo(b->name);
 }
@@ -228,7 +228,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 	return succ;
 }
 
-UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
+UIntOS IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	DWORD bytesNeeded;
 	DWORD nServices;
@@ -241,12 +241,12 @@ UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> s
 	{
 		return 0;
 	}
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<ServiceItem> svc;
 	ENUM_SERVICE_STATUSW* services = (ENUM_SERVICE_STATUSW*)MAlloc(bytesNeeded);
 	if (EnumServicesStatusW((SC_HANDLE)this->clsData.OrNull(), SERVICE_WIN32, SERVICE_STATE_ALL, services, bytesNeeded, &bytesNeeded, &nServices, 0))
 	{
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < nServices)
 		{
 			svc = MemAllocNN(ServiceItem);
@@ -265,7 +265,7 @@ UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> s
 void IO::ServiceManager::FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	NN<ServiceItem> svc;
-	UOSInt i = svcList->GetCount();
+	UIntOS i = svcList->GetCount();
 	while (i-- > 0)
 	{
 		svc = svcList->GetItemNoCheck(i);

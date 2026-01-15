@@ -9,8 +9,8 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 	Net::RSS *rss;
 	NN<RSSStatus> status;
 	Data::DateTime *dt;
-	UOSInt i;
-	UOSInt cnt;
+	UIntOS i;
+	UIntOS cnt;
 	NN<Text::String> id;
 
 	me->threadRunning = true;
@@ -30,7 +30,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 			else
 			{
 				me->nextDT.SetCurrTimeUTC();
-				me->nextDT.AddSecond((OSInt)me->refreshSecond);
+				me->nextDT.AddSecond((IntOS)me->refreshSecond);
 
 				i = me->currRSSMaps.GetCount();
 				while (i-- > 0)
@@ -115,7 +115,7 @@ Net::RSSReader::~RSSReader()
 	this->lastRSS.Delete();
 	this->url->Release();
 
-	UOSInt i;
+	UIntOS i;
 	NN<RSSStatus> status;
 	i = this->currRSSMaps.GetCount();
 	while (i-- > 0)

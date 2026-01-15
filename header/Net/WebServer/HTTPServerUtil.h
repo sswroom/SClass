@@ -18,7 +18,7 @@ namespace Net
 			static Bool SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> stm);
 			static Bool SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff);
 			static Bool SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, Text::CStringNN cont);
-			static Bool ResponseFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN fileName, OSInt cacheAge);
+			static Bool ResponseFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN fileName, IntOS cacheAge);
 
 			static void SetCompLevel(Data::Compress::Deflater::CompLevel compLevel);
 			static Bool AllowGZip(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);

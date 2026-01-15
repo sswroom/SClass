@@ -18,12 +18,12 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocLink::GetItemType()
 	return Text::Doc::DocItem::DIT_URL;
 }
 
-UOSInt Text::Doc::DocLink::Add(NN<Text::Doc::DocItem> item)
+UIntOS Text::Doc::DocLink::Add(NN<Text::Doc::DocItem> item)
 {
 	if (item->GetItemType() == Text::Doc::DocItem::DIT_URL)
 	{
 		item.Delete();
-		return (UOSInt)-1;
+		return (UIntOS)-1;
 	}
 	return this->items.Add(item);
 }

@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::S
 	}
 	IO::StringLogFile *logFile;
 	UInt64 ofst = 4096;
-	UOSInt dataOfst;
+	UIntOS dataOfst;
 	Data::Timestamp ts;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbDetail;
@@ -86,9 +86,9 @@ Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::S
 	return logFile;
 }
 
-UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chunk, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
+UIntOS Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chunk, UIntOS ofst, UIntOS endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UIntOS nNameChar)
 {
-	UOSInt dataOfst;
+	UIntOS dataOfst;
 	UInt32 dataSize;
 	const UTF16Char *thisName;
 	UInt16 nChar;
@@ -111,7 +111,7 @@ UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chun
 			//UInt16 depId = ReadUInt16(&chunk[ofst + 1]);
 			dataSize = ReadUInt32(&chunk[ofst + 3]);
 			ofst += 7;
-			UOSInt dataEnd = ofst + dataSize;
+			UIntOS dataEnd = ofst + dataSize;
 			if (dataEnd > endOfst)
 			{
 				printf("BinXML: %04x BinXmlTokenOpenStartElementTag Parse error\r\n", (UInt32)ofst);
@@ -124,7 +124,7 @@ UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chun
 			{
 				nChar = ReadUInt16(&chunk[ofst + 6]);
 				thisName = (const UTF16Char*)&chunk[ofst + 8];
-				ofst += 8 + (UOSInt)(nChar + 1) * 2;
+				ofst += 8 + (UIntOS)(nChar + 1) * 2;
 			}
 			else
 			{
@@ -182,7 +182,7 @@ UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chun
 #endif
 			nChar = ReadUInt16(&chunk[ofst + 2]);
 			sb->AppendUTF16((const UTF16Char*)&chunk[ofst + 4], nChar);
-			ofst += 4 + (UOSInt)nChar * 2;
+			ofst += 4 + (UIntOS)nChar * 2;
 			break;
 		case 0x06:
 		case 0x46:
@@ -197,7 +197,7 @@ UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chun
 			{
 				UInt16 nChar = ReadUInt16(&chunk[ofst + 6]);
 				sb->AppendUTF16((const UTF16Char*)&chunk[ofst + 8], nChar);
-				ofst += 8 + (UOSInt)(nChar + 1) * 2;
+				ofst += 8 + (UIntOS)(nChar + 1) * 2;
 			}
 			else
 			{
@@ -211,7 +211,7 @@ UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chun
 				sb->AppendUTF8Char('"');
 				sb->AppendUTF16((const UTF16Char*)&chunk[ofst + 4], nChar);
 				sb->AppendUTF8Char('"');
-				ofst += 4 + (UOSInt)nChar * 2;
+				ofst += 4 + (UIntOS)nChar * 2;
 			}
 			else if (chunk[ofst] == 0x0e)
 			{

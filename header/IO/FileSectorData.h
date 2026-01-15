@@ -16,11 +16,11 @@ namespace IO
 		virtual ~FileSectorData();
 
 		virtual UInt64 GetSectorCount() const;
-		virtual UOSInt GetBytesPerSector() const;
+		virtual UIntOS GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
 		virtual NN<SectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
 		virtual NN<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
-		virtual UOSInt GetSeekCount() const;
+		virtual UIntOS GetSeekCount() const;
 	};
 }
 #endif

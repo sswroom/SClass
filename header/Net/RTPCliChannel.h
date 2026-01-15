@@ -23,7 +23,7 @@ namespace Net
 			Int32 payloadType;
 			UInt32 ts;
 			UInt8 *buff;
-			UOSInt dataSize;
+			UIntOS dataSize;
 		} PacketBuff;
 
 		struct ChannelData
@@ -41,12 +41,12 @@ namespace Net
 			Media::MediaType mediaType;
 			NN<Net::SocketFactory> sockf;
 
-			UOSInt threadCnt;
-			UOSInt buffCnt;
+			UIntOS threadCnt;
+			UIntOS buffCnt;
 
 			Sync::Mutex packMut;
 			PacketBuff *packBuff; 
-			UOSInt packCnt;
+			UIntOS packCnt;
 
 			Net::RTPController *playCtrl;
 
@@ -77,10 +77,10 @@ namespace Net
 		Text::String *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
-		Optional<Media::VideoSource> GetVideo(UOSInt index);
-		Optional<Media::AudioSource> GetAudio(UOSInt index);
-		Optional<Media::VideoSource> CreateShadowVideo(UOSInt index);
-		Optional<Media::AudioSource> CreateShadowAudio(UOSInt index);
+		Optional<Media::VideoSource> GetVideo(UIntOS index);
+		Optional<Media::AudioSource> GetAudio(UIntOS index);
+		Optional<Media::VideoSource> CreateShadowVideo(UIntOS index);
+		Optional<Media::AudioSource> CreateShadowAudio(UIntOS index);
 
 		AnyType GetUserData();
 		void SetUserData(AnyType userData);

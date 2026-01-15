@@ -3,7 +3,7 @@ section .text
 global CSNV12_RGB8_do_nv12rgb8
 global CSNV12_RGB8_do_nv12rgb2
 
-;void CSNV12_RGB8_do_nv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSNV12_RGB8_do_nv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 cofst
 ;8 cWidth4
 ;16 cSub
@@ -37,13 +37,13 @@ CSNV12_RGB8_do_nv12rgb8:
 	mov r10,rcx
 	mov r11,rdx
 	lea rdx,[r9 * 8] ;width
-	mov qword [rsp+24],rdx ;OSInt cSize = width << 3;
+	mov qword [rsp+24],rdx ;IntOS cSize = width << 3;
 	mov rcx,r9
 	lea rdx,[r9-4]
 	shr rcx,2
 	shr rdx,1
-	mov qword [rsp+16],rdx ;OSInt cSub = (width >> 1) - 2;
-	mov qword [rsp+8],rcx ;OSInt cWidth4 = width >> 2;
+	mov qword [rsp+16],rdx ;IntOS cSub = (width >> 1) - 2;
+	mov qword [rsp+8],rcx ;IntOS cWidth4 = width >> 2;
 	mov qword [rsp],0 ;Int32 cofst = 0;//this->cofst;
 
 	mov rcx,qword [rsp+104] ;height
@@ -663,7 +663,7 @@ n2r8lopexit:
 	pop rbp
 	ret
 
-;void CSNV12_RGB8_do_nv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSNV12_RGB8_do_nv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 rdi
 ;8 rsi
 ;16 rbx

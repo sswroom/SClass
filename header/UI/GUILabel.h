@@ -12,7 +12,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual void SetText(Text::CStringNN text) = 0;
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual Bool HasTextColor() = 0;
 		virtual UInt32 GetTextColor() = 0;
 		virtual void SetTextColor(UInt32 textColor) = 0;

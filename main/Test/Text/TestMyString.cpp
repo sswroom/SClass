@@ -6,7 +6,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 //	UTF8Char sbuff[64];
 //	UTF8Char *sptr;
-	UOSInt i;
+	UIntOS i;
 	i = Text::StrCharCnt((const UTF8Char*)"aBcDeFgHiJklmnopqrstuvwxyz");
 	if (i != 26)
 	{

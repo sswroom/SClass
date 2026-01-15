@@ -4,15 +4,15 @@
 
 Bool Net::MIBReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt initSize = sb->GetLength();
+	UIntOS initSize = sb->GetLength();
 	if (!this->reader.ReadLine(sb, 512))
 	{
 		return false;
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
 		i = sb->IndexOf(UTF8STRC("*/"), initSize);
@@ -21,7 +21,7 @@ Bool Net::MIBReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 			sb->TrimToLength(initSize);
 			return true;
 		}
-		sb->RemoveChars(initSize, (UOSInt)i + 2 - initSize);
+		sb->RemoveChars(initSize, (UIntOS)i + 2 - initSize);
 		this->escapeType = ET_NONE;
 	}
 	else if (this->escapeType == ET_STRING)
@@ -46,7 +46,7 @@ Bool Net::MIBReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 
 		if (i != INVALID_INDEX && (j == INVALID_INDEX || j > i) && (k == INVALID_INDEX || k > i))
 		{
-			UOSInt j = sb->IndexOf(UTF8STRC("--"), i + 2);
+			UIntOS j = sb->IndexOf(UTF8STRC("--"), i + 2);
 			if (j != INVALID_INDEX)
 			{
 				sb->RemoveChars(i, (j - i + 2));
@@ -109,8 +109,8 @@ Bool Net::MIBReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	if (sptr[this->currOfst] == '{')
 	{
-		UOSInt level = 0;
-		UOSInt i = this->currOfst;
+		UIntOS level = 0;
+		UIntOS i = this->currOfst;
 		while (true)
 		{
 			if (sptr[i] == 0)
@@ -158,7 +158,7 @@ Bool Net::MIBReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	else if (Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst]))
 	{
-		UOSInt i = this->currOfst;
+		UIntOS i = this->currOfst;
 		if (Text::StrStartsWith(&sptr[this->currOfst], (const UTF8Char*)"OCTET STRING") && !Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst + 12]))
 		{
 			i += 12;
@@ -192,8 +192,8 @@ Bool Net::MIBReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == '(')
 	{
-		UOSInt level = 0;
-		UOSInt i = this->currOfst;
+		UIntOS level = 0;
+		UIntOS i = this->currOfst;
 		while (true)
 		{
 			if (sptr[i] == 0)
@@ -232,7 +232,7 @@ Bool Net::MIBReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == '"')
 	{
-		UOSInt i;
+		UIntOS i;
 		while (true)
 		{
 			i = Text::StrIndexOfChar(&sptr[this->currOfst + 1], '"');

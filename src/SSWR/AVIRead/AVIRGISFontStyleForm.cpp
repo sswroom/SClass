@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
-	UOSInt newStyle = me->env->AddFontStyle(CSTR("Unnamed"), CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
+	UIntOS newStyle = me->env->AddFontStyle(CSTR("Unnamed"), CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
 	SSWR::AVIRead::AVIRGISFontEditForm frm(nullptr, me->ui, me->core, me->env, me->eng, newStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsSelectedChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
-	UOSInt i = me->fsFonts->GetSelectedFontStyle();
+	UIntOS i = me->fsFonts->GetSelectedFontStyle();
 	me->fontStyle = i;
 }
 
@@ -75,7 +75,7 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::UpdatePreview()
 	this->fsFonts->Redraw();
 }
 
-SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS fontStyle) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -145,7 +145,7 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(NN<const Media::ColorH
 {
 }
 
-UOSInt SSWR::AVIRead::AVIRGISFontStyleForm::GetFontStyle()
+UIntOS SSWR::AVIRead::AVIRGISFontStyleForm::GetFontStyle()
 {
 	return this->fontStyle;
 }

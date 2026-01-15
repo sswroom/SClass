@@ -18,7 +18,7 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UIntOS nChar)
 {
 	while (nChar > 0)
 	{
@@ -28,7 +28,7 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UIntOS nChar)
 {
 	while (nChar > 0)
 	{
@@ -55,12 +55,12 @@ void IO::ConsoleWriter::ResetTextColor()
 {
 }
 		
-UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UIntOS IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
+WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UIntOS nChar)
 {
 	return 0;
 }
@@ -88,16 +88,16 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return false;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UIntOS displayWidth)
 {
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UIntOS IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	return 0;
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UIntOS IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	return 1;
 }

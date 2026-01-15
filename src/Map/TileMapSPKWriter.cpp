@@ -10,7 +10,7 @@ Map::TileMapSPKWriter::~TileMapSPKWriter()
 {
 }
 
-void Map::TileMapSPKWriter::BeginLevel(UOSInt level)
+void Map::TileMapSPKWriter::BeginLevel(UIntOS level)
 {	
 }
 
@@ -18,11 +18,11 @@ void Map::TileMapSPKWriter::AddX(Int32 x)
 {
 }
 
-void Map::TileMapSPKWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapSPKWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(sbuff, level);
+	sptr = Text::StrUIntOS(sbuff, level);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x);
 	*sptr++ = IO::Path::PATH_SEPERATOR;

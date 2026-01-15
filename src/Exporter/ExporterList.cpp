@@ -139,7 +139,7 @@ Exporter::ExporterList::~ExporterList()
 
 void Exporter::ExporterList::SetCodePage(UInt32 codePage)
 {
-	UOSInt i = this->exporters.GetCount();
+	UIntOS i = this->exporters.GetCount();
 	NN<IO::FileExporter> exporter;
 	while (i-- > 0)
 	{
@@ -150,7 +150,7 @@ void Exporter::ExporterList::SetCodePage(UInt32 codePage)
 
 void Exporter::ExporterList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
-	UOSInt i = this->exporters.GetCount();
+	UIntOS i = this->exporters.GetCount();
 	NN<IO::FileExporter> exporter;
 	while (i-- > 0)
 	{
@@ -159,11 +159,11 @@ void Exporter::ExporterList::SetEncFactory(Optional<Text::EncodingFactory> encFa
 	}
 }
 
-UOSInt Exporter::ExporterList::GetSupportedExporters(NN<Data::ArrayListNN<IO::FileExporter>> exporters, NN<IO::ParsedObject> obj)
+UIntOS Exporter::ExporterList::GetSupportedExporters(NN<Data::ArrayListNN<IO::FileExporter>> exporters, NN<IO::ParsedObject> obj)
 {
-	UOSInt cnt = 0;
-	UOSInt i = 0;
-	UOSInt j = this->exporters.GetCount();
+	UIntOS cnt = 0;
+	UIntOS i = 0;
+	UIntOS j = this->exporters.GetCount();
 	NN<IO::FileExporter> exporter;
 	while (i < j)
 	{

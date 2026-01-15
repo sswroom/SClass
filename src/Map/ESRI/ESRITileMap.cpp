@@ -42,18 +42,18 @@ Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType() const
 	return Map::TileMap::TT_ESRI;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetMinLevel() const
+UIntOS Map::ESRI::ESRITileMap::GetMinLevel() const
 {
 	return 0;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetMaxLevel() const
+UIntOS Map::ESRI::ESRITileMap::GetMaxLevel() const
 {
 	return this->esriMap->TileGetLevelCount() - 1;
 }
 
 
-Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index) const
+Double Map::ESRI::ESRITileMap::GetLevelScale(UIntOS index) const
 {
 	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
 	Double level = this->esriMap->TileGetLevelResolution(index);
@@ -63,13 +63,13 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index) const
 	return level / scaleDiv;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale) const
+UIntOS Map::ESRI::ESRITileMap::GetNearestLevel(Double scale) const
 {
 	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
 	Double ldiff;
 	Double minDiff;
-	UOSInt minInd;
-	UOSInt i;
+	UIntOS minInd;
+	UIntOS i;
 	Double logResol = Math_Log10(scale * scaleDiv);
 	minInd = 0;
 	minDiff = 100000.0;
@@ -88,7 +88,7 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale) const
 	return minInd;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount() const
+UIntOS Map::ESRI::ESRITileMap::GetConcurrentCount() const
 {
 	return 1;
 }
@@ -110,7 +110,7 @@ Bool Map::ESRI::ESRITileMap::IsMercatorProj() const
 	return false;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetTileSize() const
+UIntOS Map::ESRI::ESRITileMap::GetTileSize() const
 {
 	return this->esriMap->TileGetWidth();
 }
@@ -125,7 +125,7 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
+Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UIntOS level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
@@ -136,7 +136,7 @@ void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2DDbl size, Double dpi)
 	this->dispDPI = dpi;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
+UIntOS Map::ESRI::ESRITileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	Int32 i;
@@ -152,13 +152,13 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 	if (rect.min.y == rect.max.y)
 		return 0;
 	this->dispBounds = rect;
-	UOSInt tileWidth = this->esriMap->TileGetWidth();
-	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	UIntOS tileWidth = this->esriMap->TileGetWidth();
+	UIntOS tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
-	Int32 pixX1 = (Int32)((rect.min.x - origin.x) / resol / UOSInt2Double(tileWidth));
-	Int32 pixX2 = (Int32)((rect.max.x - origin.x) / resol / UOSInt2Double(tileWidth));
-	Int32 pixY1 = (Int32)((origin.y - rect.min.y) / resol / UOSInt2Double(tileHeight));
-	Int32 pixY2 = (Int32)((origin.y - rect.max.y) / resol / UOSInt2Double(tileHeight));
+	Int32 pixX1 = (Int32)((rect.min.x - origin.x) / resol / UIntOS2Double(tileWidth));
+	Int32 pixX2 = (Int32)((rect.max.x - origin.x) / resol / UIntOS2Double(tileWidth));
+	Int32 pixY1 = (Int32)((origin.y - rect.min.y) / resol / UIntOS2Double(tileHeight));
+	Int32 pixY2 = (Int32)((origin.y - rect.max.y) / resol / UIntOS2Double(tileHeight));
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;
@@ -182,10 +182,10 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 		}
 		i++;
 	}
-	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
+	return (UIntOS)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char filePath[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -194,13 +194,13 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return nullptr;
-	UOSInt tileWidth = this->esriMap->TileGetWidth();
-	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	UIntOS tileWidth = this->esriMap->TileGetWidth();
+	UIntOS tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
-	Double x1 = tileId.x * UOSInt2Double(tileWidth) * resol + origin.x;
-	Double y1 = origin.y - tileId.y * UOSInt2Double(tileHeight) * resol;
-	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
-	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
+	Double x1 = tileId.x * UIntOS2Double(tileWidth) * resol + origin.x;
+	Double y1 = origin.y - tileId.y * UIntOS2Double(tileHeight) * resol;
+	Double x2 = x1 + UIntOS2Double(tileWidth) * resol;
+	Double y2 = y1 - UIntOS2Double(tileHeight) * resol;
 
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
@@ -218,7 +218,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	sptr = Text::StrInt32(sptr, tileId.x);
 	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 	{
-		IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+		IO::StmData::FileData fd({filePath, (UIntOS)(filePathEnd - filePath)}, false);
 		if (fd.GetDataSize() > 0)
 		{
 			if (parsers->ParseFile(fd).SetTo(pobj))
@@ -236,7 +236,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 		return nullptr;
 
 	this->esriMap->TileLoadToFile(CSTRP(filePath, filePathEnd), level, tileId.x, tileId.y);
-	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+	IO::StmData::FileData fd({filePath, (UIntOS)(filePathEnd - filePath)}, false);
 	if (fd.GetDataSize() > 0)
 	{
 		if (parsers->ParseFile(fd).SetTo(pobj))
@@ -251,17 +251,17 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRITileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRITileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
 
-Bool Map::ESRI::ESRITileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::ESRI::ESRITileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	return this->esriMap->TileGetURL(sb, level, tileId.x, tileId.y);
 }
 
-Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePath[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -269,13 +269,13 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return nullptr;
-	UOSInt tileWidth = this->esriMap->TileGetWidth();
-	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	UIntOS tileWidth = this->esriMap->TileGetWidth();
+	UIntOS tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
-	Double x1 = tileId.x * UOSInt2Double(tileWidth) * resol + origin.x;
-	Double y1 = origin.y - tileId.y * UOSInt2Double(tileHeight) * resol;
-	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
-	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
+	Double x1 = tileId.x * UIntOS2Double(tileWidth) * resol + origin.x;
+	Double y1 = origin.y - tileId.y * UIntOS2Double(tileHeight) * resol;
+	Double x2 = x1 + UIntOS2Double(tileWidth) * resol;
+	Double y2 = y1 - UIntOS2Double(tileHeight) * resol;
 
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
@@ -285,14 +285,14 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrUOSInt(sptr, level);
+	sptr = Text::StrUIntOS(sptr, level);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, tileId.y);
 	IO::Path::CreateDirectory(CSTRP(filePath, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		it.Set(IT_PNG);
@@ -304,7 +304,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 		return nullptr;
 
 	this->esriMap->TileLoadToFile(CSTRP(filePath, sptr), level, tileId.x, tileId.y);
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		it.Set(IT_PNG);

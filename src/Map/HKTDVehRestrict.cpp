@@ -15,10 +15,10 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 	UnsafeArray<UTF8Char> sptr;
 	Optional<Map::NameArray> nameArr;
 	Data::ArrayListInt64 idArr;
-	UOSInt colCnt;
-	UOSInt i;
-	UOSInt j;
-	OSInt idCol = -1;
+	UIntOS colCnt;
+	UIntOS i;
+	UIntOS j;
+	IntOS idCol = -1;
 	NN<RouteInfo> route;
 	NN<Math::Geometry::Vector2D> vec;
 
@@ -29,9 +29,9 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 	{
 		if (routeLyr->GetColumnName(sbuff, i).SetTo(sptr))
 		{
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+			if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 			{
-				idCol = (OSInt)i;
+				idCol = (IntOS)i;
 				break;
 			}
 		}
@@ -46,7 +46,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 		while (i < j)
 		{
 			sb.ClearStr();
-			if (routeLyr->GetString(sb, nameArr, idArr.GetItem(i), (UOSInt)idCol))
+			if (routeLyr->GetString(sb, nameArr, idArr.GetItem(i), (UIntOS)idCol))
 			{
 				if (routeLyr->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
 				{
@@ -78,7 +78,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 
 Map::HKTDVehRestrict::~HKTDVehRestrict()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<RouteInfo> route;
 	this->csys.Delete();
 	this->db.Delete();
@@ -97,8 +97,8 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
 	UnsafeArrayOpt<const UTF8Char> colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
-	UOSInt colSize[] = {11, 32, 255};
-	UOSInt colDP[] = {0, 10, 0};
+	UIntOS colSize[] = {11, 32, 255};
+	UIntOS colDP[] = {0, 10, 0};
 	NN<Map::VectorLayer> lyr;
 	NEW_CLASSNN(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
@@ -108,13 +108,13 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
 		UTF8Char sbuff2[64];
-		OSInt roadRouteIdCol = -1;
-		OSInt locationCol = -1;
-		OSInt vrIdCol = -1;
-		OSInt maxWeightCol = -1;
-		OSInt remarksCol = -1;
-		UOSInt i;
-		UOSInt j;
+		IntOS roadRouteIdCol = -1;
+		IntOS locationCol = -1;
+		IntOS vrIdCol = -1;
+		IntOS maxWeightCol = -1;
+		IntOS remarksCol = -1;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<UTF8Char> strs[3];
 		i = 0;
 		j = r->ColCount();
@@ -122,25 +122,25 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 		{
 			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
 				{
-					roadRouteIdCol = (OSInt)i;
+					roadRouteIdCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOCATION")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LOCATION")))
 				{
-					locationCol = (OSInt)i;
+					locationCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("VR_ID")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("VR_ID")))
 				{
-					vrIdCol = (OSInt)i;
+					vrIdCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAX_WEIGHT")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MAX_WEIGHT")))
 				{
-					maxWeightCol = (OSInt)i;
+					maxWeightCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("REMARKS")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("REMARKS")))
 				{
-					remarksCol = (OSInt)i;
+					remarksCol = (IntOS)i;
 				}
 			}
 			i++;
@@ -148,20 +148,20 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 
 		while (r->ReadNext())
 		{
-			if (r->IsNull((UOSInt)maxWeightCol))
+			if (r->IsNull((UIntOS)maxWeightCol))
 			{
 			}
 			else
 			{
-				Int32 roadRouteId = r->GetInt32((UOSInt)roadRouteIdCol);
-				Double location = r->GetDblOr((UOSInt)locationCol, 0);
-				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
-				Double maxWeight = r->GetDblOr((UOSInt)maxWeightCol, 0);
+				Int32 roadRouteId = r->GetInt32((UIntOS)roadRouteIdCol);
+				Double location = r->GetDblOr((UIntOS)locationCol, 0);
+				Int32 vrId = r->GetInt32((UIntOS)vrIdCol);
+				Double maxWeight = r->GetDblOr((UIntOS)maxWeightCol, 0);
 				NN<RouteInfo> route;
 				NN<Math::Geometry::Point> pt;
 				Math::Coord2DDbl coord;
 				sbuff[0] = 0;
-				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
+				r->GetStr((UIntOS)remarksCol, sbuff, sizeof(sbuff));
 
 				if (this->routeMap.Get(roadRouteId).SetTo(route))
 				{

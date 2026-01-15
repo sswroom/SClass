@@ -106,7 +106,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void SetInitStreamType(IO::StreamType stype);
-			void SetInitSerialPort(UOSInt port);
+			void SetInitSerialPort(UIntOS port);
 			void SetInitBaudRate(Int32 baudRate);
 
 			NN<IO::Stream> GetStream() const;

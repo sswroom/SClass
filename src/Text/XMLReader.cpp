@@ -86,12 +86,12 @@ void Text::XMLReader::InitBuffer()
 	}
 }
 
-UOSInt Text::XMLReader::FillBuffer()
+UIntOS Text::XMLReader::FillBuffer()
 {
 	NN<Text::Encoding> enc;
 	if (this->enc.SetTo(enc) && this->stmEnc)
 	{
-		UOSInt rawReadSize = this->stm->Read(Data::ByteArray(&this->rawBuff[this->rawBuffSize], BUFFSIZE - this->rawBuffSize));
+		UIntOS rawReadSize = this->stm->Read(Data::ByteArray(&this->rawBuff[this->rawBuffSize], BUFFSIZE - this->rawBuffSize));
 		this->rawBuffSize += rawReadSize;
 		if (this->buffSize >= (BUFFSIZE >> 1))
 		{
@@ -112,7 +112,7 @@ UOSInt Text::XMLReader::FillBuffer()
 			MemCopyO(this->rawBuff.Ptr(), &this->rawBuff[rawReadSize], this->rawBuffSize - rawReadSize);
 			this->rawBuffSize -= rawReadSize;
 		}
-		UOSInt retSize = (UOSInt)(sptr - &this->readBuff[this->buffSize]);
+		UIntOS retSize = (UIntOS)(sptr - &this->readBuff[this->buffSize]);
 		return retSize;
 	}
 	else
@@ -126,8 +126,8 @@ void Text::XMLReader::ParseElementNS()
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> name;
 	NN<Text::String> value;
-	UOSInt i = 0;
-	UOSInt j = this->attrList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->attrList.GetCount();
 	while (i < j)
 	{
 		attr = this->attrList.GetItemNoCheck(i);
@@ -195,7 +195,7 @@ Text::XMLReader::~XMLReader()
 	this->pathList.FreeAll();
 	MemFreeArr(this->readBuff);
 	MemFreeArr(this->rawBuff);
-	UOSInt i = this->nsMap.GetCount();
+	UIntOS i = this->nsMap.GetCount();
 	while (i-- > 0)
 	{
 		this->nsMap.GetItemNoCheck(i)->Release();
@@ -218,7 +218,7 @@ void Text::XMLReader::GetCurrPath(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-UOSInt Text::XMLReader::GetPathLev() const
+UIntOS Text::XMLReader::GetPathLev() const
 {
 	return this->pathList.GetCount();
 }
@@ -253,7 +253,7 @@ Text::CStringNN Text::XMLReader::GetElementName() const
 	NN<Text::String> s;
 	if ((this->nt == Text::XMLNode::NodeType::Element || this->nt == Text::XMLNode::NodeType::ElementEnd) && this->nodeText.SetTo(s))
 	{
-		UOSInt i = s->IndexOf(':');
+		UIntOS i = s->IndexOf(':');
 		return s->ToCString().Substring(i + 1);
 	}
 	else
@@ -262,24 +262,24 @@ Text::CStringNN Text::XMLReader::GetElementName() const
 	}
 }
 
-UOSInt Text::XMLReader::GetAttribCount() const
+UIntOS Text::XMLReader::GetAttribCount() const
 {
 	return this->attrList.GetCount();
 }
 
-NN<Text::XMLAttrib> Text::XMLReader::GetAttribNoCheck(UOSInt index) const
+NN<Text::XMLAttrib> Text::XMLReader::GetAttribNoCheck(UIntOS index) const
 {
 	return this->attrList.GetItemNoCheck(index);
 }
 
-Optional<Text::XMLAttrib> Text::XMLReader::GetAttrib(UOSInt index) const
+Optional<Text::XMLAttrib> Text::XMLReader::GetAttrib(UIntOS index) const
 {
 	return this->attrList.GetItem(index);
 }
 
 Optional<Text::XMLAttrib> Text::XMLReader::GetAttrib(Text::CStringNN name) const
 {
-	UOSInt i = this->attrList.GetCount();
+	UIntOS i = this->attrList.GetCount();
 	NN<Text::XMLAttrib> attr;
 	while (i-- > 0)
 	{
@@ -346,7 +346,7 @@ Bool Text::XMLReader::ReadNext()
 		return false;
 	}
 
-	UOSInt parseOfst = this->parseOfst;
+	UIntOS parseOfst = this->parseOfst;
 	if ((this->buffSize - parseOfst) < 128)
 	{
 		if (parseOfst > 0)
@@ -363,7 +363,7 @@ Bool Text::XMLReader::ReadNext()
 				parseOfst = 0;
 			}
 		}
-		UOSInt readSize = this->FillBuffer();
+		UIntOS readSize = this->FillBuffer();
 		if (readSize > 0)
 		{
 			this->buffSize += readSize;
@@ -377,7 +377,7 @@ Bool Text::XMLReader::ReadNext()
 	}
 	if (this->readBuff[parseOfst] == '<')
 	{
-		UOSInt lenLeft = this->buffSize - parseOfst;
+		UIntOS lenLeft = this->buffSize - parseOfst;
 		if (Text::StrStartsWithC(&this->readBuff[parseOfst], lenLeft, UTF8STRC("<!--")))
 		{
 			this->nt = Text::XMLNode::NodeType::Comment;
@@ -399,7 +399,7 @@ Bool Text::XMLReader::ReadNext()
 						parseOfst = 0;
 						this->buffSize = 0;
 					}
-					UOSInt readSize = this->FillBuffer();
+					UIntOS readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 1;
@@ -437,7 +437,7 @@ Bool Text::XMLReader::ReadNext()
 						parseOfst = 0;
 						this->buffSize = 0;
 					}
-					UOSInt readSize = this->FillBuffer();
+					UIntOS readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 2;
@@ -471,7 +471,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						parseOfst = 0;
 						this->buffSize = 0;
-						UOSInt readSize = this->FillBuffer();
+						UIntOS readSize = this->FillBuffer();
 						if (readSize <= 0)
 						{
 							this->parseError = 41;
@@ -488,7 +488,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (c == '&')
 						{
-							UOSInt l = this->buffSize - parseOfst;
+							UIntOS l = this->buffSize - parseOfst;
 							if (l >= 4 && this->readBuff[parseOfst + 3] == ';')
 							{
 								if (Text::StrStartsWithC(&this->readBuff[parseOfst], l, UTF8STRC("&lt;")))
@@ -673,7 +673,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->FillBuffer();
+					UIntOS readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 4;
@@ -690,7 +690,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else if (c == '&')
 					{
-						UOSInt l = this->buffSize - parseOfst;
+						UIntOS l = this->buffSize - parseOfst;
 						if (l >= 4 && this->readBuff[parseOfst + 3] == ';')
 						{
 							if (Text::StrStartsWithC(&this->readBuff[parseOfst], l, UTF8STRC("&lt;")))
@@ -811,7 +811,7 @@ Bool Text::XMLReader::ReadNext()
 							NN<Text::EncodingFactory> encFact;
 							if (this->encFact.SetTo(encFact) && nns->Equals(UTF8STRC("xml")))
 							{
-								UOSInt i = this->attrList.GetCount();
+								UIntOS i = this->attrList.GetCount();
 								NN<Text::XMLAttrib> attr;
 								while (i-- > 0)
 								{
@@ -915,7 +915,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->FillBuffer();
+					UIntOS readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->parseError = 17;
@@ -974,7 +974,7 @@ Bool Text::XMLReader::ReadNext()
 						OPTSTR_DEL(opts);
 						if (this->mode == Text::XMLReader::PM_XML)
 						{
-							UOSInt i = nodeText->IndexOf(':');
+							UIntOS i = nodeText->IndexOf(':');
 							if (i == INVALID_INDEX)
 							{
 								this->ns = this->nsMap.GetC(CSTR(""));
@@ -1025,7 +1025,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					parseOfst = 0;
 					this->buffSize = 0;
-					UOSInt readSize = this->FillBuffer();
+					UIntOS readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
 						this->nt = Text::XMLNode::NodeType::Unknown;
@@ -1054,7 +1054,7 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
-								UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
@@ -1082,7 +1082,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else if (c == '&')
 					{
-						UOSInt l = this->buffSize - parseOfst;
+						UIntOS l = this->buffSize - parseOfst;
 						if (l >= 4 && this->readBuff[parseOfst + 3] == ';')
 						{
 							sbOri.AppendC(&this->readBuff[parseOfst], 4);
@@ -1235,7 +1235,7 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
-								UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
@@ -1278,7 +1278,7 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
-								UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
@@ -1308,7 +1308,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						parseOfst = 0;
 						this->buffSize = 1;
-						UOSInt readSize = this->FillBuffer();
+						UIntOS readSize = this->FillBuffer();
 						if (readSize <= 0)
 						{
 							this->nt = Text::XMLNode::NodeType::Unknown;
@@ -1350,7 +1350,7 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
-								UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
@@ -1467,12 +1467,12 @@ Bool Text::XMLReader::ReadNext()
 			{
 				parseOfst = 0;
 				this->buffSize = 0;
-				UOSInt readSize = this->FillBuffer();
+				UIntOS readSize = this->FillBuffer();
 				if (readSize <= 0)
 				{
 					if (this->enc.SetTo(enc) && !this->stmEnc)
 					{
-						UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+						UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 						this->nodeText = nns = Text::String::New(len);
 						enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 						nns->v[len] = 0;
@@ -1504,7 +1504,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (this->enc.SetTo(enc) && !this->stmEnc)
 					{
-						UOSInt len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
+						UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 						this->nodeText = nns = Text::String::New(len);
 						enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 						nns->v[len] = 0;
@@ -1525,7 +1525,7 @@ Bool Text::XMLReader::ReadNext()
 			}
 			else if (c == '&' && !isHTMLScript)
 			{
-				UOSInt l = this->buffSize - parseOfst;
+				UIntOS l = this->buffSize - parseOfst;
 				if (l >= 4 && this->readBuff[parseOfst + 3] == ';')
 				{
 					if (Text::StrStartsWithC(&this->readBuff[parseOfst], l, UTF8STRC("&lt;")))
@@ -1655,7 +1655,7 @@ Bool Text::XMLReader::ReadNodeText(NN<Text::StringBuilderUTF8> sb)
 		{
 			return true;
 		}
-		UOSInt pathLev = this->pathList.GetCount();
+		UIntOS pathLev = this->pathList.GetCount();
 		Text::XMLNode::NodeType nt;
 		Bool succ = true;
 		while ((succ = this->ReadNext()) != false)
@@ -1717,7 +1717,7 @@ Text::CString Text::XMLReader::NextElementName2()
 		if (this->nt == Text::XMLNode::NodeType::Element)
 		{
 			Text::CStringNN name = Text::String::OrEmpty(this->nodeText)->ToCString();
-			UOSInt i = name.IndexOf(':');
+			UIntOS i = name.IndexOf(':');
 			return name.Substring(i + 1);
 		}
 		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
@@ -1740,7 +1740,7 @@ Bool Text::XMLReader::SkipElement()
 				return true;
 			}
 		}
-		UOSInt initLev = this->pathList.GetCount();
+		UIntOS initLev = this->pathList.GetCount();
 		Bool succ = true;
 		while ((succ = this->ReadNext()) != false)
 		{
@@ -1772,15 +1772,15 @@ Bool Text::XMLReader::HasError() const
 	return this->parseError != 0;
 }
 
-UOSInt Text::XMLReader::GetErrorCode() const
+UIntOS Text::XMLReader::GetErrorCode() const
 {
 	return this->parseError;
 }
 
 Bool Text::XMLReader::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	NN<Text::XMLAttrib> attr;
 	switch (this->nt)
@@ -1882,7 +1882,7 @@ Bool Text::XMLReader::ToString(NN<Text::StringBuilderUTF8> sb) const
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UIntOS lev, NN<Text::StringBuilderUTF8> sb)
 {
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;

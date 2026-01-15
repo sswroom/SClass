@@ -36,16 +36,16 @@ namespace Crypto
 			CipherAlgorithm cipherAlgorithm;
 			Data::ByteBuffer key;
 			UnsafeArrayOpt<UInt8> salt;
-			UOSInt saltSize;
+			UIntOS saltSize;
 			UnsafeArrayOpt<UInt8> iv;
-			UOSInt ivSize;
-			UOSInt iterCnt;
-			UOSInt dkLen;
+			UIntOS ivSize;
+			UIntOS iterCnt;
+			UIntOS dkLen;
 			Data::RandomBytesGenerator random;
 
 			UnsafeArray<const UInt8> DecGetSalt(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> salt);
 			UnsafeArray<const UInt8> DecGetIV(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> iv);
-			UOSInt GetEncKey(UnsafeArray<const UInt8> salt, UnsafeArray<UInt8> key);
+			UIntOS GetEncKey(UnsafeArray<const UInt8> salt, UnsafeArray<UInt8> key);
 			NN<Crypto::Encrypt::Encryption> CreateCrypto(UnsafeArray<const UInt8> iv, UnsafeArray<const UInt8> keyBuff);
 
 		public:
@@ -53,9 +53,9 @@ namespace Crypto
 			~JasyptEncryptor();
 
 			Bool Decrypt(NN<IO::ConfigFile> cfg);
-			UOSInt Decrypt(UnsafeArray<const UInt8> srcBuff, UOSInt srcLen, UnsafeArray<UInt8> outBuff);
-			UOSInt DecryptB64(Text::CStringNN b64Str, UnsafeArray<UInt8> outBuff);
-			UOSInt EncryptAsB64(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff);
+			UIntOS Decrypt(UnsafeArray<const UInt8> srcBuff, UIntOS srcLen, UnsafeArray<UInt8> outBuff);
+			UIntOS DecryptB64(Text::CStringNN b64Str, UnsafeArray<UInt8> outBuff);
+			UIntOS EncryptAsB64(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff);
 
 			static Text::CStringNN KeyAlgorithmGetName(KeyAlgorithm keyAlg);
 			static Text::CStringNN CipherAlgorithmGetName(CipherAlgorithm cipherAlg);

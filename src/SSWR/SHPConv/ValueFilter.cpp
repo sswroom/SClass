@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/SHPConv/ValueFilter.h"
 
-SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, Text::CStringNN val, Int32 compareType)
+SSWR::SHPConv::ValueFilter::ValueFilter(UIntOS colIndex, Text::CStringNN val, Int32 compareType)
 {
 	this->colIndex = colIndex;
 	this->value = Text::String::New(val);
@@ -22,21 +22,21 @@ Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, 
 	switch (this->compareType)
 	{
 	case 3:
-		return Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), this->value->v, this->value->leng);
+		return Text::StrEqualsICaseC(sbuff, (UIntOS)(sptr - sbuff), this->value->v, this->value->leng);
 	case 2:
-		return !Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), this->value->v, this->value->leng);
+		return !Text::StrEqualsICaseC(sbuff, (UIntOS)(sptr - sbuff), this->value->v, this->value->leng);
 	case 1:
-		return Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), this->value->v, this->value->leng);
+		return Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), this->value->v, this->value->leng);
 	case 0:
 	default:
-		return !Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), this->value->v, this->value->leng);
+		return !Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), this->value->v, this->value->leng);
 	}
 }
 
 UnsafeArray<UTF8Char> SSWR::SHPConv::ValueFilter::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
-	buff = Text::StrUOSInt(buff, this->colIndex);
+	buff = Text::StrUIntOS(buff, this->colIndex);
 	switch (this->compareType)
 	{
 	case 3:

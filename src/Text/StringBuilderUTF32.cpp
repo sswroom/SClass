@@ -14,7 +14,7 @@ Text::StringBuilderUTF32::~StringBuilderUTF32()
 
 NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(NN<Text::PString> s)
 {
-	UOSInt slen = Text::StrUTF8_UTF32CntC(s->v, s->leng);
+	UIntOS slen = Text::StrUTF8_UTF32CntC(s->v, s->leng);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
@@ -25,7 +25,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(NN<Text::PString> s)
 
 NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(UnsafeArray<const UTF8Char> s)
 {
-	UOSInt slen = Text::StrUTF8_UTF32Cnt(s);
+	UIntOS slen = Text::StrUTF8_UTF32Cnt(s);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
@@ -34,9 +34,9 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(UnsafeArray<const UT
 	return *this;
 }
 
-NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendC(UnsafeArray<const UTF8Char> s, UIntOS charCnt)
 {
-	UOSInt slen = Text::StrUTF8_UTF32CntC(s, charCnt);
+	UIntOS slen = Text::StrUTF8_UTF32CntC(s, charCnt);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
@@ -45,10 +45,10 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendC(UnsafeArray<const U
 	return *this;
 }
 
-NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendS(UnsafeArray<const UTF8Char> s, UIntOS maxLen)
 {
-	UOSInt len = Text::StrCharCntS(s, maxLen);
-	UOSInt slen = Text::StrUTF8_UTF32CntC(s, len);
+	UIntOS len = Text::StrCharCntS(s, maxLen);
+	UIntOS slen = Text::StrUTF8_UTF32CntC(s, len);
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
@@ -57,7 +57,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendS(UnsafeArray<const U
 	return *this;
 }
 
-NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOSInt repCnt)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendChar(UTF32Char c, UIntOS repCnt)
 {
 	this->AllocLeng(repCnt);
 	while (repCnt-- > 0)
@@ -68,10 +68,10 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOS
 	return *this;
 }
 
-NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(UnsafeArray<UnsafeArray<const UTF32Char>> sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(UnsafeArray<UnsafeArray<const UTF32Char>> sarr, UIntOS nStr)
 {
 	UnsafeArray<const UTF32Char> csptr;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < nStr)
 	{
@@ -83,7 +83,7 @@ NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(UnsafeArray<Uns
 			this->buffEnd[0] = 0;
 		}
 		
-		UOSInt slen = Text::StrCharCnt(csptr);
+		UIntOS slen = Text::StrCharCnt(csptr);
 		if (slen > 0)
 		{
 			this->AllocLeng(slen);
@@ -97,7 +97,7 @@ NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(UnsafeArray<Uns
 
 NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendToUpper(UnsafeArray<const UTF32Char> s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UIntOS slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
 	return *this;
@@ -105,7 +105,7 @@ NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendToUpper(UnsafeArray
 
 NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendToLower(UnsafeArray<const UTF32Char> s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UIntOS slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToLower(this->buffEnd, s);
 	return *this;

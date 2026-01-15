@@ -12,10 +12,10 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 	UInt8 readBuff[256];
 	UInt64 currOfst;
 	UInt64 readOfst;
-	UOSInt buffSize;
-	UOSInt readSize;
-	UOSInt frameSize;
-	UOSInt j;
+	UIntOS buffSize;
+	UIntOS readSize;
+	UIntOS frameSize;
+	UIntOS j;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	if (!me->fd.SetTo(fd))
 	{
@@ -72,7 +72,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 			{
 				if ((readBuff[j + 4] & 0xc0) == 0x40)
 				{
-					frameSize = 14 + (UOSInt)(readBuff[j + 13] & 7);
+					frameSize = 14 + (UIntOS)(readBuff[j + 13] & 7);
 				}
 				else if ((readBuff[j + 4] & 0xf0) == 0x20)
 				{
@@ -90,7 +90,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 			}
 			else
 			{
-				frameSize = 6 + (UOSInt)ReadMUInt16(&readBuff[j + 4]);
+				frameSize = 6 + (UIntOS)ReadMUInt16(&readBuff[j + 4]);
 				pack = MemAllocNN(IO::FileAnalyse::MPEGFileAnalyse::PackInfo);
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
@@ -151,12 +151,12 @@ Text::CStringNN IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
 	return CSTR("MPEG");
 }
 
-UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -199,7 +199,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
@@ -251,7 +251,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		break;
 	case 0xbb:
 		{
-			UOSInt i;
+			UIntOS i;
 			sb->AppendC(UTF8STRC("System header"));
 			sb->AppendC(UTF8STRC("\r\nRate Bound = "));
 			sb->AppendU32((ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
@@ -294,7 +294,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendC(UTF8STRC("Private Stream 1"));
 		if (this->mpgVer == 2)
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			sb->AppendC(UTF8STRC("\r\nPES Scrambling Control = "));
 			sb->AppendU16((packBuff[6] & 0x30) >> 4);
@@ -393,7 +393,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 				i += 1;
 			}
 
-			i = 9 + (UOSInt)packBuff[8];
+			i = 9 + (UIntOS)packBuff[8];
 			sb->AppendC(UTF8STRC("\r\nStream Type = 0x"));
 			sb->AppendHex8(packBuff[i]);
 			if ((packBuff[i] & 0xf0) == 0xa0)
@@ -443,13 +443,13 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 			}
 		
 			sb->AppendC(UTF8STRC("\r\nContent Size = "));
-			sb->AppendUOSInt((pack->packSize - i));
+			sb->AppendUIntOS((pack->packSize - i));
 			sb->AppendC(UTF8STRC("\r\nContent:\r\n"));
 			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -516,7 +516,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		break;
 	case 0xc0:
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			sb->AppendC(UTF8STRC("Audio Stream 1"));
 			i = 6;
@@ -574,7 +574,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendC(UTF8STRC("Video Stream"));
 		if (this->mpgVer == 2)
 		{
-			OSInt i;
+			IntOS i;
 			Int64 pts;
 			sb->AppendC(UTF8STRC("\r\nPES Scrambling Control = "));
 			sb->AppendU16((packBuff[6] & 0x30) >> 4);
@@ -680,7 +680,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		}
 		else
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -737,16 +737,16 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	return true;
 }
 
-UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -757,13 +757,13 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
@@ -814,7 +814,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 		break;
 	case 0xbb:
 		{
-			UOSInt i;
+			UIntOS i;
 			frame->AddField(0, 4, CSTR("Sequence"), CSTR("System header"));
 			frame->AddUInt(6, 3, CSTR("Rate Bound"), (ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
 			frame->AddUInt(9, 1, CSTR("Audio Bound"), (UInt16)(packBuff[9] >> 2));
@@ -846,7 +846,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Private Stream 1"));
 		if (this->mpgVer == 2)
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			frame->AddUInt(6, 1, CSTR("PES Scrambling Control"), (packBuff[6] & 0x30) >> 4);
 			frame->AddUInt(6, 1, CSTR("PES Priority"), (packBuff[6] & 0x8) >> 3);
@@ -918,7 +918,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				i += 1;
 			}
 
-			i = 9 + (UOSInt)packBuff[8];
+			i = 9 + (UIntOS)packBuff[8];
 			frame->AddHex8(i, CSTR("Stream Type"), packBuff[i]);
 			if ((packBuff[i] & 0xf0) == 0xa0)
 			{
@@ -959,13 +959,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				i += 4;
 			}
 
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, CSTRP(sbuff, sptr));
 			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
 		else
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -1006,7 +1006,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				break;
 			}
 
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, CSTRP(sbuff, sptr));
 			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
@@ -1017,13 +1017,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 		break;
 	case 0xbf:
 		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Private Stream 2"));
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 6);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 6);
 		frame->AddText(6, CSTRP(sbuff, sptr));
 		frame->AddHexBuff(6, pack->packSize - 6, CSTR("Content"), &packBuff[6], true);
 		break;
 	case 0xc0:
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			frame->AddField(0, 4, CSTR("Sequence"), CSTR("Audio Stream 1"));
 			i = 6;
@@ -1065,7 +1065,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				break;
 			}
 
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, CSTRP(sbuff, sptr));
 			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
@@ -1074,7 +1074,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Video Stream"));
 		if (this->mpgVer == 2)
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			frame->AddUInt(6, 1, CSTR("PES Scrambling Control"), (packBuff[6] & 0x30) >> 4);
 			frame->AddUInt(6, 1, CSTR("PES Priority"), (packBuff[6] & 0x8) >> 3);
@@ -1146,13 +1146,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				i += 1;
 			}
 		
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 9 - packBuff[8]);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 9 - packBuff[8]);
 			frame->AddText(i, CSTRP(sbuff, sptr));
-			frame->AddHexBuff(9 + (UOSInt)packBuff[8], pack->packSize - 9 - packBuff[8], CSTR("Content"), &packBuff[9 + packBuff[8]], true);
+			frame->AddHexBuff(9 + (UIntOS)packBuff[8], pack->packSize - 9 - packBuff[8], CSTR("Content"), &packBuff[9 + packBuff[8]], true);
 		}
 		else
 		{
-			UOSInt i;
+			UIntOS i;
 			Int64 pts;
 			i = 6;
 			while (packBuff[i] & 0x80)
@@ -1193,7 +1193,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 				break;
 			}
 
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, CSTRP(sbuff, sptr));
 			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
@@ -1214,10 +1214,10 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
-	UOSInt readSize;
-	UOSInt buffSize;
-	UOSInt j;
-	UOSInt frameSize;
+	UIntOS readSize;
+	UIntOS buffSize;
+	UIntOS j;
+	UIntOS frameSize;
 	UInt64 readOfst;
 	Bool valid = true;
 	NN<IO::StreamData> fd;
@@ -1272,7 +1272,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		{
 			if ((readBuff[j + 4] & 0xc0) == 0x40)
 			{
-				frameSize = 14 + (UOSInt)(readBuff[j + 13] & 7);
+				frameSize = 14 + (UIntOS)(readBuff[j + 13] & 7);
 			}
 			else if ((readBuff[j + 4] & 0xf0) == 0x20)
 			{
@@ -1286,7 +1286,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		}
 		else
 		{
-			frameSize = 6 + (UOSInt)ReadMUInt16(&readBuff[j + 4]);
+			frameSize = 6 + (UIntOS)ReadMUInt16(&readBuff[j + 4]);
 		}
 		if (j + frameSize <= buffSize)
 		{

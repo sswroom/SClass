@@ -22,7 +22,7 @@ Media::AudioConcatSource::AudioConcatSource()
 
 Media::AudioConcatSource::~AudioConcatSource()
 {
-	UOSInt i = this->stmList.GetCount();
+	UIntOS i = this->stmList.GetCount();
 	while (i-- > 0)
 	{
 		this->stmList.RemoveAt(i).Delete();
@@ -113,8 +113,8 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 	Data::Duration stmTime = 0;
 	NN<Media::AudioSource> audSrc1;
 	NN<Media::AudioSource> audSrc2;
-	UOSInt stmIndex;
-	UOSInt stmCnt;
+	UIntOS stmIndex;
+	UIntOS stmCnt;
 	stmTotal = 0;
 	stmIndex = 0;
 	stmCnt = this->stmList.GetCount();
@@ -172,7 +172,7 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 	return stmTotal;
 }
 
-Bool Media::AudioConcatSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::AudioConcatSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Media::AudioSource> audSrc;
 	if (this->readEvt.NotNull() && this->currStm > 0 && this->stmList.GetItem(this->currStm).SetTo(audSrc))
@@ -202,12 +202,12 @@ void Media::AudioConcatSource::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 {
 	NN<Media::AudioSource> audSrc;
 	if (!this->stmList.GetItem(this->currStm).SetTo(audSrc))
 		return 0;
-	UOSInt readSize = audSrc->ReadBlock(blk);
+	UIntOS readSize = audSrc->ReadBlock(blk);
 	if (readSize > 0)
 		return readSize;
 	if (this->currStm + 1 >= this->stmList.GetCount())
@@ -234,7 +234,7 @@ UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 Data::Duration Media::AudioConcatSource::GetCurrTime()
 {
 	Data::Duration totalTime = 0;
-	UOSInt i = this->currStm;
+	UIntOS i = this->currStm;
 	NN<Media::AudioSource> astm;
 	if (this->stmList.GetItem(i).SetTo(astm))
 	{
@@ -250,7 +250,7 @@ Data::Duration Media::AudioConcatSource::GetCurrTime()
 	return totalTime;
 }
 
-UOSInt Media::AudioConcatSource::GetMinBlockSize()
+UIntOS Media::AudioConcatSource::GetMinBlockSize()
 {
 	return this->format.align;
 }

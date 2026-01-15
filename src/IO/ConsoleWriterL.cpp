@@ -72,12 +72,12 @@ void IO::ConsoleWriter::ResetTextColor()
 	printf("\x1b[0m");
 }
 		
-UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UIntOS IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UIntOS nChar)
 {
 #if !defined(__arm__)
 	if (fgetws(sbuff.Ptr(), (int)nChar, stdin) == 0)
@@ -110,7 +110,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 			Int32 consoleHeight;*/
 
 	Char row[32];
-	OSInt i;
+	IntOS i;
 	Char col[32];
 	Bool succ = false;
 	Int32 c;
@@ -200,16 +200,16 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return false;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UIntOS displayWidth)
 {
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UIntOS IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	return 80;
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UIntOS IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	if (c < 128)
 		return 1;

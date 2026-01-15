@@ -24,7 +24,7 @@ Data::Class::~Class()
 	this->fields.FreeAll(FreeFieldInfo);
 }
 
-UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull)
+UIntOS Data::Class::AddField(Text::CStringNN name, IntOS ofst, Data::VariItem::ItemType itemType, Bool notNull)
 {
 	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->name = Text::String::New(name);
@@ -37,7 +37,7 @@ UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::I
 	return Data::VariItem::GetItemSize(itemType);
 }
 
-UOSInt Data::Class::AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, UOSInt fieldSize, ByNameFunc byNameFunc)
+UIntOS Data::Class::AddFieldEnum(Text::CStringNN name, IntOS ofst, Text::CStringNN typeName, UIntOS fieldSize, ByNameFunc byNameFunc)
 {
 	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->name = Text::String::New(name);
@@ -161,12 +161,12 @@ Bool Data::Class::AddField(Text::CStringNN name, Data::UUID *const *val)
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID, false) != 0;
 }
 
-UOSInt Data::Class::GetFieldCount()
+UIntOS Data::Class::GetFieldCount()
 {
 	return this->fields.GetCount();
 }
 
-Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
+Optional<Text::String> Data::Class::GetFieldName(UIntOS index)
 {
 	NN<FieldInfo> field;
 	if (this->fields.GetItem(index).SetTo(field))
@@ -176,7 +176,7 @@ Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
 	return nullptr;
 }
 
-Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
+Data::VariItem::ItemType Data::Class::GetFieldType(UIntOS index)
 {
 	NN<FieldInfo> field;
 	if (this->fields.GetItem(index).SetTo(field))
@@ -186,12 +186,12 @@ Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 	return Data::VariItem::ItemType::Unknown;
 }
 
-Optional<Data::Class::FieldInfo> Data::Class::GetFieldInfo(UOSInt index)
+Optional<Data::Class::FieldInfo> Data::Class::GetFieldInfo(UIntOS index)
 {
 	return this->fields.GetItem(index);
 }
 
-Optional<Data::VariItem> Data::Class::GetNewValue(UOSInt index, AnyType obj)
+Optional<Data::VariItem> Data::Class::GetNewValue(UIntOS index, AnyType obj)
 {
 	NN<FieldInfo> field;
 	if (!this->fields.GetItem(index).SetTo(field))
@@ -202,7 +202,7 @@ Optional<Data::VariItem> Data::Class::GetNewValue(UOSInt index, AnyType obj)
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
 }
 
-Bool Data::Class::IsNotNull(UOSInt index)
+Bool Data::Class::IsNotNull(UIntOS index)
 {
 	NN<FieldInfo> field;
 	if (this->fields.GetItem(index).SetTo(field))
@@ -212,7 +212,7 @@ Bool Data::Class::IsNotNull(UOSInt index)
 	return false;
 }
 
-Bool Data::Class::GetValue(NN<Data::VariItem> itm, UOSInt index, AnyType obj)
+Bool Data::Class::GetValue(NN<Data::VariItem> itm, UIntOS index, AnyType obj)
 {
 	NN<FieldInfo> field;
 	if (!this->fields.GetItem(index).SetTo(field))
@@ -231,39 +231,39 @@ Bool Data::Class::GetValue(NN<Data::VariItem> itm, UOSInt index, AnyType obj)
 	return true;
 }
 
-Bool Data::Class::SetField(AnyType obj, UOSInt index, NN<Data::VariItem> item)
+Bool Data::Class::SetField(AnyType obj, UIntOS index, NN<Data::VariItem> item)
 {
 	NN<FieldInfo> field;
 	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return false;
 	}
-	void *valPtr = (void*)(field->ofst + (OSInt)obj.p);
+	void *valPtr = (void*)(field->ofst + (IntOS)obj.p);
 	Data::VariItem::SetPtr(valPtr, field->itemType, item);
 	return true;
 }
 
-Bool Data::Class::SetFieldClearItem(AnyType obj, UOSInt index, NN<Data::VariItem> item)
+Bool Data::Class::SetFieldClearItem(AnyType obj, UIntOS index, NN<Data::VariItem> item)
 {
 	NN<FieldInfo> field;
 	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return false;
 	}
-	void *valPtr = (void*)(field->ofst + (OSInt)obj.p);
+	void *valPtr = (void*)(field->ofst + (IntOS)obj.p);
 	Data::VariItem::SetPtrAndNotKeep(valPtr, field->itemType, item);
 	return true;
 }
 
 Bool Data::Class::Equals(AnyType obj1, AnyType obj2)
 {
-	UOSInt i = this->fields.GetCount();
+	UIntOS i = this->fields.GetCount();
 	NN<FieldInfo> field;
 	while (i-- > 0)
 	{
 		field = this->fields.GetItemNoCheck(i);
-		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1.p);
-		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2.p);
+		void *valPtr1 = (void*)(field->ofst + (IntOS)obj1.p);
+		void *valPtr2 = (void*)(field->ofst + (IntOS)obj2.p);
 		if (!Data::VariItem::PtrEquals(valPtr1, valPtr2, field->itemType))
 		{
 			return false;
@@ -272,7 +272,7 @@ Bool Data::Class::Equals(AnyType obj1, AnyType obj2)
 	return true;
 }
 
-void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("class "));
@@ -285,8 +285,8 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	NN<Data::ArrayListNN<FieldInfo>> fieldList = this->fields;
 	NN<FieldInfo> field;
 	NN<Text::String> typeName;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
@@ -354,7 +354,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 			sb->AppendC(UTF8STRC("void Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 			sb->AppendC(field->name->v + 1, field->name->leng - 1);
-			sb->AppendC(UTF8STRC("FromIndex(UOSInt "));
+			sb->AppendC(UTF8STRC("FromIndex(UIntOS "));
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(");\r\n"));
 		}
@@ -413,7 +413,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
 
-void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	if (clsPrefix == 0)
 	{
@@ -422,8 +422,8 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	NN<Data::ArrayListNN<FieldInfo>> fieldList = this->fields;
 	NN<FieldInfo> field;
 	NN<Text::String> typeName;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	sb->AppendChar('\t', tabLev);
 	sb->Append(clsPrefix);
@@ -628,7 +628,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->AppendC(UTF8STRC("::Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 			sb->AppendC(field->name->v + 1, field->name->leng - 1);
-			sb->AppendC(UTF8STRC("FromIndex(UOSInt "));
+			sb->AppendC(UTF8STRC("FromIndex(UIntOS "));
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(")\r\n"));
 			sb->AppendChar('\t', tabLev);
@@ -861,9 +861,9 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->AppendChar('\t', tabLev + 1);
 			sb->AppendC(UTF8STRC("cls->AddFieldEnum(CSTR(\""));
 			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("\"), (OSInt)&this->"));
+			sb->AppendC(UTF8STRC("\"), (IntOS)&this->"));
 			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" - (OSInt)this, CSTR(\""));
+			sb->AppendC(UTF8STRC(" - (IntOS)this, CSTR(\""));
 			sb->Append(typeName);
 			sb->AppendC(UTF8STRC("\"), sizeof("));
 			sb->Append(field->name);
@@ -936,7 +936,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::StringMapNative<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
@@ -1008,8 +1008,8 @@ void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev
 	NN<FieldInfo> field;
 	NN<Text::String> typeName;
 	Text::CStringNN javaType;
-	UOSInt i = 0;
-	UOSInt j = this->fields.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->fields.GetCount();
 	while (i < j)
 	{
 		field = this->fields.GetItemNoCheck(i);
@@ -1214,7 +1214,7 @@ Optional<Data::Class> Data::Class::ParseFromStr(Text::CStringNN str)
 Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 {
 	NN<Data::Class> cls;
-	OSInt ofst = 0;
+	IntOS ofst = 0;
 	NEW_CLASSNN(cls, Data::Class(0))
 	Text::StringBuilderUTF8 sb;
 	sb.Append(str);
@@ -1222,8 +1222,8 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 	sarr[1] = sb;
 	Text::PString strType;
 	Text::PString strName;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	while (true)
 	{
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);

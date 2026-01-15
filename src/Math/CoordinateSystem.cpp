@@ -202,9 +202,9 @@ Math::Vector3 Math::CoordinateSystem::Convert3D(NN<const Math::CoordinateSystem>
 	}
 }
 
-void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints)
+void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool srcRad = false;
 	if (srcCoord->IsProjected())
 	{

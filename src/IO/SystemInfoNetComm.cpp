@@ -17,7 +17,7 @@ struct IO::SystemInfo::ClassData
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	IntOS i;
 	Text::PString u8arr[2];
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
@@ -99,7 +99,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_IOT_GATEWAY;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	return 0;
 }

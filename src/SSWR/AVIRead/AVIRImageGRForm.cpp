@@ -4,56 +4,56 @@
 #include "SSWR/AVIRead/AVIRImageGRForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	OSInt hOfst;
-	OSInt vOfst;
-	OSInt level;
+	IntOS hOfst;
+	IntOS vOfst;
+	IntOS level;
 	Int32 status;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
-		me->grFilter->SetParameter(me->currLayer, (OSInt)newPos - 100, vOfst, level, status);
+		me->grFilter->SetParameter(me->currLayer, (IntOS)newPos - 100, vOfst, level, status);
 		me->UpdatePreview();
-		sptr = Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		sptr = Text::StrIntOS(sbuff, (IntOS)newPos - 100);
 		me->txtHOfst->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	OSInt hOfst;
-	OSInt vOfst;
-	OSInt level;
+	IntOS hOfst;
+	IntOS vOfst;
+	IntOS level;
 	Int32 status;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
-		me->grFilter->SetParameter(me->currLayer, hOfst, (OSInt)newPos - 100, level, status);
+		me->grFilter->SetParameter(me->currLayer, hOfst, (IntOS)newPos - 100, level, status);
 		me->UpdatePreview();
-		sptr = Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		sptr = Text::StrIntOS(sbuff, (IntOS)newPos - 100);
 		me->txtVOfst->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	OSInt hOfst;
-	OSInt vOfst;
-	OSInt level;
+	IntOS hOfst;
+	IntOS vOfst;
+	IntOS level;
 	Int32 status;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
-		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, (OSInt)newPos - 100, status);
+		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, (IntOS)newPos - 100, status);
 		me->UpdatePreview();
-		sptr=  Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		sptr=  Text::StrIntOS(sbuff, (IntOS)newPos - 100);
 		me->txtLevel->SetText(CSTRP(sbuff, sptr));
 	}
 }
@@ -61,9 +61,9 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, U
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	OSInt hOfst;
-	OSInt vOfst;
-	OSInt level;
+	IntOS hOfst;
+	IntOS vOfst;
+	IntOS level;
 	Int32 status;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
@@ -76,9 +76,9 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnEnableChanged(AnyType userObj, Bool newVal)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	OSInt hOfst;
-	OSInt vOfst;
-	OSInt level;
+	IntOS hOfst;
+	IntOS vOfst;
+	IntOS level;
 	Int32 status;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
@@ -115,27 +115,27 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
-	me->currLayer = (UOSInt)me->lbLayers->GetSelectedIndex();
+	me->currLayer = (UIntOS)me->lbLayers->GetSelectedIndex();
 	if (me->currLayer != INVALID_INDEX)
 	{
-		OSInt hOfst;
-		OSInt vOfst;
-		OSInt level;
+		IntOS hOfst;
+		IntOS vOfst;
+		IntOS level;
 		Int32 status;
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
 		if (me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 		{
 			me->modifying = true;
-			sptr = Text::StrOSInt(sbuff, hOfst);
+			sptr = Text::StrIntOS(sbuff, hOfst);
 			me->txtHOfst->SetText(CSTRP(sbuff, sptr));
-			me->hsbHOfst->SetPos((UOSInt)(hOfst + 100));
-			sptr = Text::StrOSInt(sbuff, vOfst);
+			me->hsbHOfst->SetPos((UIntOS)(hOfst + 100));
+			sptr = Text::StrIntOS(sbuff, vOfst);
 			me->txtVOfst->SetText(CSTRP(sbuff, sptr));
-			me->hsbVOfst->SetPos((UOSInt)(vOfst + 100));
-			sptr = Text::StrOSInt(sbuff, level);
+			me->hsbVOfst->SetPos((UIntOS)(vOfst + 100));
+			sptr = Text::StrIntOS(sbuff, level);
 			me->txtLevel->SetText(CSTRP(sbuff, sptr));
-			me->hsbLevel->SetPos((UOSInt)(level + 100));
+			me->hsbLevel->SetPos((UIntOS)(level + 100));
 			me->cboType->SetSelectedIndex(status & 3);
 			me->chkEnable->SetChecked((status & 4) == 0);
 			me->modifying = false;
@@ -153,12 +153,12 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(AnyType userObj)
 	}
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{
-		me->grFilter->ProcessImage32(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
+		me->grFilter->ProcessImage32(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (IntOS)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (IntOS)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
 		me->previewCtrl->SetImage(me->destImg.Ptr(), true);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
-		me->grFilter->ProcessImage64(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
+		me->grFilter->ProcessImage64(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (IntOS)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (IntOS)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
 		me->previewCtrl->SetImage(me->destImg.Ptr(), true);
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -178,11 +178,11 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdatePreview()
 	{
 		if (srcPrevImg->info.pf == Media::PF_B8G8R8A8)
 		{
-			this->grFilter->ProcessImage32(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (OSInt)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (OSInt)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
+			this->grFilter->ProcessImage32(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (IntOS)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (IntOS)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
 		}
 		else if (srcPrevImg->info.pf == Media::PF_LE_B16G16R16A16)
 		{
-			this->grFilter->ProcessImage64(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (OSInt)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (OSInt)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
+			this->grFilter->ProcessImage64(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (IntOS)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (IntOS)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
 		}
 		this->previewCtrl->SetImage(this->destPrevImg, true);
 	}
@@ -190,8 +190,8 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdatePreview()
 
 void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	this->lbLayers->ClearItems();
@@ -200,7 +200,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	j = this->grFilter->GetLayerCount();
 	while (i < j)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
 		this->lbLayers->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		i++;
 	}

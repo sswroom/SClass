@@ -52,7 +52,7 @@ extern "C" UInt32 CRC32R_Reverse(UInt32 polynomial)
 {
 	UInt32 v;
 	UInt32 v2;
-	OSInt i = 32;
+	IntOS i = 32;
 	v = polynomial;
 	v2 = 0;
 	while (i-- > 0)
@@ -68,7 +68,7 @@ extern "C" UInt32 CRC32R_Reverse(UInt32 polynomial)
 #include <arm_acle.h>
 #endif
 
-extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
+extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal)
 {
 	if (tab[128] == 0x82F63B78)
 	{
@@ -174,7 +174,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, U
 #include <nmmintrin.h>
 extern "C" Int32 UseSSE42;
 
-extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
+extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal)
 {
 	if (tab[128] == 0x82F63B78 && UseSSE42 != 0)
 	{
@@ -250,7 +250,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, U
 	}
 }
 #else
-extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
+extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal)
 {
 	while (buffSize >= 16)
 	{

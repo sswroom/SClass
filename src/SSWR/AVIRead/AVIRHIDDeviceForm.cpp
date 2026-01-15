@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2)
+IntOS __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -85,8 +85,8 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientContro
 	this->OnMonitorChanged();
 
 	NN<IO::HIDInfo> hid;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 

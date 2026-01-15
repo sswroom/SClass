@@ -10,8 +10,8 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 		return 0;
 	}
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 uval;
 	NN<Text::XMLAttrib> attr;
 	Text::XMLNode::NodeType nodeType;
@@ -335,8 +335,8 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 	NEW_CLASSNN(band, Media::Jasper::JasperBand());
 	NN<Text::String> aname;
 	NN<Text::String> nns;
-	UOSInt i = 0;
-	UOSInt j = reader->GetAttribCount();
+	UIntOS i = 0;
+	UIntOS j = reader->GetAttribCount();
 	while (i < j)
 	{
 		NN<Text::XMLAttrib> attr = reader->GetAttribNoCheck(i);
@@ -347,7 +347,7 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 		}
 		else if (aname->Equals(UTF8STRC("height")) && attr->value.SetTo(nns))
 		{
-			band->SetHeight(nns->ToUOSInt());
+			band->SetHeight(nns->ToUIntOS());
 		}
 		else
 		{

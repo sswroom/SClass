@@ -26,7 +26,7 @@ namespace SSWR
 			Data::Int32FastMapNN<Data::ArrayListNN<MenuInfo>> menuItems;
 
 		private:
-			static void __stdcall FileHandler(AnyType userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall FileHandler(AnyType userObj, const UTF8Char **files, UIntOS nFiles);
 			static void __stdcall OnCategoryChg(AnyType userObj);
 			static void __stdcall OnContentClick(AnyType userObj);
 

@@ -11,8 +11,8 @@ SSWR::VAMS::VAMSBTList::~VAMSBTList()
 {
 	NN<Data::FastStringMapNN<AvlBleItem>> item;
 	NN<AvlBleItem> bleItem;
-	UOSInt i = this->itemMap.GetCount();
-	UOSInt j;
+	UIntOS i = this->itemMap.GetCount();
+	UIntOS j;
 	while (i-- > 0)
 	{
 		item = this->itemMap.GetItemNoCheck(i);
@@ -60,9 +60,9 @@ void SSWR::VAMS::VAMSBTList::AddItem(NN<Text::String> avlNo, Int32 progId, Int64
 	}
 }
 
-UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> itemList, Int32 progId, Int32 timeoutIntervalMs)
+UIntOS SSWR::VAMS::VAMSBTList::QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> itemList, Int32 progId, Int32 timeoutIntervalMs)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<AvlBleItem> item;
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Data::FastStringMapNN<AvlBleItem>> progMap;
@@ -74,8 +74,8 @@ UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> i
 	dt.SetCurrTimeUTC();
 	Int64 toTime = dt.ToTicks();
 	Int64 fromTime = toTime - timeoutIntervalMs;
-	UOSInt i = 0;
-	UOSInt j = progMap->GetCount();
+	UIntOS i = 0;
+	UIntOS j = progMap->GetCount();
 	while (i < j)
 	{
 		item = progMap->GetItemNoCheck(i);
@@ -110,7 +110,7 @@ Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 }
 
 
-UOSInt SSWR::VAMS::VAMSBTList::GetProgList(NN<Data::ArrayListNative<Int32>> progList)
+UIntOS SSWR::VAMS::VAMSBTList::GetProgList(NN<Data::ArrayListNative<Int32>> progList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return this->itemMap.AddKeysTo(progList);

@@ -15,11 +15,11 @@ namespace Text
 
 		virtual NN<StringBuilderUTF> Append(NN<Text::PString> s);
 		virtual NN<StringBuilderUTF> Append(UnsafeArray<const UTF8Char> s);
-		virtual NN<StringBuilderUTF> AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt);
-		virtual NN<StringBuilderUTF> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen);
-		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
+		virtual NN<StringBuilderUTF> AppendC(UnsafeArray<const UTF8Char> s, UIntOS charCnt);
+		virtual NN<StringBuilderUTF> AppendS(UnsafeArray<const UTF8Char> s, UIntOS maxLen);
+		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UIntOS repCnt);
 
-		NN<StringBuilderUTF16> AppendCSV(UnsafeArray<UnsafeArray<const UTF16Char>> sarr, UOSInt nStr);
+		NN<StringBuilderUTF16> AppendCSV(UnsafeArray<UnsafeArray<const UTF16Char>> sarr, UIntOS nStr);
 		NN<StringBuilderUTF16> AppendToUpper(UnsafeArray<const UTF16Char> s);
 		NN<StringBuilderUTF16> AppendToLower(UnsafeArray<const UTF16Char> s);
  	};

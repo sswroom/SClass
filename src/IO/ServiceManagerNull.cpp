@@ -4,7 +4,7 @@
 #include "IO/ServiceManager.h"
 #include "Manage/Process.h"
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
+IntOS IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
 {
 	return a->name->CompareTo(b->name);
 }
@@ -58,7 +58,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 	return false;
 }
 
-UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
+UIntOS IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	return 0;
 }

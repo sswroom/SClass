@@ -9,9 +9,9 @@ namespace Text
 	{
 	private:
 		UInt8 lineBuff[54];
-		UOSInt lineBuffSize;
+		UIntOS lineBuffSize;
 		NN<IO::Stream> stm;
-		UOSInt lineCnt;
+		UIntOS lineCnt;
 		Crypto::Encrypt::Base64 b64;
 
 	public:
@@ -19,14 +19,14 @@ namespace Text
 		virtual ~MailBase64Stream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
 
-		UOSInt GetWriteCount();
+		UIntOS GetWriteCount();
 	};
 }
 #endif

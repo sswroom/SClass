@@ -24,7 +24,7 @@ namespace IO
 		Bool reqHasResult;
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
-		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize);
+		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UIntOS resultSize);
 		static void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 	protected:

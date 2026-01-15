@@ -20,7 +20,7 @@ namespace IO
 		Optional<Text::String> progPath;
 		Optional<Text::String> version;
 
-		UOSInt GetVMList(NN<Data::ArrayListNN<VMId>> vms);
+		UIntOS GetVMList(NN<Data::ArrayListNN<VMId>> vms);
 	public:
 		VBoxManager();
 		~VBoxManager();

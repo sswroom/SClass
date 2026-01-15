@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userO
 	Int32 lsnr;
 	UInt8 fPort;
 	UInt8 buff[32];
-	UOSInt buffLen;
+	UIntOS buffLen;
 
 	sb.ClearStr();
 	me->txtDevAddr->GetText(sb);
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userO
 		return;
 	}
 
-	UOSInt payloadLen = Net::LoRaGWUtil::GenUpPayload(payload, false, devAddr, fCnt, fPort, nwkSKey, appSKey, buff, buffLen);
+	UIntOS payloadLen = Net::LoRaGWUtil::GenUpPayload(payload, false, devAddr, fCnt, fPort, nwkSKey, appSKey, buff, buffLen);
 	sb.ClearStr();
 	Net::LoRaGWUtil::GenRxpkJSON(sb, 923400000, 2, 0, 4, rssi, lsnr, payload, payloadLen);
 
@@ -272,8 +272,8 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
-	UOSInt i = 0;
-	UOSInt j = sizeof(pdata) / sizeof(pdata[0]);
+	UIntOS i = 0;
+	UIntOS j = sizeof(pdata) / sizeof(pdata[0]);
 	while (i < j)
 	{
 		this->cboPredef->AddItem(Text::CStringNN(pdata[i].name, pdata[i].nameLen), &pdata[i]);

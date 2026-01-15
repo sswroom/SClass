@@ -119,7 +119,7 @@ UInt32 Sync::ThreadUtil::GetThreadId(ThreadHandle *hand)
 	pthread_getunique_np(&pthread, &id);
 	return id;
 #else
-	return (UInt32)(UOSInt)pthread;
+	return (UInt32)(UIntOS)pthread;
 #endif
 
 }
@@ -129,11 +129,11 @@ UInt32 Sync::ThreadUtil::GetThreadId()
 #if defined(__linux__)
 	return (UInt32)gettid();
 #else
-	return (UInt32)(UOSInt)pthread_self();
+	return (UInt32)(UIntOS)pthread_self();
 #endif
 }
 
-UOSInt Sync::ThreadUtil::GetThreadCnt()
+UIntOS Sync::ThreadUtil::GetThreadCnt()
 {
 #if defined(__FreeBSD__) || defined(__APPLE__)
 	int mib[2];
@@ -172,10 +172,10 @@ UOSInt Sync::ThreadUtil::GetThreadCnt()
 	}
 	else
 	{
-		OSInt procSys;
+		IntOS procSys;
 		procSys = sysconf(_SC_NPROCESSORS_CONF);
 		if (procSys > 0)
-			return (UOSInt)procSys;
+			return (UIntOS)procSys;
 		return 1;
 	}
 #endif

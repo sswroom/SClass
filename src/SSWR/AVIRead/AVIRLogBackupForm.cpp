@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRLogBackupForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogBackupForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[64];
-	UOSInt logNameSize;
-	UOSInt nameSize;
+	UIntOS logNameSize;
+	UIntOS nameSize;
 	Int32 logTime;
 	UnsafeArray<UTF8Char> filePath;
 	UnsafeArray<UTF8Char> filePathEnd;
@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	Data::DateTime currTime;
 	Data::FastStringMapNN<LogGroup> logGrps;
 	NN<LogGroup> logGrp;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool succ;
 	IO::Path::PathType pt;
 
@@ -44,17 +44,17 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 		*filePath++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = me->txtLogName->GetText(filePath).Or(filePath);
-	logNameSize = (UOSInt)(sptr - filePath);
+	logNameSize = (UIntOS)(sptr - filePath);
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		while (IO::Path::FindNextFile(filePath, sess, 0, 0, 0).SetTo(filePathEnd))
 		{
-			nameSize = (UOSInt)(Text::StrConcatS(sbuff2, filePath, 63) - sbuff2);
+			nameSize = (UIntOS)(Text::StrConcatS(sbuff2, filePath, 63) - sbuff2);
 			if (nameSize >= logNameSize + 6)
 			{
 				sbuff2[logNameSize + 6] = 0;
-				if (Text::StrEndsWithICaseC(filePath, (UOSInt)(filePathEnd - filePath), UTF8STRC(".zip")) || Text::StrEndsWithICaseC(filePath, (UOSInt)(filePathEnd - filePath), UTF8STRC(".rar")))
+				if (Text::StrEndsWithICaseC(filePath, (UIntOS)(filePathEnd - filePath), UTF8STRC(".zip")) || Text::StrEndsWithICaseC(filePath, (UIntOS)(filePathEnd - filePath), UTF8STRC(".rar")))
 				{
 				}
 				else
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 				Data::Timestamp createTime = 0;
 				Data::Timestamp accessTime = 0;
 				rfs.GetFileTimes(createTime, accessTime, lastModTime);
-				succ = succ & zip.AddFile(s->ToCString().Substring((UOSInt)(filePath - sbuff)), rfs, lastModTime, accessTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
+				succ = succ & zip.AddFile(s->ToCString().Substring((UIntOS)(filePath - sbuff)), rfs, lastModTime, accessTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
 			}
 		}
 

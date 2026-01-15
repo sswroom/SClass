@@ -73,7 +73,7 @@ IO::StmData::FileData::FileData(NN<Text::String> fname, Bool deleteOnClose)
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
+		fdh->fileName.leng = (UIntOS)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 		fdh->deleteOnClose = deleteOnClose;
 	}
 }
@@ -102,7 +102,7 @@ IO::StmData::FileData::FileData(Text::CStringNN fname, Bool deleteOnClose)
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
+		fdh->fileName.leng = (UIntOS)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 		fdh->deleteOnClose = deleteOnClose;
 	}
 }
@@ -113,7 +113,7 @@ IO::StmData::FileData::~FileData()
 	this->SetFullName(CSTR(""));
 }
 
-UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::FileData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -131,8 +131,8 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::By
 		}
 		fdh->seekCnt++;
 	}
-	UOSInt totalRead = 0;
-	UOSInt byteRead;
+	UIntOS totalRead = 0;
+	UIntOS byteRead;
 	if (length > dataLength - offset)
 		length = dataLength - offset;
 	while (totalRead < length)
@@ -184,13 +184,13 @@ void IO::StmData::FileData::SetFullName(Text::CStringNN fullName)
 	}
 	if (fullName.leng > 0)
 	{
-		UOSInt i;
+		UIntOS i;
 		this->fdn = MemAlloc(FILEDATANAME, 1);
 		this->fdn->objectCnt = 1;
 		this->fdn->fullName = Text::String::New(fullName);
 		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->fdn->fileName.v = &this->fdn->fullName->v[i + 1];
-		this->fdn->fileName.leng = (UOSInt)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v.Ptr());
+		this->fdn->fileName.leng = (UIntOS)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v.Ptr());
 	}
 }
 
@@ -223,7 +223,7 @@ Bool IO::StmData::FileData::IsLoading() const
 	return false;
 }
 
-UOSInt IO::StmData::FileData::GetSeekCount() const
+UIntOS IO::StmData::FileData::GetSeekCount() const
 {
 	if (this->fdh)
 		return this->fdh->seekCnt;

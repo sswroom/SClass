@@ -23,19 +23,19 @@ namespace Map
 		struct MapInfo
 		{
 			const UTF8Char *name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 			const UTF8Char *region;
-			UOSInt regionLen;
+			UIntOS regionLen;
 			const UTF8Char *org;
-			UOSInt orgLen;
+			UIntOS orgLen;
 			MapType mapType;
-			UOSInt mapTypeParam; //TileMap = concurrent count, ESRI Map = SRID
+			UIntOS mapTypeParam; //TileMap = concurrent count, ESRI Map = SRID
 			const UTF8Char *url;
-			UOSInt urlLen;
+			UIntOS urlLen;
 			const UTF8Char *desc;
-			UOSInt descLen;
-			UOSInt minLevel;
-			UOSInt maxLevel;
+			UIntOS descLen;
+			UIntOS minLevel;
+			UIntOS maxLevel;
 			Double boundsX1;
 			Double boundsY1;
 			Double boundsX2;
@@ -44,7 +44,7 @@ namespace Map
 
 		static MapInfo maps[];
 	public:
-		static UnsafeArray<const MapInfo> GetMapInfos(OutParam<UOSInt> cnt);
+		static UnsafeArray<const MapInfo> GetMapInfos(OutParam<UIntOS> cnt);
 		static Optional<Map::MapDrawLayer> OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, NN<Math::CoordinateSystem> envCSys);
 		static Text::CStringNN MapTypeGetName(MapType mapType);
 	};

@@ -12,28 +12,28 @@ namespace UI
 		private:
 			Bool isBottom;
 			Bool dragMode;
-			OSInt dragX;
-			OSInt dragY;
-			OSInt lastX;
-			OSInt lastY;
-			OSInt dragMax;
-			OSInt dragMin;
+			IntOS dragX;
+			IntOS dragY;
+			IntOS lastX;
+			IntOS lastY;
+			IntOS dragMax;
+			IntOS dragMin;
 
 		private:
 			static Int32 useCnt;
-			static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+			static IntOS __stdcall FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 			static void Init(Optional<InstanceHandle> hInst);
 			static void Deinit(Optional<InstanceHandle> hInst);
 
-			void DrawXorBar(HDC hdc, OSInt x, OSInt y);
+			void DrawXorBar(HDC hdc, IntOS x, IntOS y);
 			void CalDragRange();
 		public:
 			WinVSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom);
 			virtual ~WinVSplitter();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
-			virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos);
+			virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos);
 		};
 	}
 }

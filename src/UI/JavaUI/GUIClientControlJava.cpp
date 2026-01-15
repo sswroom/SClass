@@ -20,8 +20,8 @@ UI::GUIClientControl::~GUIClientControl()
 
 void UI::GUIClientControl::UpdateFont()
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 //	void *font = GetFont();
 /*	if (font)
 	{
@@ -38,7 +38,7 @@ void UI::GUIClientControl::UpdateFont()
 
 void UI::GUIClientControl::ClearChildren()
 {
-	OSInt i = this->children.GetCount();
+	IntOS i = this->children.GetCount();
 	while (i-- > 0)
 	{
 		NN<GUIControl> ctrl;
@@ -89,12 +89,12 @@ void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 	}
 }
 
-UOSInt UI::GUIClientControl::GetChildCount() const
+UIntOS UI::GUIClientControl::GetChildCount() const
 {
 	return this->children.GetCount();
 }
 
-Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
+Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UIntOS index) const
 {
 	return this->children.GetItem(index);
 }
@@ -114,8 +114,8 @@ void UI::GUIClientControl::FocusChild(GUIControl *child)
 
 void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Double left = 0;
 	Double top = 0;
 	Math::Coord2DDbl br;
@@ -226,7 +226,7 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	}*/
 
 	this->UpdateChildrenSize(false);
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> evt = this->resizeHandlers.GetItem(i);
@@ -248,7 +248,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	UOSInt i = this->children.GetCount();
+	UIntOS i = this->children.GetCount();
 	while (i-- > 0)
 	{
 		this->children.GetItemNoCheck(i)->SetDPI(hdpi, ddpi);

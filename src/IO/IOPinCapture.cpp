@@ -13,10 +13,10 @@ void IO::IOPinCapture::FreeCaptureData(NN<CaptureBuff> buff)
 	MemFreeNN(buff);
 }
 
-UOSInt IO::IOPinCapture::AddCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh, NN<CaptureBuff> buff)
+UIntOS IO::IOPinCapture::AddCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh, NN<CaptureBuff> buff)
 {
-	UOSInt ret = 0;
-	UOSInt i;
+	UIntOS ret = 0;
+	UIntOS i;
 	NN<CaptureBuff> prevBuff;
 	if (buff->prevBuff.SetTo(prevBuff))
 	{
@@ -179,7 +179,7 @@ UnsafeArray<UTF8Char> IO::IOPinCapture::GetName(UnsafeArray<UTF8Char> buff)
 	return this->pin->GetName(Text::StrConcatC(buff, UTF8STRC("IOPinCapture - ")));
 }
 
-UOSInt IO::IOPinCapture::GetCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh)
+UIntOS IO::IOPinCapture::GetCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh)
 {
 	return this->AddCaptureData(times, isHigh, this->capBuff);
 }

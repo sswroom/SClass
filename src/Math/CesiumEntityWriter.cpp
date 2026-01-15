@@ -63,8 +63,8 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
-			UOSInt k;
-			UOSInt nPoint;
+			UIntOS k;
+			UIntOS nPoint;
 			Math::Coord2DDbl pt;
 			Data::ArrayListA<Math::Coord2DDbl> pointList;
 			pg->GetCoordinates(pointList);
@@ -91,10 +91,10 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
-			UOSInt nPoint;
+			UIntOS nPoint;
 			UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
 			UnsafeArray<Double> zList;
-			UOSInt k;
+			UIntOS k;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
 			if (lineString->GetZList(nPoint).SetTo(zList))
@@ -141,10 +141,10 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 			while (it.HasNext())
 			{
 				lineString = it.Next();
-				UOSInt nPoint;
+				UIntOS nPoint;
 				UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
 				UnsafeArray<Double> zList;
-				UOSInt k;
+				UIntOS k;
 				if (lineString->GetZList(nPoint).SetTo(zList))
 				{
 					k = 0;

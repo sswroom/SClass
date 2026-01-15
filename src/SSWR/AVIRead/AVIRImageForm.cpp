@@ -28,7 +28,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
-	UOSInt selInd = me->lbImages->GetSelectedIndex();
+	UIntOS selInd = me->lbImages->GetSelectedIndex();
 	NN<Media::RasterImage> img;
 	if (me->imgList->GetImage(selInd, me->currImgDelay).SetTo(img))
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(AnyType userObj)
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	NN<Media::RasterImage> currImg;
@@ -51,21 +51,21 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
 		Math::Coord2DDbl imgPos = me->pbImage->Scn2ImagePos(scnPos);
-		OSInt xPos = Double2Int32(imgPos.x);
-		OSInt yPos = Double2Int32(imgPos.y);
+		IntOS xPos = Double2Int32(imgPos.x);
+		IntOS yPos = Double2Int32(imgPos.y);
 		if (xPos < 0)
 			xPos = 0;
-		else if ((UOSInt)xPos >= currImg->info.dispSize.x)
-			xPos = (OSInt)currImg->info.dispSize.x - 1;
+		else if ((UIntOS)xPos >= currImg->info.dispSize.x)
+			xPos = (IntOS)currImg->info.dispSize.x - 1;
 		if (yPos < 0)
 			yPos = 0;
-		else if ((UOSInt)yPos >= currImg->info.dispSize.y)
-			yPos = (OSInt)currImg->info.dispSize.y - 1;
+		else if ((UIntOS)yPos >= currImg->info.dispSize.y)
+			yPos = (IntOS)currImg->info.dispSize.y - 1;
 		currImg->GetRasterData(pixel, xPos, yPos, 1, 1, 16, false, Media::RotateType::None);
 		sb.AppendC(UTF8STRC("(x, y) = ("));
-		sb.AppendOSInt(xPos);
+		sb.AppendIntOS(xPos);
 		sb.AppendC(UTF8STRC(", "));
-		sb.AppendOSInt(yPos);
+		sb.AppendIntOS(yPos);
 		sb.AppendC(UTF8STRC(")"));
 		if (currImg->info.pf == Media::PF_PAL_1 || currImg->info.pf == Media::PF_PAL_W1)
 		{
@@ -603,7 +603,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 		if (me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			sb.AppendDouble(me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(currImg->info.dispSize.x), imgPos.y / UOSInt2Double(currImg->info.dispSize.y)));
+			sb.AppendDouble(me->imgList->GetThermoValue(imgPos.x / UIntOS2Double(currImg->info.dispSize.x), imgPos.y / UIntOS2Double(currImg->info.dispSize.y)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		sb.AppendDouble(dR);
@@ -731,11 +731,11 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	mnu->AddItem(CSTR("To 8bpp (Palette)"), MNU_FILTER_PAL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
-	UOSInt i = 0;
-	UOSInt j = this->imgList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->imgList->GetCount();
 	while (i < j)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), i);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Image")), i);
 		this->lbImages->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
@@ -779,7 +779,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_COLOR:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
@@ -793,7 +793,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (dr == UI::GUIForm::DR_OK)
 				{
-					this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
+					this->imgList->ReplaceImage((UIntOS)selInd, prevImg);
 					buffImg.Delete();
 				}
 				else
@@ -809,7 +809,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_GR:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
@@ -831,7 +831,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					
 					if (dr == UI::GUIForm::DR_OK)
 					{
-						this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
+						this->imgList->ReplaceImage((UIntOS)selInd, prevImg);
 						buffImg.Delete();
 						img = prevImg;
 						this->pbImage->SetImage(prevImg.Ptr(), true);
@@ -850,7 +850,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_RESIZE:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
@@ -868,7 +868,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					if (dr == UI::GUIForm::DR_OK && Optional<Media::RasterImage>(frm.GetNewImage()).SetTo(img))
 					{
 						this->pbImage->SetImage(nullptr, false);
-						this->imgList->ReplaceImage((UOSInt)selInd, img);
+						this->imgList->ReplaceImage((UIntOS)selInd, img);
 						this->pbImage->SetImage(img, false);
 						this->currImg = img.Ptr();
 						this->UpdateInfo();
@@ -879,7 +879,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_32BIT:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
@@ -897,7 +897,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_64BIT:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
@@ -915,7 +915,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILTER_PAL8:
 		{
-			UOSInt selInd = this->lbImages->GetSelectedIndex();
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
 			NN<Media::RasterImage> img;
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{

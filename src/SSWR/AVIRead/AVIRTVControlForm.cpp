@@ -21,9 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 		me->cboCommand->ClearItems();
 		return;
 	}
-	IO::TVControl::TVType tvType = (IO::TVControl::TVType)me->cboTVType->GetSelectedItem().GetOSInt();
-	UOSInt i = me->cboPort->GetSelectedIndex();
-	UInt32 portNum = (UInt32)me->cboPort->GetItem(i).GetUOSInt();
+	IO::TVControl::TVType tvType = (IO::TVControl::TVType)me->cboTVType->GetSelectedItem().GetIntOS();
+	UIntOS i = me->cboPort->GetSelectedIndex();
+	UInt32 portNum = (UInt32)me->cboPort->GetItem(i).GetUIntOS();
 	if (portNum == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("TV Control"), me);
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 
 	Data::ArrayListNative<IO::TVControl::CommandType> cmdList;
 	Data::ArrayListNative<IO::TVControl::CommandFormat> cmdFormats;
-	UOSInt j;
+	UIntOS j;
 	tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;
 	j = cmdList.GetCount();
@@ -195,8 +195,8 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListNative<IO::TVControl::TVType> tvTypes;
 	IO::TVControl::TVInfo tvInfo;
 
@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	{
 		if (IO::TVControl::GetTVInfo(tvTypes.GetItem(i), &tvInfo))
 		{
-			this->cboTVType->AddItem({tvInfo.name, tvInfo.nameLen}, (void*)(OSInt)tvInfo.tvType);
+			this->cboTVType->AddItem({tvInfo.name, tvInfo.nameLen}, (void*)(IntOS)tvInfo.tvType);
 		}
 		i++;
 	}
@@ -241,13 +241,13 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	}
 	
 	{
-		Data::ArrayListNative<UOSInt> ports;
+		Data::ArrayListNative<UIntOS> ports;
 		IO::SerialPort::GetAvailablePorts(ports, 0);
 		i = 0;
 		j = ports.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports.GetItem(i));
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports.GetItem(i));
 			this->cboPort->AddItem(CSTRP(sbuff, sptr), (void*)ports.GetItem(i));
 			i++;
 		}

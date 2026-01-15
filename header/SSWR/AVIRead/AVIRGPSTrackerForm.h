@@ -31,7 +31,7 @@ namespace SSWR
 			Optional<Map::GPSTrack> gpsTrk;
 			Sync::Mutex recMut;
 			Bool recUpdated;
-			UOSInt recSateCnt;
+			UIntOS recSateCnt;
 			Map::LocationService::SateStatus recSates[32];
 			Optional<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
@@ -45,7 +45,7 @@ namespace SSWR
 
 			Sync::Mutex nmeaMut;
 			UnsafeArray<Optional<Text::String>> nmeaBuff;
-			UOSInt nmeaIndex;
+			UIntOS nmeaIndex;
 			Bool nmeaUpdated;
 
 			NN<UI::GUITabControl> tcMain;
@@ -133,7 +133,7 @@ namespace SSWR
 			static void __stdcall OnMTKFactoryResetClicked(AnyType userObj);
 			static void __stdcall OnDispOffClicked(AnyType userObj);
 			static void __stdcall OnTopMostChg(AnyType userObj, Bool newState);
-			static void __stdcall OnNMEALine(AnyType userObj, UnsafeArray<const UTF8Char> line, UOSInt lineLen);
+			static void __stdcall OnNMEALine(AnyType userObj, UnsafeArray<const UTF8Char> line, UIntOS lineLen);
 			static void __stdcall SignalFocusLost(AnyType userObj);
 			NN<UI::GUIButton> NewDisplayOffButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 		public:

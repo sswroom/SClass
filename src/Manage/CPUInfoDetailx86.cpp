@@ -77,7 +77,7 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 }
 
 #if defined(WIN32) || defined(_WIN64)
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UIntOS index, OutParam<Double> temp)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)
@@ -115,7 +115,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 }
 #else
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UIntOS index, OutParam<Double> temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	Text::CStringNN path;

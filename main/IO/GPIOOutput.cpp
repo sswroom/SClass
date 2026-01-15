@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Int32 pinNum;
 	Int32 val;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 3)
 	{

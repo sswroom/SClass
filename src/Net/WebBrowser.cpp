@@ -19,7 +19,7 @@
 #include <stdio.h>
 #endif
 
-UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
+UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UIntOS urlLen)
 {
 	UTF8Char buff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -32,7 +32,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 	}
 	if (!Text::URLString::GetURIScheme(sptr, url, urlLen).SetTo(sptr2))
 		return nullptr;
-	if (Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTPS")))
+	if (Text::StrEqualsC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC("HTTPS")))
 	{
 		UnsafeArray<const UTF8Char> urlEnd = &url[urlLen];
 		sptr = sptr2;
@@ -43,9 +43,9 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 		sptr = sptr2;
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		url = &url[Text::StrIndexOfCharC(url, urlLen, ':') + 3];
-		url = &url[Text::StrIndexOfCharC(url, (UOSInt)(urlEnd - url), '/')];
+		url = &url[Text::StrIndexOfCharC(url, (UIntOS)(urlEnd - url), '/')];
 		this->hash.Clear();
-		this->hash.Calc(url.Ptr(), (UOSInt)(urlEnd - url));
+		this->hash.Calc(url.Ptr(), (UIntOS)(urlEnd - url));
 		this->hash.GetValue(hashResult);
 		Text::StrHexBytes(sptr, hashResult, 4, 0);
 		return Text::StrConcat(sbuff, buff);
@@ -89,7 +89,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	}
 	if (!Text::URLString::GetURIScheme(sbuff, url.v, url.leng).SetTo(sptr))
 		return nullptr;
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FILE")))
 	{
 		if (Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
@@ -102,7 +102,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		}
 		return fd;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTP")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("HTTP")))
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
@@ -110,7 +110,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
@@ -121,7 +121,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FTP")))
 	{
 /*		IO::Stream *stm = Net::URL::OpenStream(url, this->sockf);
 		IO::StmData::StreamDataStream *data;
@@ -130,7 +130,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		NEW_CLASS(data, IO::StmData::*/
 		return nullptr;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DATA")))
 	{
 		IO::StmData::MemoryDataCopy *fd;
 		UnsafeArray<const UTF8Char> urlPtr;
@@ -172,14 +172,14 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 				}
 			}
 		}
-		if (Text::StrStartsWithC(urlPtr, (UOSInt)(urlEnd - urlPtr), UTF8STRC("base64,")))
+		if (Text::StrStartsWithC(urlPtr, (UIntOS)(urlEnd - urlPtr), UTF8STRC("base64,")))
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			UOSInt textSize;
-			UOSInt binSize;
+			UIntOS textSize;
+			UIntOS binSize;
 			UnsafeArray<UTF8Char> strTemp;
 			UnsafeArray<UTF8Char> sptr;
-			textSize = (UOSInt)(urlEnd - urlPtr + 7);
+			textSize = (UIntOS)(urlEnd - urlPtr + 7);
 			strTemp = MemAllocArr(UTF8Char, textSize + 1);
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, urlPtr + 7);
 			binSize = b64.CalcBinSize(CSTRP(strTemp, sptr));

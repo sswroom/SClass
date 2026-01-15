@@ -46,7 +46,7 @@ Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(Text::CStringNN table
 Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(NN<DB::TableDef> tableDef)
 {
 	NN<DB::DBCache::TableInfo> table;
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(this->tableMut);
 	NN<const Data::ArrayListNN<DB::DBCache::TableInfo>> tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
@@ -72,7 +72,7 @@ DB::DBCache::~DBCache()
 {
 	NN<const Data::ArrayListNN<DB::DBCache::TableInfo>> tableList = this->tableMap.GetValues();
 	NN<DB::DBCache::TableInfo> table;
-	UOSInt i = tableList->GetCount();
+	UIntOS i = tableList->GetCount();
 	while (i-- > 0)
 	{
 		table = tableList->GetItemNoCheck(i);
@@ -81,12 +81,12 @@ DB::DBCache::~DBCache()
 	}
 }
 
-OSInt DB::DBCache::GetRowCount(Text::CStringNN tableName)
+IntOS DB::DBCache::GetRowCount(Text::CStringNN tableName)
 {
 	NN<DB::DBCache::TableInfo> table;
 	if (this->GetTableInfo(tableName).SetTo(table))
 	{
-		return (OSInt)table->dataCnt;
+		return (IntOS)table->dataCnt;
 	}
 	else
 	{
@@ -94,20 +94,20 @@ OSInt DB::DBCache::GetRowCount(Text::CStringNN tableName)
 	}
 }
 
-UOSInt DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page)
+UIntOS DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page)
 {
 	NN<DB::DBCache::TableInfo> tableInfo;
 	if (!this->GetTableInfo(tableName).SetTo(tableInfo))
 		return 0;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	DB::SQLBuilder sql(this->db);
 	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, page);
 	NN<DB::DBReader> r;
 	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		NN<DB::DBRow> row;
-		UOSInt pageSkip = 0;
-		UOSInt pageSize = page->GetPageSize();
+		UIntOS pageSkip = 0;
+		UIntOS pageSize = page->GetPageSize();
 		if (status != DB::SQLGenerator::PageStatus::Succ)
 		{
 			pageSkip = page->GetPageNum() * page->GetPageSize();

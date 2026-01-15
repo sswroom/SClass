@@ -11,10 +11,10 @@ namespace Text
 		public:
 			ASCII85Enc();
 			virtual ~ASCII85Enc();
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
-			UnsafeArray<UTF8Char> EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
-			virtual UOSInt CalcBinSize(Text::CStringNN a85Str) const;
-			virtual UOSInt DecodeBin(Text::CStringNN a85Str, UnsafeArray<UInt8> dataBuff) const;
+			virtual UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const;
+			UnsafeArray<UTF8Char> EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const;
+			virtual UIntOS CalcBinSize(Text::CStringNN a85Str) const;
+			virtual UIntOS DecodeBin(Text::CStringNN a85Str, UnsafeArray<UInt8> dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 	}

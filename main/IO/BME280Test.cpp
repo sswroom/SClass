@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		else
 		{
 			Sync::SimpleThread::Sleep(1000);
-			OSInt i = 10;
+			IntOS i = 10;
 			while (i-- > 0)
 			{
 				Double temp;

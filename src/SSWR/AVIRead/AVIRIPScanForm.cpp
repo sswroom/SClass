@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::ICMPScanner::ScanResult> result;
-	UOSInt i;
-	UOSInt j;
-	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
+	UIntOS i;
+	UIntOS j;
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetIntOS();
 	if (ip != 0)
 	{
 		WriteNUInt32(buff, ip);
@@ -91,9 +91,9 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 				if (ipType == Net::IPType::Private)
 				{
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+					this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 				}
 				k++;
 			}

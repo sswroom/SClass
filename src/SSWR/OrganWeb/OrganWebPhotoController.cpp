@@ -70,10 +70,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 		sptr = sbuff;
 		if (me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, sptr).SetTo(userFile))
 		{
-			UOSInt buffSize;
+			UIntOS buffSize;
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 			
-			buffSize = (UOSInt)fd.GetDataSize();
+			buffSize = (UIntOS)fd.GetDataSize();
 			Data::ByteBuffer buff(buffSize);
 			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);
@@ -155,13 +155,13 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
 				}
 
-				IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (fs.IsError())
 				{
 				}
 				else
 				{
-					UOSInt buffSize = (UOSInt)fs.GetLength();
+					UIntOS buffSize = (UIntOS)fs.GetLength();
 					if (buffSize > 0)
 					{
 						Data::ByteBuffer buff(buffSize);
@@ -196,7 +196,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 					Text::UTF8Reader reader(fs);
 					while (reader.ReadLine(sbuff2, 511).SetTo(sptr2))
 					{
-						if (Text::StrSplitP(sarr, 3, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 2)
+						if (Text::StrSplitP(sarr, 3, {sbuff2, (UIntOS)(sptr2 - sbuff2)}, '\t') == 2)
 						{
 							if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength()))
 							{
@@ -271,7 +271,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 					NN<Media::CS::CSConverter> csconv;
 					if (this->csconv.SetTo(csconv))
 					{
-						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (IntOS)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
@@ -285,7 +285,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 						this->lrgbLimiter.LimitImageLRGB(lrimgnn->data, lrimgnn->info.dispSize.x, lrimgnn->info.dispSize.y);
 						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						resizerLR->SetTargetSize(Math::Size2D<UIntOS>(imgWidth, imgHeight));
 						dimg = resizerLR->ProcessToNew(lrimgnn);
 						mutUsage.EndUse();
 						lrimg.Delete();
@@ -315,7 +315,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 	/*						Int32 xRand;
 							Int32 yRand;
 							Int16 fontSize = imgWidth / 12;
-							OSInt leng = this->watermark->leng;
+							IntOS leng = this->watermark->leng;
 							Double sz[2];
 							Int32 iWidth;
 							Int32 iHeight;
@@ -392,7 +392,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 							{
-								IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 								fs.Write(mstm.GetArray());
 							}
 						}
@@ -481,8 +481,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					return;
 				}
 			}
-			IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			UOSInt buffSize = (UOSInt)fs.GetLength();
+			IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			UIntOS buffSize = (UIntOS)fs.GetLength();
 			if (fs.IsError() || buffSize == 0)
 			{
 			}
@@ -504,7 +504,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 		sptr = this->env->UserfileGetPath(sbuff, userFile);
 		if (userFile->fileType == FileType::Audio)
 		{
-			UOSInt i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), '.');
+			UIntOS i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), '.');
 			sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("png"));
 		}
 		mutUsage.EndUse();
@@ -517,7 +517,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 		NN<Media::StaticImage> lrimgnn;
 		Optional<Media::StaticImage> dimg;
 		{
-			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
+			IO::StmData::FileData fd({sbuff, (UIntOS)(sptr - sbuff)}, false);
 			optimgList = Optional<Media::ImageList>::ConvertFrom(this->env->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 		if (optimgList.SetTo(imgList))
@@ -543,7 +543,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					NN<Media::CS::CSConverter> csconv;
 					if (this->csconv.SetTo(csconv))
 					{
-						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (IntOS)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
@@ -559,30 +559,30 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						resizerLR->SetTargetSize(Math::Size2D<UIntOS>(imgWidth, imgHeight));
 						Double x1 = userFile->cropLeft;
 						Double y1 = userFile->cropTop;
-						Double x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - userFile->cropRight;
-						Double y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom;
+						Double x2 = UIntOS2Double(lrimgnn->info.dispSize.x) - userFile->cropRight;
+						Double y2 = UIntOS2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom;
 						if (userFile->cropLeft < 0)
 						{
 							x1 = 0;
-							x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - userFile->cropRight - userFile->cropLeft;
+							x2 = UIntOS2Double(lrimgnn->info.dispSize.x) - userFile->cropRight - userFile->cropLeft;
 						}
 						else if (userFile->cropRight < 0)
 						{
 							x1 = userFile->cropLeft + userFile->cropRight;
-							x2 = UOSInt2Double(lrimgnn->info.dispSize.x);
+							x2 = UIntOS2Double(lrimgnn->info.dispSize.x);
 						}
 						if (userFile->cropTop < 0)
 						{
 							y1 = 0;
-							y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom - userFile->cropTop;
+							y2 = UIntOS2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom - userFile->cropTop;
 						}
 						else if (userFile->cropBottom < 0)
 						{
 							y1 = userFile->cropBottom + userFile->cropTop;
-							y2 = UOSInt2Double(lrimgnn->info.dispSize.y);
+							y2 = UIntOS2Double(lrimgnn->info.dispSize.y);
 						}
 						dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 						mutUsage.EndUse();
@@ -591,7 +591,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						resizerLR->SetTargetSize(Math::Size2D<UIntOS>(imgWidth, imgHeight));
 						dimg = resizerLR->ProcessToNew(lrimgnn);
 						mutUsage.EndUse();
 					}
@@ -604,7 +604,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				if (dimg.SetTo(simg))
 				{
 					UnsafeArray<UInt8> buff;
-					UOSInt buffSize;
+					UIntOS buffSize;
 					simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 					if (rotateType == 1)
@@ -645,13 +645,13 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 										gimg->DelFont(f);
 										break;
 									}
-									if (sz.x <= UOSInt2Double(simg->info.dispSize.x) && sz.y <= UOSInt2Double(simg->info.dispSize.y))
+									if (sz.x <= UIntOS2Double(simg->info.dispSize.x) && sz.y <= UIntOS2Double(simg->info.dispSize.y))
 									{
-										xRand = Double2Int32(UOSInt2Double(simg->info.dispSize.x) - sz.x);
-										yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
+										xRand = Double2Int32(UIntOS2Double(simg->info.dispSize.x) - sz.x);
+										yRand = Double2Int32(UIntOS2Double(simg->info.dispSize.y) - sz.y);
 										iWidth = (UInt32)Double2Int32(sz.x);
 										iHeight = (UInt32)Double2Int32(sz.y);
-										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_IGNORE_ALPHA).SetTo(gimg2))
+										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UIntOS>(iWidth, iHeight), Media::AT_IGNORE_ALPHA).SetTo(gimg2))
 										{
 											gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
 											gimg2->SetAlphaType(Media::AT_ALPHA);
@@ -687,7 +687,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 							{
-								IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 								buff = mstm.GetBuff(buffSize);
 								fs.Write(Data::ByteArrayR(buff, buffSize));
 								if (userFile->prevUpdated)
@@ -719,7 +719,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
-							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
 							fs.Write(Data::ByteArrayR(buff, buffSize));
 							if (userFile->prevUpdated)
@@ -783,8 +783,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 
 			if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && wfile->prevUpdated == 0)
 			{
-				IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				UOSInt buffSize = (UOSInt)fs.GetLength();
+				IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				UIntOS buffSize = (UIntOS)fs.GetLength();
 				if (fs.IsError() || buffSize == 0)
 				{
 				}
@@ -848,7 +848,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						NN<Media::CS::CSConverter> csconv;
 						if (this->csconv.SetTo(csconv))
 						{
-							csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+							csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (IntOS)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 						}
 						else
 						{
@@ -864,30 +864,30 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						{
 							Sync::MutexUsage mutUsage(this->resizerMut);
 							resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+							resizerLR->SetTargetSize(Math::Size2D<UIntOS>(imgWidth, imgHeight));
 							Double x1 = wfile->cropLeft;
 							Double y1 = wfile->cropTop;
-							Double x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - wfile->cropRight;
-							Double y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom;
+							Double x2 = UIntOS2Double(lrimgnn->info.dispSize.x) - wfile->cropRight;
+							Double y2 = UIntOS2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom;
 							if (wfile->cropLeft < 0)
 							{
 								x1 = 0;
-								x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - wfile->cropRight - wfile->cropLeft;
+								x2 = UIntOS2Double(lrimgnn->info.dispSize.x) - wfile->cropRight - wfile->cropLeft;
 							}
 							else if (wfile->cropRight < 0)
 							{
 								x1 = wfile->cropLeft + wfile->cropRight;
-								x2 = UOSInt2Double(lrimgnn->info.dispSize.x);
+								x2 = UIntOS2Double(lrimgnn->info.dispSize.x);
 							}
 							if (wfile->cropTop < 0)
 							{
 								y1 = 0;
-								y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom - wfile->cropTop;
+								y2 = UIntOS2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom - wfile->cropTop;
 							}
 							else if (wfile->cropBottom < 0)
 							{
 								y1 = wfile->cropBottom + wfile->cropTop;
-								y2 = UOSInt2Double(lrimgnn->info.dispSize.y);
+								y2 = UIntOS2Double(lrimgnn->info.dispSize.y);
 							}
 							dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 							mutUsage.EndUse();
@@ -896,7 +896,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						{
 							Sync::MutexUsage mutUsage(this->resizerMut);
 							resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+							resizerLR->SetTargetSize(Math::Size2D<UIntOS>(imgWidth, imgHeight));
 							dimg = resizerLR->ProcessToNew(lrimgnn);
 							mutUsage.EndUse();
 						}
@@ -909,7 +909,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					if (dimg.SetTo(simg))
 					{
 						UnsafeArray<UInt8> buff;
-						UOSInt buffSize;
+						UIntOS buffSize;
 						simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 						if (rotateType == 1)
@@ -938,7 +938,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
-							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
 							fs.Write(Data::ByteArrayR(buff, buffSize));
 							if (wfile->prevUpdated)

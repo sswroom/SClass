@@ -13,35 +13,35 @@ namespace DB
 		typedef struct
 		{
 			DB::DBUtil::ColType colType;
-			UOSInt colSize;
-			UOSInt decimalPoint;
-			UOSInt colOfst;
+			UIntOS colSize;
+			UIntOS decimalPoint;
+			UIntOS colOfst;
 		} DBFColumn;
 
 	private:
 		NN<IO::SeekableStream> stm;
-		UOSInt colCnt;
+		UIntOS colCnt;
 		UnsafeArray<DBFColumn> columns;
-		UOSInt rowCnt;
+		UIntOS rowCnt;
 		UInt64 refPos;
 		NN<Text::Encoding> enc;
 		UnsafeArray<UInt8> rec;
-		UOSInt recSize;
+		UIntOS recSize;
 
 	public:
-		DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UOSInt> colSize, UnsafeArray<const UOSInt> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage);
+		DBFFixWriter(NN<IO::SeekableStream> stm, UIntOS nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UIntOS> colSize, UnsafeArray<const UIntOS> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage);
 		~DBFFixWriter();
 		void AddRecord(UnsafeArray<UnsafeArray<const UTF8Char>> rowValues);
 
-		Bool SetColumnDT(UOSInt index, NN<Data::DateTime> val);
-		Bool SetColumnTS(UOSInt index, const Data::Timestamp &val);
-		Bool SetColumnF64(UOSInt index, Double val);
-		Bool SetColumnI16(UOSInt index, Int16 val);
-		Bool SetColumnI32(UOSInt index, Int32 val);
-		Bool SetColumnI64(UOSInt index, Int64 val);
-		Bool SetColumnU32(UOSInt index, UInt32 val);
-		Bool SetColumnBool(UOSInt index, Bool val);
-		Bool SetColumnStr(UOSInt index, Text::CStringNN val);
+		Bool SetColumnDT(UIntOS index, NN<Data::DateTime> val);
+		Bool SetColumnTS(UIntOS index, const Data::Timestamp &val);
+		Bool SetColumnF64(UIntOS index, Double val);
+		Bool SetColumnI16(UIntOS index, Int16 val);
+		Bool SetColumnI32(UIntOS index, Int32 val);
+		Bool SetColumnI64(UIntOS index, Int64 val);
+		Bool SetColumnU32(UIntOS index, UInt32 val);
+		Bool SetColumnBool(UIntOS index, Bool val);
+		Bool SetColumnStr(UIntOS index, Text::CStringNN val);
 		void WriteRecord();
 	};
 }

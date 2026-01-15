@@ -4,7 +4,7 @@
 #include "Math/Math_C.h"
 #include "UI/JavaUI/JUITrackBar.h"
 
-UI::JavaUI::JUITrackBar::JUITrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::JavaUI::JUITrackBar::JUITrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal) : UI::GUITrackBar(ui, parent)
 {
 }
 
@@ -12,20 +12,20 @@ UI::JavaUI::JUITrackBar::~JUITrackBar()
 {
 }
 
-OSInt UI::JavaUI::JUITrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUITrackBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::JavaUI::JUITrackBar::SetPos(UOSInt pos)
+void UI::JavaUI::JUITrackBar::SetPos(UIntOS pos)
 {
 }
 
-void UI::JavaUI::JUITrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
+void UI::JavaUI::JUITrackBar::SetRange(UIntOS minVal, UIntOS maxVal)
 {
 }
 
-UOSInt UI::JavaUI::JUITrackBar::GetPos()
+UIntOS UI::JavaUI::JUITrackBar::GetPos()
 {
 	return 0;
 }

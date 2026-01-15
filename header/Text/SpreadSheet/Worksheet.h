@@ -37,10 +37,10 @@ namespace Text
 			Double posYInch;
 			Double widthInch;
 			Double heightInch;
-			UOSInt row1;
-			UOSInt col1;
-			UOSInt row2;
-			UOSInt col2;
+			UIntOS row1;
+			UIntOS col1;
+			UIntOS row2;
+			UIntOS col2;
 			Optional<OfficeChart> chart;
 		};
 
@@ -82,12 +82,12 @@ namespace Text
 			Double marginFooter;
 			UInt16 options;
 			UInt32 zoom;
-			UOSInt maxCol;
+			UIntOS maxCol;
 
 		public:
-			Optional<RowData> CreateRow(UOSInt row);
+			Optional<RowData> CreateRow(UIntOS row);
 		private:
-			Optional<CellData> GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
+			Optional<CellData> GetCellData(UIntOS row, UIntOS col, Bool keepMerge);
 			void FreeRowData(NN<RowData> data);
 			void FreeCellData(NN<CellData> data);
 			NN<RowData> CloneRow(NN<RowData> row, NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl);
@@ -127,50 +127,50 @@ namespace Text
 			Double GetDefRowHeightPt();
 
 			NotNullPtr<Text::String> GetName() const;
-			Bool SetCellString(UOSInt row, UOSInt col, NotNullPtr<Text::String> val);
-			Bool SetCellString(UOSInt row, UOSInt col, Text::CStringNN val);
-			Bool SetCellTS(UOSInt row, UOSInt col, Data::Timestamp val);
-			Bool SetCellDateTime(UOSInt row, UOSInt col, NotNullPtr<Data::DateTime> val);
-			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
-			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
-			Bool SetCellInt64(UOSInt row, UOSInt col, Int64 val);
-			Bool SetCellEmpty(UOSInt row, UOSInt col);
-			Bool SetCellStyle(UOSInt row, UOSInt col, Optional<CellStyle> style);
-			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, HAlignment hAlign);
-			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, UInt32 color, BorderType borderType);
-			Bool SetCellURL(UOSInt row, UOSInt col, Optional<Text::String> url);
-			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
-			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val);
-			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val);
-			Bool SetCellTS(UOSInt row, UOSInt col, Optional<CellStyle> style, Data::Timestamp val);
-			Bool SetCellDateTime(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Data::DateTime> val);
-			Bool SetCellDouble(UOSInt row, UOSInt col, Optional<CellStyle> style, Double val);
-			Bool SetCellInt32(UOSInt row, UOSInt col, Optional<CellStyle> style, Int32 val);
-			Bool SetCellInt64(UOSInt row, UOSInt col, Optional<CellStyle> style, Int64 val);
-			Bool SetCellEmpty(UOSInt row, UOSInt col, Optional<CellStyle> style);
-			Bool MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width);
-			Bool SetCellMergeLeft(UOSInt row, UOSInt col);
-			Bool SetCellMergeUp(UOSInt row, UOSInt col);
-			Bool SetRowHidden(UOSInt row, Bool hidden);
-			Bool SetRowHeight(UOSInt row, Double height);
+			Bool SetCellString(UIntOS row, UIntOS col, NotNullPtr<Text::String> val);
+			Bool SetCellString(UIntOS row, UIntOS col, Text::CStringNN val);
+			Bool SetCellTS(UIntOS row, UIntOS col, Data::Timestamp val);
+			Bool SetCellDateTime(UIntOS row, UIntOS col, NotNullPtr<Data::DateTime> val);
+			Bool SetCellDouble(UIntOS row, UIntOS col, Double val);
+			Bool SetCellInt32(UIntOS row, UIntOS col, Int32 val);
+			Bool SetCellInt64(UIntOS row, UIntOS col, Int64 val);
+			Bool SetCellEmpty(UIntOS row, UIntOS col);
+			Bool SetCellStyle(UIntOS row, UIntOS col, Optional<CellStyle> style);
+			Bool SetCellStyleHAlign(UIntOS row, UIntOS col, NN<SpreadSheetStyleCtrl> wb, HAlignment hAlign);
+			Bool SetCellStyleBorderBottom(UIntOS row, UIntOS col, NN<SpreadSheetStyleCtrl> wb, UInt32 color, BorderType borderType);
+			Bool SetCellURL(UIntOS row, UIntOS col, Optional<Text::String> url);
+			Bool SetCellURL(UIntOS row, UIntOS col, Text::CString url);
+			Bool SetCellString(UIntOS row, UIntOS col, Optional<CellStyle> style, NotNullPtr<Text::String> val);
+			Bool SetCellString(UIntOS row, UIntOS col, Optional<CellStyle> style, Text::CStringNN val);
+			Bool SetCellTS(UIntOS row, UIntOS col, Optional<CellStyle> style, Data::Timestamp val);
+			Bool SetCellDateTime(UIntOS row, UIntOS col, Optional<CellStyle> style, NotNullPtr<Data::DateTime> val);
+			Bool SetCellDouble(UIntOS row, UIntOS col, Optional<CellStyle> style, Double val);
+			Bool SetCellInt32(UIntOS row, UIntOS col, Optional<CellStyle> style, Int32 val);
+			Bool SetCellInt64(UIntOS row, UIntOS col, Optional<CellStyle> style, Int64 val);
+			Bool SetCellEmpty(UIntOS row, UIntOS col, Optional<CellStyle> style);
+			Bool MergeCells(UIntOS row, UIntOS col, UInt32 height, UInt32 width);
+			Bool SetCellMergeLeft(UIntOS row, UIntOS col);
+			Bool SetCellMergeUp(UIntOS row, UIntOS col);
+			Bool SetRowHidden(UIntOS row, Bool hidden);
+			Bool SetRowHeight(UIntOS row, Double height);
 
-			UOSInt GetCount();
-			Optional<RowData> GetItem(UOSInt row);
-			void RemoveCol(UOSInt col);
-			void InsertCol(UOSInt col);
-			UOSInt GetMaxCol();
+			UIntOS GetCount();
+			Optional<RowData> GetItem(UIntOS row);
+			void RemoveCol(UIntOS col);
+			void InsertCol(UIntOS col);
+			UIntOS GetMaxCol();
 
-			void SetColWidth(UOSInt col, Double width, Math::Unit::Distance::DistanceUnit unit);
-			UOSInt GetColWidthCount();
-			Double GetColWidthPt(UOSInt col);
-			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
+			void SetColWidth(UIntOS col, Double width, Math::Unit::Distance::DistanceUnit unit);
+			UIntOS GetColWidthCount();
+			Double GetColWidthPt(UIntOS col);
+			Double GetColWidth(UIntOS col, Math::Unit::Distance::DistanceUnit unit);
 
-			Optional<const CellData> GetCellDataRead(UOSInt row, UOSInt col) const;
+			Optional<const CellData> GetCellDataRead(UIntOS row, UIntOS col) const;
 			Bool GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb);
 
-			UOSInt GetDrawingCount();
-			Optional<WorksheetDrawing> GetDrawing(UOSInt index);
-			NN<WorksheetDrawing> GetDrawingNoCheck(UOSInt index);
+			UIntOS GetDrawingCount();
+			Optional<WorksheetDrawing> GetDrawing(UIntOS index);
+			NN<WorksheetDrawing> GetDrawingNoCheck(UIntOS index);
 			NN<WorksheetDrawing> CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
 			NN<OfficeChart> CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, Text::CString title);
 		};

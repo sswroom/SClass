@@ -10,7 +10,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Char sbuff[32];
-	OSInt i = 100000000;
+	IntOS i = 100000000;
 	const Char *srcStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	IO::ConsoleWriter *console;
 	Manage::HiResClock clk;

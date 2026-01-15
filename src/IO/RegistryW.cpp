@@ -133,7 +133,7 @@ Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UIntOS index)
 {
 	DWORD buffSize = 256;
 	if (RegEnumKeyExW((HKEY)this->clsData, (DWORD)index, buff.Ptr(), &buffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
@@ -203,15 +203,15 @@ UnsafeArrayOpt<WChar> IO::Registry::GetValueStr(UnsafeArray<const WChar> name, U
 	{
 		if (regType == REG_SZ)
 		{
-			if (buff[(UOSInt)(cbData >> 1) - 1])
+			if (buff[(UIntOS)(cbData >> 1) - 1])
 			{
-				buff[(UOSInt)cbData >> 1] = 0;
+				buff[(UIntOS)cbData >> 1] = 0;
 			}
 			else
 			{
 				cbData -= 2;
 			}
-			return &buff[(UOSInt)cbData >> 1];
+			return &buff[(UIntOS)cbData >> 1];
 		}
 		else
 		{
@@ -256,7 +256,7 @@ Bool IO::Registry::GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> va
 	}
 }
 
-UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UIntOS index)
 {
 	Int32 result;
 	UInt32 buffSize = 256;

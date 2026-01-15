@@ -30,7 +30,7 @@ namespace SSWR
 //			UI::MSWindowTrackBar *tbValue;
 			UI::MSWindowHScrollBar *hsbValue;
 
-			static void __stdcall FileHandler(void *userObj, const WChar **files, OSInt nFiles);
+			static void __stdcall FileHandler(void *userObj, const WChar **files, IntOS nFiles);
 			static void __stdcall OnValueChanged(void *userObj, Int32 scrollPos);
 			static void __stdcall OnPBResized(void *userObj);
 

@@ -13,7 +13,7 @@ namespace Sync
 		typedef struct
 		{
 			ParallelTask *me;
-			UOSInt index;
+			UIntOS index;
 			Sync::Event *evt;
 			Bool running;
 			Bool toStop;
@@ -22,15 +22,15 @@ namespace Sync
 		} ThreadStatus;
 
 		Sync::Event mainEvt;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		ThreadStatus *stats;
 
 		static UInt32 __stdcall WorkerThread(AnyType userObj);
 	public:
-		ParallelTask(UOSInt threadCnt, Bool taskQueue);
+		ParallelTask(UIntOS threadCnt, Bool taskQueue);
 		~ParallelTask();
 
-		UOSInt GetThreadCnt();
+		UIntOS GetThreadCnt();
 		void AddTask(TaskFunc func, AnyType taskObj);
 		void WaitForIdle();
 	};

@@ -3,12 +3,12 @@
 #include "Data/Comparable.h"
 #include "Text/MyString.h"
 
-extern "C" void InsertionSort_SortBInt32(Int32 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortBInt32(Int32 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	Int32 temp;
 	Int32 temp1;
 	Int32 temp2;
@@ -34,7 +34,7 @@ extern "C" void InsertionSort_SortBInt32(Int32 *arr, OSInt left, OSInt right)
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -45,12 +45,12 @@ extern "C" void InsertionSort_SortBInt32(Int32 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortBStr(UTF8Char **arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortBStr(UTF8Char **arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	UTF8Char *temp;
 	UTF8Char *temp1;
 	UTF8Char *temp2;
@@ -76,7 +76,7 @@ extern "C" void InsertionSort_SortBStr(UTF8Char **arr, OSInt left, OSInt right)
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -87,10 +87,10 @@ extern "C" void InsertionSort_SortBStr(UTF8Char **arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortInt32(Int32 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortInt32(Int32 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int32 temp;
 	Int32 temp1;
 	Int32 temp2;
@@ -121,10 +121,10 @@ extern "C" void InsertionSort_SortInt32(Int32 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortUInt32(UInt32 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortUInt32(UInt32 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt32 temp;
 	UInt32 temp1;
 	UInt32 temp2;
@@ -155,10 +155,10 @@ extern "C" void InsertionSort_SortUInt32(UInt32 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortInt64(Int64 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortInt64(Int64 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int64 temp;
 	Int64 temp1;
 	Int64 temp2;
@@ -189,10 +189,10 @@ extern "C" void InsertionSort_SortInt64(Int64 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortSingle(Single *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortSingle(Single *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Single temp;
 	Single temp1;
 	Single temp2;
@@ -223,10 +223,10 @@ extern "C" void InsertionSort_SortSingle(Single *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortDouble(Double *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortDouble(Double *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Double temp;
 	Double temp1;
 	Double temp2;
@@ -257,10 +257,10 @@ extern "C" void InsertionSort_SortDouble(Double *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortStr(UTF8Char **arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortStr(UTF8Char **arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UTF8Char *temp;
 	UTF8Char *temp1;
 	UTF8Char *temp2;
@@ -291,10 +291,10 @@ extern "C" void InsertionSort_SortStr(UTF8Char **arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortInt32Inv(Int32 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortInt32Inv(Int32 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int32 temp;
 	Int32 temp1;
 	Int32 temp2;
@@ -325,10 +325,10 @@ extern "C" void InsertionSort_SortInt32Inv(Int32 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortUInt32Inv(UInt32 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortUInt32Inv(UInt32 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt32 temp;
 	UInt32 temp1;
 	UInt32 temp2;
@@ -359,10 +359,10 @@ extern "C" void InsertionSort_SortUInt32Inv(UInt32 *arr, OSInt left, OSInt right
 	}
 }
 
-extern "C" void InsertionSort_SortInt64Inv(Int64 *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortInt64Inv(Int64 *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int64 temp;
 	Int64 temp1;
 	Int64 temp2;
@@ -393,10 +393,10 @@ extern "C" void InsertionSort_SortInt64Inv(Int64 *arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortSingleInv(Single *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortSingleInv(Single *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Single temp;
 	Single temp1;
 	Single temp2;
@@ -427,10 +427,10 @@ extern "C" void InsertionSort_SortSingleInv(Single *arr, OSInt left, OSInt right
 	}
 }
 
-extern "C" void InsertionSort_SortDoubleInv(Double *arr, OSInt left, OSInt right)
+extern "C" void InsertionSort_SortDoubleInv(Double *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Double temp;
 	Double temp1;
 	Double temp2;

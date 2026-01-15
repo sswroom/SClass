@@ -41,7 +41,7 @@ namespace Map
 
 		private:
 			Data::ArrayListStringNN urls;
-			UOSInt urlNext;
+			UIntOS urlNext;
 			Sync::Mutex urlMut;
 
 			NN<Text::String> cacheDir;

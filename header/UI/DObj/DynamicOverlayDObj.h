@@ -17,14 +17,14 @@ namespace UI
 			Double a;
 			Data::Random *rnd;
 		public:
-			DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl);
+			DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<IntOS> tl);
 			virtual ~DynamicOverlayDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor();
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();

@@ -9,7 +9,7 @@
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
-Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
+Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UIntOS minLevel, UIntOS maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
 	this->cacheDir = Text::String::NewOrNull(cacheDir);
 	this->spkg = nullptr;
@@ -71,30 +71,30 @@ Bool Map::MercatorTileMap::IsError() const
 	return false;
 }
 
-UOSInt Map::MercatorTileMap::GetMinLevel() const
+UIntOS Map::MercatorTileMap::GetMinLevel() const
 {
 	return this->minLevel;
 }
 
-UOSInt Map::MercatorTileMap::GetMaxLevel() const
+UIntOS Map::MercatorTileMap::GetMaxLevel() const
 {
 	return this->maxLevel;
 }
 
 
-Double Map::MercatorTileMap::GetLevelScale(UOSInt index) const
+Double Map::MercatorTileMap::GetLevelScale(UIntOS index) const
 {
-	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (Double)(1 << index);
+	return 204094080000.0 / UIntOS2Double(this->tileWidth) / (Double)(1 << index);
 }
 
-UOSInt Map::MercatorTileMap::GetNearestLevel(Double scale) const
+UIntOS Map::MercatorTileMap::GetNearestLevel(Double scale) const
 {
-	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
+	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UIntOS2Double(this->tileWidth)) / Math_Log10(2));
 	if (level < (Int32)this->minLevel)
 		return this->minLevel;
 	else if (level > (Int32)this->maxLevel)
 		return this->maxLevel;
-	return (UOSInt)level;
+	return (UIntOS)level;
 }
 
 Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
@@ -114,12 +114,12 @@ Bool Map::MercatorTileMap::IsMercatorProj() const
 	return true;
 }
 
-UOSInt Map::MercatorTileMap::GetTileSize() const
+UIntOS Map::MercatorTileMap::GetTileSize() const
 {
 	return this->tileWidth;
 }
 
-UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
+UIntOS Map::MercatorTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	Int32 i;
 	Int32 j;
@@ -185,10 +185,10 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 	Int32 y = pixY2 - pixY1 + 1;
 	if (x <= 0 || y <= 0)
 		return 0;
-	return (UOSInt)(x * y);
+	return (UIntOS)(x * y);
 }
 
-Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> urlPtr;
@@ -229,7 +229,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 		sptru = s->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrUOSInt(sptru, level);
+		sptru = Text::StrUIntOS(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, loadTileIdX);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
@@ -239,7 +239,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 		if (IO::Path::GetPathType(CSTRP(filePathU, sptru)) == IO::Path::PathType::File)
 		{
 			NN<IO::StmData::FileData> fd;
-			NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+			NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 			if (fd->GetDataSize() > 0)
 			{
 				currTS = Data::Timestamp::UtcNow().AddDay(-7);
@@ -271,14 +271,14 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 	}
 	else if (this->spkg.SetTo(spkg))
 	{
-		sptru = Text::StrUOSInt(filePathU, level);
+		sptru = Text::StrUIntOS(filePathU, level);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, loadTileIdX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NN<IO::StreamData> fd;
-		if (spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
+		if (spkg->CreateStreamData({filePathU, (UIntOS)(sptru - filePathU)}).SetTo(fd))
 		{
 			IO::StmData::BufferedStreamData bsd(fd);
 			if (parsers->ParseFile(bsd).SetTo(pobj))
@@ -303,16 +303,16 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 	urlPtr = this->GetTileImageURL(url, level, Math::Coord2D<Int32>(loadTileIdX, tileId.y)).Or(url);
 
 	Net::WebStatus::StatusCode status;
-	UOSInt redirCnt = 10;
+	UIntOS redirCnt = 10;
 	while (redirCnt-- > 0)
 	{
-		cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
+		cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UIntOS)(urlPtr - url), UTF8STRC("https://")));
 		cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		cli->SetTimeout(5000);
 		if (hasTime)
 		{
 			sptr = Net::WebUtil::Date2Str(sbuff, ts);
-			cli->AddHeaderC(CSTR("If-Modified-Since"), {sbuff, (UOSInt)(sptr - sbuff)});
+			cli->AddHeaderC(CSTR("If-Modified-Since"), {sbuff, (UIntOS)(sptr - sbuff)});
 		}
 		status = cli->GetRespStatus();
 		if (status != Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -328,7 +328,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 	}
 	if (status == 304)
 	{
-		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0), Data::Timestamp(0));
 //		printf("Reply 304\r\n");
 	}
@@ -339,7 +339,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 		{
 			if (!this->cacheDir.IsNull())
 			{
-				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
+				IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
 				fs.Write(mstm.GetArray());
 				Data::DateTime dt;
 				if (cli->GetLastModified(dt))
@@ -355,7 +355,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 			}
 			else if (this->spkg.SetTo(spkg))
 			{
-				spkg->AddFile(mstm.GetBuff(), (UOSInt)mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
+				spkg->AddFile(mstm.GetBuff(), (UIntOS)mstm.GetLength(), {filePathU, (UIntOS)(sptru - filePathU)}, ts);
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 			}
 		}
@@ -369,12 +369,12 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 	Optional<IO::StreamData> fd = nullptr;
 	if (!this->cacheDir.IsNull())
 	{
-		NEW_CLASSNN(nnfd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(nnfd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 		fd = nnfd;
 	}
 	else if (this->spkg.SetTo(spkg))
 	{
-		fd = spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
+		fd = spkg->CreateStreamData({filePathU, (UIntOS)(sptru - filePathU)});
 	}
 	if (fd.SetTo(nnfd))
 	{
@@ -398,9 +398,9 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Mat
 	return nullptr;
 }
 
-Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> urlPtr;
 	UTF8Char filePathU[512];
@@ -440,7 +440,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 		sptru = s->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrUOSInt(sptru, level);
+		sptru = Text::StrUIntOS(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, loadTileIdX);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
@@ -460,7 +460,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
-		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
@@ -499,7 +499,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
-		if (spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
+		if (spkg->CreateStreamData({filePathU, (UIntOS)(sptru - filePathU)}).SetTo(fd))
 		{
 			it.Set(imgt);
 			return fd;
@@ -511,7 +511,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 
 	urlPtr = this->GetTileImageURL(url, level, Math::Coord2D<Int32>(loadTileIdX, tileId.y)).Or(url);
 
-	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UIntOS)(urlPtr - url), UTF8STRC("https://")));
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
@@ -521,19 +521,19 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	if (status == 304)
 	{
-		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
 		fs.SetFileTimes(&dt, nullptr, nullptr);
 	}
 	else if (status >= 200 && status < 300)
 	{
 		UInt64 contLeng = cli->GetContentLength();
-		UOSInt currPos = 0;
+		UIntOS currPos = 0;
 		UInt8 *imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
-			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-			while ((readSize = cli->Read(Data::ByteArray(&imgBuff[currPos], (UOSInt)contLeng - currPos))) > 0)
+			imgBuff = MemAlloc(UInt8, (UIntOS)contLeng);
+			while ((readSize = cli->Read(Data::ByteArray(&imgBuff[currPos], (UIntOS)contLeng - currPos))) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)
@@ -545,8 +545,8 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			{
 				if (!this->cacheDir.IsNull())
 				{
-					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					fs.Write(Data::ByteArrayR(imgBuff, (UOSInt)contLeng));
+					IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(Data::ByteArrayR(imgBuff, (UIntOS)contLeng));
 					if (cli->GetLastModified(dt))
 					{
 						currTime.SetCurrTimeUTC();
@@ -560,7 +560,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 				}
 				else if (this->spkg.SetTo(spkg))
 				{
-					spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, Data::Timestamp::UtcNow());
+					spkg->AddFile(imgBuff, (UIntOS)contLeng, {filePathU, (UIntOS)(sptru - filePathU)}, Data::Timestamp::UtcNow());
 				}
 			}
 			MemFree(imgBuff);
@@ -572,12 +572,12 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Optional<IO::StreamData> optfd = nullptr;
 	if (!this->cacheDir.IsNull())
 	{
-		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 		optfd = fd;
 	}
 	else if (this->spkg.SetTo(spkg))
 	{
-		optfd = spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
+		optfd = spkg->CreateStreamData({filePathU, (UIntOS)(sptru - filePathU)});
 	}
 	if (optfd.SetTo(fd))
 	{
@@ -591,7 +591,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	return nullptr;
 }
 
-Int32 Map::MercatorTileMap::Lon2TileX(Double lon, UOSInt level)
+Int32 Map::MercatorTileMap::Lon2TileX(Double lon, UIntOS level)
 {
 	Double x = ((lon + 180.0) / 360.0 * (1 << level));
 	Int32 ix = (Int32)x;
@@ -601,7 +601,7 @@ Int32 Map::MercatorTileMap::Lon2TileX(Double lon, UOSInt level)
 		return ix;
 }
 
-Int32 Map::MercatorTileMap::Lat2TileY(Double lat, UOSInt level)
+Int32 Map::MercatorTileMap::Lat2TileY(Double lat, UIntOS level)
 {
 	Double y = ((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
 	Int32 iy = (Int32)y;
@@ -611,22 +611,22 @@ Int32 Map::MercatorTileMap::Lat2TileY(Double lat, UOSInt level)
 		return iy;
 }
 
-Int32 Map::MercatorTileMap::Lon2TileXR(Double lon, UOSInt level)
+Int32 Map::MercatorTileMap::Lon2TileXR(Double lon, UIntOS level)
 {
 	return Double2Int32((lon + 180.0) / 360.0 * (1 << level)); 
 }
 
-Int32 Map::MercatorTileMap::Lat2TileYR(Double lat, UOSInt level)
+Int32 Map::MercatorTileMap::Lat2TileYR(Double lat, UIntOS level)
 {
 	return Double2Int32((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
 }
 
-Double Map::MercatorTileMap::TileX2Lon(Int32 x, UOSInt level)
+Double Map::MercatorTileMap::TileX2Lon(Int32 x, UIntOS level)
 {
 	return x * 360.0 / (1 << level) - 180;
 }
 
-Double Map::MercatorTileMap::TileY2Lat(Int32 y, UOSInt level)
+Double Map::MercatorTileMap::TileY2Lat(Int32 y, UIntOS level)
 {
 	Double n = Math::PI - 2.0 * Math::PI * y / (1 << level);
 	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));

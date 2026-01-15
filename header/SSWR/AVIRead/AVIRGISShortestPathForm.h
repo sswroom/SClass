@@ -39,7 +39,7 @@ namespace SSWR
 			NN<AVIRMapNavigator> navi;
 			NN<Map::MapDrawLayer> layer;
 			Map::ShortestPath3D spath;
-			UOSInt mode;
+			UIntOS mode;
 			Math::Coord2DDbl startPos;
 			Math::Coord2DDbl endPos;
 			Data::ArrayListNN<Math::Geometry::LineString> spathLineList;
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnStartPosClicked(AnyType userObj);
 			static void __stdcall OnEndPosClicked(AnyType userObj);
 			static void __stdcall OnSearchClicked(AnyType userObj);
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnPathsSelChg(AnyType userObj);
 
 			UnsafeArray<UTF8Char> Coord2DDblToString(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl coord);

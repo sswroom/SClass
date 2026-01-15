@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Int32 ret = 1;
 	UInt8 signData[2048];
-	UOSInt signLen;
+	UIntOS signLen;
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);

@@ -23,7 +23,7 @@ namespace Map
 			virtual Bool ExportExcel(NN<IO::SeekableStream> stm, Text::CStringNN fileName) = 0;
 
 			static Optional<LeicaGSIFile> Parse(NN<IO::Stream> fs);
-			static void ParseHeader(UnsafeArray<Text::PString> sarr, UOSInt colCount, NN<LeicaGSIFile> file);
+			static void ParseHeader(UnsafeArray<Text::PString> sarr, UIntOS colCount, NN<LeicaGSIFile> file);
 		};
 	}
 }

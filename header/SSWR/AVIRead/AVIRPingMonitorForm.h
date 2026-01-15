@@ -78,8 +78,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 			NN<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
-			static void __stdcall OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize);
+			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UIntOS packetSize);
+			static void __stdcall OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UIntOS packetSize);
 			static void __stdcall OnInfoClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);

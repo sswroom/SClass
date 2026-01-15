@@ -27,7 +27,7 @@ void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, AnyType userObj)
 
 void UI::GUITabControl::EventSelChange()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{

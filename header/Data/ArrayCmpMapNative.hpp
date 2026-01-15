@@ -19,17 +19,17 @@ namespace Data
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		virtual T GetKey(UOSInt index) const;
-		OSInt GetIndex(T key) const;
+		virtual T GetKey(UIntOS index) const;
+		IntOS GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
-		void AllocSize(UOSInt cnt);
+		void AllocSize(UIntOS cnt);
 		NN<const Data::ArrayListNative<V>> GetValues() const;
 		NN<Data::SortableArrayListObj<T>> GetKeys() const;
-		virtual UOSInt GetCount() const;
-		virtual V GetItem(UOSInt index) const;
+		virtual UIntOS GetCount() const;
+		virtual V GetItem(UIntOS index) const;
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<V> ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<V> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -45,29 +45,29 @@ namespace Data
 
 	template <class T, class V> V ArrayCmpMapNative<T, V>::Put(T key, V val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			V oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			V oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key);
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, key);
+			this->vals.Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T, class V> V ArrayCmpMapNative<T, V>::Get(T key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -77,12 +77,12 @@ namespace Data
 
 	template <class T, class V> V ArrayCmpMapNative<T, V>::Remove(T key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			this->keys->RemoveAt((UOSInt)i);
-			return this->vals.RemoveAt((UOSInt)i);
+			this->keys->RemoveAt((UIntOS)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -90,12 +90,12 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> T ArrayCmpMapNative<T, V>::GetKey(UOSInt index) const
+	template <class T, class V> T ArrayCmpMapNative<T, V>::GetKey(UIntOS index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> OSInt ArrayCmpMapNative<T, V>::GetIndex(T key) const
+	template <class T, class V> IntOS ArrayCmpMapNative<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
 	}
@@ -105,9 +105,9 @@ namespace Data
 		return this->keys->SortedIndexOf(key) >= 0;
 	}
 
-	template <class T, class V> void ArrayCmpMapNative<T, V>::AllocSize(UOSInt cnt)
+	template <class T, class V> void ArrayCmpMapNative<T, V>::AllocSize(UIntOS cnt)
 	{
-		UOSInt newSize = this->keys->GetCount() + cnt;
+		UIntOS newSize = this->keys->GetCount() + cnt;
 		this->keys->EnsureCapacity(newSize);
 		this->vals.EnsureCapacity(newSize);
 	}
@@ -122,12 +122,12 @@ namespace Data
 		return this->keys;
 	}
 
-	template <class T, class V> UOSInt ArrayCmpMapNative<T, V>::GetCount() const
+	template <class T, class V> UIntOS ArrayCmpMapNative<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
 	}
 
-	template <class T, class V> V ArrayCmpMapNative<T, V>::GetItem(UOSInt index) const
+	template <class T, class V> V ArrayCmpMapNative<T, V>::GetItem(UIntOS index) const
 	{
 		return this->vals.GetItem(index);
 	}
@@ -137,9 +137,9 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> UnsafeArray<V> ArrayCmpMapNative<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<V> ArrayCmpMapNative<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt;
+		UIntOS cnt;
 		UnsafeArray<V> arr = this->vals.GetArr(cnt);
 		UnsafeArray<V> outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr.Ptr(), arr.Ptr(), sizeof(V) * cnt);

@@ -13,11 +13,11 @@
 UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 {
 	NN<Media::MPGFile> me = userData.GetNN<Media::MPGFile>();
-	UOSInt buffSize;
-	UOSInt readSize;
-	UOSInt i;
-	UOSInt j;
-	UOSInt endOfst;
+	UIntOS buffSize;
+	UIntOS readSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS endOfst;
 	UInt32 thisSize;
 	Int64 scr_base;
 //	Int64 scr_ext;
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 						}
 						scr_base = (((Int64)(me->readBuff[i + 4] & 0x38)) << 27) | ((me->readBuff[i + 4] & 3) << 28) | (me->readBuff[i + 5] << 20) | ((me->readBuff[i + 6] & 0xf8) << 12) | ((me->readBuff[i + 6] & 3) << 13) | (me->readBuff[i + 7] << 5) | (me->readBuff[i + 8] >> 3);
 //						scr_ext = ((me->readBuff[i + 8] & 3) << 7) | (me->readBuff[i + 9] >> 1);
-						i += 14 + (UOSInt)(me->readBuff[i + 13] & 7);
+						i += 14 + (UIntOS)(me->readBuff[i + 13] & 7);
 					}
 					if (initScr == -1)
 					{
@@ -247,7 +247,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 						}
 						else
 						{
-							j += (UOSInt)me->readBuff[i + j + 1] + 2;
+							j += (UIntOS)me->readBuff[i + j + 1] + 2;
 						}
 					}
 					UInt8 stmType = me->readBuff[i + 3] & 0x1f;
@@ -382,7 +382,7 @@ UInt64 Media::MPGFile::GetBitRate()
 	else
 	{
 		UInt64 bitRate = this->vstm->GetBitRate();
-		UOSInt i;
+		UIntOS i;
 		i = this->dataStms.GetCount();
 		while (i-- > 0)
 		{
@@ -454,10 +454,10 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 		i = (this->readBuff[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (ReadInt32(&this->readBuff[(UOSInt)currOfst]) != (Int32)0xbb010000)
+	if (ReadInt32(&this->readBuff[(UIntOS)currOfst]) != (Int32)0xbb010000)
 		return;
 
-	i = ReadMUInt16(&this->readBuff[(UOSInt)currOfst + 4]);
+	i = ReadMUInt16(&this->readBuff[(UIntOS)currOfst + 4]);
 	currOfst += 6 + i;
 	while (true)
 	{
@@ -501,7 +501,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 			{
 				scr_base = (((Int64)(this->readBuff[j + 4] & 0x38)) << 27) | ((this->readBuff[j + 4] & 3) << 28) | (this->readBuff[j + 5] << 20) | ((this->readBuff[j + 6] & 0xf8) << 12) | ((this->readBuff[j + 6] & 3) << 13) | (this->readBuff[j + 7] << 5) | (this->readBuff[j + 8] >> 3);
 //				scr_ext = ((this->readBuff[j + 8] & 3) << 7) | (this->readBuff[j + 9] >> 1);
-				currOfst += 14 + (UOSInt)(this->readBuff[j + 13] & 7);
+				currOfst += 14 + (UIntOS)(this->readBuff[j + 13] & 7);
 			}
 			if (initScr == -1)
 			{
@@ -516,7 +516,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 			{
 //				Int64 pts = 0;
 //				Int64 dts = 0;
-				UOSInt stmHdrSize = this->readBuff[j + 8];
+				UIntOS stmHdrSize = this->readBuff[j + 8];
 				if ((this->readBuff[j + 7] & 0xc0) == 0x80)
 				{
 //					pts = (((Int64)(this->readBuff[j + 9] & 0xe)) << 29) | (this->readBuff[j + 10] << 22) | ((this->readBuff[j + 11] & 0xfe) << 14) | (this->readBuff[j + 12] << 7) | (this->readBuff[j + 13] >> 1);
@@ -780,10 +780,10 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 				Media::FrameInfo info;
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
-				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize, info, frameRateNorm, frameRateDenorm, this->bitRate, false))
+				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UIntOS)stmHdrSize, info, frameRateNorm, frameRateDenorm, this->bitRate, false))
 				{
 					NEW_CLASS(this->vstm, Media::M2VStreamSource(*this));
-					this->vstm->DetectStreamInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize);
+					this->vstm->DetectStreamInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UIntOS)stmHdrSize);
 				}
 			}
 			else if (this->readBuff[j + 3] == 0xbc) // program_stream_map
@@ -811,12 +811,12 @@ Media::MPGFile::~MPGFile()
 	this->stmData.Delete();
 }
 
-UOSInt Media::MPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
+UIntOS Media::MPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
-	return (UOSInt)-1;
+	return (UIntOS)-1;
 }
 
-Optional<Media::MediaSource> Media::MPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::MPGFile::GetStream(UIntOS index, OptOut<Int32> syncTime)
 {
 	syncTime.Set(0);
 	if (index == 0)
@@ -824,7 +824,7 @@ Optional<Media::MediaSource> Media::MPGFile::GetStream(UOSInt index, OptOut<Int3
 	return this->audStms.GetItem(index - 1);
 }
 
-void Media::MPGFile::KeepStream(UOSInt index, Bool toKeep)
+void Media::MPGFile::KeepStream(UIntOS index, Bool toKeep)
 {
 }
 
@@ -882,7 +882,7 @@ Bool Media::MPGFile::CanSeek()
 	return true;
 }
 
-UOSInt Media::MPGFile::GetDataSeekCount()
+UIntOS Media::MPGFile::GetDataSeekCount()
 {
 	return this->stmData->GetSeekCount();
 }

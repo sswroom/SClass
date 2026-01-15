@@ -17,7 +17,7 @@ namespace Net
 		class WebConnection : public WebResponse
 		{
 		public:
-			typedef void (CALLBACKFUNC SendLogger)(AnyType userObj, UOSInt buffSize);
+			typedef void (CALLBACKFUNC SendLogger)(AnyType userObj, UIntOS buffSize);
 		private:
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
@@ -27,8 +27,8 @@ namespace Net
 			NN<Net::WebServer::WebHandler> hdlr;
 			Optional<ProtocolHandler> protoHdlr;
 			UInt8 *dataBuff;
-			UOSInt dataBuffSize;
-			UOSInt buffSize;
+			UIntOS dataBuffSize;
+			UIntOS buffSize;
 			Net::WebServer::WebServerRequest *currReq;
 			KeepAlive keepAlive;
 			Sync::Mutex procMut;
@@ -51,7 +51,7 @@ namespace Net
 			SSEDisconnectHandler sseHdlr;
 			AnyType sseHdlrObj;
 
-			UOSInt SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			UIntOS SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		public:
 			WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<WebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
@@ -81,8 +81,8 @@ namespace Net
 			virtual Text::CStringNN GetRespHeaders();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();

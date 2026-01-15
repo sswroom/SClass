@@ -9,9 +9,9 @@ namespace Media
 	private:
 		typedef struct
 		{
-			OSInt hOfst;
-			OSInt vOfst;
-			OSInt level;
+			IntOS hOfst;
+			IntOS vOfst;
+			IntOS level;
 			Int32 status;
 		} LayerSetting;
 
@@ -22,14 +22,14 @@ namespace Media
 		GRFilter();
 		~GRFilter();
 
-		UOSInt GetLayerCount();
-		UOSInt AddLayer();
-		Bool RemoveLayer(UOSInt layer);
-		void SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status);
-		Bool GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSInt> vOfst, OptOut<OSInt> level, OptOut<Int32> status);
+		UIntOS GetLayerCount();
+		UIntOS AddLayer();
+		Bool RemoveLayer(UIntOS layer);
+		void SetParameter(UIntOS layer, IntOS hOfst, IntOS vOfst, IntOS level, Int32 status);
+		Bool GetParameter(UIntOS layer, OptOut<IntOS> hOfst, OptOut<IntOS> vOfst, OptOut<IntOS> level, OptOut<Int32> status);
 
-		void ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
-		void ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
+		void ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl);
+		void ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl);
 	};
 }
 #endif

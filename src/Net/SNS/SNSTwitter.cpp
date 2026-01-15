@@ -28,7 +28,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::S
 	{
 		this->chDesc = s;
 	}
-	UOSInt i = itemList.GetCount();
+	UIntOS i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
@@ -51,7 +51,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::S
 
 Net::SNS::SNSTwitter::~SNSTwitter()
 {
-	UOSInt i;
+	UIntOS i;
 	this->ctrl.Delete();
 	this->chName->Release();
 	OPTSTR_DEL(this->chDesc);
@@ -89,7 +89,7 @@ UnsafeArray<UTF8Char> Net::SNS::SNSTwitter::GetDirName(UnsafeArray<UTF8Char> dir
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
+UIntOS Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
 	return itemList->AddAll(this->itemMap);
 }
@@ -109,7 +109,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<SNSItem> snsItem;
-	OSInt si;
+	IntOS si;
 	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 	Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
 	Data::ArrayListInt64 idList;
@@ -117,7 +117,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 	this->itemMap.AddKeysTo(idList);
 
 	this->ctrl->GetChannelItems(this->channelId, 0, itemList, nullptr);
-	UOSInt i = itemList.GetCount();
+	UIntOS i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -127,7 +127,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 			si = idList.SortedIndexOf(item->id);
 			if (si >= 0)
 			{
-				idList.RemoveAt((UOSInt)si);
+				idList.RemoveAt((UIntOS)si);
 			}
 			else
 			{

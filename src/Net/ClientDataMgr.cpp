@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/ClientDataMgr.h"
 
-Net::ClientDataMgr::ClientDataMgr(UOSInt maxBuffSize)
+Net::ClientDataMgr::ClientDataMgr(UIntOS maxBuffSize)
 {
 	this->maxBuffSize = maxBuffSize;
 	this->buff = MemAlloc(UInt8, maxBuffSize);
@@ -14,7 +14,7 @@ Net::ClientDataMgr::~ClientDataMgr()
 	MemFree(this->buff);
 }
 
-void Net::ClientDataMgr::AddData(UInt8 *buff, UOSInt buffSize)
+void Net::ClientDataMgr::AddData(UInt8 *buff, UIntOS buffSize)
 {
 	if (this->currDataSize + buffSize > this->currDataSize)
 	{
@@ -37,13 +37,13 @@ void Net::ClientDataMgr::AddData(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-UInt8 *Net::ClientDataMgr::GetData(UOSInt *dataSize)
+UInt8 *Net::ClientDataMgr::GetData(UIntOS *dataSize)
 {
 	*dataSize = this->currDataSize;
 	return this->buff;
 }
 
-void Net::ClientDataMgr::HandleData(UOSInt handleSize)
+void Net::ClientDataMgr::HandleData(UIntOS handleSize)
 {
 	if (handleSize >= this->currDataSize)
 	{

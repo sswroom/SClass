@@ -13,12 +13,12 @@
 #endif
 #define LOOPCNT 10485760
 
-void mtest(UOSInt copyCnt)
+void mtest(UIntOS copyCnt)
 {
 	UInt8 *buff1;
 	UInt8 *buff2;
 	Manage::HiResClock *clk;
-	UOSInt i;
+	UIntOS i;
 	Double t1;
 	Double t2;
 	Double t3;
@@ -65,7 +65,7 @@ void mtest(UOSInt copyCnt)
 	MemFreeA(buff2);
 }
 
-void MemTest2(UOSInt cnt)
+void MemTest2(UIntOS cnt)
 {
 	UTF8Char sbuff1[64];
 	UTF8Char sbuff2[64];
@@ -77,11 +77,11 @@ void MemTest2(UOSInt cnt)
 		{
 			sptr = Text::StrConcat(sptr, (UTF8Char*)"0");
 		}
-		memcpy(sbuff2, sbuff1, (UOSInt)(sptr - sbuff1));
-		MemCopyNAC(sbuff2, sbuff1, (UOSInt)(sptr - sbuff1));
-		MemCopyAC(sbuff2, sbuff1, (UOSInt)(sptr - sbuff1));
-		MemCopyNANC(sbuff2, sbuff1, (UOSInt)(sptr - sbuff1));
-		MemCopyANC(sbuff2, sbuff1, (UOSInt)(sptr - sbuff1));
+		memcpy(sbuff2, sbuff1, (UIntOS)(sptr - sbuff1));
+		MemCopyNAC(sbuff2, sbuff1, (UIntOS)(sptr - sbuff1));
+		MemCopyAC(sbuff2, sbuff1, (UIntOS)(sptr - sbuff1));
+		MemCopyNANC(sbuff2, sbuff1, (UIntOS)(sptr - sbuff1));
+		MemCopyANC(sbuff2, sbuff1, (UIntOS)(sptr - sbuff1));
 	}
 	else
 	{
@@ -109,7 +109,7 @@ void MemTest2(UOSInt cnt)
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	mtest(COPYCNT);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 1024)
 	{
 		printf("i = %d\r\n", (UInt32)i);

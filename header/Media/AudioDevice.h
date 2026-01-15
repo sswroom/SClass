@@ -20,8 +20,8 @@ namespace Media
 		Optional<Media::AudioRenderer> currRenderer;
 
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex);
+		static UIntOS GetDeviceCount();
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devIndex);
 		static Optional<Media::AudioRenderer> CreateRenderer(Text::CStringNN devName);
 
 		AudioDevice();

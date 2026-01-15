@@ -144,7 +144,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 						}
 						else if (sb.EqualsICase(UTF8STRC("CONSTRAINT")) && sqlType == DB::SQLType::SQLite)
 						{
-							UOSInt brkCnt = 0;
+							UIntOS brkCnt = 0;
 							while (true)
 							{
 								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
@@ -178,8 +178,8 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 						}
 						else
 						{
-							UOSInt colSize;
-							UOSInt colDP;
+							UIntOS colSize;
+							UIntOS colDP;
 							NN<DB::ColDef> col;
 							if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
 							{
@@ -221,7 +221,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 							if (sb.Equals(UTF8STRC("(")))
 							{
 								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
-								if (!sb.ToUOSInt(colSize))
+								if (!sb.ToUIntOS(colSize))
 								{
 									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToPtr());
 									col.Delete();
@@ -232,7 +232,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								if (sb.Equals(UTF8STRC(",")))
 								{
 									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
-									if (!sb.ToUOSInt(colSize))
+									if (!sb.ToUIntOS(colSize))
 									{
 										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToPtr());
 										col.Delete();
@@ -317,7 +317,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 									if (sb.Equals(UTF8STRC("(")))
 									{
 										Text::StringBuilderUTF8 sbDef;
-										UOSInt brkCnt = 1;
+										UIntOS brkCnt = 1;
 										while (true)
 										{
 											sql = SQLUtil::ParseNextWord(sql, sb, sqlType);

@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	Bool ByteCountingSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
+	Bool ByteCountingSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS lastIndex);
 }
 #endif

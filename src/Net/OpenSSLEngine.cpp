@@ -419,7 +419,7 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
 	while (true)
 	{
-		if (inlen == 0 || (UOSInt)in[0] + 1 > inlen)
+		if (inlen == 0 || (UIntOS)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
 		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
@@ -437,7 +437,7 @@ int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned cha
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
 	while (true)
 	{
-		if ((UOSInt)in[0] + 1 > inlen)
+		if ((UIntOS)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
 		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
@@ -489,7 +489,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[5];
-	UOSInt addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 5));
+	UIntOS addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 5));
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);
@@ -503,15 +503,15 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostN
 	}
 	if (this->clsData->cliCert)
 	{
-		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(IntOS)this->clsData->cliCert->GetASN1BuffSize());
 	}
 	if (this->clsData->cliKey)
 	{
-		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(IntOS)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	NN<Socket> s;
 	NN<Net::TCPClient> cli;
-	UOSInt addrInd = 0;
+	UIntOS addrInd = 0;
 	while (addrInd < addrCnt)
 	{
 		cli = this->clif->Create(addr[addrInd], port, timeout);
@@ -546,11 +546,11 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStr
 	}
 	if (this->clsData->cliCert)
 	{
-		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(IntOS)this->clsData->cliCert->GetASN1BuffSize());
 	}
 	if (this->clsData->cliKey)
 	{
-		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(IntOS)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	return CreateClientConn(ssl, s, hostName, err);
 }
@@ -567,7 +567,7 @@ UnsafeArray<UTF8Char> Net::OpenSSLEngine::GetErrorDetail(UnsafeArray<UTF8Char> s
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UOSInt keyLength)
+Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UIntOS keyLength)
 {
 	Bool succ = false;
 	EVP_PKEY *pkey;
@@ -654,7 +654,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 	return succ;
 }
 
-Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLength)
+Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UIntOS keyLength)
 {
 #if !defined(OSSL_DEPRECATEDIN_3_0)
 	BIGNUM *bn = BN_new();
@@ -673,7 +673,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLen
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("RSAKey.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UOSInt)readSize), fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UIntOS)readSize), fileName);
 			fileName->Release();
 		}
 		BIO_free(bio1);
@@ -771,7 +771,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 		key->ToASN1String(sb);
 		printf("%s\r\n", sb.ToPtr());
 		Crypto::Cert::X509File::ECName ecName = key->GetECName();
-		UOSInt keyLen;
+		UIntOS keyLen;
 		UnsafeArray<const UInt8> keyPtr;
 		if (!key->GetECPublic(keyLen).SetTo(keyPtr))
 		{
@@ -912,8 +912,8 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cer
 				NN<Crypto::Cert::X509Key> tempKey;
 				UnsafeArray<const UInt8> privBuff;
 				UnsafeArray<const UInt8> pubBuff;
-				UOSInt privSize;
-				UOSInt pubSize;
+				UIntOS privSize;
+				UIntOS pubSize;
 				if (privKey->CreateKey().SetTo(tempKey) && tempKey->GetECPublic(pubSize).SetTo(pubBuff) && tempKey->GetECPrivate(privSize).SetTo(privBuff))
 				{
 					Net::ASN1PDUBuilder asn1;
@@ -947,7 +947,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cer
 	return nullptr;
 }
 
-Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)
+Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UIntOS> signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -1071,7 +1071,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UIntOS Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1112,10 +1112,10 @@ UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UI
 	}
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	return (UOSInt)outlen;
+	return (UIntOS)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR  payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UIntOS Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR  payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
@@ -1161,10 +1161,10 @@ UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UI
 	}
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	return (UOSInt)outlen;
+	return (UIntOS)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UIntOS Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1203,5 +1203,5 @@ UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, Unsaf
 	}
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	return (UOSInt)outlen;
+	return (UIntOS)outlen;
 }

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(AnyType userO
 	Int64 v;
 	me->txtValue->GetText(sb);
 	UInt32 ns = 0;
-	UOSInt i = sb.IndexOf('.');
+	UIntOS i = sb.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
 		Text::CStringNN decimals = sb.ToCString().Substring(i + 1);

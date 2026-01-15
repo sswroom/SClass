@@ -29,14 +29,14 @@ IO::I2CChannelOS::I2CChannelOS(Int32 busNo, UInt8 slaveAddr)
 		close(fd);
 		return;
 	}
-	this->hand = (void*)(OSInt)fd;
+	this->hand = (void*)(IntOS)fd;
 }
 
 IO::I2CChannelOS::~I2CChannelOS()
 {
 	if (this->hand)
 	{
-		close((int)(OSInt)this->hand);
+		close((int)(IntOS)this->hand);
 	}
 }
 
@@ -45,32 +45,32 @@ Bool IO::I2CChannelOS::IsError()
 	return this->hand == 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UOSInt buffSize)
+UIntOS IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
-	OSInt ret;
+	IntOS ret;
 	while (true)
 	{
-		ret = read((int)(OSInt)this->hand, buff.Ptr(), buffSize);
+		ret = read((int)(IntOS)this->hand, buff.Ptr(), buffSize);
 		if (ret >= 0 || errno != EINTR)
 			break;
 	}
 	if (ret < 0)
 		return 0;
 	else
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 }
 
-UOSInt IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UIntOS IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
-	OSInt ret;
+	IntOS ret;
 	while (true)
 	{
-		ret = write((int)(OSInt)this->hand, buff.Ptr(), buffSize);
+		ret = write((int)(IntOS)this->hand, buff.Ptr(), buffSize);
 		if (ret >= 0 || errno != EINTR)
 			break;
 	}
 	if (ret < 0)
 		return 0;
 	else
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 }

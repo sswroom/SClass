@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 		{
 			NN<Text::String> s;
-			UOSInt i;
+			UIntOS i;
 			UInt32 ip;
 			Int32 v;
 			Text::PString sarr[2];

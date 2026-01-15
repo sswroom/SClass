@@ -19,7 +19,7 @@ void TestEmpty()
 	wb.AddWorksheet(CSTR("Sheet1"));
 	wb.AddWorksheet(CSTR("Sheet2"));
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
+	if (!exporter.ExportNewFile({fileName, (UIntOS)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -28,7 +28,7 @@ void TestEmpty()
 
 void TestChart()
 {
-	UOSInt testRowCnt = 2;
+	UIntOS testRowCnt = 2;
 	UTF8Char fileName[512];
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[32];
@@ -49,14 +49,14 @@ void TestChart()
 		chart->AddLegend(LegendPos::Bottom);
 	}
 
-	UOSInt rowNum;
+	UIntOS rowNum;
 	Data::DateTime dt;
 	dataSheet->SetCellString(0, 0, dateStyle.Ptr(), CSTR("Date"));
-	UOSInt i = 0;
-	UOSInt j = 20;
+	UIntOS i = 0;
+	UIntOS j = 20;
 	while (i < j)
 	{
-		dataSheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UOSInt2Double(i) * 0.1);
+		dataSheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UIntOS2Double(i) * 0.1);
 		
 		sbuff2[0] = (UTF8Char)('A' + i);
 		sbuff2[1] = 0;
@@ -69,7 +69,7 @@ void TestChart()
 		while (rowNum < testRowCnt)
 		{
 			dt.SetCurrTime();
-			dt.AddDay((OSInt)(rowNum - testRowCnt));
+			dt.AddDay((IntOS)(rowNum - testRowCnt));
 			rowNum++;
 			dataSheet->SetCellDateTime(rowNum, 0, dateStyle.Ptr(), dt);
 			i = 0;
@@ -77,7 +77,7 @@ void TestChart()
 			{
 				if (i != 5)
 				{
-					dataSheet->SetCellDouble(rowNum, i + 1, numStyle.Ptr(), UOSInt2Double(rowNum) * 0.2 + UOSInt2Double(i) * 0.1);
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle.Ptr(), UIntOS2Double(rowNum) * 0.2 + UIntOS2Double(i) * 0.1);
 				}
 				i++;
 			}
@@ -91,7 +91,7 @@ void TestChart()
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
+	if (!exporter.ExportNewFile({fileName, (UIntOS)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -107,17 +107,17 @@ void TestCols()
 	NN<WorkbookFont> font10 = wb.NewFont(CSTR("Arial"), 10, false);
 	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
-	UOSInt i = 0;
-	UOSInt j = 2000;
+	UIntOS i = 0;
+	UIntOS j = 2000;
 	while (i < j)
 	{
-		sheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UOSInt2Double(i) * 0.1);
+		sheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UIntOS2Double(i) * 0.1);
 
 		i++;
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
+	if (!exporter.ExportNewFile({fileName, (UIntOS)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -142,7 +142,7 @@ void TestColWidth()
 	sheet->SetColWidth(8, 75.75, Math::Unit::Distance::DU_POINT);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
+	if (!exporter.ExportNewFile({fileName, (UIntOS)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -171,7 +171,7 @@ void TestBorder()
 	sheet->SetCellInt32(1, 3, normalStyle.Ptr(), 8);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
+	if (!exporter.ExportNewFile({fileName, (UIntOS)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));

@@ -10,26 +10,26 @@ namespace Data
 	{
 	public:
 		SortableArrayListNative() : ArrayListNative<T>() {};
-		SortableArrayListNative(UOSInt capacity) : ArrayListNative<T>() {};
+		SortableArrayListNative(UIntOS capacity) : ArrayListNative<T>() {};
 		virtual ~SortableArrayListNative() {};
 
-		UOSInt SortedInsert(T val);
-		OSInt SortedIndexOf(T val) const;
-		virtual OSInt Compare(T a, T b) const;
+		UIntOS SortedInsert(T val);
+		IntOS SortedIndexOf(T val) const;
+		virtual IntOS Compare(T a, T b) const;
 		T Min() const;
 		T Max() const;
 		Double Mean() const;
 		T Median() const;
 	};
 
-	template <class T> UOSInt Data::SortableArrayListNative<T>::SortedInsert(T val)
+	template <class T> UIntOS Data::SortableArrayListNative<T>::SortedInsert(T val)
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		IntOS i;
+		IntOS j;
+		IntOS k;
 		T l;
 		i = 0;
-		j = (OSInt)this->objCnt - 1;
+		j = (IntOS)this->objCnt - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -48,18 +48,18 @@ namespace Data
 				break;
 			}
 		}
-		this->Insert((UOSInt)i, val);
-		return (UOSInt)i;
+		this->Insert((UIntOS)i, val);
+		return (UIntOS)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayListNative<T>::SortedIndexOf(T val) const
+	template <class T> IntOS Data::SortableArrayListNative<T>::SortedIndexOf(T val) const
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		IntOS i;
+		IntOS j;
+		IntOS k;
 		T l;
 		i = 0;
-		j = (OSInt)this->objCnt - 1;
+		j = (IntOS)this->objCnt - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -80,7 +80,7 @@ namespace Data
 		return -i - 1;
 	}
 
-	template <class T> OSInt Data::SortableArrayListNative<T>::Compare(T a, T b) const
+	template <class T> IntOS Data::SortableArrayListNative<T>::Compare(T a, T b) const
 	{
 		if (a > b) return 1;
 		if (a < b) return -1;
@@ -89,7 +89,7 @@ namespace Data
 
 	template <class T> T Data::SortableArrayListNative<T>::Min() const
 	{
-		UOSInt i = this->objCnt;
+		UIntOS i = this->objCnt;
 		if (this->objCnt == 0)
 			return 0;
 		T v = this->arr[0];
@@ -105,7 +105,7 @@ namespace Data
 
 	template <class T> T Data::SortableArrayListNative<T>::Max() const
 	{
-		UOSInt i = this->objCnt;
+		UIntOS i = this->objCnt;
 		if (this->objCnt == 0)
 			return 0;
 		T v = this->arr[0];
@@ -122,7 +122,7 @@ namespace Data
 	template <class T> Double Data::SortableArrayListNative<T>::Mean() const
 	{
 		Double sum = 0;
-		UOSInt i = this->objCnt;
+		UIntOS i = this->objCnt;
 		while (i-- > 0)
 		{
 			sum += (Double)this->arr[i];
@@ -132,14 +132,14 @@ namespace Data
 
 	template <class T> T Data::SortableArrayListNative<T>::Median() const
 	{
-		UOSInt cnt = this->objCnt;
+		UIntOS cnt = this->objCnt;
 		if (cnt == 0)
 			return 0;
 		if (cnt == 1)
 			return this->arr[0];
 		UnsafeArray<T> tmpArr = MemAllocArr(T, cnt);
 		MemCopyNO(tmpArr.Ptr(), this->arr.Ptr(), cnt * sizeof(T));
-		ArtificialQuickSort_Sort(tmpArr.Ptr(), 0, (OSInt)cnt - 1);
+		ArtificialQuickSort_Sort(tmpArr.Ptr(), 0, (IntOS)cnt - 1);
 		T v = tmpArr[cnt >> 1];
 		MemFreeArr(tmpArr);
 		return v;

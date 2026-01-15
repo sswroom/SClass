@@ -140,7 +140,7 @@ void Media::LPCMSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::LPCMSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::LPCMSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
@@ -155,15 +155,15 @@ void Media::LPCMSource::Stop()
 	this->readOfst = 0;
 }
 
-UOSInt Media::LPCMSource::ReadBlock(Data::ByteArray buff)
+UIntOS Media::LPCMSource::ReadBlock(Data::ByteArray buff)
 {
 	NN<IO::StreamData> data;
 	if (!this->data.SetTo(data))
 		return 0;
 	NN<Sync::Event> readEvt;
-	UOSInt readSize = 0;
+	UIntOS readSize = 0;
 #ifndef HAS_ASM32
-	UOSInt i;
+	UIntOS i;
 #endif
 	if (this->format.intType == Media::AudioFormat::IT_BIGENDIAN)
 	{
@@ -357,10 +357,10 @@ rblk2_24_2exit:
 			Data::ByteBuffer tmpBuff(buff.GetSize() * blk);
 			Data::ByteArray tmpPtr;
 			Data::ByteArray tmpPtr2;
-			UOSInt cnt;
-			UOSInt cnt2;
+			UIntOS cnt;
+			UIntOS cnt2;
 			readSize = data->GetRealData(this->readOfst, readSize * blk, tmpBuff);
-			UOSInt sizeLeft = readSize;
+			UIntOS sizeLeft = readSize;
 			tmpPtr = tmpBuff;
 			while (sizeLeft >= blk)
 			{
@@ -394,9 +394,9 @@ rblk2_24_2exit:
 	return readSize;
 }
 
-UOSInt Media::LPCMSource::GetMinBlockSize()
+UIntOS Media::LPCMSource::GetMinBlockSize()
 {
-	return this->format.nChannels * (UOSInt)(this->format.bitpersample >> 3);
+	return this->format.nChannels * (UIntOS)(this->format.bitpersample >> 3);
 }
 
 Data::Duration Media::LPCMSource::GetCurrTime()
@@ -417,18 +417,18 @@ Bool Media::LPCMSource::SupportSampleRead()
 	return true;
 }
 
-UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff)
+UIntOS Media::LPCMSource::ReadSample(UInt64 sampleOfst, UIntOS sampleCount, Data::ByteArray buff)
 {
 	NN<IO::StreamData> data;
 	if (!this->data.SetTo(data))
 		return 0;
-	UOSInt blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
+	UIntOS blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (sampleOfst < 0)
 	{
 		if (sampleOfst + sampleCount > 0)
 		{
-			buff.Clear(0, (UOSInt)-(Int64)sampleOfst * blk);
-			return (UOSInt)((data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
+			buff.Clear(0, (UIntOS)-(Int64)sampleOfst * blk);
+			return (UIntOS)((data->GetRealData(0, (UIntOS)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
 		}
 		else
 		{

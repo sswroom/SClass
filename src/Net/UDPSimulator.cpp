@@ -26,9 +26,9 @@ void Net::UDPSimulator::Run()
 	UTF8Char *sptr;
 	Text::PString sarr[3];
 	UInt8 buff[4096];
-	UOSInt i;
-	UOSInt j;
-	UOSInt byteSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS byteSize;
 	Data::DateTime *dt;
 	UInt32 ip;
 	UInt16 port;
@@ -42,7 +42,7 @@ void Net::UDPSimulator::Run()
 	NEW_CLASS(rawFS, IO::FileStream(this->rawFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((sptr = reader->ReadLine(sbuff, 2048)) != 0)
 	{
-		if (Text::StrSplitP(sarr, 3, {sbuff, (UOSInt)(sptr - sbuff)}, '\t') == 2)
+		if (Text::StrSplitP(sarr, 3, {sbuff, (UIntOS)(sptr - sbuff)}, '\t') == 2)
 		{
 			i = sarr[1].IndexOf(UTF8STRC("Received "));
 			if (i != INVALID_INDEX)

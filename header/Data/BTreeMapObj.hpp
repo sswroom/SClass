@@ -45,8 +45,8 @@ namespace Data
 		T Get(Text::CStringNN key) const;
 		virtual T Remove(NN<Text::String> key);
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<T> ToArray(OutParam<UOSInt> objCnt);
-		virtual UnsafeArray<NN<Text::String>> ToNameArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<T> ToArray(OutParam<UIntOS> objCnt);
+		virtual UnsafeArray<NN<Text::String>> ToNameArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -116,7 +116,7 @@ namespace Data
 		NN<BTreeObjNode<T>> nnnode;
 		Optional<BTreeObjNode<T>> optnode;
 		T retVal;
-		OSInt i;
+		IntOS i;
 		if (node->nodeHash == hash)
 		{
 			i = node->nodeStr->CompareToFast(key->ToCString());
@@ -399,7 +399,7 @@ namespace Data
 		NN<BTreeObjNode<T>> node;
 		while (optnode.SetTo(node))
 		{
-			OSInt i;
+			IntOS i;
 			if (node->nodeHash == hash)
 			{
 				i = node->nodeStr->CompareToFast(key->ToCString());
@@ -435,7 +435,7 @@ namespace Data
 		NN<BTreeObjNode<T>> node;
 		while (optnode.SetTo(node))
 		{
-			OSInt i;
+			IntOS i;
 			if (node->nodeHash == hash)
 			{
 				i = node->nodeStr->CompareToFast(key);
@@ -484,7 +484,7 @@ namespace Data
 			NN<BTreeObjNode<T>> node;
 			while (optnode.SetTo(node))
 			{
-				OSInt i;
+				IntOS i;
 				if (node->nodeHash == hash)
 				{
 					i = node->nodeStr->CompareToFast(key->ToCString());
@@ -533,9 +533,9 @@ namespace Data
 		return this->rootNode.IsNull();
 	}
 
-	template <class T> UnsafeArray<T> BTreeMapObj<T>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<T> BTreeMapObj<T>::ToArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 		{
@@ -550,9 +550,9 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T> UnsafeArray<NN<Text::String>> BTreeMapObj<T>::ToNameArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<NN<Text::String>> BTreeMapObj<T>::ToNameArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 		{

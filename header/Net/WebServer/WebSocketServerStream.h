@@ -17,25 +17,25 @@ namespace Net
 			AnyType stmData;
 
 			UnsafeArray<UInt8> recvBuff;
-			UOSInt recvCapacity;
-			UOSInt recvSize;
+			UIntOS recvCapacity;
+			UIntOS recvSize;
 
 			Bool SendPacket(UInt8 opcode, Data::ByteArrayR buff);
-			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		public:
 			WebSocketServerStream(NN<IO::StreamHandler> stmHdlr, NN<Net::WebServer::WebResponse> resp);
 			virtual ~WebSocketServerStream();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();
 			virtual IO::StreamType GetStreamType() const;
 
-			virtual void ProtocolData(UnsafeArray<const UInt8> data, UOSInt dataSize);
+			virtual void ProtocolData(UnsafeArray<const UInt8> data, UIntOS dataSize);
 			virtual void ConnectionClosed();
 		};
 	}

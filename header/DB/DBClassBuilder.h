@@ -9,7 +9,7 @@ namespace DB
 	{
 	private:
 		NN<Data::Class> cls;
-		OSInt currPos;
+		IntOS currPos;
 	public:
 		DBClassBuilder();
 		~DBClassBuilder();

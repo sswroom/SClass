@@ -19,7 +19,7 @@ DB::TableDef::TableDef(Text::CString schemaName, Text::CStringNN tableName)
 
 DB::TableDef::~TableDef()
 {
-	UOSInt i;
+	UIntOS i;
 	OPTSTR_DEL(this->databaseName);
 	OPTSTR_DEL(this->schemaName);
 	this->tableName->Release();
@@ -74,12 +74,12 @@ DB::SQLType DB::TableDef::GetSQLType() const
 	return this->sqlType;
 }
 
-UOSInt DB::TableDef::GetColCnt() const
+UIntOS DB::TableDef::GetColCnt() const
 {
 	return this->cols.GetCount();
 }
 
-Optional<DB::ColDef> DB::TableDef::GetCol(UOSInt index) const
+Optional<DB::ColDef> DB::TableDef::GetCol(UIntOS index) const
 {
 	return this->cols.GetItem(index);
 }
@@ -104,9 +104,9 @@ Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 	return retCol;
 }
 
-UOSInt DB::TableDef::CountPK() const
+UIntOS DB::TableDef::CountPK() const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
 	{
@@ -184,8 +184,8 @@ NN<DB::TableDef> DB::TableDef::SetSQLType(DB::SQLType sqlType)
 
 void DB::TableDef::ColFromReader(NN<DB::DBReader> r)
 {
-	UOSInt i = 0;
-	UOSInt j = r->ColCount();
+	UIntOS i = 0;
+	UIntOS j = r->ColCount();
 	NN<DB::ColDef> col;
 	while (i < j)
 	{

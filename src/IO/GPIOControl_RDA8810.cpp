@@ -42,15 +42,15 @@ Bool IO::GPIOControl::IsError()
 	return this->clsData->mem->IsError() || this->clsData->memC->IsError();
 }
 
-UOSInt IO::GPIOControl::GetPinCount()
+UIntOS IO::GPIOControl::GetPinCount()
 {
 	return 128;
 }
 
-Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinHigh(UIntOS pinNum)
 {
 	Int32 index = pinNum & 31;
-	OSInt ind = IsPinOutput(pinNum)?4:3;
+	IntOS ind = IsPinOutput(pinNum)?4:3;
 	if (pinNum < 32)
 	{
 		return (this->clsData->gpioPtr[0 + ind] & (1 << index)) != 0;
@@ -73,7 +73,7 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 	}
 }
 
-Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinOutput(UIntOS pinNum)
 {
 	Int32 index = pinNum & 31;
 	if (pinNum < 32)
@@ -95,15 +95,15 @@ Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 	return false;
 }
 
-UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
+UIntOS IO::GPIOControl::GetPinMode(UIntOS pinNum)
 {
 	return IsPinOutput(pinNum)?1:0;
 }
 
-Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
+Bool IO::GPIOControl::SetPinOutput(UIntOS pinNum, Bool isOutput)
 {
 	Int32 index = pinNum & 31;
-	OSInt ind = isOutput?1:2;
+	IntOS ind = isOutput?1:2;
 	if (pinNum < 32)
 	{
 		this->clsData->gpioPtr[0 + ind] = (1 << index);
@@ -127,10 +127,10 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
+Bool IO::GPIOControl::SetPinState(UIntOS pinNum, Bool isHigh)
 {
 	Int32 index = pinNum & 31;
-	OSInt ind = isHigh?4:6;
+	IntOS ind = isHigh?4:6;
 	if (pinNum < 32)
 	{
 		this->clsData->gpioPtr[0 + ind] = (1 << index);
@@ -154,37 +154,37 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
+Bool IO::GPIOControl::SetPullType(UIntOS pinNum, IO::IOPin::PullType pt)
 {
 	return false;
 }
 
-void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnHigh(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnLow(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnRaise(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnFall(UIntOS pinNum, Bool enable)
 {
 }
 
-Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
+Bool IO::GPIOControl::HasEvent(UIntOS pinNum)
 {
 	return false;
 }
 
-void IO::GPIOControl::ClearEvent(UOSInt pinNum)
+void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
+Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

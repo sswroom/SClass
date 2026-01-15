@@ -92,7 +92,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 		CSTR("SwimmingPool"),
 	};
 	NN<Text::XMLAttrib> attr;
-	UOSInt i;
+	UIntOS i;
 	Int64 id;
 	Double lat;
 	Double lon;
@@ -653,7 +653,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 					{
 						if (layers[elemType - 1] == 0)
 						{
-							UOSInt colCnt = 1;
+							UIntOS colCnt = 1;
 							if (elemType == 38)
 							{
 								colCnt = 2;
@@ -1311,7 +1311,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 				{
 					if (layers[elemType - 1] == 0)
 					{
-						UOSInt colCnt = 1;
+						UIntOS colCnt = 1;
 						if (elemType == 6)
 						{
 							colCnt = 2;
@@ -1335,7 +1335,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 				{
 					if (layers[elemType - 1] == 0)
 					{
-						UOSInt colCnt = 1;
+						UIntOS colCnt = 1;
 						if (elemType == 6)
 						{
 							colCnt = 2;
@@ -1387,7 +1387,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 
 NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> nodeText;
 	NN<Text::XMLAttrib> attr;
 	NN<Map::OSM::OSMData> data;

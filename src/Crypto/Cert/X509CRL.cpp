@@ -25,7 +25,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CRL::GetFileType() const
 
 void Crypto::Cert::X509CRL::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArray<const UInt8> tmpBuff;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType).SetTo(tmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
@@ -125,7 +125,7 @@ NN<Net::ASN1Names> Crypto::Cert::X509CRL::CreateNames() const
 
 Bool Crypto::Cert::X509CRL::HasVersion() const
 {
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", itemLen, itemType).NotNull() && itemType == Net::ASN1Util::IT_INTEGER)
 	{
@@ -136,7 +136,7 @@ Bool Crypto::Cert::X509CRL::HasVersion() const
 
 Bool Crypto::Cert::X509CRL::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -161,7 +161,7 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 Bool Crypto::Cert::X509CRL::GetThisUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArrayOpt<const UInt8> itemPDU;
 	UnsafeArray<const UInt8> nnitemPDU;
 	if (this->HasVersion())
@@ -185,7 +185,7 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(NN<Data::DateTime> dt) const
 Bool Crypto::Cert::X509CRL::GetNextUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArrayOpt<const UInt8> itemPDU;
 	UnsafeArray<const UInt8> nnitemPDU;
 	if (this->HasVersion())
@@ -208,16 +208,16 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(NN<Data::DateTime> dt) const
 
 Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 {
-	UOSInt snLen;
+	UIntOS snLen;
 	UnsafeArray<const UInt8> sn;
 	if (!cert->GetSerialNumber(snLen).SetTo(sn))
 		return true;
 	UTF8Char sbuff[32];
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArrayOpt<const UInt8> itemPDU;
 	UnsafeArray<const UInt8> nnitemPDU;
-	UOSInt i;
+	UIntOS i;
 	if (this->HasVersion())
 	{
 		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", itemLen, itemType);
@@ -235,7 +235,7 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 	if (itemType != Net::ASN1Util::IT_SEQUENCE)
 	{
 		i++;
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.1.")), i);
+		Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("1.1.")), i);
 		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), (const Char*)sbuff, itemLen, itemType);
 		if (!itemPDU.SetTo(nnitemPDU) || itemType != Net::ASN1Util::IT_SEQUENCE)
 		{
@@ -248,8 +248,8 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 		while (true)
 		{
 			UnsafeArray<const UInt8> subitemPDU;
-			UOSInt subitemLen;
-			Text::StrConcatC(Text::StrUOSInt(sbuff, ++i), UTF8STRC(".1"));
+			UIntOS subitemLen;
+			Text::StrConcatC(Text::StrUIntOS(sbuff, ++i), UTF8STRC(".1"));
 			if (!Net::ASN1Util::PDUGetItem(nnitemPDU, nnitemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType).SetTo(subitemPDU))
 				break;
 			if (itemType == Net::ASN1Util::IT_INTEGER && Text::StrEqualsC(subitemPDU, subitemLen, sn, snLen))

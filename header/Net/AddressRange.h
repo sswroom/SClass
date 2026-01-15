@@ -23,11 +23,11 @@ namespace Net
 		AddrType aType;
 
 	public:
-		AddressRange(UnsafeArray<const UTF8Char> addr, UOSInt addrLen, Bool scanBoardcast);
+		AddressRange(UnsafeArray<const UTF8Char> addr, UIntOS addrLen, Bool scanBoardcast);
 		~AddressRange();
 
-		UOSInt GetCount();
-		Bool GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr);
+		UIntOS GetCount();
+		Bool GetItem(UIntOS index, Net::SocketUtil::AddressInfo *addr);
 	};
 }
 #endif

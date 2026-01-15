@@ -30,7 +30,7 @@ struct Net::HTTPOSClient::ClassData
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
 {
 	Net::HTTPOSClient::ClassData *data = (Net::HTTPOSClient::ClassData*)userdata;
-	UOSInt len = (UOSInt)(size * nitems);
+	UIntOS len = (UIntOS)(size * nitems);
 	if (Text::StrStartsWithC((const UTF8Char*)buffer, len, UTF8STRC("HTTP/")))
 	{
 		return len;
@@ -38,7 +38,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	NN<Text::String> hdr = Text::String::New(len);
 	MemCopyNO(hdr->v.Ptr(), buffer, len);
 	hdr->v[len] = 0;
-	UOSInt i = len;
+	UIntOS i = len;
 	while (i > 0)
 	{
 		if (hdr->v[i - 1] == 13 || hdr->v[i - 1] == 10)
@@ -108,7 +108,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
 	if (this->clsData->certs.SetTo(certList))
 	{
-		UOSInt i = certList->GetCount();
+		UIntOS i = certList->GetCount();
 		NN<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
@@ -127,7 +127,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return this->clsData->curl == 0;
 }
 
-UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
+UIntOS Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
 	this->EndRequest(0, 0);
 	if (this->clsData->curl == 0)
@@ -143,7 +143,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 
 	if (myBuff.GetSize() > (this->contLeng - this->contRead))
 	{
-		myBuff = myBuff.WithSize((UOSInt)(this->contLeng - this->contRead));
+		myBuff = myBuff.WithSize((UIntOS)(this->contLeng - this->contRead));
 		if (myBuff.GetSize() <= 0)
 		{
 			return 0;
@@ -165,7 +165,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	else
 	{
 		myBuff.CopyFrom(Data::ByteArray(this->dataBuff, this->buffSize));
-		UOSInt size = this->buffSize;
+		UIntOS size = this->buffSize;
 		this->contRead += this->buffSize;
 		this->buffSize = 0;
 		return size;
@@ -173,7 +173,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(Data::ByteArrayR buff)
+UIntOS Net::HTTPOSClient::Write(Data::ByteArrayR buff)
 {
 	if (this->canWrite && this->sbForm.IsNull())
 	{
@@ -210,7 +210,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	UTF8Char svrname[256];
 	UnsafeArray<UTF8Char> svrnameEnd;
 
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<const UTF8Char> ptr1;
 	UnsafeArray<UTF8Char> ptrs[2];
 	UInt16 port;
@@ -311,7 +311,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	if (!this->cliHost.SetTo(nns))
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
-		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd- svrname), UTF8STRC("localhost")))
+		if (Text::StrEqualsICaseC(svrname, (UIntOS)(svrnameEnd- svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
@@ -460,7 +460,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		NN<Text::StringBuilderUTF8> sbForm;
 		if (this->sbForm.SetTo(sbForm))
 		{
-			UOSInt len = sbForm->GetLength();
+			UIntOS len = sbForm->GetLength();
 			this->AddContentLength(len);
 			this->sbForm = nullptr;
 			this->Write(sbForm->ToByteArray());
@@ -469,7 +469,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		this->canWrite = false;
 		this->writing = true;
 
-		UOSInt reqSize;
+		UIntOS reqSize;
 		UnsafeArray<UInt8> reqBuff = this->reqMstm->GetBuff(reqSize);
 
 		if (this->clsData->headers)

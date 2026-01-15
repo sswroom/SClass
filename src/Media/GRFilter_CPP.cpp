@@ -2,15 +2,15 @@
 #include "SIMD.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-//	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+//	IntOS v;
 	srcPtr += 4 + sbpl;
 	destPtr += 4 + dbpl;
 	if (hOfst < 0)
@@ -93,15 +93,15 @@ extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+	IntOS v;
 	srcPtr += 4 + sbpl;
 	destPtr += 4 + dbpl;
 	if (hOfst < 0)
@@ -176,15 +176,15 @@ extern "C" void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+	IntOS v;
 	srcPtr += 4 + sbpl;
 	destPtr += 4 + dbpl;
 	if (hOfst < 0)
@@ -259,15 +259,15 @@ extern "C" void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 	}
 }
 
-extern "C" void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+	IntOS v;
 	srcPtr += 8 + sbpl;
 	destPtr += 8 + dbpl;
 	if (hOfst < 0)
@@ -342,15 +342,15 @@ extern "C" void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+	IntOS v;
 	srcPtr += 8 + sbpl;
 	destPtr += 8 + dbpl;
 	if (hOfst < 0)
@@ -426,15 +426,15 @@ extern "C" void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
+extern "C" void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst)
 {
-	OSInt targetOfst = 0;
-	OSInt loopX = width - 1;
-	OSInt loopY = height - 1;
-	OSInt sAdd;
-	OSInt dAdd;
-	OSInt i;
-	OSInt v;
+	IntOS targetOfst = 0;
+	IntOS loopX = width - 1;
+	IntOS loopY = height - 1;
+	IntOS sAdd;
+	IntOS dAdd;
+	IntOS i;
+	IntOS v;
 	srcPtr += 8 + sbpl;
 	destPtr += 8 + dbpl;
 	if (hOfst < 0)

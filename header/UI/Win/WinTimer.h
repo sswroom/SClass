@@ -10,14 +10,14 @@ namespace UI
 		{
 		private:
 			NN<UI::GUIForm> parent;
-			UOSInt id;
+			UIntOS id;
 			UInt32 interval;
 
 		public:
-			WinTimer(NN<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj);
+			WinTimer(NN<UI::GUIForm> parent, UIntOS id, UInt32 interval, UI::UIEvent handler, AnyType userObj);
 			virtual ~WinTimer();
 
-			UOSInt GetId();
+			UIntOS GetId();
 		};
 	}
 }

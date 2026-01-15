@@ -11,7 +11,7 @@ class TextDBReader : public DB::DBReader
 {
 private:
 	NN<DB::TextDB::DBData> data;
-	UOSInt index;
+	UIntOS index;
 	UnsafeArrayOpt<Optional<Text::String>> row;
 public:
 	TextDBReader(NN<DB::TextDB::DBData> data)
@@ -37,17 +37,17 @@ public:
 		return false;
 	}
 
-	virtual UOSInt ColCount()
+	virtual UIntOS ColCount()
 	{
 		return this->data->colList.GetCount();
 	}
 
-	virtual OSInt GetRowChanged()
+	virtual IntOS GetRowChanged()
 	{
 		return -1;
 	}
 
-	virtual Int32 GetInt32(UOSInt colIndex)
+	virtual Int32 GetInt32(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -60,7 +60,7 @@ public:
 		return s->ToInt32();
 	}
 
-	virtual Int64 GetInt64(UOSInt colIndex)
+	virtual Int64 GetInt64(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -73,7 +73,7 @@ public:
 		return s->ToInt64();
 	}
 
-	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -86,7 +86,7 @@ public:
 		return Text::StrUTF8_WChar(buff, s->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -100,7 +100,7 @@ public:
 		return true;
 	}
 
-	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -113,7 +113,7 @@ public:
 		return s->Clone();
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -126,7 +126,7 @@ public:
 		return Text::StrConcatS(buff, s->v, buffSize);
 	}
 
-	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -139,7 +139,7 @@ public:
 		return Data::Timestamp(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
-	virtual Double GetDblOrNAN(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -152,7 +152,7 @@ public:
 		return s->ToDoubleOrNAN();
 	}
 
-	virtual Bool GetBool(UOSInt colIndex)
+	virtual Bool GetBool(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -169,7 +169,7 @@ public:
 		return s->ToInt32() != 0;
 	}
 
-	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -182,7 +182,7 @@ public:
 		return s->leng;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -192,22 +192,22 @@ public:
 			return 0;
 		if (!row[colIndex].SetTo(s))
 			return 0;
-		UOSInt len = s->leng;
+		UIntOS len = s->leng;
 		MemCopyNO(buff.Ptr(), s->v.Ptr(), len);
 		return len;
 	}
 
-	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
 		return nullptr;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
 	
-	virtual Bool IsNull(UOSInt colIndex)
+	virtual Bool IsNull(UIntOS colIndex)
 	{
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
@@ -220,7 +220,7 @@ public:
 		return false;
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		NN<Text::String> name;
 		if (this->data->colList.GetItem(colIndex).SetTo(name))
@@ -230,7 +230,7 @@ public:
 		return nullptr;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
 		if (colIndex >= this->data->colList.GetCount())
 			return DB::DBUtil::CT_Unknown;
@@ -238,7 +238,7 @@ public:
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->data->colList.GetCount())
 		{
@@ -271,9 +271,9 @@ DB::TextDB::TextDB(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 
 DB::TextDB::~TextDB()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<DBData> data;
 	UnsafeArray<Optional<Text::String>> vals;
 	k = this->dbMap.GetCount();
@@ -297,11 +297,11 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<Text::String> key;
-	UOSInt i = 0;
-	UOSInt j = this->dbMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->dbMap.GetCount();
 	while (i < j)
 	{
 		if (this->dbMap.GetKey(i).SetTo(key))
@@ -313,7 +313,7 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 	return j;
 }
 
-Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DBData> data;
 	if (!this->dbMap.GetC(tableName).SetTo(data))
@@ -373,8 +373,8 @@ Bool DB::TextDB::AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN>
 	NN<DBData> data;
 	if (this->dbMap.GetC(tableName).SetTo(data))
 		return false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASSNN(data, DBData());
 	data->name = Text::String::New(tableName);
 	i = 0;
@@ -389,13 +389,13 @@ Bool DB::TextDB::AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN>
 	return true;
 }
 
-Bool DB::TextDB::AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UOSInt colCount)
+Bool DB::TextDB::AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UIntOS colCount)
 {
 	NN<DBData> data;
 	if (this->dbMap.GetC(tableName).SetTo(data))
 		return false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASSNN(data, DBData());
 	data->name = Text::String::New(tableName);
 	i = 0;
@@ -419,8 +419,8 @@ Bool DB::TextDB::AddTableData(NN<Data::ArrayListObj<Optional<Text::String>>> val
 	{
 		return false;
 	}
-	UOSInt i = 0;
-	UOSInt j = valList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = valList->GetCount();
 	UnsafeArray<Optional<Text::String>> vals = MemAllocArr(Optional<Text::String>, j);
 	while (i < j)
 	{
@@ -431,7 +431,7 @@ Bool DB::TextDB::AddTableData(NN<Data::ArrayListObj<Optional<Text::String>>> val
 	return true;
 }
 
-Bool DB::TextDB::AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount)
+Bool DB::TextDB::AddTableData(UnsafeArray<Text::CString> valArr, UIntOS colCount)
 {
 	NN<DBData> currDB;
 	if (!this->currDB.SetTo(currDB))
@@ -440,7 +440,7 @@ Bool DB::TextDB::AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount
 	{
 		return false;
 	}
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UnsafeArray<Optional<Text::String>> vals = MemAllocArr(Optional<Text::String>, colCount);
 	while (i < colCount)
 	{

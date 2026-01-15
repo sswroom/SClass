@@ -11,7 +11,7 @@ struct Manage::ProcessExecution::ClassData
 	int in[2];
 };
 
-UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
+UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->in[0] = 0;
@@ -25,7 +25,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	Data::ArrayListObj<UTF8Char *> args;
 	Bool argStart = false;
 
-	UOSInt cmdLen = cmdLine.leng;
+	UIntOS cmdLen = cmdLine.leng;
 	UTF8Char *pptr;
 	if (cmdLen >= 64)
 	{
@@ -86,7 +86,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 		ret = execvp((Char*)arr[0], (Char**)arr);
 		exit(ret);
 	}
-	return (UOSInt)pid;
+	return (UIntOS)pid;
 }
 
 Manage::ProcessExecution::ProcessExecution(Text::CStringNN cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
@@ -104,14 +104,14 @@ Bool Manage::ProcessExecution::IsDown() const
 	return !this->IsRunning();
 }
 
-UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
+UIntOS Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = read(this->clsData->out[0], buff.Arr().Ptr(), (size_t)buff.GetSize());
+	IntOS readSize = read(this->clsData->out[0], buff.Arr().Ptr(), (size_t)buff.GetSize());
 	if (readSize >= 0)
 	{
-		return (UOSInt)readSize;
+		return (UIntOS)readSize;
 	}
 	else
 	{
@@ -119,14 +119,14 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Manage::ProcessExecution::Write(Data::ByteArrayR buff)
+UIntOS Manage::ProcessExecution::Write(Data::ByteArrayR buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = write(this->clsData->in[1], buff.Ptr(), buff.GetSize());
+	IntOS readSize = write(this->clsData->in[1], buff.Ptr(), buff.GetSize());
 	if (readSize >= 0)
 	{
-		return (UOSInt)readSize;
+		return (UIntOS)readSize;
 	}
 	else
 	{

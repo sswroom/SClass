@@ -5,7 +5,7 @@
 
 void Game::Sudoku::SudokuBoard::HintInit()
 {
-	OSInt i = 81;
+	IntOS i = 81;
 	while (i-- > 0)
 	{
 		if (this->board[i] & 15)
@@ -21,10 +21,10 @@ void Game::Sudoku::SudokuBoard::HintInit()
 
 void Game::Sudoku::SudokuBoard::HintHCheck()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt currOfst;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS currOfst;
 	Bool numExist[10];
 	UInt16 v;
 	currOfst = 0;
@@ -62,10 +62,10 @@ void Game::Sudoku::SudokuBoard::HintHCheck()
 
 void Game::Sudoku::SudokuBoard::HintVCheck()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt currOfst;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS currOfst;
 	Bool numExist[10];
 	UInt16 v;
 	currOfst = 0;
@@ -103,13 +103,13 @@ void Game::Sudoku::SudokuBoard::HintVCheck()
 
 void Game::Sudoku::SudokuBoard::HintBoxCheck()
 {
-	UOSInt i1;
-	UOSInt i2;
-	UOSInt j1;
-	UOSInt j2;
-	UOSInt k;
-	UOSInt currOfst;
-	UOSInt currOfst2;
+	UIntOS i1;
+	UIntOS i2;
+	UIntOS j1;
+	UIntOS j2;
+	UIntOS k;
+	UIntOS currOfst;
+	UIntOS currOfst2;
 	Bool numExist[10];
 	UInt16 v;
 	currOfst = 0;
@@ -158,12 +158,12 @@ void Game::Sudoku::SudokuBoard::HintBoxCheck()
 	}
 }
 
-void Game::Sudoku::SudokuBoard::HintUpdate(UOSInt xOfst, UOSInt yOfst, UInt16 mask)
+void Game::Sudoku::SudokuBoard::HintUpdate(UIntOS xOfst, UIntOS yOfst, UInt16 mask)
 {
-	UOSInt y;
-	UOSInt x;
-	UOSInt boxXOfst;
-	UOSInt boxYOfst;
+	UIntOS y;
+	UIntOS x;
+	UIntOS boxXOfst;
+	UIntOS boxYOfst;
 
 	x = 0;
 	while (x < 9)
@@ -214,7 +214,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev1()
 	while (modified)
 	{
 		modified = false;
-		UOSInt i = 81;
+		UIntOS i = 81;
 		while (i-- > 0)
 		{
 			v = this->board[i];
@@ -283,10 +283,10 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2H()
 {
 	UInt8 cnts[10];
 	UInt16 v;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt currOfst;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS currOfst;
 	Bool modified = false;
 	currOfst = 0;
 	i = 9;
@@ -366,10 +366,10 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2V()
 {
 	UInt8 cnts[10];
 	UInt16 v;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt currOfst;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS currOfst;
 	Bool modified = false;
 	currOfst = 0;
 	i = 9;
@@ -449,13 +449,13 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2Box()
 {
 	UInt8 cnts[10];
 	UInt16 v;
-	UOSInt i1;
-	UOSInt i2;
-	UOSInt j1;
-	UOSInt j2;
-	UOSInt k;
-	UOSInt currOfst;
-	UOSInt currOfst2;
+	UIntOS i1;
+	UIntOS i2;
+	UIntOS j1;
+	UIntOS j2;
+	UIntOS k;
+	UIntOS currOfst;
+	UIntOS currOfst2;
 	Bool modified = false;
 	currOfst = 0;
 	i1 = 3;
@@ -545,9 +545,9 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2Box()
 	return modified;
 }
 
-UOSInt Game::Sudoku::SudokuBoard::SolveLev3Inner(UOSInt initXOfst, UOSInt initYOfst, NN<SudokuBoard> succBoard)
+UIntOS Game::Sudoku::SudokuBoard::SolveLev3Inner(UIntOS initXOfst, UIntOS initYOfst, NN<SudokuBoard> succBoard)
 {
-	UOSInt modified;
+	UIntOS modified;
 	UInt16 v;
 	this->SolveLev2();
 	if (this->IsFinish())
@@ -557,9 +557,9 @@ UOSInt Game::Sudoku::SudokuBoard::SolveLev3Inner(UOSInt initXOfst, UOSInt initYO
 //		this->PrintBoard();
 		return 1;
 	}
-	UOSInt solutionCnt = 0;
-	UOSInt x;
-	UOSInt y;
+	UIntOS solutionCnt = 0;
+	UIntOS x;
+	UIntOS y;
 	UInt8 num;
 	Game::Sudoku::SudokuBoard tmpBoard;
 	x = initXOfst;
@@ -598,14 +598,14 @@ UOSInt Game::Sudoku::SudokuBoard::SolveLev3Inner(UOSInt initXOfst, UOSInt initYO
 	return solutionCnt;
 }
 
-Bool Game::Sudoku::SudokuBoard::HasHError(UOSInt xOfst, UOSInt yOfst) const
+Bool Game::Sudoku::SudokuBoard::HasHError(UIntOS xOfst, UIntOS yOfst) const
 {
 	UInt8 num = GetBoardNum(xOfst, yOfst, nullptr);
 	if (num == 0)
 	{
 		return false;
 	}
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 9)
 	{
 		if (i != xOfst)
@@ -620,14 +620,14 @@ Bool Game::Sudoku::SudokuBoard::HasHError(UOSInt xOfst, UOSInt yOfst) const
 	return false;
 }
 
-Bool Game::Sudoku::SudokuBoard::HasVError(UOSInt xOfst, UOSInt yOfst) const
+Bool Game::Sudoku::SudokuBoard::HasVError(UIntOS xOfst, UIntOS yOfst) const
 {
 	UInt8 num = GetBoardNum(xOfst, yOfst, nullptr);
 	if (num == 0)
 	{
 		return false;
 	}
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 9)
 	{
 		if (i != yOfst)
@@ -642,19 +642,19 @@ Bool Game::Sudoku::SudokuBoard::HasVError(UOSInt xOfst, UOSInt yOfst) const
 	return false;
 }
 
-Bool Game::Sudoku::SudokuBoard::HasBoxError(UOSInt xOfst, UOSInt yOfst) const
+Bool Game::Sudoku::SudokuBoard::HasBoxError(UIntOS xOfst, UIntOS yOfst) const
 {
 	UInt8 num = GetBoardNum(xOfst, yOfst, nullptr);
 	if (num == 0)
 	{
 		return false;
 	}
-	UOSInt boxX = (xOfst / 3) * 3;
-	UOSInt boxY = (yOfst / 3) * 3;
-	UOSInt i = 0;
+	UIntOS boxX = (xOfst / 3) * 3;
+	UIntOS boxY = (yOfst / 3) * 3;
+	UIntOS i = 0;
 	while (i < 3)
 	{
-		UOSInt j = 0;
+		UIntOS j = 0;
 		while (j < 3)
 		{
 			if ((boxX + i) != xOfst || (boxY + j) != yOfst)
@@ -688,7 +688,7 @@ Game::Sudoku::SudokuBoard::~SudokuBoard()
 	MemFreeArr(this->board);
 }
 
-void Game::Sudoku::SudokuBoard::SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 number, Bool isDefault)
+void Game::Sudoku::SudokuBoard::SetBoardNum(UIntOS xOfst, UIntOS yOfst, UInt8 number, Bool isDefault)
 {
 	if (number == 0)
 	{
@@ -706,7 +706,7 @@ void Game::Sudoku::SudokuBoard::SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 nu
 	}
 }
 
-void Game::Sudoku::SudokuBoard::ToggleHints(UOSInt xOfst, UOSInt yOfst, UInt8 number)
+void Game::Sudoku::SudokuBoard::ToggleHints(UIntOS xOfst, UIntOS yOfst, UInt8 number)
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
 	if ((v & 15) == 0)
@@ -715,14 +715,14 @@ void Game::Sudoku::SudokuBoard::ToggleHints(UOSInt xOfst, UOSInt yOfst, UInt8 nu
 	}	
 }
 
-UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, OptOut<Bool> isDefault) const
+UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UIntOS xOfst, UIntOS yOfst, OptOut<Bool> isDefault) const
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
 	isDefault.Set((v & 16) != 0);
 	return v & 15;
 }
 
-UInt16 Game::Sudoku::SudokuBoard::GetBoardValue(UOSInt xOfst, UOSInt yOfst) const
+UInt16 Game::Sudoku::SudokuBoard::GetBoardValue(UIntOS xOfst, UIntOS yOfst) const
 {
 	return this->board[yOfst * 9 + xOfst];
 }
@@ -734,10 +734,10 @@ void Game::Sudoku::SudokuBoard::CopyFrom(NN<const SudokuBoard> board)
 
 Bool Game::Sudoku::SudokuBoard::IsFinish() const
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 9)
 	{
-		UOSInt j = 0;
+		UIntOS j = 0;
 		while (j < 9)
 		{
 			if (GetBoardNum(i, j, nullptr) == 0)
@@ -753,7 +753,7 @@ Bool Game::Sudoku::SudokuBoard::IsFinish() const
 
 Bool Game::Sudoku::SudokuBoard::IsEmpty() const
 {
-	OSInt i = 81;
+	IntOS i = 81;
 	while (i-- > 0)
 	{
 		if (this->board[i] != 0)
@@ -762,7 +762,7 @@ Bool Game::Sudoku::SudokuBoard::IsEmpty() const
 	return true;
 }
 
-Bool Game::Sudoku::SudokuBoard::HasError(UOSInt xOfst, UOSInt yOfst) const
+Bool Game::Sudoku::SudokuBoard::HasError(UIntOS xOfst, UIntOS yOfst) const
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
 	if ((v & 15) == 0 || (v & 16) != 0)
@@ -772,14 +772,14 @@ Bool Game::Sudoku::SudokuBoard::HasError(UOSInt xOfst, UOSInt yOfst) const
 	return HasHError(xOfst, yOfst) || HasVError(xOfst, yOfst) || HasBoxError(xOfst, yOfst);
 }
 
-UOSInt Game::Sudoku::SudokuBoard::ExportData(UnsafeArray<UInt8> boardOut) const
+UIntOS Game::Sudoku::SudokuBoard::ExportData(UnsafeArray<UInt8> boardOut) const
 {
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(boardOut, UTF8STRC("Sudoku\r\n"));
-	UOSInt y = 0;
+	UIntOS y = 0;
 	while (y < 9)
 	{
-		UOSInt x = 0;
+		UIntOS x = 0;
 		while (x < 9)
 		{
 			UInt8 num = this->GetBoardNum(x, y, nullptr);
@@ -789,7 +789,7 @@ UOSInt Game::Sudoku::SudokuBoard::ExportData(UnsafeArray<UInt8> boardOut) const
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 		y++;
 	}
-	return (UOSInt)(sptr - boardOut);
+	return (UIntOS)(sptr - boardOut);
 }
 
 Bool Game::Sudoku::SudokuBoard::ImportData(UnsafeArray<const UInt8> boardIn)
@@ -800,10 +800,10 @@ Bool Game::Sudoku::SudokuBoard::ImportData(UnsafeArray<const UInt8> boardIn)
 		return false;
 	}
 	boardIn += 8;
-	UOSInt y = 0;
+	UIntOS y = 0;
 	while (y < 9)
 	{
-		UOSInt x = 0;
+		UIntOS x = 0;
 		while (x < 9)
 		{
 			if (boardIn[0] == ' ')
@@ -838,7 +838,7 @@ Bool Game::Sudoku::SudokuBoard::ImportData(UnsafeArray<const UInt8> boardIn)
 
 void Game::Sudoku::SudokuBoard::Clear()
 {
-	OSInt i;
+	IntOS i;
 	i = 81;
 	while (i-- > 0)
 	{
@@ -851,7 +851,7 @@ void Game::Sudoku::SudokuBoard::Clear()
 
 void Game::Sudoku::SudokuBoard::ClearAll()
 {
-	UOSInt i;
+	UIntOS i;
 	i = 81;
 	while (i-- > 0)
 	{
@@ -862,7 +862,7 @@ void Game::Sudoku::SudokuBoard::ClearAll()
 Bool Game::Sudoku::SudokuBoard::FixAll()
 {
 	Bool changed = false;
-	UOSInt i = 81;
+	UIntOS i = 81;
 	while (i-- > 0)
 	{
 		if ((this->board[i] & 15) != 0 && (this->board[i] & 16) == 0)
@@ -881,7 +881,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev1One()
 	changed = false;
 
 	HintLev2();
-	UOSInt i = 81;
+	UIntOS i = 81;
 	while (i-- > 0 && !changed)
 	{
 		v = this->board[i];
@@ -960,10 +960,10 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2()
 	return changed;
 }
 
-UOSInt Game::Sudoku::SudokuBoard::SolveLev3()
+UIntOS Game::Sudoku::SudokuBoard::SolveLev3()
 {
 	Game::Sudoku::SudokuBoard succBoard(*this);
-	UOSInt solutionCnt = this->SolveLev3Inner(9, 9, succBoard);
+	UIntOS solutionCnt = this->SolveLev3Inner(9, 9, succBoard);
 	this->CopyFrom(succBoard);
 	return solutionCnt;
 }
@@ -981,13 +981,13 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 	Bool xExists[3];
 	Bool yExists[3];
 	this->HintLev1();
-	UOSInt boxX = 0;
+	UIntOS boxX = 0;
 	while (boxX < 3)
 	{
-		UOSInt boxY = 0;
+		UIntOS boxY = 0;
 		while (boxY < 3)
 		{
-			UOSInt num = 1;
+			UIntOS num = 1;
 			while (num <= 9)
 			{
 				xExists[0] = false;
@@ -996,14 +996,14 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				yExists[0] = false;
 				yExists[1] = false;
 				yExists[2] = false;
-				UOSInt x = 0;
+				UIntOS x = 0;
 				while (x < 3)
 				{
-					UOSInt y = 0;
+					UIntOS y = 0;
 					while (y < 3)
 					{
-						UOSInt currX = boxX * 3 + x;
-						UOSInt currY = boxY * 3 + y;
+						UIntOS currX = boxX * 3 + x;
+						UIntOS currY = boxY * 3 + y;
 						UInt16 v = this->board[currY * 9 + currX];
 						if (v & (16 << num))
 						{
@@ -1017,8 +1017,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 
 				if (yExists[0] && !yExists[1] && !yExists[2])
 				{
-					UOSInt currY = boxY * 3 + 0;
-					UOSInt x = 0;
+					UIntOS currY = boxY * 3 + 0;
+					UIntOS x = 0;
 					while (x < 9)
 					{
 						if (x / 3 != boxX)
@@ -1030,8 +1030,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				}
 				else if (!yExists[0] && yExists[1] && !yExists[2])
 				{
-					UOSInt currY = boxY * 3 + 1;
-					UOSInt x = 0;
+					UIntOS currY = boxY * 3 + 1;
+					UIntOS x = 0;
 					while (x < 9)
 					{
 						if (x / 3 != boxX)
@@ -1043,8 +1043,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				}
 				else if (!yExists[0] && !yExists[1] && yExists[2])
 				{
-					UOSInt currY = boxY * 3 + 2;
-					UOSInt x = 0;
+					UIntOS currY = boxY * 3 + 2;
+					UIntOS x = 0;
 					while (x < 9)
 					{
 						if (x / 3 != boxX)
@@ -1056,8 +1056,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				}
 				if (xExists[0] && !xExists[1] && !xExists[2])
 				{
-					UOSInt currX = boxX * 3 + 0;
-					UOSInt y = 0;
+					UIntOS currX = boxX * 3 + 0;
+					UIntOS y = 0;
 					while (y < 9)
 					{
 						if (y / 3 != boxY)
@@ -1069,8 +1069,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				}
 				else if (!xExists[0] && xExists[1] && !xExists[2])
 				{
-					UOSInt currX = boxX * 3 + 1;
-					UOSInt y = 0;
+					UIntOS currX = boxX * 3 + 1;
+					UIntOS y = 0;
 					while (y < 9)
 					{
 						if (y / 3 != boxY)
@@ -1082,8 +1082,8 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 				}
 				else if (!xExists[0] && !xExists[1] && xExists[2])
 				{
-					UOSInt currX = boxX * 3 + 2;
-					UOSInt y = 0;
+					UIntOS currX = boxX * 3 + 2;
+					UIntOS y = 0;
 					while (y < 9)
 					{
 						if (y / 3 != boxY)
@@ -1103,7 +1103,7 @@ void Game::Sudoku::SudokuBoard::HintLev2()
 
 void Game::Sudoku::SudokuBoard::ClearHints()
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 81)
 	{
 		this->board[i] &= 0x1f;
@@ -1117,13 +1117,13 @@ void Game::Sudoku::SudokuBoard::PrintBoard() const
 	sbuff[9] = '\r';
 	sbuff[10] = '\n';
 	sbuff[11] = 0;
-	UOSInt y = 0;
+	UIntOS y = 0;
 	while (y < 9)
 	{
-		UOSInt x = 0;
+		UIntOS x = 0;
 		while (x < 9)
 		{
-			UOSInt v = this->board[y * 9 + x] & 0xf;
+			UIntOS v = this->board[y * 9 + x] & 0xf;
 			if (v == 0)
 			{
 				sbuff[x] = ' ';

@@ -15,7 +15,7 @@ Crypto::Encrypt::AES128GCM::~AES128GCM()
 
 }
 
-UOSInt Crypto::Encrypt::AES128GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::AES128GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
@@ -40,10 +40,10 @@ UOSInt Crypto::Encrypt::AES128GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	printf("EVP_CIPHER_CTX_ctrl: ret = %d\r\n", ret);
 #endif
 	EVP_CIPHER_CTX_free(ectx);
-	return (UOSInt)(outSize + finalSize + 16);
+	return (UIntOS)(outSize + finalSize + 16);
 }
 
-UOSInt Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
@@ -68,15 +68,15 @@ UOSInt Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	printf("EVP_DecryptFinal: ret = %d, finalSize = %d\r\n", ret, finalSize);
 #endif
 	EVP_CIPHER_CTX_free(ectx);
-	return (UOSInt)(outSize + finalSize);
+	return (UIntOS)(outSize + finalSize);
 }
 
-UOSInt Crypto::Encrypt::AES128GCM::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::GetEncBlockSize() const
 {
 	return 16;
 }
 
-UOSInt Crypto::Encrypt::AES128GCM::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::GetDecBlockSize() const
 {
 	return 16;
 }

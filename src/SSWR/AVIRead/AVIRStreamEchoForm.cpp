@@ -57,7 +57,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	UInt8 buff[2048];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	NN<IO::Stream> stm;
 	me->threadRunning = true;
 	if (me->stm.SetTo(stm))

@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt sigFig, NN<const DoubleStyle> style)
+UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS sigFig, NN<const DoubleStyle> style)
 {
 	if (val == 0)
 	{
@@ -34,7 +34,7 @@ UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, 
 		return Text::StrConcatC(oriStr, style->infStr, style->infLen);
 	}
 	Double addBase = 5.0e-11;
-	UOSInt i;
+	UIntOS i;
 	if (sigFig < 10)
 	{
 		sigFig = 10;
@@ -52,7 +52,7 @@ UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, 
 	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
 	val = val * Math_Pow(10.0, -ex - 1) + addBase;
-	if (ex >= (OSInt)(sigFig + 1) || ex <= -4)
+	if (ex >= (IntOS)(sigFig + 1) || ex <= -4)
 	{
 		val = val * 100.0;
 		iVal = (Int32)val;
@@ -233,7 +233,7 @@ UnsafeArray<UTF16Char> Text::StrDoubleW(UnsafeArray<UTF16Char> oriStr, Double va
 	{
 		return Text::StrConcatASCII(oriStr, "1.#INF00");
 	}
-	OSInt i = 7;
+	IntOS i = 7;
 	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
 	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
@@ -417,7 +417,7 @@ UnsafeArray<UTF32Char> Text::StrDoubleW(UnsafeArray<UTF32Char> oriStr, Double va
 	{
 		return Text::StrConcatASCII(oriStr, "1.#INF00");
 	}
-	OSInt i = 7;
+	IntOS i = 7;
 	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
 	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
@@ -571,7 +571,7 @@ UnsafeArray<UTF32Char> Text::StrDoubleW(UnsafeArray<UTF32Char> oriStr, Double va
 	return oriStr;
 }
 
-UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP)
 {
 	UTF8Char fmt[64];
 	if (maxDP <= 0)
@@ -602,7 +602,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val
 	return StrDoubleFmt(oriStr, val, (const Char*)fmt);
 }
 
-UnsafeArray<UTF16Char> Text::StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF16Char> Text::StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -625,7 +625,7 @@ UnsafeArray<UTF16Char> Text::StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double 
 	return StrDoubleFmtW(oriStr, val, fmt);
 }
 
-UnsafeArray<UTF32Char> Text::StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF32Char> Text::StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -705,7 +705,7 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt groupCnt, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS groupCnt, UIntOS minDP, UIntOS maxDP)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -714,7 +714,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double va
 	Char c;
 	Int32 digit;
 	Int32 sign;
-	OSInt leng;
+	IntOS leng;
 
 	if (Math::IsInfinity(val))
 	{
@@ -739,13 +739,13 @@ UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double va
 	{
 		*oriStr++ = '-';
 	}
-	UOSInt maxLeng = maxDP + (UInt32)digit;
-	UOSInt minLeng = minDP + (UInt32)digit;
+	UIntOS maxLeng = maxDP + (UInt32)digit;
+	UIntOS minLeng = minDP + (UInt32)digit;
 
 	if (maxLeng < 0)
 	{
 	}
-	else if ((OSInt)minLeng < leng)
+	else if ((IntOS)minLeng < leng)
 	{
 		buffPtr = buff2;
 		*buffPtr++ = '0';
@@ -922,7 +922,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double va
 	Int32 afterDigitZ = 0;
 	Int32 beforeDigit = 0;
 	Int32 eDigit = 0;
-	OSInt leng;
+	IntOS leng;
 
 	Char sbuff[256];
 	Char *sptr;
@@ -1358,7 +1358,7 @@ UnsafeArray<UTF16Char> Text::StrDoubleFmtW(UnsafeArray<UTF16Char> oriStr, Double
 	Int32 afterDigitZ = 0;
 	Int32 beforeDigit = 0;
 	Int32 eDigit = 0;
-	OSInt leng;
+	IntOS leng;
 
 	Char sbuff[256];
 	Char *sptr;
@@ -1786,7 +1786,7 @@ UnsafeArray<UTF32Char> Text::StrDoubleFmtW(UnsafeArray<UTF32Char> oriStr, Double
 	Int32 afterDigitZ = 0;
 	Int32 beforeDigit = 0;
 	Int32 eDigit = 0;
-	OSInt leng;
+	IntOS leng;
 
 	Char sbuff[256];
 	Char *sptr;
@@ -2515,11 +2515,11 @@ Bool Text::StrToDoubleW(UnsafeArray<const UTF32Char> str1, OutParam<Double> outV
 void Text::SBAppendF32(NN<Text::StringBuilderUTF> sb, Single v)
 {
 	UTF8Char sbuff[33];
-	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(Text::StrDouble(sbuff, v) - sbuff));
 }
 
 void Text::SBAppendF64(NN<Text::StringBuilderUTF> sb, Double v)
 {
 	UTF8Char sbuff[33];
-	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(Text::StrDouble(sbuff, v) - sbuff));
 }

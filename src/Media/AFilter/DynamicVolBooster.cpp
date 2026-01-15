@@ -6,7 +6,7 @@
 
 void Media::AFilter::DynamicVolBooster::ResetStatus()
 {
-	UOSInt i = soundBuffLeng;
+	UIntOS i = soundBuffLeng;
 	while (i-- > 0)
 	{
 		soundBuff[i] = 0;
@@ -68,9 +68,9 @@ Data::Duration Media::AFilter::DynamicVolBooster::SeekToTime(Data::Duration time
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->enabled)
 	{
 		if (this->bitCount == 16)
@@ -79,8 +79,8 @@ UOSInt Media::AFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 			Double log32 = Math_Log10(this->bgLevel * 32768);
 			Double log32768 = Math_Log10(32768);
 			Int32 noiseVol = Double2Int32(this->bgLevel * 32768);
-			UOSInt i = 0;
-			UOSInt j;
+			UIntOS i = 0;
+			UIntOS j;
 			Int32 currSample;
 			Int32 absVol;
 			Int32 thisVol;
@@ -158,8 +158,8 @@ UOSInt Media::AFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 			Double log32 = Math_Log10(this->bgLevel * 128);
 			Double log32768 = Math_Log10(128);
 			Int32 noiseVol = Double2Int32(this->bgLevel * 128);
-			UOSInt i = 0;
-			UOSInt j;
+			UIntOS i = 0;
+			UIntOS j;
 			Int32 currSample;
 			Int32 absVol;
 			Int32 thisVol;

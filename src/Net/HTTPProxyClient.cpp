@@ -33,9 +33,9 @@ void Net::HTTPProxyClient::AddProxyAuthen()
 
 		sptr = Text::StrConcatC(buff, UTF8STRC("BASIC "));
 		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr);
+		sptr = sptr + b64.Encrypt(userPwd, (UIntOS)(sptr2 - userPwd), sptr);
 		*sptr = 0;
-		this->AddHeaderC(CSTR("Proxy-Authorization"), {(const UTF8Char*)buff, (UOSInt)(sptr - buff)});
+		this->AddHeaderC(CSTR("Proxy-Authorization"), {(const UTF8Char*)buff, (UIntOS)(sptr - buff)});
 	}
 }
 
@@ -60,7 +60,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	UTF8Char host[256];
 	UnsafeArray<UTF8Char> hostEnd;
 
-	UOSInt i;
+	UIntOS i;
 	const UTF8Char *ptr1;
 	Text::PString ptrs[2];
 	UnsafeArray<UTF8Char> cptr;
@@ -139,8 +139,8 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			}
 			cptr = url.ConcatTo(cptr);
 			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
-			this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - dataBuff)));
-			this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, (UOSInt)(hostEnd - host)));
+			this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UIntOS)(cptr - dataBuff)));
+			this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, (UIntOS)(hostEnd - host)));
 #ifdef SHOWDEBUG
 			printf("Request Data: %s", dataBuff.Ptr());
 			printf("Add Header: %s", host);

@@ -75,9 +75,9 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			virtual UOSInt GetDataSourceCount() const;
-			virtual void GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
-			virtual Optional<DB::ReadingDB> OpenDataSource(UOSInt index);
+			virtual UIntOS GetDataSourceCount() const;
+			virtual void GetDataSourceName(UIntOS index, NN<Text::StringBuilderUTF8> sb) const;
+			virtual Optional<DB::ReadingDB> OpenDataSource(UIntOS index);
 		};
 	}
 }

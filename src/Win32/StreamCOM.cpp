@@ -31,14 +31,14 @@ Bool Win32::StreamCOM::IsDown() const
 	return false;
 }
 
-UOSInt Win32::StreamCOM::Read(const Data::ByteArray &buff)
+UIntOS Win32::StreamCOM::Read(const Data::ByteArray &buff)
 {
 	UInt32 cbSize = 0;
 	this->stm->Read(buff.Arr().Ptr(), (ULONG)buff.GetSize(), (ULONG*)&cbSize);
 	return cbSize;
 }
 
-UOSInt Win32::StreamCOM::Write(Data::ByteArrayR buff)
+UIntOS Win32::StreamCOM::Write(Data::ByteArrayR buff)
 {
 	UInt32 cbSize = 0;
 	this->stm->Write(buff.Ptr(), (ULONG)buff.GetSize(), (ULONG*)&cbSize);

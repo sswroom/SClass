@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(AnyType userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(NN<IO::SDCardInfo> item1, NN<IO::SDCardInfo> item2)
+IntOS __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(NN<IO::SDCardInfo> item1, NN<IO::SDCardInfo> item2)
 {
 	return item1->GetName()->CompareTo(item1->GetName());
 }
@@ -164,8 +164,8 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 	this->OnMonitorChanged();
 
 	NN<IO::SDCardInfo> sdCard;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 
@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 	while (i < j)
 	{
 		sdCard = this->sdCardList.GetItemNoCheck(i);
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 		sptr = sdCard->GetName()->ConcatTo(sptr);
 		this->lbDevices->AddItem(CSTRP(sbuff, sptr), sdCard);

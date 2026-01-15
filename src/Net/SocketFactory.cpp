@@ -101,7 +101,7 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::
 	return succ;
 }
 
-UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs)
+UIntOS Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs)
 {
 	UTF8Char sbuff[256];
 
@@ -120,7 +120,7 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<N
 		this->LoadHosts(dnsHdlr);
 	}
 	mutUsage.EndUse();
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (!this->noV6DNS)
 	{
 		ret = dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr));

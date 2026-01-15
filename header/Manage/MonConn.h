@@ -18,10 +18,10 @@ namespace Manage
 	class MonConn
 	{
 	public:
-		static UOSInt BuildPacket(UInt8 *outbuff, UInt8 *data, UOSInt dataSize, UInt16 cmdType, UInt16 cmdSeq);
+		static UIntOS BuildPacket(UInt8 *outbuff, UInt8 *data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq);
 		static UInt16 CalCheck(UInt8 *packet);
-		static UInt8 *FindPacket(UInt8 *buff, UOSInt buffSize);
-		static Bool IsCompletePacket(UInt8 *buff, UOSInt buffSize);
+		static UInt8 *FindPacket(UInt8 *buff, UIntOS buffSize);
+		static Bool IsCompletePacket(UInt8 *buff, UIntOS buffSize);
 		static void ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData);
 
 	private:
@@ -49,7 +49,7 @@ namespace Manage
 
 		static UInt32 __stdcall ConnTThread(AnyType conn);
 		static UInt32 __stdcall ConnRThread(AnyType conn);
-		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
+		void AddCommand(UInt8 *data, UIntOS dataSize, UInt16 cmdType);
 	public:
 		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFactory> clif, NN<IO::Writer> msgWriter, Data::Duration timeout);
 		~MonConn();

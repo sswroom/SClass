@@ -29,7 +29,7 @@ namespace SSWR
 				Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 				NN<Text::String> GetName() const;
 				UInt64 GetSize() const;
-				virtual OSInt CompareTo(NN<Data::Comparable> obj) const;
+				virtual IntOS CompareTo(NN<Data::Comparable> obj) const;
 			};
 
 		private:

@@ -6,26 +6,26 @@
 #include "Media/WaveOutRenderer.h"
 #include "Text/MyString.h"
 
-UOSInt Media::AudioDevice::GetDeviceCount()
+UIntOS Media::AudioDevice::GetDeviceCount()
 {
-	UOSInt asioCnt = Media::ASIOOutRenderer::GetDeviceCount();
-	UOSInt woCnt = Media::WaveOutRenderer::GetDeviceCount();
+	UIntOS asioCnt = Media::ASIOOutRenderer::GetDeviceCount();
+	UIntOS woCnt = Media::WaveOutRenderer::GetDeviceCount();
 #ifndef _WIN32_WCE
-	UOSInt ksCnt = Media::KSRenderer::GetDeviceCount();
+	UIntOS ksCnt = Media::KSRenderer::GetDeviceCount();
 #else
-	UOSInt ksCnt = 0;
+	UIntOS ksCnt = 0;
 #endif
 	return asioCnt + woCnt + ksCnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
-	UOSInt asioCnt = Media::ASIOOutRenderer::GetDeviceCount();
-	UOSInt woCnt = Media::WaveOutRenderer::GetDeviceCount();
+	UIntOS asioCnt = Media::ASIOOutRenderer::GetDeviceCount();
+	UIntOS woCnt = Media::WaveOutRenderer::GetDeviceCount();
 #ifndef _WIN32_WCE
-	UOSInt ksCnt = Media::KSRenderer::GetDeviceCount();
+	UIntOS ksCnt = Media::KSRenderer::GetDeviceCount();
 #else
-	OSInt ksCnt = 0;
+	IntOS ksCnt = 0;
 #endif
 	if (devNo < asioCnt)
 	{
@@ -130,8 +130,8 @@ void Media::AudioDevice::ClearDevices()
 
 Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::AudioSource> audsrc)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::AudioRenderer> renderer;
 	if (this->rendererList.GetCount() == 0)
 	{

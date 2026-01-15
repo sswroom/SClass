@@ -29,7 +29,7 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> re
 	UnsafeArray<UTF8Char> src;
 	UTF8Char c;
 	IO::ConfigFile *cfg;
-	UOSInt i;
+	UIntOS i;
 	NEW_CLASS(cfg, IO::ConfigFile());
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{

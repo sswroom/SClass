@@ -20,7 +20,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UInt8 sensorId[7];
 	UInt16 pinNum = 7;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

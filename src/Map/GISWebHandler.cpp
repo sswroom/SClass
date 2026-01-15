@@ -111,7 +111,7 @@ Map::GISWebHandler::~GISWebHandler()
 	this->ws.FreeAll(FreeGISWorkspace);
 }
 
-UOSInt Map::GISWebHandler::AddAsset(NN<Map::MapDrawLayer> layer)
+UIntOS Map::GISWebHandler::AddAsset(NN<Map::MapDrawLayer> layer)
 {
 	return this->assets.Add(layer);
 }
@@ -129,7 +129,7 @@ Optional<Map::GISWebService::GISWorkspace> Map::GISWebHandler::AddWorkspace(Text
 	return ws;
 }
 
-Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, NN<GISWebService::GISWorkspace> ws, UOSInt assetIndex)
+Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, NN<GISWebService::GISWorkspace> ws, UIntOS assetIndex)
 {
 	NN<Map::MapDrawLayer> layer;
 	if (!this->assets.GetItem(assetIndex).SetTo(layer))

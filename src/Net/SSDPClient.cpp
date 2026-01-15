@@ -22,7 +22,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(&data[0], data.GetSize());
 			Text::PString sarr[2];
-			UOSInt lineCnt;
+			UIntOS lineCnt;
 			sarr[1] = sb;
 			while (true)
 			{
@@ -71,7 +71,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 					me->devMap.Put(ip, dev);
 				}
 				Bool found = false;
-				UOSInt i = dev->services.GetCount();
+				UIntOS i = dev->services.GetCount();
 				while (i-- > 0)
 				{
 					svc = dev->services.GetItemNoCheck(i);

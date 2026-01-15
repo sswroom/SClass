@@ -153,17 +153,17 @@ NN<Text::SpreadSheet::OfficeChartAxis> Text::SpreadSheet::OfficeChart::CreateAxi
 	return axis;
 }
 
-UOSInt Text::SpreadSheet::OfficeChart::GetAxisCount()
+UIntOS Text::SpreadSheet::OfficeChart::GetAxisCount()
 {
 	return this->axes.GetCount();
 }
 
-Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetAxis(UOSInt index)
+Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetAxis(UIntOS index)
 {
 	return this->axes.GetItem(index);
 }
 
-UOSInt Text::SpreadSheet::OfficeChart::GetAxisIndex(NN<OfficeChartAxis> axis)
+UIntOS Text::SpreadSheet::OfficeChart::GetAxisIndex(NN<OfficeChartAxis> axis)
 {
 	return this->axes.IndexOf(axis);
 }
@@ -180,7 +180,7 @@ Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetValueAxis()
 
 void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Optional<Text::String> name, Bool showMarker)
 {
-	UOSInt i = this->series.GetCount();
+	UIntOS i = this->series.GetCount();
 	NN<OfficeChartSeries> series;
 	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name.NotNull())
@@ -201,7 +201,7 @@ void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryDa
 
 void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Text::CString name, Bool showMarker)
 {
-	UOSInt i = this->series.GetCount();
+	UIntOS i = this->series.GetCount();
 	NN<OfficeChartSeries> series;
 	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name.leng > 0)
@@ -220,17 +220,17 @@ void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryDa
 	this->series.Add(series);
 }
 
-UOSInt Text::SpreadSheet::OfficeChart::GetSeriesCount() const
+UIntOS Text::SpreadSheet::OfficeChart::GetSeriesCount() const
 {
 	return this->series.GetCount();
 }
 
-NN<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeriesNoCheck(UOSInt index) const
+NN<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeriesNoCheck(UIntOS index) const
 {
 	return this->series.GetItemNoCheck(index);
 }
 
-Optional<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeries(UOSInt index) const
+Optional<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeries(UIntOS index) const
 {
 	return this->series.GetItem(index);
 }

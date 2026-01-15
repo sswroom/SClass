@@ -12,7 +12,7 @@ namespace Data
 		RandomBytesGenerator();
 		~RandomBytesGenerator();
 
-		void NextBytes(UnsafeArray<UInt8> buff, UOSInt len);
+		void NextBytes(UnsafeArray<UInt8> buff, UIntOS len);
 	};
 }
 #endif

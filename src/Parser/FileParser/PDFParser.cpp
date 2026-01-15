@@ -15,9 +15,9 @@
 struct Parser::FileParser::PDFParser::PDFParseEnv
 {
 	Data::ByteArray buff;
-	UOSInt buffSize;
-	UOSInt currOfst;
-	UOSInt dataSize;
+	UIntOS buffSize;
+	UIntOS currOfst;
+	UIntOS dataSize;
 	UInt64 dataOfst;
 	UInt64 fileSize;
 	NN<IO::StreamData> fd;
@@ -26,7 +26,7 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	Bool succ;
 };
 
-Bool Parser::FileParser::PDFParser::IsComment(UnsafeArray<const UTF8Char> buff, UOSInt size)
+Bool Parser::FileParser::PDFParser::IsComment(UnsafeArray<const UTF8Char> buff, UIntOS size)
 {
 	if (buff[0] == '%')
 	{
@@ -41,7 +41,7 @@ Bool Parser::FileParser::PDFParser::IsComment(UnsafeArray<const UTF8Char> buff, 
 
 Bool Parser::FileParser::PDFParser::NextLine(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, Bool skipComment)
 {
-	UOSInt i = env->currOfst;
+	UIntOS i = env->currOfst;
 	while (i < env->dataSize)
 	{
 		if (env->buff[i] == '\n' || env->buff[i] == '\r')
@@ -129,7 +129,7 @@ Bool Parser::FileParser::PDFParser::NextLine(NN<PDFParseEnv> env, NN<Text::Strin
 	return false;
 }
 
-Bool Parser::FileParser::PDFParser::NextLineFixed(NN<PDFParseEnv> env, UOSInt size)
+Bool Parser::FileParser::PDFParser::NextLineFixed(NN<PDFParseEnv> env, UIntOS size)
 {
 	if (env->currOfst + size < env->dataSize)
 	{
@@ -239,7 +239,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 #if defined(VERBOSE)
 		printf("PDFParser: EOF found no EOL, ofst = %lld\r\n", env->lineBegin);
 #endif
-		env->currOfst = (UOSInt)(env->lineBegin + 5 - env->dataOfst);
+		env->currOfst = (UIntOS)(env->lineBegin + 5 - env->dataOfst);
 	}
 	else
 	{
@@ -282,7 +282,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 		{
 			if (dataOfst != 0)
 			{
-				obj->SetData(env->fd, dataOfst, (UOSInt)(env->lineBegin - dataOfst));
+				obj->SetData(env->fd, dataOfst, (UIntOS)(env->lineBegin - dataOfst));
 			}
 			return true;
 		}
@@ -326,8 +326,8 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 				else
 				{
 					sb->RTrim();
-					UOSInt startCnt = sb->CountStr(CSTR("<<"));
-					UOSInt endCnt = sb->CountStr(UTF8STRC(">>"));
+					UIntOS startCnt = sb->CountStr(CSTR("<<"));
+					UIntOS endCnt = sb->CountStr(UTF8STRC(">>"));
 					if (startCnt > endCnt)
 					{
 						sb->AppendUTF8Char(' ');
@@ -394,7 +394,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		env->normalEnd = true;
 		return false;
 	}
-	UOSInt iLeng;
+	UIntOS iLeng;
 	if (leng->EndsWith(UTF8STRC(" 0 R")))
 	{
 		UInt8 buff[128];
@@ -483,7 +483,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 			env->normalEnd = true;
 			return false;
 		}
-		if (!sb->ToUOSInt(iLeng))
+		if (!sb->ToUIntOS(iLeng))
 		{
 #if defined(VERBOSE)
 			printf("PDFParser: Stream Length reference object content not valid: %s\r\n", sb->ToString());
@@ -511,7 +511,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 	}
 	else
 	{
-		if (!leng->ToUOSInt(iLeng))
+		if (!leng->ToUIntOS(iLeng))
 		{
 #if defined(VERBOSE)
 			printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
@@ -608,8 +608,8 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			}
 			while (true)
 			{
-				UOSInt startCnt = sb->CountStr(UTF8STRC("<<"));
-				UOSInt endCnt = sb->CountStr(UTF8STRC(">>"));
+				UIntOS startCnt = sb->CountStr(UTF8STRC("<<"));
+				UIntOS endCnt = sb->CountStr(UTF8STRC(">>"));
 				if (startCnt > endCnt)
 				{
 					sb->AppendUTF8Char(' ');
@@ -733,8 +733,8 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 		}
 		else
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			i = sb->IndexOf(' ');
 			if (i == INVALID_INDEX)
 			{
@@ -745,7 +745,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				break;
 			}
 			sb->v[i] = 0;
-			if (!Text::StrToUOSInt(&sb->v[i + 1], j) || !Text::StrToUOSInt(sb->v, i))
+			if (!Text::StrToUIntOS(&sb->v[i + 1], j) || !Text::StrToUIntOS(sb->v, i))
 			{
 				sb->v[i] = ' ';
 #if defined(VERBOSE)
@@ -787,7 +787,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				}
 				sb->v[10] = 0;
 				sb->v[16] = 0;
-				if (!Text::StrToUInt64(&sb->v[0], thisRef->items[i].ofst) || !Text::StrToUOSInt(&sb->v[11], thisRef->items[i].generation))
+				if (!Text::StrToUInt64(&sb->v[0], thisRef->items[i].ofst) || !Text::StrToUIntOS(&sb->v[11], thisRef->items[i].generation))
 				{
 #if defined(VERBOSE)
 					printf("PDFParser: xref value format invalid2: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->ToString());
@@ -870,8 +870,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 
 	UInt8 tmpBuff[32];
 	env.fd->GetRealData(env.fileSize - 32, 32, BYTEARR(tmpBuff));
-	UOSInt i = Text::StrIndexOfC(tmpBuff, 32, UTF8STRC("startxref"));
-	UOSInt j;
+	UIntOS i = Text::StrIndexOfC(tmpBuff, 32, UTF8STRC("startxref"));
+	UIntOS j;
 	if (i != INVALID_INDEX)
 	{
 		i += 9;
@@ -956,8 +956,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 					}
 					while (true)
 					{
-						UOSInt startCnt = sb.CountStr(UTF8STRC("<<"));
-						UOSInt endCnt = sb.CountStr(UTF8STRC(">>"));
+						UIntOS startCnt = sb.CountStr(UTF8STRC("<<"));
+						UIntOS endCnt = sb.CountStr(UTF8STRC(">>"));
 						if (startCnt > endCnt)
 						{
 							sb.AppendUTF8Char(' ');
@@ -993,8 +993,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 				}
 				else
 				{
-					UOSInt i;
-					UOSInt j;
+					UIntOS i;
+					UIntOS j;
 					i = sb.IndexOf(' ');
 					if (i == INVALID_INDEX)
 					{
@@ -1005,7 +1005,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 						break;
 					}
 					sb.v[i] = 0;
-					if (!Text::StrToUOSInt(&sb.v[i + 1], j) || !Text::StrToUOSInt(sb.v, i))
+					if (!Text::StrToUIntOS(&sb.v[i + 1], j) || !Text::StrToUIntOS(sb.v, i))
 					{
 						sb.v[i] = ' ';
 #if defined(VERBOSE)
@@ -1051,7 +1051,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		}
 		else if (sb.IndexOf(UTF8STRC(" 0 obj ")) != INVALID_INDEX)
 		{
-			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj "));
+			UIntOS i = sb.IndexOf(UTF8STRC(" 0 obj "));
 			sb.TrimToLength(i + 6);
 			env.currOfst = env.lineBegin + i + 7 - env.dataOfst;
 			if (!ParseObject(env, sb, doc, xref))
@@ -1059,7 +1059,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		}
 		else if (sb.IndexOf(UTF8STRC(" 0 obj<<")) != INVALID_INDEX)
 		{
-			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			UIntOS i = sb.IndexOf(UTF8STRC(" 0 obj"));
 			sb.TrimToLength(i + 6);
 			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
 			if (!ParseObject(env, sb, doc, xref))
@@ -1067,7 +1067,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		}
 		else if (sb.IndexOf(UTF8STRC(" 0 obj[")) != INVALID_INDEX)
 		{
-			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			UIntOS i = sb.IndexOf(UTF8STRC(" 0 obj"));
 			sb.TrimToLength(i + 6);
 			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
 			if (!ParseObject(env, sb, doc, xref))
@@ -1075,7 +1075,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		}
 		else if (sb.IndexOf(UTF8STRC(" 0 obj/")) != INVALID_INDEX)
 		{
-			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			UIntOS i = sb.IndexOf(UTF8STRC(" 0 obj"));
 			sb.TrimToLength(i + 6);
 			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
 			if (!ParseObject(env, sb, doc, xref))

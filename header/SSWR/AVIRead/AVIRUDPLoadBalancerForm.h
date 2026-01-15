@@ -42,8 +42,8 @@ namespace SSWR
 			Optional<Net::UDPServer> sourceUDP;
 			Sync::Mutex sessMut;
 			Data::ArrayListNN<UDPSession> sessList;
-			UOSInt nextTarget;
-			UOSInt dispNextTarget;
+			UIntOS nextTarget;
+			UIntOS dispNextTarget;
 			Data::ArrayListNN<UDPTarget> targetList;
 			IO::LogTool log;
 			Data::Duration sessTimeout;

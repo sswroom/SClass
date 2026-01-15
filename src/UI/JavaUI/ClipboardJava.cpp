@@ -45,7 +45,7 @@ UI::Clipboard::~Clipboard()
 }
 
 
-UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
+UIntOS UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
 {
 	if (this->clsData->clipboard == 0)
 		return 0;
@@ -66,7 +66,7 @@ UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
 	{
 		return 0;
 	}
-	OSInt ret = 0;
+	IntOS ret = 0;
 /*	if (gtk_clipboard_wait_is_text_available(clipboard))
 	{
 		dataTypes->Add(1);
@@ -79,7 +79,7 @@ UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
 	}
 	GdkAtom *targets;
 	gint nTargets;
-	OSInt i;
+	IntOS i;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		i = 0;
@@ -113,8 +113,8 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 	Win32::Clipboard::FilePasteType ret = Win32::Clipboard::FPT_NONE;
 	GdkAtom *targets;
 	gint nTargets;
-	OSInt i;
-	UOSInt j;
+	IntOS i;
+	UIntOS j;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		const Char *typeName;
@@ -129,12 +129,12 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 				{
 					gint leng;
 					const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
-					if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("copy")))
+					if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UIntOS)leng, UTF8STRC("copy")))
 					{
 						ret = Win32::Clipboard::FPT_COPY;
 						i = 5;
 					}
-					else if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("cut")))
+					else if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UIntOS)leng, UTF8STRC("cut")))
 					{
 						ret = Win32::Clipboard::FPT_MOVE;
 						i = 4;
@@ -271,7 +271,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 		gchar **s = gtk_clipboard_wait_for_uris(clipboard);
 		if (s)
 		{
-			OSInt i = 0;
+			IntOS i = 0;
 			while (true)
 			{
 				if (s[i] == 0)
@@ -324,7 +324,7 @@ Bool UI::Clipboard::GetString(Optional<ControlHandle> hWndOwner, NN<Text::String
 	return false;
 }
 
-UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UIntOS buffSize)
 {
 /*	if (fmtId >= 128)
 	{

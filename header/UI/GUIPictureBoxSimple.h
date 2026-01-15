@@ -23,7 +23,7 @@ namespace UI
 		GUIPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void SetImage(Optional<Media::StaticImage> currImage) = 0;
 		virtual void SetImageDImg(Optional<Media::DrawImage> img) = 0;
 
@@ -34,9 +34,9 @@ namespace UI
 		void HandleMouseMove(MouseEventHandler hdlr, AnyType userObj);
 		void HandleMouseUp(MouseEventHandler hdlr, AnyType userObj);
 
-		void EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);
-		void EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);
-		void EventMouseMove(Math::Coord2D<OSInt> pos);
+		void EventButtonDown(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn);
+		void EventButtonUp(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn);
+		void EventMouseMove(Math::Coord2D<IntOS> pos);
 	};
 }
 #endif

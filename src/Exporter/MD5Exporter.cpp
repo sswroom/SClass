@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::MD5Exporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MD5Exporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::MD5Exporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -67,8 +67,8 @@ Bool Exporter::MD5Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UInt8 buff[16];
 	IO::StreamWriter writer(stm, this->codePage);
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt cnt = fchk->GetCount();
+	UIntOS i = 0;
+	UIntOS cnt = fchk->GetCount();
 	while (i < cnt)
 	{
 		fchk->GetEntryHash(i, buff);

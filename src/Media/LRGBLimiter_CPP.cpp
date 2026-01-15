@@ -3,9 +3,9 @@
 #include "Core/ByteTool_C.h"
 #include "Media/LRGBLimiter.h"
 
-extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 * imgPtr, UOSInt w, UOSInt h)
+extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 * imgPtr, UIntOS w, UIntOS h)
 {
-	UOSInt pxCnt = w * h;
+	UIntOS pxCnt = w * h;
 	Int16 minV;
 	Int16 maxV;
 	Int16 v;

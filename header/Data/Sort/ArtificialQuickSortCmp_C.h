@@ -3,10 +3,10 @@
 #include "Data/DataComparer.h"
 #include "Data/Sort/InsertionSortCmp_C.h"
 
-template <class T> void ArtificialQuickSort_PreSort(T *arr, OSInt left, OSInt right);
-template <class T> void ArtificialQuickSort_Sort(T *arr, OSInt firstIndex, OSInt lastIndex);
+template <class T> void ArtificialQuickSort_PreSort(T *arr, IntOS left, IntOS right);
+template <class T> void ArtificialQuickSort_Sort(T *arr, IntOS firstIndex, IntOS lastIndex);
 
-template <class T> void ArtificialQuickSort_PreSort(T *arr, OSInt left, OSInt right)
+template <class T> void ArtificialQuickSort_PreSort(T *arr, IntOS left, IntOS right)
 {
 	T temp;
 	T temp2;
@@ -25,22 +25,22 @@ template <class T> void ArtificialQuickSort_PreSort(T *arr, OSInt left, OSInt ri
 	}
 }
 
-template <class T> void ArtificialQuickSort_Sort(T *arr, OSInt firstIndex, OSInt lastIndex)
+template <class T> void ArtificialQuickSort_Sort(T *arr, IntOS firstIndex, IntOS lastIndex)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
+	IntOS *levi = MemAlloc(IntOS, 65536);
+	IntOS *desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	T meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	T temp;
 
 	ArtificialQuickSort_PreSort(arr, firstIndex, lastIndex);

@@ -75,13 +75,13 @@ Bool Net::HTTPClient::FormAdd(Text::CStringNN name, Text::CString value)
 	{
 		sbForm->AppendUTF8Char('&');
 	}
-	sbForm->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sbForm->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sbForm->AppendUTF8Char('=');
 	Text::CStringNN nnval;
 	if (value.SetTo(nnval))
 	{
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nnval.v);
-		sbForm->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sbForm->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	return true;
 }
@@ -129,12 +129,12 @@ void Net::HTTPClient::ForceHostName(Text::CStringNN hostName)
 		this->forceHost = Text::String::New(hostName);
 }
 
-UOSInt Net::HTTPClient::GetRespHeaderCnt() const
+UIntOS Net::HTTPClient::GetRespHeaderCnt() const
 {
 	return this->headers.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	NN<Text::String> s;
 	if (this->headers.GetItem(index).SetTo(s))
@@ -174,15 +174,15 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 	while (it.HasNext())
 	{
 		s = it.Next();
-		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
+		if (s->StartsWithICase(buff, (UIntOS)(s2 - buff)))
 		{
-			return Text::CStringNN(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff)).LTrim();
+			return Text::CStringNN(&s->v[s2-buff], s->leng - (UIntOS)(s2 - buff)).LTrim();
 		}
 	}
 	return nullptr;
 }
 
-Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index) const
+Optional<Text::String> Net::HTTPClient::GetRespHeader(UIntOS index) const
 {
 	return this->headers.GetItem(index);
 }
@@ -203,12 +203,12 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
-	UOSInt arrCnt;
+	UIntOS arrCnt;
 	this->EndRequest(0, 0);
 	if (this->GetRespHeader(CSTR("Content-Type"), sbuff).SetTo(sptr))
 	{
 		sarr[1].v = sbuff;
-		sarr[1].leng = (UOSInt)(sptr - sbuff);
+		sarr[1].leng = (UIntOS)(sptr - sbuff);
 		arrCnt = 2;
 		while (arrCnt > 1)
 		{
@@ -226,7 +226,7 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 void Net::HTTPClient::GetContentFileName(NN<Text::StringBuilderUTF8> sb)
 {
 	this->EndRequest(0, 0);
-	UOSInt i;
+	UIntOS i;
 	Text::CStringNN hdr;
 	if (this->GetRespHeader(CSTR("Content-Disposition")).SetTo(hdr))
 	{
@@ -334,7 +334,7 @@ Double Net::HTTPClient::GetTotalTime()
 	return this->clk.GetTimeDiff();
 }
 
-UOSInt Net::HTTPClient::GetHdrLen()
+UIntOS Net::HTTPClient::GetHdrLen()
 {
 	return this->hdrLen;
 }
@@ -349,11 +349,11 @@ UInt64 Net::HTTPClient::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UIntOS buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
-	UOSInt currPos = 0;
-	UOSInt readSize;
+	UIntOS currPos = 0;
+	UIntOS readSize;
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
 		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
@@ -393,11 +393,11 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UIn
 	return false;
 }
 
-Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UIntOS buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
-	UOSInt currPos = 0;
-	UOSInt readSize;
+	UIntOS currPos = 0;
+	UIntOS readSize;
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
 		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
@@ -450,15 +450,15 @@ void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateSt
 	Text::PString ptrs3[3];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if ((i = dateStr.IndexOf(UTF8STRC(", "))) != INVALID_INDEX)
 	{
 		sptr = dateStr.Substring(i + 2).ConcatTo(sbuff);
 		tmps = sbuff;
 		if (Text::StrIndexOfChar(tmps, '-') == INVALID_INDEX)
 		{
-			i = Text::StrSplitP(ptrs, 6, {tmps, (UOSInt)(sptr - sbuff)}, ' ');
+			i = Text::StrSplitP(ptrs, 6, {tmps, (UIntOS)(sptr - sbuff)}, ' ');
 			if (i >= 4)
 			{
 				j = Text::StrSplitP(ptrs2, 3, ptrs[3], ':');
@@ -470,7 +470,7 @@ void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateSt
 		}
 		else
 		{
-			i = Text::StrSplitP(ptrs, 6, {tmps, (UOSInt)(sptr - sbuff)}, ' ');
+			i = Text::StrSplitP(ptrs, 6, {tmps, (UIntOS)(sptr - sbuff)}, ' ');
 			if (i >= 2)
 			{
 				Text::StrSplitP(ptrs2, 3, ptrs[1], ':');
@@ -482,7 +482,7 @@ void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateSt
 	else
 	{
 		sptr = dateStr.ConcatTo(sbuff);
-		i = Text::StrSplitP(ptrs, 6, {sbuff, (UOSInt)(sptr - sbuff)}, ' ');
+		i = Text::StrSplitP(ptrs, 6, {sbuff, (UIntOS)(sptr - sbuff)}, ' ');
 		if (i > 3)
 		{
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');
@@ -502,15 +502,15 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 	Text::PString ptrs3[3];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if ((i = dateStr.IndexOf(UTF8STRC(", "))) != INVALID_INDEX)
 	{
 		sptr = dateStr.Substring(i + 2).ConcatTo(sbuff);
 		tmps = sbuff;
 		if (Text::StrIndexOfChar(tmps, '-') == INVALID_INDEX)
 		{
-			i = Text::StrSplitP(ptrs, 6, {tmps, (UOSInt)(sptr - sbuff)}, ' ');
+			i = Text::StrSplitP(ptrs, 6, {tmps, (UIntOS)(sptr - sbuff)}, ' ');
 			if (i >= 4)
 			{
 				j = Text::StrSplitP(ptrs2, 3, ptrs[3], ':');
@@ -522,7 +522,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 		}
 		else
 		{
-			i = Text::StrSplitP(ptrs, 6, {tmps, (UOSInt)(sptr - sbuff)}, ' ');
+			i = Text::StrSplitP(ptrs, 6, {tmps, (UIntOS)(sptr - sbuff)}, ' ');
 			if (i >= 2)
 			{
 				if (Text::StrSplitP(ptrs2, 3, ptrs[1], ':') == 3 && Text::StrSplitP(ptrs3, 3, ptrs[0], '-') == 3)
@@ -539,7 +539,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 	else
 	{
 		sptr = dateStr.ConcatTo(sbuff);
-		i = Text::StrSplitP(ptrs, 6, {sbuff, (UOSInt)(sptr - sbuff)}, ' ');
+		i = Text::StrSplitP(ptrs, 6, {sbuff, (UIntOS)(sptr - sbuff)}, ' ');
 		if (i > 3)
 		{
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');
@@ -626,7 +626,7 @@ Bool Net::HTTPClient::LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::
 		return false;
 	}
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	while ((readSize = cli->Read(Data::ByteArray(buff, sizeof(buff)))) > 0)
 	{
 		if (readSize > maxSize)
@@ -650,7 +650,7 @@ Bool Net::HTTPClient::LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::
 		return false;
 	}
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	while ((readSize = cli->Read(Data::ByteArray(buff, sizeof(buff)))) > 0)
 	{
 		if (readSize > maxSize)

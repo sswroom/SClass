@@ -49,7 +49,7 @@ private:
 private:
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
-	UOSInt threadCount;
+	UIntOS threadCount;
 	Bool threadToStop;
 	Sync::Event mainEvt;
 	ThreadStatus *stats;
@@ -66,7 +66,7 @@ private:
 			return;
 		}
 		NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
-		UOSInt i;
+		UIntOS i;
 		NN<Text::String> contURL;
 		if (jobj->GetValueString(CSTR("content.url")).SetTo(contURL))
 		{
@@ -97,7 +97,7 @@ private:
 	static void ParseJSON(NN<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		mstm->Write(Data::ByteArrayR(U8STR(""), 1));
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<const UInt8> buff = mstm->GetBuff(i);
 		NN<Text::JSONBase> json;
 		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1)).SetTo(json))
@@ -124,7 +124,7 @@ private:
 			}
 			cli->EndRequest(0, 0);
 //			UInt64 totalRead = 0;
-			UOSInt thisRead;
+			UIntOS thisRead;
 			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream());
 			while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
@@ -139,7 +139,7 @@ private:
 			{
 				if (tmpSb->Equals(UTF8STRC("gzip")))
 				{
-					UOSInt respSize;
+					UIntOS respSize;
 					UnsafeArray<const UInt8> respData = mstm->GetBuff(respSize);
 					if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 					{
@@ -222,7 +222,7 @@ private:
 	}
 
 public:
-	CesiumDownloader(NN<Net::TCPClientFactory> clif, UOSInt threadCount, Bool useComp)
+	CesiumDownloader(NN<Net::TCPClientFactory> clif, UIntOS threadCount, Bool useComp)
 	{
 		this->clif = clif;
 		this->ssl = Net::SSLEngineFactory::Create(clif, true);
@@ -230,7 +230,7 @@ public:
 		this->threadToStop = false;
 		this->useComp = useComp;
 		this->stats = MemAlloc(ThreadStatus, this->threadCount);
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			this->stats[i].me = this;
@@ -263,7 +263,7 @@ public:
 
 	~CesiumDownloader()
 	{
-		UOSInt i;
+		UIntOS i;
 		this->threadToStop = true;
 		i = this->threadCount;
 		while (i-- > 0)
@@ -301,7 +301,7 @@ public:
 
 	void AddURL(Text::CStringNN url)
 	{
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			if (this->stats[i].currURL == 0)
@@ -316,7 +316,7 @@ public:
 
 	void WaitForIdle()
 	{
-		UOSInt i;
+		UIntOS i;
 		Bool found = true;
 		while (true)
 		{
@@ -335,10 +335,10 @@ public:
 		}
 	}
 	
-	UOSInt GetTotalReqCnt()
+	UIntOS GetTotalReqCnt()
 	{
-		UOSInt ret = 0;
-		UOSInt i = this->threadCount;
+		UIntOS ret = 0;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			ret += this->stats[i].reqCnt;
@@ -346,10 +346,10 @@ public:
 		return ret;
 	}
 
-	UOSInt GetTotalSuccCnt()
+	UIntOS GetTotalSuccCnt()
 	{
-		UOSInt ret = 0;
-		UOSInt i = this->threadCount;
+		UIntOS ret = 0;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			ret += this->stats[i].succCnt;
@@ -360,7 +360,7 @@ public:
 	UInt64 GetTotalDownloadSize()
 	{
 		UInt64 ret = 0;
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			ret += this->stats[i].totalDownload;
@@ -371,7 +371,7 @@ public:
 	UInt64 GetTotalUploadSize()
 	{
 		UInt64 ret = 0;
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			ret += this->stats[i].totalUpload;
@@ -382,7 +382,7 @@ public:
 	UInt64 GetTotalContentSize()
 	{
 		UInt64 ret = 0;
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			ret += this->stats[i].totalContentSize;
@@ -392,7 +392,7 @@ public:
 
 	void ClearStat()
 	{
-		UOSInt i = this->threadCount;
+		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
 			this->stats[i].reqCnt = 0;
@@ -406,7 +406,7 @@ public:
 	void ClearFiles()
 	{
 		Sync::MutexUsage mutUsage(this->filesMut);
-		UOSInt i = this->filesList.GetCount();
+		UIntOS i = this->filesList.GetCount();
 		FileEntry *file;
 		while (i-- > 0)
 		{
@@ -425,7 +425,7 @@ public:
 
 class FilesComparator : public Data::Comparator<CesiumDownloader::FileEntry*>
 {
-	virtual OSInt Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b) const
+	virtual IntOS Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b) const
 	{
 		return a->url->CompareToFast(b->url->ToCString());
 	}
@@ -443,9 +443,9 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 	sb.AppendC(UTF8STRC("\r\nTotal Time used: "));
 	sb.AppendDouble(t);
 	sb.AppendC(UTF8STRC("\r\nTotal Request Count: "));
-	sb.AppendUOSInt(downloader->GetTotalReqCnt());
+	sb.AppendUIntOS(downloader->GetTotalReqCnt());
 	sb.AppendC(UTF8STRC("\r\nTotal Success Count: "));
-	sb.AppendUOSInt(downloader->GetTotalSuccCnt());
+	sb.AppendUIntOS(downloader->GetTotalSuccCnt());
 	sb.AppendC(UTF8STRC("\r\nTotal Download: "));
 	sb.AppendU64(downloader->GetTotalDownloadSize());
 	sb.AppendC(UTF8STRC("\r\nTotal Upload: "));
@@ -461,8 +461,8 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 	
 	IO::FileStream fs(CSTR("CesiumFiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	CesiumDownloader::FileEntry *file;
-	UOSInt i = 0;
-	UOSInt j = filesList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = filesList.GetCount();
 	while (i < j)
 	{
 		file = filesList.GetItem(i);

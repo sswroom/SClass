@@ -24,8 +24,8 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
-	UOSInt i;
-	UOSInt fileCnt = files.GetCount();
+	UIntOS i;
+	UIntOS fileCnt = files.GetCount();
 	Bool succ;
 	i = 0;
 	while (i < fileCnt)
@@ -42,13 +42,13 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	NN<IO::PackageFile> pkgFile;
-	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UOSInt)-1)
+	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UIntOS)-1)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<IO::ParsedObject> pobj;
 		Bool found = false;
 		i = me->fileIndex + 1;
@@ -115,12 +115,12 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	NN<IO::PackageFile> pkgFile;
-	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UOSInt)-1)
+	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UIntOS)-1)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i;
+		UIntOS i;
 		NN<IO::ParsedObject> pobj;
 		Bool found = false;
 		i = me->fileIndex;
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->hideCursor)
@@ -389,8 +389,8 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->pbImage->SetImage(nullptr, false);
 	this->imgList.Delete();
 	if (!sameDir)
@@ -420,7 +420,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 		{
 			this->fileIndex = INVALID_INDEX;
 			sptr = nnimgList->GetSourceName(sbuff);
-			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
@@ -431,7 +431,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 				j = pkgFile->GetCount();
 				while (j-- > 0)
 				{
-					if (pkgFile->GetItemName(sbuff2, j).SetTo(sptr2) && Text::StrEqualsC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), sbuff2, (UOSInt)(sptr2 - sbuff2)))
+					if (pkgFile->GetItemName(sbuff2, j).SetTo(sptr2) && Text::StrEqualsC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), sbuff2, (UIntOS)(sptr2 - sbuff2)))
 					{
 						this->fileIndex = j;
 						break;
@@ -462,8 +462,8 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 	if (this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile).SetTo(pobj))
 	{
 		NN<IO::PackageFile> pf;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Bool found = false;
 		NN<IO::ParsedObject> pobj2;
 

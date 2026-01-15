@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "Map/MapsforgeUtil.h"
 
-UOSInt Map::MapsforgeUtil::ReadVBEU(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<UInt64> v)
+UIntOS Map::MapsforgeUtil::ReadVBEU(UnsafeArray<UInt8> buff, UIntOS ofst, OutParam<UInt64> v)
 {
 	UInt64 tmpV = 0;
-	UOSInt sh = 0;
+	UIntOS sh = 0;
 	UInt8 b;
 	while (true)
 	{
@@ -19,10 +19,10 @@ UOSInt Map::MapsforgeUtil::ReadVBEU(UnsafeArray<UInt8> buff, UOSInt ofst, OutPar
 	return ofst;
 }
 
-UOSInt Map::MapsforgeUtil::ReadVBES(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<Int64> v)
+UIntOS Map::MapsforgeUtil::ReadVBES(UnsafeArray<UInt8> buff, UIntOS ofst, OutParam<Int64> v)
 {
 	Int64 tmpV = 0;
-	UOSInt sh = 0;
+	UIntOS sh = 0;
 	UInt8 b;
 	while (true)
 	{

@@ -6,19 +6,19 @@
 
 UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 {
-	this->scnPos = Math::Coord2D<OSInt>(0, 0);
+	this->scnPos = Math::Coord2D<IntOS>(0, 0);
 }
 
 void __stdcall GUIPopupMenu_Position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in, gpointer user_data)
 {
 	UI::GUIPopupMenu *me = (UI::GUIPopupMenu*)user_data;
-	Math::Coord2D<OSInt> scnPos = me->GetScnPos();
+	Math::Coord2D<IntOS> scnPos = me->GetScnPos();
 	*x = (gint)scnPos.x;
 	*y = (gint)scnPos.y;
 	*push_in = true;
 }
 
-void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
+void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<IntOS> scnPos)
 {
 	NN<UI::GUIForm> frm;
 	if (ctrl->GetRootForm().SetTo(frm))

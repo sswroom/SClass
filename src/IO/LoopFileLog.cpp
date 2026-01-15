@@ -41,7 +41,7 @@ IO::LoopFileLog::LoopFileLog(Text::CStringNN fileName, Int32 nFiles, LogType sty
 	SwapFiles();
 
 	sptr = Text::StrConcatC(fileName.ConcatTo(buff), UTF8STRC("0.log"));
-	NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fileStm, IO::FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 
@@ -143,7 +143,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logM
 		SwapFiles();
 		sptr = Text::StrConcatC(this->fileName->ConcatTo(buff), UTF8STRC("0.log"));
 
-		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 

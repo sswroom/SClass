@@ -17,15 +17,15 @@
 	Media::OpenCV::OCVFrame *frame;
 };
 
-void PossibleArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect)
+void PossibleArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, UIntOS *rect)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
-	Math::RectArea<UOSInt> area;
-	Math::RectArea<UOSInt>::GetRectArea(&area, rect, 4);
+	Math::RectArea<UIntOS> area;
+	Math::RectArea<UIntOS>::GetRectArea(&area, rect, 4);
 	Media::OpenCV::OCVFrame *croppedFrame = filteredFrame->CropToNew(&area);
 	if (croppedFrame)
 	{
-		UOSInt cropRect[8];
+		UIntOS cropRect[8];
 		cropRect[0] = rect[0] - area.left;
 		cropRect[1] = rect[1] - area.top;
 		cropRect[2] = rect[2] - area.left;
@@ -92,7 +92,7 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 	}
 }*/
 
-void __stdcall OnNumberPlate(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
+void __stdcall OnNumberPlate(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UIntOS> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UIntOS confidence, NN<Media::StaticImage> plateImg)
 {
 	printf("Parsed Number Plate: %s\r\n", result->v.Ptr());
 }

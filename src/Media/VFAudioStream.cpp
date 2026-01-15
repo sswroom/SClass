@@ -35,7 +35,7 @@ Media::VFAudioStream::VFAudioStream(NN<Media::VFMediaFile> mfile)
 
 Media::VFAudioStream::~VFAudioStream()
 {
-	UOSInt useCnt;
+	UIntOS useCnt;
 	{
 		Sync::MutexUsage mutUsage(this->mfile->mut);
 		useCnt = --this->mfile->useCnt;
@@ -82,7 +82,7 @@ void Media::VFAudioStream::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::VFAudioStream::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::VFAudioStream::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->readEvt = evt;
 	this->currSample = 0;
@@ -94,14 +94,14 @@ void Media::VFAudioStream::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
+UIntOS Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
 	NN<Sync::Event> readEvt;
-	UOSInt sampleCnt = blk.GetSize() / this->fmt.nChannels / ((UOSInt)this->fmt.bitpersample >> 3);
+	UIntOS sampleCnt = blk.GetSize() / this->fmt.nChannels / ((UIntOS)this->fmt.bitpersample >> 3);
 	if (sampleCnt + this->currSample > this->sampleCnt)
 	{
-		sampleCnt = (UOSInt)(this->sampleCnt - this->currSample);
+		sampleCnt = (UIntOS)(this->sampleCnt - this->currSample);
 	}
 	if (sampleCnt <= 0)
 	{
@@ -109,7 +109,7 @@ UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 			readEvt->Set();
 		return 0;
 	}
-	UOSInt readSize = sampleCnt * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
+	UIntOS readSize = sampleCnt * this->fmt.nChannels * ((UIntOS)this->fmt.bitpersample >> 3);
 	VF_ReadData_Audio rd;
 	rd.dwSize = sizeof(rd);
 	*(UInt64*)&rd.dwSamplePosL = this->currSample;
@@ -119,16 +119,16 @@ UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 	rd.lpBuf = blk.Arr().Ptr();
 	funcs->ReadData(mfile->file, VF_STREAM_AUDIO, &rd);
 	this->currSample += rd.dwReadedSampleCount;
-	readSize = rd.dwReadedSampleCount * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
+	readSize = rd.dwReadedSampleCount * this->fmt.nChannels * ((UIntOS)this->fmt.bitpersample >> 3);
 
 	if (this->readEvt.SetTo(readEvt))
 		readEvt->Set();
 	return readSize;
 }
 
-UOSInt Media::VFAudioStream::GetMinBlockSize()
+UIntOS Media::VFAudioStream::GetMinBlockSize()
 {
-	return this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
+	return this->fmt.nChannels * ((UIntOS)this->fmt.bitpersample >> 3);
 }
 
 Data::Duration Media::VFAudioStream::GetCurrTime()

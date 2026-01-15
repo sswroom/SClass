@@ -62,7 +62,7 @@ namespace Data
 		static Bool String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
 		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval);
 
-		static Bool IsYearLeap(OSInt year);
+		static Bool IsYearLeap(IntOS year);
 		static Int32 ParseYearStr(Text::CStringNN year);
 		static UInt8 ParseMonthStr(Text::CStringNN month);
 		static UnsafeArray<UTF8Char> DispYear(UnsafeArray<UTF8Char> buff, Int32 year);

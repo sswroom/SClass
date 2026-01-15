@@ -52,10 +52,10 @@ namespace Net
 	private:
 		NN<Text::String> id;
 		NN<Text::String> uri;
-		UOSInt maxSessions;
-		UOSInt sessionTimeout;
+		UIntOS maxSessions;
+		UIntOS sessionTimeout;
 		NN<WebDriverOSInfo> osinfo;
-		UOSInt heartbeatPeriod;
+		UIntOS heartbeatPeriod;
 		NN<Text::String> availability;
 		NN<Text::String> version;
 		Data::ArrayListNN<WebDriverSlot> slots;

@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	NN<Media::StaticImage> srcPrevImg;
@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
+	Double bvalue = UIntOS2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = UIntOS2Double(me->hsbContr->GetPos());
+	Double gvalue = UIntOS2Double(me->hsbGamma->GetPos());
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));

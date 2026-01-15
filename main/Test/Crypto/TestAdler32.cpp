@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	NEW_CLASS(hash, Crypto::Hash::Adler32());
 
-	UOSInt i = 32;
+	UIntOS i = 32;
 	while (i-- > 0)
 	{
 		testBlock[i] = 0;

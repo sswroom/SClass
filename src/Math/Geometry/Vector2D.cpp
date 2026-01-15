@@ -16,7 +16,7 @@ Bool Math::Geometry::Vector2D::Contains(NN<Math::Geometry::Vector2D> vec) const
 {
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	this->GetCoordinates(ptList);
-	UOSInt i = ptList.GetCount();
+	UIntOS i = ptList.GetCount();
 	if (i == 0)
 		return false;
 	while (i-- > 0)
@@ -31,12 +31,12 @@ Math::Coord2DDbl Math::Geometry::Vector2D::GetCentroid() const
 {
 	Math::Coord2DDbl sum = Math::Coord2DDbl(0, 0);
 	Data::ArrayListA<Math::Coord2DDbl> coordList;
-	UOSInt i = this->GetCoordinates(coordList);
+	UIntOS i = this->GetCoordinates(coordList);
 	while (i-- > 0)
 	{
 		sum += coordList.GetItem(i);
 	}
-	return sum / UOSInt2Double(coordList.GetCount());
+	return sum / UIntOS2Double(coordList.GetCount());
 }
 
 Math::Coord2DDbl Math::Geometry::Vector2D::GetDistanceCenter() const

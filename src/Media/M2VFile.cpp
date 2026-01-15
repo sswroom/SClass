@@ -9,7 +9,7 @@
 UInt32 __stdcall Media::M2VFile::PlayThread(AnyType userData)
 {
 	NN<Media::M2VFile> me = userData.GetNN<Media::M2VFile>();
-	UOSInt buffSize;
+	UIntOS buffSize;
 	me->playStarted = true;
 	me->playing = true;
 	me->stm->ClearFrameBuff();
@@ -40,7 +40,7 @@ Media::M2VFile::M2VFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 	this->playToStop = false;
 	this->startTime = 0;
 
-	UOSInt buffSize = this->stmData->GetRealData(0, 1024, this->readBuff);
+	UIntOS buffSize = this->stmData->GetRealData(0, 1024, this->readBuff);
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	Media::FrameInfo info;
@@ -59,12 +59,12 @@ Media::M2VFile::~M2VFile()
 	this->stmData.Delete();
 }
 
-UOSInt Media::M2VFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
+UIntOS Media::M2VFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
-	return (UOSInt)-1;
+	return (UIntOS)-1;
 }
 
-Optional<Media::MediaSource> Media::M2VFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::M2VFile::GetStream(UIntOS index, OptOut<Int32> syncTime)
 {
 	if (index != 0)
 		return nullptr;
@@ -72,7 +72,7 @@ Optional<Media::MediaSource> Media::M2VFile::GetStream(UOSInt index, OptOut<Int3
 	return this->stm;
 }
 
-void Media::M2VFile::KeepStream(UOSInt index, Bool toKeep)
+void Media::M2VFile::KeepStream(UIntOS index, Bool toKeep)
 {
 }
 
@@ -142,7 +142,7 @@ Bool Media::M2VFile::CanSeek()
 	return true;
 }
 
-UOSInt Media::M2VFile::GetDataSeekCount()
+UIntOS Media::M2VFile::GetDataSeekCount()
 {
 	return this->stmData->GetSeekCount();
 }

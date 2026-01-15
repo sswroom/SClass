@@ -121,8 +121,8 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<OrganEnv> env;
 			NN<OrganGroup> rootGroup;
-			UOSInt lastDirIndex;
-			UOSInt lastObjIndex;
+			UIntOS lastDirIndex;
+			UIntOS lastObjIndex;
 			Bool restoreObj;
 			OrganSpecies *lastSpeciesObj;
 			OrganGroup *lastGroupObj;
@@ -140,8 +140,8 @@ namespace SSWR
 			Optional<WebFileInfo> dispImageWF;
 			Bool dispImageToCrop;
 			Bool dispImageDown;
-			Math::Coord2D<OSInt> dispImageDownPos;
-			Math::Coord2D<OSInt> dispImageCurrPos;
+			Math::Coord2D<IntOS> dispImageDownPos;
+			Math::Coord2D<IntOS> dispImageCurrPos;
 
 			NN<Map::DrawMapRenderer> mapRenderer;
 			NN<Map::MapView> mapView;
@@ -150,7 +150,7 @@ namespace SSWR
 			NN<Map::TileMap> mapTile;
 			Bool mapUpdated;
 			Data::FastMapNN<UInt32, OrganSpImgLayer> mapImgLyrs;
-			UOSInt imgFontStyle;
+			UIntOS imgFontStyle;
 
 			Text::String *initSelObj;
 			Text::String *initSelImg;
@@ -171,11 +171,11 @@ namespace SSWR
 			static void __stdcall OnObjDblClicked(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
 			static void __stdcall OnImgSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static UI::EventState __stdcall OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static UI::EventState __stdcall OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static UI::EventState __stdcall OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnImgDraw(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
+			static UI::EventState __stdcall OnImgRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
+			static void __stdcall OnImgDraw(AnyType userObj, UnsafeArray<UInt8> imgPtr, UIntOS w, UIntOS h, UIntOS bpl);
 			static void __stdcall OnImgDblClicked(AnyType userObj);
 			static void __stdcall OnImgDirClicked(AnyType userObj);
 			static void __stdcall OnImageRotateClicked(AnyType userObj);
@@ -199,14 +199,14 @@ namespace SSWR
 			static void __stdcall OnObjPlaceClicked(AnyType userObj);
 			static void __stdcall OnObjCombineClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnMapScaleScroll(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnMapScaleScroll(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTileUpdated(AnyType userObj);
-			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static void __stdcall OnMapDraw(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static void __stdcall OnMapDraw(AnyType userObj, NN<Media::DrawImage> dimg, IntOS xOfst, IntOS yOfst);
 
-			static OSInt __stdcall GroupCompare(NN<OrganGroupItem> group1, NN<OrganGroupItem> group2);
+			static IntOS __stdcall GroupCompare(NN<OrganGroupItem> group1, NN<OrganGroupItem> group2);
 
-			Bool CalcCropRect(Math::Coord2D<OSInt> *rect);
+			Bool CalcCropRect(Math::Coord2D<IntOS> *rect);
 
 			void UpdateDir();
 			void UpdateImgDir();
@@ -237,7 +237,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual DragEffect DragEnter(NN<UI::GUIDropData> data);
-			virtual void DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y);
+			virtual void DropData(NN<UI::GUIDropData> data, IntOS x, IntOS y);
 
 /*			virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppvObject);
 			virtual ULONG STDMETHODCALLTYPE AddRef();

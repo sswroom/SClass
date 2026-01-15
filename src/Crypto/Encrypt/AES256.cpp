@@ -13,7 +13,7 @@ Crypto::Encrypt::AES256::~AES256()
 
 }
 
-UOSInt Crypto::Encrypt::AES256::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
+UIntOS Crypto::Encrypt::AES256::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -124,7 +124,7 @@ UOSInt Crypto::Encrypt::AES256::EncryptBlock(UnsafeArray<const UInt8> inBlock, U
 	return 16;
 }
 
-UOSInt Crypto::Encrypt::AES256::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
+UIntOS Crypto::Encrypt::AES256::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -238,8 +238,8 @@ UOSInt Crypto::Encrypt::AES256::DecryptBlock(UnsafeArray<const UInt8> inBlock, U
 
 void Crypto::Encrypt::AES256::SetKey(UnsafeArray<const UInt8> key)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 temp;
 
 	this->encRK[0] = ReadMUInt32(&key[ 0]);

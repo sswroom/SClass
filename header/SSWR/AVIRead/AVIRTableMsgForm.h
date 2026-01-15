@@ -13,10 +13,10 @@ namespace SSWR
 		private:
 			NN<UI::GUIListView> lvTable;
 			NN<SSWR::AVIRead::AVIRCore> core;
-			UOSInt colCnt;
+			UIntOS colCnt;
 
 		public:
-			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colName);
+			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UIntOS colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colName);
 			virtual ~AVIRTableMsgForm();
 
 			virtual void OnMonitorChanged();

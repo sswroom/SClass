@@ -32,19 +32,19 @@ Bool IO::SerialPort::InitStream()
 		return false;
 	if (portNum <= 32)
 	{
-		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyS")), portNum - 1);
+		Text::StrUIntOS(Text::StrConcatC(portName, UTF8STRC("/dev/ttyS")), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyUSB")), portNum - 33);
+		Text::StrUIntOS(Text::StrConcatC(portName, UTF8STRC("/dev/ttyUSB")), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyACM")), portNum - 65);
+		Text::StrUIntOS(Text::StrConcatC(portName, UTF8STRC("/dev/ttyACM")), portNum - 65);
 	}
 	else if (portNum <= 128)
 	{
-		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/rfcomm")), portNum - 97);
+		Text::StrUIntOS(Text::StrConcatC(portName, UTF8STRC("/dev/rfcomm")), portNum - 97);
 	}
 	else
 	{
@@ -52,7 +52,7 @@ Bool IO::SerialPort::InitStream()
 	}
 
 	Int32 h = open((Char*)portName, O_RDWR | O_NOCTTY | O_NDELAY);
-	this->handle = (void*)(OSInt)h;
+	this->handle = (void*)(IntOS)h;
 	if (h < 0)
 	{
 		this->handle = 0;
@@ -178,7 +178,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UOSInt>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -187,21 +187,21 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UOSInt>> ports, 
 	{
 		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
-			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyS")))
+			if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyS")))
 			{
-				ports->Add(1 + Text::StrToUOSInt(&sbuff[4]));
+				ports->Add(1 + Text::StrToUIntOS(&sbuff[4]));
 				if (portTypes)
 					portTypes->Add(SPT_SERIALPORT);
 			}
-			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyUSB")))
+			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyUSB")))
 			{
-				ports->Add(33 + Text::StrToUOSInt(&sbuff[6]));
+				ports->Add(33 + Text::StrToUIntOS(&sbuff[6]));
 				if (portTypes)
 					portTypes->Add(SPT_USBSERIAL);
 			}
-			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyACM")))
+			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyACM")))
 			{
-				ports->Add(65 + Text::StrToUOSInt(&sbuff[6]));
+				ports->Add(65 + Text::StrToUIntOS(&sbuff[6]));
 				if (portTypes)
 					portTypes->Add(SPT_USBSERIAL);
 			}
@@ -212,7 +212,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UOSInt>> ports, 
 	{
 		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
-			ports->Add(97 + Text::StrToUOSInt(&sbuff[6]));
+			ports->Add(97 + Text::StrToUIntOS(&sbuff[6]));
 			if (portTypes)
 				portTypes->Add(SPT_BLUETOOTH);
 		}
@@ -241,12 +241,12 @@ Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
+UIntOS IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 {
 	return 0;
 }
 
-UOSInt IO::SerialPort::GetUSBPort()
+UIntOS IO::SerialPort::GetUSBPort()
 {
 	if (IO::Path::GetPathType(CSTR("/dev/ttyUSB0")) == IO::Path::PathType::File)
 		return 33;
@@ -256,7 +256,7 @@ UOSInt IO::SerialPort::GetUSBPort()
 		return 0;
 }
 
-UOSInt IO::SerialPort::GetBTPort()
+UIntOS IO::SerialPort::GetBTPort()
 {
 	if (IO::Path::GetPathType(CSTR("/dev/rfcomm0")) == IO::Path::PathType::File)
 		return 97;
@@ -264,25 +264,25 @@ UOSInt IO::SerialPort::GetBTPort()
 		return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)
+UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UIntOS portNum)
 {
 	if (portNum <= 0)
 		return nullptr;
 	if (portNum <= 32)
 	{
-		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyS")), portNum - 1);
+		return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("/dev/ttyS")), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyUSB")), portNum - 33);
+		return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("/dev/ttyUSB")), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyACM")), portNum - 65);
+		return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("/dev/ttyACM")), portNum - 65);
 	}
 	else if (portNum <= 128)
 	{
-		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/rfcomm")), portNum - 97);
+		return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("/dev/rfcomm")), portNum - 97);
 	}
 	else
 	{
@@ -299,7 +299,7 @@ Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
 	if (!fs.IsError())
 	{
 		sptr = Text::StrInt32(sbuff, num);
-		if (fs.Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff))) == (UOSInt)(sptr - sbuff))
+		if (fs.Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff))) == (UIntOS)(sptr - sbuff))
 		{
 			ret = true;
 		}
@@ -307,12 +307,12 @@ Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
 	return ret;
 }
 
-Bool IO::SerialPort::ResetPort(UOSInt portNum)
+Bool IO::SerialPort::ResetPort(UIntOS portNum)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UOSInt i;
-	OSInt si;
+	UIntOS i;
+	IntOS si;
 	UnsafeArray<UTF8Char> sptr;
 	if (portNum <= 32)
 	{
@@ -320,14 +320,14 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 	else if (portNum <= 64)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb-serial/devices/ttyUSB")), portNum - 33);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb-serial/devices/ttyUSB")), portNum - 33);
 		if ((si = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
 		{
 			return false;
 		}
 		sbuff2[si] = 0;
-		sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(sbuff2, (UOSInt)si));
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
+		sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(sbuff2, (UIntOS)si));
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
 		if (i == INVALID_INDEX)
 			return false;
 		sbuff[i] = 0;
@@ -348,7 +348,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 }
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
+IO::SerialPort::SerialPort(UIntOS portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
 	this->reading = 0;
@@ -364,7 +364,7 @@ IO::SerialPort::~SerialPort()
 	ADDMESSAGE("Close\r\n");
 	if (this->handle)
 	{
-		OSInt h = (OSInt)this->handle;
+		IntOS h = (IntOS)this->handle;
 		this->handle = 0;
 		flock((int)h, LOCK_UN);
 		close((int)h);
@@ -387,7 +387,7 @@ Bool IO::SerialPort::IsDown() const
 	if (this->flowCtrl)
 	{
 		int status;
-		if (ioctl((int)(OSInt)this->handle, TIOCMGET, &status) == 0)
+		if (ioctl((int)(IntOS)this->handle, TIOCMGET, &status) == 0)
 		{
 			return (status & TIOCM_DSR) == 0;
 		}
@@ -395,11 +395,11 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
+UIntOS IO::SerialPort::Read(const Data::ByteArray &buff)
 {
-	OSInt readCnt;
-	OSInt h;
-	h = (OSInt)this->handle;
+	IntOS readCnt;
+	IntOS h;
+	h = (IntOS)this->handle;
 	if (h == 0)
 	{
 //		wprintf(L"h == 0\n");
@@ -435,16 +435,16 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	this->reading = false;
 	mutUsage.EndUse();
 //	wprintf(L"End read, cnt = %d\n", readCnt);
-	return (UOSInt)readCnt;
+	return (UIntOS)readCnt;
 }
 
-UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
+UIntOS IO::SerialPort::Write(Data::ByteArrayR buff)
 {
-	OSInt writeCnt;
-	OSInt h = (OSInt)this->handle;
+	IntOS writeCnt;
+	IntOS h = (IntOS)this->handle;
 	writeCnt = write((int)h, buff.Ptr(), buff.GetSize());
 	fsync((int)h);
-	return (UOSInt)writeCnt;
+	return (UIntOS)writeCnt;
 }
 
 Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
@@ -452,7 +452,7 @@ Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buf
 	return nullptr;
 }
 
-UOSInt IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
 	return 0;
@@ -470,11 +470,11 @@ Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, N
 	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	OSInt h = (OSInt)this->handle;
+	IntOS h = (IntOS)this->handle;
 	fsync((int)h);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::SerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
@@ -483,7 +483,7 @@ void IO::SerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
 
 Int32 IO::SerialPort::Flush()
 {
-	tcflush((int)(OSInt)this->handle, TCIOFLUSH);
+	tcflush((int)(IntOS)this->handle, TCIOFLUSH);
 	return 0;
 }
 
@@ -492,7 +492,7 @@ void IO::SerialPort::Close()
 	ADDMESSAGE("Close\r\n");
 	if (this->handle)
 	{
-		OSInt h = (OSInt)this->handle;
+		IntOS h = (IntOS)this->handle;
 		this->handle = 0;
 		flock((int)h, LOCK_UN);
 		close((int)h);
@@ -513,7 +513,7 @@ IO::StreamType IO::SerialPort::GetStreamType() const
 	return IO::StreamType::SerialPort;
 }
 
-UOSInt IO::SerialPort::GetPortNum() const
+UIntOS IO::SerialPort::GetPortNum() const
 {
 	return this->portNum;
 }

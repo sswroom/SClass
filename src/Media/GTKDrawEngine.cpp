@@ -29,7 +29,7 @@ Media::GTKDrawEngine::~GTKDrawEngine()
 {
 }
 
-Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UIntOS> size, Media::AlphaType atype)
 {
 	NN<Media::GTKDrawImage> dimg;
 	cairo_surface_t *surface;
@@ -40,14 +40,14 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSI
 	{
 		atype = Media::AT_PREMUL_ALPHA;
 	}
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<IntOS>(0, 0), size, 32, atype, nullptr));
 	return dimg;
 }
 
-NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br, Optional<Media::ColorSess> colorSess)
+NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<IntOS> tl, Math::Coord2D<IntOS> br, Optional<Media::ColorSess> colorSess)
 {
 	NN<Media::GTKDrawImage> dimg;
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_IGNORE_ALPHA, colorSess));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UIntOS>((UIntOS)(br.x - tl.x), (UIntOS)(br.y - tl.y)), 32, Media::AT_IGNORE_ALPHA, colorSess));
 	return dimg;
 }
 
@@ -94,7 +94,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 struct StreamStatus
 {
 	Data::ByteArray buff;
-	UOSInt currOfst;
+	UIntOS currOfst;
 };
 
 cairo_status_t GTKDrawEngine_ArrayStream(void *closure, unsigned char *data, unsigned int length)
@@ -137,7 +137,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 	if (isImage == 0)
 		return nullptr;
 	UInt64 fileLength = stm->GetLength();
-	Data::ByteBuffer data((UOSInt)fileLength);
+	Data::ByteBuffer data((UIntOS)fileLength);
 	data.CopyFrom(Data::ByteArrayR(hdr, 128));
 	if (stm->Read(data.SubArray(128)) != fileLength - 128)
 	{
@@ -153,16 +153,16 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 		{
 			cairo_t *cr = cairo_create(surface);
 			NN<Media::GTKDrawImage> dimg;
-			Math::Size2D<UOSInt> size;
+			Math::Size2D<UIntOS> size;
 			Media::AlphaType atype = Media::AT_IGNORE_ALPHA;
-			size.x = (UOSInt)cairo_image_surface_get_width(surface);
-			size.y = (UOSInt)cairo_image_surface_get_height(surface);
+			size.x = (UIntOS)cairo_image_surface_get_width(surface);
+			size.y = (UIntOS)cairo_image_surface_get_height(surface);
 			cairo_content_t content = cairo_surface_get_content(surface);
 			if (content == CAIRO_CONTENT_COLOR_ALPHA)
 			{
 				atype = Media::AT_PREMUL_ALPHA;
 			}
-			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<IntOS>(0, 0), size, 32, atype, nullptr));
 			return dimg;
 
 		}
@@ -176,16 +176,16 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 		if (pixBuf)
 		{
 			NN<Media::GTKDrawImage> dimg;
-			Math::Size2D<UOSInt> size;
+			Math::Size2D<UIntOS> size;
 			Media::AlphaType atype = Media::AT_IGNORE_ALPHA;
-			size.x = (UOSInt)gdk_pixbuf_get_width(pixBuf);
-			size.y = (UOSInt)gdk_pixbuf_get_height(pixBuf);
+			size.x = (UIntOS)gdk_pixbuf_get_width(pixBuf);
+			size.y = (UIntOS)gdk_pixbuf_get_height(pixBuf);
 			cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
 			cairo_t *cr = cairo_create(surface);
 			UInt8 *dptr = cairo_image_surface_get_data(surface);
-			OSInt dbpl = cairo_image_surface_get_stride(surface);
+			IntOS dbpl = cairo_image_surface_get_stride(surface);
 			UInt8 *sptr = gdk_pixbuf_get_pixels(pixBuf);
-			OSInt sbpl = gdk_pixbuf_get_rowstride(pixBuf);
+			IntOS sbpl = gdk_pixbuf_get_rowstride(pixBuf);
 			if (gdk_pixbuf_get_has_alpha(pixBuf))
 			{
 				atype = Media::AT_PREMUL_ALPHA;
@@ -204,7 +204,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 			cairo_surface_mark_dirty(surface);
 			g_object_unref(pixBuf);
 
-			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<IntOS>(0, 0), size, 32, atype, nullptr));
 			return dimg;
 		}
 	}
@@ -229,8 +229,8 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 		cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
 		UnsafeArray<UInt8> sptr = simg->data;
 		UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
-		OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
-		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
+		IntOS sbpl = (IntOS)simg->info.storeSize.x << 2;
+		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 		if (simg->info.atype == Media::AT_ALPHA)
 		{
 			Sync::MutexUsage mutUsage(this->iabMut);
@@ -253,7 +253,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 Optional<Media::DrawImage> Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 {
 	NN<Media::GTKDrawImage> dimg = NN<Media::GTKDrawImage>::ConvertFrom(img);
-	Math::Size2D<UOSInt> size = dimg->GetSize();
+	Math::Size2D<UIntOS> size = dimg->GetSize();
 	Media::AlphaType atype = dimg->GetAlphaType();
 	if (dimg->GetSurface())
 	{
@@ -313,7 +313,7 @@ Media::GTKDrawFont::GTKDrawFont(Text::CStringNN fontName, Double fontHeight, Med
 	}
 }
 
-Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
+Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, IntOS fontSlant, IntOS fontWeight)
 {
 	if (fontName == 0)
 	{
@@ -328,7 +328,7 @@ Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, OSInt
 	this->fontSlant = fontSlant;
 }
 
-Media::GTKDrawFont::GTKDrawFont(NN<Text::String> fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
+Media::GTKDrawFont::GTKDrawFont(NN<Text::String> fontName, Double fontHeight, IntOS fontSlant, IntOS fontWeight)
 {
 	this->fontName = fontName->Clone();
 	this->fontHeight = fontHeight;
@@ -357,12 +357,12 @@ Double Media::GTKDrawFont::GetHeight()
 	return this->fontHeight;
 }
 
-OSInt Media::GTKDrawFont::GetFontWeight()
+IntOS Media::GTKDrawFont::GetFontWeight()
 {
 	return this->fontWeight;
 }
 
-OSInt Media::GTKDrawFont::GetFontSlant()
+IntOS Media::GTKDrawFont::GetFontSlant()
 {
 	return this->fontSlant;
 }
@@ -415,7 +415,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess) : Media::RasterImage(size, Math::Size2D<UIntOS>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
@@ -435,17 +435,17 @@ Media::GTKDrawImage::~GTKDrawImage()
 	}
 }
 
-UOSInt Media::GTKDrawImage::GetWidth() const
+UIntOS Media::GTKDrawImage::GetWidth() const
 {
 	return this->info.dispSize.x;
 }
 
-UOSInt Media::GTKDrawImage::GetHeight() const
+UIntOS Media::GTKDrawImage::GetHeight() const
 {
 	return this->info.dispSize.y;
 }
 
-Math::Size2D<UOSInt> Media::GTKDrawImage::GetSize() const
+Math::Size2D<UIntOS> Media::GTKDrawImage::GetSize() const
 {
 	return this->info.dispSize;
 }
@@ -510,7 +510,7 @@ void Media::GTKDrawImage::GetImgBitsEnd(Bool modified)
 	}
 }
 
-UOSInt Media::GTKDrawImage::GetImgBpl() const
+UIntOS Media::GTKDrawImage::GetImgBpl() const
 {
 	return (this->info.storeSize.x * this->info.storeBPP) >> 3;
 }
@@ -534,41 +534,41 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, N
 {
 	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	pen->Init(this->cr);
-	cairo_move_to((cairo_t*)this->cr, x1 + OSInt2Double(this->tl.x), y1 + OSInt2Double(this->tl.y));
-	cairo_line_to((cairo_t*)this->cr, x2 + OSInt2Double(this->tl.x), y2 + OSInt2Double(this->tl.y));
+	cairo_move_to((cairo_t*)this->cr, x1 + IntOS2Double(this->tl.x), y1 + IntOS2Double(this->tl.y));
+	cairo_line_to((cairo_t*)this->cr, x2 + IntOS2Double(this->tl.x), y2 + IntOS2Double(this->tl.y));
 	cairo_stroke((cairo_t*)this->cr);
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPoints, NN<DrawPen> p)
 {
 	printf("GTK: Draw PolylineI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UIntOS nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolyPolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, NN<DrawPen> p)
 {
 	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
-		cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+		cairo_move_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+			cairo_line_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 			points++;
 		}
 		cairo_stroke((cairo_t*)this->cr);
@@ -580,7 +580,7 @@ Bool Media::GTKDrawImage::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> point
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<GTKDrawPen> pen;
 	NN<DrawPen> nnp;
@@ -588,11 +588,11 @@ Bool Media::GTKDrawImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points
 	NN<GTKDrawBrush> brush;
 	if (nPoints >= 2)
 	{
-		cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+		cairo_move_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+			cairo_line_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 			points++;
 		}
 		cairo_close_path((cairo_t*)this->cr);
@@ -629,13 +629,13 @@ Bool Media::GTKDrawImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UIntOS nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<GTKDrawPen> pen;
 	NN<DrawPen> nnp;
 	NN<DrawBrush> nnb;
 	NN<GTKDrawBrush> brush;
-	UOSInt i;
+	UIntOS i;
 	if (nPointCnt > 0)
 	{
 		while (nPointCnt-- > 0)
@@ -643,11 +643,11 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> po
 			i = *pointCnt++;
 			if (i > 0)
 			{
-				cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+				cairo_move_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 				points++;
 				while (i-- > 1)
 				{
-					cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
+					cairo_line_to((cairo_t*)this->cr, points[0].x + IntOS2Double(this->tl.x), points[0].y + IntOS2Double(this->tl.y));
 					points++;
 				}
 				cairo_close_path((cairo_t*)this->cr);
@@ -695,14 +695,14 @@ Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Op
 	{
 		NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
 		brush->Init(this->cr);
-		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
+		cairo_rectangle((cairo_t*)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + IntOS2Double(this->tl.y), size.x, size.y);
 		cairo_fill((cairo_t*)this->cr);
 	}
 	if (p.SetTo(nnp))
 	{
 		NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
-		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
+		cairo_rectangle((cairo_t*)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + IntOS2Double(this->tl.y), size.x, size.y);
 		cairo_stroke((cairo_t*)this->cr);
 	}
 	return true;
@@ -761,7 +761,7 @@ Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, N
 	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 	font->Init(this->cr);
 	brush->Init(this->cr);
-	cairo_move_to((cairo_t *)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->tl.y));
+	cairo_move_to((cairo_t *)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + font->GetHeight() * 0.8 + 1 + IntOS2Double(this->tl.y));
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v.Ptr());
 	return true;
 }
@@ -783,41 +783,41 @@ Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN
 	Double sVal = Math_Sin(angleR);
 	Double dist = font->GetHeight() * 0.8 + 1;
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v.Ptr(), &extents);
-	cairo_move_to((cairo_t *)this->cr, center.x - dist * sVal + OSInt2Double(this->tl.x), center.y + dist * cVal + OSInt2Double(this->tl.y));
+	cairo_move_to((cairo_t *)this->cr, center.x - dist * sVal + IntOS2Double(this->tl.x), center.y + dist * cVal + IntOS2Double(this->tl.y));
 	cairo_rotate((cairo_t *)this->cr, angleR);
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v.Ptr());
 	cairo_rotate((cairo_t *)this->cr, -angleR);
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, UIntOS buffSize)
 {
 	return DrawStringB(tl, str->ToCString(), f, b, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, UIntOS buffSize)
 {
-	OSInt px = Double2OSInt(tl.x);
-	OSInt py = Double2OSInt(tl.y);
+	IntOS px = Double2IntOS(tl.x);
+	IntOS py = Double2IntOS(tl.y);
 	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(f);
 	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 
 	UInt32 sz[2];
 	NN<Media::GTKDrawImage> gimg;
-	OSInt swidth;
-	OSInt sheight;
-	OSInt sx;
-	OSInt sy;
-	OSInt dwidth;
-	OSInt dheight;
+	IntOS swidth;
+	IntOS sheight;
+	IntOS sx;
+	IntOS sy;
+	IntOS dwidth;
+	IntOS dheight;
 
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v.Ptr(), &extents);
 	sz[0] = (UInt32)Double2Int32(extents.width + 2);
 	sz[1] = (UInt32)Double2Int32(extents.height + 2);
-	dwidth = (OSInt)this->info.dispSize.x - px;
-	dheight = (OSInt)this->info.dispSize.y - py;
+	dwidth = (IntOS)this->info.dispSize.x - px;
+	dheight = (IntOS)this->info.dispSize.y - py;
 
 	if (dwidth < 0)
 	{
@@ -827,50 +827,50 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 	}
 	else
 	{
-		swidth = (OSInt)(sz[0] + (buffSize << 1));
-		sheight = (OSInt)(sz[1] + (buffSize << 1));
-		if (!Optional<Media::GTKDrawImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA)).SetTo(gimg))
+		swidth = (IntOS)(sz[0] + (buffSize << 1));
+		sheight = (IntOS)(sz[1] + (buffSize << 1));
+		if (!Optional<Media::GTKDrawImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)swidth, (UIntOS)sheight), Media::AT_ALPHA)).SetTo(gimg))
 		{
 			return false;
 		}
 
-		if (px < (OSInt)buffSize)
+		if (px < (IntOS)buffSize)
 		{
-			sx = -px + (OSInt)buffSize;
+			sx = -px + (IntOS)buffSize;
 			swidth += px;
 			px = 0;
 		}
 		else
 		{
 			sx = 0;
-			px -= (OSInt)buffSize;
+			px -= (IntOS)buffSize;
 		}
-		if (py < (OSInt)buffSize)
+		if (py < (IntOS)buffSize)
 		{
-			sy = -py + (OSInt)buffSize;
+			sy = -py + (IntOS)buffSize;
 			sheight = (sheight + py);
 			py = 0;
 		}
 		else
 		{
 			sy = 0;
-			py -= (OSInt)buffSize;
+			py -= (IntOS)buffSize;
 		}
-		if (((OSInt)gimg->GetHeight() - sheight) < sy)
+		if (((IntOS)gimg->GetHeight() - sheight) < sy)
 		{
-			sheight = (OSInt)gimg->GetHeight() - sy;
+			sheight = (IntOS)gimg->GetHeight() - sy;
 		}
-		if (((OSInt)gimg->GetWidth() - swidth) < sx)
+		if (((IntOS)gimg->GetWidth() - swidth) < sx)
 		{
-			swidth = (OSInt)gimg->GetWidth() - sx;
+			swidth = (IntOS)gimg->GetWidth() - sx;
 		}
-		if (dwidth + (OSInt)buffSize < swidth)
+		if (dwidth + (IntOS)buffSize < swidth)
 		{
-			swidth = dwidth + (OSInt)buffSize;
+			swidth = dwidth + (IntOS)buffSize;
 		}
-		if (dheight + (OSInt)buffSize < sheight)
+		if (dheight + (IntOS)buffSize < sheight)
 		{
-			sheight = dheight + (OSInt)buffSize;
+			sheight = dheight + (IntOS)buffSize;
 		}
 		if (swidth <= 0 || sheight <= 0 || sz[0] <= 0 || sz[1] <= 0)
 		{
@@ -879,50 +879,50 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 		else
 		{
 			NN<Media::DrawBrush> whiteB = gimg->NewBrushARGB(0xffffffff);
-			gimg->DrawString(Math::Coord2DDbl(OSInt2Double(sx) + tl.x - OSInt2Double(px),
-				OSInt2Double(sy) + tl.y - OSInt2Double(py)), str, f, whiteB);
+			gimg->DrawString(Math::Coord2DDbl(IntOS2Double(sx) + tl.x - IntOS2Double(px),
+				IntOS2Double(sy) + tl.y - IntOS2Double(py)), str, f, whiteB);
 			gimg->DelBrush(whiteB);
 
-			UOSInt bpl = (sz[0] + (buffSize << 1)) << 2;
-			UOSInt dbpl = this->info.dispSize.x << 2;
+			UIntOS bpl = (sz[0] + (buffSize << 1)) << 2;
+			UIntOS dbpl = this->info.dispSize.x << 2;
 			UInt32 color = brush->GetOriColor();
 			cairo_surface_flush((cairo_surface_t*)gimg->surface);
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
-			if (py + sheight > (OSInt)this->info.dispSize.y)
+			if (py + sheight > (IntOS)this->info.dispSize.y)
 			{
-				sheight = (OSInt)this->info.dispSize.y - py;
+				sheight = (IntOS)this->info.dispSize.y - py;
 			}
-			if (px + swidth > (OSInt)this->info.dispSize.x)
+			if (px + swidth > (IntOS)this->info.dispSize.x)
 			{
-				swidth = (OSInt)this->info.dispSize.x - px;
+				swidth = (IntOS)this->info.dispSize.x - px;
 			}
 			if (swidth > 0 && sheight > 0)
 			{
 				if (dbits)
 				{
-					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
-					dbits = ((UInt8*)dbits) + (py * (OSInt)dbpl) + (px << 2);
+					pbits = ((UInt8*)pbits) + (sy * (IntOS)bpl) + (sx << 2);
+					dbits = ((UInt8*)dbits) + (py * (IntOS)dbpl) + (px << 2);
 
 					if ((color & 0xff000000) == 0xff000000)
 					{
-						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)dbpl, color);
+						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, (UIntOS)swidth, (UIntOS)sheight, (IntOS)bpl, (IntOS)dbpl, color);
 					}
 					else
 					{
-						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)dbpl, color);
+						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, (UIntOS)swidth, (UIntOS)sheight, (IntOS)bpl, (IntOS)dbpl, color);
 					}
 					cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 				}
 				else
 				{
-					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
+					pbits = ((UInt8*)pbits) + (sy * (IntOS)bpl) + (sx << 2);
 
-					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)bpl, color);
+					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, (UIntOS)swidth, (UIntOS)sheight, (IntOS)bpl, (IntOS)bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
 					gimg->SetVDPI(this->GetVDPI());
-					this->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(px - sx), OSInt2Double(py - sy)));
+					this->DrawImagePt(gimg, Math::Coord2DDbl(IntOS2Double(px - sx), IntOS2Double(py - sy)));
 				}
 			}
 		}
@@ -932,12 +932,12 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UIntOS buffSize)
 {
 	return DrawStringRotB(center, str->ToCString(), f, b, angleDegree, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UIntOS buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;
@@ -962,7 +962,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
-		cairo_translate((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y));
+		cairo_translate((cairo_t*)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + IntOS2Double(this->tl.y));
 		cairo_scale((cairo_t*)this->cr, this->info.hdpi / img->GetHDPI(), this->info.vdpi / img->GetVDPI());
 		cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 		cairo_paint((cairo_t*)this->cr);
@@ -974,7 +974,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		if (gimg->info.storeBPP != 32 || this->info.storeBPP != 32)
 		{
 			cairo_save((cairo_t*)this->cr);
-			cairo_translate((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y));
+			cairo_translate((cairo_t*)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + IntOS2Double(this->tl.y));
 			cairo_scale((cairo_t*)this->cr, 1, 1);
 			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 			cairo_paint((cairo_t*)this->cr);
@@ -984,17 +984,17 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
 		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 		UInt8 *simgPtr = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
-		OSInt sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
+		IntOS sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
 
-		OSInt ixPos = Double2Int32(tl.x);
-		OSInt iyPos = Double2Int32(tl.y);
-		OSInt ixPos2 = ixPos + (OSInt)gimg->info.dispSize.x;
-		OSInt iyPos2 = iyPos + (OSInt)gimg->info.dispSize.y;
-		if ((OSInt)this->info.dispSize.x < ixPos2)
+		IntOS ixPos = Double2Int32(tl.x);
+		IntOS iyPos = Double2Int32(tl.y);
+		IntOS ixPos2 = ixPos + (IntOS)gimg->info.dispSize.x;
+		IntOS iyPos2 = iyPos + (IntOS)gimg->info.dispSize.y;
+		if ((IntOS)this->info.dispSize.x < ixPos2)
 		{
-			ixPos2 = (OSInt)this->info.dispSize.x;
+			ixPos2 = (IntOS)this->info.dispSize.x;
 		}
 		if (ixPos < 0)
 		{
@@ -1002,9 +1002,9 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 			ixPos = 0;
 		}
 
-		if ((OSInt)this->info.dispSize.y < iyPos2)
+		if ((IntOS)this->info.dispSize.y < iyPos2)
 		{
-			iyPos2 = (OSInt)this->info.dispSize.y;
+			iyPos2 = (IntOS)this->info.dispSize.y;
 		}
 		if (iyPos < 0)
 		{
@@ -1018,7 +1018,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 
 		if (gimg->info.atype == Media::AT_ALPHA_ALL_FF || gimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			ImageCopy_ImgCopy(simgPtr, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
+			ImageCopy_ImgCopy(simgPtr, dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
 		}
@@ -1030,7 +1030,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 				this->eng->iab.SetSourceProfile(gimg->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);
-				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), gimg->info.atype);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
@@ -1062,15 +1062,15 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	}
 	cairo_surface_flush((cairo_surface_t*)this->surface);
 	UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-	OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+	IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 	UnsafeArray<UInt8> simgPtr = img->data;
-	OSInt sbpl = (OSInt)img->info.storeSize.x * 4;
+	IntOS sbpl = (IntOS)img->info.storeSize.x * 4;
 
 	Int32 ixPos = Double2Int32(tl.x);
 	Int32 iyPos = Double2Int32(tl.y);
 	Int32 ixPos2 = ixPos + (Int32)img->info.dispSize.x;
 	Int32 iyPos2 = iyPos + (Int32)img->info.dispSize.y;
-	if ((OSInt)this->info.dispSize.x < ixPos2)
+	if ((IntOS)this->info.dispSize.x < ixPos2)
 	{
 		ixPos2 = (Int32)this->info.dispSize.x;
 	}
@@ -1080,7 +1080,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 		ixPos = 0;
 	}
 
-	if ((OSInt)this->info.dispSize.y < iyPos2)
+	if ((IntOS)this->info.dispSize.y < iyPos2)
 	{
 		iyPos2 = (Int32)this->info.dispSize.y;
 	}
@@ -1096,7 +1096,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 
 	if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 	{
-		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
+		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
@@ -1108,7 +1108,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 			this->eng->iab.SetSourceProfile(img->info.color);
 			this->eng->iab.SetDestProfile(this->info.color);
 			this->eng->iab.SetOutputProfile(this->info.color);
-			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
+			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), img->info.atype);
 		}
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
@@ -1135,9 +1135,9 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
-		cairo_rectangle((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y), srcSize.x, srcSize.y);
+		cairo_rectangle((cairo_t*)this->cr, destTL.x + IntOS2Double(this->tl.x), destTL.y + IntOS2Double(this->tl.y), srcSize.x, srcSize.y);
 		cairo_clip((cairo_t*)this->cr);
-		cairo_translate((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y));
+		cairo_translate((cairo_t*)this->cr, destTL.x + IntOS2Double(this->tl.x), destTL.y + IntOS2Double(this->tl.y));
 		cairo_scale((cairo_t*)this->cr, this->info.hdpi / img->GetHDPI(), this->info.vdpi / img->GetVDPI());
 		cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, Double2Int32(srcTL.x), Double2Int32(srcTL.y));
 		cairo_paint((cairo_t*)this->cr);
@@ -1149,9 +1149,9 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 		if (gimg->info.storeBPP != 32 || this->info.storeBPP != 32)
 		{
 			cairo_save((cairo_t*)this->cr);
-			cairo_rectangle((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y), srcSize.x, srcSize.y);
+			cairo_rectangle((cairo_t*)this->cr, destTL.x + IntOS2Double(this->tl.x), destTL.y + IntOS2Double(this->tl.y), srcSize.x, srcSize.y);
 			cairo_clip((cairo_t*)this->cr);
-			cairo_translate((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y));
+			cairo_translate((cairo_t*)this->cr, destTL.x + IntOS2Double(this->tl.x), destTL.y + IntOS2Double(this->tl.y));
 			cairo_scale((cairo_t*)this->cr, 1, 1);
 			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, Double2Int32(-srcTL.x), Double2Int32(-srcTL.y));
 			cairo_paint((cairo_t*)this->cr);
@@ -1161,17 +1161,17 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
 		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 		UInt8 *simgPtr = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
-		OSInt sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
+		IntOS sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
 
-		OSInt ixPos = Double2Int32(destTL.x);
-		OSInt iyPos = Double2Int32(destTL.y);
-		OSInt ixPos2 = ixPos + (OSInt)srcSize.x;
-		OSInt iyPos2 = iyPos + (OSInt)srcSize.y;
-		if ((OSInt)this->info.dispSize.x < ixPos2)
+		IntOS ixPos = Double2Int32(destTL.x);
+		IntOS iyPos = Double2Int32(destTL.y);
+		IntOS ixPos2 = ixPos + (IntOS)srcSize.x;
+		IntOS iyPos2 = iyPos + (IntOS)srcSize.y;
+		if ((IntOS)this->info.dispSize.x < ixPos2)
 		{
-			ixPos2 = (OSInt)this->info.dispSize.x;
+			ixPos2 = (IntOS)this->info.dispSize.x;
 		}
 		if (ixPos < 0)
 		{
@@ -1179,9 +1179,9 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 			ixPos = 0;
 		}
 
-		if ((OSInt)this->info.dispSize.y < iyPos2)
+		if ((IntOS)this->info.dispSize.y < iyPos2)
 		{
-			iyPos2 = (OSInt)this->info.dispSize.y;
+			iyPos2 = (IntOS)this->info.dispSize.y;
 		}
 		if (iyPos < 0)
 		{
@@ -1195,7 +1195,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 
 		if (gimg->info.atype == Media::AT_ALPHA_ALL_FF || gimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			ImageCopy_ImgCopy(simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
+			ImageCopy_ImgCopy(simgPtr + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
 		}
@@ -1207,7 +1207,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 				this->eng->iab.SetSourceProfile(gimg->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);
-				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), gimg->info.atype);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
@@ -1235,16 +1235,16 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 	{
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 		Media::ImgRemapper::LinearImageRemapper remapper;
 		remapper.SetSourceImage(img);
-		remapper.Remap(dimgPtr, (UOSInt)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		remapper.Remap(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
 }
 
-NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
 {
 	NN<Media::GTKDrawPen> p;
 	NEW_CLASSNN(p, Media::GTKDrawPen(color, thick));
@@ -1277,8 +1277,8 @@ NN<Media::DrawFont> Media::GTKDrawImage::CloneFont(NN<DrawFont> f)
 	NN<Media::GTKDrawFont> fnt = NN<Media::GTKDrawFont>::ConvertFrom(f);
 	NN<Text::String> fname = fnt->GetFontName();
 	Double height = fnt->GetHeight();
-	OSInt fontWeight = fnt->GetFontWeight();
-	OSInt fontSlant = fnt->GetFontSlant();
+	IntOS fontWeight = fnt->GetFontWeight();
+	IntOS fontSlant = fnt->GetFontSlant();
 	NEW_CLASSNN(fnt, Media::GTKDrawFont(fname, height, fontWeight, fontSlant));
 	return fnt;
 }
@@ -1314,33 +1314,33 @@ void Media::GTKDrawImage::SetTextAlign(DrawEngine::DrawPos pos)
 {
 }
 
-void Media::GTKDrawImage::GetStringBound(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBound(UnsafeArray<Int32> pos, IntOS centX, IntOS centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
 }
 
-void Media::GTKDrawImage::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
 }
 
-void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
+void Media::GTKDrawImage::CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const
 {
 	if (this->surface)
 	{
 		if (x < 0)
 		{
-			width = (UOSInt)((OSInt)width + x);
+			width = (UIntOS)((IntOS)width + x);
 			x = 0;
 		}
 		if (y < 0)
 		{
-			height = (UOSInt)((OSInt)height + y);
+			height = (UIntOS)((IntOS)height + y);
 			y = 0;
 		}
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		UInt8 *srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData)
 		{
-			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info.storeSize.x * 4, imgPtr.Ptr(), width * 4, height, this->info.storeSize.x * 4, bpl, upsideDown);
+			ImageCopy_ImgCopyR(srcData + x * 4 + y * (IntOS)this->info.storeSize.x * 4, imgPtr.Ptr(), width * 4, height, this->info.storeSize.x * 4, bpl, upsideDown);
 		}
 	}
 }
@@ -1362,7 +1362,7 @@ Optional<Media::StaticImage> Media::GTKDrawImage::ToStaticImage() const
 	return nullptr;
 }
 
-UOSInt Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)
+UIntOS Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;
@@ -1395,12 +1395,12 @@ UOSInt Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)
 #endif
 }
 
-UOSInt Media::GTKDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
+UIntOS Media::GTKDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-UOSInt Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
+UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;
@@ -1452,12 +1452,12 @@ Media::RasterImage::ImageType Media::GTKDrawImage::GetImageType() const
 	return Media::RasterImage::ImageType::GUIImage;
 }
 
-void Media::GTKDrawImage::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::GTKDrawImage::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	this->CopyBits(left, top, destBuff.Ptr(), destBpl, width, height, upsideDown);
 }
 
-Int32 Media::GTKDrawImage::GetPixel32(OSInt x, OSInt y) const
+Int32 Media::GTKDrawImage::GetPixel32(IntOS x, IntOS y) const
 {
 	return 0;
 }

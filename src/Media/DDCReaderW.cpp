@@ -27,7 +27,7 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 	WChar wbuff[16];
 	WChar monVID[4];
 	UInt32 monPID;
-	UOSInt k;
+	UIntOS k;
 
 	DISPLAY_DEVICEW dd;
 	MemClear(&dd, sizeof(dd));
@@ -138,8 +138,8 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char monVID[4];
 	UInt32 monPID;
-	UOSInt k;
-	UOSInt monitorIdLen = Text::StrCharCnt(monitorId);
+	UIntOS k;
+	UIntOS monitorIdLen = Text::StrCharCnt(monitorId);
 
 	DISPLAY_DEVICEW dd;
 	MemClear(&dd, sizeof(dd));
@@ -164,7 +164,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 				sptr = Text::StrWChar_UTF8C(sbuff, &ddMon.DeviceID[k + 3], 4);
 				monPID = (UInt32)Text::StrHex2Int32C(sbuff);
 
-				if (Text::StrStartsWithC(monitorId, monitorIdLen, monVID, 3) && Text::StrEqualsICaseC(&monitorId[3], monitorIdLen - 3, sbuff, (UOSInt)(sptr - sbuff)))
+				if (Text::StrStartsWithC(monitorId, monitorIdLen, monVID, 3) && Text::StrEqualsICaseC(&monitorId[3], monitorIdLen - 3, sbuff, (UIntOS)(sptr - sbuff)))
 				{
 					HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT, NULL, NULL, NULL);
 					if (devInfo)
@@ -237,7 +237,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
     }
 }
 
-Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize)
+Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UIntOS edidSize)
 {
 	UnsafeArray<UInt8> nnedid;
 	this->edid = nnedid = MemAllocArr(UInt8, edidSize);
@@ -256,22 +256,22 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UnsafeArrayOpt<UInt8> Media::DDCReader::GetEDID(OutParam<UOSInt> size)
+UnsafeArrayOpt<UInt8> Media::DDCReader::GetEDID(OutParam<UIntOS> size)
 {
 	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
+UIntOS Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
 	const GUID GUID_CLASS_MONITOR = {0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18};
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Media::DDCReader> reader;
 
 	WChar wbuff[16];
 	WChar monVID[4];
 	UInt32 monPID;
-	UOSInt k;
+	UIntOS k;
 	Bool found;
 
 	DISPLAY_DEVICEW dd;

@@ -13,8 +13,8 @@ Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolyli
 	UTF8Char c;
 	Bool isX;
 	Math::Geometry::LineString *pl;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<Math::Coord2DDbl> ptList;
 	lastX = 0;
 	lastY = 0;

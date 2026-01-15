@@ -15,8 +15,8 @@ namespace IO
 		GPUManager();
 		~GPUManager();
 
-		UOSInt GetGPUCount();
-		Optional<IO::GPUControl> GetGPUControl(UOSInt index);
+		UIntOS GetGPUCount();
+		Optional<IO::GPUControl> GetGPUControl(UIntOS index);
 	};
 }
 #endif

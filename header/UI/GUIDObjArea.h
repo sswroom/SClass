@@ -32,15 +32,15 @@ namespace UI
 		void SetHandler(Optional<UI::DObj::DObjHandler> dobjHdlr);
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 	protected:
 		virtual void OnSurfaceCreated();
-		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
-		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
-		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnMouseDblClick(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseWheel(Math::Coord2D<IntOS> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<IntOS> pos);
+		virtual void OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnMouseDblClick(Math::Coord2D<IntOS> pos, MouseButton button);
 	};
 };
 #endif

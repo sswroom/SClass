@@ -21,18 +21,18 @@ namespace Map
 	private:
 		Data::ArrayListNN<Map::ReverseGeocoder> revGeos;
 		Data::ArrayListNN<LangMap> langMaps;
-		OSInt nextCoder;
+		IntOS nextCoder;
 		Optional<DB::DBTool> conn;
 		Optional<IO::Writer> errWriter;
 		Sync::Mutex mut;
 	private:
-		OSInt GetLangIndex(UInt32 lcid);
+		IntOS GetLangIndex(UInt32 lcid);
 	public:
 		DBAssistedRReverseGeocoder(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Optional<IO::Writer> errWriter);
 		virtual ~DBAssistedRReverseGeocoder();
 
-		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		void AddReverseGeocoder(NN<Map::ReverseGeocoder> revGeo);
 
 		void AddLangMap(Int32 lcid, Int32 lang);

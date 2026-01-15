@@ -10,10 +10,10 @@ private:
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	NN<DB::TableDef> tabDef;
 	Optional<Text::SpreadSheet::Worksheet::RowData> row;
-	UOSInt currIndex;
-	UOSInt maxIndex;
+	UIntOS currIndex;
+	UIntOS maxIndex;
 public:
-	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, NN<DB::TableDef> tabDef, UOSInt initOfst, UOSInt maxOfst)
+	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, NN<DB::TableDef> tabDef, UIntOS initOfst, UIntOS maxOfst)
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
@@ -39,17 +39,17 @@ public:
 		return this->row.NotNull();
 	}
 
-	virtual UOSInt ColCount()
+	virtual UIntOS ColCount()
 	{
 		return this->tabDef->GetColCnt();
 	}
 
-	virtual OSInt GetRowChanged()
+	virtual IntOS GetRowChanged()
 	{
 		return 0;
 	}
 
-	virtual Int32 GetInt32(UOSInt colIndex)
+	virtual Int32 GetInt32(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -60,7 +60,7 @@ public:
 		return cellValue->ToInt32();
 	}
 
-	virtual Int64 GetInt64(UOSInt colIndex)
+	virtual Int64 GetInt64(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -71,7 +71,7 @@ public:
 		return cellValue->ToInt64();
 	}
 
-	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -82,7 +82,7 @@ public:
 		return Text::StrUTF8_WChar(buff, cellValue->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -94,7 +94,7 @@ public:
 		return true;
 	}
 
-	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -105,7 +105,7 @@ public:
 		return cellValue->Clone();
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -116,7 +116,7 @@ public:
 		return cellValue->ConcatToS(buff, buffSize);
 	}
 
-	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -127,7 +127,7 @@ public:
 		return Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
-	virtual Double GetDblOrNAN(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -138,7 +138,7 @@ public:
 		return cellValue->ToDoubleOrNAN();
 	}
 
-	virtual Bool GetBool(UOSInt colIndex)
+	virtual Bool GetBool(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -149,7 +149,7 @@ public:
 		return cellValue->v[0] == 'T' || cellValue->v[0] == 't' || cellValue->ToInt32() != 0;
 	}
 
-	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -160,7 +160,7 @@ public:
 		return cellValue->leng;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -172,17 +172,17 @@ public:
 		return cellValue->leng;
 	}
 
-	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
 		return nullptr;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+	virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -194,7 +194,7 @@ public:
 		return true;
 	}
 
-	virtual Bool IsNull(UOSInt colIndex)
+	virtual Bool IsNull(UIntOS colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
@@ -205,7 +205,7 @@ public:
 		return false;
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
@@ -215,7 +215,7 @@ public:
 		return nullptr;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
 		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
@@ -226,7 +226,7 @@ public:
 		return DB::DBUtil::ColType::CT_Unknown;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
 		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
@@ -249,7 +249,7 @@ DB::WorkbookDB::~WorkbookDB()
 	this->wb.Delete();
 }
 
-UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 	{
@@ -263,7 +263,7 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayL
 	return this->wb->GetCount();
 }
 
-Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	NN<DB::TableDef> tabDef;
@@ -276,7 +276,7 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 		return nullptr;
 	}
 	NN<WorkbookReader> r;
-	UOSInt endOfst;
+	UIntOS endOfst;
 	if (maxCnt == 0)
 	{
 		endOfst = sheet->GetCount();
@@ -307,8 +307,8 @@ Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Tex
 	NN<Text::SpreadSheet::Worksheet::CellData> cell;
 	if (sheet->GetItem(0).SetTo(row))
 	{
-		UOSInt i = 0;
-		UOSInt j = row->cells.GetCount();
+		UIntOS i = 0;
+		UIntOS j = row->cells.GetCount();
 		while (i < j)
 		{
 			if (row->cells.GetItem(i).SetTo(cell))

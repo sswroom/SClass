@@ -41,7 +41,7 @@ namespace SSWR
 			void LoadMap(Int32 mapType);
 			void UpdateList();
 
-			static void __stdcall OnFileDrop(void *userObj, const WChar **files, OSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, const WChar **files, IntOS nFiles);
 			static void __stdcall OnLayerDblClicked(void *userObj);
 		public:
 			MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NN<Net::SocketFactory> sockf);

@@ -23,11 +23,11 @@ namespace IO
 		typedef struct
 		{
 			UnsafeArray<UInt8> buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 		} ReadBuffer;
 	private:
 		DataHdlr hdlr;
-		UOSInt buffSize;
+		UIntOS buffSize;
 
 		Bool started;
 		Bool running;
@@ -44,7 +44,7 @@ namespace IO
 
 		static UInt32 __stdcall ReadThread(AnyType obj);
 	public:
-		ActiveStreamReader(DataHdlr hdlr, AnyType userData, UOSInt buffSize);
+		ActiveStreamReader(DataHdlr hdlr, AnyType userData, UIntOS buffSize);
 		~ActiveStreamReader();
 
 		void SetUserData(AnyType userData);

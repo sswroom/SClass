@@ -15,11 +15,11 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	WChar wbuff[256];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
 	Data::ArrayListObj<const UTF8Char*> dbCols;
 	Data::ArrayListNative<UInt32> dbCols2;
 

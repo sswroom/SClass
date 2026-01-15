@@ -16,23 +16,23 @@ namespace UI
 			Double fontSize;
 			UInt32 fontColor;
 			UInt32 codePage;
-			Math::Size2D<UOSInt> size;
+			Math::Size2D<UIntOS> size;
 			Double lineHeight;
 			Optional<Media::DrawImage> dimg;
 			Double rollSpeed;
-			OSInt lastRollPos;
+			IntOS lastRollPos;
 			Data::DateTime startTime;
 
 			void UpdateBGImg();
 		public:
-			RollingTextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
+			RollingTextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, Double rollSpeed);
 			virtual ~RollingTextDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();

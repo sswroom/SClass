@@ -13,7 +13,7 @@ namespace IO
 		~Library();
 		Bool IsError();
 		void *GetFunc(UnsafeArray<const Char> funcName);
-		void *GetFuncNum(OSInt num);
+		void *GetFuncNum(IntOS num);
 	};
 };
 #endif

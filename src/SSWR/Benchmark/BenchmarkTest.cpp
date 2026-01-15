@@ -32,7 +32,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 	}
 	if (valid)
 	{
-		UOSInt leng;
+		UIntOS leng;
 		const UInt8 *data;
 		data = req->GetReqData(leng);
 		if (leng <= 128 || leng >= 65536)
@@ -189,13 +189,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 	UTF8Char *sptr2;
 	if (req->GetQueryValueStr(CSTR("model"), fileName, 512))
 	{
-		UOSInt fileSize;
+		UIntOS fileSize;
 		sptr = IO::Path::GetProcessFileName(path);
 		sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcat(sptr, fileName);
 		IO::FileStream fs(CSTRP(path, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fileSize = (UOSInt)fs.GetLength();
+		fileSize = (UIntOS)fs.GetLength();
 		if (fileSize > 0)
 		{
 			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
@@ -221,7 +221,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
-			UOSInt reqSize;
+			UIntOS reqSize;
 			const UInt8 *reqData = req->GetReqData(reqSize);
 			if (reqSize > 0 && reqSize <= 128)
 			{
@@ -249,7 +249,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		}
 		else
 		{
-			UOSInt fileSize;
+			UIntOS fileSize;
 			const UInt8 *fileBuff;
 			if (req->GetQueryValueStr(CSTR("file"), fileName, 512))
 			{
@@ -356,7 +356,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (Text::StrStartsWithC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("Unknown")))
+				if (Text::StrStartsWithC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC("Unknown")))
 				{
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));

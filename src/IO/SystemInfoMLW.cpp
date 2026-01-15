@@ -23,7 +23,7 @@ IO::SystemInfo::SystemInfo()
 
 	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
 	{
-		data->platformName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		data->platformName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 	}
 }
 
@@ -72,7 +72,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_LUNCHBOX;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	return 0;
 }

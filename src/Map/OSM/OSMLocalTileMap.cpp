@@ -30,8 +30,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 currVal;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
@@ -79,8 +79,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 		
 		Bool xNeedDelete;
 		NN<IO::PackageFile> xPkg;
-		sptr = Text::StrUOSInt(sbuff, this->maxLevel);
-		if (pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
+		sptr = Text::StrUIntOS(sbuff, this->maxLevel);
+		if (pkgFile->GetItemPack((UIntOS)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 		{
 			i = 0;
 			j = xPkg->GetCount();
@@ -114,7 +114,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 				Bool yNeedDelete;
 				NN<IO::PackageFile> yPkg;
 				sptr = Text::StrUInt32(sbuff, minXBlk);
-				if (xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
+				if (xPkg->GetItemPack((UIntOS)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
 				{
 					i = yPkg->GetCount();
 					while (i-- > 0)
@@ -162,7 +162,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 	}
 }
 
-Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text::String> name, NN<Text::String> format, UOSInt minZoom, UOSInt maxZoom, Math::Coord2DDbl minCoord, Math::Coord2DDbl maxCoord)
+Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text::String> name, NN<Text::String> format, UIntOS minZoom, UIntOS maxZoom, Math::Coord2DDbl minCoord, Math::Coord2DDbl maxCoord)
 {
 	this->pkgFile = pkgFile;
 	this->name = name->Clone().Ptr();
@@ -210,33 +210,33 @@ Map::TileMap::TileType Map::OSM::OSMLocalTileMap::GetTileType() const
 	return Map::TileMap::TT_OSMLOCAL;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetMinLevel() const
+UIntOS Map::OSM::OSMLocalTileMap::GetMinLevel() const
 {
 	return this->minLevel;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetMaxLevel() const
+UIntOS Map::OSM::OSMLocalTileMap::GetMaxLevel() const
 {
 	return this->maxLevel;
 }
 
 
-Double Map::OSM::OSMLocalTileMap::GetLevelScale(UOSInt index) const
+Double Map::OSM::OSMLocalTileMap::GetLevelScale(UIntOS index) const
 {
-	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << index);
+	return 204094080000.0 / UIntOS2Double(this->tileWidth) / (1 << index);
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale) const
+UIntOS Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale) const
 {
-	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
+	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UIntOS2Double(this->tileWidth)) / Math_Log10(2));
 	if (level < (Int32)this->minLevel)
 		level = 0;
 	else if (level > (Int32)this->maxLevel)
 		level = (Int32)this->maxLevel;
-	return (UOSInt)level;
+	return (UIntOS)level;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetConcurrentCount() const
+UIntOS Map::OSM::OSMLocalTileMap::GetConcurrentCount() const
 {
 	return 1;
 }
@@ -257,7 +257,7 @@ Bool Map::OSM::OSMLocalTileMap::IsMercatorProj() const
 	return true;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetTileSize() const
+UIntOS Map::OSM::OSMLocalTileMap::GetTileSize() const
 {
 	return this->tileWidth;
 }
@@ -278,7 +278,7 @@ Map::TileMap::ImageType Map::OSM::OSMLocalTileMap::GetImageType() const
 	}
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
+UIntOS Map::OSM::OSMLocalTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	Int32 i;
 	Int32 j;
@@ -329,10 +329,10 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 		}
 		i++;
 	}
-	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
+	return (UIntOS)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NN<IO::StreamData> fd;
@@ -356,7 +356,7 @@ Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("file:///"));
@@ -367,7 +367,7 @@ UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<
 	{
 		Text::StrReplace(sbuff, '\\', '/');
 	}
-	sptr = Text::StrUOSInt(sptr, level);
+	sptr = Text::StrUIntOS(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -377,7 +377,7 @@ UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<
 	return sptr;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	sb->AppendC(UTF8STRC("file:///"));
 	sb->Append(this->pkgFile->GetSourceNameObj());
@@ -387,7 +387,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 	{
 		sb->Replace('\\', '/');
 	}
-	sb->AppendUOSInt(level);
+	sb->AppendUIntOS(level);
 	sb->AppendUTF8Char('/');
 	sb->AppendI32(tileId.x);
 	sb->AppendUTF8Char('/');
@@ -397,7 +397,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 	return true;
 }
 
-Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -418,16 +418,16 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 	Bool yNeedDelete;
 	NN<IO::PackageFile> yPkg;
 	fd = nullptr;
-	sptr = Text::StrUOSInt(sbuff, level);
-	if (this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
+	sptr = Text::StrUIntOS(sbuff, level);
+	if (this->pkgFile->GetItemPack((UIntOS)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 	{
 		sptr = Text::StrInt32(sbuff, tileId.x);
-		if (xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
+		if (xPkg->GetItemPack((UIntOS)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
 		{
 			sptr = Text::StrInt32(sbuff, tileId.y);
 			*sptr++ = '.';
 			sptr = this->fmt->ConcatTo(sptr);
-			fd = yPkg->GetItemStmDataNew((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
+			fd = yPkg->GetItemStmDataNew((UIntOS)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (!fd.IsNull())
 			{
 				if (it.IsNotNull())
@@ -448,11 +448,11 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 	return fd;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX, OutParam<Int32> minY, OutParam<Int32> maxX, OutParam<Int32> maxY)
+Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UIntOS level, OutParam<Int32> minX, OutParam<Int32> minY, OutParam<Int32> maxX, OutParam<Int32> maxY)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 x;
 	Int32 y;
 	Bool found = false;
@@ -471,7 +471,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
 			{
-				if (Text::StrToInt32(sbuff, x) && x == (OSInt)level)
+				if (Text::StrToInt32(sbuff, x) && x == (IntOS)level)
 				{
 					found = true;
 					break;
@@ -525,7 +525,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 						{
 							if (xPkg->GetItemName(sbuff, j).SetTo(sptr) && xPkg->GetItemType(j) == IO::PackageFile::PackObjectType::StreamData)
 							{
-								k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), sbuff2, (UOSInt)(sptr2 - sbuff2));
+								k = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), sbuff2, (UIntOS)(sptr2 - sbuff2));
 								if (k != INVALID_INDEX)
 								{
 									sbuff[k] = 0;

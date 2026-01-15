@@ -25,8 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	Optional<Net::SSLEngine> ssl = nullptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (me->targets.GetCount() <= 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please add at least 1 target URL"), TITLE, me);
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	{
 		NN<Net::WebServer::WebListener> svr;
 		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
-		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, me->targets.GetItemNoCheck(0)->ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
+		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, me->targets.GetItemNoCheck(0)->ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetIntOS()));
 		i = 1;
 		j = me->targets.GetCount();
 		while (i < j)
@@ -157,8 +157,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnLogSel(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::WebListener> svr;
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTimerTick(AnyType user
 	if (i != me->lastAccessIndex)
 	{
 		Data::ArrayListNN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> logs;
-		Data::ArrayListNative<UOSInt> logIndex;
+		Data::ArrayListNative<UIntOS> logIndex;
 		NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage;
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTimerTick(AnyType user
 			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 
-			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
+			me->lbAccess->AddItem(sb.ToCString(), (void*)(IntOS)logIndex.GetItem(i));
 			i++;
 		}
 	}
@@ -244,8 +244,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnAccessSelChg(AnyType u
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	me->reqLog->Use(mutUsage);
-	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
-	UOSInt j;
+	UIntOS i = (UIntOS)me->lbAccess->GetSelectedItem().p;
+	UIntOS j;
 	NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 	log = me->reqLog->GetEntry(i);
 	sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
@@ -300,7 +300,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTargetAddClicked(AnyTy
 		me->ui->ShowMsgOK(CSTR("Invalid Target URL, must be starts with http::// or https://"), TITLE, me);
 		return;
 	}
-	UOSInt i = me->targets.GetCount();
+	UIntOS i = me->targets.GetCount();
 	while (i-- > 0)
 	{
 		if (me->targets.GetItemNoCheck(i)->Equals(sb.ToCString()))
@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTargetAddClicked(AnyTy
 
 void SSWR::AVIRead::AVIRHTTPLoadBalancerForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
+	UIntOS i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{
 		this->caCerts.GetItem(i).Delete();
@@ -327,7 +327,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::G
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	this->core = core;
 	this->SetText(TITLE);
 	this->SetFont(nullptr, 8.25, false);
@@ -364,7 +364,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::G
 	this->lblLogDir = ui->NewLabel(this->grpParam, CSTR("Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("log"));
 	this->txtLogDir = ui->NewTextBox(this->grpParam, CSTRP(sbuff, sptr));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
@@ -393,8 +393,8 @@ SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::G
 	this->lblFwdType->SetRect(8, 152, 100, 23, false);
 	this->cboFwdType = ui->NewComboBox(this->grpParam,false);
 	this->cboFwdType->SetRect(108, 152, 100, 23, false);
-	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
-	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
+	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(IntOS)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
+	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(IntOS)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
 	this->cboFwdType->SetSelectedIndex(0);
 	this->btnStart = ui->NewButton(this->grpParam, CSTR("Start"));
 	this->btnStart->SetRect(200, 176, 75, 23, false);

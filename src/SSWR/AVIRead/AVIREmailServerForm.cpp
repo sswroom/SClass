@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 		{
 			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
-		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
+		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetIntOS();
 		NN<Net::Email::SMTPServer> smtpSvr;
 		NEW_CLASSNN(smtpSvr, Net::Email::SMTPServer(me->clif->GetSocketFactory(), me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
 		if (smtpSvr->IsError())
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(AnyType user
 	me->btnLogFile->SetEnabled(false);
 }
 
-void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	NN<Net::Email::EmailStore::EmailInfo> email;
@@ -260,7 +260,7 @@ UnsafeArrayOpt<UTF8Char> __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailRec
 	cli->GetRemoteAddr(remoteAddr);
 	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
-	me->totalSize += (UOSInt)mail->dataStm->GetLength();
+	me->totalSize += (UIntOS)mail->dataStm->GetLength();
 	return Text::StrInt64(queryId, id);
 }
 
@@ -289,7 +289,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 	{
 		IO::MemoryStream mstm;
 		content->WriteStream(mstm);
-		me->totalSize += (UOSInt)mstm.GetLength();
+		me->totalSize += (UIntOS)mstm.GetLength();
 	}
 }
 
@@ -309,9 +309,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	NN<Net::Email::EmailStore::EmailInfo> email;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
@@ -442,7 +442,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(AnyType user
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
+	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetIntOS();
 	me->txtSMTPPort->GetText(sb);
 	if (sb.ToUInt16(port))
 	{
@@ -481,7 +481,7 @@ Optional<Text::String> SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 use
 
 void SSWR::AVIRead::AVIREmailServerForm::ClearSMTPCACerts()
 {
-	UOSInt i = this->smtpCACerts.GetCount();
+	UIntOS i = this->smtpCACerts.GetCount();
 	while (i-- > 0)
 	{
 		this->smtpCACerts.GetItem(i).Delete();
@@ -491,7 +491,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearSMTPCACerts()
 
 void SSWR::AVIRead::AVIREmailServerForm::ClearPOP3CACerts()
 {
-	UOSInt i = this->pop3CACerts.GetCount();
+	UIntOS i = this->pop3CACerts.GetCount();
 	while (i-- > 0)
 	{
 		this->pop3CACerts.GetItem(i).Delete();
@@ -501,7 +501,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearPOP3CACerts()
 
 void SSWR::AVIRead::AVIREmailServerForm::ClearGCISCACerts()
 {
-	UOSInt i = this->gcisCACerts.GetCount();
+	UIntOS i = this->gcisCACerts.GetCount();
 	while (i-- > 0)
 	{
 		this->gcisCACerts.GetItem(i).Delete();
@@ -553,9 +553,9 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 	this->lblSMTPType->SetRect(0, 48, 100, 23, false);
 	this->cboSMTPType = ui->NewComboBox(this->tpSMTP, false);
 	this->cboSMTPType->SetRect(100, 48, 100, 23, false);
-	this->cboSMTPType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::Plain);
-	this->cboSMTPType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::STARTTLS);
-	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::SSL);
+	this->cboSMTPType->AddItem(CSTR("Plain"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::Plain);
+	this->cboSMTPType->AddItem(CSTR("STARTTLS"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::STARTTLS);
+	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::SSL);
 	this->cboSMTPType->SetSelectedIndex(0);
 	this->cboSMTPType->HandleSelectionChange(OnSMTPTypeSelChg, this);
 	this->btnSMTPStart = ui->NewButton(this->tpSMTP, CSTR("Start"));
@@ -665,7 +665,7 @@ void SSWR::AVIRead::AVIREmailServerForm::OnMonitorChanged()
 Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId)
 {
 	Sync::MutexUsage mutUsage(this->userMut);
-	UOSInt index = this->userMap.GetC(user);
+	UIntOS index = this->userMap.GetC(user);
 	if (index == 0)
 	{
 		NN<Text::String> str = Text::String::New(user);
@@ -676,22 +676,22 @@ Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CStringNN user, Text::CStri
 	return true;
 }
 
-UOSInt SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, OutParam<UOSInt> size)
+UIntOS SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, OutParam<UIntOS> size)
 {
 	Net::Email::EmailStore::MessageStat stat;
 	Optional<Text::String> userName = this->GetUserName(userId);
 	this->store->GetMessageStat(OPTSTR_CSTR(userName), stat);
-	size.Set((UOSInt)stat.unreadSize);
+	size.Set((UIntOS)stat.unreadSize);
 	return stat.unreadCount;
 }
 
 Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, NN<Data::ArrayListNative<UInt32>> unreadList)
 {
-	Data::ArrayListNative<UOSInt> unreadIndices;
+	Data::ArrayListNative<UIntOS> unreadIndices;
 	Optional<Text::String> userName = this->GetUserName(userId);
 	this->store->GetUnreadIndices(OPTSTR_CSTR(userName), unreadIndices);
-	UOSInt i = 0;
-	UOSInt j = unreadIndices.GetCount();
+	UIntOS i = 0;
+	UIntOS j = unreadIndices.GetCount();
 	while (i < j)
 	{
 		unreadList->Add((UInt32)unreadIndices.GetItem(i));
@@ -725,16 +725,16 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 	UInt64 fileLength = fd->GetDataSize();
 	if (fileLength < 1048576)
 	{
-		Data::ByteBuffer buff((UOSInt)fileLength);
-		if (fd->GetRealData(0, (UOSInt)fileLength, buff) == fileLength)
+		Data::ByteBuffer buff((UIntOS)fileLength);
+		if (fd->GetRealData(0, (UIntOS)fileLength, buff) == fileLength)
 		{
-			stm->Write(buff.WithSize((UOSInt)fileLength));
+			stm->Write(buff.WithSize((UIntOS)fileLength));
 			succ = true;
 		}
 	}
 	else
 	{
-		UOSInt readSize;
+		UIntOS readSize;
 		UInt64 ofst = 0;
 		Data::ByteBuffer buff(1048576);
 		succ = true;
@@ -742,7 +742,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 		{
 			if (ofst + 1048576 > fileLength)
 			{
-				readSize = (UOSInt)(fileLength - ofst);
+				readSize = (UIntOS)(fileLength - ofst);
 			}
 			else
 			{

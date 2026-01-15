@@ -15,7 +15,7 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-UOSInt DB::ReadingDB::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
+UIntOS DB::ReadingDB::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
@@ -25,7 +25,7 @@ Int8 DB::ReadingDB::GetTzQhr() const
 	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
-UOSInt DB::ReadingDB::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
+UIntOS DB::ReadingDB::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
 	return 0;
 }

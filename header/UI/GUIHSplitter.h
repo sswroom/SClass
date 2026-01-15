@@ -11,8 +11,8 @@ namespace UI
 		virtual ~GUIHSplitter();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos) = 0;
-		virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos) = 0;
+		virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos) = 0;
+		virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos) = 0;
 	};
 }
 #endif

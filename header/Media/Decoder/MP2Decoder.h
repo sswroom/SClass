@@ -11,7 +11,7 @@ namespace Media
 		private:
 			UInt32 nChannel;
 			void *context;
-			UOSInt blkSize;
+			UIntOS blkSize;
 			UInt64 totalReadSize;
 
 			Optional<Sync::Event> readEvt;
@@ -22,10 +22,10 @@ namespace Media
 			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 			virtual void Stop();
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-			virtual UOSInt GetMinBlockSize();
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS GetMinBlockSize();
 		};
 	}
 }

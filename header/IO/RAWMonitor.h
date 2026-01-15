@@ -26,8 +26,8 @@ namespace IO
 		virtual LinkType GetLinkType() const = 0;
 		virtual Bool IsError() = 0;
 		virtual void Close() = 0;
-		virtual UOSInt GetMTU() = 0;
-		virtual UOSInt NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks) = 0;
+		virtual UIntOS GetMTU() = 0;
+		virtual UIntOS NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks) = 0;
 
 		static Text::CString LinkTypeGetName(UInt32 linkType);
 	};

@@ -3,7 +3,7 @@ section .text
 global AlphaBlend8_C8_DoBlend
 global AlphaBlend8_C8_DoBlendPA
 
-;void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlend(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 edi
 ;8 esi
@@ -26,8 +26,8 @@ AlphaBlend8_C8_DoBlend:
 	push rdi
 	mov rbx,qword [rsp+72] ;width
 	shl rbx,2
-	sub r9,rbx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub rdx,rbx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub r9,rbx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub rdx,rbx ;dAdd		IntOS dAdd = dbpl - width * 4;
 	xor rax,rax
 	mov ebx,0x10101010
 	
@@ -120,7 +120,7 @@ iadbldlop2:
 	pop rbp
 	ret
 	
-;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 edi
 ;8 esi
@@ -143,8 +143,8 @@ AlphaBlend8_C8_DoBlendPA:
 	push rdi
 	mov rbx,qword [rsp+72] ;width
 	shl rbx,2
-	sub r9,rbx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub rdx,rbx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub r9,rbx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub rdx,rbx ;dAdd		IntOS dAdd = dbpl - width * 4;
 
 	xor eax,eax
 	mov ebx,0x10101010

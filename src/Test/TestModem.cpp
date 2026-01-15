@@ -4,12 +4,12 @@
 #include "Test/TestModem.h"
 #include "Text/StringBuilderUTF8.h"
 
-UOSInt Test::TestModem::ListPorts(NN<IO::Writer> writer)
+UIntOS Test::TestModem::ListPorts(NN<IO::Writer> writer)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNative<UOSInt> ports;
-	UOSInt i;
-	UOSInt j;
+	Data::ArrayListNative<UIntOS> ports;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypes;
 	IO::SerialPort::GetAvailablePorts(ports, &portTypes);
 	writer->WriteLine(CSTR("Available Serial Ports:"));
@@ -19,7 +19,7 @@ UOSInt Test::TestModem::ListPorts(NN<IO::Writer> writer)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Port "));
-		sb.AppendUOSInt(ports.GetItem(i));
+		sb.AppendUIntOS(ports.GetItem(i));
 		sb.AppendC(UTF8STRC(" - "));
 		sb.Append(IO::SerialPort::GetPortTypeName(portTypes.GetItem(i)));
 		writer->WriteLine(sb.ToCString());
@@ -33,8 +33,8 @@ void Test::TestModem::GSMModemTest(NN<IO::Writer> writer, NN<IO::GSMModemControl
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (modem->GSMGetManufacturer(sbuff).SetTo(sptr))
 	{

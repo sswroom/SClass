@@ -41,8 +41,8 @@ namespace SSWR
 			static void __stdcall OnTypeSelChg(AnyType userObj, Bool newState);
 			static void __stdcall OnMeasureSelChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDistanceUnitChg(AnyType userObj);
-			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			void UpdateDistDisp();
 
 		public:

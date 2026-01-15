@@ -18,10 +18,10 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocText::GetItemType()
 	return Text::Doc::DocItem::DIT_TEXT;
 }
 
-UOSInt Text::Doc::DocText::Add(NN<Text::Doc::DocItem> item)
+UIntOS Text::Doc::DocText::Add(NN<Text::Doc::DocItem> item)
 {
 	item.Delete();
-	return (UOSInt)-1;
+	return (UIntOS)-1;
 }
 
 const UTF8Char *Text::Doc::DocText::GetText()

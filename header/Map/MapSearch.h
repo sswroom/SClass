@@ -16,7 +16,7 @@ namespace Map
 		Double searchDist;
 		NN<Map::MapSearchLayer> mapLayer;
 		Optional<Text::String> searchStr;
-		UOSInt strIndex;
+		UIntOS strIndex;
 	} MapSearchLayerInfo;
 
 	class MapSearch

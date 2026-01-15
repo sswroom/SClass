@@ -6,8 +6,8 @@
 typedef struct
 {
 	UInt8 packetType;
-	UOSInt packetSize;
-	UOSInt packetDataSize;
+	UIntOS packetSize;
+	UIntOS packetDataSize;
 	UInt8 *packetBuff;
 } ClientData;
 
@@ -41,7 +41,7 @@ void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NN<IO::Stream> stm, AnyTy
 	MemFree(cliData.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	NN<ClientData> cliData = stmData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
@@ -66,8 +66,8 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 			return 0;
 		}
 	}
-	UOSInt packetSize;
-	UOSInt i;
+	UIntOS packetSize;
+	UIntOS i;
 	while (buff.GetSize() >= 2)
 	{
 		if (buff[1] & 0x80)
@@ -78,18 +78,18 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 			{
 				if (buff[3] & 0x80)
 				{
-					packetSize = (UOSInt)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | ((buff[3] & 0x7f) << 14) | (buff[4] << 21));
+					packetSize = (UIntOS)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | ((buff[3] & 0x7f) << 14) | (buff[4] << 21));
 					i = 5;
 				}
 				else
 				{
-					packetSize = (UOSInt)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | (buff[3] << 14));
+					packetSize = (UIntOS)((buff[1] & 0x7f) | ((buff[2] & 0x7f) << 7) | (buff[3] << 14));
 					i = 4;
 				}
 			}
 			else
 			{
-				packetSize = (UOSInt)((buff[1] & 0x7f) | (buff[2] << 7));
+				packetSize = (UIntOS)((buff[1] & 0x7f) | (buff[2] << 7));
 				i = 3;
 			}
 		}
@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	buff[0] = (UInt8)(cmdType & 0xff);
 	if (cmdSize < 128)
@@ -165,7 +165,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UnsafeArray<UInt8> buff, Int
 	}
 }
 
-Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(UnsafeArray<const UTF8Char> buff, InOutParam<UOSInt> index, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(UnsafeArray<const UTF8Char> buff, InOutParam<UIntOS> index, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt16 strSize;
 	if ((buffSize - index.Get()) < 2)
@@ -176,6 +176,6 @@ Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(UnsafeArray<const UTF8Char> b
 		return false;
 	}
 	sb->AppendC((const UTF8Char*)&buff[2 + index.Get()], strSize);
-	index.Set((UOSInt)strSize + 2 + index.Get());
+	index.Set((UIntOS)strSize + 2 + index.Get());
 	return true;
 }

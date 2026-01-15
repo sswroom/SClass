@@ -12,7 +12,7 @@ namespace Manage
 		virtual UInt16 ReadMemUInt16(UInt64 addr) = 0;
 		virtual UInt32 ReadMemUInt32(UInt64 addr) = 0;
 		virtual UInt64 ReadMemUInt64(UInt64 addr) = 0;
-		virtual UOSInt ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize) = 0;
+		virtual UIntOS ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UIntOS reqSize) = 0;
 	};
 }
 #endif

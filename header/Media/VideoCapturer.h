@@ -17,8 +17,8 @@ namespace Media
 	public:
 		virtual ~VideoCapturer() {}
 
-		virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom) = 0;
-		virtual UOSInt GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt) = 0;
+		virtual void SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom) = 0;
+		virtual UIntOS GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt) = 0;
 		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool IsVideoCapture() { return true; };
 	};

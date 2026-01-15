@@ -261,7 +261,7 @@ Bool Net::FTPConn::ChangePassiveMode(OutParam<UInt32> ip, OutParam<UInt16> port)
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sarr[7];
 	UInt8 buff[6];
-	UOSInt i;
+	UIntOS i;
 	this->msgRet = sbuff;
 	this->statusChg = false;
 	writer->WriteLine(CSTR("PASV"));

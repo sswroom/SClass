@@ -29,7 +29,7 @@ namespace Net
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;
 		Data::ArrayListStringNN headers;
-		UOSInt hdrLen;
+		UIntOS hdrLen;
 
 		Bool kaConn;
 		NN<Text::String> url;
@@ -63,12 +63,12 @@ namespace Net
 		Bool WriteContent(Text::CStringNN contType, Text::CStringNN content);
 
 		void ForceHostName(Text::CStringNN hostName);
-		UOSInt GetRespHeaderCnt() const;
-		UnsafeArrayOpt<UTF8Char> GetRespHeader(UOSInt index, UnsafeArray<UTF8Char> buff);
+		UIntOS GetRespHeaderCnt() const;
+		UnsafeArrayOpt<UTF8Char> GetRespHeader(UIntOS index, UnsafeArray<UTF8Char> buff);
 		UnsafeArrayOpt<UTF8Char> GetRespHeader(Text::CStringNN name, UnsafeArray<UTF8Char> valueBuff);
 		Bool GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CStringNN name);
-		Optional<Text::String> GetRespHeader(UOSInt index) const;
+		Optional<Text::String> GetRespHeader(UIntOS index) const;
 		Data::ArrayIterator<NN<Text::String>> RespHeaderIterator() const;
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
@@ -83,11 +83,11 @@ namespace Net
 		Net::WebStatus::StatusCode GetRespStatus();
 		NN<const Net::SocketUtil::AddressInfo> GetSvrAddr();
 		Double GetTotalTime();
-		UOSInt GetHdrLen();
+		UIntOS GetHdrLen();
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
-		Bool ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize);
-		Bool ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
+		Bool ReadAllContent(NN<IO::Stream> outStm, UIntOS buffSize, UInt64 maxSize);
+		Bool ReadAllContent(NN<Text::StringBuilderUTF8> sb, UIntOS buffSize, UInt64 maxSize);
 
 		static void ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr);
 		static Data::Timestamp ParseDateStr(Text::CStringNN dateStr);

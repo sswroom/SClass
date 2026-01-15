@@ -18,17 +18,17 @@ namespace Data
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		OSInt GetIndex(T key) const;
+		IntOS GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
-		void AllocSize(UOSInt cnt);
-		UOSInt AddKeysTo(NN<List<T>> list);
-		virtual UOSInt GetCount() const;
-		virtual T GetKey(UOSInt index) const;
-		virtual V GetItem(UOSInt index) const;
-		V RemoveAt(UOSInt index);
+		void AllocSize(UIntOS cnt);
+		UIntOS AddKeysTo(NN<List<T>> list);
+		virtual UIntOS GetCount() const;
+		virtual T GetKey(UIntOS index) const;
+		virtual V GetItem(UIntOS index) const;
+		V RemoveAt(UIntOS index);
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<V> ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<V> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -43,28 +43,28 @@ namespace Data
 
 	template <class T, class V> V FastMapNative<T, V>::Put(T key, V val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			V oldVal = this->values.GetItem((UOSInt)i).value;
-            this->values.SetItem((UOSInt)i, TwinItemNative<T,V>(key, val));
+			V oldVal = this->values.GetItem((UIntOS)i).value;
+            this->values.SetItem((UIntOS)i, TwinItemNative<T,V>(key, val));
 			return oldVal;
 		}
 		else
 		{
-			this->values.Insert((UOSInt)~i, TwinItemNative<T,V>(key, val));
+			this->values.Insert((UIntOS)~i, TwinItemNative<T,V>(key, val));
 			return 0;
 		}
 	}
 
 	template <class T, class V> V FastMapNative<T, V>::Get(T key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			return this->values.GetItem((UOSInt)i).value;
+			return this->values.GetItem((UIntOS)i).value;
 		}
 		else
 		{
@@ -74,11 +74,11 @@ namespace Data
 
 	template <class T, class V> V FastMapNative<T, V>::Remove(T key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			return this->values.RemoveAt((UOSInt)i).value;
+			return this->values.RemoveAt((UIntOS)i).value;
 		}
 		else
 		{
@@ -86,18 +86,18 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> OSInt FastMapNative<T, V>::GetIndex(T key) const
+	template <class T, class V> IntOS FastMapNative<T, V>::GetIndex(T key) const
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		IntOS i;
+		IntOS j;
+		IntOS k;
 		T l;
 		i = 0;
-		j = (OSInt)this->values.GetCount() - 1;
+		j = (IntOS)this->values.GetCount() - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			l = this->values.GetItem((UOSInt)k).key;
+			l = this->values.GetItem((UIntOS)k).key;
 			if (l > key)
 			{
 				j = k - 1;
@@ -119,16 +119,16 @@ namespace Data
 		return this->GetIndex(key) >= 0;
 	}
 
-	template <class T, class V> void FastMapNative<T, V>::AllocSize(UOSInt cnt)
+	template <class T, class V> void FastMapNative<T, V>::AllocSize(UIntOS cnt)
 	{
-		UOSInt newSize = this->values.GetCount() + cnt;
+		UIntOS newSize = this->values.GetCount() + cnt;
 		this->values.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> UOSInt FastMapNative<T, V>::AddKeysTo(NN<List<T>> list)
+	template <class T, class V> UIntOS FastMapNative<T, V>::AddKeysTo(NN<List<T>> list)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->values.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->values.GetCount();
 		while (i < j)
 		{
 			list->Add(this->values.GetItem(i).key);
@@ -137,22 +137,22 @@ namespace Data
 		return j;
 	}
 
-	template <class T, class V> UOSInt FastMapNative<T, V>::GetCount() const
+	template <class T, class V> UIntOS FastMapNative<T, V>::GetCount() const
 	{
 		return this->values.GetCount();
 	}
 
-	template <class T, class V> T FastMapNative<T, V>::GetKey(UOSInt index) const
+	template <class T, class V> T FastMapNative<T, V>::GetKey(UIntOS index) const
 	{
 		return this->values.GetItem(index).key;
 	}
 
-	template <class T, class V> V FastMapNative<T, V>::GetItem(UOSInt index) const
+	template <class T, class V> V FastMapNative<T, V>::GetItem(UIntOS index) const
 	{
 		return this->values.GetItem(index).value;
 	}
 
-	template <class T, class V> V FastMapNative<T, V>::RemoveAt(UOSInt index)
+	template <class T, class V> V FastMapNative<T, V>::RemoveAt(UIntOS index)
 	{
 		return this->values.RemoveAt(index).value;
 	}
@@ -162,9 +162,9 @@ namespace Data
 		return this->values.GetCount() == 0;
 	}
 
-	template <class T, class V> UnsafeArray<V> FastMapNative<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<V> FastMapNative<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt = this->values.GetCount();
+		UIntOS cnt = this->values.GetCount();
 		UnsafeArray<V> outArr = MemAllocArr(V, cnt);
 		objCnt.Set(cnt);
 		while (cnt-- > 0)

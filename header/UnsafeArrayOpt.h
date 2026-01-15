@@ -16,7 +16,7 @@ public:
 		this->p = p;
 	}
 
-	UnsafeArrayOpt(UOSInt p) = delete;
+	UnsafeArrayOpt(UIntOS p) = delete;
 
 	UnsafeArrayOpt(UnsafeArray<T> p)
 	{

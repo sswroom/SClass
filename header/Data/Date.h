@@ -76,21 +76,21 @@ namespace Data
 			this->dateVal = DateTimeUtil::Date2TotalDays(year, d.month, d.day);
 		}
 
-		void SetMonth(OSInt month)
+		void SetMonth(IntOS month)
 		{
 			DateTimeUtil::DateValue d;
 			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
 			this->dateVal = DateTimeUtil::Date2TotalDays(d.year, (Int32)month, d.day);
 		}
 
-		void SetDay(OSInt day)
+		void SetDay(IntOS day)
 		{
 			DateTimeUtil::DateValue d;
 			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
 			this->dateVal = DateTimeUtil::Date2TotalDays(d.year, d.month, (Int32)day);
 		}
 
-		Data::Date AddDay(OSInt day) const
+		Data::Date AddDay(IntOS day) const
 		{
 			return Data::Date(this->dateVal + day);
 		}
@@ -152,7 +152,7 @@ namespace Data
 			return (this->dateVal <= dt.dateVal);
 		}
 		
-		OSInt CompareTo(NN<const Data::Date> obj) const
+		IntOS CompareTo(NN<const Data::Date> obj) const
 		{
 			if (this->dateVal > obj->dateVal)
 				return 1;

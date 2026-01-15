@@ -9,7 +9,7 @@ Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash:
 	Manage::HiResClock clk;
 	UInt8 hashVal[64];
 	UInt8 *testBlock = MemAllocA(UInt8, 1048576);
-	OSInt i;
+	IntOS i;
 	clk.Start();
 	i = 1024;
 	while (i-- > 0)
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
-	UOSInt j;
+	UIntOS j;
 	Double speed;
 	NN<Crypto::Hash::HashAlgorithm> hash;
 	me->lvCompare->ClearItems();
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 			me->lvCompare->SetSubItem(j, 1, CSTRP(sbuff, sptr));
 			hash.Delete();
 		}
-		i = (Crypto::Hash::HashType)((OSInt)i + 1);
+		i = (Crypto::Hash::HashType)((IntOS)i + 1);
 	}
 }
 
@@ -53,11 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
+	UIntOS i = me->cboAlgorithm->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		NN<Crypto::Hash::HashAlgorithm> hash;
-		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboAlgorithm->GetItem(i).GetOSInt()).SetTo(hash))
+		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboAlgorithm->GetItem(i).GetIntOS()).SetTo(hash))
 		{
 			sptr = Text::StrDouble(sbuff, HashTestSpeed(hash));
 			me->txtSpeed->SetText(CSTRP(sbuff, sptr));
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 			this->cboAlgorithm->AddItem(CSTRP(sbuff, sptr), (void*)i);
 			hash.Delete();
 		}
-		i = (Crypto::Hash::HashType)((OSInt)i + 1);
+		i = (Crypto::Hash::HashType)((IntOS)i + 1);
 	}
 }
 

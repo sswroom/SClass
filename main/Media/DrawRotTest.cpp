@@ -5,18 +5,18 @@
 #include "Media/DrawEngineFactory.h"
 #include "Text/MyString.h"
 
-void GenerateAngle(NN<Media::DrawEngine> deng, UOSInt angleDegree)
+void GenerateAngle(NN<Media::DrawEngine> deng, UIntOS angleDegree)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(sbuff, angleDegree);
+	sptr = Text::StrUIntOS(sbuff, angleDegree);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	NN<Media::DrawImage> dimg;
-	if (deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (deng->CreateImage32(Math::Size2D<UIntOS>(160, 160), Media::AlphaType::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawStringRot(Math::Coord2DDbl(80, 80), CSTRP(sbuff, sptr), f, b, UOSInt2Double(angleDegree));
+		dimg->DrawStringRot(Math::Coord2DDbl(80, 80), CSTRP(sbuff, sptr), f, b, UIntOS2Double(angleDegree));
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

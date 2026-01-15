@@ -13,7 +13,7 @@ namespace UI
 		private:
 			Data::ArrayListObj<AnyType> items;
 			GtkTreeModel *model;
-			UOSInt minVisible;
+			UIntOS minVisible;
 			Bool allowEdit;
 
 		public:
@@ -26,23 +26,23 @@ namespace UI
 
 			virtual void BeginUpdate();
 			virtual void EndUpdate();
-			virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
-			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
-			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
-			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
-			virtual AnyType RemoveItem(UOSInt index);
+			virtual UIntOS AddItem(NN<Text::String> itemText, AnyType itemObj);
+			virtual UIntOS AddItem(Text::CStringNN itemText, AnyType itemObj);
+			virtual UIntOS InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj);
+			virtual UIntOS InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj);
+			virtual AnyType RemoveItem(UIntOS index);
 			virtual void ClearItems();
-			virtual UOSInt GetCount();
-			virtual void SetSelectedIndex(UOSInt index);
-			virtual UOSInt GetSelectedIndex();
+			virtual UIntOS GetCount();
+			virtual void SetSelectedIndex(UIntOS index);
+			virtual UIntOS GetSelectedIndex();
 			virtual AnyType GetSelectedItem();
-			virtual AnyType GetItem(UOSInt index);
+			virtual AnyType GetItem(UIntOS index);
 
 			virtual Math::Size2DDbl GetSize();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual void UpdatePos(Bool redraw);
-			virtual void SetTextSelection(UOSInt startPos, UOSInt endPos);
+			virtual void SetTextSelection(UIntOS startPos, UIntOS endPos);
 		};
 	}
 }

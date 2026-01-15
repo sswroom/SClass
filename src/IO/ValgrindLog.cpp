@@ -3,7 +3,7 @@
 #include "IO/ValgrindLog.h"
 #include "Text/UTF8Reader.h"
 
-void IO::ValgrindLog::SetPPID(UOSInt ppid)
+void IO::ValgrindLog::SetPPID(UIntOS ppid)
 {
 	this->ppid = ppid;
 }
@@ -20,7 +20,7 @@ void IO::ValgrindLog::SetCommandLine(Text::CStringNN commandLine)
 	this->commandLine = Text::String::New(commandLine);
 }
 
-void IO::ValgrindLog::BeginLeak(UOSInt threadId, Text::CStringNN message)
+void IO::ValgrindLog::BeginLeak(UIntOS threadId, Text::CStringNN message)
 {
 	NN<LeakInfo> leak;
 	NEW_CLASSNN(leak, LeakInfo());
@@ -32,7 +32,7 @@ void IO::ValgrindLog::BeginLeak(UOSInt threadId, Text::CStringNN message)
 	this->currStack = leak->stacks;
 }
 
-void IO::ValgrindLog::BeginException(UOSInt threadId, Text::CStringNN message)
+void IO::ValgrindLog::BeginException(UIntOS threadId, Text::CStringNN message)
 {
 	NN<ExceptionInfo> ex;
 	NEW_CLASSNN(ex, ExceptionInfo());
@@ -128,7 +128,7 @@ void __stdcall IO::ValgrindLog::FreeException(NN<ExceptionInfo> ex)
 	ex.Delete();
 }
 
-IO::ValgrindLog::ValgrindLog(UOSInt mainPID)
+IO::ValgrindLog::ValgrindLog(UIntOS mainPID)
 {
 	this->ppid = 0;
 	this->mainPID = mainPID;
@@ -152,12 +152,12 @@ IO::ValgrindLog::~ValgrindLog()
 	this->exceptions.FreeAll(FreeException);
 }
 
-UOSInt IO::ValgrindLog::GetMainPID() const
+UIntOS IO::ValgrindLog::GetMainPID() const
 {
 	return this->mainPID;
 }
 
-UOSInt IO::ValgrindLog::GetPPID() const
+UIntOS IO::ValgrindLog::GetPPID() const
 {
 	return this->ppid;
 }
@@ -227,17 +227,17 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 	Bool beginGroup = false;
 	Bool beginLeak = false;
 	Bool beginStack = false;
-	UOSInt threadId = 0;
-	UOSInt pid;
-	UOSInt i;
-	UOSInt j;
+	UIntOS threadId = 0;
+	UIntOS pid;
+	UIntOS i;
+	UIntOS j;
 	if (!sb.StartsWith(CSTR("==")))
 		return nullptr;
 	i = sb.IndexOf(UTF8STRC("== "), 2);
 	if (i == INVALID_INDEX)
 		return nullptr;
 	sb.v[i] = 0;
-	if (!Text::StrToUOSInt(&sb.v[2], pid))
+	if (!Text::StrToUIntOS(&sb.v[2], pid))
 		return nullptr;
 	if (!sb.ToCString().Substring(i + 3).Equals(CSTR("Memcheck, a memory error detector")))
 		return nullptr;
@@ -269,7 +269,7 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 			continue;
 		}
 		sb.v[i] = 0;
-		if (!Text::StrToUOSInt(&sb.v[2], pid))
+		if (!Text::StrToUIntOS(&sb.v[2], pid))
 		{
 			sb.v[i] = '=';
 			if (!hasError)
@@ -305,8 +305,8 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 			}
 			else if (cont.StartsWith(CSTR("Parent PID: ")))
 			{
-				UOSInt ppid;
-				if (cont.Substring(12).ToUOSInt(ppid))
+				UIntOS ppid;
+				if (cont.Substring(12).ToUIntOS(ppid))
 				{
 					log->SetPPID(ppid);
 				}
@@ -359,7 +359,7 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 			else if (cont.StartsWith(CSTR("Thread ")) && cont.EndsWith(':'))
 			{
 				sb.RemoveChars(1);
-				Text::StrToUOSInt(&cont.v[7], threadId);
+				Text::StrToUIntOS(&cont.v[7], threadId);
 				continue;
 			}
 			else if (!beginLeak && cont.StartsWith(CSTR(" Address ")))

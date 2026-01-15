@@ -8,8 +8,8 @@
 
 void IO::SMBIOS::GetDataType(NN<Data::ArrayListArr<const UInt8>> dataList, UInt8 dataType) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->smbiosBuffSize;
+	UIntOS i = 0;
+	UIntOS j = this->smbiosBuffSize;
 	UnsafeArray<const UInt8> buff = this->smbiosBuff;
 	while (i < j)
 	{
@@ -26,7 +26,7 @@ void IO::SMBIOS::GetDataType(NN<Data::ArrayListArr<const UInt8>> dataList, UInt8
 	}
 }
 
-IO::SMBIOS::SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UOSInt smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr)
+IO::SMBIOS::SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UIntOS smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr)
 {
 	this->smbiosBuff = smbiosBuff;
 	this->smbiosBuffSize = smbiosBuffSize;
@@ -42,17 +42,17 @@ IO::SMBIOS::~SMBIOS()
 	}
 }
 
-UOSInt IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const
+UIntOS IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const
 {
 	Data::ArrayListArr<const UInt8> dataList;
 	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[8];
 	NN<MemoryDeviceInfo> mem;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt ret = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS ret = 0;
 	this->GetDataType(dataList, 17);
 	i = 0;
 	j = dataList.GetCount();
@@ -155,10 +155,10 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformName(UnsafeArray<UTF8Char> buff)
 	Data::ArrayListArr<const UInt8> dataList;
 	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[32];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	UnsafeArray<UTF8Char> nnret;
 	this->GetDataType(dataList, 2);
@@ -209,10 +209,10 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 	Data::ArrayListArr<const UInt8> dataList;
 	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[32];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	this->GetDataType(dataList, 2);
 	i = 0;
@@ -324,8 +324,8 @@ Int32 IO::SMBIOS::GetChassisType() const
 {
 	Data::ArrayListArr<const UInt8> dataList;
 	UnsafeArray<const UInt8> dataBuff;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int32 ret = 0;
 	this->GetDataType(dataList, 3);
 	i = 0;
@@ -344,10 +344,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::CString carr[32];
 	const UInt8 *dataBuff;
-	UOSInt i = 0;
-	UOSInt j = this->smbiosBuffSize;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = this->smbiosBuffSize;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArray<const UInt8> buff = this->smbiosBuff;
 	while (i < j)
 	{
@@ -367,7 +367,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			{
 				if (dataBuff[l] == 0)
 				{
-					carr[k - 1].leng = (UOSInt)(&dataBuff[l] - carr[k - 1].v.Ptr());
+					carr[k - 1].leng = (UIntOS)(&dataBuff[l] - carr[k - 1].v.Ptr());
 					if (dataBuff[l + 1] == 0)
 						break;
 					carr[k].v = &dataBuff[l + 1];
@@ -1856,7 +1856,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			while (l < dataBuff[1])
 			{
 				sb->AppendC(UTF8STRC("Device "));
-				sb->AppendUOSInt(k);
+				sb->AppendUIntOS(k);
 				sb->AppendC(UTF8STRC(" Status: "));
 				if (dataBuff[l] & 0x80)
 				{
@@ -1868,7 +1868,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device "));
-				sb->AppendUOSInt(k);
+				sb->AppendUIntOS(k);
 				sb->AppendC(UTF8STRC(" Type: "));
 				switch (dataBuff[l] & 0x7f)
 				{
@@ -1910,7 +1910,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device "));
-				sb->AppendUOSInt(k);
+				sb->AppendUIntOS(k);
 				sb->AppendC(UTF8STRC(" Description: "));
 				sb->AppendOpt(carr[dataBuff[l + 1]]);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -1936,7 +1936,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				if (carr[k].leng > 0)
 				{
 					sb->AppendC(UTF8STRC("String "));
-					sb->AppendUOSInt(k);
+					sb->AppendUIntOS(k);
 					sb->AppendC(UTF8STRC(": "));
 					sb->AppendOpt(carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -1962,7 +1962,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				if (carr[k].leng > 0)
 				{
 					sb->AppendC(UTF8STRC("String "));
-					sb->AppendUOSInt(k);
+					sb->AppendUIntOS(k);
 					sb->AppendC(UTF8STRC(": "));
 					sb->AppendOpt(carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -2003,7 +2003,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				if (carr[k].leng > 0)
 				{
 					sb->AppendC(UTF8STRC("Language "));
-					sb->AppendUOSInt(k);
+					sb->AppendUIntOS(k);
 					sb->AppendC(UTF8STRC(": "));
 					sb->AppendOpt(carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -4136,7 +4136,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] > 8)
 			{
 				sb->AppendC(UTF8STRC("Processor-Specific Data: "));
-				sb->AppendHexBuff(&dataBuff[8], (UOSInt)dataBuff[1] - 8, ' ', Text::LineBreakType::None);
+				sb->AppendHexBuff(&dataBuff[8], (UIntOS)dataBuff[1] - 8, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -4261,11 +4261,11 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 				if (dataBuff[1] <= 24 + dataBuff[23] * 2)
 				{
-					UOSInt i = 0;
+					UIntOS i = 0;
 					while (i < dataBuff[23])
 					{
 						sb->AppendC(UTF8STRC("Associated Component Handles["));
-						sb->AppendUOSInt(i);
+						sb->AppendUIntOS(i);
 						sb->AppendC(UTF8STRC("]: 0x"));
 						sb->AppendHex16(ReadUInt16(&dataBuff[24 + i * 2]));
 						sb->AppendC(UTF8STRC("\r\n"));
@@ -4321,7 +4321,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 					while (k < dataBuff[4])
 					{
 						sb->AppendC(UTF8STRC("Region "));
-						sb->AppendUOSInt(k);
+						sb->AppendUIntOS(k);
 						sb->AppendC(UTF8STRC(" Type: "));
 						switch (dataBuff[16 + k])
 						{
@@ -4351,12 +4351,12 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 						}
 						sb->AppendC(UTF8STRC("\r\n"));
 						sb->AppendC(UTF8STRC("Region "));
-						sb->AppendUOSInt(k);
+						sb->AppendUIntOS(k);
 						sb->AppendC(UTF8STRC(" Start Address: 0x"));
 						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8]));
 						sb->AppendC(UTF8STRC("\r\n"));
 						sb->AppendC(UTF8STRC("Region "));
-						sb->AppendUOSInt(k);
+						sb->AppendUIntOS(k);
 						sb->AppendC(UTF8STRC(" End Address: 0x"));
 						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8 + 4]));
 						sb->AppendC(UTF8STRC("\r\n"));
@@ -4401,13 +4401,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Data:\r\n"));
-			sb->AppendHexBuff(&dataBuff[4], (UOSInt)dataBuff[1] - 4, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(&dataBuff[4], (UIntOS)dataBuff[1] - 4, ' ', Text::LineBreakType::CRLF);
 			sb->AppendC(UTF8STRC("\r\n"));
 			l = 1;
 			while (l < k)
 			{
 				sb->AppendC(UTF8STRC("Strings "));
-				sb->AppendUOSInt(l);
+				sb->AppendUIntOS(l);
 				sb->AppendUTF8Char(':');
 				sb->AppendUTF8Char(' ');
 				sb->AppendOpt(carr[l]);

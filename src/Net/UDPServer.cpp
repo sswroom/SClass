@@ -24,7 +24,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
 		{
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
@@ -40,7 +40,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 					else
 						sptr = sbuff;
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
-					sptr = Text::StrUOSInt(sptr, recvSize);
+					sptr = Text::StrUIntOS(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort).Or(sptr);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
@@ -99,7 +99,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
 		{
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
@@ -115,7 +115,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 					else
 						sptr = sbuff;
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
-					sptr = Text::StrUOSInt(sptr, recvSize);
+					sptr = Text::StrUIntOS(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort).Or(sptr);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
@@ -157,13 +157,13 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UIntOS threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = nullptr;
 	this->v6threadStats = nullptr;
 	this->recvCnt = 0;
-	UOSInt i;
+	UIntOS i;
 
 	this->sockf = sockf;
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
@@ -332,7 +332,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 Net::UDPServer::~UDPServer()
 {
 	NN<Socket> soc;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<ThreadStat> v4threadStats;
 	UnsafeArray<ThreadStat> v6threadStats;
 	if (this->v4threadStats.SetTo(v4threadStats))
@@ -419,7 +419,7 @@ Bool Net::UDPServer::SupportV6()
 	return this->socV6.NotNull();
 }
 
-Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt dataSize)
+Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UIntOS dataSize)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -466,7 +466,7 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 			sptr = sbuff;
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Sending UDP "));
-		sptr = Text::StrUOSInt(sptr, dataSize);
+		sptr = Text::StrUIntOS(sptr, dataSize);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes to "));
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port).Or(sptr);
 		this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);

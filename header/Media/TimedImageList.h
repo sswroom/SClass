@@ -36,7 +36,7 @@ namespace Media
 
 		Bool IsError();
 
-		Bool AddImage(Int64 captureTimeTicks, UnsafeArray<const UInt8> imgBuff, UOSInt imgSize, ImageFormat imgFmt);
+		Bool AddImage(Int64 captureTimeTicks, UnsafeArray<const UInt8> imgBuff, UIntOS imgSize, ImageFormat imgFmt);
 	};
 }
 #endif

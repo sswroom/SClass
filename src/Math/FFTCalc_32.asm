@@ -10,7 +10,7 @@ global _FFTCalc_Forward
 
 extern _Math_PI
 
-;void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+;void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 ;0 ebx
 ;4 edi
 ;8 esi
@@ -61,7 +61,7 @@ awi16lop:
 	pop esi
 	ret
 
-;void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+;void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 ;0 ebx
 ;4 edi
 ;8 esi
@@ -116,7 +116,7 @@ awi24lop:
 	pop esi
 	ret
 
-;void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCnt)
+;void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, IntOS sampleCnt)
 ;0 retaddr
 ;4 freq
 ;8 complexIn
@@ -168,7 +168,7 @@ f2freqlop:
 f2freqexit:
 	ret
 	
-;void FFTCalc_Rearrange(Double *complexData, OSInt sampleCount)
+;void FFTCalc_Rearrange(Double *complexData, IntOS sampleCount)
 ;0 ebx
 ;4 esi
 ;8 edi
@@ -226,7 +226,7 @@ fftrexit:
 	pop edi
 	ret
 	
-;void FFTCalc_ForwardCalc(Double *complexData, OSInt sampleCount)
+;void FFTCalc_ForwardCalc(Double *complexData, IntOS sampleCount)
 ;0 nextSin
 ;8 kthMul
 ;16 0.5
@@ -275,7 +275,7 @@ fftfclop:						;{
 	punpckldq xmm7,xmm0			;Int32 negv[4] = {0, 0x80000000, 0, 0};
 	
 	mov dword [esp+0],2
-	mov esi,8					;OSInt thisSampleCount = 4;
+	mov esi,8					;IntOS thisSampleCount = 4;
 	fld1
 	fidiv dword [esp+0]
 	fst qword [esp+16]			; = 0.5
@@ -375,7 +375,7 @@ fftfcexit:
 	add esp,36
 	ret
 
-;void FFTCalc_ForwardCalcR(Double *complexData, OSInt sampleCount)
+;void FFTCalc_ForwardCalcR(Double *complexData, IntOS sampleCount)
 ;0 tempData
 ;16 esi
 ;20 edi
@@ -503,7 +503,7 @@ fftfcrexit:
 	add esp,24
 	ret
 	
-;OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
+;IntOS FFTCalc_Forward(Double *complexData, IntOS sampleCount)
 ;0 retaddr
 ;4 complexData
 ;8 sampleCount

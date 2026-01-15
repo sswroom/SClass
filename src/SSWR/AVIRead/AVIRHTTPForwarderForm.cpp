@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(AnyType us
 
 void SSWR::AVIRead::AVIRHTTPForwarderForm::ClearCACerts()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{

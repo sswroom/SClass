@@ -21,9 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 	me->rss.Delete();
 	if (sb.GetLength() > 8)
 	{
-		UOSInt i;
-		UOSInt j;
-		OSInt si;
+		UIntOS i;
+		UIntOS j;
+		IntOS si;
 		Net::RSS *rss;
 		NN<Text::String> s;
 		NN<Net::RSSItem> item;
@@ -133,14 +133,14 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	NN<Text::String> s;
-	UOSInt i = me->cboRecent->GetSelectedIndex();
+	UIntOS i = me->cboRecent->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->rssList.GetItem(i).SetTo(s))
 	{
 		me->txtURL->SetText(s->ToCString());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	NN<Net::RSSItem> item;
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
-	UOSInt i;
+	UIntOS i;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->rssList.GetCount();
 	while (i-- > 0)
 	{

@@ -12,7 +12,7 @@ namespace UI
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 	public:
-		GUIVideoBoxDDLQ(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt);
+		GUIVideoBoxDDLQ(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UIntOS buffCnt, UIntOS threadCnt);
 		virtual ~GUIVideoBoxDDLQ();
 	};
 }

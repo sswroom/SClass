@@ -15,22 +15,22 @@ Media::Jasper::JasperReportElement::~JasperReportElement()
 	SDEL_STRING(this->uuid);
 }
 
-void Media::Jasper::JasperReportElement::SetX(UOSInt x)
+void Media::Jasper::JasperReportElement::SetX(UIntOS x)
 {
 	this->x = x;
 }
 
-void Media::Jasper::JasperReportElement::SetY(UOSInt y)
+void Media::Jasper::JasperReportElement::SetY(UIntOS y)
 {
 	this->y = y;
 }
 
-void Media::Jasper::JasperReportElement::SetWidth(UOSInt width)
+void Media::Jasper::JasperReportElement::SetWidth(UIntOS width)
 {
 	this->width = width;
 }
 
-void Media::Jasper::JasperReportElement::SetHeight(UOSInt height)
+void Media::Jasper::JasperReportElement::SetHeight(UIntOS height)
 {
 	this->height = height;
 }
@@ -41,22 +41,22 @@ void Media::Jasper::JasperReportElement::SetUUID(Text::String *uuid)
 	this->uuid = SCOPY_STRING(uuid);
 }
 
-UOSInt Media::Jasper::JasperReportElement::GetX() const
+UIntOS Media::Jasper::JasperReportElement::GetX() const
 {
 	return this->x;
 }
 
-UOSInt Media::Jasper::JasperReportElement::GetY() const
+UIntOS Media::Jasper::JasperReportElement::GetY() const
 {
 	return this->y;
 }
 
-UOSInt Media::Jasper::JasperReportElement::GetWidth() const
+UIntOS Media::Jasper::JasperReportElement::GetWidth() const
 {
 	return this->width;
 }
 
-UOSInt Media::Jasper::JasperReportElement::GetHeight() const
+UIntOS Media::Jasper::JasperReportElement::GetHeight() const
 {
 	return this->height;
 }

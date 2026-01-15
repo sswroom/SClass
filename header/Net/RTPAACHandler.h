@@ -29,7 +29,7 @@ namespace Net
 		Int32 profileId;
 		Int32 config;
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 
 		Optional<Sync::Event> evt;
 		Sync::Event *dataEvt;
@@ -41,7 +41,7 @@ namespace Net
 		RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChannel);
 		virtual ~RTPAACHandler();
 
-		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
+		virtual void MediaDataReceived(UInt8 *buff, UIntOS dataSize, UInt32 seqNum, UInt32 ts);
 		virtual void SetFormat(UnsafeArray<const UTF8Char> fmtStr);
 		virtual Int32 GetPayloadType();
 
@@ -53,10 +53,10 @@ namespace Net
 
 		virtual void GetFormat(NN<Media::AudioFormat> format);
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 	};

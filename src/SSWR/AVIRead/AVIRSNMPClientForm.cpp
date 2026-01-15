@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("Please enter OID"), CSTR("SNMP Client"), me);
 		return;
 	}
-	UOSInt i = me->cboCommandType->GetSelectedIndex();
+	UIntOS i = me->cboCommandType->GetSelectedIndex();
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 	Net::SNMPUtil::ErrorStatus err;
 	NN<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 		err = me->cli->V1Walk(addr, community, sbOID.ToCString(), itemList);
 	}
 	community->Release();
-	UOSInt j;
+	UIntOS j;
 	Text::StringBuilderUTF8 sb;
 	NN<Net::SNMPUtil::BindingItem> item;
 	me->lvResults->ClearItems();

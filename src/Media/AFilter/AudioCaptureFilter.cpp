@@ -11,7 +11,7 @@ UInt32 __stdcall Media::AFilter::AudioCaptureFilter::CaptureThread(AnyType userO
 {
 	NN<Media::AFilter::AudioCaptureFilter> me = userObj.GetNN<Media::AFilter::AudioCaptureFilter>();
 	UInt8 *tmpBuff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -71,9 +71,9 @@ Data::Duration Media::AFilter::AudioCaptureFilter::SeekToTime(Data::Duration tim
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->writing)
 	{

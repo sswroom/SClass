@@ -102,13 +102,13 @@ namespace SSWR
 			Data::Timestamp lastKernelTime;
 			Int32 threadCnt;
 
-			static void __stdcall OnSumDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnSumDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnProcSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnTimerCPUTick(AnyType userObj);
 			static void __stdcall OnDetModuleRefClicked(AnyType userObj);
 			static void __stdcall OnDetThreadRefClicked(AnyType userObj);
-			static void __stdcall OnDetThreadDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnDetThreadDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnDetHeapRefClicked(AnyType userObj);
 			static void __stdcall OnDetHeapSelChg(AnyType userObj);
 

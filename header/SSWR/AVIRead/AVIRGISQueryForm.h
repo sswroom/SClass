@@ -72,36 +72,36 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<AVIRMapNavigator> navi;
 			NN<Map::MapDrawLayer> lyr;
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 			Bool rdown;
-			Math::Coord2D<OSInt> rdownPos;
+			Math::Coord2D<IntOS> rdownPos;
 			Optional<Math::Geometry::Vector2D> currVec;
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
-			UOSInt nameCol;
+			UIntOS nameCol;
 			Sync::Mutex downMut;
 			Data::ArrayListStringNN downList;
 			Sync::Mutex openMut;
 			Data::ArrayListStringNN openList;
 			Sync::Thread downThread;
 			Optional<Text::String> downPath;
-			UOSInt dispCnt;
+			UIntOS dispCnt;
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
-			Data::ArrayListNative<UOSInt> queryValueOfstList;
+			Data::ArrayListNative<UIntOS> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 
-			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseRDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseRUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
 			static void __stdcall OnObjNameSelChg(AnyType userObj);
-			static void __stdcall OnInfoDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnInfoDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnObjDownloadClicked(AnyType userObj);
 			static void __stdcall OnColDownloadClicked(AnyType userObj);
 			static void __stdcall OnOpenTimer(AnyType userObj);
@@ -110,7 +110,7 @@ namespace SSWR
 
 			void ShowLayerNames();
 			void ClearQueryResults();
-			void SetQueryItem(UOSInt index);
+			void SetQueryItem(UIntOS index);
 			void DownloadURL(NN<Text::String> url);
 		public:
 			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<AVIRMapNavigator> navi);

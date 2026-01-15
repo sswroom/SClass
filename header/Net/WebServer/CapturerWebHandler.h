@@ -31,8 +31,8 @@ namespace Net
 			static void AppendWiFiTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime);
 			static void AppendBTTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly);
 			static void AppendGSMTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> entryList, Bool inRangeOnly);
-			static OSInt __stdcall WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2);
-			static OSInt __stdcall BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2);
+			static IntOS __stdcall WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2);
+			static IntOS __stdcall BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2);
 		public:
 			CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, Optional<IO::RadioSignalLogger> radioLogger);
 			virtual ~CapturerWebHandler();

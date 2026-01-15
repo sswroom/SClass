@@ -2,7 +2,7 @@ section .text
 
 global MediaPlayer_VideoCropImageY
 
-;MediaPlayer_VideoCropImageY(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+;MediaPlayer_VideoCropImageY(UInt8 *yptr, IntOS w, IntOS h, IntOS ySplit, IntOS *crops)
 
 ;0 rdi
 ;8 rbx

@@ -617,7 +617,7 @@ int SoftwareSerial::peek()
 
 SoftwareSerial *RS232GPIO_Serial;
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate) : IO::Stream(UTF8STRC("RS-232"))
+IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UIntOS rxdPin, UIntOS txdPin, Int32 baudRate) : IO::Stream(UTF8STRC("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;
@@ -636,9 +636,9 @@ IO::RS232GPIO::~RS232GPIO()
 	this->Close();
 }
 
-OSInt IO::RS232GPIO::Read(UInt8 *buff, OSInt size)
+IntOS IO::RS232GPIO::Read(UInt8 *buff, IntOS size)
 {
-	OSInt retSize = 0;
+	IntOS retSize = 0;
 	while (!RS232GPIO_Serial->available())
 	{
 		Sync::SimpleThread::Sleep(1);
@@ -651,9 +651,9 @@ OSInt IO::RS232GPIO::Read(UInt8 *buff, OSInt size)
 	return retSize;
 }
 
-OSInt IO::RS232GPIO::Write(const UInt8 *buff, OSInt size)
+IntOS IO::RS232GPIO::Write(const UInt8 *buff, IntOS size)
 {
-	OSInt i = size;
+	IntOS i = size;
 	while (i-- > 0)
 	{
 		RS232GPIO_Serial->write(*buff++);
@@ -666,7 +666,7 @@ Bool IO::RS232GPIO::HasData()
 	return RS232GPIO_Serial->available();
 }
 
-void *IO::RS232GPIO::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginRead(UInt8 *buff, IntOS size, Sync::Event *evt)
 {
 	void *ret = (void*)Read(buff, size);
 	if (ret)
@@ -682,14 +682,14 @@ Int32 IO::RS232GPIO::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomple
 	{
 		*incomplete = false;
 	}
-	return (Int32)(OSInt)reqData;
+	return (Int32)(IntOS)reqData;
 }
 
 void IO::RS232GPIO::CancelRead(void *reqData)
 {
 }
 
-void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, IntOS size, Sync::Event *evt)
 {
 	void *ret = (void*)Write(buff, size);
 	if (ret)
@@ -701,7 +701,7 @@ void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
 
 Int32 IO::RS232GPIO::EndWrite(void *reqData)
 {
-	return (Int32)(OSInt)reqData;
+	return (Int32)(IntOS)reqData;
 }
 
 void IO::RS232GPIO::CancelWrite(void *reqData)

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeadChanged(AnyType userObj)
 	NN<IO::Device::IBuddy> currBuddy;
 	if (me->currBuddy.SetTo(currBuddy))
 	{
-		me->currHead = (IO::Device::IBuddy::IBuddyHeadEffect)(OSInt)me->lbHead->GetSelectedItem().p;
+		me->currHead = (IO::Device::IBuddy::IBuddyHeadEffect)(IntOS)me->lbHead->GetSelectedItem().p;
 		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
@@ -174,9 +174,9 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k = 0;
 	NN<IO::Device::IBuddy> buddy;
 	j = IO::Device::IBuddy::GetNumDevice();
 	i = 0;
@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 		}
 		else
 		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
 			k++;
 			this->buddyList.Add(buddy);
 			this->lbDevice->AddItem(CSTRP(sbuff, sptr), buddy);

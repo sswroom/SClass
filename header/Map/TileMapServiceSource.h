@@ -14,14 +14,14 @@ namespace Map
 		{
 			NN<Text::String> url;
 			Double unitPerPixel;
-			UOSInt order;
+			UIntOS order;
 		};
 	private:
 		Math::RectAreaDbl bounds;
 		Math::Coord2DDbl origin;
 		Math::Coord2DDbl csysOrigin;
-		UOSInt tileWidth;
-		UOSInt tileHeight;
+		UIntOS tileWidth;
+		UIntOS tileHeight;
 		Optional<Text::EncodingFactory> encFact;
 		ImageType imgType;
 		Text::String *tileExt;
@@ -32,7 +32,7 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 		Data::ArrayListNN<TileLayer> layers;
 		NN<Math::CoordinateSystem> csys;
-		UOSInt concurrCnt;
+		UIntOS concurrCnt;
 
 		void LoadXML();
 	public:
@@ -42,24 +42,24 @@ namespace Map
 		virtual Text::CStringNN GetName() const;
 		virtual Bool IsError() const;
 		virtual TileType GetTileType() const;
-		virtual UOSInt GetMinLevel() const;
-		virtual UOSInt GetMaxLevel() const;
-		virtual Double GetLevelScale(UOSInt level) const;
-		virtual UOSInt GetNearestLevel(Double scale) const;
-		virtual UOSInt GetConcurrentCount() const;
+		virtual UIntOS GetMinLevel() const;
+		virtual UIntOS GetMaxLevel() const;
+		virtual Double GetLevelScale(UIntOS level) const;
+		virtual UIntOS GetNearestLevel(Double scale) const;
+		virtual UIntOS GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
-		virtual UOSInt GetTileSize() const;
+		virtual UIntOS GetTileSize() const;
 		virtual ImageType GetImageType() const;
 
-		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids);
-		virtual Optional<Media::ImageList> LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
-		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
-		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
-		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
+		virtual UIntOS GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids);
+		virtual Optional<Media::ImageList> LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId);
+		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId);
+		virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
-		void SetConcurrentCount(UOSInt concurrCnt);
+		void SetConcurrentCount(UIntOS concurrCnt);
 	};
 }
 #endif

@@ -3,13 +3,13 @@
 #include "SIMD.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void LanczosResizer16_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizer16_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x4 cvals;
 	Int32x4 cvald;
@@ -54,13 +54,13 @@ extern "C" void LanczosResizer16_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *out
 	}
 }
 
-extern "C" void LanczosResizer16_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+extern "C" void LanczosResizer16_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, IntOS swidth, UInt8 *tmpbuff)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
 	UInt8 *tmpPtr;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int16x4 cvals;
 	Int32x4 cvald;
@@ -104,12 +104,12 @@ extern "C" void LanczosResizer16_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,
 	}
 }
 
-extern "C" void LanczosResizer16_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32x4 cvald;
 	UInt16x4 cvalw;
@@ -146,9 +146,9 @@ extern "C" void LanczosResizer16_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, O
 	}
 }
 
-extern "C" void LanczosResizer16_C8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_expand(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width << 3;
 	dstep -= width << 3;
@@ -170,9 +170,9 @@ extern "C" void LanczosResizer16_C8_expand(UInt8 *inPt, UInt8 *outPt, OSInt widt
 	}
 }
 
-extern "C" void LanczosResizer16_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	sstep -= width << 3;
 	dstep -= width << 3;
@@ -196,9 +196,9 @@ extern "C" void LanczosResizer16_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt w
 	}
 }
 
-extern "C" void LanczosResizer16_C8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	sstep -= width << 3;
 	dstep -= width << 2;
 
@@ -219,9 +219,9 @@ extern "C" void LanczosResizer16_C8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt wi
 	}
 }
 
-extern "C" void LanczosResizer16_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 ucvals;
 	sstep -= width << 3;
@@ -249,9 +249,9 @@ extern "C" void LanczosResizer16_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, OSInt wid
 	}
 }
 
-extern "C" void LanczosResizer16_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizer16_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 cvals;
 	UInt16x4 ucvals;
 	sstep -= width << 3;

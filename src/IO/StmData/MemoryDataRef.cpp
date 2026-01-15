@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryDataRef.h"
 
-IO::StmData::MemoryDataRef::MemoryDataRef(UnsafeArray<const UInt8> data, UOSInt dataLength) : data(data, dataLength)
+IO::StmData::MemoryDataRef::MemoryDataRef(UnsafeArray<const UInt8> data, UIntOS dataLength) : data(data, dataLength)
 {
 	this->name = nullptr;
 }
@@ -18,7 +18,7 @@ IO::StmData::MemoryDataRef::~MemoryDataRef()
 	OPTSTR_DEL(this->name);
 }
 
-UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	if (offset >= this->data.GetSize())
 	{
@@ -26,7 +26,7 @@ UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, Dat
 	}
 	if (offset + length > this->data.GetSize())
 	{
-		length = (UOSInt)(this->data.GetSize() - offset);
+		length = (UIntOS)(this->data.GetSize() - offset);
 	}
 	if (length > 0)
 	{
@@ -45,7 +45,7 @@ Text::CString IO::StmData::MemoryDataRef::GetShortName() const
 	NN<Text::String> name;
 	if (this->name.SetTo(name))
 	{
-		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		return name->ToCString().Substring(i + 1);
 	}
 	return CSTR("Memory");
@@ -82,7 +82,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UIn
 	{
 		length = this->data.GetSize() - offset;
 	}
-	NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.SubArray(offset, (UOSInt)length)));
+	NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.SubArray(offset, (UIntOS)length)));
 	if (this->name.SetTo(s))
 		data->SetName(s);
 	return data;
@@ -98,7 +98,7 @@ Bool IO::StmData::MemoryDataRef::IsLoading() const
 	return false;
 }
 
-UOSInt IO::StmData::MemoryDataRef::GetSeekCount() const
+UIntOS IO::StmData::MemoryDataRef::GetSeekCount() const
 {
 	return 0;
 }

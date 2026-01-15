@@ -36,12 +36,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	};
 	Text::StringBuilderUTF8 sb;
 	const Char *cptr;
-	UOSInt i = 0;
-	UOSInt j = sizeof(cfgList) / sizeof(cfgList[0]);
+	UIntOS i = 0;
+	UIntOS j = sizeof(cfgList) / sizeof(cfgList[0]);
 	while (i < j)
 	{
 		cptr = cfgList[i];
-		UOSInt len = Text::StrCharCntCh(cptr);
+		UIntOS len = Text::StrCharCntCh(cptr);
 		if (cfg->GetValue({(const UTF8Char*)cptr, len}).IsNull())
 		{
 			sb.ClearStr();

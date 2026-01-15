@@ -227,8 +227,8 @@ private:
 		NN<AVIRCesiumTileHandler> me = NN<AVIRCesiumTileHandler>::ConvertFrom(svcHdlr);
 		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
 		Text::StringBuilderUTF8 sb;
-		UOSInt i = 0;
-		UOSInt j = me->tileList->GetCount();
+		UIntOS i = 0;
+		UIntOS j = me->tileList->GetCount();
 		while (i < j)
 		{
 			NN<Map::CesiumTile> tile = me->tileList->GetItemNoCheck(i);
@@ -251,8 +251,8 @@ public:
 		this->SetAllowBrowsing(true);
 		this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, IndexFunc);
 		this->AddService(CSTR("/tiles.json"), Net::WebUtil::RequestMethod::HTTP_GET, TilesFunc);
-		UOSInt i = 0;
-		UOSInt j = tileList->GetCount();
+		UIntOS i = 0;
+		UIntOS j = tileList->GetCount();
 		while (i < j)
 		{
 			this->AddTile(tileList->GetItemNoCheck(i));
@@ -267,7 +267,7 @@ public:
 	void AddTile(NN<Map::CesiumTile> tile)
 	{
 		Text::CStringNN name = tile->GetSourceNameObj()->ToCString();
-		UOSInt i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		name = name.Substring(i + 1);
 		this->AddPackage(name, tile->GetPackageFile()->Clone());
 	}
@@ -321,8 +321,8 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 	this->chkLightLevel->HandleCheckedChange(OnLightLevelChkChg, this);
 	this->lbTiles = ui->NewListBox(*this, false);
 	this->lbTiles->SetDockType(UI::GUIControl::DOCK_FILL);
-	UOSInt i = 0;
-	UOSInt j = tiles->GetCount();
+	UIntOS i = 0;
+	UIntOS j = tiles->GetCount();
 	while (i < j)
 	{
 		NN<Map::CesiumTile> tile = tiles->GetItemNoCheck(i);
@@ -370,8 +370,8 @@ void SSWR::AVIRead::AVIRCesiumTileForm::AddTile(NN<Map::CesiumTile> tile)
 
 void SSWR::AVIRead::AVIRCesiumTileForm::AddTiles(NN<Data::ArrayListNN<Map::CesiumTile>> tiles)
 {
-	UOSInt i = 0;
-	UOSInt j = tiles->GetCount();
+	UIntOS i = 0;
+	UIntOS j = tiles->GetCount();
 	while (i < j)
 	{
 		this->AddTile(tiles->GetItemNoCheck(i));

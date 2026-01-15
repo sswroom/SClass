@@ -18,19 +18,19 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 	}
 	else if (Text::StrEqualsC(sb.ToString(), sb.GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
 	{
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<const UInt8> buff;
 		UInt8 *tmpBuff = 0;
 		UTF8Char *tmpBuff2 = 0;
-		OSInt tmpBuffSize = 0;
-		OSInt tmpBuffSize2 = 0;
+		IntOS tmpBuffSize = 0;
+		IntOS tmpBuffSize2 = 0;
 		UnsafeArray<UTF8Char> sptr;
-		OSInt size1;
-		UOSInt size2;
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		IntOS size1;
+		UIntOS size2;
+		IntOS i;
+		IntOS j;
+		IntOS k;
+		IntOS l;
 		Text::Encoding enc(codePage);
 		Crypto::Encrypt::FormEncode formEnc;
 
@@ -65,7 +65,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 					tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 				}
 				sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-				l = this->strNames.SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
+				l = this->strNames.SortedInsert(Text::StrCopyNewC(tmpBuff2, (UIntOS)(sptr - tmpBuff2)));
 				if (k < i)
 				{
 					if (i - k - 1 > tmpBuffSize)
@@ -84,7 +84,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 						tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 					}
 					sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-					this->strValues.Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
+					this->strValues.Insert(l, Text::StrCopyNewC(tmpBuff2, (UIntOS)(sptr - tmpBuff2)));
 				}
 				else
 				{
@@ -114,7 +114,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 
 Net::WebServer::HTTPFormParser::~HTTPFormParser()
 {
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<const UTF8Char> s;
 	i = this->strNames.GetCount();
 	while (i-- > 0)
@@ -124,19 +124,19 @@ Net::WebServer::HTTPFormParser::~HTTPFormParser()
 	}
 }
 
-UOSInt Net::WebServer::HTTPFormParser::GetStrCount() const
+UIntOS Net::WebServer::HTTPFormParser::GetStrCount() const
 {
 	return this->strNames.GetCount();
 }
 
-UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrName(UIntOS index)
 {
 	return this->strNames.GetItem(index);
 }
 
 UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrValue(UnsafeArray<const UTF8Char> strName)
 {
-	OSInt i = this->strNames.SortedIndexOf(strName);
+	IntOS i = this->strNames.SortedIndexOf(strName);
 	if (i >= 0)
 	{
 		return this->strValues.GetItem(i);

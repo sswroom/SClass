@@ -7,11 +7,11 @@
 
 extern "C"
 {
-	void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, UInt8 *rgbTable);
-	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, UInt8 *rgbTable);
+	void AlphaBlend8_C8_DoBlend(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, UIntOS width, UIntOS height, UInt8 *rgbTable);
+	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, UIntOS width, UIntOS height, UInt8 *rgbTable);
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
@@ -19,15 +19,15 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl,
 	}
 	else
 	{
-		UOSInt lastHeight = height;
-		UOSInt currHeight;
-		UOSInt i = this->threadCnt;
+		UIntOS lastHeight = height;
+		UIntOS currHeight;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
+			this->stats[i].dest = dest + dbpl * (IntOS)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * (OSInt)currHeight;
+			this->stats[i].src = src + sbpl * (IntOS)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -55,7 +55,7 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl,
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
@@ -63,15 +63,15 @@ void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbp
 	}
 	else
 	{
-		UOSInt lastHeight = height;
-		UOSInt currHeight;
-		UOSInt i = this->threadCnt;
+		UIntOS lastHeight = height;
+		UIntOS currHeight;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
+			this->stats[i].dest = dest + dbpl * (IntOS)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * (OSInt)currHeight;
+			this->stats[i].src = src + sbpl * (IntOS)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -105,7 +105,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 	if (this->lutList.SetTo(lutList))
 	{
 		NN<LUTInfo> lut;
-		UOSInt i;
+		UIntOS i;
 		i = lutList->GetCount();
 		while (i-- > 0)
 		{
@@ -135,7 +135,7 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
@@ -194,7 +194,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Optional<Media::ColorSess> colorSe
 	}
 
 	this->stats = MemAlloc(ThreadStat, this->threadCnt);
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->stats[i].me = *this;
@@ -223,7 +223,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Optional<Media::ColorSess> colorSe
 
 Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 {
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	Bool found;
 	while (i-- > 0)
 	{
@@ -272,7 +272,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_C8::Blend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height, Media::AlphaType srcAType)
 {
 	if (this->changed)
 	{
@@ -291,16 +291,16 @@ void Media::ABlend::AlphaBlend8_C8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, U
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt32 bVal;
 	UInt32 gVal;
 	UInt32 rVal;
 	UInt32 aVal;
 
-	sbpl = sbpl - (OSInt)(width << 2);
-	dbpl = dbpl - (OSInt)(width << 2);
+	sbpl = sbpl - (IntOS)(width << 2);
+	dbpl = dbpl - (IntOS)(width << 2);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -338,7 +338,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::ColorHandler
 	if (this->lutList.SetTo(lutList))
 	{
 		NN<LUTInfo> lut;
-		UOSInt i;
+		UIntOS i;
 		i = lutList->GetCount();
 		while (i-- > 0)
 		{

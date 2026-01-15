@@ -32,7 +32,7 @@ void Parser::ParserList::AddObjectParser(NN<IO::ObjectParser> parser)
 void Parser::ParserList::SetCodePage(UInt32 codePage)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -49,7 +49,7 @@ void Parser::ParserList::SetCodePage(UInt32 codePage)
 void Parser::ParserList::SetMapManager(Optional<Map::MapManager> mapMgr)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -66,7 +66,7 @@ void Parser::ParserList::SetMapManager(Optional<Map::MapManager> mapMgr)
 void Parser::ParserList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -83,7 +83,7 @@ void Parser::ParserList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 void Parser::ParserList::SetWebBrowser(Optional<Net::WebBrowser> browser)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -100,7 +100,7 @@ void Parser::ParserList::SetWebBrowser(Optional<Net::WebBrowser> browser)
 void Parser::ParserList::SetTCPClientFactory(NN<Net::TCPClientFactory> clif)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -117,7 +117,7 @@ void Parser::ParserList::SetTCPClientFactory(NN<Net::TCPClientFactory> clif)
 void Parser::ParserList::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i = this->filePArr.GetCount();
+	UIntOS i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
@@ -134,8 +134,8 @@ void Parser::ParserList::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 void Parser::ParserList::SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i;
-	UOSInt j = this->filePArr.GetCount();
+	UIntOS i;
+	UIntOS j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
@@ -156,8 +156,8 @@ void Parser::ParserList::SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjP
 void Parser::ParserList::SetLogTool(Optional<IO::LogTool> log)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i;
-	UOSInt j = this->filePArr.GetCount();
+	UIntOS i;
+	UIntOS j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
@@ -178,8 +178,8 @@ void Parser::ParserList::SetLogTool(Optional<IO::LogTool> log)
 void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	NN<IO::ParserBase> parser;
-	UOSInt i;
-	UOSInt j = this->filePArr.GetCount();
+	UIntOS i;
+	UIntOS j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
@@ -199,20 +199,20 @@ void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::Pars
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
-	UOSInt i = 0;
-	UOSInt j = this->filePArr.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->filePArr.GetCount();
 	NN<IO::FileParser> parser;
 	NN<IO::ParsedObject> result;
 	if (fd->GetDataSize() <= 0)
 		return nullptr;
 	Data::ByteBuffer hdr(IO::FileParser::hdrSize);
-	UOSInt readSize;
+	UIntOS readSize;
 	readSize = fd->GetRealData(0, IO::FileParser::hdrSize, hdr);
 	if (readSize != IO::FileParser::hdrSize)
 	{
 		if (readSize != fd->GetDataSize())
 		{
-			UOSInt hdrSize = readSize;
+			UIntOS hdrSize = readSize;
 			while (true)
 			{
 				readSize = fd->GetRealData(hdrSize, IO::FileParser::hdrSize - hdrSize, hdr.SubArray(hdrSize));
@@ -275,8 +275,8 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseObject(NN<IO::ParsedObject> 
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseObjectType(NN<IO::ParsedObject> pobj, IO::ParserType targetType)
 {
-	UOSInt i = 0;
-	UOSInt j = this->objPArr.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->objPArr.GetCount();
 	NN<IO::ObjectParser> parser;
 	NN<IO::ParsedObject> result;
 	while (i < j)

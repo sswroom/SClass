@@ -12,12 +12,12 @@ DB::MongoDB::~MongoDB()
 {
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
 
-Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return 0;
 }
@@ -40,7 +40,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
+UIntOS DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }

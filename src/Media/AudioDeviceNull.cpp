@@ -3,12 +3,12 @@
 #include "Media/AudioDevice.h"
 #include "Text/MyString.h"
 
-UOSInt Media::AudioDevice::GetDeviceCount()
+UIntOS Media::AudioDevice::GetDeviceCount()
 {
 	return 0;
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UIntOS devNo)
 {
 	return 0;
 }
@@ -38,7 +38,7 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 
 void Media::AudioDevice::ClearDevices()
 {
-	UOSInt i;
+	UIntOS i;
 	Media::AudioRenderer *renderer;
 
 	BindAudio(0);
@@ -53,8 +53,8 @@ void Media::AudioDevice::ClearDevices()
 
 Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Media::AudioRenderer *renderer;
 	if (this->rendererList.GetCount() == 0)
 	{

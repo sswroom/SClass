@@ -15,7 +15,7 @@ UI::GUIComboBox::~GUIComboBox()
 
 void UI::GUIComboBox::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs.GetCount();
+	UIntOS i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
@@ -52,14 +52,14 @@ void UI::GUIComboBox::EventTextChanged()
 
 UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetSelectedItemText(UnsafeArray<UTF8Char> sbuff)
 {
-	UOSInt i = this->GetSelectedIndex();
+	UIntOS i = this->GetSelectedIndex();
 	NN<Text::String> s;
 	if (i == INVALID_INDEX || !this->itemTexts.GetItem(i).SetTo(s))
 		return nullptr;
 	return Text::StrConcatC(sbuff, s->v, s->leng);
 }
 
-UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index)
 {
 	NN<Text::String> txt;
 	if (!this->itemTexts.GetItem(index).SetTo(txt))

@@ -58,8 +58,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 	NEW_CLASS(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	UInt32 cnt = ReadMUInt32(&hdr[8]);
 	UInt64 ofst = 12;
-	UOSInt readSize;
-	UOSInt i = 0;
+	UIntOS readSize;
+	UIntOS i = 0;
 	while (i < cnt && ofst < fileSize)
 	{
 		readSize = fd->GetRealData(ofst, 256, BYTEARR(buff));
@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		UInt32 tag = ReadMUInt32(buff);
 		if (tag == 1)
 		{
-			UOSInt aliasLen = ReadMUInt16(&buff[4]);
+			UIntOS aliasLen = ReadMUInt16(&buff[4]);
 			Int64 ts = ReadMInt64(&buff[6 + aliasLen]);
 			UInt32 certLen = ReadMUInt32(&buff[14 + aliasLen]);
 			sb.ClearStr();
@@ -87,7 +87,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 			NEW_CLASSNN(file, Crypto::Cert::X509EPrivKey(s, cerBuff.WithSize(certLen)));
 			ofst += 18 + aliasLen + certLen;
 			readSize = fd->GetRealData(ofst, 256, BYTEARR(buff));
-			UOSInt chainCnt = ReadMUInt32(buff);
+			UIntOS chainCnt = ReadMUInt32(buff);
 			ofst += 4;
 			pkg->AddObject(file, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), 0, 0, 0);
 			s->Release();
@@ -96,7 +96,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 				sb.RemoveChars(3);
 				sb.Append(CSTR("crt"));
 				s = Text::String::New(sb.ToCString());
-				UOSInt certTypeLen = ReadMUInt16(&buff[4]);
+				UIntOS certTypeLen = ReadMUInt16(&buff[4]);
 				certLen = ReadMUInt32(&buff[6 + certTypeLen]);
 				if (cerBuff.GetSize() < certLen)
 				{
@@ -113,7 +113,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 				{
 					NN<Crypto::Cert::X509FileList> files;
 					NEW_CLASSNN(files, Crypto::Cert::X509FileList(s, NN<Crypto::Cert::X509Cert>::ConvertFrom(file)));
-					UOSInt i = 1;
+					UIntOS i = 1;
 					while (i < chainCnt)
 					{
 						readSize = fd->GetRealData(ofst, 256, BYTEARR(buff));
@@ -136,9 +136,9 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		}
 		else if (tag == 2)
 		{
-			UOSInt aliasLen = ReadMUInt16(&buff[4]);
+			UIntOS aliasLen = ReadMUInt16(&buff[4]);
 			Int64 ts = ReadMInt64(&buff[6 + aliasLen]);
-			UOSInt certTypeLen = ReadMUInt16(&buff[14 + aliasLen]);
+			UIntOS certTypeLen = ReadMUInt16(&buff[14 + aliasLen]);
 			UInt32 certLen = ReadMUInt32(&buff[16 + aliasLen + certTypeLen]);
 			if (certTypeLen != 5 || !Text::StrEqualsC(&buff[16 + aliasLen], certTypeLen, UTF8STRC("X.509")))
 			{

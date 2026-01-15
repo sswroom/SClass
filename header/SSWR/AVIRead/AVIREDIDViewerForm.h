@@ -18,7 +18,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnHex;
 			NN<UI::GUITextBox> txtEDID;
 			UnsafeArrayOpt<UInt8> edid;
-			UOSInt edidSize;
+			UIntOS edidSize;
 			
 			void UpdateEDIDDisp();
 			static void __stdcall OnSaveClicked(AnyType userObj);

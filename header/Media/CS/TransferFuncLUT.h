@@ -10,7 +10,7 @@ namespace Media
 		class TransferFuncLUT : public TransferFunc
 		{
 		private:
-			UOSInt srcCnt;
+			UIntOS srcCnt;
 			Double *invLUT;
 			Double *fwdLUT;
 

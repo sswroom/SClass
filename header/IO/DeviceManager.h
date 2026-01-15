@@ -12,7 +12,7 @@ namespace IO
 		DeviceManager();
 		~DeviceManager();
 
-		UOSInt QueryHIDDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> devList);
+		UIntOS QueryHIDDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> devList);
 		void FreeDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> devList);
 	};
 }

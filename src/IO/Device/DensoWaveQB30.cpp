@@ -14,8 +14,8 @@ void __stdcall IO::Device::DensoWaveQB30::RecvThread(NN<Sync::Thread> thread)
 	NN<IO::Device::DensoWaveQB30> me = thread->GetUserObj().GetNN<IO::Device::DensoWaveQB30>();
 	UInt8 buff[256];
 	UnsafeArray<UTF8Char> sbuff;
-	UOSInt recvSize;
-	UOSInt i;
+	UIntOS recvSize;
+	UIntOS i;
 	Bool found;
 	sbuff = MemAllocArr(UTF8Char, RECVBUFFSIZE + 1);
 	while (!thread->IsStopping())
@@ -136,9 +136,9 @@ Bool IO::Device::DensoWaveQB30::WaitForReply(UInt32 timeToWait)
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	UOSInt currBuffSize = 0;
-	UOSInt startIndex;
-	UOSInt i;
+	UIntOS currBuffSize = 0;
+	UIntOS startIndex;
+	UIntOS i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -175,9 +175,9 @@ Bool IO::Device::DensoWaveQB30::WaitForReplyVal(UInt32 timeToWait, OutParam<Int3
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	UOSInt currBuffSize = 0;
-	UOSInt startIndex;
-	UOSInt i;
+	UIntOS currBuffSize = 0;
+	UIntOS startIndex;
+	UIntOS i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -206,7 +206,7 @@ Bool IO::Device::DensoWaveQB30::WaitForReplyVal(UInt32 timeToWait, OutParam<Int3
 	}
 }
 
-Int32 IO::Device::DensoWaveQB30::ReadCommand(UnsafeArray<const UTF8Char> cmdStr, UOSInt cmdLen)
+Int32 IO::Device::DensoWaveQB30::ReadCommand(UnsafeArray<const UTF8Char> cmdStr, UIntOS cmdLen)
 {
 	Int32 result;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -228,7 +228,7 @@ Int32 IO::Device::DensoWaveQB30::ReadCommand(UnsafeArray<const UTF8Char> cmdStr,
 	return result;
 }
 
-Bool IO::Device::DensoWaveQB30::WriteCommand(UnsafeArray<const UTF8Char> cmdStr, UOSInt cmdLen)
+Bool IO::Device::DensoWaveQB30::WriteCommand(UnsafeArray<const UTF8Char> cmdStr, UIntOS cmdLen)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -330,9 +330,9 @@ void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, AnyType user
 	this->scanHdlrObj = userObj;
 }
 
-UOSInt IO::Device::DensoWaveQB30::GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList)
+UIntOS IO::Device::DensoWaveQB30::GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList)
 {
-	UOSInt initCnt = cmdList->GetCount();
+	UIntOS initCnt = cmdList->GetCount();
 	cmdList->Add(DC_GET_READ_MODE);
 	cmdList->Add(DC_SET_READ_MODE);
 	cmdList->Add(DC_GET_BW_MODE);
@@ -1911,49 +1911,49 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 	{
 	case DC_SET_READ_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR01#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BW_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR02#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_READ_REPEAT_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR04#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR04#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BRIGHTNESS:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR07#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SHT_SIGNAL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR09#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SCAN_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0B#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SHUTTER_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0G#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0G#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_GAIN:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0K#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0K#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_LED_LEVEL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0L#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_LED_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR0M#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_OUTPUT_TIMING:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR11#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_UNREAD_DATA_SEND:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR12#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_INDIR_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR15#00")), val), U8STR("\r"));
@@ -1961,7 +1961,7 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR15#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR15#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_TRIGGER_DELAY:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR16#00")), val), U8STR("\r"));
@@ -1969,7 +1969,7 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR16#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR16#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SIGNAL_ON_DUR:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR17#00")), val), U8STR("\r"));
@@ -1977,19 +1977,19 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR17#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR17#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SIGNAL_DELAY:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR18#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR18#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_LIGHT_LED:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1C#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_MARKER_LIGHT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1J#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_DECODE_TIME_LIMIT:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1D#00")), val), U8STR("\r"));
@@ -1997,139 +1997,139 @@ Bool IO::Device::DensoWaveQB30::SetCommand(DeviceCommand dcmd, Int32 val)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1D#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1D#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_OUTPUT1_TYPE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1E#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_OUTPUT2_TYPE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1G#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_AUTO_SENSE_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1H#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CONT_READ_MODE_B:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR1I#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_QRCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR41#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_MICRO_QRCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR42#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_PDF417:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR43#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_DATAMATRIX:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR44#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BARCODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR45#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_INTERLEAVED_2OF5:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR46#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CODABAR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR47#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CODEBAR_START_STOP:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR48#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CODE39:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR49#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CODE128:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4A#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_QRCODE_REVERSE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4B#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_QRLINK_CODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4F#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_GS1_DATABAR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4I#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_GS1_COMPOSITE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4J#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_MICRO_PDF417:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4K#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BARCODE_READ_MODE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4L#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SQRC:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4M#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SQRC_KEY_UNMATCH:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4P#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_SQRC_KEY_MATCH:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4O#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_IQRCODE_SQUARE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4Q#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_IQRCODE_RECT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4R#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_AZTEC_FULL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4V#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_AZTEC_COMPACT:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4W#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_MENU_READ:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR4Z#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_COMM_SEQ:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR21#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BAUD_RATE:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR22#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CODE_MARK:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR25#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_LINE_NUM:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR26#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BCC:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR27#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CTS_SIGNAL:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR28#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_CTS_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR29#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR29#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_ACK_NAK_TIME:
 		if (val < 10)
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR2A#0")), val), U8STR("\r"));
 		else
 			csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR2A#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_RECV_HDR:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR2C#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR33#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_READ_ERR_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR35#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_MAGIC_KEY:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR37#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_POWER_ON_BUZZER:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR38#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_SET_BUZZER_OFF:
 		csptr = Text::StrConcat(Text::StrInt32(Text::StrConcatC(cbuff, UTF8STRC("WR39#")), val), U8STR("\r"));
-		return this->WriteCommand(cbuff, (UOSInt)(csptr - cbuff));
+		return this->WriteCommand(cbuff, (UIntOS)(csptr - cbuff));
 	case DC_GET_READ_MODE:
 	case DC_GET_BW_MODE:
 	case DC_GET_READ_REPEAT_TIME:

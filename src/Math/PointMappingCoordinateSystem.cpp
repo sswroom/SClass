@@ -18,7 +18,7 @@ Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN
 
 Math::PointMappingCoordinateSystem::~PointMappingCoordinateSystem()
 {
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<Double> ptItem;
 	i = this->mappingList.GetCount();
 	while (i-- > 0)
@@ -50,8 +50,8 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToBaseXY(Math::Coord2DDbl m
 	Double ptDist[3];
 	Double *ptList[3];
 	UnsafeArray<Double> ptItem;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	ptDist[0] = -1;
 	ptDist[1] = -1;
 	ptDist[2] = -1;
@@ -123,7 +123,7 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NN<Math::Geomet
 {
 	NN<Math::Geometry::LineString> tmpLS = NN<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
 	Double ret = 0;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<Math::Coord2DDbl> ptList = tmpLS->GetPointList(i);
 	while (i-- > 0)
 	{
@@ -137,8 +137,8 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NN<Math::Geomet
 NN<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::Clone() const
 {
 	NN<Math::PointMappingCoordinateSystem> csys;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<Double> ptItem;
 	NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->baseCSys->Clone()));
 	i = 0;
@@ -164,8 +164,8 @@ Bool Math::PointMappingCoordinateSystem::IsProjected() const
 
 void Math::PointMappingCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<Double> ptItem;
 	sb->AppendC(UTF8STRC("Point Mapping File Name: "));
 	sb->Append(this->sourceName);
@@ -200,8 +200,8 @@ Bool Math::PointMappingCoordinateSystem::Equals(NN<const CoordinateSystem> csys)
 	const Math::PointMappingCoordinateSystem *pmcs = (const Math::PointMappingCoordinateSystem*)csys.Ptr();
 	UnsafeArray<Double> ptItem1;
 	UnsafeArray<Double> ptItem2;
-	UOSInt i;
-	UOSInt j = this->mappingList.GetCount();
+	UIntOS i;
+	UIntOS j = this->mappingList.GetCount();
 	if (pmcs->mappingList.GetCount() != j)
 		return false;
 	i = 0;

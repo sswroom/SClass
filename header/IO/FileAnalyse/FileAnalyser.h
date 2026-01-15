@@ -17,11 +17,11 @@ namespace IO
 			virtual ~FileAnalyser();
 
 			virtual Text::CStringNN GetFormatName() = 0;
-			virtual UOSInt GetFrameCount() = 0;
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst) = 0;
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index) = 0;
+			virtual UIntOS GetFrameCount() = 0;
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst) = 0;
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index) = 0;
 
 			virtual Bool IsError() = 0;
 			virtual Bool IsParsing() = 0;

@@ -5,7 +5,7 @@
 #include "Sync/SimpleThread.h"
 #include <windows.h>
 
-void Sync::SimpleThread::Sleep(UOSInt ms)
+void Sync::SimpleThread::Sleep(UIntOS ms)
 {
 	::Sleep((UInt32)ms);
 }
@@ -16,7 +16,7 @@ extern "C"
 };
 static UInt64 SimpleThread_Freq = 0;
 
-void Sync::SimpleThread::Sleepus(UOSInt us)
+void Sync::SimpleThread::Sleepus(UIntOS us)
 {
 #if defined(_WIN32_WCE)
 	Manage::HiResClock clk;

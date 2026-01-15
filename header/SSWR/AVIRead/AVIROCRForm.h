@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Math::RectArea<OSInt> area;
+				Math::RectArea<IntOS> area;
 				NN<Text::String> result;
 				Double confidence;
 				NN<Media::StaticImage> resImg;
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnTextSelChg(AnyType userObj);
 			static void __stdcall OnLangSelChg(AnyType userObj);
 			static void __stdcall OnCharSetSelChg(AnyType userObj);
-			static void __stdcall OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
+			static void __stdcall OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<IntOS> boundary);
 			void ClearResults();
 			void PerformOCR();
 		public:

@@ -19,7 +19,7 @@ NN<Map::GeoPackageLayer::StringSession> Map::GeoPackageLayer::StringSessCreate()
 	return sess;
 }
 
-Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UOSInt index)
+Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UIntOS index)
 {
 	NN<DB::DBReader> r;
 	if (sess->thisId == index)
@@ -69,7 +69,7 @@ Map::GeoPackageLayer::GeoPackageLayer(NN<Map::GeoPackage> gpkg, NN<Map::GeoPacka
 	{
 		NN<DB::ColDef> col;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (it.HasNext())
 		{
 			col = it.Next();
@@ -101,7 +101,7 @@ Map::GeoPackageLayer::~GeoPackageLayer()
 	this->gpkg->Release();
 	this->tabDef.Delete();
 	Optional<Math::Geometry::Vector2D> vec;
-	UOSInt i = this->vecList.GetCount();
+	UIntOS i = this->vecList.GetCount();
 	while (i-- > 0)
 	{
 		vec = this->vecList.GetItem(i);
@@ -119,12 +119,12 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	if (nameArr.IsNotNull()) nameArr.SetNoCheck(NN<NameArray>::ConvertFrom(this->StringSessCreate()));
-	UOSInt i;
-	UOSInt j;
-	UOSInt initCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS initCnt;
 	NN<Math::Geometry::Vector2D> vec;
 	switch (this->mixedData)
 	{
@@ -163,17 +163,17 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Op
 	}
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::GeoPackageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr.IsNotNull()) nameArr.SetNoCheck(NN<NameArray>::ConvertFrom(this->StringSessCreate()));
-	UOSInt i;
-	UOSInt j;
-	UOSInt initCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS initCnt;
 	NN<Math::Geometry::Vector2D> vec;
 	switch (this->mixedData)
 	{
@@ -219,7 +219,7 @@ Int64 Map::GeoPackageLayer::GetObjectIdMax() const
 	return (Int64)(this->vecList.GetCount() - 1);
 }
 
-UOSInt Map::GeoPackageLayer::GetRecordCnt() const
+UIntOS Map::GeoPackageLayer::GetRecordCnt() const
 {
 	return this->vecList.GetCount();
 }
@@ -235,27 +235,27 @@ void Map::GeoPackageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	}
 }
 
-Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<StringSession> sess;
 	NN<DB::DBReader> r;
 	if (Optional<StringSession>::ConvertFrom(nameArr).SetTo(sess) && sess->r.SetTo(r))
 	{
-		if (!StringSessGoRow(sess, (UOSInt)id))
+		if (!StringSessGoRow(sess, (UIntOS)id))
 			return false;
 		return r->GetStr(strIndex, sb);
 	}
 	return false;
 }
 
-UOSInt Map::GeoPackageLayer::GetColumnCnt() const
+UIntOS Map::GeoPackageLayer::GetColumnCnt() const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))	return 0;
 	return tabDef->GetColCnt();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -266,7 +266,7 @@ UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Cha
 	return col->GetColName()->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -278,7 +278,7 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<
 	return col->GetColType();
 }
 
-Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::GeoPackageLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -313,17 +313,17 @@ void Map::GeoPackageLayer::EndGetObject(NN<GetObjectSess> session)
 Optional<Math::Geometry::Vector2D> Map::GeoPackageLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<Math::Geometry::Vector2D> vec;
-	if (this->vecList.GetItem((UOSInt)id).SetTo(vec))
+	if (this->vecList.GetItem((UIntOS)id).SetTo(vec))
 		return vec->Clone();
 	return nullptr;
 }
 
-UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
@@ -348,7 +348,7 @@ void Map::GeoPackageLayer::Reconnect()
 	this->gpkg->Reconnect();
 }
 
-UOSInt Map::GeoPackageLayer::GetGeomCol() const
+UIntOS Map::GeoPackageLayer::GetGeomCol() const
 {
 	return this->geomCol;
 }
@@ -360,7 +360,7 @@ Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass() const
 
 void Map::GeoPackageLayer::MultiplyCoordinates(Double v)
 {
-	UOSInt i = this->vecList.GetCount();
+	UIntOS i = this->vecList.GetCount();
 	NN<Math::Geometry::Vector2D> vec;
 	while (i-- > 0)
 	{

@@ -4,14 +4,14 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	me->downPos = scnPos;
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	if (me->downPos == scnPos)
@@ -20,11 +20,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 		Math::Coord2DDbl mapLyrPos;
 		Math::Coord2DDbl nearPos;
 		NN<Map::GetObjectSess> sess;
-		UOSInt i;
-		UOSInt j;
-		UOSInt i2;
-		UOSInt j2;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS i2;
+		UIntOS j2;
+		UIntOS k;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		Data::ArrayListNN<Map::MapDrawLayer> layers;
@@ -84,7 +84,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 				}
 				else
 				{
-					Math::Coord2DDbl mapLyrPos2 = me->navi->ScnXY2MapXY(scnPos + Math::Coord2D<OSInt>(5, 0));
+					Math::Coord2DDbl mapLyrPos2 = me->navi->ScnXY2MapXY(scnPos + Math::Coord2D<IntOS>(5, 0));
 					if (!csysEnv->Equals(csysLyr))
 					{
 						mapLyrPos2 = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapLyrPos2);
@@ -116,7 +116,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 								{
 									ptNear = obj->objPos;
 								}
-								Math::Coord2D<OSInt> nearScn;
+								Math::Coord2D<IntOS> nearScn;
 								nearScn = me->navi->MapXY2ScnXY(ptNear);
 								if (nearScn.x < scnPos.x)
 								{
@@ -211,7 +211,7 @@ void SSWR::AVIRead::AVIRGISGroupQueryForm::ClearQueryResults()
 {
 	NN<Text::String> value;
 	this->queryNameList.FreeAll();
-	UOSInt i = this->queryValueList.GetCount();
+	UIntOS i = this->queryValueList.GetCount();
 	while (i-- > 0)
 	{
 		value = this->queryValueList.GetItemNoCheck(i);
@@ -224,7 +224,7 @@ void SSWR::AVIRead::AVIRGISGroupQueryForm::ClearQueryResults()
 	this->queryVecOriList.DeleteAll();
 }
 
-void SSWR::AVIRead::AVIRGISGroupQueryForm::SetQueryItem(UOSInt index)
+void SSWR::AVIRead::AVIRGISGroupQueryForm::SetQueryItem(UIntOS index)
 {
 //	NN<Math::VectorTextWriter> writer;
 	NN<Math::Geometry::Vector2D> vec;
@@ -237,9 +237,9 @@ void SSWR::AVIRead::AVIRGISGroupQueryForm::SetQueryItem(UOSInt index)
 	this->queryVecOriList.GetItem(index).SetTo(vec);
 //	UTF8Char sbuff[64];
 //	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Optional<Text::String> name;
 	Optional<Text::String> value;
 	this->lvInfo->ClearItems();

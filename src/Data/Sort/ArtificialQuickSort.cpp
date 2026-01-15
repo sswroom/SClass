@@ -18,15 +18,15 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void Data::Sort::ArtificialQuickSort::DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Int32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Int32 temp1;
 	Int32 temp2;
 	Int32 temp;
@@ -139,15 +139,15 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(NN<ThreadStat> stat, UnsafeArr
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	UInt32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	UInt32 temp1;
 	UInt32 temp2;
 	UInt32 temp;
@@ -258,14 +258,14 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(NN<ThreadStat> stat, UnsafeAr
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	UnsafeArray<UTF8Char> meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	UnsafeArray<UTF8Char> temp;
 
 	while (true)
@@ -357,8 +357,8 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(AnyType userObj)
 {
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	Bool found;
-	OSInt firstIndex;
-	OSInt lastIndex;
+	IntOS firstIndex;
+	IntOS lastIndex;
 	UnsafeArray<UInt8> arr;
 	{
 		Sync::Event evt;
@@ -466,10 +466,10 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 {
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->arr = nullptr;
-	this->tasks = MemAllocArr(OSInt, 65536);
+	this->tasks = MemAllocArr(IntOS, 65536);
 	this->taskCnt = 0;
 	this->threads = MemAllocArr(ThreadStat, this->threadCnt);
-	UOSInt i;
+	UIntOS i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -503,7 +503,7 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 
 Data::Sort::ArtificialQuickSort::~ArtificialQuickSort()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -532,7 +532,7 @@ Data::Sort::ArtificialQuickSort::~ArtificialQuickSort()
 	MemFreeArr(this->threads);
 }
 
-void Data::Sort::ArtificialQuickSort::SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
 	this->arr = UnsafeArray<UInt8>::ConvertFrom(arr);
 	this->arrType = AT_INT32;
@@ -555,7 +555,7 @@ void Data::Sort::ArtificialQuickSort::SortInt32(UnsafeArray<Int32> arr, OSInt fi
 		}
 		else
 		{
-			UOSInt i = this->threadCnt;
+			UIntOS i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)
@@ -578,7 +578,7 @@ void Data::Sort::ArtificialQuickSort::SortInt32(UnsafeArray<Int32> arr, OSInt fi
 	this->arr = nullptr;
 }
 
-void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex)
 {
 	this->arr = UnsafeArray<UInt8>::ConvertFrom(arr);
 	this->arrType = AT_UINT32;
@@ -601,7 +601,7 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt 
 		}
 		else
 		{
-			UOSInt i = this->threadCnt;
+			UIntOS i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)
@@ -624,7 +624,7 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt 
 	this->arr = nullptr;
 }
 
-void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex)
 {
 	this->arr = UnsafeArray<UInt8>::ConvertFrom(arr);
 	this->arrType = AT_STRUTF8;
@@ -647,7 +647,7 @@ void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>>
 		}
 		else
 		{
-			UOSInt i = this->threadCnt;
+			UIntOS i = this->threadCnt;
 			while (i-- > 0)
 			{
 				if (this->threads[i].state != 1)
@@ -760,7 +760,7 @@ void ArtificialQuickSort(int array[], int nor) {
 */
 
 
-void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt left, OSInt right)
+void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS left, IntOS right)
 {
 	NN<Data::Comparable> temp;
 
@@ -777,22 +777,22 @@ void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::Comparabl
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
+	IntOS *levi = MemAlloc(IntOS, 65536);
+	IntOS *desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	NN<Data::Comparable> meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	NN<Data::Comparable> temp;
 
 	PreSortCmpO(arr, firstIndex, lastIndex);

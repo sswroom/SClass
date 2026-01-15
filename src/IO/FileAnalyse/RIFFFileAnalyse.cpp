@@ -6,7 +6,7 @@
 #include "Media/ICCProfile.h"
 #include "Sync/SimpleThread.h"
 
-void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(NN<IO::StreamData> fd, UOSInt lev, UInt64 ofst, UInt64 size)
+void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(NN<IO::StreamData> fd, UIntOS lev, UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[12];
 	UInt64 endOfst = ofst + size;
@@ -69,16 +69,16 @@ void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NN<Sync::Thread> th
 	}
 }
 
-UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
+UIntOS IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UIntOS lev, UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -93,7 +93,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
@@ -131,12 +131,12 @@ Text::CStringNN IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
 	return CSTR("RIFF");
 }
 
-UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	UInt8 buff[5];
@@ -155,17 +155,17 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 		sb->AppendSlow((UTF8Char*)buff);
 	}
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(pack->packSize);
+	sb->AppendUIntOS(pack->packSize);
 	return true;
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	UInt8 buff[5];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
@@ -185,7 +185,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendSlow((UTF8Char*)buff);
 	}
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(pack->packSize);
+	sb->AppendUIntOS(pack->packSize);
 
 	if (pack->packType == *(Int32*)"avih")
 	{
@@ -391,12 +391,12 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendU16(ReadUInt16(&packBuff[2]));
 		sb->AppendC(UTF8STRC("\r\nNumber of Images = "));
 		sb->AppendU16(ReadUInt16(&packBuff[4]));
-		OSInt i = 0;
-		OSInt j = ReadUInt16(&packBuff[4]);
+		IntOS i = 0;
+		IntOS j = ReadUInt16(&packBuff[4]);
 		while (i < j)
 		{
 			sb->AppendC(UTF8STRC("\r\nImage "));
-			sb->AppendOSInt(i);
+			sb->AppendIntOS(i);
 			sb->AppendC(UTF8STRC(":"));
 
 			sb->AppendC(UTF8STRC("\r\nWidth = "));
@@ -422,10 +422,10 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	return true;
 }
 
-UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	UOSInt ret;
-	UOSInt i = this->maxLev;
+	UIntOS ret;
+	UIntOS i = this->maxLev;
 	while (true)
 	{
 		ret = this->GetFrameIndex(i, ofst);
@@ -441,16 +441,16 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 	}
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	UInt8 buff[5];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
 		return nullptr;
@@ -597,11 +597,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 		frame->AddUInt(10, 2, CSTR("File Format"), ReadUInt32(&packBuff[2]));
 		frame->AddUInt(12, 2, CSTR("Number of Images"), ReadUInt32(&packBuff[4]));
 
-		UOSInt i = 0;
-		UOSInt j = ReadUInt16(&packBuff[4]);
+		UIntOS i = 0;
+		UIntOS j = ReadUInt16(&packBuff[4]);
 		while (i < j)
 		{
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image ")), i), UTF8STRC(":"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Image ")), i), UTF8STRC(":"));
 			frame->AddText(14 + (i << 4), CSTRP(sbuff, sptr));
 			frame->AddUInt(14 + (i << 4), 1, CSTR("Width"), packBuff[6 + (i << 4)]);
 			frame->AddUInt(15 + (i << 4), 1, CSTR("Height"), packBuff[7 + (i << 4)]);
@@ -657,10 +657,10 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::IsParsing()
 Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 /*	UInt8 *readBuff;
-	OSInt readSize;
-	OSInt buffSize;
-	OSInt j;
-	OSInt frameSize;
+	IntOS readSize;
+	IntOS buffSize;
+	IntOS j;
+	IntOS frameSize;
 	Int64 readOfst;
 	Bool valid = true;
 	IO::FileStream *dfs;

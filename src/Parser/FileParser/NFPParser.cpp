@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NFPParser::ParseFileHdr(NN<IO::St
 {
 	UInt32 fileCnt;
 	UInt32 fileOfst;
-	UOSInt i;
+	UIntOS i;
 	NFPFileInfo *fileInfo;
 	UTF8Char sbuff[13];
 	UnsafeArray<UTF8Char> sptr;

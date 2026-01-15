@@ -10,7 +10,7 @@ namespace UI
 		class GTKTimer : public GUITimer
 		{
 		private:
-			UOSInt id;
+			UIntOS id;
 			UInt32 interval;
 
 			static Int32 OnTick(void *userObj);
@@ -18,7 +18,7 @@ namespace UI
 			GTKTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
 			virtual ~GTKTimer();
 
-			UOSInt GetId();
+			UIntOS GetId();
 		};
 	}
 }

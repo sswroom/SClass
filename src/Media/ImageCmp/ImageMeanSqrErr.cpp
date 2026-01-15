@@ -23,23 +23,23 @@ Double Media::ImageCmp::ImageMeanSqrErr::CompareImage(NN<Media::RasterImage> ori
 		Int64 diffSum = 0;
 		if (oriImage->info.storeBPP == 32)
 		{
-			UOSInt w = oriImage->info.dispSize.GetWidth();
-			UOSInt bpl = w << 2;
+			UIntOS w = oriImage->info.dispSize.GetWidth();
+			UIntOS bpl = w << 2;
 			UInt8 *srcImg;
 			UInt8 *destImg;
-			UOSInt i = oriImage->info.dispSize.GetHeight();
+			UIntOS i = oriImage->info.dispSize.GetHeight();
 			srcImg = MemAlloc(UInt8, bpl);
 			destImg = MemAlloc(UInt8, bpl);
 			UInt8 *srcPtr;
 			UInt8 *destPtr;
-			UOSInt j;
-			OSInt db;
-			OSInt dg;
-			OSInt dr;
+			UIntOS j;
+			IntOS db;
+			IntOS dg;
+			IntOS dr;
 			while (i-- > 0)
 			{
-				oriImage->GetRasterData(srcImg, 0, (OSInt)i, w, 1, bpl, false, Media::RotateType::None);
-				cmpImage->GetRasterData(destImg, 0, (OSInt)i, w, 1, bpl, false, Media::RotateType::None);
+				oriImage->GetRasterData(srcImg, 0, (IntOS)i, w, 1, bpl, false, Media::RotateType::None);
+				cmpImage->GetRasterData(destImg, 0, (IntOS)i, w, 1, bpl, false, Media::RotateType::None);
 				srcPtr = srcImg;
 				destPtr = destImg;
 				j = w;

@@ -11,29 +11,29 @@
 
 struct UI::GUITextView::ClassData
 {
-	UOSInt scrSize;
+	UIntOS scrSize;
 
-	UOSInt scrHPos;
-	UOSInt scrHMin;
-	UOSInt scrHMax;
-	UOSInt scrHPage;
+	UIntOS scrHPos;
+	UIntOS scrHMin;
+	UIntOS scrHMax;
+	UIntOS scrHPage;
 	Bool scrHDown;
-	OSInt scrHDownX;
-	UOSInt scrHDownPos;
+	IntOS scrHDownX;
+	UIntOS scrHDownPos;
 
-	UOSInt scrVPos;
-	UOSInt scrVMin;
-	UOSInt scrVMax;
-	UOSInt scrVPage;
+	UIntOS scrVPos;
+	UIntOS scrVMin;
+	UIntOS scrVMax;
+	UIntOS scrVPage;
 	Bool scrVDown;
-	OSInt scrVDownY;
-	UOSInt scrVDownPos;
+	IntOS scrVDownY;
+	UIntOS scrVDownPos;
 
 	guint timerId;
 	Bool shiftDown;
 };
 
-OSInt UI::GUITextView::useCnt = 0;
+IntOS UI::GUITextView::useCnt = 0;
 
 gboolean GUITextView_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
@@ -69,7 +69,7 @@ gboolean GUITextView_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer da
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDown(Double2OSInt(evt->x), Double2OSInt(evt->y), btn);
+		me->OnMouseDown(Double2IntOS(evt->x), Double2IntOS(evt->y), btn);
 		me->Focus();
 	}
 	return false;
@@ -102,7 +102,7 @@ gboolean GUITextView_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseUp(Double2OSInt(evt->x), Double2OSInt(evt->y), btn);
+		me->OnMouseUp(Double2IntOS(evt->x), Double2IntOS(evt->y), btn);
 	}
 	return false;
 }
@@ -112,7 +112,7 @@ gboolean GUITextView_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer da
 	UI::GUITextView *me = (UI::GUITextView*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
 	me->SetShiftState((evt->state & GDK_SHIFT_MASK) != 0);
-	me->OnMouseMove(Double2OSInt(evt->x), Double2OSInt(evt->y));
+	me->OnMouseMove(Double2IntOS(evt->x), Double2IntOS(evt->y));
 	return false;
 }
 
@@ -201,7 +201,7 @@ gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer use
 void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 {
 	NN<UI::GUITextView> me = userObj.GetNN<UI::GUITextView>();
-	Math::Size2D<UOSInt> scnSize;
+	Math::Size2D<UIntOS> scnSize;
 	NN<Media::DrawImage> img;
 	if (me->drawBuff.SetTo(img))
 	{
@@ -252,7 +252,7 @@ void UI::GUITextView::UpdateScrollBar()
 			drawBuff->DelFont(fnt);
 		}
 	}
-	Math::Size2D<UOSInt> usz = this->GetSizeP();
+	Math::Size2D<UIntOS> usz = this->GetSizeP();
 	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage)
 	{
 		usz.y -= clsData->scrSize;
@@ -262,7 +262,7 @@ void UI::GUITextView::UpdateScrollBar()
 		usz.x -= clsData->scrSize;
 	}
 
-	this->pageLineCnt = (UInt32)(UOSInt2Double(usz.y) / sz.y);
+	this->pageLineCnt = (UInt32)(UIntOS2Double(usz.y) / sz.y);
 	this->pageLineHeight = sz.y;
 	this->clsData->scrVPage = this->pageLineCnt;
 	this->clsData->scrHPage = usz.x;
@@ -274,7 +274,7 @@ Bool UI::GUITextView::IsShiftPressed()
 	return this->clsData->shiftDown;
 }
 
-void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
+void UI::GUITextView::SetScrollHPos(UIntOS pos, Bool redraw)
 {
 	if (this->clsData->scrHPos == pos)
 	{
@@ -295,7 +295,7 @@ void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
 	}
 }
 
-void UI::GUITextView::SetScrollVPos(UOSInt pos, Bool redraw)
+void UI::GUITextView::SetScrollVPos(UIntOS pos, Bool redraw)
 {
 	if (this->clsData->scrVPos == pos)
 	{
@@ -316,7 +316,7 @@ void UI::GUITextView::SetScrollVPos(UOSInt pos, Bool redraw)
 	}
 }
 
-void UI::GUITextView::SetScrollHRange(UOSInt min, UOSInt max)
+void UI::GUITextView::SetScrollHRange(UIntOS min, UIntOS max)
 {
 	if (this->clsData->scrHMin == min && this->clsData->scrHMax == max)
 	{
@@ -335,7 +335,7 @@ void UI::GUITextView::SetScrollHRange(UOSInt min, UOSInt max)
 	this->Redraw();
 }
 
-void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
+void UI::GUITextView::SetScrollVRange(UIntOS min, UIntOS max)
 {
 	if (this->clsData->scrVMin == min && this->clsData->scrVMax == max)
 	{
@@ -354,13 +354,13 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 	this->Redraw();
 }
 
-UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth)
+UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UIntOS strLen, UIntOS pxWidth)
 {
 	WChar wbuff[256];
 	NN<Media::DrawImage> drawBuff;
 	if (this->drawBuff.SetTo(drawBuff))
 	{
-		UOSInt pxLeft = pxWidth;
+		UIntOS pxLeft = pxWidth;
 		UTF8Char sbuff[7];
 		UTF32Char u32c;
 		UnsafeArray<const UTF8Char> currPtr;
@@ -370,7 +370,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 		cairo_region_t *region = cairo_region_create();
 		GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
 		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
-		UOSInt ret;
+		UIntOS ret;
 		NN<Media::DrawFont> fnt;
 		if (this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
@@ -430,7 +430,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 				pxLeft -= txtWidth;
 				currPtr = nextPtr;
 			}
-			ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
+			ret = Text::StrUTF8_WCharCntC(csptr, (UIntOS)(currPtr - csptr));
 			Text::StrDelNew(csptr);
 			drawBuff->DelFont(fnt);
 		}
@@ -448,7 +448,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 	}
 }
 
-void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height)
+void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UIntOS strLen, OutParam<UIntOS> width, OutParam<UIntOS> height)
 {
 	NN<Media::DrawImage> drawBuff;
 	if (this->drawBuff.SetTo(drawBuff))
@@ -475,8 +475,8 @@ void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, O
 			}
 			sz = drawBuff->GetTextSize(fnt, s->ToCString());
 			s->Release();
-			width.Set((UOSInt)Double2OSInt(sz.x));
-			height.Set((UOSInt)Double2OSInt(sz.y));
+			width.Set((UIntOS)Double2IntOS(sz.x));
+			height.Set((UIntOS)Double2IntOS(sz.y));
 			drawBuff->DelFont(fnt);
 		}
 		else
@@ -506,15 +506,15 @@ void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, O
 		cairo_text_extents_t extents;
 		cairo_text_extents(cr, (const Char*)csptr, &extents);
 		Text::StrDelNew(csptr);
-		*width = (UOSInt)Double2OSInt(extents.width) + 2;
-		*height = (UOSInt)Double2OSInt(((Media::GTKDrawFont*)fnt)->GetHeight()) + 2;
+		*width = (UIntOS)Double2IntOS(extents.width) + 2;
+		*height = (UIntOS)Double2IntOS(((Media::GTKDrawFont*)fnt)->GetHeight()) + 2;
 		this->drawBuff->DelFont(fnt);
 		gdk_window_end_draw_frame(window, drawing);
 		cairo_region_destroy(region);
 	}*/
 }
 
-void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
+void UI::GUITextView::SetCaretPos(IntOS scnX, IntOS scnY)
 {
 
 }
@@ -586,7 +586,7 @@ Text::CStringNN UI::GUITextView::GetObjectClass() const
 	return CSTR("TextView");
 }
 
-OSInt UI::GUITextView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITextView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -597,85 +597,85 @@ void UI::GUITextView::UpdateFont()
 	UpdateScrollBar();
 }
 
-OSInt UI::GUITextView::GetScrollHPos()
+IntOS UI::GUITextView::GetScrollHPos()
 {
-	return (OSInt)this->clsData->scrHPos;
+	return (IntOS)this->clsData->scrHPos;
 }
 
-OSInt UI::GUITextView::GetScrollVPos()
+IntOS UI::GUITextView::GetScrollVPos()
 {
-	return (OSInt)this->clsData->scrVPos;
+	return (IntOS)this->clsData->scrVPos;
 }
 
-void UI::GUITextView::OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
+void UI::GUITextView::OnMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 {
-	Math::Size2D<UOSInt> sz = this->GetSizeP();
-	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage && scnX >= (OSInt)(sz.x - clsData->scrSize))
+	Math::Size2D<UIntOS> sz = this->GetSizeP();
+	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage && scnX >= (IntOS)(sz.x - clsData->scrSize))
 	{
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			UOSInt btnSize = sz.y * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
+			UIntOS btnSize = sz.y * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
 			if (btnSize  < clsData->scrSize)
 			{
 				btnSize = clsData->scrSize;
 			}
-			UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
-			UOSInt scrollY1 = (sz.y - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range;
-			UOSInt scrollY2 = scrollY1 + btnSize;
-			if (scnY >= (OSInt)scrollY1 && scnY < (OSInt)scrollY2)
+			UIntOS range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
+			UIntOS scrollY1 = (sz.y - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range;
+			UIntOS scrollY2 = scrollY1 + btnSize;
+			if (scnY >= (IntOS)scrollY1 && scnY < (IntOS)scrollY2)
 			{
 				clsData->scrVDownY = scnY;
 				clsData->scrVDownPos = clsData->scrVPos;
 				clsData->scrVDown = true;
 			}
-			else if (scnY < (OSInt)(btnSize >> 1))
+			else if (scnY < (IntOS)(btnSize >> 1))
 			{
 				clsData->scrVPos = clsData->scrVMin;;
 				this->Redraw();
 			}
-			else if (scnY >= (OSInt)(sz.y - (btnSize >> 1)))
+			else if (scnY >= (IntOS)(sz.y - (btnSize >> 1)))
 			{
 				clsData->scrVPos = clsData->scrVMax - clsData->scrVPage + 1;
 				this->Redraw();
 			}
 			else  
 			{
-				clsData->scrVPos = (UOSInt)((scnY - (OSInt)(btnSize >> 1)) * (OSInt)(clsData->scrVMax - clsData->scrVMin - clsData->scrVPage + 1) / (OSInt)(sz.y - btnSize));
+				clsData->scrVPos = (UIntOS)((scnY - (IntOS)(btnSize >> 1)) * (IntOS)(clsData->scrVMax - clsData->scrVMin - clsData->scrVPage + 1) / (IntOS)(sz.y - btnSize));
 				this->Redraw();
 			}
 		}
 	}
-	else if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage && scnY >= (OSInt)(sz.y - clsData->scrSize))
+	else if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage && scnY >= (IntOS)(sz.y - clsData->scrSize))
 	{
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			UOSInt btnSize = sz.x * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
+			UIntOS btnSize = sz.x * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
 			if (btnSize  < clsData->scrSize)
 			{
 				btnSize = clsData->scrSize;
 			}
-			UOSInt range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
-			UOSInt scrollX1 = (sz.x - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range;
-			UOSInt scrollX2 = scrollX1 + btnSize;
-			if (scnX >= (OSInt)scrollX1 && scnX < (OSInt)scrollX2)
+			UIntOS range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
+			UIntOS scrollX1 = (sz.x - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range;
+			UIntOS scrollX2 = scrollX1 + btnSize;
+			if (scnX >= (IntOS)scrollX1 && scnX < (IntOS)scrollX2)
 			{
 				clsData->scrHDownX = scnX;
 				clsData->scrHDownPos = clsData->scrHPos;
 				clsData->scrHDown = true;
 			}
-			else if (scnX < (OSInt)(btnSize >> 1))
+			else if (scnX < (IntOS)(btnSize >> 1))
 			{
 				clsData->scrHPos = clsData->scrHMin;;
 				this->Redraw();
 			}
-			else if (scnX >= (OSInt)(sz.x - (btnSize >> 1)))
+			else if (scnX >= (IntOS)(sz.x - (btnSize >> 1)))
 			{
 				clsData->scrHPos = clsData->scrHMax - clsData->scrHPage + 1;
 				this->Redraw();
 			}
 			else
 			{
-				clsData->scrHPos = (UOSInt)((scnX - (OSInt)(btnSize >> 1)) * (OSInt)(clsData->scrHMax - clsData->scrHMin - clsData->scrHPage + 1) / (OSInt)(sz.x - btnSize));
+				clsData->scrHPos = (UIntOS)((scnX - (IntOS)(btnSize >> 1)) * (IntOS)(clsData->scrHMax - clsData->scrHMin - clsData->scrHPage + 1) / (IntOS)(sz.x - btnSize));
 				this->Redraw();
 			}
 		}
@@ -687,7 +687,7 @@ void UI::GUITextView::OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
 
 }
 
-void UI::GUITextView::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
+void UI::GUITextView::OnMouseUp(IntOS scnX, IntOS scnY, MouseButton btn)
 {
 	if (this->clsData->scrVDown && btn == UI::GUIControl::MBTN_LEFT)
 	{
@@ -703,52 +703,52 @@ void UI::GUITextView::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
 	}
 }
 
-void UI::GUITextView::OnMouseMove(OSInt scnX, OSInt scnY)
+void UI::GUITextView::OnMouseMove(IntOS scnX, IntOS scnY)
 {
-	Math::Size2D<UOSInt> sz = this->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->GetSizeP();
 	if (this->clsData->scrVDown)
 	{
-		UOSInt btnSize = sz.y * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
+		UIntOS btnSize = sz.y * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
 		if (btnSize  < clsData->scrSize)
 		{
 			btnSize = clsData->scrSize;
 		}
-		UOSInt range = this->clsData->scrVMax - this->clsData->scrVMin - clsData->scrVPage;
-		OSInt scrollPos = (OSInt)clsData->scrVDownPos + (scnY - clsData->scrVDownY) * (OSInt)range / (OSInt)(sz.y - btnSize);
-		if (scrollPos < (OSInt)clsData->scrVMin)
+		UIntOS range = this->clsData->scrVMax - this->clsData->scrVMin - clsData->scrVPage;
+		IntOS scrollPos = (IntOS)clsData->scrVDownPos + (scnY - clsData->scrVDownY) * (IntOS)range / (IntOS)(sz.y - btnSize);
+		if (scrollPos < (IntOS)clsData->scrVMin)
 		{
 			clsData->scrVPos = clsData->scrVMin;
 		}
-		else if ((UOSInt)scrollPos > clsData->scrVMax - clsData->scrVPage + 1)
+		else if ((UIntOS)scrollPos > clsData->scrVMax - clsData->scrVPage + 1)
 		{
 			clsData->scrVPos = clsData->scrVMax - clsData->scrVPage + 1;
 		}
 		else
 		{
-			clsData->scrVPos = (UOSInt)scrollPos;
+			clsData->scrVPos = (UIntOS)scrollPos;
 		}
 		this->Redraw();
 	}
 	else if (this->clsData->scrHDown)
 	{
-		UOSInt btnSize = sz.x * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
+		UIntOS btnSize = sz.x * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
 		if (btnSize  < clsData->scrSize)
 		{
 			btnSize = clsData->scrSize;
 		}
-		UOSInt range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
-		OSInt scrollPos = (OSInt)clsData->scrHDownPos + (scnX - clsData->scrHDownX) * (OSInt)range / (OSInt)(sz.x - btnSize);
-		if (scrollPos < (OSInt)clsData->scrHMin)
+		UIntOS range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
+		IntOS scrollPos = (IntOS)clsData->scrHDownPos + (scnX - clsData->scrHDownX) * (IntOS)range / (IntOS)(sz.x - btnSize);
+		if (scrollPos < (IntOS)clsData->scrHMin)
 		{
 			clsData->scrHPos = clsData->scrHMin;
 		}
-		else if ((UOSInt)scrollPos > clsData->scrHMax - clsData->scrHPage + 1)
+		else if ((UIntOS)scrollPos > clsData->scrHMax - clsData->scrHPage + 1)
 		{
 			clsData->scrHPos = clsData->scrHMax - clsData->scrHPage + 1;
 		}
 		else
 		{
-			clsData->scrHPos = (UOSInt)scrollPos;
+			clsData->scrHPos = (UIntOS)scrollPos;
 		}
 		this->Redraw();
 	}
@@ -762,7 +762,7 @@ void UI::GUITextView::OnMouseWheel(Bool isDown)
 {
 	if (false)
 	{
-		UOSInt scrollSize = clsData->scrHPage >> 2;
+		UIntOS scrollSize = clsData->scrHPage >> 2;
 		if (scrollSize < 1)
 		{
 			scrollSize = 1;
@@ -784,7 +784,7 @@ void UI::GUITextView::OnMouseWheel(Bool isDown)
 	}
 	else
 	{
-		UOSInt scrollSize = clsData->scrVPage >> 2;
+		UIntOS scrollSize = clsData->scrVPage >> 2;
 		if (scrollSize < 1)
 		{
 			scrollSize = 1;
@@ -815,9 +815,9 @@ void UI::GUITextView::OnMouseWheel(Bool isDown)
 
 void UI::GUITextView::OnDraw(void *cr)
 {
-	Math::Size2D<UOSInt> sz = this->GetSizeP();
-	UOSInt drawWidth = sz.x;
-	UOSInt drawHeight = sz.y;
+	Math::Size2D<UIntOS> sz = this->GetSizeP();
+	UIntOS drawWidth = sz.x;
+	UIntOS drawHeight = sz.y;
 	Bool hasHScr = false;
 	Bool hasVScr = false;
 
@@ -831,8 +831,8 @@ void UI::GUITextView::OnDraw(void *cr)
 		hasHScr = true;
 		drawHeight -= clsData->scrSize;
 	}
-	NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight), this->colorSess);
-	this->clsData->scrSize = (UOSInt)Double2OSInt(8.0 * this->GetHDPI() / this->GetDDPI());
+	NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(0, 0), Math::Coord2D<IntOS>((IntOS)drawWidth, (IntOS)drawHeight), this->colorSess);
+	this->clsData->scrSize = (UIntOS)Double2IntOS(8.0 * this->GetHDPI() / this->GetDDPI());
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	this->DrawImage(dimg);
@@ -840,43 +840,43 @@ void UI::GUITextView::OnDraw(void *cr)
 
 	if (hasVScr)
 	{
-		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>((OSInt)(sz.x - clsData->scrSize), 0), Math::Coord2D<OSInt>((OSInt)clsData->scrSize, (OSInt)drawHeight), this->colorSess);
+		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>((IntOS)(sz.x - clsData->scrSize), 0), Math::Coord2D<IntOS>((IntOS)clsData->scrSize, (IntOS)drawHeight), this->colorSess);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(drawHeight)), nullptr, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(clsData->scrSize), UIntOS2Double(drawHeight)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
-		UOSInt btnSize = drawHeight * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
+		UIntOS btnSize = drawHeight * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
 		if (btnSize  < clsData->scrSize)
 		{
 			btnSize = clsData->scrSize;
 		}
-		UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
-		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize)), nullptr, b);
+		UIntOS range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
+		dimg->DrawRect(Math::Coord2DDbl(0, UIntOS2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UIntOS2Double(clsData->scrSize), UIntOS2Double(btnSize)), nullptr, b);
 		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}
 	if (hasHScr)
 	{
-		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, (OSInt)(sz.y - clsData->scrSize)), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)clsData->scrSize), this->colorSess);
+		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(0, (IntOS)(sz.y - clsData->scrSize)), Math::Coord2D<IntOS>((IntOS)drawWidth, (IntOS)clsData->scrSize), this->colorSess);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(drawWidth), UOSInt2Double(clsData->scrSize)), nullptr, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(drawWidth), UIntOS2Double(clsData->scrSize)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
-		UOSInt btnSize = drawWidth * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
+		UIntOS btnSize = drawWidth * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
 		if (btnSize  < clsData->scrSize)
 		{
 			btnSize = clsData->scrSize;
 		}
-		UOSInt range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
+		UIntOS range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
 		if (range <= 0)
 		{
 			range = 1;
 		}
-		dimg->DrawRect(Math::Coord2DDbl(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize)), nullptr, b);
+		dimg->DrawRect(Math::Coord2DDbl(UIntOS2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UIntOS2Double(btnSize), UIntOS2Double(clsData->scrSize)), nullptr, b);
 		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}

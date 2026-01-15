@@ -20,7 +20,7 @@ namespace Net
 		NN<Sync::Event> resEvt;
 
 		static void __stdcall RecvThread(NN<Sync::Thread> thread);
-		void ICMPChecksum(UInt8 *buff, UOSInt buffSize);
+		void ICMPChecksum(UInt8 *buff, UIntOS buffSize);
 	public:
 		TraceRoute(NN<Net::SocketFactory> sockf, UInt32 ip);
 		~TraceRoute();

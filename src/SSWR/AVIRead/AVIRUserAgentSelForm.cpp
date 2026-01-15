@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
 	if (me->cboFilterOS->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem>().SetTo(osItem))
 	{
-		me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)me->cboFilterBrowser->GetSelectedItem().GetOSInt());
+		me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)me->cboFilterBrowser->GetSelectedItem().GetIntOS());
 	}
 }
 
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(AnyType us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	NN<Net::UserAgentDB::UAEntry> uaList;
@@ -46,9 +46,9 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType us
 
 void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Text::StringBuilderUTF8 sb;
 	Text::CStringNN nnosVer;
 	UnsafeArray<const UTF8Char> nns;
@@ -151,9 +151,9 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Bool found;
 	NN<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
 	Text::StringBuilderUTF8 sb;

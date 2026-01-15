@@ -38,9 +38,9 @@ namespace UI
 		virtual void EventLineBegin();
 		virtual void EventLineEnd();
 		virtual void EventCopy();
-		virtual void EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void EventMouseMove(OSInt scnX, OSInt scnY);
+		virtual void EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn);
+		virtual void EventMouseUp(IntOS scnX, IntOS scnY, MouseButton btn);
+		virtual void EventMouseMove(IntOS scnX, IntOS scnY);
 		virtual void EventTimerTick();
 		virtual void DrawImage(NN<Media::DrawImage> dimg);
 		virtual void UpdateCaretPos();
@@ -51,14 +51,14 @@ namespace UI
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();
 		UInt64 GetFileSize();
-		UOSInt GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray outBuff);
+		UIntOS GetFileData(UInt64 ofst, UIntOS size, Data::ByteArray outBuff);
 
 		void HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj);
 
 		Text::CString GetAnalyzerName();
 		Bool GetFrameName(NN<Text::StringBuilderUTF8> sb);
-		UOSInt GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
-		UOSInt GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
+		UIntOS GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
+		UIntOS GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
 		Bool GoToNextUnkField();
 		Optional<Data::ByteBuffer> GetDevrivedBuff() const;
 		Optional<IO::FileAnalyse::FileAnalyser> CreateDevrivedAnaylse() const;

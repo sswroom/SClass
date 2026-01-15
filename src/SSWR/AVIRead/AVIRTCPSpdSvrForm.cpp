@@ -98,7 +98,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(AnyType userObj)
 {
 	NN<ClientStatus> cliStatus = userObj.GetNN<ClientStatus>();
 	Data::ByteBuffer recvBuff(9000);
-	UOSInt recvSize;
+	UIntOS recvSize;
 	while (true)
 	{
 		recvSize = cliStatus->cli->Read(recvBuff);

@@ -22,9 +22,9 @@ namespace Crypto
 			virtual FileType GetFileType() const;
 			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
 
-			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual UIntOS GetCertCount();
+			virtual Bool GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Optional<X509Cert> GetNewCert(UIntOS index);
 			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NN<ASN1Data> Clone() const;
@@ -41,10 +41,10 @@ namespace Crypto
 			Bool GetNotAfter(NN<Data::DateTime> dt) const;
 			Bool DomainValid(Text::CStringNN domain) const;
 			Bool IsSelfSigned() const;
-			UOSInt GetCRLDistributionPoints(NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints) const;
+			UIntOS GetCRLDistributionPoints(NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints) const;
 
-			UnsafeArrayOpt<const UInt8> GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const;
-			UnsafeArrayOpt<const UInt8> GetSerialNumber(OutParam<UOSInt> dataLen) const;
+			UnsafeArrayOpt<const UInt8> GetIssuerNamesSeq(OutParam<UIntOS> dataLen) const;
+			UnsafeArrayOpt<const UInt8> GetSerialNumber(OutParam<UIntOS> dataLen) const;
 		};
 	}
 }

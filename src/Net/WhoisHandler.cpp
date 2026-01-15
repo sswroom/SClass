@@ -52,18 +52,18 @@ NN<Net::WhoisRecord> Net::WhoisHandler::RequestIP(UInt32 ip)
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(ip);
 	UInt32 sortableIP1;
 	UInt32 sortableIP2;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	NN<WhoisRecord> rec;
 	
 	Sync::MutexUsage mutUsage(this->recordMut);
 	i = 0;
-	j = (OSInt)this->recordList.GetCount() - 1;
+	j = (IntOS)this->recordList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		rec = this->recordList.GetItemNoCheck((UOSInt)k);
+		rec = this->recordList.GetItemNoCheck((UIntOS)k);
 		sortableIP1 = Net::SocketUtil::IPv4ToSortable(rec->GetStartIP());
 		sortableIP2 = Net::SocketUtil::IPv4ToSortable(rec->GetEndIP());
 		if (sortableIP >= sortableIP1 && sortableIP <= sortableIP2)
@@ -80,6 +80,6 @@ NN<Net::WhoisRecord> Net::WhoisHandler::RequestIP(UInt32 ip)
 		}
 	}
 	rec = this->client.RequestIP(ip, this->timeout);
-	this->recordList.Insert((UOSInt)i, rec);
+	this->recordList.Insert((UIntOS)i, rec);
 	return rec;
 }

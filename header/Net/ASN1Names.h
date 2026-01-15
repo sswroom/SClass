@@ -33,7 +33,7 @@ namespace Net
 			Text::CStringNN name;
 			ContentFunc contentFunc;
 			Text::CStringNN *enumVals;
-			UOSInt enumCnt;
+			UIntOS enumCnt;
 		};
 
 		struct RuleContainer
@@ -47,11 +47,11 @@ namespace Net
 		Text::CString currCondParam;
 		Data::ArrayListNN<NameRule> rules;
 
-		Data::ArrayListNative<UOSInt> readLev;
-		UOSInt readIndex;
+		Data::ArrayListNative<UIntOS> readLev;
+		UIntOS readIndex;
 		RuleContainer *readContainer;
 		UInt8 readLastOID[32];
-		UOSInt readLastOIDLen;
+		UIntOS readLastOIDLen;
 	private:
 		void AddRule(NN<NameRule> rule);
 		void FreeContainer(RuleContainer *container);
@@ -62,8 +62,8 @@ namespace Net
 		~ASN1Names();
 
 		void ReadBegin();
-		Text::CStringNN ReadName(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff);
-		Text::CString ReadNameNoDef(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff);
+		Text::CStringNN ReadName(Net::ASN1Util::ItemType itemType, UIntOS len, const UInt8 *buff);
+		Text::CString ReadNameNoDef(Net::ASN1Util::ItemType itemType, UIntOS len, const UInt8 *buff);
 		void ReadContainerBegin();
 		void ReadContainerEnd();
 
@@ -78,7 +78,7 @@ namespace Net
 
 		NN<ASN1Names> Container(Text::CStringNN name, ContentFunc func);
 		NN<ASN1Names> NextValue(Text::CStringNN name);
-		NN<ASN1Names> Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt);
+		NN<ASN1Names> Enum(Text::CStringNN name, Text::CStringNN *enumVals, UIntOS enumCnt);
 
 		NN<ASN1Names> SetCertificate(); //PKIX1Explicit88
 		NN<ASN1Names> SetRSAPublicKey(); //PKCS-1

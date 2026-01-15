@@ -34,7 +34,7 @@ IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(NN<IO:
 	return IO::FileExporter::SupportType::PathOnly;
 }
 
-Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::SQLiteExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -61,7 +61,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	Optional<DB::TableDef> tabDef;
 	NN<DB::TableDef> nntabDef;
 	Data::ArrayListStringNN tables;
-	OSInt k;
+	IntOS k;
 	if (!DB::SQLiteFile::CreateDBTool(fileName, log, CSTR("DB: ")).SetTo(destDB))
 		return false;
 	Bool succ = true;

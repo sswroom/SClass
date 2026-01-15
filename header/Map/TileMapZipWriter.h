@@ -14,19 +14,19 @@ namespace Map
 		IO::FileStream fs;
 		IO::ZIPBuilder zip;
 		Map::TileMap::ImageType imgType;
-		UOSInt minLev;
-		UOSInt maxLev;
+		UIntOS minLev;
+		UIntOS maxLev;
 		Math::RectAreaDbl bounds;
 		Data::ArrayListInt32 xList;
 		NN<Text::String> name;
-		UOSInt currLev;
+		UIntOS currLev;
 	public:
-		TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::ImageType imgType, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds);
+		TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::ImageType imgType, UIntOS minLev, UIntOS maxLev, Math::RectAreaDbl bounds);
 		virtual ~TileMapZipWriter();
 
-		virtual void BeginLevel(UOSInt level);
+		virtual void BeginLevel(UIntOS level);
 		virtual void AddX(Int32 x);
-		virtual void AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
+		virtual void AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
 	};
 }
 #endif

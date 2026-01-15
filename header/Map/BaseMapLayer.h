@@ -28,7 +28,7 @@ namespace Map
 			BLT_GMAP_SATELITE
 		} BaseLayerType;
 	public:
-		static UOSInt GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes);
+		static UIntOS GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes);
 		static Text::CStringNN BaseLayerTypeGetName(BaseLayerType blt);
 		static Optional<Map::MapDrawLayer> CreateLayer(BaseLayerType blt, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers);
 	};

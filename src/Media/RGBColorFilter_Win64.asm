@@ -5,7 +5,7 @@ global RGBColorFilter_ProcessImageHDRPart
 global RGBColorFilter_ProcessImageHDRDPart
 global RGBColorFilter_ProcessImageHDRDLPart
 
-;void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+;void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 
 ;0 rdi
 ;8 rsi
@@ -272,7 +272,7 @@ pip48_6:
 	pop rbp
 	ret
 
-;void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+;void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 
 ;0 rdi
 ;8 rsi
@@ -543,7 +543,7 @@ pihp48_6:
 	pop rbp
 	ret
 
-;void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+;void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 
 ;0 rdi
 ;8 rsi
@@ -823,7 +823,7 @@ pihdp48_6:
 	ret
 
 
-;void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev)
+;void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev)
 
 ;0 r12
 ;8 rdi

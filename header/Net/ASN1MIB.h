@@ -19,7 +19,7 @@ namespace Net
 			Text::String *typeName;
 			Text::String *typeVal;
 			UInt8 oid[32];
-			UOSInt oidLen;
+			UIntOS oidLen;
 			Data::ArrayListStringNN valName;
 			Data::ArrayListStringNN valCont;
 			Optional<ModuleInfo> impModule;
@@ -38,7 +38,7 @@ namespace Net
 		Data::FastStringMapNN<ModuleInfo> moduleMap;
 		ModuleInfo globalModule;
 
-		static UOSInt CalcLineSpace(UnsafeArray<const UTF8Char> txt);
+		static UIntOS CalcLineSpace(UnsafeArray<const UTF8Char> txt);
 		static void ModuleAppendOID(NN<ModuleInfo> module, NN<ObjectInfo> obj);
 		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NN<Text::StringBuilderUTF8> errMessage);
 		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);
@@ -54,7 +54,7 @@ namespace Net
 		static Bool IsType(UnsafeArray<const UTF8Char> s);
 		static Bool IsKnownType(Text::CStringNN s);
 		static Bool IsUnknownType(Text::CStringNN s);
-		static OSInt BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType);
+		static IntOS BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType);
 		static UnsafeArray<const UTF8Char> SkipWS(UnsafeArray<const UTF8Char> s);
 		static UTF8Char NextChar(UnsafeArray<const UTF8Char> s);
 	public:

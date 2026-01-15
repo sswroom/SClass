@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	Net::DNSClient *dnsCli;
 	NN<Net::DNSClient::RequestAnswer> ans;
 	Manage::HiResClock *clk;
-	UOSInt i;
-	UOSInt j;
-	UOSInt bestInd;
+	UIntOS i;
+	UIntOS j;
+	UIntOS bestInd;
 	me->txtServer->GetText(sb);
 	if (!Net::SocketUtil::SetAddrInfo(dnsAddr, sb.ToCString()))
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	Double t;
 	if (reqIP == 0)
 	{
-		UInt16 reqType = (UInt16)me->cboRequest->GetSelectedItem().GetUOSInt();
+		UInt16 reqType = (UInt16)me->cboRequest->GetSelectedItem().GetUIntOS();
 		clk->Start();
 		dnsCli->GetByType(me->ansList, sb.ToCString(), reqType);
 		t = clk->GetTimeDiff();
@@ -49,13 +49,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 		dnsCli->GetByIPv4Name(me->ansList, reqIP);
 		t = clk->GetTimeDiff();
 	}
-	bestInd = (UOSInt)-1;
+	bestInd = (UIntOS)-1;
 	i = 0;
 	j = me->ansList.GetCount();
 	while (i < j)
 	{
 		ans = me->ansList.GetItemNoCheck(i);
-		if (bestInd == (UOSInt)-1 && ans->recType == 1)
+		if (bestInd == (UIntOS)-1 && ans->recType == 1)
 		{
 			bestInd = i;
 		}
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	}
 	if (j > 0)
 	{
-		if (bestInd == (UOSInt)-1)
+		if (bestInd == (UIntOS)-1)
 		{
 			bestInd = 0;
 		}

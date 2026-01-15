@@ -30,9 +30,9 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 	Media::MonitorSurface *surface = this->surfaceMgr->CreatePrimarySurface(hMon, 0);
 	if (surface == 0) return 0;
 	Media::StaticImage *retImg = surface->CreateStaticImage();
-	OSInt lineAdd;
+	IntOS lineAdd;
 	UInt8 *dataPtr = surface->LockSurface(&lineAdd);
-	UOSInt i = 10;
+	UIntOS i = 10;
 	while (i-- > 0)
 	{
 		ImageUtil_ColorFill32(dataPtr, surface->info->storeWidth * surface->info->storeHeight, 0xff800000);
@@ -56,7 +56,7 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<Monit
 {
     Display *dis = XOpenDisplay((char *)0);
 	printf("nScreen = %d\r\n", ScreenCount(dis));
-    Screen *scr = ScreenOfDisplay(dis, -1 + (int)(OSInt)hMon.OrNull());
+    Screen *scr = ScreenOfDisplay(dis, -1 + (int)(IntOS)hMon.OrNull());
     Drawable drawable = XRootWindowOfScreen(scr);
 
 	Media::StaticImage *retImg = 0;
@@ -77,8 +77,8 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<Monit
 		{
 			info.pf = Media::PF_LE_A2B10G10R10;
 		}
-		info.dispSize = Math::Size2D<UOSInt>((UInt32)image->width, (UInt32)image->height);
-		info.storeSize = Math::Size2D<UOSInt>((UInt32)image->bytes_per_line / (info.storeBPP >> 3), (UInt32)image->height);
+		info.dispSize = Math::Size2D<UIntOS>((UInt32)image->width, (UInt32)image->height);
+		info.storeSize = Math::Size2D<UIntOS>((UInt32)image->bytes_per_line / (info.storeBPP >> 3), (UInt32)image->height);
 		info.byteSize = info.storeSize.CalcArea() * (info.storeBPP >> 3);
 		info.par2 = 1.0;
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;

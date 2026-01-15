@@ -4,10 +4,10 @@
 void Text::JSONUtil::ArrayGPSTrack(NN<JSONBuilder> json, NN<Map::GPSTrack> trk)
 {
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
-	UOSInt recordCnt;
-	UOSInt i = 0;
-	UOSInt j = trk->GetTrackCnt();
-	UOSInt k;
+	UIntOS recordCnt;
+	UIntOS i = 0;
+	UIntOS j = trk->GetTrackCnt();
+	UIntOS k;
 	while (i < j)
 	{
 		if (trk->GetTrack(i, recordCnt).SetTo(recs))

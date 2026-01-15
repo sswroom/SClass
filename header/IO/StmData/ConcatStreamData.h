@@ -35,7 +35,7 @@ namespace IO
 			ConcatStreamData(Text::CStringNN fileName);
 			virtual ~ConcatStreamData();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
+			virtual UIntOS GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer);
 			virtual NN<Text::String> GetFullName() const;
 			virtual Text::CString GetShortName() const;
 			virtual UInt64 GetDataSize() const;
@@ -44,7 +44,7 @@ namespace IO
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile() const;
 			virtual Bool IsLoading() const;
-			virtual UOSInt GetSeekCount() const;
+			virtual UIntOS GetSeekCount() const;
 
 			void AddData(NN<IO::StreamData> data);
 		};

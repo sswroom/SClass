@@ -8,11 +8,11 @@ namespace UI
 	class GUIPopupMenu : public GUIMenu
 	{
 	private:
-		Math::Coord2D<OSInt> scnPos;
+		Math::Coord2D<IntOS> scnPos;
 	public:
 		GUIPopupMenu();
-		void ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos);
-		Math::Coord2D<OSInt> GetScnPos() const { return this->scnPos; }
+		void ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<IntOS> scnPos);
+		Math::Coord2D<IntOS> GetScnPos() const { return this->scnPos; }
 	};
 }
 #endif

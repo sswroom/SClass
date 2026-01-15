@@ -9,10 +9,10 @@ namespace Data
 	{
 	public:
 		ArrayListCmp();
-		ArrayListCmp(UOSInt Capacity);
+		ArrayListCmp(UIntOS Capacity);
 
 		virtual NN<Data::ArrayListNN<Data::Comparable>> Clone() const;
-		virtual OSInt Compare(NN<Data::Comparable> obj1, NN<Data::Comparable> obj2) const;
+		virtual IntOS Compare(NN<Data::Comparable> obj1, NN<Data::Comparable> obj2) const;
 	};
 }
 #endif

@@ -35,12 +35,12 @@ namespace SSWR
 			virtual Text::String *GetCacheDir();
 			virtual Text::CStringNN GetMapFont();
 
-			virtual UOSInt GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
-			virtual UOSInt GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp);
-			virtual UOSInt GetSpeciesImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganSpecies> sp);
-			virtual UOSInt GetGroupAllSpecies(NN<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp);
-			virtual UOSInt GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayListNative<UInt32>> colors, Optional<OrganGroup> grp);
-			virtual UOSInt GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayListNative<Int32>> speciesIds);
+			virtual UIntOS GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
+			virtual UIntOS GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp);
+			virtual UIntOS GetSpeciesImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganSpecies> sp);
+			virtual UIntOS GetGroupAllSpecies(NN<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp);
+			virtual UIntOS GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayListNative<UInt32>> colors, Optional<OrganGroup> grp);
+			virtual UIntOS GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayListNative<Int32>> speciesIds);
 			virtual Optional<OrganGroup> GetGroup(Int32 groupId, OutParam<Int32> parentId);
 			virtual Optional<OrganSpecies> GetSpecies(Int32 speciesId);
 			virtual UnsafeArray<UTF8Char> GetSpeciesDir(NN<OrganSpecies> sp, UnsafeArray<UTF8Char> sbuff);
@@ -56,8 +56,8 @@ namespace SSWR
 			Bool UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> webFileName, UnsafeArray<const UTF8Char> srcURL);
 			virtual Bool SaveSpecies(NN<OrganSpecies> sp);
 			virtual Bool SaveGroup(NN<OrganGroup> grp);
-			virtual UOSInt GetGroupCount(Int32 groupId);
-			virtual UOSInt GetSpeciesCount(Int32 groupId);
+			virtual UIntOS GetGroupCount(Int32 groupId);
+			virtual UIntOS GetSpeciesCount(Int32 groupId);
 			virtual Bool AddGroup(NN<OrganGroup> grp, Int32 parGroupId);
 			virtual Bool DelGroup(Int32 groupId);
 			virtual Bool SetGroupDefSp(NN<OrganGroup> grp, NN<OrganImageItem> img);
@@ -67,14 +67,14 @@ namespace SSWR
 			virtual Bool MoveImages(NN<Data::ArrayListNN<OrganImages>> imgList, NN<OrganSpecies> destSp, NN<UI::GUIForm> frm);
 			virtual Bool CombineSpecies(NN<OrganSpecies> destSp, NN<OrganSpecies> srcSp);
 
-			virtual UOSInt GetWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList);
+			virtual UIntOS GetWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList);
 			virtual Bool AddWebUser(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark, UserType userType);
 			virtual Bool ModifyWebUser(Int32 id, UnsafeArray<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark);
 			virtual void ReleaseWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList);
 
 			virtual Bool IsSpeciesBookExist(Int32 speciesId, Int32 bookId);
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, UnsafeArray<const UTF8Char> dispName);
-			virtual UOSInt GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId);
+			virtual UIntOS GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId);
 			virtual void ReleaseSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items);
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url);
 
@@ -106,7 +106,7 @@ namespace SSWR
 			virtual Optional<Media::ImageList> ParseSpImage(NN<OrganSpecies> sp);
 			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile);
 			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile);
-			virtual OrganGroup *SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UOSInt resultStrBuffSize, Int32 *parentId);
+			virtual OrganGroup *SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId);
 
 		private:
 			virtual void LoadGroupTypes();

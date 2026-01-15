@@ -69,7 +69,7 @@ Data::Duration Media::Decoder::ADXDecoder::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	NN<Media::AudioSource> sourceAudio;
@@ -98,12 +98,12 @@ void Media::Decoder::ADXDecoder::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
+UIntOS Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 {
 	NN<Sync::Event> readEvt;
-	UOSInt blkSize = blk.GetSize();
-	UOSInt outSize;
-	UOSInt readSize;
+	UIntOS blkSize = blk.GetSize();
+	UIntOS outSize;
+	UIntOS readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
 	NN<Media::AudioSource> sourceAudio;
@@ -167,7 +167,7 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 	}
 }
 
-UOSInt Media::Decoder::ADXDecoder::GetMinBlockSize()
+UIntOS Media::Decoder::ADXDecoder::GetMinBlockSize()
 {
 	if (this->nChannels == 1)
 	{

@@ -8,11 +8,11 @@ namespace Crypto
 	{
 	private:
 		UnsafeArray<UInt8> key;
-		UOSInt keySize;
+		UIntOS keySize;
 		UInt64 counter;
 
 	public:
-		HOTP(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter);
+		HOTP(UnsafeArray<const UInt8> key, UIntOS keySize, UInt64 counter);
 		virtual ~HOTP();
 
 		virtual OTPType GetType();
@@ -21,7 +21,7 @@ namespace Crypto
 		virtual Bool IsValid(UInt32 code);
 		virtual void GenURI(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> name);
 
-		static UInt32 CalcCode(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter, UInt32 nDigits);
+		static UInt32 CalcCode(UnsafeArray<const UInt8> key, UIntOS keySize, UInt64 counter, UInt32 nDigits);
 	};
 }
 #endif

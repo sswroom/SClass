@@ -31,14 +31,14 @@ typedef struct
 
 void Net::WLANLinuxMTKInterface::Reopen()
 {
-	close(-1 + (int)(OSInt)this->id);
-	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
+	close(-1 + (int)(IntOS)this->id);
+	this->id = (void*)(IntOS)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 }
 
 Net::WLANLinuxMTKInterface::WLANLinuxMTKInterface(Text::CStringNN name, void *id, Net::WirelessLAN::INTERFACE_STATE state, UInt32 setCmd, UInt32 siteSurveyCmd)
 {
 	this->name = Text::String::New(name);
-	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
+	this->id = (void*)(IntOS)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 	this->state = state;
 	this->setCmd = setCmd;
 	this->siteSurveyCmd = siteSurveyCmd;
@@ -46,7 +46,7 @@ Net::WLANLinuxMTKInterface::WLANLinuxMTKInterface(Text::CStringNN name, void *id
 
 Net::WLANLinuxMTKInterface::~WLANLinuxMTKInterface()
 {
-	close(-1 + (int)(OSInt)this->id);
+	close(-1 + (int)(IntOS)this->id);
 	this->name->Release();
 }
 
@@ -64,26 +64,26 @@ Bool Net::WLANLinuxMTKInterface::Scan()
 //	printf("before ioctl, cmd = %04x, leng = %d\r\n", cmds->setCmd, wrq.u.data.length);
 #if defined(THREADSAFE)
 	MemLock();
-	ret = ioctl(-1 + (int)(OSInt)this->id, this->setCmd, &wrq);
+	ret = ioctl(-1 + (int)(IntOS)this->id, this->setCmd, &wrq);
 	MemUnlock();
 #else
-	ret = ioctl(-1 + (int)(OSInt)this->id, this->setCmd, &wrq);
+	ret = ioctl(-1 + (int)(IntOS)this->id, this->setCmd, &wrq);
 #endif
 //		printf("set SiteSurvey=1 ret = %d, errno = %d\r\n", ret, errno);
 //	mutUsage.EndUse();
 	return ret >= 0;
 }
 
-UOSInt Net::WLANLinuxMTKInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
+UIntOS Net::WLANLinuxMTKInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 	NN<Net::WirelessLAN::BSSInfo> bss;
 	NN<Net::WirelessLAN::Network> network;
 	this->GetBSSList(bssList);
 	if (bssList.GetCount() > 0)
 	{
-		UOSInt i;
+		UIntOS i;
 		retVal = bssList.GetCount();
 		i = 0;
 		while (i < retVal)
@@ -98,15 +98,15 @@ UOSInt Net::WLANLinuxMTKInterface::GetNetworks(NN<Data::ArrayListNN<Net::Wireles
 	return retVal;
 }
 
-UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
+UIntOS Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	NN<Net::WirelessLAN::BSSInfo> bssInfo;
 	BSSEntry bss;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;
-	UOSInt buffSize = IW_SCAN_MAX_DATA;
+	UIntOS buffSize = IW_SCAN_MAX_DATA;
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 
 	buff = MemAlloc(UInt8, buffSize);
@@ -117,24 +117,24 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::Wireless
 //		printf("SiteSurvey ioctl before\r\n");
 #if defined(THREADSAFE)
 	MemLock();
-	ret = ioctl(-1 + (int)(OSInt)this->id, this->siteSurveyCmd, &wrq);
+	ret = ioctl(-1 + (int)(IntOS)this->id, this->siteSurveyCmd, &wrq);
 	MemUnlock();
 #else
-	ret = ioctl(-1 + (int)(OSInt)this->id, this->siteSurveyCmd, &wrq);
+	ret = ioctl(-1 + (int)(IntOS)this->id, this->siteSurveyCmd, &wrq);
 #endif
 //		printf("get_site_survey return %d, errno = %d, len = %d\r\n", ret, errno, wrq.u.data.length);
 //	mutUsage.EndUse();
 	if (ret == 0)
 	{
-		UOSInt lineCnt = 2;
-		UOSInt colCnt;
+		UIntOS lineCnt = 2;
+		UIntOS colCnt;
 		Text::PString lines[2];
 		Text::PString cols[11];
 		UnsafeArray<UTF8Char> macs[6];
-		UOSInt ui;
-		UOSInt channelInd = INVALID_INDEX;
-		UOSInt ssidInd = INVALID_INDEX;
-		UOSInt bssidInd = INVALID_INDEX;
+		UIntOS ui;
+		UIntOS channelInd = INVALID_INDEX;
+		UIntOS ssidInd = INVALID_INDEX;
+		UIntOS bssidInd = INVALID_INDEX;
 		buff[wrq.u.data.length] = 0;
 
 //		syslog(LOG_DEBUG, (const Char*)buff);
@@ -162,8 +162,8 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::Wireless
 				{
 					continue;
 				}
-				ssidInd = (UOSInt)(cols[colCnt - 1].v - lines[0].v);
-				channelInd = (UOSInt)(cols[colCnt - 2].v - lines[0].v);
+				ssidInd = (UIntOS)(cols[colCnt - 1].v - lines[0].v);
+				channelInd = (UIntOS)(cols[colCnt - 2].v - lines[0].v);
 			}
 			else if (lines[0].leng < bssidInd)
 			{
@@ -172,11 +172,11 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::Wireless
 			colCnt = Text::StrSplitWSP(&cols[2], 9, {&lines[0].v[bssidInd], lines[0].leng - bssidInd}) + 2;
 			lines[0].v[bssidInd - 1] = 0;
 			cols[1].v = &lines[0].v[ssidInd];
-			cols[1].leng = (UOSInt)(&lines[0].v[bssidInd - 1] - cols[1].v);
+			cols[1].leng = (UIntOS)(&lines[0].v[bssidInd - 1] - cols[1].v);
 			cols[1].Trim();
 			lines[0].v[ssidInd - 1] = 0;
 			cols[0].v = &lines[0].v[channelInd];
-			cols[0].leng = (UOSInt)(&lines[0].v[ssidInd - 1] - cols[0].v);
+			cols[0].leng = (UIntOS)(&lines[0].v[ssidInd - 1] - cols[0].v);
 			cols[0].Trim();
 			if (colCnt >= 8)
 			{

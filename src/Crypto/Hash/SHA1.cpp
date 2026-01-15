@@ -51,7 +51,7 @@ void Crypto::Hash::SHA1::Clear()
 	this->intermediateHash[4]   = 0xC3D2E1F0;
 }
 
-void Crypto::Hash::SHA1::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::SHA1::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->messageLength += (buffSize << 3);
 	if ((buffSize + this->messageBlockIndex) < 64)
@@ -88,7 +88,7 @@ void Crypto::Hash::SHA1::GetValue(UnsafeArray<UInt8> buff) const
 	UInt32 intHash[5];
 	MemCopyNO(intHash, this->intermediateHash, 20);
 
-	UOSInt i;
+	UIntOS i;
 	if (this->messageBlockIndex < 55)
 	{
 		MemCopyNO(calBuff, this->messageBlock, messageBlockIndex);
@@ -124,12 +124,12 @@ void Crypto::Hash::SHA1::GetValue(UnsafeArray<UInt8> buff) const
 	}
 }
 
-UOSInt Crypto::Hash::SHA1::GetBlockSize() const
+UIntOS Crypto::Hash::SHA1::GetBlockSize() const
 {
 	return 64;
 }
 
-UOSInt Crypto::Hash::SHA1::GetResultSize() const
+UIntOS Crypto::Hash::SHA1::GetResultSize() const
 {
 	return 20;
 }

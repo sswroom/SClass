@@ -85,7 +85,7 @@ namespace IO
 		{
 			TVType tvType;
 			UnsafeArray<const UTF8Char> name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 			UInt32 defBaudRate;
 		} TVInfo;
 	protected:
@@ -98,7 +98,7 @@ namespace IO
 		virtual Bool SendSetCommand(CommandType ct, Int32 val) = 0;
 		virtual void GetSupportedCmd(Data::ArrayListNative<CommandType> *cmdList, Data::ArrayListNative<CommandFormat> *cmdFormats) = 0;
 
-		static OSInt GetTVList(Data::ArrayListNative<TVType> *tvList);
+		static IntOS GetTVList(Data::ArrayListNative<TVType> *tvList);
 		static Bool GetTVInfo(TVType tvType, TVInfo *info);
 		static Optional<TVControl> CreateTVControl(NN<IO::Stream> stm, TVType tvType, Int32 monId);
 		static Text::CStringNN GetCommandName(CommandType cmdType);

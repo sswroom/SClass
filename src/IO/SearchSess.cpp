@@ -6,14 +6,14 @@
 
 IO::SearchSess::SearchSess(const UTF8Char *searchName)
 {
-	UOSInt i;
+	UIntOS i;
 	UTF8Char *sptr;
 	NEW_CLASS(this->modTime, Data::DateTime());
 	this->nameBuff = MemAlloc(UTF8Char, 256);
 	sptr = Text::StrConcat(this->nameBuff, searchName);
-	i = Text::StrLastIndexOfCharC(this->nameBuff, (UOSInt)(sptr - this->nameBuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(this->nameBuff, (UIntOS)(sptr - this->nameBuff), IO::Path::PATH_SEPERATOR);
 	this->nameStart = &this->nameBuff[i + 1];
-	this->sess = IO::Path::FindFile(this->nameBuff, (UOSInt)(sptr - this->nameBuff));
+	this->sess = IO::Path::FindFile(this->nameBuff, (UIntOS)(sptr - this->nameBuff));
 }
 
 IO::SearchSess::~SearchSess()

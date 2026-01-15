@@ -7,7 +7,7 @@ Data::ArrayListCStrFast::ArrayListCStrFast() : Data::SortableArrayList<Text::CSt
 {
 }
 
-Data::ArrayListCStrFast::ArrayListCStrFast(UOSInt capacity) : Data::SortableArrayList<Text::CStringNN>(capacity)
+Data::ArrayListCStrFast::ArrayListCStrFast(UIntOS capacity) : Data::SortableArrayList<Text::CStringNN>(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayList<Text::CStringNN>> Data::ArrayListCStrFast::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListCStrFast::Compare(Text::CStringNN obj1, Text::CStringNN obj2) const
+IntOS Data::ArrayListCStrFast::Compare(Text::CStringNN obj1, Text::CStringNN obj2) const
 {
 	return obj1.CompareToFast(obj2);
 }

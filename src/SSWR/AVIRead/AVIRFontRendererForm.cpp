@@ -4,8 +4,8 @@
 void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFontRendererForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFontRendererForm>();
-	Math::Size2D<UOSInt> sz = me->pbChar->GetSizeP();
-	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem().p, sz);
+	Math::Size2D<UIntOS> sz = me->pbChar->GetSizeP();
+	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(IntOS)me->lbChar->GetSelectedItem().p, sz);
 	me->pbChar->SetImage(newImg, false);
 	me->pbChar->ZoomToFit();
 	me->currImg.Delete();
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClient
 	while (i <= j)
 	{
 		sptr = Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)i);
-		this->lbChar->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)i);
+		this->lbChar->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)i);
 		i++;
 	}
 }

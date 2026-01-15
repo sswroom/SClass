@@ -31,7 +31,7 @@ void Crypto::Hash::BSDChkSum::Clear()
 	this->chksum = 0;
 }
 
-void Crypto::Hash::BSDChkSum::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::BSDChkSum::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UInt16 chksum = this->chksum;
 
@@ -51,12 +51,12 @@ void Crypto::Hash::BSDChkSum::GetValue(UnsafeArray<UInt8> buff)
 	*(UInt16*)&buff[0] = chksum;
 }
 
-UOSInt Crypto::Hash::BSDChkSum::GetBlockSize()
+UIntOS Crypto::Hash::BSDChkSum::GetBlockSize()
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::BSDChkSum::GetResultSize()
+UIntOS Crypto::Hash::BSDChkSum::GetResultSize()
 {
 	return 2;
 }

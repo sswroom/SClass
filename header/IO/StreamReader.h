@@ -14,10 +14,10 @@ namespace IO
 		NN<IO::Stream> stm;
 
 		UnsafeArray<UTF8Char> cbuff;
-		UOSInt cSize;
-		UOSInt cPos;
+		UIntOS cSize;
+		UIntOS cPos;
 		UnsafeArray<UInt8> buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		Text::LineBreakType lineBreak;
 
 		UInt64 lastPos;
@@ -29,8 +29,8 @@ namespace IO
 		StreamReader(NN<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamReader();
 		virtual void Close();
-		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> buff, UOSInt maxCharCnt);
-		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
+		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> buff, UIntOS maxCharCnt);
+		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UIntOS maxCharCnt);
 		virtual UnsafeArray<UTF8Char> GetLastLineBreak(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();

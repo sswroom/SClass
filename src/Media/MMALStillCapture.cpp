@@ -295,8 +295,8 @@ Bool Media::MMALStillCapture::CapturePhoto(OutParam<Media::PhotoCapturer::PhotoF
 		wprintf(L"Cannot enable encoder port\r\n");
 		return false;
 	}
-	OSInt num = mmal_queue_length(info->buffPool->queue);
-	OSInt i = 0;
+	IntOS num = mmal_queue_length(info->buffPool->queue);
+	IntOS i = 0;
 	while (i < num)
 	{
 		MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get (info->buffPool->queue);

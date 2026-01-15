@@ -48,7 +48,7 @@ Media::DShow::DShowSourceCapture::DShowSourceCapture() : CBaseFilter(L"Source Ca
 
 Media::DShow::DShowSourceCapture::~DShowSourceCapture()
 {
-	OSInt i = this->vPins->GetCount();;
+	IntOS i = this->vPins->GetCount();;
 	DShowVideoPin *pin;
 	while (i-- > 0)
 	{

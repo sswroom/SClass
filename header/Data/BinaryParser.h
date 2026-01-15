@@ -10,7 +10,7 @@ namespace Data
 	{
 	private:
 		Data::ByteArrayR buff;
-		UOSInt currOfst;
+		UIntOS currOfst;
 		Bool error;
 
 	public:

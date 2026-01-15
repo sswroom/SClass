@@ -21,10 +21,10 @@ namespace IO
 	public:
 		static InputReturnType InputInt32(NN<IO::ConsoleWriter> console, InOutParam<Int32> output, Bool showOriVal);
 		static InputReturnType InputBool(NN<IO::ConsoleWriter> console, InOutParam<Bool> output);
-		static InputReturnType InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UOSInt nNames, InOutParam<UOSInt> selection);
+		static InputReturnType InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UIntOS nNames, InOutParam<UIntOS> selection);
 		static InputReturnType InputDateTime(NN<IO::ConsoleWriter> console, NN<Data::DateTime> output);
-		static InputReturnType InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UOSInt buffSize, OutParam<UOSInt> inputSize);
-		static InputReturnType InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, OutParam<UOSInt> inputSize);
+		static InputReturnType InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UIntOS buffSize, OutParam<UIntOS> inputSize);
+		static InputReturnType InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UIntOS maxCharCnt, OutParam<UIntOS> inputSize);
 	};
 }
 #endif

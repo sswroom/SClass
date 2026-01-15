@@ -93,7 +93,7 @@ void Media::WaveInSource::GetFormat(NN<AudioFormat> format)
 	format->align = (UInt32)this->nChannels * this->nbits >> 3;
 }
 
-Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->evt = evt;
 	return false;
@@ -104,12 +104,12 @@ void Media::WaveInSource::Stop()
 	this->started = false;
 }
 
-UOSInt Media::WaveInSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::WaveInSource::ReadBlock(Data::ByteArray blk)
 {
 	return 0;
 }
 
-UOSInt Media::WaveInSource::GetMinBlockSize()
+UIntOS Media::WaveInSource::GetMinBlockSize()
 {
 	return (UInt32)(this->nChannels * this->nbits >> 3);
 }

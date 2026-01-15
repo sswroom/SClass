@@ -4,7 +4,7 @@
 #include "Data/Sort/InsertionSort_C.h"
 #include "Text/MyString.h"
 
-extern "C" void ArtificialQuickSort_PreSortInt32(Int32 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortInt32(Int32 *arr, IntOS left, IntOS right)
 {
 	Int32 temp = 0;
 	Int32 temp2;
@@ -23,7 +23,7 @@ extern "C" void ArtificialQuickSort_PreSortInt32(Int32 *arr, OSInt left, OSInt r
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortUInt32(UInt32 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortUInt32(UInt32 *arr, IntOS left, IntOS right)
 {
 	UInt32 temp = 0;
 
@@ -40,7 +40,7 @@ extern "C" void ArtificialQuickSort_PreSortUInt32(UInt32 *arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortInt64(Int64 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortInt64(Int64 *arr, IntOS left, IntOS right)
 {
 	Int64 temp = 0;
 
@@ -57,7 +57,7 @@ extern "C" void ArtificialQuickSort_PreSortInt64(Int64 *arr, OSInt left, OSInt r
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortSingle(Single *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortSingle(Single *arr, IntOS left, IntOS right)
 {
 	Single temp = 0;
 
@@ -74,7 +74,7 @@ extern "C" void ArtificialQuickSort_PreSortSingle(Single *arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortDouble(Double *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortDouble(Double *arr, IntOS left, IntOS right)
 {
 	Double temp = 0;
 
@@ -91,7 +91,7 @@ extern "C" void ArtificialQuickSort_PreSortDouble(Double *arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, IntOS left, IntOS right)
 {
 	UTF8Char *temp = 0;
 	UTF8Char *temp2;
@@ -110,7 +110,7 @@ extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortInt32Inv(Int32 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortInt32Inv(Int32 *arr, IntOS left, IntOS right)
 {
 	Int32 temp = 0;
 
@@ -127,7 +127,7 @@ extern "C" void ArtificialQuickSort_PreSortInt32Inv(Int32 *arr, OSInt left, OSIn
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortUInt32Inv(UInt32 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortUInt32Inv(UInt32 *arr, IntOS left, IntOS right)
 {
 	UInt32 temp = 0;
 
@@ -144,7 +144,7 @@ extern "C" void ArtificialQuickSort_PreSortUInt32Inv(UInt32 *arr, OSInt left, OS
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortInt64Inv(Int64 *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortInt64Inv(Int64 *arr, IntOS left, IntOS right)
 {
 	Int64 temp = 0;
 
@@ -161,7 +161,7 @@ extern "C" void ArtificialQuickSort_PreSortInt64Inv(Int64 *arr, OSInt left, OSIn
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortSingleInv(Single *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortSingleInv(Single *arr, IntOS left, IntOS right)
 {
 	Single temp = 0;
 
@@ -178,7 +178,7 @@ extern "C" void ArtificialQuickSort_PreSortSingleInv(Single *arr, OSInt left, OS
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortDoubleInv(Double *arr, OSInt left, OSInt right)
+extern "C" void ArtificialQuickSort_PreSortDoubleInv(Double *arr, IntOS left, IntOS right)
 {
 	Double temp = 0;
 
@@ -195,18 +195,18 @@ extern "C" void ArtificialQuickSort_PreSortDoubleInv(Double *arr, OSInt left, OS
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS levi[256];
+	IntOS desni[256];
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Int32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Int32 temp1;
 	Int32 temp2;
 	Int32 temp;
@@ -282,19 +282,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	UInt32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	UInt32 temp1;
 	UInt32 temp2;
 	UInt32 temp;
@@ -370,19 +370,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortInt64(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortInt64(Int64 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Int64 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Int64 temp1;
 	Int64 temp2;
 	Int64 temp;
@@ -446,19 +446,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortSingle(Single *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortSingle(Single *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Single meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Single temp1;
 	Single temp2;
 	Single temp;
@@ -522,19 +522,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortDouble(Double *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortDouble(Double *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Double meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Double temp1;
 	Double temp2;
 	Double temp;
@@ -598,22 +598,22 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, IntOS firstIndex, IntOS lastIndex)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
+	IntOS *levi = MemAlloc(IntOS, 65536);
+	IntOS *desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	UTF8Char *meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	UTF8Char *temp;
 
 	ArtificialQuickSort_PreSortStr(arr, firstIndex, lastIndex);
@@ -682,18 +682,18 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, OSInt firstIndex, OS
 #endif
 }
 
-extern "C" void ArtificialQuickSort_SortInt32Inv(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortInt32Inv(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS levi[256];
+	IntOS desni[256];
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Int32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Int32 temp1;
 	Int32 temp2;
 	Int32 temp;
@@ -760,19 +760,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortUInt32Inv(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortUInt32Inv(UInt32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	UInt32 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	UInt32 temp1;
 	UInt32 temp2;
 	UInt32 temp;
@@ -836,19 +836,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortInt64Inv(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortInt64Inv(Int64 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Int64 meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Int64 temp1;
 	Int64 temp2;
 	Int64 temp;
@@ -912,19 +912,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortSingleInv(Single *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortSingleInv(Single *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Single meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Single temp1;
 	Single temp2;
 	Single temp;
@@ -988,19 +988,19 @@ labelcritticall5:;
 	}
 }
 
-extern "C" void ArtificialQuickSort_SortDoubleInv(Double *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void ArtificialQuickSort_SortDoubleInv(Double *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS j;
+	IntOS left;
+	IntOS right;
 	Double meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	Double temp1;
 	Double temp2;
 	Double temp;

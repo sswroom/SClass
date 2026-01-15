@@ -96,8 +96,8 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer
 	this->hdlr = 0;
 
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 ip;
 	Int32 v;
 	Text::PString sarr[2];
@@ -184,8 +184,8 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer
 
 SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<ClientInfo> cli;
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->hdlr);
@@ -219,16 +219,16 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(NN<Core::ProgControl> progCtrl)
 	this->console->WriteLine(CSTR("SDNSProxy exiting"));
 }
 
-UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList)
+UIntOS SSWR::SDNSProxy::SDNSProxyCore::GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList)
 {
-	UOSInt initSize = cliList->GetCount();
+	UIntOS initSize = cliList->GetCount();
 	Sync::MutexUsage mutUsage(this->cliInfoMut);
 	cliList->AddAll(this->cliInfos);
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }
 
-UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetRequestPerMin()
+UIntOS SSWR::SDNSProxy::SDNSProxyCore::GetRequestPerMin()
 {
 	return this->lastCnt;
 }

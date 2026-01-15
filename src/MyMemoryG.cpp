@@ -16,18 +16,18 @@
 Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
-OSInt mcBreakPt = 0;
+IntOS mcBreakPt = 0;
 Sync::Mutex *mcMut = 0;
 
 void MemPtrChk(void *ptr)
 {
 #ifdef HAS_ASM32
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		_asm int 3;
 	}
 #else
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		MessageBoxW(0, L"Out of Memory", L"Error", 0);
 	}
@@ -60,19 +60,19 @@ void MemUnlock()
 	mcMut->Unlock();
 }
 
-void *MAlloc(OSInt size)
+void *MAlloc(IntOS size)
 {
 	mcMut->Lock();
 	mcMemoryCnt++;
 
 	void *ptr = malloc(size);
 #ifdef HAS_ASM32
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		_asm int 3;
 	}
 #else
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		MessageBoxW(0, L"Out of Memory", L"Error", 0);
 	}
@@ -112,7 +112,7 @@ Int32 MemCheckError()
 		writer.Write(CSTRP(buff, sptr));
 		writer.Write(CSTR(" Memory leaks occurs for "));
 		sptr = Text::StrInt32(buff, cnt);
-		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
+		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
 		writer.WriteLine(CSTR(" times"));
 		found = true;
 	}

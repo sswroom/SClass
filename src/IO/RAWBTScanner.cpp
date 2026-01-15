@@ -10,7 +10,7 @@
 
 struct IO::RAWBTScanner::ClassData
 {
-	UOSInt devCnt;
+	UIntOS devCnt;
 	IO::RAWBTMonitor *btMon;
 	RecordHandler hdlr;
 	AnyType hdlrObj;
@@ -22,7 +22,7 @@ void __stdcall IO::RAWBTScanner::RecvThread(NN<Sync::Thread> thread)
 {
 	NN<IO::RAWBTScanner> me = thread->GetUserObj().GetNN<IO::RAWBTScanner>();
 	UInt8 *buff;
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Int64 timeTicks;
 	buff = MemAlloc(UInt8, me->clsData->btMon->GetMTU());
 	while (!thread->IsStopping())

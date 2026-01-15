@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnStartClick(AnyType userObj);
 			static void __stdcall OnLogSel(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnEGaugeData(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
+			static void __stdcall OnEGaugeData(AnyType userObj, UnsafeArray<const UInt8> data, UIntOS dataSize);
 		public:
 			AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIReGaugeSvrForm();

@@ -11,10 +11,10 @@ namespace Data
 		ArrayListT();
 		virtual ~ArrayListT();
 
-		virtual UOSInt Add(T val);
-		virtual UOSInt AddRange(UnsafeArray<const T> arr, UOSInt cnt);
-		virtual T RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, T val);
+		virtual UIntOS Add(T val);
+		virtual UIntOS AddRange(UnsafeArray<const T> arr, UIntOS cnt);
+		virtual T RemoveAt(UIntOS index);
+		virtual void Insert(UIntOS index, T val);
 	};
 
 	template <class T> ArrayListT<T>::ArrayListT()
@@ -25,13 +25,13 @@ namespace Data
 	{
 	}
 
-	template <class T> UOSInt ArrayListT<T>::Add(T val)
+	template <class T> UIntOS ArrayListT<T>::Add(T val)
 	{
-		UOSInt ret;
+		UIntOS ret;
 		if (this->objCnt == this->capacity)
 		{
 			UnsafeArray<T> newArr = MemAllocArr(T, this->capacity << 1);
-			UOSInt i = this->objCnt;
+			UIntOS i = this->objCnt;
 			while (i-- > 0)
 			{
 				newArr[i] = this->arr[i];
@@ -44,9 +44,9 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListT<T>::AddRange(UnsafeArray<const T> arr, UOSInt cnt)
+	template <class T> UIntOS ArrayListT<T>::AddRange(UnsafeArray<const T> arr, UIntOS cnt)
 	{
-		UOSInt i;
+		UIntOS i;
 		if (this->objCnt + cnt >= this->capacity)
 		{
 			while (this->objCnt + cnt >= this->capacity)
@@ -74,11 +74,11 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> T ArrayListT<T>::RemoveAt(UOSInt index)
+	template <class T> T ArrayListT<T>::RemoveAt(UIntOS index)
 	{
 		if (index >= this->objCnt)
 			return (T)0;
-		UOSInt i = index + 1;
+		UIntOS i = index + 1;
 		T o = this->arr[index];
 		while (i < this->objCnt)
 		{
@@ -89,11 +89,11 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayListT<T>::Insert(UOSInt index, T Val)
+	template <class T> void ArrayListT<T>::Insert(UIntOS index, T Val)
 	{
 		if (this->objCnt == this->capacity)
 		{
-			UOSInt i;
+			UIntOS i;
 			UnsafeArray<T> newArr = MemAllocArr(T, this->capacity << 1);
 			if (index > 0)
 			{
@@ -119,7 +119,7 @@ namespace Data
 		}
 		else
 		{
-			UOSInt j = this->objCnt;
+			UIntOS j = this->objCnt;
 			while (j > index)
 			{
 				this->arr[j] = this->arr[j - 1];

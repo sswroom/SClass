@@ -24,13 +24,13 @@ namespace SSWR
 		private:
 			struct SQLSession
 			{
-				UOSInt mode;
+				UIntOS mode;
 				Optional<IO::Stream> stm;
-				UOSInt totalCnt;
+				UIntOS totalCnt;
 				Data::Timestamp startTime;
 				Data::Timestamp lastUpdateTime;
 				NN<Text::StringBuilderUTF8> sbInsert;
-				UOSInt nInsert;
+				UIntOS nInsert;
 				Optional<DB::DBConn> db;
 			};
 		private:
@@ -86,7 +86,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtStatus;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayListNative<UOSInt> colInd;
+			Data::ArrayListNative<UIntOS> colInd;
 			Data::ArrayListStringNN colStr;
 			NN<DB::ReadingDB> db;
 			Text::CString schema;
@@ -109,12 +109,12 @@ namespace SSWR
 			static void __stdcall OnAssignColClicked(AnyType userObj);
 			static void __stdcall OnDataConnSelChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDataConnCboSelChg(AnyType userObj);
-			Optional<Text::String> GetNewText(UOSInt colIndex);
-			NN<Text::String> GetNewTextNN(UOSInt colIndex);
+			Optional<Text::String> GetNewText(UIntOS colIndex);
+			NN<Text::String> GetNewTextNN(UIntOS colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
 			Bool InitConn(NN<DB::ReadingDB> conn, Int8 connTz);
-			Bool GetColIndex(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
-			Bool IsColIndexValid(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable);
+			Bool GetColIndex(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
+			Bool IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable);
 			Bool CheckDataFile();
 			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess);
 			Bool NextSQL(Text::CStringNN sql, NN<SQLSession> sess);

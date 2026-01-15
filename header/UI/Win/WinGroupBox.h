@@ -11,7 +11,7 @@ namespace UI
 		private:
 			void *oriWndProc;
 
-			static OSInt __stdcall GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+			static IntOS __stdcall GBWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		public:
 			WinGroupBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN name);
 			virtual ~WinGroupBox();

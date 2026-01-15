@@ -1490,9 +1490,9 @@ const Media::SSRC::SSRCDither::DitherCoef Media::SSRC::SSRCDither::ditherCoef[] 
 
 Media::SSRC::SSRCDither::SSRCDither(UInt32 fs, Int32 min, Int32 max, UInt32 shaperID, PDFID pdfID, Double noisePeak, UInt64 seed) : rng(seed)
 {
-	OSInt shaperIndex = -1;
-	UOSInt i = 0;
-	UOSInt j = sizeof(ditherCoef) / sizeof(ditherCoef[0]);
+	IntOS shaperIndex = -1;
+	UIntOS i = 0;
+	UIntOS j = sizeof(ditherCoef) / sizeof(ditherCoef[0]);
 	while (i < j)
 	{
 		if (fs == ditherCoef[i].fs && shaperID == ditherCoef[i].id)
@@ -1553,7 +1553,7 @@ void Media::SSRC::SSRCDither::GetPeaks(Double *peaks)
 Double Media::SSRC::SSRCDither::GetMaxNoiseStrength()
 {
 	Double sum = 0;
-	UOSInt j = 0;
+	UIntOS j = 0;
 	while (j < ditherCoef[this->shaperIndex].len)
 	{
 		sum += Math_Abs(ditherCoef[this->shaperIndex].coefs[j]);
@@ -1563,7 +1563,7 @@ Double Media::SSRC::SSRCDither::GetMaxNoiseStrength()
 	return (this->noisePeak + 0.5) * sum + this->noisePeak;
 }
 
-void Media::SSRC::SSRCDither::QuantizeDouble(Int32 *out, const Double *in, UOSInt nSamples, Double gain)
+void Media::SSRC::SSRCDither::QuantizeDouble(Int32 *out, const Double *in, UIntOS nSamples, Double gain)
 {
 	const Double *shaperCoefs = ditherCoef[this->shaperIndex].coefs;
 	const UInt32 shaperLen = ditherCoef[this->shaperIndex].len;
@@ -1575,11 +1575,11 @@ void Media::SSRC::SSRCDither::QuantizeDouble(Int32 *out, const Double *in, UOSIn
 	Double peakTop = this->peakTop;
 	int randPtr = this->randPtr;
 
-	UOSInt p = 0;
+	UIntOS p = 0;
 	while (p < nSamples)
 	{
 		Double h = shaperCoefs[shaperLen-1] * buf[shaperLen-1];
-		UOSInt i = shaperLen - 2;
+		UIntOS i = shaperLen - 2;
 		while (i >= 0)
 		{
 			h += shaperCoefs[i] * buf[i];

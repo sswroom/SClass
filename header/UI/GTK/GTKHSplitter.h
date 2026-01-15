@@ -12,8 +12,8 @@ namespace UI
 		private:
 			Bool isRight;
 			Bool dragMode;
-			OSInt dragX;
-			OSInt dragY;
+			IntOS dragX;
+			IntOS dragY;
 
 			static gboolean SignalMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data);
 			static gboolean SignalMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -21,9 +21,9 @@ namespace UI
 			GTKHSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual ~GTKHSplitter();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
-			virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos);
+			virtual void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos);
 		};
 	}
 }

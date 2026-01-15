@@ -48,7 +48,7 @@ Optional<Text::String> Crypto::Token::JWTParam::GetIssuer() const
 	return this->iss;
 }
 
-Bool Crypto::Token::JWTParam::IsIssuerValid(UnsafeArray<const UTF8Char> issuer, UOSInt issuerLen) const
+Bool Crypto::Token::JWTParam::IsIssuerValid(UnsafeArray<const UTF8Char> issuer, UIntOS issuerLen) const
 {
 	NN<Text::String> s;
 	return !this->iss.SetTo(s) || s->Equals(issuer, issuerLen);

@@ -10,7 +10,7 @@ Media::PDFParameter::PDFParameter()
 Media::PDFParameter::~PDFParameter()
 {
 	NN<ParamEntry> entry;
-	UOSInt i = this->entries.GetCount();
+	UIntOS i = this->entries.GetCount();
 	while (i-- > 0)
 	{
 		entry = this->entries.GetItemNoCheck(i);
@@ -37,7 +37,7 @@ Optional<Text::String> Media::PDFParameter::GetEntryValue(Text::CStringNN type) 
 	return nullptr;
 }
 
-Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
+Optional<Text::String> Media::PDFParameter::GetEntryType(UIntOS index) const
 {
 	NN<ParamEntry> entry;
 	if (this->GetItem(index).SetTo(entry))
@@ -45,7 +45,7 @@ Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
 	return nullptr;
 }
 
-Optional<Text::String> Media::PDFParameter::GetEntryValue(UOSInt index) const
+Optional<Text::String> Media::PDFParameter::GetEntryValue(UIntOS index) const
 {
 	NN<ParamEntry> entry;
 	if (this->GetItem(index).SetTo(entry))
@@ -61,8 +61,8 @@ Bool Media::PDFParameter::ContainsEntry(Text::CStringNN type) const
 Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetEntry(Text::CStringNN type) const
 {
 	NN<ParamEntry> entry;
-	UOSInt i = 0;
-	UOSInt j = this->entries.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->entries.GetCount();
 	while (i < j)
 	{
 		entry = this->entries.GetItemNoCheck(i);
@@ -73,11 +73,11 @@ Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetEntry(Text::CS
 	return nullptr;
 }
 
-UOSInt Media::PDFParameter::GetEntryIndex(Text::CStringNN type) const
+UIntOS Media::PDFParameter::GetEntryIndex(Text::CStringNN type) const
 {
 	NN<ParamEntry> entry;
-	UOSInt i = 0;
-	UOSInt j = this->entries.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->entries.GetCount();
 	while (i < j)
 	{
 		entry = this->entries.GetItemNoCheck(i);
@@ -88,17 +88,17 @@ UOSInt Media::PDFParameter::GetEntryIndex(Text::CStringNN type) const
 	return INVALID_INDEX;
 }
 
-UOSInt Media::PDFParameter::GetCount() const
+UIntOS Media::PDFParameter::GetCount() const
 {
 	return this->entries.GetCount();
 }
 
-NN<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItemNoCheck(UOSInt index) const
+NN<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItemNoCheck(UIntOS index) const
 {
 	return this->entries.GetItemNoCheck(index);
 }
 
-Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UOSInt index) const
+Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UIntOS index) const
 {
 	return this->entries.GetItem(index);
 }
@@ -106,9 +106,9 @@ Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UOSInt in
 Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN parameter)
 {
 	parameter = parameter.LTrim();
-	UOSInt i = 1;
-	UOSInt j = parameter.leng;
-	UOSInt k;
+	UIntOS i = 1;
+	UIntOS j = parameter.leng;
+	UIntOS k;
 	if (j == 0)
 		return nullptr;
 	if (parameter.v[0] != '/')
@@ -118,9 +118,9 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 	Data::ArrayListNative<UTF8Char> endChars;
 	Optional<ParamEntry> lastEntry = nullptr;
 	NN<ParamEntry> nnlastEntry;
-	UOSInt startType = i;
-	UOSInt endType = 0;
-	UOSInt startValue = 0;
+	UIntOS startType = i;
+	UIntOS endType = 0;
+	UIntOS startValue = 0;
 	while (true)
 	{
 		if (i >= j || (endChars.GetCount() == 0 && parameter.v[i] == '/'))

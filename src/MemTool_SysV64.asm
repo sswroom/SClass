@@ -73,7 +73,7 @@ global _MemCopyOAC_AMDAVX
 
 global MemCopyNACAddr
 
-;void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val)
+;void MemFillB(UInt8 *buff, IntOS byteCnt, UInt8 val)
 ;0 retAddr
 ;rdi buff
 ;rsi byteCnt
@@ -86,7 +86,7 @@ _MemFillB:
 	rep stosb
 	ret
 
-;void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val);
+;void MemFillW(UInt8 *buff, IntOS wordCnt, UInt16 val);
 ;0 retAddr
 ;rdi buff
 ;rsi wordCnt
@@ -99,7 +99,7 @@ _MemFillW:
 	rep stosw
 	ret
 
-;void MemClearAC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearAC_SSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rdi buff
 ;rsi buffSize
@@ -122,7 +122,7 @@ memclearaclop:
 	jnz memclearaclop
 	ret
 	
-;void MemClearANC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearANC_SSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rdi buff
 ;rsi buffSize
@@ -145,7 +145,7 @@ memclearanclop:
 	jnz memclearanclop
 	ret
 	
-;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -242,7 +242,7 @@ memcopyaclop4a:
 memcopyacexit:
 	ret
 
-;void MemCopyOAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyOAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -341,7 +341,7 @@ memcopyoaclop4a:
 memcopyoacexit:
 	ret
 
-;void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -437,7 +437,7 @@ memcopyanclop4a:
 memcopyancexit:
 	ret
 
-;void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -563,7 +563,7 @@ memcopynaclop128:
 memcopynacexit:
 	ret
 
-;void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -649,7 +649,7 @@ memcopynanclop4:
 memcopynancexit:
 	ret
 
-;void MemCopyAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -738,7 +738,7 @@ memcopyacavxlop4a:
 memcopyacavxexit:
 	ret
 
-;void MemCopyOAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyOAC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -834,7 +834,7 @@ memcopyoacavxlop4a:
 memcopyoacavxexit:
 	ret
 
-;void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -921,7 +921,7 @@ memcopyancavxlop4a:
 memcopyancavxexit:
 	ret
 
-;void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr
@@ -1040,7 +1040,7 @@ memcopynacavxlop128:
 memcopynacavxexit:
 	ret
 
-;void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rdi destPtr
 ;rsi srcPtr

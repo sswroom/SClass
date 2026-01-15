@@ -13,7 +13,7 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 {
 	WChar wbuff[512];
 	UnsafeArray<WChar> sarr[3];
-	UOSInt i;
+	UIntOS i;
 	MONITORINFOEXW info;
 	info.cbSize = sizeof(info);
 	if (GetMonitorInfoW((HMONITOR)hMonitor.OrNull(), &info))

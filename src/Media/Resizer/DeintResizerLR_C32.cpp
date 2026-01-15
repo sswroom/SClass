@@ -12,7 +12,7 @@
 
 void Media::Resizer::DeintResizerLR_C32::DestoryVertO()
 {
-	UnsafeArray<OSInt> oIndex;
+	UnsafeArray<IntOS> oIndex;
 	UnsafeArray<Int64> oWeight;
 	if (this->oIndex.SetTo(oIndex))
 	{
@@ -36,7 +36,7 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertO()
 
 void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 {
-	UnsafeArray<OSInt> eIndex;
+	UnsafeArray<IntOS> eIndex;
 	UnsafeArray<Int64> eWeight;
 	if (this->eIndex.SetTo(eIndex))
 	{
@@ -58,7 +58,7 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 	this->esStep = 0;
 }
 
-Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::DeinterlacingResizer(srcAlphaType)
+Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::DeinterlacingResizer(srcAlphaType)
 {
 	this->osSize = 0;
 	this->odSize = 0;
@@ -83,7 +83,7 @@ Media::Resizer::DeintResizerLR_C32::~DeintResizerLR_C32()
 	DestoryVertE();
 }
 
-void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer::DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown)
+void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer::DeintType dType, UnsafeArray<UInt8> src, UIntOS sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UIntOS dbpl, UIntOS dwidth, UIntOS dheight, Bool upsideDown)
 {
 	LRHPARAMETER prm;
 	Double w;
@@ -117,28 +117,28 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 		this->action->UpdateRGBTable(rgbTable);
 	}
 
-	OSInt sstep = (OSInt)sbpl;
-	OSInt dstep;
+	IntOS sstep = (IntOS)sbpl;
+	IntOS dstep;
 	if (upsideDown)
 	{
-		dstep = -(OSInt)dbpl;
+		dstep = -(IntOS)dbpl;
 		dest += dbpl * (dheight - 1);
 	}
 	else
 	{
-		dstep = (OSInt)dbpl;
+		dstep = (IntOS)dbpl;
 	}
 
 	if (dType == Media::DeinterlacingResizer::DT_TOP_FIELD)
 	{
-		if (swidth != UOSInt2Double(dwidth))
+		if (swidth != UIntOS2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth || !this->hFilter.SetTo(hFilter))
 			{
 				DestoryHori();
 
-				if (swidth > UOSInt2Double(dwidth))
+				if (swidth > UIntOS2Double(dwidth))
 				{
 					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
@@ -155,21 +155,21 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				this->hFilter = hFilter;
 			}
 
-			if (this->osSize != sheight || this->odSize != dheight || this->osStep != (OSInt)(dwidth << 3) || !this->oFilter.SetTo(vFilter))
+			if (this->osSize != sheight || this->odSize != dheight || this->osStep != (IntOS)(dwidth << 3) || !this->oFilter.SetTo(vFilter))
 			{
 				DestoryVertO();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
-					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, 0.25);
 				}
 				else
 				{
-					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, 0.25);
 				}
 				osSize = sheight;
 				odSize = dheight;
-				osStep = (OSInt)dwidth << 3;
+				osStep = (IntOS)dwidth << 3;
 				oIndex = prm.index;
 				oWeight = prm.weight;
 				oTap = prm.tap;
@@ -183,11 +183,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 		else
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			if (osSize != sheight || odSize != dheight || osStep != (OSInt)sbpl || !this->oFilter.SetTo(vFilter))
+			if (osSize != sheight || odSize != dheight || osStep != (IntOS)sbpl || !this->oFilter.SetTo(vFilter))
 			{
 				DestoryVertO();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
 					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0.25);
 				}
@@ -197,7 +197,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				}
 				osSize = sheight;
 				odSize = dheight;
-				osStep = (OSInt)sbpl;
+				osStep = (IntOS)sbpl;
 				oIndex = prm.index;
 				oWeight = prm.weight;
 				oTap = prm.tap;
@@ -210,14 +210,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 	}
 	else if (dType == Media::DeinterlacingResizer::DT_BOTTOM_FIELD)
 	{
-		if (swidth != UOSInt2Double(dwidth))
+		if (swidth != UIntOS2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth || !this->hFilter.SetTo(hFilter))
 			{
 				DestoryHori();
 
-				if (swidth > UOSInt2Double(dwidth))
+				if (swidth > UIntOS2Double(dwidth))
 				{
 					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
@@ -234,21 +234,21 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				this->hFilter = hFilter;
 			}
 
-			if (this->esSize != sheight || this->edSize != dheight || this->esStep != (OSInt)(dwidth << 3) || !this->eFilter.SetTo(vFilter))
+			if (this->esSize != sheight || this->edSize != dheight || this->esStep != (IntOS)(dwidth << 3) || !this->eFilter.SetTo(vFilter))
 			{
 				DestoryVertE();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
-					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, -0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, -0.25);
 				}
 				else
 				{
-					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, -0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, -0.25);
 				}
 				esSize = sheight;
 				edSize = dheight;
-				esStep = (OSInt)dwidth << 3;
+				esStep = (IntOS)dwidth << 3;
 				eIndex = prm.index;
 				eWeight = prm.weight;
 				eTap = prm.tap;
@@ -262,11 +262,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 		else
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			if (esSize != sheight || edSize != dheight || esStep != (OSInt)sbpl || !this->eFilter.SetTo(vFilter))
+			if (esSize != sheight || edSize != dheight || esStep != (IntOS)sbpl || !this->eFilter.SetTo(vFilter))
 			{
 				DestoryVertE();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
 					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, -0.25);
 				}
@@ -276,7 +276,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				}
 				esSize = sheight;
 				edSize = dheight;
-				esStep = (OSInt)sbpl;
+				esStep = (IntOS)sbpl;
 				eIndex = prm.index;
 				eWeight = prm.weight;
 				eTap = prm.tap;
@@ -289,14 +289,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 	}
 	else
 	{
-		if (swidth != UOSInt2Double(dwidth) && sheight != UOSInt2Double(dheight))
+		if (swidth != UIntOS2Double(dwidth) && sheight != UIntOS2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth || !this->hFilter.SetTo(hFilter))
 			{
 				DestoryHori();
 
-				if (swidth > UOSInt2Double(dwidth))
+				if (swidth > UIntOS2Double(dwidth))
 				{
 					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
@@ -313,21 +313,21 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				this->hFilter = hFilter;
 			}
 
-			if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)(dwidth << 3) || !this->vFilter.SetTo(vFilter))
+			if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (IntOS)(dwidth << 3) || !this->vFilter.SetTo(vFilter))
 			{
 				DestoryVert();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
-					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, 0);
 				}
 				else
 				{
-					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (IntOS)dwidth << 3, 0);
 				}
 				vsSize = sheight;
 				vdSize = dheight;
-				vsStep = (OSInt)dwidth << 3;
+				vsStep = (IntOS)dwidth << 3;
 				vIndex = prm.index;
 				vWeight = prm.weight;
 				vTap = prm.tap;
@@ -338,14 +338,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (swidth != UOSInt2Double(dwidth))
+		else if (swidth != UIntOS2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(this->mut);
 			if (hsSize != swidth || hdSize != dwidth || !this->hFilter.SetTo(hFilter))
 			{
 				DestoryHori();
 
-				if (swidth > UOSInt2Double(dwidth))
+				if (swidth > UIntOS2Double(dwidth))
 				{
 					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
@@ -365,14 +365,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (sheight != UOSInt2Double(dheight))
+		else if (sheight != UIntOS2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)sbpl || !this->vFilter.SetTo(vFilter))
+			if (vsSize != sheight || vdSize != dheight || vsStep != (IntOS)sbpl || !this->vFilter.SetTo(vFilter))
 			{
 				DestoryVert();
 
-				if (sheight > UOSInt2Double(dheight))
+				if (sheight > UIntOS2Double(dheight))
 				{
 					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0);
 				}
@@ -382,7 +382,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 				}
 				vsSize = sheight;
 				vdSize = dheight;
-				vsStep = (OSInt)sbpl;
+				vsStep = (IntOS)sbpl;
 				vIndex = prm.index;
 				vWeight = prm.weight;
 				vTap = prm.tap;

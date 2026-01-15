@@ -31,9 +31,9 @@ namespace Math
 			this->y = y;
 		}
 
-		static Value2D<UOSInt> UOSIntFromDouble(Double2D v)
+		static Value2D<UIntOS> UIntOSFromDouble(Double2D v)
 		{
-			return Value2D<UOSInt>((UOSInt)Double2OSInt(v.x), (UOSInt)Double2OSInt(v.y));
+			return Value2D<UIntOS>((UIntOS)Double2IntOS(v.x), (UIntOS)Double2IntOS(v.y));
 		}
 
 		Math::Double2D ToDouble() const

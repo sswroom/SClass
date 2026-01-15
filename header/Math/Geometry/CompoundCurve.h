@@ -16,7 +16,7 @@ namespace Math
 			virtual void AddGeometry(NN<LineString> geometry);
 			virtual Vector2D::VectorType GetVectorType() const;
 			virtual NN<Vector2D> Clone() const;
-			UOSInt GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList) const;
+			UIntOS GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList) const;
 			virtual Bool HasCurve() const { return true; }
 			virtual Optional<Vector2D> ToSimpleShape() const;
 		};

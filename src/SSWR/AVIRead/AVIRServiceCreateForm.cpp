@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(AnyType use
 		me->ui->ShowMsgOK(CSTR("Please enter command line"), CSTR("Create Service"), me);
 		return;
 	}
-	if (me->svcMgr.ServiceCreate(sbName.ToCString(), sbDesc.ToCString(), sbCmdLine.ToCString(), (IO::ServiceInfo::ServiceState)me->cboState->GetSelectedItem().GetOSInt()))
+	if (me->svcMgr.ServiceCreate(sbName.ToCString(), sbDesc.ToCString(), sbCmdLine.ToCString(), (IO::ServiceInfo::ServiceState)me->cboState->GetSelectedItem().GetIntOS()))
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}

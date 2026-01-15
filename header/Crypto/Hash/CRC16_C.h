@@ -3,6 +3,6 @@
 extern "C"
 {
 	void CRC16_InitTable(UInt16 *tab, UInt16 polynomial);
-	UInt16 CRC16_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal);
+	UInt16 CRC16_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, UInt16 currVal);
 }
 #endif

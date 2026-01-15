@@ -53,7 +53,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 UI::GUITreeView::TreeItem::~TreeItem()
 {
 	NN<TreeItem> item;
-	UOSInt i;
+	UIntOS i;
 	i = this->children.GetCount();
 	while (i-- > 0)
 	{
@@ -112,12 +112,12 @@ NN<Text::String> UI::GUITreeView::TreeItem::GetText() const
 	return this->txt;
 }
 
-UOSInt UI::GUITreeView::TreeItem::GetChildCount()
+UIntOS UI::GUITreeView::TreeItem::GetChildCount()
 {
 	return this->children.GetCount();
 }
 
-Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UIntOS index)
 {
 	return this->children.GetItem(index);
 }
@@ -164,7 +164,7 @@ UI::GUITreeView::~GUITreeView()
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs.GetCount();
+	UIntOS i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
@@ -177,19 +177,19 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	UOSInt i = this->rightClkHdlrs.GetCount();
+	UIntOS i = this->rightClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->rightClkHdlrs.GetItem(i)(this->rightClkObjs.GetItem(i));
 	}
 }
 
-OSInt UI::GUITreeView::EventBeginLabelEdit(NN<UI::GUITreeView::TreeItem> item)
+IntOS UI::GUITreeView::EventBeginLabelEdit(NN<UI::GUITreeView::TreeItem> item)
 {
 	return 0;
 }
 
-OSInt UI::GUITreeView::EventEndLabelEdit(NN<UI::GUITreeView::TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
+IntOS UI::GUITreeView::EventEndLabelEdit(NN<UI::GUITreeView::TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
 {
 	return 0;
 }
@@ -271,7 +271,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 AnyType UI::GUITreeView::RemoveItem(NN<TreeItem> item)
 {
 	ClassData *data = this->clsData;
-	UOSInt i = this->treeItems.IndexOf(item);
+	UIntOS i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
 		AnyType obj = item->GetItemObj();
@@ -293,12 +293,12 @@ void UI::GUITreeView::ClearItems()
 	FreeItems();
 }
 
-UOSInt UI::GUITreeView::GetRootCount()
+UIntOS UI::GUITreeView::GetRootCount()
 {
 	return this->treeItems.GetCount();
 }
 
-Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UIntOS index)
 {
 	return this->treeItems.GetItem(index);
 }
@@ -340,7 +340,7 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 
 Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeView::ClassData *data, GtkTreePath *selPath, NN<UI::GUITreeView::TreeItem> item)
 {
-	UOSInt i = item->GetChildCount();
+	UIntOS i = item->GetChildCount();
 	GtkTreePath *itemPath;
 	NN<UI::GUITreeView::TreeItem> child;
 	while (i-- > 0)
@@ -373,8 +373,8 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 	{
 		GtkTreePath *selPath = gtk_tree_model_get_path(GTK_TREE_MODEL(data->treeStore), &iter);
 		GtkTreePath *itemPath;
-		UOSInt i = 0;
-		UOSInt j = this->treeItems.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->treeItems.GetCount();
 		NN<UI::GUITreeView::TreeItem> item;
 		while (i < j)
 		{
@@ -417,7 +417,7 @@ Text::CStringNN UI::GUITreeView::GetObjectClass() const
 	return CSTR("TreeView");
 }
 
-OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

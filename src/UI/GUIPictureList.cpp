@@ -9,7 +9,7 @@
 
 #define ICONPADDING 10
 
-UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize, Optional<Media::ColorSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, eng, colorSess)
+UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UIntOS> iconSize, Optional<Media::ColorSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, eng, colorSess)
 {
 	this->hasBorder = hasBorder;
 	this->iconSize = iconSize;
@@ -29,45 +29,45 @@ UI::GUIPictureList::~GUIPictureList()
 
 void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 {
-	UOSInt w = img->GetWidth();
-	UOSInt h = img->GetHeight();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt currY = this->GetVScrollPos();
-	OSInt ofst;
-	OSInt x;
-	OSInt y;
-	UOSInt iconPerRow;
+	UIntOS w = img->GetWidth();
+	UIntOS h = img->GetHeight();
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS currY = this->GetVScrollPos();
+	IntOS ofst;
+	IntOS x;
+	IntOS y;
+	UIntOS iconPerRow;
 	NN<Media::DrawImage> gimg;
 	this->ClearBackground(img);
 
 	if (w <= this->iconSize.x + ICONPADDING)
 	{
-		ofst = -(OSInt)currY;
+		ofst = -(IntOS)currY;
 		i = 0;
 		j = this->imgList.GetCount();
 		while (i < j)
 		{
-			if (ofst + (OSInt)this->iconSize.y + ICONPADDING > 0)
+			if (ofst + (IntOS)this->iconSize.y + ICONPADDING > 0)
 			{
 				if (i == this->selectedIndex)
 				{
 					NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
-					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), nullptr, b);
+					img->DrawRect(Math::Coord2DDbl(0, IntOS2Double(ofst)), Math::Size2DDbl(UIntOS2Double(w), UIntOS2Double(this->iconSize.y + ICONPADDING)), nullptr, b);
 					img->DelBrush(b);
 				}
 				if (this->imgList.GetItem(i).SetTo(gimg))
 				{
-					x = (OSInt)(w - gimg->GetWidth()) >> 1;
-					y = (OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
+					x = (IntOS)(w - gimg->GetWidth()) >> 1;
+					y = (IntOS)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
 					gimg->SetHDPI(img->GetHDPI());
 					gimg->SetVDPI(img->GetVDPI());
-					img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+					img->DrawImagePt(gimg, Math::Coord2DDbl(IntOS2Double(x), IntOS2Double(y)));
 				}
 			}
-			ofst += (OSInt)this->iconSize.y + 10;
-			if (ofst > (OSInt)h)
+			ofst += (IntOS)this->iconSize.y + 10;
+			if (ofst > (IntOS)h)
 			{
 				break;
 			}
@@ -77,12 +77,12 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 	else
 	{
 		iconPerRow = w / (this->iconSize.x + ICONPADDING);
-		ofst = -(OSInt)currY;
+		ofst = -(IntOS)currY;
 		i = 0;
 		j = this->imgList.GetCount();
 		while (i < j)
 		{
-			if (ofst + (OSInt)this->iconSize.y + ICONPADDING > 0)
+			if (ofst + (IntOS)this->iconSize.y + ICONPADDING > 0)
 			{
 				k = 0;
 				while (k < iconPerRow)
@@ -90,24 +90,24 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 					if (i + k == this->selectedIndex)
 					{
 						NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
-						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, nullptr, b);
+						img->DrawRect(Math::Coord2DDbl(UIntOS2Double((this->iconSize.x + ICONPADDING) * k), IntOS2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, nullptr, b);
 						img->DelBrush(b);
 					}
 					if (this->imgList.GetItem(i + k).SetTo(gimg))
 					{
-						x = (OSInt)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
-						y = (OSInt)((OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
+						x = (IntOS)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
+						y = (IntOS)((IntOS)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
 						gimg->SetHDPI(img->GetHDPI());
 						gimg->SetVDPI(img->GetVDPI());
-						img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+						img->DrawImagePt(gimg, Math::Coord2DDbl(IntOS2Double(x), IntOS2Double(y)));
 					}
 					k++;
 					if (i + k >= j)
 						break;
 				}
 			}
-			ofst += (OSInt)this->iconSize.y + 10;
-			if (ofst > (OSInt)h)
+			ofst += (IntOS)this->iconSize.y + 10;
+			if (ofst > (IntOS)h)
 			{
 				break;
 			}
@@ -118,14 +118,14 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 	if (this->hasBorder)
 	{
 		NN<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, nullptr, 0);
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w - 1), UOSInt2Double(h - 1)), p, nullptr);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(w - 1), UIntOS2Double(h - 1)), p, nullptr);
 		img->DelPen(p);
 	}
 }
 
-void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void UI::GUIPictureList::OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->IndexFromPoint(pos);
 	if (i != INVALID_INDEX && i != this->selectedIndex)
 	{
@@ -134,12 +134,12 @@ void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI
 	}
 }
 
-UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
+UIntOS UI::GUIPictureList::IndexFromPoint(Math::Coord2D<IntOS> pos)
 {
-	UOSInt index;
-	UOSInt currY = this->GetVScrollPos();
-	Math::Size2D<UOSInt> sz = this->GetSizeP();
-	if (pos.x < 0 || pos.x >= (OSInt)sz.x || pos.y < 0 || pos.y >= (OSInt)sz.y)
+	UIntOS index;
+	UIntOS currY = this->GetVScrollPos();
+	Math::Size2D<UIntOS> sz = this->GetSizeP();
+	if (pos.x < 0 || pos.x >= (IntOS)sz.x || pos.y < 0 || pos.y >= (IntOS)sz.y)
 	{
 		return INVALID_INDEX;
 	}
@@ -152,8 +152,8 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
 	}
 	else
 	{
-		UOSInt iconPerRow = sz.x / (this->iconSize.x + ICONPADDING);
-		if (pos.x >= (OSInt)(iconPerRow * (this->iconSize.x + ICONPADDING)))
+		UIntOS iconPerRow = sz.x / (this->iconSize.x + ICONPADDING);
+		if (pos.x >= (IntOS)(iconPerRow * (this->iconSize.x + ICONPADDING)))
 			return INVALID_INDEX;
 		index = ((UInt32)pos.y + currY) / (this->iconSize.y + ICONPADDING) * iconPerRow + (UInt32)pos.x / (this->iconSize.x + ICONPADDING);
 		if (index >= this->imgList.GetCount())
@@ -178,12 +178,12 @@ void UI::GUIPictureList::Add(NN<Media::RasterImage> img)
 	simg.Delete();
 }
 
-UOSInt UI::GUIPictureList::GetCount()
+UIntOS UI::GUIPictureList::GetCount()
 {
 	return this->imgList.GetCount();
 }
 
-void UI::GUIPictureList::RemoveAt(UOSInt index)
+void UI::GUIPictureList::RemoveAt(UIntOS index)
 {
 	NN<Media::DrawImage> img;
 	if (this->imgList.RemoveAt(index).SetTo(img))
@@ -194,7 +194,7 @@ void UI::GUIPictureList::RemoveAt(UOSInt index)
 
 void UI::GUIPictureList::Clear()
 {
-	UOSInt i = this->imgList.GetCount();
+	UIntOS i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
 		NN<Media::DrawImage> img;
@@ -203,12 +203,12 @@ void UI::GUIPictureList::Clear()
 	}
 }
 
-UOSInt UI::GUIPictureList::GetSelectedIndex()
+UIntOS UI::GUIPictureList::GetSelectedIndex()
 {
 	return this->selectedIndex;
 }
 
-void UI::GUIPictureList::SetSelectedIndex(UOSInt index)
+void UI::GUIPictureList::SetSelectedIndex(UIntOS index)
 {
 	if (index == INVALID_INDEX || index < this->imgList.GetCount())
 	{

@@ -9,8 +9,8 @@ Crypto::Encrypt::JasyptConfigFile::JasyptConfigFile(NN<IO::ConfigFile> cfg, Cryp
 
 Crypto::Encrypt::JasyptConfigFile::~JasyptConfigFile()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	i = this->decVals.GetCount();
 	while (i-- > 0)
@@ -40,7 +40,7 @@ Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(NN<Text::
 		return nullptr;
 	if (s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')') && s->leng < 512)
 	{
-		UOSInt leng = this->enc.DecryptB64(Text::CStringNN(&s->v[4], s->leng - 5), sbuff);
+		UIntOS leng = this->enc.DecryptB64(Text::CStringNN(&s->v[4], s->leng - 5), sbuff);
 		if (Text::StringTool::IsTextASCII(Data::ByteArrayR(sbuff, leng)))
 		{
 			if (!this->decVals.GetNN(category).SetTo(cate))
@@ -77,7 +77,7 @@ Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CSt
 		return nullptr;
 	if (s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')'))
 	{
-		UOSInt leng = this->enc.DecryptB64(Text::CStringNN(&s->v[4], s->leng - 5), sbuff);
+		UIntOS leng = this->enc.DecryptB64(Text::CStringNN(&s->v[4], s->leng - 5), sbuff);
 		if (Text::StringTool::IsTextASCII(Data::ByteArrayR(sbuff, leng)))
 		{
 			if (!this->decVals.GetC(category).SetTo(cate))

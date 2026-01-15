@@ -22,7 +22,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Map::MapEnv> env;
-			UOSInt fontStyle;
+			UIntOS fontStyle;
 			Bool changed;
 			NN<Media::DrawEngine> eng;
 
@@ -47,7 +47,7 @@ namespace SSWR
 
 			void UpdatePreview();
 		public:
-			AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS fontStyle);
 			virtual ~AVIRGISFontStyleForm();
 
 			virtual void OnMonitorChanged();
@@ -55,7 +55,7 @@ namespace SSWR
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 
-			UOSInt GetFontStyle();
+			UIntOS GetFontStyle();
 			Bool IsChanged();
 		};
 	}

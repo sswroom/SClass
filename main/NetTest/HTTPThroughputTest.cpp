@@ -17,11 +17,11 @@
 #define POSTSIZE 1048576
 
 Text::CStringNN paramUrl;
-UOSInt threadCnt;
-UOSInt paramConnCnt;
+UIntOS threadCnt;
+UIntOS paramConnCnt;
 Bool kaConn;
 Net::WebUtil::RequestMethod reqMeth;
-UOSInt postSize;
+UIntOS postSize;
 
 UInt32 threadCurrCnt;
 Int32 connLeft;
@@ -56,11 +56,11 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 	Double timeResp;
 	UInt8 buff[2048];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 cnt;
 	Double respT;
-	UOSInt recvSize;
+	UIntOS recvSize;
 	{
 		Sync::Event evt;
 		status->evt = &evt;
@@ -82,8 +82,8 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 					if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
 					{
 						i = POSTSIZE;
-						sptr = Text::StrUOSInt(buff, i);
-						cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
+						sptr = Text::StrUIntOS(buff, i);
+						cli->AddHeaderC(CSTR("Content-Length"), {buff, (UIntOS)(sptr - buff)});
 						while (i >= 2048)
 						{
 							j = cli->Write(Data::ByteArrayR(buff, 2048));
@@ -205,15 +205,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	postSize = POSTSIZE;
 
 	UTF8Char sbuff[256];
-	UOSInt i;
-	UOSInt cmdCnt;
+	UIntOS i;
+	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> args = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Bool showHelp = false;
 
 	i = 1;
 	while (i < cmdCnt)
 	{
-		UOSInt cmdLen = Text::StrCharCnt(args[i]);
+		UIntOS cmdLen = Text::StrCharCnt(args[i]);
 		if (args[i][0] == '-')
 		{
 			switch (args[i][1])
@@ -223,10 +223,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				break;
 			case 'c':
 			case 't':
-				threadCnt = Text::StrToUOSInt(&args[i][2]);
+				threadCnt = Text::StrToUIntOS(&args[i][2]);
 				break;
 			case 'r':
-				paramConnCnt = Text::StrToUOSInt(&args[i][2]);
+				paramConnCnt = Text::StrToUIntOS(&args[i][2]);
 				break;
 			case 'k':
 				kaConn = (args[i][2] != 'c');

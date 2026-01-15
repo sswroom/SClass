@@ -14,7 +14,7 @@ namespace Media
 		void *captureCbData;
 		UInt8 *scnBuff;
 		UInt8 *scnABuff;
-		OSInt scnBuffSize;
+		IntOS scnBuffSize;
 
 		void *ddObj;
 		void *primarySurface;

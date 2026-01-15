@@ -26,26 +26,26 @@ namespace Map
 		Sync::Mutex reqMut;
 		Sync::Event reqEvt;
 		UnsafeArrayOpt<UTF8Char> reqBuff;
-		UOSInt reqBuffSize;
+		UIntOS reqBuffSize;
 		Int32 reqLat;
 		Int32 reqLon;
 		UInt32 reqLCID;
 		Bool reqResult;
 
-		Net::TCPClient *GetLatestClient(UOSInt retryCnt);
+		Net::TCPClient *GetLatestClient(UIntOS retryCnt);
 	public:
 		ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port);
 		virtual ~ReverseGeocoderServer();
 
-		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
 		virtual AnyType NewConn(NN<Net::TCPClient> cli);
 		virtual void EndConn(NN<Net::TCPClient> cli, AnyType cliObj);
-		virtual UOSInt ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
+		virtual UIntOS ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType cliObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType cliObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		Bool IsError();
 	};
 }

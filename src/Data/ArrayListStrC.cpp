@@ -7,7 +7,7 @@ Data::ArrayListStrC::ArrayListStrC() : Data::SortableArrayList<const Char*>()
 {
 }
 
-Data::ArrayListStrC::ArrayListStrC(UOSInt capacity) : Data::SortableArrayList<const Char*>(capacity)
+Data::ArrayListStrC::ArrayListStrC(UIntOS capacity) : Data::SortableArrayList<const Char*>(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayList<const Char*>> Data::ArrayListStrC::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrC::Compare(const Char* obj1, const Char* obj2) const
+IntOS Data::ArrayListStrC::Compare(const Char* obj1, const Char* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }

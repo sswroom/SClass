@@ -13,8 +13,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Manage::HiResClock *clk;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListStringNN *strs;
 	NN<Text::String> s;
 	
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		j = 1000;
 		while (j-- > 0)
 		{
-			s = Text::String::New(sbuff, (UOSInt)(Text::StrInt32(sbuff, (Int32)j) - sbuff));
+			s = Text::String::New(sbuff, (UIntOS)(Text::StrInt32(sbuff, (Int32)j) - sbuff));
 			strs->Add(s);
 		}
 		NN<Text::String> str = strs->JoinString();

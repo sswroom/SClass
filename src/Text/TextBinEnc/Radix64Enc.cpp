@@ -4,8 +4,8 @@
 
 Text::TextBinEnc::Radix64Enc::Radix64Enc(const Char *encArr)
 {
-	UOSInt i = 256;
-	UOSInt j;
+	UIntOS i = 256;
+	UIntOS j;
 	while (i-- > 0)
 	{
 		this->decArr[i] = 0xFF;
@@ -26,12 +26,12 @@ Text::TextBinEnc::Radix64Enc::~Radix64Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::Radix64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
-	UOSInt outSize;
+	UIntOS outSize;
 	UTF8Char sptr[4];
-	UOSInt tmp1 = buffSize % 3;
-	UOSInt tmp2 = buffSize / 3;
+	UIntOS tmp1 = buffSize % 3;
+	UIntOS tmp2 = buffSize / 3;
 	if (tmp1)
 	{
 		outSize = tmp2 * 4 + 4;
@@ -68,9 +68,9 @@ UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, U
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::Radix64Enc::CalcBinSize(Text::CStringNN str) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> sbuff = str.v;
 	while ((c = *sbuff++) != 0)
@@ -83,9 +83,9 @@ UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(Text::CStringNN str) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const WChar *sbuff) const
+UIntOS Text::TextBinEnc::Radix64Enc::CalcBinSize(const WChar *sbuff) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	WChar c;
 	while ((c = *sbuff++) != 0)
 	{
@@ -97,14 +97,14 @@ UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::Radix64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
-	UOSInt decSize = 0;
+	UIntOS decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
-	UOSInt len = str.leng;
+	UIntOS len = str.leng;
 	UnsafeArray<const UTF8Char> b64Str = str.v;
 	while (len-- > 0)
 	{
@@ -147,9 +147,9 @@ UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<
 	return decSize;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(const WChar *b64Str, UnsafeArray<UInt8> dataBuff) const 
+UIntOS Text::TextBinEnc::Radix64Enc::DecodeBin(const WChar *b64Str, UnsafeArray<UInt8> dataBuff) const 
 {
-	UOSInt decSize = 0;
+	UIntOS decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;

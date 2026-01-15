@@ -13,11 +13,11 @@ namespace IO
 		virtual ~SectorData(){};
 
 		virtual UInt64 GetSectorCount() const = 0;
-		virtual UOSInt GetBytesPerSector() const = 0;
+		virtual UIntOS GetBytesPerSector() const = 0;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff) = 0;
 		virtual NN<SectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const = 0;
 		virtual NN<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const = 0;
-		virtual UOSInt GetSeekCount() const = 0;
+		virtual UIntOS GetSeekCount() const = 0;
 
 		virtual IO::ParserType GetParserType() const { return IO::ParserType::SectorData; };
 	};

@@ -13,7 +13,7 @@ namespace UI
 			GtkProgressBar *bar;
 			UInt64 currCnt;
 			UInt64 totalCnt;
-			UOSInt timerId;
+			UIntOS timerId;
 			Bool cntUpdated;
 
 			static Int32 SignalTick(void *userObj);
@@ -21,7 +21,7 @@ namespace UI
 			GTKProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~GTKProgressBar();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 			virtual void ProgressStart(Text::CStringNN name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);

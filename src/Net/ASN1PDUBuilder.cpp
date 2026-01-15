@@ -20,7 +20,7 @@ Net::ASN1PDUBuilder::~ASN1PDUBuilder()
 	MemFreeArr(this->buff);
 }
 
-void Net::ASN1PDUBuilder::AllocateSize(UOSInt size)
+void Net::ASN1PDUBuilder::AllocateSize(UIntOS size)
 {
 	if (this->currOffset + size > this->buffSize)
 	{
@@ -63,8 +63,8 @@ void Net::ASN1PDUBuilder::EndLevel()
 {
 	if (this->currLev > 0)
 	{
-		UOSInt seqOffset;
-		UOSInt seqLen;
+		UIntOS seqOffset;
+		UIntOS seqLen;
 		this->currLev--;
 		seqOffset = this->seqOffset[this->currLev];
 		seqLen = this->currOffset - seqOffset;
@@ -189,7 +189,7 @@ void Net::ASN1PDUBuilder::AppendUInt32(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, UnsafeArray<const UInt8> buff, UOSInt len)
+void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, UnsafeArray<const UInt8> buff, UIntOS len)
 {
 	len++;
 	if (len < 128)
@@ -241,7 +241,7 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, Data::ByteArrayR buff)
 	AppendBitString(bitLeft, &buff[0], buff.GetSize());
 }
 
-void Net::ASN1PDUBuilder::AppendOctetString(UnsafeArray<const UInt8> buff, UOSInt len)
+void Net::ASN1PDUBuilder::AppendOctetString(UnsafeArray<const UInt8> buff, UIntOS len)
 {
 	this->AppendOther(4, buff, len);
 }
@@ -286,7 +286,7 @@ void Net::ASN1PDUBuilder::AppendNull()
 	this->currOffset += 2;
 }
 
-void Net::ASN1PDUBuilder::AppendOID(UnsafeArray<const UInt8> oid, UOSInt len)
+void Net::ASN1PDUBuilder::AppendOID(UnsafeArray<const UInt8> oid, UIntOS len)
 {
 	this->AllocateSize(len + 2);
 	this->buff[this->currOffset] = 6;
@@ -307,7 +307,7 @@ void Net::ASN1PDUBuilder::AppendOID(Data::ByteArrayR oid)
 void Net::ASN1PDUBuilder::AppendOIDString(Text::CStringNN oidStr)
 {
 	UInt8 buff[32];
-	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, buff);
+	UIntOS buffSize = Net::ASN1Util::OIDText2PDU(oidStr, buff);
 	this->AppendOID(buff, buffSize);
 }
 
@@ -372,7 +372,7 @@ void Net::ASN1PDUBuilder::AppendUTCTime(NN<Data::DateTime> t)
 	this->AppendOther(0x17, sbuff, 13);
 }
 
-void Net::ASN1PDUBuilder::AppendOther(UInt8 type, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendOther(UInt8 type, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize == 0)
 	{
@@ -418,24 +418,24 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, UnsafeArray<const UInt8> buff,
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendContentSpecific(UInt8 n, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendContentSpecific(UInt8 n, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->AppendOther((UInt8)(0xA0 + n), buff, buffSize);
 }
 
-void Net::ASN1PDUBuilder::AppendSequence(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendSequence(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->AppendOther(0x30, buff, buffSize);
 }
 
-void Net::ASN1PDUBuilder::AppendInteger(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendInteger(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->AppendOther(2, buff, buffSize);
 }
 
-UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(UnsafeArrayOpt<const Char> path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
+UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(UnsafeArrayOpt<const Char> path, OptOut<UIntOS> itemLen, OutParam<UIntOS> itemOfst)
 {
-	UOSInt startOfst;
+	UIntOS startOfst;
 	if (this->currLev > 0)
 	{
 		startOfst = this->seqOffset[this->currLev - 1];
@@ -447,7 +447,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(UnsafeArrayOpt<const
 	return Net::ASN1Util::PDUGetItemRAW(&this->buff[startOfst], &this->buff[this->currOffset], path, itemLen, itemOfst);
 }
 
-UnsafeArray<const UInt8> Net::ASN1PDUBuilder::GetBuff(OutParam<UOSInt> buffSize)
+UnsafeArray<const UInt8> Net::ASN1PDUBuilder::GetBuff(OutParam<UIntOS> buffSize)
 {
 	this->EndAll();
 	buffSize.Set(this->currOffset);
@@ -460,7 +460,7 @@ UnsafeArray<const UInt8> Net::ASN1PDUBuilder::GetBuff()
 	return this->buff;
 }
 
-UOSInt Net::ASN1PDUBuilder::GetBuffSize()
+UIntOS Net::ASN1PDUBuilder::GetBuffSize()
 {
 	this->EndAll();
 	return this->currOffset;

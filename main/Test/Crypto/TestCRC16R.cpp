@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (!Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType::CRC16R).SetTo(hash))
 		return 1;
 
-	UOSInt i = 32;
+	UIntOS i = 32;
 	while (i-- > 0)
 	{
 		testBlock[i] = 0;

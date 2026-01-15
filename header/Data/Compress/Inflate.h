@@ -29,11 +29,11 @@ namespace Data
 			Inflate(Bool hasHeader);
 			virtual ~Inflate();
 
-			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff);
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff);
 			virtual Bool Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData);
 
-			static UOSInt TestCompress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, Bool hasHeader);
-			static UOSInt Compress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level);
+			static UIntOS TestCompress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, Bool hasHeader);
+			static UIntOS Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level);
 		};
 	}
 }

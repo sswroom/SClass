@@ -35,16 +35,16 @@ namespace IO
 
 		struct RunOptions;
 
-		typedef void (CALLBACKFUNC StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
+		typedef void (CALLBACKFUNC StepStatusHandler)(AnyType userObj, UIntOS cmdIndex, Data::Duration dur);
 	private:
 		NN<Net::TCPClientFactory> clif;
-		UOSInt lastErrorIndex;
+		UIntOS lastErrorIndex;
 		Optional<Text::String> lastErrorMsg;
 		NN<Text::String> webdriverURL;
 		Optional<Text::String> userDataDir;
 		Bool noPause;
 
-		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
+		Bool ErrorClient(NN<Net::WebDriverClient> cli, UIntOS currIndex);
 		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice, NN<RunOptions> options);
 		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice, NN<RunOptions> options);
 		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice, NN<RunOptions> options);
@@ -62,9 +62,9 @@ namespace IO
 		void SetNoPause(Bool noPause) { this->noPause = noPause; }
 		void SetUserDataDir(Text::CStringNN userDataDir) { OPTSTR_DEL(this->userDataDir); this->userDataDir = Text::String::New(userDataDir); }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }
-		UOSInt GetLastErrorIndex() const { return this->lastErrorIndex; }
-		Optional<Net::WebDriverBy> ParseBy(Text::CStringNN by, UOSInt currIndex);
-		Optional<Net::WebDriverBy> ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex);
+		UIntOS GetLastErrorIndex() const { return this->lastErrorIndex; }
+		Optional<Net::WebDriverBy> ParseBy(Text::CStringNN by, UIntOS currIndex);
+		Optional<Net::WebDriverBy> ParseOptionLocator(Text::CStringNN locator, UIntOS currIndex);
 		static void FillMobileItemSelector(NN<UI::ItemSelector> selector);
 		static Text::CStringNN BrowserTypeGetName(BrowserType browserType);
 		static Int64 GetDefaultScriptTimeout() { return 30000; }

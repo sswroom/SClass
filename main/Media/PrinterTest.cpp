@@ -42,8 +42,8 @@ public:
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Media::DrawEngine> eng;

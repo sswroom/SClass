@@ -59,8 +59,8 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	Data::ArrayListNN<Media::MediaFile> stmList;
 	NN<Media::MediaFile> file;
 	Data::RandomOS random;
-	UOSInt i;
-	UOSInt currStm;
+	UIntOS i;
+	UIntOS currStm;
 	Net::HKOWeather::WeatherSignal currSignal;
 	Net::HKOWeather::WeatherSignal nextSignal;
 	Bool typhoonStop = false;
@@ -76,7 +76,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	while (true)
 	{
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Alarm"));
-		sptr = Text::StrUOSInt(sptr, i);
+		sptr = Text::StrUIntOS(sptr, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -238,8 +238,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<NN<Text::String>> sel;
-	UOSInt i;
-	UOSInt devCnt;
+	UIntOS i;
+	UIntOS devCnt;
 	IO::ConsoleInput::InputReturnType irt;
 	IO::LogTool log;
 
@@ -255,7 +255,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	while (i-- > 0)
 	{
 		sptr = Media::AudioDevice::GetDeviceName(buff, i).Or(buff);
-		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff));
+		sel[i] = Text::String::New(buff, (UIntOS)(sptr - buff));
 	}
 	if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))
 	{

@@ -28,7 +28,7 @@ UI::JavaUI::JUIRadioButton::~JUIRadioButton()
 {
 }
 
-OSInt UI::JavaUI::JUIRadioButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

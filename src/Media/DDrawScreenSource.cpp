@@ -11,7 +11,7 @@ UInt32 __stdcall Media::DDrawScreenSource::CaptureThread(void *userObj)
 	Media::DDrawScreenSource *me = (Media::DDrawScreenSource*)userObj;
 	LPDIRECTDRAWSURFACE7 surface;
 	DDSURFACEDESC2 ddsd;
-	OSInt sizeNeeded;
+	IntOS sizeNeeded;
 	Manage::HiResClock *clk;
 	UInt32 frameNum;
 	Double t1;
@@ -44,9 +44,9 @@ UInt32 __stdcall Media::DDrawScreenSource::CaptureThread(void *userObj)
 						MemFree(me->scnBuff);
 					}
 					me->scnBuff = MemAlloc(UInt8, me->scnBuffSize + 16);
-					if (15 & (OSInt)me->scnBuff)
+					if (15 & (IntOS)me->scnBuff)
 					{
-						me->scnABuff = me->scnBuff + 16 - (15 & (OSInt)me->scnBuff);
+						me->scnABuff = me->scnBuff + 16 - (15 & (IntOS)me->scnBuff);
 					}
 					else
 					{

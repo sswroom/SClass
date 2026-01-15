@@ -25,8 +25,8 @@ namespace SSWR
 			virtual ~BookArrayList();
 
 			void Sort();
-			static OSInt __stdcall CompareBook(NN<OrganBook> book1, NN<OrganBook> book2);
-			virtual OSInt Compare(NN<OrganBook> book1, NN<OrganBook> book2) const;
+			static IntOS __stdcall CompareBook(NN<OrganBook> book1, NN<OrganBook> book2);
+			virtual IntOS Compare(NN<OrganBook> book1, NN<OrganBook> book2) const;
 		};
 
 		class OrganBookForm : public UI::GUIForm

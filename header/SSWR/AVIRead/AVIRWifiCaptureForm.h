@@ -53,7 +53,7 @@ namespace SSWR
 			Optional<IO::MotionDetectorAccelerometer> motion;
 			NN<Net::WirelessLAN> wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
-			UOSInt wlanScan;
+			UIntOS wlanScan;
 			Data::FastMapNN<UInt64, BSSStatus> bssMap;
 			Data::FastMapNN<UInt64, WifiLog> wifiLogMap;
 			Int32 lastMotion;
@@ -107,7 +107,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnGPSClicked(AnyType userObj);
 			static void __stdcall OnCaptureClicked(AnyType userObj);
-			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnLogWifiSaveClicked(AnyType userObj);
 			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);

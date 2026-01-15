@@ -12,15 +12,15 @@ namespace Data
 			NN<IO::Stream> outStm;
 			void *cmpInfo;
 			UInt8 *writeBuff;
-			UOSInt headerSize;
+			UIntOS headerSize;
 		public:
-			InflateStream(NN<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader);
+			InflateStream(NN<IO::Stream> outStm, UIntOS headerSize, Bool zlibHeader);
 			InflateStream(NN<IO::Stream> outStm, Bool zlibHeader);
 			virtual ~InflateStream();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

@@ -67,7 +67,7 @@ UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencInt(UnsafeArray<UInt8> buff, UInt
 	}
 }
 
-UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UOSInt len)
+UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UIntOS len)
 {
 	if (s.IsNull())
 	{
@@ -234,10 +234,10 @@ Text::CStringNN Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
 	}
 }
 
-UOSInt Net::MySQLUtil::BuildAuthen(UnsafeArray<UInt8> buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password)
+UIntOS Net::MySQLUtil::BuildAuthen(UnsafeArray<UInt8> buff, AuthenType authType, const UInt8 *nonce, UIntOS nonceSize, Text::CStringNN password)
 {
 	UInt8 tmpBuff[32];
-	UOSInt i;
+	UIntOS i;
 	switch (authType)
 	{
 	default:
@@ -289,7 +289,7 @@ Bool Net::MySQLUtil::IsAxisAware(Text::CStringNN svrVer)
 	UTF8Char sbuff[32];
 	if (svrVer.IndexOf(UTF8STRC("-MariaDB")) != INVALID_INDEX)
 		return false;
-	UOSInt i = svrVer.IndexOf('.');
+	UIntOS i = svrVer.IndexOf('.');
 	if (i != INVALID_INDEX && i < 10)
 	{
 		Text::StrConcatC(sbuff, svrVer.v, i);

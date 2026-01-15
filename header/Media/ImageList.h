@@ -55,8 +55,8 @@ namespace Media
 		Data::ArrayListNative<ValueType> valTypeStr;
 		Data::ArrayListStringNN valStr;
 
-		Math::Size2D<UOSInt> thermoSize;
-		UOSInt thermoBPP;
+		Math::Size2D<UIntOS> thermoSize;
+		UIntOS thermoBPP;
 		UInt8 *thermoPtr;
 		Double thermoEmissivity;
 		Double thermoTransmission;
@@ -69,19 +69,19 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		UOSInt AddImage(NN<Media::RasterImage> img, UInt32 imageDelay);
-		void ReplaceImage(UOSInt index, NN<Media::RasterImage> img);
-		Bool RemoveImage(UOSInt index, Bool toRelease);
-		UOSInt GetCount() const;
-		Optional<Media::RasterImage> GetImage(UOSInt index, OptOut<UInt32> imageDelay) const;
-		UInt32 GetImageDelay(UOSInt index) const;
-		ImageType GetImageType(UOSInt index) const;
-		void SetImageType(UOSInt index, ImageType imgType);
-		void ToStaticImage(UOSInt index);
+		UIntOS AddImage(NN<Media::RasterImage> img, UInt32 imageDelay);
+		void ReplaceImage(UIntOS index, NN<Media::RasterImage> img);
+		Bool RemoveImage(UIntOS index, Bool toRelease);
+		UIntOS GetCount() const;
+		Optional<Media::RasterImage> GetImage(UIntOS index, OptOut<UInt32> imageDelay) const;
+		UInt32 GetImageDelay(UIntOS index) const;
+		ImageType GetImageType(UIntOS index) const;
+		void SetImageType(UIntOS index, ImageType imgType);
+		void ToStaticImage(UIntOS index);
 		void SetAuthor(UnsafeArray<const UTF8Char> name);
 		void SetImageName(UnsafeArrayOpt<const UTF8Char> imgName);
 
-		void SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
+		void SetThermoImage(Math::Size2D<UIntOS> thermoSize, UIntOS thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
 		Bool HasThermoImage() const;
 		Double GetThermoValue(Double x, Double y) const;
 

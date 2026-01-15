@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvrMem.log"));
-	MemSetLogFile(sbuff, (UOSInt)(sptr - sbuff));
+	MemSetLogFile(sbuff, (UIntOS)(sptr - sbuff));
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvr.err"));
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART);

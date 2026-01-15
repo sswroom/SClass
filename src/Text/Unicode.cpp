@@ -335,9 +335,9 @@ Text::Unicode::Block Text::Unicode::blocks[] = {
 
 Optional<Text::Unicode::Block> Text::Unicode::GetBlock(UInt32 code)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(blocks) / sizeof(blocks[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(blocks) / sizeof(blocks[0])) - 1;
+	IntOS k;
 	Block *blk;
 	while (i <= j)
 	{

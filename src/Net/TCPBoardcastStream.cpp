@@ -16,7 +16,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(NN<Socket> s, AnyType userOb
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
-		UOSInt size = me->writeBuffSize;
+		UIntOS size = me->writeBuffSize;
 		me->writeBuffSize = 0;
 		if (me->log->HasHandler())
 		{
@@ -24,7 +24,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(NN<Socket> s, AnyType userOb
 			sptr = me->sockf->GetRemoteName(sbuff, s).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
-			sb.AppendUOSInt(size);
+			sb.AppendUIntOS(size);
 			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		cli->Write(Data::ByteArrayR(me->writeBuff, size));
@@ -58,16 +58,16 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NN<Net::TCPClient> cli, AnyTy
 		sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
-		sb.AppendUOSInt(buff.GetSize());
+		sb.AppendUIntOS(buff.GetSize());
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	Sync::MutexUsage mutUsage(me->readMut);
-	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
-	if ((OSInt)readBuffSize < 0)
+	UIntOS readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
+	if ((IntOS)readBuffSize < 0)
 	{
 		readBuffSize += 16384;
 	}
-	UOSInt size = buff.GetSize();
+	UIntOS size = buff.GetSize();
 	if (readBuffSize + size >= 16384)
 	{
 		size = 16383 - readBuffSize;
@@ -96,7 +96,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NN<Net::TCPClient> cli, AnyTy
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Recv readBuffPtr2 = "));
-		sb.AppendUOSInt(me->readBuffPtr2);
+		sb.AppendUIntOS(me->readBuffPtr2);
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 }
@@ -156,9 +156,9 @@ Bool Net::TCPBoardcastStream::IsDown() const
 	return this->cliMgr->GetClientCount() == 0;
 }
 
-UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
+UIntOS Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt readBuffSize;
+	UIntOS readBuffSize;
 
 	Sync::Interlocked::IncrementU32(this->readCnt);
 	while (true)
@@ -169,18 +169,18 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 			return 0;
 		}
 		readBuffSize = this->readBuffPtr2 - this->readBuffPtr1;
-		if ((OSInt)readBuffSize < 0)
+		if ((IntOS)readBuffSize < 0)
 		{
 			readBuffSize += 16384;
 		}
-		if ((OSInt)readBuffSize > 0)
+		if ((IntOS)readBuffSize > 0)
 			break;
 		Sync::SimpleThread::Sleep(10);
 	}
 	Sync::Interlocked::DecrementU32(this->readCnt);
 	Sync::MutexUsage mutUsage(this->readMut);
 	Data::ByteArray myBuff = buff;
-	if ((UOSInt)readBuffSize >= myBuff.GetSize())
+	if ((UIntOS)readBuffSize >= myBuff.GetSize())
 	{
 	}
 	else
@@ -208,17 +208,17 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("TBS "));
-		sb.AppendUOSInt(myBuff.GetSize());
+		sb.AppendUIntOS(myBuff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes returned"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	return myBuff.GetSize();
 }
 
-UOSInt Net::TCPBoardcastStream::Write(Data::ByteArrayR buff)
+UIntOS Net::TCPBoardcastStream::Write(Data::ByteArrayR buff)
 {
 	Bool cliFound = false;
-	UOSInt i;
+	UIntOS i;
 	NN<Net::TCPClient> cli;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -240,7 +240,7 @@ UOSInt Net::TCPBoardcastStream::Write(Data::ByteArrayR buff)
 				sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC(" with "));
-				sb.AppendUOSInt(buff.GetSize());
+				sb.AppendUIntOS(buff.GetSize());
 				this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 			}
 
@@ -250,7 +250,7 @@ UOSInt Net::TCPBoardcastStream::Write(Data::ByteArrayR buff)
 	mutUsage.EndUse();
 	if (!cliFound)
 	{
-		UOSInt buffSizeLeft = 2048 - this->writeBuffSize;
+		UIntOS buffSizeLeft = 2048 - this->writeBuffSize;
 		if (buffSizeLeft >= buff.GetSize())
 		{
 			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), buff.GetSize());

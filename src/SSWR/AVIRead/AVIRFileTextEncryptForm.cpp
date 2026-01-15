@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 			me->ui->ShowMsgOK(CSTR("Source file is too large"), CSTR("File Text Encrypt"), me);
 			return;
 		}
-		UOSInt buffSize = (UOSInt)len;
+		UIntOS buffSize = (UIntOS)len;
 		Data::ByteBuffer srcBuff(buffSize);
 		if (fs.Read(srcBuff) != buffSize)
 		{
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 		if (me->chkDecrypt->IsChecked())
 		{
 			UInt8 *destBuff = MemAlloc(UInt8, buffSize << 1);
-			UOSInt destSize = destEnc->DecodeBin(Text::CStringNN(srcBuff.Arr(), buffSize), destBuff);
+			UIntOS destSize = destEnc->DecodeBin(Text::CStringNN(srcBuff.Arr(), buffSize), destBuff);
 			if (destSize == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in decrypting file"), CSTR("File Text Encrypt"), me);
@@ -143,8 +143,8 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(Optional<UI::GUI
 
 	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
 	NN<Text::TextBinEnc::TextBinEnc> enc;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)

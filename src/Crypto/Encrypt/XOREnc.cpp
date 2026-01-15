@@ -9,10 +9,10 @@ Crypto::Encrypt::XOREnc::~XOREnc()
 {
 }
 
-UOSInt Crypto::Encrypt::XOREnc::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::XOREnc::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 lastByte = 0;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < inSize)
 	{
 		outBuff[i] = inBuff[i] ^ lastByte;
@@ -21,11 +21,11 @@ UOSInt Crypto::Encrypt::XOREnc::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt 
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::XOREnc::Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 lastByte = 0;
 	UInt8 lastLastByte = 0;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < inSize)
 	{
 		lastLastByte = inBuff[i];
@@ -36,12 +36,12 @@ UOSInt Crypto::Encrypt::XOREnc::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt 
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::XOREnc::GetEncBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::XOREnc::GetDecBlockSize() const
 {
 	return 1;
 }

@@ -99,7 +99,7 @@ namespace Media
 			virtual ~ToneGenerator();
 
 			virtual void GetFormat(NN<AudioFormat> format);
-			virtual UOSInt ReadBlock(Data::ByteArray buff); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray buff); //ret actual block size
 
 			void ClearTones();
 			void SetInstrument(InstrumentType instType);

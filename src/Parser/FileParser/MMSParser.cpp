@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 {
 	IO::VirtualPackageFile *pf;
 	UInt32 fileCnt;
-	UOSInt currOfst;
+	UIntOS currOfst;
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -77,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 	}
 
 	fileCnt = *ptr++;
-	currOfst = (UOSInt)(ptr - hdr.Arr());
+	currOfst = (UIntOS)(ptr - hdr.Arr());
 
 	while (fileCnt-- > 0)
 	{

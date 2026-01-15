@@ -19,7 +19,7 @@ namespace UI
 			GTKDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKDateTimePicker();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual void SetValue(NN<Data::DateTime> dt);
 			virtual void SetValue(const Data::Timestamp &dt);
 			virtual void GetSelectedTime(NN<Data::DateTime> dt);

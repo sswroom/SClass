@@ -38,8 +38,8 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnThickChanged(AnyType userObj, UOSInt newPos);
-			static UI::EventState __stdcall OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnThickChanged(AnyType userObj, UIntOS newPos);
+			static UI::EventState __stdcall OnColorDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			void UpdatePreview();

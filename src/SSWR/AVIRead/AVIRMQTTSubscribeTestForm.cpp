@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(AnyTyp
 		me->cliCert.Delete();
 		me->cliCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 		NN<Text::String> s = dlg->GetFileName();
-		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
 	dlg.Delete();
@@ -234,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(AnyType
 		me->cliKey.Delete();
 		me->cliKey = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		NN<Text::String> s = dlg->GetFileName();
-		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
 	dlg.Delete();

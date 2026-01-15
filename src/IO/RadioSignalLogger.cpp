@@ -82,8 +82,8 @@ void __stdcall IO::RadioSignalLogger::OnGSMUpdate(NN<Data::ArrayListNN<IO::GSMMo
 	if (me->fs.SetTo(fs))
 	{
 		NN<IO::GSMModemController::CellSignal> cell;
-		UOSInt i = 0;
-		UOSInt j = cells->GetCount();
+		UIntOS i = 0;
+		UIntOS j = cells->GetCount();
 		if (j > 0)
 		{
 			Data::Timestamp currTime = Data::Timestamp::Now();
@@ -137,11 +137,11 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	UTF8Char sbuff[512];
 	NN<IO::FileStream> fs;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("radio"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");

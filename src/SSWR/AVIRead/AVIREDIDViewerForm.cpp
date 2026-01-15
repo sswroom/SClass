@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
 	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
-	UOSInt fileSize;
-	UOSInt i;
-	UOSInt fileCnt = fileNames.GetCount();
+	UIntOS fileSize;
+	UIntOS i;
+	UIntOS fileCnt = fileNames.GetCount();
 	Bool found = false;
 	UnsafeArray<UInt8> edid;
 	i = 0;
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 	{
 		{
 			IO::FileStream fs(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fileSize = (UOSInt)fs.GetLength();
+			fileSize = (UIntOS)fs.GetLength();
 			if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 			{
 				Data::ByteBuffer fileCont(fileSize);
@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::~AVIREDIDViewerForm()
 
 void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 {
-	UOSInt edidSize;
+	UIntOS edidSize;
 	UnsafeArray<UInt8> edid;
 	UnsafeArray<UInt8> edidSrc;
 	Optional<MonitorHandle> hMon = this->GetHMonitor();

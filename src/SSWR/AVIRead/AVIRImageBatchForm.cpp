@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 				printf("AVIRImageBatchForm: Pixel Format not supported: %s\r\n", Media::PixelFormatGetName(simg->info.pf).v.Ptr());
 				simg->ToB8G8R8A8();
 			}
-			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
+			Math::Size2D<UIntOS> sz = me->pbMain->GetSizeP();
 			me->resizer->SetTargetSize(sz);
 			me->resizer->SetDestProfile(simg->info.color);
 			me->previewImage = me->resizer->ProcessToNew(simg);
@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 				me->filteredImage = simg->CreateStaticImage();
 			}
 			me->initPos = true;
-			me->hsbBright->SetPos((UOSInt)Double2OSInt(nnsetting->brightness * 1000));
-			me->hsbContr->SetPos((UOSInt)Double2OSInt(nnsetting->contrast * 100));
-			me->hsbGamma->SetPos((UOSInt)Double2OSInt(nnsetting->gamma * 100));
+			me->hsbBright->SetPos((UIntOS)Double2IntOS(nnsetting->brightness * 1000));
+			me->hsbContr->SetPos((UIntOS)Double2IntOS(nnsetting->contrast * 100));
+			me->hsbGamma->SetPos((UIntOS)Double2IntOS(nnsetting->gamma * 100));
 			me->hsbHDRLev->SetPos((nnsetting->flags & 240) >> 4);
 			me->initPos = false;
 			me->UpdatePreview();
@@ -78,23 +78,23 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UIntOS newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
-	UOSInt hdrLev = me->hsbHDRLev->GetPos();
+	Double bvalue = UIntOS2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = UIntOS2Double(me->hsbContr->GetPos());
+	Double gvalue = UIntOS2Double(me->hsbGamma->GetPos());
+	UIntOS hdrLev = me->hsbHDRLev->GetPos();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
 	me->lblContrV->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, hdrLev);
+	sptr = Text::StrUIntOS(sbuff, hdrLev);
 	me->lblHDRLevV->SetText(CSTRP(sbuff, sptr));
 
 	if (!me->initPos)
@@ -119,7 +119,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(AnyType userObj,
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(AnyType userObj, UOSInt finCnt)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(AnyType userObj, UIntOS finCnt)
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->prgMain->ProgressUpdate(finCnt, me->selCnt);
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI:
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (key == UI::GUIControl::GK_LEFT)
 	{
-		UOSInt currPos = me->hsbContr->GetPos();
+		UIntOS currPos = me->hsbContr->GetPos();
 		if (currPos < 10)
 		{
 			currPos = 0;
@@ -147,13 +147,13 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI:
 	}
 	else if (key == UI::GUIControl::GK_RIGHT)
 	{
-		UOSInt currPos = me->hsbContr->GetPos();
+		UIntOS currPos = me->hsbContr->GetPos();
 		currPos += 10;
 		me->hsbContr->SetPos(currPos);
 	}
 	else if (key == UI::GUIControl::GK_HOME)
 	{
-		UOSInt currPos = me->hsbContr->GetPos();
+		UIntOS currPos = me->hsbContr->GetPos();
 		if (currPos < 100)
 		{
 			currPos = 0;
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI:
 	}
 	else if (key == UI::GUIControl::GK_END)
 	{
-		UOSInt currPos = me->hsbContr->GetPos();
+		UIntOS currPos = me->hsbContr->GetPos();
 		currPos += 100;
 		me->hsbContr->SetPos(currPos);
 	}
@@ -204,7 +204,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	UOSInt fileCnt = 0;
+	UIntOS fileCnt = 0;
 	NN<IO::Path::FindFileSession> sess;
 	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
@@ -236,9 +236,9 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
-		setting.brightness = UOSInt2Double(this->hsbBright->GetPos()) * 0.001;
-		setting.contrast = UOSInt2Double(this->hsbContr->GetPos()) * 0.01;
-		setting.gamma = UOSInt2Double(this->hsbGamma->GetPos()) * 0.01;
+		setting.brightness = UIntOS2Double(this->hsbBright->GetPos()) * 0.001;
+		setting.contrast = UIntOS2Double(this->hsbContr->GetPos()) * 0.01;
+		setting.gamma = UIntOS2Double(this->hsbGamma->GetPos()) * 0.01;
 		setting.flags = (Int32)(this->hsbHDRLev->GetPos() << 4);
 		this->icMain->ApplySetting(previewImage, filteredImage, setting);
 		this->pbMain->SetImage(filteredImage.Ptr(), true);

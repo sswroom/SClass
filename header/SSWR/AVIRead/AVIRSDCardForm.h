@@ -49,7 +49,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCapacity;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
-			static OSInt __stdcall ItemCompare(NN<IO::SDCardInfo> item1, NN<IO::SDCardInfo> item2);
+			static IntOS __stdcall ItemCompare(NN<IO::SDCardInfo> item1, NN<IO::SDCardInfo> item2);
 		public:
 			AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSDCardForm();

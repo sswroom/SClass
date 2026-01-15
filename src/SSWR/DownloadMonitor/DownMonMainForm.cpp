@@ -46,8 +46,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 	}
 
 	Bool changed = false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int32 id;
 	Sync::MutexUsage mutUsage(me->endedMut);
 	while (me->endedList.GetCount() > 0)
@@ -57,7 +57,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		j = me->lvFiles->GetCount();
 		while (i < j)
 		{
-			if (id == me->lvFiles->GetItem(i).GetOSInt())
+			if (id == me->lvFiles->GetItem(i).GetIntOS())
 			{
 				me->lvFiles->RemoveItem(i);
 				changed = true;
@@ -72,7 +72,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		me->SaveList();
 		if (me->chkAutoStart->IsChecked())
 		{
-			id = (Int32)me->lvFiles->GetItem(0).GetOSInt();
+			id = (Int32)me->lvFiles->GetItem(0).GetIntOS();
 			if (id)
 			{
 				me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -88,7 +88,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		{
 			me->alarmSet = false;
 			me->lblAlarm->SetText(CSTR(""));
-			id = (Int32)me->lvFiles->GetItem(0).GetOSInt();
+			id = (Int32)me->lvFiles->GetItem(0).GetIntOS();
 			if (id)
 			{
 				me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -107,8 +107,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 	Text::PString sarr[2];
 	Text::PString sarr2[2];
 	Bool changed = false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sarr[1] = sb;
 	while (true)
 	{
@@ -129,7 +129,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 					if (me->core->FileGet(id, webType, mutUsage).SetTo(file))
 					{
 						sptr = Text::StrInt32(sbuff, file->id);
-						j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
+						j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
 						me->lvFiles->SetSubItem(j, 1, file->fileName);
 						changed = true;
 					}
@@ -151,16 +151,16 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Data::ArrayListNative<UInt32> formats;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UTF8Char> url;
-	UOSInt urlLen;
+	UIntOS urlLen;
 	Text::PString sarr[2];
 	Data::ArrayListObj<const UTF8Char *> urlStrList;
-	Data::ArrayListNative<UOSInt> urlLenList;
+	Data::ArrayListNative<UIntOS> urlLenList;
 	Data::ArrayListObj<const UTF8Char *> descList;
 	UI::Clipboard clipboard(me->GetHandle());
 	clipboard.GetDataFormats(formats);
@@ -255,7 +255,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 							if (me->core->FileGet(id, 3, mutUsage).SetTo(file))
 							{
 								sptr = Text::StrInt32(sbuff, file->id);
-								j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
+								j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
 								me->lvFiles->SetSubItem(j, 1, file->fileName);
 								changed = true;
 							}
@@ -277,13 +277,13 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = me->lvFiles->GetCount();
 	while (i < j)
 	{
-		Int32 id = (Int32)me->lvFiles->GetItem(i).GetOSInt();
+		Int32 id = (Int32)me->lvFiles->GetItem(i).GetIntOS();
 		Sync::MutexUsage mutUsage;
 		NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 		if (me->core->FileGet(id & 0xffffff, id >> 24, mutUsage).SetTo(file))
@@ -315,10 +315,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 	UI::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
-	Int32 id = (Int32)me->lvFiles->GetItem(itemIndex).GetOSInt();
+	Int32 id = (Int32)me->lvFiles->GetItem(itemIndex).GetIntOS();
 	if (id)
 	{
 		me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -328,7 +328,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType u
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(AnyType userObj)
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
-	Int32 id = (Int32)me->lvFiles->GetSelectedItem().GetOSInt();
+	Int32 id = (Int32)me->lvFiles->GetSelectedItem().GetIntOS();
 	if (id > 0)
 	{
 		if (me->ui->ShowMsgYesNo(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
@@ -346,10 +346,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 webType = 4;
 	Int32 maxId = me->core->FileGetMaxId(webType);
-	OSInt currPage = 1;
+	IntOS currPage = 1;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> pageList;
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> totalList;
 	NN<Net::WebSite::WebSite48IdolControl::ItemData> item;
@@ -397,11 +397,11 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 			{
 				Sync::MutexUsage mutUsage;
 				NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
-				UOSInt j;
+				UIntOS j;
 				if (me->core->FileGet(item->id, webType, mutUsage).SetTo(file))
 				{
 					sptr = Text::StrInt32(UARR(sbuff), file->id);
-					j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
+					j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
 					me->lvFiles->SetSubItem(j, 1, file->fileName);
 					changed = true;
 				}
@@ -485,7 +485,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> listFile;
 	if (listFile.Set(this->core->GetListFile()))
 	{
@@ -525,7 +525,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						if (this->core->FileGet(id, webType, mutUsage).SetTo(file))
 						{
 							sptr = Text::StrInt32(UARR(sbuff), file->id);
-							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
+							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
 							this->lvFiles->SetSubItem(i, 1, file->fileName);
 						}
 					}
@@ -549,8 +549,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	NN<Text::String> listFile;
 	if (!listFile.Set(this->core->GetListFile()))
@@ -562,7 +562,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	j = this->lvFiles->GetCount();
 	while (i < j)
 	{
-		Int32 id = (Int32)this->lvFiles->GetItem(i).GetOSInt();
+		Int32 id = (Int32)this->lvFiles->GetItem(i).GetIntOS();
 		Sync::MutexUsage mutUsage;
 		NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 		if (this->core->FileGet(id & 0xffffff, id >> 24, mutUsage).SetTo(file))

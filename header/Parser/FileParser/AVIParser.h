@@ -22,7 +22,7 @@ namespace Parser
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
 		private:
-			UInt32 EstimateDecodeSize(NN<Media::AudioFormat> fmt, UInt64 totalSize, UOSInt frameSize);
+			UInt32 EstimateDecodeSize(NN<Media::AudioFormat> fmt, UInt64 totalSize, UIntOS frameSize);
 		};
 	}
 }

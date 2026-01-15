@@ -20,7 +20,7 @@ global _Benchmark_MemReadTest
 extern _CPUBrand
 extern _UseAVX
 
-;Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 
 ;0 retAddr
 ;rdi buff1
@@ -67,7 +67,7 @@ t12lop2:
 	
 	ret
 
-;Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 ;0 retAddr
 ;rdi buff1
 ;rsi buff2
@@ -160,7 +160,7 @@ mwriteavxlop2:
 
 	ret
 
-;Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 ;0 retAddr
 ;rdi buff1
 ;rsi buff2

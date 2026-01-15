@@ -15,7 +15,7 @@ extern "C" void CPUInfo_cpuid(Int32 *cpuInfo, Int32 func, Int32 subfunc)
 
 Manage::CPUInfo::CPUInfo()
 {
-	OSInt sysType = 0;
+	IntOS sysType = 0;
 
 	this->infoCnt = 0;
 	this->brand = Manage::CPUVendor::CB_UNKNOWN;
@@ -50,12 +50,12 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
 
-UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
+UIntOS Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	return 0;
 }
@@ -72,12 +72,12 @@ Manage::CPUInfo::~CPUInfo()
 		Text::StrDelNew((const UTF8Char*)this->clsData);
 }
 
-UOSInt Manage::CPUInfo::GetInfoCnt()
+UIntOS Manage::CPUInfo::GetInfoCnt()
 {
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -121,17 +121,17 @@ Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UIntOS index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UIntOS index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UIntOS index)
 {
 	return CSTR("Unknown");
 }

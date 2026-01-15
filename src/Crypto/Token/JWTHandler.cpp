@@ -12,7 +12,7 @@
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWTHandler::JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWTHandler::JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	this->ssl = ssl;
 	this->alg = alg;
@@ -31,8 +31,8 @@ Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data
 {
 	NN<Data::ArrayListObj<Optional<Text::String>>> keys = payload->GetKeys();
 	NN<Text::String> key;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<JWTParam> nnparam;
 	NN<Text::String> s;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);

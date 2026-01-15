@@ -20,7 +20,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 		UInt64 hwAddr = ReadMUInt64(&data[28]) & 0xffffffffffff0000LL;
 		UInt32 reqIP = 0;
 		UInt32 transactionId = ReadMUInt32(&data[4]);
-		UOSInt i;
+		UIntOS i;
 		UInt32 j;
 		UInt8 t;
 		UInt8 len;
@@ -276,8 +276,8 @@ Net::DHCPServer::DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 s
 
 	this->devUsed = 0;
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 ip;
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
@@ -335,7 +335,7 @@ Net::DHCPServer::~DHCPServer()
 		this->svr = 0;
 
 		NN<DeviceStatus> dev;
-		UOSInt i = this->devMap.GetCount();
+		UIntOS i = this->devMap.GetCount();
 		while (i-- > 0)
 		{
 			dev = this->devMap.GetItemNoCheck(i);

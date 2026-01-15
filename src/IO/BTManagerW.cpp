@@ -40,7 +40,7 @@ IO::BTManager::~BTManager()
 	}
 }
 
-UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
+UIntOS IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
 {
 	InternalData *me = (InternalData*)this->internalData;
 	BluetoothFindFirstRadioFunc FindFirst = (BluetoothFindFirstRadioFunc)me->lib->GetFunc("BluetoothFindFirstRadio");
@@ -49,7 +49,7 @@ UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> 
 	if (FindFirst == 0 || FindNext == 0 || FindClose == 0)
 		return 0;
 
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	BLUETOOTH_FIND_RADIO_PARAMS frp;
 	HANDLE hand;
 	NN<IO::BTController> btCtrl;

@@ -58,7 +58,7 @@ namespace Data
 			Data::ReadonlyArray<UInt8> *byteArr;
 			NN<Math::Geometry::Vector2D> vector;
 			NN<Data::UUID> uuid;
-			struct { const UTF8Char *v; UOSInt leng; } cstr;
+			struct { const UTF8Char *v; UIntOS leng; } cstr;
 			UInt8 buff[16];
 
 #ifdef HAS_DEF_CONSTR
@@ -141,7 +141,7 @@ namespace Data
 		UInt64 GetAsU64() const;
 		Bool GetAsBool() const;
 		void GetAsString(NN<Text::StringBuilderUTF8> sb) const;
-		UnsafeArray<UTF8Char> GetAsStringS(UnsafeArray<UTF8Char> buff, UOSInt buffSize) const;
+		UnsafeArray<UTF8Char> GetAsStringS(UnsafeArray<UTF8Char> buff, UIntOS buffSize) const;
 		Optional<Text::String> GetAsNewString() const;
 		Data::DateTime *GetAsNewDateTime() const;
 		Data::Timestamp GetAsTimestamp() const;
@@ -156,9 +156,9 @@ namespace Data
 
 		void SetNull();
 		void SetStrSlow(UnsafeArrayOpt<const UTF8Char> str);
-		void SetStr(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen);
-		void SetStr(UnsafeArray<const UTF8Char> str, UOSInt strLen);
-		void SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen);
+		void SetStr(UnsafeArrayOpt<const UTF8Char> str, UIntOS strLen);
+		void SetStr(UnsafeArray<const UTF8Char> str, UIntOS strLen);
+		void SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UIntOS strLen);
 		void SetStr(Optional<Text::String> str);
 		void SetStr(NN<Text::String> str);
 		void SetDate(Data::DateTime *dt);
@@ -176,7 +176,7 @@ namespace Data
 		void SetI64(Int64 val);
 		void SetU64(UInt64 val);
 		void SetBool(Bool val);
-		void SetByteArr(UnsafeArray<const UInt8> arr, UOSInt cnt);
+		void SetByteArr(UnsafeArray<const UInt8> arr, UIntOS cnt);
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
 		void SetVector(NN<Math::Geometry::Vector2D> vec);
 		void SetUUID(NN<Data::UUID> uuid);
@@ -208,7 +208,7 @@ namespace Data
 		static NN<VariItem> NewI64(Int64 val);
 		static NN<VariItem> NewU64(UInt64 val);
 		static NN<VariItem> NewBool(Bool val);
-		static NN<VariItem> NewByteArr(const UInt8 *arr, UOSInt cnt);
+		static NN<VariItem> NewByteArr(const UInt8 *arr, UIntOS cnt);
 		static NN<VariItem> NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static NN<VariItem> NewVector(Optional<Math::Geometry::Vector2D> vec);
 		static NN<VariItem> NewUUID(Data::UUID *uuid);
@@ -221,7 +221,7 @@ namespace Data
 		static void SetPtrAndNotKeep(void *ptr, ItemType itemType, NN<VariItem> item);
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 
-		static UOSInt GetItemSize(ItemType itemType);
+		static UIntOS GetItemSize(ItemType itemType);
 		static Text::CStringNN ItemTypeGetName(ItemType itemType);
 	};
 }

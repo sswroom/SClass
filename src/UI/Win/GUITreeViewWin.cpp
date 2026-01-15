@@ -30,7 +30,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 UI::GUITreeView::TreeItem::~TreeItem()
 {
 	NN<TreeItem> item;
-	UOSInt i;
+	UIntOS i;
 	i = this->children.GetCount();
 	while (i-- > 0)
 	{
@@ -85,19 +85,19 @@ NN<Text::String> UI::GUITreeView::TreeItem::GetText() const
 	return this->txt;
 }
 
-UOSInt UI::GUITreeView::TreeItem::GetChildCount()
+UIntOS UI::GUITreeView::TreeItem::GetChildCount()
 {
 	return this->children.GetCount();
 }
 
-Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UIntOS index)
 {
 	return this->children.GetItem(index);
 }
 
-OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::GUITreeView *me = (UI::GUITreeView*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUITreeView *me = (UI::GUITreeView*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	NN<TreeItem> dragItem;
 	switch (msg)
 	{
@@ -158,7 +158,7 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 void UI::GUITreeView::FreeItems()
 {
 	NN<TreeItem> item;
-	UOSInt i;
+	UIntOS i;
 	i = this->treeItems.GetCount();
 	while (i-- > 0)
 	{
@@ -177,7 +177,7 @@ UI::GUITreeView::GUITreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
-	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TVWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)TVWndProc);
 	this->autoFocus = false;
 	this->editing = false;
 	this->draging = false;
@@ -185,13 +185,13 @@ UI::GUITreeView::GUITreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 
 UI::GUITreeView::~GUITreeView()
 {
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)this->oriWndProc);
 	FreeItems();
 }
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs.GetCount();
+	UIntOS i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
@@ -204,19 +204,19 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	UOSInt i = this->rightClkHdlrs.GetCount();
+	UIntOS i = this->rightClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->rightClkHdlrs.GetItem(i)(this->rightClkObjs.GetItem(i));
 	}
 }
 
-OSInt UI::GUITreeView::EventBeginLabelEdit(NN<TreeItem> item)
+IntOS UI::GUITreeView::EventBeginLabelEdit(NN<TreeItem> item)
 {
 	return 0;
 }
 
-OSInt UI::GUITreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
+IntOS UI::GUITreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
 {
 	return 1;
 }
@@ -322,7 +322,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 
 AnyType UI::GUITreeView::RemoveItem(NN<UI::GUITreeView::TreeItem> item)
 {
-	UOSInt i = this->treeItems.IndexOf(item);
+	UIntOS i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
 		AnyType obj = item->GetItemObj();
@@ -343,12 +343,12 @@ void UI::GUITreeView::ClearItems()
 	FreeItems();
 }
 
-UOSInt UI::GUITreeView::GetRootCount()
+UIntOS UI::GUITreeView::GetRootCount()
 {
 	return this->treeItems.GetCount();
 }
 
-Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UIntOS index)
 {
 	return this->treeItems.GetItem(index);
 }
@@ -484,11 +484,11 @@ Text::CStringNN UI::GUITreeView::GetObjectClass() const
 	return CSTR("TreeView");
 }
 
-OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 {
 	NMTVDISPINFOW *info;
 	LPNMTREEVIEW lpnmtv;
-	OSInt retVal;
+	IntOS retVal;
 	NN<UI::GUITreeView::TreeItem> item;
 	switch (code)
 	{

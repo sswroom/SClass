@@ -35,16 +35,16 @@ extern "C"
 #define MyString_StrDigit100W MyString_StrDigit100U8
 #endif
 
-	OSInt MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2);
-	OSInt MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *str2);
-	OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2);
-	OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2);
-	OSInt MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2);
-	OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2);
+	IntOS MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2);
+	IntOS MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *str2);
+	IntOS MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2);
+	IntOS MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2);
+	IntOS MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2);
+	IntOS MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2);
 
-	UOSInt MyString_StrCharCnt(const UTF8Char *oriStr);
-	UOSInt MyString_StrCharCntUTF16(const UTF16Char *oriStr);
-	UOSInt MyString_StrCharCntUTF32(const UTF32Char *oriStr);
+	UIntOS MyString_StrCharCnt(const UTF8Char *oriStr);
+	UIntOS MyString_StrCharCntUTF16(const UTF16Char *oriStr);
+	UIntOS MyString_StrCharCntUTF32(const UTF32Char *oriStr);
 
 	UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val);
 	UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val);
@@ -67,7 +67,7 @@ extern "C"
 
 namespace Text
 {
-	FORCEINLINE UnsafeArray<UTF8Char> StrConcatC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt charCnt)
+	FORCEINLINE UnsafeArray<UTF8Char> StrConcatC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS charCnt)
 	{
 		MemCopyO(oriStr.Ptr(), strToJoin.Ptr(), charCnt);
 		oriStr += charCnt;
@@ -75,14 +75,14 @@ namespace Text
 		return oriStr;
 	}
 
-	FORCEINLINE UnsafeArray<UTF8Char> StrConcatNE(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt charCnt)
+	FORCEINLINE UnsafeArray<UTF8Char> StrConcatNE(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS charCnt)
 	{
 		MemCopyO(oriStr.Ptr(), strToJoin.Ptr(), charCnt);
 		oriStr += charCnt;
 		return oriStr;
 	}
 
-	FORCEINLINE UnsafeArray<UTF8Char> StrConcatCS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt charCnt, UOSInt buffSize)
+	FORCEINLINE UnsafeArray<UTF8Char> StrConcatCS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS charCnt, UIntOS buffSize)
 	{
 		if (buffSize > charCnt)
 		{
@@ -95,47 +95,47 @@ namespace Text
 	}
 
 	FORCEINLINE UnsafeArray<UTF8Char> StrConcat(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin) { while ((*oriStr++ = *strToJoin++) != 0); return oriStr - 1; }
-	UnsafeArray<UTF8Char> StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize);
+	UnsafeArray<UTF8Char> StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS buffSize);
 	UnsafeArray<UTF8Char> StrConcatASCII(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const Char> strToJoin);
 
 	UnsafeArray<UTF8Char> StrInt16(UnsafeArray<UTF8Char> oriStr, Int16 val);
 	UnsafeArray<UTF8Char> StrUInt16(UnsafeArray<UTF8Char> oriStr, UInt16 val);
 	UnsafeArray<UTF8Char> StrInt32(UnsafeArray<UTF8Char> oriStr, Int32 val);
 	UnsafeArray<UTF8Char> StrUInt32(UnsafeArray<UTF8Char> oriStr, UInt32 val);
-	UnsafeArray<UTF8Char> StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt);
-	UnsafeArray<UTF8Char> StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt);
+	UnsafeArray<UTF8Char> StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UIntOS sepCnt);
+	UnsafeArray<UTF8Char> StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UIntOS sepCnt);
 #ifdef HAS_INT64
 	UnsafeArray<UTF8Char> StrInt64(UnsafeArray<UTF8Char> oriStr, Int64 val);
 	UnsafeArray<UTF8Char> StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val);
-	UnsafeArray<UTF8Char> StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt);
-	UnsafeArray<UTF8Char> StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt);
+	UnsafeArray<UTF8Char> StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UIntOS sepCnt);
+	UnsafeArray<UTF8Char> StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UIntOS sepCnt);
 #endif
 
 	UnsafeArray<UTF8Char> StrToUpper(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc);
-	UnsafeArray<UTF8Char> StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc, UOSInt strLen);
+	UnsafeArray<UTF8Char> StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc, UIntOS strLen);
 	UnsafeArray<UTF8Char> StrToLower(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc);
-	UnsafeArray<UTF8Char> StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc, UOSInt strLen);
+	UnsafeArray<UTF8Char> StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc, UIntOS strLen);
 	UnsafeArray<UTF8Char> StrToCapital(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToProc);
 
 	Bool StrEquals(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
 	Bool StrEqualsN(UnsafeArrayOpt<const UTF8Char> str1, UnsafeArrayOpt<const UTF8Char> str2);
-	FORCEINLINE Bool StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	FORCEINLINE Bool StrEqualsC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	Bool StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, UnsafeArray<const UTF8Char> str2, UOSInt str2Len);
+	Bool StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, UnsafeArray<const UTF8Char> str2, UIntOS str2Len);
 
-	FORCEINLINE OSInt StrCompare(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompare(str1.Ptr(), str2.Ptr()); }
-	FORCEINLINE OSInt StrCompareICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompareICase(str1.Ptr(), str2.Ptr()); }
-	OSInt StrCompareFastC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	FORCEINLINE IntOS StrCompare(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompare(str1.Ptr(), str2.Ptr()); }
+	FORCEINLINE IntOS StrCompareICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompareICase(str1.Ptr(), str2.Ptr()); }
+	IntOS StrCompareFastC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 
-	FORCEINLINE UOSInt StrCharCnt(UnsafeArray<const UTF8Char> str)
+	FORCEINLINE UIntOS StrCharCnt(UnsafeArray<const UTF8Char> str)
 	{
 #if 0 //defined(__GNUC__)
-		return (UOSInt)strlen(UnsafeArray<const Char>::Convert(str).Ptr());
+		return (UIntOS)strlen(UnsafeArray<const Char>::Convert(str).Ptr());
 #else
 		return MyString_StrCharCnt(str.Ptr());
 #endif
 	}
-	UOSInt StrCharCntS(UnsafeArray<const UTF8Char> str, UOSInt maxLen);
+	UIntOS StrCharCntS(UnsafeArray<const UTF8Char> str, UIntOS maxLen);
 
 	Bool StrHasUpperCase(UnsafeArray<const UTF8Char> str);
 
@@ -151,13 +151,13 @@ namespace Text
 	UnsafeArray<UTF8Char> StrHexVal24(UnsafeArray<UTF8Char> oriStr, UInt32 val);
 	UnsafeArray<UTF8Char> StrHexVal16(UnsafeArray<UTF8Char> oriStr, UInt16 val);
 	UnsafeArray<UTF8Char> StrHexByte(UnsafeArray<UTF8Char> oriStr, UInt8 val);
-	UnsafeArray<UTF8Char> StrHexBytes(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator);
+	UnsafeArray<UTF8Char> StrHexBytes(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UIntOS buffSize, UTF8Char seperator);
 	UnsafeArray<UTF8Char> StrHexVal32VLC(UnsafeArray<UTF8Char> oriStr, UInt32 val);
 	UnsafeArray<UTF8Char> StrHexVal32LC(UnsafeArray<UTF8Char> oriStr, UInt32 val);
 	UnsafeArray<UTF8Char> StrHexVal24LC(UnsafeArray<UTF8Char> oriStr, UInt32 val);
 	UnsafeArray<UTF8Char> StrHexVal16LC(UnsafeArray<UTF8Char> oriStr, UInt16 val);
 	UnsafeArray<UTF8Char> StrHexByteLC(UnsafeArray<UTF8Char> oriStr, UInt8 val);
-	UnsafeArray<UTF8Char> StrHexBytesLC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator);
+	UnsafeArray<UTF8Char> StrHexBytesLC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UIntOS buffSize, UTF8Char seperator);
 	Int64 StrHex2Int64C(UnsafeArray<const UTF8Char> str);
 	Bool StrHex2Int64V(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal);
 	Bool StrHex2Int64S(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal, Int64 failVal);
@@ -173,36 +173,36 @@ namespace Text
 	FORCEINLINE Bool StrHex2UInt32V(UnsafeArray<const UTF8Char> str, OutParam<UInt32> outVal) { return StrHex2Int32V(str, OutParam<Int32>::ConvertFrom(outVal)); }
 	FORCEINLINE UInt16 StrHex2UInt16C(UnsafeArray<const UTF8Char> str) { return (UInt16)StrHex2Int16C(str); }
 	FORCEINLINE Bool StrHex2UInt16V(UnsafeArray<const UTF8Char> str, OutParam<UInt16> outVal) { return StrHex2Int16V(str, OutParam<Int16>::ConvertFrom(outVal)); }
-	UOSInt StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff);
-	UOSInt StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator);
+	UIntOS StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff);
+	UIntOS StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator);
 #ifdef HAS_INT64
 	Int64 StrOct2Int64(UnsafeArray<const UTF8Char> str);
 #endif
 
 #if _OSINT_SIZE == 64
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSInt(UnsafeArray<UTF8Char> oriStr, OSInt val) { return StrInt64(oriStr, (Int64)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSIntS(UnsafeArray<UTF8Char> oriStr, OSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSInt(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSIntS(UnsafeArray<UTF8Char> oriStr, UOSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrUInt64S(oriStr, (UInt64)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrHexVal64(oriStr, (UInt64)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOS(UnsafeArray<UTF8Char> oriStr, IntOS val) { return StrInt64(oriStr, (Int64)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOSS(UnsafeArray<UTF8Char> oriStr, IntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrUInt64(oriStr, (UInt64)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOSS(UnsafeArray<UTF8Char> oriStr, UIntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrUInt64S(oriStr, (UInt64)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrHexVal64(oriStr, (UInt64)val); }
 #elif _OSINT_SIZE == 32
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSInt(UnsafeArray<UTF8Char> oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSIntS(UnsafeArray<UTF8Char> oriStr, OSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSInt(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSIntS(UnsafeArray<UTF8Char> oriStr, UOSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrUInt32S(oriStr, (UInt32)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrHexVal32(oriStr, (UInt32)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOS(UnsafeArray<UTF8Char> oriStr, IntOS val) { return StrInt32(oriStr, (Int32)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOSS(UnsafeArray<UTF8Char> oriStr, IntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrUInt32(oriStr, (UInt32)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOSS(UnsafeArray<UTF8Char> oriStr, UIntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrUInt32S(oriStr, (UInt32)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrHexVal32(oriStr, (UInt32)val); }
 #else // _OSINT_SIZE == 16
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSInt(UnsafeArray<UTF8Char> oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrOSIntS(UnsafeArray<UTF8Char> oriStr, OSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSInt(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrUOSIntS(UnsafeArray<UTF8Char> oriStr, UOSInt val, UTF8Char seperator, UOSInt sepCnt) { return StrUInt32S(oriStr, (UInt16)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UOSInt val) { return StrHexVal16(oriStr, (UInt16)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOS(UnsafeArray<UTF8Char> oriStr, IntOS val) { return StrInt32(oriStr, (Int16)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrIntOSS(UnsafeArray<UTF8Char> oriStr, IntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrUInt16(oriStr, (UInt16)val); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrUIntOSS(UnsafeArray<UTF8Char> oriStr, UIntOS val, UTF8Char seperator, UIntOS sepCnt) { return StrUInt32S(oriStr, (UInt16)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrHexValOS(UnsafeArray<UTF8Char> oriStr, UIntOS val) { return StrHexVal16(oriStr, (UInt16)val); }
 #endif
 
-	UOSInt StrSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> str, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> str, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> str); //Optimized
-	UOSInt StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> str); //Optimized
+	UIntOS StrSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> str, UTF8Char splitChar); //Optimized
+	UIntOS StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> str, UTF8Char splitChar); //Optimized
+	UIntOS StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> str); //Optimized
+	UIntOS StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> str); //Optimized
 	Bool StrToUInt8(UnsafeArray<const UTF8Char> intStr, OutParam<UInt8> outVal);
 	UInt8 StrToUInt8(UnsafeArray<const UTF8Char> intStr);
 	Bool StrToUInt16(UnsafeArray<const UTF8Char> intStr, OutParam<UInt16> outVal);
@@ -222,72 +222,72 @@ namespace Text
 	FORCEINLINE UInt64 StrToUInt64(UnsafeArray<const UTF8Char> str) { UInt64 v; StrToUInt64S(str, v, 0); return v; }
 #endif
 
-	OSInt StrToOSInt(UnsafeArray<const UTF8Char> str);
-	Bool StrToOSInt(UnsafeArray<const UTF8Char> intStr, OutParam<OSInt> outVal);
-	UOSInt StrToUOSInt(UnsafeArray<const UTF8Char> str);
-	Bool StrToUOSInt(UnsafeArray<const UTF8Char> intStr, OutParam<UOSInt> outVal);
+	IntOS StrToIntOS(UnsafeArray<const UTF8Char> str);
+	Bool StrToIntOS(UnsafeArray<const UTF8Char> intStr, OutParam<IntOS> outVal);
+	UIntOS StrToUIntOS(UnsafeArray<const UTF8Char> str);
+	Bool StrToUIntOS(UnsafeArray<const UTF8Char> intStr, OutParam<UIntOS> outVal);
 	Bool StrToBool(UnsafeArrayOpt<const UTF8Char> str);
-	UOSInt StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	UOSInt StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
-	UOSInt StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c);
-	UOSInt StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
-	UOSInt StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	UOSInt StrLastIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
-	UOSInt StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c);
-	UOSInt StrLastIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c);
-	UOSInt StrLastIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	UIntOS StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	UIntOS StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
+	UIntOS StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c);
+	UIntOS StrIndexOfC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
+	UIntOS StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	UIntOS StrLastIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
+	UIntOS StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c);
+	UIntOS StrLastIndexOfC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c);
+	UIntOS StrLastIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
 	Bool StrContainChars(UnsafeArray<const UTF8Char> str, UnsafeArray<const UTF8Char> chars);
 	UnsafeArray<UTF8Char> StrRTrim(UnsafeArray<UTF8Char> str1);
 	UnsafeArray<UTF8Char> StrLTrim(UnsafeArray<UTF8Char> str1);
 	UnsafeArray<UTF8Char> StrTrim(UnsafeArray<UTF8Char> str1);
-	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimC(UnsafeArray<UTF8Char> str1, UOSInt len) { if (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) { while (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) len--;  str1[len] = 0; } return str1 + len; }
-	UnsafeArray<UTF8Char> StrTrimC(UnsafeArray<UTF8Char> str1, UOSInt len);
-	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) { if (len > 0 && str1[len - 1] == ' ') { while (len > 0 && str1[len - 1] == ' ') len--;  str1[len] = 0; } return str1 + len; }
-	FORCEINLINE UnsafeArray<UTF8Char> StrLTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) {	UnsafeArray<UTF8Char> sptr; if (str1[0] == ' ') { sptr = str1 + 1; while (sptr[0] == ' ') sptr++; len -= (UOSInt)(sptr - str1); MemCopyO(str1.Ptr(), sptr.Ptr(), len + 1); } return str1 + len; }
-	FORCEINLINE UnsafeArray<UTF8Char> StrTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) { len = (UOSInt)(StrRTrimSpC(str1, len) - str1); return StrLTrimSpC(str1, len); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimC(UnsafeArray<UTF8Char> str1, UIntOS len) { if (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) { while (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) len--;  str1[len] = 0; } return str1 + len; }
+	UnsafeArray<UTF8Char> StrTrimC(UnsafeArray<UTF8Char> str1, UIntOS len);
+	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimSpC(UnsafeArray<UTF8Char> str1, UIntOS len) { if (len > 0 && str1[len - 1] == ' ') { while (len > 0 && str1[len - 1] == ' ') len--;  str1[len] = 0; } return str1 + len; }
+	FORCEINLINE UnsafeArray<UTF8Char> StrLTrimSpC(UnsafeArray<UTF8Char> str1, UIntOS len) {	UnsafeArray<UTF8Char> sptr; if (str1[0] == ' ') { sptr = str1 + 1; while (sptr[0] == ' ') sptr++; len -= (UIntOS)(sptr - str1); MemCopyO(str1.Ptr(), sptr.Ptr(), len + 1); } return str1 + len; }
+	FORCEINLINE UnsafeArray<UTF8Char> StrTrimSpC(UnsafeArray<UTF8Char> str1, UIntOS len) { len = (UIntOS)(StrRTrimSpC(str1, len) - str1); return StrLTrimSpC(str1, len); }
 	UnsafeArray<UTF8Char> StrTrimWSCRLF(UnsafeArray<UTF8Char> str1);
-	UnsafeArray<UTF8Char> StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UOSInt len);
+	UnsafeArray<UTF8Char> StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UIntOS len);
 	UnsafeArray<UTF8Char> StrRemoveChar(UnsafeArray<UTF8Char> str1, UTF8Char c);
 
 	UnsafeArray<const UTF8Char> StrCopyNew(UnsafeArray<const UTF8Char> str1);
 	UnsafeArrayOpt<const UTF8Char> StrSCopyNew(UnsafeArrayOpt<const UTF8Char> str1);
-	UnsafeArray<const UTF8Char> StrCopyNewC(UnsafeArray<const UTF8Char> str1, UOSInt strLen);
+	UnsafeArray<const UTF8Char> StrCopyNewC(UnsafeArray<const UTF8Char> str1, UIntOS strLen);
 	void StrDelNew(UnsafeArray<const UTF8Char> newStr);
 	Bool StrStartsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	FORCEINLINE Bool StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	FORCEINLINE Bool StrStartsWithC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrStartsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	Bool StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrEndsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	Bool StrEndsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrEndsWithC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrEndsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	Bool StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrIsInt32(UnsafeArray<const UTF8Char> str1);
-	UOSInt StrReplace(UnsafeArray<UTF8Char> str1, UTF8Char oriC, UTF8Char destC);
-	UOSInt StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo);
-	UnsafeArray<UTF8Char> StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<UTF8Char> sptrEnd, UnsafeArray<const UTF8Char> replaceFrom, UOSInt replaceFromLen, UnsafeArray<const UTF8Char> replaceTo, UOSInt replaceToLen);
-	UOSInt StrReplaceICase(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo);
+	UIntOS StrReplace(UnsafeArray<UTF8Char> str1, UTF8Char oriC, UTF8Char destC);
+	UIntOS StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo);
+	UnsafeArray<UTF8Char> StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<UTF8Char> sptrEnd, UnsafeArray<const UTF8Char> replaceFrom, UIntOS replaceFromLen, UnsafeArray<const UTF8Char> replaceTo, UIntOS replaceToLen);
+	UIntOS StrReplaceICase(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo);
 	UnsafeArray<UTF8Char> StrToCSVRec(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> str1);
 	UnsafeArray<const UTF8Char> StrToNewCSVRec(UnsafeArray<const UTF8Char> str1);
-	UOSInt StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit);
-	UnsafeArray<UTF8Char> StrCSVJoin(UnsafeArray<UTF8Char> oriStr, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs, UOSInt nStrs);
-	UOSInt StrCountChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
-	UOSInt StrCountStr(UnsafeArray<const UTF8Char> str1, UOSInt strLen1, UnsafeArray<const UTF8Char> str2, UOSInt strLen2);
+	UIntOS StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit);
+	UnsafeArray<UTF8Char> StrCSVJoin(UnsafeArray<UTF8Char> oriStr, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs, UIntOS nStrs);
+	UIntOS StrCountChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
+	UIntOS StrCountStr(UnsafeArray<const UTF8Char> str1, UIntOS strLen1, UnsafeArray<const UTF8Char> str2, UIntOS strLen2);
 	UnsafeArray<UTF8Char> StrRemoveANSIEscapes(UnsafeArray<UTF8Char> str1);
 
 	FORCEINLINE UnsafeArray<Char> StrConcat(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToJoin) { return UnsafeArray<Char>::ConvertFrom(StrConcat(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToJoin))); }
-	FORCEINLINE UnsafeArray<Char> StrConcatS(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToJoin, UOSInt buffSize) { return UnsafeArray<Char>::ConvertFrom(StrConcatS(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToJoin), buffSize)); }
-	FORCEINLINE UnsafeArray<Char> StrConcatC(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToJoin, UOSInt charCnt) { return UnsafeArray<Char>::ConvertFrom(StrConcatC(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToJoin), charCnt)); }
+	FORCEINLINE UnsafeArray<Char> StrConcatS(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToJoin, UIntOS buffSize) { return UnsafeArray<Char>::ConvertFrom(StrConcatS(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToJoin), buffSize)); }
+	FORCEINLINE UnsafeArray<Char> StrConcatC(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToJoin, UIntOS charCnt) { return UnsafeArray<Char>::ConvertFrom(StrConcatC(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToJoin), charCnt)); }
 	FORCEINLINE UnsafeArray<Char> StrInt16(UnsafeArray<Char> oriStr, Int16 val) { return UnsafeArray<Char>::ConvertFrom(StrInt16(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
 	FORCEINLINE UnsafeArray<Char> StrUInt16(UnsafeArray<Char> oriStr, UInt16 val) { return UnsafeArray<Char>::ConvertFrom(StrUInt16(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
 	FORCEINLINE UnsafeArray<Char> StrInt32(UnsafeArray<Char> oriStr, Int32 val) { return UnsafeArray<Char>::ConvertFrom(StrInt32(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
 	FORCEINLINE UnsafeArray<Char> StrUInt32(UnsafeArray<Char> oriStr, UInt32 val) { return UnsafeArray<Char>::ConvertFrom(StrUInt32(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
-	FORCEINLINE UnsafeArray<Char> StrInt32S(UnsafeArray<Char> oriStr, Int32 val, Char seperator, UOSInt sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrInt32S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
-	FORCEINLINE UnsafeArray<Char> StrUInt32S(UnsafeArray<Char> oriStr, UInt32 val, Char seperator, UOSInt sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrUInt32S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
+	FORCEINLINE UnsafeArray<Char> StrInt32S(UnsafeArray<Char> oriStr, Int32 val, Char seperator, UIntOS sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrInt32S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
+	FORCEINLINE UnsafeArray<Char> StrUInt32S(UnsafeArray<Char> oriStr, UInt32 val, Char seperator, UIntOS sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrUInt32S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
 #ifdef HAS_INT64
 	FORCEINLINE UnsafeArray<Char> StrInt64(UnsafeArray<Char> oriStr, Int64 val) { return UnsafeArray<Char>::ConvertFrom(StrInt64(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
 	FORCEINLINE UnsafeArray<Char> StrUInt64(UnsafeArray<Char> oriStr, UInt64 val) { return UnsafeArray<Char>::ConvertFrom(StrUInt64(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }; //Optimized
-	FORCEINLINE UnsafeArray<Char> StrInt64S(UnsafeArray<Char> oriStr, Int64 val, Char seperator, UOSInt sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrInt64S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
-	FORCEINLINE UnsafeArray<Char> StrUInt64S(UnsafeArray<Char> oriStr, UInt64 val, Char seperator, UOSInt sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrUInt64S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
+	FORCEINLINE UnsafeArray<Char> StrInt64S(UnsafeArray<Char> oriStr, Int64 val, Char seperator, UIntOS sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrInt64S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
+	FORCEINLINE UnsafeArray<Char> StrUInt64S(UnsafeArray<Char> oriStr, UInt64 val, Char seperator, UIntOS sepCnt) { return UnsafeArray<Char>::ConvertFrom(StrUInt64S(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, (UTF8Char)seperator, sepCnt)); };
 #endif
 	FORCEINLINE UnsafeArray<Char> StrToUpper(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToProc) { return UnsafeArray<Char>::ConvertFrom(StrToUpper(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToProc))); }
 	FORCEINLINE UnsafeArray<Char> StrToLower(UnsafeArray<Char> oriStr, UnsafeArray<const Char> strToProc) { return UnsafeArray<Char>::ConvertFrom(StrToLower(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(strToProc))); }
@@ -295,11 +295,11 @@ namespace Text
 	FORCEINLINE Bool StrEqualsCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEquals(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEqualsChN(UnsafeArrayOpt<const Char> str1, UnsafeArrayOpt<const Char> str2) { return StrEqualsN(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(str1), UnsafeArrayOpt<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEqualsICaseCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEqualsICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
-	FORCEINLINE Bool StrEqualsICaseChC(UnsafeArray<const Char> str1, UOSInt str1Len, UnsafeArray<const Char> str2, UOSInt str2Len) { return StrEqualsICaseC(UnsafeArray<const UTF8Char>::ConvertFrom(str1), str1Len, UnsafeArray<const UTF8Char>::ConvertFrom(str2), str2Len); }
-	FORCEINLINE OSInt StrCompareCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return MyString_StrCompare(UnsafeArray<const UTF8Char>::ConvertFrom(str1).Ptr(), UnsafeArray<const UTF8Char>::ConvertFrom(str2).Ptr()); }
-	FORCEINLINE OSInt StrCompareICaseCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return MyString_StrCompareICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1).Ptr(), UnsafeArray<const UTF8Char>::ConvertFrom(str2).Ptr()); }
-	FORCEINLINE UOSInt StrCharCntCh(UnsafeArray<const Char> str) { return StrCharCnt(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
-	FORCEINLINE UOSInt StrCharCntSCh(UnsafeArray<const Char> str, UOSInt maxLen) { return StrCharCntS(UnsafeArray<const UTF8Char>::ConvertFrom(str), maxLen); }
+	FORCEINLINE Bool StrEqualsICaseChC(UnsafeArray<const Char> str1, UIntOS str1Len, UnsafeArray<const Char> str2, UIntOS str2Len) { return StrEqualsICaseC(UnsafeArray<const UTF8Char>::ConvertFrom(str1), str1Len, UnsafeArray<const UTF8Char>::ConvertFrom(str2), str2Len); }
+	FORCEINLINE IntOS StrCompareCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return MyString_StrCompare(UnsafeArray<const UTF8Char>::ConvertFrom(str1).Ptr(), UnsafeArray<const UTF8Char>::ConvertFrom(str2).Ptr()); }
+	FORCEINLINE IntOS StrCompareICaseCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return MyString_StrCompareICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1).Ptr(), UnsafeArray<const UTF8Char>::ConvertFrom(str2).Ptr()); }
+	FORCEINLINE UIntOS StrCharCntCh(UnsafeArray<const Char> str) { return StrCharCnt(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
+	FORCEINLINE UIntOS StrCharCntSCh(UnsafeArray<const Char> str, UIntOS maxLen) { return StrCharCntS(UnsafeArray<const UTF8Char>::ConvertFrom(str), maxLen); }
 	FORCEINLINE Bool StrHasUpperCaseCh(UnsafeArray<const Char> str) { return StrHasUpperCase(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 
 #ifdef HAS_INT64
@@ -311,7 +311,7 @@ namespace Text
 	FORCEINLINE UnsafeArray<Char> StrHexVal24Ch(UnsafeArray<Char> oriStr, UInt32 val) { return UnsafeArray<Char>::ConvertFrom(StrHexVal24(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }
 	FORCEINLINE UnsafeArray<Char> StrHexVal16Ch(UnsafeArray<Char> oriStr, UInt16 val) { return UnsafeArray<Char>::ConvertFrom(StrHexVal16(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }
 	FORCEINLINE UnsafeArray<Char> StrHexByteCh(UnsafeArray<Char> oriStr, UInt8 val) { return UnsafeArray<Char>::ConvertFrom(StrHexByte(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }
-	FORCEINLINE UnsafeArray<Char> StrHexBytesCh(UnsafeArray<Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, Char seperator) { return UnsafeArray<Char>::ConvertFrom(StrHexBytes(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), buff, buffSize, (UTF8Char)seperator)); };
+	FORCEINLINE UnsafeArray<Char> StrHexBytesCh(UnsafeArray<Char> oriStr, UnsafeArray<const UInt8> buff, UIntOS buffSize, Char seperator) { return UnsafeArray<Char>::ConvertFrom(StrHexBytes(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), buff, buffSize, (UTF8Char)seperator)); };
 	FORCEINLINE Int64 StrHex2Int64ChC(UnsafeArray<const Char> str) { return StrHex2Int64C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
 	FORCEINLINE Int32 StrHex2Int32ChC(UnsafeArray<const Char> str) { return StrHex2Int32C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 	FORCEINLINE UInt32 StrHex2UInt32ChC(UnsafeArray<const Char> str) { return (UInt32)StrHex2Int32C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
@@ -319,34 +319,34 @@ namespace Text
 	FORCEINLINE Int16 StrHex2Int16ChC(UnsafeArray<const Char> str) { return StrHex2Int16C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 	FORCEINLINE UInt16 StrHex2UInt16ChC(UnsafeArray<const Char> str) { return (UInt16)StrHex2Int16C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 	FORCEINLINE UInt8 StrHex2UInt8ChC(UnsafeArray<const Char> str) { return StrHex2UInt8C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
-	FORCEINLINE UOSInt StrHex2BytesCh(UnsafeArray<const Char> str, UnsafeArray<UInt8> buff) { return StrHex2Bytes(UnsafeArray<const UTF8Char>::ConvertFrom(str), buff); };
+	FORCEINLINE UIntOS StrHex2BytesCh(UnsafeArray<const Char> str, UnsafeArray<UInt8> buff) { return StrHex2Bytes(UnsafeArray<const UTF8Char>::ConvertFrom(str), buff); };
 #ifdef HAS_INT64
 	FORCEINLINE Int64 StrOct2Int64Ch(UnsafeArray<const Char> str) { return StrOct2Int64(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
 #endif
 
 #if _OSINT_SIZE == 64
-	FORCEINLINE UnsafeArray<Char> StrOSInt(UnsafeArray<Char> oriStr, OSInt val) { return StrInt64(oriStr, (Int64)val); }
-	FORCEINLINE UnsafeArray<Char> StrOSIntS(UnsafeArray<Char> oriStr, OSInt val, Char seperator, UOSInt sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrUOSInt(UnsafeArray<Char> oriStr, UOSInt val) { return StrUInt64(oriStr, (UInt64)val); }
-	FORCEINLINE UnsafeArray<Char> StrUOSIntS(UnsafeArray<Char> oriStr, UOSInt val, Char seperator, UOSInt sepCnt) { return StrUInt64S(oriStr, (UInt64)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UOSInt val) { return StrHexVal64Ch(oriStr, (UInt64)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOS(UnsafeArray<Char> oriStr, IntOS val) { return StrInt64(oriStr, (Int64)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOSS(UnsafeArray<Char> oriStr, IntOS val, Char seperator, UIntOS sepCnt) { return StrInt64S(oriStr, (Int64)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrUInt64(oriStr, (UInt64)val); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOSS(UnsafeArray<Char> oriStr, UIntOS val, Char seperator, UIntOS sepCnt) { return StrUInt64S(oriStr, (UInt64)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrHexVal64Ch(oriStr, (UInt64)val); }
 #elif _OSINT_SIZE == 32
-	FORCEINLINE UnsafeArray<Char> StrOSInt(UnsafeArray<Char> oriStr, OSInt val) { return StrInt32(oriStr, (Int32)val); }
-	FORCEINLINE UnsafeArray<Char> StrOSIntS(UnsafeArray<Char> oriStr, OSInt val, Char seperator, UOSInt sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrUOSInt(UnsafeArray<Char> oriStr, UOSInt val) { return StrUInt32(oriStr, (UInt32)val); }
-	FORCEINLINE UnsafeArray<Char> StrUOSIntS(UnsafeArray<Char> oriStr, UOSInt val, Char seperator, UOSInt sepCnt) { return StrUInt32S(oriStr, (UInt32)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UOSInt val) { return StrHexVal32Ch(oriStr, (UInt32)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOS(UnsafeArray<Char> oriStr, IntOS val) { return StrInt32(oriStr, (Int32)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOSS(UnsafeArray<Char> oriStr, IntOS val, Char seperator, UIntOS sepCnt) { return StrInt32S(oriStr, (Int32)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrUInt32(oriStr, (UInt32)val); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOSS(UnsafeArray<Char> oriStr, UIntOS val, Char seperator, UIntOS sepCnt) { return StrUInt32S(oriStr, (UInt32)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrHexVal32Ch(oriStr, (UInt32)val); }
 #else // _OSINT_SIZE == 16
-	FORCEINLINE UnsafeArray<Char> StrOSInt(UnsafeArray<Char> oriStr, OSInt val) { return StrInt32(oriStr, (Int16)val); }
-	FORCEINLINE UnsafeArray<Char> StrOSIntS(UnsafeArray<Char> oriStr, OSInt val, Char seperator, UOSInt sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrUOSInt(UnsafeArray<Char> oriStr, UOSInt val) { return StrUInt16(oriStr, (UInt16)val); }
-	FORCEINLINE UnsafeArray<Char> StrUOSIntS(UnsafeArray<Char> oriStr, UOSInt val, Char seperator, UOSInt sepCnt) { return StrUInt32S(oriStr, (UInt16)val, seperator, sepCnt); }
-	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UOSInt val) { return StrHexVal16Ch(oriStr, (UInt16)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOS(UnsafeArray<Char> oriStr, IntOS val) { return StrInt32(oriStr, (Int16)val); }
+	FORCEINLINE UnsafeArray<Char> StrIntOSS(UnsafeArray<Char> oriStr, IntOS val, Char seperator, UIntOS sepCnt) { return StrInt32S(oriStr, (Int16)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrUInt16(oriStr, (UInt16)val); }
+	FORCEINLINE UnsafeArray<Char> StrUIntOSS(UnsafeArray<Char> oriStr, UIntOS val, Char seperator, UIntOS sepCnt) { return StrUInt32S(oriStr, (UInt16)val, seperator, sepCnt); }
+	FORCEINLINE UnsafeArray<Char> StrHexValOS(UnsafeArray<Char> oriStr, UIntOS val) { return StrHexVal16Ch(oriStr, (UInt16)val); }
 #endif
-	FORCEINLINE UOSInt StrSplitCh(UnsafeArray<UnsafeArray<Char>> strs, UOSInt maxStrs, UnsafeArray<Char> str, Char splitChar) { return StrSplit(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str), (UTF8Char)splitChar); }
-	FORCEINLINE UOSInt StrSplitTrimCh(UnsafeArray<UnsafeArray<Char>> strs, UOSInt maxStrs, UnsafeArray<Char> str, Char splitChar) { return StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str), (UTF8Char)splitChar); }
-	FORCEINLINE UOSInt StrSplitLineCh(UnsafeArray<UnsafeArray<Char>> strs, UOSInt maxStrs, UnsafeArray<Char> str) { return StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str)); };
-	FORCEINLINE UOSInt StrSplitWSCh(UnsafeArray<UnsafeArray<Char>> strs, UOSInt maxStrs, UnsafeArray<Char> str) { return StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str)); };
+	FORCEINLINE UIntOS StrSplitCh(UnsafeArray<UnsafeArray<Char>> strs, UIntOS maxStrs, UnsafeArray<Char> str, Char splitChar) { return StrSplit(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str), (UTF8Char)splitChar); }
+	FORCEINLINE UIntOS StrSplitTrimCh(UnsafeArray<UnsafeArray<Char>> strs, UIntOS maxStrs, UnsafeArray<Char> str, Char splitChar) { return StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str), (UTF8Char)splitChar); }
+	FORCEINLINE UIntOS StrSplitLineCh(UnsafeArray<UnsafeArray<Char>> strs, UIntOS maxStrs, UnsafeArray<Char> str) { return StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str)); };
+	FORCEINLINE UIntOS StrSplitWSCh(UnsafeArray<UnsafeArray<Char>> strs, UIntOS maxStrs, UnsafeArray<Char> str) { return StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(str)); };
 	FORCEINLINE Bool StrToUInt8Ch(UnsafeArray<const Char> intStr, OutParam<UInt8> outVal) { return StrToUInt8(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
 	FORCEINLINE UInt8 StrToUInt8Ch(UnsafeArray<const Char> intStr) { return StrToUInt8(UnsafeArray<const UTF8Char>::ConvertFrom(intStr)); };
 	FORCEINLINE Bool StrToUInt16Ch(UnsafeArray<const Char> intStr, OutParam<UInt16> outVal) { return StrToUInt16(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
@@ -364,17 +364,17 @@ namespace Text
 	FORCEINLINE Bool StrToUInt64Ch(UnsafeArray<const Char> intStr, OutParam<UInt64> outVal) { return StrToUInt64(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); }
 	FORCEINLINE UInt64 StrToUInt64Ch(UnsafeArray<const Char> str) { return StrToUInt64(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 #endif
-	FORCEINLINE OSInt StrToOSIntCh(UnsafeArray<const Char> str) { return StrToOSInt(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
-	FORCEINLINE Bool StrToOSIntCh(UnsafeArray<const Char> intStr, OutParam<OSInt> outVal) { return StrToOSInt(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
-	FORCEINLINE UOSInt StrToUOSIntCh(UnsafeArray<const Char> str) { return StrToUOSInt(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
-	FORCEINLINE Bool StrToUOSIntCh(UnsafeArray<const Char> intStr, OutParam<UOSInt> outVal) { return StrToUOSInt(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
+	FORCEINLINE IntOS StrToIntOSCh(UnsafeArray<const Char> str) { return StrToIntOS(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
+	FORCEINLINE Bool StrToIntOSCh(UnsafeArray<const Char> intStr, OutParam<IntOS> outVal) { return StrToIntOS(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
+	FORCEINLINE UIntOS StrToUIntOSCh(UnsafeArray<const Char> str) { return StrToUIntOS(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
+	FORCEINLINE Bool StrToUIntOSCh(UnsafeArray<const Char> intStr, OutParam<UIntOS> outVal) { return StrToUIntOS(UnsafeArray<const UTF8Char>::ConvertFrom(intStr), outVal); };
 	FORCEINLINE Bool StrToBoolCh(UnsafeArrayOpt<const Char> str) { return StrToBool(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(str)); };
 
-	FORCEINLINE UOSInt StrIndexOfCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
-	FORCEINLINE UOSInt StrIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
-	FORCEINLINE UOSInt StrIndexOfICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOfICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); };
-	FORCEINLINE UOSInt StrLastIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrLastIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
-	FORCEINLINE UOSInt StrLastIndexOf(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrLastIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
+	FORCEINLINE UIntOS StrIndexOfCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
+	FORCEINLINE UIntOS StrIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
+	FORCEINLINE UIntOS StrIndexOfICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOfICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); };
+	FORCEINLINE UIntOS StrLastIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrLastIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
+	FORCEINLINE UIntOS StrLastIndexOf(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrLastIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrContainChars(UnsafeArray<const Char> str, UnsafeArray<const Char> chars) { return StrContainChars(UnsafeArray<const UTF8Char>::ConvertFrom(str), UnsafeArray<const UTF8Char>::ConvertFrom(chars)); }
 	FORCEINLINE UnsafeArray<Char> StrRTrim(UnsafeArray<Char> str1) { return UnsafeArray<Char>::ConvertFrom(StrRTrim(UnsafeArray<UTF8Char>::ConvertFrom(str1))); };
 	FORCEINLINE UnsafeArray<Char> StrLTrim(UnsafeArray<Char> str1) { return UnsafeArray<Char>::ConvertFrom(StrLTrim(UnsafeArray<UTF8Char>::ConvertFrom(str1))); };
@@ -383,25 +383,25 @@ namespace Text
 	FORCEINLINE UnsafeArray<Char> StrRemoveChar(UnsafeArray<Char> str1, Char c) { return UnsafeArray<Char>::ConvertFrom(StrRemoveChar(UnsafeArray<UTF8Char>::ConvertFrom(str1), (UTF8Char)c)); };
 
 	UnsafeArray<const Char> StrCopyNewCh(UnsafeArray<const Char> str1);
-	UnsafeArray<const Char> StrCopyNewChC(UnsafeArray<const Char> str1, UOSInt strLen);
+	UnsafeArray<const Char> StrCopyNewChC(UnsafeArray<const Char> str1, UIntOS strLen);
 	void StrDelNewCh(UnsafeArray<const Char> newStr);
 	FORCEINLINE Bool StrStartsWith(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrStartsWith(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrStartsWithICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrStartsWithICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEndsWith(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEndsWith(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEndsWithICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEndsWithICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrIsInt32Ch(UnsafeArray<const Char> str1) { return StrIsInt32(UnsafeArray<const UTF8Char>::ConvertFrom(str1)); };
-	FORCEINLINE UOSInt StrReplaceCh(UnsafeArray<Char> str1, Char oriC, Char destC) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), (UTF8Char)oriC, (UTF8Char)destC); };
-	FORCEINLINE UOSInt StrReplaceCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };
-	FORCEINLINE UOSInt StrReplaceICaseCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplaceICase(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };
+	FORCEINLINE UIntOS StrReplaceCh(UnsafeArray<Char> str1, Char oriC, Char destC) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), (UTF8Char)oriC, (UTF8Char)destC); };
+	FORCEINLINE UIntOS StrReplaceCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };
+	FORCEINLINE UIntOS StrReplaceICaseCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplaceICase(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };
 	FORCEINLINE UnsafeArray<Char> StrToCSVRec(UnsafeArray<Char> oriStr, UnsafeArray<const Char> str1) { return UnsafeArray<Char>::ConvertFrom(StrToCSVRec(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<const UTF8Char>::ConvertFrom(str1))); };
 	FORCEINLINE UnsafeArray<const Char> StrToNewCSVRec(UnsafeArray<const Char> str1) { return UnsafeArray<const Char>::ConvertFrom(StrToNewCSVRec(UnsafeArray<const UTF8Char>::ConvertFrom(str1))); }
-	FORCEINLINE UOSInt StrCSVSplit(UnsafeArray<UnsafeArray<Char>> strs, UOSInt maxStrs, UnsafeArray<Char> strToSplit) { return StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(strToSplit)); };
-	FORCEINLINE UnsafeArray<Char> StrCSVJoin(UnsafeArray<Char> oriStr, UnsafeArray<UnsafeArrayOpt<const Char>> strs, UOSInt nStrs) { return UnsafeArray<Char>::ConvertFrom(StrCSVJoin(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(strs), nStrs)); };
-	FORCEINLINE UOSInt StrCountChar(UnsafeArray<const Char> str1, Char c) { return StrCountChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); };
+	FORCEINLINE UIntOS StrCSVSplit(UnsafeArray<UnsafeArray<Char>> strs, UIntOS maxStrs, UnsafeArray<Char> strToSplit) { return StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(strs), maxStrs, UnsafeArray<UTF8Char>::ConvertFrom(strToSplit)); };
+	FORCEINLINE UnsafeArray<Char> StrCSVJoin(UnsafeArray<Char> oriStr, UnsafeArray<UnsafeArrayOpt<const Char>> strs, UIntOS nStrs) { return UnsafeArray<Char>::ConvertFrom(StrCSVJoin(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(strs), nStrs)); };
+	FORCEINLINE UIntOS StrCountChar(UnsafeArray<const Char> str1, Char c) { return StrCountChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); };
 	FORCEINLINE UnsafeArray<Char> StrRemoveANSIEscapes(UnsafeArray<Char> str1) { return UnsafeArray<Char>::ConvertFrom(StrRemoveANSIEscapes(UnsafeArray<UTF8Char>::ConvertFrom(str1))); };
 }
 
-Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 != len2)
 	{
@@ -458,7 +458,7 @@ Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray
 	}
 }
 
-Bool Text::StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+Bool Text::StrStartsWithC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 < len2)
 	{

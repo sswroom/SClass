@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 	UInt32 targetIP;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->txtTargetIP->GetText(sb);
 	targetIP = me->sockf->DNSResolveIPv4(sb.ToCString());
 	if (targetIP == 0)
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Error in resolving target host"), CSTR("Trace Route"), me);
 		return;
 	}
-	UInt32 ip = (UInt32)me->cboSelfIP->GetSelectedItem().GetOSInt();
+	UInt32 ip = (UInt32)me->cboSelfIP->GetSelectedItem().GetIntOS();
 	if (ip)
 	{
 		Data::ArrayListNative<UInt32> ipList;
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 				{
 					ip = ipList.GetItem(i);
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					me->lbIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+					me->lbIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 					i++;
 				}
 			}
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
-	UInt32 ip = (UInt32)(UOSInt)me->lbIP->GetSelectedItem().p;
+	UInt32 ip = (UInt32)(UIntOS)me->lbIP->GetSelectedItem().p;
 	if (ip)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -109,9 +109,9 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -126,7 +126,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 			if (ip == 0)
 				break;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboSelfIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+			this->cboSelfIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 			k++;
 		}
 		connInfo.Delete();

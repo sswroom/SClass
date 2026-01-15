@@ -2,20 +2,20 @@
 #include "MyMemory.h"
 #include "Media/CS/CSI420_RGB8.h"
 
-extern "C" void CSI420_RGB8_do_yv12rgb(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *y2r, UInt8 *rgbGammaCorr)
+extern "C" void CSI420_RGB8_do_yv12rgb(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *y2r, UInt8 *rgbGammaCorr)
 {
 	UInt8 *yuv2rgb = (UInt8*)y2r;
-	OSInt cSub = (width >> 1) - 2;
-	OSInt cSize = width << 3;
-	OSInt cWidth4 = width >> 2;
+	IntOS cSub = (width >> 1) - 2;
+	IntOS cSize = width << 3;
+	IntOS cWidth4 = width >> 2;
 	Int32 cofst = 0;//this->cofst;
 
 	height = (height >> 1) - ((isLast & 1) << 1);
 
 	UInt8 *tmpPtr;
-	OSInt widthLeft;
+	IntOS widthLeft;
 //	Int32 buffTemp;
-	OSInt i;
+	IntOS i;
 
 	i = width;
 	tmpPtr = csLineBuff;

@@ -134,7 +134,7 @@ sconcatlop:
 	lea rax,[rdi+rdx-1]
 	ret
 
-;Char *MyString_StrConcatS(Char *oriStr, const Char *strToJoin, OSInt buffSize);
+;Char *MyString_StrConcatS(Char *oriStr, const Char *strToJoin, IntOS buffSize);
 ;rdi oriStr
 ;rsi strToJoin
 ;rdx buffSize
@@ -157,7 +157,7 @@ sconcatslop2:
 	ret
 
 
-;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, OSInt buffSize)
+;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, IntOS buffSize)
 ;rdi oriStr
 ;rsi strToJoin
 ;rdx buffSize
@@ -204,7 +204,7 @@ sconcatu16lop:
 	lea rax,[rdi+rdx-2]
 	ret
 
-;UTF32Char *MyString_StrConcatSUTF32(UTF32Char *oriStr, const UTF32Char *strToJoin, OSInt buffSize)
+;UTF32Char *MyString_StrConcatSUTF32(UTF32Char *oriStr, const UTF32Char *strToJoin, IntOS buffSize)
 ;rdi oriStr
 ;rsi strToJoin
 ;rdx buffSize
@@ -2181,7 +2181,7 @@ si64lop20:
 si64exit:
 	ret
 
-;OSInt MyString_StrCompare(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompare(const Char *str1, const Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2273,7 +2273,7 @@ scmplop5:
 	lea rdi,[rdi+1]
 	jmp scmplop
 
-;OSInt MyString_StrCompareICase(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompareICase(const Char *str1, const Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2382,7 +2382,7 @@ scmpiclop12:
 scmpicret:
 	ret
 
-;OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
+;IntOS MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2476,7 +2476,7 @@ scmpu16lop5:
 scmpu16ret:
 	ret
 
-;OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
+;IntOS MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2585,7 +2585,7 @@ scmpicu16lop12:
 scmpicu16ret:
 	ret
 
-;OSInt MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
+;IntOS MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2681,7 +2681,7 @@ scmpu32lop5:
 scmpu32ret:
 	ret
 
-;OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
+;IntOS MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
 ;0 retAddr
 ;rdi str1
 ;rsi str2
@@ -2792,7 +2792,7 @@ scmpicu32lop12:
 scmpicu32ret:
 	ret
 
-;OSInt MyString_StrCharCnt(const Char *s)
+;IntOS MyString_StrCharCnt(const Char *s)
 ;0 retAdddr
 ;rdi s
 	align 16
@@ -2899,7 +2899,7 @@ scclop7:
 	add rax,7
 	ret
 
-;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)
+;IntOS MyString_StrCharCntUTF16(const UTF16Char *s)
 ;0 retAddr
 ;rdi s
 	align 16
@@ -2917,7 +2917,7 @@ sccu16lop:
 	dec rax
 	ret
 	
-;OSInt MyString_StrCharCntUTF32(const UTF32Char *s)
+;IntOS MyString_StrCharCntUTF32(const UTF32Char *s)
 ;0 retAddr
 ;rdi s
 	align 16

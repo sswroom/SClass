@@ -26,7 +26,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType() const
 
 void Crypto::Cert::X509CertReq::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArray<const UInt8> tmpBuff;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", len, itemType).SetTo(tmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
@@ -88,7 +88,7 @@ NN<Net::ASN1Names> Crypto::Cert::X509CertReq::CreateNames() const
 
 Bool Crypto::Cert::X509CertReq::GetNames(NN<CertNames> names) const
 {
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> namesPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", itemLen, itemType).SetTo(namesPDU))
@@ -100,16 +100,16 @@ Bool Crypto::Cert::X509CertReq::GetNames(NN<CertNames> names) const
 
 Bool Crypto::Cert::X509CertReq::GetExtensions(NN<CertExtensions> ext) const
 {
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> extPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4.1", itemLen, itemType).SetTo(extPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		UOSInt oidLen;
+		UIntOS oidLen;
 		UnsafeArray<const UInt8> oid;
 		if (Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", oidLen, itemType).SetTo(oid) && Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(oid, oidLen), CSTR("1.2.840.113549.1.9.14"))) //extensionRequest
 		{
-			UOSInt extSeqSize;
+			UIntOS extSeqSize;
 			UnsafeArray<const UInt8> extSeq;
 			if (Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", extSeqSize, itemType).SetTo(extSeq) && itemType == Net::ASN1Util::IT_SEQUENCE)
 			{
@@ -122,7 +122,7 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(NN<CertExtensions> ext) const
 
 Optional<Crypto::Cert::X509Key> Crypto::Cert::X509CertReq::GetNewPublicKey() const
 {
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> keyPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", itemLen, itemType).SetTo(keyPDU))

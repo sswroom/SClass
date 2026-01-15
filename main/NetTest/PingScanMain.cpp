@@ -28,8 +28,8 @@ void PingScan(UInt32 ip)
 	{
 		NN<const Data::ReadingListNN<Net::ICMPScanner::ScanResult>> results = scanner->GetResults();
 		NN<Net::ICMPScanner::ScanResult> result;
-		UOSInt i = 0;
-		UOSInt j = results->GetCount();
+		UIntOS i = 0;
+		UIntOS j = results->GetCount();
 		while (i < j)
 		{
 			result = results->GetItemNoCheck(i);
@@ -63,9 +63,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	sockf->GetConnInfoList(connInfoList);
 	i = 0;

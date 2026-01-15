@@ -53,10 +53,10 @@ Bool Net::TCPServerStream::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
+UIntOS Net::TCPServerStream::Read(const Data::ByteArray &buff)
 {
 	Bool toClose = false;
-	UOSInt readSize = 0;
+	UIntOS readSize = 0;
 	while (this->svr)
 	{
 		Sync::MutexUsage readMutUsage(this->readMut);
@@ -87,12 +87,12 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::TCPServerStream::Write(Data::ByteArrayR buff)
+UIntOS Net::TCPServerStream::Write(Data::ByteArrayR buff)
 {
 	Bool toClose = false;
 	Net::TCPClient *cli = 0;
 	Sync::MutexUsage mutUsage(this->connMut);
-	UOSInt writeSize;
+	UIntOS writeSize;
 	if (this->currCli)
 	{
 		cli = this->currCli;

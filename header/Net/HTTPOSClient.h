@@ -25,7 +25,7 @@ namespace Net
 		UInt64 contRead;
 
 		UnsafeArray<UInt8> dataBuff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 
 	public:
 		HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn);
@@ -33,8 +33,8 @@ namespace Net
 
 		virtual Bool IsError() const;
 
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

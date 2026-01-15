@@ -245,7 +245,7 @@ Bool IO::StorageDevice::SMARTGetVersion(UInt8 *ver, UInt8 *rev, Bool *supportATA
 
 Bool IO::StorageDevice::SMARTGetDiskID(UInt8 *idSector)
 {
-	const OSInt buffSize = sizeof(SENDCMDOUTPARAMS) + IDENTIFY_BUFFER_SIZE;
+	const IntOS buffSize = sizeof(SENDCMDOUTPARAMS) + IDENTIFY_BUFFER_SIZE;
 	UInt8 buff[buffSize];
 	DWORD outSize = 0;
 	SENDCMDINPARAMS params;
@@ -257,7 +257,7 @@ Bool IO::StorageDevice::SMARTGetDiskID(UInt8 *idSector)
 	SENDCMDOUTPARAMS *outParams = (SENDCMDOUTPARAMS*)buff;
 	UInt8 *src  = outParams->bBuffer;
 	UInt16 *dest = (UInt16*)idSector;
-	OSInt i = 256;
+	IntOS i = 256;
 	while (i-- > 0)
 	{
 		*dest = (*src << 8) | src[1];

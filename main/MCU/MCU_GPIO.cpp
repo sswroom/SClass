@@ -8,7 +8,7 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	OSInt i = 3;
+	IntOS i = 3;
 	IO::GPIOControl gpio;	
 	gpio.SetPinOutput(PIN1, true);
 	gpio.SetPinOutput(PIN2, true);

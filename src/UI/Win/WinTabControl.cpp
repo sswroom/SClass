@@ -16,7 +16,7 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
 	UI::Win::WinTabControl *me = (UI::Win::WinTabControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
@@ -41,8 +41,8 @@ OSInt __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt
 	case WM_ERASEBKGND:
 		{
 			RECT rc;
-			Math::Size2D<UOSInt> sz;
-			Math::RectArea<OSInt> tpRect = me->GetTabPageRect();
+			Math::Size2D<UIntOS> sz;
+			Math::RectArea<IntOS> tpRect = me->GetTabPageRect();
 			sz = me->GetSizeP();
 			rc.left = 0;
 			rc.top = 0;
@@ -87,7 +87,7 @@ UI::Win::WinTabControl::WinTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 	}
 	Math::Size2DDbl sz = parent->GetClientSize();
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, sz.x, sz.y);
-	this->oriWndProc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
+	this->oriWndProc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)TCWndProc);
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
@@ -97,25 +97,25 @@ UI::Win::WinTabControl::WinTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 
 UI::Win::WinTabControl::~WinTabControl()
 {
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (IntOS)this->oriWndProc);
 	this->tabPages.DeleteAll();
 }
 
 NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 {
-	UOSInt index;
+	UIntOS index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
+	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
-	Math::RectArea<OSInt> rect = GetTabPageRect();
+	Math::RectArea<IntOS> rect = GetTabPageRect();
 	page->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
@@ -126,19 +126,19 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 
 NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 {
-	UOSInt index;
+	UIntOS index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
+	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
-	Math::RectArea<OSInt> rect = GetTabPageRect();
+	Math::RectArea<IntOS> rect = GetTabPageRect();
 	page->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
@@ -147,7 +147,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 	return page;
 }
 
-void UI::Win::WinTabControl::SetSelectedIndex(UOSInt index)
+void UI::Win::WinTabControl::SetSelectedIndex(UIntOS index)
 {
 	if (this->selIndex != index)
 	{
@@ -168,7 +168,7 @@ void UI::Win::WinTabControl::SetSelectedIndex(UOSInt index)
 
 void UI::Win::WinTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 {
-	UOSInt i = this->tabPages.GetCount();
+	UIntOS i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
 		if (page.Ptr() == this->tabPages.GetItem(i).OrNull())
@@ -178,7 +178,7 @@ void UI::Win::WinTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 	}
 }
 
-UOSInt UI::Win::WinTabControl::GetSelectedIndex()
+UIntOS UI::Win::WinTabControl::GetSelectedIndex()
 {
 	return this->selIndex;
 }
@@ -188,17 +188,17 @@ Optional<UI::GUITabPage> UI::Win::WinTabControl::GetSelectedPage()
 	return this->tabPages.GetItem(this->selIndex);
 }
 
-void UI::Win::WinTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
+void UI::Win::WinTabControl::SetTabPageName(UIntOS index, Text::CStringNN name)
 {
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(name.v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_SETITEMW, index, (LPARAM)&item);
+	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_SETITEMW, index, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 }
 
-UnsafeArrayOpt<UTF8Char> UI::Win::WinTabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinTabControl::GetTabPageName(UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[512];
 	TCITEMW item;
@@ -206,11 +206,11 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinTabControl::GetTabPageName(UOSInt index, Un
 	item.pszText = (LPWSTR)wbuff;
 	item.cchTextMax = 512;
 	wbuff[0] = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_GETITEMW, index, (LPARAM)&item);
+	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_GETITEMW, index, (LPARAM)&item);
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Math::RectArea<OSInt> UI::Win::WinTabControl::GetTabPageRect()
+Math::RectArea<IntOS> UI::Win::WinTabControl::GetTabPageRect()
 {
 	RECT rc;
 	RECT rcTc;
@@ -220,17 +220,17 @@ Math::RectArea<OSInt> UI::Win::WinTabControl::GetTabPageRect()
 	rc.bottom = 0;
 	SendMessageW((HWND)this->hwnd.OrNull(), TCM_ADJUSTRECT, FALSE, (LPARAM)&rc);
 	GetClientRect((HWND)this->hwnd.OrNull(), &rcTc);
-	return Math::RectArea<OSInt>(rc.left, rc.top, rcTc.right + rc.right - rc.left, rcTc.bottom + rc.bottom - rc.top);
+	return Math::RectArea<IntOS>(rc.left, rc.top, rcTc.right + rc.right - rc.left, rcTc.bottom + rc.bottom - rc.top);
 }
 
-OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 {
-	UOSInt newIndex;
+	UIntOS newIndex;
 	NN<UI::GUITabPage> tp;
 	switch (code)
 	{
 	case TCN_SELCHANGE:
-		newIndex = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), TCM_GETCURSEL, 0, 0);
+		newIndex = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), TCM_GETCURSEL, 0, 0);
 		if (newIndex != this->selIndex)
 		{
 			if (this->tabPages.GetItem(this->selIndex).SetTo(tp))
@@ -248,13 +248,13 @@ OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 
 void UI::Win::WinTabControl::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
 		cb.func(cb.userObj);
 	}
-	Math::RectArea<OSInt> rect = GetTabPageRect();
+	Math::RectArea<IntOS> rect = GetTabPageRect();
 
 	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
@@ -284,7 +284,7 @@ void UI::Win::WinTabControl::SetDPI(Double hdpi, Double ddpi)
 		it.Next()->SetDPI(hdpi, ddpi);
 	}
 
-	Math::RectArea<OSInt> rect = GetTabPageRect();
+	Math::RectArea<IntOS> rect = GetTabPageRect();
 	it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{

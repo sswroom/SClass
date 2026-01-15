@@ -40,7 +40,7 @@ void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NN<IO::Stream> stm, Any
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt32 crcVal;
@@ -97,7 +97,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
 	*(Int16*)&buff[4] = cmdType;

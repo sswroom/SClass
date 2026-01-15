@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, NN<Data::ArrayListNN<ExeB16Addr>> parts, NN<Data::ArrayListInt32> partInd, NN<ExeB16Addr> startAddr, NN<Manage::DasmX86_16> dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, NN<Data::ArrayListNN<ExeB16Addr>> parts, NN<Data::ArrayListInt32> partInd, NN<ExeB16Addr> startAddr, NN<Manage::DasmX86_16> dasm, UIntOS codeSize)
 {
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 	if (!this->codesList.SetTo(codesList))
@@ -18,9 +18,9 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 
 	UTF8Char buff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<ExeB16Addr> eaddr;
-	UOSInt i;
+	UIntOS i;
 	UInt16 oriIP;
 	while (true)
 	{
@@ -39,11 +39,11 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 			Bool isSucc = dasm->DasmNext(sess, sptr, &buffSize);
 			if (!isSucc)
 			{
-				UOSInt sizeLeft = codeSize - sess->regs.IP;
+				UIntOS sizeLeft = codeSize - sess->regs.IP;
 				if (sizeLeft > 16)
 					sizeLeft = 16;
 				sptr = Text::StrHexBytes(Text::StrConcatC(&buff[::Text::StrCharCnt(buff)], UTF8STRC("Unknown opcodes: ")), &sess->code[oriIP], sizeLeft, ' ');
-				codes->Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
+				codes->Add(Text::String::New(buff, (UIntOS)(sptr - buff)));
 				break;
 			}
 			codes->Add(Text::String::NewNotNullSlow(buff));
@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 			{
 				UInt32 nextAddr = sess->regs.CS;
 				nextAddr = (nextAddr << 16) + sess->endIP;
-				OSInt i = sess->jmpAddrs.SortedIndexOf(nextAddr);
+				IntOS i = sess->jmpAddrs.SortedIndexOf(nextAddr);
 				if (i < 0)
 				{
 					break;
@@ -115,9 +115,9 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<ExeB16Addr> eaddr;
-	UOSInt codeSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS codeSize;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListUInt32 *funcCalls;
 	Data::ArrayListUInt32 *nfuncCalls;
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
@@ -144,19 +144,19 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
 	nfuncCalls->AddAll(sess->callAddrs);
 	nfuncCalls->AddAll(sess->jmpAddrs);
-	UOSInt arrSize;
+	UIntOS arrSize;
 	UInt32 *tmpArr = nfuncCalls->GetArr(arrSize).Ptr();
-	ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
+	ArtificialQuickSort_SortUInt32(tmpArr, 0, (IntOS)arrSize - 1);
 	dasm->DeleteSess(sess);
 
 	while (nfuncCalls->GetCount() > 0)
 	{
 		UInt32 faddr = nfuncCalls->GetItem(0);
 		nfuncCalls->RemoveAt(0);
-		OSInt si = funcCalls->SortedIndexOf(faddr);
+		IntOS si = funcCalls->SortedIndexOf(faddr);
 		if (si < 0)
 		{
-			funcCalls->Insert((UOSInt)-si - 1, faddr);
+			funcCalls->Insert((UIntOS)-si - 1, faddr);
 			sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 			sess->regs.IP = (::UInt16)faddr;
 			NEW_CLASSNN(codes, Data::ArrayListStringNN());
@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 			nfuncCalls->AddAll(sess->callAddrs);
 			nfuncCalls->AddAll(sess->jmpAddrs);
 			tmpArr = nfuncCalls->GetArr(arrSize).Ptr();
-			ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
+			ArtificialQuickSort_SortUInt32(tmpArr, 0, (IntOS)arrSize - 1);
 			dasm->DeleteSess(sess);
 		}
 	}
@@ -209,8 +209,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(AnyType userObj)
 	if (item.NotNull())
 	{
 		NN<ExeB16Addr> addr = item.GetNN<ExeB16Addr>();
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		me->lb16BitCont->ClearItems();
 		i = 0;
 		j = addr->codeList->GetCount();
@@ -229,10 +229,10 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
-	UOSInt modIndex = (UOSInt)me->lbImport->GetSelectedItem().p;
+	UIntOS modIndex = (UIntOS)me->lbImport->GetSelectedItem().p;
 	me->lvImport->ClearItems();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = me->exeFile->GetImportFuncCount(modIndex);
 	while (i < j)
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(AnyType userObj)
 		NN<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Size = "));
-		sb.AppendUOSInt(res->dataSize);
+		sb.AppendUIntOS(res->dataSize);
 		sb.AppendC(UTF8STRC("\r\nCodePage = "));
 		sb.AppendU32(res->codePage);
 		sb.AppendC(UTF8STRC("\r\nType = "));
@@ -324,8 +324,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	sptr = exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->tcEXE = ui->NewTabControl(*this);
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	this->lvProp->AddColumn(CSTR("Name"), 250);
 	this->lvProp->AddColumn(CSTR("Value"), 250);
 
-	UOSInt k;
+	UIntOS k;
 	i = 0;
 	j = this->exeFile->GetPropCount();
 	while (i < j)
@@ -421,8 +421,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 {
-	UOSInt j;
-	UOSInt i;
+	UIntOS j;
+	UIntOS i;
 	NN<Data::ArrayListNN<ExeB16Addr>> parts;
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 	this->exeFile.Delete();

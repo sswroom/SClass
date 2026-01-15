@@ -18,10 +18,10 @@ namespace IO
 		virtual Int32 Write(const UInt8 *buff, Int32 size);
 
 		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
-		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual UIntOS EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(NN<StreamReadReq> reqData);
 		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
-		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual UIntOS EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
 		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 
 		virtual Int32 Flush();

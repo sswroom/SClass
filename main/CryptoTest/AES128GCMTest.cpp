@@ -9,9 +9,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 iv[] = {1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0};
 	Crypto::Encrypt::AES128GCM aes(key, iv);
 	UInt8 inBuff[4096];
-	UOSInt inSize;
+	UIntOS inSize;
 	UInt8 outBuff[4096];
-	UOSInt outSize;
+	UIntOS outSize;
 
 	{
 		IO::FileStream fs(CSTR("/home/sswroom/Progs/Temp/FileTest/EncTest/api.js"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

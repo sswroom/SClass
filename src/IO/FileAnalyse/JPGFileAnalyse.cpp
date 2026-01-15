@@ -148,7 +148,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			{
 				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 				tag->ofst = ofst;
-				tag->size = (UOSInt)(dataSize - ofst - 2);
+				tag->size = (UIntOS)(dataSize - ofst - 2);
 				tag->tagType = 0;
 				me->tags.Add(tag);
 				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
@@ -161,7 +161,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			{
 				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 				tag->ofst = ofst;
-				tag->size = (UOSInt)(dataSize - ofst);
+				tag->size = (UIntOS)(dataSize - ofst);
 				tag->tagType = 0;
 				me->tags.Add(tag);
 			}
@@ -207,12 +207,12 @@ Text::CStringNN IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
 	return CSTR("JPEG");
 }
 
-UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	Text::CStringNN name;
@@ -228,15 +228,15 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 		sb->AppendC(UTF8STRC(")"));
 	}
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	return true;
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 v;
 	Text::CStringNN name;
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
@@ -244,7 +244,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendC(UTF8STRC("Tag "));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC("\r\nTagType = 0x"));
 	sb->AppendHex8(tag->tagType);
 	if (GetTagName(tag->tagType).SetTo(name))
@@ -254,7 +254,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		sb->AppendC(UTF8STRC(")"));
 	}
 	sb->AppendC(UTF8STRC("\r\nSize = "));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	if (!this->fd.SetTo(fd))
 		return true;
 	if (tag->tagType == 0xc4)
@@ -269,7 +269,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		while (i < 16)
 		{
 			sb->AppendC(UTF8STRC("\r\nCode length "));
-			sb->AppendUOSInt(i + 1);
+			sb->AppendUIntOS(i + 1);
 			sb->AppendC(UTF8STRC(" count = "));
 			sb->AppendU16(tagData[5 + i]);
 
@@ -299,7 +299,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		while (i < tagData[9])
 		{
 			sb->AppendC(UTF8STRC("\r\nComponent "));
-			sb->AppendUOSInt(i);
+			sb->AppendUIntOS(i);
 			sb->AppendC(UTF8STRC(":\r\n"));
 			sb->AppendC(UTF8STRC(" Component identifier = "));
 			sb->AppendU16(tagData[j]);
@@ -326,7 +326,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		while (i < tagData[4])
 		{
 			sb->AppendC(UTF8STRC("\r\nComponent "));
-			sb->AppendUOSInt(i);
+			sb->AppendUIntOS(i);
 			sb->AppendC(UTF8STRC("\r\n Scan component selector = "));
 			sb->AppendU16(tagData[j]);
 			sb->AppendC(UTF8STRC("\r\n DC entropy coding selector = "));
@@ -516,16 +516,16 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	return true;
 }
 
-UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<JPGTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -536,20 +536,20 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 v;
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	NN<IO::StreamData> fd;
@@ -557,14 +557,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	if (tag->tagType != 0)
 	{
 		frame->AddHex8(0, CSTR("Start of Tag"), 0xFF);
 		frame->AddHex8Name(1, CSTR("TagType"), tag->tagType, GetTagName(tag->tagType));
 	}
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
 	frame->AddText(2, CSTRP(sbuff, sptr));
 	if (tag->tagType == 0xc4)
 	{
@@ -576,7 +576,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 		i = 0;
 		while (i < 16)
 		{
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Code length ")), i + 1), UTF8STRC(" count"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Code length ")), i + 1), UTF8STRC(" count"));
 			frame->AddUInt(5 + i, 1, CSTRP(sbuff, sptr), tagData[5 + i]);
 
 			i++;
@@ -601,7 +601,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 		j = 10;
 		while (i < tagData[9])
 		{
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
 			frame->AddText((UInt32)j, CSTRP(sbuff, sptr));
 			frame->AddUInt(j, 1, CSTR("Component identifier"), tagData[j]);
 			frame->AddUInt(j + 1, 1, CSTR("Horizontal sampling factor"), (UInt16)(tagData[j + 1] >> 4));
@@ -622,7 +622,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 		i = 0;
 		while (i < tagData[4])
 		{
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
 			frame->AddText((UInt32)j, CSTRP(sbuff, sptr));
 			frame->AddUInt(j, 1, CSTR("Scan component selector"), tagData[j]);
 			frame->AddUInt(j + 1, 1, CSTR("DC entropy coding selector"), (UInt16)(tagData[j + 1] >> 4));

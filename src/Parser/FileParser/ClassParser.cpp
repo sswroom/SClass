@@ -43,8 +43,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ClassParser::ParseFileHdr(NN<IO::
 		return nullptr;
 	}
 	Optional<IO::JavaClass> cls = nullptr;
-	Data::ByteBuffer buff((UOSInt)dsize);
-	if (fd->GetRealData(0, (UOSInt)dsize, buff) == dsize)
+	Data::ByteBuffer buff((UIntOS)dsize);
+	if (fd->GetRealData(0, (UIntOS)dsize, buff) == dsize)
 	{
 		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff);
 	}

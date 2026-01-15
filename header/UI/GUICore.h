@@ -80,8 +80,8 @@ namespace UI
 		virtual void SetNoDisplayOff(Bool noDispOff) = 0;
 		virtual void DisplayOff() = 0;
 		virtual void Suspend() = 0;
-		virtual Math::Size2D<UOSInt> GetDesktopSize() = 0;
-		virtual Math::Coord2D<OSInt> GetCursorPos() = 0;
+		virtual Math::Size2D<UIntOS> GetDesktopSize() = 0;
+		virtual Math::Coord2D<IntOS> GetCursorPos() = 0;
 		virtual void SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot) = 0;
 		virtual void GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi) = 0;
 		virtual void SetMonitorMgr(Optional<Media::MonitorMgr> monMgr) = 0;
@@ -104,11 +104,11 @@ namespace UI
 		virtual NN<GUIPictureBoxSimple> NewPictureBoxSimple(NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) = 0;
 		virtual NN<GUIProgressBar> NewProgressBar(NN<UI::GUIClientControl> parent, UInt64 totalCnt) = 0;
 		virtual NN<GUIRadioButton> NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected) = 0;
-		virtual NN<GUIRealtimeLineChart> NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess) = 0;
+		virtual NN<GUIRealtimeLineChart> NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess) = 0;
 		virtual NN<GUITabControl> NewTabControl(NN<GUIClientControl> parent) = 0;
 		virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText) = 0;
 		virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine) = 0;
-		virtual NN<GUITrackBar> NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) = 0;
+		virtual NN<GUITrackBar> NewTrackBar(NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal) = 0;
 		virtual NN<GUIHSplitter> NewHSplitter(NN<UI::GUIClientControl> parent, Int32 width, Bool isRight) = 0;
 		virtual NN<GUIVSplitter> NewVSplitter(NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom) = 0;
 		virtual NN<GUIFileDialog> NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave) = 0;
@@ -119,7 +119,7 @@ namespace UI
 		virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd) = 0;
 		virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent) = 0;
 
-		NN<GUIListView> NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
+		NN<GUIListView> NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UIntOS colCount);
 		NN<GUIPanel> NewPanel(NN<UI::GUIClientControl> parent);
 		NN<GUIPictureBoxDD> NewPictureBoxDD(NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 	};

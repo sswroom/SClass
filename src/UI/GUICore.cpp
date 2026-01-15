@@ -8,7 +8,7 @@ UI::GUICore::~GUICore()
 {
 }
 
-NN<UI::GUIListView> UI::GUICore::NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount)
+NN<UI::GUIListView> UI::GUICore::NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UIntOS colCount)
 {
 	NN<UI::GUIListView> ctrl;
 	NEW_CLASSNN(ctrl, UI::GUIListView(*this, parent, lvstyle, colCount));

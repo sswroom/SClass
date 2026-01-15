@@ -18,8 +18,8 @@ namespace Data
 		void SetValue(UnsafeArray<const UInt8> buff);
 		void SetValue(NN<UUID> uuid);
 		void SetValue(Text::CStringNN str);
-		UOSInt GetValue(UnsafeArray<UInt8> buff) const;
-		OSInt CompareTo(NN<UUID> uuid) const;
+		UIntOS GetValue(UnsafeArray<UInt8> buff) const;
+		IntOS CompareTo(NN<UUID> uuid) const;
 
 		UInt32 GetTimeLow() const;
 		UInt16 GetTimeMid() const;

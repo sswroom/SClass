@@ -119,7 +119,7 @@ sconcatlop:
 	pop ebx
 	ret
 
-;Char *MyString_StrConcatF(Char *oriStr, const Char *strToJoin, OSInt buffSize)
+;Char *MyString_StrConcatF(Char *oriStr, const Char *strToJoin, IntOS buffSize)
 ;0 esi
 ;4 ebx
 ;8 retAddr
@@ -148,7 +148,7 @@ sconcatflop:
 	pop ebx
 	ret
 
-;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, OSInt buffSize)
+;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, IntOS buffSize)
 ;0 esi
 ;4 ebx
 ;8 retAddr
@@ -211,7 +211,7 @@ sconcatu16lop:
 	pop ebx
 	ret
 
-;UTF32Char *MyString_StrConcatSUTF32(UTF32Char *oriStr, const UTF32Char *strToJoin, OSInt buffSize)
+;UTF32Char *MyString_StrConcatSUTF32(UTF32Char *oriStr, const UTF32Char *strToJoin, IntOS buffSize)
 ;0 esi
 ;4 ebx
 ;8 retAddr
@@ -1114,7 +1114,7 @@ sui64u32exit:
 	mov ebx,dword [esp-4]
 	ret
 
-;OSInt MyString_StrCompare(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompare(const Char *str1, const Char *str2)
 ;0 rsi
 ;4 rdi
 ;8 retAddr
@@ -1218,7 +1218,7 @@ scmpret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCompareICase(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompareICase(const Char *str1, const Char *str2)
 ;0 esi
 ;4 edi
 ;8 retAddr
@@ -1337,7 +1337,7 @@ scmpicret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
+;IntOS MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
 ;0 esi
 ;4 edi
 ;8 retAddr
@@ -1441,7 +1441,7 @@ scmpu16ret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const WChar *str2)
+;IntOS MyString_StrCompareICaseUTF16(const UTF16Char *str1, const WChar *str2)
 ;0 esi
 ;4 edi
 ;8 retAddr
@@ -1560,7 +1560,7 @@ scmpicu16ret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
+;IntOS MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
 ;0 esi
 ;4 edi
 ;8 retAddr
@@ -1664,7 +1664,7 @@ scmpu32ret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
+;IntOS MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
 ;0 esi
 ;4 edi
 ;8 retAddr
@@ -1783,7 +1783,7 @@ scmpicu32ret:
 	pop edi
 	ret
 
-;OSInt MyString_StrCharCnt(const Char *s)
+;IntOS MyString_StrCharCnt(const Char *s)
 ;0 retAdddr
 ;4 s
 	align 16
@@ -1801,7 +1801,7 @@ scclop:
 	dec eax
 	ret
 
-;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)
+;IntOS MyString_StrCharCntUTF16(const UTF16Char *s)
 ;0 retAddr
 ;4 s
 	align 16
@@ -1820,7 +1820,7 @@ sccu16lop:
 	dec eax
 	ret
 
-;OSInt MyString_StrCharCntUTF32(const UTF32Char *s)
+;IntOS MyString_StrCharCntUTF32(const UTF32Char *s)
 ;0 retAddr
 ;4 s
 	align 16

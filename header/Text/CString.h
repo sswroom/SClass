@@ -14,9 +14,9 @@ namespace
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CStringNN(str, (UOSInt)(strEnd - str))
+#define CSTRP(str, strEnd) Text::CStringNN(str, (UIntOS)(strEnd - str))
 #endif
-#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UOSInt)(strEnd - str)))
+#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UIntOS)(strEnd - str)))
 
 namespace Text
 {
@@ -24,7 +24,7 @@ namespace Text
 	struct CString
 	{
 		UnsafeArrayOpt<const UTF8Char> v;
-		UOSInt leng;
+		UIntOS leng;
 
 		CString() = default;
 
@@ -35,7 +35,7 @@ namespace Text
 		}
 
 		CString(CStringNN);
-		CString(UnsafeArrayOpt<const UTF8Char> v, UOSInt leng)
+		CString(UnsafeArrayOpt<const UTF8Char> v, UIntOS leng)
 		{
 			this->v = v.Ptr();
 			this->leng = leng;
@@ -59,11 +59,11 @@ namespace Text
 				printf("CSTRP found null at %s (%d)\r\n", fileName, lineNum);
 				return nullptr;
 			}
-			return CString(str, (UOSInt)(strEnd - str));
+			return CString(str, (UIntOS)(strEnd - str));
 		}
 #endif
 
-/*		CString Substring(UOSInt index) const
+/*		CString Substring(UIntOS index) const
 		{
 			if (index >= this->leng)
 			{
@@ -77,7 +77,7 @@ namespace Text
 
 		CString LTrim() const
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->leng)
 			{
 				if (this->v[i] != ' ' && this->v[i] != '\t')
@@ -110,7 +110,7 @@ namespace Text
 	struct CStringNN : public StringBase<const UTF8Char>
 	{
 		CStringNN() = default;
-		CStringNN(UnsafeArray<const UTF8Char> v, UOSInt leng)
+		CStringNN(UnsafeArray<const UTF8Char> v, UIntOS leng)
 		{
 			this->v = v;
 			this->leng = leng;
@@ -121,7 +121,7 @@ namespace Text
 			return CStringNN(v, Text::StrCharCnt(v));
 		}
 
-		CStringNN Substring(UOSInt index) const
+		CStringNN Substring(UIntOS index) const
 		{
 			if (index >= this->leng)
 			{
@@ -135,7 +135,7 @@ namespace Text
 
 		CStringNN LTrim() const
 		{
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->leng)
 			{
 				if (this->v[i] != ' ' && this->v[i] != '\t')
@@ -182,9 +182,9 @@ namespace Text
 			return cstr;
 	}
 
-	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<Text::CString> strs, UOSInt nStrs)
+	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<Text::CString> strs, UIntOS nStrs)
 	{
-		UOSInt i = 0;
+		UIntOS i = 0;
 		Text::CStringNN cstr;
 		UnsafeArray<const UTF8Char> sptr;
 		UTF8Char c;

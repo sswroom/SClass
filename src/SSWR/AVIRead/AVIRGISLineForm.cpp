@@ -6,18 +6,18 @@
 
 #define MNU_SET_DEFAULT 101
 
-void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, UIntOS newPos)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
-	me->lineThick = UOSInt2Double(newPos) * 0.1;
+	me->lineThick = UIntOS2Double(newPos) * 0.1;
 	sptr = Text::StrDouble(sbuff, me->lineThick);
 	me->lblThickV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 {
-	Math::Size2D<UOSInt> sz;
+	Math::Size2D<UIntOS> sz;
 	NN<Media::DrawImage> dimg;
 	sz = this->pbPreview->GetSizeP();
 	if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> p
 	this->lblThick = ui->NewLabel(this->pnlMain, CSTR("Thick"));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	this->hsbThick = ui->NewHScrollBar(this->pnlMain, 16);
-	this->hsbThick->InitScrollBar(0, 600, (UOSInt)Double2OSInt(this->lineThick * 10), 10);
+	this->hsbThick->InitScrollBar(0, 600, (UIntOS)Double2IntOS(this->lineThick * 10), 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);
 	sptr = Text::StrDouble(sbuff, this->lineThick);

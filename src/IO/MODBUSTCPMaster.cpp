@@ -14,9 +14,9 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 {
 	NN<IO::MODBUSTCPMaster> me = userObj.GetNN<IO::MODBUSTCPMaster>();
 	UInt8 buff[1024];
-	UOSInt buffSize = 0;
-	UOSInt readSize;
-	UOSInt i;
+	UIntOS buffSize = 0;
+	UIntOS readSize;
+	UIntOS i;
 	Bool incomplete;
 	NN<AddrResultCb> cb;
 	Sync::ThreadUtil::SetName(CSTR("MODBUSTCP"));
@@ -58,7 +58,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 									{
 										cb->readFunc(cb->userObj, buff[i + 7], &buff[i + 9], buff[i + 8]);
 									}
-									i += 6 + (UOSInt)packetSize;
+									i += 6 + (UIntOS)packetSize;
 								}
 								else
 								{
@@ -83,7 +83,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 								}
 								break;
 							default:
-								i += (UOSInt)packetSize + 6;
+								i += (UIntOS)packetSize + 6;
 								break;
 							}
 						}
@@ -138,7 +138,7 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(NN<IO::Stream> stm)
 
 IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 {
-	UOSInt i;
+	UIntOS i;
 	//if (this->stm)
 	{
 		this->threadToStop = true;
@@ -176,7 +176,7 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -203,7 +203,7 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -230,7 +230,7 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -257,7 +257,7 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -291,7 +291,7 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -318,7 +318,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
@@ -341,16 +341,16 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	WriteMInt16(&buff[8], regAddr);
 	WriteMInt16(&buff[10], cnt);
 	buff[12] = (UInt8)(cnt << 1);
-	MemCopyNO(&buff[13], val.Ptr(), (UOSInt)cnt * 2);
+	MemCopyNO(&buff[13], val.Ptr(), (UIntOS)cnt * 2);
 	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 13));
+		this->stm->Write(Data::ByteArrayR(buff, (UIntOS)cnt * 2 + 13));
 		this->clk.Start();
 	}
 	return true;

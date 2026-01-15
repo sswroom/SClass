@@ -53,7 +53,7 @@ void IO::Device::BYDC9R::MotorRPM(Int32 rpm)
 void IO::Device::BYDC9R::BatteryChargedTime(UInt32 minutes)
 {
 	Sync::MutexUsage mutUsage(this->statusMut);
-	this->status.batteryChargedStart = Data::Timestamp::Now().AddMinute(-(OSInt)minutes);
+	this->status.batteryChargedStart = Data::Timestamp::Now().AddMinute(-(IntOS)minutes);
 }
 
 void IO::Device::BYDC9R::LeftMotorMode(MotorMode mode)

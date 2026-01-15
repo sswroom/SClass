@@ -38,7 +38,7 @@ void Media::ImageAlphaBlend::SetOutputProfile(NN<const Media::ColorProfile>  oPr
 	}
 }
 
-/*void Media::ImageAlphaBlend::Add(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+/*void Media::ImageAlphaBlend::Add(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 {
 #ifdef HAS_ASM32
 	_asm
@@ -126,7 +126,7 @@ iadaddlop2:
 #endif
 }
 
-void Media::ImageAlphaBlend::Subtract(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+void Media::ImageAlphaBlend::Subtract(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 {
 #ifdef HAS_ASM32
 	_asm

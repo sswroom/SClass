@@ -12,10 +12,10 @@ namespace UI
 			GTKCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKCheckedListBox();
 
-			virtual Bool GetItemChecked(UOSInt index);
-			virtual void SetItemChecked(UOSInt index, Bool isChecked);
+			virtual Bool GetItemChecked(UIntOS index);
+			virtual void SetItemChecked(UIntOS index, Bool isChecked);
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 		};
 	}
 }

@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "Data/DWGUtil.h"
 
-void Data::DWGUtil::HeaderDecrypt(UnsafeArray<const UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt size)
+void Data::DWGUtil::HeaderDecrypt(UnsafeArray<const UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS size)
 {
 	Int32 randseed = 1;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < size)
 	{
 		randseed *= 0x343fd;

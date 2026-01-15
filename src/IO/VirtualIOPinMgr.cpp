@@ -3,12 +3,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-IO::VirtualIOPinMgr::VirtualIOPinMgr(UOSInt pinCnt)
+IO::VirtualIOPinMgr::VirtualIOPinMgr(UIntOS pinCnt)
 {
 	this->pinCnt = pinCnt;
 	this->pins = MemAlloc(PinStatus*, this->pinCnt);
 	PinStatus *status;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < pinCnt)
 	{
@@ -26,7 +26,7 @@ IO::VirtualIOPinMgr::VirtualIOPinMgr(UOSInt pinCnt)
 IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 {
 	PinStatus *status;
-	UOSInt i = this->pinCnt;
+	UIntOS i = this->pinCnt;
 	Bool toRel;
 	while (i-- > 0)
 	{
@@ -52,10 +52,10 @@ Optional<IO::IOPin> IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
 	return pin;
 }
 
-UOSInt IO::VirtualIOPinMgr::GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList)
+UIntOS IO::VirtualIOPinMgr::GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList)
 {
-	UOSInt i = 0;
-	UOSInt j = this->pinCnt;
+	UIntOS i = 0;
+	UIntOS j = this->pinCnt;
 	while (i < j)
 	{
 		pinList->Add((Int32)i);

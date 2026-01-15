@@ -50,12 +50,12 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1
 
 Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
-	UOSInt nPoint;
-	UOSInt nAlts;
+	UIntOS nPoint;
+	UIntOS nAlts;
 	UnsafeArray<Math::Coord2DDbl> points;
 	UnsafeArray<Double> alts;
 	points = lineString->GetPointList(nPoint);
-	UOSInt j = nPoint;
+	UIntOS j = nPoint;
 	Double totalDist = 0;
 	Double dist;
 	Math::Coord2DDbl lastPt;

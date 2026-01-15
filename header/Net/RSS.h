@@ -61,10 +61,10 @@ namespace Net
 		virtual ~RSS();
 
 		Bool IsError();
-		virtual UOSInt Add(NN<RSSItem> val);
-		virtual UOSInt GetCount() const;
-		virtual NN<RSSItem> GetItemNoCheck(UOSInt Index) const;
-		virtual Optional<RSSItem> GetItem(UOSInt Index) const;
+		virtual UIntOS Add(NN<RSSItem> val);
+		virtual UIntOS GetCount() const;
+		virtual NN<RSSItem> GetItemNoCheck(UIntOS Index) const;
+		virtual Optional<RSSItem> GetItem(UIntOS Index) const;
 
 		Optional<Text::String> GetTitle() const;
 		Optional<Text::String> GetLink() const;

@@ -5,12 +5,12 @@
 #include "Parser/FullParserList.h"
 #include "SSWR/ColorDemo/ColorDemoForm.h"
 
-void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(void *userObj, const WChar **files, OSInt nFiles)
+void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(void *userObj, const WChar **files, IntOS nFiles)
 {
 	SSWR::ColorDemo::ColorDemoForm *me = (SSWR::ColorDemo::ColorDemoForm*)userObj;
 	if (nFiles > 0)
 	{
-		OSInt i = 0;
+		IntOS i = 0;
 		while (i < nFiles)
 		{
 			IO::StmData::FileData *fd;

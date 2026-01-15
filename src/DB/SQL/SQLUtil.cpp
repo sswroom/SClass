@@ -47,7 +47,7 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 		{
 			if (strStart.SetTo(nns))
 			{
-				sb->AppendC(nns, (UOSInt)(sql - nns - 1));
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
 				return sql;
 			}
 		}
@@ -55,7 +55,7 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 		{
 			if (strStart.SetTo(nns))
 			{
-				sb->AppendC(nns, (UOSInt)(sql - nns - 1));
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
 				return sql - 1;
 			}
 			else

@@ -14,7 +14,7 @@ Text::StringBuilderC::~StringBuilderC()
 
 NN<Text::StringBuilderC> Text::StringBuilderC::Append(UnsafeArray<const Char> s)
 {
-	UOSInt slen = Text::StrCharCntCh(s);
+	UIntOS slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	if (slen < 8)
 	{
@@ -32,7 +32,7 @@ NN<Text::StringBuilderC> Text::StringBuilderC::Append(UnsafeArray<const Char> s)
 	return *this;
 }
 
-NN<Text::StringBuilderC> Text::StringBuilderC::AppendC(UnsafeArray<const Char> s, UOSInt charCnt)
+NN<Text::StringBuilderC> Text::StringBuilderC::AppendC(UnsafeArray<const Char> s, UIntOS charCnt)
 {
 	AllocLeng(charCnt);
 	if (charCnt < 8)
@@ -51,7 +51,7 @@ NN<Text::StringBuilderC> Text::StringBuilderC::AppendC(UnsafeArray<const Char> s
 	return *this;
 }
 
-NN<Text::StringBuilderC> Text::StringBuilderC::AppendChar(Char c, UOSInt repeatCnt)
+NN<Text::StringBuilderC> Text::StringBuilderC::AppendChar(Char c, UIntOS repeatCnt)
 {
 	if (c == 0)
 		return *this;
@@ -64,10 +64,10 @@ NN<Text::StringBuilderC> Text::StringBuilderC::AppendChar(Char c, UOSInt repeatC
 	return *this;
 }
 
-NN<Text::StringBuilderC> Text::StringBuilderC::AppendCSV(UnsafeArray<UnsafeArray<const Char>> sarr, UOSInt nStr)
+NN<Text::StringBuilderC> Text::StringBuilderC::AppendCSV(UnsafeArray<UnsafeArray<const Char>> sarr, UIntOS nStr)
 {
 	NN<Text::String> s;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < nStr)
 	{
@@ -83,7 +83,7 @@ NN<Text::StringBuilderC> Text::StringBuilderC::AppendCSV(UnsafeArray<UnsafeArray
 
 NN<Text::StringBuilderC> Text::StringBuilderC::AppendToUpper(UnsafeArray<const Char> s)
 {
-	UOSInt slen = Text::StrCharCntCh(s);
+	UIntOS slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToUpper(buffEnd, s);
 	return *this;
@@ -91,7 +91,7 @@ NN<Text::StringBuilderC> Text::StringBuilderC::AppendToUpper(UnsafeArray<const C
 
 NN<Text::StringBuilderC> Text::StringBuilderC::AppendToLower(UnsafeArray<const Char> s)
 {
-	UOSInt slen = Text::StrCharCntCh(s);
+	UIntOS slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToLower(buffEnd, s);
 	return *this;
@@ -99,14 +99,14 @@ NN<Text::StringBuilderC> Text::StringBuilderC::AppendToLower(UnsafeArray<const C
 
 NN<Text::StringBuilderC> Text::StringBuilderC::AppendASCII(UnsafeArray<const Char> s)
 {
-	UOSInt slen = Text::StrCharCntCh(s);
+	UIntOS slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	while ((*buffEnd++ = *s++) != 0);
 	buffEnd--;
 	return *this;
 }
 
-NN<Text::StringBuilderC> Text::StringBuilderC::AppendASCII(UnsafeArray<const Char> s, UOSInt charCnt)
+NN<Text::StringBuilderC> Text::StringBuilderC::AppendASCII(UnsafeArray<const Char> s, UIntOS charCnt)
 {
 	AllocLeng(charCnt);
 	while (charCnt-- > 0)

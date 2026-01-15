@@ -42,14 +42,14 @@ Bool Data::TableData::GetColumnDataStr(Text::CStringNN columnName, NN<Data::Arra
 	NN<DB::DBReader> r;
 	if (!this->GetTableData().SetTo(r))
 		return false;
-	UOSInt col = INVALID_INDEX;
-	UOSInt i = 0;
-	UOSInt colCnt = r->ColCount();
+	UIntOS col = INVALID_INDEX;
+	UIntOS i = 0;
+	UIntOS colCnt = r->ColCount();
 	while (i < colCnt)
 	{
 		if (r->GetName(i, sbuff).SetTo(sptr))
 		{
-			if (columnName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (columnName.Equals(sbuff, (UIntOS)(sptr - sbuff)))
 			{
 				col = i;
 				break;
@@ -77,11 +77,11 @@ Optional<Data::DataSet> Data::TableData::GetDataSet(Text::CStringNN columnName)
 	{
 		return nullptr;
 	}
-	UOSInt keyCol = INVALID_INDEX;
-	UOSInt valueCol = INVALID_INDEX;
+	UIntOS keyCol = INVALID_INDEX;
+	UIntOS valueCol = INVALID_INDEX;
 	DB::ColDef colDef(CSTR(""));
-	UOSInt colCnt = r->ColCount();
-	UOSInt i = 0;
+	UIntOS colCnt = r->ColCount();
+	UIntOS i = 0;
 	while (i < colCnt)
 	{
 		if (r->GetColDef(i, colDef))
@@ -140,10 +140,10 @@ Optional<Data::DataSet> Data::TableData::GetKeyDataSet()
 	{
 		return nullptr;
 	}
-	UOSInt keyCol = INVALID_INDEX;
+	UIntOS keyCol = INVALID_INDEX;
 	DB::ColDef colDef(CSTR(""));
-	UOSInt colCnt = r->ColCount();
-	UOSInt i = 0;
+	UIntOS colCnt = r->ColCount();
+	UIntOS i = 0;
 	while (i < colCnt)
 	{
 		if (r->GetColDef(i, colDef))
@@ -213,9 +213,9 @@ NN<Data::TableData> Data::TableData::CreateSubTable(NN<Data::QueryConditions> co
 	return data;
 }
 
-UOSInt Data::TableData::GetRowCount()
+UIntOS Data::TableData::GetRowCount()
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	NN<DB::DBReader> r;
 	if (this->GetTableData().SetTo(r))
 	{
@@ -228,9 +228,9 @@ UOSInt Data::TableData::GetRowCount()
 	return cnt;
 }
 
-UOSInt Data::TableData::GetRowCount(NN<Data::QueryConditions> cond)
+UIntOS Data::TableData::GetRowCount(NN<Data::QueryConditions> cond)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	NN<DB::DBReader> r;
 	if (this->GetTableData(cond).SetTo(r))
 	{
@@ -268,7 +268,7 @@ Bool Data::TableData::GetFirstData(Text::CStringNN columnName, Optional<Data::Qu
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i = r->ColCount();
+		UIntOS i = r->ColCount();
 		while (i-- > 0)
 		{
 			if (r->GetName(i, sbuff).SetTo(sptr))

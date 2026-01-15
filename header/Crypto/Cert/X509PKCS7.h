@@ -17,9 +17,9 @@ namespace Crypto
 			virtual FileType GetFileType() const;
 			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
 			
-			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual UIntOS GetCertCount();
+			virtual Bool GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Optional<X509Cert> GetNewCert(UIntOS index);
 			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NN<ASN1Data> Clone() const;
@@ -28,8 +28,8 @@ namespace Crypto
 
 			Bool IsSignData() const;
 			Crypto::Hash::HashType GetDigestType() const;
-			UnsafeArrayOpt<const UInt8> GetMessageDigest(OutParam<UOSInt> digestSize) const;
-			UnsafeArrayOpt<const UInt8> GetEncryptedDigest(OutParam<UOSInt> encSize) const;
+			UnsafeArrayOpt<const UInt8> GetMessageDigest(OutParam<UIntOS> digestSize) const;
+			UnsafeArrayOpt<const UInt8> GetEncryptedDigest(OutParam<UIntOS> encSize) const;
 		};
 	}
 }

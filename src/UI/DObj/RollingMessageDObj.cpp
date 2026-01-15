@@ -18,7 +18,7 @@ void UI::DObj::RollingMessageDObj::FreeMessage(NN<MessageInfo> msg)
 	MemFreeNN(msg);
 }
 
-UI::DObj::RollingMessageDObj::RollingMessageDObj(NN<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
+UI::DObj::RollingMessageDObj::RollingMessageDObj(NN<Media::DrawEngine> deng, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, Double rollSpeed) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->size = size;
@@ -39,7 +39,7 @@ UI::DObj::RollingMessageDObj::~RollingMessageDObj()
 		FreeMessage(msg);
 	if (this->thisMessage.SetTo(msg) && msg->deleted)
 		FreeMessage(msg);
-	UOSInt i = this->msgMap.GetCount();
+	UIntOS i = this->msgMap.GetCount();
 	while (i-- > 0)
 	{
 		FreeMessage(this->msgMap.GetItemNoCheck(i));
@@ -56,7 +56,7 @@ Bool UI::DObj::RollingMessageDObj::IsChanged()
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	Double t = currTime.Diff(this->startTime).GetTotalSec();
-	OSInt currPos = Double2OSInt(UOSInt2Double(this->size.x) * t / this->rollSpeed);
+	IntOS currPos = Double2IntOS(UIntOS2Double(this->size.x) * t / this->rollSpeed);
 	if (currPos != this->lastRollPos)
 	{
 		return true;
@@ -79,8 +79,8 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
 		Double t = currTime.Diff(this->startTime).GetTotalSec();
-		OSInt currPos = Double2OSInt(UOSInt2Double(this->size.x) * t / this->rollSpeed);
-		OSInt lastPos = currPos + this->lastMsgOfst;
+		IntOS currPos = Double2IntOS(UIntOS2Double(this->size.x) * t / this->rollSpeed);
+		IntOS lastPos = currPos + this->lastMsgOfst;
 		if (this->lastMessage.SetTo(msg))
 		{
 			NN<Media::DrawImage> img;
@@ -88,7 +88,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			{
 				msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 			}
-			if (lastPos >= (OSInt)this->size.x)
+			if (lastPos >= (IntOS)this->size.x)
 			{
 				if (msg->deleted)
 				{
@@ -98,31 +98,31 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			}
 			else if (msg->img.SetTo(img))
 			{
-				OSInt ofst = 0;
+				IntOS ofst = 0;
 				if (img->GetWidth() > this->size.x)
-					ofst = -(OSInt)(img->GetWidth() - this->size.x);
+					ofst = -(IntOS)(img->GetWidth() - this->size.x);
 
-				OSInt drawPos = ofst - lastPos;
-				OSInt srcPos = 0;
-				Math::Size2D<UOSInt> srcSize = img->GetSize();
+				IntOS drawPos = ofst - lastPos;
+				IntOS srcPos = 0;
+				Math::Size2D<UIntOS> srcSize = img->GetSize();
 				if (drawPos < 0)
 				{
 					srcPos = -drawPos;
 					drawPos = 0;
-					if ((UOSInt)srcPos >= srcSize.x)
+					if ((UIntOS)srcPos >= srcSize.x)
 					{
 						srcSize.x = 0;
 					}
 					else
 					{
-						srcSize.x -= (UOSInt)srcPos;
+						srcSize.x -= (UIntOS)srcPos;
 					}
 				}
-				if (drawPos + (OSInt)srcSize.x > (OSInt)this->size.x)
+				if (drawPos + (IntOS)srcSize.x > (IntOS)this->size.x)
 				{
-					srcSize.x = this->size.x - (UOSInt)drawPos;
+					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
 			}
 		}
 		if (this->thisMessage.SetTo(msg))
@@ -134,32 +134,32 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			}
 			if (msg->img.SetTo(img))
 			{
-				UOSInt w = img->GetWidth();
+				UIntOS w = img->GetWidth();
 				if (w < this->size.x)
 					w = this->size.x;
 
-				OSInt drawPos = (OSInt)this->size.x - currPos;
-				OSInt srcPos = 0;
-				Math::Size2D<UOSInt> srcSize = img->GetSize();
+				IntOS drawPos = (IntOS)this->size.x - currPos;
+				IntOS srcPos = 0;
+				Math::Size2D<UIntOS> srcSize = img->GetSize();
 				if (drawPos < 0)
 				{
 					srcPos = -drawPos;
 					drawPos = 0;
-					if ((UOSInt)srcPos >= srcSize.x)
+					if ((UIntOS)srcPos >= srcSize.x)
 					{
 						srcSize.x = 0;
 					}
 					else
 					{
-						srcSize.x -= (UOSInt)srcPos;
+						srcSize.x -= (UIntOS)srcPos;
 					}
 				}
-				if (drawPos + (OSInt)srcSize.x > (OSInt)this->size.x)
+				if (drawPos + (IntOS)srcSize.x > (IntOS)this->size.x)
 				{
-					srcSize.x = this->size.x - (UOSInt)drawPos;
+					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
-				if (currPos >= (OSInt)w)
+				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
+				if (currPos >= (IntOS)w)
 				{
 					this->lastMessage = this->thisMessage;
 					this->thisMessage = nullptr;
@@ -226,7 +226,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 }
 
-Bool UI::DObj::RollingMessageDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::RollingMessageDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	return false;
 }
@@ -286,7 +286,7 @@ void UI::DObj::RollingMessageDObj::RemoveMessage(UInt32 msgId)
 	}
 }
 
-void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
+void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UIntOS> size)
 {
 	Sync::MutexUsage mutUsage(this->msgMut);
 	NN<Media::DrawImage> img;
@@ -301,7 +301,7 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 		this->deng->DeleteImage(img);
 		msg->img = nullptr;
 	}
-	UOSInt i = this->msgMap.GetCount();
+	UIntOS i = this->msgMap.GetCount();
 	while (i-- > 0)
 	{
 		msg = this->msgMap.GetItemNoCheck(i);

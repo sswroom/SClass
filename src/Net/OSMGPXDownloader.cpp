@@ -17,7 +17,7 @@ Net::OSMGPXDownloader::OSMGPXDownloader(NN<Net::SocketFactory> sockf, Text::CStr
 		*sptr = 0;
 	}
 	this->writer = writer;
-	this->storeDir = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	this->storeDir = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	this->sockf = sockf;
 	NEW_CLASSNN(this->reader, Net::RSSReader(CSTR("http://www.openstreetmap.org/traces/rss"), sockf, 0, 900, *this, 60000, this->log));
 }
@@ -35,11 +35,11 @@ void Net::OSMGPXDownloader::ItemAdded(NN<Net::RSSItem> item)
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt i;
+	UIntOS i;
 	IO::Path::PathType pt;
 
 	sptr = Text::String::OrEmpty(item->link)->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
 	sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("http://www.openstreetmap.org/trace/"));
@@ -65,13 +65,13 @@ void Net::OSMGPXDownloader::ItemAdded(NN<Net::RSSItem> item)
 		Text::StringBuilderUTF8 sb;
 		NN<Net::HTTPClient> cli;
 		UInt8 buff[2048];
-		UOSInt readSize;
+		UIntOS readSize;
 		UInt64 totalSize;
 		IO::FileStream *fs;
-		UOSInt retryCnt = 3;
+		UIntOS retryCnt = 3;
 
 		sb.AppendC(UTF8STRC("Downloading: "));
-		sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+		sb.AppendC(sbuff2, (UIntOS)(sptr2 - sbuff2));
 		this->writer->WriteLine(sb.ToCString());
 
 		while (retryCnt-- > 0)

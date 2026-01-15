@@ -112,7 +112,7 @@ NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry64(UInt64 mac64Int, Optional<Te
 void IO::BTDevLog::AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap)
 {
 	NN<IO::BTScanLog::ScanRecord3> rec;
-	UOSInt i = devMap->GetCount();
+	UIntOS i = devMap->GetCount();
 	while (i-- > 0)
 	{
 		rec = devMap->GetItemNoCheck(i);
@@ -130,7 +130,7 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[9];
-	UOSInt colCnt;
+	UIntOS colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
 	UInt32 advType;
@@ -195,7 +195,7 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 			if (sarr[3].v[0])
 			{
 				sarr[1] = sarr[3];
-				UOSInt i = 2;
+				UIntOS i = 2;
 				while (i == 2)
 				{
 					i = Text::StrSplitP(sarr, 2, sarr[1], ',');
@@ -224,8 +224,8 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 	logList.AddAll(this->pubDevs);
 	logList.AddAll(this->randDevs);
 	NN<DevEntry> log;
-	UOSInt i = 0;
-	UOSInt j = logList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = logList.GetCount();
 	while (i < j)
 	{
 		log = logList.GetItemNoCheck(i);

@@ -774,7 +774,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			cfg->GetValue(CSTR("spring.datasource.username")),
 			cfg->GetValue(CSTR("spring.datasource.password")), log, sockf).SetTo(db))
 		{
-			UOSInt i;
+			UIntOS i;
 			Data::ArrayListNN<LamppostData> dataList;
 			Data::ArrayListNN<LamppostData> dataList2;
 			NN<Data::NamedClass<LamppostData>> cls = LamppostData().CreateClass();
@@ -788,7 +788,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				db->CloseReader(r);
 
 				sb.ClearStr();
-				sb.AppendUOSInt(dataList.GetCount());
+				sb.AppendUIntOS(dataList.GetCount());
 				sb.AppendC(UTF8STRC(" rows of records loaded"));
 				console.WriteLine(sb.ToCString());
 
@@ -800,7 +800,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				if (DB::DBDataFile<LamppostData>::LoadFile(CSTRP(sbuff, sptr), cls, dataList2))
 				{
 					sb.ClearStr();
-					sb.AppendUOSInt(dataList2.GetCount());
+					sb.AppendUIntOS(dataList2.GetCount());
 					sb.AppendC(UTF8STRC(" rows of records loaded from file"));
 					console.WriteLine(sb.ToCString());
 				}

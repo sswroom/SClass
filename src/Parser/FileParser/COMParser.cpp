@@ -58,8 +58,8 @@ Optional<IO::ParsedObject> Parser::FileParser::COMParser::ParseFileHdr(NN<IO::St
 	regs.SS = 0x80;
 	IO::EXEFile *exef;
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
-	UOSInt codeLen;
-	exef->AddDOSEnv((UOSInt)fd->GetDataSize() + 256, &regs, 0x80);
+	UIntOS codeLen;
+	exef->AddDOSEnv((UIntOS)fd->GetDataSize() + 256, &regs, 0x80);
 	UInt8 *codePtr = exef->GetDOSCodePtr(codeLen);
 	exef->SetDOSHasPSP(true);
 	fd->GetRealData(0, codeLen - 256, Data::ByteArray(&codePtr[256], codeLen - 256));
@@ -100,7 +100,7 @@ Optional<IO::ParsedObject> Parser::FileParser::COMParser::ParseFileHdr(NN<IO::St
 	*(UInt32*)&codePtr[56] = 0xffffffff;
 	*(UInt32*)&codePtr[60] = 0;
 	*(UInt16*)&codePtr[64] = 0x206;
-	OSInt i = 66;
+	IntOS i = 66;
 	while (i < 80)
 		codePtr[i++] = 0;
 	codePtr[80] = 0xcd;

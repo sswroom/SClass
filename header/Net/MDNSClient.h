@@ -25,7 +25,7 @@ namespace Net
 		Bool IsError();
 		Bool SendQuery(Text::CStringNN domain);
 
-		static UOSInt ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> answers);
+		static UIntOS ParseAnswers(UnsafeArray<const UInt8> buff, UIntOS dataSize, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> answers);
 	};
 }
 #endif

@@ -53,10 +53,10 @@ Bool Data::Compress::DeflateStream::IsDown() const
 	return this->clsData->srcStm->IsDown();
 }
 
-UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 {
 	NN<Crypto::Hash::HashAlgorithm> hash;
-	UOSInt initSize = buff.GetSize();
+	UIntOS initSize = buff.GetSize();
 	int ret;
 	this->clsData->stm.next_out = buff.Arr().Ptr();
 	this->clsData->stm.avail_out = (unsigned int)buff.GetSize();
@@ -64,13 +64,13 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 	{
 		if (this->clsData->stm.avail_in == 0 || this->clsData->srcLeng == 0)
 		{
-			UOSInt readSize = BUFFSIZE;
+			UIntOS readSize = BUFFSIZE;
 			if (this->clsData->srcLeng > 0)
 			{
 				this->clsData->stm.next_in = this->clsData->buff;
 				if (this->clsData->srcLeng < BUFFSIZE)
 				{
-					readSize = (UOSInt)this->clsData->srcLeng;
+					readSize = (UIntOS)this->clsData->srcLeng;
 				}
 				readSize = this->clsData->srcStm->Read(Data::ByteArray(this->clsData->buff, readSize));
 				if (readSize > 0 && this->clsData->hash.SetTo(hash))
@@ -103,7 +103,7 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 	return initSize - this->clsData->stm.avail_out;
 }
 
-UOSInt Data::Compress::DeflateStream::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::DeflateStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

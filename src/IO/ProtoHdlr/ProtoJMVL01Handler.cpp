@@ -23,11 +23,11 @@ void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NN<IO::Stream> stm, Any
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UIntOS IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	UInt16 crcVal;
 	UInt16 len;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < buff.GetSize() - 1)
 	{
@@ -42,11 +42,11 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 			{
 				return buff.GetSize() - i;
 			}
-			crcVal = this->crc.CalcDirect(&buff[i + 2], (UOSInt)len - 1);
+			crcVal = this->crc.CalcDirect(&buff[i + 2], (UIntOS)len - 1);
 			if (crcVal == ReadMUInt16(&buff[i + 1 + len]) && buff[i + 3 + len] == 13 && buff[i + 4 + len] == 10)
 			{
-				this->listener->DataParsed(stm, stmObj, buff[i + 3], ReadMUInt16(&buff[i - 1 + len]), &buff[i + 4], (UOSInt)len - 5);
-				i += (UOSInt)len + 4;
+				this->listener->DataParsed(stm, stmObj, buff[i + 3], ReadMUInt16(&buff[i - 1 + len]), &buff[i + 4], (UIntOS)len - 5);
+				i += (UIntOS)len + 4;
 			}
 		}
 		else if (buff[i] == 0x79 && buff[i + 1] == 0x79)
@@ -63,8 +63,8 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 			crcVal = this->crc.CalcDirect(&buff[i + 2], len);
 			if (crcVal == ReadMUInt16(&buff[i + 2 + len]) && buff[i + 4 + len] == 13 && buff[i + 5 + len] == 10)
 			{
-				this->listener->DataParsed(stm, stmObj, buff[i + 4], ReadMUInt16(&buff[i + len]), &buff[i + 5], (UOSInt)len - 5);
-				i += (UOSInt)len + 5;
+				this->listener->DataParsed(stm, stmObj, buff[i + 4], ReadMUInt16(&buff[i + len]), &buff[i + 5], (UIntOS)len - 5);
+				i += (UIntOS)len + 5;
 			}
 		}
 		i++;
@@ -72,7 +72,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize() - i;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	if (cmdSize >= 1024)
 		return 0;

@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 	{
 		Int32 i = (hdr[13] & 7);
 		Int64 currOfst = 14 + i;
-		if (ReadMInt32(&hdr[(OSInt)currOfst]) != 0x000001bb)
+		if (ReadMInt32(&hdr[(IntOS)currOfst]) != 0x000001bb)
 			return nullptr;
 
 		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))
@@ -95,7 +95,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 			else if (pkgFile.SetTo(nnpkgFile))
 			{
 				Int32 stmId;
-				UOSInt ind;
+				UIntOS ind;
 				NN<IO::StmData::ConcatStreamData> data;
 				stmId = 2;
 				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));

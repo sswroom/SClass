@@ -98,7 +98,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	NN<IO::Stream> stm1;
 	NN<IO::Stream> stm2;
 	NN<IO::FileStream> stmLog1;
@@ -136,7 +136,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	NN<IO::Stream> stm1;
 	NN<IO::Stream> stm2;
 	NN<IO::FileStream> stmLog2;

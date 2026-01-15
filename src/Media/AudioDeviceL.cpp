@@ -5,14 +5,14 @@
 #include "Media/PulseAudioRenderer.h"
 #include "Text/MyString.h"
 
-UOSInt Media::AudioDevice::GetDeviceCount()
+UIntOS Media::AudioDevice::GetDeviceCount()
 {
 	return Media::PulseAudioRenderer::GetDeviceCount() + Media::ALSARenderer::GetDeviceCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
-	UOSInt paCount = Media::PulseAudioRenderer::GetDeviceCount();
+	UIntOS paCount = Media::PulseAudioRenderer::GetDeviceCount();
 	if (devNo >= paCount)
 	{
 		return Media::ALSARenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("ALSA: ")), devNo - paCount);
@@ -88,8 +88,8 @@ void Media::AudioDevice::ClearDevices()
 
 Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::AudioSource> audsrc)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::AudioRenderer> renderer;
 	NN<Media::AudioSource> nnaudsrc;
 	if (this->rendererList.GetCount() == 0)

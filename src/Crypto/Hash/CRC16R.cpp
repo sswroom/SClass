@@ -46,7 +46,7 @@ void Crypto::Hash::CRC16R::Clear()
 	currVal = 0xffff;
 }
 
-void Crypto::Hash::CRC16R::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::CRC16R::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = CRC16R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), this->currVal);;
 }
@@ -56,12 +56,12 @@ void Crypto::Hash::CRC16R::GetValue(UnsafeArray<UInt8> buff) const
 	WriteMInt16(buff.Ptr(), ~currVal);
 }
 
-UOSInt Crypto::Hash::CRC16R::GetBlockSize() const
+UIntOS Crypto::Hash::CRC16R::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC16R::GetResultSize() const
+UIntOS Crypto::Hash::CRC16R::GetResultSize() const
 {
 	return 2;
 }
@@ -70,7 +70,7 @@ UInt16 Crypto::Hash::CRC16R::Reverse(UInt16 polynomial)
 {
 	UInt16 v;
 	UInt16 v2;
-	UOSInt i = 16;
+	UIntOS i = 16;
 	v = polynomial;
 	v2 = 0;
 	while (i-- > 0)

@@ -2,26 +2,26 @@
 #include "IO/SerialPort.h"
 #include "IO/SerialPortUtil.h"
 
-void IO::SerialPortUtil::FillPortSelector(NN<UI::ItemSelector> selector, UOSInt defPort)
+void IO::SerialPortUtil::FillPortSelector(NN<UI::ItemSelector> selector, UIntOS defPort)
 {
-	UOSInt defIndex = 0;
-	Data::ArrayListNative<UOSInt> ports;
+	UIntOS defIndex = 0;
+	Data::ArrayListNative<UIntOS> ports;
 	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypeList;
 	IO::SerialPort::GetAvailablePorts(ports, &portTypeList);
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt currPort;
-	UOSInt currIndex;
-	UOSInt i = 0;
-	UOSInt j = ports.GetCount();
+	UIntOS currPort;
+	UIntOS currIndex;
+	UIntOS i = 0;
+	UIntOS j = ports.GetCount();
 	while (i < j)
 	{
 		currPort = ports.GetItem(i);
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 		sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
-		currIndex = selector->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
+		currIndex = selector->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)currPort);
 		if (currPort == defPort)
 		{
 			defIndex = currIndex;
@@ -36,7 +36,7 @@ void IO::SerialPortUtil::FillPortSelector(NN<UI::ItemSelector> selector, UOSInt 
 
 void IO::SerialPortUtil::FillBaudRateSelector(NN<UI::ItemSelector> selector)
 {
-	UOSInt defIndex;
+	UIntOS defIndex;
 	selector->AddItem(CSTR("460800"), (void*)460800);
 	selector->AddItem(CSTR("256000"), (void*)256000);
 	selector->AddItem(CSTR("230400"), (void*)230400);
@@ -64,17 +64,17 @@ void IO::SerialPortUtil::FillBaudRateSelector(NN<UI::ItemSelector> selector)
 
 void IO::SerialPortUtil::FillParitySelector(NN<UI::ItemSelector> selector)
 {
-	UOSInt defIndex;
-	defIndex = selector->AddItem(CSTR("No Parity"), (void*)(OSInt)IO::SerialPort::PARITY_NONE);
-	selector->AddItem(CSTR("Even Parity"), (void*)(OSInt)IO::SerialPort::PARITY_EVEN);
-	selector->AddItem(CSTR("Odd Parity"), (void*)(OSInt)IO::SerialPort::PARITY_ODD);
+	UIntOS defIndex;
+	defIndex = selector->AddItem(CSTR("No Parity"), (void*)(IntOS)IO::SerialPort::PARITY_NONE);
+	selector->AddItem(CSTR("Even Parity"), (void*)(IntOS)IO::SerialPort::PARITY_EVEN);
+	selector->AddItem(CSTR("Odd Parity"), (void*)(IntOS)IO::SerialPort::PARITY_ODD);
 	selector->SetSelectedIndex(defIndex);
 }
 
 Optional<IO::SerialPort> IO::SerialPortUtil::OpenSerialPort(NN<UI::ItemSelector> portSelector, NN<UI::ItemSelector> baudRateSelector, NN<UI::ItemSelector> paritySelector, Bool flowControl)
 {
 	NN<IO::SerialPort> port;
-	NEW_CLASSNN(port, IO::SerialPort(portSelector->GetSelectedItem().GetUOSInt(), (UInt32)baudRateSelector->GetSelectedItem().GetUOSInt(), (IO::SerialPort::ParityType)paritySelector->GetSelectedItem().GetOSInt(), flowControl));
+	NEW_CLASSNN(port, IO::SerialPort(portSelector->GetSelectedItem().GetUIntOS(), (UInt32)baudRateSelector->GetSelectedItem().GetUIntOS(), (IO::SerialPort::ParityType)paritySelector->GetSelectedItem().GetIntOS(), flowControl));
 	if (port->IsError())
 	{
 		port.Delete();

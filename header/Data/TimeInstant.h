@@ -22,27 +22,27 @@ namespace Data
 
 		~TimeInstant() = default;
 
-		TimeInstant AddDay(OSInt val) const
+		TimeInstant AddDay(IntOS val) const
 		{
 			return TimeInstant(this->sec + val * 86400LL, this->nanosec);
 		}
 
-		TimeInstant AddHour(OSInt val) const
+		TimeInstant AddHour(IntOS val) const
 		{
 			return TimeInstant(this->sec + val * 3600LL, this->nanosec);
 		}
 
-		TimeInstant AddMinute(OSInt val) const
+		TimeInstant AddMinute(IntOS val) const
 		{
 			return TimeInstant(this->sec + val * 60LL, this->nanosec);
 		}
 
-		TimeInstant AddSecond(OSInt val) const
+		TimeInstant AddSecond(IntOS val) const
 		{
 			return TimeInstant(this->sec + val, this->nanosec);
 		}
 
-		TimeInstant AddMS(OSInt val) const
+		TimeInstant AddMS(IntOS val) const
 		{
 			Int64 newSec = this->sec + val / 1000;
 			val = (val % 1000) * 1000000 + (Int32)this->nanosec;
@@ -271,7 +271,7 @@ namespace Data
 				return true;
 		}
 
-		OSInt CompareTo(const TimeInstant& ts) const
+		IntOS CompareTo(const TimeInstant& ts) const
 		{
 			if (this->sec > ts.sec)
 				return 1;
@@ -306,8 +306,8 @@ namespace Data
 		{
 			Int32 days = (Int32)variTime;
 			Double ds = (variTime - days);
-			OSInt s = (OSInt)(ds * 86400);
-			return Data::TimeInstant(((Int64)days - 25569) * 86400000LL + (OSInt)(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000));
+			IntOS s = (IntOS)(ds * 86400);
+			return Data::TimeInstant(((Int64)days - 25569) * 86400000LL + (IntOS)(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000));
 		}
 
 		static TimeInstant FromTicks(Int64 ticks)

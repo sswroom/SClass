@@ -24,7 +24,7 @@ namespace SSWR
 				Sync::Mutex mut;
 			};
 
-			typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
+			typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UIntOS dataSize);
 		private:
 			NN<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
@@ -48,11 +48,11 @@ namespace SSWR
 
 			Bool Start();
 			Bool IsError();
-			UOSInt GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList);
-			void SendUserData(const UInt8 *dataBuff, UOSInt dataSize);
+			UIntOS GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList);
+			void SendUserData(const UInt8 *dataBuff, UIntOS dataSize);
 
-			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		};
 	}
 }

@@ -35,9 +35,9 @@ namespace IO
 			{
 				NN<Text::String> name;
 				UTF8Char type;
-				UOSInt colOfst;
-				UOSInt colSize;
-				UOSInt colDP;
+				UIntOS colOfst;
+				UIntOS colSize;
+				UIntOS colDP;
 			};
 		private:
 			Optional<IO::StreamData> fd;
@@ -54,10 +54,10 @@ namespace IO
 			virtual ~DBF3FileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

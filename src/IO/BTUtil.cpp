@@ -1218,9 +1218,9 @@ const IO::BTUtil::NumberMap IO::BTUtil::uuids[] = {
 
 Text::CStringNN IO::BTUtil::GetManufacturerName(UInt16 manuf)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(compId) / sizeof(compId[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(compId) / sizeof(compId[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -1271,9 +1271,9 @@ UInt64 IO::BTUtil::GetAddrMAC(UnsafeArray<const UInt8> addr)
 
 Text::CStringNN IO::BTUtil::GetUUIDName(UInt16 uuid)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(uuids) / sizeof(uuids[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(uuids) / sizeof(uuids[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

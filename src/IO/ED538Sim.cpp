@@ -3,7 +3,7 @@
 
 IO::ED538Sim::ED538Sim()
 {
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		this->diCounts[i] = 0;
@@ -25,12 +25,12 @@ Text::CStringNN IO::ED538Sim::GetName()
 	return CSTR("ED538");
 }
 
-UOSInt IO::ED538Sim::GetValueCount()
+UIntOS IO::ED538Sim::GetValueCount()
 {
 	return 20;
 }
 
-Text::CString IO::ED538Sim::GetValueName(UOSInt index)
+Text::CString IO::ED538Sim::GetValueName(UIntOS index)
 {
 	switch (index)
 	{
@@ -79,7 +79,7 @@ Text::CString IO::ED538Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED538Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ED538Sim::GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 8)
 	{
@@ -99,7 +99,7 @@ Bool IO::ED538Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-Bool IO::ED538Sim::ToggleValue(UOSInt index)
+Bool IO::ED538Sim::ToggleValue(UIntOS index)
 {
 	if (index < 8)
 	{

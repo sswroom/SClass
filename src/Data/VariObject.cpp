@@ -5,7 +5,7 @@
 Data::VariObject::~VariObject()
 {
 	NN<const Data::ArrayListObj<Data::VariItem*>> itemList = this->items.GetValues();
-	UOSInt i = itemList->GetCount();
+	UIntOS i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		VariItem *item = itemList->GetItem(i);
@@ -20,8 +20,8 @@ void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('{');
 	NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
 	NN<const Data::ArrayListObj<VariItem*>> values = this->items.GetValues();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UIntOS i = 0;
+	UIntOS j = keys->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
@@ -29,7 +29,7 @@ void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendUTF8Char(',');
 		}
 		sptr = Text::JSText::ToJSTextDQuote(sbuff, keys->GetItem(i).Or(U8STR("")));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendUTF8Char(':');
 		values->GetItem(i)->ToString(sb);
 		i++;
@@ -40,15 +40,15 @@ void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 NN<Data::Class> Data::VariObject::CreateClass() const
 {
 	NN<Data::Class> cls;
-	OSInt currPos = 0;
+	IntOS currPos = 0;
 	NEW_CLASSNN(cls, Data::Class(0));
 	NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
 	NN<const Data::ArrayListObj<VariItem*>> values = this->items.GetValues();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UIntOS i = 0;
+	UIntOS j = keys->GetCount();
 	while (i < j)
 	{
-		currPos += (OSInt)cls->AddField(Text::CStringNN::FromPtr(keys->GetItem(i).Or(U8STR(""))), currPos, values->GetItem(i)->GetItemType(), false);
+		currPos += (IntOS)cls->AddField(Text::CStringNN::FromPtr(keys->GetItem(i).Or(U8STR(""))), currPos, values->GetItem(i)->GetItemType(), false);
 		i++;
 	}
 	return cls;

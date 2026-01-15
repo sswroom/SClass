@@ -33,14 +33,14 @@ Bool IO::SerialPort::InitStream()
 	DCB dcb;
 	if (portNum >= 10)
 	{
-		Text::StrUOSInt(Text::StrConcat(buff, L"\\\\.\\COM"), portNum);
+		Text::StrUIntOS(Text::StrConcat(buff, L"\\\\.\\COM"), portNum);
 	}
 	else
 	{
 #ifdef _WIN32_WCE
 		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff, L"COM"), portNum), L":");
 #else
-		Text::StrUOSInt(Text::StrConcat(buff, L"COM"), portNum);
+		Text::StrUIntOS(Text::StrConcat(buff, L"COM"), portNum);
 #endif
 	}
 
@@ -139,7 +139,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UIntOS>> ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	NN<IO::Registry> reg;
 	NN<IO::Registry> comreg;
@@ -150,7 +150,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 	{
 		if (reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM").SetTo(comreg))
 		{
-			UOSInt i;
+			UIntOS i;
 			succ = true;
 			i = 0;
 			while (comreg->GetName(wbuff, i).NotNull())
@@ -159,7 +159,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 				{
 					if (Text::StrStartsWith(wbuff2, L"COM"))
 					{
-						ports->Add(Text::StrToUOSIntW(&wbuff2[3]));
+						ports->Add(Text::StrToUIntOSW(&wbuff2[3]));
 						if (portTypes)
 						{
 							if (Text::StrStartsWith(wbuff, L"\\Device\\com0com"))
@@ -235,9 +235,9 @@ Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
+UIntOS IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 {
-	UOSInt port = 0;
+	UIntOS port = 0;
 	NN<IO::Registry> reg;
 	NN<IO::Registry> comreg;
 	WChar wbuff[512];
@@ -247,7 +247,7 @@ UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 	{
 		if (reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM").SetTo(comreg))
 		{
-			UOSInt i;
+			UIntOS i;
 			i = 0;
 			while (comreg->GetName(wbuff, i).NotNull())
 			{
@@ -259,7 +259,7 @@ UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 						{
 							if (Text::StrStartsWith(wbuff2, L"COM"))
 							{
-								port = Text::StrToUOSIntW(&wbuff2[3]);
+								port = Text::StrToUIntOSW(&wbuff2[3]);
 								break;
 							}
 						}
@@ -276,14 +276,14 @@ UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 	return port;
 }
 
-UOSInt IO::SerialPort::GetUSBPort()
+UIntOS IO::SerialPort::GetUSBPort()
 {
 	return GetPortWithType(CSTR("USBSER"));
 }
 
-UOSInt IO::SerialPort::GetBTPort()
+UIntOS IO::SerialPort::GetBTPort()
 {
-	UOSInt port = 0;
+	UIntOS port = 0;
 	if (port == 0)
 		port = GetPortWithType(CSTR("BthModem"));
 	if (port == 0)
@@ -291,17 +291,17 @@ UOSInt IO::SerialPort::GetBTPort()
 	return port;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)
+UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UIntOS portNum)
 {
-	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("COM")), portNum);
+	return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("COM")), portNum);
 }
 
-Bool IO::SerialPort::ResetPort(UOSInt portNum)
+Bool IO::SerialPort::ResetPort(UIntOS portNum)
 {
 	return false;
 }
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
+IO::SerialPort::SerialPort(UIntOS portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
 	this->reading = 0;
@@ -349,7 +349,7 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
+UIntOS IO::SerialPort::Read(const Data::ByteArray &buff)
 {
 	UInt32 readCnt;
 	BOOL ret;
@@ -397,9 +397,9 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 
 }
 
-UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
+UIntOS IO::SerialPort::Write(Data::ByteArrayR buff)
 {
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	void *h = this->handle;
 #ifdef _WIN32_WCE
 	if (WriteFile(h, buff.Ptr(), buff.GetSize(), (DWORD*)&writeCnt, 0))
@@ -436,7 +436,7 @@ UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
 struct ReadEvent
 {
 	UInt8 *buff;
-	UOSInt size;	
+	UIntOS size;	
 	NN<Sync::Event> evt;
 	UInt32 readSize;
 	OVERLAPPED ol;
@@ -452,7 +452,7 @@ Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buf
 	UInt32 readSize;
 	if (ReadFile(h, buff.Ptr(), buff.GetSize(), (LPDWORD)&readSize, 0))
 	{
-		return (IO::StreamReadReq*)(OSInt)readSize;
+		return (IO::StreamReadReq*)(IntOS)readSize;
 	}
 	else
 	{
@@ -473,11 +473,11 @@ Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buf
 #endif
 }
 
-UOSInt IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 #ifdef _WIN32_WCE
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 #else
 	NN<ReadEvent> re = NN<ReadEvent>::ConvertFrom(reqData);
 	UInt32 retVal;
@@ -509,9 +509,9 @@ Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, N
 	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::SerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
@@ -548,7 +548,7 @@ IO::StreamType IO::SerialPort::GetStreamType() const
 	return IO::StreamType::SerialPort;
 }
 
-UOSInt IO::SerialPort::GetPortNum() const
+UIntOS IO::SerialPort::GetPortNum() const
 {
 	return this->portNum;
 }

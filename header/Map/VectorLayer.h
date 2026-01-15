@@ -16,8 +16,8 @@ namespace Map
 		struct ColInfo
 		{
 			DB::DBUtil::ColType colType;
-			UOSInt colSize;
-			UOSInt colDP;
+			UIntOS colSize;
+			UIntOS colDP;
 
 			ColInfo(std::nullptr_t)
 			{
@@ -26,7 +26,7 @@ namespace Map
 				this->colDP = 0;
 			}
 
-			ColInfo(DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP)
+			ColInfo(DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP)
 			{
 				this->colType = colType;
 				this->colSize = colSize;
@@ -42,9 +42,9 @@ namespace Map
 	private:
 		Map::DrawLayerType layerType;
 		UnsafeArray<NN<Text::String>> colNames;
-		UOSInt strCnt;
-		UOSInt *maxStrLen;
-		UOSInt *thisStrLen;
+		UIntOS strCnt;
+		UIntOS *maxStrLen;
+		UIntOS *thisStrLen;
 		Data::ArrayListNN<Math::Geometry::Vector2D> vectorList;
 		Data::ArrayListArr<UnsafeArrayOpt<const UTF8Char>> strList;
 		Math::Coord2DDbl min;
@@ -63,26 +63,26 @@ namespace Map
 	public:
 		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, NN<Math::CoordinateSystem> csys, Optional<Text::String> layerName);
 		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName);
 		virtual ~VectorLayer();
 
 		virtual DrawLayerType GetLayerType() const;
 		virtual void SetMixedData(MixedData mixedData);
-		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
-		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UIntOS GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
+		virtual UIntOS GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UIntOS GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
-		virtual UOSInt GetRecordCnt() const;
+		virtual UIntOS GetRecordCnt() const;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
-		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt colIndex);
-		virtual UOSInt GetColumnCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const;
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const;
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS colIndex);
+		virtual UIntOS GetColumnCnt() const;
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const;
+		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const;
+		virtual Bool GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const;
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
@@ -91,8 +91,8 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		void SetTableName(Text::String *tableName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual UOSInt GetGeomCol() const;
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 		Bool VectorValid(NN<Math::Geometry::Vector2D> vec);

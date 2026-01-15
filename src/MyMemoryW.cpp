@@ -31,14 +31,14 @@ HANDLE mcHandle = 0;
 Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
-OSInt mcBreakPt = 0;
-UOSInt mcBreakSize = 0;
+IntOS mcBreakPt = 0;
+UIntOS mcBreakSize = 0;
 Sync::MutexData mcMut;
 const UTF8Char *mcLogFile = 0;
 
 void MemPtrChk(void *ptr)
 {
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		DebugBreak();
 	}
@@ -58,19 +58,19 @@ void MemInit()
 	}
 }
 
-void MemSetBreakPoint(OSInt address)
+void MemSetBreakPoint(IntOS address)
 {
 	mcBreakPt = address;
 	mcBreakSize = 0;
 }
 
-void MemSetBreakPoint(OSInt address, UOSInt size)
+void MemSetBreakPoint(IntOS address, UIntOS size)
 {
 	mcBreakPt = address;
 	mcBreakSize = size;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
+void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
 {
 	if (mcLogFile)
 	{
@@ -95,13 +95,13 @@ void MemUnlock()
 }
 
 #if defined(THREADSAFE)
-void *MAlloc(UOSInt size)
+void *MAlloc(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	void *mptr = HeapAlloc(mcHandle, 0, size + 8);
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size + 8))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size + 8))
 	{
 		DebugBreak();
 	}
@@ -123,22 +123,22 @@ void *MAlloc(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	return ((UInt8*)mptr) + 8;
 }
 
-void *MAllocA(UOSInt size)
+void *MAllocA(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 32);
 	UInt8 *sptr = mptr;
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
 	{
 		DebugBreak();
 	}
@@ -160,25 +160,25 @@ void *MAllocA(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	mptr += 16;
-	mptr += 16 - (15 & (OSInt)mptr);
+	mptr += 16 - (15 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
 
-void *MAllocA64(UOSInt size)
+void *MAllocA64(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 80);
 	UInt8 *sptr = mptr;
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
 	{
 		DebugBreak();
 	}
@@ -200,13 +200,13 @@ void *MAllocA64(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	mptr += 16;
-	mptr += 64 - (63 & (OSInt)mptr);
+	mptr += 64 - (63 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
@@ -229,7 +229,7 @@ void MemFreeA(void *ptr)
 //	_heapchk();
 	UInt8 *relPtr = *(UInt8**)&((UInt8*)ptr)[-8];
 #ifdef _DEBUG
-	OSInt v = ((UInt8*)ptr) - relPtr;
+	IntOS v = ((UInt8*)ptr) - relPtr;
 	if (v > 80 || v < 16)
 	{
 		v = 0;
@@ -245,12 +245,12 @@ void MemFreeA(void *ptr)
 	Sync::Mutex_Unlock(&mcMut);
 }
 #else
-void *MAlloc(UOSInt size)
+void *MAlloc(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	void *mptr = HeapAlloc(mcHandle, 0, size + 8);
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size + 8))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size + 8))
 	{
 		DebugBreak();
 	}
@@ -271,21 +271,21 @@ void *MAlloc(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	return ((UInt8*)mptr) + 8;
 }
 
-void *MAllocA(UOSInt size)
+void *MAllocA(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 32);
 	UInt8 *sptr = mptr;
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
 	{
 		DebugBreak();
 	}
@@ -306,24 +306,24 @@ void *MAllocA(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	mptr += 16;
-	mptr += 16 - (15 & (OSInt)mptr);
+	mptr += 16 - (15 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
 
-void *MAllocA64(UOSInt size)
+void *MAllocA64(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 80);
 	UInt8 *sptr = mptr;
-	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	if ((IntOS)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
 	{
 		DebugBreak();
 	}
@@ -344,13 +344,13 @@ void *MAllocA64(UOSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	mptr += 16;
-	mptr += 64 - (63 & (OSInt)mptr);
+	mptr += 64 - (63 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
@@ -370,7 +370,7 @@ void MemFreeA(void *ptr)
 //	_heapchk();
 	UInt8 *relPtr = *(UInt8**)&((UInt8*)ptr)[-8];
 #ifdef _DEBUG
-	OSInt v = ((UInt8*)ptr) - relPtr;
+	IntOS v = ((UInt8*)ptr) - relPtr;
 	if (v > 80 || v < 16)
 	{
 		v = 0;
@@ -459,7 +459,7 @@ Int32 MemCheckError()
 		UInt32 displacement;
 		line.SizeOfStruct = sizeof(line);
 		SymInitialize(procHand, 0, TRUE);
-		UOSInt i;
+		UIntOS i;
 
 		symb = (SYMBOL_INFO*)tmpBuff;
 		symb->SizeOfStruct = sizeof(SYMBOL_INFO);
@@ -481,7 +481,7 @@ Int32 MemCheckError()
 					break;
 				}
 				sptr = Text::StrConcatC(buff, UTF8STRC("("));
-				sptr = Text::StrHexVal32(sptr, (UInt32)(UOSInt)ent.lpData);
+				sptr = Text::StrHexVal32(sptr, (UInt32)(UIntOS)ent.lpData);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(") size = "));
 				sptr = Text::StrUInt32(sptr, ent.cbData - 8);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
@@ -496,7 +496,7 @@ Int32 MemCheckError()
 					sptr = Text::StrHexBytes(sptr, (UInt8*)ent.lpData + 8, ent.cbData - 8, ' ');
 				}
 
-				UOSInt address = *(UOSInt*)ent.lpData;
+				UIntOS address = *(UIntOS*)ent.lpData;
 				if (address)
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" Alloc from "));

@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<Text::XMLNode> node1;
 	NN<Text::XMLNode> node2;
@@ -18,10 +18,10 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 	Text::XMLDocument doc;
 	if (doc.ParseBuff(encFact, buff, buffSize))
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		Text::StringBuilderUTF8 sbKey;
 		Text::StringBuilderUTF8 sbRegion;
 		Text::StringBuilderUTF8 sbDesc;
@@ -113,7 +113,7 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 	}
 }
 
-Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->Init(encFact, buff, buffSize);
 }
@@ -128,7 +128,7 @@ Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CSt
 		Data::ByteBuffer buff(fileSize);
 		if (fs.Read(buff) == fileSize)
 		{
-			this->Init(encFact, buff.Arr(), (UOSInt)fileSize);
+			this->Init(encFact, buff.Arr(), (UIntOS)fileSize);
 		}
 	}
 }
@@ -137,8 +137,8 @@ Net::HKTrafficImage::~HKTrafficImage()
 {
 	NN<GroupInfo> grp;
 	NN<ImageInfo> img;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = this->groupMap.GetCount();
 	while (i-- > 0)
 	{
@@ -158,7 +158,7 @@ Net::HKTrafficImage::~HKTrafficImage()
 	}
 }
 
-UOSInt Net::HKTrafficImage::GetGroups(NN<Data::ArrayListNN<Net::HKTrafficImage::GroupInfo>> groups)
+UIntOS Net::HKTrafficImage::GetGroups(NN<Data::ArrayListNN<Net::HKTrafficImage::GroupInfo>> groups)
 {
 	return groups->AddAll(this->groupMap);
 }

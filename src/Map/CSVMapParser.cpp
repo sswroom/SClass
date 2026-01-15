@@ -9,11 +9,11 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 {
 	Text::PString tmpArr[2];
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> tmpcArr2;
-	UOSInt colCnt;
-	UOSInt totalCnt;
-	UOSInt latIndex = INVALID_INDEX;
-	UOSInt lonIndex = INVALID_INDEX;
-	UOSInt nameIndex = INVALID_INDEX;
+	UIntOS colCnt;
+	UIntOS totalCnt;
+	UIntOS latIndex = INVALID_INDEX;
+	UIntOS lonIndex = INVALID_INDEX;
+	UIntOS nameIndex = INVALID_INDEX;
 	UTF8Char sbuff[2048];
 	Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>> colNames;
 	NN<IO::Reader> reader;
@@ -54,7 +54,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 	{
 		Map::VectorLayer *lyr;
 		NN<Math::Geometry::Point> pt;
-		UOSInt i;
+		UIntOS i;
 
 		tmpcArr2 = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, totalCnt + 1);
 		i = totalCnt;

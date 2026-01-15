@@ -6,7 +6,7 @@
 
 extern "C"
 {
-	void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UOSInt destNbits, UInt8 *rgbTable);
+	void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UIntOS destNbits, UInt8 *rgbTable);
 }
 
 void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
@@ -113,12 +113,12 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	NN<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
 	NN<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
 	NN<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
-	OSInt i;
+	IntOS i;
 
 	i = 65536;
 	while (i-- > 0)
 	{
-		Double dv = OSInt2Double(i) / 65535.0;
+		Double dv = IntOS2Double(i) / 65535.0;
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dv) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dv) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dv) * bMul);
@@ -152,7 +152,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	fbFunc.Delete();
 }
 
-Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UIntOS srcNBits, Media::PixelFormat srcPF, UIntOS destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
@@ -182,7 +182,7 @@ Media::CS::CSRGB16_RGB8::~CSRGB16_RGB8()
 	}
 }
 
-void Media::CS::CSRGB16_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB16_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -191,18 +191,18 @@ void Media::CS::CSRGB16_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 	}
 	if (invert)
 	{
-		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (IntOS)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB16_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
+	CSRGB16_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
 }
 
-UOSInt Media::CS::CSRGB16_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB16_RGB8::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * (this->srcNBits >> 3);
 }
 
-UOSInt Media::CS::CSRGB16_RGB8::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB16_RGB8::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * (this->destNBits >> 3);
 }

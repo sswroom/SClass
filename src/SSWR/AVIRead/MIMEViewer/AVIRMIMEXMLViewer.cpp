@@ -15,15 +15,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 	this->lvXML->AddColumn(CSTR("Path"), 300);
 	this->lvXML->AddColumn(CSTR("Value"), 300);
 
-	UOSInt size;
+	UIntOS size;
 	UnsafeArray<const UInt8> buff = obj->GetRAWData(size);
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	IO::MemoryReadingStream mstm(buff, size);
 	Text::XMLReader reader(core->GetEncFactory(), mstm, Text::XMLReader::PM_XML);
 	while (reader.ReadNext())

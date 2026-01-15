@@ -22,7 +22,7 @@ Crypto::Cert::X509Cert::~X509Cert()
 
 Bool Crypto::Cert::X509Cert::GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -46,7 +46,7 @@ Bool Crypto::Cert::X509Cert::GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const
 
 UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509Cert::GetSubjectCN(UnsafeArray<UTF8Char> sbuff) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -70,7 +70,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509Cert::GetSubjectCN(UnsafeArray<UTF8Ch
 
 Bool Crypto::Cert::X509Cert::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -112,12 +112,12 @@ void Crypto::Cert::X509Cert::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 	this->GetSubjectCN(sb);
 }
 
-UOSInt Crypto::Cert::X509Cert::GetCertCount()
+UIntOS Crypto::Cert::X509Cert::GetCertCount()
 {
 	return 1;
 }
 
-Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509Cert::GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index != 0)
 		return false;
@@ -125,7 +125,7 @@ Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, NN<Text::StringBuilderUTF
 	return true;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::GetNewCert(UIntOS index)
 {
 	if (index != 0)
 		return nullptr;
@@ -248,7 +248,7 @@ NN<Net::ASN1Names> Crypto::Cert::X509Cert::CreateNames() const
 Bool Crypto::Cert::X509Cert::GetIssuerNames(NN<CertNames> names) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -274,7 +274,7 @@ Bool Crypto::Cert::X509Cert::GetIssuerNames(NN<CertNames> names) const
 Bool Crypto::Cert::X509Cert::GetSubjNames(NN<CertNames> names) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -300,7 +300,7 @@ Bool Crypto::Cert::X509Cert::GetSubjNames(NN<CertNames> names) const
 Bool Crypto::Cert::X509Cert::GetExtensions(NN<CertExtensions> ext) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -326,7 +326,7 @@ Bool Crypto::Cert::X509Cert::GetExtensions(NN<CertExtensions> ext) const
 Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Cert::GetNewPublicKey() const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -367,7 +367,7 @@ Bool Crypto::Cert::X509Cert::GetKeyId(const Data::ByteArray &keyId) const
 
 Bool Crypto::Cert::X509Cert::GetNotBefore(NN<Data::DateTime> dt) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -388,7 +388,7 @@ Bool Crypto::Cert::X509Cert::GetNotBefore(NN<Data::DateTime> dt) const
 
 Bool Crypto::Cert::X509Cert::GetNotAfter(NN<Data::DateTime> dt) const
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
@@ -482,10 +482,10 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned() const
 	return ret;
 }
 
-UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints) const
+UIntOS Crypto::Cert::X509Cert::GetCRLDistributionPoints(NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -509,10 +509,10 @@ UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(NN<Data::ArrayListObj<Te
 
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UIntOS> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
@@ -537,10 +537,10 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<U
 	return nullptr;
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UOSInt> dataLen) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UIntOS> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> pdu;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{

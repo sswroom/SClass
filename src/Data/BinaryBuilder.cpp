@@ -7,7 +7,7 @@ Data::BinaryBuilder::BinaryBuilder() : mstm()
 {
 }
 
-Data::BinaryBuilder::BinaryBuilder(UOSInt initSize) : mstm(initSize)
+Data::BinaryBuilder::BinaryBuilder(UIntOS initSize) : mstm(initSize)
 {
 }
 
@@ -137,7 +137,7 @@ void Data::BinaryBuilder::AppendBArr(Data::ByteArrayR barr)
 {
 	UInt8 buff[6];
 	UnsafeArray<UTF8Char> sptr = Text::StrWriteChar(buff, (UTF32Char)barr.GetSize());
-	this->mstm.Write(Data::ByteArrayR(buff, (UOSInt)(sptr - buff)));
+	this->mstm.Write(Data::ByteArrayR(buff, (UIntOS)(sptr - buff)));
 	this->mstm.Write(barr);
 }
 

@@ -14,10 +14,10 @@ namespace IO
 		virtual ~ED516Sim();
 
 		virtual Text::CStringNN GetName();
-		virtual UOSInt GetValueCount();
-		virtual Text::CString GetValueName(UOSInt index);
-		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-		virtual Bool ToggleValue(UOSInt index);
+		virtual UIntOS GetValueCount();
+		virtual Text::CString GetValueName(UIntOS index);
+		virtual Bool GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+		virtual Bool ToggleValue(UIntOS index);
 
 		virtual Bool ReadCoil(UInt16 coilAddr, OutParam<Bool> value);
 		virtual Bool ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value);

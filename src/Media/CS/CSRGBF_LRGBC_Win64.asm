@@ -2,7 +2,7 @@ section .text
 
 global CSRGBF_LRGBC_Convert
 
-;void CSRGBF_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGBF_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcNBits, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable);
 ;0 rdi
 ;8 rsi
 ;16 rbx

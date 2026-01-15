@@ -27,7 +27,7 @@ namespace SSWR
 			{
 				NN<Text::String> topic;
 				UnsafeArray<UInt8> message;
-				UOSInt msgSize;
+				UIntOS msgSize;
 				Bool updated;
 				Int64 updateTime;
 			} TopicStatus;
@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnTopicUpdate(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
+			static void __stdcall OnTopicUpdate(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize);
 
 			void ServerStop();
 			void ClearCACerts();

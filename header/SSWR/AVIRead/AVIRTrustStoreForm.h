@@ -22,7 +22,7 @@ namespace SSWR
 			Optional<Crypto::Cert::CertStore> store;
 
 			NN<UI::GUIListView> lvTrustCert;
-			static void __stdcall OnTrustCertDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnTrustCertDblClicked(AnyType userObj, UIntOS index);
 		public:
 			AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store);
 			virtual ~AVIRTrustStoreForm();

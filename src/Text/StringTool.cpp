@@ -30,8 +30,8 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Str
 	sb->AppendUTF8Char('{');
 	NN<Data::ArrayListObj<Optional<Text::String>>> keys = map->GetKeys();
 	NN<const Data::ArrayListObj<Text::String *>> vals = map->GetValues();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UIntOS i = 0;
+	UIntOS j = keys->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
@@ -55,8 +55,8 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Rea
 		return;
 	}
 	sb->AppendUTF8Char('[');
-	UOSInt i = 0;
-	UOSInt j = list->GetCount();
+	UIntOS i = 0;
+	UIntOS j = list->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
@@ -72,8 +72,8 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Rea
 
 void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, NN<const Data::List<Int32>> list, Text::CStringNN seperator)
 {
-	UOSInt i = 0;
-	UOSInt j = list->GetCount();
+	UIntOS i = 0;
+	UIntOS j = list->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
@@ -101,7 +101,7 @@ Bool Text::StringTool::IsNonASCII(UnsafeArray<const UTF8Char> s)
 Bool Text::StringTool::IsTextASCII(const Data::ByteArrayR &buff)
 {
 	UInt8 b;
-	UOSInt index = 0;
+	UIntOS index = 0;
 	while (index < buff.GetSize())
 	{
 		b = buff[index++];
@@ -120,7 +120,7 @@ Bool Text::StringTool::IsTextASCII(const Data::ByteArrayR &buff)
 Bool Text::StringTool::IsTextUTF8(const Data::ByteArrayR &buff)
 {
 	UInt8 b;
-	UOSInt index = 0;
+	UIntOS index = 0;
 	while (index < buff.GetSize())
 	{
 		b = buff[index++];
@@ -169,7 +169,7 @@ Bool Text::StringTool::IsTextUTF8(const Data::ByteArrayR &buff)
 
 Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 {
-	UOSInt atPos = INVALID_INDEX;
+	UIntOS atPos = INVALID_INDEX;
 	UnsafeArrayOpt<const UTF8Char> dotPtr = nullptr;
 	UnsafeArray<const UTF8Char> nndotPtr;
 	UnsafeArray<const UTF8Char> startPtr = s;
@@ -200,7 +200,7 @@ Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 			{
 				return false;
 			}
-			atPos = (UOSInt)(s - startPtr - 1);
+			atPos = (UIntOS)(s - startPtr - 1);
 			dotPtr = nullptr;
 
 		}
@@ -237,9 +237,9 @@ Bool Text::StringTool::IsInteger(UnsafeArray<const UTF8Char> s)
 Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 {
 	UTF8Char sbuff[9];
-	UOSInt idLen;
+	UIntOS idLen;
 	UTF8Char chk;
-	UOSInt ichk;
+	UIntOS ichk;
 	if (hkid.EndsWith(')'))
 	{
 		if (hkid.leng == 10)
@@ -294,13 +294,13 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 	}
 
 	if (Text::CharUtil::IsDigit(chk))
-		ichk = (UOSInt)chk - 0x30;
+		ichk = (UIntOS)chk - 0x30;
 	else if (chk == 'A')
 		ichk = 10;
 	else
 		return false;
 
-	UOSInt thisChk;
+	UIntOS thisChk;
 	if (idLen == 8)
 	{
 		if (!Text::CharUtil::IsUpperCase(sbuff[0]) ||
@@ -314,14 +314,14 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 				return false;
 		
 		thisChk = 0;
-		thisChk += (UOSInt)(sbuff[0] - 'A' + 10) * 9;
-		thisChk += (UOSInt)(sbuff[1] - 'A' + 10) * 8;
-		thisChk += (UOSInt)(sbuff[2] - '0') * 7;
-		thisChk += (UOSInt)(sbuff[3] - '0') * 6;
-		thisChk += (UOSInt)(sbuff[4] - '0') * 5;
-		thisChk += (UOSInt)(sbuff[5] - '0') * 4;
-		thisChk += (UOSInt)(sbuff[6] - '0') * 3;
-		thisChk += (UOSInt)(sbuff[7] - '0') * 2;
+		thisChk += (UIntOS)(sbuff[0] - 'A' + 10) * 9;
+		thisChk += (UIntOS)(sbuff[1] - 'A' + 10) * 8;
+		thisChk += (UIntOS)(sbuff[2] - '0') * 7;
+		thisChk += (UIntOS)(sbuff[3] - '0') * 6;
+		thisChk += (UIntOS)(sbuff[4] - '0') * 5;
+		thisChk += (UIntOS)(sbuff[5] - '0') * 4;
+		thisChk += (UIntOS)(sbuff[6] - '0') * 3;
+		thisChk += (UIntOS)(sbuff[7] - '0') * 2;
 		thisChk += ichk;
 		if ((thisChk % 11) != 0)
 			return false;
@@ -339,13 +339,13 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 				return false;
 
 		thisChk = 36 * 9;
-		thisChk += (UOSInt)(sbuff[0] - 'A' + 10) * 8;
-		thisChk += (UOSInt)(sbuff[1] - '0') * 7;
-		thisChk += (UOSInt)(sbuff[2] - '0') * 6;
-		thisChk += (UOSInt)(sbuff[3] - '0') * 5;
-		thisChk += (UOSInt)(sbuff[4] - '0') * 4;
-		thisChk += (UOSInt)(sbuff[5] - '0') * 3;
-		thisChk += (UOSInt)(sbuff[6] - '0') * 2;
+		thisChk += (UIntOS)(sbuff[0] - 'A' + 10) * 8;
+		thisChk += (UIntOS)(sbuff[1] - '0') * 7;
+		thisChk += (UIntOS)(sbuff[2] - '0') * 6;
+		thisChk += (UIntOS)(sbuff[3] - '0') * 5;
+		thisChk += (UIntOS)(sbuff[4] - '0') * 4;
+		thisChk += (UIntOS)(sbuff[5] - '0') * 3;
+		thisChk += (UIntOS)(sbuff[6] - '0') * 2;
 #if defined(VERBOSE)
 		printf("%c: %d * 9 = %d\r\n", ' ', 36, 36 * 9);
 		printf("%c: %d * 8 = %d\r\n", sbuff[0], sbuff[0] - 'A' + 10, (sbuff[0] - 'A' + 10) * 8);
@@ -375,8 +375,8 @@ Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN
 {
 	UTF8Char sbuff[128];
 	Double v;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = str.IndexOf(splitChar, i);
@@ -399,11 +399,11 @@ Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN
 	}
 }
 
-UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr)
+UIntOS Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr)
 {
-	UOSInt initCnt = outArr->GetCount();
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS initCnt = outArr->GetCount();
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = str.IndexOf(splitChar, i);
@@ -430,7 +430,7 @@ Bool Text::StringTool::Equals(Optional<Text::String> s1, Optional<Text::String> 
 	return str1->Equals(str2);
 }
 
-OSInt Text::StringTool::Compare(Optional<Text::String> s1, Optional<Text::String> s2)
+IntOS Text::StringTool::Compare(Optional<Text::String> s1, Optional<Text::String> s2)
 {
 	if (s1 == s2)
 		return 0;
@@ -443,7 +443,7 @@ OSInt Text::StringTool::Compare(Optional<Text::String> s1, Optional<Text::String
 	return str1->CompareTo(str2);
 }
 
-OSInt Text::StringTool::CompareICase(Optional<Text::String> s1, Optional<Text::String> s2)
+IntOS Text::StringTool::CompareICase(Optional<Text::String> s1, Optional<Text::String> s2)
 {
 	if (s1 == s2)
 		return 0;
@@ -456,11 +456,11 @@ OSInt Text::StringTool::CompareICase(Optional<Text::String> s1, Optional<Text::S
 	return str1->CompareToICase(str2);
 }
 
-Math::Size2D<UOSInt> Text::StringTool::GetMonospaceSize(UnsafeArray<const UTF8Char> s)
+Math::Size2D<UIntOS> Text::StringTool::GetMonospaceSize(UnsafeArray<const UTF8Char> s)
 {
-	UOSInt h = 1;
-	UOSInt w = 0;
-	UOSInt maxW = 0;
+	UIntOS h = 1;
+	UIntOS w = 0;
+	UIntOS maxW = 0;
 	UTF32Char c;
 	while (true)
 	{
@@ -505,7 +505,7 @@ Math::Size2D<UOSInt> Text::StringTool::GetMonospaceSize(UnsafeArray<const UTF8Ch
 void Text::StringTool::RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList)
 {
 	NN<Text::String> s;
-	UOSInt i = strList->GetCount();
+	UIntOS i = strList->GetCount();
 	while (i-- > 0)
 	{
 		s = strList->GetItemNoCheck(i);

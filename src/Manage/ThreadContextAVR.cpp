@@ -3,7 +3,7 @@
 #include "Manage/ThreadContextAVR.h"
 #include "Text/MyString.h"
 
-Manage::ThreadContextAVR::ThreadContextAVR(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextAVR::ThreadContextAVR(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -14,12 +14,12 @@ Manage::ThreadContextAVR::~ThreadContextAVR()
 {
 }
 
-UOSInt Manage::ThreadContextAVR::GetRegisterCnt()
+UIntOS Manage::ThreadContextAVR::GetRegisterCnt()
 {
 	return 0;
 }
 
-UTF8Char *Manage::ThreadContextAVR::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextAVR::GetRegister(UIntOS index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	return 0;
 }
@@ -30,9 +30,9 @@ void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb)
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -57,12 +57,12 @@ Manage::ThreadContext::ContextType Manage::ThreadContextAVR::GetType()
 	return Manage::ThreadContext::ContextType::AVR;
 }
 
-UOSInt Manage::ThreadContextAVR::GetThreadId()
+UIntOS Manage::ThreadContextAVR::GetThreadId()
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextAVR::GetProcessId()
+UIntOS Manage::ThreadContextAVR::GetProcessId()
 {
 	return this->procId;
 }
@@ -72,30 +72,30 @@ void *Manage::ThreadContextAVR::GetContext()
 	return this->context;
 }
 
-UOSInt Manage::ThreadContextAVR::GetInstAddr()
+UIntOS Manage::ThreadContextAVR::GetInstAddr()
 {
 	return 0;
 }
 
-UOSInt Manage::ThreadContextAVR::GetStackAddr()
+UIntOS Manage::ThreadContextAVR::GetStackAddr()
 {
 	return 0;
 }
 
-UOSInt Manage::ThreadContextAVR::GetFrameAddr()
+UIntOS Manage::ThreadContextAVR::GetFrameAddr()
 {
 	return 0;
 }
 
-void Manage::ThreadContextAVR::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextAVR::SetInstAddr(UIntOS instAddr)
 {
 }
 
-void Manage::ThreadContextAVR::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextAVR::SetStackAddr(UIntOS stackAddr)
 {
 }
 
-void Manage::ThreadContextAVR::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextAVR::SetFrameAddr(UIntOS frameAddr)
 {
 }
 

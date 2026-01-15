@@ -102,7 +102,7 @@ void Crypto::Token::JWToken::SetPayload(Text::CStringNN payload)
 	this->payload = Text::String::New(payload).Ptr();
 }
 
-void Crypto::Token::JWToken::SetSignature(UnsafeArray<const UInt8> sign, UOSInt signSize)
+void Crypto::Token::JWToken::SetSignature(UnsafeArray<const UInt8> sign, UIntOS signSize)
 {
 	UnsafeArray<UInt8> nnsign;
 	if (this->sign.SetTo(nnsign))
@@ -173,7 +173,7 @@ Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NN<JWTP
 
 }
 
-Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	NN<Text::String> nnheader;
 	NN<Text::String> nnpayload;
@@ -318,7 +318,7 @@ void Crypto::Token::JWToken::ToString(NN<Text::StringBuilderUTF8> sb) const
 	b64.EncodeBin(sb, nnsign, this->signSize);
 }
 
-Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -327,7 +327,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Generate(JWSignature::A
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\"typ\":\"JWT\"}"));
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
+	b64.EncodeBin(sb, sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendUTF8Char('.');
 	b64.EncodeBin(sb, payload.v, payload.leng);
 	Crypto::Token::JWSignature sign(ssl, alg, key, keyLeng, keyType);
@@ -377,7 +377,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 	s->Release();
 	sbHeader.Append(CSTR("}"));
 	UInt8 signData[1024];
-	UOSInt signLen;
+	UIntOS signLen;
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, sbHeader.v, sbHeader.leng);
@@ -401,13 +401,13 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN token, Optional<Text::StringBuilderUTF8> sbErr)
 {
 	NN<Text::StringBuilderUTF8> nnsb;
-	UOSInt i1 = token.IndexOf('.');;
+	UIntOS i1 = token.IndexOf('.');;
 	if (i1 == INVALID_INDEX)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: no . found"));
 		return nullptr;
 	}
-	UOSInt i2 = token.IndexOf('.', i1 + 1);
+	UIntOS i2 = token.IndexOf('.', i1 + 1);
 	if (i2 == INVALID_INDEX)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: Only 1 . found"));
@@ -420,11 +420,11 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	}
 	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	UInt8 *headerBuff = MemAlloc(UInt8, i1 + 1);
-	UOSInt headerSize;
+	UIntOS headerSize;
 	UInt8 *payloadBuff = MemAlloc(UInt8, (i2 - i1));
-	UOSInt payloadSize;
+	UIntOS payloadSize;
 	UInt8 *signBuff = MemAlloc(UInt8, (token.leng - i2));
-	UOSInt signSize;
+	UIntOS signSize;
 	headerSize = b64url.DecodeBin(Text::CStringNN(token.v, i1), headerBuff);
 	payloadSize = b64url.DecodeBin(Text::CStringNN(token.v + i1 + 1, i2 - i1 - 1), payloadBuff);
 	signSize = b64url.DecodeBin(Text::CStringNN(token.v + i2 + 1, token.leng - i2 - 1), signBuff);
@@ -502,10 +502,10 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 
 Text::CStringNN Crypto::Token::JWToken::PayloadName(Text::CStringNN key)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(payloadNames) / sizeof(payloadNames[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(payloadNames) / sizeof(payloadNames[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

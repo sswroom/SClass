@@ -2,7 +2,7 @@ section .text
 
 global ScaledMapView_IMapXYToScnXY
 
-;Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, OSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, OSInt scnWidth, OSInt scnHeight);
+;Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, IntOS nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, IntOS scnWidth, IntOS scnHeight);
 ;0 xmm6
 ;16 xmm7
 ;32 rdi

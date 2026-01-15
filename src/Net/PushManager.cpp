@@ -99,8 +99,8 @@ void Net::PushManager::SaveData()
 		NN<Text::String> devModel;
 		Text::UTF8Writer writer(fs);
 		Sync::MutexUsage mutUsage(this->dataMut);
-		UOSInt i = 0;
-		UOSInt j = this->devMap.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->devMap.GetCount();
 		while (i < j)
 		{
 			dev = this->devMap.GetItemNoCheck(i);
@@ -162,7 +162,7 @@ Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLE
 
 Net::PushManager::~PushManager()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->userMap.GetCount();
 	while (i-- > 0)
 	{
@@ -281,7 +281,7 @@ Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::Stri
 	{
 		if (this->userMap.GetNN(it.Next()).SetTo(user))
 		{
-			UOSInt k = user->devMap.GetCount();
+			UIntOS k = user->devMap.GetCount();
 			while (k-- > 0)
 			{
 				tokenList.Add(user->devMap.GetItemNoCheck(k)->token->Clone());
@@ -318,12 +318,12 @@ Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::Stri
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage)
+UIntOS Net::PushManager::GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
-	UOSInt i = 0;
-	UOSInt j = this->userMap.GetCount();
-	UOSInt ret = 0;
+	UIntOS i = 0;
+	UIntOS j = this->userMap.GetCount();
+	UIntOS ret = 0;
 	NN<UserInfo> user;
 	while (i < j)
 	{

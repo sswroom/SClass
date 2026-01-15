@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Crypto::Hash::Bcrypt bcrypt;
 	UInt8 radixTest[] = {0x85, 0x20, 0xAF, 0x9F, 0x03, 0x3D, 0xB3, 0x8C, 0x08, 0x5F, 0xD2, 0x5E, 0x2D, 0xAA, 0x5E, 0x84, 0xA2, 0xB9, 0x61, 0xD2, 0xF1, 0x29, 0xC9, 0xA4};
 	UInt8 decTest[64];
-	UOSInt decSize;
+	UIntOS decSize;
 	Text::TextBinEnc::Radix64Enc radix64("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 	Text::StringBuilderUTF8 sb;
 	radix64.EncodeBin(sb, radixTest, sizeof(radixTest));

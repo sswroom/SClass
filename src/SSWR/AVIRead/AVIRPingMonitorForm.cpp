@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UIntOS packetSize)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	Text::StringBuilderUTF8 sb;
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 		rec = me->whois.RequestIP(srcIP);
 		if (rec->GetNetworkName(sbuff).SetTo(sptr))
 		{
-			ipInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			ipInfo->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		else
 		{
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 		}
 		if (rec->GetCountryCode(sbuff).SetTo(sptr))
 		{
-			ipInfo->country = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			ipInfo->country = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		else
 		{
@@ -54,13 +54,13 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", size = "));
-	sb.AppendUOSInt(packetSize);
+	sb.AppendUIntOS(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UIntOS packetSize)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->analyzer.PacketIPv4_2(rawData, packetSize, 0, 0);
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 		return;
 	}
 
-	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetIntOS();
 	if (ip)
 	{
 		NN<Socket> soc;
@@ -185,8 +185,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 	if (me->ipListUpdated)
 	{
 		NN<IPInfo> ipInfo;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		me->ipListUpdated = false;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbIP->ClearItems();
@@ -287,9 +287,9 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->clif->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 				if (ip == 0)
 					break;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 				k++;
 			}
 		}
@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	this->logger.Delete();
 
 	NN<IPInfo> ipInfo;
-	UOSInt i;
+	UIntOS i;
 	i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{

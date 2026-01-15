@@ -11,8 +11,8 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayFunc(NN<Net::WebServer::WebReq
 	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
 	Sync::MutexUsage mutUsage;
 	NN<Data::ReadingListNN<Net::LoRaMonitorCore::GWInfo>> gwList = me->core->GetGWList(mutUsage);
-	UOSInt i = 0;
-	UOSInt j = gwList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = gwList->GetCount();
 	while (i < j)
 	{
 		NN<Net::LoRaMonitorCore::GWInfo> gw = gwList->GetItemNoCheck(i);
@@ -42,7 +42,7 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::
 		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	}
 	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
-	UOSInt i = gw->lastDataBegin;
+	UIntOS i = gw->lastDataBegin;
 	while (i != gw->lastDataEnd)
 	{
 		NN<Net::LoRaMonitorCore::DataPacket> pkt;

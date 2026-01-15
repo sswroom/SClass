@@ -19,7 +19,7 @@ UI::JavaUI::JUIPictureBox::~JUIPictureBox()
 {
 }
 
-OSInt UI::JavaUI::JUIPictureBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIPictureBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

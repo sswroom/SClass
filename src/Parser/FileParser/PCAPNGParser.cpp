@@ -90,7 +90,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			{
 				UInt16 optCode;
 				UInt16 optLeng;
-				UOSInt i = 16;
+				UIntOS i = 16;
 				timeResol = 0;
 				if (ReadUInt16(&packetBuff[8]) == 201)
 				{
@@ -114,7 +114,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 						timeResol = (Int8)packetBuff[i + 4];
 						break;
 					}
-					i += 4 + (UOSInt)optLeng;
+					i += 4 + (UIntOS)optLeng;
 					if (i & 3)
 					{
 						i += 4 - (i & 3);
@@ -194,7 +194,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			{
 				UInt16 optCode;
 				UInt16 optLeng;
-				UOSInt i = 16;
+				UIntOS i = 16;
 				timeResol = 0;
 				if (ReadMUInt16(&packetBuff[8]) == 201)
 				{
@@ -218,7 +218,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 						timeResol = (Int8)packetBuff[i + 4];
 						break;
 					}
-					i += 4 + (UOSInt)optLeng;
+					i += 4 + (UIntOS)optLeng;
 					if (i & 3)
 					{
 						i += 4 - (i & 3);

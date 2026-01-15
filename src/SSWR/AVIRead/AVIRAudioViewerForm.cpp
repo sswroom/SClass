@@ -28,10 +28,10 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 {
 	NN<Media::DrawImage> gimg;
 	NN<Media::DrawImage> img;
-	Math::Size2D<UOSInt> sz = this->pbsSample->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbsSample->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
-	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
+	if (this->totalSample == 0 || this->totalSample == (UIntOS)-1)
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
@@ -57,14 +57,14 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawPen> p;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UInt32 currCh;
-		UOSInt currY;
-		UOSInt channelH;
-		UOSInt lastY;
-		UOSInt thisY;
-		UOSInt align = this->format.align;
+		UIntOS currY;
+		UIntOS channelH;
+		UIntOS lastY;
+		UIntOS thisY;
+		UIntOS align = this->format.align;
 		if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 			Data::ByteBuffer buff(this->format.align * sz.x);
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 						while (i < sz.x)
 						{
 							thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
-							gimg->DrawLine(UOSInt2Double(i - 1), UOSInt2Double(lastY), UOSInt2Double(i), UOSInt2Double(thisY), p);
+							gimg->DrawLine(UIntOS2Double(i - 1), UIntOS2Double(lastY), UIntOS2Double(i), UIntOS2Double(thisY), p);
 							
 							lastY = thisY;
 							i++;
@@ -129,10 +129,10 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 {
 	NN<Media::DrawImage> gimg;
 	NN<Media::DrawImage> img;
-	Math::Size2D<UOSInt> sz = this->pbsFreq->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbsFreq->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
-	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
+	if (this->totalSample == 0 || this->totalSample == (UIntOS)-1)
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
@@ -158,13 +158,13 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawPen> p;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Double lastX;
 		Double lastY;
 		Double thisX;
 		Double thisY;
-//		OSInt align = this->format->align;
+//		IntOS align = this->format->align;
 		if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			i = 0;
 			while (i < this->format.nChannels)
 			{
-				Math::FFT::ForwardBits(buff.Arr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+				Math::FFT::ForwardBits(buff.Arr() + i * (UIntOS)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 				if (i == 0)
 				{
@@ -208,8 +208,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 				{
 					rVal = freqData[j];
 
-					thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE / 2 - 1);
-					thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UOSInt2Double(sz.y) / 7.0;
+					thisX = UIntOS2Double(j * sz.x) / (Double)(FFTSAMPLE / 2 - 1);
+					thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UIntOS2Double(sz.y) / 7.0;
 					if (lastX >= 0)
 					{
 						gimg->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -295,11 +295,11 @@ SSWR::AVIRead::AVIRAudioViewerForm::~AVIRAudioViewerForm()
 
 void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 {
-	Math::Size2D<UOSInt> sz;
+	Math::Size2D<UIntOS> sz;
 	switch (cmdId)
 	{
 	case MNU_NEXT_SAMPLE:
-		if (this->totalSample != (UOSInt)-1)
+		if (this->totalSample != (UIntOS)-1)
 		{
 			if (this->currSample + 1 < this->totalSample)
 			{
@@ -316,7 +316,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_NEXT_PAGE:
-		if (this->totalSample != (UOSInt)-1)
+		if (this->totalSample != (UIntOS)-1)
 		{
 			if (this->currSample + 1 < this->totalSample)
 			{
@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_END:
-		if (this->totalSample != (UOSInt)-1)
+		if (this->totalSample != (UIntOS)-1)
 		{
 			if (this->currSample + 1 != this->totalSample)
 			{

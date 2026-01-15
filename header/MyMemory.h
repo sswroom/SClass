@@ -17,12 +17,12 @@ void MemFreeA64(ptr);
 void MemInit();
 void MemDeinit();
 void MemPtrChk(void *ptr);
-void MemSetBreakPoint(OSInt address);
-void MemSetBreakPoint(OSInt address, UOSInt size);
+void MemSetBreakPoint(IntOS address);
+void MemSetBreakPoint(IntOS address, UIntOS size);
 void MemSetLogFile(const UTF8Char *logFile);
 void MemLock();
 void MemUnlock();
-void MemClear(void *buff, OSInt size);
+void MemClear(void *buff, IntOS size);
 Int32 MemCheckError();
 Int32 MemCountBlks();
 void MemIncCounter(void *ptr);
@@ -57,14 +57,14 @@ void MemDecCounter(void *ptr);
 
 void MemPtrChk(void *ptr);
 void MemInit();
-void MemSetBreakPoint(OSInt address);
-void MemSetBreakPoint(OSInt address, UOSInt size);
-void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen);
+void MemSetBreakPoint(IntOS address);
+void MemSetBreakPoint(IntOS address, UIntOS size);
+void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen);
 void MemLock();
 void MemUnlock();
-void *MAlloc(UOSInt size);
-void *MAllocA(UOSInt size);
-void *MAllocA64(UOSInt size);
+void *MAlloc(UIntOS size);
+void *MAllocA(UIntOS size);
+void *MAllocA64(UIntOS size);
 void MemFree(void *ptr);
 void MemFreeA(void *ptr);
 void MemDeinit();
@@ -85,7 +85,7 @@ template <class T> NN<T> MemNewClass(T *cls)
 FORCEINLINE void *operator new(size_t size)
 {
 	MemLock();
-	void *ret = MAllocA(UInt8, (UOSInt)size);
+	void *ret = MAllocA(UInt8, (UIntOS)size);
 	MemUnlock();
 	return ret;
 }

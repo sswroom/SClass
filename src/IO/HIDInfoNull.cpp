@@ -43,7 +43,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	return 0;
 }
 
-OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
+IntOS IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 {
 	return 0;
 }

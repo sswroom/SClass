@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 
 		Bool valid = false;
 		UInt64 currOfst = 0;
-		UOSInt readSize;
+		UIntOS readSize;
 		{
 			Data::ByteBuffer buff(1048576);
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

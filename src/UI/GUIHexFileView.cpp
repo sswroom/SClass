@@ -134,22 +134,22 @@ void UI::GUIHexFileView::EventCopy()
 
 }
 
-void UI::GUIHexFileView::EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
+void UI::GUIHexFileView::EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 {
 	if (btn == MBTN_LEFT)
 	{
 		UInt64 ofst;
-		this->GetTextPos(OSInt2Double(scnX), OSInt2Double(scnY), &ofst);
+		this->GetTextPos(IntOS2Double(scnX), IntOS2Double(scnY), &ofst);
 		this->GoToOffset(ofst);
 	}
 }
 
-void UI::GUIHexFileView::EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
+void UI::GUIHexFileView::EventMouseUp(IntOS scnX, IntOS scnY, MouseButton btn)
 {
 
 }
 
-void UI::GUIHexFileView::EventMouseMove(OSInt scnX, OSInt scnY)
+void UI::GUIHexFileView::EventMouseMove(IntOS scnX, IntOS scnY)
 {
 
 }
@@ -162,7 +162,7 @@ void UI::GUIHexFileView::EventTimerTick()
 		if (fileLen != this->fileSize)
 		{
 			this->fileSize = fileLen;
-			this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
+			this->SetScrollVRange(0, (UIntOS)(this->fileSize >> 4));
 			this->Redraw();
 		}
 	}
@@ -173,13 +173,13 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 	NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 	dimg->DelBrush(b);
-	OSInt vPos = this->GetScrollVPos();
+	IntOS vPos = this->GetScrollVPos();
 	if (this->fileSize > 0)
 	{
 		UTF8Char sbuff[17];
 		UTF8Char sbuff2[2];
 		UnsafeArray<UTF8Char> sptr;
-		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
+		UInt64 currOfst = ((UInt64)(UIntOS)vPos) * 16;
 		Optional<Media::DrawFont> f = this->CreateDrawFont(dimg);
 		NN<Media::DrawFont> fnt;
 		NN<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
@@ -190,17 +190,17 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 		NN<Media::DrawBrush> fieldBrush = dimg->NewBrushARGB(this->fieldColor);
 		Math::Coord2DDbl currPos = Math::Coord2DDbl(0, 0);
 		Double hHeight = this->pageLineHeight * 0.5;
-		Double dHeight = UOSInt2Double(dimg->GetHeight());
-		UOSInt i;
-		UOSInt j;
+		Double dHeight = UIntOS2Double(dimg->GetHeight());
+		UIntOS i;
+		UIntOS j;
 		UTF8Char c;
 		UTF32Char wc;
 		Data::ByteArray currPtr;
-		UOSInt k;
-		UOSInt readBuffSize = (this->pageLineCnt + 1) * 16;
+		UIntOS k;
+		UIntOS readBuffSize = (this->pageLineCnt + 1) * 16;
 		UnsafeArray<const UTF8Char> textPtr;
 		UnsafeArray<const UTF8Char> textPtr2;
-		UOSInt textSkip;
+		UIntOS textSkip;
 		UInt64 drawOfst;
 		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = nullptr;
 		NN<const IO::FileAnalyse::FrameDetail::FieldInfo> nnfieldInfo;
@@ -314,12 +314,12 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 
 			if (k < 16)
 			{
-				currPos.x += hHeight * 3 * UOSInt2Double(16 - k);
+				currPos.x += hHeight * 3 * UIntOS2Double(16 - k);
 			}
 			j = textSkip;
 			if (textSkip > 0)
 			{
-				currPos.x += hHeight * UOSInt2Double(textSkip);
+				currPos.x += hHeight * UIntOS2Double(textSkip);
 				textPtr += textSkip;
 				textSkip = 0;
 			}
@@ -340,8 +340,8 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 							*sptr = 0;
 							dimg->DrawString(currPos, CSTRP(sbuff, sptr), fnt, textBrush);
 						}
-						currPos.x += hHeight * OSInt2Double(textPtr2 - textPtr);
-						j += (UOSInt)(textPtr2 - textPtr);
+						currPos.x += hHeight * IntOS2Double(textPtr2 - textPtr);
+						j += (UIntOS)(textPtr2 - textPtr);
 						textPtr = textPtr2;
 					}
 					else
@@ -374,10 +374,10 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 
 void UI::GUIHexFileView::UpdateCaretPos()
 {
-	OSInt posV = this->GetScrollVPos();
-	Double currY = this->pageLineHeight * OSInt2Double((OSInt)(this->currOfst >> 4) - posV);
+	IntOS posV = this->GetScrollVPos();
+	Double currY = this->pageLineHeight * IntOS2Double((IntOS)(this->currOfst >> 4) - posV);
 	Double currX;
-	UOSInt charCnt;
+	UIntOS charCnt;
 	if (this->fileSize < 0x100000000)
 	{
 		charCnt = 9;
@@ -386,9 +386,9 @@ void UI::GUIHexFileView::UpdateCaretPos()
 	{
 		charCnt = 17;
 	}
-	charCnt += (UOSInt)(this->currOfst & 15) * 3;
-	currX = UOSInt2Double(charCnt) * this->pageLineHeight * 0.5;
-	this->SetCaretPos(Double2OSInt(currX), Double2OSInt(currY));
+	charCnt += (UIntOS)(this->currOfst & 15) * 3;
+	currX = UIntOS2Double(charCnt) * this->pageLineHeight * 0.5;
+	this->SetCaretPos(Double2IntOS(currX), Double2IntOS(currY));
 }
 
 Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
@@ -427,7 +427,7 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 		this->analyse = IO::FileAnalyse::FileAnalyser::AnalyseFile(fd);
 		this->fileSize = this->fd->GetDataSize();
 		this->currOfst = 0;
-		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
+		this->SetScrollVRange(0, (UIntOS)(this->fileSize >> 4));
 		this->GoToOffset(0);
 	}
 	this->Redraw();
@@ -452,7 +452,7 @@ Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnal
 	}
 	this->fileSize = this->fd->GetDataSize();
 	this->currOfst = 0;
-	this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
+	this->SetScrollVRange(0, (UIntOS)(this->fileSize >> 4));
 	this->GoToOffset(0);
 	this->Redraw();
 	return true;
@@ -461,7 +461,7 @@ Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnal
 
 void UI::GUIHexFileView::GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst)
 {
-	UOSInt addrLen;
+	UIntOS addrLen;
 	if (this->fileSize < 0x100000000)
 	{
 		addrLen = 9;
@@ -471,24 +471,24 @@ void UI::GUIHexFileView::GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byte
 		addrLen = 17;
 	}
 
-	OSInt vPos = this->GetScrollVPos();
+	IntOS vPos = this->GetScrollVPos();
 	UInt64 ofst;
-	vPos = (OSInt)(OSInt2Double(vPos) + scnPosY / this->pageLineHeight);
+	vPos = (IntOS)(IntOS2Double(vPos) + scnPosY / this->pageLineHeight);
 	if (vPos < 0)
 	{
 		vPos = 0;
 	}
-	if (scnPosX < UOSInt2Double(addrLen) * this->pageLineHeight * 0.5)
+	if (scnPosX < UIntOS2Double(addrLen) * this->pageLineHeight * 0.5)
 	{
-		ofst = (UOSInt)vPos * 16;
+		ofst = (UIntOS)vPos * 16;
 	}
-	else if (scnPosX >= UOSInt2Double(addrLen + 48) * this->pageLineHeight * 0.5)
+	else if (scnPosX >= UIntOS2Double(addrLen + 48) * this->pageLineHeight * 0.5)
 	{
-		ofst = (UOSInt)vPos * 16 + 15;
+		ofst = (UIntOS)vPos * 16 + 15;
 	}
 	else
 	{
-		ofst = (UOSInt)vPos * 16 + ((UOSInt)(scnPosX / this->pageLineHeight * 2.0) - addrLen) / 3;
+		ofst = (UIntOS)vPos * 16 + ((UIntOS)(scnPosX / this->pageLineHeight * 2.0) - addrLen) / 3;
 	}
 	if (this->fileSize == 0)
 	{
@@ -518,7 +518,7 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 		if (!this->frame.SetTo(frame) || ofst < frame->GetOffset() || ofst >= frame->GetOffset() + frame->GetSize())
 		{
 			this->frame.Delete();
-			UOSInt i = analyse->GetFrameIndex(ofst);
+			UIntOS i = analyse->GetFrameIndex(ofst);
 			if (i != INVALID_INDEX)
 			{
 				this->frame = analyse->GetFrameDetail(i);
@@ -526,19 +526,19 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 		}
 	}
 
-	OSInt vPos = this->GetScrollVPos();
+	IntOS vPos = this->GetScrollVPos();
 	this->currOfst = ofst;
-	if (vPos > (OSInt)(ofst >> 4))
+	if (vPos > (IntOS)(ofst >> 4))
 	{
-		this->SetScrollVPos((UOSInt)(ofst >> 4), true);
+		this->SetScrollVPos((UIntOS)(ofst >> 4), true);
 	}
 	else if (vPos + (Int32)this->pageLineCnt <= (Int64)(ofst >> 4))
 	{
-		this->SetScrollVPos((UOSInt)(ofst >> 4) - this->pageLineCnt + 1, true);
+		this->SetScrollVPos((UIntOS)(ofst >> 4) - this->pageLineCnt + 1, true);
 	}
 	this->Redraw();
 	this->UpdateCaretPos();
-	UOSInt i = this->hdlrList.GetCount();
+	UIntOS i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<OffsetChgHandler> cb = this->hdlrList.GetItem(i);
@@ -556,7 +556,7 @@ UInt64 UI::GUIHexFileView::GetFileSize()
 	return this->fileSize;
 }
 
-UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray outBuff)
+UIntOS UI::GUIHexFileView::GetFileData(UInt64 ofst, UIntOS size, Data::ByteArray outBuff)
 {
 	if (this->fd)
 	{
@@ -595,7 +595,7 @@ Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)
 	{
 		return false;
 	}
-	UOSInt index = analyse->GetFrameIndex(this->currOfst);
+	UIntOS index = analyse->GetFrameIndex(this->currOfst);
 	if (index == INVALID_INDEX)
 	{
 		return false;
@@ -603,18 +603,18 @@ Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)
 	return analyse->GetFrameName(index, sb);
 }
 
-UOSInt UI::GUIHexFileView::GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
+UIntOS UI::GUIHexFileView::GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
 {
 	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame) && this->analyse.SetTo(analyse))
 	{
-		UOSInt i = frame->GetFieldInfos(this->currOfst, fieldList);
+		UIntOS i = frame->GetFieldInfos(this->currOfst, fieldList);
 		if (i > 0)
 		{
 			NN<const IO::FileAnalyse::FrameDetail::FieldInfo> field;
-			UOSInt k = fieldList->GetCount();
-			UOSInt j = k - i;
+			UIntOS k = fieldList->GetCount();
+			UIntOS j = k - i;
 			while (j < k)
 			{
 				field = fieldList->GetItemNoCheck(j);
@@ -641,7 +641,7 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnal
 	return 0;
 }
 
-UOSInt UI::GUIHexFileView::GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList)
+UIntOS UI::GUIHexFileView::GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame))
@@ -659,7 +659,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 		return false;
 	}
 	UInt64 currOfst = this->currOfst;
-	UOSInt index = analyse->GetFrameIndex(currOfst);
+	UIntOS index = analyse->GetFrameIndex(currOfst);
 	if (index == INVALID_INDEX)
 	{
 		return true;

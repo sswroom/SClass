@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/MemoryReadingStream.h"
 
-IO::MemoryReadingStream::MemoryReadingStream(UnsafeArray<const UTF8Char> buff, UOSInt buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff, buffSize)
+IO::MemoryReadingStream::MemoryReadingStream(UnsafeArray<const UTF8Char> buff, UIntOS buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff, buffSize)
 {
 	this->currPtr = 0;
 }
@@ -21,9 +21,9 @@ Bool IO::MemoryReadingStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryReadingStream::Read(const Data::ByteArray &buff)
+UIntOS IO::MemoryReadingStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt readSize = buff.GetSize();
+	UIntOS readSize = buff.GetSize();
 	if (this->buff.GetSize() - this->currPtr < readSize)
 	{
 		readSize = this->buff.GetSize() - this->currPtr;
@@ -33,7 +33,7 @@ UOSInt IO::MemoryReadingStream::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt IO::MemoryReadingStream::Write(Data::ByteArrayR buff)
+UIntOS IO::MemoryReadingStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -63,7 +63,7 @@ UInt64 IO::MemoryReadingStream::SeekFromBeginning(UInt64 position)
 
 	if (outPos > this->buff.GetSize())
 		return this->currPtr;
-	this->currPtr = (UOSInt)outPos;
+	this->currPtr = (UIntOS)outPos;
 	return this->currPtr;
 }
 

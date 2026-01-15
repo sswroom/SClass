@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const UInt8> key, UOSInt keySize)
+Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const UInt8> key, UIntOS keySize)
 {
 	this->hashInner = hash->Clone();
 	this->hashOuter = hash->Clone();
@@ -16,7 +16,7 @@ Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const
 		this->padSize = keySize;
 	this->iPad = MemAllocArr(UInt8, this->padSize);
 	this->oPad = MemAllocArr(UInt8, this->padSize);
-	UOSInt i = this->padSize;
+	UIntOS i = this->padSize;
 	while (i-- > 0)
 	{
 		this->iPad[i] = 0x36;
@@ -61,7 +61,7 @@ void Crypto::Hash::HMAC::Clear()
 	this->hashInner->Calc(iPad, padSize);
 }
 
-void Crypto::Hash::HMAC::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::HMAC::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->hashInner->Calc(buff, buffSize);
 }
@@ -75,12 +75,12 @@ void Crypto::Hash::HMAC::GetValue(UnsafeArray<UInt8> buff) const
 	this->hashOuter->GetValue(buff);
 }
 
-UOSInt Crypto::Hash::HMAC::GetBlockSize() const
+UIntOS Crypto::Hash::HMAC::GetBlockSize() const
 {
 	return this->hashInner->GetBlockSize();
 }
 
-UOSInt Crypto::Hash::HMAC::GetResultSize() const
+UIntOS Crypto::Hash::HMAC::GetResultSize() const
 {
 	return this->hashInner->GetResultSize();
 }

@@ -8,31 +8,31 @@ namespace Data
 	{
 	private:
 		UnsafeArray<Int64> arr;
-		UOSInt objCnt;
-		UOSInt capacity;
+		UIntOS objCnt;
+		UIntOS capacity;
 
-		void Init(UOSInt capacity);
+		void Init(UIntOS capacity);
 	public:
 		ArrayListDate();
-		ArrayListDate(UOSInt capacity);
+		ArrayListDate(UIntOS capacity);
 		~ArrayListDate();
 
-		UOSInt Add(NN<Data::DateTime> val);
+		UIntOS Add(NN<Data::DateTime> val);
 		void AddAll(NN<const Data::ArrayListDate> arr);
-		void AddRange(UnsafeArray<NN<const Data::DateTime>> arr, UOSInt cnt);
-		void RemoveAt(UOSInt index);
-		void Insert(UOSInt index, NN<Data::DateTime> val);
-		UOSInt SortedInsert(NN<Data::DateTime> val);
-		OSInt SortedIndexOf(NN<Data::DateTime> val) const;
-		UOSInt IndexOf(NN<Data::DateTime> val) const;
+		void AddRange(UnsafeArray<NN<const Data::DateTime>> arr, UIntOS cnt);
+		void RemoveAt(UIntOS index);
+		void Insert(UIntOS index, NN<Data::DateTime> val);
+		UIntOS SortedInsert(NN<Data::DateTime> val);
+		IntOS SortedIndexOf(NN<Data::DateTime> val) const;
+		UIntOS IndexOf(NN<Data::DateTime> val) const;
 		void Clear();
 		NN<ArrayListDate> Clone() const;
 
-		UOSInt GetCount() const;
-		UOSInt GetCapacity() const;
+		UIntOS GetCount() const;
+		UIntOS GetCapacity() const;
 
-		void GetItem(UOSInt index, NN<Data::DateTime> valOut) const;
-		void SetItem(UOSInt index, NN<Data::DateTime> val);
+		void GetItem(UIntOS index, NN<Data::DateTime> valOut) const;
+		void SetItem(UIntOS index, NN<Data::DateTime> val);
 		void Sort(Bool decending);
 	};
 }

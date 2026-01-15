@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->cboName->GetText(sb);
 	sb.Trim();
-	UOSInt i = sb.GetCharCnt();
+	UIntOS i = sb.GetCharCnt();
 	while (i-- > 0)
 	{
 		if (sb.ToString()[i] >= 0x80)
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(AnyType u
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(NN<Net::MACInfo::MACEntry> obj1, NN<Net::MACInfo::MACEntry> obj2)
+IntOS __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(NN<Net::MACInfo::MACEntry> obj1, NN<Net::MACInfo::MACEntry> obj2)
 {
 	return Text::StrCompareFastC(obj1->name, obj1->nameLen, obj2->name, obj2->nameLen);
 }
@@ -64,8 +64,8 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<Net::MACInfo::MACEntry> macList = Net::MACInfo::GetMACEntryList(i);
 	UnsafeArray<NN<Net::MACInfo::MACEntry>> macListSort = MemAllocArr(NN<Net::MACInfo::MACEntry>, i);
 	Optional<Net::MACInfo::MACEntry> lastMAC;
@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 			macListSort[j++] = macList[i];
 		}
 	}
-	Data::Sort::ArtificialQuickSortFunc<NN<Net::MACInfo::MACEntry>>::Sort(macListSort, MACCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<NN<Net::MACInfo::MACEntry>>::Sort(macListSort, MACCompare, 0, (IntOS)j - 1);
 	this->cboName->BeginUpdate();
 	lastMAC = nullptr;
 	i = 0;

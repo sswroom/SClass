@@ -15,9 +15,9 @@ namespace IO
 	private:
 		Data::ArrayListStringNN fileNames;
 		UnsafeArray<UInt8> chkValues;
-		UOSInt chkCapacity;
+		UIntOS chkCapacity;
 		Crypto::Hash::HashType chkType;
-		UOSInt hashSize;
+		UIntOS hashSize;
 
 	public:
 		static Optional<FileCheck> CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError);
@@ -30,13 +30,13 @@ namespace IO
 		FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType);
 		virtual ~FileCheck();
 
-		UOSInt GetHashSize() const;
+		UIntOS GetHashSize() const;
 		Crypto::Hash::HashType GetCheckType() const;
-		UOSInt GetCount() const;
-		Optional<Text::String> GetEntryName(UOSInt index) const;
-		Bool GetEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal) const;
+		UIntOS GetCount() const;
+		Optional<Text::String> GetEntryName(UIntOS index) const;
+		Bool GetEntryHash(UIntOS index, UnsafeArray<UInt8> hashVal) const;
 		void AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVal);
-		Bool CheckEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const;
+		Bool CheckEntryHash(UIntOS index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const;
 		Bool MergeFrom(NN<FileCheck> chk);
 
 		virtual IO::ParserType GetParserType() const;

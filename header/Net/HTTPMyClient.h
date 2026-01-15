@@ -29,23 +29,23 @@ namespace Net
 
 		UInt64 contRead;
 		Int32 contEnc;
-		UOSInt chunkSizeLeft;
+		UIntOS chunkSizeLeft;
 
 		UnsafeArray<UInt8> dataBuff;
-		UOSInt buffSize;
-		UOSInt buffOfst;
+		UIntOS buffSize;
+		UIntOS buffOfst;
 		Data::Duration timeout;
 
-		UOSInt ReadRAWInternal(Data::ByteArray buff);
+		UIntOS ReadRAWInternal(Data::ByteArray buff);
 	public:
 		HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError() const;
 
-		UOSInt ReadRAW(const Data::ByteArray &buff);
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		UIntOS ReadRAW(const Data::ByteArray &buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

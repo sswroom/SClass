@@ -40,7 +40,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 			NN<UI::GUIButton> btnLastValue;
 
-			static void __stdcall OnColorChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnColorChg(AnyType userObj, UIntOS newPos);
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 			static void __stdcall OnLastValueClick(AnyType userObj);

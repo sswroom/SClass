@@ -7,7 +7,7 @@
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"
 
-OSInt Map::OSM::ElementComparator::Compare(NN<ElementInfo> a, NN<ElementInfo> b) const
+IntOS Map::OSM::ElementComparator::Compare(NN<ElementInfo> a, NN<ElementInfo> b) const
 {
 	if (a->type > b->type)
 	{
@@ -46,7 +46,7 @@ void __stdcall Map::OSM::OSMData::FreeElement(NN<ElementInfo> elem)
 	if (elem->tags.SetTo(tags))
 	{
 		NN<TagInfo> tag;
-		UOSInt i = tags->GetCount();
+		UIntOS i = tags->GetCount();
 		while (i-- > 0)
 		{
 			tag = tags->GetItemNoCheck(i);
@@ -89,8 +89,8 @@ Map::OSM::LayerType Map::OSM::OSMData::CalcElementLayerType(NN<ElementInfo> elem
 		return LayerType::Unknown;
 	}
 	NN<TagInfo> tag;
-	UOSInt i = 0;
-	UOSInt j = tags->GetCount();
+	UIntOS i = 0;
+	UIntOS j = tags->GetCount();
 	while (i < j)
 	{
 		tag = tags->GetItemNoCheck(i);
@@ -524,12 +524,12 @@ NN<Map::OSM::RelationInfo> Map::OSM::OSMData::NewRelation(Int64 id)
 
 Optional<Map::OSM::ElementInfo> Map::OSM::OSMData::GetElementById(Int64 id, ElementType type)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->elements.GetCount() - 1;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->elements.GetCount() - 1;
 	while (i <= j)
 	{
-		OSInt k = (i + j) >> 1;
-		NN<ElementInfo> elem = this->elements.GetItemNoCheck((UOSInt)k);
+		IntOS k = (i + j) >> 1;
+		NN<ElementInfo> elem = this->elements.GetItemNoCheck((UIntOS)k);
 		if (elem->type < type || (elem->type == type && elem->id < id))
 		{
 			i = k + 1;
@@ -567,8 +567,8 @@ Optional<Map::OSM::NodeInfo> Map::OSM::OSMData::GetNodeByPos(Double lat, Double 
 	NN<ElementGroup> grp;
 	if (this->eleGroups.Get(x << 16 | y).SetTo(grp))
 	{
-		UOSInt i = 0;
-		UOSInt j = grp->elements.GetCount();
+		UIntOS i = 0;
+		UIntOS j = grp->elements.GetCount();
 		while (i < j)
 		{
 			NN<ElementInfo> elem = grp->elements.GetItemNoCheck(i);
@@ -714,8 +714,8 @@ NN<Math::Geometry::Vector2D> Map::OSM::OSMData::CreateVector(NN<ElementInfo> ele
 	else if (elem->type == ElementType::Way)
 	{
 		NN<WayInfo> way = NN<WayInfo>::ConvertFrom(elem);
-		UOSInt i = 0;
-		UOSInt j = way->nodes.GetCount();
+		UIntOS i = 0;
+		UIntOS j = way->nodes.GetCount();
 		if (j < 2)
 		{
 			printf("OSMData: Way %lld has no enough nodes\r\n", way->id);
@@ -728,7 +728,7 @@ NN<Math::Geometry::Vector2D> Map::OSM::OSMData::CreateVector(NN<ElementInfo> ele
 			NEW_CLASSNN(ret, Math::Geometry::Point(4326, 0, 0));
 			return ret;
 		}
-		if (this->layerSpecs[(UOSInt)layerType].isArea)
+		if (this->layerSpecs[(UIntOS)layerType].isArea)
 		{
 			NN<Math::Geometry::Polygon> pg;
 			NN<Math::Geometry::LinearRing> line;
@@ -809,8 +809,8 @@ Bool Map::OSM::OSMData::IsShowUnknown() const
 void Map::OSM::OSMData::BuildIndex()
 {
 	this->SortElements();
-	UOSInt i = 0;
-	UOSInt j = this->elements.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->elements.GetCount();
 	NN<ElementInfo> elem;
 	while (i < j)
 	{
@@ -822,7 +822,7 @@ void Map::OSM::OSMData::BuildIndex()
 
 void Map::OSM::OSMData::SetStyleDefault()
 {
-	UOSInt i = (UOSInt)LayerType::Count;
+	UIntOS i = (UIntOS)LayerType::Count;
 	while (i-- > 0)
 	{
 		this->layerSpecs[i].minScale = 1;
@@ -830,64 +830,64 @@ void Map::OSM::OSMData::SetStyleDefault()
 		this->layerSpecs[i].isArea = false;
 		this->layerSpecs[i].hide = false;
 	}
-	this->layerSpecs[(UOSInt)LayerType::AmenityFastFood].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::AmenityMarketplace].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::AmenityPostBox].maxScale = 5000.0;
-	this->layerSpecs[(UOSInt)LayerType::AmenityRestaurant].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::AmenityTelephone].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::Building].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::HighwayBusStop].maxScale = 20000.0;
-	this->layerSpecs[(UOSInt)LayerType::HighwayCycleway].maxScale = 100000.0;
-	this->layerSpecs[(UOSInt)LayerType::HighwayFootway].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::HighwayPath].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::HighwayTrafficSignals].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::Landuse].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::LanduseIndustrial].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::LanduseResidential].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalBay].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalCape].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalGrassland].maxScale = 200000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalPeak].maxScale = 500000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalRock].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalSaddle].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalScrub].maxScale = 200000.0;
-	this->layerSpecs[(UOSInt)LayerType::NaturalValley].maxScale = 10000.0;
-	this->layerSpecs[(UOSInt)LayerType::PlaceHamlet].minScale = 5000.0;
-	this->layerSpecs[(UOSInt)LayerType::PlaceHamlet].maxScale = 25000.0;
-	this->layerSpecs[(UOSInt)LayerType::PlaceLocality].maxScale = 20000.0;
-	this->layerSpecs[(UOSInt)LayerType::PowerLine].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::PowerSubstation].maxScale = 50000.0;
-	this->layerSpecs[(UOSInt)LayerType::WaterwayStream].maxScale = 25000.0;
-	this->layerSpecs[(UOSInt)LayerType::Unknown].maxScale = 2000000000.0;
-	this->layerSpecs[(UOSInt)LayerType::AmenityPolice].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::AmenityKindergarten].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::Building].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::GolfBunker].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::GolfFairway].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::GolfRough].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::Landuse].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::LanduseIndustrial].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::LanduseResidential].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::LeisurePark].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::LeisurePitch].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::NaturalGrassland].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::NaturalScrub].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::NaturalWood].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::PowerSubstation].isArea = true;
-	this->layerSpecs[(UOSInt)LayerType::Unknown].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayCrossing].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayEmergencyAccessPoint].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayGiveWay].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayMilestone].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayRestArea].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwaySpeedCamera].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::HighwayStreetLamp].hide = true;
-	this->layerSpecs[(UOSInt)LayerType::NaturalValley].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::AmenityFastFood].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::AmenityMarketplace].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::AmenityPostBox].maxScale = 5000.0;
+	this->layerSpecs[(UIntOS)LayerType::AmenityRestaurant].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::AmenityTelephone].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::Building].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::HighwayBusStop].maxScale = 20000.0;
+	this->layerSpecs[(UIntOS)LayerType::HighwayCycleway].maxScale = 100000.0;
+	this->layerSpecs[(UIntOS)LayerType::HighwayFootway].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::HighwayPath].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::HighwayTrafficSignals].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::Landuse].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::LanduseIndustrial].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::LanduseResidential].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalBay].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalCape].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalGrassland].maxScale = 200000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalPeak].maxScale = 500000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalRock].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalSaddle].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalScrub].maxScale = 200000.0;
+	this->layerSpecs[(UIntOS)LayerType::NaturalValley].maxScale = 10000.0;
+	this->layerSpecs[(UIntOS)LayerType::PlaceHamlet].minScale = 5000.0;
+	this->layerSpecs[(UIntOS)LayerType::PlaceHamlet].maxScale = 25000.0;
+	this->layerSpecs[(UIntOS)LayerType::PlaceLocality].maxScale = 20000.0;
+	this->layerSpecs[(UIntOS)LayerType::PowerLine].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::PowerSubstation].maxScale = 50000.0;
+	this->layerSpecs[(UIntOS)LayerType::WaterwayStream].maxScale = 25000.0;
+	this->layerSpecs[(UIntOS)LayerType::Unknown].maxScale = 2000000000.0;
+	this->layerSpecs[(UIntOS)LayerType::AmenityPolice].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::AmenityKindergarten].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::Building].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::GolfBunker].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::GolfFairway].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::GolfRough].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::Landuse].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::LanduseIndustrial].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::LanduseResidential].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::LeisurePark].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::LeisurePitch].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::NaturalGrassland].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::NaturalScrub].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::NaturalWood].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::PowerSubstation].isArea = true;
+	this->layerSpecs[(UIntOS)LayerType::Unknown].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayCrossing].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayEmergencyAccessPoint].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayGiveWay].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayMilestone].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayRestArea].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwaySpeedCamera].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::HighwayStreetLamp].hide = true;
+	this->layerSpecs[(UIntOS)LayerType::NaturalValley].hide = true;
 }
 
 void Map::OSM::OSMData::SetStyleCenterline()
 {
-	UOSInt i = (UOSInt)LayerType::Count;
+	UIntOS i = (UIntOS)LayerType::Count;
 	while (i-- > 0)
 	{
 		this->layerSpecs[i].minScale = 1;
@@ -895,25 +895,25 @@ void Map::OSM::OSMData::SetStyleCenterline()
 		this->layerSpecs[i].isArea = false;
 		this->layerSpecs[i].hide = true;
 	}
-	this->layerSpecs[(UOSInt)LayerType::HighwayMotorway].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayMotorwayLink].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayPrimary].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayPrimaryLink].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayResidential].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwaySecondary].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwaySecondaryLink].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayService].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayTertiary].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayTrunk].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayTrunkLink].hide = false;
-	this->layerSpecs[(UOSInt)LayerType::HighwayUnclassified].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayMotorway].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayMotorwayLink].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayPrimary].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayPrimaryLink].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayResidential].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwaySecondary].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwaySecondaryLink].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayService].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayTertiary].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayTrunk].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayTrunkLink].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayUnclassified].hide = false;
 }
 
-UOSInt Map::OSM::OSMData::GetRelations(NN<Data::ArrayListNN<RelationInfo>> outArr) const
+UIntOS Map::OSM::OSMData::GetRelations(NN<Data::ArrayListNN<RelationInfo>> outArr) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->elements.GetCount();
-	UOSInt ret = 0;
+	UIntOS i = 0;
+	UIntOS j = this->elements.GetCount();
+	UIntOS ret = 0;
 	while (i < j)
 	{
 		NN<ElementInfo> elem = this->elements.GetItemNoCheck(i);
@@ -937,11 +937,11 @@ void Map::OSM::OSMData::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<ElementInfo> elem;
-	UOSInt i = 0;
-	UOSInt j = this->elements.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->elements.GetCount();
 	while (i < j)
 	{
 		elem = this->elements.GetItemNoCheck(i);
@@ -960,7 +960,7 @@ UOSInt Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 			else if (!elem->hasParent)
 			{
 				LayerType layerType = elem->layerType;
-				if (!this->layerSpecs[(UOSInt)layerType].hide)
+				if (!this->layerSpecs[(UIntOS)layerType].hide)
 				{
 					outArr->Add(elem->id << 2 | (UInt8)elem->type);
 				}
@@ -971,22 +971,22 @@ UOSInt Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 	return j;
 }
 
-UOSInt Map::OSM::OSMData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::OSM::OSMData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OSM::OSMData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::OSM::OSMData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX = (Int32)(rect.min.x / this->groupDist);
 	Int32 maxX = (Int32)(rect.max.x / this->groupDist);
 	Int32 minY = (Int32)(rect.min.y / this->groupDist);
 	Int32 maxY = (Int32)(rect.max.y / this->groupDist);
-	OSInt si = this->eleGroups.GetIndex((minX << 16) | minY);
-	UOSInt index = si >= 0 ? (UOSInt)si : (UOSInt)(~si);
+	IntOS si = this->eleGroups.GetIndex((minX << 16) | minY);
+	UIntOS index = si >= 0 ? (UIntOS)si : (UIntOS)(~si);
 	si = this->eleGroups.GetIndex((maxX << 16) | maxY);
-	UOSInt endIndex = si >= 0 ? (UOSInt)si : (UOSInt)(~si);
-	UOSInt ret = 0;
+	UIntOS endIndex = si >= 0 ? (UIntOS)si : (UIntOS)(~si);
+	UIntOS ret = 0;
 	NN<ElementInfo> elem;
 	NN<ElementGroup> grp;
 	Data::ArrayListInt64 tmpArr;
@@ -996,8 +996,8 @@ UOSInt Map::OSM::OSMData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 		{
 			if (grp->x >= minX && grp->x <= maxX && grp->y >= minY && grp->y <= maxY)
 			{
-				UOSInt k = 0;
-				UOSInt l = grp->elements.GetCount();
+				UIntOS k = 0;
+				UIntOS l = grp->elements.GetCount();
 				while (k < l)
 				{
 					elem = grp->elements.GetItemNoCheck(k);
@@ -1013,13 +1013,13 @@ UOSInt Map::OSM::OSMData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 						{
 							LayerType layerType = elem->layerType;
 							Bool show = true;
-							if (!this->showUnknown && this->layerSpecs[(UOSInt)layerType].hide)
+							if (!this->showUnknown && this->layerSpecs[(UIntOS)layerType].hide)
 							{
 								show = false;
 							}
 							else
 							{
-								show = this->currScale >= this->layerSpecs[(UOSInt)layerType].minScale && this->currScale <= this->layerSpecs[(UOSInt)layerType].maxScale;
+								show = this->currScale >= this->layerSpecs[(UIntOS)layerType].minScale && this->currScale <= this->layerSpecs[(UIntOS)layerType].maxScale;
 							}
 							if (show)
 							{
@@ -1033,10 +1033,10 @@ UOSInt Map::OSM::OSMData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 		}
 		index++;
 	}
-	ArtificialQuickSort_SortInt64(tmpArr.Arr().Ptr(), 0, (OSInt)tmpArr.GetCount() - 1);
+	ArtificialQuickSort_SortInt64(tmpArr.Arr().Ptr(), 0, (IntOS)tmpArr.GetCount() - 1);
 	Int64 lastId = -1;
-	UOSInt i = 0;
-	UOSInt j = tmpArr.GetCount();
+	UIntOS i = 0;
+	UIntOS j = tmpArr.GetCount();
 	while (i < j)
 	{
 		Int64 currId = tmpArr.GetItem(i);
@@ -1058,7 +1058,7 @@ Int64 Map::OSM::OSMData::GetObjectIdMax() const
 	return elem->id << 2 | (UInt8)elem->type;
 }
 
-UOSInt Map::OSM::OSMData::GetRecordCnt() const
+UIntOS Map::OSM::OSMData::GetRecordCnt() const
 {
 	return this->elements.GetCount();
 }
@@ -1067,15 +1067,15 @@ void Map::OSM::OSMData::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::OSM::OSMData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::OSM::OSMData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<ElementInfo> elem;
 	NN<Data::ArrayListNN<TagInfo>> tags;
 	NN<TagInfo> tag;
 	NN<Text::String> lang;
 	NN<Math::Geometry::Vector2D> vec;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (!this->GetElementById(id >> 2, (ElementType)(id & 3)).SetTo(elem))
 	{
 		return false;
@@ -1130,12 +1130,12 @@ Bool Map::OSM::OSMData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameA
 	return false;
 }
 
-UOSInt Map::OSM::OSMData::GetColumnCnt() const
+UIntOS Map::OSM::OSMData::GetColumnCnt() const
 {
 	return 4;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::OSM::OSMData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::OSM::OSMData::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	switch (colIndex)
 	{
@@ -1152,7 +1152,7 @@ UnsafeArrayOpt<UTF8Char> Map::OSM::OSMData::GetColumnName(UnsafeArray<UTF8Char> 
 	}
 }
 
-DB::DBUtil::ColType Map::OSM::OSMData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::OSM::OSMData::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	switch (colIndex)
 	{
@@ -1173,7 +1173,7 @@ DB::DBUtil::ColType Map::OSM::OSMData::GetColumnType(UOSInt colIndex, OptOut<UOS
 	}
 }
 
-Bool Map::OSM::OSMData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::OSM::OSMData::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	switch (colIndex)
 	{
@@ -1243,7 +1243,7 @@ Optional<Math::Geometry::Vector2D> Map::OSM::OSMData::GetNewVectorById(NN<GetObj
 	return this->CreateVector(elem);
 }
 
-UOSInt Map::OSM::OSMData::GetGeomCol() const
+UIntOS Map::OSM::OSMData::GetGeomCol() const
 {
 	return 3;
 }

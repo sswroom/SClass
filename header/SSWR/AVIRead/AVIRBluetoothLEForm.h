@@ -45,7 +45,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnStoreListClicked(AnyType userObj);
-			static void __stdcall OnDevicesDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnDevicesDblClick(AnyType userObj, UIntOS index);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnLEScanItem(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();

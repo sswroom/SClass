@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 			Data::DateTime dt;
 			NN<IO::BTScanLog::LogEntry> log;
 			Int64 lastTick;
-			UOSInt i = 0;
-			UOSInt j = me->entry->logs->GetCount();
+			UIntOS i = 0;
+			UIntOS j = me->entry->logs->GetCount();
 			if (j > 0)
 			{
 				lastTick = me->entry->logs->GetItemNoCheck(0)->timeTicks;
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.ClearStr();
 				sb.AppendUTF8Char('\"');
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb.AppendUTF8Char('\"');
 				sb.AppendUTF8Char(',');
 				sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);
@@ -105,9 +105,9 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 	Data::DateTime dt;
 	NN<IO::BTScanLog::LogEntry> log;
 	Int64 lastTick;
-	UOSInt i = 0;
-	UOSInt j = entry->logs->GetCount();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = entry->logs->GetCount();
+	UIntOS k;
 	if (j > 0)
 	{
 		lastTick = entry->logs->GetItemNoCheck(0)->timeTicks;

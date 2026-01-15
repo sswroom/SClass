@@ -21,10 +21,10 @@ namespace Manage
 
 		virtual UnsafeArrayOpt<UTF8Char> ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address);
 
-		UOSInt GetModuleCount();
-		Optional<Text::String> GetModuleName(UOSInt index);
-		UInt64 GetModuleAddr(UOSInt index);
-		UInt64 GetModuleSize(UOSInt index);
+		UIntOS GetModuleCount();
+		Optional<Text::String> GetModuleName(UIntOS index);
+		UInt64 GetModuleAddr(UIntOS index);
+		UInt64 GetModuleSize(UIntOS index);
 	};
 }
 #endif

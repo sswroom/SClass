@@ -2,7 +2,7 @@ section .text
 
 global _Math_Int32Arr2DblArr
 
-;void Math_Int32Arr2DblArr(Double *dblArr, Int32 *intArr, OSInt arrCnt)
+;void Math_Int32Arr2DblArr(Double *dblArr, Int32 *intArr, IntOS arrCnt)
 ;0 retAddr
 ;4 dblArr
 ;8 intArr

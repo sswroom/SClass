@@ -17,14 +17,14 @@ Net::SNMPInfo::~SNMPInfo()
 
 }
 
-void Net::SNMPInfo::PDUSeqGetDetail(Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb)
+void Net::SNMPInfo::PDUSeqGetDetail(Data::ByteArrayR pdu, UIntOS level, NN<Text::StringBuilderUTF8> sb)
 {
 	if (level > 0)
 	{
 		sb->AppendChar('\t', level);
 	}
 	sb->AppendC(UTF8STRC("{\r\n"));
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < pdu.GetSize())
 	{
 		i += this->PDUGetDetail(nullptr, pdu.SubArray(i), level + 1, sb);
@@ -41,7 +41,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(Data::ByteArrayR pdu, UOSInt level, NN<Text:
 	sb->AppendC(UTF8STRC("}"));
 }
 
-UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb)
+UIntOS Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UIntOS level, NN<Text::StringBuilderUTF8> sb)
 {
 	if (pdu.GetSize() < 2)
 	{
@@ -58,8 +58,8 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOS
 		sb->AppendUTF8Char(' ');
 	}
 	UInt8 t = pdu[0];
-	UOSInt len = pdu[1];
-	UOSInt hdrSize = 2;
+	UIntOS len = pdu[1];
+	UIntOS hdrSize = 2;
 	if (len & 0x80)
 	{
 		if (len == 0x81)
@@ -117,7 +117,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOS
 		sb->AppendC(UTF8STRC("OCTET STRING "));
 		{
 			Bool isBin = false;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < len)
 			{
 				if (pdu[i + hdrSize] < 0x20 || pdu[i + hdrSize] >= 0x7f)
@@ -165,7 +165,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOS
 			UTF8Char sbuff[16];
 			UnsafeArray<UTF8Char> sptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&pdu[hdrSize]));
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		else
 		{
@@ -299,7 +299,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, Data::ByteArrayR pduBuff, NN<Text:
 	case 4:
 		{
 			Bool isBin = false;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < pduBuff.GetSize())
 			{
 				if (pduBuff[i] < 0x20 || pduBuff[i] >= 0x7f)
@@ -346,7 +346,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, Data::ByteArrayR pduBuff, NN<Text:
 			UTF8Char sbuff[16];
 			UnsafeArray<UTF8Char> sptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pduBuff.ReadNU32(0));
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		else
 		{

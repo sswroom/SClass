@@ -59,7 +59,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NN<IO
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::OruxMapExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -88,9 +88,9 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	NN<Map::TileMap> tileMap = NN<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
-	UOSInt i;
-	UOSInt j;
-	UOSInt level;
+	UIntOS i;
+	UIntOS j;
+	UIntOS level;
 	NN<Text::String> s;
 //	UnsafeArray<const UTF8Char> csptr;
 	Int32 minX;
@@ -105,13 +105,13 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	Bool succ;
 	i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(fileName2, &fileName.v[i + 1], fileName.leng - i - 1);
-	i = Text::StrLastIndexOfCharC(fileName2, (UOSInt)(sptr - fileName2), '.');
+	i = Text::StrLastIndexOfCharC(fileName2, (UIntOS)(sptr - fileName2), '.');
 	if (i != INVALID_INDEX)
 	{
 		fileName2[i] = 0;
 		sptr = &fileName2[i];
 	}
-	if (Text::StrEndsWithC(fileName2, (UOSInt)(sptr - fileName2), UTF8STRC(".otrk2")))
+	if (Text::StrEndsWithC(fileName2, (UIntOS)(sptr - fileName2), UTF8STRC(".otrk2")))
 	{
 		sptr -= 6;
 		*sptr = 0;
@@ -167,7 +167,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 					writer->Write(CSTR("<OruxTracker  versionCode=\"2.1\">\n"));
 
 					writer->Write(CSTR("<MapCalibration layers=\"false\" layerLevel=\""));
-					sptr = Text::StrUOSInt(sbuff, level);
+					sptr = Text::StrUIntOS(sbuff, level);
 					writer->Write(CSTRP(sbuff, sptr));
 					writer->Write(CSTR("\">\n"));
 
@@ -255,7 +255,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 						Math::Coord2D<Int32> tileId = imgIds.GetItem(j);
 						if (osm->LoadTileImageData(level, tileId, bounds, true, it).SetTo(fd))
 						{
-							UOSInt imgSize = (UOSInt)fd->GetDataSize();
+							UIntOS imgSize = (UIntOS)fd->GetDataSize();
 							Data::ByteBuffer imgBuff(imgSize);
 							fd->GetRealData(0, imgSize, imgBuff);
 							sql.Clear();

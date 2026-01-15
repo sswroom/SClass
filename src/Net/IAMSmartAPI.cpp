@@ -30,11 +30,11 @@ void Net::IAMSmartAPI::InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN c
 	cli->AddHeaderC(CSTR("clientID"), this->clientID->ToCString());
 	cli->AddHeaderC(CSTR("signatureMethod"), signatureMethod);
 	sptr = Text::StrInt64(sbuff, timestamp);
-	hmac.Calc(sbuff, (UOSInt)(sptr - sbuff));
+	hmac.Calc(sbuff, (UIntOS)(sptr - sbuff));
 	cli->AddHeaderC(CSTR("timestamp"), CSTRP(sbuff, sptr));
 	this->rand.NextBytes(buff, 18);
 	sptr = Text::StrHexBytes(sbuff, buff, 18, 0);
-	hmac.Calc(sbuff, (UOSInt)(sptr - sbuff));
+	hmac.Calc(sbuff, (UIntOS)(sptr - sbuff));
 	if (content.leng > 0)
 	{
 		hmac.Calc(content.v, content.leng);
@@ -61,7 +61,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	WriteMInt32(msgBuff.Ptr(), 12);
 	byteGen.NextBytes(msgBuff + 4, 12);
 	Crypto::Encrypt::AES256GCM aes(cek->key, msgBuff + 4);
-	UOSInt encLeng = aes.Encrypt(jsonMsg.v, jsonMsg.leng, msgBuff + 16);
+	UIntOS encLeng = aes.Encrypt(jsonMsg.v, jsonMsg.leng, msgBuff + 16);
 	if (encLeng != jsonMsg.leng + 16)
 	{
 		MemFreeArr(msgBuff);
@@ -97,7 +97,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		return nullptr;
 	}
 	NN<Text::JSONBase> json;
-	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength() - 1)).SetTo(json))
 	{
 #if defined(VERBOSE)
 		printf("Response is not JSON\r\n");
@@ -123,7 +123,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	}
 
 	msgBuff = MemAllocArr(UInt8, s->leng);
-	UOSInt msgLeng = b64.DecodeBin(s->ToCString(), msgBuff);
+	UIntOS msgLeng = b64.DecodeBin(s->ToCString(), msgBuff);
 	json->EndUse();
 	if (msgLeng < 32)
 	{
@@ -143,7 +143,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	}
 	UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, msgLeng - 32 + 1);
 	aes.SetIV(&msgBuff[4]);
-	UOSInt decLeng = aes.Decrypt(&msgBuff[16], msgLeng - 16, decBuff);
+	UIntOS decLeng = aes.Decrypt(&msgBuff[16], msgLeng - 16, decBuff);
 	MemFreeArr(msgBuff);
 	if (decLeng != msgLeng - 32)
 	{
@@ -364,7 +364,7 @@ Bool Net::IAMSmartAPI::GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo>
 		return false;
 	}
 	NN<Text::JSONBase> json;
-	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength() - 1)).SetTo(json))
 	{
 #if defined(VERBOSE)
 		printf("Response is not JSON\r\n");
@@ -388,7 +388,7 @@ Bool Net::IAMSmartAPI::GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo>
 	}
 
 	UnsafeArray<UInt8> pubKeyBuff = MemAllocArr(UInt8, pubKey->leng);
-	UOSInt pubKeyLen;
+	UIntOS pubKeyLen;
 	Text::TextBinEnc::Base64Enc b64;
 	pubKeyLen = b64.DecodeBin(pubKey->ToCString(), pubKeyBuff);
 	if (!Crypto::Cert::X509File::IsPublicKeyInfo(pubKeyBuff, pubKeyBuff + pubKeyLen, "1"))
@@ -426,7 +426,7 @@ Bool Net::IAMSmartAPI::GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo>
 	}
 	UnsafeArray<UInt8> cekBuff1 = MemAllocArr(UInt8, secretKey->leng);
 	UInt8 cekBuff2[256];
-	UOSInt cekLeng;
+	UIntOS cekLeng;
 	cekLeng = b64.DecodeBin(secretKey->ToCString(), cekBuff1);
 	if (cekLeng != 256)
 	{
@@ -502,7 +502,7 @@ Bool Net::IAMSmartAPI::RevokeKey()
 		return false;
 	}
 	NN<Text::JSONBase> json;
-	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength() - 1)).SetTo(json))
 	{
 #if defined(VERBOSE)
 		printf("Response is not JSON\r\n");

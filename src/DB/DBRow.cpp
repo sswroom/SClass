@@ -170,7 +170,7 @@ Bool DB::DBRow::SetFieldVector(NN<DB::DBRow::Field> field, Optional<Math::Geomet
 	return true;
 }
 
-Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, const UInt8 *buff, UOSInt buffSize)
+Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, const UInt8 *buff, UIntOS buffSize)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
@@ -290,7 +290,7 @@ Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(NN<DB::DBRow::Field> field) 
 	}	
 }
 
-const UInt8 *DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, UOSInt *buffSize) const
+const UInt8 *DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, UIntOS *buffSize) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
@@ -349,7 +349,7 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 	NN<DB::ColDef> col;
 	NN<DB::DBRow::Field> field;
 	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (it.HasNext())
 	{
 		col = it.Next();
@@ -368,7 +368,7 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 			{
 			case DT_BINARY:
 				{
-					UOSInt size = r->GetBinarySize(i);
+					UIntOS size = r->GetBinarySize(i);
 					UInt8 *buff = MemAlloc(UInt8, size);
 					r->GetBinary(i, buff);
 					this->SetFieldBinary(field, buff, size);
@@ -494,7 +494,7 @@ Bool DB::DBRow::SetValueVector(Text::CStringNN fieldName, Math::Geometry::Vector
 	return this->SetFieldVector(field, vec);
 }
 
-Bool DB::DBRow::SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOSInt buffSize)
+Bool DB::DBRow::SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UIntOS buffSize)
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
@@ -564,7 +564,7 @@ Math::Geometry::Vector2D *DB::DBRow::GetValueVector(Text::CStringNN fieldName) c
 	return this->GetFieldVector(field);
 }
 
-const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UOSInt *buffSize) const
+const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UIntOS *buffSize) const
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
@@ -577,7 +577,7 @@ const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UOSInt *buffSi
 void DB::DBRow::Commit()
 {
 	NN<DB::DBRow::Field> field;
-	UOSInt i = this->dataMap.GetCount();
+	UIntOS i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
 		field = this->dataMap.GetItemNoCheck(i);
@@ -629,7 +629,7 @@ void DB::DBRow::Commit()
 void DB::DBRow::Rollback()
 {
 	NN<DB::DBRow::Field> field;
-	UOSInt i = this->dataMap.GetCount();
+	UIntOS i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
 		field = this->dataMap.GetItemNoCheck(i);
@@ -671,7 +671,7 @@ Bool DB::DBRow::GetSinglePKI64(OutParam<Int64> key) const
 {
 	Bool hasKey = false;
 	NN<DB::DBRow::Field> field;
-	UOSInt i = this->dataMap.GetCount();
+	UIntOS i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
 		field = this->dataMap.GetItemNoCheck(i);
@@ -706,8 +706,8 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 	Math::WKTWriter wkt;
 	NN<Math::Geometry::Vector2D> vec;
 	DataType dtype;
-	UOSInt k;
-	UOSInt strLen;
+	UIntOS k;
+	UIntOS strLen;
 	this->AppendTableName(sb);
 	Data::ArrayIterator<NN<DB::ColDef>> it = this->table->ColIterator();
 	Bool found = false;
@@ -797,7 +797,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 void DB::DBRow::AppendTableName(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::CStringNN tableName = this->table->GetTableName()->ToCString();
-	UOSInt i = tableName.IndexOf('.');
+	UIntOS i = tableName.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
 		tableName = tableName.Substring(i + 1);

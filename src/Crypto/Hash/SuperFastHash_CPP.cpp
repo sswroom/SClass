@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" UInt32 SuperFastHash_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal)
+extern "C" UInt32 SuperFastHash_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal)
 {
 	UInt32 tmp;
-    UOSInt rem;
+    UIntOS rem;
 
     rem = buffSize & 3;
     buffSize >>= 2;

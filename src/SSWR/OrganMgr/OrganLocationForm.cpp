@@ -5,7 +5,7 @@ void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 {
 	Data::ArrayListNN<Location> locList;
 	NN<Location> l;
-	UOSInt i;
+	UIntOS i;
 	while (this->env->LocationGet(id).SetTo(l))
 	{
 		locList.Add(l);
@@ -37,14 +37,14 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 	this->sublocUpdating = true;
 	this->lbSublocations->ClearItems();
 	this->currLoc = 0;
-	this->currLocInd = (UOSInt)-1;
+	this->currLocInd = (UIntOS)-1;
 	this->txtCName->SetText(CSTR(""));
 	this->txtEName->SetText(CSTR(""));
 	
 	NN<Data::ArrayListNN<Location>> locSubList = this->env->LocationGetSub(parId);
 	NN<Location> l;
-	UOSInt i = 0;
-	UOSInt j = locSubList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = locSubList->GetCount();
 	while (i < j)
 	{
 		l = locSubList->GetItemNoCheck(i);
@@ -75,7 +75,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 		return !ret;
 	}
 
-	if (this->env->LocationUpdate(currLoc->id, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
+	if (this->env->LocationUpdate(currLoc->id, CSTRP(sbuff, sbuffEnd), {sbuff2, (UIntOS)(sbuff2End - sbuff2)}))
 	{
 		this->currLoc->ename->Release();
 		this->currLoc->cname->Release();
@@ -92,7 +92,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganLocationForm::GetParentLoc()
 {
-	UOSInt i = this->lbLocation->GetCount();
+	UIntOS i = this->lbLocation->GetCount();
 	if (i == 0)
 		return 0;
 	else
@@ -108,8 +108,8 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(AnyType userObj)
 		return;
 	}
 	
-	UOSInt i = (UOSInt)me->lbLocation->GetSelectedIndex();
-	UOSInt j = me->lbLocation->GetCount() - 1;
+	UIntOS i = (UIntOS)me->lbLocation->GetSelectedIndex();
+	UIntOS j = me->lbLocation->GetCount() - 1;
 	while (j > i)
 	{
 		me->lbLocation->RemoveItem(j);
@@ -152,7 +152,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(AnyType userObj
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(AnyType userObj)
 {
 	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
-	UOSInt i = me->lbSublocations->GetSelectedIndex();
+	UIntOS i = me->lbSublocations->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		if (me->ToSave())
@@ -191,7 +191,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(AnyType userObj)
 		parId = parLoc->id;
 	}
 	
-	if (me->env->LocationAdd(parId, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
+	if (me->env->LocationAdd(parId, CSTRP(sbuff, sbuffEnd), {sbuff2, (UIntOS)(sbuff2End - sbuff2)}))
 	{
 		me->currLoc = 0;
 		me->txtCName->SetText(CSTR(""));

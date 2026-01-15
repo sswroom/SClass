@@ -61,8 +61,8 @@ namespace Data
 			virtual ObjectType GetType() const = 0;
 			virtual DataType GetReturnType() const = 0;
 			virtual NN<ConditionObject> Clone() const = 0;
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const = 0;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const = 0;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const = 0;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const = 0;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const = 0;
 		};
 
@@ -121,14 +121,14 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::BooleanAnd; }
 			virtual NN<ConditionObject> Clone() const;
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			Bool ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			Bool ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 
-			UOSInt GetCount() const;
+			UIntOS GetCount() const;
 			void AddAnd(NN<BooleanObject> obj);
 		};
 
@@ -143,13 +143,13 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::BooleanOr; }
 			virtual NN<ConditionObject> Clone() const;
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 
-			UOSInt GetCount() const;
+			UIntOS GetCount() const;
 			void AddOr(NN<BooleanObject> obj);
 		};
 
@@ -164,8 +164,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::NumberField; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, NumberField(this->fieldName)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const { fieldList->Add(this->fieldName); }
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const;
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const;
@@ -188,8 +188,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::TimeField; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, TimeField(this->fieldName)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const { fieldList->Add(this->fieldName); }
 			virtual Data::Timestamp Eval(NN<Data::VariObject> obj) const;
 			virtual Data::Timestamp Eval(NN<Data::ObjectGetter> getter) const;
@@ -205,8 +205,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::Int32Object; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, Int32Object(this->val)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const { sb->AppendI32(this->val); return true; }
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendI32(this->val); return true; }
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::I32; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::I32; }
@@ -226,8 +226,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::Int64Object; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, Int64Object(this->val)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const { sb->AppendI64(this->val); return true; }
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendI64(this->val); return true; }
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::I64; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::I64; }
@@ -248,8 +248,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::Float64Object; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, Float64Object(this->val)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const { sb->AppendDouble(this->val); return true; }
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendDouble(this->val); return true; }
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::F64; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::F64; }
@@ -269,8 +269,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::TimestampObject; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, TimestampObject(this->val)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const { UTF8Char sbuff[128]; UnsafeArray<UTF8Char> sptr = DB::DBUtil::SDBTS(sbuff, this->val, sqlType, tzQhr); sb->AppendP(sbuff, sptr); return true; }
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return true; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { UTF8Char sbuff[128]; UnsafeArray<UTF8Char> sptr = DB::DBUtil::SDBTS(sbuff, this->val, sqlType, tzQhr); sb->AppendP(sbuff, sptr); return true; }
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
 			virtual Data::Timestamp Eval(NN<Data::VariObject> obj) const { return this->val; }
 			virtual Data::Timestamp Eval(NN<Data::ObjectGetter> getter) const { return this->val; }
@@ -291,8 +291,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::NumberCondition; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, NumberCondition(NN<NumberObject>::ConvertFrom(this->left->Clone()), NN<NumberObject>::ConvertFrom(this->right->Clone()), this->cond)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
@@ -316,8 +316,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::TimeCondition; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, TimeCondition(NN<TimeObject>::ConvertFrom(this->left->Clone()), NN<TimeObject>::ConvertFrom(this->right->Clone()), this->cond)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
@@ -355,8 +355,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, TimeBetweenCondition(this->fieldName->ToCString(), this->t1, this->t2)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -371,8 +371,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, Int32InCondition(this->fieldName->ToCString(), this->vals)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -387,8 +387,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringInCondition(this->fieldName->ToCString(), this->vals)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -403,8 +403,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringNotInCondition(this->fieldName->ToCString(), this->vals)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -419,8 +419,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringContainsCondition(this->fieldName->ToCString(), this->val->ToCString())); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -435,8 +435,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringEqualsCondition(this->fieldName->ToCString(), this->val->ToCString())); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -451,8 +451,8 @@ namespace Data
 
 			virtual ObjectType GetType() const;
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, BooleanCondition(this->fieldName->ToCString(), this->val)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
@@ -467,8 +467,8 @@ namespace Data
 
 			virtual ObjectType GetType() const { return ObjectType::NullCondition; }
 			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, NullCondition(this->fieldName->ToCString(), this->notNull)); return cond; }
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
-			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
@@ -487,8 +487,8 @@ namespace Data
 
 		Bool IsValid(NN<Data::VariObject> obj, OutParam<Bool> outVal);
 		Bool IsValid(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal);
-		Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<Conditions::BooleanObject>> clientConditions);
-		Bool CanWhereClause(UOSInt maxDBItem) const;
+		Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem, NN<Data::ArrayListNN<Conditions::BooleanObject>> clientConditions);
+		Bool CanWhereClause(UIntOS maxDBItem) const;
 		void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 		NN<Conditions::BooleanObject> GetRootCond() const { return cond; }
 

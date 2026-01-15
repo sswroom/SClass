@@ -106,7 +106,7 @@ namespace IO
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 		static Text::CStringNN AdvTypeGetName(AdvType advType);
 		static Bool ParseBTRAWPacket(NN<ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff);
-		static void ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst);
+		static void ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst);
 	};
 }
 #endif

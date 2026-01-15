@@ -4,14 +4,14 @@
 #include "Map/TileMapFolderWriter.h"
 #include "Text/JSONBuilder.h"
 
-Map::TileMapFolderWriter::TileMapFolderWriter(Text::CStringNN folderName, Map::TileMap::ImageType imgType, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds)
+Map::TileMapFolderWriter::TileMapFolderWriter(Text::CStringNN folderName, Map::TileMap::ImageType imgType, UIntOS minLev, UIntOS maxLev, Math::RectAreaDbl bounds)
 {
 	this->folderName = Text::String::New(folderName);
 	this->imgType = imgType;
 	this->minLev = minLev;
 	this->maxLev = maxLev;
 	this->bounds = bounds;
-	UOSInt i;
+	UIntOS i;
 	if (folderName.EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		i = Text::StrLastIndexOfCharC(folderName.v, folderName.leng - 1, IO::Path::PATH_SEPERATOR);
@@ -46,9 +46,9 @@ Map::TileMapFolderWriter::~TileMapFolderWriter()
 		json.ObjectAddStr(CSTR("format"), CSTR("png"));
 		break;
 	}
-	sptr = Text::StrUOSInt(sbuff, this->minLev);
+	sptr = Text::StrUIntOS(sbuff, this->minLev);
 	json.ObjectAddStr(CSTR("minzoom"), CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, this->maxLev);
+	sptr = Text::StrUIntOS(sbuff, this->maxLev);
 	json.ObjectAddStr(CSTR("maxzoom"), CSTRP(sbuff, sptr));
 	json.ObjectAddStr(CSTR("scale"), CSTR("1.000000"));
 	json.ObjectBeginArray(CSTR("bounds"));
@@ -72,7 +72,7 @@ Map::TileMapFolderWriter::~TileMapFolderWriter()
 	this->name->Release();
 }
 
-void Map::TileMapFolderWriter::BeginLevel(UOSInt level)
+void Map::TileMapFolderWriter::BeginLevel(UIntOS level)
 {
 }
 
@@ -80,7 +80,7 @@ void Map::TileMapFolderWriter::AddX(Int32 x)
 {
 }
 
-void Map::TileMapFolderWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapFolderWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -89,7 +89,7 @@ void Map::TileMapFolderWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::By
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrUOSInt(sptr, level);
+	sptr = Text::StrUIntOS(sptr, level);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x);
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));

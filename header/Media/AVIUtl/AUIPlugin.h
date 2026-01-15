@@ -36,13 +36,13 @@ namespace Media
 			~AUIPlugin();
 
 			NN<AUIPlugin> Clone() const;
-			UOSInt LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
+			UIntOS LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
 
 			Bool CloseInput(void *hand);
 			Bool GetInputVideoInfo(void *hand, NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt);
 			Bool GetInputAudioInfo(void *hand, NN<Media::AudioFormat> af, OutParam<UInt32> sampleCnt);
-			UOSInt GetVideoFrame(void *hand, UOSInt frameNum, UnsafeArray<UInt8> buff);
-			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);
+			UIntOS GetVideoFrame(void *hand, UIntOS frameNum, UnsafeArray<UInt8> buff);
+			UIntOS GetAudioData(void *hand, UIntOS startSample, UIntOS sampleLength, UInt8 *buff);
 			Bool IsVideoKeyFrame(void *hand, UInt32 frameNum);
 			Bool ConfigInput(void *hInst, void *hWnd);
 			void PrepareSelector(NN<IO::FileSelector> selector);

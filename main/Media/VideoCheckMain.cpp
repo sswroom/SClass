@@ -120,7 +120,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Media::Decoder::FFMPEGDecoder::Enable();
 	const UTF8Char *fileName = (const UTF8Char*)"test.mp4";
 //	return sample_decode((const Char*)fileName);
-	UOSInt argc;
+	UIntOS argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{

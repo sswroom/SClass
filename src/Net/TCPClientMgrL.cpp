@@ -47,16 +47,16 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 	if (!me->clsData.SetTo(clsData))
 		return 0;
 	Data::Timestamp currTime;
-	OSInt pollRet;
-	UOSInt i;
-	UOSInt readSize;
+	IntOS pollRet;
+	UIntOS i;
+	UIntOS readSize;
 	UInt8 tmpBuff[16];
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
-	UOSInt pollfdCap = 16;
+	UIntOS pollfdCap = 16;
 	struct pollfd *pollfds = MemAlloc(struct pollfd, pollfdCap);
 	Net::TCPClientMgr::TCPClientStatus **pollCli = MemAlloc(Net::TCPClientMgr::TCPClientStatus*, pollfdCap);
-	UOSInt pollCliCnt;
-	UOSInt pollReqCnt;
+	UIntOS pollCliCnt;
+	UIntOS pollReqCnt;
 	Bool pollPreData = false;
 
 	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
@@ -108,7 +108,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 				{
 					pollCli[pollReqCnt] = cliStat.Ptr();
 					pollReqCnt++;
-					pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s.Ptr();
+					pollfds[pollReqCnt].fd = -1 + (int)(IntOS)s.Ptr();
 					pollfds[pollReqCnt].events = POLLIN;
 					pollfds[pollReqCnt].revents = 0;
 					if (cliStat->recvDataExist)
@@ -179,7 +179,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 							readMutUsage.EndUse();
 						}
 
-						if (readSize == (UOSInt)-1)
+						if (readSize == (UIntOS)-1)
 						{
 #if defined(VERBOSE)
 							printf("Cli %d readSize = -1\r\n", cliStat->cli->GetRemotePort());
@@ -257,10 +257,10 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	Data::Timestamp currTime;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Data::Timestamp lastCheckTime = 0;
-	UOSInt i;
+	UIntOS i;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
@@ -329,7 +329,7 @@ void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cli
 		printf("ProcessClient: not cliStat\r\n");
 	}
 	this->workerTasks.Put(cliStat);
-	UOSInt i = this->workerCnt;
+	UIntOS i = this->workerCnt;
 	while (i-- > 0)
 	{
 		if (this->workers[i].state == WorkerState::Idle)
@@ -340,7 +340,7 @@ void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cli
 	}
 }
 
-Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
+Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UIntOS workerCnt, TCPClientTimeout toHdlr)
 {
 	this->timeout = Data::Duration::FromSecNS(timeOutSeconds, 0);
 	this->evtHdlr = evtHdlr;
@@ -388,7 +388,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 {
 	Optional<ClassData> clsData = this->clsData;
 	NN<ClassData> nnclsData;
-	UOSInt i = this->cliMap.GetCount();
+	UIntOS i = this->cliMap.GetCount();
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	if (i)
 	{
@@ -405,7 +405,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	if (clsData.SetTo(nnclsData))
 	{
 		nnclsData->hasData = true;
-		i = (UOSInt)write(nnclsData->pipewrfd, "", 1);
+		i = (UIntOS)write(nnclsData->pipewrfd, "", 1);
 	}
 	while (this->cliMap.GetCount() > 0)
 	{
@@ -415,7 +415,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	if (clsData.SetTo(nnclsData))
 	{
 		nnclsData->hasData = true;
-		i = (UOSInt)write(nnclsData->pipewrfd, "", 1);
+		i = (UIntOS)write(nnclsData->pipewrfd, "", 1);
 	}
 	while (clientThreadRunning)
 	{
@@ -498,7 +498,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	Sync::MutexUsage readMutUsage(cliStat->readMut);
 	cliStat->reading = true;
 	cliStat->recvDataExist = false;
-	OSInt i = this->cliMap.GetIndex(cliId);
+	IntOS i = this->cliMap.GetIndex(cliId);
 	if (i >= 0)
 	{
 		printf("TCPClientMgr: Duplicate Client Id %llx\r\n", cliId);
@@ -515,7 +515,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	}
 }
 
-Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UIntOS buffSize)
 {
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::MutexUsage mutUsage(this->cliMut);
@@ -539,7 +539,7 @@ Bool Net::TCPClientMgr::IsError()
 void Net::TCPClientMgr::CloseAll()
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
-	UOSInt i = this->cliMap.GetCount();
+	UIntOS i = this->cliMap.GetCount();
 	while (i-- > 0)
 	{
 		NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
@@ -556,7 +556,7 @@ void Net::TCPClientMgr::UseGetClient(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->cliMut);
 }
 
-UOSInt Net::TCPClientMgr::GetClientCount() const
+UIntOS Net::TCPClientMgr::GetClientCount() const
 {
 	return this->cliMap.GetCount();
 }
@@ -571,7 +571,7 @@ void Net::TCPClientMgr::ExtendTimeout(NN<Net::TCPClient> cli)
 	}
 }
 
-Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UOSInt index, OutParam<AnyType> cliData)
+Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UIntOS index, OutParam<AnyType> cliData)
 {
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	if (this->cliMap.GetItem(index).SetTo(cliStat))

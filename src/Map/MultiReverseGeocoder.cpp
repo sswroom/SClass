@@ -13,7 +13,7 @@ Map::MultiReverseGeocoder::MultiReverseGeocoder(Optional<IO::Writer> errWriter)
 Map::MultiReverseGeocoder::~MultiReverseGeocoder()
 {
 	NN<Map::ReverseGeocoder> revGeo;
-	UOSInt i = this->revGeos.GetCount();
+	UIntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		if (revGeos.RemoveAt(i).SetTo(revGeo))
@@ -23,11 +23,11 @@ Map::MultiReverseGeocoder::~MultiReverseGeocoder()
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->revGeos.GetCount();
+	IntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
@@ -50,11 +50,11 @@ UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::SearchName(UnsafeArray<UTF8C
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->revGeos.GetCount();
+	IntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);

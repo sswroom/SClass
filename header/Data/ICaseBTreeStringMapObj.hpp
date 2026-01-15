@@ -8,7 +8,7 @@ namespace Data
 	{
 	protected:
 		T PutNode(NN<BTreeStringObjNode<T>> node, Text::CStringNN key, UInt32 hash, T val);
-		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
+		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UIntOS keyLen) const;
 	public:
 		ICaseBTreeStringMapObj();
 		virtual ~ICaseBTreeStringMapObj();
@@ -23,7 +23,7 @@ namespace Data
 		NN<BTreeStringObjNode<T>> rightNode;
 		NN<BTreeStringObjNode<T>> tmpNode;
 		T retVal;
-		OSInt i;
+		IntOS i;
 		if (node->nodeHash == hash)
 		{
 			i = Text::StrCompareICase(node->nodeKey, key.v);
@@ -144,10 +144,10 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 ICaseBTreeStringMapObj<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
+	template <class T> UInt32 ICaseBTreeStringMapObj<T>::CalHash(UnsafeArray<const UTF8Char> key, UIntOS keyLen) const
 	{
 		UTF8Char sbuff[256];
-		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
+		UIntOS charCnt = (UIntOS)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
 		return this->crc->CalcDirect(sbuff, charCnt);
 	}
 
@@ -166,7 +166,7 @@ namespace Data
 		NN<BTreeStringObjNode<T>> nnnode;
 		while (node.SetTo(nnnode))
 		{
-			OSInt i;
+			IntOS i;
 			if (nnnode->nodeHash == hash)
 			{
 				i = Text::StrCompareICase(nnnode->nodeKey, key.v);
@@ -214,7 +214,7 @@ namespace Data
 			NN<BTreeStringObjNode<T>> parNode = rootNode;
 			while (node.SetTo(nnnode))
 			{
-				OSInt i;
+				IntOS i;
 				if (nnnode->nodeHash == hash)
 				{
 					i = Text::StrCompareICase(nnnode->nodeKey, key.v);

@@ -14,7 +14,7 @@ Map::Leica::LeicaLevelFile::LeicaLevelFile()
 
 Map::Leica::LeicaLevelFile::~LeicaLevelFile()
 {
-	OSInt i;
+	IntOS i;
 	NN<LevelPoint> point;
 	i = this->pointList.GetCount();
 	while (i-- > 0)
@@ -524,12 +524,12 @@ Bool Map::Leica::LeicaLevelFile::ExportExcel(NN<IO::SeekableStream> stm, Text::C
 	return succ;
 }
 
-UOSInt Map::Leica::LeicaLevelFile::GetPointCnt()
+UIntOS Map::Leica::LeicaLevelFile::GetPointCnt()
 {
 	return this->pointList.GetCount();
 }
 
-Text::CString Map::Leica::LeicaLevelFile::GetPointName(UOSInt index)
+Text::CString Map::Leica::LeicaLevelFile::GetPointName(UIntOS index)
 {
 	NN<LevelPoint> point;
 	Text::PString pointName;
@@ -543,7 +543,7 @@ Text::CString Map::Leica::LeicaLevelFile::GetPointName(UOSInt index)
 	return nullptr;
 }
 
-Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointBack(UOSInt index)
+Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointBack(UIntOS index)
 {
 	NN<LevelPoint> point;
 	if (this->pointList.GetItem(index).SetTo(point))
@@ -556,7 +556,7 @@ Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFi
 	return 0;
 }
 
-Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointInter(UOSInt index)
+Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointInter(UIntOS index)
 {
 	NN<LevelPoint> point;
 	if (this->pointList.GetItem(index).SetTo(point))
@@ -569,7 +569,7 @@ Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFi
 	return 0;
 }
 
-Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointFore(UOSInt index)
+Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFile::GetPointFore(UIntOS index)
 {
 	NN<LevelPoint> point;
 	if (this->pointList.GetItem(index).SetTo(point))
@@ -582,7 +582,7 @@ Optional<const Map::Leica::LeicaLevelFile::Measurement> Map::Leica::LeicaLevelFi
 	return 0;
 }
 
-Optional<const Map::Leica::LeicaLevelFile::HeightMeasure> Map::Leica::LeicaLevelFile::GetPointHeight(UOSInt index)
+Optional<const Map::Leica::LeicaLevelFile::HeightMeasure> Map::Leica::LeicaLevelFile::GetPointHeight(UIntOS index)
 {
 	NN<LevelPoint> point;;
 	if (this->pointList.GetItem(index).SetTo(point))
@@ -595,8 +595,8 @@ Optional<const Map::Leica::LeicaLevelFile::HeightMeasure> Map::Leica::LeicaLevel
 Bool Map::Leica::LeicaLevelFile::CalcPointLevs(NN<Data::ArrayList<Double>> calcLevs, NN<Data::ArrayList<Double>> adjLevS, NN<Data::ArrayList<Double>> adjLevD)
 {
 	NN<LevelPoint> point;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double corrV = 0;
 	Double corrV2;
 	Int32 lastHeight = -1;

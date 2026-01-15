@@ -17,7 +17,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
 		{
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
@@ -45,9 +45,9 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 	return 0;
 }
 
-Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8Char> ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt threadCnt)
+Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8Char> ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UIntOS threadCnt)
 {
-	UOSInt i;
+	UIntOS i;
 	this->threadCnt = threadCnt;
 	this->sockf = sockf;
 	this->hdlr = hdlr;
@@ -97,7 +97,7 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 
 Net::ARPHandler::~ARPHandler()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Socket> soc;
 	if (this->threadStats)
 	{

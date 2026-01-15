@@ -16,7 +16,7 @@ typedef struct
 	volatile UInt32 *memPtr;
 } ClassData;
 
-IO::GPIOPin::GPIOPin(OSInt pinNum)
+IO::GPIOPin::GPIOPin(IntOS pinNum)
 {
 	this->pinNum = pinNum;
 	ClassData *clsData = MemAlloc(ClassData, 1);
@@ -192,10 +192,10 @@ void IO::GPIOPin::ClearEvent()
 {
 }
 
-OSInt IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
+IntOS IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
 {
-	OSInt i = 0;
-	OSInt j = 96;
+	IntOS i = 0;
+	IntOS j = 96;
 	while (i < j)
 	{
 		pinList->Add((Int32)i);

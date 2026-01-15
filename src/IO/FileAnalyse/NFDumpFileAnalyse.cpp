@@ -66,10 +66,10 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> 
 	}
 }
 
-UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UnsafeArray<UInt8> srcBlock, UOSInt srcSize, UnsafeArray<UInt8> outBlock, UOSInt maxOutSize)
+UIntOS IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UnsafeArray<UInt8> srcBlock, UIntOS srcSize, UnsafeArray<UInt8> outBlock, UIntOS maxOutSize)
 {
 	Data::Compress::LZODecompressor dec;
-	UOSInt destSize;
+	UIntOS destSize;
 	if (dec.Decompress(Data::ByteArray(outBlock, maxOutSize), destSize, Data::ByteArrayR(srcBlock, srcSize)))
 	{
 		return destSize;
@@ -101,7 +101,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 	this->thread.Stop();
 	this->fd.Delete();
 	this->packs.MemFreeAll();
-	UOSInt i = this->extMap.GetCount();
+	UIntOS i = this->extMap.GetCount();
 	UnsafeArray<UInt8> ext;
 	while (i-- > 0)
 	{
@@ -117,12 +117,12 @@ Text::CStringNN IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
 	return CSTR("NFDump");
 }
 
-UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -150,17 +150,17 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 	return true;
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> extBuff;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	NN<IO::StreamData> fd;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
@@ -289,8 +289,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	}
 	else if (pack->packType == 3)
 	{
-		UOSInt size = pack->packSize;
-		UOSInt dispSize = size;
+		UIntOS size = pack->packSize;
+		UIntOS dispSize = size;
 		if (dispSize > 256)
 			dispSize = 256;
 		Data::ByteBuffer packBuff(size);
@@ -301,7 +301,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		if (this->hasLZODecomp)
 		{
 			Data::DateTime dt;
-			UOSInt decBuffSize = 1048576 * 5;
+			UIntOS decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
 			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
@@ -333,12 +333,12 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 						dt.AddMS(ReadUInt16(&decBuff[i + 8]));
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
 						sb->AppendC(UTF8STRC(", first = "));
-						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 16]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 10]));
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
 						sb->AppendC(UTF8STRC(", last = "));
-						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 
 						sb->AppendC(UTF8STRC(", Fwd Status = "));
 						sb->AppendU16(decBuff[i + 20]);
@@ -367,10 +367,10 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 						{
 							sb->AppendC(UTF8STRC(", src IP = "));
 							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 							sb->AppendC(UTF8STRC(", dest IP = "));
 							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j + 4]));
-							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 							j += 8;
 						}
 						sb->AppendC(UTF8STRC(", In Pkts = "));
@@ -397,7 +397,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 						}
 						if (this->extMap.Get(ReadUInt16(&decBuff[i + 6])).SetTo(extBuff))
 						{
-							OSInt extId;
+							IntOS extId;
 							k = ReadUInt16(&extBuff[2]);
 							l = 4;
 							while (l < k)
@@ -451,7 +451,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 								{
 									sb->AppendC(UTF8STRC(", Next HOP IP = "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 10) //EX_NEXT_HOP_v6
@@ -465,7 +465,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 								{
 									sb->AppendC(UTF8STRC(", BGP Next IP = "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 12) //EX_NEXT_HOP_BGP_v6
@@ -553,7 +553,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 								{
 									sb->AppendC(UTF8STRC(", Router IP = "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 24) //EX_ROUTER_IP_v6
@@ -584,7 +584,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 									sb->AppendC(UTF8STRC(", T Received = "));
 									dt.SetTicks(ReadInt64(&decBuff[i + j]));
 									sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									j += 8;
 								}
 								if (j >= recSize)
@@ -608,9 +608,9 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 							if (l == 0)
 								break;
 							sb->AppendC(UTF8STRC(", Extension ID"));
-							sb->AppendUOSInt(j);
+							sb->AppendUIntOS(j);
 							sb->AppendC(UTF8STRC(" = "));
-							sb->AppendUOSInt(l);
+							sb->AppendUIntOS(l);
 							j++;
 							k += 2;
 						}
@@ -644,12 +644,12 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 						sb->AppendC(UTF8STRC(", version = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 4]));
 						sb->AppendC(UTF8STRC(", SA Family = "));
-						sb->AppendUOSInt(j = ReadUInt16(&decBuff[i + 24]));
+						sb->AppendUIntOS(j = ReadUInt16(&decBuff[i + 24]));
 						sb->AppendC(UTF8STRC(", IP = "));
 						if (j == 2) //AF_INET
 						{
 							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + 16]));
-							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						}
 						else if (j == 23) //AF_INET6
 						{
@@ -676,19 +676,19 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 						while (k < l)
 						{
 							sb->AppendC(UTF8STRC(", Sys ID"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							sb->AppendC(UTF8STRC(", Seq Failure"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 							sb->AppendC(UTF8STRC(", Packets"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 8]));
 							sb->AppendC(UTF8STRC(", Flows"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 16]));
 							j += 24;
@@ -720,16 +720,16 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	return true;
 }
 
-UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -740,13 +740,13 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
@@ -792,7 +792,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 			frame->AddField(4, 4, CSTR("Flags"), CSTR(" Catalog"));
 		}
 		frame->AddUInt(8, 4, CSTR("Number of Blocks"), ReadUInt32(&packBuff[8]));
-		UOSInt strLen = Text::StrCharCnt(&packBuff[12]);
+		UIntOS strLen = Text::StrCharCnt(&packBuff[12]);
 		frame->AddStrS(12, strLen + 1, CSTR("Identifier"), &packBuff[12]);
 	}
 	else if (pack->packType == 1)
@@ -843,8 +843,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 	}
 	else if (pack->packType == 3)
 	{
-		UOSInt size = pack->packSize;
-		UOSInt dispSize = size;
+		UIntOS size = pack->packSize;
+		UIntOS dispSize = size;
 		Data::ByteBuffer packBuff(size);
 		fd->GetRealData(pack->fileOfst, size, packBuff);
 
@@ -863,16 +863,16 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 		if (this->hasLZODecomp)
 		{
 			Data::DateTime dt;
-			UOSInt decBuffSize = 1048576 * 5;
+			UIntOS decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
 			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
 /*				UInt8 *extBuff;
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
-				UOSInt l;
+				UIntOS i;
+				UIntOS j;
+				UIntOS k;
+				UIntOS l;
 				UInt32 recType;
 				UInt32 recSize;
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -965,7 +965,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 						extBuff = this->extMap->Get(ReadUInt16(&decBuff[i + 6]));
 						if (extBuff)
 						{
-							OSInt extId;
+							IntOS extId;
 							k = ReadUInt16(&extBuff[2]);
 							l = 4;
 							while (l < k)
@@ -1176,9 +1176,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 							if (l == 0)
 								break;
 							sb->AppendC(UTF8STRC(", Extension ID"));
-							sb->AppendUOSInt(j);
+							sb->AppendUIntOS(j);
 							sb->AppendC(UTF8STRC(" = "));
-							sb->AppendUOSInt(l);
+							sb->AppendUIntOS(l);
 							j++;
 							k += 2;
 						}
@@ -1213,7 +1213,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 						sb->AppendC(UTF8STRC(", version = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 4]));
 						sb->AppendC(UTF8STRC(", SA Family = "));
-						sb->AppendUOSInt(j = ReadUInt16(&decBuff[i + 24]));
+						sb->AppendUIntOS(j = ReadUInt16(&decBuff[i + 24]));
 						sb->AppendC(UTF8STRC(", IP = "));
 						if (j == 2) //AF_INET
 						{
@@ -1245,19 +1245,19 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 						while (k < l)
 						{
 							sb->AppendC(UTF8STRC(", Sys ID"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							sb->AppendC(UTF8STRC(", Seq Failure"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 							sb->AppendC(UTF8STRC(", Packets"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 8]));
 							sb->AppendC(UTF8STRC(", Flows"));
-							sb->AppendUOSInt(k);
+							sb->AppendUIntOS(k);
 							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 16]));
 							j += 24;

@@ -9,16 +9,16 @@ UI::JavaUI::JUICheckedListBox::~JUICheckedListBox()
 {
 }
 
-Bool UI::JavaUI::JUICheckedListBox::GetItemChecked(UOSInt index)
+Bool UI::JavaUI::JUICheckedListBox::GetItemChecked(UIntOS index)
 {
 	return false;
 }
 
-void UI::JavaUI::JUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
+void UI::JavaUI::JUICheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 {
 }
 
-OSInt UI::JavaUI::JUICheckedListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUICheckedListBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

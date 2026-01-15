@@ -20,12 +20,12 @@ void __stdcall UtilUI::ColorDialog::OnCancelClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		Double newV;
 		me->subDowned = true;
 		me->pbSub->SetCapture();
@@ -34,11 +34,11 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::C
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)sz.y - 2)
+		else if (scnPos.y > (IntOS)sz.y - 2)
 		{
-			scnPos.y = (OSInt)sz.y - 2;
+			scnPos.y = (IntOS)sz.y - 2;
 		}
-		newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+		newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 		if (me->mainXYZ.val[2] != newV)
 		{
 			me->mainXYZ.val[2] = newV;
@@ -49,23 +49,23 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::C
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		Double newV;
 		sz = me->pbSub->GetSizeP();
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)sz.y - 2)
+		else if (scnPos.y > (IntOS)sz.y - 2)
 		{
-			scnPos.y = (OSInt)sz.y - 2;
+			scnPos.y = (IntOS)sz.y - 2;
 		}
-		newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+		newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 		if (me->mainXYZ.val[2] != newV)
 		{
 			me->mainXYZ.val[2] = newV;
@@ -76,7 +76,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::C
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -85,18 +85,18 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coo
 		if (me->subDowned)
 		{
 			me->subDowned = false;
-			Math::Size2D<UOSInt> sz;
+			Math::Size2D<UIntOS> sz;
 			Double newV;
 			sz = me->pbSub->GetSizeP();
 			if (scnPos.y < 1)
 			{
 				scnPos.y = 1;
 			}
-			else if (scnPos.y > (OSInt)sz.y - 2)
+			else if (scnPos.y > (IntOS)sz.y - 2)
 			{
-				scnPos.y = (OSInt)sz.y - 2;
+				scnPos.y = (IntOS)sz.y - 2;
 			}
-			newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+			newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 			if (me->mainXYZ.val[2] != newV)
 			{
 				me->mainXYZ.val[2] = newV;
@@ -108,14 +108,14 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coo
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->subDowned = true;
 		me->pbMain->SetCapture();
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		Double newV1;
 		Double newV2;
 		sz = me->pbMain->GetSizeP();
@@ -124,20 +124,20 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::
 		{
 			scnPos.x = 1;
 		}
-		else if (scnPos.x > (OSInt)sz.x - 2)
+		else if (scnPos.x > (IntOS)sz.x - 2)
 		{
-			scnPos.x = (OSInt)sz.x - 2;
+			scnPos.x = (IntOS)sz.x - 2;
 		}
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)sz.y - 2)
+		else if (scnPos.y > (IntOS)sz.y - 2)
 		{
-			scnPos.y = (OSInt)sz.y - 2;
+			scnPos.y = (IntOS)sz.y - 2;
 		}
-		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.x - 3);
-		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+		newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
+		newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 		if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
 		{
 			me->mainXYZ.val[0] = newV1;
@@ -149,12 +149,12 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		Double newV1;
 		Double newV2;
 		sz = me->pbMain->GetSizeP();
@@ -162,20 +162,20 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::
 		{
 			scnPos.x = 1;
 		}
-		else if (scnPos.x > (OSInt)sz.x - 2)
+		else if (scnPos.x > (IntOS)sz.x - 2)
 		{
-			scnPos.x = (OSInt)sz.x - 2;
+			scnPos.x = (IntOS)sz.x - 2;
 		}
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)sz.y - 2)
+		else if (scnPos.y > (IntOS)sz.y - 2)
 		{
-			scnPos.y = (OSInt)sz.y - 2;
+			scnPos.y = (IntOS)sz.y - 2;
 		}
-		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.x - 3);
-		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+		newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
+		newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 		if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
 		{
 			me->mainXYZ.val[0] = newV1;
@@ -187,7 +187,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -196,7 +196,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Co
 		if (me->subDowned)
 		{
 			me->subDowned = false;
-			Math::Size2D<UOSInt> sz;
+			Math::Size2D<UIntOS> sz;
 			Double newV1;
 			Double newV2;
 			sz = me->pbMain->GetSizeP();
@@ -204,20 +204,20 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Co
 			{
 				scnPos.x = 1;
 			}
-			else if (scnPos.x > (OSInt)sz.x - 2)
+			else if (scnPos.x > (IntOS)sz.x - 2)
 			{
-				scnPos.x = (OSInt)sz.x - 2;
+				scnPos.x = (IntOS)sz.x - 2;
 			}
 			if (scnPos.y < 1)
 			{
 				scnPos.y = 1;
 			}
-			else if (scnPos.y > (OSInt)sz.y - 2)
+			else if (scnPos.y > (IntOS)sz.y - 2)
 			{
-				scnPos.y = (OSInt)sz.y - 2;
+				scnPos.y = (IntOS)sz.y - 2;
 			}
-			newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.x - 3);
-			newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.y - 3);
+			newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
+			newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
 			if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
 			{
 				me->mainXYZ.val[0] = newV1;
@@ -742,10 +742,10 @@ Math::Vector3 UtilUI::ColorDialog::RGB2HSV(Math::Vector3 rgb)
 	return Math::Vector3(h, s, v);
 }
 
-void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h)
+void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS startIndex, UIntOS endIndex, UIntOS w, UIntOS h)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double v1;
 	Double v2;
 	Double v3;
@@ -865,11 +865,11 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt st
 	i = startIndex;
 	while (i < endIndex)
 	{
-		v3 = UOSInt2Double(i) * v3R;
+		v3 = UIntOS2Double(i) * v3R;
 		j = 0;
 		while (j < w)
 		{
-			v2 = UOSInt2Double(j) * v2R;
+			v2 = UIntOS2Double(j) * v2R;
 			rgbv = XYZ2RGB(Math::Vector3(v2, v3, v1));
 			rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 			rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
@@ -898,14 +898,14 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt st
 
 void UtilUI::ColorDialog::GenMainImage()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found;
 	UnsafeArray<UInt8> imgPtr = this->mainImg->data;
-	UOSInt w = this->mainImg->info.dispSize.x;
-	UOSInt h = this->mainImg->info.dispSize.y;
+	UIntOS w = this->mainImg->info.dispSize.x;
+	UIntOS h = this->mainImg->info.dispSize.y;
 
-	UOSInt lastIndex = h;
-	UOSInt thisIndex;
+	UIntOS lastIndex = h;
+	UIntOS thisIndex;
 	i = this->genThreadCnt;
 	while (i-- > 0)
 	{
@@ -941,8 +941,8 @@ void UtilUI::ColorDialog::GenMainImage()
 
 void UtilUI::ColorDialog::GenSubImage()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double v1;
 	Double v2;
 	Double v3;
@@ -952,8 +952,8 @@ void UtilUI::ColorDialog::GenSubImage()
 
 	UInt8 c[4];
 	UnsafeArray<UInt8> imgPtr = this->subImg->data;
-	UOSInt w = this->subImg->info.dispSize.x;
-	UOSInt h = this->subImg->info.dispSize.y;
+	UIntOS w = this->subImg->info.dispSize.x;
+	UIntOS h = this->subImg->info.dispSize.y;
 	NN<const Media::ColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
@@ -1066,7 +1066,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	i = 0;
 	while (i < h)
 	{
-		v1 = UOSInt2Double(i) * v1R;
+		v1 = UIntOS2Double(i) * v1R;
 		rgbv = this->XYZ2RGB(Math::Vector3(v2, v3, v1));
 		rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 		rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
@@ -1510,7 +1510,7 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 
 	this->genThreadCnt = Sync::ThreadUtil::GetThreadCnt();
 	NEW_CLASSNN(this->genEvt, Sync::Event(true));
-	UOSInt i;
+	UIntOS i;
 	this->genStats = MemAllocArr(ThreadStat, this->genThreadCnt);
 	Bool running;
 	i = this->genThreadCnt;
@@ -1541,7 +1541,7 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 
 	Media::ColorProfile color;
 	color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
-	Math::Size2D<UOSInt> sz;
+	Math::Size2D<UIntOS> sz;
 	sz = this->pbMain->GetSizeP();
 	NEW_CLASSNN(this->mainImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	sz = this->pbSub->GetSizeP();
@@ -1558,7 +1558,7 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 
 UtilUI::ColorDialog::~ColorDialog()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool running;
 	i = this->genThreadCnt;
 	while (i-- > 0)
@@ -1668,20 +1668,20 @@ void UtilUI::ColorDialog::OnMonitorChanged()
 
 		Media::ColorProfile color;
 		color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		this->mainImg.Delete();
 		this->subImg.Delete();
 		sz = this->pbMain->GetSizeP();
-		NEW_CLASSNN(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASSNN(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UIntOS>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 		sz = this->pbSub->GetSizeP();
-		NEW_CLASSNN(this->subImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASSNN(this->subImg, Media::StaticImage(sz - Math::Coord2D<UIntOS>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 
 		this->GenMainImage();
 		this->GenSubImage();
 	}
 }
 
-void UtilUI::ColorDialog::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
+void UtilUI::ColorDialog::OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight)
 {
 	if (dispWidth > dispHeight)
 	{

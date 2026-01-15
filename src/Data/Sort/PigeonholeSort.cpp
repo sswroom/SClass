@@ -16,9 +16,9 @@ Data::Sort::PigeonholeSort::~PigeonholeSort()
 	MemFreeAArr(this->valCount);
 }
 
-void Data::Sort::PigeonholeSort::SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::PigeonholeSort::SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt cnt = this->maxVal - this->minVal + 1;
+	IntOS cnt = this->maxVal - this->minVal + 1;
 	if (cnt & 3)
 	{
 		MemClear(this->valCount.Ptr(), sizeof(Int32) * cnt);
@@ -28,7 +28,7 @@ void Data::Sort::PigeonholeSort::SortInt32(UnsafeArray<Int32> arr, OSInt firstIn
 		MemClearANC(this->valCount.Ptr(), sizeof(Int32) * cnt);
 	}
 	Int32 cval;
-	OSInt i;
+	IntOS i;
 	while (firstIndex <= lastIndex)
 		this->valCount[arr[firstIndex++] - this->minVal]++;
 	i = 0;

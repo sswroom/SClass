@@ -41,10 +41,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::S
 	NN<Text::String> fname = fd->GetFullFileName();
 	if (fname->EndsWithICase(UTF8STRC(".JKS")) && fsize <= 65536)
 	{
-/*		buff = MemAlloc(UInt8, (UOSInt)fsize);
-		if (fd->GetRealData(0, (UOSInt)fsize, buff) == fsize && Net::ASN1Util::PDUIsValid(buff, buff + (UOSInt)fsize))
+/*		buff = MemAlloc(UInt8, (UIntOS)fsize);
+		if (fd->GetRealData(0, (UIntOS)fsize, buff) == fsize && Net::ASN1Util::PDUIsValid(buff, buff + (UIntOS)fsize))
 		{
-			NEW_CLASS(asn1, Crypto::JKSFile(fname, buff, (UOSInt)fsize));
+			NEW_CLASS(asn1, Crypto::JKSFile(fname, buff, (UIntOS)fsize));
 		}
 		MemFree(buff);*/
 	}

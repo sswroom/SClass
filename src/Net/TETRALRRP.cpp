@@ -4,7 +4,7 @@
 #include "Math/Math_C.h"
 #include "Net/TETRALRRP.h"
 
-Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode)
+Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode)
 {
 	if (buff[0] != 0x80)
 	{
@@ -408,7 +408,7 @@ UnsafeArray<UInt8> Net::TETRALRRP::WriteDateTime(UnsafeArray<UInt8> buff, NN<Dat
 	return buff + 5;
 }
 
-UOSInt Net::TETRALRRP::GenLocReq(UnsafeArray<UInt8> buff)
+UIntOS Net::TETRALRRP::GenLocReq(UnsafeArray<UInt8> buff)
 {
 	///////////////////////////
 	buff[0] = 0x05;
@@ -431,9 +431,9 @@ UOSInt Net::TETRALRRP::GenLocReq(UnsafeArray<UInt8> buff)
 	return 17;
 }
 
-UOSInt Net::TETRALRRP::BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GPSRecord3> record, Int32 requestId, Int32 resultCode)
+UIntOS Net::TETRALRRP::BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GPSRecord3> record, Int32 requestId, Int32 resultCode)
 {
-	UOSInt retSize;
+	UIntOS retSize;
 	UnsafeArray<UInt8> ptr;
 	Data::DateTime dt;
 	ptr = &buff[3];

@@ -80,7 +80,7 @@ namespace IO
 
 		void SetErrorMsg(Text::CStringNN msg);
 	public:
-		SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer> messageWriter);
+		SMake(Text::CStringNN cfgFile, UIntOS threadCnt, Optional<IO::Writer> messageWriter);
 		virtual ~SMake();
 
 		virtual IO::ParserType GetParserType() const;
@@ -93,7 +93,7 @@ namespace IO
 		void SetMessageWriter(Optional<IO::Writer> messageWriter);
 		void SetCommandWriter(Optional<IO::Writer> cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
-		void SetThreadCnt(UOSInt threadCnt);
+		void SetThreadCnt(UIntOS threadCnt);
 		void SetAsyncMode(Bool asyncMode);
 
 		void AsyncPostCompile();
@@ -105,7 +105,7 @@ namespace IO
 
 		void CleanFiles();
 
-		UOSInt GetProgList(NN<Data::ArrayListNN<Text::String>> progList); //No release
+		UIntOS GetProgList(NN<Data::ArrayListNN<Text::String>> progList); //No release
 		Bool IsProgGroup(Text::CStringNN progName) const;
 		Optional<const ProgramItem> GetProgItem(Text::CStringNN progName) const;
 	};

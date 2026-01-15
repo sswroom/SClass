@@ -6,13 +6,13 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
+void TestEncode(UInt32 val, UIntOS bitCnt, IO::Writer *writer)
 {
 	UInt8 keyBuff[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
 	Crypto::Encrypt::RC4Cipher rc4(keyBuff, bitCnt >> 3);
 	UInt8 dataBuff[16];
 	UInt8 outBuff[16];
-	UOSInt outSize;
+	UIntOS outSize;
 	WriteUInt32(&dataBuff[0], val);
 	WriteUInt32(&dataBuff[4], val);
 	WriteUInt32(&dataBuff[8], val);
@@ -27,11 +27,11 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 }
 
 //RFC 6229
-void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
+void TestAllForBit(UIntOS bitCnt, IO::Writer *writer)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Key Length: "));
-	sb.AppendUOSInt(bitCnt);
+	sb.AppendUIntOS(bitCnt);
 	sb.AppendC(UTF8STRC(" bits"));
 	writer->WriteLine(sb.ToCString());
 	TestEncode(0, bitCnt, writer);
@@ -55,18 +55,18 @@ void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 	writer->WriteLine();
 }
 
-Bool TestEncode2(UnsafeArray<const UTF8Char> key, UOSInt keyLen, UnsafeArray<const UTF8Char> val, UOSInt valLen, UnsafeArray<const UTF8Char> expRes, UOSInt expResLen)
+Bool TestEncode2(UnsafeArray<const UTF8Char> key, UIntOS keyLen, UnsafeArray<const UTF8Char> val, UIntOS valLen, UnsafeArray<const UTF8Char> expRes, UIntOS expResLen)
 {
 	Crypto::Encrypt::RC4Cipher rc4(key, keyLen);
 	UInt8 outBuff[16];
-	UOSInt outSize;
+	UIntOS outSize;
 	UInt8 decBuff[16];
-	UOSInt decSize;
+	UIntOS decSize;
 	UTF8Char sbuff[33];
 	UnsafeArray<UTF8Char> sptr;
 	outSize = rc4.Encrypt(val.Ptr(), valLen, outBuff);
 	sptr = Text::StrHexBytes(sbuff, outBuff, outSize, 0);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), expRes, expResLen))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), expRes, expResLen))
 	{
 		return false;
 	}

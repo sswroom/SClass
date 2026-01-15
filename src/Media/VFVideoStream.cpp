@@ -14,7 +14,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 	UnsafeArray<UInt8> frameBuff;
 	UInt32 frameTime;
 	Media::FrameType ft;
-	UOSInt frameSize;
+	UIntOS frameSize;
 	UInt32 frameNum;
 	me->threadRunning = true;
 	frameNum = 0;
@@ -121,7 +121,7 @@ Media::VFVideoStream::VFVideoStream(NN<Media::VFMediaFile> mfile)
 
 Media::VFVideoStream::~VFVideoStream()
 {
-	UOSInt useCnt;
+	UIntOS useCnt;
 	this->threadToStop = true;
 	this->threadEvt.Set();
 	while (this->threadRunning)
@@ -153,7 +153,7 @@ Text::CStringNN Media::VFVideoStream::GetFilterName()
 	return CSTR("VFVideoStream");
 }
 
-Bool Media::VFVideoStream::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::VFVideoStream::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	info->Set(this->info);
 	maxFrameSize.Set(this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3));
@@ -234,7 +234,7 @@ Bool Media::VFVideoStream::SetPreferFrameType(Media::FrameType ftype)
 	return true;
 }
 
-UOSInt Media::VFVideoStream::GetDataSeekCount()
+UIntOS Media::VFVideoStream::GetDataSeekCount()
 {
 	return 0;
 }
@@ -244,11 +244,11 @@ Bool Media::VFVideoStream::HasFrameCount()
 	return true;
 }
 
-UOSInt Media::VFVideoStream::GetFrameCount()
+UIntOS Media::VFVideoStream::GetFrameCount()
 {
 	return this->frameCnt;
 }
-Data::Duration Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::VFVideoStream::GetFrameTime(UIntOS frameIndex)
 {
 	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateScale, this->frameRate);
 }
@@ -256,7 +256,7 @@ Data::Duration Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	UInt32 i;
-	UOSInt dataSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
+	UIntOS dataSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
 	i = 0;
 	while (i < this->frameCnt)
 	{
@@ -268,7 +268,7 @@ void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, AnyType userData
 	}
 }
 
-UOSInt Media::VFVideoStream::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::VFVideoStream::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
 	if (this->currFrameNum >= this->frameCnt)

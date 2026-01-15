@@ -8,11 +8,11 @@ namespace Data
 	{
 	public:
 		ArrayListInt64();
-		ArrayListInt64(UOSInt capacity);
+		ArrayListInt64(UIntOS capacity);
 
 		virtual NN<ArrayListNative<Int64>> Clone() const;
 
-		void AddRangeI32(UnsafeArray<Int32> arr, UOSInt cnt);
+		void AddRangeI32(UnsafeArray<Int32> arr, UIntOS cnt);
 		void AddRangeI32(NN<const Data::ArrayListNative<Int32>> arr);
 	};
 }

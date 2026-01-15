@@ -18,27 +18,27 @@ namespace IO
 		~GPIOControl();
 
 		Bool IsError();
-		UOSInt GetPinCount();
+		UIntOS GetPinCount();
 
-		Bool IsPinHigh(UOSInt pinNum);
-		Bool IsPinOutput(UOSInt pinNum);
-		UOSInt GetPinMode(UOSInt pinNum);
-		Bool SetPinOutput(UOSInt pinNum, Bool isOutput);
-		Bool SetPinState(UOSInt pinNum, Bool isHigh);
-		Bool SetPullType(UOSInt pinNum, IO::IOPin::PullType pt);
+		Bool IsPinHigh(UIntOS pinNum);
+		Bool IsPinOutput(UIntOS pinNum);
+		UIntOS GetPinMode(UIntOS pinNum);
+		Bool SetPinOutput(UIntOS pinNum, Bool isOutput);
+		Bool SetPinState(UIntOS pinNum, Bool isHigh);
+		Bool SetPullType(UIntOS pinNum, IO::IOPin::PullType pt);
 
-		Bool InterruptEnable(UOSInt pinNum, Bool enable);
+		Bool InterruptEnable(UIntOS pinNum, Bool enable);
 		void HandleInterrupt(InterruptHandler hdlr, AnyType userObj);
 		void UnhandleInterrupt(InterruptHandler hdlr, AnyType userObj);
 
-		void SetEventOnHigh(UOSInt pinNum, Bool enable);
-		void SetEventOnLow(UOSInt pinNum, Bool enable);
-		void SetEventOnRaise(UOSInt pinNum, Bool enable);
-		void SetEventOnFall(UOSInt pinNum, Bool enable);
-		Bool HasEvent(UOSInt pinNum);
-		void ClearEvent(UOSInt pinNum);
+		void SetEventOnHigh(UIntOS pinNum, Bool enable);
+		void SetEventOnLow(UIntOS pinNum, Bool enable);
+		void SetEventOnRaise(UIntOS pinNum, Bool enable);
+		void SetEventOnFall(UIntOS pinNum, Bool enable);
+		Bool HasEvent(UIntOS pinNum);
+		void ClearEvent(UIntOS pinNum);
 
-		static Text::CStringNN PinModeGetName(UOSInt pinNum, UOSInt pinMode);
+		static Text::CStringNN PinModeGetName(UIntOS pinNum, UIntOS pinMode);
 	};
 }
 #endif

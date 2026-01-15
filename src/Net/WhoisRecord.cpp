@@ -18,7 +18,7 @@ Net::WhoisRecord::~WhoisRecord()
 	this->items.FreeAll();
 }
 
-void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen)
+void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UIntOS itemLen)
 {
 	if (item[0] == 0 && this->items.GetCount() == 0)
 	{
@@ -26,8 +26,8 @@ void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen)
 	}
 	if (startIP == 0)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<UTF8Char> sarr[4];
 		Int32 bitCnt;
 		UInt8 ip[4];
@@ -106,12 +106,12 @@ void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen)
 	this->items.Add(Text::String::New(item, itemLen));
 }
 
-UOSInt Net::WhoisRecord::GetCount() const
+UIntOS Net::WhoisRecord::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-Optional<Text::String> Net::WhoisRecord::GetItem(UOSInt index) const
+Optional<Text::String> Net::WhoisRecord::GetItem(UIntOS index) const
 {
 	return this->items.GetItem(index);
 }
@@ -132,7 +132,7 @@ UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetNetworkName(UnsafeArray<UTF8Char> 
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("netname:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);
-			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
+			return Text::StrTrimC(buff, (UIntOS)(sptr - buff));
 		}
 	}
 	return nullptr;
@@ -149,7 +149,7 @@ UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetCountryCode(UnsafeArray<UTF8Char> 
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("country:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);
-			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
+			return Text::StrTrimC(buff, (UIntOS)(sptr - buff));
 		}
 	}
 	return nullptr;

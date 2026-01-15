@@ -33,11 +33,11 @@ namespace Map
 		public:
 			virtual ~AddressComparator();
 
-			virtual OSInt Compare(NN<AddressEntry> a, NN<AddressEntry> b) const;
+			virtual IntOS Compare(NN<AddressEntry> a, NN<AddressEntry> b) const;
 		};
 	private:
 		Data::ArrayListNN<Map::ReverseGeocoder> revGeos;
-		UOSInt nextCoder;
+		UIntOS nextCoder;
 		NN<DB::DBTool> conn;
 		NN<IO::Writer> errWriter;
 		Data::BTreeMapObj<Text::String *> strMap;
@@ -47,11 +47,11 @@ namespace Map
 		DBAssistedReverseGeocoderPL(NN<DB::DBTool> db, NN<IO::Writer> errWriter);
 		virtual ~DBAssistedReverseGeocoderPL();
 
-		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual void AddReverseGeocoder(NN<Map::ReverseGeocoder> revGeo);
 	private:
-		OSInt AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy);
+		IntOS AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy);
 	};
 }
 #endif

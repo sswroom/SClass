@@ -43,19 +43,19 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::GPSTrack> track;
 			NN<AVIRMapNavigator> navi;
-			UOSInt startMark;
-			UOSInt endMark;
+			UIntOS startMark;
+			UIntOS endMark;
 			UnsafeArrayOpt<Optional<Text::String>> names;
-			UOSInt namesCnt;
+			UIntOS namesCnt;
 			Bool threadRunning;
 			Bool threadToStop;
-			UOSInt currTrackId;
+			UIntOS currTrackId;
 
 		private:
 			static UInt32 __stdcall AddressThread(AnyType userObj);
 			static void __stdcall OnCboNameChg(AnyType userObj);
 			static void __stdcall OnLbRecordChg(AnyType userObj);
-			static UI::EventState __stdcall OnLbRecordRClick(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static UI::EventState __stdcall OnLbRecordRClick(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn);
 			void FreeNames();
 
 		public:

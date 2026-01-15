@@ -24,7 +24,7 @@ Map::GoogleMap::GoogleWSSearcherXML::~GoogleWSSearcherXML()
 {
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang)
 {
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -55,7 +55,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 		Int32 status = cli->GetRespStatus();
-		UOSInt readSize;
+		UIntOS readSize;
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(Data::ByteArray(databuff, 2048))) > 0)
 		{
@@ -70,7 +70,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 			{
 				Bool succ = false;
 				Text::XMLNode **result;
-				UOSInt resultCnt;
+				UIntOS resultCnt;
 				result = doc.SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
 				if (resultCnt == 1)
 				{
@@ -121,7 +121,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 			sptr = Text::StrConcatC(url, UTF8STRC("Google "));
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
+			errWriter->WriteLineC(url, (UIntOS)(sptr - url));
 			*buff = 0;
 		}
 	}
@@ -135,7 +135,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
@@ -143,7 +143,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	if (this->lastIsError)
 	{

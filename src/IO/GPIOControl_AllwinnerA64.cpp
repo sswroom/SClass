@@ -15,7 +15,7 @@ struct IO::GPIOControl::ClassData
 	volatile UInt32 *gpioPtr;
 };
 
-void GPIOControl_GetPortNum(UInt16 pinNum, OSInt *portNum, OSInt *index)
+void GPIOControl_GetPortNum(UInt16 pinNum, IntOS *portNum, IntOS *index)
 {
 	if (pinNum < 10)
 	{
@@ -73,58 +73,58 @@ Bool IO::GPIOControl::IsError()
 	return this->clsData->mem->IsError();
 }
 
-UOSInt IO::GPIOControl::GetPinCount()
+UIntOS IO::GPIOControl::GetPinCount()
 {
 	return 103;
 }
 
-Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinHigh(UIntOS pinNum)
 {
 	if (pinNum >= 103)
 	{
 		return false;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	return ((this->clsData->gpioPtr[portNum * 9 + 4] >> index) & 1) != 0;
 }
 
-Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinOutput(UIntOS pinNum)
 {
 	if (pinNum >= 103)
 	{
 		return false;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	return ((this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
 }
 
-UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
+UIntOS IO::GPIOControl::GetPinMode(UIntOS pinNum)
 {
 	if (pinNum >= 103)
 	{
 		return 0;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	return (this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
 }
 
-Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
+Bool IO::GPIOControl::SetPinOutput(UIntOS pinNum, Bool isOutput)
 {
 	if (pinNum >= 103)
 	{
 		return false;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	UInt32 mask = 7 << ((index & 7) * 4);
@@ -133,14 +133,14 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
+Bool IO::GPIOControl::SetPinState(UIntOS pinNum, Bool isHigh)
 {
 	if (pinNum >= 103)
 	{
 		return false;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	UInt32 v = isHigh?(1 << index):0;
@@ -148,14 +148,14 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
+Bool IO::GPIOControl::SetPullType(UIntOS pinNum, IO::IOPin::PullType pt)
 {
 	if (pinNum >= 103)
 	{
 		return false;
 	}
-	OSInt portNum;
-	OSInt index;
+	IntOS portNum;
+	IntOS index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	UInt32 v;
@@ -175,28 +175,28 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	return true;
 }
 
-void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnHigh(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnLow(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnRaise(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnFall(UIntOS pinNum, Bool enable)
 {
 }
 
-Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
+Bool IO::GPIOControl::HasEvent(UIntOS pinNum)
 {
 	return false;
 }
 
-void IO::GPIOControl::ClearEvent(UOSInt pinNum)
+void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
@@ -825,7 +825,7 @@ static Text::CString GPIOControl_Func6[] = {
 	CSTR("PH_EINT11"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
+Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

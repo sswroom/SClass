@@ -83,7 +83,7 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 		NEW_CLASS(rdr, IO::StreamReader(fstm));
 		while (rdr->ReadLine(lineBuff))
 		{
-			OSInt strCnt;
+			IntOS strCnt;
 			Int32 lyrType;
 			strCnt = Text::StrSplitTrim(strs, 10, lineBuff, ',');
 

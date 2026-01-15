@@ -4,7 +4,7 @@
 
 Bool Net::Email::EmailUtil::AddressValid(UnsafeArray<const UTF8Char> addr)
 {
-	UOSInt i = Text::StrIndexOfChar(addr, '@');
+	UIntOS i = Text::StrIndexOfChar(addr, '@');
 	if (i == INVALID_INDEX || i == 0)
 	{
 		return false;

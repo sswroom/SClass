@@ -29,8 +29,8 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 	WChar *multiBuff = 0;
 	WChar *fnameBuff;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt filterCnt = this->names.GetCount();
+	UIntOS i = 0;
+	UIntOS filterCnt = this->names.GetCount();
 	NN<Text::String> name;
 	NN<Text::String> pattern;
 	NN<Text::String> s;
@@ -125,7 +125,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 		Text::StrReplaceW(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		UOSInt i = Text::StrLastIndexOfCharW(fname2, IO::Path::PATH_SEPERATOR);
+		UIntOS i = Text::StrLastIndexOfCharW(fname2, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			fname2[i] = 0;
@@ -215,13 +215,13 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 /*	ofn.lpstrFilter = sb.ToString();
 	ofn.lpstrCustomFilter = 0; 
 	ofn.nMaxCustFilter = 0;*/
-	UOSInt nFilterIndex = 0;
+	UIntOS nFilterIndex = 0;
 	if (this->filterIndex == INVALID_INDEX)
 	{
 		if (this->isSave && fnameBuff && fnameBuff[0] != 0)
 		{
 			Bool found = false;
-			UOSInt foundIndexLeng = 0;
+			UIntOS foundIndexLeng = 0;
 			NN<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
 			i = 0;
 			while (i < filterCnt)
@@ -258,7 +258,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 	{
 		nFilterIndex = this->filterIndex;
 	}
-	UOSInt si = nFilterIndex;
+	UIntOS si = nFilterIndex;
 	GSList *list = gtk_file_chooser_list_filters(chooser);
 	GSList *item = list;
 	while (item)
@@ -347,7 +347,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 		this->ClearFileNames();
 		OPTSTR_DEL(this->fileName);
 		this->fileName = nullptr;
-		this->filterIndex = (UOSInt)-1;
+		this->filterIndex = (UIntOS)-1;
 		GtkFileFilter *filter = gtk_file_chooser_get_filter(chooser);
 		if (filter)
 		{
@@ -363,7 +363,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 				this->filterIndex++;
 				if (item->next == 0)
 				{
-					this->filterIndex = (UOSInt)-1;
+					this->filterIndex = (UIntOS)-1;
 					break;
 				}
 				item = item->next;
@@ -427,7 +427,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 					else
 					{
 						Text::StrConcatC(fname3, initFileName, i);
-						UOSInt j = Text::StrIndexOfW(currPtr, fname3);
+						UIntOS j = Text::StrIndexOfW(currPtr, fname3);
 						if (j != INVALID_INDEX)
 						{
 							currPtr[j] = 0;

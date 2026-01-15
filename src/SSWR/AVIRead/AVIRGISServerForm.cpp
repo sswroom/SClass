@@ -47,13 +47,13 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 	}
 	UInt16 port = 0;
 	Bool valid = true;
-	UOSInt workerCnt;
+	UIntOS workerCnt;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	sb.ClearStr();
 	me->txtWorkerCnt->GetText(sb);
-	if (!sb.ToUOSInt(workerCnt))
+	if (!sb.ToUIntOS(workerCnt))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), TITLE, me);
 		return;
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnAssetSelChg(AnyType userObj)
 		me->txtAssetPath->SetText(layer->GetSourceNameObj()->ToCString());
 		sptr = Text::StrUInt32(sbuff, layer->GetCoordinateSystem()->GetSRID());
 		me->txtAssetSRID->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, layer->GetRecordCnt());
+		sptr = Text::StrUIntOS(sbuff, layer->GetRecordCnt());
 		me->txtAssetCount->SetText(CSTRP(sbuff, sptr));
 		Math::RectAreaDbl bbox;
 		if (layer->GetBounds(bbox))
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureLayerSelChg(AnyType us
 void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureAddClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
-	UOSInt i = me->cboFeatureLayer->GetSelectedIndex();
+	UIntOS i = me->cboFeatureLayer->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
 		return;
@@ -250,9 +250,9 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFiles(AnyType userObj, Data::
 	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	NN<Map::MapDrawLayer> layer;
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
+	UIntOS k;
 	while (i < j)
 	{
 		IO::StmData::FileData fd(files.GetItem(i), false);
@@ -309,7 +309,7 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->lblSSLCert->SetRect(284, 28, 200, 23, false);
 	this->lblWorkerCnt = ui->NewLabel(this->pnlConn, CSTR("Worker Count"));
 	this->lblWorkerCnt->SetRect(4, 52, 100, 23, false);
-	sptr = Text::StrUOSInt(sbuff, Sync::ThreadUtil::GetThreadCnt());
+	sptr = Text::StrUIntOS(sbuff, Sync::ThreadUtil::GetThreadCnt());
 	this->txtWorkerCnt = ui->NewTextBox(this->pnlConn, CSTRP(sbuff, sptr));
 	this->txtWorkerCnt->SetRect(104, 52, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlConn, CSTR("Start"));

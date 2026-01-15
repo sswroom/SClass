@@ -19,8 +19,8 @@ namespace UI
 	class GUIDropData
 	{
 	public:
-		virtual UOSInt GetCount() = 0;
-		virtual UnsafeArrayOpt<const UTF8Char> GetName(UOSInt index) = 0;
+		virtual UIntOS GetCount() = 0;
+		virtual UnsafeArrayOpt<const UTF8Char> GetName(UIntOS index) = 0;
 		virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name) = 0;
 	};
@@ -37,7 +37,7 @@ namespace UI
 		} DragEffect;
 	public:
 		virtual DragEffect DragEnter(NN<GUIDropData> data) = 0;
-		virtual void DropData(NN<GUIDropData> data, OSInt x, OSInt y) = 0;
+		virtual void DropData(NN<GUIDropData> data, IntOS x, IntOS y) = 0;
 	};
 
 	class GUIControl
@@ -213,7 +213,7 @@ namespace UI
 			DET_ALREADYREGISTER
 		} DragErrorType;
 
-		typedef EventState (CALLBACKFUNC MouseEventHandler)(AnyType userObj, Math::Coord2D<OSInt> scnCoord, MouseButton btn);
+		typedef EventState (CALLBACKFUNC MouseEventHandler)(AnyType userObj, Math::Coord2D<IntOS> scnCoord, MouseButton btn);
 
 
 	protected:
@@ -257,14 +257,14 @@ namespace UI
 		virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 		virtual void SetSize(Double width, Double height);
-		virtual void SetSizeP(Math::Size2D<UOSInt> size);
+		virtual void SetSizeP(Math::Size2D<UIntOS> size);
 		virtual Math::Size2DDbl GetSize();
-		virtual Math::Size2D<UOSInt> GetSizeP();
+		virtual Math::Size2D<UIntOS> GetSizeP();
 		virtual void SetPosition(Double x, Double y);
-		virtual Math::Coord2D<OSInt> GetPositionP();
-		virtual Math::Coord2D<OSInt> GetScreenPosP();
+		virtual Math::Coord2D<IntOS> GetPositionP();
+		virtual Math::Coord2D<IntOS> GetScreenPosP();
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
-		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
+		virtual void SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn);
 		void SetRect(Double left, Double top, Double width, Double height, Bool updateScn);
 		virtual void SetFont(Text::CString fontName, Double ptSize, Bool isBold);
 		void InitFont();
@@ -277,12 +277,12 @@ namespace UI
 		void *GetBGBrush();
 		virtual Bool IsFormFocused();
 		virtual void Focus();
-		virtual OSInt GetScrollHPos();
-		virtual OSInt GetScrollVPos();
-		void ScrollTo(OSInt x, OSInt y);
+		virtual IntOS GetScrollHPos();
+		virtual IntOS GetScrollVPos();
+		void ScrollTo(IntOS x, IntOS y);
 
 		virtual Text::CStringNN GetObjectClass() const = 0;
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual void OnPosChanged(Bool updateScn);
 		virtual void OnShow();

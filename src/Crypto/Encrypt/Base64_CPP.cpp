@@ -7,14 +7,14 @@ extern "C"
 {
 	extern Char *Base64_encArr;
 	extern UInt8 Base64_decArr[];
-	OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
-	OSInt Base64_Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
+	IntOS Base64_Encrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff);
+	IntOS Base64_Decrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff);
 }
-OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff)
+IntOS Base64_Encrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff)
 {
-	OSInt tmp1 = inSize % 3;
-	OSInt tmp2 = inSize / 3;
-	OSInt retSize;
+	IntOS tmp1 = inSize % 3;
+	IntOS tmp2 = inSize / 3;
+	IntOS retSize;
 	if (tmp1 == 0)
 	{
 		retSize = tmp2 << 2;
@@ -54,7 +54,7 @@ OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff)
 	return retSize;
 }
 
-OSInt Base64_Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff)
+IntOS Base64_Decrypt(const UInt8 *inBuff, IntOS inSize, UInt8 *outBuff)
 {
 	UInt8 *startPos = outBuff;
 	UInt8 b;

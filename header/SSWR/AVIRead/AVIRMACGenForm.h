@@ -33,7 +33,7 @@ namespace SSWR
 
 			static void __stdcall OnGenerateClicked(AnyType userObj);
 			static void __stdcall OnAdapterSetClicked(AnyType userObj);
-			static OSInt __stdcall ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2);
+			static IntOS __stdcall ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2);
 		public:
 			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACGenForm();

@@ -52,7 +52,7 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NN<Net::TCPClient> cli, AnyTy
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
-		UOSInt i;
+		UIntOS i;
 		SDEL_STRING(cliStatus->cliName);
 		SDEL_STRING(cliStatus->mailFrom);
 		i = cliStatus->rcptTo.GetCount();
@@ -101,8 +101,8 @@ void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyTyp
 			cliStatus->buffSize += buff.GetSize();
 			buff += buff.GetSize();
 		}
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		j = 0;
 		i = 0;
 		while (i < cliStatus->buffSize)
@@ -155,11 +155,11 @@ void __stdcall Net::Email::SMTPServer::ClientTimeout(NN<Net::TCPClient> cli, Any
 {
 }
 
-UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg)
+UIntOS Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = Text::StrIndexOfCharC(&msg.v[i], msg.leng - i, '\r');
@@ -167,7 +167,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 		{
 			sb.AppendI32(statusCode);
 			sb.AppendC(UTF8STRC("-"));
-			sb.AppendC(&msg.v[i], (UOSInt)j);
+			sb.AppendC(&msg.v[i], (UIntOS)j);
 			sb.AppendC(UTF8STRC("\r\n"));
 			i += j + 2;
 		}
@@ -182,7 +182,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 	}
 
 
-	UOSInt buffSize;
+	UIntOS buffSize;
 	buffSize = cli->Write(sb.ToByteArray());
 	if (this->rawLog)
 	{
@@ -191,11 +191,11 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 	return buffSize;
 }
 
-/*OSInt Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg)
+/*IntOS Net::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg)
 {
 	Text::StringBuilderC sb;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = Text::StrIndexOfChar(&msg[i], '\r');
@@ -218,12 +218,12 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 	}
 
 
-	OSInt strLen = sb.GetLength();
+	IntOS strLen = sb.GetLength();
 	strLen = cli->Write((UInt8*)sb.ToString(), strLen);
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
@@ -241,7 +241,7 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 			pwd.v = userName.v + userName.leng + 1;
 			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v.Ptr());
+				pwd.leng = (UIntOS)(decBuff + cmdLen - pwd.v.Ptr());
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);
@@ -437,7 +437,7 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 			pwd.v = userName.v + userName.leng + 1;
 			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v.Ptr());
+				pwd.leng = (UIntOS)(decBuff + cmdLen - pwd.v.Ptr());
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);

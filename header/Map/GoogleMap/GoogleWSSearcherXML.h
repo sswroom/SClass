@@ -26,9 +26,9 @@ namespace Map
 			GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NN<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherXML();
 
-			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw
-			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+			UTF8Char *SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw
+			virtual UTF8Char *SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
+			virtual UTF8Char *CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
 		};
 	}
 }

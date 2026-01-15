@@ -12,7 +12,7 @@ Data::FieldComparator::FieldComparator(Text::CString compareConds)
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];
-	UOSInt i = 2;
+	UIntOS i = 2;
 	Int8 dir;
 	sb.Append(nncompareConds);
 	sarr[1] = sb;
@@ -39,11 +39,11 @@ Data::FieldComparator::~FieldComparator()
 	this->fieldNames.FreeAll();
 }
 
-OSInt Data::FieldComparator::Compare(NN<VariObject> a, NN<VariObject> b) const
+IntOS Data::FieldComparator::Compare(NN<VariObject> a, NN<VariObject> b) const
 {
 	Data::ArrayIterator<NN<Text::String>> it = this->fieldNames.Iterator();
-	OSInt k;
-	UOSInt i = 0;
+	IntOS k;
+	UIntOS i = 0;
 	while (it.HasNext())
 	{
 		NN<Text::String> fieldName = it.Next();
@@ -72,13 +72,13 @@ Bool Data::FieldComparator::ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQ
 	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayIterator<NN<Text::String>> it = this->fieldNames.Iterator();
 	Bool found = false;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (it.HasNext())
 	{
 		if (found)
 			sb->AppendC(UTF8STRC(", "));
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		if (this->dirs.GetItem(i) == -1)
 		{
 			sb->AppendC(UTF8STRC(" desc"));
@@ -89,7 +89,7 @@ Bool Data::FieldComparator::ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQ
 	return true;
 }
 
-OSInt Data::FieldComparator::Compare(Optional<VariItem> a, Optional<VariItem> b)
+IntOS Data::FieldComparator::Compare(Optional<VariItem> a, Optional<VariItem> b)
 {
 	NN<VariItem> nna;
 	NN<VariItem> nnb;

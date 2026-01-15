@@ -34,8 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnTimerTick(AnyType user
 	Int64 dispTime = Data::DateTimeUtil::GetCurrTimeMillis() / 1000 - 1;
 	NN<Net::EthernetAnalyzer::BandwidthStat> stat;
 	UInt32 ip;
-	UOSInt i = 0;
-	UOSInt j = me->lvDetail->GetCount();
+	UIntOS i = 0;
+	UIntOS j = me->lvDetail->GetCount();
 	while (i < j)
 	{
 		stat = me->lvDetail->GetItem(i).GetNN<Net::EthernetAnalyzer::BandwidthStat>();
@@ -60,11 +60,11 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnTimerTick(AnyType user
 				stat->displayTime = dispTime;
 				sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
 				me->lvDetail->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-				sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+				sptr = Text::StrUIntOS(sbuff, stat->lastStat.recvCnt);
 				me->lvDetail->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
 				me->lvDetail->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-				sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+				sptr = Text::StrUIntOS(sbuff, stat->lastStat.sendCnt);
 				me->lvDetail->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 			}
 			else if (dispTime == stat->currStat.time)
@@ -72,11 +72,11 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnTimerTick(AnyType user
 				stat->displayTime = dispTime;
 				sptr = Text::StrUInt64(sbuff, stat->currStat.recvBytes);
 				me->lvDetail->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-				sptr = Text::StrUOSInt(sbuff, stat->currStat.recvCnt);
+				sptr = Text::StrUIntOS(sbuff, stat->currStat.recvCnt);
 				me->lvDetail->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt64(sbuff, stat->currStat.sendBytes);
 				me->lvDetail->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-				sptr = Text::StrUOSInt(sbuff, stat->currStat.sendCnt);
+				sptr = Text::StrUIntOS(sbuff, stat->currStat.sendCnt);
 				me->lvDetail->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 			}
 			else if (stat->displayTime == stat->lastStat.time)
@@ -110,11 +110,11 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnTimerTick(AnyType user
 			}
 			sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
 			me->lvDetail->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-			sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+			sptr = Text::StrUIntOS(sbuff, stat->lastStat.recvCnt);
 			me->lvDetail->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
 			me->lvDetail->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-			sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+			sptr = Text::StrUIntOS(sbuff, stat->lastStat.sendCnt);
 			me->lvDetail->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 		}
 		i++;
@@ -139,11 +139,11 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnTimerTick(AnyType user
 		}
 		sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
 		me->lvDetail->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+		sptr = Text::StrUIntOS(sbuff, stat->lastStat.recvCnt);
 		me->lvDetail->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
 		me->lvDetail->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+		sptr = Text::StrUIntOS(sbuff, stat->lastStat.sendCnt);
 		me->lvDetail->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 		i++;
 	}

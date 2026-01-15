@@ -73,11 +73,11 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 	Int32 i;
 	Data::Duration refStart;
 	Data::Duration audStartTime;	
-	UOSInt readBuffLeng = BUFFLENG;
-	UOSInt outBuffLeng;
-	UOSInt outBitPerSample;
-	UOSInt outNChannels;
-	UOSInt minLeng;
+	UIntOS readBuffLeng = BUFFLENG;
+	UIntOS outBuffLeng;
+	UIntOS outBitPerSample;
+	UIntOS outNChannels;
+	UIntOS minLeng;
 	Data::Duration thisT;
 	Data::Duration lastT;
 	NN<Media::RefClock> clk;
@@ -128,11 +128,11 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 		lastT = thisT = GetCurrTime(me->hand);
 		refStart = thisT - audStartTime;
 
-		UOSInt buffSize[2];
-		UOSInt outSize[2];
+		UIntOS buffSize[2];
+		UIntOS outSize[2];
 		UInt8 *outBuff[2];
-		OSInt nextBlock;
-		UOSInt readSize = 0;
+		IntOS nextBlock;
+		UIntOS readSize = 0;
 		UInt8 *readBuff = 0;
 		Bool isFirst = true;
 		if (me->dataConv)
@@ -215,7 +215,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 						
 					}
 				}
-				i = (Int32)(i * (OSInt)(outBitPerSample >> 3) * (OSInt)outNChannels);
+				i = (Int32)(i * (IntOS)(outBitPerSample >> 3) * (IntOS)outNChannels);
 				while (i > 0)
 				{
 					if (buffSize[nextBlock] == 0)
@@ -224,7 +224,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 						audsrc->Stop();
 						break;
 					}
-					if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
+					if ((UIntOS)i >= buffSize[nextBlock] - outSize[nextBlock])
 					{
 						err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
 						if (err < 0)
@@ -527,10 +527,10 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 	return true;
 }
 
-UOSInt Media::ALSARenderer::GetDeviceCount()
+UIntOS Media::ALSARenderer::GetDeviceCount()
 {
 	Int32 card = -1;
-	UOSInt count = 0;
+	UIntOS count = 0;
 	card = -1;
 	while (snd_card_next(&card) >= 0 && card >= 0)
 	{
@@ -539,7 +539,7 @@ UOSInt Media::ALSARenderer::GetDeviceCount()
 	return count;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	snd_ctl_t *handle;
 	snd_ctl_card_info_t *info;
@@ -604,7 +604,7 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 				UTF8Char sbuff[32];
 				UnsafeArray<UTF8Char> sptr;
 				sptr = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("hw:")));
-				this->devName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+				this->devName = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			DEL_CLASS(cfg);
 		}

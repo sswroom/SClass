@@ -15,7 +15,7 @@ Media::Decoder::G711muLawDecoder::G711muLawDecoder(NN<Media::AudioSource> source
 	if (fmt.bitpersample != 8)
 		return;
 	this->sourceAudio = sourceAudio.Ptr();
-	this->align = (UOSInt)fmt.nChannels << 1;
+	this->align = (UIntOS)fmt.nChannels << 1;
 }
 
 Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
@@ -70,7 +70,7 @@ Data::Duration Media::Decoder::G711muLawDecoder::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	NN<Media::AudioSource> sourceAudio;
@@ -95,7 +95,7 @@ void Media::Decoder::G711muLawDecoder::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
+UIntOS Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 {
 	NN<Sync::Event> readEvt;
 	static Int16 table[] = {
@@ -140,10 +140,10 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 		return 0;
 	}
 	blk = blk.WithSize(blk.GetSize() / this->align * this->align);
-	UOSInt readSize;
-	UOSInt sofst = blk.GetSize() >> 1;
-	UOSInt dofst = 0;
-	UOSInt cnt;
+	UIntOS readSize;
+	UIntOS sofst = blk.GetSize() >> 1;
+	UIntOS dofst = 0;
+	UIntOS cnt;
 	readSize = sourceAudio->ReadBlock(blk.SubArray(sofst, sofst));
 	cnt = readSize;
 	while (cnt-- > 0)
@@ -158,7 +158,7 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 	return readSize << 1;
 }
 
-UOSInt Media::Decoder::G711muLawDecoder::GetMinBlockSize()
+UIntOS Media::Decoder::G711muLawDecoder::GetMinBlockSize()
 {
 	return this->align;
 }

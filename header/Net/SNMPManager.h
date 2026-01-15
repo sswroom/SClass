@@ -13,9 +13,9 @@ namespace Net
 		typedef struct
 		{
 			NN<Text::String> name;
-			UOSInt index;
+			UIntOS index;
 			UInt8 objId[64];
-			UOSInt objIdLen;
+			UIntOS objIdLen;
 			Double mulVal;
 			Int32 invVal;
 			SSWR::SMonitor::SAnalogSensor::ReadingType readingType;
@@ -28,7 +28,7 @@ namespace Net
 			Net::SocketUtil::AddressInfo addr;
 			NN<Text::String> community;
 			UInt8 objId[64];
-			UOSInt objIdLen;
+			UIntOS objIdLen;
 			NN<Text::String> descr;
 			Optional<Text::String> contact;
 			Optional<Text::String> name;
@@ -53,10 +53,10 @@ namespace Net
 
 		Bool IsError();
 		void UpdateValues();
-		UOSInt GetAgentList(NN<Data::ArrayListNN<AgentInfo>> agentList);
+		UIntOS GetAgentList(NN<Data::ArrayListNN<AgentInfo>> agentList);
 
 		Optional<AgentInfo> AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
-		UOSInt AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, NN<Data::ArrayListNN<AgentInfo>> agentList, Bool scanIP);
+		UIntOS AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, NN<Data::ArrayListNN<AgentInfo>> agentList, Bool scanIP);
 
 		static void Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec, OutParam<Int64> cliId);
 		static Int64 Agent2CliId(NN<const AgentInfo> agent);

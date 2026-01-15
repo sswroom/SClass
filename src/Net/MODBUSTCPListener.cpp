@@ -36,9 +36,9 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 	Bool succ;
 	Bool bVal;
 	UInt16 iVal;
-	UOSInt i;
-	UOSInt j;
-	if (packetSize >= 4 && buff.GetSize() == (UOSInt)packetSize + 6)
+	UIntOS i;
+	UIntOS j;
+	if (packetSize >= 4 && buff.GetSize() == (UIntOS)packetSize + 6)
 	{
 		UInt8 addr = buff[6];
 		Sync::MutexUsage mutUsage(me->devMut);
@@ -91,7 +91,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
+							cli->Write(Data::ByteArrayR(retBuff, (UIntOS)byteSize + 9));
 						}
 					}
 				}
@@ -140,7 +140,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
+							cli->Write(Data::ByteArrayR(retBuff, (UIntOS)byteSize + 9));
 						}
 					}
 				}
@@ -177,7 +177,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
+							cli->Write(Data::ByteArrayR(retBuff, (UIntOS)byteSize + 9));
 						}
 					}
 				}
@@ -214,7 +214,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
+							cli->Write(Data::ByteArrayR(retBuff, (UIntOS)byteSize + 9));
 						}
 					}
 				}
@@ -310,7 +310,7 @@ Net::MODBUSTCPListener::~MODBUSTCPListener()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 
-	UOSInt i = this->devMap.GetCount();
+	UIntOS i = this->devMap.GetCount();
 	NN<IO::MODBUSDevSim> dev;
 	while (i-- > 0)
 	{
@@ -336,22 +336,22 @@ void Net::MODBUSTCPListener::AddDevice(UInt8 addr, NN<IO::MODBUSDevSim> dev)
 		dev.Delete();
 }
 
-UOSInt Net::MODBUSTCPListener::GetDeviceCount() const
+UIntOS Net::MODBUSTCPListener::GetDeviceCount() const
 {
 	return this->devMap.GetCount();
 }
 
-NN<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDeviceNoCheck(UOSInt index) const
+NN<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDeviceNoCheck(UIntOS index) const
 {
 	return this->devMap.GetItemNoCheck(index);
 }
 
-Optional<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDevice(UOSInt index) const
+Optional<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDevice(UIntOS index) const
 {
 	return this->devMap.GetItem(index);
 }
 
-UInt32 Net::MODBUSTCPListener::GetDeviceAddr(UOSInt index)
+UInt32 Net::MODBUSTCPListener::GetDeviceAddr(UIntOS index)
 {
 	return this->devMap.GetKey(index);
 }

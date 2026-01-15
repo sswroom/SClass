@@ -17,7 +17,7 @@ Crypto::Cert::CurlCert::~CurlCert()
 Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo.p;
-	UOSInt slen;
+	UIntOS slen;
 	while (slist)
 	{
 		slen = Text::StrCharCntCh(slist->data);
@@ -33,7 +33,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo.p;
-	UOSInt slen;
+	UIntOS slen;
 	while (slist)
 	{
 		slen = Text::StrCharCntCh(slist->data);
@@ -78,9 +78,9 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 	{
 		if (Text::StrStartsWith(slist->data, "Cert:"))
 		{
-			UOSInt len = Text::StrCharCntCh(slist->data);
+			UIntOS len = Text::StrCharCntCh(slist->data);
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName)).SetTo(pobjCert))
+			if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UIntOS)len - 5), fileName)).SetTo(pobjCert))
 			{
 				fileName->Release();
 				return pobjCert;

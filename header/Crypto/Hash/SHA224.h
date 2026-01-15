@@ -11,7 +11,7 @@ namespace Crypto
 		private:
 			UInt32 intermediateHash[8];
 			UInt64 messageLength;
-			UOSInt messageBlockIndex;
+			UIntOS messageBlockIndex;
 			UInt8 messageBlock[64];
 
 		public:
@@ -21,10 +21,10 @@ namespace Crypto
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
-			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
-			virtual UOSInt GetBlockSize() const;
-			virtual UOSInt GetResultSize() const;
+			virtual UIntOS GetBlockSize() const;
+			virtual UIntOS GetResultSize() const;
 		};
 	}
 }

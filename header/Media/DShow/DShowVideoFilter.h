@@ -27,7 +27,7 @@ namespace Media
 		{
 		private:
 			Int32 initRes;
-			Math::Size2D<UOSInt> preferSize;
+			Math::Size2D<UIntOS> preferSize;
 			UInt32 preferRate;
 			UInt32 preferFCC;
 			UInt32 preferBPP;
@@ -49,7 +49,7 @@ namespace Media
 				this->cb = 0;
 				this->fcCb = 0;
 				this->ud = 0;
-				this->preferSize = Math::Size2D<UOSInt>(0, 0);
+				this->preferSize = Math::Size2D<UIntOS>(0, 0);
 				this->preferRate = 0;
 				this->preferFCC = (UInt32)-1;
 				this->preferBPP = 0;
@@ -212,8 +212,8 @@ namespace Media
 					}
 					else if (this->frameFCC == ReadNUInt32("H264"))
 					{
-						OSInt i = 0;
-						OSInt j = frameSize - 4;
+						IntOS i = 0;
+						IntOS j = frameSize - 4;
 						while (i < j)
 						{
 							if (dataPtr[i] == 0 && dataPtr[i+1] == 0 && dataPtr[i+2] == 0 && dataPtr[i+3] == 1)
@@ -267,7 +267,7 @@ namespace Media
 				}
 			}
 
-			void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 rate, UInt32 fcc, UInt32 bpp)
+			void SetPreferSize(Math::Size2D<UIntOS> size, UInt32 rate, UInt32 fcc, UInt32 bpp)
 			{
 				this->preferSize = size;
 				this->preferRate = rate;

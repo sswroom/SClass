@@ -16,7 +16,7 @@ static GPIOControl_InterruptInfo GPIOControl_intHdlrs[HANDLERCNT] = {0};
 
 ISR(PCINT0_vect)
 {
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < HANDLERCNT)
 	{
 		if (GPIOControl_intHdlrs[i].hdlr)
@@ -44,13 +44,13 @@ Bool IO::GPIOControl::IsError()
 	return false;
 }
 
-UOSInt IO::GPIOControl::GetPinCount()
+UIntOS IO::GPIOControl::GetPinCount()
 {
 	return 23;
 }
 
 
-Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
+Bool IO::GPIOControl::IsPinHigh(UIntOS pinNum)
 {
 	if (pinNum < 8)
 	{
@@ -70,7 +70,7 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 	}
 }
 
-Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
+Bool IO::GPIOControl::SetPinOutput(UIntOS pinNum, Bool isOutput)
 {
 	if (isOutput)
 	{
@@ -113,7 +113,7 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
+Bool IO::GPIOControl::SetPinState(UIntOS pinNum, Bool isHigh)
 {
 	if (isHigh)
 	{
@@ -156,11 +156,11 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	return true;
 }
 
-Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
+Bool IO::GPIOControl::SetPullType(UIntOS pinNum, IO::IOPin::PullType pt)
 {
 }
 
-Bool IO::GPIOControl::InterruptEnable(UOSInt pinNum, Bool enable)
+Bool IO::GPIOControl::InterruptEnable(UIntOS pinNum, Bool enable)
 {
 	if (pinNum < 8)
 	{
@@ -202,7 +202,7 @@ Bool IO::GPIOControl::InterruptEnable(UOSInt pinNum, Bool enable)
 
 void IO::GPIOControl::HandleInterrupt(InterruptHandler hdlr, void *userObj)
 {
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < HANDLERCNT)
 	{
 		if (GPIOControl_intHdlrs[i].hdlr == 0)
@@ -217,7 +217,7 @@ void IO::GPIOControl::HandleInterrupt(InterruptHandler hdlr, void *userObj)
 
 void IO::GPIOControl::UnhandleInterrupt(InterruptHandler hdlr, void *userObj)
 {
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < HANDLERCNT)
 	{
 		if (GPIOControl_intHdlrs[i].hdlr == hdlr && GPIOControl_intHdlrs[i].userObj == userObj)
@@ -230,27 +230,27 @@ void IO::GPIOControl::UnhandleInterrupt(InterruptHandler hdlr, void *userObj)
 	}
 }
 
-void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnHigh(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnLow(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnRaise(UIntOS pinNum, Bool enable)
 {
 }
 
-void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
+void IO::GPIOControl::SetEventOnFall(UIntOS pinNum, Bool enable)
 {
 }
 
-Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
+Bool IO::GPIOControl::HasEvent(UIntOS pinNum)
 {
 }
 
-void IO::GPIOControl::ClearEvent(UOSInt pinNum)
+void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 

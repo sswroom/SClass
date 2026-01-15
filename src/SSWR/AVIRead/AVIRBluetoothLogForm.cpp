@@ -21,8 +21,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(AnyType userOb
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UIntOS i = 0;
+		UIntOS j = dlg->GetFileNameCount();
 		while (i < j)
 		{
 			NN<Text::String> name;
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(AnyType userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	NN<const IO::BTDevLog::DevEntry> log;
@@ -63,12 +63,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
-		UOSInt i = me->macList.SetEntry(log->mac64Int, name->ToCString());
+		UIntOS i = me->macList.SetEntry(log->mac64Int, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItemNoCheck(i);
 		me->UpdateStatus();
 
-		UOSInt j;
+		UIntOS j;
 		i = 0;
 		j = me->lvContent->GetCount();
 		while (i < j)
@@ -114,9 +114,9 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS l;
 	this->lvContent->ClearItems();
 	i = 0;
 	j = logList.GetCount();
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 void SSWR::AVIRead::AVIRBluetoothLogForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList.GetCount());
+	sb.AppendUIntOS(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }

@@ -43,12 +43,12 @@ void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 				UnsafeArray<UTF8Char> sptr;
 				sb.AppendC(UTF8STRC("NTP: Client "));
 				sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port).Or(sbuff);
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				dt.AddMS((OSInt)me->timeDiff);
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
+				dt.AddMS((IntOS)me->timeDiff);
 				dt.ToLocalTime();
 				sb.AppendC(UTF8STRC(" reply time as "));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			}
 		}
@@ -80,7 +80,7 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 						sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
 						dt.ToLocalTime();
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 					}
 					else
@@ -90,7 +90,7 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 						sb.AppendC(UTF8STRC("NTP: Time update to "));
 						dt.ToLocalTime();
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						sb.AppendC(UTF8STRC(" failed"));
 						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 						dt.SetCurrTimeUTC();
@@ -168,8 +168,8 @@ void Net::NTPServer::ReadTime(const UInt8 *buff, Data::DateTime *time)
 	UInt32 v = ReadMUInt32(&buff[0]);
 	UInt32 v2 = ReadMUInt32(&buff[4]);
 
-	time->AddMinute((OSInt)v / 60);
-	time->AddMS((OSInt)((v % 60) * 1000 + ((v2 * 1000LL) >> 32)));
+	time->AddMinute((IntOS)v / 60);
+	time->AddMS((IntOS)((v % 60) * 1000 + ((v2 * 1000LL) >> 32)));
 }
 
 Data::Timestamp Net::NTPServer::ReadTime(const UInt8 *buff)

@@ -20,7 +20,7 @@ namespace Media
 			U128 state;
 
 			UInt64 remain;
-			UOSInt remainSize;
+			UIntOS remainSize;
 
 			UInt64 Xrandom64();
 			static UInt32 Add64c(UInt64 *ret, UInt64 *u, UInt64 *v);
@@ -32,14 +32,14 @@ namespace Media
 
 			UInt64 Next(UInt32 nbits);
 			UInt64 Next64();
-			void NextBytes(UInt8 *ptr, UOSInt z);
+			void NextBytes(UInt8 *ptr, UIntOS z);
 			Double NextDouble();
 			Double NextRectangularDouble(Double min, Double max);
-			void FillRectangularDouble(Double *ptr, UOSInt z, Double min, Double max);
+			void FillRectangularDouble(Double *ptr, UIntOS z, Double min, Double max);
 			Double NextTriangularDouble(Double peak);
-			void FillTriangularDouble(Double *ptr, UOSInt z, Double peak);
+			void FillTriangularDouble(Double *ptr, UIntOS z, Double peak);
 			Double NextTwoLevelDouble(Double peak);
-			void FillTwoLevelDouble(Double *ptr, UOSInt z, Double peak);
+			void FillTwoLevelDouble(Double *ptr, UIntOS z, Double peak);
 		};
 	}
 }

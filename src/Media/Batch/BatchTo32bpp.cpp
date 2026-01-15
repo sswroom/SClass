@@ -20,8 +20,8 @@ void Media::Batch::BatchTo32bpp::SetHandler(Optional<Media::Batch::BatchHandler>
 
 void Media::Batch::BatchTo32bpp::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
-	UOSInt j;
-	UOSInt k;
+	UIntOS j;
+	UIntOS k;
 	NN<Media::StaticImage> newImg;
 	j = 0;
 	k = imgList->GetCount();

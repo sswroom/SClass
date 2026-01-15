@@ -21,13 +21,13 @@ IO::MemoryStream::MemoryStream() : IO::SeekableStream(CSTR("MemoryStream")), buf
 	currPtr = 0;
 }
 
-IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("MemoryStream")), buff((capacity == 0)?DEF_CAPACITY:capacity)
+IO::MemoryStream::MemoryStream(UIntOS capacity) : IO::SeekableStream(CSTR("MemoryStream")), buff((capacity == 0)?DEF_CAPACITY:capacity)
 {
 	currSize = 0;
 	currPtr = 0;
 }
 
-/*IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
+/*IO::MemoryStream::MemoryStream(UInt8 *buff, UIntOS buffSize, const UTF8Char *dbg, UIntOS dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	this->capacity = 0;
 	this->currSize = buffSize;
@@ -44,7 +44,7 @@ UnsafeArray<UInt8> IO::MemoryStream::GetBuff()
 	return this->buff.Arr();
 }
 
-UnsafeArray<UInt8> IO::MemoryStream::GetBuff(OutParam<UOSInt> buffSize)
+UnsafeArray<UInt8> IO::MemoryStream::GetBuff(OutParam<UIntOS> buffSize)
 {
 	buffSize.Set(this->currSize);
 	return this->buff.Arr();
@@ -63,7 +63,7 @@ Text::CStringNN IO::MemoryStream::ToCString()
 	}
 	else
 	{
-		UOSInt newCapacity = this->buff.GetSize() << 1;
+		UIntOS newCapacity = this->buff.GetSize() << 1;
 		if (newCapacity > MAX_CAPACITY)
 		{
 			newCapacity = MAX_CAPACITY;
@@ -81,9 +81,9 @@ Bool IO::MemoryStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryStream::Read(const Data::ByteArray &buff)
+UIntOS IO::MemoryStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt readSize = buff.GetSize();
+	UIntOS readSize = buff.GetSize();
 	if (this->currSize - this->currPtr < readSize)
 	{
 		readSize = this->currSize - this->currPtr;
@@ -93,9 +93,9 @@ UOSInt IO::MemoryStream::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt IO::MemoryStream::Write(Data::ByteArrayR buff)
+UIntOS IO::MemoryStream::Write(Data::ByteArrayR buff)
 {
-	UOSInt endPos = this->currPtr + buff.GetSize();
+	UIntOS endPos = this->currPtr + buff.GetSize();
 
 	if (endPos <= this->buff.GetSize())
 	{
@@ -112,7 +112,7 @@ UOSInt IO::MemoryStream::Write(Data::ByteArrayR buff)
 	}
 	while (endPos > this->buff.GetSize())
 	{
-		UOSInt newCapacity = this->buff.GetSize() << 1;
+		UIntOS newCapacity = this->buff.GetSize() << 1;
 		if (newCapacity > MAX_CAPACITY)
 		{
 			newCapacity = MAX_CAPACITY;
@@ -169,10 +169,10 @@ UInt64 IO::MemoryStream::SeekFromBeginning(UInt64 position)
 
 	if (this->currSize < outPos)
 	{
-		this->currSize = (UOSInt)outPos;
+		this->currSize = (UIntOS)outPos;
 	}
 
-	this->currPtr = (UOSInt)outPos;
+	this->currPtr = (UIntOS)outPos;
 	return outPos;
 }
 

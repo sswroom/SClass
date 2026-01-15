@@ -66,7 +66,7 @@ namespace SSWR
 
 			Optional<Crypto::Cert::X509Cert> GetCert();
 			Optional<Crypto::Cert::X509File> GetKey();
-			UOSInt GetCACerts(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
+			UIntOS GetCACerts(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 		};
 	}
 }

@@ -153,9 +153,9 @@ Text::Locale::LocaleEntry Text::Locale::locales[] = {
 
 Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntry(UInt32 lcid)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(locales) / sizeof(locales[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(locales) / sizeof(locales[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -177,7 +177,7 @@ Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntry(UInt32 lcid)
 
 Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByCodePage(UInt32 codePage)
 {
-	UOSInt j = (sizeof(locales) / sizeof(locales[0]));
+	UIntOS j = (sizeof(locales) / sizeof(locales[0]));
 	while (j-- > 0)
 	{
 		if (locales[j].defCodePage == codePage)
@@ -188,7 +188,7 @@ Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByCodePage(UInt3
 
 Text::Locale::Locale()
 {
-	UOSInt i = sizeof(locales) / sizeof(locales[0]);
+	UIntOS i = sizeof(locales) / sizeof(locales[0]);
 	while (i-- > 0)
 	{
 		if (this->locales[i].shortName[0] != 0)

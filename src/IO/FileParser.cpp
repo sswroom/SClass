@@ -17,7 +17,7 @@ Optional<IO::ParsedObject> IO::FileParser::ParseFile(NN<IO::StreamData> fd, Opti
 Optional<IO::ParsedObject> IO::FileParser::ParseFilePath(Text::CStringNN filePath)
 {
 	IO::PackageFile *pkg = 0;
-	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		NN<Text::String> dir = Text::String::New(filePath.v, i);
@@ -33,4 +33,4 @@ Optional<IO::ParsedObject> IO::FileParser::ParseFilePath(Text::CStringNN filePat
 	return pobj;
 }
 
-const UOSInt IO::FileParser::hdrSize = HDRSIZE;
+const UIntOS IO::FileParser::hdrSize = HDRSIZE;

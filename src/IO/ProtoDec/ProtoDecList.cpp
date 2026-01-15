@@ -19,7 +19,7 @@ IO::ProtoDec::ProtoDecList::ProtoDecList()
 IO::ProtoDec::ProtoDecList::~ProtoDecList()
 {
 	NN<IO::ProtoDec::ProtocolDecoder> protoDec;
-	UOSInt i;
+	UIntOS i;
 	i = this->decList.GetCount();
 	while (i-- > 0)
 	{
@@ -28,17 +28,17 @@ IO::ProtoDec::ProtoDecList::~ProtoDecList()
 	}
 }
 
-UOSInt IO::ProtoDec::ProtoDecList::GetCount() const
+UIntOS IO::ProtoDec::ProtoDecList::GetCount() const
 {
 	return this->decList.GetCount();
 }
 
-Optional<IO::ProtoDec::ProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItem(UOSInt index) const
+Optional<IO::ProtoDec::ProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItem(UIntOS index) const
 {
 	return this->decList.GetItem(index);
 }
 
-NN<IO::ProtoDec::ProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItemNoCheck(UOSInt index) const
+NN<IO::ProtoDec::ProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItemNoCheck(UIntOS index) const
 {
 	return this->decList.GetItemNoCheck(index);
 }

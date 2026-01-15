@@ -78,7 +78,7 @@ Optional<Text::String> Media::PDFObject::GetType() const
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return nullptr;
-	UOSInt i = parameter->GetEntryIndex(CSTR("Type"));
+	UIntOS i = parameter->GetEntryIndex(CSTR("Type"));
 	if (i != INVALID_INDEX)
 		return parameter->GetEntryValue(i);
 	return nullptr;
@@ -89,7 +89,7 @@ Optional<Text::String> Media::PDFObject::GetSubtype() const
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return nullptr;
-	UOSInt i = parameter->GetEntryIndex(CSTR("Subtype"));
+	UIntOS i = parameter->GetEntryIndex(CSTR("Subtype"));
 	if (i != INVALID_INDEX)
 		return parameter->GetEntryValue(i);
 	return nullptr;
@@ -101,7 +101,7 @@ Optional<Text::String> Media::PDFObject::GetFilter() const
 	if (!this->parameter.SetTo(parameter))
 		return nullptr;
 	NN<Text::String> s;
-	UOSInt i = parameter->GetEntryIndex(CSTR("Filter"));
+	UIntOS i = parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
 	{
 		NN<Media::PDFParameter::ParamEntry> entry = parameter->GetItemNoCheck(i);
@@ -117,7 +117,7 @@ Optional<Text::String> Media::PDFObject::GetColorSpace() const
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return nullptr;
-	UOSInt i = parameter->GetEntryIndex(CSTR("ColorSpace"));
+	UIntOS i = parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
 		return parameter->GetEntryValue(i);
@@ -125,36 +125,36 @@ Optional<Text::String> Media::PDFObject::GetColorSpace() const
 	return nullptr;
 }
 
-UOSInt Media::PDFObject::GetBitPerComponent() const
+UIntOS Media::PDFObject::GetBitPerComponent() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
 	if (parameter->GetEntryValue(CSTR("BitPerComponent")).SetTo(s))
-		return s->ToUOSInt();
+		return s->ToUIntOS();
 	return 0;
 }
 
-UOSInt Media::PDFObject::GetWidth() const
+UIntOS Media::PDFObject::GetWidth() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
 	if (parameter->GetEntryValue(CSTR("Width")).SetTo(s))
-		return s->ToUOSInt();
+		return s->ToUIntOS();
 	return 0;
 }
 
-UOSInt Media::PDFObject::GetHeight() const
+UIntOS Media::PDFObject::GetHeight() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
 	if (parameter->GetEntryValue(CSTR("Height")).SetTo(s))
-		return s->ToUOSInt();
+		return s->ToUIntOS();
 	return 0;
 }
 
@@ -168,8 +168,8 @@ Bool Media::PDFObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 	{
 		sb->Append(CSTR("<<"));
 		NN<PDFParameter::ParamEntry> ent;
-		UOSInt i = 0;
-		UOSInt j = param->GetCount();
+		UIntOS i = 0;
+		UIntOS j = param->GetCount();
 		while (i < j)
 		{
 			ent = param->GetItemNoCheck(i);
@@ -210,10 +210,10 @@ Bool Media::PDFObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 		}
 		else
 		{
-			sb->AllocLeng((UOSInt)len);
-			if (fd->GetRealData(0, len, Data::ByteArray(sb->GetEndPtr(), (UOSInt)len)) == len)
+			sb->AllocLeng((UIntOS)len);
+			if (fd->GetRealData(0, len, Data::ByteArray(sb->GetEndPtr(), (UIntOS)len)) == len)
 			{
-				sb->SetEndPtr(sb->GetEndPtr() + (UOSInt)len);
+				sb->SetEndPtr(sb->GetEndPtr() + (UIntOS)len);
 				return true;
 			}
 			sb->AppendUTF8Char('\r');

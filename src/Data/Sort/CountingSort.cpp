@@ -15,10 +15,10 @@ Data::Sort::CountingSort::~CountingSort()
 	MemFreeAArr(this->valCount);
 }
 
-void Data::Sort::CountingSort::SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::CountingSort::SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt i;
-	OSInt cnt = this->maxVal - this->minVal + 1;
+	IntOS i;
+	IntOS cnt = this->maxVal - this->minVal + 1;
 	Int32 cval;
 	if (cnt & 3)
 	{

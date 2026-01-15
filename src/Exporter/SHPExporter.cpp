@@ -44,7 +44,7 @@ IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::SHPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -71,9 +71,9 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
-	UOSInt fileSize = 100;
-	UOSInt recCnt = 0;
-	UOSInt i;
+	UIntOS fileSize = 100;
+	UIntOS recCnt = 0;
+	UIntOS i;
 	Int32 ilayerType = 0;
 	Math::Coord2DDbl min = Math::Coord2DDbl(0, 0);
 	Math::Coord2DDbl max = Math::Coord2DDbl(0, 0);
@@ -197,8 +197,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 		NN<Math::Geometry::Polyline> pl;
 		Math::RectAreaDbl box;
-		UOSInt nPtOfst;
-		UOSInt nPoint;
+		UIntOS nPtOfst;
+		UIntOS nPoint;
 		UInt8 nvals[8];
 		UInt32 *ptOfsts;
 		Math::Coord2DDbl *points;
@@ -258,11 +258,11 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		ilayerType = 13;
 
-		UOSInt j;
+		UIntOS j;
 		NN<Math::Geometry::Polyline> pl;
 		Math::RectAreaDbl box;
-		UOSInt nPtOfst;
-		UOSInt nPoint;
+		UIntOS nPtOfst;
+		UIntOS nPoint;
 		Double ranges[2];
 		UInt8 nvals[8];
 		UInt32 *ptOfsts;
@@ -346,8 +346,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 		NN<Math::Geometry::Polygon> pg;
 		Math::RectAreaDbl box;
-		UOSInt nPtOfst;
-		UOSInt nPoint;
+		UIntOS nPtOfst;
+		UIntOS nPoint;
 		UInt8 nvals[8];
 		UInt32 *ptOfsts;
 		Math::Coord2DDbl *points;
@@ -442,6 +442,6 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Math::SRESRIWKTWriter wkt;
 	UnsafeArray<UTF8Char> cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
 	IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	fs.Write(Data::ByteArrayR((UInt8*)projArr, (UOSInt)(cptr - projArr)));
+	fs.Write(Data::ByteArrayR((UInt8*)projArr, (UIntOS)(cptr - projArr)));
 	return true;
 }

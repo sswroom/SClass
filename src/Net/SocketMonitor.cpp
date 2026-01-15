@@ -13,7 +13,7 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 		UInt8 *buff = MemAlloc(UInt8, 65536);
 		while (!thread->IsStopping())
 		{
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			Net::SocketFactory::ErrorType et;
@@ -32,13 +32,13 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 	}
 }
 
-Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
+Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UIntOS threadCnt)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	this->threadCnt = threadCnt;
 	this->threads = 0;
-	UOSInt i;
+	UIntOS i;
 
 	this->sockf = sockf;
 	this->hdlr = {hdlr, userData};
@@ -48,7 +48,7 @@ Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, 
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SocketMonitor")), i);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("SocketMonitor")), i);
 		NEW_CLASS(this->threads[i], Sync::Thread(DataThread, this, CSTRP(sbuff, sptr)));
 		this->threads[i]->Start();
 	}
@@ -56,7 +56,7 @@ Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, 
 
 Net::SocketMonitor::~SocketMonitor()
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->threads)
 	{
 		i = this->threadCnt;

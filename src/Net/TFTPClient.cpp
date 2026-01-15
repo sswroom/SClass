@@ -81,13 +81,13 @@ Bool Net::TFTPClient::SendFile(UnsafeArray<const UTF8Char> fileName, NN<IO::Stre
 	if (!this->svr.SetTo(svr))
 		return false;
 	UInt8 *packet;
-	UOSInt readSize;
-	UOSInt blockSize = 512;
+	UIntOS readSize;
+	UIntOS blockSize = 512;
 	Bool succ = false;
 	packet = MemAlloc(UInt8, blockSize + 4);
 	WriteMInt16(&packet[0], 2);
-	readSize = (UOSInt)(Text::StrConcat(&packet[2], fileName) - packet + 1);
-	readSize = (UOSInt)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
+	readSize = (UIntOS)(Text::StrConcat(&packet[2], fileName) - packet + 1);
+	readSize = (UIntOS)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
 	this->replyRecv = false;
 	this->replyError = false;
 	this->nextId = 0;
@@ -127,12 +127,12 @@ Bool Net::TFTPClient::RecvFile(UnsafeArray<const UTF8Char> fileName, NN<IO::Stre
 	if (!this->svr.SetTo(svr))
 		return false;
 	UInt8 packet[512];
-	UOSInt readSize;
-	UOSInt blockSize = 512;
+	UIntOS readSize;
+	UIntOS blockSize = 512;
 	Bool succ = false;
 	WriteMInt16(&packet[0], 1);
-	readSize = (UOSInt)(Text::StrConcat(&packet[2], fileName) - packet + 1);
-	readSize = (UOSInt)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
+	readSize = (UIntOS)(Text::StrConcat(&packet[2], fileName) - packet + 1);
+	readSize = (UIntOS)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
 	this->replyRecv = false;
 	this->replyError = false;
 	this->recvSize = 0;

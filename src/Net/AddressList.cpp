@@ -11,15 +11,15 @@ Net::AddressList::~AddressList()
 	this->Clear();
 }
 
-UOSInt Net::AddressList::Add(NN<const Net::SocketUtil::AddressInfo> val)
+UIntOS Net::AddressList::Add(NN<const Net::SocketUtil::AddressInfo> val)
 {
 	return this->addrList.Add(CloneItem(val));
 }
 
-UOSInt Net::AddressList::AddRange(UnsafeArray<NN<const Net::SocketUtil::AddressInfo>> arr, UOSInt cnt)
+UIntOS Net::AddressList::AddRange(UnsafeArray<NN<const Net::SocketUtil::AddressInfo>> arr, UIntOS cnt)
 {
 	this->addrList.EnsureCapacity(this->GetCapacity() + cnt);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < cnt)
 	{
 		this->Add(CloneItem(arr[i]));
@@ -30,7 +30,7 @@ UOSInt Net::AddressList::AddRange(UnsafeArray<NN<const Net::SocketUtil::AddressI
 Bool Net::AddressList::Remove(NN<const Net::SocketUtil::AddressInfo> val)
 {
 	NN<const Net::SocketUtil::AddressInfo> addr;
-	UOSInt i = this->IndexOf(val);
+	UIntOS i = this->IndexOf(val);
 	if (i == INVALID_INDEX)
 		return false;
 	if (!this->addrList.RemoveAt(i).SetTo(addr))
@@ -39,20 +39,20 @@ Bool Net::AddressList::Remove(NN<const Net::SocketUtil::AddressInfo> val)
 	return true;
 }
 
-Optional<const Net::SocketUtil::AddressInfo> Net::AddressList::RemoveAt(UOSInt index)
+Optional<const Net::SocketUtil::AddressInfo> Net::AddressList::RemoveAt(UIntOS index)
 {
 	return this->addrList.RemoveAt(index);
 }
 
-void Net::AddressList::Insert(UOSInt index, NN<const Net::SocketUtil::AddressInfo> val)
+void Net::AddressList::Insert(UIntOS index, NN<const Net::SocketUtil::AddressInfo> val)
 {
 	this->addrList.Insert(index, CloneItem(val));
 }
 
-UOSInt Net::AddressList::IndexOf(NN<const Net::SocketUtil::AddressInfo> val)
+UIntOS Net::AddressList::IndexOf(NN<const Net::SocketUtil::AddressInfo> val)
 {
-	UOSInt i = 0;
-	UOSInt j = this->addrList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->addrList.GetCount();
 	while (i < j)
 	{
 		if (Net::SocketUtil::AddrEquals(this->addrList.GetItemNoCheck(i), val))
@@ -69,29 +69,29 @@ void Net::AddressList::Clear()
 	this->addrList.FreeAll(FreeItem);
 }
 
-UOSInt Net::AddressList::GetCount() const
+UIntOS Net::AddressList::GetCount() const
 {
 	return this->addrList.GetCount();
 }
 
-UOSInt Net::AddressList::GetCapacity() const
+UIntOS Net::AddressList::GetCapacity() const
 {
 	return this->addrList.GetCapacity();
 }
 
-NN<const Net::SocketUtil::AddressInfo> Net::AddressList::GetItemNoCheck(UOSInt index) const
+NN<const Net::SocketUtil::AddressInfo> Net::AddressList::GetItemNoCheck(UIntOS index) const
 {
 	return this->addrList.GetItemNoCheck(index);
 }
 
-Optional<const Net::SocketUtil::AddressInfo> Net::AddressList::GetItem(UOSInt index) const
+Optional<const Net::SocketUtil::AddressInfo> Net::AddressList::GetItem(UIntOS index) const
 {
 	return this->addrList.GetItem(index);
 }
 
-void Net::AddressList::SetItem(UOSInt index, NN<const Net::SocketUtil::AddressInfo> val)
+void Net::AddressList::SetItem(UIntOS index, NN<const Net::SocketUtil::AddressInfo> val)
 {
-	UOSInt objCnt = this->addrList.GetCount();
+	UIntOS objCnt = this->addrList.GetCount();
 	if (index == objCnt)
 	{
 		this->Add(val);

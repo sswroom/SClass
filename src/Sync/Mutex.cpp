@@ -187,7 +187,7 @@ typedef struct
 {
 	pthread_mutex_t mut;
 	pthread_t lockTID;
-	OSInt lockCnt;
+	IntOS lockCnt;
 } MutexInfo;
 
 void Sync::Mutex_Create(Sync::MutexData *data)
@@ -220,7 +220,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(OSInt)currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(IntOS)currTID);
 	}
 	else
 	{
@@ -252,7 +252,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(OSInt)currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(IntOS)currTID);
 		return true;
 	}
 	else

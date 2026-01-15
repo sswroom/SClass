@@ -9,16 +9,16 @@ namespace IO
 	private:
 		Int32 fd;
 	public:
-		RAWBTMonitor(UOSInt devNum);
+		RAWBTMonitor(UIntOS devNum);
 		virtual ~RAWBTMonitor();
 
 		virtual LinkType GetLinkType() const;
 		virtual Bool IsError();
 		virtual void Close();
-		virtual UOSInt GetMTU();
-		virtual UOSInt NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks);
+		virtual UIntOS GetMTU();
+		virtual UIntOS NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks);
 
-		static UOSInt GetDevCount();
+		static UIntOS GetDevCount();
 	};
 }
 #endif

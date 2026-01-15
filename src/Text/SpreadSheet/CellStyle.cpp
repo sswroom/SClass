@@ -27,7 +27,7 @@ Bool Text::SpreadSheet::CellStyle::BorderStyle::operator==(const BorderStyle &bo
 		return true;
 }
 
-Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
+Text::SpreadSheet::CellStyle::CellStyle(UIntOS index)
 {
 	this->index = index;
 	this->id = nullptr;
@@ -136,7 +136,7 @@ Bool Text::SpreadSheet::CellStyle::Equals(NN<const CellStyle> style) const
 	return true;
 }
 
-NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetIndex(UOSInt index)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetIndex(UIntOS index)
 {
 	this->index = index;
 	return *this;
@@ -221,7 +221,7 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetDataFormat(Tex
 	return *this;
 }
 
-UOSInt Text::SpreadSheet::CellStyle::GetIndex() const
+UIntOS Text::SpreadSheet::CellStyle::GetIndex() const
 {
 	return this->index;
 }

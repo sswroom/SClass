@@ -56,8 +56,8 @@ Bool Net::MDNSClient::IsError()
 Bool Net::MDNSClient::SendQuery(Text::CStringNN domain)
 {
 	UInt8 buff[512];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	WriteNUInt16(&buff[0], 0);
 	WriteNUInt16(&buff[2], 0);
 	WriteMUInt16(&buff[4], 1);
@@ -91,15 +91,15 @@ Bool Net::MDNSClient::SendQuery(Text::CStringNN domain)
 	return this->udp->SendTo(addr, 5353, buff, i);
 }
 
-UOSInt Net::MDNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> answers)
+UIntOS Net::MDNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UIntOS dataSize, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> answers)
 {
 	NN<Net::DNSClient::RequestAnswer> ans;
-	UOSInt ansCount = ReadMUInt16(&buff[6]);
-	UOSInt cnt2 = ReadMUInt16(&buff[8]);
-	UOSInt cnt3 = ReadMUInt16(&buff[10]);
+	UIntOS ansCount = ReadMUInt16(&buff[6]);
+	UIntOS cnt2 = ReadMUInt16(&buff[8]);
+	UIntOS cnt3 = ReadMUInt16(&buff[10]);
 	ansCount += cnt2 + cnt3;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 12;
 
 	j = 0;

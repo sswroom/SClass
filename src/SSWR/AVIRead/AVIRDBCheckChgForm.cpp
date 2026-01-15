@@ -18,8 +18,8 @@
 #include "UI/GUIFileDialog.h"
 
 #define SRID 4326
-#define TEXT_COL (UOSInt)-3
-#define UNKNOWN_COL (UOSInt)-2
+#define TEXT_COL (UIntOS)-3
+#define UNKNOWN_COL (UIntOS)-2
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 {
@@ -45,8 +45,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	me->inited = false;
 	while (i < nFiles)
 	{
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt();
+	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetIntOS();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
 	dlg->SetAllowMultiSel(false);
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Success, "));
-			sb.AppendUOSInt(sess.totalCnt);
+			sb.AppendUIntOS(sess.totalCnt);
 			sb.AppendC(UTF8STRC(" SQL generated"));
 			me->txtStatus->SetText(sb.ToCString());
 		}
@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt();
+	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetIntOS();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	Bool succ;
 	SQLSession sess;
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Success, "));
-		sb.AppendUOSInt(sess.totalCnt);
+		sb.AppendUIntOS(sess.totalCnt);
 		sb.AppendC(UTF8STRC(" SQL executed"));
 		me->txtStatus->SetText(sb.ToCString());
 	}
@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnCboSelChg(AnyType us
 	}
 }
 			
-Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UOSInt colIndex)
+Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UIntOS colIndex)
 {
 	NN<Text::String> s;
 	if (this->colStr.GetItem(colIndex).SetTo(s))
@@ -307,7 +307,7 @@ Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UOSInt colI
 		return nullptr;
 }
 
-NN<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewTextNN(UOSInt colIndex)
+NN<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewTextNN(UIntOS colIndex)
 {
 	NN<Text::String> s;
 	if (this->colStr.GetItem(colIndex).SetTo(s))
@@ -395,10 +395,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 co
 	this->cboDataTable->ClearItems();
 	if (tableNames.GetCount() > 0)
 	{
-		UOSInt tableIndex = 0;
+		UIntOS tableIndex = 0;
 		NN<Text::String> name;
 		Data::ArrayIterator<NN<Text::String>> it = tableNames.Iterator();
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (it.HasNext())
 		{
 			name = it.Next();
@@ -415,13 +415,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 co
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
 {
 	colInd->Clear();
-	UOSInt i = 0;
-	UOSInt destCnt = destTable->GetColCnt();
-	UOSInt k;
-	UOSInt srcCnt;
+	UIntOS i = 0;
+	UIntOS destCnt = destTable->GetColCnt();
+	UIntOS k;
+	UIntOS srcCnt;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ColDef> col;
@@ -448,7 +448,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UOS
 				i = 0;
 				while (i < destCnt)
 				{
-					if (destTable->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+					if (destTable->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UIntOS)(sptr - sbuff)))
 					{
 						colInd->SetItem(i, k);
 						break;
@@ -460,7 +460,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UOS
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Data File Column "));
-				sb.AppendUOSInt(k);
+				sb.AppendUIntOS(k);
 				if (sptr)
 				{
 					sb.AppendC(UTF8STRC(" ("));
@@ -482,16 +482,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UOS
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable)
 {
-	UOSInt j = colInd->GetCount();
+	UIntOS j = colInd->GetCount();
 	if (j == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Error in reading database structure"), CSTR("DB Check Change"), this);
 		return false;
 	}
 	NN<DB::ColDef> col;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < j)
 	{
 		if (colInd->GetItem(i) == UNKNOWN_COL)
@@ -505,7 +505,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayListNative
 			else
 			{
 				sb.Append(CSTR("Column "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 			}
 			this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Check Change"), this);
 			return false;
@@ -569,14 +569,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
-	UOSInt keyDCol1;
-	UOSInt keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUOSInt();
-	UOSInt keyDCol2;
-	UOSInt i;
-	UOSInt k;
-	UOSInt dbCnt;
-	UOSInt srcCnt;
+	UIntOS keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUIntOS();
+	UIntOS keyDCol1;
+	UIntOS keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUIntOS();
+	UIntOS keyDCol2;
+	UIntOS i;
+	UIntOS k;
+	UIntOS dbCnt;
+	UIntOS srcCnt;
 	Data::FastStringMapObj<Text::String**> csvData;
 	Text::String** rowData;
 	NN<DB::ColDef> col;
@@ -632,11 +632,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			return false;
 		}
 	}
-	UOSInt dataFileRowCnt = 0;
-	UOSInt noChgCnt = 0;
-	UOSInt updateCnt = 0;
-	UOSInt newRowCnt = 0;
-	UOSInt delRowCnt = 0;
+	UIntOS dataFileRowCnt = 0;
+	UIntOS noChgCnt = 0;
+	UIntOS updateCnt = 0;
+	UIntOS newRowCnt = 0;
+	UIntOS delRowCnt = 0;
 	Bool succ = true;
 	NN<Text::String> s;
 	NN<Text::String> id;
@@ -1028,15 +1028,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	dataDBCond.Delete();
 	if (succ)
 	{
-		sptr = Text::StrUOSInt(sbuff, dataFileRowCnt);
+		sptr = Text::StrUIntOS(sbuff, dataFileRowCnt);
 		this->txtDataFileRow->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, noChgCnt);
+		sptr = Text::StrUIntOS(sbuff, noChgCnt);
 		this->txtNoChg->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, updateCnt);
+		sptr = Text::StrUIntOS(sbuff, updateCnt);
 		this->txtUpdated->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, newRowCnt);
+		sptr = Text::StrUIntOS(sbuff, newRowCnt);
 		this->txtNewRow->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, delRowCnt);
+		sptr = Text::StrUIntOS(sbuff, delRowCnt);
 		this->txtDeletedRow->SetText(CSTRP(sbuff, sptr));
 		return true;
 	}
@@ -1091,7 +1091,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	UInt32 srid = 0;
 	if (dataConn->GetTableDef(nullptr, sbTable.ToCString()).SetTo(table))
 	{
-		UOSInt i = table->GetColCnt();
+		UIntOS i = table->GetColCnt();
 		while (i-- > 0)
 		{
 			if (table->GetCol(i).SetTo(col) && col->GetColType() == DB::DBUtil::CT_Vector)
@@ -1113,12 +1113,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool intKey = false;
 	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(this->GetDBSQLType());
 	Text::StringBuilderUTF8 sbId;
-	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
-	UOSInt keyDCol1;
-	UOSInt keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUOSInt();
-	UOSInt keyDCol2;
-	UOSInt i = 0;
-	UOSInt dbCnt = table->GetColCnt();
+	UIntOS keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUIntOS();
+	UIntOS keyDCol1;
+	UIntOS keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUIntOS();
+	UIntOS keyDCol2;
+	UIntOS i = 0;
+	UIntOS dbCnt = table->GetColCnt();
 	while (i < dbCnt)
 	{
 		if (i == keyCol1 && keyCol2 == INVALID_INDEX && table->GetCol(i).SetTo(col))
@@ -1166,8 +1166,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	{
 		srid = SRID;
 	}
-	UOSInt k;
-	UOSInt srcCnt;
+	UIntOS k;
+	UIntOS srcCnt;
 	Data::FastStringMapObj<Text::String**> csvData;
 	Text::String** rowData;
 	NN<DB::DBReader> r;
@@ -2034,7 +2034,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 	{
 		if (sql.StartsWith(UTF8STRC("insert into ")))
 		{
-			UOSInt i = sql.IndexOf(UTF8STRC(") values ("));
+			UIntOS i = sql.IndexOf(UTF8STRC(") values ("));
 			if (i == INVALID_INDEX)
 			{
 				if (db->ExecuteNonQuery(sql) >= 0)
@@ -2105,7 +2105,7 @@ void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NN<SQLSession> sess)
 	{
 		sess->lastUpdateTime = t;
 		Text::StringBuilderUTF8 sb;
-		sb.AppendUOSInt(sess->totalCnt);
+		sb.AppendUIntOS(sess->totalCnt);
 		sb.AppendC(UTF8STRC(" SQL executed"));
 		this->txtStatus->SetText(sb.ToCString());
 		this->ui->ProcessMessages();
@@ -2168,7 +2168,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 		if (nns->StartsWith(UTF8STRC("0x")))
 		{
 			UInt8 *buff = MemAlloc(UInt8, nns->leng >> 1);
-			UOSInt buffSize = Text::StrHex2Bytes(&nns->v[2], buff);
+			UIntOS buffSize = Text::StrHex2Bytes(&nns->v[2], buff);
 			Optional<Math::Geometry::Vector2D> vec2 = Math::MSGeography::ParseBinary(buff, buffSize, 0);
 			MemFree(buff);
 			sql->AppendVector(vec2);
@@ -2378,8 +2378,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->HandleDropFiles(OnFiles, this);
 
 	this->cboKeyCol2->SetSelectedIndex(0);
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<DB::TableDef> tableDef;
 	if (this->db->GetTableDef(this->schema, this->table).SetTo(tableDef))
 	{

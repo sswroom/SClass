@@ -84,7 +84,7 @@ namespace Manage
 		NN<DasmARM_Sess> CreateSess(NN<DasmARM_Regs> regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(NN<DasmARM_Sess> sess);
 
-		Bool DasmNext(NN<DasmARM_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmARM_Sess> sess, UTF8Char *buff, UIntOS *outBuffSize); //True = succ
 	};
 }
 

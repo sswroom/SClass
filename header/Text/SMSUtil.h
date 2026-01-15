@@ -17,8 +17,8 @@ namespace Text
 		} DCS;
 
 	public:
-		static OSInt ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen);
-		static OSInt ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff);
+		static IntOS ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen);
+		static IntOS ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff);
 		static void GetTextInfo(UnsafeArray<const UTF16Char> msg, OutParam<DCS> dcs, OutParam<UInt32> dataLen);
 		static UInt32 GSMTextSize2DataSize(UInt32 textSize);
 		static Bool TrimGSMText(UnsafeArray<UTF16Char> msg);

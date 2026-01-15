@@ -9,13 +9,13 @@ namespace Text
 	class XML
 	{
 	private:
-		static UOSInt GetXMLTextLen(UnsafeArray<const UTF8Char> text);
-		static UOSInt GetXMLTextLen(UnsafeArray<const WChar> text);
-		static UOSInt GetXMLTextLiteLen(UnsafeArray<const UTF8Char> text);
-		static UOSInt GetXMLTextLiteLen(UnsafeArray<const WChar> text);
-		static UOSInt GetHTMLBodyTextLen(UnsafeArray<const UTF8Char> text);
-		static UOSInt GetHTMLElementTextLen(UnsafeArray<const UTF8Char> text);
-		static UOSInt GetHTMLBodyTextLen(UnsafeArray<const WChar> text);
+		static UIntOS GetXMLTextLen(UnsafeArray<const UTF8Char> text);
+		static UIntOS GetXMLTextLen(UnsafeArray<const WChar> text);
+		static UIntOS GetXMLTextLiteLen(UnsafeArray<const UTF8Char> text);
+		static UIntOS GetXMLTextLiteLen(UnsafeArray<const WChar> text);
+		static UIntOS GetHTMLBodyTextLen(UnsafeArray<const UTF8Char> text);
+		static UIntOS GetHTMLElementTextLen(UnsafeArray<const UTF8Char> text);
+		static UIntOS GetHTMLBodyTextLen(UnsafeArray<const WChar> text);
 		static Bool WriteUTF8Char(NN<IO::Stream> stm, UTF32Char c);
 	public:
 		static UnsafeArray<UTF8Char> ToXMLText(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> text);
@@ -43,8 +43,8 @@ namespace Text
 		static void ParseStr(UnsafeArray<UTF8Char> out, UnsafeArray<const UTF8Char> xmlStart, UnsafeArray<const UTF8Char> xmlEnd);
 		static void ParseStr(UnsafeArray<WChar> out, UnsafeArray<const WChar> xmlStart, UnsafeArray<const WChar> xmlEnd);
 
-		static Bool HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt refSize, NN<IO::Stream> stm);
-		static Bool HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt refSize, NN<Text::StringBuilderUTF8> sb);
+		static Bool HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UIntOS refSize, NN<IO::Stream> stm);
+		static Bool HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UIntOS refSize, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

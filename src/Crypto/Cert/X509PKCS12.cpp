@@ -24,7 +24,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS12::GetFileType() const
 
 void Crypto::Cert::X509PKCS12::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-/*	UOSInt len = 0;
+/*	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff + this->buffSize, "1.1.2", &len, &itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
@@ -33,17 +33,17 @@ void Crypto::Cert::X509PKCS12::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 	}*/
 }
 
-UOSInt Crypto::Cert::X509PKCS12::GetCertCount()
+UIntOS Crypto::Cert::X509PKCS12::GetCertCount()
 {
 	return 0;
 }
 
-Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509PKCS12::GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS12::GetNewCert(UIntOS index)
 {
 	return nullptr;
 }

@@ -24,18 +24,18 @@ IO::CryptoStream::~CryptoStream()
 		MemFreeArr(tmpBuff);
 }
 
-UOSInt IO::CryptoStream::Read(const Data::ByteArray &buff)
+UIntOS IO::CryptoStream::Read(const Data::ByteArray &buff)
 {
 	NN<IO::Stream> nnstm;
 	if (!this->stm.SetTo(nnstm))
 		return 0;
 	UnsafeArray<UInt8> tmpBuff;
-	UOSInt size = buff.GetSize();
+	UIntOS size = buff.GetSize();
 	UnsafeArray<UInt8> buffPtr = buff.Arr();
-	UOSInt retSize = 0;
-	UOSInt eblkSize = this->crypto->GetEncBlockSize();
-	UOSInt dblkSize = this->crypto->GetDecBlockSize();
-	UOSInt i;
+	UIntOS retSize = 0;
+	UIntOS eblkSize = this->crypto->GetEncBlockSize();
+	UIntOS dblkSize = this->crypto->GetDecBlockSize();
+	UIntOS i;
 	if (this->decBuffSize > 0)
 	{
 		if (this->decBuffSize > size)
@@ -57,7 +57,7 @@ UOSInt IO::CryptoStream::Read(const Data::ByteArray &buff)
 	}
 	if (size > 0)
 	{
-		OSInt blkCnt = size / eblkSize;
+		IntOS blkCnt = size / eblkSize;
 		if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < blkCnt * dblkSize)
 		{
 			if (this->tmpBuff.SetTo(tmpBuff))
@@ -102,18 +102,18 @@ UOSInt IO::CryptoStream::Read(const Data::ByteArray &buff)
 	return retSize;
 }
 
-UOSInt IO::CryptoStream::Write(Data::ByteArrayR buff)
+UIntOS IO::CryptoStream::Write(Data::ByteArrayR buff)
 {
 	NN<IO::Stream> nnstm;
 	if (!this->stm.SetTo(nnstm))
 		return 0;
 	UnsafeArray<UInt8> tmpBuff;
-	UOSInt size = buff.GetSize();
+	UIntOS size = buff.GetSize();
 	UnsafeArray<const UInt8> buffPtr = buff.Arr();
-	UOSInt retSize = size;
-	UOSInt eblkSize = this->crypto->GetEncBlockSize();
-	UOSInt dblkSize = this->crypto->GetDecBlockSize();
-	UOSInt i;
+	UIntOS retSize = size;
+	UIntOS eblkSize = this->crypto->GetEncBlockSize();
+	UIntOS dblkSize = this->crypto->GetDecBlockSize();
+	UIntOS i;
 	if (this->encBuffSize + size < eblkSize)
 	{
 		MemCopyNO(&this->encBuff[this->encBuffSize], buffPtr.Ptr(), size);
@@ -137,7 +137,7 @@ UOSInt IO::CryptoStream::Write(Data::ByteArrayR buff)
 			size -= eblkSize - this->encBuffSize;
 			this->encBuffSize = 0;
 		}
-		OSInt blkCnt = size / eblkSize;
+		IntOS blkCnt = size / eblkSize;
 		if (blkCnt > 0)
 		{
 			if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < blkCnt * dblkSize)
@@ -175,8 +175,8 @@ void IO::CryptoStream::Close()
 		if (this->encBuffSize > 0)
 		{
 			UnsafeArray<UInt8> tmpBuff;
-			UOSInt i;
-			UOSInt dblkSize = this->crypto->GetDecBlockSize();
+			UIntOS i;
+			UIntOS dblkSize = this->crypto->GetDecBlockSize();
 			if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < dblkSize)
 			{
 				if (this->tmpBuff.SetTo(tmpBuff))

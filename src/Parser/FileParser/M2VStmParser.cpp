@@ -36,7 +36,7 @@ Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO:
 	if (hdr.ReadMI32(0) != 0x1b3)
 		return nullptr;
 	UInt8 tmpBuff[1024];
-	UOSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
+	UIntOS readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UInt64 bitRate;

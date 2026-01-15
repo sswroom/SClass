@@ -18,7 +18,7 @@ Math::VectorTextWriterList::VectorTextWriterList()
 Math::VectorTextWriterList::~VectorTextWriterList()
 {
 	Math::VectorTextWriter *writer;
-	UOSInt i = this->list.GetCount();
+	UIntOS i = this->list.GetCount();
 	while (i-- > 0)
 	{
 		writer = this->list.GetItem(i);
@@ -26,12 +26,12 @@ Math::VectorTextWriterList::~VectorTextWriterList()
 	}
 }
 
-UOSInt Math::VectorTextWriterList::GetCount() const
+UIntOS Math::VectorTextWriterList::GetCount() const
 {
 	return this->list.GetCount();
 }
 
-Math::VectorTextWriter* Math::VectorTextWriterList::GetItem(UOSInt index) const
+Math::VectorTextWriter* Math::VectorTextWriterList::GetItem(UIntOS index) const
 {
 	return this->list.GetItem(index);
 }

@@ -8,10 +8,10 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 {
 	NN<IO::SNBProtocol> me = userObj.GetNN<IO::SNBProtocol>();
 	UInt8 *recvBuff;
-	UOSInt buffSize;
-	UOSInt recvSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS buffSize;
+	UIntOS recvSize;
+	UIntOS i;
+	UIntOS j;
 	UInt8 chk;
 	me->running = true;
 	recvBuff = MemAlloc(UInt8, 4096);
@@ -90,12 +90,12 @@ IO::SNBProtocol::~SNBProtocol()
 	this->stm.Delete();
 }
 
-void IO::SNBProtocol::SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
+void IO::SNBProtocol::SendCommand(UInt8 cmdType, UIntOS cmdSize, UInt8 *cmd)
 {
 	UInt8 buff[262];
 	UInt8 chk;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	buff[0] = 0;
 	buff[1] = 2;
 	buff[2] = 1;

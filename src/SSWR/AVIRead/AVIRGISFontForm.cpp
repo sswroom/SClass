@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(AnyType userObj)
 	dlg.Delete();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
@@ -67,7 +67,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontText()
 void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 {
 	this->previewImage.Delete();
-	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbPreview->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{

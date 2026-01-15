@@ -10,17 +10,17 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void Media::ImageCopy::MT_Copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::ImageCopy::MT_Copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS copySize, UIntOS height, IntOS sstep, IntOS dstep)
 {
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
-	UOSInt i = this->nThread;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
+	UIntOS i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
 		currHeight = MulDivUOS(i, height, this->nThread);
-		this->stats[i].inPt = inPt + (OSInt)currHeight * sstep;
-		this->stats[i].outPt = outPt + (OSInt)currHeight * dstep;
+		this->stats[i].inPt = inPt + (IntOS)currHeight * sstep;
+		this->stats[i].outPt = outPt + (IntOS)currHeight * dstep;
 		this->stats[i].copySize = copySize;
 		this->stats[i].height = lastHeight - currHeight;
 		this->stats[i].sstep = sstep;
@@ -84,7 +84,7 @@ UInt32 Media::ImageCopy::WorkerThread(AnyType obj)
 
 Media::ImageCopy::ImageCopy()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found;
 #if defined(CPU_X86_64)
 	if (CPUBrand == 2)
@@ -133,7 +133,7 @@ Media::ImageCopy::ImageCopy()
 
 Media::ImageCopy::~ImageCopy()
 {
-	UOSInt i = nThread;
+	UIntOS i = nThread;
 	Bool found;
 	while (i-- > 0)
 	{
@@ -162,7 +162,7 @@ Media::ImageCopy::~ImageCopy()
 	}
 }
 
-void Media::ImageCopy::Copy32(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::ImageCopy::Copy32(UnsafeArray<const UInt8> src, IntOS sbpl, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
@@ -174,7 +174,7 @@ void Media::ImageCopy::Copy32(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeAr
 	}
 }
 
-void Media::ImageCopy::Copy16(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::ImageCopy::Copy16(UnsafeArray<const UInt8> src, IntOS sbpl, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
@@ -189,10 +189,10 @@ void Media::ImageCopy::Copy16(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeAr
 void Media::ImageCopy::SetThreadPriority(Sync::ThreadUtil::ThreadPriority tp)
 {
 	Bool fin;
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	while (i-- > 0)
 	{
-		this->stats[i].copySize = (UOSInt)tp;
+		this->stats[i].copySize = (UIntOS)tp;
 		this->stats[i].status = 4;
 		this->stats[i].evt->Set();
 	}

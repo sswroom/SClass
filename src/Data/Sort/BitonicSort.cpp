@@ -5,11 +5,11 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void Data::Sort::BitonicSort::DoMergeInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, OSInt n, Bool dir, OSInt m)
+void Data::Sort::BitonicSort::DoMergeInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, IntOS n, Bool dir, IntOS m)
 {
 	Int32 v1;
 	Int32 v2;
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < n - m)
 	{
 		v1 = arr[i];
@@ -93,11 +93,11 @@ void Data::Sort::BitonicSort::DoMergeInt32(NN<ThreadStat> stat, UnsafeArray<Int3
 	}
 }
 
-void Data::Sort::BitonicSort::DoMergeUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, OSInt n, Bool dir, OSInt m)
+void Data::Sort::BitonicSort::DoMergeUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, IntOS n, Bool dir, IntOS m)
 {
 	UInt32 v1;
 	UInt32 v2;
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < n - m)
 	{
 		v1 = arr[i];
@@ -208,9 +208,9 @@ Bool Data::Sort::BitonicSort::DoTask(NN<ThreadStat> stat)
 	}
 }
 
-void Data::Sort::BitonicSort::SortInnerInt32(UnsafeArray<Int32> arr, OSInt n, Bool dir, OSInt pw2)
+void Data::Sort::BitonicSort::SortInnerInt32(UnsafeArray<Int32> arr, IntOS n, Bool dir, IntOS pw2)
 {
-	OSInt m = n / 2;
+	IntOS m = n / 2;
 	if (m > 1)
 	{
 		this->SortInnerInt32(arr, m, !dir, pw2 >> 1);
@@ -250,9 +250,9 @@ void Data::Sort::BitonicSort::SortInnerInt32(UnsafeArray<Int32> arr, OSInt n, Bo
 	}
 }
 
-void Data::Sort::BitonicSort::SortInnerUInt32(UnsafeArray<UInt32> arr, OSInt n, Bool dir, OSInt pw2)
+void Data::Sort::BitonicSort::SortInnerUInt32(UnsafeArray<UInt32> arr, IntOS n, Bool dir, IntOS pw2)
 {
-	OSInt m = n / 2;
+	IntOS m = n / 2;
 	if (m > 1)
 	{
 		this->SortInnerUInt32(arr, m, !dir, pw2 >> 1);
@@ -319,7 +319,7 @@ Data::Sort::BitonicSort::BitonicSort()
 	mainThread.toStop = false;
 	mainThread.state = 1;
 	NEW_CLASSNN(mainThread.evt, Sync::Event(true));
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	Optional<ThreadStat> lastThread = nullptr;
 	while (i-- > 0)
 	{
@@ -352,7 +352,7 @@ Data::Sort::BitonicSort::BitonicSort()
 
 Data::Sort::BitonicSort::~BitonicSort()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -385,30 +385,30 @@ Data::Sort::BitonicSort::~BitonicSort()
 	mainThread.evt.Delete();
 }
 
-void Data::Sort::BitonicSort::SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BitonicSort::SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt cnt = lastIndex - firstIndex + 1;
+	IntOS cnt = lastIndex - firstIndex + 1;
 	if (cnt > 1)
 	{
-		OSInt m = 1;
+		IntOS m = 1;
 		while (m < cnt)
 			m = m << 1;
 		this->SortInnerInt32(arr + firstIndex, cnt, true, m >> 1);
 	}
 }
 
-void Data::Sort::BitonicSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BitonicSort::SortUInt32(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt cnt = lastIndex - firstIndex + 1;
+	IntOS cnt = lastIndex - firstIndex + 1;
 	if (cnt > 1)
 	{
-		OSInt m = 1;
+		IntOS m = 1;
 		while (m < cnt)
 			m = m << 1;
 		this->SortInnerUInt32(arr + firstIndex, cnt, true, m >> 1);
 	}
 }
 
-void Data::Sort::BitonicSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BitonicSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex)
 {
 }

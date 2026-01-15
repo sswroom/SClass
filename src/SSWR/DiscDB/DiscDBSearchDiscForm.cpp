@@ -12,9 +12,9 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userO
 
 	NN<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> disc;
 	NN<SSWR::DiscDB::DiscDBEnv::DiscFileInfo> file;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	if (me->env->GetBurntDisc(sb.ToCString()).SetTo(disc))
 	{
 		UTF8Char sbuff[32];

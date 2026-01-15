@@ -12,7 +12,7 @@ UI::GUIPictureBox::GUIPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA_ALL_FF));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
-	this->resizer->SetTargetSize(Math::Size2D<UOSInt>(200, 200));
+	this->resizer->SetTargetSize(Math::Size2D<UIntOS>(200, 200));
 }
 
 UI::GUIPictureBox::~GUIPictureBox()
@@ -28,7 +28,7 @@ Text::CStringNN UI::GUIPictureBox::GetObjectClass() const
 void UI::GUIPictureBox::OnSizeChanged(Bool updateScn)
 {
 	UI::GUIControl::OnSizeChanged(updateScn);
-	Math::Size2D<UOSInt> sz = GetSizeP();
+	Math::Size2D<UIntOS> sz = GetSizeP();
 	this->resizer->SetTargetSize(sz);
 	if (this->allowResize)
 	{
@@ -64,9 +64,9 @@ void UI::GUIPictureBox::HandleMouseUp(MouseEventHandler hdlr, AnyType userObj)
 	this->mouseUpObjs.Add(userObj);
 }
 
-void UI::GUIPictureBox::EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn)
+void UI::GUIPictureBox::EventButtonDown(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -74,9 +74,9 @@ void UI::GUIPictureBox::EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl
 	}
 }
 
-void UI::GUIPictureBox::EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn)
+void UI::GUIPictureBox::EventButtonUp(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -84,9 +84,9 @@ void UI::GUIPictureBox::EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::
 	}
 }
 
-void UI::GUIPictureBox::EventMouseMove(Math::Coord2D<OSInt> pos)
+void UI::GUIPictureBox::EventMouseMove(Math::Coord2D<IntOS> pos)
 {
-	UOSInt i = this->mouseMoveHdlrs.GetCount();
+	UIntOS i = this->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), pos, MBTN_MIDDLE);

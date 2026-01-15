@@ -52,7 +52,7 @@ UInt32 Manage::ThreadContextX86_32::GetEDI() const
 #endif
 
 
-Manage::ThreadContextX86_32::ThreadContextX86_32(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextX86_32::ThreadContextX86_32(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -67,9 +67,9 @@ Manage::ThreadContextX86_32::~ThreadContextX86_32()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextX86_32::GetRegisterCnt() const
+UIntOS Manage::ThreadContextX86_32::GetRegisterCnt() const
 {
-	UOSInt cnt = 33;
+	UIntOS cnt = 33;
 	if (this->mmOfst >= 0)
 	{
 		cnt += 8;
@@ -81,7 +81,7 @@ UOSInt Manage::ThreadContextX86_32::GetRegisterCnt() const
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 	switch (index)
 	{
@@ -445,9 +445,9 @@ void Manage::ThreadContextX86_32::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -492,32 +492,32 @@ Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType() const
 	return Manage::ThreadContext::ContextType::X86_32;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetThreadId() const
+UIntOS Manage::ThreadContextX86_32::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetProcessId() const
+UIntOS Manage::ThreadContextX86_32::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetInstAddr() const
+UIntOS Manage::ThreadContextX86_32::GetInstAddr() const
 {
 	return this->GetEIP();
 }
 
-UOSInt Manage::ThreadContextX86_32::GetStackAddr() const
+UIntOS Manage::ThreadContextX86_32::GetStackAddr() const
 {
 	return this->GetESP();
 }
 
-UOSInt Manage::ThreadContextX86_32::GetFrameAddr() const
+UIntOS Manage::ThreadContextX86_32::GetFrameAddr() const
 {
 	return this->GetEBP();
 }
 
-void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextX86_32::SetInstAddr(UIntOS instAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rip = instAddr;
@@ -526,7 +526,7 @@ void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr)
 #endif
 }
 
-void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextX86_32::SetStackAddr(UIntOS stackAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rsp = stackAddr;
@@ -535,7 +535,7 @@ void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr)
 #endif
 }
 
-void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextX86_32::SetFrameAddr(UIntOS frameAddr)
 {
 #ifdef CONTEXT_VX86
 	((CONTEXT_TYPE*)this->context)->Rbp = frameAddr;
@@ -600,7 +600,7 @@ Bool Manage::ThreadContextX86_32::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) cons
 #endif
 
 #ifdef CONTEXT_VX86
-	OSInt i = 8;
+	IntOS i = 8;
 	while (i-- > 0)
 	{
 		MemCopyNO(&r->floatBuff[i * 10], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[i], 10);

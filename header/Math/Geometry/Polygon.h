@@ -22,8 +22,8 @@ namespace Math
 //			Bool HasJunction() const;
 //			void SplitByJunction(NN<Data::ArrayListNN<Math::Geometry::Polygon>> results);
 			NN<Math::Geometry::MultiPolygon> CreateMultiPolygon() const;
-			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSInt nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UOSInt nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
-			UOSInt FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
+			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UIntOS nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UIntOS nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
+			UIntOS FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
 		};
 	}
 }

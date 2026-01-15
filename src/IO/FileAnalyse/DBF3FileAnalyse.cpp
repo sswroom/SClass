@@ -23,7 +23,7 @@ void __stdcall IO::FileAnalyse::DBF3FileAnalyse::ParseThread(NN<Sync::Thread> th
 		pack->packSize = 32;
 		pack->packType = PackType::TableHeader;
 		me->packs.Add(pack);
-		UOSInt currColOfst = 1;
+		UIntOS currColOfst = 1;
 		UInt64 ofst = 32;
 		while (!thread->IsStopping() && ofst < startOfst)
 		{
@@ -58,7 +58,7 @@ void __stdcall IO::FileAnalyse::DBF3FileAnalyse::ParseThread(NN<Sync::Thread> th
 			}
 		}
 		ofst = startOfst;
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < nRec)
 		{
 			pack = MemAllocNN(IO::FileAnalyse::DBF3FileAnalyse::PackInfo);
@@ -117,12 +117,12 @@ Text::CStringNN IO::FileAnalyse::DBF3FileAnalyse::GetFormatName()
 	return CSTR("DBF3");
 }
 
-UOSInt IO::FileAnalyse::DBF3FileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::DBF3FileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::DBF3FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::DBF3FileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::DBF3FileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -135,16 +135,16 @@ Bool IO::FileAnalyse::DBF3FileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-UOSInt IO::FileAnalyse::DBF3FileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::DBF3FileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -155,13 +155,13 @@ UOSInt IO::FileAnalyse::DBF3FileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::DBF3FileAnalyse::PackInfo> pack;
 	NN<IO::StreamData> fd;
@@ -180,8 +180,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 	if (pack->packType == PackType::TableHeader)
 	{
 		Text::StringBuilderUTF8 sb;
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddHex8(0, CSTR("DBF File Type"), packBuff[0]);
 		sb.AppendU32(1900 + packBuff[1])->AppendUTF8Char('-')->AppendU16(packBuff[2])->AppendUTF8Char('-')->AppendU16(packBuff[3]);
 		frame->AddField(1, 3, CSTR("Last update"), sb.ToCString());
@@ -198,8 +198,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 	}
 	else if (pack->packType == PackType::FieldSubrecords)
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddStrS(0, 11, CSTR("Field name"), &packBuff[0]);
 		frame->AddStrC(11, 1, CSTR("Field type"), &packBuff[11]);
 		frame->AddUInt(12, 4, CSTR("Displacement of field in record"), ReadUInt32(&packBuff[12]));
@@ -216,11 +216,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 	}
 	else if (pack->packType == PackType::TableRecord)
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddField(0, 1, CSTR("Record deleted"), (packBuff[0] == '*')?CSTR("Yes"):CSTR("No"));
-		UOSInt i = 0;
-		UOSInt j = this->cols.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->cols.GetCount();
 		NN<DBFCol> col;
 		while (i < j)
 		{
@@ -231,8 +231,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 	}
 	else if (pack->packType == PackType::Terminator)
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddHex8(0, CSTR("Terminator"), packBuff[0]);
 	}
 	return frame;

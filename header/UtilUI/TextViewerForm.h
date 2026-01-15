@@ -22,7 +22,7 @@ namespace UtilUI
 		NN<Media::MonitorMgr> monMgr;
 		
 		static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-		static void __stdcall OnTextPosUpd(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
+		static void __stdcall OnTextPosUpd(AnyType userObj, UInt32 textPosX, UIntOS textPosY);
 		static void __stdcall OnSearchClosed(AnyType userObj, NN<UI::GUIForm> frm);
 	public:
 		TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, NN<Media::DrawEngine> deng, UInt32 codePage);

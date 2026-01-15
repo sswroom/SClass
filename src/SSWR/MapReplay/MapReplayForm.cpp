@@ -52,8 +52,8 @@ void SSWR::MapReplay::MapReplayForm::LoadMap(Int32 mapType)
 
 void SSWR::MapReplay::MapReplayForm::UpdateList()
 {
-	UOSInt cnt = this->env->GetItemCount(0);
-	UOSInt i;
+	UIntOS cnt = this->env->GetItemCount(0);
+	UIntOS i;
 	Map::MapEnv::ItemType itemType;
 	const WChar *name;
 	this->lbLayers->ClearItems();
@@ -72,14 +72,14 @@ void SSWR::MapReplay::MapReplayForm::UpdateList()
 
 }
 
-void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const WChar **files, OSInt nFiles)
+void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const WChar **files, IntOS nFiles)
 {
 	SSWR::MapReplay::MapReplayForm *me = (SSWR::MapReplay::MapReplayForm*)userObj;
 	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;
 
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < nFiles)
 	{
 		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
@@ -148,7 +148,7 @@ SSWR::MapReplay::MapReplayForm::MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowFo
 	this->lbLayers->HandleDoubleClicked(OnLayerDblClicked, this);
 	NEW_CLASS(this->splitter, UI::MSWindowHSplitter(ui->GetHInst(), this, 2, false));
 
-	OSInt i;
+	IntOS i;
 	Math::CoordinateSystem *csys = Math::GeographicCoordinateSystem::CreateCoordinateSystem(Math::GeographicCoordinateSystem::GCST_WGS84);
 	NEW_CLASS(this->env, Map::MapEnv(L"Untitled", 0xffffffff, csys));
 	DEL_CLASS(csys);

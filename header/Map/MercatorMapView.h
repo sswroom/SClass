@@ -12,12 +12,12 @@ namespace Map
 		Math::Coord2DDbl centPixel;
 		Double hdpi;
 		Double ddpi;
-		UOSInt level;
-		UOSInt maxLevel;
+		UIntOS level;
+		UIntOS maxLevel;
 		Double dtileSize;
 
 	public:
-		MercatorMapView(Math::Size2DDbl scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize);
+		MercatorMapView(Math::Size2DDbl scnSize, Math::Coord2DDbl center, UIntOS maxLevel, UIntOS tileSize);
 		virtual ~MercatorMapView();
 
 		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);
@@ -36,8 +36,8 @@ namespace Map
 		virtual Double GetDDPI() const;
 
 		virtual Bool InViewXY(Math::Coord2DDbl mapPos) const;
-		virtual Bool MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const; // return inScreen
-		virtual Bool IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
+		virtual Bool MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints, Math::Coord2DDbl ofst) const; // return inScreen
+		virtual Bool IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UIntOS nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const;
 		virtual Math::Coord2DDbl ScnXYNoDirToMapXY(Math::Coord2DDbl scnPos) const;
 		virtual NN<Map::MapView> Clone() const;

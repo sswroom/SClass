@@ -22,9 +22,9 @@ namespace IO
 			GoProCameraControl(NN<Net::TCPClientFactory> clif, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~GoProCameraControl();
 
-			virtual UOSInt GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);
+			virtual UIntOS GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);
 			virtual void FreeInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);
-			virtual UOSInt GetFileList(NN<Data::ArrayListNN<FileInfo>> fileList);
+			virtual UIntOS GetFileList(NN<Data::ArrayListNN<FileInfo>> fileList);
 			virtual Bool GetFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 			virtual Bool GetThumbnailFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 

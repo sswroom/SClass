@@ -55,7 +55,7 @@ Text::CStringNN IO::USBInfo::GetDispName()
 UInt16 USBInfo_ReadI16(Text::CStringNN fileName)
 {
 	UInt8 buff[33];
-	UOSInt readSize;
+	UIntOS readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	readSize = fs.Read(BYTEARR(buff).WithSize(32));
 	buff[readSize] = 0;
@@ -74,15 +74,15 @@ UInt16 USBInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
+UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 {
 	ClassData clsData;
 	NN<IO::USBInfo> usb;
 	Text::StringBuilderUTF8 sb;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char sbuff[512];
 	UInt8 cbuff[256];
-	UOSInt readSize;
+	UIntOS readSize;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr3;

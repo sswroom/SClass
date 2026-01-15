@@ -15,7 +15,7 @@ extern CPUBrand
 extern UseAVX
 %endif
 
-;Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 
 ;0 rdi
 ;8 rsi
@@ -212,7 +212,7 @@ mcopyamdavxlop4:
 	pop rsi
 	ret
 
-;Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 
 ;0 rdi
 ;8 rsi
@@ -369,7 +369,7 @@ mwriteamdavxlop2:
 	pop rsi
 	ret
 
-;Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+;Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt)
 
 ;0 rdi
 ;8 rsi

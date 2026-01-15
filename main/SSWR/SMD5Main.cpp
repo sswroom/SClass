@@ -115,7 +115,7 @@ public:
 
 	virtual void ProgressStart(Text::CStringNN name, UInt64 count)
 	{
-		UOSInt i;
+		UIntOS i;
 		Sync::MutexUsage mutUsage(this->mut);
 		NN<Text::String> nnname;
 		OPTSTR_DEL(this->name);
@@ -157,8 +157,8 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose, Option
 			}
 		}
 		UInt8 hash[32];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Text::String> entryName;
 		
 		i = 0;
@@ -194,7 +194,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose, Option
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt cmdCnt;
+	UIntOS cmdCnt;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
@@ -213,8 +213,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<IO::Path::FindFileSession> sess;
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;
-		UOSInt i;
-		UOSInt j = 1;
+		UIntOS i;
+		UIntOS j = 1;
 		while (j < cmdCnt && (!foundFiles || !showHelp))
 		{
 			if (cmdLines[j][0] == '-')
@@ -237,7 +237,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				foundFiles = true;
 				sptr = Text::StrConcat(sbuff, cmdLines[j]);
-				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 				Text::CStringNN cstr = CSTRP(sbuff, sptr).Substring(i + 1);
 				if (cstr.IndexOf('*') != INVALID_INDEX || cstr.IndexOf('?') != INVALID_INDEX)
 				{
@@ -342,7 +342,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Unknown parameter type ("));
-		sptr = Text::StrUOSInt(sptr, cmdCnt);
+		sptr = Text::StrUIntOS(sptr, cmdCnt);
 		*sptr++ = ')';
 		*sptr = 0;
 		console->WriteLine(CSTRP(sbuff, sptr));

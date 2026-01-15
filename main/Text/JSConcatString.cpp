@@ -8,8 +8,8 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Text::String *strArr[10000];
 	NN<Text::String> str;
 	Data::ArrayListString *a;

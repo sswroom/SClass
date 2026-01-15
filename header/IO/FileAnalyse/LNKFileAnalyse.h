@@ -32,7 +32,7 @@ namespace IO
 			{
 				TagType tagType;
 				UInt64 ofst;
-				UOSInt size;
+				UIntOS size;
 			};
 		private:
 			Optional<IO::StreamData> fd;
@@ -47,10 +47,10 @@ namespace IO
 			virtual ~LNKFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

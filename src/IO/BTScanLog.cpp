@@ -203,12 +203,12 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
 	{
 		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buff.GetSize())
+		if ((UIntOS)len + 7 > buff.GetSize())
 		{
 			return false;
 		}
-		UOSInt optEnd;
-		UOSInt i;
+		UIntOS optEnd;
+		UIntOS i;
 		if (buff[7] == 0xd) //Sub Event: LE Extended Advertising Report (0x0d)
 		{
 			UInt8 numReports = buff[8];
@@ -228,7 +228,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 			rec->rssi = (Int8)buff[22];
 			rec->txPower = (Int8)buff[21];
 
-			optEnd = (UOSInt)buff[32] + 33;
+			optEnd = (UIntOS)buff[32] + 33;
 			i = 33;
 		}
 		else if (buff[7] == 0x2)
@@ -249,7 +249,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 			mac[7] = 0;
 			rec->txPower = 0;
 
-			optEnd = (UOSInt)buff[17] + 18;
+			optEnd = (UIntOS)buff[17] + 18;
 			i = 18;
 			if (optEnd < buff.GetSize())
 			{
@@ -296,13 +296,13 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
 	{
 		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buff.GetSize() || len < 15)
+		if ((UIntOS)len + 7 > buff.GetSize() || len < 15)
 		{
 			return false;
 		}
 		rec->rssi = (Int8)buff[21];
-		UOSInt optEnd;
-		UOSInt i;
+		UIntOS optEnd;
+		UIntOS i;
 		UInt8 numReports = buff[7];
 		if (numReports != 1)
 		{
@@ -336,12 +336,12 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 	return false;
 }
 
-void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst)
+void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = ofst;
-	UOSInt j;
+	UIntOS i = ofst;
+	UIntOS j;
 
 	sbuff[0] = 0;
 	sptr = sbuff;
@@ -354,7 +354,7 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 		}
 		if (buff[i + 1] == 8 || buff[i + 1] == 9)
 		{
-			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
+			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UIntOS)optLen - 1);
 		}
 		else if (buff[i + 1] == 3) //UUIDs
 		{
@@ -434,11 +434,11 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 				rec->measurePower = (Int8)buff[i + 26];
 			}
 		}
-		i += 1 + (UOSInt)optLen;
+		i += 1 + (UIntOS)optLen;
 	}
 	if (sbuff[0])
 	{
-		rec->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		rec->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 	}
 	else
 	{

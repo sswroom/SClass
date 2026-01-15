@@ -8,7 +8,7 @@ void __stdcall IO::MTStream::OutputThread(NN<Sync::Thread> thread)
 {
 	NN<IO::MTStream> me = thread->GetUserObj().GetNN<IO::MTStream>();
 	UnsafeArray<UInt8> tmpBuff;
-	UOSInt size;
+	UIntOS size;
 	while (!thread->IsStopping())
 	{
 		if (me->cacheSize > 0)
@@ -39,7 +39,7 @@ void __stdcall IO::MTStream::OutputThread(NN<Sync::Thread> thread)
 	}
 }
 
-IO::MTStream::MTStream(NN<IO::Stream> outStm, UOSInt buffSize) : IO::Stream(outStm->GetSourceNameObj()), thread(OutputThread, this, CSTR("MTStream"))
+IO::MTStream::MTStream(NN<IO::Stream> outStm, UIntOS buffSize) : IO::Stream(outStm->GetSourceNameObj()), thread(OutputThread, this, CSTR("MTStream"))
 {
 	this->outStm = outStm;
 	this->cacheBuffSize = buffSize;
@@ -61,12 +61,12 @@ Bool IO::MTStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt IO::MTStream::Read(const Data::ByteArray &buff)
+UIntOS IO::MTStream::Read(const Data::ByteArray &buff)
 {
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::MTStream::Write(Data::ByteArrayR buff)
+UIntOS IO::MTStream::Write(Data::ByteArrayR buff)
 {
 	if (!this->thread.IsRunning())
 		return 0;
@@ -78,7 +78,7 @@ UOSInt IO::MTStream::Write(Data::ByteArrayR buff)
 		this->thread.Notify();
 		return buff.GetSize();
 	}
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	while (buff.GetSize() > 0)
 	{
 		if (this->cacheSize >= this->cacheBuffSize)
@@ -89,7 +89,7 @@ UOSInt IO::MTStream::Write(Data::ByteArrayR buff)
 		}
 		else
 		{
-			UOSInt copySize = this->cacheBuffSize - this->cacheSize;
+			UIntOS copySize = this->cacheBuffSize - this->cacheSize;
 			if (copySize > buff.GetSize())
 			{
 				copySize = buff.GetSize();

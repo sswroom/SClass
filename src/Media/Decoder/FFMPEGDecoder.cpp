@@ -194,15 +194,15 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 	UInt32 currFmt;
 	UInt32 srcFCC;
 	UnsafeArray<UInt8> frameBuff;
-	UOSInt frameSize;
+	UIntOS frameSize;
 	Bool seeked;
 	Data::Duration seekTime;
 	AVColorPrimaries colorPrimaries;
 	AVColorTransferCharacteristic colorTrc;
 	AVColorSpace yuvColor;
 	FFMPEGFrameInfo frames[FRAMEBUFFSIZE];
-	UOSInt frameIndexS;
-	UOSInt frameIndexE;
+	UIntOS frameIndexS;
+	UIntOS frameIndexE;
 	Data::Duration lastFrameTime;
 	Bool isOpenGOP;
 #ifdef _DEBUG
@@ -211,7 +211,7 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 #endif
 };
 
-void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	ClassData *data = this->clsData;
     AVPacket avpkt;
@@ -238,7 +238,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendChar(fType, 1);
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendOSInt(dataSize);
+		sb.AppendIntOS(dataSize);
 		data->dbgWriter->WriteLine(sb.ToCString());
 	}
 #endif
@@ -344,14 +344,14 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 				UInt8 *yptr = data->frame->data[0];
 				UInt8 *uptr = data->frame->data[1];
 				UInt8 *vptr = data->frame->data[2];
-				OSInt ybpl = data->frame->linesize[0];
-				OSInt ubpl = data->frame->linesize[1];
-				OSInt vbpl = data->frame->linesize[2];
-				OSInt w = data->frame->width;
-				OSInt h = data->frame->height;
+				IntOS ybpl = data->frame->linesize[0];
+				IntOS ubpl = data->frame->linesize[1];
+				IntOS vbpl = data->frame->linesize[2];
+				IntOS w = data->frame->width;
+				IntOS h = data->frame->height;
 				UInt8 *dptr;
-				OSInt i;
-				frameTempBuff = MemAllocA(UInt8, (UOSInt)(w * h * 2));
+				IntOS i;
+				frameTempBuff = MemAllocA(UInt8, (UIntOS)(w * h * 2));
 				dptr = frameTempBuff;
 				w = w >> 1;
 				while (h-- > 0)
@@ -570,7 +570,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 	Media::FrameInfo frameInfo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 
 	AVCodecID codecId;
@@ -682,7 +682,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 		return;
 	}
 
-	UOSInt frameSize;
+	UIntOS frameSize;
 	if (sourceVideo->IsRealTimeSrc())
 	{
 		frameSize = frameInfo.dispSize.CalcArea() * 4;
@@ -697,7 +697,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 	    AVPacket avpkt;
 		Int32 ret;
 		UInt8 *firstFrame;
-		UOSInt frameNum;
+		UIntOS frameNum;
 		ret = FFMPEGDecoder_avcodec_open2(data->ctx, data->codec, 0);
 		if (ret < 0)
 		{
@@ -845,7 +845,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 				Media::FrameInfo frinfo;
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
-				UOSInt maxFrameSize;
+				UIntOS maxFrameSize;
 				this->GetVideoInfo(frinfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 				data->frameSize = maxFrameSize;
 				if (data->frameSize > 0)
@@ -899,7 +899,7 @@ Text::CStringNN Media::Decoder::FFMPEGDecoder::GetFilterName()
 	return CSTR("FFMPEGDecoder");
 }
 
-Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	ClassData *data = this->clsData;
 	if (this->sourceVideo == 0)
@@ -907,8 +907,8 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return false;
 	Bool fullRange = false;
-	info->dispSize = Math::Size2D<UOSInt>(data->dispWidth, data->dispHeight);
-	info->storeSize = Math::Size2D<UOSInt>(data->storeWidth, data->storeHeight);
+	info->dispSize = Math::Size2D<UIntOS>(data->dispWidth, data->dispHeight);
+	info->storeSize = Math::Size2D<UIntOS>(data->storeWidth, data->storeHeight);
 	info->par2 = data->par;
 	info->byteSize = 0;
 	switch (data->currFmt)
@@ -1196,12 +1196,12 @@ Bool Media::Decoder::FFMPEGDecoder::HasFrameCount()
 	return this->sourceVideo->HasFrameCount();
 }
 
-UOSInt Media::Decoder::FFMPEGDecoder::GetFrameCount()
+UIntOS Media::Decoder::FFMPEGDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
 
-Data::Duration Media::Decoder::FFMPEGDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::FFMPEGDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
@@ -1234,7 +1234,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 	Media::FrameInfo frameInfo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
 		return nullptr;
@@ -1329,15 +1329,15 @@ private:
 	AVFrame *frame;
 	Media::AudioFormat *decFmt;
 	UInt8 *frameBuff;
-	UOSInt frameMaxSize;
-	UOSInt frameBuffSize;
+	UIntOS frameMaxSize;
+	UIntOS frameBuffSize;
 	UInt8 *readBuff;
-	UOSInt readBlockSize;
+	UIntOS readBlockSize;
 	Bool seeked;
 
 	Optional<Sync::Event> readEvt;
 
-	OSInt GetChannelCnt()
+	IntOS GetChannelCnt()
 	{
 #if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
 		return this->frame->ch_layout.nb_channels;
@@ -1575,7 +1575,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize)
+	virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize)
 	{
 		NN<Sync::Event> nnevt;
 		NN<Media::AudioSource> sourceAudio;
@@ -1603,10 +1603,10 @@ public:
 		this->readEvt = nullptr;
 	}
 
-	virtual UOSInt ReadBlock(Data::ByteArray blk)
+	virtual UIntOS ReadBlock(Data::ByteArray blk)
 	{
-		UOSInt outSize = 0;
-		UOSInt i;
+		UIntOS outSize = 0;
+		UIntOS i;
 	    AVPacket avpkt;
 		Int32 ret;
 		NN<Media::AudioSource> sourceAudio;
@@ -1664,7 +1664,7 @@ public:
 				}
 			}
 
-			UOSInt srcSize = sourceAudio->ReadBlock(Data::ByteArray(this->readBuff, this->readBlockSize));
+			UIntOS srcSize = sourceAudio->ReadBlock(Data::ByteArray(this->readBuff, this->readBlockSize));
 			if (srcSize == 0)
 			{
 				if (this->readEvt.SetTo(readEvt))
@@ -1700,7 +1700,7 @@ public:
 					if (gotFrame)
 					{
 						UInt8 *dataPtr = this->frame->data[0];
-						UOSInt dataSize = (UOSInt)this->frame->nb_samples * this->decFmt->align;
+						UIntOS dataSize = (UIntOS)this->frame->nb_samples * this->decFmt->align;
 						if (this->frameBuffSize + dataSize > this->frameMaxSize)
 						{
 							while (this->frameBuffSize + dataSize > this->frameMaxSize)
@@ -1723,9 +1723,9 @@ public:
 						{
 							UInt8 *arr[8];
 							UInt8 *outBuff = &this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->GetChannelCnt();
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->GetChannelCnt();
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = this->frame->data[i];
@@ -1746,9 +1746,9 @@ public:
 						{
 							Int16 *arr[8];
 							Int16 *outBuff = (Int16*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->GetChannelCnt();
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->GetChannelCnt();
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = (Int16*)this->frame->data[i];
@@ -1769,9 +1769,9 @@ public:
 						{
 							Int32 *arr[8];
 							Int32 *outBuff = (Int32*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->GetChannelCnt();
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->GetChannelCnt();
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = (Int32*)this->frame->data[i];
@@ -1792,9 +1792,9 @@ public:
 						{
 							Single *arr[8];
 							Single *outBuff = (Single*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->GetChannelCnt();
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->GetChannelCnt();
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = (Single*)this->frame->data[i];
@@ -1815,9 +1815,9 @@ public:
 						{
 							Double *arr[8];
 							Double *outBuff = (Double*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->GetChannelCnt();
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->GetChannelCnt();
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = (Double*)this->frame->data[i];
@@ -1839,9 +1839,9 @@ public:
 						{
 							Int64 *arr[8];
 							Int64 *outBuff = (Int64*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
-							OSInt ind = 0;
-							OSInt sampleLeft = this->frame->nb_samples;
+							IntOS ch = this->frame->channels;
+							IntOS ind = 0;
+							IntOS sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
 							{
 								arr[ind] = (Int64*)this->frame->data[i];
@@ -1895,7 +1895,7 @@ public:
 			while ((ret = FFMPEGDecoder_avcodec_receive_frame(this->ctx, this->frame)) == 0)
 			{
 				UInt8 *dataPtr = this->frame->data[0];
-				OSInt dataSize = this->frame->nb_samples * this->decFmt->align;
+				IntOS dataSize = this->frame->nb_samples * this->decFmt->align;
 				if (blkSize >= dataSize)
 				{
 					MemCopyNO(buff, this->frame->data[0], dataSize);
@@ -1940,7 +1940,7 @@ public:
 		return outSize;
 	}
 
-	virtual UOSInt GetMinBlockSize()
+	virtual UIntOS GetMinBlockSize()
 	{
 		return this->decFmt->align;
 	}

@@ -31,7 +31,7 @@ Media::MPAStreamSource::~MPAStreamSource()
 	}
 }
 
-Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
+Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UIntOS buffSize)
 {
 	if (this->fmt.formatId == 0)
 	{
@@ -170,7 +170,7 @@ void Media::MPAStreamSource::GetFormat(NN<Media::AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::MPAStreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::MPAStreamSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->pbEvt = evt;
 	this->streamStarted = true;
@@ -185,9 +185,9 @@ void Media::MPAStreamSource::Stop()
 	this->pbEvt = nullptr;
 }
 
-UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt bSize;
+	UIntOS bSize;
 	Sync::MutexUsage mutUsage(this->buffMut);
 	if (this->buffEnd < this->buffStart)
 	{
@@ -227,20 +227,20 @@ UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 		}
 	}
 
-	UOSInt buffSize2;
+	UIntOS buffSize2;
 	if (this->buffStart > this->buffEnd)
 	{
 		MemCopyNO(this->dataBuff2, &this->dataBuff[this->buffStart], this->buffSize - this->buffStart);
 		MemCopyNO(&this->dataBuff2[this->buffSize - this->buffStart], this->dataBuff, this->buffEnd);
-		buffSize2 = (UOSInt)(this->buffEnd - this->buffStart) + this->buffSize;
+		buffSize2 = (UIntOS)(this->buffEnd - this->buffStart) + this->buffSize;
 	}
 	else
 	{
 		MemCopyNO(this->dataBuff2, &this->dataBuff[this->buffStart], this->buffEnd - this->buffStart);
 		buffSize2 = this->buffEnd - this->buffStart;
 	}
-	UOSInt i = 0;
-	UOSInt frStart = (UOSInt)-1;
+	UIntOS i = 0;
+	UIntOS frStart = (UIntOS)-1;
 	while (i < buffSize2 - 1)
 	{
 		if (this->dataBuff2[i] == 0xff && (this->dataBuff2[i + 1] & 0xf8) == 0xf8)
@@ -250,12 +250,12 @@ UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 		}
 		i++;
 	}
-	if (frStart != (UOSInt)-1)
+	if (frStart != (UIntOS)-1)
 	{
 		if (buffSize2 - frStart < 7)
 		{
 			buffSize2 = frStart;
-			frStart = (UOSInt)-1;
+			frStart = (UIntOS)-1;
 		}
 		else
 		{
@@ -320,7 +320,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 			if (blk.GetSize() < frStart + frameSize)
 			{
 				buffSize2 = frStart;
-				frStart = (UOSInt)-1;
+				frStart = (UIntOS)-1;
 			}
 			else if (frStart + frameSize <= buffSize2)
 			{
@@ -337,7 +337,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 			else
 			{
 				buffSize2 = frStart;
-				frStart = (UOSInt)-1;
+				frStart = (UIntOS)-1;
 			}
 		}
 	}
@@ -367,9 +367,9 @@ UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 	}
 }
 
-UOSInt Media::MPAStreamSource::GetMinBlockSize()
+UIntOS Media::MPAStreamSource::GetMinBlockSize()
 {
-	UOSInt size = this->fmt.align;
+	UIntOS size = this->fmt.align;
 	if (size == 1)
 	{
 		size = 144 * this->fmt.bitRate / this->fmt.frequency + 1;
@@ -387,7 +387,7 @@ Bool Media::MPAStreamSource::IsEnd()
 	return !this->pbc->IsRunning();
 }
 
-void Media::MPAStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
+void Media::MPAStreamSource::DetectStreamInfo(UInt8 *header, UIntOS headerSize)
 {
 }
 
@@ -405,9 +405,9 @@ void Media::MPAStreamSource::SetStreamTime(Data::Duration time)
 	this->buffSample = time.MultiplyU64(this->fmt.bitRate >> 3);
 }
 
-void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
+void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UIntOS buffSize)
 {
-	UOSInt buffWriten;
+	UIntOS buffWriten;
 	NN<Sync::Event> evt;
 	if (this->pbEvt.NotNull())
 	{
@@ -487,7 +487,7 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 Data::Duration Media::MPAStreamSource::GetFrameStreamTime()
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	UOSInt buffSize;
+	UIntOS buffSize;
 	if (this->buffEnd < this->buffStart)
 	{
 		buffSize = this->buffEnd - this->buffStart + this->buffSize;

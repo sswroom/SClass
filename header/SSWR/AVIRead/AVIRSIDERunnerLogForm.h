@@ -18,7 +18,7 @@ namespace SSWR
 		public:
 			struct StepStat
 			{
-				UOSInt count;
+				UIntOS count;
 				Double totalTime;
 				Double minTime;
 				Double maxTime;

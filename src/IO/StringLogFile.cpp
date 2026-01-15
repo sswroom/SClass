@@ -8,7 +8,7 @@ IO::StringLogFile::StringLogFile(NN<Text::String> sourceName) : IO::LogFile(sour
 IO::StringLogFile::~StringLogFile()
 {
 	NN<LogItem> item;
-	UOSInt i = this->items.GetCount();
+	UIntOS i = this->items.GetCount();
 	while (i-- > 0)
 	{
 		item = this->items.GetItemNoCheck(i);
@@ -18,12 +18,12 @@ IO::StringLogFile::~StringLogFile()
 	}
 }
 
-UOSInt IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
+UIntOS IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
 {
 	return this->items.GetCount();
 }
 
-Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, OutParam<Data::Timestamp> ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
+Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UIntOS index, OutParam<Data::Timestamp> ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
 	NN<LogItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -39,7 +39,7 @@ Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt 
 	return true;
 }
 
-Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	NN<LogItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -54,7 +54,7 @@ Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOS
 	return true;
 }
 
-UOSInt IO::StringLogFile::AddLog(const Data::Timestamp &ts, Text::CString message, Text::CString desc)
+UIntOS IO::StringLogFile::AddLog(const Data::Timestamp &ts, Text::CString message, Text::CString desc)
 {
 	NN<LogItem> item = MemAllocNN(LogItem);
 	item->ts = ts;

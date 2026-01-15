@@ -24,9 +24,9 @@ void Data::Compress::LZWEncStream2::ResetTable()
 	this->nextTableOfst = 1;
 }
 
-Data::Compress::LZWEncStream2::LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWEncStream2::LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UIntOS minCodeSize, UIntOS maxCodeSize, IntOS codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
-	this->tableSize = ((UOSInt)1 << maxCodeSize);
+	this->tableSize = ((UIntOS)1 << maxCodeSize);
 	this->lzwTable = MemAllocAArr(UInt16, this->tableSize * 512);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -52,8 +52,8 @@ Data::Compress::LZWEncStream2::LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSIn
 Data::Compress::LZWEncStream2::~LZWEncStream2()
 {
 	UnsafeArray<UInt8> buff = this->encBuff;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 bestCode;
 	Bool found;
 	while (this->buffSize > 0)
@@ -70,11 +70,11 @@ Data::Compress::LZWEncStream2::~LZWEncStream2()
 		j = 0;
 		while (i < this->buffSize)
 		{
-			if (this->lzwTable[j + (UOSInt)buff[i] * 2] == 0 && j != 0)
+			if (this->lzwTable[j + (UIntOS)buff[i] * 2] == 0 && j != 0)
 			{
 				this->writer->WriteBits(bestCode, this->currCodeSize);
-				this->lzwTable[j + (UOSInt)buff[i] * 2] = this->currTableSize;
-				this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] = 0;
+				this->lzwTable[j + (UIntOS)buff[i] * 2] = this->currTableSize;
+				this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] = 0;
 				this->currTableSize++;
 				found = true;
 				buff += i;
@@ -83,16 +83,16 @@ Data::Compress::LZWEncStream2::~LZWEncStream2()
 			}
 			else
 			{
-				bestCode = this->lzwTable[j + (UOSInt)buff[i] * 2];
-				if (this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] == 0)
+				bestCode = this->lzwTable[j + (UIntOS)buff[i] * 2];
+				if (this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] == 0)
 				{
-					this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] = (UInt16)(this->currTableSize - this->endCode);
-					j = (UOSInt)(this->currTableSize - this->endCode) * 512;
+					this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] = (UInt16)(this->currTableSize - this->endCode);
+					j = (UIntOS)(this->currTableSize - this->endCode) * 512;
 					MemClearAC((UInt8*)&this->lzwTable[j], 1024);
 				}
 				else
 				{
-					j = (UOSInt)this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] * 512;
+					j = (UIntOS)this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] * 512;
 				}
 			}
 			i++;
@@ -126,19 +126,19 @@ Bool Data::Compress::LZWEncStream2::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt Data::Compress::LZWEncStream2::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::LZWEncStream2::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 {
 	UInt8 *relBuff = 0;
-	UOSInt sizeLeft;
+	UIntOS sizeLeft;
 	UInt16 bestCode;
-	UOSInt i;
-	UOSInt j;
-	UOSInt ret = buff.GetSize();
+	UIntOS i;
+	UIntOS j;
+	UIntOS ret = buff.GetSize();
 	Bool found;
 	if (this->buffSize == 0)
 	{
@@ -167,11 +167,11 @@ UOSInt Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 		j = 0;
 		while (i < sizeLeft)
 		{
-			if (this->lzwTable[j + (UOSInt)buff[i] * 2] == 0 && j != 0)
+			if (this->lzwTable[j + (UIntOS)buff[i] * 2] == 0 && j != 0)
 			{
 				this->writer->WriteBits(bestCode, this->currCodeSize);
 #if IS_BYTEORDER_LE
-				*(UInt32*)&this->lzwTable[j + (UOSInt)buff[i] * 2] = this->currTableSize;
+				*(UInt32*)&this->lzwTable[j + (UIntOS)buff[i] * 2] = this->currTableSize;
 #else
 				this->lzwTable[j + buff[i] * 2] = this->currTableSize;
 				this->lzwTable[j + buff[i] * 2 + 1] = 0;
@@ -184,17 +184,17 @@ UOSInt Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 			}
 			else
 			{
-				bestCode = this->lzwTable[j + (UOSInt)buff[i] * 2];
-				if (this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] == 0)
+				bestCode = this->lzwTable[j + (UIntOS)buff[i] * 2];
+				if (this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] == 0)
 				{
-					this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] = this->nextTableOfst;
-					j = (UOSInt)this->nextTableOfst * 512;
+					this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] = this->nextTableOfst;
+					j = (UIntOS)this->nextTableOfst * 512;
 					MemClearAC((UInt8*)&this->lzwTable[j], 1024);
 					this->nextTableOfst++;
 				}
 				else
 				{
-					j = (UOSInt)this->lzwTable[j + (UOSInt)buff[i] * 2 + 1] * 512;
+					j = (UIntOS)this->lzwTable[j + (UIntOS)buff[i] * 2 + 1] * 512;
 				}
 			}
 			i++;

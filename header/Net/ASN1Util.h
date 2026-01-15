@@ -47,7 +47,7 @@ namespace Net
 			IT_CONTEXT_SPECIFIC_4 = 0xa4
 		} ItemType;
 	public:
-		static UOSInt PDUParseLen(UnsafeArray<const UInt8> pdu, UOSInt ofst, UOSInt pduSize, OutParam<UInt32> len); //return pduSize + 1 on error
+		static UIntOS PDUParseLen(UnsafeArray<const UInt8> pdu, UIntOS ofst, UIntOS pduSize, OutParam<UInt32> len); //return pduSize + 1 on error
 
 		static UnsafeArrayOpt<const UInt8> PDUParseSeq(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt8> type, OutParam<UnsafeArray<const UInt8>> seqEnd);
 		static UnsafeArrayOpt<const UInt8> PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val);
@@ -56,24 +56,24 @@ namespace Net
 
 		static Bool PDUParseUTCTimeCont(Data::ByteArrayR pdu, NN<Data::DateTime> dt);
 
-		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level);
-		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, OptOut<UnsafeArray<const UInt8>> pduNext);
-		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, OptOut<UnsafeArray<const UInt8>> pduNext, Optional<Net::ASN1Names> names);
+		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UIntOS level);
+		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UIntOS level, OptOut<UnsafeArray<const UInt8>> pduNext);
+		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UIntOS level, OptOut<UnsafeArray<const UInt8>> pduNext, Optional<Net::ASN1Names> names);
 
 		static Bool PDUDSizeEnd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UnsafeArray<const UInt8>> pduNext);
-		static UnsafeArrayOpt<const UInt8> PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst);
-		static UnsafeArrayOpt<const UInt8> PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OptOut<ItemType> itemType);
+		static UnsafeArrayOpt<const UInt8> PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UIntOS> len, OutParam<UIntOS> itemOfst);
+		static UnsafeArrayOpt<const UInt8> PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UIntOS> len, OptOut<ItemType> itemType);
 		static ItemType PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path);
-		static UOSInt PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path);
+		static UIntOS PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path);
 		static Bool PDUIsValid(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
-		static void PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names);
+		static void PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UIntOS pduOfst, UIntOS pduEndOfst, Optional<Net::ASN1Names> names);
 
-		static OSInt OIDCompare(Data::ByteArrayR oid1, Data::ByteArrayR oid2);
-		static Bool OIDStartsWith(UnsafeArray<const UInt8> oid1, UOSInt oid1Len, UnsafeArray<const UInt8> oid2, UOSInt oid2Len);
+		static IntOS OIDCompare(Data::ByteArrayR oid1, Data::ByteArrayR oid2);
+		static Bool OIDStartsWith(UnsafeArray<const UInt8> oid1, UIntOS oid1Len, UnsafeArray<const UInt8> oid2, UIntOS oid2Len);
 		static Bool OIDEqualsText(Data::ByteArrayR oidPDU, Text::CStringNN oidText);
 		static void OIDToString(Data::ByteArrayR pdu, NN<Text::StringBuilderUTF8> sb);
-		static UOSInt OIDCalcPDUSize(Text::CStringNN oidText);
-		static UOSInt OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pduBuff);
+		static UIntOS OIDCalcPDUSize(Text::CStringNN oidText);
+		static UIntOS OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pduBuff);
 
 		static void OIDToCPPCode(Data::ByteArrayR oid, Text::CStringNN objectName, NN<Text::StringBuilderUTF8> sb);
 

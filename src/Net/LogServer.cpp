@@ -63,7 +63,7 @@ void __stdcall Net::LogServer::ClientData(NN<Net::TCPClient> cli, AnyType userOb
 		cliStatus->buffSize += buff.GetSize();
 	}
 
-	UOSInt sizeLeft = me->protoHdlr.ParseProtocol(cli, cliStatus, 0, Data::ByteArrayR(cliStatus->buff, cliStatus->buffSize));
+	UIntOS sizeLeft = me->protoHdlr.ParseProtocol(cli, cliStatus, 0, Data::ByteArrayR(cliStatus->buff, cliStatus->buffSize));
 	if (sizeLeft <= 0)
 	{
 		cliStatus->buffSize = 0;
@@ -129,7 +129,7 @@ Net::LogServer::~LogServer()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	this->logPath->Release();
-	UOSInt i;
+	UIntOS i;
 	NN<IPStatus> status;
 	i = this->ipMap.GetCount();
 	while (i-- > 0)
@@ -156,10 +156,10 @@ void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, AnyType userObj)
 	this->logHdlr = hdlr;
 }
 
-void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	UInt8 reply[18];
-	UOSInt replySize;
+	UIntOS replySize;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IPStatus> status;
@@ -232,7 +232,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	}
 }
 
-void Net::LogServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::LogServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 
 }

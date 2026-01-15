@@ -13,7 +13,7 @@
 UInt32 __stdcall Map::MapScheduler::MapThread(AnyType obj)
 {
 	UInt32 i = 0;
-	UOSInt j;
+	UIntOS j;
 	NN<Map::MapScheduler> me = obj.GetNN<Map::MapScheduler>();
 	me->threadRunning = true;
 	while (!me->toStop)
@@ -140,8 +140,8 @@ void Map::MapScheduler::DrawPoint(NN<Math::Geometry::Point> pt)
 		Double scnH = this->map->GetScnHeight();
 		Double spotX = this->icoSpotX * scale;
 		Double spotY = this->icoSpotY * scale;
-		imgW = UOSInt2Double(img->GetWidth()) * scale;
-		imgH = UOSInt2Double(img->GetHeight()) * scale;
+		imgW = UIntOS2Double(img->GetWidth()) * scale;
+		imgH = UIntOS2Double(img->GetHeight()) * scale;
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
 		this->isLayerEmpty.Set(false);
 		if (*this->objCnt >= this->maxCnt)
@@ -176,7 +176,7 @@ void Map::MapScheduler::DrawLineString(NN<Math::Geometry::LineString> pl)
 	{
 		return;
 	}
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> pointArr = pl->GetPointList(nPoint);
 	if (this->isFirst)
 	{
@@ -189,7 +189,7 @@ void Map::MapScheduler::DrawLineString(NN<Math::Geometry::LineString> pl)
 
 void Map::MapScheduler::DrawLinearRing(NN<Math::Geometry::LinearRing> lr)
 {
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> pointArr = lr->GetPointList(nPoint);
 	if (this->isFirst)
 	{
@@ -208,7 +208,7 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 		return;
 	}
 	NN<Math::Geometry::LineString> lineString;
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> pointArr;
 	Data::ArrayIterator<NN<Math::Geometry::LineString>> it;
 	if (this->isFirst)
@@ -249,7 +249,7 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 
 void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 {
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> pointArr;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it;
 	if (this->isFirst)
@@ -262,8 +262,8 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 				this->isLayerEmpty.Set(false);
 		}
 	}
-	UOSInt i = 0;
-	UOSInt nPtOfst = pg->GetCount();
+	UIntOS i = 0;
+	UIntOS nPtOfst = pg->GetCount();
 	UInt32 *ptOfstArr;
 	UInt32 *relArr = 0;
 	UInt32 cntArr[20];
@@ -335,7 +335,7 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 {
 	Data::ArrayListNative<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
-	UOSInt nPoint;
+	UIntOS nPoint;
 	NN<Math::Geometry::Vector2D> vec;
 	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = cp->Iterator();
 	while (it.HasNext())
@@ -360,12 +360,12 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 	if (ptList.GetCount() > 0)
 	{
 		UnsafeArray<Math::Coord2DDbl> pointArr = ptList.GetArr(nPoint);
-		UOSInt nPtOfst;
+		UIntOS nPtOfst;
 		UInt32 *ptOfstArr = ptOfst.GetArr(nPtOfst).Ptr();
 		if (this->isFirst)
 		{
-			UOSInt k;
-			UOSInt l;
+			UIntOS k;
+			UIntOS l;
 
 			if (this->map->MapXYToScnXYArr(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
 				this->isLayerEmpty.Set(false);
@@ -440,7 +440,7 @@ void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::D
 	this->isLayerEmpty = isLayerEmpty;
 }
 
-void Map::MapScheduler::SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxCnt)
+void Map::MapScheduler::SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UIntOS> objCnt, UIntOS maxCnt)
 {
 	this->objBounds = objBounds;
 	this->objCnt = objCnt.Ptr();

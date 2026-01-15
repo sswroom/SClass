@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ParseFileHdr(NN<IO::St
 	return pobj;
 }
 
-UOSInt Parser::FileParser::MKVParser::ReadDataSize(NN<MKVStatus> status, OutParam<UInt64> dataSize)
+UIntOS Parser::FileParser::MKVParser::ReadDataSize(NN<MKVStatus> status, OutParam<UInt64> dataSize)
 {
 	if (status->currOfst >= status->buffSize)
 	{
@@ -171,7 +171,7 @@ UOSInt Parser::FileParser::MKVParser::ReadDataSize(NN<MKVStatus> status, OutPara
 	}
 }
 
-UOSInt Parser::FileParser::MKVParser::ReadID(NN<MKVStatus> status, OutParam<UInt32> eleId)
+UIntOS Parser::FileParser::MKVParser::ReadID(NN<MKVStatus> status, OutParam<UInt32> eleId)
 {
 	if (status->currOfst >= status->buffSize)
 	{
@@ -230,10 +230,10 @@ UOSInt Parser::FileParser::MKVParser::ReadID(NN<MKVStatus> status, OutParam<UInt
 	}
 }
 
-UOSInt Parser::FileParser::MKVParser::ReadData(NN<MKVStatus> status, UInt64 dataSize, Data::ByteArray buff)
+UIntOS Parser::FileParser::MKVParser::ReadData(NN<MKVStatus> status, UInt64 dataSize, Data::ByteArray buff)
 {
-	UOSInt readSize;
-	UOSInt thisReadSize;
+	UIntOS readSize;
+	UIntOS thisReadSize;
 	if (status->currOfst + dataSize > status->buffSize)
 	{
 		readSize = 0;
@@ -247,7 +247,7 @@ UOSInt Parser::FileParser::MKVParser::ReadData(NN<MKVStatus> status, UInt64 data
 		}
 		if (dataSize > BUFFSIZE)
 		{
-			thisReadSize = status->fd->GetRealData(status->nextReadOfst, (UOSInt)dataSize, buff);
+			thisReadSize = status->fd->GetRealData(status->nextReadOfst, (UIntOS)dataSize, buff);
 			status->nextReadOfst += thisReadSize;
 			readSize += thisReadSize;
 		}
@@ -262,24 +262,24 @@ UOSInt Parser::FileParser::MKVParser::ReadData(NN<MKVStatus> status, UInt64 data
 			}
 			else
 			{
-				buff.CopyFrom(status->buff.SubArray(status->currOfst, (UOSInt)dataSize));
-				status->currOfst += (UOSInt)dataSize;
-				readSize += (UOSInt)dataSize;
+				buff.CopyFrom(status->buff.SubArray(status->currOfst, (UIntOS)dataSize));
+				status->currOfst += (UIntOS)dataSize;
+				readSize += (UIntOS)dataSize;
 			}
 		}
 		return readSize;
 	}
 	else
 	{
-		buff.CopyFrom(status->buff.SubArray(status->currOfst, (UOSInt)dataSize));
-		status->currOfst += (UOSInt)dataSize;
-		return (UOSInt)dataSize;
+		buff.CopyFrom(status->buff.SubArray(status->currOfst, (UIntOS)dataSize));
+		status->currOfst += (UIntOS)dataSize;
+		return (UIntOS)dataSize;
 	}
 }
 
-UOSInt Parser::FileParser::MKVParser::ReadBuffer(NN<MKVStatus> status)
+UIntOS Parser::FileParser::MKVParser::ReadBuffer(NN<MKVStatus> status)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	if (status->currOfst < status->buffSize)
 	{
 		status->buff.CopyInner(0, status->currOfst, status->buffSize - status->currOfst);
@@ -299,7 +299,7 @@ UOSInt Parser::FileParser::MKVParser::ReadBuffer(NN<MKVStatus> status)
 	return readSize;
 }
 
-Bool Parser::FileParser::MKVParser::SkipBuffer(NN<MKVStatus> status, UOSInt skipSize)
+Bool Parser::FileParser::MKVParser::SkipBuffer(NN<MKVStatus> status, UIntOS skipSize)
 {
 	if (status->currOfst + skipSize > status->buffSize)
 	{
@@ -317,7 +317,7 @@ Bool Parser::FileParser::MKVParser::SkipBuffer(NN<MKVStatus> status, UOSInt skip
 
 Bool Parser::FileParser::MKVParser::ReadHeader(NN<MKVStatus> status, UInt64 dataSize)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt64 elementSize;
 	UInt32 hdrId;
 	UInt8 buff[16];
@@ -334,36 +334,36 @@ Bool Parser::FileParser::MKVParser::ReadHeader(NN<MKVStatus> status, UInt64 data
 		switch (hdrId)
 		{
 		case 0x4286: //EBMLVersion
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x42f7: //EBMLReadVersion
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x42f2: //EBMLMaxIDLength
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x42f3: //EBMLMaxSizeLength
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x4282: //DocType
 			if (elementSize > 16)
 			{
-				SkipBuffer(status, (UOSInt)elementSize);
+				SkipBuffer(status, (UIntOS)elementSize);
 			}
 			else
 			{
-				ReadData(status, (UOSInt)elementSize, BYTEARR(buff));
+				ReadData(status, (UIntOS)elementSize, BYTEARR(buff));
 
 			}
 			break;
 		case 0x4287: //DocTypeVersion
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x4285: //DocTypeReadVersion
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -374,7 +374,7 @@ Bool Parser::FileParser::MKVParser::ReadHeader(NN<MKVStatus> status, UInt64 data
 Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStatus> status, UInt64 dataSize)
 {
 	IO::ParsedObject *pobj = 0;
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool valid = true;
 	UInt64 elementSize;
 	UInt32 hdrId;
@@ -399,28 +399,28 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStat
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x114d9b74: //SeekHead
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x1254c367: //Tags
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x1549a966: //Info
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x1654ae6b: //Track
 			valid = ReadTrack(status, elementSize);
 			break;
 		case 0x1c53bb6b: //Cues
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x1f43b675: //Cluster
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -436,7 +436,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStat
 
 Bool Parser::FileParser::MKVParser::ReadTrack(NN<MKVStatus> status, UInt64 dataSize)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool valid = true;
 	UInt64 elementSize;
 	UInt32 hdrId;
@@ -457,13 +457,13 @@ Bool Parser::FileParser::MKVParser::ReadTrack(NN<MKVStatus> status, UInt64 dataS
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0xae: //TrackEntry
-			valid = ReadTrackEntry(status, (UOSInt)elementSize);
+			valid = ReadTrackEntry(status, (UIntOS)elementSize);
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -475,7 +475,7 @@ Bool Parser::FileParser::MKVParser::ReadTrack(NN<MKVStatus> status, UInt64 dataS
 
 Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 dataSize)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool valid = true;
 	UInt64 elementSize;
 	UInt32 hdrId;
@@ -506,7 +506,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x83: //TrackType
 			if (ReadData(status, elementSize, BYTEARR(buff)) != elementSize)
@@ -524,7 +524,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 			}
 			break;
 		case 0x9c: //FlagLacing
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0xd7: //TrackNumber
 			ReadData(status, elementSize, BYTEARR(buff));
@@ -552,7 +552,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 			valid = ReadAudio(status, elementSize, audioFmt);
 			break;
 		case 0x63a2: //CodecPrivate
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x73c5: //TrackUID
 			ReadData(status, elementSize, BYTEARR(buff));
@@ -574,7 +574,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 			}
 			break;
 		case 0x22b59c: //Language
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x23e383: //DefaultDuration
 			if (elementSize == 4)
@@ -584,11 +584,11 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 			}
 			else
 			{
-				SkipBuffer(status, (UOSInt)elementSize);
+				SkipBuffer(status, (UIntOS)elementSize);
 			}
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -602,7 +602,7 @@ Bool Parser::FileParser::MKVParser::ReadTrackEntry(NN<MKVStatus> status, UInt64 
 
 Bool Parser::FileParser::MKVParser::ReadVideo(NN<MKVStatus> status, UInt64 dataSize, NN<Media::FrameInfo> frameInfo)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool valid = true;
 	UInt64 elementSize;
 	UInt32 hdrId;
@@ -625,7 +625,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(NN<MKVStatus> status, UInt64 dataS
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0xb0: //PixelWidth
 			if (elementSize != ReadData(status, elementSize, BYTEARR(buff)))
@@ -678,7 +678,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(NN<MKVStatus> status, UInt64 dataS
 			}
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;
@@ -692,7 +692,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(NN<MKVStatus> status, UInt64 dataS
 
 Bool Parser::FileParser::MKVParser::ReadAudio(NN<MKVStatus> status, UInt64 dataSize, NN<Media::AudioFormat> audioFmt)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool valid = true;
 	UInt64 elementSize;
 	UInt32 hdrId;
@@ -715,7 +715,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(NN<MKVStatus> status, UInt64 dataS
 		switch (hdrId)
 		{
 		case 0xec: //Void
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		case 0x9f: //Channels
 			if (elementSize != ReadData(status, elementSize, BYTEARR(buff)))
@@ -754,7 +754,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(NN<MKVStatus> status, UInt64 dataS
 			}
 			break;
 		default:
-			SkipBuffer(status, (UOSInt)elementSize);
+			SkipBuffer(status, (UIntOS)elementSize);
 			break;
 		}
 		dataSize -= elementSize;

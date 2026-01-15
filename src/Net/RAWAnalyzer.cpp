@@ -10,7 +10,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 {
 	NN<Net::RAWAnalyzer> me = userObj.GetNN<Net::RAWAnalyzer>();
 	UInt8 packetBuff[10240];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Sync::Interlocked::IncrementI32(me->threadCnt);
@@ -53,7 +53,7 @@ Net::RAWAnalyzer::RAWAnalyzer(NN<Net::TCPClientFactory> clif, UInt16 infoPort, O
 		NN<Socket> soc;
 		if (this->rawSock.SetTo(soc))
 		{
-			OSInt i = 3;
+			IntOS i = 3;
 			while (i-- > 0)
 			{
 				Sync::ThreadUtil::Create(RecvThread, this);

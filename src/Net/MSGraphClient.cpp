@@ -119,10 +119,10 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphEventMessageRequest::Parse
 
 Bool Net::MSGraphEventMessageRequest::IsKnownType(Text::CStringNN type)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(knownTypes) / sizeof(knownTypes[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(knownTypes) / sizeof(knownTypes[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -281,8 +281,8 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		}
 		NN<Text::JSONObject> dataObj;
 		NN<T> data;
-		UOSInt i = 0;
-		UOSInt j = arr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = arr->GetArrayLength();
 		while (i < j)
 		{
 			if (arr->GetArrayObject(i).SetTo(dataObj))
@@ -322,8 +322,8 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 
 void Net::MSGraphClient::BuildRcpt(NN<Text::JSONBuilder> builder, NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList, Net::Email::EmailMessage::RecipientType type, Text::CStringNN name)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::Email::EmailMessage::EmailAddress> addr;
 	NN<Text::String> s;
 	Bool found = false;
@@ -376,7 +376,7 @@ void Net::MSGraphClient::SetLog(NN<IO::LogTool> log, Bool debugLog)
 	this->log = log;
 }
 
-void Net::MSGraphClient::SetAttSplitSize(UOSInt attSplitSize)
+void Net::MSGraphClient::SetAttSplitSize(UIntOS attSplitSize)
 {
 	this->attSplitSize = attSplitSize;
 }
@@ -507,7 +507,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	return nullptr;
 }
 
-Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
+Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UIntOS top, UIntOS skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -532,7 +532,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 	if (top != 0)
 	{
 		sb.Append(CSTR("?%24top="));
-		sb.AppendUOSInt(top);
+		sb.AppendUIntOS(top);
 		found = true;
 	}
 	if (skip != 0)
@@ -543,7 +543,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 			sb.AppendUTF8Char('?');
 		found = true;
 		sb.Append(CSTR("?%24skip="));
-		sb.AppendUOSInt(top);
+		sb.AppendUIntOS(top);
 	}
 	if (this->log.SetTo(log))
 	{
@@ -622,8 +622,8 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 		}
 		NN<Text::JSONObject> msgObj;
 		NN<MSGraphEventMessageRequest> msg;
-		UOSInt i = 0;
-		UOSInt j = arr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = arr->GetArrayLength();
 		while (i < j)
 		{
 			if (arr->GetArrayObject(i).SetTo(msgObj))
@@ -725,7 +725,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 		{
 			builder.ObjectAddStr(CSTR("contentType"), CSTR("text"));
 		}
-		builder.ObjectAddStr(CSTR("content"), Text::CStringNN(content, (UOSInt)contentLen));
+		builder.ObjectAddStr(CSTR("content"), Text::CStringNN(content, (UIntOS)contentLen));
 		builder.ObjectEnd();
 	}
 	NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
@@ -821,8 +821,8 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 			msg.Delete();
 			return nullptr;
 		}
-		UOSInt i = 0;
-		UOSInt j = message->AttachmentGetCount();
+		UIntOS i = 0;
+		UIntOS j = message->AttachmentGetCount();
 		NN<Net::Email::EmailMessage::Attachment> att;
 		Bool succ = true;
 		while (i < j)
@@ -912,8 +912,8 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 						NEW_CLASSNN(uplSess, MSGraphUploadSession(json))
 						if (uplSess->IsValid())
 						{
-							UOSInt currOfst = 0;
-							UOSInt endOfst;
+							UIntOS currOfst = 0;
+							UIntOS endOfst;
 							while (currOfst < att->contentLen)
 							{
 								endOfst = currOfst + this->attSplitSize;
@@ -926,11 +926,11 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 								cli->AddContentLength(endOfst - currOfst);
 								sb.ClearStr();
 								sb.Append(CSTR("bytes "));
-								sb.AppendUOSInt(currOfst);
+								sb.AppendUIntOS(currOfst);
 								sb.AppendUTF8Char('-');
-								sb.AppendUOSInt(endOfst - 1);
+								sb.AppendUIntOS(endOfst - 1);
 								sb.AppendUTF8Char('/');
-								sb.AppendUOSInt(att->contentLen);
+								sb.AppendUIntOS(att->contentLen);
 								cli->AddHeaderC(CSTR("Content-Range"), sb.ToCString());
 								if (this->log.SetTo(log))
 								{
@@ -956,7 +956,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 										{
 											sb.ClearStr();
 											sb.Append(CSTR("MailMessagesCreate: File upload pass end of file: "));
-											sb.AppendUOSInt(att->contentLen);
+											sb.AppendUIntOS(att->contentLen);
 											log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 										}
 										succ = false;
@@ -972,9 +972,9 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 										{
 											sb.ClearStr();
 											sb.Append(CSTR("MailMessagesCreate: File upload missing data: "));
-											sb.AppendUOSInt(endOfst);
+											sb.AppendUIntOS(endOfst);
 											sb.Append(CSTR(" !="));
-											sb.AppendUOSInt(att->contentLen);
+											sb.AppendUIntOS(att->contentLen);
 											log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 										}
 										succ = false;

@@ -102,12 +102,12 @@ HRESULT __stdcall Win32::COMStream::SetSize(ULARGE_INTEGER libNewSize)
 HRESULT __stdcall Win32::COMStream::CopyTo(IStream *pstm, ULARGE_INTEGER cb, ULARGE_INTEGER *pcbRead, ULARGE_INTEGER *pcbWritten)
 {
 	DebugMsg("CopyTo");
-	void *buff = MAlloc((UOSInt)cb.QuadPart);
-	UOSInt readSize;
+	void *buff = MAlloc((UIntOS)cb.QuadPart);
+	UIntOS readSize;
 	if (pcbRead)
-		readSize = (UOSInt)(pcbRead->QuadPart = stm->Read(Data::ByteArray((UInt8*)buff, (UOSInt)cb.QuadPart)));
+		readSize = (UIntOS)(pcbRead->QuadPart = stm->Read(Data::ByteArray((UInt8*)buff, (UIntOS)cb.QuadPart)));
 	else
-		readSize = stm->Read(Data::ByteArray((UInt8*)buff, (UOSInt)cb.QuadPart));
+		readSize = stm->Read(Data::ByteArray((UInt8*)buff, (UIntOS)cb.QuadPart));
 	ULONG ul;
 	pstm->Write(buff, (ULONG)readSize, &ul);
 	if (pcbWritten)

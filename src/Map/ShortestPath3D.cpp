@@ -18,9 +18,9 @@ Map::ShortestPath3D::LineComparator::~LineComparator()
 
 }
 
-OSInt Map::ShortestPath3D::LineComparator::Compare(NN<LineInfo> a, NN<LineInfo> b) const
+IntOS Map::ShortestPath3D::LineComparator::Compare(NN<LineInfo> a, NN<LineInfo> b) const
 {
-	return (OSInt)a->index - (OSInt)b->index;
+	return (IntOS)a->index - (IntOS)b->index;
 }
 
 Map::ShortestPath3D::PathResultComparator::PathResultComparator()
@@ -31,7 +31,7 @@ Map::ShortestPath3D::PathResultComparator::~PathResultComparator()
 {
 }
 
-OSInt Map::ShortestPath3D::PathResultComparator::Compare(NN<PathResult> a, NN<PathResult> b) const
+IntOS Map::ShortestPath3D::PathResultComparator::Compare(NN<PathResult> a, NN<PathResult> b) const
 {
 	if (a->dist > b->dist)
 	{
@@ -55,7 +55,7 @@ Map::ShortestPath3D::NodeDistanceComparator::~NodeDistanceComparator()
 {
 }
 
-OSInt Map::ShortestPath3D::NodeDistanceComparator::Compare(NN<NodeSession> a, NN<NodeSession> b) const
+IntOS Map::ShortestPath3D::NodeDistanceComparator::Compare(NN<NodeSession> a, NN<NodeSession> b) const
 {
 	if (a->calcNodeDist > b->calcNodeDist)
 	{
@@ -74,7 +74,7 @@ OSInt Map::ShortestPath3D::NodeDistanceComparator::Compare(NN<NodeSession> a, NN
 void Map::ShortestPath3D::FreeLineInfo(NN<LineInfo> lineInfo)
 {
 	lineInfo->vec.Delete();
-	UOSInt i = lineInfo->properties.GetCount();
+	UIntOS i = lineInfo->properties.GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(lineInfo->properties[i]);
@@ -85,8 +85,8 @@ void Map::ShortestPath3D::FreeLineInfo(NN<LineInfo> lineInfo)
 
 void Map::ShortestPath3D::AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo)
 {
-	UOSInt i = 0;
-	UOSInt j = areaInfo->nodes.GetCount();
+	UIntOS i = 0;
+	UIntOS j = areaInfo->nodes.GetCount();
 	NN<NodeInfo> nodeInfo;
 	while (i < j)
 	{
@@ -98,16 +98,16 @@ void Map::ShortestPath3D::AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN
 
 NN<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetArea(Math::Coord2DDbl pos)
 {
-	OSInt areaX = (OSInt)(pos.x / this->searchDist);
-	OSInt areaY = (OSInt)(pos.y / this->searchDist);
-	OSInt i = 0;
-	OSInt j = (OSInt)this->areas.GetCount() - 1;
-	OSInt k;
+	IntOS areaX = (IntOS)(pos.x / this->searchDist);
+	IntOS areaY = (IntOS)(pos.y / this->searchDist);
+	IntOS i = 0;
+	IntOS j = (IntOS)this->areas.GetCount() - 1;
+	IntOS k;
 	NN<AreaInfo> areaInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		areaInfo = this->areas.GetItemNoCheck((UOSInt)k);
+		areaInfo = this->areas.GetItemNoCheck((UIntOS)k);
 		if (areaInfo->x > areaX)
 		{
 			j = k - 1;
@@ -132,22 +132,22 @@ NN<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetArea(Math::Coord2DDbl 
 	NEW_CLASSNN(areaInfo, AreaInfo());
 	areaInfo->x = areaX;
 	areaInfo->y = areaY;
-	this->areas.Insert((UOSInt)i, areaInfo);
+	this->areas.Insert((UIntOS)i, areaInfo);
 	return areaInfo;
 }
 
 Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetAreaOpt(Math::Coord2DDbl pos) const
 {
-	OSInt areaX = (OSInt)(pos.x / this->searchDist);
-	OSInt areaY = (OSInt)(pos.y / this->searchDist);
-	OSInt i = 0;
-	OSInt j = (OSInt)this->areas.GetCount() - 1;
-	OSInt k;
+	IntOS areaX = (IntOS)(pos.x / this->searchDist);
+	IntOS areaY = (IntOS)(pos.y / this->searchDist);
+	IntOS i = 0;
+	IntOS j = (IntOS)this->areas.GetCount() - 1;
+	IntOS k;
 	NN<AreaInfo> areaInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		areaInfo = this->areas.GetItemNoCheck((UOSInt)k);
+		areaInfo = this->areas.GetItemNoCheck((UIntOS)k);
 		if (areaInfo->x > areaX)
 		{
 			j = k - 1;
@@ -174,16 +174,16 @@ Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetAreaOpt(Math::Co
 
 NN<Map::ShortestPath3D::AreaSession> Map::ShortestPath3D::GetAreaSess(NN<PathSession> sess, Math::Coord2DDbl pos) const
 {
-	OSInt areaX = (OSInt)(pos.x / this->searchDist);
-	OSInt areaY = (OSInt)(pos.y / this->searchDist);
-	OSInt i = 0;
-	OSInt j = (OSInt)sess->areas.GetCount() - 1;
-	OSInt k;
+	IntOS areaX = (IntOS)(pos.x / this->searchDist);
+	IntOS areaY = (IntOS)(pos.y / this->searchDist);
+	IntOS i = 0;
+	IntOS j = (IntOS)sess->areas.GetCount() - 1;
+	IntOS k;
 	NN<AreaSession> areaSess;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		areaSess = sess->areas.GetItemNoCheck((UOSInt)k);
+		areaSess = sess->areas.GetItemNoCheck((UIntOS)k);
 		if (areaSess->x > areaX)
 		{
 			j = k - 1;
@@ -208,20 +208,20 @@ NN<Map::ShortestPath3D::AreaSession> Map::ShortestPath3D::GetAreaSess(NN<PathSes
 	NEW_CLASSNN(areaSess, AreaSession());
 	areaSess->x = areaX;
 	areaSess->y = areaY;
-	sess->areas.Insert((UOSInt)i, areaSess);
+	sess->areas.Insert((UIntOS)i, areaSess);
 	return areaSess;
 }
 
-Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(OSInt areaX, OSInt areaY) const
+Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(IntOS areaX, IntOS areaY) const
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->areas.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->areas.GetCount() - 1;
+	IntOS k;
 	NN<AreaInfo> areaInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		areaInfo = this->areas.GetItemNoCheck((UOSInt)k);
+		areaInfo = this->areas.GetItemNoCheck((UIntOS)k);
 		if (areaInfo->x > areaX)
 		{
 			j = k - 1;
@@ -249,14 +249,14 @@ Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(OSI
 NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNode(Math::Coord2DDbl pos, Double z)
 {
 	NN<AreaInfo> areaInfo = GetArea(pos);
-	OSInt i = 0;
-	OSInt j = (OSInt)areaInfo->nodes.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)areaInfo->nodes.GetCount() - 1;
+	IntOS k;
 	NN<NodeInfo> nodeInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		nodeInfo = areaInfo->nodes.GetItemNoCheck((UOSInt)k);
+		nodeInfo = areaInfo->nodes.GetItemNoCheck((UIntOS)k);
 		if (nodeInfo->pos.x > pos.x)
 		{
 			j = k - 1;
@@ -290,7 +290,7 @@ NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNode(Math::Coord2DDbl 
 	nodeInfo->pos = pos;
 	nodeInfo->z = z;
 	nodeInfo->networkId = 0;
-	areaInfo->nodes.Insert((UOSInt)i, nodeInfo);
+	areaInfo->nodes.Insert((UIntOS)i, nodeInfo);
 	return nodeInfo;
 }
 
@@ -301,14 +301,14 @@ NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNodeOrUnknown(Math::Co
 	{
 		return this->unknownNode;
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)areaInfo->nodes.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)areaInfo->nodes.GetCount() - 1;
+	IntOS k;
 	NN<NodeInfo> nodeInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		nodeInfo = areaInfo->nodes.GetItemNoCheck((UOSInt)k);
+		nodeInfo = areaInfo->nodes.GetItemNoCheck((UIntOS)k);
 		if (nodeInfo->pos.x > pos.x)
 		{
 			j = k - 1;
@@ -344,15 +344,15 @@ NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNodeOrUnknown(Math::Co
 NN<Map::ShortestPath3D::NodeSession> Map::ShortestPath3D::GetNodeSess(NN<PathSession> sess, Math::Coord2DDbl pos, Double z) const
 {
 	NN<AreaSession> areaSess = GetAreaSess(sess, pos);
-	OSInt i = 0;
-	OSInt j = (OSInt)areaSess->nodes.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)areaSess->nodes.GetCount() - 1;
+	IntOS k;
 	NN<NodeSession> nodeSess;
 	NN<NodeInfo> nodeInfo;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		nodeSess = areaSess->nodes.GetItemNoCheck((UOSInt)k);
+		nodeSess = areaSess->nodes.GetItemNoCheck((UIntOS)k);
 		nodeInfo = nodeSess->node;
 		if (nodeInfo->pos.x > pos.x)
 		{
@@ -386,7 +386,7 @@ NN<Map::ShortestPath3D::NodeSession> Map::ShortestPath3D::GetNodeSess(NN<PathSes
 	NEW_CLASSNN(nodeSess, NodeSession());
 	nodeSess->node = GetNodeOrUnknown(pos, z);
 	nodeSess->calcNodeDist = MAX_DIST;
-	areaSess->nodes.Insert((UOSInt)i, nodeSess);
+	areaSess->nodes.Insert((UIntOS)i, nodeSess);
 	return nodeSess;
 }
 
@@ -396,8 +396,8 @@ void Map::ShortestPath3D::FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId)
 	nodes.Add(nodeInfo);
 	while (nodes.Pop().SetTo(nodeInfo))
 	{
-		UOSInt i = 0;
-		UOSInt j = nodeInfo->lines.GetCount();
+		UIntOS i = 0;
+		UIntOS j = nodeInfo->lines.GetCount();
 		NN<LineInfo> lineInfo;
 		NN<NodeInfo> nextNode;
 		nodeInfo->networkId = networkId;
@@ -475,12 +475,12 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 	}
 	NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(idArr, nameArr);
-	UOSInt colCnt = layer->GetColumnCnt();
-	UOSInt k;
+	UIntOS colCnt = layer->GetColumnCnt();
+	UIntOS k;
 	UnsafeArray<Optional<Text::String>> properties = MemAllocArr(Optional<Text::String>, colCnt);
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = idArr.GetCount();
+	UIntOS i = 0;
+	UIntOS j = idArr.GetCount();
 	while (i < j)
 	{
 		if (layer->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
@@ -532,9 +532,9 @@ Optional<Map::ShortestPath3D::LineInfo> Map::ShortestPath3D::AddPath(NN<Math::Ge
 	NN<NodeInfo> nodeInfo;
 	UnsafeArray<Math::Coord2DDbl> ptList;
 	UnsafeArray<Double> zList;
-	UOSInt nPoints;
-	UOSInt i;
-	UOSInt j;
+	UIntOS nPoints;
+	UIntOS i;
+	UIntOS j;
 	switch (type)
 	{
 	case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -654,10 +654,10 @@ void Map::ShortestPath3D::BuildNetwork()
 	UInt32 networkId = this->networkCnt;
 	NN<AreaInfo> areaInfo;
 	NN<NodeInfo> nodeInfo;
-	UOSInt i = 0;
-	UOSInt j = this->areas.GetCount();
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = this->areas.GetCount();
+	UIntOS k;
+	UIntOS l;
 	while (i < j)
 	{
 		areaInfo = this->areas.GetItemNoCheck(i);
@@ -682,8 +682,8 @@ void Map::ShortestPath3D::BuildNetwork()
 void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const
 {
 	NN<LineInfo> lineInfo;
-	UOSInt i = 0;
-	UOSInt j = this->lines.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->lines.GetCount();
 	while (i < j)
 	{
 		lineInfo = this->lines.GetItemNoCheck(i);
@@ -697,8 +697,8 @@ void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::L
 
 void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos) const
 {
-	OSInt x = (OSInt)(pos.x / this->searchDist);
-	OSInt y = (OSInt)(pos.y / this->searchDist);
+	IntOS x = (IntOS)(pos.x / this->searchDist);
+	IntOS y = (IntOS)(pos.y / this->searchDist);
 	Data::ArrayListNN<LineInfo> lines;
 	NN<AreaInfo> areaInfo;
 	if (GetExistingArea(x, y).SetTo(areaInfo))
@@ -717,9 +717,9 @@ void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> path
 	Math::Coord2DDbl nearestPt;
 	Double dist;
 	NN<LineInfo> lineInfo;
-	UOSInt lastIndex = INVALID_INDEX;
-	UOSInt i = 0;
-	UOSInt j = lines.GetCount();
+	UIntOS lastIndex = INVALID_INDEX;
+	UIntOS i = 0;
+	UIntOS j = lines.GetCount();
 	while (i < j)
 	{
 		lineInfo = lines.GetItemNoCheck(i);
@@ -778,10 +778,10 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 	NN<PathResult> path2;
 	GetNearestPaths(paths1, posStart);
 	GetNearestPaths(paths2, posEnd);
-	UOSInt i1;
-	UOSInt i2;
-	UOSInt j1;
-	UOSInt j2;
+	UIntOS i1;
+	UIntOS i2;
+	UIntOS j1;
+	UIntOS j2;
 	i1 = 0;
 	i2 = 0;
 	j1 = paths1.GetCount();
@@ -872,7 +872,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		sess->lastStartHalfLine2 = nullptr;
 		NEW_CLASSNN(startHalfLine1, Math::Geometry::LineString(this->csys->GetSRID(), 2, true, false));
 		sess->lastStartHalfLine1 = startHalfLine1;
-		UOSInt nPoint;
+		UIntOS nPoint;
 		UnsafeArray<Math::Coord2DDbl> pointList = startHalfLine1->GetPointList(nPoint);
 		UnsafeArray<Double> zList;
 		pointList[0] = nodePt;
@@ -978,7 +978,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			i2++;
 		}
 		i1++;
-		Data::Sort::ArtificialQuickSort::Sort<NN<NodeSession>>(calcNodes.Arr(), comparator, (OSInt)i1, (OSInt)calcNodes.GetCount() - 1);
+		Data::Sort::ArtificialQuickSort::Sort<NN<NodeSession>>(calcNodes.Arr(), comparator, (IntOS)i1, (IntOS)calcNodes.GetCount() - 1);
 		if (nodeSess->node->pos == path2->line->startPos && nodeSess->node->z == path2->line->startZ)
 		{
 			startFound = true;
@@ -1090,8 +1090,8 @@ UInt32 Map::ShortestPath3D::GetNetworkCnt() const
 void Map::ShortestPath3D::GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList) const
 {
 	NN<LineInfo> lineInfo;
-	UOSInt i = 0;
-	UOSInt j = this->lines.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->lines.GetCount();
 	while (i < j)
 	{
 		lineInfo = this->lines.GetItemNoCheck(i);
@@ -1124,10 +1124,10 @@ void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::Li
 	Bool isReverse = false;
 	Double dir1;
 	Double dir2;
-	UOSInt k;
-	UOSInt l;
-	UOSInt i = 0;
-	UOSInt j = lineList->GetCount();
+	UIntOS k;
+	UIntOS l;
+	UIntOS i = 0;
+	UIntOS j = lineList->GetCount();
 	if (j >= 2)
 	{
 		ls = lineList->GetItemNoCheck(0);

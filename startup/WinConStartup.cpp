@@ -51,17 +51,17 @@ void __stdcall ConsoleControl_SignalExit(NN<Core::ProgControl> progCtrl)
 	ctrl->evt->Set();
 }
 
-UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	NN<Core::ConsoleControl> ctrl = NN<Core::ConsoleControl>::ConvertFrom(progCtrl);
 	UnsafeArray<UnsafeArray<UTF8Char>> nnargv;
 	if (!ctrl->argv.SetTo(nnargv))
 	{
 		Int32 argc;
-		OSInt i;
+		IntOS i;
 		WChar *cmdLine = GetCommandLineW();
 		WChar **argv = CommandLineToArgvW(cmdLine, &argc);
-		ctrl->argc = (UOSInt)argc;
+		ctrl->argc = (UIntOS)argc;
 		ctrl->argv = nnargv = MemAllocArr(UnsafeArray<UTF8Char>, ctrl->argc);
 		i = argc;
 		while (i-- > 0)
@@ -105,7 +105,7 @@ void ConsoleControl_Destroy(NN<Core::ConsoleControl> ctrl)
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	if (ctrl->argv.SetTo(argv))
 	{
-		UOSInt i = ctrl->argc;
+		UIntOS i = ctrl->argc;
 		while (i-- > 0)
 		{
 			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));

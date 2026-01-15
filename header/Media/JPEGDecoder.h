@@ -11,7 +11,7 @@ namespace Media
 		JPEGDecoder();
 		~JPEGDecoder();
 
-		Bool Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt maxWidth, UOSInt maxHeight, Media::PixelFormat pf) const;
+		Bool Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS maxWidth, UIntOS maxHeight, Media::PixelFormat pf) const;
 		Optional<Media::StaticImage> DecodeImage(Data::ByteArrayR dataBuff) const;
 	};
 }

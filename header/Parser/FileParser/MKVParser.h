@@ -17,8 +17,8 @@ namespace Parser
 				NN<IO::StreamData> fd;
 				UInt64 nextReadOfst;
 				Data::ByteArray buff;
-				UOSInt buffSize;
-				UOSInt currOfst;
+				UIntOS buffSize;
+				UIntOS currOfst;
 			} MKVStatus;
 
 		public:
@@ -30,11 +30,11 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 		private:
-			static UOSInt ReadDataSize(NN<MKVStatus> status, OutParam<UInt64> dataSize);
-			static UOSInt ReadID(NN<MKVStatus> status, OutParam<UInt32> eleId);
-			static UOSInt ReadData(NN<MKVStatus> status, UInt64 dataSize, Data::ByteArray buff);
-			static UOSInt ReadBuffer(NN<MKVStatus> status);
-			static Bool SkipBuffer(NN<MKVStatus> status, UOSInt skipSize);
+			static UIntOS ReadDataSize(NN<MKVStatus> status, OutParam<UInt64> dataSize);
+			static UIntOS ReadID(NN<MKVStatus> status, OutParam<UInt32> eleId);
+			static UIntOS ReadData(NN<MKVStatus> status, UInt64 dataSize, Data::ByteArray buff);
+			static UIntOS ReadBuffer(NN<MKVStatus> status);
+			static Bool SkipBuffer(NN<MKVStatus> status, UIntOS skipSize);
 			static Bool ReadHeader(NN<MKVStatus> status, UInt64 dataSize);
 			static Optional<IO::ParsedObject> ReadSegment(NN<MKVStatus> status, UInt64 dataSize);
 			static Bool ReadTrack(NN<MKVStatus> status, UInt64 dataSize);

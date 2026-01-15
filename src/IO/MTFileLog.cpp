@@ -77,7 +77,7 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UIntOS arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
@@ -86,7 +86,7 @@ void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<D
 	Data::DateTimeUtil::TimeValue tval;
 	Text::StringBuilderUTF8 sb;
 
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < arrCnt)
 	{
@@ -134,7 +134,7 @@ void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<D
 			cstm.Delete();
 			fileStm.Delete();
 
-			NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fileStm, FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASSNN(cstm, IO::BufferedOutputStream(fileStm, 4096));
 			NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
@@ -147,7 +147,7 @@ void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<D
 
 		sptr = time.ToString(buff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat));
 		sb.ClearStr();
-		sb.AppendC(buff, (UOSInt)(sptr - buff));
+		sb.AppendC(buff, (UIntOS)(sptr - buff));
 		sb.Append(msgArr[i]);
 		log->WriteLine(sb.ToCString());
 
@@ -161,7 +161,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 {
 	NN<IO::MTFileLog> me = userObj.GetNN<IO::MTFileLog>();
 	Sync::ThreadUtil::SetName(CSTR("MTFileLog"));
-	UOSInt arrCnt;
+	UIntOS arrCnt;
 	UnsafeArray<NN<Text::String>> msgArr;
 	UnsafeArray<Data::Timestamp> dateArr;
 	while (!me->closed)
@@ -205,7 +205,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<cons
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<const Char> nndateFormat;
 	if (!dateFormat.SetTo(nndateFormat))
 	{
@@ -214,7 +214,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<cons
 	else
 	{
 		sptr = Text::StrConcatC(Text::StrConcat(buff, UnsafeArray<const UTF8Char>::ConvertFrom(nndateFormat)), UTF8STRC("\t"));
-		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff));
+		this->dateFormat = Text::StrCopyNewC(buff, (UIntOS)(sptr - buff));
 	}
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
@@ -247,7 +247,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<cons
 	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, tval, ts.tzQhr);
 	sptr = GetNewName(buff, tval, ts.inst.nanosec, this->lastVal);
 
-	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fileStm, FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASSNN(cstm, IO::BufferedOutputStream(fileStm, 4096));
 	NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 	if (fileStm->GetPosition() == 0)

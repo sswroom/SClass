@@ -23,7 +23,7 @@ Bool Text::UTF8Writer::Write(Text::CStringNN str)
 Bool Text::UTF8Writer::WriteLine(Text::CStringNN str)
 {
 	const UTF8Char crlf[2] = {13, 10};
-	UOSInt ret = this->stm->Write(str.ToByteArray());
+	UIntOS ret = this->stm->Write(str.ToByteArray());
 	if (ret == str.leng)
 	{
 		ret += this->stm->Write(Data::ByteArrayR(crlf, 2));
@@ -31,94 +31,94 @@ Bool Text::UTF8Writer::WriteLine(Text::CStringNN str)
 	return ret == str.leng + 2;
 }
 
-Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF16Char> str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF16Char> str, UIntOS nChar)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
+	UIntOS utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 1);
 	Text::StrUTF16_UTF8C(utf8, str, nChar);
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
 	MemFreeArr(utf8);
 	return ret == utf8Len;
 }
 
 Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF16Char> str)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str);
+	UIntOS utf8Len = Text::StrUTF16_UTF8Cnt(str);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 1);
 	Text::StrUTF16_UTF8(utf8, str);
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
 	MemFreeArr(utf8);
 	return ret == utf8Len;
 }
 
-Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF16Char> str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF16Char> str, UIntOS nChar)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
+	UIntOS utf8Len = Text::StrUTF16_UTF8CntC(str, nChar);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 2);
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUTF16_UTF8C(utf8, str, nChar);
 	sptr[0] = 13;
 	sptr[1] = 10;
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
 	MemFreeArr(utf8);
 	return ret == utf8Len + 2;
 }
 
 Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF16Char> str)
 {
-	UOSInt utf8Len = Text::StrUTF16_UTF8Cnt(str);
+	UIntOS utf8Len = Text::StrUTF16_UTF8Cnt(str);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 2);
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUTF16_UTF8(utf8, str);
 	sptr[0] = 13;
 	sptr[1] = 10;
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
 	MemFreeArr(utf8);
 	return ret == utf8Len + 2;
 }
 
-Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF32Char> str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF32Char> str, UIntOS nChar)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
+	UIntOS utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 1);
 	Text::StrUTF32_UTF8C(utf8, str, nChar);
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
 	MemFreeArr(utf8);
 	return ret == utf8Len;
 }
 
 Bool Text::UTF8Writer::WriteW(UnsafeArray<const UTF32Char> str)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str);
+	UIntOS utf8Len = Text::StrUTF32_UTF8Cnt(str);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 1);
 	Text::StrUTF32_UTF8(utf8, str);
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len));
 	MemFreeArr(utf8);
 	return ret == utf8Len;
 }
 
-Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF32Char> str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF32Char> str, UIntOS nChar)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
+	UIntOS utf8Len = Text::StrUTF32_UTF8CntC(str, nChar);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 2);
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUTF32_UTF8C(utf8, str, nChar);
 	sptr[0] = 13;
 	sptr[1] = 10;
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
 	MemFreeArr(utf8);
 	return ret == utf8Len + 2;
 }
 
 Bool Text::UTF8Writer::WriteLineW(UnsafeArray<const UTF32Char> str)
 {
-	UOSInt utf8Len = Text::StrUTF32_UTF8Cnt(str);
+	UIntOS utf8Len = Text::StrUTF32_UTF8Cnt(str);
 	UnsafeArray<UTF8Char> utf8 = MemAllocArr(UTF8Char, utf8Len + 2);
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUTF32_UTF8(utf8, str);
 	sptr[0] = 13;
 	sptr[1] = 10;
-	UOSInt ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
+	UIntOS ret = this->stm->Write(Data::ByteArrayR(utf8, utf8Len + 2));
 	MemFreeArr(utf8);
 	return ret == utf8Len + 2;
 }

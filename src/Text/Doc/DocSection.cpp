@@ -24,22 +24,22 @@ Bool Text::Doc::DocSection::IsLandscape()
 	return this->isLandscape;
 }
 
-UOSInt Text::Doc::DocSection::Add(NN<Text::Doc::DocItem> item)
+UIntOS Text::Doc::DocSection::Add(NN<Text::Doc::DocItem> item)
 {
 	return this->items.Add(item);
 }
 
-UOSInt Text::Doc::DocSection::GetCount() const
+UIntOS Text::Doc::DocSection::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-NN<Text::Doc::DocItem> Text::Doc::DocSection::GetItemNoCheck(UOSInt index) const
+NN<Text::Doc::DocItem> Text::Doc::DocSection::GetItemNoCheck(UIntOS index) const
 {
 	return this->items.GetItemNoCheck(index);
 }
 
-Optional<Text::Doc::DocItem> Text::Doc::DocSection::GetItem(UOSInt index) const
+Optional<Text::Doc::DocItem> Text::Doc::DocSection::GetItem(UIntOS index) const
 {
 	return this->items.GetItem(index);
 }

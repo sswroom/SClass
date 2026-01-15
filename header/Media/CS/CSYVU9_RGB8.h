@@ -19,20 +19,20 @@ namespace Media
 				UnsafeArray<UInt8> uPtr;
 				UnsafeArray<UInt8> vPtr;
 				UnsafeArray<UInt8> dest;
-				UOSInt width;
-				UOSInt height;
-				UOSInt isFirst;
-				UOSInt isLast;
-				OSInt dbpl;
-				UOSInt csLineSize;
+				UIntOS width;
+				UIntOS height;
+				UIntOS isFirst;
+				UIntOS isLast;
+				IntOS dbpl;
+				UIntOS csLineSize;
 				UInt8 *csLineBuff;
 				UInt8 *csNALineBuff;
 				UInt8 *csLineBuff2;
 				UInt8 *csNALineBuff2;
 			} THREADSTAT;
 
-			UOSInt currId;
-			UOSInt nThread;
+			UIntOS currId;
+			UIntOS nThread;
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
@@ -40,8 +40,8 @@ namespace Media
 		public:
 			CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYVU9_RGB8();
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
-			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UIntOS GetSrcFrameSize(UIntOS width, UIntOS height);
 		};
 	}
 }

@@ -14,12 +14,12 @@ Bool IO::NullStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::NullStream::Read(const Data::ByteArray &buff)
+UIntOS IO::NullStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt IO::NullStream::Write(Data::ByteArrayR buff)
+UIntOS IO::NullStream::Write(Data::ByteArrayR buff)
 {
 	return buff.GetSize();
 }

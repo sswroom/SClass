@@ -29,7 +29,7 @@ Int32 GUICustomDraw_OnTick(void *userObj)
 gboolean GUICustomDraw_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)data;
-	NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget)), me->colorSess);
+	NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(0, 0), Math::Coord2D<IntOS>(gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget)), me->colorSess);
 	dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	me->OnDraw(dimg);
@@ -63,7 +63,7 @@ gboolean GUICustomDraw_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer 
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDown(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->OnMouseDown(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -94,7 +94,7 @@ gboolean GUICustomDraw_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer da
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseUp(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->OnMouseUp(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -103,7 +103,7 @@ gboolean GUICustomDraw_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer 
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
-	me->OnMouseMove(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
+	me->OnMouseMove(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 	return false;
 }
 
@@ -111,7 +111,7 @@ gboolean GUICustomDraw_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpointer
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)data;
 	GdkEventScroll *evt = (GdkEventScroll*)event;
-	return me->OnMouseWheel(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), Double2Int32(-evt->delta_y)) == UI::EventState::StopEvent;
+	return me->OnMouseWheel(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), Double2Int32(-evt->delta_y)) == UI::EventState::StopEvent;
 }
 
 gboolean GUICustomDraw_OnKeyDown(GtkWidget *widget, GdkEvent *event, gpointer user_data)
@@ -127,9 +127,9 @@ gboolean GUICustomDraw_OnKeyDown(GtkWidget *widget, GdkEvent *event, gpointer us
 		return false;
 	}
 }
-/*OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+/*IntOS __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::GUICustomDraw *me = (UI::GUICustomDraw*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUICustomDraw *me = (UI::GUICustomDraw*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	if (me == 0)
 	{
 		return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
@@ -226,7 +226,7 @@ gboolean GUICustomDraw_OnKeyDown(GtkWidget *widget, GdkEvent *event, gpointer us
 			ret = joyGetPosEx(me->joystickId - 1, &info);
 			if (ret == JOYERR_NOERROR)
 			{
-				OSInt i = 1;
+				IntOS i = 1;
 				UInt32 mask = 1;
 				while (i <= 32)
 				{
@@ -343,51 +343,51 @@ Text::CStringNN UI::GUICustomDraw::GetObjectClass() const
 	return CSTR("CustomDraw");
 }
 
-OSInt UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-UI::EventState UI::GUICustomDraw::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState UI::GUICustomDraw::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	return UI::EventState::ContinueEvent;
 }
 
-void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<OSInt> scnPos)
+void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 }
 
-UI::EventState UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
+UI::EventState UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta)
 {
 	return UI::EventState::ContinueEvent;
 }
 
-void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureStep(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnJSButtonDown(OSInt buttonId)
+void UI::GUICustomDraw::OnJSButtonDown(IntOS buttonId)
 {
 }
 
-void UI::GUICustomDraw::OnJSButtonUp(OSInt buttonId)
+void UI::GUICustomDraw::OnJSButtonUp(IntOS buttonId)
 {
 }
 
-void UI::GUICustomDraw::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4)
+void UI::GUICustomDraw::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4)
 {
 }
 

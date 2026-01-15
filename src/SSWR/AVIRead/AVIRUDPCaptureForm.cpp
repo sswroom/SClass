@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 	if (me->packetsChg)
 	{
 		Data::DateTime dt;
-		OSInt i;
+		IntOS i;
 		me->packetsChg = false;
 		Sync::MutexUsage mutUsage(me->packetMut);
 		me->lbData->ClearItems();
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	UOSInt i;
+	UIntOS i;
 	i = me->lbData->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 		Text::StringBuilderUTF8 sb;
 		UnsafeArray<UInt8> pbuff;
 		Data::DateTime dt;
-		i = (UOSInt)me->lbData->GetItem(i).p;
+		i = (UIntOS)me->lbData->GetItem(i).p;
 		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.AppendC(UTF8STRC("Recv Time: "));
 		dt.SetTicks(me->packets[i].recvTime);
@@ -128,14 +128,14 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr.NotNull())
 		return;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	UInt16 port = (UInt16)me->lvPorts->GetItem(index).GetUOSInt();
+	UInt16 port = (UInt16)me->lvPorts->GetItem(index).GetUIntOS();
 	if (port != 0)
 	{
 		sptr = Text::StrUInt16(sbuff, port);
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	this->packetsChg = false;
 	this->packetCurr = 0;
 	this->packets = MemAlloc(PacketInfo, PACKETCOUNT);
-	UOSInt i;
+	UIntOS i;
 	i = PACKETCOUNT;
 	while (i-- > 0)
 	{
@@ -314,7 +314,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRUDPCaptureForm::~AVIRUDPCaptureForm()
 {
-	OSInt i;
+	IntOS i;
 	UnsafeArray<UInt8> pbuff;
 	this->svr.Delete();
 	i = PACKETCOUNT;

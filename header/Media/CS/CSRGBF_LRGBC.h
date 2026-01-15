@@ -10,7 +10,7 @@ namespace Media
 		class CSRGBF_LRGBC : public Media::CS::CSConverter
 		{
 		private:
-			UOSInt srcNBits;
+			UIntOS srcNBits;
 			Media::PixelFormat srcPF;
 			Media::ColorProfile srcProfile;
 			Media::ColorProfile destProfile;
@@ -22,11 +22,11 @@ namespace Media
 		private:
 			void UpdateRGBTable();
 		public:
-			CSRGBF_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess);
+			CSRGBF_LRGBC(UIntOS srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSRGBF_LRGBC();
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
-			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
-			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UIntOS GetSrcFrameSize(UIntOS width, UIntOS height);
+			virtual UIntOS GetDestFrameSize(UIntOS width, UIntOS height);
 			virtual void SetPalette(UnsafeArray<UInt8> pal);
 
 			virtual void YUVParamChanged(NN<const YUVPARAM> yuv);

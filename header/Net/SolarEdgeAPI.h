@@ -91,7 +91,7 @@ namespace Net
 
 		Optional<Text::String> GetCurrentVersion();
 		Bool GetSupportedVersions(NN<Data::ArrayListStringNN> versions);
-		Bool GetSiteList(NN<Data::ArrayListNN<Site>> versions, UOSInt maxCount, UOSInt startOfst, OptOut<UOSInt> totalCount);
+		Bool GetSiteList(NN<Data::ArrayListNN<Site>> versions, UIntOS maxCount, UIntOS startOfst, OptOut<UIntOS> totalCount);
 		void FreeSiteList(NN<Data::ArrayListNN<Site>> versions);
 		Bool GetSiteOverview(Int32 siteId, NN<SiteOverview> overview);
 		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayListT<TimedValue>> values);

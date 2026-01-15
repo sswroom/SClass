@@ -63,8 +63,8 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 	UnsafeArray<UTF8Char> lineBuff1;
 	UnsafeArray<UTF8Char> lineBuff2;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt colCnt;
-	UOSInt i;
+	UIntOS colCnt;
+	UIntOS i;
 	Bool firstCol;
 
 	IO::BufferedOutputStream cstm(outStm, 65536);
@@ -227,8 +227,8 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	UnsafeArray<UTF8Char> lineBuff2;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt colCnt;
-	UOSInt i;
+	UIntOS colCnt;
+	UIntOS i;
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
 
@@ -240,7 +240,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	writer.Write(CSTR("<title>"));
 	sptr2 = db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
-	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr2 = Text::XML::ToXMLText(lineBuff2, sptr);
 	writer.WriteLine(CSTRP(lineBuff2, sptr2));
@@ -250,7 +250,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	writer.WriteLine(CSTR("</head>"));
 	sptr2 = db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
-	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("<body><h1>")), sptr);
 	writer.WriteLine(CSTRP(lineBuff1, sptr));
@@ -313,9 +313,9 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 	UnsafeArray<UTF8Char> lineBuff2;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt colCnt;
-	UOSInt i;
-	UOSInt colSize;
+	UIntOS colCnt;
+	UIntOS i;
+	UIntOS colSize;
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
 
@@ -433,9 +433,9 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	NN<Text::SpreadSheet::Worksheet> ws = wb->AddWorksheet(tableName);
 	Text::SpreadSheet::CellStyle style(0);
 	NN<Text::SpreadSheet::CellStyle> timeStyle;
-	UOSInt i = 0;
-	UOSInt j = r->ColCount();
-	UOSInt row;
+	UIntOS i = 0;
+	UIntOS j = r->ColCount();
+	UIntOS row;
 	while (i < j)
 	{
 		if (r->GetName(i, sbuff).SetTo(sptr))
@@ -450,7 +450,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 		{
 			if (!r->IsNull(i))
 			{
-				UOSInt colSize;
+				UIntOS colSize;
 				DB::DBUtil::ColType ct = r->GetColType(i, colSize);
 				switch (ct)
 				{
@@ -541,8 +541,8 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 	UnsafeArray<UTF8Char> lineBuff1;
 	UnsafeArray<UTF8Char> lineBuff2;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt colCnt;
-	UOSInt i;
+	UIntOS colCnt;
+	UIntOS i;
 
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
@@ -568,7 +568,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 		NN<Text::String> tableName = it.Next();
 		if (db->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
-			UOSInt ind = tableName->LastIndexOf('\\');
+			UIntOS ind = tableName->LastIndexOf('\\');
 			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName->v[ind + 1]), UTF8STRC(">"));
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');
@@ -600,7 +600,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 				i = 0;
 				while (i < colCnt)
 				{
-					UOSInt colSize;
+					UIntOS colSize;
 					DB::DBUtil::ColType ct = r->GetColType(i, colSize);
 					switch (ct)
 					{

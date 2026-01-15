@@ -18,7 +18,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 	this->hMon = 0;
 }
 
-Media::DDCReader::DDCReader(UInt8 *edid, UOSInt edidSize)
+Media::DDCReader::DDCReader(UInt8 *edid, UIntOS edidSize)
 {
 	this->edid = MemAlloc(UInt8, edidSize);
 	this->edidSize = edidSize;
@@ -35,7 +35,7 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
+UInt8 *Media::DDCReader::GetEDID(UIntOS *size)
 {
 	if (size)
 	{
@@ -44,7 +44,7 @@ UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
+UIntOS Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
 {
 	return 0;
 }

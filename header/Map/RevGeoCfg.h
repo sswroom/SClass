@@ -17,7 +17,7 @@ namespace Map
 			Int32 searchType;
 			Int32 usedCnt;
 			NN<Map::MapSearchLayer> data;
-			UOSInt strIndex;
+			UIntOS strIndex;
 		} SearchLayer;
 
 	private:
@@ -27,7 +27,7 @@ namespace Map
 		RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSrchMgr);
 		~RevGeoCfg();
 
-		UnsafeArrayOpt<UTF8Char> GetStreetName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos);
+		UnsafeArrayOpt<UTF8Char> GetStreetName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos);
 		Bool GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos);
 	};
 }

@@ -56,12 +56,12 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm);
 			static void __stdcall OnVideoEnd(AnyType userObj);
-			static void __stdcall OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<IntOS> scnPos);
 
 			virtual void OnMediaOpened();
 			virtual void OnMediaClosed();
 		private:
-			void SwitchAudio(OSInt audIndex);
+			void SwitchAudio(IntOS audIndex);
 
 		public:
 			AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);

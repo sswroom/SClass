@@ -3,7 +3,7 @@ section .text
 global BGImgFilter_DiffA8_YUY2
 global BGImgFilter_DiffYUV8
 
-;void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, OSInt pxCnt)
+;void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, IntOS pxCnt)
 ;0 retAddr
 ;rcx destImg
 ;rdx bgImg
@@ -56,7 +56,7 @@ bgifa8_yuy2lop1:
 bgifa8_yuy2lop2:
 	ret
 	
-;void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, OSInt byteCnt)
+;void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, IntOS byteCnt)
 ;0 retAddr
 ;rcx destImg
 ;rdx bgImg

@@ -45,9 +45,9 @@ namespace Map
 		Data::ArrayListNN<LayerInfo> layers;
 		Data::ArrayListStringNN mapImageTypeNames;
 		Data::ArrayListStringNN infoTypeNames;
-		UOSInt layer;
-		UOSInt mapImageType;
-		UOSInt infoType;
+		UIntOS layer;
+		UIntOS mapImageType;
+		UIntOS infoType;
 
 		Optional<LayerCRS> currCRS;
 		NN<Math::CoordinateSystem> csys;
@@ -65,20 +65,20 @@ namespace Map
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 		virtual Optional<Media::ImageList> DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl);
 
 		Bool IsError() const;
-		UOSInt GetInfoType() const;
-		UOSInt GetLayerCRS() const;
-		void SetInfoType(UOSInt index);
-		void SetLayer(UOSInt index);
-		void SetMapImageType(UOSInt index);
-		void SetLayerCRS(UOSInt index);
-		UOSInt GetLayerNames(NN<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetMapImageTypeNames(NN<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetInfoTypeNames(NN<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetLayerCRSNames(NN<Data::ArrayListNN<Text::String>> nameList) const;
+		UIntOS GetInfoType() const;
+		UIntOS GetLayerCRS() const;
+		void SetInfoType(UIntOS index);
+		void SetLayer(UIntOS index);
+		void SetMapImageType(UIntOS index);
+		void SetLayerCRS(UIntOS index);
+		UIntOS GetLayerNames(NN<Data::ArrayListStringNN> nameList) const;
+		UIntOS GetMapImageTypeNames(NN<Data::ArrayListStringNN> nameList) const;
+		UIntOS GetInfoTypeNames(NN<Data::ArrayListStringNN> nameList) const;
+		UIntOS GetLayerCRSNames(NN<Data::ArrayListNN<Text::String>> nameList) const;
 	};
 }
 #endif

@@ -95,7 +95,7 @@ Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetCompName(UInt16 comp)
 	return nullptr;
 }
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst)
+UIntOS IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, UnsafeArray<const UInt8> buff, UIntOS buffSize, UInt64 ofst)
 {
 	UInt64 compSize;
 	UInt64 uncompSize;
@@ -105,7 +105,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 	UInt32 recType;
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> rec;
 	UInt8 headerBuff[30];
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < buffSize)
 	{
@@ -125,14 +125,14 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 		commentLen = ReadUInt16(&buff[i + 32]);
 		ofst = ReadUInt32(&buff[i + 42]);
 
-		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buffSize)
+		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buffSize)
 		{
 			return i;
 		}
 		if (extraLen > 0)
 		{
-			const UInt8 *extraBuff = &buff[i + 46 + (UOSInt)fnameLen];
-			UOSInt j = 0;
+			const UInt8 *extraBuff = &buff[i + 46 + (UIntOS)fnameLen];
+			UIntOS j = 0;
 			UInt16 extraTag;
 			UInt16 extraSize;
 			while (j + 4 <= extraLen)
@@ -158,15 +158,15 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 						zip64Info += 8;
 					}
 				}
-				j += 4 + (UOSInt)extraSize;
+				j += 4 + (UIntOS)extraSize;
 			}
 		}
 		fd->GetRealData(ofst, 30, BYTEARR(headerBuff));
-		UOSInt extraSize = ReadUInt16(&headerBuff[28]);
+		UIntOS extraSize = ReadUInt16(&headerBuff[28]);
 		rec = MemAllocNN(ZIPRecord);
 		rec->tagType = 0x504B0304;
 		rec->ofst = ofst;
-		rec->size = 30 + extraSize + (UOSInt)fnameLen;
+		rec->size = 30 + extraSize + (UIntOS)fnameLen;
 		rec->fileName = nullptr;
 		this->tags.Add(rec);
 
@@ -180,19 +180,19 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 			this->tags.Add(rec);
 		}
 
-		i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+		i += 46 + (UIntOS)fnameLen + extraLen + commentLen;
 	}
 	return i;
 }
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst)
+UIntOS IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff, UIntOS buffSize, UInt64 ofst)
 {
 	UInt32 recType;
 	UInt16 fnameLen;
 	UInt16 extraLen;
 	UInt16 commentLen;
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> rec;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < buffSize)
 	{
@@ -209,7 +209,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff
 		extraLen = ReadUInt16(&buff[i + 30]);
 		commentLen = ReadUInt16(&buff[i + 32]);
 
-		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buffSize)
+		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buffSize)
 		{
 			return i;
 		}
@@ -217,11 +217,11 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff
 		rec = MemAllocNN(ZIPRecord);
 		rec->tagType = recType;
 		rec->ofst = ofst + i;
-		rec->size = 46 + (UOSInt)fnameLen + extraLen + commentLen;
+		rec->size = 46 + (UIntOS)fnameLen + extraLen + commentLen;
 		rec->fileName = nullptr;
 		this->tags.Add(rec);
 
-		i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+		i += 46 + (UIntOS)fnameLen + extraLen + commentLen;
 	}
 	return i;
 }
@@ -246,7 +246,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		return;
 	}
 
-	UOSInt i;
+	UIntOS i;
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> rec;
 	ofst = 0;
 	dataSize = fd->GetDataSize();
@@ -271,15 +271,15 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
 						if (cdSize <= 1048576)
 						{
-							Data::ByteBuffer cdBuff((UOSInt)cdSize);
-							fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
-							me->ParseCentDir(fd, cdBuff.Arr(), (UOSInt)cdSize, cdOfst);
-							me->AddCentDir(cdBuff.Arr(), (UOSInt)cdSize, cdOfst);
+							Data::ByteBuffer cdBuff((UIntOS)cdSize);
+							fd->GetRealData(cdOfst, (UIntOS)cdSize, cdBuff);
+							me->ParseCentDir(fd, cdBuff.Arr(), (UIntOS)cdSize, cdOfst);
+							me->AddCentDir(cdBuff.Arr(), (UIntOS)cdSize, cdOfst);
 						}
 						else
 						{
 							Data::ByteBuffer cdBuff(1048576);
-							UOSInt buffSize = 0;
+							UIntOS buffSize = 0;
 							ofst = 0;
 							while (ofst < cdSize)
 							{
@@ -290,7 +290,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 								}
 								else
 								{
-									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
+									i = fd->GetRealData(cdOfst + ofst + buffSize, (UIntOS)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
@@ -326,7 +326,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 								}
 								else
 								{
-									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
+									i = fd->GetRealData(cdOfst + ofst + buffSize, (UIntOS)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
@@ -370,7 +370,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 						rec = MemAllocNN(ZIPRecord);
 						rec->tagType = 0x504B0506;
 						rec->ofst = dataSize - 22;
-						rec->size = 22 + (UOSInt)commentLen;
+						rec->size = 22 + (UIntOS)commentLen;
 						rec->fileName = nullptr;
 						me->tags.Add(rec);
 						return;
@@ -389,7 +389,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 					rec = MemAllocNN(ZIPRecord);
 					rec->tagType = 0x504B0506;
 					rec->ofst = dataSize - 22;
-					rec->size = 22 + (UOSInt)commentLen;
+					rec->size = 22 + (UIntOS)commentLen;
 					rec->fileName = nullptr;
 					me->tags.Add(rec);
 					return;
@@ -421,7 +421,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				rec = MemAllocNN(ZIPRecord);
 				rec->tagType = recType;
 				rec->ofst = ofst;
-				rec->size = 30 + (UOSInt)fnameLen + extraLen;
+				rec->size = 30 + (UIntOS)fnameLen + extraLen;
 				rec->fileName = nullptr;
 				me->tags.Add(rec);
 
@@ -431,7 +431,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				rec->size = compSize;
 				rec->fileName = nullptr;
 				me->tags.Add(rec);
-				ofst += 30 + (UOSInt)fnameLen + extraLen + compSize;
+				ofst += 30 + (UIntOS)fnameLen + extraLen + compSize;
 			}
 		}
 		else if (recType == 0x504B0102)
@@ -450,10 +450,10 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				rec = MemAllocNN(ZIPRecord);
 				rec->tagType = recType;
 				rec->ofst = ofst;
-				rec->size = 46 + (UOSInt)fnameLen + extraLen + commentLen;
+				rec->size = 46 + (UIntOS)fnameLen + extraLen + commentLen;
 				rec->fileName = nullptr;
 				me->tags.Add(rec);
-				ofst += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+				ofst += 46 + (UIntOS)fnameLen + extraLen + commentLen;
 			}
 		}
 		else if (recType == 0x504B0506)
@@ -462,10 +462,10 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			rec = MemAllocNN(ZIPRecord);
 			rec->tagType = recType;
 			rec->ofst = ofst;
-			rec->size = 22 + (UOSInt)commentLen;
+			rec->size = 22 + (UIntOS)commentLen;
 			rec->fileName = nullptr;
 			me->tags.Add(rec);
-			ofst += 22 + (UOSInt)commentLen;
+			ofst += 22 + (UIntOS)commentLen;
 		}
 		else
 		{
@@ -474,7 +474,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 }
 
-void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
+void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame,Data::ByteArrayR tagData, UIntOS extraStart, UIntOS extraLen, UIntOS tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
 {
 	if (tagSize < extraStart + extraLen)
 	{
@@ -485,9 +485,9 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 	UInt64 t;
 	UInt16 extraTag;
 	UInt16 extraSize;
-	UOSInt j = 0;
-	UOSInt k;
-	UOSInt l;
+	UIntOS j = 0;
+	UIntOS k;
+	UIntOS l;
 	while (j + 4 <= extraLen)
 	{
 		extraTag = ReadUInt16(&tagData[extraStart + j]);
@@ -574,11 +574,11 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 			k++;
 			frame->AddUInt(k, 1, CSTR("UIDSize"), tagData[k]);
 			frame->AddHexBuff(k + 1, CSTR("UID"), tagData.SubArray(k + 1, tagData[k]), false);
-			k += 1 + (UOSInt)tagData[k];
+			k += 1 + (UIntOS)tagData[k];
 			frame->AddUInt(k, 1, CSTR("GIDSize"), tagData[k]);
 			frame->AddHexBuff(k + 1, CSTR("GID"), tagData.SubArray(k + 1, tagData[k]), false);
 		}
-		j += 4 + (UOSInt)extraSize;
+		j += 4 + (UIntOS)extraSize;
 	}
 }
 
@@ -601,7 +601,7 @@ IO::FileAnalyse::ZIPFileAnalyse::~ZIPFileAnalyse()
 {
 	this->thread.Stop();
 	this->fd.Delete();
-	UOSInt i = this->tags.GetCount();
+	UIntOS i = this->tags.GetCount();
 	NN<ZIPRecord> tag;
 	while (i-- > 0)
 	{
@@ -616,12 +616,12 @@ Text::CStringNN IO::FileAnalyse::ZIPFileAnalyse::GetFormatName()
 	return CSTR("ZIP");
 }
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> tag;
 	Text::CStringNN name;
@@ -638,7 +638,7 @@ Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 		sb->AppendC(UTF8STRC(")"));
 	}
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	if (tag->fileName.SetTo(s))
 	{
 		sb->AppendC(UTF8STRC(", name="));
@@ -648,16 +648,16 @@ Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 }
 
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<ZIPRecord> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -668,13 +668,13 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
@@ -686,7 +686,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 	if (!this->fd.SetTo(fd))
 		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	if (tag->tagType == 0)
@@ -701,7 +701,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 	UInt16 commentLen;
 	UInt32 ofst;
 	Data::Timestamp ts;
-	UOSInt i;
+	UIntOS i;
 	Data::ByteBuffer tagData(tag->size);
 	fd->GetRealData(tag->ofst, tag->size, tagData);
 	frame->AddField(0, 4, CSTR("Record Type"), GetTagName(tag->tagType));
@@ -724,7 +724,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		frame->AddStrC(30, fnameLen, CSTR("File name"), &tagData[30]);
 		if (extraLen)
 		{
-			i = 30 + (UOSInt)fnameLen;
+			i = 30 + (UIntOS)fnameLen;
 			ParseExtraTag(frame, tagData, i, extraLen, tag->size, compSize, uncompSize, 0);
 		}
 		break;
@@ -773,7 +773,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 			frame->AddUInt(42, 4, CSTR("Relative offset of local file header"), ofst);
 		}
 		frame->AddStrC(46, fnameLen, CSTR("File name"), &tagData[46]);
-		i = 46 + (UOSInt)fnameLen;
+		i = 46 + (UIntOS)fnameLen;
 		if (extraLen)
 		{
 			ParseExtraTag(frame, tagData, i, extraLen, tag->size, compSize, uncompSize, ofst);

@@ -23,7 +23,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt64 fileOfst;
-				UOSInt size;
+				UIntOS size;
 			} ProtocolItem;
 		private:
 			NN<UI::GUIPanel> pnlCtrl;
@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnLoadClicked(AnyType userObj);
-			static void __stdcall OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
+			static void __stdcall OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UIntOS size, Text::CStringNN typeName);
 			void ClearList();
 		public:
 			AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

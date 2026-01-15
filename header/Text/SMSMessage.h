@@ -38,7 +38,7 @@ namespace Text
 		UnsafeArrayOpt<const UTF16Char> GetSMSC();
 		UnsafeArrayOpt<const UTF16Char> GetContent();
 
-		UOSInt ToSubmitPDU(UnsafeArray<UInt8> buff);
+		UIntOS ToSubmitPDU(UnsafeArray<UInt8> buff);
 
 		static Optional<Text::SMSMessage> CreateFromPDU(UnsafeArray<const UInt8> pduBytes);
 	};

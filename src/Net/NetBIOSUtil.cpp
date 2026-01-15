@@ -23,7 +23,7 @@ UnsafeArrayOpt<UTF8Char> Net::NetBIOSUtil::GetName(UnsafeArray<UTF8Char> sbuff, 
 
 UnsafeArray<UTF8Char> Net::NetBIOSUtil::SetName(UnsafeArray<UTF8Char> nbBuff, UnsafeArray<const UTF8Char> name)
 {
-	UOSInt i = 16;
+	UIntOS i = 16;
 	UTF8Char c;
 	while (i-- > 0)
 	{

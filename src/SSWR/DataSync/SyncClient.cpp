@@ -13,9 +13,9 @@
 UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(AnyType userObj)
 {
 	NN<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
-	UOSInt recvSize;
+	UIntOS recvSize;
 	UInt8 *buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Net::TCPClient> cli;
 	me->recvRunning = true;
 	buff = MemAlloc(UInt8, 8192);
@@ -81,8 +81,8 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(AnyType userObj)
 UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(AnyType userObj)
 {
 	NN<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->kaRunning = true;
 	{
 		Data::DateTime currTime;
@@ -108,7 +108,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(AnyType userObj)
 			j = me->dataMgr.GetCount();
 			while (i < j)
 			{
-				UOSInt dataSize;
+				UIntOS dataSize;
 				const UInt8 *buff = me->dataMgr.GetData(i, &dataSize);
 				if (!me->SendUserData(buff, dataSize))
 				{
@@ -136,7 +136,7 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	Bool succ = false;
 	UInt8 cmdBuff[512];
 	UInt8 packetBuff[512];
-	UOSInt len;
+	UIntOS len;
 	WriteInt32(cmdBuff, this->serverId);
 	len = this->serverName->leng;
 	cmdBuff[4] = (UInt8)(len & 0xff);
@@ -156,7 +156,7 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 {
 	Bool succ = false;
 	UInt8 packetBuff[32];
-	UOSInt len;
+	UIntOS len;
 	len = this->protoHdlr.BuildPacket(packetBuff, 2, 0, packetBuff, 0, 0);
 	
 	Sync::MutexUsage mutUsage(this->cliMut);
@@ -168,11 +168,11 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	return succ;
 }
 
-Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize)
+Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UIntOS dataSize)
 {
 	Bool succ = false;
 	UInt8 packetBuff[2048];
-	UOSInt len;
+	UIntOS len;
 	if (dataSize > 2038)
 	{
 		UInt8 *dataBuff = MemAlloc(UInt8, dataSize + 10);
@@ -241,15 +241,15 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	this->serverName->Release();
 }
 
-void SSWR::DataSync::SyncClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 }
 
-void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 
-void SSWR::DataSync::SyncClient::AddUserData(const UInt8 *data, UOSInt dataSize)
+void SSWR::DataSync::SyncClient::AddUserData(const UInt8 *data, UIntOS dataSize)
 {
 	Crypto::Hash::CRC32RIEEE crc;
 	crc.CalcDirect(data, dataSize);

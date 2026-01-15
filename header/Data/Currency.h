@@ -10,7 +10,7 @@ namespace Data
 	class Currency
 	{
 	public:
-		static UOSInt GetDecimal(UInt32 currency)
+		static UIntOS GetDecimal(UInt32 currency)
 		{
 			switch (currency)
 			{

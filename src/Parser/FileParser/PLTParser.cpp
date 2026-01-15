@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	Map::GPSTrack *track = nullptr;
 	Bool valid;
 
-/*	UOSInt i = fd->GetFullName()->LastIndexOf('.');
+/*	UIntOS i = fd->GetFullName()->LastIndexOf('.');
 	if (i == INVALID_INDEX)
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)
@@ -55,19 +55,19 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Track Point File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("OziExplorer Track Point File Version ")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Altitude is in Feet")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Altitude is in Feet")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	{
 		reader.ReadLine(sbuff, 1024);
 		reader.ReadLine(sbuff, 1024);
-		UOSInt cnt;
+		UIntOS cnt;
 
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())

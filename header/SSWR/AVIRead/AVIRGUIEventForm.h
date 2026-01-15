@@ -27,7 +27,7 @@ namespace SSWR
 
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnDisplayOffClicked(AnyType userObj);
-			static void __stdcall OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey);
+			static void __stdcall OnKeyDown(AnyType userObj, UIntOS keyCode, Bool extendedKey);
 		public:
 			AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGUIEventForm();
@@ -36,7 +36,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 			virtual void OnFocusLost();
-			virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
+			virtual void OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight);
 		};
 	}
 }

@@ -3,7 +3,7 @@
 #include "DB/SQLGenerator.h"
 
 
-void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, UOSInt pkCount)
+void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, UIntOS pkCount)
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
@@ -100,7 +100,7 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NN<DB::SQLBuilder> sql,
 	}
 }
 
-void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc, Optional<Text::String> nativeType)
+void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP, Bool autoInc, Optional<Text::String> nativeType)
 {
 	NN<Text::String> s;
 	switch (sqlType)
@@ -279,7 +279,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("VARCHAR(MAX)"));
 			}
@@ -295,7 +295,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF16Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("NVARCHAR(MAX)"));
 			}
@@ -311,7 +311,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF32Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("NVARCHAR(MAX)"));
 			}
@@ -420,7 +420,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -436,7 +436,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF16Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -452,7 +452,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF32Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -541,7 +541,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -553,7 +553,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF16Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -565,7 +565,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NN<DB::SQLBuilder> sql
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF32Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize == (UIntOS)-1)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -890,7 +890,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NN<DB::SQLBuilder> sql, Text::CString s
 	DB::SQLType sqlType = sql->GetSQLType();
 	Data::ArrayIterator<NN<DB::ColDef>> it;
 	Bool found;
-	UOSInt pkCnt = tabDef->CountPK();
+	UIntOS pkCnt = tabDef->CountPK();
 	Bool hasAutoInc = false;
 	Int64 autoIncStart = 1;
 //	Int64 autoIncStep = 1;
@@ -1038,8 +1038,8 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 	UTF8Char tmpBuff[256];
 	NN<DB::TableDef> nntabDef;
 	DB::DBUtil::ColType colType;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -1102,7 +1102,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 		{
 			Optional<Math::Geometry::Vector2D> vec;
 			UInt8 *binBuff;
-			UOSInt colSize;
+			UIntOS colSize;
 			colType = r->GetColType(i, colSize);
 			switch (colType)
 			{
@@ -1150,7 +1150,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 				}
 				else
 				{
-					UOSInt sz = r->GetBinarySize(i);
+					UIntOS sz = r->GetBinarySize(i);
 					binBuff = MemAlloc(UInt8, sz);
 					r->GetBinary(i, binBuff);
 					sql->AppendBinary(binBuff, sz);
@@ -1301,8 +1301,8 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NN<DB::SQLBuilde
 	if (page.SetTo(nnpage))
 	{
 		Bool hasOrder = false;
-		UOSInt i = 1;
-		UOSInt j = nnpage->GetSortingCount();
+		UIntOS i = 1;
+		UIntOS j = nnpage->GetSortingCount();
 		UnsafeArray<const UTF8Char> sortCol;
 		if (j > 0)
 		{
@@ -1385,8 +1385,8 @@ UnsafeArray<UTF8Char> DB::SQLGenerator::GenInsertCmd(UnsafeArray<UTF8Char> sqlst
 {
 	UnsafeArray<UTF8Char> currPtr;
 	UTF8Char tmpBuff[256];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::CStringNN cstr;
 
 	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));

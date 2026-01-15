@@ -44,15 +44,15 @@ namespace Text
 
 		void AddAttrib(NN<XMLAttrib> attr);
 		void AddChild(NN<XMLNode> node);
-		UOSInt GetAttribCnt();
-		Optional<XMLAttrib> GetAttrib(UOSInt index);
+		UIntOS GetAttribCnt();
+		Optional<XMLAttrib> GetAttrib(UIntOS index);
 		Optional<XMLAttrib> GetFirstAttrib(Text::CStringNN attrName);
 
-		UOSInt GetChildCnt() const;
-		NN<XMLNode> GetChildNoCheck(UOSInt index) const;
-		Optional<XMLNode> GetChild(UOSInt index) const;
+		UIntOS GetChildCnt() const;
+		NN<XMLNode> GetChildNoCheck(UIntOS index) const;
+		Optional<XMLNode> GetChild(UIntOS index) const;
 
-		UnsafeArray<NN<XMLNode>> SearchNode(Text::CStringNN path, OutParam<UOSInt> cnt);
+		UnsafeArray<NN<XMLNode>> SearchNode(Text::CStringNN path, OutParam<UIntOS> cnt);
 		Optional<XMLNode> SearchFirstNode(Text::CStringNN path);
 		void ReleaseSearch(UnsafeArray<NN<XMLNode>> searchResult);
 
@@ -62,8 +62,8 @@ namespace Text
 		void SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult);
 		Bool SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
-		Bool SearchEqual(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr);
-		Bool SearchEval(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB);
+		Bool SearchEqual(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr);
+		Bool SearchEval(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB);
 	public:
 		static Text::CStringNN NodeTypeGetName(NodeType ntype);
 	};
@@ -82,7 +82,7 @@ namespace Text
 	{
 	private:
 		UTF8Char *doc;
-		UOSInt docLeng;
+		UIntOS docLeng;
 		Optional<Text::String> version;
 		Optional<Text::String> encoding;
 
@@ -91,7 +91,7 @@ namespace Text
 	public:
 		XMLDocument();
 		virtual ~XMLDocument();
-		Bool ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size);
+		Bool ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS size);
 		Bool ParseStream(NN<Text::EncodingFactory> encFact, IO::Stream *stm);
 		void AppendXmlDeclaration(NN<Text::StringBuilderUTF8> sb);
 	};

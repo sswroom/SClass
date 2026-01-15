@@ -9,7 +9,7 @@ global _LanczosResizer16_C8_collapse
 global _LanczosResizer16_C8_imgcopy
 global _LanczosResizer16_C8_imgcopy_pa
 
-;void LanczosResizer16_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizer16_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -116,7 +116,7 @@ hfpalop3:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizer16_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -215,7 +215,7 @@ hflop3:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -398,7 +398,7 @@ vfexit:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_expand(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -463,7 +463,7 @@ explop2:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -533,7 +533,7 @@ exppalop2:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -595,7 +595,7 @@ collop2:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -663,7 +663,7 @@ iclop2:
 	pop ebp
 	ret
 
-;void LanczosResizer16_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizer16_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx

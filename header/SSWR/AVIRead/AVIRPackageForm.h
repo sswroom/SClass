@@ -44,9 +44,9 @@ namespace SSWR
 				Optional<Crypto::Hash::HashAlgorithm> hash;
 				Crypto::Hash::HashType currHash;
 				UInt64 fileReadSize;
-				UOSInt fileCnt;
-				UOSInt dirCnt;
-				UOSInt errorCnt;
+				UIntOS fileCnt;
+				UIntOS dirCnt;
+				UIntOS errorCnt;
 				UInt64 totalSizeUncomp;
 				UInt64 totalCompSize;
 				UInt64 totalSize;
@@ -132,16 +132,16 @@ namespace SSWR
 
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall LVDblClick(AnyType userObj, UOSInt index);
-			static void __stdcall OnStatusDblClick(AnyType userObj, UOSInt index);
-			static void __stdcall OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index);
+			static void __stdcall LVDblClick(AnyType userObj, UIntOS index);
+			static void __stdcall OnStatusDblClick(AnyType userObj, UIntOS index);
+			static void __stdcall OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UIntOS index);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 			void GoUpLevel();
-			void OpenItem(UOSInt index);
+			void OpenItem(UIntOS index);
 			void TestPackage(NN<IO::ActiveStreamReader> reader, NN<ReadSession> sess, NN<IO::PackageFile> pack);
 			void DisplayPackFile(NN<IO::PackageFile> packFile);
-			UOSInt PackFileIndex(UOSInt lvIndex);
+			UIntOS PackFileIndex(UIntOS lvIndex);
 			void UpdatePackFile(NN<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
 			void PasteFiles(NN<Data::ArrayListStringNN> files, Bool move);
 			void WriteFileList(NN<IO::TableWriter> writer);

@@ -16,7 +16,7 @@ namespace UI
 			JUIRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~JUIRadioButton();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual Bool IsSelected();
 			virtual void Select();
 		};

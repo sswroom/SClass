@@ -7,7 +7,7 @@ Data::ArrayListStrFast::ArrayListStrFast() : Data::SortableArrayListObj<Text::St
 {
 }
 
-Data::ArrayListStrFast::ArrayListStrFast(UOSInt capacity) : Data::SortableArrayListObj<Text::String*>(capacity)
+Data::ArrayListStrFast::ArrayListStrFast(UIntOS capacity) : Data::SortableArrayListObj<Text::String*>(capacity)
 {
 }
 
@@ -19,19 +19,19 @@ NN<Data::ArrayListObj<Text::String*>> Data::ArrayListStrFast::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrFast::Compare(Text::String *obj1, Text::String *obj2) const
+IntOS Data::ArrayListStrFast::Compare(Text::String *obj1, Text::String *obj2) const
 {
 	return obj1->CompareToFast(obj2->ToCString());
 }
 
-OSInt Data::ArrayListStrFast::SortedIndexOf(Text::CStringNN val) const
+IntOS Data::ArrayListStrFast::SortedIndexOf(Text::CStringNN val) const
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	i = 0;
-	j = (OSInt)this->objCnt - 1;
+	j = (IntOS)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

@@ -15,8 +15,8 @@ namespace Media
 			Int32 maxVol;
 			Int32 lastVol;
 			Int32 thisVol;
-			UOSInt maxIndex;
-			UOSInt soundIndex;
+			UIntOS maxIndex;
+			UIntOS soundIndex;
 			UInt32 nChannels;
 			UInt32 bitCount;
 			Bool enabled;
@@ -30,7 +30,7 @@ namespace Media
 
 			virtual void GetFormat(NN<AudioFormat> format);
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void SetEnabled(Bool enabled);
 			void SetBGLevel(Double bgLevel);

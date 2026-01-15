@@ -11,10 +11,10 @@ namespace IO
 		virtual ~MODBUSDevSim() {}
 
 		virtual Text::CStringNN GetName() = 0;
-		virtual UOSInt GetValueCount() = 0;
-		virtual Text::CString GetValueName(UOSInt index) = 0;
-		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;
-		virtual Bool ToggleValue(UOSInt index) = 0;
+		virtual UIntOS GetValueCount() = 0;
+		virtual Text::CString GetValueName(UIntOS index) = 0;
+		virtual Bool GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool ToggleValue(UIntOS index) = 0;
 
 		virtual Bool ReadCoil(UInt16 coilAddr, OutParam<Bool> value) = 0;
 		virtual Bool ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value) = 0;

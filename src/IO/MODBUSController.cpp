@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
+void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UIntOS resultSize)
 {
 	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	UnsafeArray<UInt8> reqResult;
@@ -223,7 +223,7 @@ IO::MODBUSController::MODBUSController(NN<IO::MODBUSMaster> modbus)
 
 IO::MODBUSController::~MODBUSController()
 {
-	UOSInt i = this->devMap.GetCount();
+	UIntOS i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
 		this->modbus->HandleReadResult(this->devMap.GetKey(i), 0, 0, 0);

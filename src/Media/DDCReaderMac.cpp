@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
+UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 {
 	return 0;
 }
@@ -37,7 +37,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 	this->edid = DDCReader_GetMonitorEDID(hMon, &edidSize);	
 }
 
-Media::DDCReader::DDCReader(UInt8 *edid, UOSInt edidSize)
+Media::DDCReader::DDCReader(UInt8 *edid, UIntOS edidSize)
 {
 	this->edid = MemAlloc(UInt8, edidSize);
 	this->edidSize = edidSize;
@@ -54,7 +54,7 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
+UInt8 *Media::DDCReader::GetEDID(UIntOS *size)
 {
 	if (size)
 	{
@@ -63,9 +63,9 @@ UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
+UIntOS Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	io_object_t object;
 	io_iterator_t iterator;
 	kern_return_t kernResult;

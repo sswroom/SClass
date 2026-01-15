@@ -8,9 +8,9 @@ namespace Net
 	class PacketAnalyzer
 	{
 	public:
-		static Bool PacketDataGetName(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
-		static void PacketDataGetDetail(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
-		static void PacketDataGetDetail(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
+		static Bool PacketDataGetName(UInt32 linkType, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb);
+		static void PacketDataGetDetail(UInt32 linkType, UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb);
+		static void PacketDataGetDetail(UInt32 linkType, UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
 	};
 }
 #endif

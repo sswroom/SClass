@@ -31,7 +31,7 @@ NN<UI::GUITabPage> UI::JavaUI::JUITabControl::AddTabPage(Text::CStringNN tabName
 	return tp;
 }
 
-void UI::JavaUI::JUITabControl::SetSelectedIndex(UOSInt index)
+void UI::JavaUI::JUITabControl::SetSelectedIndex(UIntOS index)
 {
 	if (this->selIndex != index)
 	{
@@ -42,7 +42,7 @@ void UI::JavaUI::JUITabControl::SetSelectedIndex(UOSInt index)
 
 void UI::JavaUI::JUITabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 {
-	UOSInt i = this->tabPages.GetCount();
+	UIntOS i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
 		if (page.Ptr() == this->tabPages.GetItem(i).OrNull())
@@ -52,7 +52,7 @@ void UI::JavaUI::JUITabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 	}
 }
 
-UOSInt UI::JavaUI::JUITabControl::GetSelectedIndex()
+UIntOS UI::JavaUI::JUITabControl::GetSelectedIndex()
 {
 	return this->selIndex;
 }
@@ -62,14 +62,14 @@ Optional<UI::GUITabPage> UI::JavaUI::JUITabControl::GetSelectedPage()
 	return this->tabPages.GetItem(this->selIndex);
 }
 
-void UI::JavaUI::JUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
+void UI::JavaUI::JUITabControl::SetTabPageName(UIntOS index, Text::CStringNN name)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
 }
 
-UnsafeArrayOpt<UTF8Char> UI::JavaUI::JUITabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> UI::JavaUI::JUITabControl::GetTabPageName(UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
@@ -77,19 +77,19 @@ UnsafeArrayOpt<UTF8Char> UI::JavaUI::JUITabControl::GetTabPageName(UOSInt index,
 	return 0;
 }
 
-Math::RectArea<OSInt> UI::JavaUI::JUITabControl::GetTabPageRect()
+Math::RectArea<IntOS> UI::JavaUI::JUITabControl::GetTabPageRect()
 {
-	return Math::RectArea<OSInt>(0, 0, 0, 0);
+	return Math::RectArea<IntOS>(0, 0, 0, 0);
 }
 
-OSInt UI::JavaUI::JUITabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUITabControl::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
 void UI::JavaUI::JUITabControl::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> evt = this->resizeHandlers.GetItem(i);

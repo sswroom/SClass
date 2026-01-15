@@ -33,7 +33,7 @@ namespace Net
 			NN<WebHandler> hdlr;
 			NN<Net::TCPServer> svr;
 			Data::ArrayListNN<Net::TCPClientMgr> cliMgrs;
-			UOSInt nextCli;
+			UIntOS nextCli;
 			Optional<Net::TCPClientMgr> proxyCliMgr;
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::TCPClientFactory> clif;
@@ -63,9 +63,9 @@ namespace Net
 			static void __stdcall ProxyClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ProxyTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
-			static void __stdcall OnDataSent(AnyType userObj, UOSInt buffSize);
+			static void __stdcall OnDataSent(AnyType userObj, UIntOS buffSize);
 		public:
-			WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
+			WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UIntOS mgrCnt, UIntOS workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
 			~WebListener();
 
 			Bool Start();
@@ -82,7 +82,7 @@ namespace Net
 
 			void ExtendTimeout(NN<Net::TCPClient> cli);
 			void GetStatus(NN<SERVER_STATUS> status);
-			UOSInt GetClientCount() const;
+			UIntOS GetClientCount() const;
 		};
 	}
 }

@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 	}
 	else
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Net::WirelessLANIE> ie;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -64,8 +64,8 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		NN<Net::WirelessLAN::BSSInfo> bss;
 		Double t1;
 		Double t2;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		wlanInterf->Scan();
 		t1 = clk.GetTimeDiff();
 		Sync::SimpleThread::Sleep(5000);
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
 	this->wlan.GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
-	UOSInt i = interfList.GetCount();
+	UIntOS i = interfList.GetCount();
 	while (i-- > 1)
 	{
 		NN<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);

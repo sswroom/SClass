@@ -32,7 +32,7 @@ namespace SSWR
 			UnsafeArrayOpt<NN<Sync::Thread>> threads;
 			Sync::Mutex connMut;
 			Data::ArrayListNN<Net::JMeter::JMeterStep> connSteps;
-			UOSInt connCurrIndex;
+			UIntOS connCurrIndex;
 			UInt32 connLeftCnt;
 			UInt32 threadCnt;
 			UInt32 threadCurrCnt;

@@ -69,13 +69,13 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
 	{
 		valid = false;
 	}
 	if (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 	{
-		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		fileName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 	}
 	else
 	{
@@ -83,11 +83,11 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	}
 	reader.ReadLine(sbuff, 1024); //Full Path
 	reader.ReadLine(sbuff, 1024); //?
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 		Double imgH = 0;
 		while (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 		{
-			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPNUM,")))
+			if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MMPNUM,")))
 			{
 				if (ptXY == 0)
 				{
@@ -118,7 +118,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					}
 				}
 			}
-			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPXY,")))
+			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MMPXY,")))
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -131,7 +131,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					}
 				}
 			}
-			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPLL,")))
+			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MMPLL,")))
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -144,7 +144,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					}
 				}
 			}
-			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IWH,")))
+			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("IWH,")))
 			{
 				if (Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -202,8 +202,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, prevList));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
-					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
+					UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]));
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s.Ptr()));
 					s->Release();
 					lyr->AddVector2(vimg, (Text::PString*)0);

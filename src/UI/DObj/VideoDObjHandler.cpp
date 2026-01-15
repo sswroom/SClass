@@ -54,7 +54,7 @@ void UI::DObj::VideoDObjHandler::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->frameMut);
 }
 
-void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler DrawFromSurface\r\n");
@@ -74,7 +74,7 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surfa
 	}
 }
 
-UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName, colorSess), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
+UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<IntOS> videoTL, Math::Size2D<UIntOS> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName, colorSess), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler init: w = %d, h = %d\r\n", (UInt32)videoSize.x, (UInt32)videoSize.y);
@@ -125,7 +125,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 	this->mf.Delete();
 }
 
-void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize)
+void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<IntOS> videoTL, Math::Size2D<UIntOS> videoSize)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 	NN<Media::DrawImage> img;

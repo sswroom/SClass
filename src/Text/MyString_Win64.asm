@@ -67,7 +67,7 @@ sconcatlop:
 	mov rbx,r9
 	ret
 
-;Char *MyString_StrConcatS(Char *oriStr, const Char *strToJoin, OSInt buffSize);
+;Char *MyString_StrConcatS(Char *oriStr, const Char *strToJoin, IntOS buffSize);
 ;rcx oriStr
 ;rdx strToJoin
 ;r8 buffSize
@@ -92,7 +92,7 @@ sconcatslop2:
 	ret
 
 
-;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, OSInt buffSize)
+;UTF16Char *MyString_StrConcatSUTF16(UTF16Char *oriStr, const UTF16Char *strToJoin, IntOS buffSize)
 ;rcx oriStr
 ;rdx strToJoin
 ;r8 buffSize
@@ -1472,7 +1472,7 @@ si64exit:
 	pop rsi
 	ret
 
-;OSInt MyString_StrCompare(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompare(const Char *str1, const Char *str2)
 ;0 retAddr
 ;rcx str1
 ;rdx str2
@@ -1573,7 +1573,7 @@ scmpret:
 	mov rdi,r9
 	ret
 
-;OSInt MyString_StrCompareICase(const Char *str1, const Char *str2)
+;IntOS MyString_StrCompareICase(const Char *str1, const Char *str2)
 ;0 retAddr
 ;rcx str1
 ;rdx str2
@@ -1689,7 +1689,7 @@ scmpicret:
 	mov rdi,r9
 	ret
 
-;OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
+;IntOS MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
 ;0 retAddr
 ;rcx str1
 ;rdx str2
@@ -1790,7 +1790,7 @@ scmpu16ret:
 	mov rdi,r9
 	ret
 
-;OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
+;IntOS MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
 ;0 retAddr
 ;rcx str1
 ;rdx str2
@@ -1906,7 +1906,7 @@ scmpicu16ret:
 	mov rdi,r9
 	ret
 
-;OSInt MyString_StrCharCnt(const Char *s)
+;IntOS MyString_StrCharCnt(const Char *s)
 ;0 retAdddr
 ;rcx s
 	align 16
@@ -1944,7 +1944,7 @@ scclop3:
 	add rax,3
 	ret
 
-;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)
+;IntOS MyString_StrCharCntUTF16(const UTF16Char *s)
 ;0 retAddr
 ;rcx s
 	align 16
@@ -1961,7 +1961,7 @@ sccu16lop:
 	dec rax
 	ret
 	
-;OSInt MyString_StrCharCntUTF32(const UTF32Char *s)
+;IntOS MyString_StrCharCntUTF32(const UTF32Char *s)
 ;0 retAddr
 ;rcx s
 	align 16

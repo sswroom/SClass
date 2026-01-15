@@ -8,7 +8,7 @@
 #define BigInt_ToString BigInt_ToStringW32
 #endif
 
-extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt valSize)
+extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, UIntOS valSize)
 {
 	srcBuff += valSize;
 	while (valSize-- > 0)
@@ -17,10 +17,10 @@ extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt va
 	}
 }
 
-extern "C" void BigInt_Neg(UInt8 *valBuff, UOSInt valSize)
+extern "C" void BigInt_Neg(UInt8 *valBuff, UIntOS valSize)
 {
 	UInt8 *valPtr = valBuff;
-	UOSInt i = valSize >> 2;
+	UIntOS i = valSize >> 2;
 	while (i-- > 0)
 	{
 		*(Int32*)valPtr = ~*(Int32*)valPtr;
@@ -48,7 +48,7 @@ extern "C" void BigInt_Neg(UInt8 *valBuff, UOSInt valSize)
 #endif
 }
 
-extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, UOSInt val)
+extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, UIntOS val)
 {
 	*(Int32*)valBuff = val;
 	Int32 t = val >> 31;
@@ -60,7 +60,7 @@ extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, UOSInt val)
 	}
 }
 
-extern "C" WChar *BigInt_ToString(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, UOSInt valSize)
+extern "C" WChar *BigInt_ToString(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, UIntOS valSize)
 {
 	////////////////////////////////////
 	return buff;

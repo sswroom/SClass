@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 
-extern "C" UInt32 DJB2a_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal)
+extern "C" UInt32 DJB2a_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal)
 {
 	UInt8 c;
 	

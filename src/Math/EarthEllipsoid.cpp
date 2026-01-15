@@ -115,12 +115,12 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 
 Double Math::EarthEllipsoid::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
-	UOSInt nPoint;
-	UOSInt nAlts;
+	UIntOS nPoint;
+	UIntOS nAlts;
 	UnsafeArray<Math::Coord2DDbl> points;
 	UnsafeArray<Double> alts;
 	points = lineString->GetPointList(nPoint);
-	UOSInt j = nPoint;
+	UIntOS j = nPoint;
 	Double totalDist = 0;
 	Double dist;
 	Math::Coord2DDbl lastPt;
@@ -173,7 +173,7 @@ Double Math::EarthEllipsoid::CalLineStringDistance(NN<Math::Geometry::LineString
 Double Math::EarthEllipsoid::CalPLDistance(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	NN<Math::Geometry::LineString> lineString;
-	UOSInt i = pl->GetCount();
+	UIntOS i = pl->GetCount();
 	Double totalDist = 0;
 	while (i-- > 0)
 	{
@@ -188,7 +188,7 @@ Double Math::EarthEllipsoid::CalPLDistance(NN<Math::Geometry::Polyline> pl, Math
 Double Math::EarthEllipsoid::CalPLDistance3D(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	NN<Math::Geometry::LineString> lineString;
-	UOSInt i = pl->GetCount();
+	UIntOS i = pl->GetCount();
 	Double totalDist = 0;
 	while (i-- > 0)
 	{
@@ -279,7 +279,7 @@ Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) c
 	Double sLat;
 	Double thisLat;
 	Double v = 0;
-	OSInt i = 10;
+	IntOS i = 10;
 	while (i-- > 0)
 	{
 		sLat = Math_Sin(rLat);
@@ -294,9 +294,9 @@ Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) c
 
 NN<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

@@ -10,7 +10,7 @@ namespace IO
 	private:
 		Crypto::Hash::CRC16R crc;
 	public:
-		I2CMODBUS(NN<IO::I2CChannel> channel, UOSInt delayMS);
+		I2CMODBUS(NN<IO::I2CChannel> channel, UIntOS delayMS);
 		virtual ~I2CMODBUS();
 
 		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data);

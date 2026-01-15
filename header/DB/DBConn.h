@@ -47,7 +47,7 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr) = 0;
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual void Close() = 0;
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql) = 0;
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql) = 0;
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql) = 0;
 		virtual Bool IsLastDataError() = 0;
 		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);

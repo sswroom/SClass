@@ -28,9 +28,9 @@ enum MenuItem
 	MNU_KEY_PRIVATEKEY = 603
 };
 
-UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
+UIntOS SSWR::AVIRead::AVIRASN1DataForm::AddHash(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
 {
-	UOSInt i = cbo->AddItem(Crypto::Hash::HashTypeGetName(hashType), (void*)(OSInt)hashType);
+	UIntOS i = cbo->AddItem(Crypto::Hash::HashTypeGetName(hashType), (void*)(IntOS)hashType);
 	if (hashType == targetType)
 		cbo->SetSelectedIndex(i);
 	return i;
@@ -51,15 +51,15 @@ Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(NN<Text::String> fileName)
 	UInt8 fileCont[172];
 	UInt8 decCont[256];
 	UInt64 fileLen;
-	UOSInt decSize;
+	UIntOS decSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	fileLen = fs.GetLength();
 	if (fileLen >= 172 && fileLen <= 174)
 	{
-		if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == (UOSInt)fileLen)
+		if (fs.Read(Data::ByteArray(fileCont, (UIntOS)fileLen)) == (UIntOS)fileLen)
 		{
 			Text::TextBinEnc::Base64Enc enc;
-			decSize = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), decCont);
+			decSize = enc.DecodeBin(Text::CStringNN(fileCont, (UIntOS)fileLen), decCont);
 			if (decSize == 128)
 			{
 				return true;
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	UInt8 signBuff[256];
-	UOSInt signLen = 128;
+	UIntOS signLen = 128;
 	Text::StringBuilderUTF8 sb;
 	me->txtVerifySignature->GetText(sb);
 	signLen = me->ParseSignature(sb, signBuff);
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 	NN<Net::SSLEngine> ssl;
 	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
-		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetOSInt(), mstm.GetArray(), Data::ByteArrayR(signBuff, signLen)))
+		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetIntOS(), mstm.GetArray(), Data::ByteArrayR(signBuff, signLen)))
 		{
 			me->txtVerifyStatus->SetText(CSTR("Valid"));
 		}
@@ -128,9 +128,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 {
 	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	UInt8 signBuff[384];
-	UOSInt signLen = 128;
+	UIntOS signLen = 128;
 	UInt8 decBuff[256];
-	UOSInt decLen = 0;
+	UIntOS decLen = 0;
 	Text::StringBuilderUTF8 sb;
 	me->txtVerifySignature->GetText(sb);
 	signLen = me->ParseSignature(sb, signBuff);
@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Cannot decrypt signature, sign len = "));
-			sb.AppendUOSInt(signLen);
+			sb.AppendUIntOS(signLen);
 			me->txtVerifyStatus->SetText(sb.ToCString());
 		}
 		ssl.Delete();
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnSignatureClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	UInt8 signBuff[512];
-	UOSInt signLen;
+	UIntOS signLen;
 	Text::StringBuilderUTF8 sb;
 	sb.ClearStr();
 	me->txtSignaturePayloadFile->GetText(sb);
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnSignatureClicked(AnyType userO
 	NN<Net::SSLEngine> ssl;
 	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
-		if (ssl->Signature(key, (Crypto::Hash::HashType)me->cboSignatureHash->GetSelectedItem().GetOSInt(), mstm.GetArray(), signBuff, signLen))
+		if (ssl->Signature(key, (Crypto::Hash::HashType)me->cboSignatureHash->GetSelectedItem().GetIntOS(), mstm.GetArray(), signBuff, signLen))
 		{
 			sb.ClearStr();
 			sb.AppendHexBuff(Data::ByteArrayR(signBuff, signLen), ' ', Text::LineBreakType::CRLF);
@@ -242,8 +242,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 		return;
 	}
 	UInt8 *buff;
-	UOSInt buffSize;
-	UOSInt type = me->cboEncryptInputType->GetSelectedIndex();
+	UIntOS buffSize;
+	UIntOS type = me->cboEncryptInputType->GetSelectedIndex();
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
@@ -280,7 +280,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Encrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
+		UIntOS outSize = ssl->Encrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetIntOS());
 		MemFree(buff);
 		ssl.Delete();
 		key.Delete();
@@ -330,8 +330,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 		return;
 	}
 	UInt8 *buff;
-	UOSInt buffSize;
-	UOSInt type = me->cboEncryptInputType->GetSelectedIndex();
+	UIntOS buffSize;
+	UIntOS type = me->cboEncryptInputType->GetSelectedIndex();
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
@@ -368,7 +368,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Decrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
+		UIntOS outSize = ssl->Decrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetIntOS());
 		MemFree(buff);
 		key.Delete();
 		ssl.Delete();
@@ -410,8 +410,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(AnyType userObj, Data
 {
 	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	NN<UI::GUITabPage> tp;
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	Bool isSign;
 	if (!me->tcMain->GetSelectedPage().SetTo(tp))
 	{
@@ -440,10 +440,10 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(AnyType userObj, Data
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> signBuff)
+UIntOS SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> signBuff)
 {
 	UInt8 fileCont[346];
-	UOSInt signLen = 0;
+	UIntOS signLen = 0;
 	if (s->leng == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Please enter Signature"), CSTR("Verify Signature"), this);
@@ -475,7 +475,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, Unsa
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
-			sb.AppendUOSInt(s->leng);
+			sb.AppendUIntOS(s->leng);
 			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
 			return 0;
 		}
@@ -489,10 +489,10 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, Unsa
 			Bool succ = false;
 			if (fileLen >= 172 && fileLen <= 174)
 			{
-				if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
+				if (fs.Read(Data::ByteArray(fileCont, (UIntOS)fileLen)) == fileLen)
 				{
 					Text::TextBinEnc::Base64Enc enc;
-					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
+					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UIntOS)fileLen), signBuff);
 					if (signLen == 128)
 					{
 						succ = true;
@@ -501,10 +501,10 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, Unsa
 			}
 			else if (fileLen >= 344 && fileLen <= 346)
 			{
-				if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
+				if (fs.Read(Data::ByteArray(fileCont, (UIntOS)fileLen)) == fileLen)
 				{
 					Text::TextBinEnc::Base64Enc enc;
-					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
+					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UIntOS)fileLen), signBuff);
 					if (signLen == 256)
 					{
 						succ = true;
@@ -568,7 +568,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, Unsa
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
-			sb.AppendUOSInt(s->leng);
+			sb.AppendUIntOS(s->leng);
 			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
 			return 0;
 		}
@@ -623,8 +623,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 		NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1);
 		Text::StringBuilderUTF8 sb;
 		NN<UI::GUIMenu> mnu2;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		mnu2 = mnu->AddSubMenu(CSTR("Certs"));
 		i = 0;
 		j = x509->GetCertCount();
@@ -641,7 +641,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Cert "));
-					sb.AppendUOSInt(i);
+					sb.AppendUIntOS(i);
 				}
 				mnu2->AddItem(sb.ToCString(), (UInt16)(MNU_CERT_0 + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				i++;
@@ -738,8 +738,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 			NN<UI::GUITabPage> tp;
 			NN<UI::GUITextBox> txt;
 			NN<Crypto::Cert::X509File> file;
-			UOSInt i = 1;
-			UOSInt j = fileList->GetFileCount();
+			UIntOS i = 1;
+			UIntOS j = fileList->GetFileCount();
 			while (i < j)
 			{
 				if (fileList->GetFile(i).SetTo(file))
@@ -963,7 +963,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 		if (cmdId >= MNU_CERT_0)
 		{
 			NN<Crypto::Cert::X509Cert> cert;
-			if (NN<Crypto::Cert::X509File>::ConvertFrom(this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0)).SetTo(cert))
+			if (NN<Crypto::Cert::X509File>::ConvertFrom(this->asn1)->GetNewCert((UIntOS)(cmdId - MNU_CERT_0)).SetTo(cert))
 			{
 				this->core->OpenObject(cert);
 			}

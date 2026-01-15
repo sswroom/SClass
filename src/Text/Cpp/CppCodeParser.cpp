@@ -28,7 +28,7 @@ void Text::Cpp::CppCodeParser::LogError(NN<Text::Cpp::CppParseStatus> status, Te
 	if (status->GetFileStatus().SetTo(fileStatus))
 	{
 		NN<Text::String> fname = fileStatus->fileName;
-		UOSInt i = fname->LastIndexOf('\\');
+		UIntOS i = fname->LastIndexOf('\\');
 		sb.AppendC(&fname->v[i + 1], fname->leng - i - 1);
 		sb.AppendC(UTF8STRC(" ("));
 		sb.AppendI32(fileStatus->lineNum);
@@ -42,7 +42,7 @@ void Text::Cpp::CppCodeParser::LogError(NN<Text::Cpp::CppParseStatus> status, Te
 	}
 }
 
-Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CStringNN condStr, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex)
+Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CStringNN condStr, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UIntOS cpIndex)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -78,7 +78,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CStringNN condStr, NN<Tex
 			if (sptr != sbuff)
 			{
 				*sptr = 0;
-				codePhases->Insert(cpIndex++, Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				codePhases->Insert(cpIndex++, Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				sptr = sbuff;
 			}
 
@@ -204,7 +204,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CStringNN condStr, NN<Tex
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePhases, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, UOSInt cpIndex, OutParam<Int32> outVal, OSInt priority)
+Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePhases, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, UIntOS cpIndex, OutParam<Int32> outVal, IntOS priority)
 {
 /*
 	Priority:
@@ -225,7 +225,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePh
 */
 
 	Text::StringBuilderUTF8 debugSB;
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> phase;
 	NN<Text::String> phase1;
 	NN<Text::String> phase2;
@@ -765,7 +765,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePh
 Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CStringNN cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result)
 {
 	Bool succ = true;
-	UOSInt j;
+	UIntOS j;
 	Data::ArrayListStringNN codePhase;
 	if (!ParseSharpIfParam(cond, status, errMsgs,  codePhase, 0))
 	{
@@ -821,8 +821,8 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	Bool valid;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::Cpp::CppParseStatus::FileParseStatus> fileStatus;
 	if (!status->GetFileStatus().SetTo(fileStatus))
 	{
@@ -840,18 +840,18 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	{
 		if (fileStatus->lineBuffWS)
 		{
-			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB.ToPtr());
-			fileStatus->lineBuffSB.AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
+			j = (UIntOS)(fileStatus->lineBuffWS - fileStatus->lineBuffSB.ToPtr());
+			fileStatus->lineBuffSB.AppendC(lineBuff, (UIntOS)(lineBuffEnd - lineBuff));
 			wordStart = fileStatus->lineBuffSB.v + j;
 		}
 		else
 		{
-			fileStatus->lineBuffSB.AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
+			fileStatus->lineBuffSB.AppendC(lineBuff, (UIntOS)(lineBuffEnd - lineBuff));
 		}
 	}
 	else
 	{
-		fileStatus->lineBuffSB.AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
+		fileStatus->lineBuffSB.AppendC(lineBuff, (UIntOS)(lineBuffEnd - lineBuff));
 	}
 	sptr = fileStatus->lineBuffSB.v + i;
 	if (fileStatus->currMode == Text::Cpp::CppParseStatus::PM_DEFINE)
@@ -885,7 +885,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 				if (c == '*' && *sptr == '/')
 				{
 					*sptr = ' ';
-					UOSInt i = fileStatus->pastModes.GetCount();
+					UIntOS i = fileStatus->pastModes.GetCount();
 					if (i > 0)
 					{
 						fileStatus->currMode = fileStatus->pastModes.RemoveAt(i - 1);
@@ -916,7 +916,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						continue;
 
 					sptr[-1] = 0;
-					if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("include")))
+					if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("include")))
 					{
 						if (valid)
 						{
@@ -967,7 +967,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("pragma")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("pragma")))
 					{
 						if (valid)
 						{
@@ -1003,7 +1003,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("ifndef")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("ifndef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1035,7 +1035,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("ifdef")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("ifdef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1067,7 +1067,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("if")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("if")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1099,7 +1099,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("elif")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("elif")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1129,7 +1129,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("define")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("define")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1158,7 +1158,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("undef")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("undef")))
 					{
 						if (valid)
 						{
@@ -1195,7 +1195,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("else")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("else")))
 					{
 						i = fileStatus->ifValid.GetCount();
 						if (i == 0)
@@ -1251,7 +1251,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							}
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("endif")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("endif")))
 					{
 						i = fileStatus->ifValid.GetCount();
 						if (i == 0)
@@ -1294,7 +1294,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							}
 						}
 					}
-					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("error")))
+					else if (Text::StrEqualsC(nnwordStart, (UIntOS)(sptr - nnwordStart - 1), UTF8STRC("error")))
 					{
 						if (valid)
 						{
@@ -1466,7 +1466,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 					if (sbuff2[0] == 0)
 					{
 						parseStatus = false;
-						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), nnwordStart, (UOSInt)(sptr - nnwordStart - 1)), UTF8STRC(" not found"));
+						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), nnwordStart, (UIntOS)(sptr - nnwordStart - 1)), UTF8STRC(" not found"));
 						this->LogError(status, CSTRP(sbuff, sptr2), errMsgs);
 					}
 					else
@@ -1919,7 +1919,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 								{
 									if (mode == 5)
 									{
-										OSInt tmpI = -1;
+										IntOS tmpI = -1;
 										while (true)
 										{
 											tmpI--;
@@ -2312,7 +2312,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 {
 	UnsafeArray<UTF8Char> lineBuff;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Bool succ;
 
 	lineBuff = MemAllocArr(UTF8Char, 65536);
@@ -2326,7 +2326,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 				i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 				sptr = Text::StrConcatC(lineBuff, &fileStatus->fileName->v[i + 1], fileStatus->fileName->leng - i - 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-				sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
+				sptr = Text::StrIntOS(sptr, fileStatus->lineNum);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("): "));
 			}
 			else
@@ -2336,7 +2336,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 			sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
 			sptr = fileName.ConcatTo(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
-			errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
+			errMsgs->Add(Text::String::New(lineBuff, (UIntOS)(sptr - lineBuff)));
 			MemFreeArr(lineBuff);
 			return false;
 		}
@@ -2358,7 +2358,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 	{
 		succ = false;
 		sptr = Text::StrConcatC(fileName.ConcatTo(lineBuff), UTF8STRC(" File End error"));
-		errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
+		errMsgs->Add(Text::String::New(lineBuff, (UIntOS)(sptr - lineBuff)));
 	}
 
 	MemFreeArr(lineBuff);

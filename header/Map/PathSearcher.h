@@ -27,7 +27,7 @@ namespace Map
 		Double minAngleRad;
 
 	private:
-		Optional<Map::PathSearcher::PointNode> GetNode(Double x, Double y, OptOut<OSInt> index);
+		Optional<Map::PathSearcher::PointNode> GetNode(Double x, Double y, OptOut<IntOS> index);
 		NN<Map::PathSearcher::PointNode> GetOrAddNode(Double x, Double y);
 	public:
 		PathSearcher(NN<Map::MapDrawLayer> layer, Double  minAngleRad);

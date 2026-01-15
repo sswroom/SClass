@@ -192,13 +192,13 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
 }
 
-/*OSInt DB::ODBCConn::ExecuteNonQuery(const WChar *sql)
+/*IntOS DB::ODBCConn::ExecuteNonQuery(const WChar *sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
@@ -272,12 +272,12 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return 0;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
 
-Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return 0;
 }
@@ -325,7 +325,7 @@ Optional<Text::String> DB::ODBCConn::GetConnSchema()
 	return this->schema;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
+UIntOS DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 {
 	return 0;
 }

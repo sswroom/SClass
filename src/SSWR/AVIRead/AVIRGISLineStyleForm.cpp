@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
-	UOSInt newStyle = me->env->AddLineStyle();
+	UIntOS newStyle = me->env->AddLineStyle();
 
 	SSWR::AVIRead::AVIRGISLineEditForm frm(nullptr, me->ui, me->core, me->env, me->eng, newStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::CancelClicked(AnyType userOb
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS lineStyle) : UI::GUIForm(parent, 462, 334, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -136,7 +136,7 @@ void SSWR::AVIRead::AVIRGISLineStyleForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_SET_DEFAULT:
-		this->env->SetDefLineStyle((UOSInt)this->lineSelector->GetSelectedLineStyle());
+		this->env->SetDefLineStyle((UIntOS)this->lineSelector->GetSelectedLineStyle());
 		this->lineSelector->Redraw();
 		break;
 	}
@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRGISLineStyleForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-UOSInt SSWR::AVIRead::AVIRGISLineStyleForm::GetLineStyle()
+UIntOS SSWR::AVIRead::AVIRGISLineStyleForm::GetLineStyle()
 {
 	return this->lineStyle;
 }

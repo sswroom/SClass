@@ -13,15 +13,15 @@ UI::JavaUI::JUIHScrollBar::~JUIHScrollBar()
 {
 }
 
-void UI::JavaUI::JUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
+void UI::JavaUI::JUIHScrollBar::InitScrollBar(UIntOS minVal, UIntOS maxVal, UIntOS currVal, UIntOS largeChg)
 {
 }
 
-void UI::JavaUI::JUIHScrollBar::SetPos(UOSInt pos)
+void UI::JavaUI::JUIHScrollBar::SetPos(UIntOS pos)
 {
 }
 
-UOSInt UI::JavaUI::JUIHScrollBar::GetPos()
+UIntOS UI::JavaUI::JUIHScrollBar::GetPos()
 {
 	return 0;
 }
@@ -30,11 +30,11 @@ void UI::JavaUI::JUIHScrollBar::SetArea(Double left, Double top, Double right, D
 {
 }
 
-void UI::JavaUI::JUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::JavaUI::JUIHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn)
 {
 }
 
-OSInt UI::JavaUI::JUIHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -17,9 +17,9 @@ namespace Media
 		WIAManager();
 		~WIAManager();
 
-		UOSInt GetDeviceCount();
-		UnsafeArrayOpt<const UTF8Char> GetDeviceName(UOSInt index);
-		Optional<WIADevice> CreateDevice(UOSInt index);
+		UIntOS GetDeviceCount();
+		UnsafeArrayOpt<const UTF8Char> GetDeviceName(UIntOS index);
+		Optional<WIADevice> CreateDevice(UIntOS index);
 	};
 
 	class WIADevice

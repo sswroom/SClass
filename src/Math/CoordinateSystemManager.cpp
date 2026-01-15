@@ -211,9 +211,9 @@ Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::
 
 Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSystemManager::SRGetSpatialRef(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -238,9 +238,9 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 
 Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSystemManager::SRGetSpatialRefPrev(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -269,10 +269,10 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 
 Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSystemManager::SRGetSpatialRefNext(UInt32 epsgId)
 {
-	OSInt lastInd;
-	OSInt i = 0;
-	OSInt j = lastInd = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
-	OSInt k;
+	IntOS lastInd;
+	IntOS i = 0;
+	IntOS j = lastInd = (IntOS)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -301,9 +301,9 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 
 Optional<const Math::CoordinateSystemManager::SpheroidInfo> Math::CoordinateSystemManager::SRGetSpheroid(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(spheroidSRID) / sizeof(spheroidSRID[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(spheroidSRID) / sizeof(spheroidSRID[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -328,9 +328,9 @@ Optional<const Math::CoordinateSystemManager::SpheroidInfo> Math::CoordinateSyst
 
 Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemManager::SRGetDatum(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(datumSRID) / sizeof(datumSRID[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(datumSRID) / sizeof(datumSRID[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -355,9 +355,9 @@ Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemM
 
 Optional<const Math::CoordinateSystemManager::GeogcsSRInfo> Math::CoordinateSystemManager::SRGetGeogcsInfo(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(geogcsSRID) / sizeof(geogcsSRID[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(geogcsSRID) / sizeof(geogcsSRID[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -382,9 +382,9 @@ Optional<const Math::CoordinateSystemManager::GeogcsSRInfo> Math::CoordinateSyst
 
 Optional<const Math::CoordinateSystemManager::ProjcsSRInfo> Math::CoordinateSystemManager::SRGetProjcsInfo(UInt32 epsgId)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(projcsSRID) / sizeof(projcsSRID[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(projcsSRID) / sizeof(projcsSRID[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -570,10 +570,10 @@ Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemM
 	{
 		name = &name[2];
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(datumList) / sizeof(datumList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(datumList) / sizeof(datumList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -694,9 +694,9 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(NN<Data::ArrayListNative<ProjCoordSysType>> csysList)
+UIntOS Math::CoordinateSystemManager::GetProjCoordinateSystems(NN<Data::ArrayListNative<ProjCoordSysType>> csysList)
 {
-	UOSInt initCnt = csysList->GetCount();
+	UIntOS initCnt = csysList->GetCount();
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
 	while (pcst <= Math::CoordinateSystemManager::PCST_LAST)
 	{
@@ -706,10 +706,10 @@ UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(NN<Data::ArrayLis
 	return csysList->GetCount() - initCnt;
 }
 
-UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList)
+UIntOS Math::CoordinateSystemManager::GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList)
 {
-	UOSInt i = 0;
-	UOSInt j = (sizeof(pcsysList) / sizeof(pcsysList[0]));
+	UIntOS i = 0;
+	UIntOS j = (sizeof(pcsysList) / sizeof(pcsysList[0]));
 	while (i < j)
 	{
 		nameList->Add(pcsysList[i].projName);
@@ -720,10 +720,10 @@ UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(NN<Data::Arra
 
 Optional<const Math::CoordinateSystemManager::ProjectedCSysInfo> Math::CoordinateSystemManager::GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> name)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(pcsysList) / sizeof(pcsysList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(pcsysList) / sizeof(pcsysList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -771,19 +771,19 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::Create
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(NN<Data::ArrayListNative<GeoCoordSysType>> csysList)
+UIntOS Math::CoordinateSystemManager::GetGeogCoordinateSystems(NN<Data::ArrayListNative<GeoCoordSysType>> csysList)
 {
-	UOSInt initCnt = csysList->GetCount();
+	UIntOS initCnt = csysList->GetCount();
 	csysList->Add(GCST_WGS84);
 	return csysList->GetCount() - initCnt;
 }
 
 Optional<const Math::CoordinateSystemManager::GeographicCSysInfo> Math::CoordinateSystemManager::GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> name)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(csysList) / sizeof(csysList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(csysList) / sizeof(csysList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

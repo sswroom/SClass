@@ -35,10 +35,10 @@ namespace Net
 			UInt16 chksum;
 		};
 	public:
-		static UnsafeArrayOpt<const UInt8> EthernetExtractUDP(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, Optional<EthernetHeader> etherHdr, Optional<IPv4Header>ipv4Hdr, NN<UDPHeader> udpHdr);
-		static UnsafeArrayOpt<const UInt8> EthernetExtract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<EthernetHeader> etherHdr);
-		static UnsafeArrayOpt<const UInt8> IPv4Extract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<IPv4Header> ipv4Hdr);
-		static UnsafeArrayOpt<const UInt8> UDPExtract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<UDPHeader> udpHdr);
+		static UnsafeArrayOpt<const UInt8> EthernetExtractUDP(UnsafeArray<const UInt8> packet, UIntOS packetSize, OutParam<UIntOS> dataSize, Optional<EthernetHeader> etherHdr, Optional<IPv4Header>ipv4Hdr, NN<UDPHeader> udpHdr);
+		static UnsafeArrayOpt<const UInt8> EthernetExtract(UnsafeArray<const UInt8> packet, UIntOS packetSize, OutParam<UIntOS> dataSize, NN<EthernetHeader> etherHdr);
+		static UnsafeArrayOpt<const UInt8> IPv4Extract(UnsafeArray<const UInt8> packet, UIntOS packetSize, OutParam<UIntOS> dataSize, NN<IPv4Header> ipv4Hdr);
+		static UnsafeArrayOpt<const UInt8> UDPExtract(UnsafeArray<const UInt8> packet, UIntOS packetSize, OutParam<UIntOS> dataSize, NN<UDPHeader> udpHdr);
 	};
 }
 #endif

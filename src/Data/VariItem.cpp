@@ -551,11 +551,11 @@ void Data::VariItem::GetAsString(NN<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::Timestamp:
 		sptr = this->val.ts.ToStringNoZone(sbuff);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		break;
 	case ItemType::Date:
 		sptr = this->val.date.ToString(sbuff);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		break;
 	case ItemType::ByteArr:
 		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LineBreakType::None);
@@ -576,7 +576,7 @@ void Data::VariItem::GetAsString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-UnsafeArray<UTF8Char> Data::VariItem::GetAsStringS(UnsafeArray<UTF8Char> sbuff, UOSInt buffSize) const
+UnsafeArray<UTF8Char> Data::VariItem::GetAsStringS(UnsafeArray<UTF8Char> sbuff, UIntOS buffSize) const
 {
 	switch (this->itemType)
 	{
@@ -692,44 +692,44 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 		return nullptr;
 	case ItemType::F32:
 		s = Text::String::New(32);
-		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f32) - s->v);
+		s->leng = (UIntOS)(Text::StrDouble(s->v, this->val.f32) - s->v);
 		return s;
 	case ItemType::F64:
 		s = Text::String::New(32);
-		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f64) - s->v);
+		s->leng = (UIntOS)(Text::StrDouble(s->v, this->val.f64) - s->v);
 		return s;
 	case ItemType::I8:
 		s = Text::String::New(4);
-		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i8) - s->v);
+		s->leng = (UIntOS)(Text::StrInt16(s->v, this->val.i8) - s->v);
 		return s;
 	case ItemType::U8:
 		s = Text::String::New(3);
-		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u8) - s->v);
+		s->leng = (UIntOS)(Text::StrUInt16(s->v, this->val.u8) - s->v);
 		return s;
 	case ItemType::I16:
 		s = Text::String::New(6);
-		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i16) - s->v);
+		s->leng = (UIntOS)(Text::StrInt16(s->v, this->val.i16) - s->v);
 		return s;
 	case ItemType::U16:
 		s = Text::String::New(5);
-		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u16) - s->v);
+		s->leng = (UIntOS)(Text::StrUInt16(s->v, this->val.u16) - s->v);
 		return s;
 	case ItemType::NI32:
 	case ItemType::I32:
 		s = Text::String::New(11);
-		s->leng = (UOSInt)(Text::StrInt32(s->v, this->val.i32) - s->v);
+		s->leng = (UIntOS)(Text::StrInt32(s->v, this->val.i32) - s->v);
 		return s;
 	case ItemType::U32:
 		s = Text::String::New(10);
-		s->leng = (UOSInt)(Text::StrUInt32(s->v, this->val.u32) - s->v);
+		s->leng = (UIntOS)(Text::StrUInt32(s->v, this->val.u32) - s->v);
 		return s;
 	case ItemType::I64:
 		s = Text::String::New(21);
-		s->leng = (UOSInt)(Text::StrInt64(s->v, this->val.i64) - s->v);
+		s->leng = (UIntOS)(Text::StrInt64(s->v, this->val.i64) - s->v);
 		return s;
 	case ItemType::U64:
 		s = Text::String::New(20);
-		s->leng = (UOSInt)(Text::StrUInt64(s->v, this->val.u64) - s->v);
+		s->leng = (UIntOS)(Text::StrUInt64(s->v, this->val.u64) - s->v);
 		return s;
 	case ItemType::BOOL:
 		if (this->val.boolean)
@@ -747,15 +747,15 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 		return Text::String::New(this->val.cstr.v, this->val.cstr.leng);
 	case ItemType::Timestamp:
 		s = Text::String::New(30);
-		s->leng = (UOSInt)(this->val.ts.ToStringNoZone(s->v) - s->v);
+		s->leng = (UIntOS)(this->val.ts.ToStringNoZone(s->v) - s->v);
 		return s;
 	case ItemType::Date:
 		s = Text::String::New(10);
-		s->leng = (UOSInt)(this->val.date.ToString(s->v) - s->v);
+		s->leng = (UIntOS)(this->val.date.ToString(s->v) - s->v);
 		return s;
 	case ItemType::ByteArr:
 		s = Text::String::New(this->val.byteArr->GetCount() * 2);
-		s->leng = (UOSInt)(Text::StrHexBytes(s->v, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0) - s->v);
+		s->leng = (UIntOS)(Text::StrHexBytes(s->v, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0) - s->v);
 		return s;
 	case ItemType::Vector:
 		{
@@ -766,7 +766,7 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 		}
 	case ItemType::UUID:
 		s = Text::String::New(48);
-		s->leng = (UOSInt)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
+		s->leng = (UIntOS)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
 		return s;
 	default:
 		return nullptr;
@@ -947,7 +947,7 @@ void Data::VariItem::SetStrSlow(UnsafeArrayOpt<const UTF8Char> str)
 	}
 }
 
-void Data::VariItem::SetStr(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen)
+void Data::VariItem::SetStr(UnsafeArrayOpt<const UTF8Char> str, UIntOS strLen)
 {
 	this->FreeItem();
 	UnsafeArray<const UTF8Char> nnstr;
@@ -964,7 +964,7 @@ void Data::VariItem::SetStr(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen)
 	}
 }
 
-void Data::VariItem::SetStr(UnsafeArray<const UTF8Char> str, UOSInt strLen)
+void Data::VariItem::SetStr(UnsafeArray<const UTF8Char> str, UIntOS strLen)
 {
 	this->FreeItem();
 	this->val.cstr.v = str.Ptr();
@@ -972,7 +972,7 @@ void Data::VariItem::SetStr(UnsafeArray<const UTF8Char> str, UOSInt strLen)
 	this->itemType = ItemType::CStr;
 }
 
-void Data::VariItem::SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen)
+void Data::VariItem::SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UIntOS strLen)
 {
 	this->FreeItem();
 	UnsafeArray<const UTF8Char> nnstr;
@@ -1142,7 +1142,7 @@ void Data::VariItem::SetBool(Bool val)
 	this->itemType = ItemType::BOOL;
 }
 
-void Data::VariItem::SetByteArr(UnsafeArray<const UInt8> arr, UOSInt cnt)
+void Data::VariItem::SetByteArr(UnsafeArray<const UInt8> arr, UIntOS cnt)
 {
 	this->FreeItem();
 	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt)).Ptr();
@@ -1396,13 +1396,13 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 	case ItemType::Timestamp:
 		sptr = this->val.ts.ToStringNoZone(sbuff);
 		sb->AppendUTF8Char('\"');
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendUTF8Char('\"');
 		break;
 	case ItemType::Date:
 		sptr = this->val.date.ToString(sbuff);
 		sb->AppendUTF8Char('\"');
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendUTF8Char('\"');
 		break;
 	case ItemType::ByteArr:
@@ -1679,7 +1679,7 @@ NN<Data::VariItem> Data::VariItem::NewBool(Bool val)
 	return item;
 }
 
-NN<Data::VariItem> Data::VariItem::NewByteArr(const UInt8 *arr, UOSInt cnt)
+NN<Data::VariItem> Data::VariItem::NewByteArr(const UInt8 *arr, UIntOS cnt)
 {
 	if (arr == 0) return NewNull();
 	ItemValue ival;
@@ -2238,7 +2238,7 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 	}
 }
 
-UOSInt Data::VariItem::GetItemSize(ItemType itemType)
+UIntOS Data::VariItem::GetItemSize(ItemType itemType)
 {
 	switch (itemType)
 	{

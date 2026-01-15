@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<cons
 	NN<UDPSession> sess;
 	Optional<UDPSession> selSess = nullptr;
 	Sync::MutexUsage mutUsage(me->sessMut);
-	UOSInt i = me->sessList.GetCount();
+	UIntOS i = me->sessList.GetCount();
 	while (i-- > 0)
 	{
 		sess = me->sessList.GetItemNoCheck(i);
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTargetAddClicked(AnyTyp
 	me->targetList.Add(target);
 	sbuff[0] = 0;
 	sptr = Net::SocketUtil::GetAddrName(sbuff, target->targetAddr).Or(sbuff);
-	UOSInt i = me->lvTarget->AddItem(CSTRP(sbuff, sptr), target);
+	UIntOS i = me->lvTarget->AddItem(CSTRP(sbuff, sptr), target);
 	sptr = Text::StrUInt16(sbuff, target->targetPort);
 	me->lvTarget->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	if (me->nextTarget == i)
@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTargetAddClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTargetDelClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPLoadBalancerForm>();
-	UOSInt i = me->lvTarget->GetSelectedIndex();
+	UIntOS i = me->lvTarget->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
 	Sync::MutexUsage mutUsage(me->sessMut);
@@ -174,9 +174,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTimerTick(AnyType userO
 		Sync::MutexUsage mutUsage(me->sessMut);
 		NN<UDPSession> sess;
 		Data::Timestamp currTime = Data::Timestamp::UtcNow();
-		UOSInt i = 0;
-		UOSInt j = me->sessList.GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = me->sessList.GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			sess = me->sessList.GetItemNoCheck(i);

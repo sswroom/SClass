@@ -47,12 +47,12 @@ public:
 	{
 	}
 
-	virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+	virtual UIntOS GetExtraCount(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
 		return 24;
 	}
 
-	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		switch (extIndex)
 		{
@@ -132,7 +132,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (buffSize != sizeof(ExtraInfo))
 			return false;
@@ -192,7 +192,7 @@ public:
 				UTF8Char sbuff[32];
 				UnsafeArray<UTF8Char> sptr;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, extInfo->devIP);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			return true;
 		case 16:
@@ -258,7 +258,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 	UTF8Char sbuff[256];
 	UnsafeArray<const UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt i;
+	UIntOS i;
 	UInt64 currPos;
 	UInt64 fileSize;
 	Int64 devId;
@@ -267,7 +267,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 	sptr = name->v;
 	i = Text::StrLastIndexOfCharC(sptr, name->leng, IO::Path::PATH_SEPERATOR);
 	sptr2 = Text::StrConcatC(sbuff, &sptr[i + 1], name->leng - i - 1);
-	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr2 - sbuff), UTF8STRC("GLOC")))
+	if (!Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr2 - sbuff), UTF8STRC("GLOC")))
 	{
 		return nullptr;
 	}

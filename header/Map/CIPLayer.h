@@ -51,16 +51,16 @@ namespace Map
 		virtual Text::String *GetName();
 
 		virtual DrawLayerType GetLayerType();
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty);
+		virtual UIntOS GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
+		virtual UIntOS GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty);
+		virtual UIntOS GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax();
 		virtual void ReleaseNameArr(void *nameArr);
-		virtual WChar *GetString(WChar *buff, void *nameArr, Int64 id, UOSInt strIndex);
-		virtual UOSInt GetColumnCnt();
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual WChar *GetString(WChar *buff, void *nameArr, Int64 id, UIntOS strIndex);
+		virtual UIntOS GetColumnCnt();
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex);
+		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColumnDef(UIntOS colIndex, DB::ColDef *colDef);
 		virtual Int32 GetBlockSize();
 		virtual UInt32 GetCodePage();
 		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);

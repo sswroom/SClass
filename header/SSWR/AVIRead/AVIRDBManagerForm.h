@@ -107,25 +107,25 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Map::MapEnv> mapEnv;
 			NN<Map::DBMapLayer> dbLayer;
-			Math::Coord2D<OSInt> mapDownPos;
+			Math::Coord2D<IntOS> mapDownPos;
 			Math::Coord2DDbl mapItemPt;
 			Optional<Data::QueryConditions> mapCond;
 			Bool sqlFileMode;
 
 			static void __stdcall OnConnSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnConnRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static void __stdcall OnConnDblClicked(AnyType userObj);
 			static void __stdcall OnSchemaSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static void __stdcall OnTableFilterClicked(AnyType userObj);
 			static UI::EventState __stdcall OnTableFilterKeyDown(AnyType userObj, UInt32 osKey);
-			static void __stdcall OnTableResultDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnTableResultDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnMapSchemaSelChg(AnyType userObj);
 			static void __stdcall OnMapTableSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button);
 			static void __stdcall OnDatabaseChangeClicked(AnyType userObj);
 			static void __stdcall OnDatabaseDeleteClicked(AnyType userObj);
 			static void __stdcall OnDatabaseNewClicked(AnyType userObj);
@@ -168,9 +168,9 @@ namespace SSWR
 
 			void ConnAdd(NN<DB::DBConn> conn);
 
-			virtual UOSInt GetDataSourceCount() const;
-			virtual void GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
-			virtual Optional<DB::ReadingDB> OpenDataSource(UOSInt index);
+			virtual UIntOS GetDataSourceCount() const;
+			virtual void GetDataSourceName(UIntOS index, NN<Text::StringBuilderUTF8> sb) const;
+			virtual Optional<DB::ReadingDB> OpenDataSource(UIntOS index);
 		};
 	}
 }

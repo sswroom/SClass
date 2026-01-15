@@ -108,33 +108,33 @@ Text::CStringNN IO::FileAnalyse::SHPFileAnalyse::GetFormatName()
 	return CSTR("ESRI Shapefile");
 }
 
-UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::SHPFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": size="));
-	sb->AppendUOSInt(pack->packSize);
+	sb->AppendUIntOS(pack->packSize);
 	return true;
 }
 
 
-UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::SHPFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -145,13 +145,13 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
@@ -164,7 +164,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(pack->packSize);
@@ -193,8 +193,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 	{
 		UInt32 numParts;
 		UInt32 numPoints;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		frame->AddUInt(0, 4, CSTR("Record Number"), ReadMUInt32(&tagData[0]));
 		frame->AddUInt(4, 4, CSTR("Content Length (WORD)"), ReadMUInt32(&tagData[4]));
 		UInt32 shapeType = ReadUInt32(&tagData[8]);

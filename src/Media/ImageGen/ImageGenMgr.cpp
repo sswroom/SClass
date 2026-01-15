@@ -31,17 +31,17 @@ Media::ImageGen::ImageGenMgr::~ImageGenMgr()
 	this->imgGenArr.DeleteAll();
 }
 
-UOSInt Media::ImageGen::ImageGenMgr::GetCount() const
+UIntOS Media::ImageGen::ImageGenMgr::GetCount() const
 {
 	return this->imgGenArr.GetCount();
 }
 
-NN<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItemNoCheck(UOSInt index) const
+NN<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItemNoCheck(UIntOS index) const
 {
 	return this->imgGenArr.GetItemNoCheck(index);
 }
 
-Optional<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItem(UOSInt index) const
+Optional<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItem(UIntOS index) const
 {
 	return this->imgGenArr.GetItem(index);
 }

@@ -8,15 +8,15 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType us
 {
 	NN<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
 	me->codeImgGen.Delete();
-	me->codeImgGen = Media::CodeImageGen::CodeImageGen::CreateGenerator((Media::CodeImageGen::CodeImageGen::CodeType)me->cboCodeType->GetSelectedItem().GetOSInt());
+	me->codeImgGen = Media::CodeImageGen::CodeImageGen::CreateGenerator((Media::CodeImageGen::CodeImageGen::CodeType)me->cboCodeType->GetSelectedItem().GetIntOS());
 	NN<Media::CodeImageGen::CodeImageGen> codeImgGen;
 	if (me->codeImgGen.SetTo(codeImgGen))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Length: "));
-		sb.AppendUOSInt(codeImgGen->GetMinLength());
+		sb.AppendUIntOS(codeImgGen->GetMinLength());
 		sb.AppendC(UTF8STRC(" - "));
-		sb.AppendUOSInt(codeImgGen->GetMaxLength());
+		sb.AppendUIntOS(codeImgGen->GetMaxLength());
 		me->lblCodeInfo->SetText(sb.ToCString());
 	}
 }
@@ -91,8 +91,8 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClient
 	this->lblCodeInfo = ui->NewLabel(this->pnlMain, CSTR(""));
 	this->lblCodeInfo->SetRect(584, 52, 100, 23, false);
 
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	i = Media::CodeImageGen::CodeImageGen::CT_FIRST;
 	j = Media::CodeImageGen::CodeImageGen::CT_LAST;
 	while (i <= j)

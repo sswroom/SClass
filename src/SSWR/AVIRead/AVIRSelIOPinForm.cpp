@@ -5,12 +5,12 @@
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
-	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetSelectedItem().GetOSInt();
+	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetSelectedItem().GetIntOS();
 
 	if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 	{
-		UOSInt i = me->cboGPIO->GetSelectedIndex();
-		UInt16 pinNum = (UInt16)me->cboGPIO->GetItem((UOSInt)i).GetUOSInt();
+		UIntOS i = me->cboGPIO->GetSelectedIndex();
+		UInt16 pinNum = (UInt16)me->cboGPIO->GetItem((UIntOS)i).GetUIntOS();
 		if (i == INVALID_INDEX)
 		{
 			me->ui->ShowMsgOK(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
@@ -36,8 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 	}
 	else if (iopt == SSWR::AVIRead::AVIRCore::IOPT_VIOPIN)
 	{
-		UOSInt i = me->cboVirtualPin->GetSelectedIndex();
-		UInt16 pinNum = (UInt16)me->cboVirtualPin->GetItem(i).GetUOSInt();
+		UIntOS i = me->cboVirtualPin->GetSelectedIndex();
+		UInt16 pinNum = (UInt16)me->cboVirtualPin->GetItem(i).GetUIntOS();
 		if (i == INVALID_INDEX)
 		{
 			me->ui->ShowMsgOK(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
@@ -64,10 +64,10 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnCancelClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
-	UOSInt i = me->cboPinType->GetSelectedIndex();
+	UIntOS i = me->cboPinType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetItem(i).GetOSInt();
+		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetItem(i).GetIntOS();
 		if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 		{
 			me->tcConfig->SetSelectedPage(me->tpGPIO);
@@ -83,8 +83,8 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Data::ArrayListInt32> ports;
 
 	this->SetText(CSTR("Select IOPin"));
@@ -142,7 +142,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 		{
 			currPort = (Int32)i;
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("GPIO")), currPort);
-			this->cboGPIO->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
+			this->cboGPIO->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)currPort);
 			i++;
 		}
 		if (j > 0)
@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	{
 		currPort = ports->GetItem(i);
 		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("VirtualIOPin")), currPort);
-		this->cboVirtualPin->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
+		this->cboVirtualPin->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)currPort);
 		i++;
 	}
 	if (j > 0)

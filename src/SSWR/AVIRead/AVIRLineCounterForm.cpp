@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
-	UOSInt i = me->lbExtensions->GetSelectedIndex();
+	UIntOS i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		OPTSTR_DEL(me->extList.RemoveAt(i));
@@ -67,23 +67,23 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj
 	me->ClearResult(true);
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 	me->CalcDir(sbuff, sptr);
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt totalLine = 0;
-	UOSInt nonEmpty = 0;
-	UOSInt codeCnt = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS totalLine = 0;
+	UIntOS nonEmpty = 0;
+	UIntOS codeCnt = 0;
 	NN<FileInfo> fi;
 	i = 0;
 	j = me->resList.GetCount();
 	while (i < j)
 	{
 		fi = me->resList.GetItemNoCheck(i);
-		sptr = Text::StrUOSInt(sbuff, fi->totalLineCnt);
+		sptr = Text::StrUIntOS(sbuff, fi->totalLineCnt);
 		k = me->lvResult->AddItem(CSTRP(sbuff, sptr), fi);
-		sptr = Text::StrUOSInt(sbuff, fi->nonEmpyCnt);
+		sptr = Text::StrUIntOS(sbuff, fi->nonEmpyCnt);
 		me->lvResult->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, fi->codeCnt);
+		sptr = Text::StrUIntOS(sbuff, fi->codeCnt);
 		me->lvResult->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		me->lvResult->SetSubItem(k, 3, fi->fileName);
 		totalLine += fi->totalLineCnt;
@@ -91,11 +91,11 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj
 		codeCnt += fi->codeCnt;
 		i++;
 	}
-	sptr = Text::StrUOSInt(sbuff, totalLine);
+	sptr = Text::StrUIntOS(sbuff, totalLine);
 	me->txtTotalLine->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, nonEmpty);
+	sptr = Text::StrUIntOS(sbuff, nonEmpty);
 	me->txtNonEmpty->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, codeCnt);
+	sptr = Text::StrUIntOS(sbuff, codeCnt);
 	me->txtCode->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -111,8 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<FileInfo> fi;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		IO::StreamWriter writer(fs, (UInt32)0);
 		i = 0;
@@ -121,11 +121,11 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 		{
 			fi = me->resList.GetItemNoCheck(i);
 			sb.ClearStr();
-			sb.AppendUOSInt(fi->totalLineCnt);
+			sb.AppendUIntOS(fi->totalLineCnt);
 			sb.AppendUTF8Char('\t');
-			sb.AppendUOSInt(fi->nonEmpyCnt);
+			sb.AppendUIntOS(fi->nonEmpyCnt);
 			sb.AppendUTF8Char('\t');
-			sb.AppendUOSInt(fi->codeCnt);
+			sb.AppendUIntOS(fi->codeCnt);
 			sb.AppendUTF8Char('\t');
 			sb.Append(fi->fileName);
 			writer.WriteLine(sb.ToCString());
@@ -141,10 +141,10 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::Path::FindFileSession> sess;
 	Text::StringBuilderUTF8 sb;
-	UOSInt lineCnt;
-	UOSInt nonEmptyCnt;
-	UOSInt codeCnt;
-	UOSInt i;
+	UIntOS lineCnt;
+	UIntOS nonEmptyCnt;
+	UIntOS codeCnt;
+	UIntOS i;
 	Bool found;
 	NN<FileInfo> fi;
 
@@ -164,11 +164,11 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 			else if (pt == IO::Path::PathType::File)
 			{
 				found = false;
-				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UOSInt)(sptr - pathBuffEnd), '.') + 1;
+				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UIntOS)(sptr - pathBuffEnd), '.') + 1;
 				Data::ArrayIterator<NN<Text::String>> it = this->extList.Iterator();
 				while (it.HasNext())
 				{
-					if (it.Next()->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
+					if (it.Next()->EqualsICase(&pathBuffEnd[i], (UIntOS)(sptr - &pathBuffEnd[i])))
 					{
 						found = true;
 						break;
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 					codeCnt = 0;
 					lineCnt = 0;
 					{
-						IO::FileStream fs({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						IO::FileStream fs({pathBuff, (UIntOS)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						Text::UTF8Reader reader(fs);
 						while (true)
 						{
@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 					fi->totalLineCnt = lineCnt;
 					fi->nonEmpyCnt = nonEmptyCnt;
 					fi->codeCnt = codeCnt;
-					fi->fileName = Text::String::New(pathBuff, (UOSInt)(sptr - pathBuff));
+					fi->fileName = Text::String::New(pathBuff, (UIntOS)(sptr - pathBuff));
 					this->resList.Add(fi);
 				}
 			}
@@ -226,7 +226,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearExts(Bool inclDisp)
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult(Bool inclDisp)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<FileInfo> fi;
 	if (inclDisp) this->lvResult->ClearItems();
 	i = this->resList.GetCount();

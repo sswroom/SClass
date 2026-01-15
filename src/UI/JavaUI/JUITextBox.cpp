@@ -79,7 +79,7 @@ Bool UI::JavaUI::JUITextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-OSInt UI::JavaUI::JUITextBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUITextBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

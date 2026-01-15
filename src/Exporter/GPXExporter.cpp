@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::GPXExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::GPXExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GPXExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -65,10 +65,10 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	Data::DateTime dt;
 

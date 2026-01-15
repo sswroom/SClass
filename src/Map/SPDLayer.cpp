@@ -31,7 +31,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		sptr = &sptr[-4];
 		*sptr = 0;
 	}
-	UOSInt i;
+	UIntOS i;
 
 	this->maxId = -1;
 	this->ofsts = 0;
@@ -44,7 +44,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	{
-		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file.IsError())
 		{
@@ -62,20 +62,20 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		}
 		else
 		{
-			i = (UOSInt)file.GetErrCode();
+			i = (UIntOS)file.GetErrCode();
 		}
 		DEL_CLASS(bstm);
 	}
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spi"));
 	{
-		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		if (!file.IsError())
 		{
-			i = (UOSInt)file.GetLength();
+			i = (UIntOS)file.GetLength();
 			this->ofsts = (UInt32*)MAlloc(i);
 			file.Read(Data::ByteArray((UInt8*)this->ofsts, i));
-			this->maxId = (OSInt)(i / 8) - 2;
+			this->maxId = (IntOS)(i / 8) - 2;
 		}
 	}
 
@@ -84,7 +84,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	{
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spd"));
 		{
-			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			if (!file.IsError())
 			{
 				file.Read(Data::ByteArray((UInt8*)&i, 4));
@@ -98,7 +98,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".sps"));
 		{
-			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 			if (!file.IsError())
 			{
@@ -167,12 +167,12 @@ Map::DrawLayerType Map::SPDLayer::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt textSize;
-	UOSInt i;
-	UOSInt k;
-	UOSInt l;
+	UIntOS textSize;
+	UIntOS i;
+	UIntOS k;
+	UIntOS l;
 
 	k = 0;
 	l = 0;
@@ -186,7 +186,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while (k < this->nblks)
 		{
@@ -199,7 +199,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 				cis->Read(Data::ByteArray(buff, 13));
 				if (buff[4])
 				{
-					strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[12] >> 1) + 1);
+					strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
 					cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
@@ -234,7 +234,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -251,11 +251,11 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	topBlk = rect.min.y / blkScale;
 	bottomBlk = rect.max.y / blkScale;
 
-	UOSInt textSize;
+	UIntOS textSize;
 	Int32 i;
 	Int32 j;
 	Int32 k;
-	UOSInt l;
+	UIntOS l;
 	if (this->nblks > 10)
 	{
 		i = 0;
@@ -306,9 +306,9 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
-		while ((UOSInt)k < this->nblks)
+		while ((UIntOS)k < this->nblks)
 		{
 			if (this->blks[k].blk.x > rightBlk)
 				break;
@@ -325,7 +325,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 					cis->Read(Data::ByteArray(buff, 13));
 					if (buff[4])
 					{
-						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[12] >> 1) + 1);
+						strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
 						cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
@@ -352,7 +352,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	}
 	else
 	{
-		while ((UOSInt)k < this->nblks)
+		while ((UIntOS)k < this->nblks)
 		{
 			if (this->blks[k].blk.x > rightBlk)
 				break;
@@ -370,7 +370,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::SPDLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -382,9 +382,9 @@ Int64 Map::SPDLayer::GetObjectIdMax() const
 	return this->maxId;
 }
 
-UOSInt Map::SPDLayer::GetRecordCnt() const
+UIntOS Map::SPDLayer::GetRecordCnt() const
 {
-	return (UOSInt)(this->maxId + 1);
+	return (UIntOS)(this->maxId + 1);
 }
 
 void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
@@ -392,7 +392,7 @@ void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
 	if (Optional<Data::ArrayListObj<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr))
 	{
-		UOSInt i = tmpArr->GetCount();
+		UIntOS i = tmpArr->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(tmpArr->RemoveAt(i));
@@ -401,14 +401,14 @@ void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	}
 }
 
-Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<Data::ArrayListObj<UTF16Char*>> tmpArr;
 	if (!Optional<Data::ArrayListObj<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr) || strIndex != 0)
 	{
 		return false;
 	}
-	UTF16Char *s = tmpArr->GetItem((UOSInt)id);
+	UTF16Char *s = tmpArr->GetItem((UIntOS)id);
 	if (s)
 	{
 		sb->AppendUTF16(s);
@@ -420,12 +420,12 @@ Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray
 	}
 }
 
-UOSInt Map::SPDLayer::GetColumnCnt() const
+UIntOS Map::SPDLayer::GetColumnCnt() const
 {
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -437,7 +437,7 @@ UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff
 	}
 }
 
-DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -451,7 +451,7 @@ DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::SPDLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex != 0)
 		return false;
@@ -489,7 +489,7 @@ Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 		Math::Coord2D<Int32> minBlk;
 		Math::Coord2D<Int32> maxBlk;
 		maxBlk = minBlk = this->blks[0].blk;
-		UOSInt i = this->nblks;
+		UIntOS i = this->nblks;
 		while (i-- > 0)
 		{
 			if (this->blks[i].blk.x > maxBlk.x)
@@ -522,7 +522,7 @@ NN<Map::GetObjectSess> Map::SPDLayer::BeginGetObject()
 //	this->mut->Lock();
 	sptr = Text::StrConcat(fileName, this->layerName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".spd"));
-	NEW_CLASSNN(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(cip, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return NN<Map::GetObjectSess>::ConvertFrom(cip);
 }
 
@@ -555,8 +555,8 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		ptOfsts = 0;
 	}
 	cip->Read(Data::ByteArray((UInt8*)&buff[2], 4));
-	points = MemAlloc(Int32, (UOSInt)buff[2] * 2);
-	cip->Read(Data::ByteArray((UInt8*)points, (UOSInt)buff[2] * 8));
+	points = MemAlloc(Int32, (UIntOS)buff[2] * 2);
+	cip->Read(Data::ByteArray((UInt8*)points, (UIntOS)buff[2] * 8));
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
@@ -577,10 +577,10 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		Math::Geometry::Polyline *pl;
 		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
-		UOSInt i = 0;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i = 0;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		while (i < (UInt32)buff[1])
 		{
 			j = ptOfsts[i];
@@ -611,10 +611,10 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
-		UOSInt i = 0;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i = 0;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		while (i < (UInt32)buff[1])
 		{
 			j = ptOfsts[i];
@@ -649,7 +649,7 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	return nullptr;
 }
 
-UOSInt Map::SPDLayer::GetGeomCol() const
+UIntOS Map::SPDLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }

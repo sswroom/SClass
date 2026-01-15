@@ -20,8 +20,8 @@ namespace Map
 		Data::ArrayListStringNN colNames;
 		Math::Coord2DDbl minPos;
 		Math::Coord2DDbl maxPos;
-		UOSInt objIdCol;
-		UOSInt shapeCol;
+		UIntOS objIdCol;
+		UIntOS shapeCol;
 		NN<Text::String> tableName;
 		Optional<DB::TableDef> tabDef;
 
@@ -32,17 +32,17 @@ namespace Map
 		virtual ~FileGDBLayer();
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
-		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UIntOS GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
+		virtual UIntOS GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UIntOS GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
-		virtual UOSInt GetRecordCnt() const;
+		virtual UIntOS GetRecordCnt() const;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
-		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex);
-		virtual UOSInt GetColumnCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const;
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const;
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex);
+		virtual UIntOS GetColumnCnt() const;
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const;
+		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const;
+		virtual Bool GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const;
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
@@ -52,13 +52,13 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
-		virtual UOSInt GetGeomCol() const;
+		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 	};
@@ -74,27 +74,27 @@ namespace Map
 		virtual ~FileGDBLReader();
 
 		virtual Bool ReadNext();
-		virtual UOSInt ColCount();
-		virtual OSInt GetRowChanged();
+		virtual UIntOS ColCount();
+		virtual IntOS GetRowChanged();
 
-		virtual Int32 GetInt32(UOSInt colIndex);
-		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDblOrNAN(UOSInt colIndex);
-		virtual Bool GetBool(UOSInt colIndex);
-		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Int32 GetInt32(UIntOS colIndex);
+		virtual Int64 GetInt64(UIntOS colIndex);
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff);
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb);
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex);
+		virtual Double GetDblOrNAN(UIntOS colIndex);
+		virtual Bool GetBool(UIntOS colIndex);
+		virtual UIntOS GetBinarySize(UIntOS colIndex);
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
 
-		virtual Bool IsNull(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual Bool IsNull(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 	};
 }
 #endif

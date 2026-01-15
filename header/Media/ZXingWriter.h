@@ -7,7 +7,7 @@ namespace Media
 	class ZXingWriter
 	{
 	public:
-		static Optional<Media::StaticImage> GenQRCode(Text::CStringNN content, Math::Size2D<UOSInt> outputSize);
+		static Optional<Media::StaticImage> GenQRCode(Text::CStringNN content, Math::Size2D<UIntOS> outputSize);
 	};
 }
 #endif

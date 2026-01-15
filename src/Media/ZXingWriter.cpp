@@ -6,7 +6,7 @@
 #include <ZXing/MultiFormatWriter.h>
 #include <ZXing/ZXVersion.h>
 
-Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN content, Math::Size2D<UOSInt> outputSize)
+Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN content, Math::Size2D<UIntOS> outputSize)
 {
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10200
 	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QRCode);
@@ -31,11 +31,11 @@ Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN conte
 	}
 	UnsafeArray<UInt8> imgPtr = simg->data;
 	UInt8 b;
-	UOSInt i;
-	UOSInt w = ((UOSInt)bitMatrix.width()) >> 3;
-	UOSInt bpl = simg->GetDataBpl();
-	UOSInt j = 0;
-	UOSInt h = (UOSInt)bitMatrix.height();
+	UIntOS i;
+	UIntOS w = ((UIntOS)bitMatrix.width()) >> 3;
+	UIntOS bpl = simg->GetDataBpl();
+	UIntOS j = 0;
+	UIntOS h = (UIntOS)bitMatrix.height();
 	while (j < h)
 	{
 		i = 0;

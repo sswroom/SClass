@@ -14,10 +14,10 @@ void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 		return;
 	}
 	NN<Net::WirelessLAN::BSSInfo> bss;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	OSInt si;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	IntOS si;
 	UInt64 imac;
 	UInt8 mac[8];
 	UnsafeArray<const UInt8> macPtr;
@@ -93,7 +93,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 							{
 								Bool found = false;
 								Int32 minRSSI;
-								UOSInt minIndex;
+								UIntOS minIndex;
 								Int32 rssi1 = Double2Int32(bss->GetRSSI());
 								minRSSI = 0;
 								minIndex = 0;
@@ -195,7 +195,7 @@ Bool Net::WiFiCapturer::Start()
 		return false;
 	}
 	this->interf.Delete();
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> namePtr;
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
 	NN<Net::WirelessLAN::Interface> ifObj;
@@ -245,9 +245,9 @@ void Net::WiFiCapturer::StoreStatus()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
-	UOSInt i;
+	UIntOS i;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("wifi"));
 	dt.SetCurrTime();
@@ -263,7 +263,7 @@ void Net::WiFiCapturer::StoreStatus()
 			IO::Path::DeleteFile(lastFileName);
 			Text::StrDelNew(lastFileName);
 		}
-		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+		this->lastFileName = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 	}
 }
 

@@ -24,7 +24,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	while (val < DATACNT)
 	{
 		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
-		s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		s = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 		map.PutNN(s, val);
 		s->Release();
 		val++;

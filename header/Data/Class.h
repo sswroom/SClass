@@ -10,11 +10,11 @@ namespace Data
 	class Class
 	{
 	public:
-		typedef OSInt (*ByNameFunc)(Text::CStringNN name);
+		typedef IntOS (*ByNameFunc)(Text::CStringNN name);
 		struct FieldInfo
 		{
 			NN<Text::String> name;
-			OSInt ofst;
+			IntOS ofst;
 			Data::VariItem::ItemType itemType;
 			Bool notNull;
 			Optional<Text::String> typeName;
@@ -29,8 +29,8 @@ namespace Data
 		Class(const void *refObj);
 		virtual ~Class();
 
-		UOSInt AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull); //return field size
-		UOSInt AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, UOSInt fieldSize, ByNameFunc byNameFunc);
+		UIntOS AddField(Text::CStringNN name, IntOS ofst, Data::VariItem::ItemType itemType, Bool notNull); //return field size
+		UIntOS AddFieldEnum(Text::CStringNN name, IntOS ofst, Text::CStringNN typeName, UIntOS fieldSize, ByNameFunc byNameFunc);
 		Bool AddField(Text::CStringNN name, const UInt8 *val);
 		Bool AddField(Text::CStringNN name, const Int8 *val);
 		Bool AddField(Text::CStringNN name, const UInt16 *val);
@@ -52,21 +52,21 @@ namespace Data
 		Bool AddField(Text::CStringNN name, const Optional<Math::Geometry::Vector2D> *val);
 		Bool AddField(Text::CStringNN name, Data::UUID *const *val);
 
-		UOSInt GetFieldCount();
-		Optional<Text::String> GetFieldName(UOSInt index);
-		Data::VariItem::ItemType GetFieldType(UOSInt index);
-		Optional<FieldInfo> GetFieldInfo(UOSInt index);
+		UIntOS GetFieldCount();
+		Optional<Text::String> GetFieldName(UIntOS index);
+		Data::VariItem::ItemType GetFieldType(UIntOS index);
+		Optional<FieldInfo> GetFieldInfo(UIntOS index);
 		
-		Optional<Data::VariItem> GetNewValue(UOSInt index, AnyType obj);
-		Bool IsNotNull(UOSInt index);
-		Bool GetValue(NN<Data::VariItem> itm, UOSInt index, AnyType obj);
-		Bool SetField(AnyType obj, UOSInt index, NN<Data::VariItem> item);
-		Bool SetFieldClearItem(AnyType obj, UOSInt index, NN<Data::VariItem> item);
+		Optional<Data::VariItem> GetNewValue(UIntOS index, AnyType obj);
+		Bool IsNotNull(UIntOS index);
+		Bool GetValue(NN<Data::VariItem> itm, UIntOS index, AnyType obj);
+		Bool SetField(AnyType obj, UIntOS index, NN<Data::VariItem> item);
+		Bool SetFieldClearItem(AnyType obj, UIntOS index, NN<Data::VariItem> item);
 		Bool Equals(AnyType obj1, AnyType obj2);
 
-		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
-		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
-		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
 
 		static Optional<Data::Class> ParseFromStr(Text::CStringNN str);
 		static Optional<Data::Class> ParseFromCpp(Text::CStringNN str);

@@ -58,7 +58,7 @@ Bool IO::SensorAndroid::GetSensorEvent(void *sensorEvt)
 {
 	if (this->queue == 0)
 		return false;
-	OSInt i = 10;
+	IntOS i = 10;
 	while (i-- > 0)
 	{
 		int id = ALooper_pollAll(1000, 0, 0, 0);

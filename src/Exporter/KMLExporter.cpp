@@ -68,7 +68,7 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::KMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::KMLExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -100,11 +100,11 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
-	UOSInt nameCol = layer->GetNameCol();
+	UIntOS nameCol = layer->GetNameCol();
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int64 currId;
 	Int64 lastId;
 	Optional<Map::NameArray> nameArr;
@@ -235,7 +235,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 				{
-					UOSInt nPoints;
+					UIntOS nPoints;
 					NN<Math::Geometry::LineString> pl = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
@@ -270,7 +270,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								*sptr++ = ' ';
 								*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 						}
@@ -289,7 +289,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								*sptr++ = ' ';
 								*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 						}
@@ -310,7 +310,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								*sptr++ = ' ';
 								*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 						}
@@ -328,7 +328,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								*sptr++ = ' ';
 								*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 						}
@@ -339,7 +339,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 				{
-					UOSInt nPoints;
+					UIntOS nPoints;
 					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
@@ -379,7 +379,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 									*sptr++ = ' ';
 									*sptr = 0;
 
-									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 									k++;
 								}
 							}
@@ -398,7 +398,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 									*sptr++ = ' ';
 									*sptr = 0;
 
-									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 									k++;
 								}
 							}
@@ -419,7 +419,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 									*sptr++ = ' ';
 									*sptr = 0;
 
-									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 									k++;
 								}
 							}
@@ -437,7 +437,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 									*sptr++ = ' ';
 									*sptr = 0;
 
-									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 									k++;
 								}
 							}
@@ -448,7 +448,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
-					UOSInt nPoints;
+					UIntOS nPoints;
 					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
@@ -488,7 +488,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 								sptr = Text::StrDouble(sptr, v.GetZ());
 								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
@@ -511,7 +511,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 								sptr = Text::StrDouble(sptr, defHeight);
 								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 								k++;
 							}
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
@@ -716,7 +716,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	return true;
 }
 
-UOSInt Exporter::KMLExporter::GetParamCnt()
+UIntOS Exporter::KMLExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -737,7 +737,7 @@ void Exporter::KMLExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::KMLExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index != 0)
 		return false;
@@ -747,7 +747,7 @@ Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return true;
 }
 
-Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index != 0 || !param.SetTo(para))
@@ -757,7 +757,7 @@ Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt inde
 	return true;
 }
 
-Int32 Exporter::KMLExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::KMLExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index != 0 || !param.SetTo(para))

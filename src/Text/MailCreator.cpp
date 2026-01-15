@@ -28,9 +28,9 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString
 	}
 	if (found)
 	{
-		UOSInt strLen;
+		UIntOS strLen;
 		UInt8 *b64Buff;
-		UOSInt b64Size;
+		UIntOS b64Size;
 		Crypto::Encrypt::Base64 b64;
 		strLen = s.leng;
 		b64Size = (strLen / 3) * 4 + 4;
@@ -63,9 +63,9 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	if (found)
 	{
 		NN<Text::String> str = Text::String::NewNotNull(s);
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UInt8 *b64Buff;
-		UOSInt b64Size;
+		UIntOS b64Size;
 		Crypto::Encrypt::Base64 b64;
 		buffSize = str->leng;
 		b64Size = (buffSize / 3) * 4 + 4;
@@ -84,13 +84,13 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	}
 }
 
-Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath)
+Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const UInt8> buff, UIntOS buffSize, UInt32 codePage, Text::CStringNN htmlPath)
 {
-	UOSInt j;
-	UOSInt endOfst = buffSize - 6;
-	UOSInt i;
-	UOSInt k;
-	UOSInt l;
+	UIntOS j;
+	UIntOS endOfst = buffSize - 6;
+	UIntOS i;
+	UIntOS k;
+	UIntOS l;
 	Data::ArrayListNN<Text::MIMEObject> imgs;
 	NN<Text::MIMEObject> obj;
 	Text::StringBuilderUTF8 sbc;
@@ -120,10 +120,10 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 			{
 				if (buff[k] == '\"')
 				{
-					UOSInt tmpI;
+					UIntOS tmpI;
 					found = false;
 					sptr = htmlPath.ConcatTo(sbuff);
-					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR );
+					l = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR );
 					sptr = &sbuff[l + 1];
 					tmpI = i;
 					if (buff[i] == '/' || buff[i] == '\\')
@@ -156,7 +156,7 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 							imgs.Add(obj);
 							sbc.AppendC((const UTF8Char*)&buff[j], i - j);
 							sbc.AppendC(UTF8STRC("cid:image"));
-							sbc.AppendUOSInt(imgs.GetCount());
+							sbc.AppendUIntOS(imgs.GetCount());
 							j = k;
 						}
 					}
@@ -198,7 +198,7 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 			mpart->AddPartHeader(k, CSTR("Content-Transfer-Encoding"), CSTR("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("<image"));
-			sbc.AppendUOSInt(i + 1);
+			sbc.AppendUIntOS(i + 1);
 			sbc.AppendC(UTF8STRC(">"));
 			mpart->AddPartHeader(k, CSTR("Content-ID"), sbc.ToCString());
 
@@ -219,7 +219,7 @@ Text::MailCreator::MailCreator()
 
 Text::MailCreator::~MailCreator()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Text::MIMEObject> obj;
 
 	SDEL_STRING(this->from);
@@ -417,8 +417,8 @@ void Text::MailCreator::SetSubject(NN<Text::String> subj)
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htmlPath)
 {
 	NN<Text::MIMEObject> obj;
-	UOSInt strLen = Text::StrCharCnt(content);
-	UOSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
+	UIntOS strLen = Text::StrCharCnt(content);
+	UIntOS buffSize = Text::StrWChar_UTF8CntC(content, strLen);
 	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
 	Text::StrWChar_UTF8C(buff, content, strLen);
 	if (ParseContentHTML(buff, buffSize, 65001, htmlPath).SetTo(obj))
@@ -458,7 +458,7 @@ void Text::MailCreator::SetContentText(NN<Text::String> content)
 Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 {
 	NN<Text::MIMEObject> obj;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt8 *buff;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -466,7 +466,7 @@ Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 		{
 			return false;
 		}
-		buffSize = (UOSInt)fs.GetLength();
+		buffSize = (UIntOS)fs.GetLength();
 		buff = MemAlloc(UInt8, buffSize);
 		fs.Read(Data::ByteArray(buff, buffSize));
 	}
@@ -521,10 +521,10 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		NN<Text::MIMEObject> obj;
 		Text::StringBuilderUTF8 sbc;
 		Text::CStringNN contType;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		NN<Text::String> fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
 		if (this->content.SetTo(obj))

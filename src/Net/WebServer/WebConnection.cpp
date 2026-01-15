@@ -24,7 +24,7 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
-UOSInt Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UIntOS Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (this->logWriter) this->logWriter->TCPSend(this->cli, buff, buffSize);
 	if (this->cstm)
@@ -100,10 +100,10 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	printf("WebConn: Received %d bytes\r\n", (UInt32)buff.GetSize());
 #endif		
 	Text::PString sarr[4];
-	UOSInt i;
-	UOSInt j;
-	UOSInt lineStart;
-	UOSInt strIndex;
+	UIntOS i;
+	UIntOS j;
+	UIntOS lineStart;
+	UIntOS strIndex;
 	NN<ProtocolHandler> protoHdlr;
 	if (this->protoHdlr.SetTo(protoHdlr))
 	{
@@ -297,7 +297,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 					strIndex = Text::StrIndexOfCharC(&this->dataBuff[lineStart], i - lineStart, ':');
 					if (strIndex != INVALID_INDEX)
 					{
-						UOSInt nameLen = strIndex;
+						UIntOS nameLen = strIndex;
 						this->dataBuff[lineStart + strIndex] = 0;
 						strIndex++;
 						while (this->dataBuff[lineStart + strIndex] == ' ')
@@ -307,7 +307,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 						this->dataBuff[i] = 0;
 						if (this->currReq)
 						{
-							this->currReq->AddHeader(Text::CStringNN(&this->dataBuff[lineStart], nameLen), Text::CStringNN(&this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex));
+							this->currReq->AddHeader(Text::CStringNN(&this->dataBuff[lineStart], nameLen), Text::CStringNN(&this->dataBuff[lineStart + (UIntOS)strIndex], i - lineStart - strIndex));
 						}
 					}
 				}
@@ -368,7 +368,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sptr = this->cli->GetRemoteName(sbuff).Or(sbuff);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
 	{
@@ -422,7 +422,7 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::WebRequest::Requ
 #if defined(VERBOSE)
 	printf("WebConn: Send headers\r\n%s", buff);
 #endif
-	this->SendData(buff, (UOSInt)(sptr - (UTF8Char*)buff));
+	this->SendData(buff, (UIntOS)(sptr - (UTF8Char*)buff));
 	MemFree(buff);
 	this->respHeaderSent = true;
 }
@@ -445,9 +445,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			NN<Net::TCPClient> proxyCli;
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
-			UOSInt i;
+			UIntOS i;
 			sptr = reqURI->ConcatTo(sbuff);
-			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ':');
+			i = Text::StrIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), ':');
 			if (i == INVALID_INDEX || i == 0)
 			{
 				this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
@@ -517,9 +517,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				{
 					UInt8 buff[2048];
 					UnsafeArray<UTF8Char> sbuffHdr = MemAllocArr(UTF8Char, 65536);
-					UOSInt i;
-					UOSInt j;
-					UOSInt k;
+					UIntOS i;
+					UIntOS j;
+					UIntOS k;
 					NN<Text::String> s;
 					Bool lengFound = false;
 					
@@ -549,7 +549,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
 					{
 						UnsafeArray<const UInt8> reqBuff;
-						UOSInt reqSize;
+						UIntOS reqSize;
 						if (currReq->GetReqData(reqSize).SetTo(reqBuff) && reqSize > 0)
 						{
 							httpCli->Write(Data::ByteArrayR(reqBuff, reqSize));
@@ -564,21 +564,21 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						UnsafeArray<UTF8Char> hdrPtr;
 						if (httpCli->GetRespHeader(i, sbuffHdr).SetTo(hdrPtr))
 						{
-							k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
+							k = Text::StrIndexOfC(sbuffHdr, (UIntOS)(hdrPtr - sbuffHdr), UTF8STRC(": "));
 							if (k != INVALID_INDEX)
 							{
 								sbuffHdr[k] = 0;
-								if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
+								if (Text::StrEqualsICaseC(sbuffHdr, (UIntOS)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
 								{
 									lengFound = true;
 								}
-								if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
+								if (Text::StrEqualsICaseC(sbuffHdr, (UIntOS)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
 								{
 								}
-								else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
+								else if (Text::StrEqualsICaseC(sbuffHdr, (UIntOS)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
 								{
 								}
-								else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
+								else if (Text::StrEqualsICaseC(sbuffHdr, (UIntOS)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
 								{
 								}
 								else
@@ -617,7 +617,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 		/*				IO::MemoryStream mstm(L"Net.WebConnection.mstm");
 						UInt8 *memBuff;
-						OSInt memSize;
+						IntOS memSize;
 						while (true)
 						{
 							k = httpCli->Read(buff, 2048);
@@ -879,12 +879,12 @@ Bool Net::WebServer::WebConnection::IsDown() const
 	return this->respDataEnd;
 }
 
-UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
+UIntOS Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
+UIntOS Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 {
 	if (this->protoHdlr.NotNull())
 	{
@@ -911,9 +911,9 @@ UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 	this->svr->ExtendTimeout(cli);
 	if (this->respTranEnc == 1)
 	{
-		UOSInt retSize = 0;
-		UOSInt ohSize;
-		UOSInt writeSize;
+		UIntOS retSize = 0;
+		UIntOS ohSize;
+		UIntOS writeSize;
 		UInt8 sbuff[MAX_CHUNK_SIZE + 10];
 		UnsafeArray<UTF8Char> sptr;
 		while (buff.GetSize() > 0)
@@ -927,15 +927,15 @@ UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 #if defined(VERBOSE)
 			printf("WebConn: chunked %s", sbuff);
 #endif
-			ohSize = (UOSInt)(sptr - sbuff) + 2;
+			ohSize = (UIntOS)(sptr - sbuff) + 2;
 			MemCopyNO(sptr.Ptr(), buff.Ptr(), writeSize);
 			buff += writeSize;
 			sptr += writeSize;
 			sptr[0] = 13;
 			sptr[1] = 10;
 			sptr += 2;
-			writeSize = this->SendData(sbuff, (UOSInt)(sptr - sbuff));
-			this->respLeng += (UOSInt)(sptr - sbuff);
+			writeSize = this->SendData(sbuff, (UIntOS)(sptr - sbuff));
+			this->respLeng += (UIntOS)(sptr - sbuff);
 			if (writeSize == 0)
 			{
 				break;

@@ -12,7 +12,7 @@ void Media::PageSplitter::SetDrawSize(Math::Size2DDbl size, Math::Unit::Distance
 	this->drawSize = size * Math::Unit::Distance::GetConvertRatio(unit, Math::Unit::Distance::DU_METER);
 }
 
-UOSInt Media::PageSplitter::SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale)
+UIntOS Media::PageSplitter::SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale)
 {
 	Math::Size2DDbl drawMapSize =  this->drawSize * scale;
 	if (pageOverlapBuffer >= drawMapSize.width || pageOverlapBuffer >= drawMapSize.height)
@@ -21,8 +21,8 @@ UOSInt Media::PageSplitter::SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *p
 	}
 	objectArea = objectArea.Reorder().Expand(objectBuffer);
 	Math::Coord2DDbl objAreaSize = objectArea.GetSize();
-	UOSInt paperXCount = 1;
-	UOSInt paperYCount = 1;
+	UIntOS paperXCount = 1;
+	UIntOS paperYCount = 1;
 	Math::Coord2DDbl totalDrawSize = drawMapSize.ToCoord();
 	while (totalDrawSize.x < objAreaSize.x)
 	{
@@ -37,8 +37,8 @@ UOSInt Media::PageSplitter::SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *p
 	Math::Coord2DDbl center = objectArea.GetCenter();
 	Math::Coord2DDbl tl = center - totalDrawSize * 0.5;
 	Math::Coord2DDbl currPt = tl;
-	UOSInt i = 0;
-	UOSInt j = 0;
+	UIntOS i = 0;
+	UIntOS j = 0;
 	while (j < paperYCount)
 	{
 		currPt.x = tl.x;

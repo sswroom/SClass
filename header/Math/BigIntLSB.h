@@ -8,14 +8,14 @@ namespace Math
 	class BigIntLSB
 	{
 	private:
-		UnsafeArray<UOSInt> valArr;
-		UnsafeArray<UOSInt> tmpArr;
-		UOSInt valCnt;
+		UnsafeArray<UIntOS> valArr;
+		UnsafeArray<UIntOS> tmpArr;
+		UIntOS valCnt;
 
 	public:
-		BigIntLSB(UOSInt valSize);
-		BigIntLSB(UOSInt valSize, Text::CStringNN val);
-		BigIntLSB(UOSInt valSize, UnsafeArray<const UInt8> val);
+		BigIntLSB(UIntOS valSize);
+		BigIntLSB(UIntOS valSize, Text::CStringNN val);
+		BigIntLSB(UIntOS valSize, UnsafeArray<const UInt8> val);
 		~BigIntLSB();
 
 		Bool IsNeg() const;
@@ -24,10 +24,10 @@ namespace Math
 
 		void ByteSwap();
 		void SetRandom(NN<Data::Random> rnd);
-		void FromBytesMSB(UnsafeArray<const UInt8> valBuff, UOSInt buffLen);
-		UOSInt GetOccupiedSize() const;
-		UOSInt GetStoreSize() const;
-		UOSInt GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOnly) const;
+		void FromBytesMSB(UnsafeArray<const UInt8> valBuff, UIntOS buffLen);
+		UIntOS GetOccupiedSize() const;
+		UIntOS GetStoreSize() const;
+		UIntOS GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOnly) const;
 
 		Bool EqualsToUI32(UInt32 val);
 		Bool EqualsToI32(Int32 val);
@@ -41,9 +41,9 @@ namespace Math
 		void AndBI(NN<const BigIntLSB> val);
 		void OrBI(NN<const BigIntLSB> val);
 		void XorBI(NN<const BigIntLSB> val);
-		Bool SetFactorial(UOSInt val); //return true if overflow
-		UOSInt MultiplyBy(UOSInt val); //return overflow value
-		UOSInt DivideBy(UOSInt val); //return remainder
+		Bool SetFactorial(UIntOS val); //return true if overflow
+		UIntOS MultiplyBy(UIntOS val); //return overflow value
+		UIntOS DivideBy(UIntOS val); //return remainder
 
 		Int32 operator =(Int32 val);
 		UInt32 operator =(UInt32 val);
@@ -55,8 +55,8 @@ namespace Math
 		NN<BigIntLSB> operator ^=(NN<const BigIntLSB> val);
 		NN<BigIntLSB> operator &=(NN<const BigIntLSB> val);
 		NN<BigIntLSB> operator |=(NN<const BigIntLSB> val);
-		NN<BigIntLSB> operator *=(UOSInt val);
-		NN<BigIntLSB> operator /=(UOSInt val);
+		NN<BigIntLSB> operator *=(UIntOS val);
+		NN<BigIntLSB> operator /=(UIntOS val);
 
 		Bool operator ==(NN<const BigIntLSB> val);
 		Bool operator !=(NN<const BigIntLSB> val);

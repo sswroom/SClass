@@ -16,9 +16,9 @@
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt64 imac;
 	NN<BSSStatus> bsss;
 	UInt8 id[8];
@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						me->wifiLogMap.Put(imac, wifiLog);
 
 						sptr = Text::StrHexBytes(sbuff, &id[0], 6, ':');
-						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap.GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
+						k = me->lvLogWifi->InsertItem((UIntOS)me->wifiLogMap.GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
 						NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMAC64Info(imac);
 						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
@@ -255,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					}
 					else
 					{
-						k = (UOSInt)me->wifiLogMap.GetIndex(imac);
+						k = (UIntOS)me->wifiLogMap.GetIndex(imac);
 						if (wifiLog->manuf.IsNull() && bss->GetManuf().SetTo(s))
 						{
 							wifiLog->manuf = s->Clone();
@@ -277,7 +277,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 							wifiLog->country = s;
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						}
-						OSInt l;
+						IntOS l;
 						UnsafeArray<const UInt8> oui;
 						oui = oui1;
 						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						{
 							Bool found = false;
 							Int32 minRSSI;
-							UOSInt minIndex;
+							UIntOS minIndex;
 							Int32 rssi1 = Double2Int32(bss->GetRSSI());
 							minRSSI = 0;
 							minIndex = 0;
@@ -427,7 +427,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					bss.Delete();
 				}
 
-				sptr = Text::StrUOSInt(sbuff, j);
+				sptr = Text::StrUIntOS(sbuff, j);
 				me->txtCurrWifiCnt->SetText(CSTRP(sbuff, sptr));
 				wlanInterf->Scan();
 
@@ -435,7 +435,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 
 				if (bssListUpd)
 				{
-					sptr = Text::StrUOSInt(sbuff, me->bssMap.GetCount());
+					sptr = Text::StrUIntOS(sbuff, me->bssMap.GetCount());
 					me->txtBSSCount->SetText(CSTRP(sbuff, sptr));
 				}
 			}
@@ -543,7 +543,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	NN<Text::String> s;
@@ -560,12 +560,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType 
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Data::DateTime dt;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -650,12 +650,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(AnyType
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt8 macBuff[8];
 	Data::DateTime dt;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -781,8 +781,8 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	this->locSvcRel = false;
 	this->captureFS = nullptr;
 	this->captureWriter = nullptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->sensorMgr.GetSensorCnt();
 	while (i < j)
@@ -941,7 +941,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 	this->captureWriter.Delete();
 	this->captureFS.Delete();
 	this->wlan.Delete();
-	UOSInt i;
+	UIntOS i;
 	NN<BSSStatus> bss;
 	i = this->bssMap.GetCount();
 	while (i-- > 0)

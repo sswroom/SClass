@@ -49,7 +49,7 @@ void Crypto::Hash::RIPEMD160::Clear()
 	buffSize = 0;
 }
 
-void Crypto::Hash::RIPEMD160::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::RIPEMD160::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->msgLeng += (buffSize << 3);
 	if ((buffSize + this->buffSize) < 64)
@@ -125,12 +125,12 @@ void Crypto::Hash::RIPEMD160::GetValue(UnsafeArray<UInt8> buff) const
 	}
 }
 
-UOSInt Crypto::Hash::RIPEMD160::GetBlockSize() const
+UIntOS Crypto::Hash::RIPEMD160::GetBlockSize() const
 {
 	return 64;
 }
 
-UOSInt Crypto::Hash::RIPEMD160::GetResultSize() const
+UIntOS Crypto::Hash::RIPEMD160::GetResultSize() const
 {
 	return 20;
 }

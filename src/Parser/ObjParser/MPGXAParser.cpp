@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::Pa
 
 	UInt8 buff[2352];
 	Bool found = false;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UInt32 v;
 	while (i < 75)
 	{

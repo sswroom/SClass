@@ -93,8 +93,8 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 
 	NN<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> devList = this->sysInfo->GetDeviceInfos();
 	NN<IO::SystemInfoLog::DeviceInfo> dev;
-	UOSInt i = 0;
-	UOSInt j = devList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = devList->GetCount();
 	while (i < j)
 	{
 		dev = devList->GetItemNoCheck(i);

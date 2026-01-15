@@ -30,9 +30,9 @@ namespace Text
 			virtual ~Expression(){};
 
 			virtual ExpressionType GetType() const = 0;
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const = 0;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const = 0;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const = 0;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
 		};
 
 		class UnknownExpression : public Expression
@@ -42,9 +42,9 @@ namespace Text
 			virtual ~UnknownExpression() {};
 
 			virtual ExpressionType GetType() const { return ExpressionType::Unknown; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		};
 
 		class WSExpression : public Expression
@@ -54,9 +54,9 @@ namespace Text
 			virtual ~WSExpression() {};
 
 			virtual ExpressionType GetType() const { return ExpressionType::WS; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		};
 
 		class SeqExpression : public Expression
@@ -68,12 +68,12 @@ namespace Text
 			virtual ~SeqExpression() { this->expList.DeleteAll();};
 
 			virtual ExpressionType GetType() const { return ExpressionType::Seq; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 
 		private:
-			UOSInt MatchInner(Text::CStringNN s, UOSInt sIndex, UOSInt expIndex) const;
+			UIntOS MatchInner(Text::CStringNN s, UIntOS sIndex, UIntOS expIndex) const;
 		};
 
 		class SubExpression : public SeqExpression
@@ -84,7 +84,7 @@ namespace Text
 
 			virtual ExpressionType GetType() const { return ExpressionType::Sub; };
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		};
 
 		class ZeroOrOneExpression : public Expression
@@ -96,9 +96,9 @@ namespace Text
 			virtual ~ZeroOrOneExpression() { this->innerExp.Delete(); }
 
 			virtual ExpressionType GetType() const { return ExpressionType::ZeroOrOne; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const { return this->innerExp->Match(s, index); };
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const { return this->innerExp->Match(s, index); };
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const { this->innerExp->ToString(sb); sb->AppendUTF8Char('?'); };
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const {sb->AppendChar('\t', level)->Append(CSTR("ZeroOrOne: ")); this->ToString(sb); }
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const {sb->AppendChar('\t', level)->Append(CSTR("ZeroOrOne: ")); this->ToString(sb); }
 		};
 
 		class ZeroOrManyExpression : public Expression
@@ -110,9 +110,9 @@ namespace Text
 			virtual ~ZeroOrManyExpression() { this->innerExp.Delete(); }
 
 			virtual ExpressionType GetType() const { return ExpressionType::ZeroOrMany; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const { return this->innerExp->Match(s, index); };
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const { return this->innerExp->Match(s, index); };
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const { this->innerExp->ToString(sb); sb->AppendUTF8Char('*'); };
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const {sb->AppendChar('\t', level)->Append(CSTR("ZeroOrMany: ")); this->ToString(sb); }
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const {sb->AppendChar('\t', level)->Append(CSTR("ZeroOrMany: ")); this->ToString(sb); }
 		};
 
 		class OneOrManyExpression : public Expression
@@ -124,9 +124,9 @@ namespace Text
 			virtual ~OneOrManyExpression() { this->innerExp.Delete(); }
 
 			virtual ExpressionType GetType() const { return ExpressionType::OneOrMany; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const { return this->innerExp->Match(s, index); };
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const { return this->innerExp->Match(s, index); };
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const { this->innerExp->ToString(sb); sb->AppendUTF8Char('+'); };
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const {sb->AppendChar('\t', level)->Append(CSTR("OneOrMany: ")); this->ToString(sb); }
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const {sb->AppendChar('\t', level)->Append(CSTR("OneOrMany: ")); this->ToString(sb); }
 		};
 
 		class AnyCharExpression : public Expression
@@ -136,9 +136,9 @@ namespace Text
 			virtual ~AnyCharExpression() {}
 
 			virtual ExpressionType GetType() const { return ExpressionType::AnyChar; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const { if (s.leng >= index + 1) return 1; return INVALID_INDEX; };
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const { if (s.leng >= index + 1) return 1; return INVALID_INDEX; };
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const { sb->AppendUTF8Char('.'); };
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const {sb->AppendChar('\t', level)->Append(CSTR("AnyChar: .")); }
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const {sb->AppendChar('\t', level)->Append(CSTR("AnyChar: .")); }
 		};
 
 		class BracketExpression : public Expression
@@ -151,9 +151,9 @@ namespace Text
 			virtual ~BracketExpression() {}
 
 			virtual ExpressionType GetType() const { return ExpressionType::Bracket; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 			void AddChar(UTF32Char c) {this->charList.Add(c); }
 		};
 
@@ -166,9 +166,9 @@ namespace Text
 			virtual ~OrExpression() { this->expList.DeleteAll(); }
 
 			virtual ExpressionType GetType() const { return ExpressionType::Or; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const;
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 			void AddExpList(NN<Data::ArrayListNN<Expression>> expList);
 		};
 
@@ -181,9 +181,9 @@ namespace Text
 			virtual ~CharMatchExpression() { }
 
 			virtual ExpressionType GetType() const { return ExpressionType::CharMatch; };
-			virtual UOSInt Match(Text::CStringNN s, UOSInt index) const;
+			virtual UIntOS Match(Text::CStringNN s, UIntOS index) const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const { sb->AppendChar(c, 1); }
-			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const {sb->AppendChar('\t', level)->Append(CSTR("CharMatch: "))->AppendChar(c, 1); }
+			virtual void Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const {sb->AppendChar('\t', level)->Append(CSTR("CharMatch: "))->AppendChar(c, 1); }
 		};
 
 	private:
@@ -195,7 +195,7 @@ namespace Text
 		RegEx(UnsafeArray<const Char> regEx);
 		~RegEx();
 
-		UOSInt Split(Text::CStringNN s, NN<Data::ArrayListStringNN> result) const;
+		UIntOS Split(Text::CStringNN s, NN<Data::ArrayListStringNN> result) const;
 		void Summary(NN<Text::StringBuilderUTF8> sb) const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};

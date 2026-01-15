@@ -96,12 +96,12 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 	else
 	{
 		UInt64 contLeng = cli->GetContentLength();
-		UOSInt currPos = 0;
-		UOSInt readSize;
+		UIntOS currPos = 0;
+		UIntOS readSize;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
-			Data::ByteBuffer imgBuff((UOSInt)contLeng);
-			while ((readSize = cli->Read(imgBuff.SubArray(currPos, (UOSInt)contLeng - currPos))) > 0)
+			Data::ByteBuffer imgBuff((UIntOS)contLeng);
+			while ((readSize = cli->Read(imgBuff.SubArray(currPos, (UIntOS)contLeng - currPos))) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)
@@ -192,7 +192,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::WebRequest> re
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sarr[5];
-	UOSInt i;
+	UIntOS i;
 	if (subReq.leng > 255)
 	{
 		subReq.leng = 255;
@@ -240,12 +240,12 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::WebRequest> re
 		dt.AddMinute(1440);
 		resp->AddExpireTime(&dt);
 
-		Data::ByteBuffer buff((UOSInt)stmLeng);
-		UOSInt buffSize = 0;
-		UOSInt readSize;
+		Data::ByteBuffer buff((UIntOS)stmLeng);
+		UIntOS buffSize = 0;
+		UIntOS readSize;
 		while (buffSize < stmLeng)
 		{
-			readSize = stm->Read(buff.SubArray(buffSize, (UOSInt)(stmLeng - buffSize)));
+			readSize = stm->Read(buff.SubArray(buffSize, (UIntOS)(stmLeng - buffSize)));
 			if (readSize == 0)
 			{
 				break;
@@ -256,13 +256,13 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::WebRequest> re
 		mutUsage.EndUse();
 		if (buffSize < stmLeng)
 		{
-			MemClear(&buff[buffSize], (UOSInt)(stmLeng - buffSize));
+			MemClear(&buff[buffSize], (UIntOS)(stmLeng - buffSize));
 		}
 		buffSize = 0;
 		Manage::HiResClock clk;
 		while (buffSize < stmLeng)
 		{
-			readSize = resp->Write(Data::ByteArrayR(&buff[buffSize], (UOSInt)(stmLeng - buffSize)));
+			readSize = resp->Write(Data::ByteArrayR(&buff[buffSize], (UIntOS)(stmLeng - buffSize)));
 			if (readSize == 0)
 			{
 				break;

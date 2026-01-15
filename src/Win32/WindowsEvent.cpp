@@ -20,7 +20,7 @@ Win32::WindowsEvent::~WindowsEvent()
 	Text::StrDelNew(this->progName);
 }
 
-Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize)
+Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UIntOS buffSize)
 {
 	if (this->hand == 0)
 		return false;

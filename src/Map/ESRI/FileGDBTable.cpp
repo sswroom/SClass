@@ -90,7 +90,7 @@ NN<Text::String> Map::ESRI::FileGDBTable::GetFileName() const
 	return this->gdbtableFD->GetFullFileName();
 }
 
-Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions)
+Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions)
 {
 	NN<FileGDBTableInfo> tableInfo;
 	if (!this->tableInfo.SetTo(tableInfo))

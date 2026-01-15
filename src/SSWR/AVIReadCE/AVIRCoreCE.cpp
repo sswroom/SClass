@@ -115,7 +115,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 	case IO::ParserType::Stream:
 		{
 			Int64 totalSize = 0;
-			OSInt thisSize;
+			IntOS thisSize;
 			UInt8 *buff;
 			IO::Stream *stm = (IO::Stream *)pobj;
 			IO::StmData::MemoryData2 *data;
@@ -181,9 +181,9 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 
 void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	Data::ArrayListNN<IO::FileExporter> exp;
 	this->exporters.GetSupportedExporters(exp, pobj);
 	if (exp.GetCount() == 0)
@@ -215,7 +215,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Par
 			i++;
 		}
 		sptr = pobj->GetSourceName(sbuff1);
-		if ((i = Text::StrLastIndexOfCharC(sbuff1, (UOSInt)(sptr - sbuff1), '.')) != INVALID_INDEX)
+		if ((i = Text::StrLastIndexOfCharC(sbuff1, (UIntOS)(sptr - sbuff1), '.')) != INVALID_INDEX)
 		{
 			sbuff1[i] = 0;
 			sptr = &sbuff1[i];

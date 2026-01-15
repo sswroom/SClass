@@ -35,7 +35,7 @@ Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Medi
 
 Media::VectorDocument::~VectorDocument()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Media::VectorGraph> graph;
 	i = this->items.GetCount();
 	while (i-- > 0)
@@ -170,12 +170,12 @@ UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetProducer() const
 	return this->producer;
 }
 
-UOSInt Media::VectorDocument::GetCount() const
+UIntOS Media::VectorDocument::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-Optional<Media::VectorGraph> Media::VectorDocument::GetItem(UOSInt index) const
+Optional<Media::VectorGraph> Media::VectorDocument::GetItem(UIntOS index) const
 {
 	return this->items.GetItem(index);
 }

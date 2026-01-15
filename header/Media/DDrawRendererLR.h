@@ -36,8 +36,8 @@ namespace Media
 		void *clipper;
 
 		FrameBuffer *surfaceBuff;
-		OSInt surfaceBuffStart;
-		OSInt surfaceBuffEnd;
+		IntOS surfaceBuffStart;
+		IntOS surfaceBuffEnd;
 		Sync::Event *surfaceBuffEvent;
 		Sync::Mutex *surfaceBuffMut;
 
@@ -69,8 +69,8 @@ namespace Media
 
 		Bool frameProcRunning;
 		Bool frameProcToStop;
-		OSInt frameProcStart;
-		OSInt frameProcEnd;
+		IntOS frameProcStart;
+		IntOS frameProcEnd;
 		Sync::Mutex *frameProcMut;
 		Sync::Event *frameProcEvent;
 
@@ -82,8 +82,8 @@ namespace Media
 		void ReleaseSubSurface();
 		void CreateFrameSrcBuff();
 		void ReleaseFrameSrcBuff();
-		OSInt GetNextSurface(Int32 frameTime);
-		void PutNextSurface(OSInt index);
+		IntOS GetNextSurface(Int32 frameTime);
+		void PutNextSurface(IntOS index);
 
 		static UInt32 __stdcall ScnUpdater(void *obj);
 		static UInt32 __stdcall FrameProcesser(void *obj);

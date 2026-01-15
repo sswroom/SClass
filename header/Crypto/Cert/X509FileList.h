@@ -21,9 +21,9 @@ namespace Crypto
 			virtual FileType GetFileType() const;
 			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
 
-			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual UIntOS GetCertCount();
+			virtual Bool GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Optional<X509Cert> GetNewCert(UIntOS index);
 			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NN<ASN1Data> Clone() const;
@@ -32,8 +32,8 @@ namespace Crypto
 			virtual NN<Net::ASN1Names> CreateNames() const;
 
 			void AddFile(NN<Crypto::Cert::X509File> file);
-			UOSInt GetFileCount() const;
-			Optional<Crypto::Cert::X509File> GetFile(UOSInt index) const;
+			UIntOS GetFileCount() const;
+			Optional<Crypto::Cert::X509File> GetFile(UIntOS index) const;
 			void SetDefaultSourceName();
 		};
 	}

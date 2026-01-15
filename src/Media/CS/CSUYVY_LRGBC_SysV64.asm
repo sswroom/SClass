@@ -13,7 +13,7 @@ section .text
 global CSUYVY_LRGBC_do_yuy2rgb
 global _CSUYVY_LRGBC_do_yuy2rgb
 
-;void CSUYVY_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+;void CSUYVY_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 ;0 ebx
 ;8 retAddr
 ;rdi rcx src
@@ -30,7 +30,7 @@ _CSUYVY_LRGBC_do_yuy2rgb:
 	
 	lea rax,[rdx*8] ;width * 7
 	shr rdx,1
-	sub rdx,2 ;				OSInt wsize = (width >> 1) - 2;
+	sub rdx,2 ;				IntOS wsize = (width >> 1) - 2;
 	sub r8,rax ;dbpl -= width * 8
 
 	mov rbx,qword [rsp+16] ;rgbGammaCorr

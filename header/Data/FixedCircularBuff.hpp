@@ -8,12 +8,12 @@ namespace Data
 	{
 	private:
 		UnsafeArray<T> buff;
-		UOSInt capacity;
-		UOSInt getIndex;
-		UOSInt putIndex;
+		UIntOS capacity;
+		UIntOS getIndex;
+		UIntOS putIndex;
 
 	public:
-		FixedCircularBuff(UOSInt capacity);
+		FixedCircularBuff(UIntOS capacity);
 		~FixedCircularBuff();
 
 		Bool HasItems() const;
@@ -22,14 +22,14 @@ namespace Data
 		T Get();
 		T GetNoRemove() const;
 		T GetLastNoRemove() const;
-		UOSInt GetCount() const;
-		UOSInt IndexOf(T item) const;
-		UOSInt GetPutIndex() const;
-		UOSInt GetItems(NN<Data::ArrayListNative<T>> list) const;
+		UIntOS GetCount() const;
+		UIntOS IndexOf(T item) const;
+		UIntOS GetPutIndex() const;
+		UIntOS GetItems(NN<Data::ArrayListNative<T>> list) const;
 	};
 }
 
-template<typename T> Data::FixedCircularBuff<T>::FixedCircularBuff(UOSInt capacity)
+template<typename T> Data::FixedCircularBuff<T>::FixedCircularBuff(UIntOS capacity)
 {
 	this->capacity = capacity;
 	this->buff = MemAllocArr(T, capacity);
@@ -94,11 +94,11 @@ template<typename T> T Data::FixedCircularBuff<T>::GetLastNoRemove() const
 	{
 		return 0;
 	}
-	UOSInt lastIndex = (this->putIndex - 1) & (this->capacity - 1);
+	UIntOS lastIndex = (this->putIndex - 1) & (this->capacity - 1);
 	return this->buff[lastIndex];
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::GetCount() const
+template<typename T> UIntOS Data::FixedCircularBuff<T>::GetCount() const
 {
 	if (this->getIndex <= this->putIndex)
 	{
@@ -110,11 +110,11 @@ template<typename T> UOSInt Data::FixedCircularBuff<T>::GetCount() const
 	}
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::IndexOf(T item) const
+template<typename T> UIntOS Data::FixedCircularBuff<T>::IndexOf(T item) const
 {
-	UOSInt andVal = this->capacity - 1;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS andVal = this->capacity - 1;
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = (this->getIndex + i) & andVal;
@@ -130,15 +130,15 @@ template<typename T> UOSInt Data::FixedCircularBuff<T>::IndexOf(T item) const
 	}
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::GetPutIndex() const
+template<typename T> UIntOS Data::FixedCircularBuff<T>::GetPutIndex() const
 {
 	return this->putIndex;
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::GetItems(NN<Data::ArrayListNative<T>> list) const
+template<typename T> UIntOS Data::FixedCircularBuff<T>::GetItems(NN<Data::ArrayListNative<T>> list) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->getIndex <= this->putIndex)
 	{
 		i = this->getIndex;

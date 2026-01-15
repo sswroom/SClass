@@ -80,13 +80,13 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
 }
 
-/*OSInt DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
+/*IntOS DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
 {
 	ClassData *data = this->clsData;
 	if (data->pSession == 0)
@@ -176,12 +176,12 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
 
-Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char tmpBuff[256];
 	UnsafeArray<UTF8Char> sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));

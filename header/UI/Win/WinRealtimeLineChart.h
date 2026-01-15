@@ -15,12 +15,12 @@ namespace UI
 			void *clsData;
 
 		public:
-			static OSInt __stdcall RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+			static IntOS __stdcall RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam);
 		private:
 			void Init(Optional<InstanceHandle> hInst);
 			void Deinit(Optional<InstanceHandle> hInst);
 		public:
-			WinRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+			WinRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS);
 			virtual ~WinRealtimeLineChart();
 		};
 	}

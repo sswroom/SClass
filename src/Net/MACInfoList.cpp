@@ -13,10 +13,10 @@
 Net::MACInfoList::MACInfoList()
 {
 	this->modified = false;
-	UOSInt cnt;
+	UIntOS cnt;
 	UnsafeArray<Net::MACInfo::MACEntry> ents = Net::MACInfo::GetMACEntryList(cnt);
 	NN<Net::MACInfo::MACEntry> entry;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < cnt)
 	{
 		entry = MemAllocNN(Net::MACInfo::MACEntry);
@@ -37,7 +37,7 @@ Net::MACInfoList::~MACInfoList()
 		this->Store();
 	}
 
-	UOSInt i;
+	UIntOS i;
 	NN<Net::MACInfo::MACEntry> entry;
 	i = this->dataList.GetCount();
 	while (i-- > 0)
@@ -48,33 +48,33 @@ Net::MACInfoList::~MACInfoList()
 	}
 }
 
-UOSInt Net::MACInfoList::GetCount() const
+UIntOS Net::MACInfoList::GetCount() const
 {
 	return this->dataList.GetCount();
 }
 
-NN<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItemNoCheck(UOSInt index) const
+NN<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItemNoCheck(UIntOS index) const
 {
 	return this->dataList.GetItemNoCheck(index);
 }
 
-Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItem(UOSInt index) const
+Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItem(UIntOS index) const
 {
 	return this->dataList.GetItem(index);
 }
 
-OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
+IntOS Net::MACInfoList::GetIndex(UInt64 macInt)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	NN<Net::MACInfo::MACEntry> entry;
 	i = 0;
-	j = (OSInt)this->dataList.GetCount() - 1;
+	j = (IntOS)this->dataList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = this->dataList.GetItemNoCheck((UOSInt)k);
+		entry = this->dataList.GetItemNoCheck((UIntOS)k);
 		if (entry->rangeStart > macInt)
 		{
 			j = k - 1;
@@ -93,10 +93,10 @@ OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
 
 Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntry(UInt64 macInt)
 {
-	OSInt si = this->GetIndex(macInt);
+	IntOS si = this->GetIndex(macInt);
 	if (si >= 0)
 	{
-		return this->dataList.GetItem((UOSInt)si);
+		return this->dataList.GetItem((UIntOS)si);
 	}
 	return nullptr;
 }
@@ -112,32 +112,32 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8
 	macBuff[5] = 0;
 	macBuff[6] = 0;
 	macBuff[7] = 0;
-	OSInt si = this->GetIndex(ReadMUInt64(macBuff));
+	IntOS si = this->GetIndex(ReadMUInt64(macBuff));
 	if (si >= 0)
 	{
-		return this->dataList.GetItem((UOSInt)si);
+		return this->dataList.GetItem((UIntOS)si);
 	}
 	return nullptr;
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)
+UIntOS Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)
 {
 	UInt64 mask = 0xffffffffffLL;
 	return SetEntry(macInt & ~mask, macInt | mask, name);
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name)
+UIntOS Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name)
 {
 	NN<Net::MACInfo::MACEntry> entry;
 	this->modified = true;
-	OSInt si = this->GetIndex(rangeStart);
+	IntOS si = this->GetIndex(rangeStart);
 	if (si >= 0)
 	{
-		entry = this->dataList.GetItemNoCheck((UOSInt)si);
+		entry = this->dataList.GetItemNoCheck((UIntOS)si);
 		if (entry->name) Text::StrDelNew(entry->name);
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
-		return (UOSInt)si;
+		return (UIntOS)si;
 	}
 	else
 	{
@@ -146,8 +146,8 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 		entry->rangeEnd = rangeEnd;
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
-		this->dataList.Insert((UOSInt)~si, entry);
-		return (UOSInt)~si;
+		this->dataList.Insert((UIntOS)~si, entry);
+		return (UIntOS)~si;
 	}
 }
 
@@ -224,8 +224,8 @@ Bool Net::MACInfoList::Store()
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("MACList.txt"));
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{

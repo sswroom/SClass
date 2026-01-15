@@ -7,7 +7,7 @@ Data::ArrayListString::ArrayListString() : Data::SortableArrayListObj<Optional<T
 {
 }
 
-Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayListObj<Optional<Text::String>>(capacity)
+Data::ArrayListString::ArrayListString(UIntOS capacity) : Data::SortableArrayListObj<Optional<Text::String>>(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayListObj<Optional<Text::String>>> Data::ArrayListString::Clone() co
 	return newArr;
 }
 
-OSInt Data::ArrayListString::Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const
+IntOS Data::ArrayListString::Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const
 {
 	if (obj1 == obj2)
 		return 0;
@@ -32,14 +32,14 @@ OSInt Data::ArrayListString::Compare(Optional<Text::String> obj1, Optional<Text:
 	return s1->CompareTo(s2);
 }
 
-OSInt Data::ArrayListString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const
+IntOS Data::ArrayListString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UIntOS len) const
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	i = 0;
-	j = (OSInt)this->objCnt - 1;
+	j = (IntOS)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -64,9 +64,9 @@ OSInt Data::ArrayListString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, U
 NN<Text::String> Data::ArrayListString::JoinString() const
 {
 	NN<Text::String> newStr;
-	UOSInt newStrLeng = 0;
-	UOSInt j;
-	UOSInt i;
+	UIntOS newStrLeng = 0;
+	UIntOS j;
+	UIntOS i;
 	NN<Text::String> s;
 	j = this->objCnt;
 	i = 0;
@@ -96,8 +96,8 @@ NN<Text::String> Data::ArrayListString::JoinString() const
 void Data::ArrayListString::FreeAll()
 {
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt j = this->objCnt;
+	UIntOS i = 0;
+	UIntOS j = this->objCnt;
 	while (i < j)
 	{
 		if (this->arr[i].SetTo(s))

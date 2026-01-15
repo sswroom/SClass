@@ -13,7 +13,7 @@ section .text
 global CSYVU9_RGB8_do_yvu9rgb8
 global _CSYVU9_RGB8_do_yvu9rgb8
 
-;void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
+;void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
 ;8 cSub
 ;16 cSize
 ;24 cWidth4

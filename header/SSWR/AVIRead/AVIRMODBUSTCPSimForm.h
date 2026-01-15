@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnDevAddClicked(AnyType userObj);
 			static void __stdcall OnDelayClicked(AnyType userObj);
 			static void __stdcall OnDeviceChanged(AnyType userObj);
-			static void __stdcall OnDeviceValuesDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnDeviceValuesDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateDevList();
 			void UpdateDevValues();

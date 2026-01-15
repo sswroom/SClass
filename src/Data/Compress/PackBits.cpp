@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "Data/Compress/PackBits.h"
 
-Bool Data::Compress::PackBits::Decompress(UnsafeArray<UInt8> destBuff, OutParam<UOSInt> destBuffSize, UnsafeArray<UInt8> srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::PackBits::Decompress(UnsafeArray<UInt8> destBuff, OutParam<UIntOS> destBuffSize, UnsafeArray<UInt8> srcBuff, UIntOS srcBuffSize)
 {
 	UInt8 b;
 	UInt8 b2;
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	while (srcBuffSize-- > 0)
 	{
 		b = *srcBuff++;

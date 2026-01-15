@@ -22,7 +22,7 @@
 #endif
 #endif
 
-void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -31,12 +31,12 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 	if (packetType == 3 && cmdSize >= 2)
 	{
 		UInt8 qosLev = (cmdType & 6) >> 1;
-		UOSInt i;
-		UOSInt packetId = ReadMUInt16(&cmd[0]);
+		UIntOS i;
+		UIntOS packetId = ReadMUInt16(&cmd[0]);
 		UnsafeArrayOpt<UTF8Char> topic = nullptr;
 		UnsafeArray<UTF8Char> nntopic;
-		UOSInt topicLen = 0;
-		if ((UOSInt)(packetId + 2) <= cmdSize)
+		UIntOS topicLen = 0;
+		if ((UIntOS)(packetId + 2) <= cmdSize)
 		{
 			nntopic = MemAlloc(UTF8Char, packetId + 1);
 			MemCopyNO(nntopic.Ptr(), &cmd[2], packetId);
@@ -93,7 +93,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 	}
 }
 
-void Net::MQTTConn::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 
@@ -101,10 +101,10 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 {
 	NN<Net::MQTTConn> me = userObj.GetNN<Net::MQTTConn>();
 	Sync::ThreadUtil::SetName(CSTR("MQTTConnRecv"));
-	UOSInt maxBuffSize = 9000;
+	UIntOS maxBuffSize = 9000;
 	UInt8 *buff;
-	UOSInt buffSize;
-	UOSInt readSize;
+	UIntOS buffSize;
+	UIntOS readSize;
 	NN<IO::Stream> stm;
 	if (!me->stm.SetTo(stm))
 	{
@@ -148,9 +148,9 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize)
+void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize)
 {
-	UOSInt i = this->hdlrList.GetCount();
+	UIntOS i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<PublishMessageHdlr> cb = this->hdlrList.GetItem(i);
@@ -184,7 +184,7 @@ Optional<Net::MQTTConn::PacketInfo> Net::MQTTConn::GetNextPacket(UInt8 packetTyp
 	}
 }
 
-Bool Net::MQTTConn::SendPacket(UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::MQTTConn::SendPacket(UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	NN<IO::Stream> stm;
 	if (!this->stm.SetTo(stm))
@@ -192,7 +192,7 @@ Bool Net::MQTTConn::SendPacket(UnsafeArray<const UInt8> packet, UOSInt packetSiz
 		return false;
 	}
 	Sync::MutexUsage mutUsage(this->cliMut);
-	UOSInt sendSize = stm->Write(Data::ByteArrayR(packet, packetSize));
+	UIntOS sendSize = stm->Write(Data::ByteArrayR(packet, packetSize));
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
 }
@@ -279,7 +279,7 @@ Net::MQTTConn::~MQTTConn()
 		stm.Delete();
 		this->stm = nullptr;
 	}
-	UOSInt i;
+	UIntOS i;
 	i = this->packetList.GetCount();
 	while (i-- > 0)
 	{
@@ -302,8 +302,8 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 	UInt8 packet1[512];
 	UInt8 packet2[512];
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	packet1[0] = 0;
 	packet1[1] = 4;
 	packet1[2] = 'M';
@@ -340,8 +340,8 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 
 Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 
 	UInt8 cmd = 0x30 | (UInt8)((qos & 3) << 1);
@@ -387,7 +387,7 @@ Bool Net::MQTTConn::SendPubAck(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr.BuildPacket(packet2, 0x40, 0, packet1, 2, this->cliData);
@@ -398,7 +398,7 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr.BuildPacket(packet2, 0x50, 0, packet1, 2, this->cliData);
@@ -409,7 +409,7 @@ Bool Net::MQTTConn::SendPubRel(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr.BuildPacket(packet2, 0x62, 0, packet1, 2, this->cliData);
@@ -420,7 +420,7 @@ Bool Net::MQTTConn::SendPubComp(UInt16 packetId)
 {
 	UInt8 packet1[16];
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr.BuildPacket(packet2, 0x70, 0, packet1, 2, this->cliData);
@@ -430,8 +430,8 @@ Bool Net::MQTTConn::SendPubComp(UInt16 packetId)
 Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 {
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (topic.leng > 504)
 	{
@@ -477,7 +477,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 Bool Net::MQTTConn::SendPing()
 {
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 	j = this->protoHdlr.BuildPacket(packet2, 0xc0, 0, packet2, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
@@ -485,7 +485,7 @@ Bool Net::MQTTConn::SendPing()
 Bool Net::MQTTConn::SendDisconnect()
 {
 	UInt8 packet2[16];
-	UOSInt j;
+	UIntOS j;
 	j = this->protoHdlr.BuildPacket(packet2, 0xe0, 0, packet2, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }

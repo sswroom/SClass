@@ -26,7 +26,7 @@ namespace Net
 		{
 			UInt64 iMAC;
 			Int64 lastDetectTime;
-			OSInt detectCnt;
+			IntOS detectCnt;
 			Data::FastMapNative<UInt32, Int64> targetIPMap;
 		};
 
@@ -39,14 +39,14 @@ namespace Net
 		Sync::Mutex adapterMut;
 
 		ThreadStat *threadStats;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		Sync::Event *ctrlEvt;
 
 	private:
 		static UInt32 __stdcall DataThread(AnyType obj);
 
 	public:
-		IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt workerCnt);
+		IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UIntOS workerCnt);
 		~IPScanDetector();
 
 		Bool IsError();

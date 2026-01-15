@@ -35,13 +35,13 @@ Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::C
 	}
 }
 
-UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
+UInt32 Media::DrawImage::GetPixel32(IntOS x, IntOS y)
 {
-	UOSInt width = this->GetWidth();
-	if (x < 0 || (UOSInt)x >= width)
+	UIntOS width = this->GetWidth();
+	if (x < 0 || (UIntOS)x >= width)
 		return 0;
-	UOSInt height = this->GetHeight();
-	if (y < 0 || (UOSInt)y >= height)
+	UIntOS height = this->GetHeight();
+	if (y < 0 || (UIntOS)y >= height)
 		return 0;
 	Bool revOrder;
 	UnsafeArray<UInt8> bmpBits;
@@ -49,16 +49,16 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 		return 0;
 	if (revOrder)
 	{
-		y = (OSInt)height - y;
+		y = (IntOS)height - y;
 	}
 	UInt32 bitCount = this->GetBitCount();
 	if (bitCount == 32)
 	{
-		return *(UInt32*)(((y * (OSInt)width + x) * 4) + bmpBits.Ptr());
+		return *(UInt32*)(((y * (IntOS)width + x) * 4) + bmpBits.Ptr());
 	}
 	else if (bitCount == 24)
 	{
-		return 0xff000000 | *(UInt32*)(((y * (OSInt)width + x) * 3) + bmpBits.Ptr());
+		return 0xff000000 | *(UInt32*)(((y * (IntOS)width + x) * 3) + bmpBits.Ptr());
 	}
 	else
 	{

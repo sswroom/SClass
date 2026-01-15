@@ -22,14 +22,14 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Media::ColorConv> colorConv;
 			NN<Map::MapEnv> env;
-			UOSInt fontStyle;
+			UIntOS fontStyle;
 			Bool changed;
 			NN<Media::DrawEngine> eng;
 
 			Optional<Text::String> currFontName;
 			Double currFontSizePt;
 			UInt32 currColor;
-			UOSInt currBuffSize;
+			UIntOS currBuffSize;
 			UInt32 currBuffColor;
 			Bool isBold;
 			Optional<Media::StaticImage> previewImage;
@@ -50,9 +50,9 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall FontNameClicked(AnyType userObj);
-			static UI::EventState __stdcall FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
-			static void __stdcall BufferSizeChanged(AnyType userObj, UOSInt scrollPos);
-			static UI::EventState __stdcall BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
+			static UI::EventState __stdcall FontColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn);
+			static void __stdcall BufferSizeChanged(AnyType userObj, UIntOS scrollPos);
+			static UI::EventState __stdcall BufferColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn);
 			static void __stdcall FontsDoubleClicked(AnyType userObj);
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateFontPreview();
 			void UpdateDisplay();
 		public:
-			AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS fontStyle);
 			virtual ~AVIRGISFontEditForm();
 
 			virtual void OnMonitorChanged();

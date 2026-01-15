@@ -37,7 +37,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 	{
 	case DB::SQLType::MySQL:
 	{
-		OSInt i = 4;
+		IntOS i = 4;
 		Optional<DB::DBReader> tmpr = nullptr;
 		NN<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
@@ -95,9 +95,9 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
 				NEW_CLASSNN(col, DB::ColDef(CSTRP(buff, ptr)));
 				ptr = r->GetStr(2, buff, sizeof(buff)).Or(buff);
-				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
+				col->SetNotNull(Text::StrEqualsICaseC(buff, (UIntOS)(ptr - buff), UTF8STRC("NO")));
 				ptr = r->GetStr(3, buff, sizeof(buff)).Or(buff);
-				col->SetPK(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("PRI")));
+				col->SetPK(Text::StrEqualsICaseC(buff, (UIntOS)(ptr - buff), UTF8STRC("PRI")));
 				if (r->GetStr(4, buff, sizeof(buff)).SetTo(ptr))
 				{
 					col->SetDefVal(CSTRP(buff, ptr));
@@ -108,7 +108,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				}
 				if (r->GetStr(5, buff, sizeof(buff)).SetTo(ptr))
 				{
-					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
+					if (Text::StrEqualsC(buff, (UIntOS)(ptr - buff), UTF8STRC("auto_increment")))
 					{
 						col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 						col->SetAttr(Text::CString(nullptr));
@@ -123,8 +123,8 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 					col->SetAttr(Text::CString(nullptr));
 				}
 				ptr = r->GetStr(1, buff, sizeof(buff)).Or(buff);
-				UOSInt colSize = 0;
-				UOSInt colDP = 0;
+				UIntOS colSize = 0;
+				UIntOS colDP = 0;
 				col->SetNativeType(CSTRP(buff, ptr));
 				col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MySQL, buff, colSize, colDP));
 				col->SetColSize(colSize);
@@ -197,10 +197,10 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 					col->SetDefVal(CSTRP(buff, ptr));
 				}
 			}
-			UOSInt colSize = (UOSInt)r->GetInt32(6);
-			UOSInt colDP = (UOSInt)r->GetInt32(8);
+			UIntOS colSize = (UIntOS)r->GetInt32(6);
+			UIntOS colDP = (UIntOS)r->GetInt32(8);
 			ptr = r->GetStr(5, buff, sizeof(buff)).Or(buff);
-			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
+			if (Text::StrEndsWithC(buff, (UIntOS)(ptr - buff), UTF8STRC(" identity")))
 			{
 				col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 				ptr -= 9;
@@ -243,7 +243,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			while (it.HasNext())
 			{
 				NN<DB::ColDef> col = it.Next();
-				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
+				if (col->GetColName()->Equals(buff, (UIntOS)(ptr - buff)))
 				{
 					col->SetPK(true);
 					if (col->IsAutoInc())
@@ -310,7 +310,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				{
 					Int32 srid = r->GetInt32(0);
 					NN<DB::ColDef> col;
-					UOSInt i = tab->GetColCnt();
+					UIntOS i = tab->GetColCnt();
 					while (i-- > 0)
 					{
 						if (tab->GetCol(i).SetTo(col))
@@ -355,7 +355,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		Optional<Text::String> geometrySchema = nullptr;
 		Optional<Text::String> ops;
 		NN<Text::String> s;
-		UOSInt sizeCol;
+		UIntOS sizeCol;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (r->ReadNext())
 		{
@@ -623,7 +623,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			}
 			if (!r->IsNull(sizeCol))
 			{
-				col->SetColSize((UOSInt)r->GetInt32(sizeCol));
+				col->SetColSize((UIntOS)r->GetInt32(sizeCol));
 			}
 			tab->AddCol(col);
 			colMap.PutNN(col->GetColName(), col.Ptr());
@@ -714,57 +714,57 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 						if (!t.SetTo(s) || s->Equals(UTF8STRC("GEOMETRY")))
 						{
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Any);
 						}
 						else if (s->Equals(UTF8STRC("POINT")))
 						{
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PointZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PointZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Point);
 						}
 						else if (s->Equals(UTF8STRC("PATH")))
 						{
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PathZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PathZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Path);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Path);
 						}
 						else if (s->Equals(UTF8STRC("POLYGON")))
 						{
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PolygonZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::PolygonZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Polygon);
 						}
 						else if (s->Equals(UTF8STRC("MULTIPOLYGON")))
 						{
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygonZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultiPolygonZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygonZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultiPolygonZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygon);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultiPolygon);
 						}
 						else
 						{
 							printf("DBConn Postgresql: Unsupported type %s\r\n", s->v.Ptr());
 							if (dimension == 3)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZ);
 							else if (dimension == 4)
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZM);
 							else
-								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Any);
 						}
 					}
 					OPTSTR_DEL(colName);

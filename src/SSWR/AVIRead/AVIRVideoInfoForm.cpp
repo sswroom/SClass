@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnAudioEnd(AnyType userData)
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Bool succ;
-	UOSInt nFiles = files.GetCount();
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		succ = me->OpenFile(files[i]->ToCString());
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(AnyType userObj, 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
-	UOSInt i = me->lbStream->GetSelectedIndex();
+	UIntOS i = me->lbStream->GetSelectedIndex();
 	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> decStatus;
 	NN<Media::MediaFile> currFile;
 	if (!me->currFile.SetTo(currFile))
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	}
 	Int32 syncTime;
 	NN<Media::MediaSource> mediaSrc;
-	if (!currFile->GetStream((UOSInt)i, syncTime).SetTo(mediaSrc))
+	if (!currFile->GetStream((UIntOS)i, syncTime).SetTo(mediaSrc))
 	{
 		me->txtStream->SetText(CSTR(""));
 		return;
@@ -88,10 +88,10 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 		Media::FrameInfo frameInfo;
 		UInt32 rateNorm;
 		UInt32 rateDenorm;
-		UOSInt maxFrameSize;
+		UIntOS maxFrameSize;
 		sb.AppendC(UTF8STRC("Media Type = Video\r\n"));
 		sb.AppendC(UTF8STRC("Frame Count = "));
-		sb.AppendUOSInt(videoSrc->GetFrameCount());
+		sb.AppendUIntOS(videoSrc->GetFrameCount());
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Stream Time = "));
 		sb.AppendDur(videoSrc->GetStreamTime());
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 			sb.AppendDouble(rateNorm / (Double)rateDenorm);
 			sb.AppendC(UTF8STRC(")\r\n"));
 			sb.AppendC(UTF8STRC("Max Frame Size = "));
-			sb.AppendUOSInt(maxFrameSize);
+			sb.AppendUIntOS(maxFrameSize);
 			sb.AppendC(UTF8STRC("\r\n"));
 			frameInfo.ToString(sb);
 		}
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 		sb.AppendDur(audioSrc->GetStreamTime());
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Min Block Size = "));
-		sb.AppendUOSInt(audioSrc->GetMinBlockSize());
+		sb.AppendUIntOS(audioSrc->GetMinBlockSize());
 		sb.AppendC(UTF8STRC("\r\n"));
 		audioSrc->GetFormat(fmt);
 		fmt.ToString(sb);
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	NEW_CLASS(vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(adecoders, Media::Decoder::AudioDecoderFinder());
 	Bool isEnd;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int32 syncTime;
 	while (true)
 	{
@@ -278,7 +278,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 
 	this->lbStream->ClearItems();
 	this->ClearDecode();
-	UOSInt i;
+	UIntOS i;
 	Int32 syncTime;
 	Text::StringBuilderUTF8 sb;
 	NN<Media::MediaSource> mediaSrc;
@@ -290,7 +290,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 		
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Stream "));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
 			sb.AppendC(UTF8STRC(" (Video)"));

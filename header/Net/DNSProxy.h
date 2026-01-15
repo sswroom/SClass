@@ -33,7 +33,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 recBuff[512];
-			UOSInt recSize;
+			UIntOS recSize;
 			Data::Timestamp reqTime;
 			UInt32 ttl;
 			NameStatus status;
@@ -44,7 +44,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 respBuff[512];
-			UOSInt respSize;
+			UIntOS respSize;
 			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
@@ -55,7 +55,7 @@ namespace Net
 		Net::DNSServer *svr;
 
 		UInt32 currServerIP;
-		UOSInt currServerIndex;
+		UIntOS currServerIndex;
 		Data::DateTime currIPTime;
 		Sync::Mutex dnsMut;
 		Data::ArrayListNative<UInt32> dnsList;
@@ -98,8 +98,8 @@ namespace Net
 		UInt32 NextId();
 		NN<CliRequestStatus> NewCliReq(UInt32 id);
 		void DelCliReq(UInt32 id);
-		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
-		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
+		static UIntOS BuildEmptyReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
+		static UIntOS BuildAddressReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
 		DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO::LogTool> log);
 		~DNSProxy();
@@ -109,11 +109,11 @@ namespace Net
 		Bool IsReqListv6Chg();
 		Bool IsReqListOthChg();
 		Bool IsTargetChg();
-		UOSInt GetReqv4List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetReqv6List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetReqOthList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList); //no need release
-		UOSInt SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask); //no need release
+		UIntOS GetReqv4List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS GetReqv6List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS GetReqOthList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList); //no need release
+		UIntOS SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask); //no need release
 		Bool GetRequestInfov4(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		Bool GetRequestInfov6(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		Bool GetRequestInfoOth(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
@@ -124,7 +124,7 @@ namespace Net
 		void SwitchDNS();
 		Bool IsDisableV6();
 		void SetDisableV6(Bool disableV6);
-		UOSInt GetBlackList(NN<Data::ArrayListNN<Text::String>> blackList);
+		UIntOS GetBlackList(NN<Data::ArrayListNN<Text::String>> blackList);
 		Bool AddBlackList(NN<Text::String> blackList);
 		Bool AddBlackList(Text::CStringNN blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, AnyType userObj);

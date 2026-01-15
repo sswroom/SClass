@@ -6,11 +6,11 @@
 
 extern "C"
 {
-	void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
-	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+	void AlphaBlend8_8_DoBlend(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, UIntOS width, UIntOS height);
+	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, UIntOS width, UIntOS height);
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
 	if (height < (this->threadCnt << 4))
 	{
@@ -18,15 +18,15 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, 
 	}
 	else
 	{
-		UOSInt lastHeight = height;
-		UOSInt currHeight;
-		UOSInt i = this->threadCnt;
+		UIntOS lastHeight = height;
+		UIntOS currHeight;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
+			this->stats[i].dest = dest + dbpl * (IntOS)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * (OSInt)currHeight;
+			this->stats[i].src = src + sbpl * (IntOS)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -54,7 +54,7 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, 
 	}
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlendPA(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
 	if (height < (this->threadCnt << 4))
 	{
@@ -62,15 +62,15 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl
 	}
 	else
 	{
-		UOSInt lastHeight = height;
-		UOSInt currHeight;
-		UOSInt i = this->threadCnt;
+		UIntOS lastHeight = height;
+		UIntOS currHeight;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			currHeight = MulDivUOS(height, i, this->threadCnt);
-			this->stats[i].dest = dest + dbpl * (OSInt)currHeight;
+			this->stats[i].dest = dest + dbpl * (IntOS)currHeight;
 			this->stats[i].dbpl = dbpl;
-			this->stats[i].src = src + sbpl * (OSInt)currHeight;
+			this->stats[i].src = src + sbpl * (IntOS)currHeight;
 			this->stats[i].sbpl = sbpl;
 			this->stats[i].width = width;
 			this->stats[i].height = lastHeight - currHeight;
@@ -140,7 +140,7 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 		this->threadCnt = 4;
 	}
 	this->stats = MemAllocArr(ThreadStat, this->threadCnt);
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->stats[i].me = *this;
@@ -168,7 +168,7 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 
 Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 {
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	Bool found;
 	while (i-- > 0)
 	{
@@ -194,7 +194,7 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 	MemFreeArr(this->stats);
 }
 
-void Media::ABlend::AlphaBlend8_8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_8::Blend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height, Media::AlphaType srcAType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
@@ -210,11 +210,11 @@ void Media::ABlend::AlphaBlend8_8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, Un
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::PremulAlpha(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height)
 {
-	UOSInt i;
-	sbpl -= (OSInt)width << 2;
-	dbpl -= (OSInt)width << 2;
+	UIntOS i;
+	sbpl -= (IntOS)width << 2;
+	dbpl -= (IntOS)width << 2;
 	while (height-- > 0)
 	{
 		i = width;

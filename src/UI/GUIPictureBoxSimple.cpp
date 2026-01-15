@@ -40,9 +40,9 @@ void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, AnyType user
 	this->mouseUpObjs.Add(userObj);
 }
 
-void UI::GUIPictureBoxSimple::EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn)
+void UI::GUIPictureBoxSimple::EventButtonDown(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -50,9 +50,9 @@ void UI::GUIPictureBoxSimple::EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIC
 	}
 }
 
-void UI::GUIPictureBoxSimple::EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn)
+void UI::GUIPictureBoxSimple::EventButtonUp(Math::Coord2D<IntOS> pos, UI::GUIControl::MouseButton btn)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -60,9 +60,9 @@ void UI::GUIPictureBoxSimple::EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUICon
 	}
 }
 
-void UI::GUIPictureBoxSimple::EventMouseMove(Math::Coord2D<OSInt> pos)
+void UI::GUIPictureBoxSimple::EventMouseMove(Math::Coord2D<IntOS> pos)
 {
-	UOSInt i = this->mouseMoveHdlrs.GetCount();
+	UIntOS i = this->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), pos, MBTN_MIDDLE);

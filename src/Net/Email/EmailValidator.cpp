@@ -20,8 +20,8 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 	Net::SocketUtil::AddressInfo addr;
 	Net::Email::SMTPConn *conn;
 	Text::CStringNN emailDomain;
-	UOSInt i = emailAddr.IndexOf('@');
-	UOSInt j;
+	UIntOS i = emailAddr.IndexOf('@');
+	UIntOS j;
 	if (i == INVALID_INDEX || i == 0)
 	{
 		return S_INVALID_FORMAT;

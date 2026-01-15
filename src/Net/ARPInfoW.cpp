@@ -25,7 +25,7 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-UOSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UIntOS Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
 {
 	MemCopyNO(buff, this->phyAddr, this->phyAddrLen);
 	return this->phyAddrLen;
@@ -41,11 +41,11 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
+UIntOS Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
 {
 	UInt32 size;
-	UOSInt cnt;
-	UOSInt i;
+	UIntOS cnt;
+	UIntOS i;
 	size = 0;
 	if (GetIpNetTable(0, (ULONG*)&size, TRUE) == ERROR_INSUFFICIENT_BUFFER)
 	{

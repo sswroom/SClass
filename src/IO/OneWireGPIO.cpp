@@ -36,7 +36,7 @@ Bool IO::OneWireGPIO::Init()
 	return true;
 }
 
-void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
+void IO::OneWireGPIO::SendBits(const UInt8 *buff, IntOS nBits)
 {
 	UInt8 mask = 1;
 	while (nBits-- > 0)
@@ -76,9 +76,9 @@ void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
 	}
 }
 
-OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
+IntOS IO::OneWireGPIO::ReadBits(UInt8 *buff, IntOS nBits)
 {
-	OSInt i = nBits;
+	IntOS i = nBits;
 	UInt8 v = 0;
 	UInt8 mask = 1;
 	while (i-- > 0)

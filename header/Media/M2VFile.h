@@ -28,9 +28,9 @@ namespace Media
 		M2VFile(NN<IO::StreamData> stmData);
 		virtual ~M2VFile();
 		
-		virtual UOSInt AddSource(NN<Media::MediaSource> src, Int32 syncTime);
-		virtual Optional<Media::MediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
-		virtual void KeepStream(UOSInt index, Bool toKeep);
+		virtual UIntOS AddSource(NN<Media::MediaSource> src, Int32 syncTime);
+		virtual Optional<Media::MediaSource> GetStream(UIntOS index, OptOut<Int32> syncTime);
+		virtual void KeepStream(UIntOS index, Bool toKeep);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff);
 		virtual Data::Duration GetStreamTime();
@@ -42,7 +42,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration mediaTime);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool CanSeek();
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 	};
 }
 #endif

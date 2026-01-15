@@ -25,7 +25,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509EPrivKey::GetFileType() const
 
 void Crypto::Cert::X509EPrivKey::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt oidLen;
+	UIntOS oidLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> oidPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1", oidLen, itemType).SetTo(oidPDU) || itemType != Net::ASN1Util::IT_OID)
@@ -33,13 +33,13 @@ void Crypto::Cert::X509EPrivKey::ToShortName(NN<Text::StringBuilderUTF8> sb) con
 		return;
 	}
 	KeyType keyType = KeyTypeFromOID(Data::ByteArrayR(oidPDU, oidLen), false);
-	UOSInt keyLen;
+	UIntOS keyLen;
 	UnsafeArray<const UInt8> keyPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.3", keyLen, itemType).SetTo(keyPDU) && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
 		sb->Append(KeyTypeGetName(keyType));
 		sb->AppendUTF8Char(' ');
-		sb->AppendUOSInt(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
+		sb->AppendUIntOS(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
 		sb->AppendC(UTF8STRC(" bits"));
 	}
 }

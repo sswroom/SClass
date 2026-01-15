@@ -19,7 +19,7 @@ private:
 		}
 
 		UnsafeArray<const UInt8> data;
-		UOSInt dataSize;
+		UIntOS dataSize;
 		if (!req->GetReqData(dataSize).SetTo(data))
 		{
 			resp->ResponseError(req, Net::WebStatus::SC_NOT_ACCEPTABLE);
@@ -125,9 +125,9 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREdgeAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIREdgeAnalyseForm>();
 	NN<EdgeRecord> record;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Text::String> s;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;

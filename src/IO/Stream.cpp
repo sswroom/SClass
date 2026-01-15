@@ -14,15 +14,15 @@ IO::Stream::Stream(const Text::CStringNN &sourceName) : IO::ParsedObject(sourceN
 
 Optional<IO::StreamReadReq> IO::Stream::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	UOSInt retVal = Read(buff);
+	UIntOS retVal = Read(buff);
 	evt->Set();
 	return (IO::StreamReadReq*)retVal;
 }
 
-UOSInt IO::Stream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::Stream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::Stream::CancelRead(NN<IO::StreamReadReq> reqData)
@@ -31,14 +31,14 @@ void IO::Stream::CancelRead(NN<IO::StreamReadReq> reqData)
 
 Optional<IO::StreamWriteReq> IO::Stream::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	UOSInt retVal = Write(buff);
+	UIntOS retVal = Write(buff);
 	evt->Set();
 	return (IO::StreamWriteReq*)retVal;
 }
 
-UOSInt IO::Stream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::Stream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::Stream::CancelWrite(NN<IO::StreamWriteReq> reqData)
@@ -55,11 +55,11 @@ IO::ParserType IO::Stream::GetParserType() const
 	return IO::ParserType::Stream;
 }
 
-UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
+UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UIntOS buffSize)
 {
 	UInt64 totalSize = 0;
-	UOSInt readSize;
-	UOSInt writeSize;
+	UIntOS readSize;
+	UIntOS writeSize;
 	Data::ByteBuffer buff(buffSize);
 	while (true)
 	{
@@ -78,10 +78,10 @@ UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
 	return totalSize;
 }
 
-Optional<Text::String> IO::Stream::ReadAsString(UOSInt buffSize)
+Optional<Text::String> IO::Stream::ReadAsString(UIntOS buffSize)
 {
 	Data::ByteBuffer buff(buffSize);
-	UOSInt readSize;
+	UIntOS readSize;
 	readSize = this->Read(buff);
 	if (readSize <= 0)
 		return nullptr;
@@ -104,12 +104,12 @@ Optional<Text::String> IO::Stream::ReadAsString()
 	return this->ReadAsString(65536);
 }
 
-Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
+Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UIntOS buffSize)
 {
 	UInt64 currOfst = 0;
 	UInt64 totalSize = 0;
-	UOSInt readSize;
-	UOSInt writeSize;
+	UIntOS readSize;
+	UIntOS writeSize;
 	Data::ByteBuffer buff(buffSize);
 	while (true)
 	{
@@ -129,10 +129,10 @@ Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
 	return totalSize == data->GetDataSize();
 }
 
-UOSInt IO::Stream::WriteCont(UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS IO::Stream::WriteCont(UnsafeArray<const UInt8> buff, UIntOS size)
 {
-	UOSInt totalWrite = 0;
-	UOSInt writeSize;
+	UIntOS totalWrite = 0;
+	UIntOS writeSize;
 	while (totalWrite < size)
 	{
 		writeSize = this->Write(Data::ByteArrayR(&buff[totalWrite], size - totalWrite));

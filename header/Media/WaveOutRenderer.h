@@ -10,7 +10,7 @@ namespace Media
 	{
 	private:
 		Optional<Media::AudioSource> audsrc;
-		OSInt devId;
+		IntOS devId;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
@@ -28,8 +28,8 @@ namespace Media
 		static UInt32 GetMSFromTime(void *mmTime, NN<const AudioFormat> fmt);
 		static Data::Duration GetDurFromTime(void *mmTime, NN<const AudioFormat> fmt);
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
+		static UIntOS GetDeviceCount();
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
 
 		WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName);
 		WaveOutRenderer(Int32 devId);

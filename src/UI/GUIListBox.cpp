@@ -16,7 +16,7 @@ Text::CStringNN UI::GUIListBox::GetObjectClass() const
 
 void UI::GUIListBox::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs.GetCount();
+	UIntOS i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->selChgHdlrs.GetItem(i);
@@ -26,7 +26,7 @@ void UI::GUIListBox::EventSelectionChange()
 
 void UI::GUIListBox::EventDoubleClick()
 {
-	UOSInt i = this->dblClickHdlrs.GetCount();
+	UIntOS i = this->dblClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->dblClickHdlrs.GetItem(i);
@@ -34,9 +34,9 @@ void UI::GUIListBox::EventDoubleClick()
 	}
 }
 
-void UI::GUIListBox::EventRightClick(Math::Coord2D<OSInt> pos)
+void UI::GUIListBox::EventRightClick(Math::Coord2D<IntOS> pos)
 {
-	UOSInt i = this->rightClickHdlrs.GetCount();
+	UIntOS i = this->rightClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<MouseEventHandler> cb = this->rightClickHdlrs.GetItem(i);

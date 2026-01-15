@@ -28,11 +28,11 @@ namespace SSWR
 
 			typedef struct
 			{
-				Math::RectArea<UOSInt> area;
+				Math::RectArea<UIntOS> area;
 				NN<Text::String> result;
 				Double maxTileAngle;
 				Double pxArea;
-				UOSInt confidence;
+				UIntOS confidence;
 				NN<Media::StaticImage> plateImg;
 			} ResultInfo;
 			
@@ -59,8 +59,8 @@ namespace SSWR
 			static void __stdcall OnPlateSelChg(AnyType userObj);
 			static void __stdcall OnSelPlateClicked(AnyType userObj);
 			static void __stdcall OnSelCornersClicked(AnyType userObj);
-			static UI::EventState __stdcall OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg);
+			static UI::EventState __stdcall OnImgDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
+			static void __stdcall OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UIntOS> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UIntOS confidence, NN<Media::StaticImage> plateImg);
 			void ClearResults();
 		public:
 			AVIRANPRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

@@ -12,13 +12,13 @@ Media::CS::CSYUV_Y8::~CSYUV_Y8()
 {
 }
 
-void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->srcFmt == *(UInt32*)"YUYV" || this->srcFmt == *(UInt32*)"YUY2")
 	{
-		UOSInt i = dispHeight;
-		UOSInt j;
-		UOSInt sAdd = (srcStoreWidth - dispWidth) * 2;
+		UIntOS i = dispHeight;
+		UIntOS j;
+		UIntOS sAdd = (srcStoreWidth - dispWidth) * 2;
 		UnsafeArray<UInt8> sptr = srcPtr[0];
 		if (dispWidth & 15)
 		{
@@ -69,7 +69,7 @@ void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr
 		else
 		{
 			UnsafeArray<UInt8> sptr = srcPtr[0];
-			UOSInt i = dispHeight;
+			UIntOS i = dispHeight;
 			while (i-- > 0)
 			{
 				MemCopyNO(destPtr.Ptr(), sptr.Ptr(), dispWidth);
@@ -80,12 +80,12 @@ void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr
 	}
 }
 
-UOSInt Media::CS::CSYUV_Y8::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV_Y8::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return 0;
 }
 
-UOSInt Media::CS::CSYUV_Y8::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV_Y8::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height;
 }

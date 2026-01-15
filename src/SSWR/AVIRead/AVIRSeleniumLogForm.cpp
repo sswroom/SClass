@@ -46,8 +46,8 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumLogForm::OnCSVClick(AnyType userObj)
 			NN<LogItem> log;
 			IO::FileStream fs(dlg->GetFileName()->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(CSTR("StartTime,EndTime,Status,Title\r\n").ToByteArray());
-			UOSInt i = 0;
-			UOSInt j = me->logItems.GetCount();
+			UIntOS i = 0;
+			UIntOS j = me->logItems.GetCount();
 			while (i < j)
 			{
 				sb.ClearStr();
@@ -74,8 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumLogForm::OnCSVClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSeleniumLogForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRSeleniumLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSeleniumLogForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
 	while (i < j)
 	{
 		if (IO::Path::GetPathType(files[i]->ToCString()) == IO::Path::PathType::Directory)
@@ -108,9 +108,9 @@ void SSWR::AVIRead::AVIRSeleniumLogForm::OpenPackage(NN<IO::PackageFile> pkg)
 	NN<Text::JSONBase> json;
 	NN<LogItem> item;
 	UInt64 fileLen;
-	UOSInt k;
-	UOSInt i = 0;
-	UOSInt j = pkg->GetCount();
+	UIntOS k;
+	UIntOS i = 0;
+	UIntOS j = pkg->GetCount();
 	while (i < j)
 	{
 		pot = pkg->GetItemType(i);
@@ -129,15 +129,15 @@ void SSWR::AVIRead::AVIRSeleniumLogForm::OpenPackage(NN<IO::PackageFile> pkg)
 		{
 			sbuff[0] = 0;
 			sptr = pkg->GetItemName(sbuff, i).Or(sbuff);
-			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".json")) && pkg->GetItemStmDataNew(i).SetTo(stmData))
+			if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".json")) && pkg->GetItemStmDataNew(i).SetTo(stmData))
 			{
 				fileLen = stmData->GetDataSize();
 				if (fileLen >= 2 && fileLen <= 1048576)
 				{
-					if (stmData->GetRealData(0, (UOSInt)fileLen, Data::ByteArray(buff, 1048576)) == fileLen)
+					if (stmData->GetRealData(0, (UIntOS)fileLen, Data::ByteArray(buff, 1048576)) == fileLen)
 					{
-						buff[(UOSInt)fileLen] = 0;
-						if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UOSInt)fileLen)).SetTo(json))
+						buff[(UIntOS)fileLen] = 0;
+						if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UIntOS)fileLen)).SetTo(json))
 						{
 							Int64 startTime = json->GetValueAsInt64(CSTR("testResults[0].startTime"));
 							Int64 endTime = json->GetValueAsInt64(CSTR("testResults[0].endTime"));

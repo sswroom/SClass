@@ -44,9 +44,9 @@ namespace IO
 		virtual void SetTextColor(Text::StandardColor fgColor);
 		virtual void ResetTextColor();
 
-		UOSInt CalDisplaySize(const WChar *str);
+		UIntOS CalDisplaySize(const WChar *str);
 
-		UnsafeArrayOpt<WChar> ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar);
+		UnsafeArrayOpt<WChar> ReadLine(UnsafeArray<WChar> sbuff, UIntOS nChar);
 
 		void EnableCPFix(Bool isEnable);
 		void SetAutoFlush(Bool autoFlush);
@@ -54,10 +54,10 @@ namespace IO
 		Bool SetCursorPos(UInt32 x, Int32 y);
 		Bool IsFileOutput();
 
-		void FixWrite(const WChar *str, UOSInt displayWidth);
-		UOSInt GetDisplayWidth(const WChar *str);
+		void FixWrite(const WChar *str, UIntOS displayWidth);
+		UIntOS GetDisplayWidth(const WChar *str);
 	private:
-		UOSInt GetDisplayCharWidth(WChar c);
+		UIntOS GetDisplayCharWidth(WChar c);
 	};
 }
 #endif

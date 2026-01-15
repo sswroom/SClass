@@ -3,7 +3,7 @@
 #include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 
-extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
+extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UIntOS buffSize, Int32 vol)
 {
 	Int32 v;
 	while (buffSize-- > 0)
@@ -20,7 +20,7 @@ extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
 	}
 }
 
-extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
+extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, UIntOS buffSize, Int32 vol)
 {
 	Int64 v;
 	while (buffSize > 0)
@@ -37,7 +37,7 @@ extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, UOSInt buffSize, Int32 vol
 	}
 }
 
-extern "C" void AudioUtil_ConvI16_F32(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt nSample)
+extern "C" void AudioUtil_ConvI16_F32(const UInt8 *srcBuff, UInt8 *destBuff, UIntOS nSample)
 {
 	Double mul = 1 / 32768.0;
 	while (nSample-- > 0)
@@ -48,7 +48,7 @@ extern "C" void AudioUtil_ConvI16_F32(const UInt8 *srcBuff, UInt8 *destBuff, UOS
 	}
 }
 
-extern "C" void AudioUtil_ConvF32_I16(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt nSample)
+extern "C" void AudioUtil_ConvF32_I16(const UInt8 *srcBuff, UInt8 *destBuff, UIntOS nSample)
 {
 	while (nSample-- > 0)
 	{

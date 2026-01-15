@@ -31,8 +31,8 @@ namespace Media
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 			virtual void Stop();
-			virtual OSInt ReadBlock(UInt8 *buff, OSInt blkSize);
-			virtual OSInt GetMinBlockSize();
+			virtual IntOS ReadBlock(UInt8 *buff, IntOS blkSize);
+			virtual IntOS GetMinBlockSize();
 			virtual Data::Duration GetCurrTime();
 		};
 	}

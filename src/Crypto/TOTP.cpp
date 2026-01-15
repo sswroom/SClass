@@ -7,7 +7,7 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 6238
-Crypto::TOTP::TOTP(UnsafeArray<const UInt8> key, UOSInt keySize) : OTP(6)
+Crypto::TOTP::TOTP(UnsafeArray<const UInt8> key, UIntOS keySize) : OTP(6)
 {
 	this->keySize = keySize;
 	this->key = MemAllocArr(UInt8, keySize);
@@ -39,7 +39,7 @@ UInt32 Crypto::TOTP::NextCode()
 
 Bool Crypto::TOTP::IsValid(UInt32 code)
 {
-	UOSInt i = 5;
+	UIntOS i = 5;
 	UInt64 counter = GetCounter() - (i >> 1);
 	while (i-- > 0)
 	{

@@ -36,19 +36,19 @@ namespace Crypto
 			Algorithm alg;
 			Crypto::Cert::X509Key::KeyType keyType;
 			UnsafeArray<UInt8> privateKey;
-			UOSInt privateKeyLeng;
+			UIntOS privateKeyLeng;
 			UInt8 hashVal[256];
-			UOSInt hashValSize;
+			UIntOS hashValSize;
 
 		public:
-			JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UIntOS privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			~JWSignature();
 
-			Bool CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-			Bool VerifyHash(UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UInt8> signature, UOSInt signatureSize);
+			Bool CalcHash(UnsafeArray<const UInt8> buff, UIntOS buffSize);
+			Bool VerifyHash(UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UInt8> signature, UIntOS signatureSize);
 			Bool GetHashB64(NN<Text::StringBuilderUTF8> sb) const;
 			UnsafeArray<const UInt8> GetSignature() const;
-			UOSInt GetSignatureLen() const;
+			UIntOS GetSignatureLen() const;
 
 			static Text::CStringNN AlgorithmGetName(Algorithm alg);
 			static Algorithm AlgorithmGetByName(UnsafeArray<const UTF8Char> name);

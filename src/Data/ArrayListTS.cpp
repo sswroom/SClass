@@ -6,7 +6,7 @@ Data::ArrayListTS::ArrayListTS() : Data::SortableArrayListNative<Data::Timestamp
 {
 }
 
-Data::ArrayListTS::ArrayListTS(UOSInt capacity) : Data::SortableArrayListNative<Data::Timestamp>(capacity)
+Data::ArrayListTS::ArrayListTS(UIntOS capacity) : Data::SortableArrayListNative<Data::Timestamp>(capacity)
 {
 }
 

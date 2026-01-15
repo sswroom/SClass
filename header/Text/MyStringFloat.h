@@ -10,25 +10,25 @@ namespace Text
 	struct DoubleStyle
 	{
 		UnsafeArray<const UTF8Char> infStr;
-		UOSInt infLen;
+		UIntOS infLen;
 		UnsafeArray<const UTF8Char> nanStr;
-		UOSInt nanLen;	
+		UIntOS nanLen;	
 	};
 
 	static const DoubleStyle DoubleStyleExcel = {UTF8STRC("1.#INF00"), UTF8STRC("1.#QNAN0")};
 	static const DoubleStyle DoubleStyleC = {UTF8STRC("INF"), UTF8STRC("NAN")};
 
-	UnsafeArray<UTF8Char> StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt sigFig, NN<const DoubleStyle> style);
+	UnsafeArray<UTF8Char> StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS sigFig, NN<const DoubleStyle> style);
 	UnsafeArray<UTF8Char> StrDouble(UnsafeArray<UTF8Char> oriStr, Double val);
 	FORCEINLINE UnsafeArray<Char> StrDoubleCh(UnsafeArray<Char> oriStr, Double val) { return UnsafeArray<Char>::ConvertFrom(StrDouble(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val)); }
 	UnsafeArray<UTF16Char> StrDoubleW(UnsafeArray<UTF16Char> oriStr, Double val);
 	UnsafeArray<UTF32Char> StrDoubleW(UnsafeArray<UTF32Char> oriStr, Double val);
 
-	UnsafeArray<UTF8Char> StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP);
-	FORCEINLINE UnsafeArray<Char> StrDoubleDPCh(UnsafeArray<Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP) { return UnsafeArray<Char>::ConvertFrom(StrDoubleDP(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, minDP, maxDP)); }
-	UnsafeArray<UTF16Char> StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP);
-	UnsafeArray<UTF32Char> StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP);
-	UnsafeArray<UTF8Char> StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt groupCnt, UOSInt minDP, UOSInt maxDP);
+	UnsafeArray<UTF8Char> StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP);
+	FORCEINLINE UnsafeArray<Char> StrDoubleDPCh(UnsafeArray<Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP) { return UnsafeArray<Char>::ConvertFrom(StrDoubleDP(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, minDP, maxDP)); }
+	UnsafeArray<UTF16Char> StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP);
+	UnsafeArray<UTF32Char> StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UIntOS minDP, UIntOS maxDP);
+	UnsafeArray<UTF8Char> StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UIntOS groupCnt, UIntOS minDP, UIntOS maxDP);
 
 	UnsafeArray<UTF8Char> StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, UnsafeArray<const Char> format);
 	FORCEINLINE UnsafeArray<Char> StrDoubleFmtCh(UnsafeArray<Char> oriStr, Double val, UnsafeArray<const Char> format) { return UnsafeArray<Char>::ConvertFrom(StrDoubleFmt(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, format)); }

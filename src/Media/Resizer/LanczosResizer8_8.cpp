@@ -190,7 +190,7 @@ void Media::Resizer::LanczosResizer8_8::HorizontalFilter(UnsafeArray<const UInt8
 		UnsafeArray<UInt8> tmpPt;
 		UnsafeArray<Int32> tmpWeight;
 		UnsafeArray<Int32> tmpIndex;
-		OSInt i;
+		IntOS i;
 		Int32 j;
 		while (height-- > 0)
 		{
@@ -454,7 +454,7 @@ hflop9:
 		UnsafeArray<UInt8> tmpPt;
 		UnsafeArray<Int32> tmpWeight;
 		UnsafeArray<Int32> tmpIndex;
-		OSInt i;
+		IntOS i;
 		Int32 j;
 
 		while (height-- > 0)
@@ -689,7 +689,7 @@ void Media::Resizer::LanczosResizer8_8::VerticalFilter(UnsafeArray<const UInt8> 
 		UnsafeArray<UInt8> tmpOut;
 		UnsafeArray<Int32> tmpWeight;
 		UnsafeArray<Int32> tmpIndex;
-		OSInt i;
+		IntOS i;
 		Int32 j;
 		while (height-- > 0)
 		{
@@ -997,7 +997,7 @@ void Media::Resizer::LanczosResizer8_8::VerticalFilter(UnsafeArray<const UInt8> 
 		UnsafeArray<UInt8> tmpOut;
 		UnsafeArray<Int32> tmpWeight;
 		UnsafeArray<Int32> tmpIndex;
-		OSInt i;
+		IntOS i;
 		Int32 j;
 		while (height-- > 0)
 		{
@@ -1346,7 +1346,7 @@ Media::Resizer::LanczosResizer8_8::~LanczosResizer8_8()
 	}
 }
 
-void Media::Resizer::LanczosResizer8_8::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizer8_8::Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight)
 {
 	PARAMETER prm;
 	UnsafeArray<UInt8> buffPtr;
@@ -1515,7 +1515,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer8_8::ProcessToNewPart
 	Media::StaticImage *img;
 	if (!IsSupported(srcImage->info))
 		return 0;
-	Math::Size2D<UOSInt> targetSize = this->targetSize;
+	Math::Size2D<UIntOS> targetSize = this->targetSize;
 	if (targetSize.x == 0)
 	{
 		targetSize.x = srcImage->info.dispSize.x;

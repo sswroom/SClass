@@ -2,7 +2,7 @@ section .text
 
 global CSUYVY_LRGB_do_uyvy2rgb
 
-;void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 rbp
 ;8 rdi
 ;16 rsi
@@ -27,7 +27,7 @@ CSUYVY_LRGB_do_uyvy2rgb:
 	mov rdi,rdx
 	lea rdx,[r8*8]
 	shr r8,1
-	sub r8,2 ;width				OSInt wsize = (width >> 1) - 2;
+	sub r8,2 ;width				IntOS wsize = (width >> 1) - 2;
 	sub qword [rsp+72],rdx ;dbpl
 
 	mov rbx,qword [rsp+80] ;yuv2rgb

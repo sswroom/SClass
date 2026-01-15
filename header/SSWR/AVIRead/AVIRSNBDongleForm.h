@@ -34,7 +34,7 @@ namespace SSWR
 				Bool shortAddrChg;
 				IO::SNBDongle::SensorType sensorType;
 				Int64 readingTime;
-				UOSInt nReading;
+				UIntOS nReading;
 				Double readings[16];
 				IO::SNBDongle::ReadingType readingTypes[16];
 			};
@@ -82,7 +82,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 			NN<UI::ListBoxLogger> logger;
 
-			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
+			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd);
 			static void __stdcall OnDongleInfoClicked(AnyType userObj);
 			static void __stdcall OnCheckDongleClicked(AnyType userObj);
 			static void __stdcall OnCheckDevicesClicked(AnyType userObj);
@@ -96,7 +96,7 @@ namespace SSWR
 			static void __stdcall OnDevOnClicked(AnyType userObj);
 			static void __stdcall OnDevOffClicked(AnyType userObj);
 			static void __stdcall OnDevStatusClicked(AnyType userObj);
-			static void __stdcall OnDeviceDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnDeviceDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnUploadClicked(AnyType userObj);
 
 			void LoadFile();
@@ -108,7 +108,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual void DeviceAdded(UInt64 devId);
-			virtual void DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, UnsafeArray<IO::SNBDongle::ReadingType> readingTypes, UnsafeArray<Double> readingVals);
+			virtual void DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UIntOS nReading, UnsafeArray<IO::SNBDongle::ReadingType> readingTypes, UnsafeArray<Double> readingVals);
 			virtual void DeviceUpdated(UInt64 devId, UInt16 shortAddr);
 			virtual void DongleInfoUpdated();
 		};

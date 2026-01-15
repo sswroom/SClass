@@ -33,7 +33,7 @@ namespace Net
 			Sync::Event evt;
 			Optional<IO::Writer> logWriter;
 			UInt32 initCode;
-			UOSInt maxSize;
+			UIntOS maxSize;
 			Bool authPlain;
 			Bool authLogin;
 
@@ -44,14 +44,14 @@ namespace Net
 			~SMTPConn();
 
 			Bool IsError();
-			UOSInt GetMaxSize();
+			UIntOS GetMaxSize();
 
 			Bool SendHelo(Text::CStringNN cliName);
 			Bool SendEHlo(Text::CStringNN cliName);
 			Bool SendAuth(Text::CStringNN userName, Text::CStringNN password);
 			Bool SendMailFrom(Text::CStringNN fromEmail);
 			Bool SendRcptTo(Text::CStringNN toEmail);
-			Bool SendData(UnsafeArray<const UTF8Char> buff, UOSInt buffSize);
+			Bool SendData(UnsafeArray<const UTF8Char> buff, UIntOS buffSize);
 			Bool SendQuit();
 		};
 	}

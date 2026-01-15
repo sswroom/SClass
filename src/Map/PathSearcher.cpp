@@ -21,18 +21,18 @@ NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> Map::PathSearcher::PointNode
 	return this->nearNodes;
 }
 
-Optional<Map::PathSearcher::PointNode> Map::PathSearcher::GetNode(Double x, Double y, OptOut<OSInt> index)
+Optional<Map::PathSearcher::PointNode> Map::PathSearcher::GetNode(Double x, Double y, OptOut<IntOS> index)
 {
-	OSInt i = 0;
-	OSInt j = this->nodes.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = this->nodes.GetCount() - 1;
+	IntOS k;
 	NN<PointNode> n;
 	Int32 ix = (Int32)(x * 200000.0);
 	Int32 iy = (Int32)(y * 200000.0);
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		n = this->nodes.GetItemNoCheck((UOSInt)k);
+		n = this->nodes.GetItemNoCheck((UIntOS)k);
 		if (n->ix > ix)
 		{
 			j = k - 1;
@@ -61,7 +61,7 @@ Optional<Map::PathSearcher::PointNode> Map::PathSearcher::GetNode(Double x, Doub
 
 NN<Map::PathSearcher::PointNode> Map::PathSearcher::GetOrAddNode(Double x, Double y)
 {
-	OSInt i;
+	IntOS i;
 	NN<Map::PathSearcher::PointNode> n;
 	if (GetNode(x, y, i).SetTo(n))
 	{
@@ -85,10 +85,10 @@ Map::PathSearcher::PathSearcher(NN<Map::MapDrawLayer> layer, Double minAngleRad)
 	Optional<Map::NameArray> nameArr;
 	NN<Math::Geometry::Polyline> pl;
 	NN<Map::GetObjectSess> sess;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Optional<PointNode> lastNode;
 	NN<PointNode> nnlastNode;
 	NN<PointNode> currNode;
@@ -189,7 +189,7 @@ Optional<Math::ShortestPath::PathNode> Map::PathSearcher::GetNearestNode(Double 
 	Double distance;
 	NN<PointNode> node;
 
-	UOSInt i = this->nodes.GetCount();
+	UIntOS i = this->nodes.GetCount();
 	if (i <= 0)
 		return 0;
 	minNode = this->nodes.GetItemNoCheck(0);
@@ -219,12 +219,12 @@ NN<Math::Geometry::LineString> Map::PathSearcher::ToPolyline(NN<Math::ShortestPa
 	NN<Map::PathSearcher::PointNode> n;
 
 	UnsafeArray<Math::Coord2DDbl> points;
-	UOSInt i;
+	UIntOS i;
 	NEW_CLASSNN(pl, Math::Geometry::LineString(0, path->nodes.GetCount(), false, false));
 	points = pl->GetPointList(i);
 
 	i = 0;
-	UOSInt j = path->nodes.GetCount();
+	UIntOS j = path->nodes.GetCount();
 	while (i < j)
 	{
 		n = path->nodes.GetItemNoCheck(i);

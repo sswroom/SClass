@@ -63,7 +63,7 @@ namespace Text
 				Bool operator==(const BorderStyle &style) const;
 			};
 		private:
-			UOSInt index;
+			UIntOS index;
 			UnsafeArrayOpt<const UTF8Char> id;
 
 			HAlignment halign;
@@ -82,14 +82,14 @@ namespace Text
 			Bool protection;
 
 		public:
-			CellStyle(UOSInt index);
+			CellStyle(UIntOS index);
 			~CellStyle();
 
 			NN<CellStyle> Clone() const;
 			void CopyFrom(NN<CellStyle> style);
 			Bool Equals(NN<const CellStyle> style) const;
 
-			NN<CellStyle> SetIndex(UOSInt index);
+			NN<CellStyle> SetIndex(UIntOS index);
 			NN<CellStyle> SetID(UnsafeArrayOpt<const UTF8Char> id);
 			NN<CellStyle> SetHAlign(HAlignment halign);
 			NN<CellStyle> SetVAlign(VAlignment valign);
@@ -103,7 +103,7 @@ namespace Text
 			NN<CellStyle> SetDataFormat(Text::String *dataFormat);
 			NN<CellStyle> SetDataFormat(Text::CString dataFormat);
 
-			UOSInt GetIndex() const;
+			UIntOS GetIndex() const;
 			UnsafeArrayOpt<const UTF8Char> GetID() const;
 			HAlignment GetHAlign() const;
 			VAlignment GetVAlign() const;

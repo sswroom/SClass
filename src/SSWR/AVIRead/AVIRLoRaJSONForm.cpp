@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRLoRaJSONForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoRaJSONForm>();
 	UInt8 buff[256];
-	UOSInt buffSize;
+	UIntOS buffSize;
 	Text::StringBuilderUTF8 sb;
 	me->txtJSON->GetText(sb);
 	NN<Text::JSONBase> json;
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	}
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	switch (buff[0] >> 5)
 	{
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize < 7)
 	{
@@ -109,26 +109,26 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF
 	sb->AppendC(UTF8STRC("DevAddr = 0x"));
 	sb->AppendHex32(ReadUInt32(&buff[0]));
 	sb->AppendC(UTF8STRC("\r\nADR = "));
-	sb->AppendUOSInt(((UOSInt)buff[4] & 0x80) >> 7);
+	sb->AppendUIntOS(((UIntOS)buff[4] & 0x80) >> 7);
 	sb->AppendC(UTF8STRC("\r\nACK = "));
-	sb->AppendUOSInt(((UOSInt)buff[4] & 0x20) >> 5);
+	sb->AppendUIntOS(((UIntOS)buff[4] & 0x20) >> 5);
 	if (donwLink)
 	{
 		sb->AppendC(UTF8STRC("\r\nRFU = "));
-		sb->AppendUOSInt(((UOSInt)buff[4] & 0x40) >> 6);
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x40) >> 6);
 		sb->AppendC(UTF8STRC("\r\nFPending = "));
-		sb->AppendUOSInt(((UOSInt)buff[4] & 0x10) >> 4);
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x10) >> 4);
 	}
 	else
 	{
 		sb->AppendC(UTF8STRC("\r\nADRACKReq = "));
-		sb->AppendUOSInt(((UOSInt)buff[4] & 0x40) >> 6);
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x40) >> 6);
 		sb->AppendC(UTF8STRC("\r\nClassB = "));
-		sb->AppendUOSInt(((UOSInt)buff[4] & 0x10) >> 4);
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x10) >> 4);
 	}
-	UOSInt fOptsLen = (UOSInt)buff[4] & 0xF;
+	UIntOS fOptsLen = (UIntOS)buff[4] & 0xF;
 	sb->AppendC(UTF8STRC("\r\nFOptsLen = "));
-	sb->AppendUOSInt(fOptsLen);
+	sb->AppendUIntOS(fOptsLen);
 	sb->AppendC(UTF8STRC("\r\nFCnt = "));
 	sb->AppendU16(ReadUInt16(&buff[5]));
 	if (fOptsLen + 7 > buffSize)

@@ -9,22 +9,22 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrToUpper(sbuff, (const UTF8Char*)"aBcDe1FgHiJk");
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
 	{
 		return 1;
 	}
 	sptr = Text::StrToLower(sbuff, (const UTF8Char*)"aBcDe1FgHiJk");
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("abcde1fghijk")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("abcde1fghijk")))
 	{
 		return 1;
 	}
 	sptr = Text::StrToUpperC(sbuff, UTF8STRC("aBcDe1FgHiJk"));
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
 	{
 		return 1;
 	}
 	sptr = Text::StrToLowerC(sbuff, UTF8STRC("aBcDe1FgHiJk"));
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("abcde1fghijk")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("abcde1fghijk")))
 	{
 		return 1;
 	}

@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
-	me->currIP = (UInt32)(UOSInt)me->lbClient->GetSelectedItem().p;
+	me->currIP = (UInt32)(UIntOS)me->lbClient->GetSelectedItem().p;
 	me->lbLog->ClearItems();
 	me->msgListUpd = true;
 }
@@ -101,8 +101,8 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	UTF8Char sbuff[20];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 		while (i < j)
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->ipMap.GetKey(i));
-			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)me->ipMap.GetKey(i));
+			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)me->ipMap.GetKey(i));
 			i++;
 		}
 		mutUsage.EndUse();
@@ -179,8 +179,8 @@ SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 	this->svr.Delete();
 
 	NN<IPLog> ipLog;
-	UOSInt i = this->ipMap.GetCount();
-	UOSInt j;
+	UIntOS i = this->ipMap.GetCount();
+	UIntOS j;
 	while (i-- > 0)
 	{
 		ipLog = this->ipMap.GetItemNoCheck(i);

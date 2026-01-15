@@ -5,12 +5,12 @@
 
 extern "C"
 {
-	void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
-	void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst);
+	void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
+	void GRFilter_ProcessLayer32V(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
+	void GRFilter_ProcessLayer32HV(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
+	void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
+	void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
+	void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl, IntOS level, IntOS hOfst, IntOS vOfst);
 }
 
 Media::GRFilter::GRFilter()
@@ -22,12 +22,12 @@ Media::GRFilter::~GRFilter()
 	this->layers.MemFreeAll();
 }
 
-UOSInt Media::GRFilter::GetLayerCount()
+UIntOS Media::GRFilter::GetLayerCount()
 {
 	return this->layers.GetCount();
 }
 
-UOSInt Media::GRFilter::AddLayer()
+UIntOS Media::GRFilter::AddLayer()
 {
 	NN<LayerSetting> layer;
 	layer = MemAllocNN(LayerSetting);
@@ -38,7 +38,7 @@ UOSInt Media::GRFilter::AddLayer()
 	return this->layers.Add(layer);
 }
 
-Bool Media::GRFilter::RemoveLayer(UOSInt layer)
+Bool Media::GRFilter::RemoveLayer(UIntOS layer)
 {
 	NN<LayerSetting> lyr;
 	if (this->layers.RemoveAt(layer).SetTo(lyr))
@@ -52,7 +52,7 @@ Bool Media::GRFilter::RemoveLayer(UOSInt layer)
 	}
 }
 
-void Media::GRFilter::SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status)
+void Media::GRFilter::SetParameter(UIntOS layer, IntOS hOfst, IntOS vOfst, IntOS level, Int32 status)
 {
 	NN<LayerSetting> lyr;
 	if (this->layers.GetItem(layer).SetTo(lyr))
@@ -64,7 +64,7 @@ void Media::GRFilter::SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt
 	}
 }
 
-Bool Media::GRFilter::GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSInt> vOfst, OptOut<OSInt> level, OptOut<Int32> status)
+Bool Media::GRFilter::GetParameter(UIntOS layer, OptOut<IntOS> hOfst, OptOut<IntOS> vOfst, OptOut<IntOS> level, OptOut<Int32> status)
 {
 	NN<LayerSetting> lyr;
 	if (this->layers.GetItem(layer).SetTo(lyr))
@@ -81,10 +81,10 @@ Bool Media::GRFilter::GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSI
 	}
 }
 
-void Media::GRFilter::ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<LayerSetting> lyr;
 	UnsafeArray<UInt8> tmpPtr1 = srcPtr;
 	UnsafeArray<UInt8> tmpPtr2 = destPtr;
@@ -120,10 +120,10 @@ void Media::GRFilter::ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt
 	}
 }
 
-void Media::GRFilter::ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<LayerSetting> lyr;
 	UnsafeArray<UInt8> tmpPtr1 = srcPtr;
 	UnsafeArray<UInt8> tmpPtr2 = destPtr;

@@ -80,7 +80,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/rtk129x-cpufreq")) == IO::Path::PathType::Directory)
 			{
-				UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
+				UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 				if (threadCnt == 2)
 				{
 					this->cpuModel = CSTR("RTD1293");
@@ -107,7 +107,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				IO::FileStream fs2(CSTR("/sys/devices/soc0/machine"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs2.IsError())
 				{
-					UOSInt i = fs2.Read(BYTEARR(fileBuff).WithSize(32));
+					UIntOS i = fs2.Read(BYTEARR(fileBuff).WithSize(32));
 					fileBuff[i] = 0;
 					while (i > 0)
 					{
@@ -171,7 +171,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_AMLOGIC)
 			{
-				UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
+				UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 				if (threadCnt == 8)
 				{
 					this->cpuModel = CSTR("Amlogic S912");
@@ -247,12 +247,12 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 	return 0;
 }
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UIntOS index, OutParam<Double> temp)
 {
 	Bool ret = false;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
+	sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
 	Text::StringBuilderUTF8 sb;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -275,7 +275,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 	if (ret)
 		return true;
 
-	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
+	sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);

@@ -225,7 +225,7 @@ namespace Net
 		Optional<Net::SSLEngine> ssl;
 		Optional<IO::LogTool> log;
 		Bool debugLog;
-		UOSInt attSplitSize;
+		UIntOS attSplitSize;
 
 		Optional<MSGraphAccessToken> AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content);
 
@@ -236,11 +236,11 @@ namespace Net
 		~MSGraphClient();
 
 		void SetLog(NN<IO::LogTool> log, Bool debugLog);
-		void SetAttSplitSize(UOSInt attSplitSize);
+		void SetAttSplitSize(UIntOS attSplitSize);
 
 		Optional<MSGraphAccessToken> AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope);
 		Optional<MSGraphEntity> EntityGet(NN<MSGraphAccessToken> token, Text::CString userName);
-		Bool MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext);
+		Bool MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UIntOS top, UIntOS skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext);
 		Bool MailFoldersGet(NN<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NN<Data::ArrayListNN<MSGraphMailFolder>> folderList);
 		Optional<MSGraphEventMessageRequest> MailMessageCreate(NN<MSGraphAccessToken> token, Text::CString userName, NN<Net::Email::EmailMessage> message);
 		Bool MailMessageSend(NN<MSGraphAccessToken> token, Text::CString userName, NN<MSGraphEventMessageRequest> message);

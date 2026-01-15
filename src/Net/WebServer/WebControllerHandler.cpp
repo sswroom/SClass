@@ -5,7 +5,7 @@
 Net::WebServer::WebControllerHandler::~WebControllerHandler()
 {
 	NN<WebController> ctrl;
-	UOSInt i = this->ctrlList.GetCount();
+	UIntOS i = this->ctrlList.GetCount();
 	while (i-- > 0)
 	{
 		ctrl = this->ctrlList.GetItemNoCheck(i);
@@ -15,8 +15,8 @@ Net::WebServer::WebControllerHandler::~WebControllerHandler()
 
 Bool Net::WebServer::WebControllerHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
-	UOSInt i = 0;
-	UOSInt j = this->ctrlList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->ctrlList.GetCount();
 	while (i < j)
 	{
 		if (this->ctrlList.GetItemNoCheck(i)->ProcessRequest(req, resp, subReq))

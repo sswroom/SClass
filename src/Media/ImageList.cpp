@@ -22,7 +22,7 @@ Media::ImageList::ImageList(Text::CStringNN fileName) : IO::ParsedObject(fileNam
 
 Media::ImageList::~ImageList()
 {
-	UOSInt i;
+	UIntOS i;
 	this->imgList.DeleteAll();
 	i = this->valStr.GetCount();
 	while (i-- > 0)
@@ -43,21 +43,21 @@ IO::ParserType Media::ImageList::GetParserType() const
 	return IO::ParserType::ImageList;
 }
 
-UOSInt Media::ImageList::AddImage(NN<Media::RasterImage> img, UInt32 imageDelay)
+UIntOS Media::ImageList::AddImage(NN<Media::RasterImage> img, UInt32 imageDelay)
 {
 	this->imgTimes.Add(imageDelay);
 	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
 	return this->imgList.Add(img);
 }
 
-void Media::ImageList::ReplaceImage(UOSInt index, NN<Media::RasterImage> img)
+void Media::ImageList::ReplaceImage(UIntOS index, NN<Media::RasterImage> img)
 {
 	Optional<Media::RasterImage> oldImg = this->imgList.GetItem(index);
 	this->imgList.SetItem(index, img);
 	oldImg.Delete();
 }
 
-Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
+Bool  Media::ImageList::RemoveImage(UIntOS index, Bool toRelease)
 {
 	NN<Media::RasterImage> oldImg;
 	if (!this->imgList.RemoveAt(index).SetTo(oldImg))
@@ -69,28 +69,28 @@ Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
 	return true;
 }
 
-UOSInt Media::ImageList::GetCount() const
+UIntOS Media::ImageList::GetCount() const
 {
 	return this->imgList.GetCount();
 }
 
-Optional<Media::RasterImage> Media::ImageList::GetImage(UOSInt index, OptOut<UInt32> imageDelay) const
+Optional<Media::RasterImage> Media::ImageList::GetImage(UIntOS index, OptOut<UInt32> imageDelay) const
 {
 	imageDelay.Set(this->imgTimes.GetItem(index));
 	return this->imgList.GetItem(index);
 }
 
-UInt32 Media::ImageList::GetImageDelay(UOSInt index) const
+UInt32 Media::ImageList::GetImageDelay(UIntOS index) const
 {
 	return this->imgTimes.GetItem(index);
 }
 
-Media::ImageList::ImageType Media::ImageList::GetImageType(UOSInt index) const
+Media::ImageList::ImageType Media::ImageList::GetImageType(UIntOS index) const
 {
 	return this->imgTypeList.GetItem(index);
 }
 
-void Media::ImageList::SetImageType(UOSInt index, ImageType imgType)
+void Media::ImageList::SetImageType(UIntOS index, ImageType imgType)
 {
 	if (index >= this->imgList.GetCount())
 	{
@@ -99,7 +99,7 @@ void Media::ImageList::SetImageType(UOSInt index, ImageType imgType)
 	this->imgTypeList.SetItem(index, imgType);
 }
 
-void Media::ImageList::ToStaticImage(UOSInt index)
+void Media::ImageList::ToStaticImage(UIntOS index)
 {
 	NN<Media::RasterImage> img;
 	if (!this->imgList.GetItem(index).SetTo(img) || img->GetImageType() == Media::RasterImage::ImageType::Static)
@@ -129,11 +129,11 @@ void Media::ImageList::SetImageName(UnsafeArrayOpt<const UTF8Char> imgName)
 	this->imgName = Text::StrSCopyNew(imgName);
 }
 
-void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
+void Media::ImageList::SetThermoImage(Math::Size2D<UIntOS> thermoSize, UIntOS thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
 {
 	this->thermoSize = thermoSize;
 	this->thermoBPP = thermoBPP;
-	UOSInt dataSize = thermoSize.CalcArea() * thermoBPP >> 3;
+	UIntOS dataSize = thermoSize.CalcArea() * thermoBPP >> 3;
 	if (this->thermoPtr)
 	{
 		MemFree(this->thermoPtr);
@@ -157,28 +157,28 @@ Double Media::ImageList::GetThermoValue(Double x, Double y) const
 	{
 		return 0;
 	}
-	OSInt xOfst = Double2Int32(x * UOSInt2Double(this->thermoSize.x));
-	OSInt yOfst = Double2Int32(y * UOSInt2Double(this->thermoSize.y));
+	IntOS xOfst = Double2Int32(x * UIntOS2Double(this->thermoSize.x));
+	IntOS yOfst = Double2Int32(y * UIntOS2Double(this->thermoSize.y));
 	if (xOfst < 0)
 		xOfst = 0;
-	else if (xOfst >= (OSInt)this->thermoSize.x)
-		xOfst = (OSInt)this->thermoSize.x - 1;
+	else if (xOfst >= (IntOS)this->thermoSize.x)
+		xOfst = (IntOS)this->thermoSize.x - 1;
 	if (yOfst < 0)
 		yOfst = 0;
-	else if (yOfst >= (OSInt)this->thermoSize.y)
-		yOfst = (OSInt)this->thermoSize.y - 1;
+	else if (yOfst >= (IntOS)this->thermoSize.y)
+		yOfst = (IntOS)this->thermoSize.y - 1;
 	Double v;
 	if (this->thermoBPP == 16)
 	{
-		v = ReadInt16(&this->thermoPtr[(yOfst * (OSInt)this->thermoSize.x + xOfst) << 1]);
+		v = ReadInt16(&this->thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 1]);
 	}
 	else if (this->thermoBPP == 8)
 	{
-		v = this->thermoPtr[yOfst * (OSInt)this->thermoSize.x + xOfst];
+		v = this->thermoPtr[yOfst * (IntOS)this->thermoSize.x + xOfst];
 	}
 	else if (this->thermoBPP == 32)
 	{
-		v = ReadInt32(&this->thermoPtr[(yOfst * (OSInt)this->thermoSize.x + xOfst) << 2]);
+		v = ReadInt32(&this->thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 2]);
 	}
 	else
 	{
@@ -224,8 +224,8 @@ void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CS
 
 Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool found = false;
 	ValueType vt;
 	NN<Text::String> s;
@@ -315,8 +315,8 @@ void Media::ImageList::ToString(NN<Text::StringBuilderUTF8> sb) const
 	Bool hasData = this->ToValueString(sb);
 	NN<Media::RasterImage> img;
 	UInt32 delay;
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->GetCount();
 	while (i < j)
 	{
 		if (this->GetImage(i, delay).SetTo(img))
@@ -327,7 +327,7 @@ void Media::ImageList::ToString(NN<Text::StringBuilderUTF8> sb) const
 			}
 			hasData = true;
 			sb->AppendC(UTF8STRC("Image "));
-			sb->AppendUOSInt(i);
+			sb->AppendUIntOS(i);
 			sb->AppendC(UTF8STRC(":\r\nDelay = "));
 			sb->AppendU32(delay);
 			sb->AppendC(UTF8STRC("\r\n"));

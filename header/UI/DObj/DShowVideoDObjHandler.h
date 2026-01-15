@@ -12,8 +12,8 @@ namespace UI
 		class DShowVideoDObjHandler : public ImageDObjHandler
 		{
 		protected:
-			Math::Coord2D<OSInt> videoTL;
-			Math::Size2D<UOSInt> videoSize;
+			Math::Coord2D<IntOS> videoTL;
+			Math::Size2D<UIntOS> videoSize;
 
 			NN<UI::GUIForm> ownerFrm;
 			NN<UI::GUITimer> tmr;
@@ -30,7 +30,7 @@ namespace UI
 			virtual void DrawBkg(NN<Media::DrawImage> dimg);
 			void DrawVideo(NN<Media::DrawImage> dimg);
 		public:
-			DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
+			DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess, Text::CStringNN imageFileName, Math::Coord2D<IntOS> videoPos, Math::Size2D<UIntOS> videoSize, Text::CStringNN videoFileName);
 			virtual ~DShowVideoDObjHandler();
 		};
 	}

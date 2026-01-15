@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (!me->chkAddPoints->IsChecked())
@@ -157,20 +157,20 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UIntOS)(cptr - buff)));
 
 	cptr = Text::StrConcat(buff, "$GPGSA,A,3,,,,,,,,,,,,,1.5,1.5,1.5");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UIntOS)(cptr - buff)));
 
 
 	cptr = Text::StrConcat(buff, "$GPGSV,1,1,0");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UIntOS)(cptr - buff)));
 
 	cptr = Text::StrConcat(buff, "$GPRMC,");
 	cptr = dt.ToString(cptr, "HHmmss.fff");
@@ -195,7 +195,7 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UIntOS)(cptr - buff)));
 }
 
 UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(UnsafeArray<Char> ptr, Double lat)

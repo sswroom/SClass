@@ -202,9 +202,9 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_UNKNOWN;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	NN<RAMInfo> ram;
 	NN<IO::SMBIOS> smbios;
 	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
@@ -214,8 +214,8 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 		smbios->GetMemoryInfo(memList);
 		if (memList.GetCount() > 0)
 		{
-			UOSInt i = 0;
-			UOSInt j = memList.GetCount();
+			UIntOS i = 0;
+			UIntOS j = memList.GetCount();
 			while (i < j)
 			{
 				mem = memList.GetItemNoCheck(i);
@@ -246,7 +246,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 
 void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<RAMInfo> ram;
 	i = ramList->GetCount();
 	while (i-- > 0)

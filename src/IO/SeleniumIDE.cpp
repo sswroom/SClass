@@ -14,8 +14,8 @@ IO::SeleniumCommand::SeleniumCommand(NN<Text::JSONObject> command)
 		NN<SeleniumTarget> starget;
 		NN<Text::JSONBase> targetBase;
 		NN<Text::JSONArray> target;
-		UOSInt i = 0;
-		UOSInt j = targets->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = targets->GetArrayLength();
 		while (i < j)
 		{
 			if (targets->GetArrayValue(i).SetTo(targetBase) && targetBase->GetType() == Text::JSONType::Array)
@@ -60,8 +60,8 @@ IO::SeleniumTest::SeleniumTest(NN<Text::JSONObject> test)
 	NN<SeleniumCommand> cmd;
 	if (test->GetObjectArray(CSTR("commands")).SetTo(commands))
 	{
-		UOSInt i = 0;
-		UOSInt j = commands->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = commands->GetArrayLength();
 		while (i < j)
 		{
 			if (commands->GetArrayObject(i).SetTo(command))
@@ -92,8 +92,8 @@ IO::SeleniumIDE::SeleniumIDE(NN<Text::String> sourceName, NN<Text::JSONObject> s
 	NN<SeleniumTest> tst;
 	if (side->GetObjectArray(CSTR("tests")).SetTo(tests))
 	{
-		UOSInt i = 0;
-		UOSInt j = tests->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = tests->GetArrayLength();
 		while (i < j)
 		{
 			if (tests->GetArrayObject(i).SetTo(test))

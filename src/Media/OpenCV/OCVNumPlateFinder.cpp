@@ -81,7 +81,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(NN<Media::OpenCV::OCVFrame> frame, P
 				Double tiltAngle;
 				Double maxTiltAngle = 0;
 				Bool found = false;
-				UOSInt k = 4;
+				UIntOS k = 4;
 				while (k-- > 0)
 				{
 					if (ang[k] < 0)
@@ -148,11 +148,11 @@ void Media::OpenCV::OCVNumPlateFinder::Find(NN<Media::OpenCV::OCVFrame> frame, P
 //					cv::drawContours(edged, drawPoly, 0, cv::Scalar(160));
 //					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
 //					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
-					Math::Coord2D<UOSInt> rect[4];
-					rect[0] = Math::Coord2D<UOSInt>((UOSInt)poly[0].x, (UOSInt)poly[0].y);
-					rect[1] = Math::Coord2D<UOSInt>((UOSInt)poly[1].x, (UOSInt)poly[1].y);
-					rect[2] = Math::Coord2D<UOSInt>((UOSInt)poly[2].x, (UOSInt)poly[2].y);
-					rect[3] = Math::Coord2D<UOSInt>((UOSInt)poly[3].x, (UOSInt)poly[3].y);
+					Math::Coord2D<UIntOS> rect[4];
+					rect[0] = Math::Coord2D<UIntOS>((UIntOS)poly[0].x, (UIntOS)poly[0].y);
+					rect[1] = Math::Coord2D<UIntOS>((UIntOS)poly[1].x, (UIntOS)poly[1].y);
+					rect[2] = Math::Coord2D<UIntOS>((UIntOS)poly[2].x, (UIntOS)poly[2].y);
+					rect[3] = Math::Coord2D<UIntOS>((UIntOS)poly[3].x, (UIntOS)poly[3].y);
 					func(userObj, filteredFrame, rect, maxTiltAngle, area, pSize);
 				}
 			}

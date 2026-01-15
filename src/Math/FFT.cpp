@@ -4,7 +4,7 @@
 #include "Math/FFT.h"
 #include "Math/Math_C.h"
 
-Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UOSInt sampleCount)
+Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UIntOS sampleCount)
 {
 	if (sampleCount == 1)
 		return true;
@@ -13,8 +13,8 @@ Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UOSInt sampleCount)
 		return false;
 	if (sampleCount & 1)
 		return false;
-	UOSInt i;
-	UOSInt j = sampleCount >> 1;
+	UIntOS i;
+	UIntOS j = sampleCount >> 1;
 	Double *temp = MemAllocA(Double, sampleCount);
 #if defined(HAS_ASM32)
 	_asm
@@ -66,7 +66,7 @@ fftflop2:
 	if (!Forward(complexData, j) || !Forward(&complexData[j * 2], j))
 		return false;
 
-	Double kthMul = -2 * Math::PI / UOSInt2Double(sampleCount);
+	Double kthMul = -2 * Math::PI / UIntOS2Double(sampleCount);
 	Double wk[2];
 	Double odd[2];
 	Double even[2];
@@ -75,7 +75,7 @@ fftflop2:
 	i = 0;
 	while (i < j)
 	{
-		Double kth = UOSInt2Double(i) * kthMul;
+		Double kth = UIntOS2Double(i) * kthMul;
 		even[0] = complexData[i * 2];
 		even[1] = complexData[i * 2 + 1];
 		odd[0] = complexData[(i + j) * 2];
@@ -93,7 +93,7 @@ fftflop2:
 	return true;
 }
 
-void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount, WindowType wtype)
+void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UIntOS sampleCount, WindowType wtype)
 {
 	Double pi2;
 	Double a0;
@@ -102,8 +102,8 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 	Double a3;
 	Double a4;
 	Double invK;
-	UOSInt j;
-	UOSInt k;
+	UIntOS j;
+	UIntOS k;
 	Double dj;
 	Double dk;
 	switch (wtype)
@@ -114,37 +114,37 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 
 	case WT_TRIANGULAR:
 		k = sampleCount >> 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		j = 0;
 		while (j < k)
 		{
-			complexData[j * 2] = complexData[j * 2] * (UOSInt2Double(j) + 0.5) / dk;
+			complexData[j * 2] = complexData[j * 2] * (UIntOS2Double(j) + 0.5) / dk;
 			j++;
 		}
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (UOSInt2Double(sampleCount - j) + 0.5) / dk;
+			complexData[j * 2] = complexData[j * 2] * (UIntOS2Double(sampleCount - j) + 0.5) / dk;
 			j++;
 		}
 		break;
 
 	case WT_HAMMING:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.53836;
 		a1 = 0.46164;
 		j = 0;
 		while (j < sampleCount)
 		{
-			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(UOSInt2Double(j) * pi2 / dk));
+			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(UIntOS2Double(j) * pi2 / dk));
 			j++;
 		}
 		break;
 
 	case WT_BLACKMANN:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 7938.0 / 18608.0;
 		a1 = 9240.0 / 18608.0;
@@ -152,7 +152,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 		j = 0;
 		while (j < sampleCount)
 		{
-			dj = UOSInt2Double(j);
+			dj = UIntOS2Double(j);
 			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk));
 			j++;
 		}
@@ -160,7 +160,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 
 	case WT_NUTTALL:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.355768;
 		a1 = 0.487396;
@@ -169,7 +169,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 		j = 0;
 		while (j < sampleCount)
 		{
-			dj = UOSInt2Double(j);
+			dj = UIntOS2Double(j);
 			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk));
 			j++;
 		}
@@ -177,7 +177,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 
 	case WT_BLACKMANN_NUTTALL:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 0.3635819;
 		a1 = 0.4891775;
@@ -186,7 +186,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 		j = 0;
 		while (j < sampleCount)
 		{
-			dj = UOSInt2Double(j);
+			dj = UIntOS2Double(j);
 			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk));
 			j++;
 		}
@@ -194,7 +194,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 
 	case WT_BLACKMANN_HARRIS:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		invK = 1.0 / dk;
 		pi2 = 2 * Math::PI;
 		a0 = 0.35875;
@@ -204,7 +204,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 		j = 0;
 		while (j < sampleCount)
 		{
-			dj = UOSInt2Double(j);
+			dj = UIntOS2Double(j);
 			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(dj * pi2 * invK) + a2 * Math_Cos(2 * pi2 * dj * invK) - a3 * Math_Cos(3 * pi2 * dj * invK));
 			j++;
 		}
@@ -212,7 +212,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 
 	case WT_FLAT_TOP:
 		k = sampleCount - 1;
-		dk = UOSInt2Double(k);
+		dk = UIntOS2Double(k);
 		pi2 = 2 * Math::PI;
 		a0 = 1;
 		a1 = 1.93;
@@ -222,7 +222,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 		j = 0;
 		while (j < sampleCount)
 		{
-			dj = UOSInt2Double(j);
+			dj = UIntOS2Double(j);
 			complexData[j * 2] = complexData[j * 2] * (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk) + a4 * Math_Cos(4 * pi2 * dj / dk));
 			j++;
 		}
@@ -230,7 +230,7 @@ void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount,
 	}
 }
 
-Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
+Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UIntOS sampleCount)
 {
 	if (sampleCount == 1)
 		return true;
@@ -239,8 +239,8 @@ Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
 		return false;
 	if (sampleCount & 1)
 		return false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	ComplexNumber *temp = MemAlloc(ComplexNumber, sampleCount >> 1);
 	i = 0;
 	j = sampleCount >> 1;
@@ -259,11 +259,11 @@ Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
 	ComplexNumber wk;
 	ComplexNumber odd;
 	ComplexNumber even;
-	Double dsampleCount = UOSInt2Double(sampleCount);
+	Double dsampleCount = UIntOS2Double(sampleCount);
 	i = 0;
 	while (i < j)
 	{
-		Double kth = -2 * UOSInt2Double(i) * Math::PI / dsampleCount;
+		Double kth = -2 * UIntOS2Double(i) * Math::PI / dsampleCount;
 		even = data[i];
 		odd = data[i + j];
 		wk = ComplexNumber(Math_Cos(kth), Math_Sin(kth)) * odd;
@@ -274,16 +274,16 @@ Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
 	return true;
 }
 
-Bool Math::FFT::Inverse(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
+Bool Math::FFT::Inverse(UnsafeArray<ComplexNumber> data, UIntOS sampleCount)
 {
 	return false;
 }
 
-Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify)
+Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, UIntOS sampleCount, UIntOS sampleAvg, UIntOS nBitPerSample, UIntOS nChannels, WindowType wtype, Double magnify)
 {
-	UOSInt sampleAdd = nChannels * nBitPerSample >> 3;
-	UOSInt i;
-	UOSInt j;
+	UIntOS sampleAdd = nChannels * nBitPerSample >> 3;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<UInt8> currSamples;
 	Double *temp = MemAllocA(Double, sampleCount * 2);
 	Double *tmpFreq = MemAlloc(Double, sampleCount);

@@ -54,18 +54,18 @@ Text::TextBinEnc::Base64Enc::~Base64Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	return this->EncodeBin(sb, dataBuff, buffSize, Text::LineBreakType::None, 0);
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine) const
+UIntOS Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize, Text::LineBreakType lbt, UIntOS charsPerLine) const
 {
 	UnsafeArray<const UTF8Char> encArr = GetEncArr(this->cs);
-	UOSInt outSize;
+	UIntOS outSize;
 	UTF8Char sptr[4];
-	UOSInt tmp1 = buffSize % 3;
-	UOSInt tmp2 = buffSize / 3;
+	UIntOS tmp1 = buffSize % 3;
+	UIntOS tmp2 = buffSize / 3;
 	if (tmp1)
 	{
 		outSize = tmp2 * 4 + 4;
@@ -76,7 +76,7 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, Un
 	}
 	if (outSize == 0)
 		return 0;
-	UOSInt lbSize;
+	UIntOS lbSize;
 	switch (lbt)
 	{
 	case Text::LineBreakType::CRLF:
@@ -137,9 +137,9 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, Un
 	}
 	else
 	{
-		UOSInt lineCnt = outSize / charsPerLine;
+		UIntOS lineCnt = outSize / charsPerLine;
 		sb->AllocLeng(outSize + lineCnt * lbSize);
-		UOSInt lineLeft = charsPerLine;
+		UIntOS lineLeft = charsPerLine;
 		while (tmp2-- > 0)
 		{
 			sptr[0] = encArr[dataBuff[0] >> 2];
@@ -237,12 +237,12 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, Un
 	}
 }
 
-UnsafeArray<UTF8Char> Text::TextBinEnc::Base64Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> Text::TextBinEnc::Base64Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize)
 {
 	UnsafeArray<const UTF8Char> encArr = GetEncArr(this->cs);
-	UOSInt outSize;
-	UOSInt tmp1 = buffSize % 3;
-	UOSInt tmp2 = buffSize / 3;
+	UIntOS outSize;
+	UIntOS tmp1 = buffSize % 3;
+	UIntOS tmp2 = buffSize / 3;
 	if (tmp1)
 	{
 		outSize = tmp2 * 4 + 4;
@@ -300,9 +300,9 @@ UnsafeArray<UTF8Char> Text::TextBinEnc::Base64Enc::EncodeBin(UnsafeArray<UTF8Cha
 
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
+UIntOS Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> sbuff = b64Str.v;
 	while ((c = *sbuff++) != 0)
@@ -315,9 +315,9 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(UnsafeArray<const WChar> sbuff) const
+UIntOS Text::TextBinEnc::Base64Enc::CalcBinSize(UnsafeArray<const WChar> sbuff) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	WChar c;
 	while ((c = *sbuff++) != 0)
 	{
@@ -329,9 +329,9 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(UnsafeArray<const WChar> sbuff) 
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
-	UOSInt decSize = 0;
+	UIntOS decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
@@ -391,9 +391,9 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<U
 	return decSize;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(UnsafeArray<const WChar> b64Str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::Base64Enc::DecodeBin(UnsafeArray<const WChar> b64Str, UnsafeArray<UInt8> dataBuff) const
 {
-	UOSInt decSize = 0;
+	UIntOS decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;

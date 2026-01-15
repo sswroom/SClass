@@ -25,7 +25,7 @@ UInt8 Text::TextBinEnc::FormEncoding::URIAllow[] = {
 void Text::TextBinEnc::FormEncoding::FormEncode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri)
 {
 	UInt8 b;
-	UOSInt uriLen = uri.leng;
+	UIntOS uriLen = uri.leng;
 	UnsafeArray<const UTF8Char> uriPtr = uri.v;
 	while (uriLen-- > 0)
 	{
@@ -52,7 +52,7 @@ void Text::TextBinEnc::FormEncoding::FormEncode(NN<Text::StringBuilderUTF8> sb, 
 void Text::TextBinEnc::FormEncoding::FormDecode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri)
 {
 	UInt8 v;
-	UOSInt uriLen = uri.leng;
+	UIntOS uriLen = uri.leng;
 	UnsafeArray<const UTF8Char> uriPtr = uri.v;
 	UTF8Char c;
 	while (uriLen-- > 0)
@@ -236,18 +236,18 @@ Text::TextBinEnc::FormEncoding::~FormEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::FormEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
-	UOSInt initLen = sb->GetCharCnt();
+	UIntOS initLen = sb->GetCharCnt();
 	FormEncode(sb, Text::CStringNN(dataBuff, buffSize));
 	return sb->GetCharCnt() - initLen;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(Text::CStringNN s) const
+UIntOS Text::TextBinEnc::FormEncoding::CalcBinSize(Text::CStringNN s) const
 {
 	UTF8Char c;
-	UOSInt retSize = 0;
-	UOSInt strLen = s.leng;
+	UIntOS retSize = 0;
+	UIntOS strLen = s.leng;
 	UnsafeArray<const UTF8Char> str = s.v;
 	while (strLen-- > 0)
 	{
@@ -273,12 +273,12 @@ UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(Text::CStringNN s) const
 	return retSize;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::FormEncoding::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;
-	UOSInt retSize = 0;
-	UOSInt strLen = s.leng;
+	UIntOS retSize = 0;
+	UIntOS strLen = s.leng;
 	UnsafeArray<const UTF8Char> str = s.v;
 
 	while (strLen-- > 0)

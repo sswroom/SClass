@@ -51,7 +51,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 	NN<Math::Geometry::LinearRing> lr;
 	Data::ArrayListNative<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
-	UOSInt nPoint;
+	UIntOS nPoint;
 	NN<Math::Geometry::Vector2D> vec;
 	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->Iterator();
 	while (it.HasNext())

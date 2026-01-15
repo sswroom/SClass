@@ -26,7 +26,7 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	Media::FrameInfo decFrameInfo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	vsrc->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
 		return nullptr;

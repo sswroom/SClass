@@ -58,7 +58,7 @@ void Media::VOBLPCMStreamSource::GetFormat(NN<Media::AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::VOBLPCMStreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::VOBLPCMStreamSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->pbEvt = evt;
 	return this->pbc->StartAudio();
@@ -70,11 +70,11 @@ void Media::VOBLPCMStreamSource::Stop()
 	this->pbEvt = nullptr;
 }
 
-UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt buffWriten;
-	UOSInt byteCopied = 0;
-	UOSInt v;
+	UIntOS buffWriten;
+	UIntOS byteCopied = 0;
+	UIntOS v;
 	NN<Sync::Event> pbEvt;
 	if (fmt.bitpersample == 24)
 	{
@@ -200,7 +200,7 @@ lop16b:
 	return byteCopied;
 }
 
-UOSInt Media::VOBLPCMStreamSource::GetMinBlockSize()
+UIntOS Media::VOBLPCMStreamSource::GetMinBlockSize()
 {
 	return this->fmt.align;
 }
@@ -215,7 +215,7 @@ Bool Media::VOBLPCMStreamSource::IsEnd()
 	return !this->pbc->IsRunning();
 }
 
-void Media::VOBLPCMStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
+void Media::VOBLPCMStreamSource::DetectStreamInfo(UInt8 *header, UIntOS headerSize)
 {
 }
 
@@ -233,9 +233,9 @@ void Media::VOBLPCMStreamSource::SetStreamTime(Data::Duration time)
 	this->buffSample = time.MultiplyU64(this->fmt.bitRate >> 3);
 }
 
-void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
+void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UIntOS buffSize)
 {
-	UOSInt buffWriten;
+	UIntOS buffWriten;
 	NN<Sync::Event> pbEvt;
 //	if (buff[0] > 0)
 //	{
@@ -317,7 +317,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 Data::Duration Media::VOBLPCMStreamSource::GetFrameStreamTime()
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	UOSInt buffSize;
+	UIntOS buffSize;
 	if (this->buffEnd < this->buffStart)
 	{
 		buffSize = this->buffEnd - this->buffStart + this->buffSize;

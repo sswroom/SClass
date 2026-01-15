@@ -28,30 +28,30 @@
 
 	this->VideoBeginProc();
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	UOSInt vwidth = this->videoInfo->dispWidth - cropLeft - cropRight;
-	UOSInt vheight = this->videoInfo->dispHeight - cropTop - cropBottom;
+	UIntOS vwidth = this->videoInfo->dispWidth - cropLeft - cropRight;
+	UIntOS vheight = this->videoInfo->dispHeight - cropTop - cropBottom;
 	if (this->videoInfo->ftype == Media::FT_FIELD_BF || this->videoInfo->ftype == Media::FT_FIELD_TF)
 	{
 		vheight = vheight << 1;
 	}
 	this->CalDisplayRect(vwidth, vheight, &rect);
-	UOSInt surfaceW = this->surfaceW;
-	UOSInt surfaceH = this->surfaceH;
+	UIntOS surfaceW = this->surfaceW;
+	UIntOS surfaceH = this->surfaceH;
 	mutUsage.EndUse();
 	if (rect.width == vbuff->destW && rect.height == vbuff->destH && this->IsSurfaceReady() && vbuff->destBitDepth == this->bitDepth)
 	{
-		UOSInt dlineSize;
+		UIntOS dlineSize;
 		UInt8 *dptr = this->LockSurfaceBegin(surfaceW, surfaceH, &dlineSize);
 		if (dptr)
 		{
-			dptr = dptr + (rect.top * (OSInt)dlineSize + rect.left * (OSInt)(this->bitDepth >> 3));
+			dptr = dptr + (rect.top * (IntOS)dlineSize + rect.left * (IntOS)(this->bitDepth >> 3));
 			if (this->bitDepth == 16)
 			{
-				this->outputCopier->Copy16(vbuff->destBuff, (OSInt)rect.width * 2, dptr, (OSInt)dlineSize, rect.width, rect.height);
+				this->outputCopier->Copy16(vbuff->destBuff, (IntOS)rect.width * 2, dptr, (IntOS)dlineSize, rect.width, rect.height);
 			}
 			else
 			{
-				this->outputCopier->Copy16(vbuff->destBuff, (OSInt)rect.width * 4, dptr, (OSInt)dlineSize, rect.width, rect.height);
+				this->outputCopier->Copy16(vbuff->destBuff, (IntOS)rect.width * 4, dptr, (IntOS)dlineSize, rect.width, rect.height);
 			}
 			this->LockSurfaceEnd();
 		}
@@ -65,7 +65,7 @@ void UI::GUIVideoBoxDD::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIVideoBoxDD::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::GUIVideoBoxDD::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn)
 {
 	this->DisplayFromSurface(surface, destTL, buffSize, clearScn);
 }
@@ -82,7 +82,7 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
+UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UIntOS buffCnt, UIntOS threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->debugLog = 0;
@@ -94,7 +94,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->maHdlr = 0;
 	this->maHdlrObj = 0;
 	this->maDown = 0;
-	this->maDownPos = Math::Coord2D<OSInt>(0, 0);
+	this->maDownPos = Math::Coord2D<IntOS>(0, 0);
 	this->maDownTime = 0;
 
 #ifdef _DEBUG
@@ -126,7 +126,7 @@ Text::CStringNN UI::GUIVideoBoxDD::GetObjectClass() const
 	return CSTR("VideoBoxDD");
 }
 
-OSInt UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -143,7 +143,7 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 	this->curr10Bit = curr10Bit;
 	this->toClear = true;
 
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -192,15 +192,15 @@ void UI::GUIVideoBoxDD::OnSurfaceCreated()
 	}
 }
 
-void UI::GUIVideoBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
+void UI::GUIVideoBoxDD::OnMouseWheel(Math::Coord2D<IntOS> pos, Int32 amount)
 {
 }
 
-void UI::GUIVideoBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
+void UI::GUIVideoBoxDD::OnMouseMove(Math::Coord2D<IntOS> pos)
 {
 }
 
-void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button)
+void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT && !this->maDown)
 	{
@@ -212,7 +212,7 @@ void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button
 	}
 }
 
-void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button)
+void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button)
 {
 	if (this->maDown && button == UI::GUIControl::MBTN_LEFT)
 	{
@@ -221,15 +221,15 @@ void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button)
 		dt.SetCurrTimeUTC();
 		if (dt.ToTicks() - this->maDownTime < 1000 && this->maHdlr != 0)
 		{
-			Math::Coord2D<OSInt> diff = pos - this->maDownPos;
-			OSInt xType;
-			OSInt yType;
+			Math::Coord2D<IntOS> diff = pos - this->maDownPos;
+			IntOS xType;
+			IntOS yType;
 			Double dpi = this->GetHDPI();
-			if (OSInt2Double(diff.x) >= dpi)
+			if (IntOS2Double(diff.x) >= dpi)
 			{
 				xType = 1;
 			}
-			else if (OSInt2Double(diff.x) <= -dpi)
+			else if (IntOS2Double(diff.x) <= -dpi)
 			{
 				xType = -1;
 			}
@@ -237,11 +237,11 @@ void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button)
 			{
 				xType = 0;
 			}
-			if (OSInt2Double(diff.y) >= dpi)
+			if (IntOS2Double(diff.y) >= dpi)
 			{
 				yType = 1;
 			}
-			else if (OSInt2Double(diff.y) <= -dpi)
+			else if (IntOS2Double(diff.y) <= -dpi)
 			{
 				yType = -1;
 			}

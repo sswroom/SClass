@@ -8,11 +8,11 @@ namespace Crypto
 	{
 	private:
 		UnsafeArray<UInt8> key;
-		UOSInt keySize;
-		UOSInt intervalMS;
+		UIntOS keySize;
+		UIntOS intervalMS;
 
 	public:
-		TOTP(UnsafeArray<const UInt8> key, UOSInt keySize);
+		TOTP(UnsafeArray<const UInt8> key, UIntOS keySize);
 		virtual ~TOTP();
 
 		virtual OTPType GetType();

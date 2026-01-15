@@ -35,20 +35,20 @@ namespace SSWR
 				NN<Data::ArrayListStringNN> headerVal;
 			} LogEntry;
 		private:
-			UOSInt logCnt;
+			UIntOS logCnt;
 			UnsafeArray<LogEntry> entries;
-			UOSInt currEnt;
+			UIntOS currEnt;
 			Sync::Mutex entMut;
 
 		public:
-			AVIRHTTPLog(UOSInt logCnt);
+			AVIRHTTPLog(UIntOS logCnt);
 			virtual ~AVIRHTTPLog();
 
 			virtual void LogRequest(NN<Net::WebServer::WebRequest> req);
-			UOSInt GetNextIndex();
+			UIntOS GetNextIndex();
 			void Use(NN<Sync::MutexUsage> mutUsage);
-			void GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayListNative<UOSInt>> logIndex);
-			NN<LogEntry> GetEntry(UOSInt index);
+			void GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayListNative<UIntOS>> logIndex);
+			NN<LogEntry> GetEntry(UIntOS index);
 		};
 
 		class AVIRHTTPSvrForm : public UI::GUIForm
@@ -62,7 +62,7 @@ namespace SSWR
 			Optional<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
 			NN<AVIRHTTPLog> reqLog;
-			UOSInt lastAccessIndex;
+			UIntOS lastAccessIndex;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;

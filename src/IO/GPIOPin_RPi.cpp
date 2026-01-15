@@ -3,7 +3,7 @@
 #include "IO/GPIOPin.h"
 #include <wiringPi.h>
 
-IO::GPIOPin::GPIOPin(OSInt pinNum)
+IO::GPIOPin::GPIOPin(IntOS pinNum)
 {
 	this->pinNum = pinNum;
 	wiringPiSetup();

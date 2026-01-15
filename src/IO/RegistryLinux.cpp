@@ -62,7 +62,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		allRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		reg->fileName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
@@ -84,7 +84,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		thisRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		reg->fileName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
@@ -231,7 +231,7 @@ Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 	return reg;
 }
 
-UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UIntOS index)
 {
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListStringNN cateList;
@@ -245,9 +245,9 @@ UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UOSInt in
 	cfg->GetCateList(cateList, false);
 	UnsafeArrayOpt<WChar> ret = nullptr;
 	Text::StringBuilderUTF8 sbSubReg;
-	UOSInt thisCateLen = this->clsData->cate->leng;
+	UIntOS thisCateLen = this->clsData->cate->leng;
 	Data::ArrayIterator<NN<Text::String>> it = cateList.Iterator();
-	UOSInt k;
+	UIntOS k;
 	while (it.HasNext())
 	{
 		cate = it.Next();
@@ -397,7 +397,7 @@ Bool IO::Registry::GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> va
 	return false;
 }
 
-UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UIntOS index)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);

@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 	UInt32 fileCnt;
 	UInt32 fileOfst;
 //	UInt32 isUncompress;
-	UOSInt i;
+	UIntOS i;
 	MLHFileInfo *fileInfo;
 	UTF8Char sbuff[17];
 	UnsafeArray<UTF8Char> sptr;

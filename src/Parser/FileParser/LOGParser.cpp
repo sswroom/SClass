@@ -49,12 +49,12 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 //	WChar *filePath;
 //	WChar *fileName;
 //	WChar *sarr[10];
-	UOSInt i;
-//	OSInt j;
-//	OSInt k;
+	UIntOS i;
+//	IntOS j;
+//	IntOS k;
 	sptr = fd->GetFullName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".LOG")))
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".LOG")))
 	{
 		return nullptr;
 	}
@@ -64,7 +64,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	UOSInt strLen = (UOSInt)(sptr - sbuff);
+	UIntOS strLen = (UIntOS)(sptr - sbuff);
 	if (strLen >= 43 && sbuff[2] == ':' && sbuff[5] == ':' && sbuff[8] == ' ' && Text::StrEquals(&sbuff[9], (const UTF8Char*)"MSG start UDP server successfully!"))
 	{
 		IO::UDPLog *log = 0;

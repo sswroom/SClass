@@ -29,7 +29,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Game::Sudoku::SudokuBoard> board;
 
-			static void __stdcall EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num);
+			static void __stdcall EventNumInput(AnyType userObj, UIntOS selX, UIntOS selY, UInt8 num);
 			static void __stdcall OnHintsClicked(AnyType userObj);
 			static void __stdcall OnSolveClicked(AnyType userObj);
 			static void __stdcall OnClearClicked(AnyType userObj);

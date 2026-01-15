@@ -9,9 +9,9 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt cnt = me->exporter->GetParamCnt();
+	UIntOS i;
+	UIntOS j;
+	UIntOS cnt = me->exporter->GetParamCnt();
 	IO::FileExporter::ParamInfo pi;
 	NN<UI::GUIControl> ctrl;
 	Int32 val;
@@ -78,8 +78,8 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt cnt = this->exporter->GetParamCnt();
-	UOSInt i;
+	UIntOS cnt = this->exporter->GetParamCnt();
+	UIntOS i;
 	NN<UI::GUILabel> lbl;
 	IO::FileExporter::ParamInfo pi;
 
@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 			NN<UI::GUIComboBox> cbo;
 			cbo = ui->NewComboBox(*this, false);
 
-			UOSInt j;
+			UIntOS j;
 			j = 0;
 			while (this->exporter->GetParamSelItems(this->param, i, j, sbuff).SetTo(sptr))
 			{
@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 				j++;
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);
-			cbo->SetSelectedIndex((UOSInt)this->exporter->GetParamSel(this->param, i));
+			cbo->SetSelectedIndex((UIntOS)this->exporter->GetParamSel(this->param, i));
 			this->ctrls[i] = cbo;
 		}
 		else

@@ -50,7 +50,7 @@ Data::Duration Media::AudioBlockSource::SeekToTime(Data::Duration time)
 		byteLeft = byteOfst;
 		this->readBlock = this->blockCnt;
 
-		UOSInt i;
+		UIntOS i;
 		i = 0;
 		while (i < this->blockCnt)
 		{
@@ -83,7 +83,7 @@ void Media::AudioBlockSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AudioBlockSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::AudioBlockSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
@@ -98,21 +98,21 @@ void Media::AudioBlockSource::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::AudioBlockSource::ReadBlock(Data::ByteArray buff)
+UIntOS Media::AudioBlockSource::ReadBlock(Data::ByteArray buff)
 {
 	NN<Sync::Event> readEvt;
 	if (this->readBlock >= this->blockCnt)
 		return 0;
 	if (this->blocks[this->readBlock].length > buff.GetSize())
 		return 0;
-	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, buff);
+	UIntOS readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, buff);
 	this->readBlock++;
 	if (this->readEvt.SetTo(readEvt))
 		readEvt->Set();
 	return readSize;
 }
 
-UOSInt Media::AudioBlockSource::GetMinBlockSize()
+UIntOS Media::AudioBlockSource::GetMinBlockSize()
 {
 	return this->maxBlockSize;
 }

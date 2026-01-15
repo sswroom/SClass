@@ -29,7 +29,7 @@ namespace IO
 		} ParityType;
 	private:
 		void *handle;
-		UOSInt portNum;
+		UIntOS portNum;
 		UInt32 baudRate;
 		ParityType parity;
 		Bool flowCtrl;
@@ -39,34 +39,34 @@ namespace IO
 
 		Bool InitStream();
 	public:
-		static Bool GetAvailablePorts(NN<Data::ArrayListNative<UOSInt>> ports, Data::ArrayListNative<SerialPortType> *portTypes);
+		static Bool GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes);
 		static Text::CStringNN GetPortTypeName(SerialPortType portType);
-		static UOSInt GetPortWithType(Text::CStringNN portName);
-		static UOSInt GetUSBPort();
-		static UOSInt GetBTPort();
-		static UnsafeArrayOpt<UTF8Char> GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum);
-		static Bool ResetPort(UOSInt portNum);
+		static UIntOS GetPortWithType(Text::CStringNN portName);
+		static UIntOS GetUSBPort();
+		static UIntOS GetBTPort();
+		static UnsafeArrayOpt<UTF8Char> GetPortName(UnsafeArray<UTF8Char> buff, UIntOS portNum);
+		static Bool ResetPort(UIntOS portNum);
 
-		SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);
+		SerialPort(UIntOS portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);
 		virtual ~SerialPort();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 		Bool HasData();
 
 		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
-		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual UIntOS EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(NN<StreamReadReq> reqData);
 		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
-		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual UIntOS EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
 		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
 		virtual IO::StreamType GetStreamType() const;
-		UOSInt GetPortNum() const;
+		UIntOS GetPortNum() const;
 
 		Bool IsError() const;
 	};

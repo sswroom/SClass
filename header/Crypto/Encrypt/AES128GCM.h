@@ -15,11 +15,11 @@ namespace Crypto
 			AES128GCM(UnsafeArray<const UInt8> key, UnsafeArray<const UInt8> iv);
 			virtual ~AES128GCM();
 
-			virtual UOSInt Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
-			virtual UOSInt Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
+			virtual UIntOS Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff);
+			virtual UIntOS Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff);
 
-			virtual UOSInt GetEncBlockSize() const;
-			virtual UOSInt GetDecBlockSize() const;
+			virtual UIntOS GetEncBlockSize() const;
+			virtual UIntOS GetDecBlockSize() const;
 		};
 	}
 }

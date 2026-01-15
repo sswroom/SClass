@@ -8,7 +8,7 @@ namespace IO
 	class SNBProtocol
 	{
 	public:
-		typedef void (CALLBACKFUNC ProtocolHandler)(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
+		typedef void (CALLBACKFUNC ProtocolHandler)(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd);
 	public:
 		NN<IO::Stream> stm;
 		ProtocolHandler protoHdlr;
@@ -22,7 +22,7 @@ namespace IO
 		SNBProtocol(NN<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj);
 		~SNBProtocol();
 
-		void SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
+		void SendCommand(UInt8 cmdType, UIntOS cmdSize, UInt8 *cmd);
 	};
 }
 

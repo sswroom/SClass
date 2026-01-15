@@ -13,13 +13,13 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	NN<Media::MonitorSurface> destSurface;
 	UnsafeArray<UInt8> vsrcBuff;
 	DrawRect rect;
-	UOSInt srcWidth = 0;
-	UOSInt srcHeight = 0;
-	UOSInt cropWidth;
-	UOSInt cropHeight;
-	UOSInt cropDY;
+	UIntOS srcWidth = 0;
+	UIntOS srcHeight = 0;
+	UIntOS cropWidth;
+	UIntOS cropHeight;
+	UIntOS cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
-	UOSInt sizeNeeded;
+	UIntOS sizeNeeded;
 	if (!vbuff->srcBuff.SetTo(vsrcBuff))
 		return;
 
@@ -39,7 +39,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 		return;
 
 	Manage::HiResClock clk;
-	csconv->ConvertV2(&vsrcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (OSInt)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
+	csconv->ConvertV2(&vsrcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (IntOS)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
 	tstat->csTime = clk.GetTimeDiff();
 
 	if (vbuff->frameType == Media::FT_NON_INTERLACE)
@@ -77,7 +77,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_FIELD_BF)
 	{
@@ -105,7 +105,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_MERGED_TF)
 	{
@@ -133,7 +133,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_MERGED_BF)
 	{
@@ -161,7 +161,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 2);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 1, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 	{
@@ -189,7 +189,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 	{
@@ -217,7 +217,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 			tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
 		}
 		srcBuff = tstat->diBuff;
-		tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
+		tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (IntOS)srcWidth << 2);
 	}
 	else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 	{
@@ -250,11 +250,11 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	}
 	if (vbuff->destSurface.SetTo(destSurface))
 	{
-		OSInt destBpl;
+		IntOS destBpl;
 		UnsafeArray<UInt8> destBuff;
 		if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 		{
-			tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
+			tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (IntOS)srcWidth << 2, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
 			destSurface->UnlockSurface();
 		}
 	}
@@ -265,11 +265,11 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	{
 		if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 		{
-			tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (OSInt)srcWidth << 2);
+			tstat->deint->Deinterlace(tstat->lrBuff + (srcWidth * 4), tstat->diBuff, 1, srcWidth, (IntOS)srcWidth << 2);
 		}
 		else
 		{
-			tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (OSInt)srcWidth << 2);
+			tstat->deint->Deinterlace(tstat->lrBuff, tstat->diBuff, 0, srcWidth, (IntOS)srcWidth << 2);
 		}
 		vbuff2->destSize = vbuff->destSize;
 		vbuff2->destBitDepth = 32;
@@ -280,11 +280,11 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 		}
 		if (vbuff2->destSurface.SetTo(destSurface))
 		{
-			OSInt destBpl;
+			IntOS destBpl;
 			UnsafeArray<UInt8> destBuff;
 			if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 			{
-				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
+				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (IntOS)srcWidth << 2, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
 				destSurface->UnlockSurface();
 			}
 		}
@@ -388,7 +388,7 @@ void UI::GUIVideoBoxDDLQ::CreateThreadResizer(NN<ThreadStat> tstat)
 	tstat->resizer10Bit = this->curr10Bit;
 }
 
-UI::GUIVideoBoxDDLQ::GUIVideoBoxDDLQ(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIVideoBoxDD(ui, parent, colorSess, buffCnt, threadCnt)
+UI::GUIVideoBoxDDLQ::GUIVideoBoxDDLQ(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UIntOS buffCnt, UIntOS threadCnt) : UI::GUIVideoBoxDD(ui, parent, colorSess, buffCnt, threadCnt)
 {
 }
 

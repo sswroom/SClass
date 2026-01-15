@@ -15,7 +15,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::GetICCID(UnsafeAr
 	return HuaweiGetICCID(sbuff);
 }
 
-UOSInt IO::Device::HuaweiGSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
+UIntOS IO::Device::HuaweiGSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
 {
 	UTF8Char sbuff[10];
 	UnsafeArray<UTF8Char> sptr;
@@ -134,9 +134,9 @@ UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::HuaweiGetICCID(Un
 	{
 		return nullptr;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^ICCID: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("^ICCID: ")))
 	{
-		return Text::StrConcatC(iccid, &sbuff[8], (UOSInt)(sptr - &sbuff[8]));
+		return Text::StrConcatC(iccid, &sbuff[8], (UIntOS)(sptr - &sbuff[8]));
 	}
 	return nullptr;
 }
@@ -150,7 +150,7 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardTyp
 		simType.Set(SIMCardType::NoCard);
 		return false;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^CARDMODE:")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("^CARDMODE:")))
 	{
 		sptr = &sbuff[10];
 		while (*sptr == ' ')
@@ -171,12 +171,12 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceSt
 	{
 		return false;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^SYSINFOEX:")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("^SYSINFOEX:")))
 	{
 		UnsafeArray<UTF8Char> sptr2 = &sbuff[11];
 		while (*sptr2 == ' ')
 			sptr2++;
-		if (Text::StrSplitP(sarr, 9, Text::PString(sptr2, (UOSInt)(sptr - sptr2)), ',') == 9)
+		if (Text::StrSplitP(sarr, 9, Text::PString(sptr2, (UIntOS)(sptr - sptr2)), ',') == 9)
 		{
 			srvStatus.Set((ServiceStatus)sarr[0].ToInt32());
 			srvDomain.Set((ServiceDomain)sarr[1].ToInt32());
@@ -198,19 +198,19 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceSt
 Bool IO::Device::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStrengthInfo> csq)
 {
 	Text::PString sarr[9];
-	UOSInt sarrCnt;
+	UIntOS sarrCnt;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^HCSQ?"), 3000).SetTo(sptr))
 	{
 		return false;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^HCSQ:")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("^HCSQ:")))
 	{
 		UnsafeArray<UTF8Char> sptr2 = &sbuff[6];
 		while (*sptr2 == ' ')
 			sptr2++;
-		sarrCnt = Text::StrSplitP(sarr, 6, Text::PString(sptr2, (UOSInt)(sptr - sptr2)), ',');
+		sarrCnt = Text::StrSplitP(sarr, 6, Text::PString(sptr2, (UIntOS)(sptr - sptr2)), ',');
 		if (sarr[0].Equals(UTF8STRC("\"NOSERVICE\"")))
 		{
 			csq->sysmode = SysMode::NoService;
@@ -301,9 +301,9 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> client
 	{
 		return false;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^DHCP:")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("^DHCP:")))
 	{
-		if (Text::StrSplitTrimP(sarr, 9, Text::PString(&sbuff[6], (UOSInt)(sptr - &sbuff[6])), ',') == 8)
+		if (Text::StrSplitTrimP(sarr, 9, Text::PString(&sbuff[6], (UIntOS)(sptr - &sbuff[6])), ',') == 8)
 		{
 			UInt32 lclientIP;
 			UInt32 lnetmask;
@@ -359,8 +359,8 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> vers
 	version->ini = nullptr;
 	NN<Text::String> s;
 	Text::CStringNN type;
-	UOSInt i = 0;
-	UOSInt j = retStrs.GetCount();
+	UIntOS i = 0;
+	UIntOS j = retStrs.GetCount();
 	while (i < j)
 	{
 		s = retStrs.GetItemNoCheck(i);

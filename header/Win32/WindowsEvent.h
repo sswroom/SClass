@@ -23,7 +23,7 @@ namespace Win32
 		WindowsEvent(UnsafeArray<const WChar> progName);
 		~WindowsEvent();
 
-		Bool WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize);
+		Bool WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UIntOS buffSize);
 	};
 }
 #endif

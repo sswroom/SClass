@@ -9,12 +9,12 @@ namespace IO
 		typedef struct
 		{
 			const UTF8Char *androidId;
-			UOSInt androidIdLen;
+			UIntOS androidIdLen;
 			const Char *brandName;
 			const Char *modelName;
 			const Char *modelNum;
 			const UTF8Char *cpuName;
-			UOSInt cpuNameLen;
+			UIntOS cpuNameLen;
 		} AndroidInfo;
 
 	private:

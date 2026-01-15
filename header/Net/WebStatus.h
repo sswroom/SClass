@@ -61,7 +61,7 @@ namespace Net
 		{
 			Int32 code;
 			UnsafeArray<const UTF8Char> name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 		} StatusInfo;
 	private:
 		static StatusInfo statInfo[];

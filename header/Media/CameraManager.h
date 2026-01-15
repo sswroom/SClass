@@ -12,8 +12,8 @@ namespace Media
 		CameraManager();
 		~CameraManager();
 
-		OSInt GetDeviceCount();
-		Optional<Media::PhotoCapturer> CreateDevice(OSInt devId);
+		IntOS GetDeviceCount();
+		Optional<Media::PhotoCapturer> CreateDevice(IntOS devId);
 	};
 }
 #endif

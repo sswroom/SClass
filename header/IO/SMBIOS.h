@@ -85,15 +85,15 @@ namespace IO
 		} MemoryDeviceInfo;
 	private:
 		UnsafeArray<const UInt8> smbiosBuff;
-		UOSInt smbiosBuffSize;
+		UIntOS smbiosBuffSize;
 		UnsafeArrayOpt<UInt8> relPtr;
 
 		void GetDataType(NN<Data::ArrayListArr<const UInt8>> dataList, UInt8 dataType) const;
 	public:
-		SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UOSInt smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr);
+		SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UIntOS smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr);
 		~SMBIOS();
 
-		UOSInt GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
+		UIntOS GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
 		void FreeMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
 
 		UnsafeArrayOpt<UTF8Char> GetPlatformName(UnsafeArray<UTF8Char> buff) const;

@@ -21,7 +21,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(AnyType use
 {
 	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	NN<MapFilter> filter;
-	UOSInt i = me->lbFilters->GetSelectedIndex();
+	UIntOS i = me->lbFilters->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->filters->RemoveAt(i).SetTo(filter))
 	{
 		me->lbFilters->RemoveItem(i);
@@ -60,8 +60,8 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClie
 
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<MapFilter> filter;
 	i = 0;
 	j = this->filters->GetCount();

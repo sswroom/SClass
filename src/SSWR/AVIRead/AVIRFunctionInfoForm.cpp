@@ -9,7 +9,7 @@
 #include "SSWR/AVIRead/AVIRFunctionInfoForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRFunctionInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRFunctionInfoForm::OnMyStackDblClk(AnyType userObj, UIntOS index)
 {
 //	SSWR::AVIRead::AVIRFunctionInfoForm *me = (SSWR::AVIRead::AVIRFunctionInfoForm*)userObj;
 }
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 		UInt32 addr = (UInt32)funcAddr;
 		UInt32 blockStart;
 		UInt32 blockEnd;
-		UOSInt i;
+		UIntOS i;
 		Data::ArrayListUInt32 callAddrs;
 		Data::ArrayListUInt32 jmpAddrs;
 		NEW_CLASS(dasm, Manage::DasmX86_32());
@@ -72,7 +72,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 		UInt64 addr = (UInt64)funcAddr;
 		UInt64 blockStart;
 		UInt64 blockEnd;
-		UOSInt i;
+		UIntOS i;
 		Data::ArrayListUInt64 callAddrs;
 		Data::ArrayListUInt64 jmpAddrs;
 		NEW_CLASS(dasm, Manage::DasmX86_64());

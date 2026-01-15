@@ -24,11 +24,11 @@ namespace Text
 		Optional<Text::EncodingFactory> encFact;
 		NN<IO::Stream> stm;
 		UnsafeArray<UTF8Char> readBuff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<UInt8> rawBuff;
-		UOSInt rawBuffSize;
-		UOSInt parseOfst;
-		UOSInt parseError; //Max = 52
+		UIntOS rawBuffSize;
+		UIntOS parseOfst;
+		UIntOS parseError; //Max = 52
 		ParseMode mode;
 
 		Data::ArrayListNN<Text::XMLAttrib> attrList;
@@ -44,23 +44,23 @@ namespace Text
 		void FreeCurrent();
 		Bool IsHTMLSkip();
 		void InitBuffer();
-		UOSInt FillBuffer();
+		UIntOS FillBuffer();
 		void ParseElementNS();
 	public:
 		XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode);
 		~XMLReader();
 
 		void GetCurrPath(NN<Text::StringBuilderUTF8> sb) const;
-		UOSInt GetPathLev() const;
+		UIntOS GetPathLev() const;
 		Text::XMLNode::NodeType GetNodeType() const;
 		Optional<Text::String> GetNodeText() const; //TextNode = Value, ElementNode = Name
 		NN<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Optional<Text::String> GetNodeOriText() const;
 		Optional<Text::String> GetNamespace() const;
 		Text::CStringNN GetElementName() const;
-		UOSInt GetAttribCount() const;
-		NN<Text::XMLAttrib> GetAttribNoCheck(UOSInt index) const;
-		Optional<Text::XMLAttrib> GetAttrib(UOSInt index) const;
+		UIntOS GetAttribCount() const;
+		NN<Text::XMLAttrib> GetAttribNoCheck(UIntOS index) const;
+		Optional<Text::XMLAttrib> GetAttrib(UIntOS index) const;
 		Optional<Text::XMLAttrib> GetAttrib(Text::CStringNN name) const;
 
 		Bool ReadNext();
@@ -72,10 +72,10 @@ namespace Text
 		Bool IsElementEmpty() const;
 		Bool IsComplete() const;
 		Bool HasError() const;
-		UOSInt GetErrorCode() const;
+		UIntOS GetErrorCode() const;
 		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-		static Bool XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
+		static Bool XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UIntOS lev, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

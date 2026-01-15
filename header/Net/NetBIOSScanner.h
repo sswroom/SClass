@@ -24,7 +24,7 @@ namespace Net
 			UInt32 ttl;
 			UInt8 unitId[6];
 			NameEntry *names;
-			UOSInt namesCnt;
+			UIntOS namesCnt;
 		};
 
 		typedef void (CALLBACKFUNC AnswerUpdated)(AnyType userObj, UInt32 sortableIP);

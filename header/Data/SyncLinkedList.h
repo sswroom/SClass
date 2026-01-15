@@ -27,8 +27,8 @@ namespace Data
 		AnyType Get();
 		AnyType GetNoRemove();
 		AnyType GetLastNoRemove();
-		UOSInt GetCount();
-		UOSInt IndexOf(AnyType item);
+		UIntOS GetCount();
+		UIntOS IndexOf(AnyType item);
 	};
 }
 

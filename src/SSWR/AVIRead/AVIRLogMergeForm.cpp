@@ -89,8 +89,8 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(AnyType userObj
 	{
 		Bool succ1;
 		Bool succ2;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Data::DateTime dt;
 		Int64 t1;
 		Int64 t2;

@@ -12,9 +12,9 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(NN<IO::StreamData> fd, UI
 {
 	if (dirSize < 26)
 		return;
-	UOSInt ofst = 0;
-	Data::ByteBuffer buff((UOSInt)dirSize);
-	fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
+	UIntOS ofst = 0;
+	Data::ByteBuffer buff((UIntOS)dirSize);
+	fd->GetRealData(dirOfst, (UIntOS)dirSize, buff);
 	while (dirSize - ofst >= 26)
 	{
 		UInt64 fileOfst = ReadUInt64(&buff[ofst]);
@@ -27,11 +27,11 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(NN<IO::StreamData> fd, UI
 
 		NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 		pack->fileOfst = fileOfst;
-		pack->packSize = (UOSInt)fileSize;
+		pack->packSize = (UIntOS)fileSize;
 		pack->packType = PT_FILE;
 		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
 		this->packs.Add(pack);
-		ofst += 26 + (UOSInt)fileNameSize;
+		ofst += 26 + (UIntOS)fileNameSize;
 	}
 }
 
@@ -56,7 +56,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(NN<IO::StreamData> fd, UI
 
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 	pack->fileOfst = dirOfst;
-	pack->packSize = (UOSInt)dirSize;
+	pack->packSize = (UIntOS)dirSize;
 	pack->packType = PT_V2DIRECTORY;
 	pack->fileName = nullptr;
 	this->packs.Add(pack);
@@ -74,7 +74,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	Int32 flags = ReadInt32(&buff[4]);
-	UOSInt endOfst;
+	UIntOS endOfst;
 	UInt64 lastOfst = ReadUInt64(&buff[8]);
 	UInt64 lastSize;
 	PackType dirType;
@@ -108,7 +108,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 
 		pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 		pack->fileOfst = lastOfst;
-		pack->packSize = (UOSInt)(fd->GetDataSize() - lastOfst);
+		pack->packSize = (UIntOS)(fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
 		pack->fileName = nullptr;
 		me->packs.Add(pack);
@@ -152,12 +152,12 @@ Text::CStringNN IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
 	return CSTR("SPK");
 }
 
-UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	NN<Text::String> s;
@@ -191,16 +191,16 @@ Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	return true;
 }
 
-UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -211,13 +211,13 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
@@ -247,7 +247,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	{
 		frame->AddText(0, CSTR("Type=Data Block"));
 	}
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, CSTRP(sbuff, sptr));
 
 	if (pack->fileName.SetTo(s))
@@ -261,7 +261,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	if (pack->packType == PT_HEADER)
 	{
 		UInt32 flags;
-		UOSInt endOfst;
+		UIntOS endOfst;
 		Data::ByteBuffer packBuff(pack->packSize);
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
@@ -281,7 +281,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 			frame->AddUInt(endOfst + 4, 4, CSTR("Custom Size"), customSize = ReadUInt32(&packBuff[endOfst + 4]));
 			if (customType == 1)
 			{
-				UOSInt customOfst;
+				UIntOS customOfst;
 				UInt8 urlCnt;
 				UInt8 urlI;
 				frame->AddText(endOfst + 8, CSTR("-OSM Tile:"));
@@ -294,7 +294,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 					frame->AddUInt(endOfst + 8 + customOfst, 1, CSTRP(sbuff, sptr), packBuff[endOfst + 8 + customOfst]);
 					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-URL")), urlI);
 					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], CSTRP(sbuff, sptr), &packBuff[endOfst + 8 + customOfst + 1]);
-					customOfst += (UOSInt)packBuff[endOfst + 8 + customOfst] + 1;
+					customOfst += (UIntOS)packBuff[endOfst + 8 + customOfst] + 1;
 					urlI++;
 				}
 			}
@@ -356,9 +356,9 @@ Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(UnsafeArray<const UInt8> dirBuff, UOSInt dirSize, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetail> frame)
+void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(UnsafeArray<const UInt8> dirBuff, UIntOS dirSize, UIntOS frameOfst, NN<IO::FileAnalyse::FrameDetail> frame)
 {
-	UOSInt ofst = 0;
+	UIntOS ofst = 0;
 	while (dirSize - ofst >= 26)
 	{
 		UInt64 fileOfst = ReadUInt64(&dirBuff[ofst]);
@@ -374,7 +374,7 @@ void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(UnsafeArray<const UInt8> dir
 		frame->AddUInt64(frameOfst + 16, CSTR("Reserved"), ReadUInt64(&dirBuff[ofst + 16]));
 		frame->AddUInt(frameOfst + 24, 2, CSTR("File Name Size"), fileNameSize);
 		frame->AddStrC(frameOfst + 26, fileNameSize, CSTR("File Name"), &dirBuff[ofst + 26]);
-		ofst += 26 + (UOSInt)fileNameSize;
-		frameOfst += 26 + (UOSInt)fileNameSize;
+		ofst += 26 + (UIntOS)fileNameSize;
+		frameOfst += 26 + (UIntOS)fileNameSize;
 	}
 }

@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 	Map::ESRI::ESRIMapServer *esriMap = 0;
 	if (me->radPredefine->IsSelected())
 	{
-		UOSInt i = me->cboPredefine->GetSelectedIndex();
+		UIntOS i = me->cboPredefine->GetSelectedIndex();
 		NN<MapServer> v;
 		if (me->cboPredefine->GetItem(i).GetOpt<MapServer>().SetTo(v))
 		{
@@ -147,8 +147,8 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(Optional<UI::GUIClientControl> p
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	OSInt i = 0;
-	OSInt j = sizeof(mapSvrs) / sizeof(mapSvrs[0]);
+	IntOS i = 0;
+	IntOS j = sizeof(mapSvrs) / sizeof(mapSvrs[0]);
 	while (i < j)
 	{
 		this->cboPredefine->AddItem({mapSvrs[i].name, mapSvrs[i].nameLen}, (void*)&mapSvrs[i]);

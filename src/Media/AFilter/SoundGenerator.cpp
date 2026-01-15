@@ -25,13 +25,13 @@ void Media::AFilter::SoundGenerator::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	NN<Media::AFilter::SoundGen::SoundTypeGen> sndGen;
-	UOSInt sampleCnt = readSize / (this->format.align);
+	UIntOS sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
-	UOSInt i;
+	UIntOS i;
 	i = this->sndGenMap.GetCount();
 	if (i <= 0)
 	{
@@ -46,11 +46,11 @@ UOSInt Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 	}
 	if (this->format.bitpersample == 16)
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS l;
 		Double v2;
-		UOSInt sampleCnt = readSize / 2 / this->format.nChannels;
+		UIntOS sampleCnt = readSize / 2 / this->format.nChannels;
 		l = 0;
 		i = 0;
 		while (i < sampleCnt)
@@ -79,11 +79,11 @@ UOSInt Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 	}
 	else if (this->format.bitpersample == 8)
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS l;
 		Double v2;
-		UOSInt sampleCnt = readSize / this->format.nChannels;
+		UIntOS sampleCnt = readSize / this->format.nChannels;
 		l = 0;
 		i = 0;
 		while (i < sampleCnt)

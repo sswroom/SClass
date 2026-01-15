@@ -9,8 +9,8 @@ namespace Data
 		class BubbleSort
 		{
 		public:
-			static void SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex);
+			static void SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }

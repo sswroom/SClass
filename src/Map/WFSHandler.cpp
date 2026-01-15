@@ -16,11 +16,11 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = req->BuildURLHost(sbuff);
-	sptr = req->GetRequestPath(sptr, 511 - (UOSInt)(sptr - sbuff));
+	sptr = req->GetRequestPath(sptr, 511 - (UIntOS)(sptr - sbuff));
 	Data::FastStringMapNN<GISWebService::GISWorkspace> wsMap;
 	NN<GISWebService::GISWorkspace> ws;
-	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
-	UOSInt j;
+	UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
+	UIntOS j;
 	sptr = &sbuff[i];
 	sptr[0] = 0;
 	if (version.Equals(CSTR("1.0.0")))
@@ -4635,10 +4635,10 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 	Data::ArrayListNN<GISFeature> featureList;
 	NN<GISFeature> feature;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	if (typeName.SetTo(nntypeName))
@@ -4678,7 +4678,7 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = req->BuildURLHost(sbuff);
-		sptr = req->GetRequestPath(sptr, 511 - (UOSInt)(sptr - sbuff));
+		sptr = req->GetRequestPath(sptr, 511 - (UIntOS)(sptr - sbuff));
 		Text::StringBuilderUTF8 sb3;
 
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
@@ -4877,13 +4877,13 @@ Bool Map::WFSHandler::GetFeature(NN<Net::WebServer::WebRequest> req, NN<Net::Web
 	Optional<Text::String> bbox;
 	NN<Text::String> s;
 	NN<GISFeature> feature;
-	UOSInt count = 0;
+	UIntOS count = 0;
 	if (version.StartsWith(CSTR("1.")))
 	{
 		typeName = req->GetQueryValue(CSTR("typeName"));
 		if (req->GetQueryValue(CSTR("maxFeatures")).SetTo(s))
 		{
-			s->ToUOSInt(count);
+			s->ToUIntOS(count);
 		}
 	}
 	else
@@ -4891,7 +4891,7 @@ Bool Map::WFSHandler::GetFeature(NN<Net::WebServer::WebRequest> req, NN<Net::Web
 		typeName = req->GetQueryValue(CSTR("typeNames"));
 		if (req->GetQueryValue(CSTR("count")).SetTo(s))
 		{
-			s->ToUOSInt(count);
+			s->ToUIntOS(count);
 		}
 	}
 	featureID = req->GetQueryValue(CSTR("featureID"));
@@ -5032,10 +5032,10 @@ Bool Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::We
 	if (feature->layer->CreateLayerTableDef().SetTo(tableDef))
 	{
 		NN<Map::GetObjectSess> sess = feature->layer->BeginGetObject();
-		UOSInt k;
-		UOSInt l;
-		UOSInt i = 0;
-		UOSInt j = idList->GetCount();
+		UIntOS k;
+		UIntOS l;
+		UIntOS i = 0;
+		UIntOS j = idList->GetCount();
 		while (i < j)
 		{
 			if (feature->layer->GetNewVectorById(sess, id = idList->GetItem(i)).SetTo(vec))

@@ -64,7 +64,7 @@ void DB::TDSConn::Close()
 {
 }
 
-OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	return -2;
 }
@@ -104,12 +104,12 @@ void DB::TDSConn::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
 
-Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return 0;
 }

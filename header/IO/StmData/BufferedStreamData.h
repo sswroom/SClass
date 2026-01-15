@@ -12,7 +12,7 @@ namespace IO
 		private:
 			NN<IO::StreamData> stmData;
 			UInt64 buffOfst;
-			UOSInt buffLength;
+			UIntOS buffLength;
 			Data::ByteBuffer buff;
 			UInt64 dataLength;
 
@@ -20,7 +20,7 @@ namespace IO
 			BufferedStreamData(NN<IO::StreamData> stmData);
 			virtual ~BufferedStreamData();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
+			virtual UIntOS GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer);
 			virtual NN<Text::String> GetFullName() const;
 			virtual Text::CString GetShortName() const;
 			virtual void SetFullName(Text::CStringNN fullName);
@@ -31,7 +31,7 @@ namespace IO
 			virtual Bool IsFullFile() const;
 			virtual NN<Text::String> GetFullFileName() const;
 			virtual Bool IsLoading() const;
-			virtual UOSInt GetSeekCount() const;
+			virtual UIntOS GetSeekCount() const;
 		};
 	}
 }

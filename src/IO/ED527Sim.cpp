@@ -3,7 +3,7 @@
 
 IO::ED527Sim::ED527Sim()
 {
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		this->relays[i] = false;
@@ -19,12 +19,12 @@ Text::CStringNN IO::ED527Sim::GetName()
 	return CSTR("ED527");
 }
 
-UOSInt IO::ED527Sim::GetValueCount()
+UIntOS IO::ED527Sim::GetValueCount()
 {
 	return 16;
 }
 
-Text::CString IO::ED527Sim::GetValueName(UOSInt index)
+Text::CString IO::ED527Sim::GetValueName(UIntOS index)
 {
 	switch (index)
 	{
@@ -65,7 +65,7 @@ Text::CString IO::ED527Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED527Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ED527Sim::GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 16)
 	{
@@ -75,7 +75,7 @@ Bool IO::ED527Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-Bool IO::ED527Sim::ToggleValue(UOSInt index)
+Bool IO::ED527Sim::ToggleValue(UIntOS index)
 {
 	if (index < 16)
 	{

@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	UInt32 SuperFastHash_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal);
+	UInt32 SuperFastHash_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal);
 }
 
 Crypto::Hash::SuperFastHash::SuperFastHash(UInt32 len)
@@ -34,7 +34,7 @@ void Crypto::Hash::SuperFastHash::Clear()
 	this->currVal = 0;
 }
 
-void Crypto::Hash::SuperFastHash::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::SuperFastHash::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = SuperFastHash_Calc(buff.Ptr(), buffSize, this->currVal);
 }
@@ -52,12 +52,12 @@ void Crypto::Hash::SuperFastHash::GetValue(UnsafeArray<UInt8> buff) const
 	*(UInt32*)buff.Ptr() = hash;
 }
 
-UOSInt Crypto::Hash::SuperFastHash::GetBlockSize() const
+UIntOS Crypto::Hash::SuperFastHash::GetBlockSize() const
 {
 	return 4;
 }
 
-UOSInt Crypto::Hash::SuperFastHash::GetResultSize() const
+UIntOS Crypto::Hash::SuperFastHash::GetResultSize() const
 {
 	return 4;
 }

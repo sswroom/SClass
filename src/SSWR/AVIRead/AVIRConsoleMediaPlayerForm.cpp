@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (files[i]->EndsWith(UTF8STRC(".icm")) || files[i]->EndsWith(UTF8STRC(".icc")))
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType use
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	me->player->SetRotateType((Media::RotateType)me->cboRotate->GetSelectedItem().GetOSInt());
+	me->player->SetRotateType((Media::RotateType)me->cboRotate->GetSelectedItem().GetIntOS());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(AnyType userObj, Bool newVal)
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(AnyType u
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	NN<Media::VideoRenderer> vrenderer;
 	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
-		vrenderer->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetOSInt());
+		vrenderer->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetIntOS());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType userObj)
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType 
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	NN<Media::VideoRenderer> vrenderer;
 	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
-		vrenderer->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetOSInt());
+		vrenderer->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetIntOS());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(AnyType userObj)
@@ -87,22 +87,22 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(An
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	NN<Media::VideoRenderer> vrenderer;
 	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
-		vrenderer->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetOSInt());
+		vrenderer->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetIntOS());
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddYUVType(Media::ColorProfile::YUVType yuvType)
 {
-	this->cboYUVType->AddItem(Media::ColorProfile::YUVTypeGetName(yuvType), (void*)(OSInt)yuvType);
+	this->cboYUVType->AddItem(Media::ColorProfile::YUVTypeGetName(yuvType), (void*)(IntOS)yuvType);
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddRGBTrans(Media::CS::TransferType rgbType)
 {
-	this->cboRGBTrans->AddItem(Media::CS::TransferTypeGetName(rgbType), (void*)(OSInt)rgbType);
+	this->cboRGBTrans->AddItem(Media::CS::TransferTypeGetName(rgbType), (void*)(IntOS)rgbType);
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddColorPrimaries(Media::ColorProfile::ColorType colorType)
 {
-	this->cboColorPrimaries->AddItem(Media::ColorProfile::ColorTypeGetName(colorType), (void*)(OSInt)colorType);
+	this->cboColorPrimaries->AddItem(Media::ColorProfile::ColorTypeGetName(colorType), (void*)(IntOS)colorType);
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
@@ -113,7 +113,7 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 	if (this->player->GetVideoRenderer().SetTo(vrenderer))
 	{
 		vrenderer->GetStatus(status);
-		UOSInt i;
+		UIntOS i;
 		i = this->cboYUVType->GetCount();
 		while (i-- > 0)
 		{
@@ -157,7 +157,7 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 	NN<Media::VideoRenderer> vrenderer;
 	if (len > 4 && len <= 16384)
 	{
-		Data::ByteBuffer buff((UOSInt)len);
+		Data::ByteBuffer buff((UIntOS)len);
 		if (fs.Read(buff) == len)
 		{
 			NN<Media::ICCProfile> icc;

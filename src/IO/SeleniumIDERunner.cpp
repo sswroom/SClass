@@ -8,13 +8,13 @@ enum class CondType
 	Times
 };
 
-Bool IO::SeleniumIDERunner::ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex)
+Bool IO::SeleniumIDERunner::ErrorClient(NN<Net::WebDriverClient> cli, UIntOS currIndex)
 {
 	OPTSTR_DEL(this->lastErrorMsg);
 	this->lastErrorIndex = currIndex;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("Response Code: "));
-	sb.AppendUOSInt((UOSInt)cli->GetLastErrorCode());
+	sb.AppendUIntOS((UIntOS)cli->GetLastErrorCode());
 	sb.Append(CSTR("\r\nError: "));
 	sb.AppendOpt(cli->GetLastError());
 	sb.Append(CSTR("\r\nMessage: "));
@@ -194,13 +194,13 @@ Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumT
 	NN<Text::String> s;
 	struct {
 		CondType type;
-		UOSInt index;
-		UOSInt param;
+		UIntOS index;
+		UIntOS param;
 	} cond[16];
-	UOSInt condCnt = 0;
+	UIntOS condCnt = 0;
 	Bool succ;
-	UOSInt currIndex;
-	UOSInt i;
+	UIntOS currIndex;
+	UIntOS i;
 	NN<IO::SeleniumCommand> command;
 	currIndex = 0;
 	succ = true;
@@ -561,7 +561,7 @@ Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumT
 					{
 						Text::CStringNN cs = s->ToCString();
 						Text::StringBuilderUTF8 sb;
-						UOSInt index;
+						UIntOS index;
 						while (true)
 						{
 							index = cs.IndexOf(CSTR("${KEY_"));
@@ -748,7 +748,7 @@ Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumT
 		{
 			cond[condCnt].type = CondType::Times;
 			cond[condCnt].index = currIndex;
-			cond[condCnt].param = Text::String::OrEmpty(command->GetTarget())->ToUOSInt();
+			cond[condCnt].param = Text::String::OrEmpty(command->GetTarget())->ToUIntOS();
 			skip = cond[condCnt].param == 0;
 			condCnt++;
 		}
@@ -786,7 +786,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 	return succ;
 }
 
-Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UOSInt currIndex)
+Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UIntOS currIndex)
 {
 	NN<Net::WebDriverBy> ret;
 	if (Net::WebDriver::ParseBy(by).SetTo(ret))
@@ -805,7 +805,7 @@ Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UO
 	}
 }
 
-Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex)
+Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseOptionLocator(Text::CStringNN locator, UIntOS currIndex)
 {
 	Optional<Net::WebDriverBy> ret = nullptr;
 	if (locator.StartsWith(CSTR("id=")))

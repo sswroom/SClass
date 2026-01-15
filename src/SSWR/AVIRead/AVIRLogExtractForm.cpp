@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sbSuffix;
-	UOSInt compareType = me->cboCompare->GetSelectedIndex();
+	UIntOS compareType = me->cboCompare->GetSelectedIndex();
 	me->txtSFile->GetText(sb1);
 	me->txtCompare->GetText(sb2);
 	me->txtOFile->GetText(sb3);
@@ -72,8 +72,8 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	}
 	else
 	{
-		UOSInt outTyp = me->cboOutType->GetSelectedIndex();
-		UOSInt i;
+		UIntOS outTyp = me->cboOutType->GetSelectedIndex();
+		UIntOS i;
 		Bool hasData;
 		IO::FileStream fs1(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs1);

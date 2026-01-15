@@ -16,7 +16,7 @@ namespace Data
 			PigeonholeSort(Int32 minVal, Int32 maxVal);
 			~PigeonholeSort();
 
-			void SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }

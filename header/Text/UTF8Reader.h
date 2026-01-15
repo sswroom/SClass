@@ -14,8 +14,8 @@ namespace Text
 		NN<IO::Stream> stm;
 
 		UInt8 buff[UTF8READER_BUFFSIZE];
-		UOSInt buffSize;
-		UOSInt currOfst;
+		UIntOS buffSize;
+		UIntOS currOfst;
 		Text::LineBreakType lineBreak;
 
 		UInt64 lastPos;
@@ -28,8 +28,8 @@ namespace Text
 		virtual void Close();
 		UTF32Char Peek();
 		UTF32Char Read();
-		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
-		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> sbuff, UOSInt maxCharCnt);
+		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UIntOS maxCharCnt);
+		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> sbuff, UIntOS maxCharCnt);
 		virtual UnsafeArray<UTF8Char> GetLastLineBreak(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();

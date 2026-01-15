@@ -71,12 +71,12 @@ Data::Duration Media::AudioFrameSource::GetStreamTime()
 
 Data::Duration Media::AudioFrameSource::SeekToTime(Data::Duration time)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	UOSInt samplePos = (UOSInt)time.MultiplyU64(this->format.frequency);
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	UIntOS samplePos = (UIntOS)time.MultiplyU64(this->format.frequency);
 	i = 0;
-	j = (OSInt)this->blockCnt - 1;
+	j = (IntOS)this->blockCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -90,11 +90,11 @@ Data::Duration Media::AudioFrameSource::SeekToTime(Data::Duration time)
 		}
 		else
 		{
-			this->readBlock = (UOSInt)k;
+			this->readBlock = (UIntOS)k;
 			return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 		}
 	}
-	this->readBlock = (UOSInt)i - 1;
+	this->readBlock = (UIntOS)i - 1;
 	this->readBlockOfst = 0;
 	return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 }
@@ -115,7 +115,7 @@ void Media::AudioFrameSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AudioFrameSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::AudioFrameSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
@@ -130,7 +130,7 @@ void Media::AudioFrameSource::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 {
 	if (this->format.formatId == 1)
 	{
@@ -138,8 +138,8 @@ UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 		{
 			blk = blk.WithSize(blk.GetSize() - (blk.GetSize() % this->format.align));
 		}
-		UOSInt readSize = 0;
-		UOSInt size;
+		UIntOS readSize = 0;
+		UIntOS size;
 		while (this->readBlock < this->blockCnt && blk.GetSize() > 0)
 		{
 			if ((blocks[this->readBlock].length - this->readBlockOfst) > blk.GetSize())
@@ -168,7 +168,7 @@ UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 			return 0;
 		if (this->blocks[this->readBlock].length > blk.GetSize())
 			return 0;
-		UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk);
+		UIntOS readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk);
 		this->readBlock++;
 		this->readBlockOfst = 0;
 		NN<Sync::Event> evt;
@@ -178,7 +178,7 @@ UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 	}
 }
 
-UOSInt Media::AudioFrameSource::GetMinBlockSize()
+UIntOS Media::AudioFrameSource::GetMinBlockSize()
 {
 	return this->maxBlockSize;
 }

@@ -7,7 +7,7 @@
 
 extern "C"
 {
-	void CSAYUV444_10_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+	void CSAYUV444_10_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, UIntOS yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
 void Media::CS::CSAYUV444_10_LRGBC::SetupRGB13_LR()
@@ -234,7 +234,7 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 UInt32 Media::CS::CSAYUV444_10_LRGBC::WorkerThread(AnyType obj)
 {
 	NN<CSAYUV444_10_LRGBC> converter = obj.GetNN<CSAYUV444_10_LRGBC>();
-	UOSInt threadId = converter->currId;
+	UIntOS threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 	{
 		Sync::Event evt;
@@ -263,7 +263,7 @@ UInt32 Media::CS::CSAYUV444_10_LRGBC::WorkerThread(AnyType obj)
 
 void Media::CS::CSAYUV444_10_LRGBC::WaitForWorker(Int32 jobStatus)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool exited;
 	while (true)
 	{
@@ -286,7 +286,7 @@ void Media::CS::CSAYUV444_10_LRGBC::WaitForWorker(Int32 jobStatus)
 
 Media::CS::CSAYUV444_10_LRGBC::CSAYUV444_10_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
-	UOSInt i;
+	UIntOS i;
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAllocArr(Int64, 65536 * 3);
 	this->yuv2rgb = MemAllocArr(Int64, 65536 * 3);
@@ -327,7 +327,7 @@ Media::CS::CSAYUV444_10_LRGBC::CSAYUV444_10_LRGBC(NN<const Media::ColorProfile> 
 
 Media::CS::CSAYUV444_10_LRGBC::~CSAYUV444_10_LRGBC()
 {
-	UOSInt i = nThread;
+	UIntOS i = nThread;
 	Bool exited;
 	while (i-- > 0)
 	{
@@ -376,12 +376,12 @@ Media::CS::CSAYUV444_10_LRGBC::~CSAYUV444_10_LRGBC()
 	MemFreeArr(this->yuv2rgb);
 }
 
-void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	UOSInt i = this->nThread;
-	UOSInt lastHeight = dispHeight;
-	UOSInt currHeight;
+	UIntOS i = this->nThread;
+	UIntOS lastHeight = dispHeight;
+	UIntOS currHeight;
 	
 	i = this->nThread;
 	lastHeight = dispHeight;
@@ -390,7 +390,7 @@ void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt
 		currHeight = MulDivUOS(i, dispHeight, this->nThread);
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 3);
-		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (IntOS)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;
@@ -402,7 +402,7 @@ void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt
 	WaitForWorker(3);
 }
 
-UOSInt Media::CS::CSAYUV444_10_LRGBC::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSAYUV444_10_LRGBC::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 3;
 }
@@ -433,7 +433,7 @@ void Media::CS::CSAYUV444_10_LRGBC::RGBParamChanged(NN<const Media::ColorHandler
 	this->rgbUpdated = true;
 }
 
-UOSInt Media::CS::CSAYUV444_10_LRGBC::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSAYUV444_10_LRGBC::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 3;
 }

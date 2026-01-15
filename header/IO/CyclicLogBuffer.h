@@ -12,12 +12,12 @@ namespace IO
 	private:
 		Sync::Mutex logMut;
 		UnsafeArray<UnsafeArrayOpt<UTF8Char>> logBuff;
-		UOSInt *logLeng;
-		UOSInt logInd;
-		UOSInt buffSize;
+		UIntOS *logLeng;
+		UIntOS logInd;
+		UIntOS buffSize;
 
 	public:
-		CyclicLogBuffer(UOSInt buffSize);
+		CyclicLogBuffer(UIntOS buffSize);
 		virtual ~CyclicLogBuffer();
 
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

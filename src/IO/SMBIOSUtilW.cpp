@@ -44,8 +44,8 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\WMI"));
 	if (db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables").SetTo(r))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		dataBuff = 0;
 		buffSize = 0;
 		if (r->ReadNext())

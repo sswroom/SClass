@@ -14,7 +14,7 @@
 
 extern "C"
 {
-	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
+	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UIntOS w, UIntOS h, UIntOS ySplit, UIntOS *crops);
 }
 
 typedef enum
@@ -43,9 +43,9 @@ typedef enum
 
 void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Media::MediaFile> mFile;
 	NN<Media::MediaSource> medSource;
 	Int32 syncTime;
@@ -94,8 +94,8 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::ChapterInfo> currChapters;
 	this->mnuChapters->ClearItems();
 	if (this->currChapters.SetTo(currChapters))
@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::AudioSource> audio, 
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	me->popMedia = (Media::MediaSource*)me->lbFiles->GetSelectedItem().p;
@@ -228,11 +228,11 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 		img.Delete();
 		return;
 	}
-	UOSInt w = img->info.dispSize.x;
-	UOSInt h = img->info.dispSize.y;
+	UIntOS w = img->info.dispSize.x;
+	UIntOS h = img->info.dispSize.y;
 	UnsafeArray<UInt8> yptr = img->data;
-	UOSInt ySplit;
-	UOSInt crops[4];
+	UIntOS ySplit;
+	UIntOS crops[4];
 	if (img->info.fourcc == *(UInt32*)"YV12")
 	{
 		if (w & 3)
@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 	me->vbdMain->UpdateCrop();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UIntOS frameNum, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -432,10 +432,10 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 	NN<Media::VideoSource> currDecoder;
 	NN<Media::VideoSource> video;
 	Data::Duration currTime;
-	UOSInt i;
+	UIntOS i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
-		i = (UOSInt)cmdId - MNU_PB_CHAPTERS;
+		i = (UIntOS)cmdId - MNU_PB_CHAPTERS;
 		if (this->PBIsPlaying())
 		{
 			PBStop();
@@ -466,7 +466,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			currTime = this->clk->GetCurrTime();
 			this->PBStop();
 			this->PBStart(currTime.AddMS(10000));
-			this->pbLastChapter = (UOSInt)-1;
+			this->pbLastChapter = (UIntOS)-1;
 		}
 		break;
 	case MNU_PB_BWD:
@@ -477,7 +477,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			if (currTime.IsNegative())
 				currTime = 0;
 			this->PBStart(currTime);
-			this->pbLastChapter = (UOSInt)-1;
+			this->pbLastChapter = (UIntOS)-1;
 		}
 		break;
 	case MNU_PB_CHAP_PREV:
@@ -490,7 +490,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				i++;
 			}
 			i--;
-			if ((OSInt)i < 0)
+			if ((IntOS)i < 0)
 			{
 				i = 0;
 			}
@@ -520,13 +520,13 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		if (this->activeVideo.SetTo(activeVideo))
 		{
 			Media::FrameInfo info;
-			Math::Size2D<UOSInt> sz1;
-			Math::Size2D<UOSInt> sz2;
-			UOSInt cropLeft;
-			UOSInt cropTop;
-			UOSInt cropRight;
-			UOSInt cropBottom;
-			Math::Size2D<UOSInt> vSize;
+			Math::Size2D<UIntOS> sz1;
+			Math::Size2D<UIntOS> sz2;
+			UIntOS cropLeft;
+			UIntOS cropTop;
+			UIntOS cropRight;
+			UIntOS cropBottom;
+			Math::Size2D<UIntOS> vSize;
 			UInt32 tmpV;
 
 			if (this->currDecoder.SetTo(currDecoder))
@@ -553,11 +553,11 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			}
 			if (info.par2 > 1)
 			{
-				vSize.y = (UOSInt)Double2Int32(UOSInt2Double(vSize.y) * info.par2);
+				vSize.y = (UIntOS)Double2Int32(UIntOS2Double(vSize.y) * info.par2);
 			}
 			else
 			{
-				vSize.x = (UOSInt)Double2Int32(UOSInt2Double(vSize.x) / info.par2);
+				vSize.x = (UIntOS)Double2Int32(UIntOS2Double(vSize.x) / info.par2);
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);
@@ -603,7 +603,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				UTF8Char sbuff[40];
 				UnsafeArray<UTF8Char> sptr;
-				UOSInt j;
+				UIntOS j;
 				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				writer.WriteLine(CSTR("# timecode format v2"));

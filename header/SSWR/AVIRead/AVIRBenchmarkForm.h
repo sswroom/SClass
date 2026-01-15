@@ -29,7 +29,7 @@ namespace SSWR
 			typedef struct
 			{
 				TestType tt;
-				UOSInt testSize;
+				UIntOS testSize;
 				Double resultRate;
 			} TestResult;
 		private:
@@ -61,8 +61,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCPU;
 			NN<UI::GUIListView> lvRAM;
 
-			static UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UOSInt byteSize);
-			void StartTest(UOSInt startSize, UOSInt buffSize);
+			static UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UIntOS byteSize);
+			void StartTest(UIntOS startSize, UIntOS buffSize);
 			void ClearResult();
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnQuickClicked(AnyType userObj);

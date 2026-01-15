@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	UInt8 dataBuff[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 	UInt8 outBuff[32];
-	UOSInt outSize;
+	UIntOS outSize;
 	outSize = rc2.Encrypt(dataBuff, 8, outBuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);

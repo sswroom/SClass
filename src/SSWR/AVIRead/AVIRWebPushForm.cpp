@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRWebPushForm::OnPushClicked(AnyType userData)
 void __stdcall SSWR::AVIRead::AVIRWebPushForm::OnFiles(AnyType userData, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRWebPushForm> me = userData.GetNN<SSWR::AVIRead::AVIRWebPushForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
 	while (i < j)
 	{
 		if (me->OpenFile(files[i]->ToCString()))

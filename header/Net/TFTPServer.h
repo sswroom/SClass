@@ -17,7 +17,7 @@ namespace Net
 			UInt64 sessId;
 			Int64 lastSignalTime;
 			NN<IO::Stream> stm;
-			UOSInt blockSize;
+			UIntOS blockSize;
 			Bool isWrite;
 			Bool isLast;
 			UInt16 currBlock;

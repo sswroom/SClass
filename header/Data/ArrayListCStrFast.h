@@ -9,10 +9,10 @@ namespace Data
 	{
 	public:
 		ArrayListCStrFast();
-		ArrayListCStrFast(UOSInt capacity);
+		ArrayListCStrFast(UIntOS capacity);
 
 		virtual NN<Data::ArrayList<Text::CStringNN>> Clone() const;
-		virtual OSInt Compare(Text::CStringNN obj1, Text::CStringNN obj2) const;
+		virtual IntOS Compare(Text::CStringNN obj1, Text::CStringNN obj2) const;
 	};
 }
 #endif

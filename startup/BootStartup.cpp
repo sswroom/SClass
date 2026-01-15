@@ -13,7 +13,7 @@ Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgCo
 	return 0;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	cmdCnt.Set(1);
 	return (UTF8Char**)&"Boot";

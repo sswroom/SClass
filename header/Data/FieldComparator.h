@@ -18,11 +18,11 @@ namespace Data
 		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();
 
-		virtual OSInt Compare(NN<VariObject> a, NN<VariObject> b) const;
+		virtual IntOS Compare(NN<VariObject> a, NN<VariObject> b) const;
 		Bool IsValid();
 		Bool ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 
-		static OSInt Compare(Optional<VariItem> a, Optional<VariItem> b);
+		static IntOS Compare(Optional<VariItem> a, Optional<VariItem> b);
 	};
 }
 #endif

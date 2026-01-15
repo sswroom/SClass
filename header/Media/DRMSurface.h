@@ -20,14 +20,14 @@ namespace Media
 		
 		virtual Media::Image *Clone() const;
 		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual void GetImageData(UInt8 *destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
-		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank);
-		virtual UInt8 *LockSurface(OSInt *lineAdd);
+		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, IntOS destX, IntOS destY, UIntOS buffW, UIntOS buffH, Bool clearScn, Bool waitForVBlank);
+		virtual UInt8 *LockSurface(IntOS *lineAdd);
 		virtual void UnlockSurface();
 
 		void SetBuffSurface(Media::MonitorSurface *buffSurface);

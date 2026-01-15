@@ -98,25 +98,25 @@ namespace SSWR
 			Double GetMonitorDDPI(Optional<MonitorHandle> hMon);
 
 			Optional<const BurntDiscInfo> NewBurntDisc(Text::CStringNN discId, Text::CStringNN discTypeId, const Data::Timestamp &ts);
-			UOSInt GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList);
+			UIntOS GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList);
 			Optional<const BurntDiscInfo> GetBurntDisc(Text::CStringNN discId);
-			OSInt GetBurntDiscIndex(Text::CStringNN discId);
-			Bool NewBurntFile(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> name, UInt64 fileSize, Text::CString category, Int32 videoId);
-			UOSInt GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList);
+			IntOS GetBurntDiscIndex(Text::CStringNN discId);
+			Bool NewBurntFile(UnsafeArray<const UTF8Char> discId, UIntOS fileId, UnsafeArray<const UTF8Char> name, UInt64 fileSize, Text::CString category, Int32 videoId);
+			UIntOS GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList);
 			void FreeBurntFiles(NN<Data::ArrayListNN<DiscFileInfo>> fileList);
-			UOSInt GetDVDTypeCount();
-			Optional<const DVDTypeInfo> GetDVDType(UOSInt index);
-			OSInt GetDVDTypeIndex(Text::CStringNN discTypeID);
+			UIntOS GetDVDTypeCount();
+			Optional<const DVDTypeInfo> GetDVDType(UIntOS index);
+			IntOS GetDVDTypeIndex(Text::CStringNN discTypeID);
 			Bool ModifyDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc);
 			Optional<const DVDTypeInfo> NewDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc);
-			UOSInt GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList);
+			UIntOS GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList);
 			Optional<const DiscTypeInfo> GetDiscType(Text::CStringNN discTypeId);
-			UOSInt GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList);
-			UOSInt GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, UnsafeArray<const UTF8Char> brand, UOSInt brandLen);
+			UIntOS GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList);
+			UIntOS GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, UnsafeArray<const UTF8Char> brand, UIntOS brandLen);
 			Int32 NewDVDVideo(UnsafeArray<const UTF8Char> anime, UnsafeArrayOpt<const UTF8Char> series, UnsafeArrayOpt<const UTF8Char> volume, UnsafeArray<const UTF8Char> dvdType);
-			UOSInt GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList);
+			UIntOS GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList);
 			Optional<const DVDVideoInfo> GetDVDVideo(Int32 videoId);
-			Bool NewMovies(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> mainTitle, NN<Text::String> type, UnsafeArrayOpt<const UTF8Char> chapter, UnsafeArrayOpt<const UTF8Char> chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, UnsafeArrayOpt<const UTF8Char> aspectRatio, UnsafeArrayOpt<const UTF8Char> remark);
+			Bool NewMovies(UnsafeArray<const UTF8Char> discId, UIntOS fileId, UnsafeArray<const UTF8Char> mainTitle, NN<Text::String> type, UnsafeArrayOpt<const UTF8Char> chapter, UnsafeArrayOpt<const UTF8Char> chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, UnsafeArrayOpt<const UTF8Char> aspectRatio, UnsafeArrayOpt<const UTF8Char> remark);
 			Bool AddMD5(NN<IO::StreamData> fd);
 		};
 	}

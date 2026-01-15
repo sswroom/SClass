@@ -18,18 +18,18 @@ namespace Net
 		UInt8 *portList;
 		Sync::Mutex portMut;
 		Data::CallbackStorage<PortUpdatedHandler> hdlr;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		Bool threadToStop;
 		Sync::Event threadEvt;
 
 		static UInt32 __stdcall ScanThread(AnyType userObj);
 	public:
-		TCPPortScanner(NN<Net::SocketFactory> socf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj);
+		TCPPortScanner(NN<Net::SocketFactory> socf, UIntOS threadCnt, PortUpdatedHandler hdlr, AnyType userObj);
 		~TCPPortScanner();
 
 		void Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPort);
 		Bool IsFinished();
-		UOSInt GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList);
+		UIntOS GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList);
 	};
 }
 #endif

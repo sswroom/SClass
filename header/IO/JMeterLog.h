@@ -62,7 +62,7 @@ namespace IO
 		Int64 GetMaxTime() const { return this->maxTime; }
 		void GetGroups(NN<Data::ArrayListNN<JMeterGroup>> groups) const { groups->AddAll(this->groups); }
 		void GetThreads(NN<Data::ArrayListNN<JMeterThread>> threads) const { threads->AddAll(this->threads); }
-		UOSInt GetConcurrCnt(Int64 ts) const;
+		UIntOS GetConcurrCnt(Int64 ts) const;
 	};
 }
 #endif

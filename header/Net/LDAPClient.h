@@ -65,7 +65,7 @@ namespace Net
 		Bool recvToStop;
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
-		void ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt msgLen);
+		void ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UIntOS msgLen);
 		UnsafeArrayOpt<const UTF8Char> ParseFilter(Net::ASN1PDUBuilder *pdu, UnsafeArray<const UTF8Char> filter, Bool complex);
 	public:
 		LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);

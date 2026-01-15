@@ -11,8 +11,8 @@ namespace Media
 	private:
 		void *cameraMgr;
 		const Char *cameraId;
-		OSInt camWidth;
-		OSInt camHeight;
+		IntOS camWidth;
+		IntOS camHeight;
 		Int32 camFourcc;
 	
 		FrameCallback cb;
@@ -34,16 +34,16 @@ namespace Media
 		
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Text::CString GetFilterName();
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 		virtual Bool Start();
 		virtual void Stop();
 		virtual Bool IsRunning();
 
-		virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom);
-		virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
+		virtual void SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom);
+		virtual UIntOS GetSupportedFormats(VideoFormat *fmtArr, UIntOS maxCnt);
 		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 	};
 
 	class AndroidVideoCaptureMgr
@@ -55,10 +55,10 @@ namespace Media
 		AndroidVideoCaptureMgr();
 		~AndroidVideoCaptureMgr();
 
-		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
-		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
+		UIntOS GetDeviceList(Data::ArrayList<UInt32> *devList);
+		UTF8Char *GetDeviceName(UTF8Char *buff, UIntOS devId);
 
-		Optional<Media::VideoCapturer> CreateDevice(UOSInt devId);
+		Optional<Media::VideoCapturer> CreateDevice(UIntOS devId);
 	};
 }
 #endif

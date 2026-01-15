@@ -30,11 +30,11 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
+		UIntOS wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
 		WChar *ws = MemAlloc(WChar, wnChar + 1);
 		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 
-		UOSInt strSize = 3 * wnChar;
+		UIntOS strSize = 3 * wnChar;
 		if (strSize > buffSize)
 		{
 			while (strSize > buffSize)
@@ -44,7 +44,7 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 			MemFreeArr(this->buff);
 			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
-		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar);
+		UIntOS nChar = enc.WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
 		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
@@ -55,7 +55,7 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 	if (this->enc.GetEncCodePage() == 65001)
 	{
 		const UTF8Char crlf[2] = {13, 10};
-		UOSInt ret = this->stm->Write(str.ToByteArray());
+		UIntOS ret = this->stm->Write(str.ToByteArray());
 		if (ret == str.leng)
 		{
 			ret += this->stm->Write(Data::ByteArrayR(crlf, 2));
@@ -65,13 +65,13 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
+		UIntOS wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
 		WChar *ws = MemAlloc(WChar, wnChar + 2);
 		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 		ws[wnChar] = 13;
 		ws[wnChar + 1] = 10;
 
-		UOSInt strSize = 3 * (wnChar + 2);
+		UIntOS strSize = 3 * (wnChar + 2);
 		if (strSize > buffSize)
 		{
 			while (strSize > buffSize)
@@ -81,15 +81,15 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 			MemFreeArr(this->buff);
 			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
-		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
+		UIntOS nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
 		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
 }
 
-Bool IO::StreamWriter::WriteW(UnsafeArray<const WChar> str, UOSInt nChar)
+Bool IO::StreamWriter::WriteW(UnsafeArray<const WChar> str, UIntOS nChar)
 {
-	UOSInt strSize = 3 * nChar;
+	UIntOS strSize = 3 * nChar;
 	if (strSize > buffSize)
 	{
 		while (strSize > buffSize)
@@ -108,9 +108,9 @@ Bool IO::StreamWriter::WriteW(UnsafeArray<const WChar> str)
 	return WriteW(str, Text::StrCharCnt(str));
 }
 
-Bool IO::StreamWriter::WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar)
+Bool IO::StreamWriter::WriteLineW(UnsafeArray<const WChar> str, UIntOS nChar)
 {
-	UOSInt strSize = 3 * nChar + 2;
+	UIntOS strSize = 3 * nChar + 2;
 	if (strSize > buffSize)
 	{
 		while (strSize > buffSize)

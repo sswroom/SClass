@@ -8,8 +8,8 @@
 typedef struct
 {
 	const UTF8Char *fileName;
-	UOSInt addr;
-	UOSInt size;
+	UIntOS addr;
+	UIntOS size;
 } ModuleInfoData;
 
 Manage::ModuleInfo::ModuleInfo(void *hProc, void *hMod)
@@ -38,7 +38,7 @@ UnsafeArray<UTF8Char> Manage::ModuleInfo::GetModuleFileName(UnsafeArray<UTF8Char
 	return Text::StrConcat(buff, info->fileName);
 }
 
-Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size)
+Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UIntOS> baseAddr, OutParam<UIntOS> size)
 {
 	ModuleInfoData *info = (ModuleInfoData*)this->hMod;
 	baseAddr.Set(info->addr);

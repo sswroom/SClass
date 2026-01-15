@@ -35,7 +35,7 @@ IO::FileExporter::SupportType Exporter::ExcelXMLExporter::IsObjectSupported(NN<I
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::ExcelXMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::ExcelXMLExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -66,10 +66,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	NN<Text::SpreadSheet::Workbook> wb;
 	NN<Text::SpreadSheet::Worksheet> ws;
 	NN<Text::SpreadSheet::CellStyle> style;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
-	UOSInt n;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
+	UIntOS n;
 	UInt32 v;
 	UnsafeArray<const UTF8Char> text;
 	NN<Text::String> s;
@@ -85,7 +85,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding="));
 	Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
 	sptr = Text::XML::ToAttrText(sbuff2, sbuff);
-	sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+	sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 	sb.AppendC(UTF8STRC("?>"));
 	writer.WriteLine(sb.ToCString());
 
@@ -125,7 +125,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <Created>"));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</Created>"));
 			writer.WriteLine(sb.ToCString());
 		}
@@ -135,7 +135,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <LastSaved>"));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</LastSaved>"));
 			writer.WriteLine(sb.ToCString());
 		}
@@ -200,7 +200,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <ActiveSheet>"));
-			sb.AppendUOSInt(wb->GetActiveSheet());
+			sb.AppendUIntOS(wb->GetActiveSheet());
 			sb.AppendC(UTF8STRC("</ActiveSheet>"));
 			writer.WriteLine(sb.ToCString());
 		}
@@ -225,7 +225,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			writer.WriteLine(CSTR("   <Color>"));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("    <Index>"));
-			sb.AppendUOSInt(k);
+			sb.AppendUIntOS(k);
 			sb.AppendC(UTF8STRC("</Index>"));
 			writer.WriteLine(sb.ToCString());
 			sb.ClearStr();
@@ -260,7 +260,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("s"));
-					sb.AppendUOSInt((20 + k));
+					sb.AppendUIntOS((20 + k));
 					style->SetID(sb.ToString());
 				}
 				sb.ClearStr();
@@ -356,7 +356,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <Interior ss:Color=\"#"));
 					sptr = Text::StrHexVal32(sbuff, style->GetFillColor());
-					sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
+					sb.AppendC(&sbuff[2], (UIntOS)(sptr - &sbuff[2]));
 					sb.AppendC(UTF8STRC("\" ss:Pattern=\"Solid\"/>"));
 					writer.WriteLine(sb.ToCString());
 				}
@@ -379,7 +379,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					{
 						sptr = Text::StrHexVal32(sbuff, font->GetColor());
 						sb.AppendC(UTF8STRC(" ss:Color=\"#"));
-						sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
+						sb.AppendC(&sbuff[2], (UIntOS)(sptr - &sbuff[2]));
 						sb.AppendC(UTF8STRC("\""));
 					}
 					if (font->IsBold())
@@ -423,13 +423,13 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 		if (ws->GetCount() > 0)
 		{
 			Bool rowSkipped = false;
-			UOSInt lastDispCol;
+			UIntOS lastDispCol;
 			NN<Text::SpreadSheet::Worksheet::RowData> row;
 			NN<Text::SpreadSheet::Worksheet::CellData> cell;
 			writer.WriteLine(CSTR("  <Table>"));
 
 			Double lastColWidth = -1;
-			UOSInt lastColIndex = INVALID_INDEX;
+			UIntOS lastColIndex = INVALID_INDEX;
 			Bool needIndex = true;
 
 			k = 0;
@@ -445,7 +445,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 						if (needIndex)
 						{
 							sb.AppendC(UTF8STRC(" ss:Index=\""));
-							sb.AppendUOSInt(lastColIndex + 1);
+							sb.AppendUIntOS(lastColIndex + 1);
 							sb.AppendC(UTF8STRC("\""));
 						}
 						sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
@@ -454,7 +454,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 						if (lastColIndex + 1 != k)
 						{
 							sb.AppendC(UTF8STRC(" ss:Span=\""));
-							sb.AppendUOSInt((k - lastColIndex - 1));
+							sb.AppendUIntOS((k - lastColIndex - 1));
 							sb.AppendC(UTF8STRC("\""));
 							needIndex = true;
 						}
@@ -481,7 +481,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				if (needIndex)
 				{
 					sb.AppendC(UTF8STRC(" ss:Index=\""));
-					sb.AppendUOSInt(lastColIndex);
+					sb.AppendUIntOS(lastColIndex);
 					sb.AppendC(UTF8STRC("\""));
 				}
 				sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
@@ -490,7 +490,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				if (lastColIndex + 1 != l)
 				{
 					sb.AppendC(UTF8STRC(" ss:Span=\""));
-					sb.AppendUOSInt((l - lastColIndex - 1));
+					sb.AppendUIntOS((l - lastColIndex - 1));
 					sb.AppendC(UTF8STRC("\""));
 				}
 				sb.AppendC(UTF8STRC("/>"));
@@ -512,7 +512,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					if (rowSkipped)
 					{
 						sb.AppendC(UTF8STRC(" ss:Index=\""));
-						sb.AppendUOSInt(k + 1);
+						sb.AppendUIntOS(k + 1);
 						sb.AppendC(UTF8STRC("\""));
 					}
 					rowSkipped = false;
@@ -568,7 +568,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 								if (m != lastDispCol + 1)
 								{
 									sb.AppendC(UTF8STRC(" ss:Index=\""));
-									sb.AppendUOSInt(m + 1);
+									sb.AppendUIntOS(m + 1);
 									sb.AppendC(UTF8STRC("\""));
 								}
 								lastDispCol = m;
@@ -703,7 +703,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			}
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <Zoom>"));
-			sb.AppendUOSInt(v);
+			sb.AppendUIntOS(v);
 			sb.AppendC(UTF8STRC("</Zoom>"));
 			writer.WriteLine(sb.ToCString());
 		}
@@ -876,7 +876,7 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, UnsafeA
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("     ss:Color=\"#"));
 		sptr = Text::StrHexVal32(sbuff, border.borderColor);
-		sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
+		sb.AppendC(&sbuff[2], (UIntOS)(sptr - &sbuff[2]));
 		sb.AppendC(UTF8STRC("\""));
 	}
 	sb.AppendC(UTF8STRC("/>"));

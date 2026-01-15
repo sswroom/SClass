@@ -14,10 +14,10 @@ namespace Media
 		{
 			UnsafeArray<UInt8> srcPtr;
 			UnsafeArray<UInt8> destPtr;
-			UOSInt width;
-			UOSInt height;
-			OSInt sAdd;
-			OSInt dAdd;
+			UIntOS width;
+			UIntOS height;
+			IntOS sAdd;
+			IntOS dAdd;
 			Int32 threadStat;
 			NN<Media::RGBColorFilter> me;
 			Sync::Event *evt;
@@ -34,9 +34,9 @@ namespace Media
 		UInt8 *lut;
 		Bool hasSSE41;
 		Double *gammaParam;
-		UOSInt gammaCnt;
+		UIntOS gammaCnt;
 
-		UOSInt nThread;
+		UIntOS nThread;
 		Sync::Event threadEvt;
 		UnsafeArray<ThreadStat> threadStats;
 
@@ -46,9 +46,9 @@ namespace Media
 		RGBColorFilter(NN<Media::ColorManager> colorMgr);
 		~RGBColorFilter();
 
-		void SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UOSInt gammaCnt);
+		void SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UIntOS gammaCnt);
 		void SetParameter(Double brightness, Double contrast, Double gamma, NN<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev);
-		void ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+		void ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown);
 	};
 }
 #endif

@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			return;
 		}
 	}
-	Net::SSLVer ver = (Net::SSLVer)me->cboVersion->GetSelectedItem().GetOSInt();
+	Net::SSLVer ver = (Net::SSLVer)me->cboVersion->GetSelectedItem().GetIntOS();
 	Optional<Socket> s;
 	NN<Socket> nns;
 	if (addr.addrType == Net::AddrType::IPv4)
@@ -68,11 +68,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));
 		return;
 	}
-	UOSInt mode = me->cboMode->GetSelectedIndex();
+	UIntOS mode = me->cboMode->GetSelectedIndex();
 	UnsafeArray<UInt8> nnpacketBuff;
 	UInt8 packetBuff[16384];
-	UOSInt retSize;
-	UOSInt readSize;
+	UIntOS retSize;
+	UIntOS readSize;
 	if (mode == 1)
 	{
 		packetBuff[0] = 0x12; //Packet Header Type = PreLogin
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending PreLogin packet: size = "));
-			sb.AppendUOSInt(retSize);
+			sb.AppendUIntOS(retSize);
 			me->txtStatus->SetText(sb.ToCString());
 			me->sockf->DestroySocket(nns);
 			sslHost->Release();
@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending SSL handshake packet: size = "));
-			sb.AppendUOSInt(retSize);
+			sb.AppendUIntOS(retSize);
 			me->txtStatus->SetText(sb.ToCString());
 			me->sockf->DestroySocket(nns);
 			return;
@@ -198,7 +198,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending SSL handshake packet: size = "));
-			sb.AppendUOSInt(retSize);
+			sb.AppendUIntOS(retSize);
 			me->txtStatus->SetText(sb.ToCString());
 			me->sockf->DestroySocket(nns);
 			return;

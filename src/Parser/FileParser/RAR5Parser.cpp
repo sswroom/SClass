@@ -9,7 +9,7 @@
 const UInt8 *Parser::FileParser::RAR5Parser::ReadVInt(const UInt8 *buffPtr, UInt64 *val)
 {
 	UInt64 v = 0;
-	OSInt sh = 0;
+	IntOS sh = 0;
 	UInt8 b;
 	while (true)
 	{
@@ -87,7 +87,7 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 			DEL_CLASS(pf);
 			return nullptr;
 		}
-		headerSize = (UInt32)(iVal + (UOSInt)(buffPtr - buff));
+		headerSize = (UInt32)(iVal + (UIntOS)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
@@ -134,10 +134,10 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 			buffPtr = ReadVInt(buffPtr, &compInfo);
 			buffPtr = ReadVInt(buffPtr, &iVal); //host OS
 			buffPtr = ReadVInt(buffPtr, &iVal); //name length
-			sptr = Text::StrConcatC(sbuff, buffPtr, (UOSInt)iVal); //name
+			sptr = Text::StrConcatC(sbuff, buffPtr, (UIntOS)iVal); //name
 			buffPtr += iVal; //name
 
-			extraEnd = buffPtr + (OSInt)extraSize;
+			extraEnd = buffPtr + (IntOS)extraSize;
 			if (extraEnd <= buff + headerSize)
 			{
 				while (buffPtr < extraEnd)

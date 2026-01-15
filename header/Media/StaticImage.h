@@ -25,13 +25,13 @@ namespace Media
 	public:
 		UnsafeArray<UInt8> data;
 	
-		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticImage(Math::Size2D<UIntOS> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UIntOS maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		StaticImage(NN<const Media::FrameInfo> imgInfo);
 		virtual ~StaticImage();
 
 		virtual NN<Media::RasterImage> Clone() const;
 		virtual Media::RasterImage::ImageType GetImageType() const;
-		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		Bool ToB8G8R8A8();
 		Bool ToB16G16R16A16();
@@ -41,18 +41,18 @@ namespace Media
 		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
 		Bool MultiplyColor(UInt32 color);
-		Bool Resize(Media::ImageResizer *resizer, Math::Size2D<UOSInt> newSize);
+		Bool Resize(Media::ImageResizer *resizer, Math::Size2D<UIntOS> newSize);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(NN<Media::StaticImage> simg) const;
-		Double CalcAvgContrast(UOSInt *bgPxCnt) const;
+		Double CalcAvgContrast(UIntOS *bgPxCnt) const;
 		Double CalcColorRate() const;
-		UInt8 *CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
-		Math::RectArea<UOSInt> CalcNearPixelRange(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
+		UInt8 *CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate);
+		Math::RectArea<UIntOS> CalcNearPixelRange(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate);
 		Data::ByteArray GetDataArray() const;
 
 	private:
-		void CalcNearPixelMaskH32(UnsafeArray<UInt8> pixelMask, UOSInt x, UOSInt y, UnsafeArray<UInt8> c, Int32 maxRate);
-		void CalcNearPixelMaskV32(UnsafeArray<UInt8> pixelMask, UOSInt x, UOSInt y, UnsafeArray<UInt8> c, Int32 maxRate);
+		void CalcNearPixelMaskH32(UnsafeArray<UInt8> pixelMask, UIntOS x, UIntOS y, UnsafeArray<UInt8> c, Int32 maxRate);
+		void CalcNearPixelMaskV32(UnsafeArray<UInt8> pixelMask, UIntOS x, UIntOS y, UnsafeArray<UInt8> c, Int32 maxRate);
 	};
 }
 #endif

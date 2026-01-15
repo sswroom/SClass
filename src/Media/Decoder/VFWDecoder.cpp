@@ -89,7 +89,7 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUI
 	return true;
 }
 
-void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->lastYCOfst = ycOfst;
 	Media::VideoSource::FrameFlag bFlags = (Media::VideoSource::FrameFlag)((flags & (Media::VideoSource::FF_REALTIME)) | Media::VideoSource::FF_BFRAMEPROC);
@@ -99,7 +99,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	{
 		if (((BITMAPINFOHEADER*)this->bmihDest)->biCompression != 0)
 		{
-			OSInt i;
+			IntOS i;
 			if (flags & Media::VideoSource::FF_DISCONTTIME)
 			{
 				this->bDiscard = this->bCnt;
@@ -167,7 +167,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			NN<Media::StaticImage> img;
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
-			UOSInt maxFrameSize;
+			UIntOS maxFrameSize;
 			this->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 			NEW_CLASSNN(img, Media::StaticImage(info));
 			MemCopyNO(img->data.Ptr(), this->frameBuff.Ptr(), this->maxFrameSize);
@@ -225,7 +225,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Med
 
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	Media::FrameInfo frameInfo;
 	if (!sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return;
@@ -248,12 +248,12 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Med
 	bmih.biClrImportant = 0;
 	bmih.biClrUsed = 0;
 
-	UOSInt fccIndex = 0;
-	UOSInt j = fccHdlrs.GetCount();
+	UIntOS fccIndex = 0;
+	UIntOS j = fccHdlrs.GetCount();
 	UInt32 fcc;
 	UInt32 outFcc;
-	UOSInt k;
-	UOSInt l;
+	UIntOS k;
+	UIntOS l;
 	while (fccIndex < j)
 	{
 		fcc = fccHdlrs.GetItem(fccIndex);
@@ -385,11 +385,11 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Med
 						storeHeight = bmihOut.biHeight;
 					}
 
-					this->maxFrameSize = (UOSInt)(storeWidth * storeHeight * bmihOut.biBitCount) >> 3;
+					this->maxFrameSize = (UIntOS)(storeWidth * storeHeight * bmihOut.biBitCount) >> 3;
 				}
 				else
 				{
-					this->maxFrameSize = (UOSInt)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
+					this->maxFrameSize = (UIntOS)(bmihOut.biWidth * bmihOut.biHeight * bmihOut.biBitCount) >> 3;
 				}
 				this->hic = hic;
 				this->sourceFCC = fcc;
@@ -438,7 +438,7 @@ Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 	return CSTR("VFWDecoder");
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;
@@ -448,8 +448,8 @@ Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPara
 	frameRateNorm.Set(this->frameRateNorm);
 	frameRateDenorm.Set(this->frameRateDenorm);
 	maxFrameSize.Set(this->maxFrameSize);
-	info->storeSize.x = (UOSInt)bmih->biWidth;
-	info->storeSize.y = (UOSInt)bmih->biHeight;
+	info->storeSize.x = (UIntOS)bmih->biWidth;
+	info->storeSize.y = (UIntOS)bmih->biHeight;
 	info->dispSize = info->storeSize;
 	info->storeBPP = bmih->biBitCount;
 	info->fourcc = bmih->biCompression;
@@ -478,12 +478,12 @@ Bool Media::Decoder::VFWDecoder::HasFrameCount()
 	return this->sourceVideo->HasFrameCount();
 }
 
-UOSInt Media::Decoder::VFWDecoder::GetFrameCount()
+UIntOS Media::Decoder::VFWDecoder::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
 
-Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
@@ -511,7 +511,7 @@ void Media::Decoder::VFWDecoder::OnFrameChanged(Media::VideoSource::FrameChange 
 		}*/
 		if (this->bCnt > 0)
 		{
-			OSInt i;
+			IntOS i;
 			this->endProcessing = true;
 			((BITMAPINFOHEADER*)this->bmihSrc)->biSizeImage = 0;
 			i = 0;

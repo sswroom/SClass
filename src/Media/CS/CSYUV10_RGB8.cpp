@@ -143,7 +143,7 @@ void Media::CS::CSYUV10_RGB8::SetupYUV_RGB13()
 	Double cnor;
 	Double c;
 
-	OSInt i;
+	IntOS i;
 
 	int updateY = 1;
 	int updateC = 1;
@@ -454,7 +454,7 @@ void Media::CS::CSYUV10_RGB8::RGBParamChanged(NN<const Media::ColorHandler::RGBP
 	this->rgbUpdated = true;
 }
 
-UOSInt Media::CS::CSYUV10_RGB8::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV10_RGB8::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 2;
 }

@@ -98,7 +98,7 @@ Bool Math::Geometry::Ellipse::Equals(NN<const Math::Geometry::Vector2D> vec, Boo
 			this->tl == ellipse->tl;
 }
 
-UOSInt Math::Geometry::Ellipse::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::Ellipse::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x * 0.5, this->tl.y));
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x, this->tl.y + this->size.y * 0.5));
@@ -127,7 +127,7 @@ void Math::Geometry::Ellipse::MultiplyCoordinatesXY(Double v)
 	this->size = this->size * v;
 }
 
-UOSInt Math::Geometry::Ellipse::GetPointCount() const
+UIntOS Math::Geometry::Ellipse::GetPointCount() const
 {
 	return 4;
 }
@@ -137,7 +137,7 @@ Bool Math::Geometry::Ellipse::HasArea() const
 	return true;
 }
 
-UOSInt Math::Geometry::Ellipse::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+UIntOS Math::Geometry::Ellipse::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (y >= this->tl.y && y < this->tl.y + this->size.y)
 	{

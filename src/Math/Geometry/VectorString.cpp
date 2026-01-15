@@ -111,7 +111,7 @@ Bool Math::Geometry::VectorString::Equals(NN<const Math::Geometry::Vector2D> vec
 			this->s->Equals(vstr->s);
 }
 
-UOSInt Math::Geometry::VectorString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::VectorString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->pos);
 	return 1;
@@ -132,7 +132,7 @@ void Math::Geometry::VectorString::MultiplyCoordinatesXY(Double v)
 	this->pos = this->pos * v;
 }
 
-UOSInt Math::Geometry::VectorString::GetPointCount() const
+UIntOS Math::Geometry::VectorString::GetPointCount() const
 {
 	return 1;
 }
@@ -142,7 +142,7 @@ Bool Math::Geometry::VectorString::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::VectorString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+UIntOS Math::Geometry::VectorString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	return 0;
 }

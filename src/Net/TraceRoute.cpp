@@ -11,10 +11,10 @@ void __stdcall Net::TraceRoute::RecvThread(NN<Sync::Thread> thread)
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
 	NN<Socket> soc;
-	UOSInt readSize;
+	UIntOS readSize;
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
-	UOSInt ipDataSize;
+	UIntOS ipDataSize;
 	me->resEvt->Set();
 	if (me->socV4.SetTo(soc))
 	{
@@ -63,7 +63,7 @@ void __stdcall Net::TraceRoute::RecvThread(NN<Sync::Thread> thread)
 	MemFree(readBuff);
 }
 
-void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
+void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UIntOS buffSize)
 {
 	UInt8 *oriBuff = buff;
     UInt32 sum = 0xffff;
@@ -144,7 +144,7 @@ Bool Net::TraceRoute::Tracev4(UInt32 ip, NN<Data::ArrayListNative<UInt32>> ipLis
 	UInt16 reqId = 1;
 	UInt16 seq = 0xd8;
 	Int32 ttl = 1;
-	OSInt retry = 0;
+	IntOS retry = 0;
 	while (ttl < 32)
 	{
 		packetBuff[0] = 8; //type = Echo request

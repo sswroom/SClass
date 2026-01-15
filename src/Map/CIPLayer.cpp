@@ -205,13 +205,13 @@ Map::DrawLayerType Map::CIPLayer::GetLayerType()
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UIntOS Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
-	OSInt textSize;
-	UOSInt i;
-	UOSInt j;
-	UOSInt l = 0;
-	UOSInt k;
+	IntOS textSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS l = 0;
+	UIntOS k;
 	
 	if (nameArr)
 	{
@@ -290,7 +290,7 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	return l;
 }
 
-UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UIntOS Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
 {
 	Int32 leftBlk;
 	Int32 rightBlk;
@@ -323,11 +323,11 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		bottomBlk = y2 / blkScale;
 	}
 
-	OSInt textSize;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	UOSInt l;
+	IntOS textSize;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	UIntOS l;
 	if (this->nblks > 10)
 	{
 		i = 0;
@@ -391,7 +391,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 			NEW_CLASS(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		}
 		
-		while (k < (OSInt)this->nblks)
+		while (k < (IntOS)this->nblks)
 		{
 			if (this->blks[k].xblk > rightBlk)
 				break;
@@ -449,7 +449,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	{
 		Data::ArrayListInt32 *tmpArr;
 		NEW_CLASS(tmpArr, Data::ArrayListInt32());
-		while (k < (OSInt)this->nblks)
+		while (k < (IntOS)this->nblks)
 		{
 			if (this->blks[k].xblk > rightBlk)
 				break;
@@ -460,7 +460,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 			}
 			k++;
 		}
-		UOSInt arrSize;
+		UIntOS arrSize;
 		Int64 lastId;
 		Int32 *arr = tmpArr->GetArray(&arrSize);
 		ArtificialQuickSort_SortInt32(arr, 0, arrSize - 1);
@@ -469,7 +469,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 			lastId = -1;
 			outArr->EnsureCapacity(arrSize);
 			k = 0;
-			while (k < (OSInt)arrSize)
+			while (k < (IntOS)arrSize)
 			{
 				if (arr[k] == lastId)
 				{
@@ -503,7 +503,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	return l;
 }
 
-UOSInt Map::CIPLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UIntOS Map::CIPLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
 {
 	return GetObjectIds(outArr, nameArr, 200000.0, Double2Int32(x1 * 200000), Double2Int32(y1 * 200000), Double2Int32(x2 * 200000), Double2Int32(y2 * 200000), keepEmpty);
 }
@@ -516,7 +516,7 @@ Int64 Map::CIPLayer::GetObjectIdMax()
 void Map::CIPLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32FastMap<WChar*> *tmpMap = (Data::Int32FastMap<WChar*>*)nameArr;
-	UOSInt i = tmpMap->GetCount();
+	UIntOS i = tmpMap->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(tmpMap->GetItem(i));
@@ -524,7 +524,7 @@ void Map::CIPLayer::ReleaseNameArr(void *nameArr)
 	DEL_CLASS(tmpMap);
 }
 
-WChar *Map::CIPLayer::GetString(WChar *buff, void *nameArr, Int64 id, UOSInt strIndex)
+WChar *Map::CIPLayer::GetString(WChar *buff, void *nameArr, Int64 id, UIntOS strIndex)
 {
 	Data::Int32FastMap<WChar*> *tmpMap = (Data::Int32FastMap<WChar*>*)nameArr;
 	if (strIndex != 0)
@@ -544,12 +544,12 @@ WChar *Map::CIPLayer::GetString(WChar *buff, void *nameArr, Int64 id, UOSInt str
 	}
 }
 
-UOSInt Map::CIPLayer::GetColumnCnt()
+UIntOS Map::CIPLayer::GetColumnCnt()
 {
 	return 1;
 }
 
-UTF8Char *Map::CIPLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UTF8Char *Map::CIPLayer::GetColumnName(UTF8Char *buff, UIntOS colIndex)
 {
 	if (colIndex == 0)
 	{
@@ -562,7 +562,7 @@ UTF8Char *Map::CIPLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 }
 
 
-DB::DBUtil::ColType Map::CIPLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::CIPLayer::GetColumnType(UIntOS colIndex, UIntOS *colSize)
 {
 	if (colIndex == 0)
 	{
@@ -582,7 +582,7 @@ DB::DBUtil::ColType Map::CIPLayer::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 	}
 }
 
-Bool Map::CIPLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::CIPLayer::GetColumnDef(UIntOS colIndex, DB::ColDef *colDef)
 {
 	if (colIndex != 0)
 		return false;
@@ -625,7 +625,7 @@ Bool Map::CIPLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Doubl
 		Int32 minYBlk;
 		maxXBlk = minXBlk = this->blks[0].xblk;
 		maxYBlk = minYBlk = this->blks[0].yblk;
-		OSInt i = this->nblks;
+		IntOS i = this->nblks;
 		while (i-- > 0)
 		{
 			if (this->blks[i].xblk > maxXBlk)
@@ -698,7 +698,7 @@ Map::CIPLayer::CIPFileObject *Map::CIPLayer::GetFileObject(void *session, Int32 
 void Map::CIPLayer::ReleaseFileObjs(Data::Int32FastMap<Map::CIPLayer::CIPFileObject*> *objs)
 {
 	Map::CIPLayer::CIPFileObject *obj;
-	UOSInt i = objs->GetCount();
+	UIntOS i = objs->GetCount();
 	while (i-- > 0)
 	{
 		obj = objs->GetItem(i);
@@ -760,11 +760,11 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer::GetNewVectorById(NN<GetObjectS
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE3D || this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		NEW_CLASS(ptOfst, Math::Geometry::Polyline(4326, (UOSInt)fobj->nParts, (UOSInt)fobj->nPoints, false, false));
+		NEW_CLASS(ptOfst, Math::Geometry::Polyline(4326, (UIntOS)fobj->nParts, (UIntOS)fobj->nPoints, false, false));
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		NEW_CLASS(ptOfst, Math::Geometry::Polygon(4326, (UOSInt)fobj->nParts, (UOSInt)fobj->nPoints, false, false));
+		NEW_CLASS(ptOfst, Math::Geometry::Polygon(4326, (UIntOS)fobj->nParts, (UIntOS)fobj->nPoints, false, false));
 	}
 	else
 	{
@@ -772,13 +772,13 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer::GetNewVectorById(NN<GetObjectS
 	}
 	if (fobj->parts)
 	{
-		UOSInt nPtOfst;
+		UIntOS nPtOfst;
 		UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
 		MemCopyNO(ptOfstArr, fobj->parts, sizeof(UInt32) * fobj->nParts);
 	}
-	UOSInt nPoint;
+	UIntOS nPoint;
 	Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
-	UOSInt i = nPoint;
+	UIntOS i = nPoint;
 	while (i-- > 0)
 	{
 		pointArr[i] = Math::Coord2DDbl(fobj->points[i * 2] * r, fobj->points[i * 2 + 1] * r);

@@ -39,7 +39,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	UOSInt fileLen = (UOSInt)fd->GetDataSize();
+	UIntOS fileLen = (UIntOS)fd->GetDataSize();
 	UInt8 *buff = MemAlloc(UInt8, fileLen);
 	if (fd->GetRealData(0, fileLen, Data::ByteArray(buff, fileLen)) != fileLen)
 	{

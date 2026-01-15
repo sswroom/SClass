@@ -23,7 +23,7 @@ namespace Data
 		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T Remove(Text::CStringNN key);
-		virtual Optional<Text::String> GetKey(UOSInt index) const;
+		virtual Optional<Text::String> GetKey(UIntOS index) const;
 		virtual void Clear();
 		virtual NN<StringMapObj<T>> Clone() const;
 	};
@@ -35,8 +35,8 @@ namespace Data
 
 	template <class T> StringMapObj<T>::StringMapObj(NN<const StringMapObj<T>> map) : ArrayCmpMapObj<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
-		UOSInt i = 0;
-		UOSInt j = map->keys->GetCount();
+		UIntOS i = 0;
+		UIntOS j = map->keys->GetCount();
 		while (i < j)
 		{
 			this->keys->Add(Text::String::CopyOrNull(map->keys->GetItem(i)));
@@ -48,7 +48,7 @@ namespace Data
 	template <class T> StringMapObj<T>::~StringMapObj()
 	{
 		NN<Text::String> s;
-		UOSInt i = this->keys->GetCount();
+		UIntOS i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			if (this->keys->GetItem(i).SetTo(s))
@@ -59,65 +59,65 @@ namespace Data
 
 	template <class T> T StringMapObj<T>::Put(Optional<Text::String> key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::CopyOrNull(key));
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, Text::String::CopyOrNull(key));
+			this->vals.Insert((UIntOS)~i, val);
 			return nullptr;
 		}
 	}
 
 	template <class T> T StringMapObj<T>::PutNN(NN<Text::String> key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key->Clone());
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, key->Clone());
+			this->vals.Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T> T StringMapObj<T>::Put(Text::CStringNN key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, Text::String::New(key.v, key.leng));
+			this->vals.Insert((UIntOS)~i, val);
 			return nullptr;
 		}
 	}
 
 	template <class T> T StringMapObj<T>::Get(Optional<Text::String> key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -127,11 +127,11 @@ namespace Data
 
 	template <class T> T StringMapObj<T>::GetNN(NN<Text::String> key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -141,11 +141,11 @@ namespace Data
 
 	template <class T> T StringMapObj<T>::Get(Text::CStringNN key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -156,13 +156,13 @@ namespace Data
 	template <class T> T StringMapObj<T>::Remove(Optional<Text::String> key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -173,13 +173,13 @@ namespace Data
 	template <class T> T StringMapObj<T>::RemoveNN(NN<Text::String> key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -190,13 +190,13 @@ namespace Data
 	template <class T> T StringMapObj<T>::Remove(Text::CStringNN key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -204,7 +204,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<Text::String> StringMapObj<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> StringMapObj<T>::GetKey(UIntOS index) const
 	{
 		return this->keys->GetItem(index);
 	}
@@ -212,7 +212,7 @@ namespace Data
 	template <class T> void StringMapObj<T>::Clear()
 	{
 		NN<Text::String> s;
-		UOSInt i;
+		UIntOS i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

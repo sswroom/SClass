@@ -31,11 +31,11 @@ namespace SSWR
 			~VAMSBTList();
 
 			void AddItem(NN<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi);
-			UOSInt QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> itemList, Int32 progId, Int32 timeoutIntervalMs);
+			UIntOS QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> itemList, Int32 progId, Int32 timeoutIntervalMs);
 			void KARecv(Int32 progId);
 			Int64 GetLastKeepAlive(Int32 progId);
 			Bool HasProg(Int32 progId);
-			UOSInt GetProgList(NN<Data::ArrayListNative<Int32>> progList);
+			UIntOS GetProgList(NN<Data::ArrayListNative<Int32>> progList);
 		};
 	}
 }

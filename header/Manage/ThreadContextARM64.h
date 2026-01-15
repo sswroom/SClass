@@ -8,24 +8,24 @@ namespace Manage
 	{
 	private:
 		void *context;
-		UOSInt procId;
-		UOSInt threadId;
+		UIntOS procId;
+		UIntOS threadId;
 	public:
-		ThreadContextARM64(UOSInt procId, UOSInt threadId, void *context);
+		ThreadContextARM64(UIntOS procId, UIntOS threadId, void *context);
 		virtual ~ThreadContextARM64();
 
-		virtual UOSInt GetRegisterCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const;
+		virtual UIntOS GetRegisterCnt() const;
+		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		virtual ContextType GetType() const;
-		virtual UOSInt GetThreadId() const;
-		virtual UOSInt GetProcessId() const;
-		virtual UOSInt GetInstAddr() const;
-		virtual UOSInt GetStackAddr() const;
-		virtual UOSInt GetFrameAddr() const;
-		virtual void SetInstAddr(UOSInt instAddr);
-		virtual void SetStackAddr(UOSInt stackAddr);
-		virtual void SetFrameAddr(UOSInt frameAddr);
+		virtual UIntOS GetThreadId() const;
+		virtual UIntOS GetProcessId() const;
+		virtual UIntOS GetInstAddr() const;
+		virtual UIntOS GetStackAddr() const;
+		virtual UIntOS GetFrameAddr() const;
+		virtual void SetInstAddr(UIntOS instAddr);
+		virtual void SetStackAddr(UIntOS stackAddr);
+		virtual void SetFrameAddr(UIntOS frameAddr);
 		virtual NN<ThreadContext> Clone() const;
 		virtual Bool GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const;
 		virtual Optional<Manage::Dasm> CreateDasm() const;

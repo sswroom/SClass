@@ -20,11 +20,11 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sarr[3];
 	UInt8 dataBuff[2048];
-	UOSInt buffSize;
-	UOSInt thisSize;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS buffSize;
+	UIntOS thisSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Bool content;
 	
 	cliData->threadRunning = true;
@@ -114,11 +114,11 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 							{
 								if (!reader.ReadLine(sbuff, 1021).SetTo(sptr) || sptr == sbuff)
 									break;
-								if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Content-Length: ")))
+								if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Content-Length: ")))
 								{
 									cliData->reqReplySize = Text::StrToUInt32(&sbuff[16]);
 								}
-								else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
+								else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Session: ")))
 								{
 									SDEL_STRING(cliData->reqStrs);
 									k = Text::StrIndexOfChar(&sbuff[9], ';');
@@ -127,12 +127,12 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 										sbuff[9 + k] = 0;
 										sptr = &sbuff[9 + k];
 									}
-									cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9])).Ptr();
+									cliData->reqStrs = Text::String::New(&sbuff[9], (UIntOS)(sptr - &sbuff[9])).Ptr();
 								}
-								else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
+								else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Public: ")))
 								{
 									SDEL_STRING(cliData->reqStrs);
-									cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8])).Ptr();
+									cliData->reqStrs = Text::String::New(&sbuff[8], (UIntOS)(sptr - &sbuff[8])).Ptr();
 								}
 							}
 							if (cliData->reqReplySize == 0)
@@ -215,7 +215,7 @@ Bool Net::RTSPClient::WaitForReply()
 	return this->cliData->reqSuccess;
 }
 
-Bool Net::RTSPClient::SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Net::RTSPClient::SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->cliData->cliMut);
@@ -284,8 +284,8 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const U
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> buff;
 	Text::PString sarr[10];
-	UOSInt i;
-	UOSInt buffSize;
+	UIntOS i;
+	UIntOS buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
@@ -315,7 +315,7 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const U
 		if (this->cliData->reqStrs)
 		{
 			sptr = this->cliData->reqStrs->ConcatTo(sbuff);
-			buffSize = Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
+			buffSize = Text::StrSplitTrimP(sarr, 10, {sbuff, (UIntOS)(sptr - sbuff)}, ',');
 			i = 0;
 			while (i < buffSize)
 			{
@@ -334,7 +334,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
@@ -372,7 +372,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
@@ -412,9 +412,9 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Net::RTSPClient *cli;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 
 	UInt16 port = 554;
 	sptr = Text::URLString::GetURLDomain(sbuff, url, port);
@@ -489,7 +489,7 @@ Bool Net::RTSPClient::Play(Text::CStringNN url, Text::CStringNN sessId)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
@@ -528,7 +528,7 @@ Bool Net::RTSPClient::Close(Text::CStringNN url, Text::CStringNN sessId)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
@@ -568,7 +568,7 @@ Bool Net::RTSPClient::Init(NN<Net::RTPCliChannel> rtpChannel)
 	UnsafeArray<UTF8Char> sptr;
 	if (this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel).SetTo(sptr))
 	{
-		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
+		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr());
 		return true;
 	}
 	return false;

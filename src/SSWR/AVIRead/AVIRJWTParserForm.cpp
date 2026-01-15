@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 
 			me->lvPayload->ClearItems();
 			NN<Text::String> name;
-			UOSInt i = 0;
-			UOSInt j = result->GetCount();
+			UIntOS i = 0;
+			UIntOS j = result->GetCount();
 			while (i < j)
 			{
 				name = Text::String::OrEmpty(result->GetKey(i));

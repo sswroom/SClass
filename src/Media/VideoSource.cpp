@@ -13,7 +13,7 @@ Media::VideoSource::~VideoSource()
 {
 	if (this->propBuffs)
 	{
-		UOSInt i = this->propBuffs->GetCount();
+		UIntOS i = this->propBuffs->GetCount();
 		while (i-- > 0)
 		{
 			MemFree(this->propBuffs->GetItem(i));
@@ -34,12 +34,12 @@ Bool Media::VideoSource::SetPreferFrameType(Media::FrameType ftype)
 	return false;
 }
 
-UOSInt Media::VideoSource::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::VideoSource::GetFrameSize(UIntOS frameIndex)
 {
 	return 0;
 }
 
-UOSInt Media::VideoSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::VideoSource::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
@@ -63,20 +63,20 @@ void Media::VideoSource::SetProp(Int32 propName, UnsafeArray<const UInt8> propBu
 		NEW_CLASS(this->propNames, Data::ArrayListInt32());
 		NEW_CLASS(this->propSizes, Data::ArrayListUInt32());
 	}
-	OSInt i = this->propNames->SortedIndexOf(propName);
+	IntOS i = this->propNames->SortedIndexOf(propName);
 	prop = MemAlloc(UInt8, propBuffSize);
 	MemCopyNO(prop, propBuff.Ptr(), propBuffSize);
 	if (i >= 0)
 	{
-		MemFree(this->propBuffs->GetItem((UOSInt)i));
-		this->propBuffs->SetItem((UOSInt)i, prop);
-		this->propSizes->SetItem((UOSInt)i, propBuffSize);
+		MemFree(this->propBuffs->GetItem((UIntOS)i));
+		this->propBuffs->SetItem((UIntOS)i, prop);
+		this->propSizes->SetItem((UIntOS)i, propBuffSize);
 	}
 	else
 	{
-		this->propNames->Insert((UOSInt)~i, propName);
-		this->propBuffs->Insert((UOSInt)~i, prop);
-		this->propSizes->Insert((UOSInt)~i, propBuffSize);
+		this->propNames->Insert((UIntOS)~i, propName);
+		this->propBuffs->Insert((UIntOS)~i, prop);
+		this->propSizes->Insert((UIntOS)~i, propBuffSize);
 	}
 }
 
@@ -84,11 +84,11 @@ UInt8 *Media::VideoSource::GetProp(Int32 propName, UInt32 *size)
 {
 	if (this->propBuffs == 0)
 		return 0;
-	OSInt i = this->propNames->SortedIndexOf(propName);
+	IntOS i = this->propNames->SortedIndexOf(propName);
 	if (i < 0)
 		return 0;
-	*size = this->propSizes->GetItem((UOSInt)i);
-	return this->propBuffs->GetItem((UOSInt)i);
+	*size = this->propSizes->GetItem((UIntOS)i);
+	return this->propBuffs->GetItem((UIntOS)i);
 }
 
 Media::MediaType Media::VideoSource::GetMediaType()

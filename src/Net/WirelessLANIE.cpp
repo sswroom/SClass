@@ -9,7 +9,7 @@
 
 Net::WirelessLANIE::WirelessLANIE(UnsafeArray<const UInt8> ieBuff)
 {
-	UOSInt size = (UOSInt)(ieBuff[1] + 2);
+	UIntOS size = (UIntOS)(ieBuff[1] + 2);
 	this->ieBuff = MemAllocArr(UInt8, size);
 	MemCopyNO(this->ieBuff.Ptr(), ieBuff.Ptr(), size);
 }
@@ -27,8 +27,8 @@ UnsafeArray<const UInt8> Net::WirelessLANIE::GetIEBuff()
 void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 cmd = ieBuff[0];
-	UOSInt size = ieBuff[1];
-	UOSInt i;
+	UIntOS size = ieBuff[1];
+	UIntOS i;
 	Bool found;
 	switch (cmd)
 	{
@@ -166,7 +166,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			if (size > 3)
 			{
 				sb->AppendC(UTF8STRC("\r\n\tPartial Virtual Bitmap = "));
-				sb->AppendHexBuff(&ieBuff[5], (UOSInt)size - 3, 0, Text::LineBreakType::None);
+				sb->AppendHexBuff(&ieBuff[5], (UIntOS)size - 3, 0, Text::LineBreakType::None);
 			}
 		}
 		else
@@ -523,7 +523,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			if (i < size)
 			{
 				sb->AppendC(UTF8STRC("\r\n\tUnknown = "));
-				sb->AppendHexBuff(&ieBuff[i + 2], (UOSInt)(size - i), 0, Text::LineBreakType::None);
+				sb->AppendHexBuff(&ieBuff[i + 2], (UIntOS)(size - i), 0, Text::LineBreakType::None);
 				i += 2;
 			}
 		}
@@ -984,7 +984,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		else if (v32 == 0x0050F204)
 		{
 			UInt16 itemId;
-			UOSInt itemSize;
+			UIntOS itemSize;
 			succ = true;
 			sb->AppendC(UTF8STRC(" (WPS Information Element)"));
 			i = 4;
@@ -1078,7 +1078,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 						NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6]);
 						sb->AppendC(ent->name, ent->nameLen);
 						sb->AppendUTF8Char(')');
-						UOSInt j = 3;
+						UIntOS j = 3;
 						while (j < itemSize - 2)
 						{
 							if (j + 2 + ieBuff[i + 6 + j + 1] > itemSize)
@@ -1096,7 +1096,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 							}
 							sb->AppendC(UTF8STRC(", Value="));
 							sb->AppendHexBuff(&ieBuff[i + 6 + j + 2], ieBuff[i + 6 + j + 1], ' ', Text::LineBreakType::None);
-							j += (UOSInt)(ieBuff[i + 6 + j + 1] + 2);
+							j += (UIntOS)(ieBuff[i + 6 + j + 1] + 2);
 						}
 					}
 				case 0x104A:
@@ -1180,7 +1180,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 	sb->AppendHexBuff(ieBuff + 2, size, 0, Text::LineBreakType::None);
 }
 
-void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, OutParam<Optional<Text::String>> manuf, OutParam<Optional<Text::String>> model, OutParam<Optional<Text::String>> serialNum)
+void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UIntOS ieLen, OutParam<Optional<Text::String>> manuf, OutParam<Optional<Text::String>> model, OutParam<Optional<Text::String>> serialNum)
 {
 	Optional<Text::String> outManuf = nullptr;
 	Optional<Text::String> outModel = nullptr;
@@ -1191,7 +1191,7 @@ void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLe
 	while (iebuff + 2 < endPtr)
 	{
 		UInt8 cmd = iebuff[0];
-		UOSInt size = iebuff[1];
+		UIntOS size = iebuff[1];
 		if (iebuff + 2 + size > endPtr)
 		{
 			break;
@@ -1201,9 +1201,9 @@ void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLe
 			UInt32 v32 = ReadMUInt32(&iebuff[2]);
 			if (v32 == 0x0050F204)
 			{
-				UOSInt i;
+				UIntOS i;
 				UInt16 itemId;
-				UOSInt itemSize;
+				UIntOS itemSize;
 				i = 4;
 				while (i <= size - 4)
 				{

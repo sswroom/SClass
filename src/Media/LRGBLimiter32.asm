@@ -3,7 +3,7 @@ section .text
 global _LRGBLimiter_LimitImageLRGB
 global LRGBLimiter_LimitImageLRGB
 
-;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
+;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, IntOS w, IntOS h);
 ;0 edi
 ;4 esi
 ;8 ebx

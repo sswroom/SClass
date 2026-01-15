@@ -8,7 +8,7 @@ namespace Data
 	public:
 		virtual ~Comparator() {};
 
-		virtual OSInt Compare(T a, T b) const = 0;
+		virtual IntOS Compare(T a, T b) const = 0;
 	};
 }
 #endif

@@ -132,8 +132,8 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 
 	me->player->StopPlayback();
 	i = 0;
@@ -199,9 +199,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 		sb.AppendI32(dbg.buffReady);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendOSInt(dbg.srcSize.x);
+		sb.AppendIntOS(dbg.srcSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendOSInt(dbg.srcSize.y);
+		sb.AppendIntOS(dbg.srcSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		sb.AppendDouble(dbg.par);
@@ -283,8 +283,8 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 	NN<Media::ChapterInfo> currChapInfo;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 
 	this->player->LoadMedia(0);
 	this->currFile.Delete();
@@ -566,7 +566,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 {
 	NN<Media::Playlist> playlist;
 	Data::Duration currTime;
-	OSInt i;
+	IntOS i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
 		i = cmdId - MNU_PB_CHAPTERS;
@@ -585,7 +585,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
-				UOSInt i = fname->IndexOf(':');
+				UIntOS i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
 					this->OpenFile(dlg.GetFileName()->ToCString(), dlg.GetParserType());
@@ -737,11 +737,11 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_ORISIZE:
 		{
-			Math::Size2D<UOSInt> vSize;
+			Math::Size2D<UIntOS> vSize;
 			if (this->player->GetVideoSize(vSize.x, vSize.y))
 			{
-				Math::Size2D<UOSInt> size1;
-				Math::Size2D<UOSInt> size2;
+				Math::Size2D<UIntOS> size1;
+				Math::Size2D<UIntOS> size2;
 
 				if (this->vbox->IsFullScreen())
 				{

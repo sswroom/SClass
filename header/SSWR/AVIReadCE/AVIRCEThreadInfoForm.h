@@ -53,7 +53,7 @@ namespace SSWR
 			Optional<Manage::SymbolResolver> symbol;
 
 			static void __stdcall OnMyStackChg(AnyType userObj);
-			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnMyStackDblClk(AnyType userObj, UIntOS index);
 		public:
 			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Manage::Process> proc, Optional<Manage::SymbolResolver> symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();

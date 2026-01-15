@@ -107,8 +107,8 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 	Data::Duration refStart;
 	Data::Duration audStartTime;
 	MMTIME mmt;
-	UOSInt buffLeng = BUFFLENG;
-	UOSInt minLeng;
+	UIntOS buffLeng = BUFFLENG;
+	UIntOS minLeng;
 	Data::Duration thisT;
 	Data::Duration lastT;
 	Int32 stmEnd;
@@ -287,12 +287,12 @@ Data::Duration Media::WaveOutRenderer::GetDurFromTime(void *mmTime, NN<const Aud
 	}
 }
 
-UOSInt Media::WaveOutRenderer::GetDeviceCount()
+UIntOS Media::WaveOutRenderer::GetDeviceCount()
 {
 	return waveOutGetNumDevs();
 }
 
-UnsafeArrayOpt<UTF8Char> Media::WaveOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::WaveOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	WAVEOUTCAPSW caps;
 	waveOutGetDevCapsW(devNo, &caps, sizeof(caps));
@@ -301,7 +301,7 @@ UnsafeArrayOpt<UTF8Char> Media::WaveOutRenderer::GetDeviceName(UnsafeArray<UTF8C
 
 Media::WaveOutRenderer::WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
-	UOSInt i = GetDeviceCount();
+	UIntOS i = GetDeviceCount();
 	UTF8Char buff[256];
 	this->devId = -1;
 	UnsafeArray<const UTF8Char> nndevName;
@@ -317,7 +317,7 @@ Media::WaveOutRenderer::WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 			{
 				if (Text::StrEquals(buff, nndevName))
 				{
-					this->devId = (OSInt)i;
+					this->devId = (IntOS)i;
 					break;
 				}
 			}

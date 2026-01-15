@@ -5,9 +5,9 @@
 #include "Map/GoogleMap/GoogleTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
 
-UOSInt Map::BaseMapLayer::GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes)
+UIntOS Map::BaseMapLayer::GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes)
 {
-	UOSInt initCnt = layerTypes->GetCount();
+	UIntOS initCnt = layerTypes->GetCount();
 	layerTypes->Add(BLT_OSM_TILE);
 	layerTypes->Add(BLT_OSM_CYCLE);
 	layerTypes->Add(BLT_OSM_TRANSP);

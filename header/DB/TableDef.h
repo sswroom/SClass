@@ -35,10 +35,10 @@ namespace DB
 		UnsafeArrayOpt<const UTF8Char> GetAttr() const;
 		UnsafeArrayOpt<const UTF8Char> GetComments() const;
 		DB::SQLType GetSQLType() const;
-		UOSInt GetColCnt() const;
-		Optional<DB::ColDef> GetCol(UOSInt index) const;
+		UIntOS GetColCnt() const;
+		Optional<DB::ColDef> GetCol(UIntOS index) const;
 		Optional<DB::ColDef> GetSinglePKCol() const;
-		UOSInt CountPK() const;
+		UIntOS CountPK() const;
 		Data::ArrayIterator<NN<DB::ColDef>> ColIterator() const;
 
 		NN<TableDef> AddCol(NN<DB::ColDef> col);

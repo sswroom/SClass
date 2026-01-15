@@ -16,9 +16,9 @@ namespace IO
 			ProtoDecList();
 			virtual ~ProtoDecList();
 
-			virtual UOSInt GetCount() const;
-			virtual Optional<ProtocolDecoder> GetItem(UOSInt index) const;
-			virtual NN<ProtocolDecoder> GetItemNoCheck(UOSInt index) const;
+			virtual UIntOS GetCount() const;
+			virtual Optional<ProtocolDecoder> GetItem(UIntOS index) const;
+			virtual NN<ProtocolDecoder> GetItemNoCheck(UIntOS index) const;
 		};
 	}
 }

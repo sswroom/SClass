@@ -13,7 +13,7 @@ Media::JPEGDecoder::~JPEGDecoder()
 {
 }
 
-Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt maxWidth, UOSInt maxHeight, Media::PixelFormat pf) const
+Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS maxWidth, UIntOS maxHeight, Media::PixelFormat pf) const
 {
 	Parser::FileParser::GUIImgParser parser;
 	NN<Media::ImageList> imgList;

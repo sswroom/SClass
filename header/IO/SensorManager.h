@@ -14,12 +14,12 @@ namespace IO
 		SensorManager();
 		~SensorManager();
 
-		UOSInt GetSensorCnt();
-		IO::Sensor::SensorType GetSensorType(UOSInt index);
-		Optional<Sensor> CreateSensor(UOSInt index);
+		UIntOS GetSensorCnt();
+		IO::Sensor::SensorType GetSensorType(UIntOS index);
+		Optional<Sensor> CreateSensor(UIntOS index);
 
-		UOSInt GetAccelerometerCnt();
-		Optional<SensorAccelerometer> CreateAccelerometer(UOSInt index);
+		UIntOS GetAccelerometerCnt();
+		Optional<SensorAccelerometer> CreateAccelerometer(UIntOS index);
 	};
 }
 #endif

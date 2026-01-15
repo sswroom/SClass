@@ -21,10 +21,10 @@
 void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
-	UOSInt i = me->lbMyStack->GetSelectedIndex();
+	UIntOS i = me->lbMyStack->GetSelectedIndex();
 	UnsafeArray<const UTF8Char> s;
 	UnsafeArray<const UTF8Char> sMem;
-	UOSInt slen;
+	UIntOS slen;
 	UnsafeArray<UTF8Char> sbuff;
 	Text::PString sline[2];
 	Text::PString sarr[34];
@@ -149,11 +149,11 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UTF8Char sbuff[18];
-	UOSInt i;
+	UIntOS i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
 	me->lvMyStack->GetSubItem(index, 3, sb);
@@ -191,8 +191,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt64 startAddr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblThreadId = ui->NewLabel(this->tpInfo, CSTR("Thread Id"));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	this->txtStartAddr->SetText(CSTRP(sbuff, sptr));
 	if (symbol->ResolveName(sbuff, startAddr).SetTo(sptr))
 	{
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 		this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
 	}
 	if (thread.GetName(sbuff).SetTo(sptr))
@@ -271,7 +271,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	else
 	{
 		UInt64 currAddr;
-		UOSInt callLev;
+		UIntOS callLev;
 		thread.Suspend();
 		if (context.Set(thread.GetThreadContext()))
 		{
@@ -284,7 +284,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
 				if (symbol->ResolveName(sbuff, currAddr).SetTo(sptr))
 				{
-					j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					j = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 					this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
 				}
 				if (!tracer.GoToNextLevel())
@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				UInt32 esp;
 				UInt32 ebp;
 				UInt8 buff[256];
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Bool ret;
 				UInt32 blockStart;
 				UInt32 blockEnd;
@@ -338,7 +338,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.AppendHex32(eip);
 					sb.AppendC(UTF8STRC(" "));
 					sptr = symbol->ResolveName(sbuff, eip).Or(sbuff);
-					i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					i  = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);
 					sb.ClearStr();
@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				UInt64 rsp;
 				UInt64 rbp;
 				UInt8 buff[256];
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Bool ret;
 				UInt64 blockStart;
 				UInt64 blockEnd;
@@ -427,7 +427,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.AppendHex64(rip);
 					sb.AppendC(UTF8STRC(" "));
 					sptr = symbol->ResolveName(sbuff, rip).Or(sbuff);
-					i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					i  = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);
 					sb.ClearStr();
@@ -470,7 +470,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				UInt64 sp;
 				UInt64 lr;
 				UInt8 buff[256];
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Bool ret;
 				UInt64 blockStart;
 				UInt64 blockEnd;
@@ -532,7 +532,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.AppendHex64(pc);
 					sb.AppendC(UTF8STRC(" "));
 					sptr = symbol->ResolveName(sbuff, pc).Or(sbuff);
-					i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);
 					sb.ClearStr();
@@ -573,9 +573,9 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 			UInt8 buff[16];
 			UTF8Char sbuff[64];
 			UInt32 bitCnt;
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
 			i = 0;
 			j = context->GetRegisterCnt();
 			while (i < j)
@@ -631,7 +631,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->stacks.GetCount();
 	while (i-- > 0)
 	{

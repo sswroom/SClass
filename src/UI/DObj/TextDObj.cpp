@@ -4,7 +4,7 @@
 #include "Text/StringBuilder.hpp"
 #include "UI/DObj/TextDObj.h"
 
-UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)
+UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->txt = Text::String::NewOrNull(txt);
@@ -34,7 +34,7 @@ UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text
 		if (this->deng->CreateImage32(this->size, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		{
 			NN<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-			Media::DrawImageTool::SplitString(dimg, nntxt->ToCString(), this->lines, f, OSInt2Double(this->size.x));
+			Media::DrawImageTool::SplitString(dimg, nntxt->ToCString(), this->lines, f, IntOS2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
 		}
@@ -66,27 +66,27 @@ void UI::DObj::TextDObj::DrawObject(NN<Media::DrawImage> dimg)
 	NN<Media::DrawBrush> b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
-	Math::Coord2D<OSInt> tl = this->GetCurrPos();
-	UInt32 linePerPage = (UInt32)Double2Int32(UOSInt2Double(this->size.y) / this->lineHeight);
+	Math::Coord2D<IntOS> tl = this->GetCurrPos();
+	UInt32 linePerPage = (UInt32)Double2Int32(UIntOS2Double(this->size.y) / this->lineHeight);
 	UInt32 currLine = this->currPage * linePerPage;
-	UOSInt j = this->lines.GetCount();
-	Double currPos = OSInt2Double(tl.y);
-	Double endPos = OSInt2Double(tl.y + (OSInt)this->size.y) - this->lineHeight;
+	UIntOS j = this->lines.GetCount();
+	Double currPos = IntOS2Double(tl.y);
+	Double endPos = IntOS2Double(tl.y + (IntOS)this->size.y) - this->lineHeight;
 	while (currPos <= endPos && currLine < j)
 	{
 		if (this->talign == TA_LEFT)
 		{
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x), currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
+			dimg->DrawString(Math::Coord2DDbl(IntOS2Double(tl.x), currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
 		}
 		else if (this->talign == TA_CENTER)
 		{
 			sz = dimg->GetTextSize(f, Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->size.x) - sz.x) * 0.5, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString(), f, b);
+			dimg->DrawString(Math::Coord2DDbl(IntOS2Double(tl.x) + (UIntOS2Double(this->size.x) - sz.x) * 0.5, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
 			sz = dimg->GetTextSize(f, Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)this->size.x) - sz.x, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
+			dimg->DrawString(Math::Coord2DDbl(IntOS2Double(tl.x + (IntOS)this->size.x) - sz.x, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;
@@ -95,7 +95,7 @@ void UI::DObj::TextDObj::DrawObject(NN<Media::DrawImage> dimg)
 	dimg->DelBrush(b);
 }
 
-Bool UI::DObj::TextDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::TextDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	return false;
 }
@@ -122,9 +122,9 @@ void UI::DObj::TextDObj::SetTextAlign(TextAlign talign)
 	this->talign = talign;
 }
 
-UOSInt UI::DObj::TextDObj::GetPageCount()
+UIntOS UI::DObj::TextDObj::GetPageCount()
 {
-	UOSInt linePerPage = (UOSInt)Double2OSInt(UOSInt2Double(this->size.y) / this->lineHeight);
+	UIntOS linePerPage = (UIntOS)Double2IntOS(UIntOS2Double(this->size.y) / this->lineHeight);
 	return (this->lines.GetCount() - 1 + linePerPage) / linePerPage;
 }
 

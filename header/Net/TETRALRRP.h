@@ -8,7 +8,7 @@ namespace Net
 	class TETRALRRP
 	{
 	public:
-		static Bool ParseProtocol(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode);
+		static Bool ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode);
 		static Double ReadLat(InOutParam<UnsafeArray<UInt8>> buff);
 		static Double ReadLong(InOutParam<UnsafeArray<UInt8>> buff);
 		static Int32 ReadSIntVar(InOutParam<UnsafeArray<UInt8>> buff);
@@ -21,9 +21,9 @@ namespace Net
 		static UnsafeArray<UInt8> WriteLong(UnsafeArray<UInt8> buff, Double lon);
 		static UnsafeArray<UInt8> WriteDateTime(UnsafeArray<UInt8> buff, NN<Data::DateTime> dt);
 
-		static UOSInt GenLocReq(UnsafeArray<UInt8> buff);
+		static UIntOS GenLocReq(UnsafeArray<UInt8> buff);
 
-		static UOSInt BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GPSRecord3> record, Int32 requestId, Int32 resultCode);
+		static UIntOS BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GPSRecord3> record, Int32 requestId, Int32 resultCode);
 	};
 };
 #endif

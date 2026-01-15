@@ -6,14 +6,14 @@
 
 void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringNN txt, NN<Data::ArrayListStringNN> outStr, NN<Media::DrawFont> f, Double width)
 {
-	UOSInt i;
-	UOSInt k;
+	UIntOS i;
+	UIntOS k;
 	Math::Size2DDbl sz;
 	UnsafeArray<const UTF8Char> currTxt = txt.v;
 	UnsafeArray<const UTF8Char> currTxtEnd = txt.v + txt.leng;
 	UnsafeArray<UTF8Char> tmpBuff;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt txtLen = txt.leng;
+	UIntOS txtLen = txt.leng;
 	tmpBuff = MemAllocArr(UTF8Char, txtLen + 1);
 	UTF8Char c;
 	UTF8Char c2;
@@ -21,7 +21,7 @@ void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringN
 	{
 		if (currTxt[0] == 0)
 			break;
-		txtLen = (UOSInt)(currTxtEnd - currTxt);
+		txtLen = (UIntOS)(currTxtEnd - currTxt);
 		k = 0;
 		i = 0;
 		while (true)
@@ -44,7 +44,7 @@ void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringN
 						Text::StrConcatC(tmpBuff, currTxt, k);
 						sptr = Text::StrTrim(tmpBuff);
 						outStr->Add(Text::String::NewP(tmpBuff, sptr));
-						Text::StrConcatC(tmpBuff, &currTxt[k], (UOSInt)(currTxtEnd - &currTxt[k]));
+						Text::StrConcatC(tmpBuff, &currTxt[k], (UIntOS)(currTxtEnd - &currTxt[k]));
 						sptr = Text::StrTrim(tmpBuff);
 						outStr->Add(Text::String::NewP(tmpBuff, sptr));
 					}
@@ -68,7 +68,7 @@ void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringN
 					{
 						Text::StrConcatC(tmpBuff, currTxt, k);
 						sptr = Text::StrTrim(tmpBuff);
-						outStr->Add(Text::String::New(tmpBuff, (UOSInt)(sptr - tmpBuff)));
+						outStr->Add(Text::String::New(tmpBuff, (UIntOS)(sptr - tmpBuff)));
 						currTxt = &currTxt[k];
 					}
 					break;

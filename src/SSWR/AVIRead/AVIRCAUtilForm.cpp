@@ -15,8 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
@@ -94,8 +94,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 								NN<Data::ArrayListStringNN> nameList;
 								if (exts.subjectAltName.SetTo(nameList))
 								{
-									UOSInt j = 0;
-									UOSInt k = nameList->GetCount();
+									UIntOS j = 0;
+									UIntOS k = nameList->GetCount();
 									while (j < k)
 									{
 										me->lbSAN->AddItem(nameList->GetItemNoCheck(j), 0);
@@ -254,10 +254,10 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("CSR not exist"), CSTR("CA Util"), me);
 		return;
 	}
-	UOSInt validDays;
+	UIntOS validDays;
 	Text::StringBuilderUTF8 sb;
 	me->txtValidDays->GetText(sb);
-	if (!sb.ToUOSInt(validDays))
+	if (!sb.ToUIntOS(validDays))
 	{
 		me->ui->ShowMsgOK(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
@@ -291,7 +291,7 @@ void SSWR::AVIRead::AVIRCAUtilForm::DisplayKeyDetail()
 		Text::StringBuilderUTF8 sb;
 		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(key->GetKeyType()));
 		sb.AppendC(UTF8STRC(", "));
-		sb.AppendUOSInt(key->GetKeySizeBits());
+		sb.AppendUIntOS(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
 		this->txtKey->SetText(sb.ToCString());
 	}

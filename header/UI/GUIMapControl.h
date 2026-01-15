@@ -17,8 +17,8 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
 		typedef void (CALLBACKFUNC ScaleChangedHandler)(AnyType userObj, Double newScale);
-		typedef void (CALLBACKFUNC MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-		typedef void (CALLBACKFUNC DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+		typedef void (CALLBACKFUNC MouseMoveHandler)(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+		typedef void (CALLBACKFUNC DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, IntOS xOfst, IntOS yOfst);
 	private:
 		Optional<Media::DrawImage> bgImg;
 		NN<Media::ColorManagerSess> colorSess;
@@ -26,7 +26,7 @@ namespace UI
 		Optional<Map::MapEnv> mapEnv;
 		NN<Map::DrawMapRenderer> renderer;
 		Bool releaseRenderer;
-		Math::Size2D<UOSInt> currSize;
+		Math::Size2D<UIntOS> currSize;
 
 		Bool bgUpdated;
 		UInt32 bgColor;
@@ -34,13 +34,13 @@ namespace UI
 		Int64 mouseLDownTime;
 		Int64 mouseRDownTime;
 		Bool mouseDown;
-		Math::Coord2D<OSInt> mouseDownPos;
-		Math::Coord2D<OSInt> mouseCurrPos;
+		Math::Coord2D<IntOS> mouseDownPos;
+		Math::Coord2D<IntOS> mouseCurrPos;
 		Bool gZoom;
-		Math::Coord2D<OSInt> gZoomPos;
+		Math::Coord2D<IntOS> gZoomPos;
 		UInt64 gZoomDist;
 		UInt64 gZoomCurrDist;
-		Math::Coord2D<OSInt> gZoomCurrPos;
+		Math::Coord2D<IntOS> gZoomCurrPos;
 		Bool pauseUpdate;
 
 		Math::Coord2DDbl markerPos;
@@ -61,16 +61,16 @@ namespace UI
 	private:
 		static void __stdcall ImageUpdated(AnyType userObj);
 
-		virtual UI::EventState OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
-		virtual UI::EventState OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
-		virtual void OnMouseMove(Math::Coord2D<OSInt> scnPos) ;
-		virtual UI::EventState OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
-		virtual void OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnJSButtonDown(OSInt buttonId);
-		virtual void OnJSButtonUp(OSInt buttonId);
-		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
+		virtual UI::EventState OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn);
+		virtual UI::EventState OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn);
+		virtual void OnMouseMove(Math::Coord2D<IntOS> scnPos) ;
+		virtual UI::EventState OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta);
+		virtual void OnGestureBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnGestureStep(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnGestureEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnJSButtonDown(IntOS buttonId);
+		virtual void OnJSButtonUp(IntOS buttonId);
+		virtual void OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4);
 
 		virtual void OnTimerTick();
 		virtual void OnDraw(NN<Media::DrawImage> img);
@@ -94,9 +94,9 @@ namespace UI
 		void SetBGColor(UInt32 bgColor);
 		void SetRenderer(NN<Map::DrawMapRenderer> renderer);
 		void UpdateMap();
-		Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
+		Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos);
 		Math::Coord2DDbl ScnXYD2MapXY(Math::Coord2DDbl scnPos);
-		Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
+		Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 		void SetMapScale(Double newScale);
 		Double GetMapScale();
 		Double GetViewScale();

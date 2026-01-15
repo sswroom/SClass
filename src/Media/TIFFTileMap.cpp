@@ -2,7 +2,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Media/TIFFTileMap.h"
 
-Media::TIFFTileMap::TIFFTileMap(UOSInt tileWidth, UOSInt tileHeight)
+Media::TIFFTileMap::TIFFTileMap(UIntOS tileWidth, UIntOS tileHeight)
 {
 	this->tileWidth = tileWidth;
 	this->tileHeight = tileHeight;
@@ -29,17 +29,17 @@ Map::TileMap::TileType Media::TIFFTileMap::GetTileType() const
 	return Map::TileMap::TT_TIFF;
 }
 
-UOSInt Media::TIFFTileMap::GetMinLevel() const
+UIntOS Media::TIFFTileMap::GetMinLevel() const
 {
 	return 0;
 }
 
-UOSInt Media::TIFFTileMap::GetMaxLevel() const
+UIntOS Media::TIFFTileMap::GetMaxLevel() const
 {
 	return this->layers.GetCount() - 1;
 }
 
-Double Media::TIFFTileMap::GetLevelScale(UOSInt level) const
+Double Media::TIFFTileMap::GetLevelScale(UIntOS level) const
 {
 	NN<LayerInfo> layer;
 	if (this->layers.GetItem(level).SetTo(layer))
@@ -49,13 +49,13 @@ Double Media::TIFFTileMap::GetLevelScale(UOSInt level) const
 	return 0;
 }
 
-UOSInt Media::TIFFTileMap::GetNearestLevel(Double scale) const
+UIntOS Media::TIFFTileMap::GetNearestLevel(Double scale) const
 {
 	///////////////////////////////////
 	return 0;
 }
 
-UOSInt Media::TIFFTileMap::GetConcurrentCount() const
+UIntOS Media::TIFFTileMap::GetConcurrentCount() const
 {
 	return 1;
 }
@@ -76,7 +76,7 @@ Bool Media::TIFFTileMap::IsMercatorProj() const
 	return false;
 }
 
-UOSInt Media::TIFFTileMap::GetTileSize() const
+UIntOS Media::TIFFTileMap::GetTileSize() const
 {
 	return this->tileWidth;
 }
@@ -91,40 +91,40 @@ Bool Media::TIFFTileMap::CanQuery() const
 	return false;
 }
 
-Bool Media::TIFFTileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
+Bool Media::TIFFTileMap::QueryInfos(Math::Coord2DDbl coord, UIntOS level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	return false;
 }
 
-UOSInt Media::TIFFTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
+UIntOS Media::TIFFTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	//////////////////////////////
 	return 0;
 }
 
-Optional<Media::ImageList> Media::TIFFTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Media::TIFFTileMap::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	//////////////////////////////
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::TIFFTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Media::TIFFTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	return nullptr;
 }
 
-Bool Media::TIFFTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Media::TIFFTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	return false;
 }
 
-Optional<IO::StreamData> Media::TIFFTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Media::TIFFTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	///////////////////////////////
 	return nullptr;
 }
 
-UOSInt Media::TIFFTileMap::GetLayerCount() const
+UIntOS Media::TIFFTileMap::GetLayerCount() const
 {
 	return this->layers.GetCount();
 }

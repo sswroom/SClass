@@ -15,8 +15,8 @@
 SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::MultipartMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	UInt8 hashBuff[64];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::MIMEObject> subObj;
 	NN<Text::MIMEObj::MIMEMessage> part;
 	this->obj = obj;
@@ -40,7 +40,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 			
 			if (this->obj->GetPartContent(1).SetTo(subObj) && subObj->GetContentType().StartsWith(UTF8STRC("application/pkcs7-signature")))
 			{
-				UOSInt dataSize;
+				UIntOS dataSize;
 				UnsafeArray<const UInt8> data = NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(subObj)->GetRAWData(dataSize);
 				NN<Crypto::Cert::X509File> x509;
 				if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), subObj->GetSourceNameObj()).SetTo(x509))
@@ -64,7 +64,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 						}
 						else
 						{
-							UOSInt buffSize;
+							UIntOS buffSize;
 							UnsafeArray<const UInt8> dataBuff = mstm.GetBuff(buffSize);
 							if (buffSize > 2 && dataBuff[buffSize - 2] == 13 && dataBuff[buffSize - 1] == 10)
 							{
@@ -80,7 +80,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 							}
 							else
 							{
-								UOSInt encLen;
+								UIntOS encLen;
 								UnsafeArray<const UInt8> encDigestData;
 								if (!pkcs7->GetEncryptedDigest(encLen).SetTo(encDigestData))
 								{
@@ -116,7 +116,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 												Crypto::Cert::DigestInfo digestInfo;
 												Bool match = false;
 												UInt8 decBuff[256];
-												UOSInt decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(encDigestData, encLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
+												UIntOS decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(encDigestData, encLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
 												if (decLen > 0)
 												{
 													if (Crypto::Cert::X509File::ParseDigestType(digestInfo, decBuff, decBuff + decLen))

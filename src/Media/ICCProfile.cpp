@@ -202,7 +202,7 @@ const UInt8 Media::ICCProfile::srgbICC[] = {
 
 Media::ICCProfile::ICCProfile(UnsafeArray<const UInt8> iccBuff) : iccBuff(ReadMUInt32(iccBuff.Ptr()))
 {
-	UOSInt leng = ReadMUInt32(iccBuff.Ptr());
+	UIntOS leng = ReadMUInt32(iccBuff.Ptr());
 	this->iccBuff.CopyFrom(Data::ByteArrayR(iccBuff, leng));
 }
 
@@ -936,7 +936,7 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 	return profile;
 }
 
-Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS ofst, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -949,7 +949,7 @@ Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame
 	frame->AddUInt(ofst, 4, CSTR("ICC Size"), buffSize);
 	frame->AddHex32Name(ofst + 4, CSTR("Preferred CMM Type"), ReadMUInt32(&buff[4]), GetNameCMMType(ReadMInt32(&buff[4])));
 	frame->AddUInt(ofst + 8, 1, CSTR("Major Version"), buff[8]);
-	frame->AddUInt(ofst + 9, 1, CSTR("Minor Version"), (UOSInt)buff[9] >> 4);
+	frame->AddUInt(ofst + 9, 1, CSTR("Minor Version"), (UIntOS)buff[9] >> 4);
 	frame->AddUInt(ofst + 9, 1, CSTR("Bug Fix Version"), buff[9] & 15);
 	frame->AddUInt(ofst + 10, 1, CSTR("Subclass Major Version"), buff[10]);
 	frame->AddUInt(ofst + 11, 1, CSTR("Subclass Minor Version"), buff[11]);
@@ -1604,14 +1604,14 @@ void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UnsafeArr
 	case 0x6D6C7563: //multiLocalizedUnicodeType
 		{
 			Text::Encoding enc(1201);
-			OSInt i;
-			OSInt j;
+			IntOS i;
+			IntOS j;
 			i = ReadMInt32(&buff[8]);
 			j = 16;
 			while (i-- > 0)
 			{
 				sptr = enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				if (i > 0)
 				{
 					sb->AppendC(UTF8STRC(", "));
@@ -1635,10 +1635,10 @@ void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UnsafeArr
 	}
 }
 
-Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UnsafeArray<UInt16> curveColors, OutParam<Double> gamma)
+Media::CS::TransferType Media::ICCProfile::FindTransferType(UIntOS colorCount, UnsafeArray<UInt16> curveColors, OutParam<Double> gamma)
 {
 	Media::CS::TransferType trans[] = {Media::CS::TRANT_sRGB, Media::CS::TRANT_BT709, Media::CS::TRANT_GAMMA, Media::CS::TRANT_LINEAR, Media::CS::TRANT_SMPTE240};
-	UOSInt tranCnt = sizeof(trans) / sizeof(trans[0]);
+	UIntOS tranCnt = sizeof(trans) / sizeof(trans[0]);
 	if (colorCount == 0)
 	{
 		gamma.Set(1.0);
@@ -1652,7 +1652,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 
 	NN<Media::CS::TransferFunc> *funcs = MemAlloc(NN<Media::CS::TransferFunc>, tranCnt);
 	Double *diffSqrSum = MemAlloc(Double, tranCnt);
-	UOSInt i = tranCnt;
+	UIntOS i = tranCnt;
 	while (i-- > 0)
 	{
 		Media::CS::TransferParam param(trans[i], 2.2);
@@ -1660,19 +1660,19 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		diffSqrSum[i] = 0;
 	}
 
-	Double mulVal = 1.0 / UOSInt2Double(colorCount - 1);
+	Double mulVal = 1.0 / UIntOS2Double(colorCount - 1);
 	Double colVal = 1.0 / 65535.0;
 	Double v;
 	Double tv;
 
-	UOSInt j = 0;
+	UIntOS j = 0;
 	while (j < colorCount)
 	{
 		v = ReadMInt16((UInt8*)&curveColors[j]) * colVal;
 		i = tranCnt;
 		while (i-- > 0)
 		{
-			tv = funcs[i]->InverseTransfer(UOSInt2Double(j) * mulVal);
+			tv = funcs[i]->InverseTransfer(UIntOS2Double(j) * mulVal);
 			diffSqrSum[i] += (tv - v) * (tv - v);
 		}
 		j++;
@@ -1716,7 +1716,7 @@ UnsafeArray<const UInt8> Media::ICCProfile::GetSRGBICCData()
 	return srgbICC;
 }
 
-void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> xyzBuff)
+void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> xyzBuff)
 {
 	Text::StringBuilderUTF8 sb;
 	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
@@ -1724,7 +1724,7 @@ void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler
 }
 
 
-void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> buff, UInt32 leng)
+void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> buff, UInt32 leng)
 {
 	UInt32 typ = ReadMUInt32(&buff[0]);
 	Int32 nCh;
@@ -1970,14 +1970,14 @@ void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler>
 			sb.AppendC(UTF8STRC(")"));
 			frame->AddField(ofst, 4, fieldName, sb.ToCString());
 
-			UOSInt i = 8;
-			UOSInt j = 0;
+			UIntOS i = 8;
+			UIntOS j = 0;
 			while (i < leng)
 			{
 				sb.ClearStr();
 				sb.Append(fieldName);
 				sb.AppendUTF8Char('[');
-				sb.AppendUOSInt(j);
+				sb.AppendUIntOS(j);
 				sb.AppendUTF8Char(']');
 
 				sptr = Text::StrDouble(sbuff, ReadS15Fixed16Number(&buff[i]));
@@ -1991,11 +1991,11 @@ void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler>
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::Encoding enc(1201);
-			UOSInt i;
+			UIntOS i;
 			UInt32 cnt;
-			UOSInt j;
-			UOSInt strOfst;
-			UOSInt strLen;
+			UIntOS j;
+			UIntOS strOfst;
+			UIntOS strLen;
 			cnt = ReadMUInt32(&buff[8]);
 			frame->AddUInt(ofst + 8, 4, CSTR("Number of records (n)"), cnt);
 			frame->AddUInt(ofst + 12, 4, CSTR("Record Size"), ReadMUInt32(&buff[12]));
@@ -2011,7 +2011,7 @@ void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler>
 				sb.ClearStr();
 				sb.Append(fieldName);
 				sb.AppendUTF8Char('[');
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendUTF8Char(']');
 				frame->AddField(ofst + strOfst, strLen, sb.ToCString(), CSTRP(sbuff, sptr));
 				j += 12;

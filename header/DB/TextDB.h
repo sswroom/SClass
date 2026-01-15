@@ -24,17 +24,17 @@ namespace DB
 		TextDB(Text::CStringNN sourceName);
 		virtual ~TextDB();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		Bool AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList);
-		Bool AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UOSInt colCount);
+		Bool AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UIntOS colCount);
 		Bool AddTableData(NN<Data::ArrayListObj<Optional<Text::String>>> valList);
-		Bool AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount);
+		Bool AddTableData(UnsafeArray<Text::CString> valArr, UIntOS colCount);
 	};
 }
 #endif

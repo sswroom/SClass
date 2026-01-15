@@ -27,9 +27,9 @@ namespace Map
 			virtual Text::CStringNN GetName() const;
 			virtual TileType GetTileType() const;
 			virtual ImageType GetImageType() const;
-			virtual UOSInt GetConcurrentCount() const;
-			virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
-			virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
+			virtual UIntOS GetConcurrentCount() const;
+			virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId);
+			virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId);
 		};
 	}
 }

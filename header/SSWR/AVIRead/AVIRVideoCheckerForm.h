@@ -20,12 +20,12 @@ namespace SSWR
 			typedef struct
 			{
 				NN<Text::String> fileName;
-				UOSInt index;
+				UIntOS index;
 			} FileQueue;
 
 			typedef struct
 			{
-				UOSInt index;
+				UIntOS index;
 				Int32 status;
 				Double t;
 			} UpdateQueue;

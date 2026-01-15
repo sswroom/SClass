@@ -49,12 +49,12 @@ Data::Duration Media::AFilter::AudioSampleRipper::SeekToTime(Data::Duration time
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	UnsafeArray<UInt8> soundBuff;
-	UOSInt thisSize;
-	UOSInt sizeLeft;
+	UIntOS thisSize;
+	UIntOS sizeLeft;
 	if (this->soundBuff.SetTo(soundBuff))
 	{
 		Sync::MutexUsage mutUsage(this->mut);

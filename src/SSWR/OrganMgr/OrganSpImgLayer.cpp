@@ -18,10 +18,10 @@ Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr)
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr)
 {
-	UOSInt i = 0;
-	UOSInt j = this->objList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->objList.GetCount();
 	while (i < j)
 	{
 		outArr->Add((Int64)i);
@@ -30,16 +30,16 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NN<Data::ArrayListInt64>
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	UOSInt cnt = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS cnt = 0;
+	UIntOS i;
+	UIntOS j;
 	NN<UserFileInfo> ufile;
 	i = 0;
 	j = this->objList.GetCount();
@@ -61,7 +61,7 @@ Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax() const
 	return (Int64)this->objList.GetCount() - 1;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetRecordCnt() const
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetRecordCnt() const
 {
 	return this->objList.GetCount();
 }
@@ -70,11 +70,11 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Optional<Map::NameArray> na
 {
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<UserFileInfo> ufile;
 	NN<Text::String> s;
-	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
+	if (!this->objList.GetItem((UIntOS)id).SetTo(ufile))
 		return false;
 	if (strIndex == 0)
 	{
@@ -91,12 +91,12 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NN<Text::StringBuilderUTF8> sb, 
 	return false;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const
 {
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -105,7 +105,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeAr
 	return nullptr;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -115,7 +115,7 @@ DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colInd
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex == 0)
 	{
@@ -152,7 +152,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(NN<Map::GetObjectSess> sessio
 Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	NN<UserFileInfo> ufile;
-	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
+	if (!this->objList.GetItem((UIntOS)id).SetTo(ufile))
 		return nullptr;
 	UInt32 srid = this->csys->GetSRID();
 	Math::Geometry::Point *pt;
@@ -160,7 +160,7 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVector
 	return pt;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetGeomCol() const
+UIntOS SSWR::OrganMgr::OrganSpImgLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -179,8 +179,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()
 
 void SSWR::OrganMgr::OrganSpImgLayer::AddItems(NN<Data::ArrayListNN<OrganImageItem>> objList)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<OrganImageItem> imgItem;
 	NN<UserFileInfo> ufile;
 	Bool found = false;
@@ -217,8 +217,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(NN<Data::ArrayListNN<OrganImageIt
 
 void SSWR::OrganMgr::OrganSpImgLayer::AddItems(NN<Data::ArrayListNN<UserFileInfo>> objList)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<UserFileInfo> ufile;
 	Bool found = false;
 	i = 0;

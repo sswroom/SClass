@@ -51,7 +51,7 @@ Optional<Net::Google::GoogleServiceAccount> Net::Google::GoogleServiceAccount::F
 	if (fs.IsError())
 		return nullptr;
 	UInt8 buff[8192];
-	UOSInt readSize;
+	UIntOS readSize;
 	Text::StringBuilderUTF8 sb;
 	while ((readSize = fs.Read(Data::ByteArray(buff, sizeof(buff)))) != 0)
 	{

@@ -3,11 +3,11 @@
 #include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Math/Geometry/LinearRing.h"
 
-Math::Geometry::LinearRing::LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint, hasZ, hasM)
+Math::Geometry::LinearRing::LinearRing(UInt32 srid, UIntOS nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint, hasZ, hasM)
 {
 }
 
-Math::Geometry::LinearRing::LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
+Math::Geometry::LinearRing::LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
 {
 }
 
@@ -43,7 +43,7 @@ Bool Math::Geometry::LinearRing::InsideOrTouch(Math::Coord2DDbl coord) const
 	Math::Coord2DDbl thisPt;
 	Math::Coord2DDbl lastPt;
 	Math::Coord2DDbl diff;
-	UOSInt l;
+	UIntOS l;
 	Int32 leftCnt = 0;
 	Double tmpX;
 
@@ -85,7 +85,7 @@ Double Math::Geometry::LinearRing::CalArea() const
 {
 	Math::Coord2DDbl lastPt = this->pointArr[0];
 	Double total = 0;
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 0)
 	{
 		total = total + (lastPt.x * this->pointArr[i].y - lastPt.y * this->pointArr[i].x);
@@ -112,7 +112,7 @@ Math::Coord2DDbl Math::Geometry::LinearRing::GetDisplayCenter() const
 	{
 		return Math::Coord2DDbl(0, 0);
 	}
-	ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (OSInt)xList.GetCount() - 1);
+	ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (IntOS)xList.GetCount() - 1);
 	Double x = LinearRing::GetIntersactsCenter(xList);
 	return Math::Coord2DDbl(x, pt.y);
 }
@@ -133,7 +133,7 @@ Double Math::Geometry::LinearRing::GetIntersactsCenter(NN<Data::ArrayListNative<
 	{
 		return 0;
 	}
-	UOSInt i = vals->GetCount();
+	UIntOS i = vals->GetCount();
 	if ((i & 1) != 0)
 	{
 		return 0;
@@ -158,19 +158,19 @@ Double Math::Geometry::LinearRing::GetIntersactsCenter(NN<Data::ArrayListNative<
 	return vals->GetItem(0);
 }
 
-NN<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints)
+NN<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UIntOS nPoints)
 {
 	NN<Math::Geometry::LinearRing> lr;
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, nPoints + 1, false, false));
-	Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
-	UOSInt i;
-	UOSInt j;
+	Double ratio = 2 * Math::PI / UIntOS2Double(nPoints);
+	UIntOS i;
+	UIntOS j;
 	Double angle;
 	UnsafeArray<Math::Coord2DDbl> pointList = lr->GetPointList(j);
 	i = 0;
 	while (i < j)
 	{
-		angle = UOSInt2Double(i) * ratio;
+		angle = UIntOS2Double(i) * ratio;
 		pointList[i] = center + Math::Coord2DDbl(radiusX * Math_Cos(angle), radiusY * Math_Sin(angle));
 		i++;
 	}

@@ -33,10 +33,10 @@ namespace Media
 		virtual Bool SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs);
 		virtual void WaitForVBlank(Optional<MonitorHandle> hMon);
 		virtual UInt32 GetRefreshRate(Optional<MonitorHandle> hMon);
-		virtual Optional<MonitorHandle> GetMonitorHandle(UOSInt monIndex);
-		virtual UOSInt GetMonitorCount();
+		virtual Optional<MonitorHandle> GetMonitorHandle(UIntOS monIndex);
+		virtual UIntOS GetMonitorCount();
 
-		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
+		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth);
 		virtual Optional<MonitorSurface> CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType);
 		virtual Bool CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType);
 	};

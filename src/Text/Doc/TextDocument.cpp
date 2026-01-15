@@ -132,22 +132,22 @@ Bool Text::Doc::TextDocument::GetVisitedLinkColor(UInt32 *visitedLinkColor) cons
 	}
 }
 
-UOSInt Text::Doc::TextDocument::Add(NN<Text::Doc::DocSection> val)
+UIntOS Text::Doc::TextDocument::Add(NN<Text::Doc::DocSection> val)
 {
 	return this->items.Add(val);
 }
 
-UOSInt Text::Doc::TextDocument::GetCount() const
+UIntOS Text::Doc::TextDocument::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-NN<Text::Doc::DocSection> Text::Doc::TextDocument::GetItemNoCheck(UOSInt index) const
+NN<Text::Doc::DocSection> Text::Doc::TextDocument::GetItemNoCheck(UIntOS index) const
 {
 	return this->items.GetItemNoCheck(index);
 }
 
-Optional<Text::Doc::DocSection> Text::Doc::TextDocument::GetItem(UOSInt index) const
+Optional<Text::Doc::DocSection> Text::Doc::TextDocument::GetItem(UIntOS index) const
 {
 	return this->items.GetItem(index);
 }

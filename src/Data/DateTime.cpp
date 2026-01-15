@@ -260,13 +260,13 @@ void Data::DateTime::SetValue(NN<const DateTime> time)
 	this->ns = time->ns;
 }
 
-void Data::DateTime::SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr)
+void Data::DateTime::SetValue(Int32 year, IntOS month, IntOS day, IntOS hour, IntOS minute, IntOS second, IntOS ms, Int8 tzQhr)
 {
 	this->SetValue(year, month, day, hour, minute, second, ms);
 	this->tzQhr = tzQhr;
 }
 
-void Data::DateTime::SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms)
+void Data::DateTime::SetValue(Int32 year, IntOS month, IntOS day, IntOS hour, IntOS minute, IntOS second, IntOS ms)
 {
 	this->SetDate(year, month, day);
 	this->SetHour(hour);
@@ -350,9 +350,9 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	tval->minute = 0;
 	tval->second = 0;
 	this->tzQhr = 0;
-	OSInt d = (OSInt)variTime;
+	IntOS d = (IntOS)variTime;
 	this->AddDay(d);
-	variTime = (variTime - OSInt2Double(d)) * 24;
+	variTime = (variTime - IntOS2Double(d)) * 24;
 	tval->hour = (UInt8)variTime;
 	variTime = (variTime - tval->hour) * 60;
 	tval->minute = (UInt8)variTime;
@@ -402,10 +402,10 @@ UInt32 Data::DateTime::GetNS()
 	return this->ns;
 }
 
-NN<Data::DateTime> Data::DateTime::AddMonth(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddMonth(IntOS val)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt newMonth = tval->month + val;
+	IntOS newMonth = tval->month + val;
 	while (newMonth < 1)
 	{
 		newMonth += 12;
@@ -425,15 +425,15 @@ NN<Data::DateTime> Data::DateTime::AddMonth(OSInt val)
 	return *this;
 }
 
-NN<Data::DateTime> Data::DateTime::AddDay(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddDay(IntOS val)
 {
 	switch (this->timeType)
 	{
 	case TimeType::Time:
 		{
 			NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-			OSInt newDay = tval->day + val;
-			OSInt dayim;
+			IntOS newDay = tval->day + val;
+			IntOS dayim;
 			if (newDay < 1)
 			{
 				while (newDay < 1)
@@ -472,15 +472,15 @@ NN<Data::DateTime> Data::DateTime::AddDay(OSInt val)
 	return *this;
 }
 
-NN<Data::DateTime> Data::DateTime::AddHour(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddHour(IntOS val)
 {
 	switch (this->timeType)
 	{
 	case TimeType::Time:
 		{
 			NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-			OSInt day = val / 24;
-			OSInt outHour;
+			IntOS day = val / 24;
+			IntOS outHour;
 			outHour = val - day * 24 + tval->hour;
 			while (outHour < 0)
 			{
@@ -509,11 +509,11 @@ NN<Data::DateTime> Data::DateTime::AddHour(OSInt val)
 	return *this;
 }
 
-NN<Data::DateTime> Data::DateTime::AddMinute(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddMinute(IntOS val)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt hours = val / 60;
-	OSInt outMin;
+	IntOS hours = val / 60;
+	IntOS outMin;
 	outMin = val - hours * 60 + tval->minute;
 	while (outMin < 0)
 	{
@@ -531,13 +531,13 @@ NN<Data::DateTime> Data::DateTime::AddMinute(OSInt val)
 	return *this;
 }
 
-NN<Data::DateTime> Data::DateTime::AddSecond(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddSecond(IntOS val)
 {
 	if (this->timeType == TimeType::Time)
 	{
 		NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-		OSInt minutes = val / 60;
-		OSInt outSec;
+		IntOS minutes = val / 60;
+		IntOS outSec;
 		outSec = val - minutes * 60 + tval->second;
 		while (outSec < 0)
 		{
@@ -561,11 +561,11 @@ NN<Data::DateTime> Data::DateTime::AddSecond(OSInt val)
 	}
 }
 
-NN<Data::DateTime> Data::DateTime::AddMS(OSInt val)
+NN<Data::DateTime> Data::DateTime::AddMS(IntOS val)
 {
 	if (this->timeType == TimeType::Time)
 	{
-		OSInt seconds = val / 1000;
+		IntOS seconds = val / 1000;
 		Int64 outNS = (val - seconds * 1000) * 1000000 + this->ns;
 		while (outNS < 0)
 		{
@@ -583,7 +583,7 @@ NN<Data::DateTime> Data::DateTime::AddMS(OSInt val)
 	}
 	else
 	{
-		OSInt seconds = val / 1000;
+		IntOS seconds = val / 1000;
 		val = val % 1000;
 		Int32 newNS = (Int32)this->ns + (Int32)val * 1000000;
 		if (newNS < 0)
@@ -602,7 +602,7 @@ NN<Data::DateTime> Data::DateTime::AddMS(OSInt val)
 	return *this;
 }
 
-void Data::DateTime::SetDate(Int32 year, OSInt month, OSInt day)
+void Data::DateTime::SetDate(Int32 year, IntOS month, IntOS day)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
@@ -617,7 +617,7 @@ void Data::DateTime::SetDate(Int32 year, OSInt month, OSInt day)
 		tval->year++;
 	}
 	tval->month = (UInt8)month;
-	OSInt dayim;
+	IntOS dayim;
 	if (day < 1)
 	{
 		while (day < 1)
@@ -651,22 +651,22 @@ void Data::DateTime::SetYear(Int32 year)
 	tval->year = year;
 }
 
-void Data::DateTime::SetMonth(OSInt month)
+void Data::DateTime::SetMonth(IntOS month)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	this->SetDate(tval->year, month, tval->day);
 }
 
-void Data::DateTime::SetDay(OSInt day)
+void Data::DateTime::SetDay(IntOS day)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	this->SetDate(tval->year, tval->month, day);
 }
 
-void Data::DateTime::SetHour(OSInt hour)
+void Data::DateTime::SetHour(IntOS hour)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt d = 0;
+	IntOS d = 0;
 	if (hour < 0)
 	{
 		d = (hour / 24) - 1;
@@ -684,10 +684,10 @@ void Data::DateTime::SetHour(OSInt hour)
 	}
 }
 
-void Data::DateTime::SetMinute(OSInt minute)
+void Data::DateTime::SetMinute(IntOS minute)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt h = 0;
+	IntOS h = 0;
 	if (minute < 0)
 	{
 		h = (minute / 60) - 1;
@@ -705,10 +705,10 @@ void Data::DateTime::SetMinute(OSInt minute)
 	}
 }
 
-void Data::DateTime::SetSecond(OSInt second)
+void Data::DateTime::SetSecond(IntOS second)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt m = 0;
+	IntOS m = 0;
 	if (second < 0)
 	{
 		m = (second / 60) - 1;
@@ -730,7 +730,7 @@ void Data::DateTime::SetNS(UInt32 ns)
 {
 	if (ns >= 1000000000)
 	{
-		this->AddSecond((OSInt)(ns / 1000000000));
+		this->AddSecond((IntOS)(ns / 1000000000));
 		this->ns = ns % 1000000000;
 	}
 	else
@@ -739,10 +739,10 @@ void Data::DateTime::SetNS(UInt32 ns)
 	}
 }
 
-/*void Data::DateTime::SetMS(OSInt ms)
+/*void Data::DateTime::SetMS(IntOS ms)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	OSInt s = 0;
+	IntOS s = 0;
 	if (ms < 0)
 	{
 		s = (ms / 1000) - 1;
@@ -954,7 +954,7 @@ void Data::DateTime::SetNTPTime(Int32 hiDword, Int32 loDword)
 	tval->second = 0;
 	this->ns = 0;
 	this->AddMinute(hiDword / 60);
-	this->AddMS((OSInt)((hiDword % 60) * 1000 + ((loDword * 1000LL) >> 32)));
+	this->AddMS((IntOS)((hiDword % 60) * 1000 + ((loDword * 1000LL) >> 32)));
 }
 
 Int64 Data::DateTime::ToNTPTime()
@@ -1068,7 +1068,7 @@ UnsafeArray<UTF8Char> Data::DateTime::ToLocalStr(UnsafeArray<UTF8Char> buff)
 #endif
 }
 
-OSInt Data::DateTime::CompareTo(NN<Data::DateTime> dt)
+IntOS Data::DateTime::CompareTo(NN<Data::DateTime> dt)
 {
 	Int64 ticks = this->ToTicks();
 	Int64 ticks2 = dt->ToTicks();

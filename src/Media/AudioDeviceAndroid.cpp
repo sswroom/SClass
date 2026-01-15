@@ -4,12 +4,12 @@
 #include "Media/OpenSLESRenderer.h"
 #include "Text/MyString.h"
 
-UOSInt Media::AudioDevice::GetDeviceCount()
+UIntOS Media::AudioDevice::GetDeviceCount()
 {
 	return Media::OpenSLESRenderer::GetDeviceCount();
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UIntOS devNo)
 {
 	return Media::OpenSLESRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("OpenSLES: ")), devNo);
 }
@@ -31,7 +31,7 @@ Media::AudioDevice::AudioDevice()
 
 Media::AudioDevice::~AudioDevice()
 {
-	OSInt i;
+	IntOS i;
 	Media::AudioRenderer *renderer;
 
 	BindAudio(0);
@@ -66,8 +66,8 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 
 Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Media::AudioRenderer *renderer;
 	if (this->rendererList.GetCount() == 0)
 	{

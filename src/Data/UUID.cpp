@@ -56,13 +56,13 @@ void Data::UUID::SetValue(Text::CStringNN str)
 	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
 
-UOSInt Data::UUID::GetValue(UnsafeArray<UInt8> buff) const
+UIntOS Data::UUID::GetValue(UnsafeArray<UInt8> buff) const
 {
 	MemCopyNO(&buff[0], this->data, 16);
 	return 16;
 }
 
-OSInt Data::UUID::CompareTo(NN<UUID> uuid) const
+IntOS Data::UUID::CompareTo(NN<UUID> uuid) const
 {
 	UInt32 v1 = ReadUInt32(&this->data[0]);
 	UInt32 v2 = ReadUInt32(&uuid->data[0]);
@@ -104,7 +104,7 @@ OSInt Data::UUID::CompareTo(NN<UUID> uuid) const
 	{
 		return -1;
 	}
-	UOSInt i = 10;
+	UIntOS i = 10;
 	while (i < 16)
 	{
 		if (this->data[i] > uuid->data[i])
@@ -190,7 +190,7 @@ NN<Data::UUID> Data::UUID::Clone() const
 
 Bool Data::UUID::Equals(NN<UUID> uuid) const
 {
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		if (uuid->data[i] != this->data[i])
@@ -204,8 +204,8 @@ Bool Data::UUID::Equals(NN<UUID> uuid) const
 void Data::UUID::GenerateV4()
 {
 	Data::RandomMT19937 rand((UInt32)Data::DateTimeUtil::GetCurrTimeMillis());
-	UOSInt j;
-	UOSInt i = 0;
+	UIntOS j;
+	UIntOS i = 0;
 	while (i < 16)
 	{
 		j = (Data::Timestamp::UtcNow().inst.nanosec / 1000) & 3;

@@ -2,7 +2,7 @@ section .text
 
 global NearestNeighbourResizer64_64_Resize
 
-;void NearestNeighbourResizer64_64_Resize(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
+;void NearestNeighbourResizer64_64_Resize(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS dheight, IntOS dbpl, IntOS *xindex, IntOS *yindex);
 ;0 rdi
 ;8 rsi
 ;16 rbx

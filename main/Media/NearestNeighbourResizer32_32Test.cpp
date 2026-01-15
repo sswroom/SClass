@@ -17,10 +17,10 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt sWidth = 1920;
-	UOSInt sHeight = 1080;
-	UOSInt dWidth = 3840;
-	UOSInt dHeight = 2160;
+	UIntOS sWidth = 1920;
+	UIntOS sHeight = 1080;
+	UIntOS dWidth = 3840;
+	UIntOS dHeight = 2160;
 	NN<Media::StaticImage> simg;
 	Optional<Media::StaticImage> simg2;
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
@@ -39,10 +39,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 //	NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
 
 	Manage::HiResClock clk;
-	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
+	resizer->SetTargetSize(Math::Size2D<UIntOS>(dWidth, dHeight));
 	resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 
-	if (Optional<Media::StaticImage>::ConvertFrom(imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight))).SetTo(simg))
+	if (Optional<Media::StaticImage>::ConvertFrom(imgGen.GenerateImage(srgb, Math::Size2D<UIntOS>(sWidth, sHeight))).SetTo(simg))
 	{
 		t0 = clk.GetTimeDiff();
 		clk.Start();

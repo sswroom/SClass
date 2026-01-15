@@ -33,9 +33,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 		me->ui->ShowMsgOK(CSTR("Please enter community"), CSTR("SNMP Manager"), me);
 		return;
 	}
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Data::ArrayListNN<Net::SNMPManager::AgentInfo> agentList;
 	NN<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
 	j = me->mgr->AddAgents(addr, community, agentList, me->chkAgentScan->IsChecked());
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 		if (me->chkSendToSvr->IsChecked())
 		{
 			Int64 cliId;
-			UOSInt l;
+			UIntOS l;
 			NN<Net::SNMPManager::ReadingInfo> reading;
 			Data::FastMapNative<UInt32, UInt16> readingMap;
 			UInt16 currId;
@@ -175,14 +175,14 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 			me->txtAgentModel->SetText(CSTR(""));	
 		}
 		me->lvAgentReading->ClearItems();
-		UOSInt i = 0;
-		UOSInt j = agent->readingList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = agent->readingList.GetCount();
 		NN<Net::SNMPManager::ReadingInfo> reading;
 		while (i < j)
 		{
 			reading = agent->readingList.GetItemNoCheck(i);
 			me->lvAgentReading->AddItem(reading->name, reading);
-			sptr = Text::StrUOSInt(sbuff, reading->index);
+			sptr = Text::StrUIntOS(sbuff, reading->index);
 			me->lvAgentReading->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType));
 			if (reading->valValid)
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 	{
 		NN<Net::SNMPManager::ReadingInfo> reading;
 		me->mgr->UpdateValues();
-		UOSInt i = me->lvAgentReading->GetCount();
+		UIntOS i = me->lvAgentReading->GetCount();
 		while (i-- > 0)
 		{
 			reading = me->lvAgentReading->GetItem(i).GetNN<Net::SNMPManager::ReadingInfo>();
@@ -269,7 +269,7 @@ void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NN<Data::ArrayListNN<Ne
 	NN<Net::SNMPManager::AgentInfo> agent;
 	SSWR::SMonitor::SMonitorCore::DevRecord2 devRec;
 	Int64 cliId;
-	UOSInt i = agentList->GetCount();
+	UIntOS i = agentList->GetCount();
 	while (i-- > 0)
 	{
 		agent = agentList->GetItemNoCheck(i);
@@ -391,8 +391,8 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 ip;
 	UInt32 netmask;
 	sockf->GetConnInfoList(connInfoList);

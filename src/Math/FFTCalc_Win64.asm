@@ -12,7 +12,7 @@ extern cos
 extern sin
 extern Math_PI
 
-;void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+;void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 ;0 retaddr
 ;rcx complexOut
 ;rdx sampleIn
@@ -54,7 +54,7 @@ awi16lop:
 	mov rsi,r8
 	ret
 
-;void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+;void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 ;0 retaddr
 ;rcx complexOut
 ;rdx sampleIn
@@ -100,7 +100,7 @@ awi24lop:
 	mov rsi,r8
 	ret
 
-;void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCnt)
+;void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, IntOS sampleCnt)
 ;0 retaddr
 ;rcx freq
 ;rdx complexIn
@@ -149,7 +149,7 @@ f2freqlop:
 f2freqexit:
 	ret
 	
-;void FFTCalc_Rearrange(Double *complexData, OSInt sampleCount)
+;void FFTCalc_Rearrange(Double *complexData, IntOS sampleCount)
 ;0 rsi
 ;8 rdi
 ;16 retaddr
@@ -203,7 +203,7 @@ fftrexit:
 	ret
 
 	
-;void FFTCalc_ForwardCalc(Double *complexData, OSInt sampleCount)
+;void FFTCalc_ForwardCalc(Double *complexData, IntOS sampleCount)
 ;0 xmm6
 ;16 xmm7
 ;32 xmm8
@@ -255,7 +255,7 @@ fftfclop:						;{
 	movd xmm0,eax
 	punpckldq xmm7,xmm0			;Int32 negv[4] = {0, 0x80000000, 0, 0};
 	
-	mov rsi,8					;OSInt thisSampleCount = 4;
+	mov rsi,8					;IntOS thisSampleCount = 4;
 	mov eax,1
 	mov edx,2
 	cvtsi2sd xmm9,eax
@@ -356,7 +356,7 @@ fftfcexit:
 	add rsp,80
 	ret
 
-;void FFTCalc_ForwardCalcR(Double *complexData, OSInt sampleCount)
+;void FFTCalc_ForwardCalcR(Double *complexData, IntOS sampleCount)
 ;0 xmm6
 ;16 xmm7
 ;32 rsi
@@ -487,7 +487,7 @@ fftfcrexit:
 	add rsp,48
 	ret
 	
-;OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
+;IntOS FFTCalc_Forward(Double *complexData, IntOS sampleCount)
 ;0 retaddr
 ;8 rcx complexData
 ;16 rdx sampleCount

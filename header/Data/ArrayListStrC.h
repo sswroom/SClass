@@ -8,10 +8,10 @@ namespace Data
 	{
 	public:
 		ArrayListStrC();
-		ArrayListStrC(UOSInt capacity);
+		ArrayListStrC(UIntOS capacity);
 
 		virtual NN<Data::ArrayList<const Char*>> Clone() const;
-		virtual OSInt Compare(const Char* obj1, const Char* obj2) const;
+		virtual IntOS Compare(const Char* obj1, const Char* obj2) const;
 	};
 }
 #endif

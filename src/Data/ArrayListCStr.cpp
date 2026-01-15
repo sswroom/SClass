@@ -7,7 +7,7 @@ Data::ArrayListCStr::ArrayListCStr() : Data::SortableArrayList<Text::CStringNN>(
 {
 }
 
-Data::ArrayListCStr::ArrayListCStr(UOSInt capacity) : Data::SortableArrayList<Text::CStringNN>(capacity)
+Data::ArrayListCStr::ArrayListCStr(UIntOS capacity) : Data::SortableArrayList<Text::CStringNN>(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayList<Text::CStringNN>> Data::ArrayListCStr::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListCStr::Compare(Text::CStringNN obj1, Text::CStringNN obj2) const
+IntOS Data::ArrayListCStr::Compare(Text::CStringNN obj1, Text::CStringNN obj2) const
 {
 	return obj1.CompareTo(obj2);
 }

@@ -62,26 +62,26 @@ namespace Manage
 
 		typedef struct
 		{
-			UOSInt startAddr;
-			UOSInt size;
+			UIntOS startAddr;
+			UIntOS size;
 			HeapType heapType;
 		} HeapInfo;
 
 	private:
-		UOSInt procId;
+		UIntOS procId;
 		void *handle;
 		Bool needRelease;
 
 	public:
-		Process(UOSInt procId, Bool controlRight);
+		Process(UIntOS procId, Bool controlRight);
 		Process();
 		Process(UnsafeArray<const UTF8Char> cmdLine);
 		Process(const WChar *cmdLine);
 		virtual ~Process();
 
-		static UOSInt GetCurrProcId();
+		static UIntOS GetCurrProcId();
 
-		UOSInt GetProcId();
+		UIntOS GetProcId();
 		Bool IsRunning() const;
 		Bool Kill();
 		UnsafeArray<WChar> GetFilename(UnsafeArray<WChar> buff);
@@ -89,21 +89,21 @@ namespace Manage
 		Bool GetCommandLine(NN<Text::StringBuilderUTF8> sb);
 		Bool GetWorkingDir(NN<Text::StringBuilderUTF8> sb);
 		Bool GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb);
-		UOSInt GetMemorySize();
-		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
-		UOSInt GetThreadIds(NN<Data::ArrayListNative<UInt32>> threadList);
+		UIntOS GetMemorySize();
+		Bool SetMemorySize(UIntOS minSize, UIntOS maxSize);
+		UIntOS GetThreadIds(NN<Data::ArrayListNative<UInt32>> threadList);
 		void *GetHandle();
-		UOSInt GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList);
-		UOSInt GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList);
-		UOSInt GetHeapLists(NN<Data::ArrayListNative<UInt32>> heapList);
-		UOSInt GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UOSInt maxCount);
+		UIntOS GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList);
+		UIntOS GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList);
+		UIntOS GetHeapLists(NN<Data::ArrayListNative<UInt32>> heapList);
+		UIntOS GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UIntOS maxCount);
 		void FreeHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList);
 		Data::Timestamp GetStartTime();
-		UOSInt GetHandles(NN<Data::ArrayListNative<HandleInfo>> handleList);
+		UIntOS GetHandles(NN<Data::ArrayListNative<HandleInfo>> handleList);
 		Bool GetHandleDetail(Int32 id, OutParam<HandleType> handleType, NN<Text::StringBuilderUTF8> sbDetail);
 
-		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
-		Bool GetMemoryInfo(OptOut<UOSInt> pageFault, OptOut<UOSInt> workingSetSize, OptOut<UOSInt> pagedPoolUsage, OptOut<UOSInt> nonPagedPoolUsage, OptOut<UOSInt> pageFileUsage);
+		Bool GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize);
+		Bool GetMemoryInfo(OptOut<UIntOS> pageFault, OptOut<UIntOS> workingSetSize, OptOut<UIntOS> pagedPoolUsage, OptOut<UIntOS> nonPagedPoolUsage, OptOut<UIntOS> pageFileUsage);
 		Bool GetTimeInfo(OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> kernelTime, OptOut<Data::Timestamp> userTime);
 		UInt32 GetGDIObjCount();
 		UInt32 GetUserObjCount();
@@ -115,7 +115,7 @@ namespace Manage
 		virtual UInt16 ReadMemUInt16(UInt64 addr);
 		virtual UInt32 ReadMemUInt32(UInt64 addr);
 		virtual UInt64 ReadMemUInt64(UInt64 addr);
-		virtual UOSInt ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize);
+		virtual UIntOS ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UIntOS reqSize);
 	public:
 		typedef struct
 		{

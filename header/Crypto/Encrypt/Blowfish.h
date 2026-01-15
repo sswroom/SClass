@@ -24,19 +24,19 @@ namespace Crypto
 			void EncryptInt(NN<EncryptParam> param) const;
 			void DecryptInt(NN<EncryptParam> param) const;
 
-			void InitPassword(UnsafeArray<const UInt8> password, UOSInt pwdLen);
+			void InitPassword(UnsafeArray<const UInt8> password, UIntOS pwdLen);
 			void Init();
-			void Key(UnsafeArray<const UInt8> password, UOSInt pwdLen);
-			void ExpandKey(UnsafeArrayOpt<const UInt8> salt, UnsafeArray<const UInt8> password, UOSInt pwdLen);
+			void Key(UnsafeArray<const UInt8> password, UIntOS pwdLen);
+			void ExpandKey(UnsafeArrayOpt<const UInt8> salt, UnsafeArray<const UInt8> password, UIntOS pwdLen);
 		public:
 			Blowfish();
-			Blowfish(UnsafeArray<const UInt8> key, UOSInt keySize);
+			Blowfish(UnsafeArray<const UInt8> key, UIntOS keySize);
 			virtual ~Blowfish();
 
-			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
-			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
+			virtual UIntOS EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
+			virtual UIntOS DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
 
-			void SetKey(UnsafeArray<const UInt8> key, UOSInt keySize);
+			void SetKey(UnsafeArray<const UInt8> key, UIntOS keySize);
 			void EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password);
 			void EncryptBlk(UnsafeArray<UInt32> lr);
 		};

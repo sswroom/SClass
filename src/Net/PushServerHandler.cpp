@@ -6,7 +6,7 @@
 Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
-	UOSInt dataLen;
+	UIntOS dataLen;
 	UnsafeArray<const UInt8> data = req->GetReqData(dataLen).Or((const UInt8*)&dataLen);
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(data, dataLen).SetTo(json))
@@ -24,7 +24,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::WebRequest
 Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
-	UOSInt dataLen;
+	UIntOS dataLen;
 	UnsafeArray<const UInt8> data = req->GetReqData(dataLen).Or((const UInt8*)&dataLen);
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(data, dataLen).SetTo(json))
@@ -34,8 +34,8 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::WebRe
 		{
 			NN<Text::JSONArray> notifArr = NN<Text::JSONArray>::ConvertFrom(notifBase);
 			NN<Text::JSONBase> o;
-			UOSInt i = 0;
-			UOSInt j = notifArr->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = notifArr->GetArrayLength();
 			while (i < j)
 			{
 				if (notifArr->GetArrayValue(i).SetTo(o))
@@ -55,7 +55,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::WebRe
 Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
-	UOSInt dataLen;
+	UIntOS dataLen;
 	UnsafeArray<const UInt8> data = req->GetReqData(dataLen).Or((const UInt8*)&dataLen);
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(data, dataLen).SetTo(json))
@@ -117,7 +117,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::WebRe
 Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
-	UOSInt dataLen;
+	UIntOS dataLen;
 	UnsafeArray<const UInt8> data = req->GetReqData(dataLen).Or((const UInt8*)&dataLen);
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(data, dataLen).SetTo(json))
@@ -176,8 +176,8 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::Web
 			Sync::MutexUsage mutUsage;
 			NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> devList = me->mgr->GetDevices(mutUsage);
 			NN<Net::PushManager::DeviceInfo2> dev;
-			UOSInt i = 0;
-			UOSInt j = devList->GetCount();
+			UIntOS i = 0;
+			UIntOS j = devList->GetCount();
 			while (i < j)
 			{
 				dev = devList->GetItemNoCheck(i);
@@ -219,8 +219,8 @@ void Net::PushServerHandler::ParseJSONSend(NN<Text::JSONBase> sendJson)
 		Data::ArrayListStringNN userList;
 		NN<Text::JSONArray> usersArr = NN<Text::JSONArray>::ConvertFrom(usersBase);
 		succ = true;
-		UOSInt i = 0;
-		UOSInt j = usersArr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = usersArr->GetArrayLength();
 		NN<Text::String> s;
 		while (i < j)
 		{

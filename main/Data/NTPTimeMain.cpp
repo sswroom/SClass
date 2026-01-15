@@ -6,7 +6,7 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt cmdCnt;
+	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmds = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	IO::ConsoleWriter console;
 	if (cmdCnt < 2)

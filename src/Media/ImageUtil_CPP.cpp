@@ -4,7 +4,7 @@
 #include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 
-extern "C" void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
+extern "C" void ImageUtil_SwapRGB(UInt8 *imgPtr, IntOS pixelCnt, IntOS bpp)
 {
 	if (bpp == 48)
 	{
@@ -52,10 +52,10 @@ extern "C" void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
 	}
 }
 
-extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UIntOS w, UIntOS h, UInt32 col)
 {
-	UOSInt pxCnt = w * h;
-	UOSInt i = pxCnt >> 4;
+	UIntOS pxCnt = w * h;
+	UIntOS i = pxCnt >> 4;
 	if (i)
 	{
 		UInt32x4 cVals = PUInt32x4SetA(col);
@@ -94,7 +94,7 @@ extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UI
 	}
 }
 /*{
-	UOSInt pxCnt = w * h;
+	UIntOS pxCnt = w * h;
 	while (pxCnt-- > 0)
 	{
 		if (pixelPtr[0] != 0)
@@ -106,9 +106,9 @@ extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UI
 }*/
 
 
-extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, UIntOS w, UIntOS h, UInt32 col)
 {
-	UOSInt pxCnt = w * h;
+	UIntOS pxCnt = w * h;
 	while (pxCnt-- > 0)
 	{
 		if (pixelPtr[0] != 0)
@@ -119,10 +119,10 @@ extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, UOSInt w, UOSInt h, U
 	}
 }
 
-extern "C" void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+extern "C" void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, UIntOS w, UIntOS h, UInt32 col)
 {
 	////////////////////////////////////
-	UOSInt pxCnt = w * h;
+	UIntOS pxCnt = w * h;
 	while (pxCnt-- > 0)
 	{
 		if (pixelPtr[0] != 0)
@@ -133,9 +133,9 @@ extern "C" void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, UOSInt w, UOSInt h, 
 	}
 }
 
-extern "C" void ImageUtil_ColorFill32(UInt8 *pixelPtr, UOSInt pixelCnt, UInt32 color)
+extern "C" void ImageUtil_ColorFill32(UInt8 *pixelPtr, UIntOS pixelCnt, UInt32 color)
 {
-	UOSInt i = pixelCnt >> 4;
+	UIntOS i = pixelCnt >> 4;
 	if (i)
 	{
 		UInt32x4 cVals = PUInt32x4SetA(color);
@@ -167,9 +167,9 @@ extern "C" void ImageUtil_ColorFill32(UInt8 *pixelPtr, UOSInt pixelCnt, UInt32 c
 	}
 }*/
 
-extern "C" void ImageUtil_ImageColorReplace32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col)
+extern "C" void ImageUtil_ImageColorReplace32(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *sPtr;
 	UInt8 *dPtr;
 	while (h-- > 0)
@@ -191,7 +191,7 @@ extern "C" void ImageUtil_ImageColorReplace32(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ImageMaskABlend32(const UInt8 *maskPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col)
+extern "C" void ImageUtil_ImageMaskABlend32(const UInt8 *maskPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col)
 {
 	UInt32 a = (((UInt32)col) >> 24);
 	UInt32 cMul = 255 - a;
@@ -200,7 +200,7 @@ extern "C" void ImageUtil_ImageMaskABlend32(const UInt8 *maskPtr, UInt8 *destPtr
 	UInt32 gAdd;
 	UInt32 bAdd;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	cMul = cMul | (cMul << 8);
 	aAdd = a | (a << 8);
 	rAdd = (col >> 16) & 0xff;
@@ -253,7 +253,7 @@ extern "C" void ImageUtil_ImageMaskABlend32(const UInt8 *maskPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ImageMask2ABlend32(const UInt8 *maskPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col1, Int32 col2)
+extern "C" void ImageUtil_ImageMask2ABlend32(const UInt8 *maskPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col1, Int32 col2)
 {
 	UInt32 a1 = (((UInt32)col1) >> 24);
 	UInt32 a2 = (((UInt32)col2) >> 24);
@@ -268,7 +268,7 @@ extern "C" void ImageUtil_ImageMask2ABlend32(const UInt8 *maskPtr, UInt8 *destPt
 	UInt32 gAdd2;
 	UInt32 bAdd2;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	cMul1 = cMul1 | (cMul1 << 8);
 	cMul2 = cMul2 | (cMul2 << 8);
 	aAdd1 = a1 | (a1 << 8);
@@ -357,14 +357,14 @@ extern "C" void ImageUtil_ImageMask2ABlend32(const UInt8 *maskPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, OSInt buffSize)
+extern "C" void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, IntOS buffSize)
 {
 	UInt8 *tmpPtr;
 	UInt8 *tmpPtr1;
 	UInt8 *tmpPtr2;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	while (h-- > 0)
 	{
 		tmpPtr = pixelPtr;
@@ -402,10 +402,10 @@ extern "C" void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, OSInt w, OSInt h, 
 	}
 }
 
-extern "C" void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, Int32 col)
+extern "C" void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, Int32 col)
 {
 	UInt8 *tmpPtr;
-	OSInt i;
+	IntOS i;
 	while (h-- > 0)
 	{
 		i = w;
@@ -419,7 +419,7 @@ extern "C" void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, OSInt w, OSInt h, OS
 	}
 }
 
-extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 col)
+extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 col)
 {
 	UInt32 a = (col >> 24);
 	UInt32 cMul = 255 - a;
@@ -437,7 +437,7 @@ extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, O
 	bAdd = ((bAdd | (bAdd << 8)) * aAdd) >> 16;
 	UInt8 *tmpPtr;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	while (h-- > 0)
 	{
 		tmpPtr = pixelPtr;
@@ -474,9 +474,9 @@ extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, O
 	}
 }
 
-extern "C" void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt8 a)
+extern "C" void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt8 a)
 {
-	OSInt cnt;
+	IntOS cnt;
 	bpl -= w * 4;
 	if (w & 7)
 	{
@@ -529,10 +529,10 @@ extern "C" void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, OSInt w, OSInt h, OS
 	}
 }
 
-extern "C" void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 a)
+extern "C" void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 a)
 {
 	UInt8 *tmpPtr;
-	OSInt cnt;
+	IntOS cnt;
 	while (h-- > 0)
 	{
 		tmpPtr = pixelPtr;
@@ -546,7 +546,7 @@ extern "C" void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSI
 	}
 }
 
-extern "C" void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 c)
+extern "C" void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 c)
 {
 	UInt32 b;
 	UInt32 g;
@@ -562,7 +562,7 @@ extern "C" void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSI
 	a = a | (a << 8);
 
 	UInt8 *tmpPtr;
-	OSInt cnt;
+	IntOS cnt;
 	while (h-- > 0)
 	{
 		tmpPtr = pixelPtr;
@@ -579,13 +579,13 @@ extern "C" void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSI
 	}
 }
 
-extern "C" void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 col)
+extern "C" void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 col)
 {
 	h -= 2;
 	if (h < 0)
 		return;
-	OSInt bpl2 = bpl - w * 4;
-	OSInt cnt;
+	IntOS bpl2 = bpl - w * 4;
+	IntOS cnt;
 	cnt = w;
 	while (cnt-- > 0)
 	{
@@ -608,9 +608,9 @@ extern "C" void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt 
 	pixelPtr += bpl2;
 }
 
-extern "C" void ImageUtil_ConvP1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	dbpl -= w << 2;
 	sbpl -= w >> 3;
@@ -647,9 +647,9 @@ extern "C" void ImageUtil_ConvP1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	dbpl -= w << 2;
 	sbpl -= w >> 2;
@@ -684,9 +684,9 @@ extern "C" void ImageUtil_ConvP2_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	if (w & 1)
 	{
 		dbpl -= w << 2;
@@ -731,9 +731,9 @@ extern "C" void ImageUtil_ConvP4_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -750,9 +750,9 @@ extern "C" void ImageUtil_ConvP8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	UInt8 *dptr;
 	while (h-- > 0)
@@ -817,9 +817,9 @@ extern "C" void ImageUtil_ConvP1_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	UInt8 *dptr;
 	while (h-- > 0)
@@ -881,9 +881,9 @@ extern "C" void ImageUtil_ConvP2_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	UInt8 *dptr;
 	while (h-- > 0)
@@ -936,9 +936,9 @@ extern "C" void ImageUtil_ConvP4_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 v;
 	UInt8 *dptr;
 	while (h-- > 0)
@@ -984,9 +984,9 @@ extern "C" void ImageUtil_ConvP8_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G5R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G5R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 cv;
 	UInt16 v;
 	sbpl -= w << 1;
@@ -1012,9 +1012,9 @@ extern "C" void ImageUtil_ConvB5G5R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G6R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G6R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 cv;
 	UInt16 v;
 	sbpl -= w << 1;
@@ -1040,9 +1040,9 @@ extern "C" void ImageUtil_ConvB5G6R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 3;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1062,9 +1062,9 @@ extern "C" void ImageUtil_ConvB8G8R8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 3;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1084,9 +1084,9 @@ extern "C" void ImageUtil_ConvR8G8B8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 2;
 	dbpl -= w * 3;
 	while (h-- > 0)
@@ -1105,9 +1105,9 @@ extern "C" void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1127,10 +1127,10 @@ extern "C" void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *dest
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8N8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8N8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt8 r;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1151,9 +1151,9 @@ extern "C" void ImageUtil_ConvR8G8B8N8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *dest
 	}
 }
 
-extern "C" void ImageUtil_ConvB16G16R16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB16G16R16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 6;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1173,9 +1173,9 @@ extern "C" void ImageUtil_ConvB16G16R16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvR16G16B16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR16G16B16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 6;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1195,9 +1195,9 @@ extern "C" void ImageUtil_ConvR16G16B16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvB16G16R16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB16G16R16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 3;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1217,9 +1217,9 @@ extern "C" void ImageUtil_ConvB16G16R16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *
 	}
 }
 
-extern "C" void ImageUtil_ConvR16G16B16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR16G16B16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 3;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1239,14 +1239,14 @@ extern "C" void ImageUtil_ConvR16G16B16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *
 	}
 }
 
-extern "C" void ImageUtil_ConvA2B10G10R10_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvA2B10G10R10_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt16 r;
 	UInt16 g;
 	UInt16 b;
 	UInt16 a;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 2;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1273,10 +1273,10 @@ extern "C" void ImageUtil_ConvA2B10G10R10_B8G8R8A8(const UInt8 *srcPtr, UInt8 *d
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1344,10 +1344,10 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 	}
 }
 
-extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1415,10 +1415,10 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w *12;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1474,10 +1474,10 @@ extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w *12;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1533,10 +1533,10 @@ extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 3;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1584,10 +1584,10 @@ extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destP
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -1623,9 +1623,9 @@ extern "C" void ImageUtil_ConvFW32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	dbpl -= w << 3;
@@ -1736,9 +1736,9 @@ extern "C" void ImageUtil_ConvP1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	dbpl -= w << 3;
@@ -1812,9 +1812,9 @@ extern "C" void ImageUtil_ConvP2_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	if (w & 1)
 	{
@@ -1900,9 +1900,9 @@ extern "C" void ImageUtil_ConvP4_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	sbpl -= w;
 	dbpl -= w << 3;
@@ -1928,9 +1928,9 @@ extern "C" void ImageUtil_ConvP8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	UInt8 *dptr;
@@ -2078,9 +2078,9 @@ extern "C" void ImageUtil_ConvP1_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	UInt8 *dptr;
@@ -2192,9 +2192,9 @@ extern "C" void ImageUtil_ConvP2_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	UInt8 *dptr;
@@ -2282,9 +2282,9 @@ extern "C" void ImageUtil_ConvP4_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS storeW, IntOS dbpl, const UInt8 *pal)
 {
-	OSInt i;
+	IntOS i;
 	const UInt8 *cPtr;
 	UInt8 v;
 	UInt8 *dptr;
@@ -2349,9 +2349,9 @@ extern "C" void ImageUtil_ConvP8_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *des
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G5R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G5R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 cv;
 	UInt16 v;
 	sbpl -= w << 1;
@@ -2381,9 +2381,9 @@ extern "C" void ImageUtil_ConvB5G5R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G6R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G6R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 cv;
 	UInt16 v;
 	sbpl -= w << 1;
@@ -2413,9 +2413,9 @@ extern "C" void ImageUtil_ConvB5G6R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 3;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2439,9 +2439,9 @@ extern "C" void ImageUtil_ConvB8G8R8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 3;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2465,9 +2465,9 @@ extern "C" void ImageUtil_ConvR8G8B8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2491,9 +2491,9 @@ extern "C" void ImageUtil_ConvR8G8B8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 2;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2517,9 +2517,9 @@ extern "C" void ImageUtil_ConvB8G8R8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *
 	}
 }
 
-extern "C" void ImageUtil_ConvB16G16R16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB16G16R16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 6;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2543,9 +2543,9 @@ extern "C" void ImageUtil_ConvB16G16R16_B16G16R16A16(const UInt8 *srcPtr, UInt8 
 	}
 }
 
-extern "C" void ImageUtil_ConvR16G16B16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR16G16B16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 6;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2569,9 +2569,9 @@ extern "C" void ImageUtil_ConvR16G16B16_B16G16R16A16(const UInt8 *srcPtr, UInt8 
 	}
 }
 
-extern "C" void ImageUtil_ConvR16G16B16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR16G16B16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 3;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2595,14 +2595,14 @@ extern "C" void ImageUtil_ConvR16G16B16A16_B16G16R16A16(const UInt8 *srcPtr, UIn
 	}
 }
 
-extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt16 r;
 	UInt16 g;
 	UInt16 b;
 	UInt16 a;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 2;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2633,10 +2633,10 @@ extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 4;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2704,10 +2704,10 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(const UInt8 *srcPtr, UI
 	}
 }
 
-extern "C" void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w << 4;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2775,10 +2775,10 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(const UInt8 *srcPtr, UI
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 12;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2834,10 +2834,10 @@ extern "C" void ImageUtil_ConvFB32G32R32_B16G16R16A16(const UInt8 *srcPtr, UInt8
 	}
 }
 
-extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 12;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2893,10 +2893,10 @@ extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 8;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2944,10 +2944,10 @@ extern "C" void ImageUtil_ConvFW32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *d
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	Single v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -2983,10 +2983,10 @@ extern "C" void ImageUtil_ConvFW32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *dest
 	}
 }
 
-extern "C" void ImageUtil_ConvW16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt8 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 2;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -3007,10 +3007,10 @@ extern "C" void ImageUtil_ConvW16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvW16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt8 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -3031,10 +3031,10 @@ extern "C" void ImageUtil_ConvW16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvW8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt8 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 2;
 	dbpl -= w << 2;
 	while (h-- > 0)
@@ -3055,10 +3055,10 @@ extern "C" void ImageUtil_ConvW8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt16 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 2;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -3079,10 +3079,10 @@ extern "C" void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destP
 	}
 }
 
-extern "C" void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt16 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 4;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -3104,10 +3104,10 @@ extern "C" void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	UInt16 v;
-	OSInt i;
+	IntOS i;
 	sbpl -= w * 2;
 	dbpl -= w << 3;
 	while (h-- > 0)
@@ -3129,15 +3129,15 @@ extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *dest
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl)
+extern "C" void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt8 b;
 	if (w & 7)
 	{
-		UOSInt w2 = w & 7;
+		UIntOS w2 = w & 7;
 		w = w >> 3;
-		sbpl = sbpl - (OSInt)w;
+		sbpl = sbpl - (IntOS)w;
 		while (h-- > 0)
 		{
 			i = w;
@@ -3168,7 +3168,7 @@ extern "C" void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt 
 	else
 	{
 		w = w >> 3;
-		sbpl = sbpl - (OSInt)w;
+		sbpl = sbpl - (IntOS)w;
 		while (h-- > 0)
 		{
 			i = w;
@@ -3190,14 +3190,14 @@ extern "C" void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt 
 	}
 }
 
-extern "C" void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	const UInt8 *sptr;
 	srcPtr += sbpl * srcHeight;
 	dbpl -= srcHeight << 2;
 	while (srcWidth-- > 0)
 	{
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		sptr = srcPtr;
 		while (wLeft-- > 0)
 		{
@@ -3210,14 +3210,14 @@ extern "C" void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl * srcHeight;
 	sbpl -= srcWidth << 2;
 	dbpl -= srcWidth << 2;
 	while (srcHeight-- > 0)
 	{
-		OSInt wLeft = srcWidth;
+		IntOS wLeft = srcWidth;
 		while (wLeft-- > 0)
 		{
 			srcPtr -= 4;
@@ -3229,7 +3229,7 @@ extern "C" void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl;
 	dbpl -= srcHeight << 2;
@@ -3238,7 +3238,7 @@ extern "C" void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	{
 		srcPtr -= 4;
 		sptr = srcPtr;
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		while (wLeft-- > 0)
 		{
 			*(Int32*)destPtr = *(Int32*)sptr;
@@ -3249,14 +3249,14 @@ extern "C" void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	const UInt8 *sptr;
 	srcPtr += sbpl * srcHeight;
 	dbpl -= srcHeight << 3;
 	while (srcWidth-- > 0)
 	{
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		sptr = srcPtr;
 		while (wLeft-- > 0)
 		{
@@ -3269,14 +3269,14 @@ extern "C" void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl * srcHeight;
 	sbpl -= srcWidth << 3;
 	dbpl -= srcWidth << 3;
 	while (srcHeight-- > 0)
 	{
-		OSInt wLeft = srcWidth;
+		IntOS wLeft = srcWidth;
 		while (wLeft-- > 0)
 		{
 			srcPtr -= 8;
@@ -3288,7 +3288,7 @@ extern "C" void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl;
 	dbpl -= srcHeight << 3;
@@ -3297,7 +3297,7 @@ extern "C" void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	{
 		srcPtr -= 8;
 		sptr = srcPtr;
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		while (wLeft-- > 0)
 		{
 			*(Int64*)destPtr = *(Int64*)sptr;
@@ -3308,20 +3308,20 @@ extern "C" void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+extern "C" void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown)
 {
-	OSInt dstep;
-	UOSInt i;
+	IntOS dstep;
+	UIntOS i;
 	if (upsideDown)
 	{
-		dstep = -(OSInt)dbpl;
+		dstep = -(IntOS)dbpl;
 		outPt += dbpl * (height - 1);
 	}
 	else
 	{
-		dstep = (OSInt)dbpl;
+		dstep = (IntOS)dbpl;
 	}
-	dstep -= (OSInt)width * 4;
+	dstep -= (IntOS)width * 4;
 	while (height-- > 0)
 	{
 		i = width;
@@ -3335,14 +3335,14 @@ extern "C" void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSIn
 	}
 }
 
-extern "C" void ImageUtil_HFRotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	const UInt8 *sptr;
 	srcPtr += sbpl * srcHeight + srcWidth * 4;
 	dbpl -= srcHeight << 2;
 	while (srcWidth-- > 0)
 	{
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		srcPtr -= 4;
 		sptr = srcPtr;
 		while (wLeft-- > 0)
@@ -3355,25 +3355,25 @@ extern "C" void ImageUtil_HFRotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_HFRotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl * srcHeight;
 	while (srcHeight-- > 0)
 	{
 		srcPtr -= sbpl;
-		MemCopyNO(destPtr, srcPtr, (UOSInt)srcWidth * 4);
+		MemCopyNO(destPtr, srcPtr, (UIntOS)srcWidth * 4);
 		destPtr += dbpl;
 	}
 }
 
-extern "C" void ImageUtil_HFRotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	dbpl -= srcHeight << 2;
 	const UInt8 *sptr;
 	while (srcWidth-- > 0)
 	{
 		sptr = srcPtr;
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		while (wLeft-- > 0)
 		{
 			*(Int32*)destPtr = *(Int32*)sptr;
@@ -3385,20 +3385,20 @@ extern "C" void ImageUtil_HFRotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+extern "C" void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown)
 {
-	OSInt dstep;
-	UOSInt i;
+	IntOS dstep;
+	UIntOS i;
 	if (upsideDown)
 	{
-		dstep = -(OSInt)dbpl;
+		dstep = -(IntOS)dbpl;
 		outPt += dbpl * (height - 1);
 	}
 	else
 	{
-		dstep = (OSInt)dbpl;
+		dstep = (IntOS)dbpl;
 	}
-	dstep -= (OSInt)width * 8;
+	dstep -= (IntOS)width * 8;
 	while (height-- > 0)
 	{
 		i = width;
@@ -3412,14 +3412,14 @@ extern "C" void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSIn
 	}
 }
 
-extern "C" void ImageUtil_HFRotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	const UInt8 *sptr;
 	srcPtr += sbpl * srcHeight + srcWidth * 8;
 	dbpl -= srcHeight << 3;
 	while (srcWidth-- > 0)
 	{
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		srcPtr -= 8;
 		sptr = srcPtr;
 		while (wLeft-- > 0)
@@ -3432,25 +3432,25 @@ extern "C" void ImageUtil_HFRotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_HFRotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	srcPtr += sbpl * srcHeight;
 	while (srcHeight-- > 0)
 	{
-		MemCopyNO(destPtr, srcPtr, (UOSInt)srcWidth * 8);
+		MemCopyNO(destPtr, srcPtr, (UIntOS)srcWidth * 8);
 		srcPtr -= sbpl;
 		destPtr += dbpl;
 	}
 }
 
-extern "C" void ImageUtil_HFRotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_HFRotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl)
 {
 	dbpl -= srcHeight << 3;
 	const UInt8 *sptr;
 	while (srcWidth-- > 0)
 	{
 		sptr = srcPtr;
-		OSInt wLeft = srcHeight;
+		IntOS wLeft = srcHeight;
 		while (wLeft-- > 0)
 		{
 			*(Int64*)destPtr = *(Int64*)sptr;
@@ -3462,7 +3462,7 @@ extern "C" void ImageUtil_HFRotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, OSInt byteSize, OSInt shiftCnt)
+extern "C" void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, IntOS byteSize, IntOS shiftCnt)
 {
 	byteSize = byteSize >> 1;
 	while (byteSize-- > 0)
@@ -3473,7 +3473,7 @@ extern "C" void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 	}
 }
 
-extern "C" void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, const UInt8 *vptr, OSInt pixelCnt, OSInt shiftCnt)
+extern "C" void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, const UInt8 *vptr, IntOS pixelCnt, IntOS shiftCnt)
 {
 	while (pixelCnt-- > 0)
 	{
@@ -3485,7 +3485,7 @@ extern "C" void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, 
 	}
 }
 
-extern "C" void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, const UInt8 *yptr, const UInt8 *uptr, const UInt8 *vptr, OSInt pixelCnt, OSInt shiftCnt)
+extern "C" void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, const UInt8 *yptr, const UInt8 *uptr, const UInt8 *vptr, IntOS pixelCnt, IntOS shiftCnt)
 {
 	while (pixelCnt-- > 0)
 	{

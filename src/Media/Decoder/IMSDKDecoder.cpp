@@ -29,7 +29,7 @@ private:
 	mfxVideoParam par;
 	SurfaceInfo *surfaces;
 	Media::FrameInfo streamInfo;
-	OSInt surfaceCnt;
+	IntOS surfaceCnt;
 	Int32 frameTime;
 	Bool inited;
 	Bool prepared;
@@ -96,8 +96,8 @@ private:
 	{
 		SurfaceInfo *currSurface = 0;
 		Bool found = false;
-		OSInt i;
-		OSInt j;
+		IntOS i;
+		IntOS j;
 		while (!found)
 		{
 			i = 0;
@@ -127,7 +127,7 @@ private:
 		return currSurface;
 	}
 
-	virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+	virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 	{
 		SurfaceInfo *currSurface = 0;
 		mfxStatus status;
@@ -305,7 +305,7 @@ public:
 		this->started = false;
 		this->frameCb = 0;
 		this->frameCbData = 0;
-		this->streamInfo.dispSize = Math::Size2D<UOSInt>(0, 0);
+		this->streamInfo.dispSize = Math::Size2D<UIntOS>(0, 0);
 		this->decFCC = 0;
 		this->decBPP = 0;
 		this->frameBuff = 0;
@@ -319,7 +319,7 @@ public:
 		Media::FrameInfo info;
 		Int32 frameRateNorm;
 		Int32 frameRateDenorm;
-		UOSInt maxFrameSize;
+		UIntOS maxFrameSize;
 		this->sourceVideo->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 		this->srcFCC = info.fourcc;
 
@@ -372,7 +372,7 @@ public:
 		this->inited = true;
 
 		this->frameTime = MulDiv32(frameRateDenorm, 1000, frameRateNorm);
-		OSInt frameSize = sourceVideo->GetFrameSize(0);
+		IntOS frameSize = sourceVideo->GetFrameSize(0);
 		if (frameSize > 0)
 		{
 			mfxBitstream bs;
@@ -448,7 +448,7 @@ public:
 		if (this->prepared)
 		{
 			MFXVideoDECODE_Close(this->session);
-			OSInt i = this->surfaceCnt;
+			IntOS i = this->surfaceCnt;
 			while (i-- > 0)
 			{
 				if (this->surfaces[i].created)
@@ -480,7 +480,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+	virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize)
 	{
 		if (this->sourceVideo == 0)
 			return false;
@@ -522,12 +522,12 @@ public:
 		this->lastFrameTime = -1;
 	}
 
-	virtual OSInt GetFrameCount()
+	virtual IntOS GetFrameCount()
 	{
 		return this->sourceVideo->GetFrameCount();
 	}
 
-	virtual UInt32 GetFrameTime(UOSInt frameIndex)
+	virtual UInt32 GetFrameTime(UIntOS frameIndex)
 	{
 		return this->sourceVideo->GetFrameTime(frameIndex);
 	}
@@ -669,7 +669,7 @@ Media::VideoSource *__stdcall IMSDKDecoder_DecodeVideo(Media::VideoSource *video
 	Media::FrameInfo decFrameInfo;
 	Int32 frameRateNorm;
 	Int32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	video->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == -1)
 		return 0;
@@ -745,7 +745,7 @@ void Media::Decoder::IMSDKDecoder::Enable()
 	Core::CoreAddVideoDecFunc(IMSDKDecoder_DecodeVideo);
 }
 
-extern "C" OSInt __imp_SetThreadErrorMode(UInt32 dwNewMode, UInt32 *lpOldMode)
+extern "C" IntOS __imp_SetThreadErrorMode(UInt32 dwNewMode, UInt32 *lpOldMode)
 {
 	return 1;
 }

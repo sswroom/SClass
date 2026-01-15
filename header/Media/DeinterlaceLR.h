@@ -18,43 +18,43 @@ namespace Media
 			UnsafeArray<UInt8> inPt;
 			UnsafeArray<UInt8> inPtCurr;
 			UnsafeArray<UInt8> outPt;
-			UOSInt width;
-			UOSInt height;
-			UOSInt tap;
-			OSInt *index;
+			UIntOS width;
+			UIntOS height;
+			UIntOS tap;
+			IntOS *index;
 			Int64 *weight;
-			OSInt sstep;
-			OSInt dstep;
+			IntOS sstep;
+			IntOS dstep;
 		} DITHREADSTAT;
 
 		typedef struct
 		{
-			UOSInt length;
+			UIntOS length;
 			Int64 *weight;
-			OSInt *index;
-			UOSInt tap;
+			IntOS *index;
+			UIntOS tap;
 		} DIPARAMETER;
 
 	private:
 		DIPARAMETER oddParam;
 		DIPARAMETER evenParam;
 		DITHREADSTAT *stats;
-		UOSInt nCore;
+		UIntOS nCore;
 		Sync::Event *evtMain;
-		UOSInt fieldCnt;
-		UOSInt fieldSep;
+		UIntOS fieldCnt;
+		UIntOS fieldSep;
 
 
 		static Double lanczos3_weight(Double phase);
-		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<DIPARAMETER> out, UOSInt indexSep, Double offsetCorr);
+		static void SetupInterpolationParameter(UIntOS source_length, UIntOS result_length, NN<DIPARAMETER> out, UIntOS indexSep, Double offsetCorr);
 
 		static UInt32 __stdcall ProcThread(AnyType obj);
 	public:
-		DeinterlaceLR(UOSInt fieldCnt, UOSInt fieldSep);
+		DeinterlaceLR(UIntOS fieldCnt, UIntOS fieldSep);
 		virtual ~DeinterlaceLR();
 
-		virtual void Reinit(UOSInt fieldCnt, UOSInt fieldSep);
-		virtual void Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UOSInt width, OSInt dstep);
+		virtual void Reinit(UIntOS fieldCnt, UIntOS fieldSep);
+		virtual void Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UIntOS width, IntOS dstep);
 	};
 }
 #endif

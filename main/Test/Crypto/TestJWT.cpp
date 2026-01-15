@@ -84,7 +84,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];
-	UOSInt keySize;
+	UIntOS keySize;
 	keySize = b64.DecodeBin(keyB64, keyBuff);
 	if (keySize == 0)
 	{

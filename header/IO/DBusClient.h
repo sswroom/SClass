@@ -39,7 +39,7 @@ namespace IO
 		void ProxyAdded(ProxyData *proxy);
 		void ProxyFree(ProxyData *proxy);
 		void ProxyRemove(const Char *path, const Char *interface);
-		ProxyData *ProxyLookup(UOSInt *index, const Char *path, const Char *interface);
+		ProxyData *ProxyLookup(UIntOS *index, const Char *path, const Char *interface);
 		ProxyData *ProxyRef(ProxyData *proxy);
 		void ProxyUnref(ProxyData *proxy);
 	public:

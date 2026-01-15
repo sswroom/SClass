@@ -17,7 +17,7 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt8 tagHdr[12];
 	Optional<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	NN<PNGTag> nntag;
@@ -78,12 +78,12 @@ Text::CStringNN IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
 	return CSTR("PNG");
 }
 
-UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -92,13 +92,13 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	sb->AppendC(UTF8STRC(": Type="));
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	sb->AppendC(UTF8STRC(", CRC=0x"));
 	sb->AppendHex32(tag->crc);
 	return true;
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
@@ -107,11 +107,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	if (!this->fd.SetTo(fd))
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC("\r\nTagType = "));
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
 	sb->AppendC(UTF8STRC("\r\nSize = "));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	sb->AppendC(UTF8STRC("\r\nCRC = 0x"));
 	sb->AppendHex32(tag->crc);
 	if (tag->tagType == *(Int32*)"IHDR")
@@ -226,7 +226,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	}
 	else if (tag->tagType == *(Int32*)"iCCP")
 	{
-		UOSInt i;
+		UIntOS i;
 		Data::ByteBuffer tagData(tag->size);
 		fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((UTF8Char*)&tagData[8]) + 9;
@@ -277,8 +277,8 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	{
 		if (tag->size <= 768 + 12 && (tag->size % 3) == 0)
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			Data::ByteBuffer tagData(tag->size - 12);
 			fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
 			i = 0;
@@ -286,7 +286,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 			while (j < tag->size - 12)
 			{
 				sb->AppendC(UTF8STRC("\r\nEntry "));
-				sb->AppendUOSInt(i);
+				sb->AppendUIntOS(i);
 				sb->AppendUTF8Char(' ');
 				sb->AppendUTF8Char('R');
 				sb->AppendU16(tagData[j + 0]);
@@ -302,16 +302,16 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	return true;
 }
 
-UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<PNGTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -322,13 +322,13 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr2;
@@ -341,7 +341,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	if (!this->fd.SetTo(fd))
 		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, U8STR("Tag")), index);
+	sptr = Text::StrUIntOS(Text::StrConcat(sbuff, U8STR("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);
 	frame->AddStrC(4, 4, CSTR("TagType"), (const UTF8Char*)&tag->tagType);
@@ -420,7 +420,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	}
 	else if (tag->tagType == *(Int32*)"iCCP")
 	{
-		UOSInt i;
+		UIntOS i;
 		Data::ByteBuffer tagData(tag->size);
 		fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((UTF8Char*)&tagData[8]);
@@ -440,7 +440,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
 			if (!comp.Decompress(mstm, stmData))
 			{
-				UOSInt iccSize;
+				UIntOS iccSize;
 				UInt8 *iccBuff = mstm->GetBuff(&iccSize);
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 				if (icc)
@@ -458,15 +458,15 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	{
 		if (tag->size <= 768 + 12 && (tag->size % 3) == 0)
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			Data::ByteBuffer tagData(tag->size - 12);
 			fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
 			i = 0;
 			j = 0;
 			while (j < tag->size - 12)
 			{
-				sptr2 = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Entry "), i) + 1;
+				sptr2 = Text::StrUIntOS(Text::StrConcat(sbuff, (const UTF8Char*)"Entry "), i) + 1;
 				sptr = sptr2;
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"R");
 				sptr = Text::StrUInt16(sptr, tagData[j + 0]);

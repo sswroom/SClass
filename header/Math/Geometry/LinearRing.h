@@ -9,8 +9,8 @@ namespace Math
 		class LinearRing : public LineString
 		{
 		public:
-			LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM);
-			LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);
+			LinearRing(UInt32 srid, UIntOS nPoint, Bool hasZ, Bool hasM);
+			LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);
 			virtual ~LinearRing();
 
 			virtual VectorType GetVectorType() const;
@@ -23,7 +23,7 @@ namespace Math
 			Bool IsClose() const;
 
 			static Double GetIntersactsCenter(NN<Data::ArrayListNative<Double>> vals);
-			static NN<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints);
+			static NN<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UIntOS nPoints);
 		};
 	}
 }

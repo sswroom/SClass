@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return 1;
 	}
 
-	UOSInt i = 32;
+	UIntOS i = 32;
 	while (i-- > 0)
 	{
 		testBlock[i] = 0;

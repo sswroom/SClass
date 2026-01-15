@@ -18,7 +18,7 @@ Map::DBAssistedReverseGeocoder::~DBAssistedReverseGeocoder()
 	this->conn.Delete();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
@@ -48,7 +48,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<
 	}
 
 
-	UOSInt i = this->revGeos.GetCount();
+	UIntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
@@ -85,7 +85,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
@@ -113,7 +113,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<U
 	}
 
 
-	UOSInt i = this->revGeos.GetCount();
+	UIntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);

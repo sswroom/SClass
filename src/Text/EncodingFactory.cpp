@@ -199,10 +199,10 @@ latin-greek
 
 Text::EncodingFactory::EncodingFactory()
 {
-	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
-	UOSInt j;
+	UIntOS i = (sizeof(encInfo) / sizeof(encInfo[0]));
+	UIntOS j;
 	NN<Text::String> s;
-	UOSInt len;
+	UIntOS len;
 	while (i-- > 0)
 	{
 		j = 0;
@@ -250,9 +250,9 @@ UInt32 Text::EncodingFactory::GetCodePage(Text::CStringNN shortName)
 
 UnsafeArray<UTF8Char> Text::EncodingFactory::GetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	IntOS k;
 	UInt32 l;
 	while (i <= j)
 	{
@@ -276,9 +276,9 @@ UnsafeArray<UTF8Char> Text::EncodingFactory::GetName(UnsafeArray<UTF8Char> buff,
 
 UnsafeArray<UTF8Char> Text::EncodingFactory::GetInternetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	IntOS k;
 	UInt32 l;
 	while (i <= j)
 	{
@@ -304,9 +304,9 @@ UnsafeArray<UTF8Char> Text::EncodingFactory::GetInternetName(UnsafeArray<UTF8Cha
 
 UnsafeArray<UTF8Char> Text::EncodingFactory::GetDotNetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	IntOS k;
 	UInt32 l;
 	while (i <= j)
 	{

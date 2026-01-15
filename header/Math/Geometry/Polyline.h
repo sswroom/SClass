@@ -21,15 +21,15 @@ namespace Math
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 
-			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSInt nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UOSInt nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
+			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UIntOS nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UIntOS nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
 			Double CalcHLength() const;
 			Double Calc3DLength() const;
-			UOSInt FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
+			UIntOS FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
 			Math::Coord2DDbl CalcPosAtDistance(Double dist) const;
 
 			Optional<Math::Geometry::Polyline> SplitByPoint(Math::Coord2DDbl pt);
 //			virtual void OptimizePolyline();
-			OSInt GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
+			IntOS GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
 
 //			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
 			Bool HasColor() const { return (this->flags & 1) != 0; }

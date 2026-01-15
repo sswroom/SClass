@@ -7,7 +7,7 @@ namespace Net
 	{
 	public:
 		static Bool TopicValid(UnsafeArray<const UTF8Char> topic);
-		static Bool TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UOSInt suibscribeTopicLen);
+		static Bool TopicMatch(UnsafeArray<const UTF8Char> topic, UIntOS topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UIntOS suibscribeTopicLen);
 		static Text::CString PacketTypeGetName(UInt8 packetType);
 	};
 }

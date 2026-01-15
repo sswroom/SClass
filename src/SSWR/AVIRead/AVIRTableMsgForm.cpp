@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 
-SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UIntOS colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(title);
 	this->SetFont(nullptr, 8.25, false);
@@ -14,7 +14,7 @@ SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl>
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < this->colCnt)
 	{
 		this->lvTable->AddColumn(Text::CStringNN::FromPtr(colNames[i]), 200);
@@ -33,9 +33,9 @@ void SSWR::AVIRead::AVIRTableMsgForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRTableMsgForm::AddRow(UnsafeArray<UnsafeArray<const UTF8Char>> row)
 {
-	UOSInt k;
-	UOSInt i = 1;
-	UOSInt j = this->colCnt;
+	UIntOS k;
+	UIntOS i = 1;
+	UIntOS j = this->colCnt;
 	k = this->lvTable->AddItem(Text::CStringNN::FromPtr(row[0]), 0);
 	while (i < j)
 	{

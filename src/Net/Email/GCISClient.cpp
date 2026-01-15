@@ -107,8 +107,8 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 	{
 		NN<Crypto::Cert::X509Cert> cert;
 		Crypto::Cert::X509FileList *certList = 0;
-		UOSInt i = 0;
-		UOSInt j = svrCert->GetCount();
+		UIntOS i = 0;
+		UIntOS j = svrCert->GetCount();
 		while (i < j)
 		{
 			if (svrCert->GetItemNoCheck(i)->CreateX509Cert().SetTo(cert))
@@ -143,8 +143,8 @@ void Net::Email::GCISClient::ParseEmailAddresses(NN<Text::JSONBuilder> builder, 
 	Text::PString sarr[10];
 	sb.Append(toList);
 	Text::CStringNN nns;
-	UOSInt strCnt = Text::StrSplitTrimP(sarr, 10, sb, ',');
-	UOSInt i = 0;
+	UIntOS strCnt = Text::StrSplitTrimP(sarr, 10, sb, ',');
+	UIntOS i = 0;
 	while (i < strCnt)
 	{
 		builder->ArrayBeginObject();

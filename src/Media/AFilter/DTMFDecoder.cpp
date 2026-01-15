@@ -22,22 +22,22 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 	Double *avgData = MemAlloc(Double, me->sampleCnt);
 	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);
 	Double v;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt align;
-	UOSInt ind697;
-	UOSInt ind770;
-	UOSInt ind852;
-	UOSInt ind941;
-	UOSInt ind1209;
-	UOSInt ind1336;
-	UOSInt ind1477;
-	UOSInt ind1633;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS align;
+	UIntOS ind697;
+	UIntOS ind770;
+	UIntOS ind852;
+	UIntOS ind941;
+	UIntOS ind1209;
+	UIntOS ind1336;
+	UIntOS ind1477;
+	UIntOS ind1633;
 	Double maxLo;
 	Double maxHi;
-	UOSInt maxHiInd;
-	UOSInt maxLoInd;
+	UIntOS maxHiInd;
+	UIntOS maxLoInd;
 
 	Int32 minAbsVol;
 	Int32 maxAbsVol;
@@ -51,7 +51,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 	Int32 hiFreq;
 	Int32 loFreq;
 	WChar tone;
-	Double dSampleCnt = UOSInt2Double(me->sampleCnt);
+	Double dSampleCnt = UIntOS2Double(me->sampleCnt);
 	Double dFreq = dSampleCnt / (Double)me->frequency;
 	ind697 = (UInt32)Double2Int32(697.0 * dFreq);
 	ind770 = (UInt32)Double2Int32(770.0 * dFreq);
@@ -163,8 +163,8 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 					}
 					i++;
 				}
-				maxLo = maxLo / UOSInt2Double(me->sampleCnt);
-				maxHi = maxHi / UOSInt2Double(me->sampleCnt);
+				maxLo = maxLo / UIntOS2Double(me->sampleCnt);
+				maxHi = maxHi / UIntOS2Double(me->sampleCnt);
 
 				if (maxLo > 0.04)
 				{
@@ -237,7 +237,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 						Int32 lowLev = Double2Int32(maxAbsVolD * 0.1 * 32768.0);
 						Bool isStart = true;
 						Bool isLow = true;
-						OSInt lowCnt = 0;
+						IntOS lowCnt = 0;
 						valid = true;
 						i = 0;
 						j = me->sampleBuffSize - volSamples;
@@ -283,7 +283,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 							}
 							i += align;
 						}
-						if (OSInt2Double(lowCnt) > UOSInt2Double(j / align) * 0.3)
+						if (IntOS2Double(lowCnt) > UIntOS2Double(j / align) * 0.3)
 						{
 							valid = false;
 						}
@@ -388,11 +388,11 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 				sb.ClearStr();
 				sb.AppendDouble(clk.GetTimeDiff());
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(maxLoInd);
+				sb.AppendUIntOS(maxLoInd);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(maxLo);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(maxHiInd);
+				sb.AppendUIntOS(maxHiInd);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(maxHi);
 				sb.AppendC(UTF8STRC("\t"));
@@ -402,9 +402,9 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(maxAbsVolD);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(maxLoInd * me->frequency / me->sampleCnt);
+				sb.AppendUIntOS(maxLoInd * me->frequency / me->sampleCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(maxHiInd * me->frequency / me->sampleCnt);
+				sb.AppendUIntOS(maxHiInd * me->frequency / me->sampleCnt);
 				debugWriter.WriteLine(sb.ToCString());
 #endif
 
@@ -433,9 +433,9 @@ void Media::AFilter::DTMFDecoder::ResetStatus()
 	this->currTone = 0;
 }
 
-Media::AFilter::DTMFDecoder::DTMFDecoder(NN<Media::AudioSource> audSrc, UOSInt calcInt) : Media::AudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
+Media::AFilter::DTMFDecoder::DTMFDecoder(NN<Media::AudioSource> audSrc, UIntOS calcInt) : Media::AudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
 {
-	UOSInt i;
+	UIntOS i;
 	Media::AudioFormat fmt;
 	audSrc->GetFormat(fmt);
 	i = 1;
@@ -473,12 +473,12 @@ Data::Duration Media::AFilter::DTMFDecoder::SeekToTime(Data::Duration time)
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
-	UOSInt sizeLeft = readSize;
-	UOSInt thisSize;
-	UOSInt samples = readSize / this->align;
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS sizeLeft = readSize;
+	UIntOS thisSize;
+	UIntOS samples = readSize / this->align;
 	while (samples >= this->calcLeft)
 	{
 		thisSize = this->calcLeft * this->align;

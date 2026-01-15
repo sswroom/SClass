@@ -2,7 +2,7 @@
 #include "Manage/CodeSymbol.h"
 #include "Text/Cpp/CppDemangler.h"
 
-Manage::CodeSymbol::CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, OSInt ofst, UInt64 funcAddr)
+Manage::CodeSymbol::CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, IntOS ofst, UInt64 funcAddr)
 {
 	this->moduleName = Text::String::New(moduleName);
 	this->funcName = Text::String::New(funcName);
@@ -24,12 +24,12 @@ UnsafeArray<UTF8Char> Manage::CodeSymbol::ToString(UnsafeArray<UTF8Char> buff) c
 	if (this->ofst > 0)
 	{
 		buff = Text::StrConcatC(buff, UTF8STRC("+0x"));
-		buff = Text::StrHexVal64V(buff, (UOSInt)this->ofst);
+		buff = Text::StrHexVal64V(buff, (UIntOS)this->ofst);
 	}
 	else if (this->ofst < 0)
 	{
 		buff = Text::StrConcatC(buff, UTF8STRC("-0x"));
-		buff = Text::StrHexVal64V(buff, (UOSInt)-this->ofst);
+		buff = Text::StrHexVal64V(buff, (UIntOS)-this->ofst);
 	}
 	*buff++ = ')';
 	*buff = 0;
@@ -40,7 +40,7 @@ Optional<Manage::CodeSymbol> Manage::CodeSymbol::ParseFromStr(UnsafeArray<const 
 {
 	Text::CStringNN moduleName;
 	Text::CStringNN funcName;
-	UOSInt i = Text::StrIndexOfChar(buff, '(');
+	UIntOS i = Text::StrIndexOfChar(buff, '(');
 	if (i == INVALID_INDEX)
 		return nullptr;
 	moduleName = Text::CStringNN(buff, i);
@@ -50,16 +50,16 @@ Optional<Manage::CodeSymbol> Manage::CodeSymbol::ParseFromStr(UnsafeArray<const 
 		return nullptr;
 	funcName = Text::CStringNN(buff, i);
 	;
-	OSInt ofst;
+	IntOS ofst;
 	if ((i = funcName.IndexOf('+')) != INVALID_INDEX)
 	{
-		if (!funcName.Substring(i + 1).ToOSInt(ofst))
+		if (!funcName.Substring(i + 1).ToIntOS(ofst))
 			return nullptr;
 		funcName.leng = i;
 	}
 	else if ((i = funcName.IndexOf('-')) != INVALID_INDEX)
 	{
-		if (!funcName.Substring(i + 1).ToOSInt(ofst))
+		if (!funcName.Substring(i + 1).ToIntOS(ofst))
 			return nullptr;
 		ofst = -ofst;
 		funcName.leng = i;

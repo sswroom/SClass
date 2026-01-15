@@ -8,7 +8,7 @@
 #include "Math/GeometryTool.h"
 #include "Math/Math_C.h"
 
-void Math::GeometryTool::RotateACW(UnsafeArray<Int32> ptOut, UnsafeArray<const Int32> ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
+void Math::GeometryTool::RotateACW(UnsafeArray<Int32> ptOut, UnsafeArray<const Int32> ptIn, UIntOS nPoint, Double centX, Double centY, Double angleRad)
 {
 	Double sd = Math_Sin(angleRad);
 	Double cd = Math_Cos(angleRad);
@@ -24,7 +24,7 @@ void Math::GeometryTool::RotateACW(UnsafeArray<Int32> ptOut, UnsafeArray<const I
 	}
 }
 
-void Math::GeometryTool::RotateACW(UnsafeArray<Double> ptOut, UnsafeArray<const Double> ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
+void Math::GeometryTool::RotateACW(UnsafeArray<Double> ptOut, UnsafeArray<const Double> ptIn, UIntOS nPoint, Double centX, Double centY, Double angleRad)
 {
 	Double sd = Math_Sin(angleRad);
 	Double cd = Math_Cos(angleRad);
@@ -40,15 +40,15 @@ void Math::GeometryTool::RotateACW(UnsafeArray<Double> ptOut, UnsafeArray<const 
 	}
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Int32> points, UOSInt nPoints, UnsafeArray<Int32> pointOut, OSInt minY, OSInt maxY, OSInt ofstX, OSInt ofstY)
+UIntOS Math::GeometryTool::BoundPolygonY(UnsafeArray<const Int32> points, UIntOS nPoints, UnsafeArray<Int32> pointOut, IntOS minY, IntOS maxY, IntOS ofstX, IntOS ofstY)
 {
 	UnsafeArray<Int32> pointsCurr = pointOut;
-	OSInt lastX;
-	OSInt lastY;
-	OSInt thisX;
-	OSInt thisY;
-	OSInt yStat;
-	UOSInt i;
+	IntOS lastX;
+	IntOS lastY;
+	IntOS thisX;
+	IntOS thisY;
+	IntOS yStat;
+	UIntOS i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -170,10 +170,10 @@ UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Int32> points, UOSInt
 		}
 	}
 
-	return (UOSInt)((pointsCurr - pointOut) >> 1);
+	return (UIntOS)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Int32> points, UOSInt nPoints, UnsafeArray<Int32> pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
+UIntOS Math::GeometryTool::BoundPolygonX(UnsafeArray<const Int32> points, UIntOS nPoints, UnsafeArray<Int32> pointOut, IntOS minX, IntOS maxX, IntOS ofstX, IntOS ofstY)
 {
 	UnsafeArray<Int32> pointsCurr = pointOut;
 	Int32 lastX;
@@ -181,7 +181,7 @@ UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Int32> points, UOSInt
 	Int32 thisX;
 	Int32 thisY;
 	Int32 xStat;
-	UOSInt i;
+	UIntOS i;
 
 	lastX = points[(nPoints << 1) - 2];
 	lastY = points[(nPoints << 1) - 1];
@@ -303,16 +303,16 @@ UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Int32> points, UOSInt
 		}
 	}
 
-	return (UOSInt)((pointsCurr - pointOut) >> 1);
+	return (UIntOS)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
+UIntOS Math::GeometryTool::BoundPolygonY(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
 {
 	UnsafeArray<Math::Coord2DDbl> pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
 	Math::Coord2DDbl thisPt;
-	OSInt yStat;
-	UOSInt i;
+	IntOS yStat;
+	UIntOS i;
 
 	lastPt = points[nPoints - 1];
 
@@ -422,16 +422,16 @@ UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Math::Coord2DDbl> poi
 		}
 	}
 
-	return (UOSInt)((pointsCurr - pointOut) >> 1);
+	return (UIntOS)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
+UIntOS Math::GeometryTool::BoundPolygonX(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
 {
 	UnsafeArray<Math::Coord2DDbl> pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
 	Math::Coord2DDbl thisPt;
 	Double xStat;
-	UOSInt i;
+	UIntOS i;
 
 	lastPt = points[nPoints - 1];
 
@@ -541,17 +541,17 @@ UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Math::Coord2DDbl> poi
 		}
 	}
 
-	return (UOSInt)((pointsCurr - pointOut) >> 1);
+	return (UIntOS)((pointsCurr - pointOut) >> 1);
 }
 
-Bool Math::GeometryTool::InPolygon(UnsafeArray<const Int32> points, UOSInt nPoints, Int32 ptX, Int32 ptY)
+Bool Math::GeometryTool::InPolygon(UnsafeArray<const Int32> points, UIntOS nPoints, Int32 ptX, Int32 ptY)
 {
 	Int32 firstX;
 	Int32 firstY;
 	Int32 lastX;
 	Int32 lastY;
-	UOSInt j;
-	UOSInt k;
+	UIntOS j;
+	UIntOS k;
 	Int32 leftCnt = 0;
 	k = 1;
 	firstX = points[0];
@@ -642,9 +642,9 @@ unsigned int yt)                   //   y (vertical) of target point
 }
 */
 
-void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UOSInt nPoints, OSInt ptX, OSInt ptY, OutParam<Int32> nearPtX, OutParam<Int32> nearPtY)
+void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UIntOS nPoints, IntOS ptX, IntOS ptY, OutParam<Int32> nearPtX, OutParam<Int32> nearPtY)
 {
-	UOSInt i = nPoints - 1;
+	UIntOS i = nPoints - 1;
 	Double calH;
 	Double calW;
 	Double calX = 0;
@@ -663,10 +663,10 @@ void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UOSInt nPo
 		}
 		else
 		{
-			calX = (calBase = (calW * calW)) * OSInt2Double(ptX);
+			calX = (calBase = (calW * calW)) * IntOS2Double(ptX);
 			calBase += calH * calH;
 			calX += calH * calH * (points[(i << 1) + 0]);
-			calX += (OSInt2Double(ptY) - (Double)points[(i << 1) + 1]) * calH * calW;
+			calX += (IntOS2Double(ptY) - (Double)points[(i << 1) + 1]) * calH * calW;
 			calX /= calBase;
 		}
 
@@ -709,8 +709,8 @@ void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UOSInt nPo
 				continue;
 		}
 
-		calH = OSInt2Double(ptY) - calY;
-		calW = OSInt2Double(ptX) - calX;
+		calH = IntOS2Double(ptY) - calY;
+		calW = IntOS2Double(ptX) - calX;
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{
@@ -723,8 +723,8 @@ void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UOSInt nPo
 	i = nPoints;
 	while (i-- > 0)
 	{
-		calH = OSInt2Double(ptY) - (Double)points[(i << 1) + 1];
-		calW = OSInt2Double(ptX) - (Double)points[(i << 1)];
+		calH = IntOS2Double(ptY) - (Double)points[(i << 1) + 1];
+		calW = IntOS2Double(ptX) - (Double)points[(i << 1)];
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{
@@ -758,7 +758,7 @@ Double Math::GeometryTool::SphereDistDeg(Double lat1, Double lon1, Double lat2, 
 	return Math_ArcCos(tmpV) * radius;
 }
 
-void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Int32> points, OutParam<Int32> outPtX, OutParam<Int32> outPtY)
+void Math::GeometryTool::GetPolygonCenter(UIntOS nParts, UIntOS nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Int32> points, OutParam<Int32> outPtX, OutParam<Int32> outPtY)
 {
 	Int32 minX;
 	Int32 maxX;
@@ -770,9 +770,9 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeA
 	Int32 thisX;
 	Int32 thisY;
 	Int32 tempX;
-	UOSInt k;
-	UOSInt j;
-	UOSInt i = nPoints;
+	UIntOS k;
+	UIntOS j;
+	UIntOS i = nPoints;
 	if (i <= 0)
 	{
 		outPtX.Set(0);
@@ -838,7 +838,7 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeA
 	i = 0;
 	while (i < j)
 	{
-		k += (UOSInt)(ptArr.GetItem(i + 1) - ptArr.GetItem(i));
+		k += (UIntOS)(ptArr.GetItem(i + 1) - ptArr.GetItem(i));
 		i += 2;
 	}
 
@@ -848,13 +848,13 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeA
 	{
 		lastX = ptArr.GetItem(i);
 		thisX = ptArr.GetItem(i + 1);
-		if ((thisX - lastX) > (OSInt)k)
+		if ((thisX - lastX) > (IntOS)k)
 		{
-			outPtX.Set((Int32)(lastX + (OSInt)k));
+			outPtX.Set((Int32)(lastX + (IntOS)k));
 			outPtY.Set(centY);
 			return;
 		}
-		k -= (UOSInt)(thisX - lastX);
+		k -= (UIntOS)(thisX - lastX);
 		i += 2;
 	}
 	outPtX.Set(0);
@@ -862,7 +862,7 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeA
 	return;
 }
 
-Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Math::Coord2DDbl> points)
+Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UIntOS nParts, UIntOS nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Math::Coord2DDbl> points)
 {
 	Double minX;
 	Double maxX;
@@ -873,9 +873,9 @@ Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoi
 	Math::Coord2DDbl thisCoord;
 	Double tempX;
 	Double sum;
-	UOSInt k;
-	UOSInt j;
-	UOSInt i = nPoints;
+	UIntOS k;
+	UIntOS j;
+	UIntOS i = nPoints;
 	if (i <= 0)
 	{
 		return Math::Coord2DDbl(0, 0);
@@ -960,7 +960,7 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, NN<cons
 	Math::Coord2DDbl maxPt = pt;
 	Double thisDist;
 	Data::ArrayListA<Math::Coord2DDbl> coords;
-	UOSInt i = vec->GetCoordinates(coords);
+	UIntOS i = vec->GetCoordinates(coords);
 	while (i-- > 0)
 	{
 		thisDist = coords.GetItem(i).CalcLengTo(pt);
@@ -1025,7 +1025,7 @@ void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDb
 	vAngle.Set(vAngleRad * 180 / Math::PI);
 }
 
-Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)
+Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UIntOS nPoints)
 {
 	Math::Geometry::Polygon *pg = 0;
 	NN<Math::CoordinateSystem> csys4326;
@@ -1038,14 +1038,14 @@ Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84
 			Math::Coord2DDbl outPos = CoordinateSystem::Convert(csys4326, csys3857, pt);
 			NN<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
-			UOSInt pgNPt;
+			UIntOS pgNPt;
 			UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(pgNPt);
 			Double pi2 = Math::PI * 2;
 			Double angle;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < nPoints)
 			{
-				angle = UOSInt2Double(i) * pi2 / UOSInt2Double(nPoints);
+				angle = UIntOS2Double(i) * pi2 / UIntOS2Double(nPoints);
 				ptArr[i].x = outPos.x + Math_Sin(angle) * radiusMeter;
 				ptArr[i].y = outPos.y + Math_Cos(angle) * radiusMeter;
 				i++;
@@ -1075,7 +1075,7 @@ Double GeometryTool_SqrtFix(Double sqrtVal, Double addVal, Double targetVal)
 		return addVal - sqrtVal;
 }
 
-void Math::GeometryTool::ArcToLine(Math::Coord2DDbl center, Double radius, UOSInt nPoint, Double startAngleRad, Double endAngleRad, Bool clockwise, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+void Math::GeometryTool::ArcToLine(Math::Coord2DDbl center, Double radius, UIntOS nPoint, Double startAngleRad, Double endAngleRad, Bool clockwise, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	Double angleDiff;
     if (clockwise) {
@@ -1087,13 +1087,13 @@ void Math::GeometryTool::ArcToLine(Math::Coord2DDbl center, Double radius, UOSIn
 		if (angleDiff < 0)
 			angleDiff += 2 * Math::PI;
     }
-	angleDiff /= UOSInt2Double(nPoint) - 1;
+	angleDiff /= UIntOS2Double(nPoint) - 1;
 	if (!clockwise)
 	{
 		angleDiff = -angleDiff;
 	}
 	Double currAngle = startAngleRad;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < nPoint)
 	{
 		ptOut->Add(Math::Coord2DDbl(radius * Math_Cos(currAngle), radius * Math_Sin(currAngle)) + center);
@@ -1102,7 +1102,7 @@ void Math::GeometryTool::ArcToLine(Math::Coord2DDbl center, Double radius, UOSIn
 	}
 }
 
-UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+UIntOS Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	Double eps = 1e-5;
     Math::Coord2DDbl v1 = pt2 - pt3;
@@ -1118,7 +1118,7 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 		{
 			Math::Coord2DDbl c = (pt1 + pt2) * 0.5;
 			Double r = c.CalcLengTo(pt1);
-			UOSInt nPoints = (UOSInt)Double2Int32((2 * Math::PI * r) / minDist);
+			UIntOS nPoints = (UIntOS)Double2Int32((2 * Math::PI * r) / minDist);
 			if (nPoints < 6)
 			{
 				nPoints = 6;
@@ -1127,13 +1127,13 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 			{
 				nPoints = 20;
 			}
-			Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
+			Double ratio = 2 * Math::PI / UIntOS2Double(nPoints);
 			Double a = Math_ArcTan2(pt1.x - c.x, pt1.y - c.y);
 			Double angle;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < nPoints)
 			{
-				angle = UOSInt2Double(i) * ratio + a;
+				angle = UIntOS2Double(i) * ratio + a;
 				ptOut->Add(c + Math::Coord2DDbl(r * Math_Cos(angle), r * Math_Sin(angle)));
 				i++;
 			}
@@ -1178,16 +1178,16 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 			angleDiff += 2 * Math::PI;
     }
 	Double leng = radius * angleDiff;
-	UOSInt pointCnt = (UOSInt)(leng / minDist);
+	UIntOS pointCnt = (UIntOS)(leng / minDist);
 	if (pointCnt < 6)
 		pointCnt = 6;
-	angleDiff /= UOSInt2Double(pointCnt);
+	angleDiff /= UIntOS2Double(pointCnt);
 	if (!isClockwise)
 	{
 		angleDiff = -angleDiff;
 	}
 	Double currAngle = startAngle;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < pointCnt)
 	{
 		ptOut->Add(Math::Coord2DDbl(radius * Math_Cos(currAngle), radius * Math_Sin(currAngle)) + center);
@@ -1198,7 +1198,7 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	return pointCnt + 1;
 }
 
-/*Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k, Double r, UOSInt cnt)
+/*Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k, Double r, UIntOS cnt)
 {
 	Double r2 = r * r;
 	Double thisX = x;
@@ -1217,7 +1217,7 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	return Math::Coord2DDbl(thisX, thisY);
 }
 
-UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+UIntOS Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	//(x – h)^2 + (y – k)^2 = r^2
 	//2h(x1 - x2) + 2k(y1 - y2) = x1^2 - x2^2 + y1^2 - y2^2
@@ -1233,18 +1233,18 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	{
 		Math::Coord2DDbl c = (pt1 + pt2) * 0.5;
 		Double r = c.CalcLengTo(pt1);
-		UOSInt nPoints = (UOSInt)Double2Int32((2 * Math::PI * r) / minDist);
+		UIntOS nPoints = (UIntOS)Double2Int32((2 * Math::PI * r) / minDist);
 		if (nPoints < 6)
 		{
 			nPoints = 6;
 		}
-		Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
+		Double ratio = 2 * Math::PI / UIntOS2Double(nPoints);
 		Double a = Math_ArcTan2(pt1.x - c.x, pt1.y - c.y);
 		Double angle;
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < nPoints)
 		{
-			angle = UOSInt2Double(i) * ratio + a;
+			angle = UIntOS2Double(i) * ratio + a;
 			ptOut->Add(c + Math::Coord2DDbl(r * Math_Cos(angle), r * Math_Sin(angle)));
 			i++;
 		}
@@ -1262,26 +1262,26 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 		Double r = Math_Sqrt((pt1.x - h) * (pt1.x - h) + (pt1.y - k) * (pt1.y - k));
 		Math::Coord2DDbl d23 = pt2 - pt3;
 
-		UOSInt initCnt = ptOut->GetCount();
+		UIntOS initCnt = ptOut->GetCount();
 		ptOut->Add(pt1);
 		Double leng = Math_Sqrt(d12.x * d12.x + d12.y * d12.y);
-		UOSInt ptCnt = (UOSInt)Math_Fix(leng / minDist);
-		UOSInt i = 1;
+		UIntOS ptCnt = (UIntOS)Math_Fix(leng / minDist);
+		UIntOS i = 1;
 		Double di;
-		Double dcnt = UOSInt2Double(ptCnt);
+		Double dcnt = UIntOS2Double(ptCnt);
 		while (i < ptCnt)
 		{
-			di = UOSInt2Double(i);
+			di = UIntOS2Double(i);
 			ptOut->Add(GeometryTool_ArcNearest(pt1.x + (pt2.x - pt1.x) * di / dcnt, pt1.y + (pt2.y - pt1.y) * di / dcnt, h, k, r, 5));
 			i++;
 		}
 		ptOut->Add(pt2);
 		leng = Math_Sqrt(d23.x * d23.x + d23.y * d23.y);
-		ptCnt = (UOSInt)Math_Fix(leng / minDist);
-		dcnt = UOSInt2Double(ptCnt);
+		ptCnt = (UIntOS)Math_Fix(leng / minDist);
+		dcnt = UIntOS2Double(ptCnt);
 		while (i < ptCnt)
 		{
-			di = UOSInt2Double(i);
+			di = UIntOS2Double(i);
 			ptOut->Add(GeometryTool_ArcNearest(pt2.x + (pt3.x - pt2.x) * di / dcnt, pt2.y + (pt3.y - pt2.y) * di / dcnt, h, k, r, 5));
 			i++;
 		}
@@ -1298,12 +1298,12 @@ Math::Coord2DDbl GeometryTool_BezierCurvePoint(Math::Coord2DDbl pt0, Math::Coord
     return pt0 * (invT2 * invT) + pt1 * (3 * t * invT2) + pt2 * (3 * invT * t2)  + pt3 * (t2 * t);
 }
 
-UOSInt Math::GeometryTool::BezierCurveToLine(Math::Coord2DDbl pt0, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, UOSInt nPoints, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+UIntOS Math::GeometryTool::BezierCurveToLine(Math::Coord2DDbl pt0, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, UIntOS nPoints, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	Double tDiff = 1 / (Double)(nPoints - 1);
 	ptOut->Add(pt0);
 	Double t = tDiff;
-	UOSInt i = 2;
+	UIntOS i = 2;
 	while (i < nPoints)
 	{
 		ptOut->Add(GeometryTool_BezierCurvePoint(pt0, pt1, pt2, pt3, t));
@@ -1324,7 +1324,7 @@ Double Math::GeometryTool::CalcDir(Math::Coord2DDbl startPt, Math::Coord2DDbl en
 	return Math::Unit::Angle::Convert(Math::Unit::Angle::AU_RADIAN, aunit, a);
 }
 
-/*UOSInt Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+/*UIntOS Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	ptOut->Add(pt1);
 	ptOut->Add(pt2);

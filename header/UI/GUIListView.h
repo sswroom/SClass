@@ -10,8 +10,8 @@ namespace UI
 	class GUIListView : public GUIControl
 	{
 	public:
-		typedef void (CALLBACKFUNC ItemEvent)(AnyType userObj, UOSInt itemIndex);
-		typedef void (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UOSInt index);
+		typedef void (CALLBACKFUNC ItemEvent)(AnyType userObj, UIntOS itemIndex);
+		typedef void (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UIntOS index);
 	protected:
 		void *clsData;
 	private:
@@ -23,65 +23,65 @@ namespace UI
 		UInt32 imgH;
 		ListViewStyle lvStyle;
 		Bool changing;
-		UOSInt colCnt;
+		UIntOS colCnt;
 
-		static OSInt useCnt;
+		static IntOS useCnt;
 
 	public:
-		GUIListView(NN<GUICore> ui, NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
+		GUIListView(NN<GUICore> ui, NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UIntOS colCount);
 		virtual ~GUIListView();
 
 		void ResetImages(UInt32 width, UInt32 height);
-		UOSInt AddImage(Media::DrawImage *img);
+		UIntOS AddImage(Media::DrawImage *img);
 		void EndAddingImage();
 
-		void ChangeColumnCnt(UOSInt newColCnt);
-		UOSInt GetColumnCnt();
+		void ChangeColumnCnt(UIntOS newColCnt);
+		UIntOS GetColumnCnt();
 		Bool AddColumn(NN<Text::String> columnName, Double colWidth);
 		Bool AddColumn(Text::CStringNN columnName, Double colWidth);
 		Bool AddColumn(UnsafeArray<const WChar> columnName, Double colWidth);
-		Bool SetColumnWidth(UOSInt index, Double colWidth);
+		Bool SetColumnWidth(UIntOS index, Double colWidth);
 		Bool ClearAll();
 
-		UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
-		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
-		UOSInt AddItem(UnsafeArray<const WChar> itemText, AnyType itemObj);
-		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String> text);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, UnsafeArray<const WChar> text);
-		Bool GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringBuilderUTF8> sb);
-		UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
-		UOSInt InsertItem(UOSInt index, UnsafeArray<const WChar> itemText, AnyType itemObj);
-		AnyType RemoveItem(UOSInt index);
-		AnyType GetItem(UOSInt index);
+		UIntOS AddItem(NN<Text::String> itemText, AnyType itemObj);
+		UIntOS AddItem(Text::CStringNN itemText, AnyType itemObj);
+		UIntOS AddItem(UnsafeArray<const WChar> itemText, AnyType itemObj);
+		UIntOS AddItem(Text::CStringNN itemText, AnyType itemObj, UIntOS imageIndex);
+		Bool SetSubItem(UIntOS index, UIntOS subIndex, NN<Text::String> text);
+		Bool SetSubItem(UIntOS index, UIntOS subIndex, Text::CStringNN text);
+		Bool SetSubItem(UIntOS index, UIntOS subIndex, UnsafeArray<const WChar> text);
+		Bool GetSubItem(UIntOS index, UIntOS subIndex, NN<Text::StringBuilderUTF8> sb);
+		UIntOS InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj);
+		UIntOS InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj);
+		UIntOS InsertItem(UIntOS index, UnsafeArray<const WChar> itemText, AnyType itemObj);
+		AnyType RemoveItem(UIntOS index);
+		AnyType GetItem(UIntOS index);
 		void ClearItems();
-		UOSInt GetCount();
-		void SetSelectedIndex(UOSInt index);
-		UOSInt GetSelectedIndex();
-		UOSInt GetSelectedIndices(Data::ArrayListNative<UOSInt> *selIndices);
+		UIntOS GetCount();
+		void SetSelectedIndex(UIntOS index);
+		UIntOS GetSelectedIndex();
+		UIntOS GetSelectedIndices(Data::ArrayListNative<UIntOS> *selIndices);
 		AnyType GetSelectedItem();
 		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
 		Optional<Text::String> GetSelectedItemTextNew();
-		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index);
-		Optional<Text::String> GetItemTextNew(UOSInt index);
+		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index);
+		Optional<Text::String> GetItemTextNew(UIntOS index);
 		void SetFullRowSelect(Bool fullRowSelect);
 		void SetShowGrid(Bool showGrid);
-		UOSInt GetStringWidth(UnsafeArray<const UTF8Char> s);
-		UOSInt GetStringWidth(const WChar *s);
-		void GetItemRectP(UOSInt index, Int32 *rect);
-		void EnsureVisible(UOSInt index);
-		AnyType SetItem(UOSInt index, AnyType itemObj);
+		UIntOS GetStringWidth(UnsafeArray<const UTF8Char> s);
+		UIntOS GetStringWidth(const WChar *s);
+		void GetItemRectP(UIntOS index, Int32 *rect);
+		void EnsureVisible(UIntOS index);
+		AnyType SetItem(UIntOS index, AnyType itemObj);
 
 		void BeginUpdate();
 		void EndUpdate();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		void EventSelChg();
-		void EventDblClk(UOSInt index);
+		void EventDblClk(UIntOS index);
 		void EventMouseClick(Math::Coord2DDbl coord, MouseButton btn);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 

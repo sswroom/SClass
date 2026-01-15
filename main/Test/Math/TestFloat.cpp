@@ -54,7 +54,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 	sptr = Text::StrDoubleFmt(sbuff, 123456789.0, "#,###.000");
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("123,456,789.000")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("123,456,789.000")))
 	{
 		return 1;
 	}

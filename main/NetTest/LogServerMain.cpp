@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UInt16 port = 1234;
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

@@ -16,27 +16,27 @@ namespace UI
 			Optional<Media::DrawImage> bmp;
 			Optional<Media::ImageList> imgList;
 			Bool noRelease;
-			OSInt frameDelay;
+			IntOS frameDelay;
 			Manage::HiResClock *clk;
 			Double startTime;
-			OSInt lastFrameNum;
+			IntOS lastFrameNum;
 
 		public:
-			OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<OSInt> tl);
-			OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, NN<Parser::ParserList> parsers);
+			OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<IntOS> tl);
+			OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<IntOS> tl, NN<Parser::ParserList> parsers);
 			virtual ~OverlayDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();
 			virtual void OnMouseClick();
 
-			void SetFrameDelay(OSInt frameDelay);
+			void SetFrameDelay(IntOS frameDelay);
 		};
 	}
 }

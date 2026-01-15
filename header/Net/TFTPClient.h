@@ -16,7 +16,7 @@ namespace Net
 		UInt16 nextId;
 		Bool replyRecv;
 		Bool replyError;
-		UOSInt recvSize;
+		UIntOS recvSize;
 		Optional<IO::Stream> recvStm;
 		Sync::Event evt;
 

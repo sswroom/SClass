@@ -31,12 +31,12 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		while (*name++)
 			if (*name == IO::Path::PATH_SEPERATOR)
 				fname = name;
-		fdh->fullName = Text::String::New((UOSInt)(name - name2 - 1));
+		fdh->fullName = Text::String::New((UIntOS)(name - name2 - 1));
 		fdh->fileName.v = dname = fdh->fullName->v;
 		while ((*dname++ = *name2++) != 0)
 			if (dname[-1] == IO::Path::PATH_SEPERATOR)
 				fdh->fileName.v = dname;
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
+		fdh->fileName.leng = (UIntOS)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 	}
 }
 
@@ -64,7 +64,7 @@ IO::StmData::FileViewData::~FileViewData()
 	Close();
 }
 
-UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::FileViewData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -81,9 +81,9 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, Data
 	{
 		endOfst = dataOffset + dataLength;
 	}
-	MemCopyNO(buffer.Arr().Ptr(), &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
+	MemCopyNO(buffer.Arr().Ptr(), &fdh->fptr[startOfst], (UIntOS)(endOfst - startOfst));
 	
-	return (UOSInt)(endOfst - startOfst);
+	return (UIntOS)(endOfst - startOfst);
 }
 
 UInt64 IO::StmData::FileViewData::GetDataSize() const
@@ -129,7 +129,7 @@ Bool IO::StmData::FileViewData::IsLoading() const
 	return false;
 }
 
-UOSInt IO::StmData::FileViewData::GetSeekCount() const
+UIntOS IO::StmData::FileViewData::GetSeekCount() const
 {
 	return 0;
 }

@@ -79,7 +79,7 @@ void Media::SilentSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::SilentSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::SilentSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
@@ -94,11 +94,11 @@ void Media::SilentSource::Stop()
 	this->readOfst = 0;
 }
 
-UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::SilentSource::ReadBlock(Data::ByteArray blk)
 {
 	NN<Sync::Event> readEvt;
-	UOSInt readSize = blk.GetSize() - (blk.GetSize() % this->format.align);
-	UOSInt i = 0;
+	UIntOS readSize = blk.GetSize() - (blk.GetSize() % this->format.align);
+	UIntOS i = 0;
 	UInt64 endOfst;
 	if (this->sampleCnt == 0)
 	{
@@ -114,7 +114,7 @@ UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
 	}
 	else if (this->readOfst + readSize > endOfst)
 	{
-		readSize = (UOSInt)(endOfst - this->readOfst);
+		readSize = (UIntOS)(endOfst - this->readOfst);
 	}
 	if (this->format.bitpersample == 8)
 	{
@@ -157,7 +157,7 @@ UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
 	return readSize;
 }
 
-UOSInt Media::SilentSource::GetMinBlockSize()
+UIntOS Media::SilentSource::GetMinBlockSize()
 {
 	return this->format.align;
 }

@@ -30,8 +30,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::StmData::FileData fd(fileName, false);
 	if (parsers->ParseFile(fd).SetTo(pobj))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Exporter::SHPExporter shpExp;
 		shpExp.SetCodePage(65001);
 
@@ -44,7 +44,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			if (lyrColl->GetItem(i).SetTo(lyr))
 			{
 				sptr = lyr->GetName()->ConcatTo(sbuff);
-				sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];
+				sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];
 				sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
 
 				IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

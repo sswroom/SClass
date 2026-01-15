@@ -35,7 +35,7 @@ namespace SSWR
 			Optional<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
 			NN<AVIRHTTPLog> reqLog;
-			UOSInt lastAccessIndex;
+			UIntOS lastAccessIndex;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;

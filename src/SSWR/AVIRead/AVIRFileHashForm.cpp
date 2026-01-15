@@ -13,8 +13,8 @@
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
-	me->currHashType = (Crypto::Hash::HashType)me->cboCheckType->GetSelectedItem().GetOSInt();
+	me->currHashType = (Crypto::Hash::HashType)me->cboCheckType->GetSelectedItem().GetIntOS();
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
@@ -82,8 +82,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 	NN<FileStatus> nnstatus;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	IO::FileExporter *exporter;
 	Crypto::Hash::HashType chkType;
 	me->threadStatus = 1;
@@ -208,11 +208,11 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 	NN<IO::FileCheck> fchk;
 	if (this->fileListChg)
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
-		UOSInt m;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
+		UIntOS m;
 		NN<FileStatus> status;
 		this->fileListChg = false;
 		this->lvFiles->ClearItems();
@@ -292,12 +292,12 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl>
 	Crypto::Hash::HashType lastType = Crypto::Hash::HashType::Last;
 	while (currType <= lastType)
 	{
-		UOSInt i = this->cboCheckType->AddItem(Crypto::Hash::HashTypeGetName(currType), (void*)(OSInt)currType);
+		UIntOS i = this->cboCheckType->AddItem(Crypto::Hash::HashTypeGetName(currType), (void*)(IntOS)currType);
 		if (currType == this->currHashType)
 		{
 			this->cboCheckType->SetSelectedIndex(i);
 		}
-		currType = (Crypto::Hash::HashType)((OSInt)currType + 1);
+		currType = (Crypto::Hash::HashType)((IntOS)currType + 1);
 	}
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
 	this->tcMain = ui->NewTabControl(*this);
@@ -360,7 +360,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<FileStatus> status;
 	this->threadToStop = true;
 	this->fileEvt.Set();

@@ -14,7 +14,7 @@ namespace Parser
 			typedef struct
 			{
 				Int32 fileIndex;
-				OSInt envIndex;
+				IntOS envIndex;
 			} MEVImageInfo;
 		private:
 			Optional<Parser::ParserList> parsers;

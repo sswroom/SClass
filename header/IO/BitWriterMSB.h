@@ -9,15 +9,15 @@ namespace IO
 	{
 	private:
 		UnsafeArray<UInt8> buff;
-		UOSInt currBytePos;
-		UOSInt currBitPos;
+		UIntOS currBytePos;
+		UIntOS currBitPos;
 		NN<IO::Stream> stm;
 
 	public:
 		BitWriterMSB(NN<IO::Stream> stm);
 		virtual ~BitWriterMSB();
 
-		virtual Bool WriteBits(UInt32 code, UOSInt bitCount);
+		virtual Bool WriteBits(UInt32 code, UIntOS bitCount);
 		virtual Bool ByteAlign();
 	};
 }

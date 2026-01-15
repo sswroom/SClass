@@ -18,8 +18,8 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
-			void ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage);
-			void ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage);
+			void ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage);
+			void ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage);
 			IO::EXEFile::ResourceType GetResourceType(UInt32 resType);
 		};
 	}

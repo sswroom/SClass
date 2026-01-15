@@ -35,7 +35,7 @@ namespace Net
 
 		UnsafeArrayOpt<ThreadStat> v4threadStats;
 		UnsafeArrayOpt<ThreadStat> v6threadStats;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		UInt16 port;
 		Sync::Event ctrlEvt;
 
@@ -53,13 +53,13 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(AnyType obj);
 
 	public:
-		UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
+		UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UIntOS workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();
 		Bool IsError();
 		Bool SupportV6();
-		virtual Bool SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt dataSize);
+		virtual Bool SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UIntOS dataSize);
 		Int32 GetRecvCnt();
 		void AddMulticastIP(UInt32 ip);
 		void SetBuffSize(Int32 buffSize);

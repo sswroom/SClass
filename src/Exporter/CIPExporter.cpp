@@ -45,7 +45,7 @@ IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::CIPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -104,12 +104,12 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<CIPBlock> theBlk;
 	NN<Map::GetObjectSess> sess;
 	Optional<Map::NameArray> nameArr;
-	UOSInt stmPos = 8;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt recCnt;
+	UIntOS stmPos = 8;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS recCnt;
 	Int32 minX;
 	Int32 maxX;
 	Int32 minY;
@@ -163,11 +163,11 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
 				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
-				UOSInt nPtOfst = pl->GetCount();
+				UIntOS nPtOfst = pl->GetCount();
 				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst + 1);
 				WriteUInt32(&buff[4], (UInt32)nPtOfst);
 				ptOfstArr[0] = 0;
-				UOSInt i = 0;
+				UIntOS i = 0;
 				NN<Math::Geometry::LineString> ls;
 				while (i < nPtOfst)
 				{
@@ -181,12 +181,12 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				stm->Write(Data::ByteArrayR((UInt8*)ptOfstArr, nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;
 
-				UOSInt nPoint = ptOfstArr[nPtOfst];
+				UIntOS nPoint = ptOfstArr[nPtOfst];
 				MemFree(ptOfstArr);
 				Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
-				UOSInt j = 0;
-				UOSInt k;
-				UOSInt l;
+				UIntOS j = 0;
+				UIntOS k;
+				UIntOS l;
 				NN<Math::Geometry::LineString> lineString;
 				i = 0;
 				while (i < nPtOfst)
@@ -233,7 +233,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 			{
 				NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
-				UOSInt nPtOfst = pg->GetCount();
+				UIntOS nPtOfst = pg->GetCount();
 				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
 				Data::ArrayListA<Math::Coord2DDbl> pointArr;
 				NN<Math::Geometry::LinearRing> lr;
@@ -294,11 +294,11 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			}
 
 			{
-				OSInt j;
-				OSInt k;
-				OSInt l;
-				OSInt m;
-				OSInt n;
+				IntOS j;
+				IntOS k;
+				IntOS l;
+				IntOS m;
+				IntOS n;
 				Text::StringBuilderUTF8 sb;
 				j = top;
 				while (j <= bottom)
@@ -307,11 +307,11 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					while (k <= right)
 					{
 						l = 0;
-						m = (OSInt)blks.GetCount() - 1;
+						m = (IntOS)blks.GetCount() - 1;
 						while (l <= m)
 						{
 							n = (l + m) >> 1;
-							theBlk = blks.GetItemNoCheck((UOSInt)n);
+							theBlk = blks.GetItemNoCheck((UIntOS)n);
 							if (theBlk->blockX > k)
 							{
 								l = n + 1;
@@ -368,7 +368,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							theBlk->records.Add(strRec);
 							strs.Add(strRec);
 
-							blks.Insert((UOSInt)l, theBlk);
+							blks.Insert((UIntOS)l, theBlk);
 						}
 
 						k++;
@@ -443,7 +443,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				cib.Write(Data::ByteArrayR((UInt8*)strRec->str, l << 1));
 			}
 
-			stmPos += (UOSInt)buff[4] + 5;
+			stmPos += (UIntOS)buff[4] + 5;
 			k += 1;
 		}
 		i += 1;
@@ -465,7 +465,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	return true;
 }
 
-UOSInt Exporter::CIPExporter::GetParamCnt()
+UIntOS Exporter::CIPExporter::GetParamCnt()
 {
 	return 2;
 }
@@ -501,7 +501,7 @@ void Exporter::CIPExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::ParamInfo> info)
+Bool Exporter::CIPExporter::GetParamInfo(UIntOS index, NN<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -520,12 +520,12 @@ Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::Para
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
+Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -544,7 +544,7 @@ Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UOSInt inde
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
+Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UIntOS index, UIntOS selCol)
 {
 	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
@@ -556,12 +556,12 @@ Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index,
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	return nullptr;
 }
 
-Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -572,7 +572,7 @@ Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt ind
 	return 0;
 }
 
-Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
@@ -583,13 +583,13 @@ Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UIntOS index, UIntOS itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
 	{
 		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
-		if (itemIndex >= 0 && (UOSInt)itemIndex < p->layer->GetColumnCnt())
+		if (itemIndex >= 0 && (UIntOS)itemIndex < p->layer->GetColumnCnt())
 		{
 			return p->layer->GetColumnName(buff, itemIndex);
 		}

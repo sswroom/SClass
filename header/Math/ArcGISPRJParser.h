@@ -10,13 +10,13 @@ namespace Math
 	private:
 		Math::ArcGISCSys csys;
 
-		static Bool ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UOSInt> strSize);
+		static Bool ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UIntOS> strSize);
 	public:
 		ArcGISPRJParser();
 		~ArcGISPRJParser();
 
 		Optional<Math::CoordinateSystem> ParsePRJFile(Text::CStringNN fileName);
-		Optional<Math::CoordinateSystem> ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UOSInt buffSize, OptOut<UOSInt> parsedSize);
+		Optional<Math::CoordinateSystem> ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize);
 	};
 }
 #endif

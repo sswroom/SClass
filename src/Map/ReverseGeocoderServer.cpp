@@ -8,12 +8,12 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
+Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UIntOS retryCnt)
 {
 	Int64 currTime;
 	Data::DateTime dt;
 	Int64 maxTime = -1;
-	UOSInt maxIndex = 0;
+	UIntOS maxIndex = 0;
 	NN<Net::TCPClient> cli;
 	AnyType cliObj;
 	NN<ClientStatus> stat;
@@ -23,7 +23,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 
 	Sync::MutexUsage mutUsage;
 	this->ctrl->UseGetCli(mutUsage);
-	UOSInt i = this->ctrl->GetCliCount();
+	UIntOS i = this->ctrl->GetCliCount();
 	if (i <= retryCnt)
 	{
 		return 0;
@@ -62,12 +62,12 @@ Map::ReverseGeocoderServer::~ReverseGeocoderServer()
 	DEL_CLASS(this->ctrl);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
-	UOSInt retryCnt = 0;
+	UIntOS retryCnt = 0;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
@@ -93,7 +93,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 		sptr = nullptr;
 		if (sent)
 		{
-			OSInt i = 10;
+			IntOS i = 10;
 			while (!this->reqResult)
 			{
 				this->reqEvt.Wait(1000);
@@ -115,12 +115,12 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 	return sptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
-	UOSInt retryCnt = 0;
+	UIntOS retryCnt = 0;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
@@ -146,7 +146,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 		sptr = nullptr;
 		if (sent)
 		{
-			OSInt i = 10;
+			IntOS i = 10;
 			while (!this->reqResult)
 			{
 				this->reqEvt.Wait(1000);
@@ -182,23 +182,23 @@ void Map::ReverseGeocoderServer::EndConn(NN<Net::TCPClient> cli, AnyType cliObj)
 	MemFree(stat.Ptr());
 }
 
-UOSInt Map::ReverseGeocoderServer::ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff)
+UIntOS Map::ReverseGeocoderServer::ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff)
 {
 	NN<ClientStatus> stat = cliObj.GetNN<ClientStatus>();
 	return this->protocol.ParseProtocol(cli, cliObj, stat->cliData, buff);
 }
 
-void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	UnsafeArray<UTF8Char> reqBuff;
 	if (cmdType == 1)
 	{
 		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
-			UOSInt strSize;
+			UIntOS strSize;
 			if ((cmd[12] & 0x80) != 0)
 			{
-				strSize = (UOSInt)(((cmd[12] & 0x7f) << 8) | cmd[13]);
+				strSize = (UIntOS)(((cmd[12] & 0x7f) << 8) | cmd[13]);
 				cmd += 14;
 			}
 			else
@@ -225,10 +225,10 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	{
 		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
-			UOSInt strSize;
+			UIntOS strSize;
 			if ((cmd[12] & 0x80) != 0)
 			{
-				strSize = (UOSInt)(((cmd[12] & 0x7f) << 8) | cmd[13]);
+				strSize = (UIntOS)(((cmd[12] & 0x7f) << 8) | cmd[13]);
 				cmd += 14;
 			}
 			else
@@ -258,7 +258,7 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	}
 }
 
-void Map::ReverseGeocoderServer::DataSkipped(NN<IO::Stream> stm, AnyType cliObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Map::ReverseGeocoderServer::DataSkipped(NN<IO::Stream> stm, AnyType cliObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 

@@ -76,7 +76,7 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 			UInt64 indexSize = fileSize - this->currFileOfst;
 			if (fileSize >= this->currFileOfst && (indexSize & 31) == 0)
 			{
-				Data::ByteBuffer indexBuff((UOSInt)indexSize);
+				Data::ByteBuffer indexBuff((UIntOS)indexSize);
 				fs->SeekFromBeginning(this->currFileOfst);
 				fs->Read(indexBuff);
 				this->indexStm.Write(indexBuff);
@@ -114,7 +114,7 @@ Media::TimedImageList::~TimedImageList()
 	{
 		if (this->changed)
 		{
-			UOSInt indexSize;
+			UIntOS indexSize;
 			UnsafeArray<UInt8> indexBuff;
 			indexBuff = this->indexStm.GetBuff(indexSize);
 			fs->Write(Data::ByteArrayR(indexBuff, indexSize));
@@ -138,7 +138,7 @@ Bool Media::TimedImageList::IsError()
 	return this->fs.IsNull();
 }
 
-Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, UnsafeArray<const UInt8> imgBuff, UOSInt imgSize, ImageFormat imgFmt)
+Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, UnsafeArray<const UInt8> imgBuff, UIntOS imgSize, ImageFormat imgFmt)
 {
 	NN<IO::FileStream> fs;
 	if (!this->fs.SetTo(fs))

@@ -53,9 +53,9 @@ namespace Net
 			Optional<Net::SNS::SNSControl> AddChannel(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId);
 
 			void Use(NN<Sync::MutexUsage> mutUsage);
-			virtual UOSInt GetCount() const;
-			virtual NN<Net::SNS::SNSControl> GetItemNoCheck(UOSInt index) const;
-			virtual Optional<Net::SNS::SNSControl> GetItem(UOSInt index) const;
+			virtual UIntOS GetCount() const;
+			virtual NN<Net::SNS::SNSControl> GetItemNoCheck(UIntOS index) const;
+			virtual Optional<Net::SNS::SNSControl> GetItem(UIntOS index) const;
 		};
 	}
 }

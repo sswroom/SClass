@@ -29,7 +29,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDevPath;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
-			static OSInt __stdcall ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2);
+			static IntOS __stdcall ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2);
 		public:
 			AVIRHIDDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHIDDeviceForm();

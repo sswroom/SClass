@@ -6,7 +6,7 @@
 void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
-	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)me->cboChannel->GetSelectedItem().GetOSInt();
+	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)me->cboChannel->GetSelectedItem().GetIntOS();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(sb);
 	NN<Net::SNS::SNSControl> ctrl;
@@ -25,8 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 	{
 		NN<Net::SNS::SNSControl::SNSItem> item;
 		Data::ArrayListNN<Net::SNS::SNSControl::SNSItem> itemList;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Data::DateTime dt;
 		NN<Text::String> s;
 		UTF8Char sbuff[32];
@@ -90,12 +90,12 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 	this->lvCurrItems->AddColumn(CSTR("Title"), 200);
 	this->lvCurrItems->AddColumn(CSTR("Message"), 400);
 
-	UOSInt i = Net::SNS::SNSControl::ST_FIRST;
+	UIntOS i = Net::SNS::SNSControl::ST_FIRST;
 	Text::CStringNN cstr;
 	while (i <= Net::SNS::SNSControl::ST_LAST)
 	{
 		cstr = Net::SNS::SNSControl::SNSTypeGetName((Net::SNS::SNSControl::SNSType)i);
-		this->cboChannel->AddItem(cstr, (void*)(OSInt)i);
+		this->cboChannel->AddItem(cstr, (void*)(IntOS)i);
 		i++;
 	}
 	this->cboChannel->SetSelectedIndex(0);
@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 	Sync::MutexUsage mutUsage;
 	this->mgr->Use(mutUsage);
 	NN<Net::SNS::SNSControl> ctrl;
-	UOSInt j = this->mgr->GetCount();
+	UIntOS j = this->mgr->GetCount();
 	i = 0;
 	while (i < j)
 	{

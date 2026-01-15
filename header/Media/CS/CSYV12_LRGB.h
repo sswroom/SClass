@@ -47,10 +47,10 @@ namespace Media
 			Int32 yvStepE;
 			UnsafeArrayOpt<UInt8> uBuff;
 			UnsafeArrayOpt<UInt8> vBuff;
-			OSInt yvBuffSize;
+			IntOS yvBuffSize;
 
 			Int32 currId;
-			UOSInt nThread;
+			UIntOS nThread;
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
@@ -72,7 +72,7 @@ namespace Media
 		public:
 			CSYV12_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYV12_LRGB();
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destLineAdd, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destLineAdd, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

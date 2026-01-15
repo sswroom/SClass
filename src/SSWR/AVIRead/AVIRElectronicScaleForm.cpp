@@ -49,12 +49,12 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 		me->currWeightUpd = false;
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt strSize;
+		UIntOS strSize;
 		sptr = Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight));
 		me->txtWeight->SetText(CSTRP(sbuff, sptr));
-		strSize = (UOSInt)(sptr - sbuff);
+		strSize = (UIntOS)(sptr - sbuff);
 
-		Math::Size2D<UOSInt> usz = me->pbsDisplay->GetSizeP();
+		Math::Size2D<UIntOS> usz = me->pbsDisplay->GetSizeP();
 		if (usz.x > 0 && usz.y > 0)
 		{
 			NN<Media::DrawImage> img;
@@ -78,17 +78,17 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 
 				Double fontHeight;
 				Math::Size2DDbl sz;
-				fontHeight = UOSInt2Double(usz.x) / UOSInt2Double(strSize);
+				fontHeight = UIntOS2Double(usz.x) / UIntOS2Double(strSize);
 				f = img->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				sz = img->GetTextSize(f, {sbuff, strSize});
 				img->DelFont(f);
-				if (UOSInt2Double(usz.x) * sz.y > UOSInt2Double(usz.y) * sz.x) //w / sz[0] > h / sz[1]
+				if (UIntOS2Double(usz.x) * sz.y > UIntOS2Double(usz.y) * sz.x) //w / sz[0] > h / sz[1]
 				{
-					fontHeight = fontHeight * UOSInt2Double(usz.y) / sz.y;
+					fontHeight = fontHeight * UIntOS2Double(usz.y) / sz.y;
 				}
 				else
 				{
-					fontHeight = fontHeight * UOSInt2Double(usz.x) / sz.x;
+					fontHeight = fontHeight * UIntOS2Double(usz.x) / sz.x;
 				}
 				f = img->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				b = img->NewBrushARGB(0xff000000);
@@ -107,8 +107,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType user
 {
 	NN<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	UInt8 buff[512];
-	UOSInt recvSize;
-	UOSInt buffSize = 0;
+	UIntOS recvSize;
+	UIntOS buffSize = 0;
 	NN<IO::Stream> stm;
 	me->threadRunning = true;
 	if (me->stm.SetTo(stm))

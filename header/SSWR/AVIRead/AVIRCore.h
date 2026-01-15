@@ -117,8 +117,8 @@ namespace SSWR
 			Optional<Media::AudioRenderer> BindAudio(Optional<Media::AudioSource> audSrc);
 
 			Bool GenLinePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NN<Media::ColorConv> colorConv);
-			Bool GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv);
-			Bool GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt fontStyle, NN<Media::ColorConv> colorConv);
+			Bool GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS lineStyle, NN<Media::ColorConv> colorConv);
+			Bool GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS fontStyle, NN<Media::ColorConv> colorConv);
 			Bool GenFontPreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NN<Media::ColorConv> colorConv);
 			void ShowForm(NN<UI::GUIForm> frm);
 			void CloseAllForm();

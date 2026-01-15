@@ -13,8 +13,8 @@ namespace Math
 		VectorTextWriterList();
 		virtual ~VectorTextWriterList();
 
-		virtual UOSInt GetCount() const;
-		virtual Math::VectorTextWriter* GetItem(UOSInt index) const;
+		virtual UIntOS GetCount() const;
+		virtual Math::VectorTextWriter* GetItem(UIntOS index) const;
 	};
 }
 #endif

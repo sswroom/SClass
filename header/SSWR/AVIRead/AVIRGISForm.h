@@ -78,21 +78,21 @@ namespace SSWR
 
 		private:
 			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button);
 			static void __stdcall OnMapScaleChanged(AnyType userObj, Double newScale);
 			static void __stdcall OnMapUpdated(AnyType userObj, Math::Coord2DDbl center, Double timeUsed);
-			static void __stdcall OnScaleScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnScaleScrolled(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTreeRightClick(AnyType userObj);
 			static void __stdcall OnCtrlFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
 			static void __stdcall OnSubFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
 			static void __stdcall OnMapLayerUpdated(AnyType userObj);
-			static void __stdcall OnTimeScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnTimeScrolled(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTimeChecked(AnyType userObj, Bool newState);
 			static void __stdcall OnTreeDrag(AnyType userObj, NN<UI::GUIMapTreeView::ItemIndex> dragItem, NN<UI::GUIMapTreeView::ItemIndex> dropItem);
-			static void __stdcall OnVAngleScrolled(AnyType userObj, UOSInt newVal);
-			static void __stdcall OnHAngleScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnVAngleScrolled(AnyType userObj, UIntOS newVal);
+			static void __stdcall OnHAngleScrolled(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
@@ -127,8 +127,8 @@ namespace SSWR
 			virtual Double GetScnDPI() const;
 			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 
-			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
-			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
+			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos);
+			virtual Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
 			virtual void HandleMapMouseLDown(MouseEvent evt, AnyType userObj);
 			virtual void HandleMapMouseLUp(MouseEvent evt, AnyType userObj);

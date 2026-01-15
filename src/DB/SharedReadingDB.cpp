@@ -28,7 +28,7 @@ void DB::SharedReadingDB::UseObject()
 
 void DB::SharedReadingDB::UnuseObject()
 {
-	OSInt i;
+	IntOS i;
 	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
 	mutUsage.EndUse();

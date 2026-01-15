@@ -29,7 +29,7 @@ namespace IO
 
 		class ServiceComparator : public Data::Comparator<NN<ServiceItem>>
 		{
-			virtual OSInt Compare(NN<ServiceItem> a, NN<ServiceItem> b) const;
+			virtual IntOS Compare(NN<ServiceItem> a, NN<ServiceItem> b) const;
 		};
 	private:
 		struct ClassData;
@@ -48,7 +48,7 @@ namespace IO
 		Bool ServiceDisable(Text::CStringNN svcName);
 		Bool ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDetail> svcDetail);
 
-		UOSInt QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
+		UIntOS QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
 		void FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
 	};
 }

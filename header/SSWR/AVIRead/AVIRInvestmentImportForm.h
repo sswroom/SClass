@@ -19,8 +19,8 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<DB::ReadingDB> db;
-			UOSInt timeCol;
-			UOSInt valueCol;
+			UIntOS timeCol;
+			UIntOS valueCol;
 			Data::Invest::DateFormat fmt;
 			Bool invert;
 
@@ -47,8 +47,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			UOSInt GetTimeCol() const { return this->timeCol; }
-			UOSInt GetValueCol() const { return this->valueCol; }
+			UIntOS GetTimeCol() const { return this->timeCol; }
+			UIntOS GetValueCol() const { return this->valueCol; }
 			Data::Invest::DateFormat GetDateFormat() const { return this->fmt; }
 			Optional<DB::ReadingDB> GetDB() const { return this->db; }
 			Bool IsInvert() const { return this->invert; }

@@ -41,7 +41,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::GPSNMEA *gps;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
-	UOSInt argc;
+	UIntOS argc;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)

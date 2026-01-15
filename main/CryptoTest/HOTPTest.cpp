@@ -26,19 +26,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("B32: "));
 	b32.EncodeBin(sb, key, 10);
 	console.WriteLine(sb.ToCString());
-	UOSInt decLen = b32.DecodeBin(sb.ToCString().Substring(5), decKey);
+	UIntOS decLen = b32.DecodeBin(sb.ToCString().Substring(5), decKey);
 	sb.ClearStr();
 	sb.AppendHexBuff(decKey, decLen, 0, Text::LineBreakType::None);
 	console.WriteLine(sb.ToCString());
 	console.WriteLine();
 	
 	Crypto::HOTP hotp(key, 10, 1);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 10)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Code "));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		sb.AppendC(UTF8STRC(": "));
 		sptr = hotp.CodeString(sbuff, hotp.NextCode());
 		sb.AppendP(sbuff, sptr);

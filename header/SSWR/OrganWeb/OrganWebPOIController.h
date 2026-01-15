@@ -48,7 +48,7 @@ namespace SSWR
 			void AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
 			void AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont);
 			void AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate);
-			static Bool ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, OSInt cacheAge, Text::CStringNN json);
+			static Bool ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json);
 		public:
 			OrganWebPOIController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize);
 			virtual ~OrganWebPOIController();

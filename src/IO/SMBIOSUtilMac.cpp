@@ -48,6 +48,6 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 		return 0;
 	}
 	
-	NEW_CLASS(smbios, IO::SMBIOS((const UInt8*)smbiosdata, (UOSInt)CFDataGetLength(smbiosdata), 0));
+	NEW_CLASS(smbios, IO::SMBIOS((const UInt8*)smbiosdata, (UIntOS)CFDataGetLength(smbiosdata), 0));
 	return smbios;
 }

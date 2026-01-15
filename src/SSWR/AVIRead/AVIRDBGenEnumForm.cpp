@@ -9,14 +9,14 @@
 
 void SSWR::AVIRead::AVIRDBGenEnumForm::Generate()
 {
-	Text::CaseType srcCaseType = (Text::CaseType)this->cboValueCase->GetSelectedItem().GetUOSInt();
-	Text::CaseType outCaseType = (Text::CaseType)this->cboOutputCase->GetSelectedItem().GetUOSInt();
-	UOSInt outType = this->cboOutputFormat->GetSelectedIndex();
+	Text::CaseType srcCaseType = (Text::CaseType)this->cboValueCase->GetSelectedItem().GetUIntOS();
+	Text::CaseType outCaseType = (Text::CaseType)this->cboOutputCase->GetSelectedItem().GetUIntOS();
+	UIntOS outType = this->cboOutputFormat->GetSelectedIndex();
 	Text::StringBuilderUTF8 sb;
 	if (outType == 0)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->nameList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->nameList.GetCount();
 		sb.Append(CSTR("export enum "));
 		Text::StringCaseConverter conv(srcCaseType);
 		conv.Convert(this->colName->v, Text::CaseType::PascalCase, sb);
@@ -38,8 +38,8 @@ void SSWR::AVIRead::AVIRDBGenEnumForm::Generate()
 	else
 	{
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = this->nameList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->nameList.GetCount();
 		sb.Append(CSTR("export const "));
 		Text::StringCaseConverter conv(srcCaseType);
 		conv.Convert(this->colName->v, Text::CaseType::PascalCase, sb);
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRDBGenEnumForm::OnUpdate(AnyType userObj)
 	userObj.GetNN<SSWR::AVIRead::AVIRDBGenEnumForm>()->Generate();
 }
 
-SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, UOSInt colIndex) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, UIntOS colIndex) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Database Generate Enum"));
@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientContro
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column")), colIndex);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Column")), colIndex);
 
 	NN<DB::DBReader> r;
 	if (this->db->QueryTableData(schema, table, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientContro
 		}
 		this->db->CloseReader(r);
 
-		UOSInt i = nameMap.GetCount();
+		UIntOS i = nameMap.GetCount();
 		while (i-- > 0)
 		{
 			if (nameMap.GetKey(i).SetTo(s))
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientContro
 			}
 		}
 		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(this->nameList, this->nameList);
-		UOSInt j = this->nameList.GetCount();
+		UIntOS j = this->nameList.GetCount();
 		i = 0;
 		while (i < j)
 		{

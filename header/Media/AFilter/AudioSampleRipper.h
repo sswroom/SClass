@@ -24,7 +24,7 @@ namespace Media
 			virtual ~AudioSampleRipper();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool IsChanged();
 			Bool GetSamples(UnsafeArray<UInt8> samples);

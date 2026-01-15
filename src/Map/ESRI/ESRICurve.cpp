@@ -11,7 +11,7 @@
 #include "Math/Geometry/Polyline.h"
 
 //https://stackoverflow.com/questions/41537950/converting-an-svg-arc-to-lines/41544540#41544540
-Map::ESRI::ESRICurve::ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOSInt nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr)
+Map::ESRI::ESRICurve::ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UIntOS nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr)
 {
 	this->srid = srid;
 	this->ptList.AddAll(Data::DataArray<Math::Coord2DDbl>(ptArr, nPoint));
@@ -29,14 +29,14 @@ Map::ESRI::ESRICurve::ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOS
 
 Map::ESRI::ESRICurve::~ESRICurve()
 {
-	UOSInt i = this->curveList.GetCount();
+	UIntOS i = this->curveList.GetCount();
 	while (i-- > 0)
 	{
 		MemFreeANN(this->curveList.GetItemNoCheck(i));
 	}
 }
 
-void Map::ESRI::ESRICurve::AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 bits)
+void Map::ESRI::ESRICurve::AddArc(UIntOS index, Math::Coord2DDbl center, UInt32 bits)
 {
 	if (index >= ptList.GetCount())
 	{
@@ -56,7 +56,7 @@ void Map::ESRI::ESRICurve::AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 
 	this->curveList.Add(arc);
 }
 
-void Map::ESRI::ESRICurve::AddBezier3Curve(UOSInt index, Math::Coord2DDbl point1, Math::Coord2DDbl point2)
+void Map::ESRI::ESRICurve::AddBezier3Curve(UIntOS index, Math::Coord2DDbl point1, Math::Coord2DDbl point2)
 {
 	if (index >= ptList.GetCount())
 	{
@@ -76,7 +76,7 @@ void Map::ESRI::ESRICurve::AddBezier3Curve(UOSInt index, Math::Coord2DDbl point1
 	this->curveList.Add(curve);
 }
 
-void Map::ESRI::ESRICurve::AddEllipticArc(UOSInt index, Math::Coord2DDbl center, Double rotation, Double semiMajor, Double minorMajorRatio, UInt32 bits)
+void Map::ESRI::ESRICurve::AddEllipticArc(UIntOS index, Math::Coord2DDbl center, Double rotation, Double semiMajor, Double minorMajorRatio, UInt32 bits)
 {
 	if (index >= ptList.GetCount())
 	{
@@ -111,11 +111,11 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 		NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
 		NN<CurveInfo> curve;
 		Math::Coord2DDbl curvePts[3];
-		UOSInt indexOfst = 0;
-		UOSInt endPart;
-		UOSInt i = 0;
-		UOSInt currIndex = 0;
-		UOSInt partI = 1;
+		UIntOS indexOfst = 0;
+		UIntOS endPart;
+		UIntOS i = 0;
+		UIntOS currIndex = 0;
+		UIntOS partI = 1;
 		if (partI >= this->partList.GetCount())
 		{
 			endPart = ptList.GetCount() - indexOfst;
@@ -285,11 +285,11 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 		NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
 		NN<CurveInfo> curve;
 		Math::Coord2DDbl curvePts[3];
-		UOSInt indexOfst = 0;
-		UOSInt endPart;
-		UOSInt i = 0;
-		UOSInt currIndex = 0;
-		UOSInt partI = 1;
+		UIntOS indexOfst = 0;
+		UIntOS endPart;
+		UIntOS i = 0;
+		UIntOS currIndex = 0;
+		UIntOS partI = 1;
 		if (partI >= this->partList.GetCount())
 		{
 			endPart = ptList.GetCount() - indexOfst;

@@ -51,9 +51,9 @@ namespace Parser
 		private:
 			static Bool ParseWorkbook(NN<IO::StreamData> fd, UInt64 ofst, UInt64 ofstRef, NN<Text::SpreadSheet::Workbook> wb);
 			static Bool ParseWorksheet(NN<IO::StreamData> fd, UInt64 ofst, NN<Text::SpreadSheet::Workbook> wb, NN<Text::SpreadSheet::Worksheet> ws, WorkbookStatus *status);
-			static UOSInt ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb);
-			static UOSInt ReadUStringPartial(UInt8 *buff, UOSInt buffSize, InOutParam<UInt32> charCnt, NN<Text::StringBuilderUTF8> sb);
-			static UOSInt ReadUStringB(UInt8 *buff, NN<Text::StringBuilderUTF8> sb);
+			static UIntOS ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb);
+			static UIntOS ReadUStringPartial(UInt8 *buff, UIntOS buffSize, InOutParam<UInt32> charCnt, NN<Text::StringBuilderUTF8> sb);
+			static UIntOS ReadUStringB(UInt8 *buff, NN<Text::StringBuilderUTF8> sb);
 			static Double ParseRKNumber(Int32 rkValue);
 		};
 	}

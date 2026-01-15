@@ -446,7 +446,7 @@ void Media::CS::CSYUV16_RGB32C::RGBParamChanged(NN<const Media::ColorHandler::RG
 	this->rgbUpdated = true;
 }
 
-UOSInt Media::CS::CSYUV16_RGB32C::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV16_RGB32C::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 3;
 }

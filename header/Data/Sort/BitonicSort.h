@@ -32,31 +32,31 @@ namespace Data
 			typedef struct
 			{
 				AnyType arr; // arr = 0 when end
-				OSInt arrLen;
+				IntOS arrLen;
 				Bool dir;
-				OSInt m;
+				IntOS m;
 				ArrayType arrType;
 				NN<Sync::Event> notifyEvt;
 			} TaskInfo;
 		private:
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			UnsafeArray<ThreadStat> threads;
 			ThreadStat mainThread;
 			Data::SyncArrayListNN<TaskInfo> tasks;
 
-			static void DoMergeInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, OSInt n, Bool dir, OSInt m);
-			static void DoMergeUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, OSInt n, Bool dir, OSInt m);
+			static void DoMergeInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, IntOS n, Bool dir, IntOS m);
+			static void DoMergeUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, IntOS n, Bool dir, IntOS m);
 			Bool DoTask(NN<ThreadStat> stat);
-			void SortInnerInt32(UnsafeArray<Int32> arr, OSInt n, Bool dir, OSInt pw2);
-			void SortInnerUInt32(UnsafeArray<UInt32> arr, OSInt n, Bool dir, OSInt pw2);
+			void SortInnerInt32(UnsafeArray<Int32> arr, IntOS n, Bool dir, IntOS pw2);
+			void SortInnerUInt32(UnsafeArray<UInt32> arr, IntOS n, Bool dir, IntOS pw2);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			BitonicSort();
 			~BitonicSort();
 
-			void SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
-			void SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
-			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
+			void SortUInt32(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex);
+			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }

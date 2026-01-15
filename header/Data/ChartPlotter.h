@@ -55,16 +55,16 @@ namespace Data
 		class ChartData
 		{
 		protected:
-			UOSInt dataCnt;
+			UIntOS dataCnt;
 
 		public:
-			ChartData(UOSInt dataCnt) { this->dataCnt = dataCnt; }
+			ChartData(UIntOS dataCnt) { this->dataCnt = dataCnt; }
 			virtual ~ChartData(){};
 
 			virtual DataType GetType() const = 0;
 			virtual NN<ChartData> Clone() const = 0;
-			UOSInt GetCount() const { return this->dataCnt; }
-			void UpdateCount(UOSInt newCnt) { if (newCnt <= this->dataCnt) this->dataCnt = newCnt; }
+			UIntOS GetCount() const { return this->dataCnt; }
+			void UpdateCount(UIntOS newCnt) { if (newCnt <= this->dataCnt) this->dataCnt = newCnt; }
 		};
 
 		template <typename T> class ArrayChartData : public ChartData
@@ -72,7 +72,7 @@ namespace Data
 		protected:
 			UnsafeArray<T> dataArr;
 		public:
-			ArrayChartData(UOSInt dataCnt) : ChartData(dataCnt)
+			ArrayChartData(UIntOS dataCnt) : ChartData(dataCnt)
 			{
 				this->dataArr = MemAllocArr(T, dataCnt);
 			}
@@ -91,9 +91,9 @@ namespace Data
 		class TimeData : public ArrayChartData<Data::TimeInstant>
 		{
 		public:
-			TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt);
-			TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt);
-			TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataCnt);
+			TimeData(UnsafeArray<Data::Timestamp> timeArr, UIntOS dataCnt);
+			TimeData(UnsafeArray<Data::TimeInstant> timeArr, UIntOS dataCnt);
+			TimeData(UnsafeArray<Int64> ticksArr, UIntOS dataCnt);
 			TimeData(NN<ReadingList<Timestamp>> timeArr);
 			virtual ~TimeData();
 
@@ -104,9 +104,9 @@ namespace Data
 			{
 				UnsafeArray<V> refArr = refData->GetData();
 				UnsafeArray<Data::TimeInstant> thisArr = this->dataArr;
-				UOSInt newCnt = 0;
-				UOSInt i = 0;
-				UOSInt j = this->dataCnt;
+				UIntOS newCnt = 0;
+				UIntOS i = 0;
+				UIntOS j = this->dataCnt;
 				while (i < j)
 				{
 					if (thisArr[i] >= ts.inst)
@@ -125,7 +125,7 @@ namespace Data
 		class Int32Data : public ArrayChartData<Int32>
 		{
 		public:
-			Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt);
+			Int32Data(UnsafeArray<Int32> intArr, UIntOS dataCnt);
 			Int32Data(NN<ReadingList<Int32>> intArr);
 			virtual ~Int32Data();
 
@@ -136,7 +136,7 @@ namespace Data
 		class UInt32Data : public ArrayChartData<UInt32>
 		{
 		public:
-			UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt);
+			UInt32Data(UnsafeArray<UInt32> intArr, UIntOS dataCnt);
 			UInt32Data(NN<ReadingList<UInt32>> intArr);
 			virtual ~UInt32Data();
 
@@ -147,7 +147,7 @@ namespace Data
 		class DoubleData : public ArrayChartData<Double>
 		{
 		public:
-			DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt);
+			DoubleData(UnsafeArray<Double> dblArr, UIntOS dataCnt);
 			DoubleData(NN<ReadingList<Double>> dblArr);
 			virtual ~DoubleData();
 
@@ -276,7 +276,7 @@ namespace Data
 		Data::ArrayListNN<ChartParam> charts;
 		Optional<Text::String> titleBuff;
 		Text::PString titleLine[3];
-		UOSInt titleLineCnt;
+		UIntOS titleLineCnt;
 		Optional<Text::String> yUnit;
 		Int8 timeZoneQHR;
 
@@ -330,7 +330,7 @@ namespace Data
 		Bool AddFilledLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
 		Bool AddScatter(Text::CStringNN name, NN<ChartData> xdata, NN<ChartData> ydata, UInt32 lineColor);
 		Bool AddScatter(Text::CStringNN name, NN<ChartData> xdata, NN<ChartData> ydata, UnsafeArrayOpt<Optional<Text::String>> labels, UInt32 lineColor);
-		Bool AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UOSInt barCount, UInt32 lineColor, UInt32 fillColor);
+		Bool AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UIntOS barCount, UInt32 lineColor, UInt32 fillColor);
 
 		void SetXRangeDate(NN<Data::DateTime> xVal);
 		void SetYRangeInt(Int32 yVal);
@@ -355,35 +355,35 @@ namespace Data
 		Optional<Axis> GetY1Axis() const;
 		Optional<Axis> GetY2Axis() const;
 		DataType GetXAxisType() const;
-		UOSInt GetChartCount() const;
-		Optional<ChartParam> GetChart(UOSInt index) const;
+		UIntOS GetChartCount() const;
+		Optional<ChartParam> GetChart(UIntOS index) const;
 
 		void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height);
-		UOSInt GetLegendCount() const;
-		UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const;
-		Bool SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt> size, Text::CStringNN fileName);
+		UIntOS GetLegendCount() const;
+		UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UIntOS index) const;
+		Bool SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UIntOS> size, Text::CStringNN fileName);
 
-		static UOSInt CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
+		static UIntOS CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
+		static UIntOS CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
+		static UIntOS CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit);
+		static UIntOS CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
 
-		static NN<TimeData> NewData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt);
-		static NN<Int32Data> NewData(UnsafeArray<Int32> data, UOSInt dataCnt);
-		static NN<UInt32Data> NewData(UnsafeArray<UInt32> data, UOSInt dataCnt);
-		static NN<DoubleData> NewData(UnsafeArray<Double> data, UOSInt dataCnt);
-		static NN<TimeData> NewDataDate(UnsafeArray<Int64> ticksData, UOSInt dataCnt);
+		static NN<TimeData> NewData(UnsafeArray<Data::Timestamp> data, UIntOS dataCnt);
+		static NN<Int32Data> NewData(UnsafeArray<Int32> data, UIntOS dataCnt);
+		static NN<UInt32Data> NewData(UnsafeArray<UInt32> data, UIntOS dataCnt);
+		static NN<DoubleData> NewData(UnsafeArray<Double> data, UIntOS dataCnt);
+		static NN<TimeData> NewDataDate(UnsafeArray<Int64> ticksData, UIntOS dataCnt);
 		static NN<TimeData> NewData(NN<Data::ReadingList<Data::Timestamp>> data);
 		static NN<Int32Data> NewData(NN<Data::ReadingList<Int32>> data);
 		static NN<UInt32Data> NewData(NN<Data::ReadingList<UInt32>> data);
 		static NN<DoubleData> NewData(NN<Data::ReadingList<Double>> data);
-		static NN<Int32Data> NewDataSeq(Int32 startSeq, UOSInt count);
+		static NN<Int32Data> NewDataSeq(Int32 startSeq, UIntOS count);
 		static Optional<Axis> NewAxis(NN<ChartData> data);
 
 		template<class K, class V> static NN<ChartData> NewDataFromKey(NN<Data::ArrayListNative<TwinItemNative<K, V>>> vals)
 		{
-			UOSInt i = 0;
-			UOSInt j = vals->GetCount();
+			UIntOS i = 0;
+			UIntOS j = vals->GetCount();
 			Data::ArrayListNative<K> arr(j);
 			while (i < j)
 			{
@@ -395,8 +395,8 @@ namespace Data
 
 		template<class K, class V> static NN<ChartData> NewDataFromValue(NN<Data::ArrayListNative<TwinItemNative<K, V>>> vals)
 		{
-			UOSInt i = 0;
-			UOSInt j = vals->GetCount();
+			UIntOS i = 0;
+			UIntOS j = vals->GetCount();
 			Data::ArrayListNative<V> arr(j);
 			while (i < j)
 			{

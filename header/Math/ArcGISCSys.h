@@ -12,9 +12,9 @@ namespace Math
 		{
 			UInt32 srid;
 			const UTF8Char *name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 			const UTF8Char *projWKT;
-			UOSInt projWKTLen;
+			UIntOS projWKTLen;
 		} CSysInfo;
 
 	private:

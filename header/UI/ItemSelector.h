@@ -7,8 +7,8 @@ namespace UI
 	class ItemSelector
 	{
 	public:
-		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
-		virtual void SetSelectedIndex(UOSInt index) = 0;
+		virtual UIntOS AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
+		virtual void SetSelectedIndex(UIntOS index) = 0;
 		virtual AnyType GetSelectedItem() = 0;
 	};
 }

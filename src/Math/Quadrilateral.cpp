@@ -29,7 +29,7 @@ Double Math::Quadrilateral::CalcMaxTiltAngle() const
 	ang[3] = dir[3] - dir[0];
 	Double maxTiltAngle = 0;
 	Double tiltAngle;
-	UOSInt i = 4;
+	UIntOS i = 4;
 	while (i-- > 0)
 	{
 		if (ang[i] < 0) ang[i] += deg360;
@@ -129,14 +129,14 @@ Bool Math::Quadrilateral::IsNonRotateRectangle() const
 	return this->tl.y == this->tr.y && this->tl.x == this->bl.x && this->bl.y == this->br.y && this->tr.x == this->br.x && this->tl.x <= this->br.x && this->tl.y <= this->br.y;
 }
 
-UOSInt Math::Quadrilateral::CalcIntersactsAtY(UnsafeArray<Double> xArr, Double y) const
+UIntOS Math::Quadrilateral::CalcIntersactsAtY(UnsafeArray<Double> xArr, Double y) const
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (this->tr.y == y)
 	{
 		if (this->tl.y == y || this->br.y == y)
 		{
-			UOSInt eqCnt = 1;
+			UIntOS eqCnt = 1;
 			Double min = tr.x;
 			Double max = tr.x;
 			if (this->tl.y == y) { eqCnt++; if (min > tl.x) min = tl.x; if (max < tl.x) max = tl.x; }
@@ -168,7 +168,7 @@ UOSInt Math::Quadrilateral::CalcIntersactsAtY(UnsafeArray<Double> xArr, Double y
 	{
 		if (this->tl.y == y || this->br.y == y)
 		{
-			UOSInt eqCnt = 1;
+			UIntOS eqCnt = 1;
 			Double min = bl.x;
 			Double max = bl.x;
 			if (this->tl.y == y) { eqCnt++; if (min > tl.x) min = tl.x; if (max < tl.x) max = tl.x; }
@@ -209,13 +209,13 @@ Double Math::Quadrilateral::Sign(Coord2DDbl p1, Coord2DDbl p2, Coord2DDbl p3)
 	return diff13.x * diff23.y - diff23.x * diff13.y;
 }
 
-Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<UOSInt>> pg)
+Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<UIntOS>> pg)
 {
-	UOSInt minX = pg[3].x;
-	UOSInt minY = pg[3].y;
-	UOSInt maxX = minX;
-	UOSInt maxY = minY;
-	UOSInt i = 3;
+	UIntOS minX = pg[3].x;
+	UIntOS minY = pg[3].y;
+	UIntOS maxX = minX;
+	UIntOS maxY = minY;
+	UIntOS i = 3;
 	while (i-- > 0)
 	{
 		if (pg[i].x < minX) minX = pg[i].x;
@@ -224,9 +224,9 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<U
 		if (pg[i].y > maxY) maxY = pg[i].y;
 	}
 
-	UOSInt diff;
-	UOSInt tldiff = pg[3].x - minX + pg[3].y - minY;
-	UOSInt tlIndex = 3;
+	UIntOS diff;
+	UIntOS tldiff = pg[3].x - minX + pg[3].y - minY;
+	UIntOS tlIndex = 3;
 	i = 3;
 	while (i-- > 0)
 	{
@@ -241,83 +241,83 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<U
 	switch (tlIndex)
 	{
 	case 0:
-		quad.tl.x = UOSInt2Double(pg[0].x);
-		quad.tl.y = UOSInt2Double(pg[0].y);
-		quad.br.x = UOSInt2Double(pg[2].x);
-		quad.br.y = UOSInt2Double(pg[2].y);
+		quad.tl.x = UIntOS2Double(pg[0].x);
+		quad.tl.y = UIntOS2Double(pg[0].y);
+		quad.br.x = UIntOS2Double(pg[2].x);
+		quad.br.y = UIntOS2Double(pg[2].y);
 		if (pg[1].x > pg[3].x)
 		{
-			quad.tr.x = UOSInt2Double(pg[1].x);
-			quad.tr.y = UOSInt2Double(pg[1].y);
-			quad.bl.x = UOSInt2Double(pg[3].x);
-			quad.bl.y = UOSInt2Double(pg[3].y);
+			quad.tr.x = UIntOS2Double(pg[1].x);
+			quad.tr.y = UIntOS2Double(pg[1].y);
+			quad.bl.x = UIntOS2Double(pg[3].x);
+			quad.bl.y = UIntOS2Double(pg[3].y);
 		}
 		else
 		{
-			quad.tr.x = UOSInt2Double(pg[3].x);
-			quad.tr.y = UOSInt2Double(pg[3].y);
-			quad.bl.x = UOSInt2Double(pg[1].x);
-			quad.bl.y = UOSInt2Double(pg[1].y);
+			quad.tr.x = UIntOS2Double(pg[3].x);
+			quad.tr.y = UIntOS2Double(pg[3].y);
+			quad.bl.x = UIntOS2Double(pg[1].x);
+			quad.bl.y = UIntOS2Double(pg[1].y);
 		}
 		break;
 	case 1:
-		quad.tl.x = UOSInt2Double(pg[1].x);
-		quad.tl.y = UOSInt2Double(pg[1].y);
-		quad.br.x = UOSInt2Double(pg[3].x);
-		quad.br.y = UOSInt2Double(pg[3].y);
+		quad.tl.x = UIntOS2Double(pg[1].x);
+		quad.tl.y = UIntOS2Double(pg[1].y);
+		quad.br.x = UIntOS2Double(pg[3].x);
+		quad.br.y = UIntOS2Double(pg[3].y);
 		if (pg[0].x > pg[2].x)
 		{
-			quad.tr.x = UOSInt2Double(pg[0].x);
-			quad.tr.y = UOSInt2Double(pg[0].y);
-			quad.bl.x = UOSInt2Double(pg[2].x);
-			quad.bl.y = UOSInt2Double(pg[2].y);
+			quad.tr.x = UIntOS2Double(pg[0].x);
+			quad.tr.y = UIntOS2Double(pg[0].y);
+			quad.bl.x = UIntOS2Double(pg[2].x);
+			quad.bl.y = UIntOS2Double(pg[2].y);
 		}
 		else
 		{
-			quad.tr.x = UOSInt2Double(pg[2].x);
-			quad.tr.y = UOSInt2Double(pg[2].y);
-			quad.bl.x = UOSInt2Double(pg[0].x);
-			quad.bl.y = UOSInt2Double(pg[0].y);
+			quad.tr.x = UIntOS2Double(pg[2].x);
+			quad.tr.y = UIntOS2Double(pg[2].y);
+			quad.bl.x = UIntOS2Double(pg[0].x);
+			quad.bl.y = UIntOS2Double(pg[0].y);
 		}
 		break;
 	case 2:
-		quad.tl.x = UOSInt2Double(pg[2].x);
-		quad.tl.y = UOSInt2Double(pg[2].y);
-		quad.br.x = UOSInt2Double(pg[0].x);
-		quad.br.y = UOSInt2Double(pg[0].y);
+		quad.tl.x = UIntOS2Double(pg[2].x);
+		quad.tl.y = UIntOS2Double(pg[2].y);
+		quad.br.x = UIntOS2Double(pg[0].x);
+		quad.br.y = UIntOS2Double(pg[0].y);
 		if (pg[1].x > pg[3].x)
 		{
-			quad.tr.x = UOSInt2Double(pg[1].x);
-			quad.tr.y = UOSInt2Double(pg[1].y);
-			quad.bl.x = UOSInt2Double(pg[3].x);
-			quad.bl.y = UOSInt2Double(pg[3].y);
+			quad.tr.x = UIntOS2Double(pg[1].x);
+			quad.tr.y = UIntOS2Double(pg[1].y);
+			quad.bl.x = UIntOS2Double(pg[3].x);
+			quad.bl.y = UIntOS2Double(pg[3].y);
 		}
 		else
 		{
-			quad.tr.x = UOSInt2Double(pg[3].x);
-			quad.tr.y = UOSInt2Double(pg[3].y);
-			quad.bl.x = UOSInt2Double(pg[1].x);
-			quad.bl.y = UOSInt2Double(pg[1].y);
+			quad.tr.x = UIntOS2Double(pg[3].x);
+			quad.tr.y = UIntOS2Double(pg[3].y);
+			quad.bl.x = UIntOS2Double(pg[1].x);
+			quad.bl.y = UIntOS2Double(pg[1].y);
 		}
 		break;
 	default:
-		quad.tl.x = UOSInt2Double(pg[3].x);
-		quad.tl.y = UOSInt2Double(pg[3].y);
-		quad.br.x = UOSInt2Double(pg[1].x);
-		quad.br.y = UOSInt2Double(pg[1].y);
+		quad.tl.x = UIntOS2Double(pg[3].x);
+		quad.tl.y = UIntOS2Double(pg[3].y);
+		quad.br.x = UIntOS2Double(pg[1].x);
+		quad.br.y = UIntOS2Double(pg[1].y);
 		if (pg[0].x > pg[2].x)
 		{
-			quad.tr.x = UOSInt2Double(pg[0].x);
-			quad.tr.y = UOSInt2Double(pg[0].y);
-			quad.bl.x = UOSInt2Double(pg[2].x);
-			quad.bl.y = UOSInt2Double(pg[2].y);
+			quad.tr.x = UIntOS2Double(pg[0].x);
+			quad.tr.y = UIntOS2Double(pg[0].y);
+			quad.bl.x = UIntOS2Double(pg[2].x);
+			quad.bl.y = UIntOS2Double(pg[2].y);
 		}
 		else
 		{
-			quad.tr.x = UOSInt2Double(pg[2].x);
-			quad.tr.y = UOSInt2Double(pg[2].y);
-			quad.bl.x = UOSInt2Double(pg[0].x);
-			quad.bl.y = UOSInt2Double(pg[0].y);
+			quad.tr.x = UIntOS2Double(pg[2].x);
+			quad.tr.y = UIntOS2Double(pg[2].y);
+			quad.bl.x = UIntOS2Double(pg[0].x);
+			quad.bl.y = UIntOS2Double(pg[0].y);
 		}
 		break;
 	}
@@ -330,7 +330,7 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2DDb
 	Double minY = pg[3].y;
 	Double maxX = minX;
 	Double maxY = minY;
-	UOSInt i = 3;
+	UIntOS i = 3;
 	while (i-- > 0)
 	{
 		if (pg[i].x < minX) minX = pg[i].x;
@@ -341,7 +341,7 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2DDb
 
 	Double diff;
 	Double tldiff = pg[3].x - minX + pg[3].y - minY;
-	UOSInt tlIndex = 3;
+	UIntOS tlIndex = 3;
 	i = 3;
 	while (i-- > 0)
 	{
@@ -415,7 +415,7 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2DDb
 	return quad;
 }
 
-UOSInt Math::Quadrilateral::CalcIntersactAtY(Math::Coord2DDbl p1, Coord2DDbl p2, Double y, UnsafeArray<Double> xArr)
+UIntOS Math::Quadrilateral::CalcIntersactAtY(Math::Coord2DDbl p1, Coord2DDbl p2, Double y, UnsafeArray<Double> xArr)
 {
 	if ((p1.y > y) ^ (p2.y > y))
 	{

@@ -17,7 +17,7 @@ namespace Media
 			English
 		};
 		
-		typedef void (CALLBACKFUNC OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
+		typedef void (CALLBACKFUNC OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<IntOS> boundary);
 	private:
 		class ClassData;
 		NN<ClassData> clsData;
@@ -35,7 +35,7 @@ namespace Media
 
 		Bool SetParsingImage(NN<Media::StaticImage> img);
 		Bool SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame);
-		Optional<Text::String> ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence);
+		Optional<Text::String> ParseInsideImage(Math::RectArea<UIntOS> area, OptOut<UIntOS> confidence);
 		
 		void HandleOCRResult(OCRResultFunc hdlr, AnyType userObj);
 		Bool ParseAllInImage();

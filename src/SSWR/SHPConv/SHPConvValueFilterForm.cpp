@@ -18,7 +18,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(AnyType userOb
 		typ = 0;
 	}
 	NN<ValueFilter> filter;
-	NEW_CLASSNN(filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToCString(), typ));
+	NEW_CLASSNN(filter, ValueFilter((UIntOS)me->cboCol->GetSelectedIndex(), sb.ToCString(), typ));
 	me->filter = filter;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -64,8 +64,8 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUICl
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = this->dbf->GetColCount();
+	UIntOS i = 0;
+	UIntOS j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{

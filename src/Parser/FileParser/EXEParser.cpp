@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 	IO::EXEFile *exef;
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
-	UOSInt codeLen;
+	UIntOS codeLen;
 
 	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[2]));
 	exef->AddProp(CSTR("(DOS)Bytes on last page of file"), CSTRP(sbuff, sptr));
@@ -164,7 +164,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	*(UInt32*)&codePtr[56] = 0xffffffff;
 	*(UInt32*)&codePtr[60] = 0;
 	*(UInt16*)&codePtr[64] = 0x206;
-	UOSInt i = 66;
+	UIntOS i = 66;
 	while (i < 80)
 		codePtr[i++] = 0;
 	codePtr[80] = 0xcd;				// INT 21H,RETF INSTRUCTIONS
@@ -490,7 +490,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 						UInt32 rva;
 //						UInt32 tabSize;
 						UInt32 sOfst;
-						UOSInt i;
+						UIntOS i;
 						Text::StringBuilderUTF8 sb;
 						Data::ByteBuffer sectionHeaders(numberOfSections * 40);
 						Data::ByteBuffer exeImage(sizeOfImage);
@@ -508,7 +508,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Name"));
 							sptr = Text::StrConcatS(sbuff, &sectionHeaders[sOfst], 9);
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
@@ -523,86 +523,86 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 							}
 
 							fd->GetRealData(dataAddr, readSize, exeImage.SubArray(virtAddr));
-							if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".text")))
+							if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".text")))
 							{
 							}
-							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rdata")))
+							else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".rdata")))
 							{
 							}
-							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".data")))
+							else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".data")))
 							{
 							}
-							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".pdata")))
+							else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".pdata")))
 							{
 							}
-							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rsrc")))
+							else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".rsrc")))
 							{
 								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage.Arr().Ptr());
 								sbuff[0] = 0;
 							}
-							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".reloc")))
+							else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".reloc")))
 							{
 							}
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Virtual Size"));
 							sptr = Text::StrUInt32(sbuff, virtSize);
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Virtual Address"));
 							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), virtAddr);
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Size Of Raw Data"));
 							sptr = Text::StrUInt32(sbuff, dataSize);
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Pointer To Raw Data"));
 							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), dataAddr);
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Pointer To Relocations"));
 							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 24]));
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Pointer To Line numbers"));
 							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 28]));
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Number Of Relocations"));
 							sptr = Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 32]));
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Number Of Line numbers"));
 							sptr = Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 34]));
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
-							sb.AppendUOSInt(i);
+							sb.AppendUIntOS(i);
 							sb.AppendC(UTF8STRC(" Characteristics"));
 							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 36]));
 							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
@@ -625,7 +625,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 						{
 							Int32 ilut;
 							UInt32 nameRVA;
-							UOSInt j;
+							UIntOS j;
 							while (true)
 							{
 								ilut = ReadInt32(&exeImage[rva + 0]);
@@ -672,7 +672,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 										}
 										else
 										{
-											sptr = Text::StrConcatC(sbuff, &exeImage[(UOSInt)(funcRVA + 2) & 0x7fffffff], 64);
+											sptr = Text::StrConcatC(sbuff, &exeImage[(UIntOS)(funcRVA + 2) & 0x7fffffff], 64);
 											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										ilut += 8;
@@ -767,9 +767,9 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 			sptr = Text::StrInt32(sbuff, neBuff[54]);
 			exef->AddProp(CSTR("Executable type"), CSTRP(sbuff, sptr));
 
-			UOSInt tableStart;
-			UOSInt tableSize;
-			UOSInt j;
+			UIntOS tableStart;
+			UIntOS tableSize;
+			UIntOS j;
 			tableStart = ReadUInt16(&neBuff[38]);
 			tableSize = ReadUInt16(&neBuff[40]) - tableStart;
 			tableStart += peOfst;
@@ -785,7 +785,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 					exef->AddProp(CSTR("ResidentName"), CSTRP(sbuff, sptr));
 
 					i++;
-					j += (UOSInt)nameTable[j] + 1;
+					j += (UIntOS)nameTable[j] + 1;
 				}
 			}
 
@@ -803,7 +803,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 					exef->AddProp(CSTR("NonResidentName"), CSTRP(sbuff, sptr));
 
 					i++;
-					j += (UOSInt)nameTable[j] + 1;
+					j += (UIntOS)nameTable[j] + 1;
 				}
 			}
 
@@ -828,7 +828,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 					sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j]));
 					exef->AddProp(CSTR("-Type ID"), CSTRP(sbuff, sptr));
 					i = ReadUInt16(&nameTable[j + 2]);
-					sptr = Text::StrOSInt(sbuff, ReadUInt16(&nameTable[j + 2]));
+					sptr = Text::StrIntOS(sbuff, ReadUInt16(&nameTable[j + 2]));
 					exef->AddProp(CSTR("-Number of resources for this type"), CSTRP(sbuff, sptr));
 					j += 8;
 					while (j < tableSize && i-- > 0)
@@ -842,7 +842,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 6]));
 						exef->AddProp(CSTR("--Resource ID"), CSTRP(sbuff, sptr));
 
-						UOSInt resSize = (UOSInt)ReadUInt16(&nameTable[j + 2]) << ReadUInt16(&nameTable[0]);
+						UIntOS resSize = (UIntOS)ReadUInt16(&nameTable[j + 2]) << ReadUInt16(&nameTable[0]);
 						Data::ByteBuffer resBuff(resSize);
 						fd->GetRealData((UInt64)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0])), resSize, resBuff);
 
@@ -857,11 +857,11 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	return exef;
 }
 
-void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	UInt32 v;
 	UInt32 thisRType = resType;
 	UnsafeArray<UTF8Char> sptr;
@@ -912,7 +912,7 @@ void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resT
 	}
 }
 
-void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
 {
 	UInt32 dataRVA = ReadUInt32(&resBuff[resOfst]);
 	UInt32 size = ReadUInt32(&resBuff[resOfst + 4]);

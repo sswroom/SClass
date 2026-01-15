@@ -10,7 +10,7 @@
 #include "Media/CS/TransferFunc.h"
 #include "Text/MyString.h"
 
-Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, NN<Media::AudioSource> audio, UOSInt fftSize, UOSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
+Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, NN<Media::AudioSource> audio, UIntOS fftSize, UIntOS timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
 {
 	if (!audio->SupportSampleRead())
 	{
@@ -29,17 +29,17 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 	UInt32 yAxis;
 	UInt32 xAxis;
 	Math::Size2DDbl sz;
-	UOSInt currSample;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS currSample;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Double *allFreqs;
 	Double *freqs;
 	Double *maxFreq;
 	Double *minFreq;
 	UInt32 iVal;
-	Double dfftSize = UOSInt2Double(fftSize);
+	Double dfftSize = UIntOS2Double(fftSize);
 	Media::AudioFormat fmt;
 	Math::FFTCalc fft(fftSize, wtype);
 	Data::ArrayIterator<NN<Text::String>> it;
@@ -50,7 +50,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		UInt64 sampleCnt = (UInt64)audio->GetSampleCount();
 		Data::ByteBuffer samples(fftSize * fmt.nChannels * fmt.bitpersample >> 3);
 
-		if (!eng->CreateImage32(Math::Size2D<UOSInt>(32, 32), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
+		if (!eng->CreateImage32(Math::Size2D<UIntOS>(32, 32), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 		{
 			return nullptr;
 		}
@@ -65,7 +65,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		while (it.HasNext())
 		{
 			s = it.Next();
-			i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
+			i = (UIntOS)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
 			sz = tmpImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.x);
 			if (iVal > yAxis)
@@ -77,13 +77,13 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
+		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UIntOS2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
 		xAxis = 0;
 		it = chartLabels.Iterator();
 		while (it.HasNext())
 		{
 			s = it.Next();
-			i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
+			i = (UIntOS)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
 			sz = tmpImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.x);
 			if (iVal > xAxis)
@@ -101,7 +101,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		j = timeRes;
 		while (i <= j)
 		{
-			currSample = (UOSInt)(sampleCnt * i / j);
+			currSample = (UIntOS)(sampleCnt * i / j);
 			audio->ReadSample(currSample - (fftSize >> 1), fftSize, samples);
 
 			if (fmt.bitpersample == 16)
@@ -147,11 +147,11 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		Double thisMin;
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
 		NN<Media::CS::TransferFunc> trans = Media::CS::TransferFunc::CreateFunc(tranParam);
-		UOSInt sbpl;
+		UIntOS sbpl;
 		UnsafeArray<UInt8> imgPtr;
 		UInt8 v;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		if (eng->CreateImage32(Math::Size2D<UOSInt>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
+		if (eng->CreateImage32(Math::Size2D<UIntOS>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 		{
 			retImg = tmpImg.Ptr();
 			tmpImg->SetColorProfile(color);
@@ -183,7 +183,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			j = 16385;
 			while (i < j)
 			{
-				v = (UInt8)(255 - (UInt8)Double2Int32(255.0 * trans->ForwardTransfer(UOSInt2Double(i) / 16384.0)));
+				v = (UInt8)(255 - (UInt8)Double2Int32(255.0 * trans->ForwardTransfer(UIntOS2Double(i) / 16384.0)));
 				lut[i] = 0xff000000 | (UInt32)(v << 16) | (UInt32)(v << 8) | v;
 				i++;
 			}
@@ -267,7 +267,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			b = tmpImg->NewBrushARGB(0xff000000);
 			f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			tmpImg->DrawLine(yAxis + 3, ihFontSize, yAxis + 3, ihFontSize + dfftSize * 0.5, p);
-			tmpImg->DrawLine(yAxis + 3, ihFontSize + dfftSize * 0.5, yAxis + 4 + UOSInt2Double(timeRes), ihFontSize + dfftSize * 0.5, p);
+			tmpImg->DrawLine(yAxis + 3, ihFontSize + dfftSize * 0.5, yAxis + 4 + UIntOS2Double(timeRes), ihFontSize + dfftSize * 0.5, p);
 
 			chartPos.Clear();
 			chartLabels.Clear();
@@ -276,23 +276,23 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			while (it.HasNext())
 			{
 				s = it.Next();
-				i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
+				i = (UIntOS)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
 				sz = tmpImg->GetTextSize(f, {sbuff, i});
 				k = (UInt32)Double2Int32(sz.x);
-				tmpImg->DrawString(Math::Coord2DDbl(yAxis - UOSInt2Double(k), dfftSize * 0.5 - chartPos.GetItem(j)), {sbuff, i}, f, b);
-				tmpImg->DrawLine(yAxis, dfftSize * 0.5 - chartPos.GetItem(j) + ihFontSize, yAxis + 4, UOSInt2Double(fftSize >> 1) - chartPos.GetItem(j) + ihFontSize, p);
+				tmpImg->DrawString(Math::Coord2DDbl(yAxis - UIntOS2Double(k), dfftSize * 0.5 - chartPos.GetItem(j)), {sbuff, i}, f, b);
+				tmpImg->DrawLine(yAxis, dfftSize * 0.5 - chartPos.GetItem(j) + ihFontSize, yAxis + 4, UIntOS2Double(fftSize >> 1) - chartPos.GetItem(j) + ihFontSize, p);
 
 				s->Release();
 			}
 
 			chartPos.Clear();
 			chartLabels.Clear();
-			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
+			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UIntOS2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
 			it = chartLabels.Iterator();
 			while (it.HasNext())
 			{
 				s = it.Next();
-				i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
+				i = (UIntOS)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
 				sz = tmpImg->GetTextSize(f, {sbuff, i});
 				k = (UInt32)Double2Int32(sz.x);
 				tmpImg->DrawStringRot(Math::Coord2DDbl(yAxis + 4 + chartPos.GetItem(j) + ihFontSize, ihFontSize + dfftSize * 0.5 + 4), {sbuff, i}, f, b, 270.0);

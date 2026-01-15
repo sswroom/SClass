@@ -78,13 +78,13 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::St
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool valid = false;
 
 	sptr = fd->GetFullName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-	j = Text::StrIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '?');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+	j = Text::StrIndexOfCharC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), '?');
 	if (j != INVALID_INDEX)
 	{
 		sbuff[i + j + 1] = 0;
@@ -94,31 +94,31 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::St
 	{
 
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".XML")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".XML")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".GPX")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".GPX")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".KML")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".KML")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".OSM")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".OSM")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".VCPROJ")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".VCPROJ")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".GML")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".GML")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".JRXML")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".JRXML")))
 	{
 		valid = true;
 	}
@@ -144,8 +144,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("gpx")))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<const UTF8Char> shortName;
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
@@ -163,7 +163,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			{
 				Map::GPSTrack *track;
 				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, nullptr));
-				track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
+				track->SetTrackName({shortName, (UIntOS)(fileName.v + fileName.leng - shortName)});
 				while (reader.NextElementName().SetTo(nodeText))
 				{
 					if (nodeText->Equals(UTF8STRC("trkseg")))
@@ -305,7 +305,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 									Double mapYMin;
 									Double mapXMax;
 									Double mapYMax;
-									UOSInt i;
+									UIntOS i;
 									NN<Text::String> aname;
 									NN<Text::String> avalue;
 									NN<Text::XMLAttrib> attr;
@@ -445,7 +445,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 		NN<Text::String> nnprojName;
 		NN<Text::String> aname;
 		NN<Text::String> avalue;
-		UOSInt i;
+		UIntOS i;
 		i = reader.GetAttribCount();
 		while (i-- > 0)
 		{
@@ -512,8 +512,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("fme:xml-tables")))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<const UTF8Char> shortName;
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
@@ -540,8 +540,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 		{
 			if (nodeText->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(nodeText->v + 4, sbTableName.ToString()) && Text::StrEquals(nodeText->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
 			{
-				UOSInt i;
-				UOSInt j;
+				UIntOS i;
+				UIntOS j;
 				DB::TextDB *db = 0;
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN colList;
@@ -937,8 +937,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 
 Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> aname;
 	NN<Text::String> avalue;
@@ -1008,7 +1008,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 
 Bool Parser::FileParser::XMLParser::ParseVSProjFile(NN<Text::XMLReader> reader, NN<Text::VSProjContainer> container)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> nodeText;
@@ -1071,7 +1071,7 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NN<Text::XMLReader> reader, 
 
 Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, NN<Text::CodeProject> proj)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Text::CodeProjectCfg> cfg;
 	NN<Text::XMLAttrib> attr;
 	Optional<Text::String> cfgName;

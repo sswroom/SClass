@@ -8,7 +8,7 @@ namespace Data
 	{
 	public:
 		ArrayListSng();
-		ArrayListSng(OSInt Capacity);
+		ArrayListSng(IntOS Capacity);
 
 		virtual NN<Data::ArrayList<Single>> Clone() const;
 	};

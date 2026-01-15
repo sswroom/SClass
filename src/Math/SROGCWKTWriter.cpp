@@ -12,7 +12,7 @@ Math::SROGCWKTWriter::~SROGCWKTWriter()
 
 }
 
-UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buff, UInt32 srid, UIntOS lev, Text::LineBreakType lbt)
 {
 	if (srid != 0)
 	{
@@ -25,7 +25,7 @@ UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buff
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::PrimemType primem, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (primem)
 	{
@@ -40,7 +40,7 @@ UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WritePrimem(UnsafeArray<UTF8Char> bu
 	}
 	return buff;
 }
-UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::UnitType unit, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (unit)
 	{
@@ -72,7 +72,7 @@ UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CoordinateSystem> pcsys, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CoordinateSystem> pcsys, UIntOS lev, Text::LineBreakType lbt)
 {
 	*buff++ = ',';
 	buff = WriteNextLine(buff, lev, lbt);

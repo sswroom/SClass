@@ -12,14 +12,14 @@ Media::ZXingReader::~ZXingReader()
 {
 }
 
-UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadY8(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> imgData, UOSInt width, UOSInt height, UOSInt lineSize) const
+UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadY8(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> imgData, UIntOS width, UIntOS height, UIntOS lineSize) const
 {
 	ZXing::ImageView imgView(imgData.Ptr(), (int)width, (int)height, ZXing::ImageFormat::Lum, (int)lineSize, 1);
 	ZXing::Result result = ZXing::ReadBarcode(imgView);
 	if (result.error().type() == ZXing::Error::Type::None)
 	{
 		ZXing::ByteArray s = result.bytes();
-		return Text::StrConcatC(buff, s.data(), (UOSInt)s.size());
+		return Text::StrConcatC(buff, s.data(), (UIntOS)s.size());
 	}
 	return 0;
 }
@@ -37,7 +37,7 @@ UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadImg(UnsafeArray<UTF8Char> buff,
 	if (result.error().type() == ZXing::Error::Type::None)
 	{
 		ZXing::ByteArray s = result.bytes();
-		return Text::StrConcatC(buff, s.data(), (UOSInt)s.size());
+		return Text::StrConcatC(buff, s.data(), (UIntOS)s.size());
 	}
 	return 0;
 }

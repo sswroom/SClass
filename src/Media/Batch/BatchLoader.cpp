@@ -13,7 +13,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 	Optional<Text::String> fileName = nullptr;
 	Optional<DataInfo> info = nullptr;
 	Bool found;
-	UOSInt i;
+	UIntOS i;
 	NN<IO::ParsedObject> nnpobj;
 
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
@@ -65,7 +65,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 						mutUsage.EndUse();
 						
 						sptr = fileNameStr->ConcatTo(sbuff);
-						i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+						i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
 						if (i != INVALID_INDEX)
 						{
 							sbuff[i] = 0;
@@ -128,7 +128,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 
 Media::Batch::BatchLoader::BatchLoader(NN<Parser::ParserList> parsers, NN<Media::Batch::BatchHandler> hdlr)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool started;
 	this->parsers = parsers;
 	this->hdlr = hdlr;
@@ -167,7 +167,7 @@ Media::Batch::BatchLoader::BatchLoader(NN<Parser::ParserList> parsers, NN<Media:
 
 Media::Batch::BatchLoader::~BatchLoader()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool exited;
 	NN<DataInfo> data;
 
@@ -255,7 +255,7 @@ Bool Media::Batch::BatchLoader::IsProcessing()
 	}
 	else
 	{
-		UOSInt i = this->threadCnt;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			if (this->threadStates[i].processing)

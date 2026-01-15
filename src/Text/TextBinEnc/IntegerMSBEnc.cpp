@@ -11,22 +11,22 @@ Text::TextBinEnc::IntegerMSBEnc::~IntegerMSBEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::IntegerMSBEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	Math::BigIntLSB bint(buffSize);
 	bint.FromBytesMSB(dataBuff, buffSize);
-	UOSInt len = sb->GetLength();
+	UIntOS len = sb->GetLength();
 	bint.ToString(sb);
 	return sb->GetLength() - len;
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::IntegerMSBEnc::CalcBinSize(Text::CStringNN str) const
 {
 	Math::BigIntLSB bint(str.leng / 2 + 1, str);
 	return bint.GetOccupiedSize();
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::IntegerMSBEnc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	Math::BigIntLSB bint(str.leng / 2 + 1, str);
 	return bint.GetBytesMSB(dataBuff, true);

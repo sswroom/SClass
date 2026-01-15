@@ -91,9 +91,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 		}
 		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
-			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UOSInt)(sptrEnd - sptr), ext.v, ext.leng))
+			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UIntOS)(sptrEnd - sptr), ext.v, ext.leng))
 			{
-				Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
+				Text::StrConcatC(sptr2, sptr, (UIntOS)(sptrEnd - sptr));
 				sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
 				me->MTConvertFile(csess, CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2End));
 			}
@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StartThreads()
 	this->threadToStop = false;
 	this->nThreads = Sync::ThreadUtil::GetThreadCnt();
 	this->threadStates = threadStates = MemAllocArr(ThreadState, this->nThreads);
-	UOSInt i = this->nThreads;
+	UIntOS i = this->nThreads;
 	while (i-- > 0)
 	{
 		threadStates[i].status = ThreadStatus::NotStarted;
@@ -176,7 +176,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 		return;
 	}
 	this->threadToStop = true;
-	UOSInt i = this->nThreads;
+	UIntOS i = this->nThreads;
 	while (i-- > 0)
 	{
 		while (threadStates[i].status == ThreadStatus::NotStarted)
@@ -221,7 +221,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(NN<ConvertSess> sess, 
 	Bool found = false;
 	while (true)
 	{
-		UOSInt i = this->nThreads;
+		UIntOS i = this->nThreads;
 		while (i-- > 0)
 		{
 			if (threadStates[i].status == ThreadStatus::Idle && !threadStates[i].hasData)

@@ -17,7 +17,7 @@ namespace Text
 			Optional<Text::String> defMsg;
 			Data::ArrayListNN<MIMEMessage> parts;
 
-			void ParsePart(UInt8 *buff, UOSInt buffSize);
+			void ParsePart(UInt8 *buff, UIntOS buffSize);
 			MultipartMIMEObj(NN<Text::String> contentType, Optional<Text::String> defMsg, NN<Text::String> boundary);
 			MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary);
 		public:
@@ -26,16 +26,16 @@ namespace Text
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual UIntOS WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<MIMEObject> Clone() const;
 
 			Optional<Text::String> GetDefMsg() const;
-			UOSInt AddPart(NN<Text::MIMEObject> obj);
-			void SetPartTransferData(UOSInt partIndex, const UInt8 *data, UOSInt dataSize);
-			Bool AddPartHeader(UOSInt partIndex, Text::CStringNN name, Text::CStringNN value);
-			Optional<Text::MIMEObject> GetPartContent(UOSInt partIndex) const;
-			Optional<MIMEMessage> GetPart(UOSInt partIndex) const;
-			UOSInt GetPartCount() const;
+			UIntOS AddPart(NN<Text::MIMEObject> obj);
+			void SetPartTransferData(UIntOS partIndex, const UInt8 *data, UIntOS dataSize);
+			Bool AddPartHeader(UIntOS partIndex, Text::CStringNN name, Text::CStringNN value);
+			Optional<Text::MIMEObject> GetPartContent(UIntOS partIndex) const;
+			Optional<MIMEMessage> GetPart(UIntOS partIndex) const;
+			UIntOS GetPartCount() const;
 
 			static Optional<MultipartMIMEObj> ParseFile(Text::CStringNN contentType, NN<IO::StreamData> data);
 		};

@@ -29,8 +29,8 @@ namespace Media
 
 		Bool SetHWParams(NN<Media::AudioSource> audsrc, void *h);
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
+		static UIntOS GetDeviceCount();
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
 		
 		void OnEvent();
 

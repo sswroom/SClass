@@ -15,7 +15,7 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::Addres
 	UInt16 nQuestions = ReadMUInt16(&data[4]);
 	UInt16 nAnswer = ReadMUInt16(&data[6]);
 	UInt16 dataLen = ReadMUInt16(&data[54]);
-	if (nQuestions == 0 && nAnswer == 1 && data.GetSize() >= 56 + (UOSInt)dataLen)
+	if (nQuestions == 0 && nAnswer == 1 && data.GetSize() >= 56 + (UIntOS)dataLen)
 	{
 		UInt8 nName = data[56];
 		if (dataLen >= 7 + nName * 18)

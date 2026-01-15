@@ -12,8 +12,8 @@ namespace IO
 		struct CaptureBuff
 		{
 			Optional<CaptureBuff> prevBuff;
-			UOSInt thisBuffSize;
-			UOSInt thisDataCnt;
+			UIntOS thisBuffSize;
+			UIntOS thisDataCnt;
 			UnsafeArray<Double> times;
 			UnsafeArray<Int32> isHigh;
 		};
@@ -26,7 +26,7 @@ namespace IO
 		Double startTime;
 
 		void FreeCaptureData(NN<CaptureBuff> buff);
-		UOSInt AddCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh, NN<CaptureBuff> buff);
+		UIntOS AddCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh, NN<CaptureBuff> buff);
 	public:
 		IOPinCapture(NN<IO::IOPin> pin);
 		virtual ~IOPinCapture();
@@ -38,7 +38,7 @@ namespace IO
 		virtual Bool SetPullType(PullType pt);
 		virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> buff);
 
-		UOSInt GetCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh);
+		UIntOS GetCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh);
 	};
 }
 #endif

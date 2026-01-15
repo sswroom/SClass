@@ -78,9 +78,9 @@ namespace Net
 			Optional<Text::String> GetModel();
 			Optional<Text::String> GetSN();
 			UnsafeArrayOpt<const UTF8Char> GetCountry();
-			UnsafeArrayOpt<const UInt8> GetChipsetOUI(OSInt index);
-			UOSInt GetIECount();
-			Optional<Net::WirelessLANIE> GetIE(UOSInt index);
+			UnsafeArrayOpt<const UInt8> GetChipsetOUI(IntOS index);
+			UIntOS GetIECount();
+			Optional<Net::WirelessLANIE> GetIE(UIntOS index);
 		};
 
 		class Interface
@@ -94,8 +94,8 @@ namespace Net
 
 			NN<Text::String> GetName() const;
 			virtual Bool Scan() = 0;
-			virtual UOSInt GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList) = 0;
-			virtual UOSInt GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList) = 0;
+			virtual UIntOS GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList) = 0;
+			virtual UIntOS GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList) = 0;
 		};
 
 	public:
@@ -103,7 +103,7 @@ namespace Net
 		~WirelessLAN();
 
 		Bool IsError();
-		UOSInt GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr);
+		UIntOS GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr);
 	};
 }
 #endif

@@ -165,7 +165,7 @@ Bool IO::CEControl::CreateDirectory(const WChar *ceDir)
 	if (IsDirectoryExist(ceDir))
 		return true;
 	Text::StrConcat(wbuff, ceDir);
-	UOSInt i = Text::StrLastIndexOfChar(wbuff, '\\');
+	UIntOS i = Text::StrLastIndexOfChar(wbuff, '\\');
 	if (i == INVALID_INDEX)
 		return CeCreateDirectory(wbuff, 0) != 0;
 	if (wbuff[i - 1] != ':')
@@ -282,7 +282,7 @@ Int64 IO::CEFileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position
 	return -1;
 }
 
-OSInt IO::CEFileStream::Read(UInt8 *buff, OSInt size)
+IntOS IO::CEFileStream::Read(UInt8 *buff, IntOS size)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return -1;
@@ -298,7 +298,7 @@ OSInt IO::CEFileStream::Read(UInt8 *buff, OSInt size)
 	}
 }
 
-OSInt IO::CEFileStream::Write(const UInt8 *buff, OSInt size)
+IntOS IO::CEFileStream::Write(const UInt8 *buff, IntOS size)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return -1;
@@ -314,52 +314,52 @@ OSInt IO::CEFileStream::Write(const UInt8 *buff, OSInt size)
 	}
 }
 
-void *IO::CEFileStream::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::CEFileStream::BeginRead(UInt8 *buff, IntOS size, Sync::Event *evt)
 {
 	evt->Set();
 	if (handle == INVALID_HANDLE_VALUE)
-		return (void*)(OSInt)-1;
+		return (void*)(IntOS)-1;
 	UInt32 readSize;
 	if (CeReadFile(handle, buff, (UInt32)size, (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
-		return (void*)(OSInt)readSize;
+		return (void*)(IntOS)readSize;
 	}
 	else
 	{
-		return (void*)(OSInt)-1;
+		return (void*)(IntOS)-1;
 	}
 }
 
-OSInt IO::CEFileStream::EndRead(void *reqData, Bool toWait)
+IntOS IO::CEFileStream::EndRead(void *reqData, Bool toWait)
 {
-	return (OSInt)reqData;
+	return (IntOS)reqData;
 }
 
 void IO::CEFileStream::CancelRead(void *reqData)
 {
 }
 
-void *IO::CEFileStream::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::CEFileStream::BeginWrite(const UInt8 *buff, IntOS size, Sync::Event *evt)
 {
 	evt->Set();
 	if (handle == INVALID_HANDLE_VALUE)
-		return (void*)(OSInt)-1;
+		return (void*)(IntOS)-1;
 	UInt32 readSize;
 	if (CeWriteFile(handle, buff, (UInt32)size, (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
-		return (void*)(OSInt)readSize;
+		return (void*)(IntOS)readSize;
 	}
 	else
 	{
-		return (void*)(OSInt)-1;
+		return (void*)(IntOS)-1;
 	}
 }
 
-OSInt IO::CEFileStream::EndWrite(void *reqData, Bool toWait)
+IntOS IO::CEFileStream::EndWrite(void *reqData, Bool toWait)
 {
-	return (OSInt)reqData;
+	return (IntOS)reqData;
 }
 
 void IO::CEFileStream::CancelWrite(void *reqData)

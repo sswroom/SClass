@@ -16,7 +16,7 @@ void __stdcall Map::HKSpeedLimit::FreeRoute(NN<RouteInfo> route)
 void Map::HKSpeedLimit::FreeIndex()
 {
 	NN<Data::ArrayListNative<Int32>> index;
-	UOSInt i = this->indexMap.GetCount();
+	UIntOS i = this->indexMap.GetCount();
 	while (i-- > 0)
 	{
 		index = this->indexMap.GetItemNoCheck(i);
@@ -28,7 +28,7 @@ void Map::HKSpeedLimit::FreeIndex()
 void Map::HKSpeedLimit::BuildIndex()
 {
 	NN<RouteInfo> route;
-	UOSInt i;
+	UIntOS i;
 	NN<Data::ArrayListNative<Int32>> index;
 	Int32 x;
 	Int32 y;
@@ -112,7 +112,7 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<RouteInfo> route;
-	UOSInt i;
+	UIntOS i;
 	this->dataCsys = roadNetwork->CreateCoordinateSystem();
 	this->reqCsys = nullptr;
 	NN<DB::ReadingDB> fgdb;
@@ -121,23 +121,23 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 		NN<DB::DBReader> r;
 		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
-			UOSInt objIdCol = INVALID_INDEX;
-			UOSInt routeIdCol = INVALID_INDEX;
-			UOSInt shapeCol = INVALID_INDEX;
+			UIntOS objIdCol = INVALID_INDEX;
+			UIntOS routeIdCol = INVALID_INDEX;
+			UIntOS shapeCol = INVALID_INDEX;
 			i = r->ColCount();
 			while (i-- > 0)
 			{
 				if (r->GetName(i, sbuff).SetTo(sptr))
 				{
-					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID")))
+					if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("OBJECTID")))
 					{
 						objIdCol = i;
 					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+					else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SHAPE")))
 					{
 						shapeCol = i;
 					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+					else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 					{
 						routeIdCol = i;
 					}
@@ -169,18 +169,18 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 		{
 			if (fgdb->QueryTableData(nullptr, CSTR("SPEED_LIMIT"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
-				UOSInt routeIdCol = INVALID_INDEX;
-				UOSInt spdLimitCol = INVALID_INDEX;
+				UIntOS routeIdCol = INVALID_INDEX;
+				UIntOS spdLimitCol = INVALID_INDEX;
 				i = r->ColCount();
 				while (i-- > 0)
 				{
 					if (r->GetName(i, sbuff).SetTo(sptr))
 					{
-						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
+						if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
 						{
 							routeIdCol = i;
 						}
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SPEED_LIMIT")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SPEED_LIMIT")))
 						{
 							spdLimitCol = i;
 						}
@@ -236,7 +236,7 @@ Optional<const Map::HKSpeedLimit::RouteInfo> Map::HKSpeedLimit::GetNearestRoute(
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
 	Data::ArrayListNative<Int32> routeList;
-	UOSInt i;
+	UIntOS i;
 	NN<RouteInfo> route;
 	Int32 minRouteId = -1;
 	Double minDist = 1000000000;
@@ -264,7 +264,7 @@ Optional<const Map::HKSpeedLimit::RouteInfo> Map::HKSpeedLimit::GetNearestRoute(
 	AppendRouteIds(routeList, xInd - 1, yInd + 1);
 	AppendRouteIds(routeList, xInd + 0, yInd + 1);
 	AppendRouteIds(routeList, xInd + 1, yInd + 1);
-	ArtificialQuickSort_SortInt32(routeList.Arr().Ptr(), 0, (OSInt)routeList.GetCount() - 1);
+	ArtificialQuickSort_SortInt32(routeList.Arr().Ptr(), 0, (IntOS)routeList.GetCount() - 1);
 	i = routeList.GetCount();
 	while (i-- > 0)
 	{
@@ -299,7 +299,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
 	Data::ArrayListNative<Int32> routeList;
-	UOSInt i;
+	UIntOS i;
 	NN<RouteInfo> route;
 	Double thisDist;
 	Int32 lastRouteId = -1;
@@ -325,7 +325,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 	AppendRouteIds(routeList, xInd - 1, yInd + 1);
 	AppendRouteIds(routeList, xInd + 0, yInd + 1);
 	AppendRouteIds(routeList, xInd + 1, yInd + 1);
-	ArtificialQuickSort_SortInt32(routeList.Arr().Ptr(), 0, (OSInt)routeList.GetCount() - 1);
+	ArtificialQuickSort_SortInt32(routeList.Arr().Ptr(), 0, (IntOS)routeList.GetCount() - 1);
 	i = routeList.GetCount();
 	while (i-- > 0)
 	{

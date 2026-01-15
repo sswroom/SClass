@@ -15,7 +15,7 @@ namespace UI
 			virtual void SetText(Text::CStringNN text);
 			virtual void SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold);
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 		};
 	}
 }

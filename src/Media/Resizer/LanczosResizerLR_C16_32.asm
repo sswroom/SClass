@@ -4,7 +4,7 @@ global _LanczosResizerLR_C16_horizontal_filter
 global _LanczosResizerLR_C16_vertical_filter
 global _LanczosResizerLR_C16_collapse
 
-;void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, Int32 tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, Int32 tap, Int32 *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -88,7 +88,7 @@ hf6start:								;else if (tap == 6)
 	jmp hf6start2
 	
 	align 16
-hf6nstart:								;if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
+hf6nstart:								;if ((((IntOS)outPt) & 15) == 0 && (dstep & 15) == 0)
 	shr dword [esp+28],1 ;width
 	align 16
 hf6nlop4:
@@ -318,7 +318,7 @@ hfexit:
 	pop ebp
 	ret	
 
-;void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, Int32 tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, Int32 tap, Int32 *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 currWidth
 ;4 edi
 ;8 esi

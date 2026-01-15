@@ -16,7 +16,7 @@ namespace Data
 			CountingSort(Int32 minVal, Int32 maxVal);
 			~CountingSort();
 
-			void SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }

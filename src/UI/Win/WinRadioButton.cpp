@@ -40,7 +40,7 @@ UI::Win::WinRadioButton::~WinRadioButton()
 {
 }
 
-OSInt UI::Win::WinRadioButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{

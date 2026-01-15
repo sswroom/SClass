@@ -15,15 +15,15 @@ UI::JavaUI::JUIHSplitter::~JUIHSplitter()
 {
 }
 
-OSInt UI::JavaUI::JUIHSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIHSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::JavaUI::JUIHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::JavaUI::JUIHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 }
 
-void UI::JavaUI::JUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::JavaUI::JUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 }

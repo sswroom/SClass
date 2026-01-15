@@ -10,17 +10,17 @@ namespace Media
 	private:
 		Optional<MonitorHandle> hMon;
 		UnsafeArrayOpt<UInt8> edid;
-		UOSInt edidSize;
+		UIntOS edidSize;
 
 	public:
 		DDCReader(Optional<MonitorHandle> hMon);
 		DDCReader(UnsafeArray<const UTF8Char> monitorId);
-		DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize);
+		DDCReader(UnsafeArray<UInt8> edid, UIntOS edidSize);
 		~DDCReader();
 
-		UnsafeArrayOpt<UInt8> GetEDID(OutParam<UOSInt> size);
+		UnsafeArrayOpt<UInt8> GetEDID(OutParam<UIntOS> size);
 
-		static UOSInt CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList);
+		static UIntOS CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList);
 	};
 }
 #endif

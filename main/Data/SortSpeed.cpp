@@ -36,10 +36,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	UInt32 *array1;
 	UInt32 *array2;
-	UOSInt recordCnt = NUM_RECORD;
+	UIntOS recordCnt = NUM_RECORD;
 
 	UInt32 seed = 0;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
@@ -69,8 +69,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	clk->Start();
 	Double t1;
-    UOSInt i;
-    UOSInt NumberOfRec;
+    UIntOS i;
+    UIntOS NumberOfRec;
 	Bool valid;
 	i = 0;
 	while (i < recordCnt)
@@ -81,7 +81,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Gen Random N = "));
-	sb.AppendUOSInt(recordCnt);
+	sb.AppendUIntOS(recordCnt);
 	sb.AppendC(UTF8STRC(", seed = "));
 	sb.AppendU32(seed);
 	sb.AppendC(UTF8STRC(", time = "));
@@ -143,13 +143,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		MemCopyANC(array2, array1, NumberOfRec * sizeof(Int32));
 		clk->Start();
-		sort->SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
+		sort->SortUInt32(array2, 0, (IntOS)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("AQuickSort "));
-		sb.AppendUOSInt(Sync::ThreadUtil::GetThreadCnt());
+		sb.AppendUIntOS(Sync::ThreadUtil::GetThreadCnt());
 		sb.AppendC(UTF8STRC(" Thread N = "));
-		sb.AppendUOSInt(NumberOfRec);
+		sb.AppendUIntOS(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
@@ -265,11 +265,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		MemCopyANC(array2, array1, NumberOfRec * sizeof(Int32));
 		clk->Start();
-		BitonicSort_SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
+		BitonicSort_SortUInt32(array2, 0, (IntOS)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("BitonicSort 1 Thread N = "));
-		sb.AppendUOSInt(NumberOfRec);
+		sb.AppendUIntOS(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
@@ -305,13 +305,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		MemCopyANC(array2, array1, NumberOfRec * sizeof(Int32));
 		clk->Start();
-		sort3->SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
+		sort3->SortUInt32(array2, 0, (IntOS)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("BitonicSort "));
-		sb.AppendUOSInt(Sync::ThreadUtil::GetThreadCnt());
+		sb.AppendUIntOS(Sync::ThreadUtil::GetThreadCnt());
 		sb.AppendC(UTF8STRC(" Thread N = "));
-		sb.AppendUOSInt(NumberOfRec);
+		sb.AppendUIntOS(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
@@ -347,11 +347,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		MemCopyANC(array2, array1, NumberOfRec * sizeof(Int32));
 		clk->Start();
-		ByteCountingSort_SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
+		ByteCountingSort_SortUInt32(array2, 0, (IntOS)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("BCountSort 1 Thread N = "));
-		sb.AppendUOSInt(NumberOfRec);
+		sb.AppendUIntOS(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
@@ -440,7 +440,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			if ((i & 65535) == 0)
 			{
-				OSInt j;
+				IntOS j;
 				UInt8 *buff = mstm->GetBuff(&j);
 				fs->Write(buff, j);
 				mstm->Clear();

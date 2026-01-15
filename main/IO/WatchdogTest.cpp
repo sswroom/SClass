@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Int32 wdId;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
-	UOSInt argc;
+	UIntOS argc;
 	running = false;
 	toStop = false;
 	NEW_CLASS(evt, Sync::Event(true));

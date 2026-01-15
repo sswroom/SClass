@@ -3,10 +3,10 @@
 #include "Data/Comparable.h"
 #include "Text/MyString.h"
 
-extern "C" void BubbleSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex;
-	OSInt i;
+	IntOS j = lastIndex;
+	IntOS i;
 	Int32 *b;
 	Bool finished = false;
 	Int32 tmp;
@@ -32,10 +32,10 @@ extern "C" void BubbleSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastInd
 	}
 }
 
-extern "C" void BubbleSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	UInt32 *b;
 	Bool finished = false;
 	UInt32 v1;
@@ -66,10 +66,10 @@ extern "C" void BubbleSort_SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-extern "C" void BubbleSort_SortInt64(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortInt64(Int64 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Int64 *b;
 	Bool finished = false;
 	Int64 v1;
@@ -100,10 +100,10 @@ extern "C" void BubbleSort_SortInt64(Int64 *arr, OSInt firstIndex, OSInt lastInd
 	}
 }
 
-extern "C" void BubbleSort_SortDouble(Double *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortDouble(Double *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Double *b;
 	Bool finished = false;
 	Double v1;
@@ -134,10 +134,10 @@ extern "C" void BubbleSort_SortDouble(Double *arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-extern "C" void BubbleSort_SortSingle(Single *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortSingle(Single *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Single *b;
 	Bool finished = false;
 	Single v1;
@@ -168,10 +168,10 @@ extern "C" void BubbleSort_SortSingle(Single *arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortStrC(Char **arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Char **b;
 	Bool finished = false;
 	Char *v1;
@@ -202,10 +202,10 @@ extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastInde
 	}
 }
 
-/*extern "C" void BubbleSort_SortCmp(void **arr, Data::Comparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmp(void **arr, Data::Comparable::CompareFunc func, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	void **b;
 	Bool finished = false;
 	void *v1;
@@ -236,10 +236,10 @@ extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastInde
 	}
 }*/
 
-extern "C" void BubbleSort_SortInt64Inv(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortInt64Inv(Int64 *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Int64 *b;
 	Bool finished = false;
 	Int64 v1;
@@ -270,10 +270,10 @@ extern "C" void BubbleSort_SortInt64Inv(Int64 *arr, OSInt firstIndex, OSInt last
 	}
 }
 
-extern "C" void BubbleSort_SortDoubleInv(Double *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortDoubleInv(Double *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Double *b;
 	Bool finished = false;
 	Double v1;
@@ -304,10 +304,10 @@ extern "C" void BubbleSort_SortDoubleInv(Double *arr, OSInt firstIndex, OSInt la
 	}
 }
 
-extern "C" void BubbleSort_SortSingleInv(Single *arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortSingleInv(Single *arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Single *b;
 	Bool finished = false;
 	Single v1;
@@ -338,10 +338,10 @@ extern "C" void BubbleSort_SortSingleInv(Single *arr, OSInt firstIndex, OSInt la
 	}
 }
 
-extern "C" void BubbleSort_SortStrCInv(Char **arr, OSInt firstIndex, OSInt lastIndex)
+extern "C" void BubbleSort_SortStrCInv(Char **arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	Char **b;
 	Bool finished = false;
 	Char *v1;
@@ -372,10 +372,10 @@ extern "C" void BubbleSort_SortStrCInv(Char **arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-/*extern "C" void BubbleSort_SortCmpInv(void **arr, Data::Comparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmpInv(void **arr, Data::Comparable::CompareFunc func, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	void **b;
 	Bool finished = false;
 	void *v1;

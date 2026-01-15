@@ -13,7 +13,7 @@ namespace Media
 		private:
 			void *clsData;
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			VPXDecoder(VideoSource *sourceVideo);
 			virtual ~VPXDecoder();
@@ -21,12 +21,12 @@ namespace Media
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
 			virtual Text::CString GetFilterName();
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize);
 			virtual void Stop();
 
 			virtual Bool HasFrameCount();
-			virtual UOSInt GetFrameCount();
-			virtual UInt32 GetFrameTime(UOSInt frameIndex);
+			virtual UIntOS GetFrameCount();
+			virtual UInt32 GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
 			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);

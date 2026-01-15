@@ -3,10 +3,10 @@
 #include "Data/Sort/BubbleSort.h"
 
 
-void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	UnsafeArray<NN<Data::Comparable>> b;
 	Bool finished = false;
 	NN<Data::Comparable> v1;
@@ -37,10 +37,10 @@ void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSI
 	}
 }
 
-void Data::Sort::BubbleSort::SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BubbleSort::SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex)
 {
-	OSInt j = lastIndex - firstIndex;
-	OSInt i;
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
 	UnsafeArray<NN<Data::Comparable>> b;
 	Bool finished = false;
 	NN<Data::Comparable> v1;

@@ -33,7 +33,7 @@ namespace Win32
 		~TerminalService();
 
 		Bool IsError();
-		OSInt GetSessions(Data::ArrayListInt *sessions);
+		IntOS GetSessions(Data::ArrayListInt *sessions);
 		WChar *GetSessionUser(WChar *buff, Int32 sessId);
 		WChar *GetSessionClientName(WChar *buff, Int32 sessId);
 		UInt32 GetSessionClientIP(Int32 sessId);

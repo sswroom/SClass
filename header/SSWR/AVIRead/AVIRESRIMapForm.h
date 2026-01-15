@@ -21,9 +21,9 @@ namespace SSWR
 			typedef struct
 			{
 				UnsafeArray<const UTF8Char> name;
-				UOSInt nameLen;
+				UIntOS nameLen;
 				UnsafeArray<const UTF8Char> url;
-				UOSInt urlLen;
+				UIntOS urlLen;
 			} MapServer;
 		private:
 			static MapServer mapSvrs[];

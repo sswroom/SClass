@@ -16,7 +16,7 @@ Bool threadRunning;
 UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UInt8 buff[512];
-	UOSInt buffSize;
+	UIntOS buffSize;
 	threadRunning = true;
 	while (!threadToStop)
 	{
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 
 	if (argc != 3)
@@ -78,7 +78,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						break;
 					}
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-					port->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
+					port->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				threadToStop = true;
 				port->Close();

@@ -32,7 +32,7 @@ namespace SSWR
 			NN<Media::MediaPlayer> player;
 		private:
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			static void __stdcall OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnPlaylistDblClk(AnyType userObj, UIntOS itemIndex);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnEndClicked(AnyType userObj);
 			static void __stdcall OnFSClicked(AnyType userObj);

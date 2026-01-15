@@ -18,7 +18,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength()).Ptr();
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/plain"))
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UIntOS buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/plain"))
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -31,7 +31,7 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSIn
 Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Text::MIMEObject(CSTR("text/plain"))
 {
 	Text::Encoding enc(codePage);
-	UOSInt strLen;
+	UIntOS strLen;
 	this->contType = 0;
 	this->codePage = codePage;
 	strLen = Text::StrCharCnt(txt);
@@ -57,7 +57,7 @@ Text::CStringNN Text::MIMEObj::TextMIMEObj::GetContentType() const
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(NN<IO::Stream> stm) const
+UIntOS Text::MIMEObj::TextMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
 	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
@@ -72,13 +72,13 @@ NN<Text::MIMEObject> Text::MIMEObj::TextMIMEObj::Clone() const
 void Text::MIMEObj::TextMIMEObj::GetText(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::Encoding enc(this->codePage);
-	UOSInt strLen;
+	UIntOS strLen;
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
 	sbuff = MemAllocArr(UTF8Char, strLen + 1);
 	sptr = enc.UTF8FromBytes(sbuff, this->textBuff, this->buffSize, 0);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	MemFreeArr(sbuff);
 }
 

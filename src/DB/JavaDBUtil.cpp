@@ -209,8 +209,8 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[2];
 		Text::PString sarr2[2];
-		UOSInt scnt;
-		UOSInt scnt2;
+		UIntOS scnt;
+		UIntOS scnt2;
 		Bool encrypt = false;
 		UInt16 port = 1433;
 		Text::CString dbName = nullptr;
@@ -355,8 +355,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			DB::ColDef colDef(CSTR(""));
-			UOSInt j = 0;
-			UOSInt k = r->ColCount();
+			UIntOS j = 0;
+			UIntOS k = r->ColCount();
 			while (j < k)
 			{
 				if (r->GetColDef(j, colDef))
@@ -388,8 +388,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	importMap.Put(CSTR("org.sswr.util.data.DataTools"), true);
 	importMap.Put(CSTR("java.util.Objects"), true);
 
-	UOSInt i = 0;
-	UOSInt j = importMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = importMap.GetCount();
 	while (i < j)
 	{
 		sb->AppendC(UTF8STRC("import "));

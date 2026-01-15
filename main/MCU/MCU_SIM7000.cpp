@@ -11,8 +11,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::SerialPort serial(1, 115200, IO::SerialPort::PARITY_NONE, false);
 	IO::GPIOControl gpio;
 	IO::RS232GPIO modem(&gpio, 0, 22, 19200);
-	OSInt readSize;
-	OSInt i;
+	IntOS readSize;
+	IntOS i;
 	UInt8 buff[128];
 	while (true)
 	{

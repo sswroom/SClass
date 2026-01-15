@@ -41,15 +41,15 @@ Optional<Text::Cpp::CppParseStatus::FileParseStatus> Text::Cpp::CppParseStatus::
 Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CStringNN fileName)
 {
 	NN<Text::String> fname;
-	OSInt i = this->fileNames.SortedIndexOfPtr(fileName.v, fileName.leng);
+	IntOS i = this->fileNames.SortedIndexOfPtr(fileName.v, fileName.leng);
 	if (i >= 0)
 	{
-		fname = Text::String::OrEmpty(this->fileNames.GetItem((UOSInt)i));
+		fname = Text::String::OrEmpty(this->fileNames.GetItem((UIntOS)i));
 	}
 	else
 	{
 		fname = Text::String::New(fileName.v, fileName.leng);
-		this->fileNames.Insert((UOSInt)~i, fname.Ptr());
+		this->fileNames.Insert((UIntOS)~i, fname.Ptr());
 	}
 
 	NN<FileParseStatus> status;
@@ -66,7 +66,7 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CStringNN fileName)
 Bool Text::Cpp::CppParseStatus::EndParseFile(Text::CStringNN fileName)
 {
 	NN<FileParseStatus> status;
-	UOSInt i = this->statuses.GetCount() - 1;
+	UIntOS i = this->statuses.GetCount() - 1;
 	if (!this->statuses.GetItem(i).SetTo(status))
 		return false;
 	if (!status->fileName->Equals(fileName))
@@ -263,12 +263,12 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 
 }
 
-UOSInt Text::Cpp::CppParseStatus::GetDefineCount()
+UIntOS Text::Cpp::CppParseStatus::GetDefineCount()
 {
 	return this->defines.GetCount();
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, NN<DefineInfo> defInfo)
+Bool Text::Cpp::CppParseStatus::GetDefineInfo(UIntOS index, NN<DefineInfo> defInfo)
 {
 	NN<DefineInfo> def;
 	if (!this->defines.GetItem(index).SetTo(def))
@@ -277,19 +277,19 @@ Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, NN<DefineInfo> defIn
 	return true;
 }
 
-UOSInt Text::Cpp::CppParseStatus::GetFileCount()
+UIntOS Text::Cpp::CppParseStatus::GetFileCount()
 {
 	return this->fileNames.GetCount();
 }
 
-Optional<Text::String> Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
+Optional<Text::String> Text::Cpp::CppParseStatus::GetFileName(UIntOS index)
 {
 	return this->fileNames.GetItem(index);
 }
 
 NN<Text::String> Text::Cpp::CppParseStatus::GetCurrCodeFile() const
 {
-	UOSInt i = this->statuses.GetCount();
+	UIntOS i = this->statuses.GetCount();
 	if (i > 0)
 	{
 		return this->statuses.GetItemNoCheck(i - 1)->fileName;

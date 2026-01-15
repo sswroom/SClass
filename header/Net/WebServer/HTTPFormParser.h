@@ -16,8 +16,8 @@ namespace Net
 			HTTPFormParser(NN<Net::WebServer::WebRequest> req, Int32 codePage);
 			~HTTPFormParser();
 
-			UOSInt GetStrCount() const;
-			UnsafeArrayOpt<const UTF8Char> GetStrName(UOSInt index);
+			UIntOS GetStrCount() const;
+			UnsafeArrayOpt<const UTF8Char> GetStrName(UIntOS index);
 			UnsafeArrayOpt<const UTF8Char> GetStrValue(UnsafeArray<const UTF8Char> strName);
 		};
 	}

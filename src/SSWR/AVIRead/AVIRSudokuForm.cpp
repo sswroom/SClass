@@ -21,10 +21,10 @@ typedef enum
 	MNU_FIX_ALL
 } MenuItem;
 
-void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num)
+void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(AnyType userObj, UIntOS selX, UIntOS selY, UInt8 num)
 {
 	NN<SSWR::AVIRead::AVIRSudokuForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSudokuForm>();
-	UOSInt mode = me->cboMode->GetSelectedItem().GetUOSInt();
+	UIntOS mode = me->cboMode->GetSelectedItem().GetUIntOS();
 	if (mode == 1)
 	{
 		me->board->SetBoardNum(selX, selY, num, false);
@@ -66,15 +66,15 @@ void __stdcall SSWR::AVIRead::AVIRSudokuForm::OnFileImport(AnyType userObj, Data
 	NN<SSWR::AVIRead::AVIRSudokuForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSudokuForm>();
 	NN<Text::String> fileName;
 	UInt8 fileBuff[512];
-	UOSInt i = 0;
-	UOSInt j = fileNames.GetCount();
+	UIntOS i = 0;
+	UIntOS j = fileNames.GetCount();
 	while (i < j)
 	{
 		fileName = fileNames.GetItem(i);
 		if (fileName->EndsWith(CSTR(".txt")))
 		{
 			IO::FileStream fs(fileNames.GetItem(i), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			UOSInt fileSize = fs.Read(BYTEARR(fileBuff));
+			UIntOS fileSize = fs.Read(BYTEARR(fileBuff));
 			fileBuff[fileSize] = 0;
 			if (me->board->ImportData(fileBuff))
 			{
@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRSudokuForm::~AVIRSudokuForm()
 
 void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)
 {
-	UOSInt solutionCnt;
+	UIntOS solutionCnt;
 	switch (cmdId)
 	{
 	case MNU_SOLVE3:
@@ -155,7 +155,7 @@ void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)
 		if (solutionCnt > 1)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append(CSTR("More than 1 solutions found, total of "))->AppendUOSInt(solutionCnt)->Append(CSTR(" solutions"));
+			sb.Append(CSTR("More than 1 solutions found, total of "))->AppendUIntOS(solutionCnt)->Append(CSTR(" solutions"));
 			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Sudoku Solver"), this);
 		}
 		break;
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)
 				NN<Text::String> fileName = dlg->GetFileName();
 				UInt8 fileBuff[512];
 				IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				UOSInt readSize = fs.Read(BYTEARR(fileBuff));
+				UIntOS readSize = fs.Read(BYTEARR(fileBuff));
 				fileBuff[readSize] = 0;
 				if (this->board->ImportData(fileBuff))
 				{
@@ -218,7 +218,7 @@ void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)
 				NN<Text::String> fileName = dlg->GetFileName();
 				IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				UInt8 fileBuff[512];
-				UOSInt fileSize = this->board->ExportData(fileBuff);
+				UIntOS fileSize = this->board->ExportData(fileBuff);
 				fs.Write(Data::ByteArrayR(fileBuff, fileSize));
 			}
 			dlg.Delete();

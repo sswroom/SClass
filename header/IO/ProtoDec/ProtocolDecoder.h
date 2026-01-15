@@ -11,14 +11,14 @@ namespace IO
 		class ProtocolDecoder
 		{
 		public:
-			typedef void (CALLBACKFUNC ProtocolInfo)(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
+			typedef void (CALLBACKFUNC ProtocolInfo)(AnyType userObj, UInt64 fileOfst, UIntOS size, Text::CStringNN typeName);
 		public:
 			virtual ~ProtocolDecoder(){};
 
 			virtual Text::CStringNN GetName() const = 0;
-			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize) = 0;
-			virtual Bool GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize) = 0;
+			virtual UIntOS ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UIntOS buffSize) = 0;
+			virtual Bool GetProtocolDetail(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool IsValid(UnsafeArray<UInt8> buff, UIntOS buffSize) = 0;
 		};
 	}
 }

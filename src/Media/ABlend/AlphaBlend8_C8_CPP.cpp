@@ -2,11 +2,11 @@
 #include "SIMD.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable)
+extern "C" void AlphaBlend8_C8_DoBlend(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable)
 {
-	OSInt sAdd = sbpl - width * 4;
-	OSInt dAdd = dbpl - width * 4;
-	OSInt i;
+	IntOS sAdd = sbpl - width * 4;
+	IntOS dAdd = dbpl - width * 4;
+	IntOS i;
 	while (height-- > 0)
 	{
 		i = width;
@@ -41,11 +41,11 @@ extern "C" void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src
 	}
 }
 
-extern "C" void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable)
+extern "C" void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable)
 {
-	OSInt sAdd = sbpl - width * 4;
-	OSInt dAdd = dbpl - width * 4;
-	OSInt i;
+	IntOS sAdd = sbpl - width * 4;
+	IntOS dAdd = dbpl - width * 4;
+	IntOS i;
 	if (false)
 	{
 		while (height-- != 0)

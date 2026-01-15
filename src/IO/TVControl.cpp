@@ -13,7 +13,7 @@ IO::TVControl::~TVControl()
 {
 }
 
-OSInt IO::TVControl::GetTVList(Data::ArrayListNative<TVType> *tvList)
+IntOS IO::TVControl::GetTVList(Data::ArrayListNative<TVType> *tvList)
 {
 	tvList->Add(TVT_MDT701S);
 	tvList->Add(TVT_NEC);

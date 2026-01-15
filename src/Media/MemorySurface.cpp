@@ -4,7 +4,7 @@
 #include "Media/ImageUtil_C.h"
 #include "Media/MemorySurface.h"
 
-Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi)
+Media::MemorySurface::MemorySurface(Math::Size2D<UIntOS> size, UIntOS bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi)
 {
 	this->buffPtr = MemAllocA(UInt8, size.CalcArea() * (bitPerPixel >> 3));
 	this->info.fourcc = 0;
@@ -54,21 +54,21 @@ Media::RasterImage::ImageType Media::MemorySurface::GetImageType() const
 	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::MemorySurface::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::MemorySurface::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
-	OSInt right = left + (OSInt)width;
-	OSInt bottom = top + (OSInt)height;
-	if (left >= (OSInt)this->info.dispSize.x || top >= (OSInt)this->info.dispSize.y || right <= 0 || bottom <= 0)
+	IntOS right = left + (IntOS)width;
+	IntOS bottom = top + (IntOS)height;
+	if (left >= (IntOS)this->info.dispSize.x || top >= (IntOS)this->info.dispSize.y || right <= 0 || bottom <= 0)
 	{
 		return;
 	}
-	if ((UOSInt)right > this->info.dispSize.x)
+	if ((UIntOS)right > this->info.dispSize.x)
 	{
-		right = (OSInt)this->info.dispSize.x;
+		right = (IntOS)this->info.dispSize.x;
 	}
-	if ((UOSInt)bottom > this->info.dispSize.y)
+	if ((UIntOS)bottom > this->info.dispSize.y)
 	{
-		bottom = (OSInt)this->info.dispSize.y;
+		bottom = (IntOS)this->info.dispSize.y;
 	}
 	if (upsideDown)
 	{
@@ -78,18 +78,18 @@ void Media::MemorySurface::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left
 	{
 		if (left < 0)
 		{
-			destBuff += (-left) * (OSInt)(this->info.storeBPP >> 3);
+			destBuff += (-left) * (IntOS)(this->info.storeBPP >> 3);
 			left = 0;
 		}
 		if (top < 0)
 		{
-			destBuff += (-top) * (OSInt)destBpl;
+			destBuff += (-top) * (IntOS)destBpl;
 			top = 0;
 		}
-		width = (UOSInt)(right - left);
-		height = (UOSInt)(bottom - top);
-		Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, this->buffPtr,
-			(OSInt)this->GetDataBpl(), left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
+		width = (UIntOS)(right - left);
+		height = (UIntOS)(bottom - top);
+		Media::ImageUtil::ImageCopyR(destBuff, (IntOS)destBpl, this->buffPtr,
+			(IntOS)this->GetDataBpl(), left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
 	}
 }
 
@@ -107,83 +107,83 @@ Bool Media::MemorySurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	if (surface->info.storeBPP == this->info.storeBPP)
 	{
-		OSInt destWidth = (OSInt)this->info.dispSize.x;
-		OSInt destHeight = (OSInt)this->info.dispSize.y;
-		Math::Size2D<UOSInt> dispSize = buffSize;
+		IntOS destWidth = (IntOS)this->info.dispSize.x;
+		IntOS destHeight = (IntOS)this->info.dispSize.y;
+		Math::Size2D<UIntOS> dispSize = buffSize;
 		Media::RotateType rt = Media::RotateTypeCalc(this->info.rotateType, surface->info.rotateType);
 		if (waitForVBlank) this->WaitForVBlank();
-		OSInt drawX = 0;
-		OSInt drawY = 0;
+		IntOS drawX = 0;
+		IntOS drawY = 0;
 		if (destTL.x < 0)
 		{
 			drawX = -destTL.x;
-			buffSize.x += (UOSInt)destTL.x;
+			buffSize.x += (UIntOS)destTL.x;
 			destTL.x = 0;
 		}
 		if (destTL.y < 0)
 		{
 			drawY = -destTL.y;
-			buffSize.y += (UOSInt)destTL.y;
+			buffSize.y += (UIntOS)destTL.y;
 			destTL.y = 0;
 		}
 		if (rt == Media::RotateType::CW_90 || rt == Media::RotateType::CW_270 || rt == Media::RotateType::HFLIP_CW_90 || rt == Media::RotateType::HFLIP_CW_270)
 		{
-			if (destTL.x + (OSInt)buffSize.x > (OSInt)this->info.dispSize.y)
+			if (destTL.x + (IntOS)buffSize.x > (IntOS)this->info.dispSize.y)
 			{
-				buffSize.x = (UOSInt)((OSInt)this->info.dispSize.y - destTL.x);
+				buffSize.x = (UIntOS)((IntOS)this->info.dispSize.y - destTL.x);
 			}
-			if (destTL.y + (OSInt)buffSize.y > (OSInt)this->info.dispSize.x)
+			if (destTL.y + (IntOS)buffSize.y > (IntOS)this->info.dispSize.x)
 			{
-				buffSize.y = (UOSInt)((OSInt)this->info.dispSize.x - destTL.y);
+				buffSize.y = (UIntOS)((IntOS)this->info.dispSize.x - destTL.y);
 			}
 			dispSize = buffSize.SwapXY();
 			destTL = destTL.SwapXY();
-			OSInt tmp = drawX;
+			IntOS tmp = drawX;
 			drawX = drawY;
 			drawY = tmp;
 		}
 		else
 		{
-			if (destTL.x + (OSInt)buffSize.x > (OSInt)destWidth)
+			if (destTL.x + (IntOS)buffSize.x > (IntOS)destWidth)
 			{
-				buffSize.x = (UOSInt)(destWidth - destTL.x);
+				buffSize.x = (UIntOS)(destWidth - destTL.x);
 			}
-			if (destTL.y + (OSInt)buffSize.y > (OSInt)destHeight)
+			if (destTL.y + (IntOS)buffSize.y > (IntOS)destHeight)
 			{
-				buffSize.y = (UOSInt)(destHeight - destTL.y);
+				buffSize.y = (UIntOS)(destHeight - destTL.y);
 			}
 		}
-		if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
+		if ((IntOS)buffSize.x > 0 && (IntOS)buffSize.y > 0)
 		{
 			if (this->info.atype == Media::AT_ALPHA && this->info.storeBPP == 32)
 			{
 				if (surface->info.rotateType == this->info.rotateType)
 				{
-					OSInt lineAdd;
+					IntOS lineAdd;
 					UnsafeArray<UInt8> srcPtr;
 					if (surface->LockSurface(lineAdd).SetTo(srcPtr))
 					{
-						ImageUtil_ConvR8G8B8N8_B8G8R8A8(srcPtr.Ptr() + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
-							this->buffPtr.Ptr() + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
-							buffSize.x, buffSize.y, lineAdd, (OSInt)this->GetDataBpl());
+						ImageUtil_ConvR8G8B8N8_B8G8R8A8(srcPtr.Ptr() + drawY * lineAdd + drawX * (IntOS)(this->info.storeBPP >> 3),
+							this->buffPtr.Ptr() + destTL.y * (IntOS)this->GetDataBpl() + destTL.x * ((IntOS)this->info.storeBPP >> 3),
+							buffSize.x, buffSize.y, lineAdd, (IntOS)this->GetDataBpl());
 						surface->UnlockSurface();
 					}
 				}
 				else
 				{
-					UOSInt bpl = this->GetDataBpl();
-					surface->GetRasterData(this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+					UIntOS bpl = this->GetDataBpl();
+					surface->GetRasterData(this->buffPtr.Ptr() + destTL.y * (IntOS)bpl + destTL.x * ((IntOS)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, bpl, false, this->info.rotateType);
-					ImageUtil_ConvR8G8B8N8_B8G8R8A8(this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), dispSize.x, dispSize.y, (OSInt)bpl, (OSInt)bpl);
+					ImageUtil_ConvR8G8B8N8_B8G8R8A8(this->buffPtr.Ptr() + destTL.y * (IntOS)bpl + destTL.x * ((IntOS)this->info.storeBPP >> 3), this->buffPtr.Ptr() + destTL.y * (IntOS)bpl + destTL.x * ((IntOS)this->info.storeBPP >> 3), dispSize.x, dispSize.y, (IntOS)bpl, (IntOS)bpl);
 				}
 			}
 			else
 			{
-				surface->GetRasterData(this->buffPtr + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+				surface->GetRasterData(this->buffPtr + destTL.y * (IntOS)this->GetDataBpl() + destTL.x * ((IntOS)this->info.storeBPP >> 3),
 					drawX, drawY, buffSize.x, buffSize.y, this->GetDataBpl(), false, this->info.rotateType);
 			}
 
@@ -192,34 +192,34 @@ Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Ma
 				UInt32 c = 0xFF000000;
 				if (destTL.y > 0)
 				{
-					ImageUtil_ImageColorFill32(this->buffPtr.Ptr(), (UOSInt)destWidth, (UOSInt)destTL.y, this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32(this->buffPtr.Ptr(), (UIntOS)destWidth, (UIntOS)destTL.y, this->GetDataBpl(), c);
 				}
-				if (destTL.y + (OSInt)dispSize.y < (OSInt)destHeight)
+				if (destTL.y + (IntOS)dispSize.y < (IntOS)destHeight)
 				{
-					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + ((UOSInt)destTL.y + dispSize.y) * this->GetDataBpl(), (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)dispSize.y - destTL.y), this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + ((UIntOS)destTL.y + dispSize.y) * this->GetDataBpl(), (UIntOS)destWidth, (UIntOS)(destHeight - (IntOS)dispSize.y - destTL.y), this->GetDataBpl(), c);
 				}
 				if (destTL.x > 0)
 				{
-					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + (UOSInt)destTL.y * this->GetDataBpl(), (UOSInt)destTL.x, dispSize.y, GetDataBpl(), c);
+					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + (UIntOS)destTL.y * this->GetDataBpl(), (UIntOS)destTL.x, dispSize.y, GetDataBpl(), c);
 				}
-				if (destTL.x + (OSInt)dispSize.x < (OSInt)destWidth)
+				if (destTL.x + (IntOS)dispSize.x < (IntOS)destWidth)
 				{
-					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + (UOSInt)destTL.y * this->GetDataBpl() + ((UOSInt)destTL.x + dispSize.x) * (this->info.storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destTL.x - dispSize.x, dispSize.y, this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32(this->buffPtr.Ptr() + (UIntOS)destTL.y * this->GetDataBpl() + ((UIntOS)destTL.x + dispSize.x) * (this->info.storeBPP >> 3), (UIntOS)destWidth - (UIntOS)destTL.x - dispSize.x, dispSize.y, this->GetDataBpl(), c);
 				}
 			}
 		}
 		else if (clearScn)
 		{
-			ImageUtil_ImageColorFill32(this->buffPtr.Ptr(), (UOSInt)destWidth, (UOSInt)destHeight, this->GetDataBpl(), 0);
+			ImageUtil_ImageColorFill32(this->buffPtr.Ptr(), (UIntOS)destWidth, (UIntOS)destHeight, this->GetDataBpl(), 0);
 		}
 		return true;
 	}
 	return false;
 }
 
-UnsafeArrayOpt<UInt8> Media::MemorySurface::LockSurface(OutParam<OSInt> lineAdd)
+UnsafeArrayOpt<UInt8> Media::MemorySurface::LockSurface(OutParam<IntOS> lineAdd)
 {
-	lineAdd.Set((OSInt)this->GetDataBpl());
+	lineAdd.Set((IntOS)this->GetDataBpl());
 	return this->buffPtr;
 }
 

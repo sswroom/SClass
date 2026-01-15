@@ -18,32 +18,32 @@ void *Media::OpenCV::OCVFrame::GetFrame()
 	return this->frame;
 }
 
-NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> area)
+NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UIntOS> area)
 {
 	return NEW_CLASS_D(OCVFrame(this->frame));
 }
 
-void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UnsafeArray<Math::Coord2D<UOSInt>> poly, UOSInt nPoints, UInt8 color)
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UnsafeArray<Math::Coord2D<UIntOS>> poly, UIntOS nPoints, UInt8 color)
 {
 
 }
 
-UOSInt Media::OpenCV::OCVFrame::GetWidth() const
-{
-	return 0;
-}
-
-UOSInt Media::OpenCV::OCVFrame::GetHeight() const
+UIntOS Media::OpenCV::OCVFrame::GetWidth() const
 {
 	return 0;
 }
 
-Math::Size2D<UOSInt> Media::OpenCV::OCVFrame::GetSize() const
+UIntOS Media::OpenCV::OCVFrame::GetHeight() const
 {
-	return Math::Size2D<UOSInt>(0, 0);
+	return 0;
 }
 
-OSInt Media::OpenCV::OCVFrame::GetBpl()
+Math::Size2D<UIntOS> Media::OpenCV::OCVFrame::GetSize() const
+{
+	return Math::Size2D<UIntOS>(0, 0);
+}
+
+IntOS Media::OpenCV::OCVFrame::GetBpl()
 {
 	return 0;
 }
@@ -53,7 +53,7 @@ UInt8 *Media::OpenCV::OCVFrame::GetDataPtr()
 	return 0;
 }
 
-void Media::OpenCV::OCVFrame::GetImageData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate)
+void Media::OpenCV::OCVFrame::GetImageData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate)
 {
 
 }
@@ -80,7 +80,7 @@ NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Do
 	return fr;
 }
 
-Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
+Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, UInt32 fourcc, Math::Size2D<UIntOS> dispSize, UIntOS storeWidth, UIntOS storeBPP, Media::PixelFormat pf)
 {
 	return 0;		
 }

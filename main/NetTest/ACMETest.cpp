@@ -28,8 +28,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<Data::ArrayListStringNN> authURLs;
 		if (order->authURLs.SetTo(authURLs))
 		{
-			UOSInt i = 0;
-			UOSInt j = authURLs->GetCount();
+			UIntOS i = 0;
+			UIntOS j = authURLs->GetCount();
 			while (i < j)
 			{
 				NN<Net::ACMEConn::Challenge> chall;

@@ -93,12 +93,12 @@ Bool Net::WebServer::PrintLogWebResponse::IsDown() const
 	return this->resp->IsDown();
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
+UIntOS Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
 {
 	return this->resp->Read(buff);
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Write(Data::ByteArrayR buff)
+UIntOS Net::WebServer::PrintLogWebResponse::Write(Data::ByteArrayR buff)
 {
 	return this->resp->Write(buff);
 }

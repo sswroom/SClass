@@ -143,24 +143,24 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 	Optional<IO::ParsedObject> pobj;
 	NN<IO::ParsedObject> nnpobj;
 	NN<Data::ArrayListNN<Map::MapDrawLayer>> layers;
-	Math::Size2D<UOSInt> sz;
-	Math::Coord2D<OSInt> mousePos = me->ui->GetCursorPos();
-	Math::Coord2D<OSInt> scnPos = me->mapCtrl->GetScreenPosP();
+	Math::Size2D<UIntOS> sz;
+	Math::Coord2D<IntOS> mousePos = me->ui->GetCursorPos();
+	Math::Coord2D<IntOS> scnPos = me->mapCtrl->GetScreenPosP();
 	mousePos.x = mousePos.x - scnPos.x;
 	mousePos.y = mousePos.y - scnPos.y;
 	sz = me->mapCtrl->GetSizeP();
-	if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < (OSInt)sz.x && mousePos.y < (OSInt)sz.y)
+	if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < (IntOS)sz.x && mousePos.y < (IntOS)sz.y)
 	{
 	}
 	else
 	{
-		mousePos.x = (OSInt)(sz.x >> 1);
-		mousePos.y = (OSInt)(sz.y >> 1);
+		mousePos.x = (IntOS)(sz.x >> 1);
+		mousePos.y = (IntOS)(sz.y >> 1);
 	}
 
 	NEW_CLASSNN(layers, Data::ArrayListNN<Map::MapDrawLayer>());
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]->ToCString());
@@ -206,35 +206,35 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 						Double hsY;
 						if (stimg->info.par2 > 1)
 						{
-							hsX = OSInt2Double(stimg->GetHotSpotX());
-							hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info.par2;
-							calcImgW = UOSInt2Double(stimg->info.dispSize.x);
-							calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
+							hsX = IntOS2Double(stimg->GetHotSpotX());
+							hsY = IntOS2Double(stimg->GetHotSpotY()) * stimg->info.par2;
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * stimg->info.par2;
 						}
 						else
 						{
-							hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info.par2;
-							hsY = OSInt2Double(stimg->GetHotSpotY());
-							calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
-							calcImgH = UOSInt2Double(stimg->info.dispSize.y);
+							hsX = IntOS2Double(stimg->GetHotSpotX()) / stimg->info.par2;
+							hsY = IntOS2Double(stimg->GetHotSpotY());
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
 						}
-						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - hsX, OSInt2Double(mousePos.y) - hsY));
-						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW - hsX, OSInt2Double(mousePos.y) + calcImgH - hsY));
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - hsX, IntOS2Double(mousePos.y) - hsY));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW - hsX, IntOS2Double(mousePos.y) + calcImgH - hsY));
 					}
 					else
 					{
 						if (stimg->info.par2 > 1)
 						{
-							calcImgW = UOSInt2Double(stimg->info.dispSize.x);
-							calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * stimg->info.par2;
 						}
 						else
 						{
-							calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
-							calcImgH = UOSInt2Double(stimg->info.dispSize.y);
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
 						}
-						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
-						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - calcImgW * 0.5, IntOS2Double(mousePos.y) - calcImgH * 0.5));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW * 0.5, IntOS2Double(mousePos.y) + calcImgH * 0.5));
 					}
 					Data::ArrayListNN<Media::StaticImage> prevList;
 					Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList>::ConvertFrom(nnpobj), prevList, 640);
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 	layers.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -288,7 +288,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math:
 	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, latLon.GetLat(), latLon.GetLon());
 	me->txtUTMGrid->SetText(CSTRP(sbuff, sptr));
 
-	UOSInt i;
+	UIntOS i;
 	i = me->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -297,11 +297,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math:
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UI::EventState ret = UI::EventState::ContinueEvent;
-	UOSInt i;
+	UIntOS i;
 	if (button == MouseButton::MBTN_LEFT)
 	{
 		i = me->mouseLDownHdlrs.GetCount();
@@ -327,11 +327,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType user
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UI::EventState ret = UI::EventState::ContinueEvent;
-	UOSInt i;
+	UIntOS i;
 	if (button == MouseButton::MBTN_LEFT)
 	{
 		i = me->mouseLUpHdlrs.GetCount();
@@ -369,7 +369,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(AnyType userObj, Do
 		return;
 	}
 	me->scaleChanging = true;
-	me->tbScale->SetPos((UOSInt)Double2OSInt(Math_Log10(newScale / me->env->GetMinScale()) * 65536.0 / Math_Log10(me->env->GetMaxScale() / me->env->GetMinScale())));
+	me->tbScale->SetPos((UIntOS)Double2IntOS(Math_Log10(newScale / me->env->GetMinScale()) * 65536.0 / Math_Log10(me->env->GetMaxScale() / me->env->GetMinScale())));
 	me->scaleChanging = false;
 	sptr = Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 	me->txtScale->SetText(CSTRP(sbuff, sptr));
@@ -382,13 +382,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(AnyType userObj, Math::C
 	me->mapUpdTChanged = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(AnyType userObj, UIntOS newVal)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (me->scaleChanging)
 		return;
 	me->scaleChanging = true;
-	Int32 scale = Double2Int32(Math_Pow(10, Math_Log10((me->env->GetMaxScale() / me->env->GetMinScale())) * UOSInt2Double(newVal) / 65536.0) * me->env->GetMinScale());
+	Int32 scale = Double2Int32(Math_Pow(10, Math_Log10((me->env->GetMaxScale() / me->env->GetMinScale())) * UIntOS2Double(newVal) / 65536.0) * me->env->GetMinScale());
 	me->mapCtrl->SetMapScale(scale);
 	me->scaleChanging = false;
 }
@@ -399,7 +399,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 	NN<UI::GUITreeView::TreeItem> item;
 	if (me->mapTree->GetHighlightItem().SetTo(item))
 	{
-		Math::Coord2D<OSInt> cursorPos = me->ui->GetCursorPos();
+		Math::Coord2D<IntOS> cursorPos = me->ui->GetCursorPos();
 
 		NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 		NN<Map::MapEnv::LayerItem> lyr;
@@ -462,12 +462,12 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(AnyType userObj)
 	me->mapCtrl->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(AnyType userObj, UIntOS newVal)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (me->useTime)
 	{
-		me->currTime = (OSInt)newVal + me->timeRangeStart;
+		me->currTime = (IntOS)newVal + me->timeRangeStart;
 		me->env->SetCurrTimeTS(nullptr, me->currTime);
 		OnMapLayerUpdated(me);
 	}
@@ -509,16 +509,16 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(AnyType userObj, NN<UI::GU
 	me->mapCtrl->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(AnyType userObj, UIntOS newVal)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
-	me->mapCtrl->SetVAngle(UOSInt2Double(newVal) * Math::PI / 180);
+	me->mapCtrl->SetVAngle(UIntOS2Double(newVal) * Math::PI / 180);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnHAngleScrolled(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnHAngleScrolled(AnyType userObj, UIntOS newVal)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
-	me->mapCtrl->SetHAngle(UOSInt2Double(newVal) * Math::PI / 180);
+	me->mapCtrl->SetHAngle(UIntOS2Double(newVal) * Math::PI / 180);
 	me->mapCtrl->UpdateMap();
 	me->mapCtrl->Redraw();
 }
@@ -874,7 +874,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 {
 	//this->mapCtrl->SetRenderer(0);
-	UOSInt i;
+	UIntOS i;
 	this->pauseUpdate = true;
 	this->CloseCtrlForm(true);
 	NN<UI::GUIForm> frm;
@@ -1526,9 +1526,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				fileSize = fs.GetLength();
 				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{
-					UOSInt i;
+					UIntOS i;
 					NN<Map::GPSTrack> trk;
-					Data::ByteBuffer fileBuff((UOSInt)fileSize);
+					Data::ByteBuffer fileBuff((UIntOS)fileSize);
 					fs.Read(fileBuff);
 					NEW_CLASSNN(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, nullptr));
 					i = 0;
@@ -1604,7 +1604,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = frm.GetFileName();
-				UOSInt i = fname->IndexOf(':');
+				UIntOS i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData fd(fname, false);
@@ -1640,7 +1640,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Text::StringBuilderUTF8 sb;
 			UnsafeArray<UTF8Char> sptr;
 			UTF8Char sbuff[10];
-			UOSInt i;
+			UIntOS i;
 			Data::DateTime dt;
 			cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
@@ -1942,8 +1942,8 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 	if (this->env->GetItemCount(nullptr) == 0)
 	{
 		Math::RectAreaDbl bounds;
-//		OSInt w;
-//		OSInt h;
+//		IntOS w;
+//		IntOS h;
 		layer->GetBounds(bounds);
 //		this->mapCtrl->GetSize(&w, &h);
 //		this->mapCtrl->UpdateMapView(layer->CreateMapView(w, h));
@@ -1964,8 +1964,8 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLa
 {
 	NN<Map::MapDrawLayer> layer;
 	Bool needPan = this->env->GetItemCount(nullptr) == 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Math::RectAreaDbl bounds;
 
 	if (needPan)
@@ -2010,8 +2010,8 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLa
 
 	Map::MapDrawLayer *layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = lyrColl->GetCount();
 	while (i < j)
@@ -2111,12 +2111,12 @@ NN<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem() con
 	return this->env->GetCoordinateSystem();
 }
 
-Math::Coord2DDbl SSWR::AVIRead::AVIRGISForm::ScnXY2MapXY(Math::Coord2D<OSInt> scnPos)
+Math::Coord2DDbl SSWR::AVIRead::AVIRGISForm::ScnXY2MapXY(Math::Coord2D<IntOS> scnPos)
 {
 	return this->mapCtrl->ScnXY2MapXY(scnPos);
 }
 
-Math::Coord2D<OSInt> SSWR::AVIRead::AVIRGISForm::MapXY2ScnXY(Math::Coord2DDbl mapPos)
+Math::Coord2D<IntOS> SSWR::AVIRead::AVIRGISForm::MapXY2ScnXY(Math::Coord2DDbl mapPos)
 {
 	return this->mapCtrl->MapXY2ScnXY(mapPos);
 }
@@ -2157,7 +2157,7 @@ void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, AnyType user
 
 void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(AnyType userObj)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->mouseLDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -2281,8 +2281,8 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 
 		this->timeRangeStart = timeStart;
 		this->timeRangeEnd = timeEnd;
-		this->tbTimeRange->SetRange(0, (UOSInt)(timeEnd - timeStart));
-		this->tbTimeRange->SetPos((UOSInt)(this->currTime - timeStart));
+		this->tbTimeRange->SetRange(0, (UIntOS)(timeEnd - timeStart));
+		this->tbTimeRange->SetPos((UIntOS)(this->currTime - timeStart));
 		this->tbTimeRange->SetEnabled(true);
 		this->chkTime->SetEnabled(true);
 		this->chkTime->SetChecked(this->useTime);

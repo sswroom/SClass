@@ -84,8 +84,8 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 
 Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> fs)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt8 compBuff[BUFFSIZE];
 	Bool contSent = false;
 	Bool succ = true;
@@ -125,7 +125,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 
 						Crypto::Hash::CRC32RIEEE crc;
 						Data::Compress::Deflater dstm(fs, contLeng, crc, compLevel, false);
-						UOSInt readSize;
+						UIntOS readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
@@ -148,7 +148,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->EnableWriteBuffer();
 
 						Data::Compress::Deflater dstm(fs, contLeng, nullptr, compLevel, true);
-						UOSInt readSize;
+						UIntOS readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
@@ -167,8 +167,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 		resp->AddContentLength(contLeng);
 		while (contLeng > 0)
 		{
-			UOSInt writeSize;
-			UOSInt readSize = fs->Read(BYTEARR(compBuff));
+			UIntOS writeSize;
+			UIntOS readSize = fs->Read(BYTEARR(compBuff));
 			if (readSize <= 0)
 			{
 				break;
@@ -191,8 +191,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 
 Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt8 compBuff[BUFFSIZE];
 	Bool succ = true;
 	Bool contSent = false;
@@ -227,11 +227,11 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 					succ = (resp->Write(Data::ByteArrayR(compBuff, 10)) == 10);
 
 					Crypto::Hash::CRC32RIEEE crc;
-					crc.Calc(buff.Ptr(), (UOSInt)contLeng);
+					crc.Calc(buff.Ptr(), (UIntOS)contLeng);
 
-					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
+					IO::MemoryReadingStream mstm(buff, (UIntOS)contLeng);
 					Data::Compress::Deflater dstm(mstm, nullptr, compLevel, false);
-					UOSInt readSize;
+					UIntOS readSize;
 					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
 						succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
@@ -249,9 +249,9 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
-						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
+						IO::MemoryReadingStream mstm(buff, (UIntOS)contLeng);
 						Data::Compress::Deflater dstm(mstm, nullptr, compLevel, true);
-						UOSInt readSize;
+						UIntOS readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
@@ -267,7 +267,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 	if (!contSent)
 	{
 		resp->AddContentLength(contLeng);
-		succ = (resp->Write(Data::ByteArrayR(buff, (UOSInt)contLeng)) == contLeng);
+		succ = (resp->Write(Data::ByteArrayR(buff, (UIntOS)contLeng)) == contLeng);
 	}
 	return succ;
 }
@@ -277,7 +277,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 	return SendContent(req, resp, mime, cont.leng, cont.v);
 }
 
-Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN fileName, OSInt cacheAge)
+Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN fileName, IntOS cacheAge)
 {
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;
@@ -333,7 +333,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest>
 		}
 		UInt64 start = 0;
 		Int64 end = -1;
-		UOSInt i = sb2.IndexOf('-');
+		UIntOS i = sb2.IndexOf('-');
 		if (i == INVALID_INDEX)
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -400,7 +400,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest>
 	if (sizeLeft <= 0)
 	{
 		UInt8 buff[BUFFSIZE];
-		UOSInt readSize;
+		UIntOS readSize;
 		readSize = fs.Read(BYTEARR(buff));
 		if (readSize == 0)
 		{

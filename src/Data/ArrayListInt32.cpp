@@ -6,7 +6,7 @@ Data::ArrayListInt32::ArrayListInt32() : Data::SortableArrayListNative<Int32>()
 {
 }
 
-Data::ArrayListInt32::ArrayListInt32(UOSInt capacity) : Data::SortableArrayListNative<Int32>(capacity)
+Data::ArrayListInt32::ArrayListInt32(UIntOS capacity) : Data::SortableArrayListNative<Int32>(capacity)
 {
 }
 

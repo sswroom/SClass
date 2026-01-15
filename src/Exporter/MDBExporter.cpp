@@ -37,7 +37,7 @@ IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(NN<IO::Pa
 #endif
 }
 
-Bool Exporter::MDBExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::MDBExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -68,8 +68,8 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<DB::DBReader> r;
 	NN<DB::ColDef> colDef;
 	Data::ArrayListStringNN tables;
-	UOSInt k;
-	UOSInt l;
+	UIntOS k;
+	UIntOS l;
 	if (!DB::MDBFileConn::CreateDBTool(fileName, log, CSTR("DB: ")).SetTo(mdb))
 		return false;
 	Bool succ = true;

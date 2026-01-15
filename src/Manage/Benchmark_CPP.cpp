@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 
-extern "C" void Benchmark_MemCopyTest(const UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
+extern "C" void Benchmark_MemCopyTest(const UInt8 *buff1, UInt8 *buff2, UIntOS buffSize, UIntOS loopCnt)
 {
 	while (loopCnt-- > 0)
 	{
@@ -10,10 +10,10 @@ extern "C" void Benchmark_MemCopyTest(const UInt8 *buff1, UInt8 *buff2, UOSInt b
 	}
 }
 
-extern "C" void Benchmark_MemWriteTest(const UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
+extern "C" void Benchmark_MemWriteTest(const UInt8 *buff1, UInt8 *buff2, UIntOS buffSize, UIntOS loopCnt)
 {
 	UInt8 *destBuff;
-	UOSInt cnt;
+	UIntOS cnt;
 	Int32x4 zval = PInt32x4Clear();
 	while (loopCnt-- > 0)
 	{
@@ -34,15 +34,15 @@ extern "C" void Benchmark_MemWriteTest(const UInt8 *buff1, UInt8 *buff2, UOSInt 
 	}
 }
 
-extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
+extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, UIntOS buffSize, UIntOS loopCnt)
 {
-/*	volatile OSInt *srcBuff;
-	OSInt cnt;
-	OSInt val;
+/*	volatile IntOS *srcBuff;
+	IntOS cnt;
+	IntOS val;
 	while (loopCnt-- > 0)
 	{
-		srcBuff = (volatile OSInt*)buff1;
-		cnt = buffSize / (sizeof(OSInt) * 4);
+		srcBuff = (volatile IntOS*)buff1;
+		cnt = buffSize / (sizeof(IntOS) * 4);
 		while (cnt-- > 0)
 		{
 			val = srcBuff[0];
@@ -58,7 +58,7 @@ extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, UOSInt buffSiz
 #else
 	volatile UInt8 *srcBuff;
 #endif
-	UOSInt cnt;
+	UIntOS cnt;
 	Int32x4 val;
 	while (loopCnt-- > 0)
 	{

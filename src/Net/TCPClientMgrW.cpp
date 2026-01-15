@@ -26,8 +26,8 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 	UInt32 waitPeriod = 1;
 	Data::Timestamp intT;
 	Data::Timestamp currTime;
-	UOSInt i;
-	UOSInt readSize;
+	UIntOS i;
+	UIntOS readSize;
 	Bool found;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
@@ -171,7 +171,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	stat->state = WorkerState::Idle;
 	while (!stat->toStop)
@@ -196,7 +196,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	this->workerTasks.Put(cliStat);
-	UOSInt i = this->workerCnt;
+	UIntOS i = this->workerCnt;
 	while (i-- > 0)
 	{
 		if (this->workers[i].state == WorkerState::Idle)
@@ -228,7 +228,7 @@ void Net::TCPClientMgr::ClientBeginRead(NN<TCPClientStatus> cliStat)
 	}
 }
 
-Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
+Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UIntOS workerCnt, TCPClientTimeout toHdlr)
 {
 	this->timeout = Data::Duration::FromSecNS(timeOutSeconds, 0);
 	this->logWriter = 0;
@@ -261,7 +261,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 
 Net::TCPClientMgr::~TCPClientMgr()
 {
-	UOSInt i = this->cliMap.GetCount();
+	UIntOS i = this->cliMap.GetCount();
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	if (i)
 	{
@@ -358,7 +358,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	}
 }
 
-Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UIntOS buffSize)
 {
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::MutexUsage mutUsage(this->cliMut);
@@ -382,7 +382,7 @@ Bool Net::TCPClientMgr::IsError()
 void Net::TCPClientMgr::CloseAll()
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
-	UOSInt i = this->cliMap.GetCount();
+	UIntOS i = this->cliMap.GetCount();
 	while (i-- > 0)
 	{
 		NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
@@ -399,7 +399,7 @@ void Net::TCPClientMgr::UseGetClient(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->cliMut);
 }
 
-UOSInt Net::TCPClientMgr::GetClientCount() const
+UIntOS Net::TCPClientMgr::GetClientCount() const
 {
 	return this->cliMap.GetCount();
 }
@@ -414,7 +414,7 @@ void Net::TCPClientMgr::ExtendTimeout(NN<Net::TCPClient> cli)
 	}
 }
 
-Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UOSInt index, OutParam<AnyType> cliData)
+Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UIntOS index, OutParam<AnyType> cliData)
 {
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	if (this->cliMap.GetItem(index).SetTo(cliStat))

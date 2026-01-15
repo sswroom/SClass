@@ -15,7 +15,7 @@ Optional<Text::String> Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char
 	UnsafeArray<const UTF8Char> nnstr;
 	if (!str.SetTo(nnstr)) return nullptr;
 	if (nnstr[0] == 0) return NewEmpty();
-	UOSInt len = Text::StrCharCnt(nnstr);
+	UIntOS len = Text::StrCharCnt(nnstr);
 	Text::String *s = (Text::String*)MemAllocA(UInt8, len + sizeof(String));
 	s->v = s->vbuff;
 	s->leng = len;
@@ -27,7 +27,7 @@ Optional<Text::String> Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char
 NN<Text::String> Text::String::NewNotNullSlow(UnsafeArray<const UTF8Char> str)
 {
 	if (str[0] == 0) return NewEmpty();
-	UOSInt len = Text::StrCharCnt(str);
+	UIntOS len = Text::StrCharCnt(str);
 	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
@@ -54,7 +54,7 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 {
 	UnsafeArray<const UTF8Char> strE;
 	if (!strEnd.SetTo(strE) || strE == str) return NewEmpty();
-	UOSInt len = (UOSInt)(strE - str);
+	UIntOS len = (UIntOS)(strE - str);
 	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
@@ -67,7 +67,7 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray<const UTF8Char> strEnd)
 {
 	if (strEnd == str) return NewEmpty();
-	UOSInt len = (UOSInt)(strEnd - str);
+	UIntOS len = (UIntOS)(strEnd - str);
 	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
@@ -81,7 +81,7 @@ Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF16Char> s
 {
 	UnsafeArray<const UTF16Char> nnstr;
 	if (!str.SetTo(nnstr)) return nullptr;
-	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(nnstr);
+	UIntOS charCnt = Text::StrUTF16_UTF8Cnt(nnstr);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8(s->v.Ptr(), nnstr);
@@ -90,17 +90,17 @@ Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF16Char> s
 
 NN<Text::String> Text::String::NewNotNull(UnsafeArray<const UTF16Char> str)
 {
-	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
+	UIntOS charCnt = Text::StrUTF16_UTF8Cnt(str);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8(s->v.Ptr(), str);
 	return s;
 }
 
-NN<Text::String> Text::String::NewW(UnsafeArray<const UTF16Char> str, UOSInt len)
+NN<Text::String> Text::String::NewW(UnsafeArray<const UTF16Char> str, UIntOS len)
 {
 	if (len == 0) return NewEmpty();
-	UOSInt charCnt = Text::StrUTF16_UTF8CntC(str, len);
+	UIntOS charCnt = Text::StrUTF16_UTF8CntC(str, len);
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8C(s->v.Ptr(), str, len);
 	s->v[charCnt] = 0;
@@ -111,7 +111,7 @@ Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF32Char> s
 {
 	UnsafeArray<const UTF32Char> nnstr;
 	if (!str.SetTo(nnstr)) return nullptr;
-	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(nnstr);
+	UIntOS charCnt = Text::StrUTF32_UTF8Cnt(nnstr);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8(s->v.Ptr(), nnstr);
@@ -120,17 +120,17 @@ Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF32Char> s
 
 NN<Text::String> Text::String::NewNotNull(UnsafeArray<const UTF32Char> str)
 {
-	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
+	UIntOS charCnt = Text::StrUTF32_UTF8Cnt(str);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8(s->v.Ptr(), str);
 	return s;
 }
 
-NN<Text::String> Text::String::NewW(UnsafeArray<const UTF32Char> str, UOSInt len)
+NN<Text::String> Text::String::NewW(UnsafeArray<const UTF32Char> str, UIntOS len)
 {
 	if (len == 0) return NewEmpty();
-	UOSInt charCnt = Text::StrUTF32_UTF8CntC(str, len);
+	UIntOS charCnt = Text::StrUTF32_UTF8CntC(str, len);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8C(s->v.Ptr(), str, len);
@@ -140,7 +140,7 @@ NN<Text::String> Text::String::NewW(UnsafeArray<const UTF32Char> str, UOSInt len
 
 NN<Text::String> Text::String::NewCSVRec(UnsafeArray<const UTF8Char> str)
 {
-	UOSInt len = 2;
+	UIntOS len = 2;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> sptr = str;
 	UnsafeArray<UTF8Char> sptr2;
@@ -175,11 +175,11 @@ NN<Text::String> Text::String::NewCSVRec(UnsafeArray<const UTF8Char> str)
 	return s;
 }
 
-NN<Text::String> Text::String::NewSubstr(Text::CStringNN s, UOSInt index, UOSInt maxLen)
+NN<Text::String> Text::String::NewSubstr(Text::CStringNN s, UIntOS index, UIntOS maxLen)
 {
 	if (s.leng < index || maxLen <= 0)
 		return NewEmpty();
-	UOSInt endIndex = index + maxLen;
+	UIntOS endIndex = index + maxLen;
 	if (s.leng < endIndex)
 		endIndex = s.leng;
 	return New(&s.v[index], endIndex - index);
@@ -189,9 +189,9 @@ void Text::String::Release()
 {
 #if defined(THREADSAFE)
 #if _OSINT_SIZE == 64
-	UOSInt cnt = Interlocked_DecrementU64(&this->useCnt);
+	UIntOS cnt = Interlocked_DecrementU64(&this->useCnt);
 #else
-	UOSInt cnt = Interlocked_DecrementU32(&this->useCnt);
+	UIntOS cnt = Interlocked_DecrementU32(&this->useCnt);
 #endif
 	if (cnt == 0)
 	{
@@ -227,7 +227,7 @@ NN<Text::String> Text::String::ToNewLower() const
 {
 	if (this->HasUpperCase())
 	{
-		UOSInt len = this->leng;
+		UIntOS len = this->leng;
 		NN<Text::String> s = Text::String::New(len);
 		Text::StrToLowerC(s->v, this->v, len);
 		return s;
@@ -238,7 +238,7 @@ NN<Text::String> Text::String::ToNewLower() const
 	}
 }
 
-Text::String::String(UOSInt cnt)
+Text::String::String(UIntOS cnt)
 {
 	this->v = this->vbuff;
 	this->useCnt = cnt;

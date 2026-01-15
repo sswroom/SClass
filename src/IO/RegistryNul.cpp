@@ -43,7 +43,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	return 0;
 }
 
-WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
+WChar *IO::Registry::GetSubReg(WChar *buff, UIntOS index)
 {
 	return 0;
 }
@@ -75,7 +75,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 	return false;
 }
 
-WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
+WChar *IO::Registry::GetName(WChar *nameBuff, UIntOS index)
 {
 	return 0;
 }

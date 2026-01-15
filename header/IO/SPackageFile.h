@@ -30,7 +30,7 @@ namespace IO
 		Int32 flags;
 		UInt64 currOfst;
 		Int32 customType;
-		UOSInt customSize;
+		UIntOS customSize;
 		Data::ByteBuffer customBuff;
 
 		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
@@ -38,12 +38,12 @@ namespace IO
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
 		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease);
-		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff);
+		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UIntOS customSize, Data::ByteArrayR customBuff);
 		SPackageFile(Text::CStringNN fileName);
 		~SPackageFile();
 
 		Bool AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, const Data::Timestamp &modTime);
-		Bool AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime);
+		Bool AddFile(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CStringNN newFile);

@@ -49,12 +49,12 @@ Text::CString IO::PCIInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt PCIInfo_AppendDevices(NN<Data::ArrayListNN<IO::PCIInfo>> pciList, const Char *clsName)
+UIntOS PCIInfo_AppendDevices(NN<Data::ArrayListNN<IO::PCIInfo>> pciList, const Char *clsName)
 {
 	IO::PCIInfo::ClassData clsData;
 	NN<IO::PCIInfo> pci;
 //	Text::StringBuilderUTF8 sb;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 
 	CFMutableDictionaryRef matchingDict;
 	io_iterator_t iter;
@@ -110,9 +110,9 @@ UOSInt PCIInfo_AppendDevices(NN<Data::ArrayListNN<IO::PCIInfo>> pciList, const C
 	return ret;
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
+UIntOS IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	ret += PCIInfo_AppendDevices(pciList, "IOPCIDevice");
 	return ret;
 }

@@ -31,10 +31,10 @@ namespace Net
 		Bool IsError();
 
 		void AddDevice(UInt8 addr, NN<IO::MODBUSDevSim> dev);
-		UOSInt GetDeviceCount() const;
-		NN<IO::MODBUSDevSim> GetDeviceNoCheck(UOSInt index) const;
-		Optional<IO::MODBUSDevSim> GetDevice(UOSInt index) const;
-		UInt32 GetDeviceAddr(UOSInt index);
+		UIntOS GetDeviceCount() const;
+		NN<IO::MODBUSDevSim> GetDeviceNoCheck(UIntOS index) const;
+		Optional<IO::MODBUSDevSim> GetDevice(UIntOS index) const;
+		UInt32 GetDeviceAddr(UIntOS index);
 		UInt32 GetDelay();
 		void SetDelay(UInt32 delay);
 	};

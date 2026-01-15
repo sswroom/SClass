@@ -63,9 +63,9 @@ namespace DB
 	protected:
 		void AddLogMsgC(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
-		UOSInt SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
-		UOSInt SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
-		UOSInt SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UIntOS SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UIntOS SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UIntOS SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr);
 	public:
 		ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
@@ -99,24 +99,24 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr);
-		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> arr);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr);
+		virtual UIntOS QuerySchemaNames(NN<Data::ArrayListStringNN> arr);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 
-		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
+		virtual UIntOS GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual Bool ChangeDatabase(Text::CStringNN databaseName);
 		virtual Optional<Text::String> GetCurrDBName();
 		Bool GetDBCollation(Text::CStringNN databaseName, NN<Collation> collation);
 
-		UOSInt GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars);
+		UIntOS GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars);
 		void FreeVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars);
 
-		UOSInt GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
+		UIntOS GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 		void FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 
-		UOSInt SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UIntOS SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr);
 
 		virtual Bool CanModify();
 	};

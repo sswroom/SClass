@@ -7,7 +7,7 @@ Data::ArrayListStrFastNN::ArrayListStrFastNN() : Data::SortableArrayListNN<Text:
 {
 }
 
-Data::ArrayListStrFastNN::ArrayListStrFastNN(UOSInt capacity) : Data::SortableArrayListNN<Text::String>(capacity)
+Data::ArrayListStrFastNN::ArrayListStrFastNN(UIntOS capacity) : Data::SortableArrayListNN<Text::String>(capacity)
 {
 }
 
@@ -19,19 +19,19 @@ NN<Data::ArrayListNN<Text::String>> Data::ArrayListStrFastNN::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrFastNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
+IntOS Data::ArrayListStrFastNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
 {
 	return obj1->CompareToFast(obj2->ToCString());
 }
 
-OSInt Data::ArrayListStrFastNN::SortedIndexOf(Text::CStringNN val) const
+IntOS Data::ArrayListStrFastNN::SortedIndexOf(Text::CStringNN val) const
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	i = 0;
-	j = (OSInt)this->objCnt - 1;
+	j = (IntOS)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -54,7 +54,7 @@ OSInt Data::ArrayListStrFastNN::SortedIndexOf(Text::CStringNN val) const
 
 void Data::ArrayListStrFastNN::FreeAll()
 {
-	UOSInt i = this->objCnt;
+	UIntOS i = this->objCnt;
 	while (i-- > 0)
 	{
 		this->arr[i]->Release();

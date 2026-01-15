@@ -41,8 +41,8 @@ namespace Map
 		Double icoSpotY;
 		ThreadState dt;
 		UnsafeArray<Math::RectAreaDbl> objBounds;
-		UOSInt *objCnt;
-		UOSInt maxCnt;
+		UIntOS *objCnt;
+		UIntOS maxCnt;
 
 		Sync::Mutex taskMut;
 		Data::ArrayListObj<Optional<Math::Geometry::Vector2D>> tasks;
@@ -76,7 +76,7 @@ namespace Map
 
 		void SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> img);
 		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, OutParam<Bool> isLayerEmpty);
-		void SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxCnt);
+		void SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UIntOS> objCnt, UIntOS maxCnt);
 		void Draw(NN<Math::Geometry::Vector2D> vec);
 		void DrawNextType(Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b);
 		void WaitForFinish();

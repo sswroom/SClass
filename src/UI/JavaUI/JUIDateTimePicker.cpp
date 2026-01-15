@@ -11,7 +11,7 @@ UI::JavaUI::JUIDateTimePicker::~JUIDateTimePicker()
 {
 }
 
-OSInt UI::JavaUI::JUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -19,8 +19,8 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::WebReques
 {
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sb.AppendUTF8Char('[');
 	j = me->layerMap.GetCount();
 	if (j > 0)
@@ -67,10 +67,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 		}
 		else //Cesium format
 		{
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
-			UOSInt l;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
+			UIntOS l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
 			NN<Text::String> s;
@@ -165,10 +165,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 		if (layer)
 		{
 			Math::GeoJSONWriter writer;
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
-			UOSInt l;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
+			UIntOS l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
 			Optional<Map::NameArray> nameArr;
@@ -279,7 +279,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::WebReque
 	else
 	{
 		Text::PString sarr[5];
-		UOSInt sarrCnt;
+		UIntOS sarrCnt;
 		sb.Append(nnrange);
 		sarrCnt = Text::StrSplitP(sarr, 5, sb, ',');
 		if (sarrCnt != 4)
@@ -319,7 +319,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::WebReque
 	fs.ReadToEnd(mstm, 8192);
 	mstm.Write(Data::ByteArrayR(U8STR(""), 1));
 
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
 	NN<Text::JSONBase> json;
 	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, buffSize - 1)).SetTo(json))
@@ -395,7 +395,7 @@ void Map::MapServerHandler::CheckObject(NN<Text::JSONBase> obj, Double x1, Doubl
 	{
 		return;
 	}
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> s;
 	NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
 	if (jobj->GetObjectValue(CSTR("content")).SetTo(obj) && obj->GetType() == Text::JSONType::Object)
@@ -540,8 +540,8 @@ void Map::MapServerHandler::AddLayer(NN<Map::MapDrawLayer> layer)
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 	{
 		NN<Map::MapLayerCollection> layerColl = NN<Map::MapLayerCollection>::ConvertFrom(layer);
-		UOSInt i = 0;
-		UOSInt j = layerColl->GetCount();
+		UIntOS i = 0;
+		UIntOS j = layerColl->GetCount();
 		while (i < j)
 		{
 			NN<Map::MapDrawLayer> sublayer;

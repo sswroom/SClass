@@ -112,9 +112,9 @@ UInt16 Text::SMSUtil::text2gsm[] = {
 	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF
 };
 
-OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen)
+IntOS Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen)
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	Int32 t = Text::SMSUtil::DCS_GSM7BIT;
 	UInt16 v;
 	UTF16Char c;
@@ -152,7 +152,7 @@ OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UI
 		dcs.Set(Text::SMSUtil::DCS_GSM7BIT);
 		if (len > 160)
 		{
-			return -(OSInt)len;
+			return -(IntOS)len;
 		}
 		dataLen.Set((UInt32)len);
 		t = 0;
@@ -264,7 +264,7 @@ OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UI
 				}
 			}
 		}
-		return (OSInt)len;
+		return (IntOS)len;
 	}
 	else if (t == Text::SMSUtil::DCS_UCS2)
 	{
@@ -273,7 +273,7 @@ OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UI
 		dataLen.Set((UInt32)len);
 		if (len > 140)
 		{
-			return -(OSInt)len;
+			return -(IntOS)len;
 		}
 		src = msg;
 		while ((c = *src++) != 0)
@@ -282,14 +282,14 @@ OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UI
 			buff[1] = (UInt8)c;
 			buff += 2;
 		}
-		return (OSInt)len;
+		return (IntOS)len;
 	}
 	return 0;
 }
 
-OSInt Text::SMSUtil::ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff)
+IntOS Text::SMSUtil::ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff)
 {
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UTF16Char> src;
 	UTF16Char c;
 	len = Text::StrCharCnt(msg) << 1;
@@ -300,13 +300,13 @@ OSInt Text::SMSUtil::ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<U
 		buff[1] = (UInt8)c;
 		buff += 2;
 	}
-	return (OSInt)len;
+	return (IntOS)len;
 }
 
 void Text::SMSUtil::GetTextInfo(UnsafeArray<const UTF16Char> msg, OutParam<DCS> dcs, OutParam<UInt32> msgLeng)
 {
 	UInt8 buff[140];
-	OSInt len = ToGSMBytes(msg, buff, dcs, msgLeng);
+	IntOS len = ToGSMBytes(msg, buff, dcs, msgLeng);
 	if (len < 0)
 	{
 		msgLeng.Set((UInt32)-len);
@@ -328,7 +328,7 @@ UInt32 Text::SMSUtil::GSMTextSize2DataSize(UInt32 textSize)
 
 Bool Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> msg)
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	UInt16 v;
 	UTF16Char c;
 	UnsafeArray<UTF16Char> src;
@@ -367,7 +367,7 @@ Bool Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> msg)
 
 UnsafeArrayOpt<UTF16Char> Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> destBuff, UnsafeArray<const UTF16Char> msg, UInt32 dataLen)
 {
-	UOSInt len = 0;
+	UIntOS len = 0;
 	UInt16 v;
 	UTF16Char c;
 	UnsafeArray<const UTF16Char> src;

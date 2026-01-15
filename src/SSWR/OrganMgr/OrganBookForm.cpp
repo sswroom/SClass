@@ -17,9 +17,9 @@ void SSWR::OrganMgr::BookArrayList::Sort()
 	Data::Sort::ArtificialQuickSortFunc<NN<OrganBook>>::Sort(*this, CompareBook);
 }
 
-OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(NN<OrganBook> book1, NN<OrganBook> book2)
+IntOS __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(NN<OrganBook> book1, NN<OrganBook> book2)
 {
-	OSInt ret = book1->GetPublishDate().CompareTo(book2->GetPublishDate());
+	IntOS ret = book1->GetPublishDate().CompareTo(book2->GetPublishDate());
 	if (ret == 0)
 	{
 		ret = Text::StringTool::CompareICase(book1->GetDispAuthor(), book2->GetDispAuthor());
@@ -31,7 +31,7 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(NN<OrganBook> book1, 
 	return ret;
 }
 
-OSInt SSWR::OrganMgr::BookArrayList::Compare(NN<OrganBook> book1, NN<OrganBook> book2) const
+IntOS SSWR::OrganMgr::BookArrayList::Compare(NN<OrganBook> book1, NN<OrganBook> book2) const
 {
 	return CompareBook(book1, book2);
 }
@@ -40,14 +40,14 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 {
 	NN<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
 	Data::Timestamp currTime = Data::DateTime(newDate->GetYear(), 1, 1, 0, 0, 0).ToTimestamp();
-	OSInt i = 0;
-	OSInt j = (OSInt)me->bookList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)me->bookList.GetCount() - 1;
+	IntOS k;
 	NN<OrganBook> book;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		book = me->bookList.GetItemNoCheck((UOSInt)k);
+		book = me->bookList.GetItemNoCheck((UIntOS)k);
 		if (book->GetPublishDate().CompareTo(currTime) >= 0)
 		{
 			j = k - 1;
@@ -57,7 +57,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 			i = k + 1;
 		}
 	}
-	if (i >= (OSInt)me->bookList.GetCount())
+	if (i >= (IntOS)me->bookList.GetCount())
 	{
 		if (me->bookList.GetCount() > 0)
 		{
@@ -67,15 +67,15 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 	}
 	else
 	{
-		Math::Size2D<UOSInt> sz = me->lvBook->GetSizeP();
-		j = (OSInt)sz.y >> 1;
+		Math::Size2D<UIntOS> sz = me->lvBook->GetSizeP();
+		j = (IntOS)sz.y >> 1;
 		Int32 rect[4];
-		me->lvBook->GetItemRectP((UOSInt)i, rect);
+		me->lvBook->GetItemRectP((UIntOS)i, rect);
 		if (rect[1] > j)
 		{
 			k = i + j / rect[3];
-			if (k >= (OSInt)me->bookList.GetCount())
-				k = (OSInt)me->bookList.GetCount() - 1;
+			if (k >= (IntOS)me->bookList.GetCount())
+				k = (IntOS)me->bookList.GetCount() - 1;
 		}
 		else
 		{
@@ -83,8 +83,8 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 			if (k < 0)
 				k = 0;
 		}
-		me->lvBook->EnsureVisible((UOSInt)k);
-		me->lvBook->SetSelectedIndex((UOSInt)i);
+		me->lvBook->EnsureVisible((UIntOS)k);
+		me->lvBook->SetSelectedIndex((UIntOS)i);
 	}
 }
 
@@ -146,10 +146,10 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(AnyType userObj
 		sb.Replace('\r', ' ');
 		sb.ReplaceStr(UTF8STRC("  "), UTF8STRC(" "));
 
-		UOSInt digitCnt = 0;
-		UOSInt i = 1;
-		UOSInt j;
-		UOSInt k;
+		UIntOS digitCnt = 0;
+		UIntOS i = 1;
+		UIntOS j;
+		UIntOS k;
 		UnsafeArray<const UTF8Char> chars = sb.ToString();
 		Bool found = false;
 		j = sb.GetLength();
@@ -262,9 +262,9 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	NN<OrganBook> book;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = this->bookList.GetCount();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->bookList.GetCount();
+	UIntOS k;
 	this->lvBook->ClearItems();
 	while (i < j)
 	{

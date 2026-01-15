@@ -14,7 +14,7 @@ Text::MailBase64Stream::~MailBase64Stream()
 	UInt8 b64buff[74];
 	if (this->lineBuffSize > 0)
 	{
-		UOSInt i = b64.Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff);
+		UIntOS i = b64.Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff);
 		this->stm->Write(Data::ByteArrayR(b64buff, i));
 	}
 }
@@ -24,14 +24,14 @@ Bool Text::MailBase64Stream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt Text::MailBase64Stream::Read(const Data::ByteArray &buff)
+UIntOS Text::MailBase64Stream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Text::MailBase64Stream::Write(Data::ByteArrayR buff)
+UIntOS Text::MailBase64Stream::Write(Data::ByteArrayR buff)
 {
-	UOSInt oriSize = buff.GetSize();
+	UIntOS oriSize = buff.GetSize();
 	UInt8 b64buff[74];
 	if (this->lineBuffSize + buff.GetSize() >= 54)
 	{
@@ -75,9 +75,9 @@ Bool Text::MailBase64Stream::Recover()
 	return this->stm->Recover();
 }
 
-UOSInt Text::MailBase64Stream::GetWriteCount()
+UIntOS Text::MailBase64Stream::GetWriteCount()
 {
-	UOSInt blk = this->lineBuffSize / 3;
+	UIntOS blk = this->lineBuffSize / 3;
 	if (this->lineBuffSize > blk * 3)
 		blk++;
 	return (this->lineCnt * 74) + (blk * 4);

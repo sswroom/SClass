@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStoreListClicked(AnyType us
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	UTF8Char sbuff[32];
@@ -62,8 +62,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType use
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj,
 
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<BTDevice> dev;
 	i = this->devMap.GetCount();
 	while (i-- > 0)
@@ -189,8 +189,8 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 	this->lvDevices->AddColumn(CSTR("Vendor"), 150);
 	this->lvDevices->AddColumn(CSTR("RSSI"), 60);
 
-	UOSInt i = 0;
-	UOSInt j = this->btList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->btList.GetCount();
 	NN<IO::BTController> btCtrl;
 	while (i < j)
 	{
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRBluetoothLEForm::~AVIRBluetoothLEForm()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<IO::BTController> btCtrl;
 	if (this->btCtrl.SetTo(btCtrl))
 	{

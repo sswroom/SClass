@@ -3,7 +3,7 @@
 #include "IO/SharedMemory.h"
 #include <windows.h>
 
-IO::SharedMemory::SharedMemory(void *hand, UInt8 *memPtr, OSInt memSize)
+IO::SharedMemory::SharedMemory(void *hand, UInt8 *memPtr, IntOS memSize)
 {
 	this->hand = hand;
 	this->memPtr = memPtr;
@@ -21,7 +21,7 @@ UInt8 *IO::SharedMemory::GetPointer()
 	return this->memPtr;
 }
 
-IO::SharedMemory *IO::SharedMemory::Create(const WChar *name, OSInt size)
+IO::SharedMemory *IO::SharedMemory::Create(const WChar *name, IntOS size)
 {
 	HANDLE hMapFile;
 	UInt8 *memPtr;
@@ -41,7 +41,7 @@ IO::SharedMemory *IO::SharedMemory::Create(const WChar *name, OSInt size)
 	return smem;
 }
 
-IO::SharedMemory *IO::SharedMemory::Open(const WChar *name, OSInt size)
+IO::SharedMemory *IO::SharedMemory::Open(const WChar *name, IntOS size)
 {
 	HANDLE hMapFile;
 	UInt8 *memPtr;

@@ -609,7 +609,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				FlightHoldingsPeriod ams;
 				cls = ams.CreateClass();
 			}
-			UOSInt cnt = 0;
+			UIntOS cnt = 0;
 			{
 				DB::DBClassReader<FlightHoldingsPeriod> reader(r, cls);
 				while (true)
@@ -626,7 +626,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("Time used = "));
 			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", rows read = "));
-			sb.AppendUOSInt(cnt);
+			sb.AppendUIntOS(cnt);
 			console.WriteLine(sb.ToCString());
 			cls.Delete();
 		}

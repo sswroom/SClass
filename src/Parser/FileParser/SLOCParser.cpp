@@ -41,12 +41,12 @@ public:
 	{
 	}
 
-	virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+	virtual UIntOS GetExtraCount(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
 		return 18;
 	}
 
-	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		switch (extIndex)
 		{
@@ -108,7 +108,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (buffSize != sizeof(ExtraInfo))
 			return false;
@@ -169,7 +169,7 @@ public:
 				UTF8Char sbuff[32];
 				UnsafeArray<UTF8Char> sptr;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, extInfo->cliIP);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			return true;
 		case 16:
@@ -215,14 +215,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	UnsafeArray<const UTF8Char> sptr;
-	UOSInt i;
-	UOSInt currPos;
+	UIntOS i;
+	UIntOS currPos;
 	UInt64 fileSize;
 	Int64 devId;
 	NN<Text::String> s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
-	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))
+	if (!Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LOC")))
 	{
 		return nullptr;
 	}
@@ -244,7 +244,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 
 	Map::GPSTrack *track;
 	sptr = Text::StrInt64(sbuff, devId);
-	s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	s = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();

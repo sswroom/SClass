@@ -949,9 +949,9 @@ FORCEINLINE Double UInt16_Float16(UInt16 val)
 #define ReadMSingle(dptr) ReadMFloat(dptr)
 #define ReadNSingle(dptr) ReadNFloat(dptr)
 
-FORCEINLINE Bool BytesEquals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UOSInt buffSize)
+FORCEINLINE Bool BytesEquals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UIntOS buffSize)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < buffSize)
 	{
 		if (buff1[i] != buff2[i])

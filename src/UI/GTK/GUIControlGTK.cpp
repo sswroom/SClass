@@ -135,9 +135,9 @@ void UI::GUIControl::SetSize(Double width, Double height)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width, this->lyPos + height, true);
 }
 
-void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
+void UI::GUIControl::SetSizeP(Math::Size2D<UIntOS> size)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(size.y) * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UIntOS2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UIntOS2Double(size.y) * this->ddpi / this->hdpi, true);
 }
 
 Math::Size2DDbl UI::GUIControl::GetSize()
@@ -146,10 +146,10 @@ Math::Size2DDbl UI::GUIControl::GetSize()
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
-Math::Size2D<UOSInt> UI::GUIControl::GetSizeP()
+Math::Size2D<UIntOS> UI::GUIControl::GetSizeP()
 {
-	return Math::Size2D<UOSInt>((UOSInt)Double2OSInt((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi),
-		(UOSInt)Double2OSInt((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
+	return Math::Size2D<UIntOS>((UIntOS)Double2IntOS((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi),
+		(UIntOS)Double2IntOS((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 //	printf("Control.GetSizeP %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -158,14 +158,14 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 	SetArea(x, y, x + this->lxPos2 - this->lxPos, y + this->lyPos2 - this->lyPos, true);
 }
 
-Math::Coord2D<OSInt> UI::GUIControl::GetPositionP()
+Math::Coord2D<IntOS> UI::GUIControl::GetPositionP()
 {
-	return Math::Coord2D<OSInt>(Double2Int32(this->lxPos * this->hdpi / this->ddpi), Double2Int32(this->lyPos * this->hdpi / this->ddpi));
+	return Math::Coord2D<IntOS>(Double2Int32(this->lxPos * this->hdpi / this->ddpi), Double2Int32(this->lyPos * this->hdpi / this->ddpi));
 }
 
-Math::Coord2D<OSInt> UI::GUIControl::GetScreenPosP()
+Math::Coord2D<IntOS> UI::GUIControl::GetScreenPosP()
 {
-	return Math::Coord2D<OSInt>(0, 0);
+	return Math::Coord2D<IntOS>(0, 0);
 }
 
 void UI::GUIControl::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -225,9 +225,9 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	this->OnSizeChanged(updateScn);
 }
 
-void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::GUIControl::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn)
 {
-	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
+	if (IntOS2Double(left) == this->lxPos && IntOS2Double(top) == this->lyPos && IntOS2Double(right) == this->lxPos2 && IntOS2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	NN<GUIClientControl> nnparent;
@@ -235,14 +235,14 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	{
 		ofst = nnparent->GetClientOfst();
 	}
-	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = IntOS2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = IntOS2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
 	if (this->parent.SetTo(nnparent))
 	{
 		AnyType container = nnparent->GetContainer();
-		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
+		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32(IntOS2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(IntOS2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -259,19 +259,19 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW == -1)
 	{
-		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;
+		this->lxPos2 = IntOS2Double(right) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lxPos2 = OSInt2Double(left + outW) * this->ddpi / this->hdpi;
+		this->lxPos2 = IntOS2Double(left + outW) * this->ddpi / this->hdpi;
 	}
 	if (outH == -1)
 	{
-		this->lyPos2 = OSInt2Double(bottom) * this->ddpi / this->hdpi;
+		this->lyPos2 = IntOS2Double(bottom) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lyPos2 = OSInt2Double(top + outH) * this->ddpi / this->hdpi;
+		this->lyPos2 = IntOS2Double(top + outH) * this->ddpi / this->hdpi;
 	}
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
@@ -405,17 +405,17 @@ void UI::GUIControl::Focus()
 	gtk_widget_grab_focus((GtkWidget*)this->hwnd.OrNull());
 }
 
-OSInt UI::GUIControl::GetScrollHPos()
+IntOS UI::GUIControl::GetScrollHPos()
 {
 	return 0;
 }
 
-OSInt UI::GUIControl::GetScrollVPos()
+IntOS UI::GUIControl::GetScrollVPos()
 {
 	return 0;
 }
 
-void UI::GUIControl::ScrollTo(OSInt x, OSInt y)
+void UI::GUIControl::ScrollTo(IntOS x, IntOS y)
 {
 }
 
@@ -438,7 +438,7 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->lyPos2 = this->lyPos + outH * this->ddpi / this->hdpi;
 	}
 
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -534,7 +534,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		gint winX;
 		gint winY;
 		gtk_window_get_position((GtkWindow*)this->hwnd.OrNull(), &winX, &winY);
-		Math::Size2D<UOSInt> winSize = this->GetSizeP();
+		Math::Size2D<UIntOS> winSize = this->GetSizeP();
 		if (monInfo.SetTo(nnmonInfo))
 		{
 			Int32 maxW = nnmonInfo->GetPixelWidth();
@@ -543,8 +543,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
-			newX = (OSInt2Double(winX + winX + (OSInt)winSize.GetWidth()) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winSize.GetHeight()) - newH) * 0.5;
+			newX = (IntOS2Double(winX + winX + (IntOS)winSize.GetWidth()) - newW) * 0.5;
+			newY = (IntOS2Double(winY + winY + (IntOS)winSize.GetHeight()) - newH) * 0.5;
 			if (newY < nnmonInfo->GetTop())
 			{
 				newY = nnmonInfo->GetTop();
@@ -559,8 +559,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxX;
 			if (newH > maxY)
 				newH = maxY;
-			newX = (OSInt2Double(winX + winX + (OSInt)winSize.GetWidth()) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winSize.GetHeight()) - newH) * 0.5;
+			newX = (IntOS2Double(winX + winX + (IntOS)winSize.GetWidth()) - newW) * 0.5;
+			newY = (IntOS2Double(winY + winY + (IntOS)winSize.GetHeight()) - newH) * 0.5;
 			if (newY < 0)
 			{
 				newY = 0;
@@ -745,13 +745,13 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 	MonitorHandle *ret;
 	if (wnd == 0)
 	{
-		ret = (MonitorHandle*)(OSInt)1;
+		ret = (MonitorHandle*)(IntOS)1;
 	}
 	else
 	{
 		GdkMonitor *mon = gdk_display_get_monitor_at_window(display, wnd);
 		GdkMonitor *mon2;
-		ret = (MonitorHandle*)(OSInt)1;
+		ret = (MonitorHandle*)(IntOS)1;
 		int i = 0;
 		int j = gdk_display_get_n_monitors(display);
 		while (i < j)
@@ -759,7 +759,7 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 			mon2 = gdk_display_get_monitor(display, i);
 			if (mon == mon2)
 			{
-				ret = (MonitorHandle*)(OSInt)(1 + i);
+				ret = (MonitorHandle*)(IntOS)(1 + i);
 				break;
 			}
 			i++;
@@ -778,11 +778,11 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 	MonitorHandle *ret;
 	if (wnd == 0)
 	{
-		ret = (MonitorHandle*)(OSInt)1;
+		ret = (MonitorHandle*)(IntOS)1;
 	}
 	else
 	{
-		ret = (MonitorHandle*)(OSInt)(1 + gdk_screen_get_monitor_at_window(scn, wnd));
+		ret = (MonitorHandle*)(IntOS)(1 + gdk_screen_get_monitor_at_window(scn, wnd));
 	}
 	return ret;
 #endif
@@ -848,7 +848,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 		}
 		Media::DrawFont *font;
 		NN<Text::String> fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
-		NEW_CLASS(font, Media::GTKDrawFont(fntName.Ptr(), height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
+		NEW_CLASS(font, Media::GTKDrawFont(fntName.Ptr(), height, (IntOS)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
 		pango_font_description_free(fnt);
 		return font;

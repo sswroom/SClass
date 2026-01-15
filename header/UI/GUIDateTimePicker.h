@@ -20,7 +20,7 @@ namespace UI
 		GUIDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIDateTimePicker();
 
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void SetValue(NN<Data::DateTime> dt) = 0;
 		virtual void SetValue(const Data::Timestamp &dt) = 0;
 		virtual void GetSelectedTime(NN<Data::DateTime> dt) = 0;

@@ -10,11 +10,11 @@
 #undef FindNextFile
 #undef DeleteFile
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
+UIntOS IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<IO::Path::FindFileSession> sess;
 	*linkPathEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(linkPathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -27,15 +27,15 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameL
 			{
 				if (pt == IO::Path::PathType::Directory)
 				{
-					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
+					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UIntOS)(sptr - linkPathEnd));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					ret += GetLinkNamesDir(nameList, linkPath, sptr, filePath, sptr2);
 				}
 				else
 				{
-					if (Text::StrEndsWithICaseC(linkPathEnd, (UOSInt)(sptr - linkPathEnd), UTF8STRC(".LNK")))
+					if (Text::StrEndsWithICaseC(linkPathEnd, (UIntOS)(sptr - linkPathEnd), UTF8STRC(".LNK")))
 					{
-						sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
+						sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UIntOS)(sptr - linkPathEnd));
 						nameList->Add(Text::String::NewP(filePath, sptr2));
 						ret++;
 					}
@@ -78,12 +78,12 @@ UnsafeArray<UTF8Char> IO::ProgramLinkManager::GetLinkPath(UnsafeArray<UTF8Char> 
 	return sptr;
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser)
+UIntOS IO::ProgramLinkManager::GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
 	UnsafeArray<UTF8Char> linkPathEnd;
 	UTF8Char filePath[512];
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (allUser)
 	{
 		linkPathEnd = GetLinkPath(linkPath, false);
@@ -118,7 +118,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, NN<IO::Prog
 	IO::LNKFile lnk(CSTRP(sbuff, sptr));
 	if (lnk.IsError())
 		return false;
-	UOSInt i = linkName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = linkName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sptr = linkName.Substring(i + 1).ConcatTo(sbuff);
@@ -131,7 +131,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, NN<IO::Prog
 	{
 		sptr = linkName.ConcatTo(sbuff);
 	}
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
@@ -166,7 +166,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 	HRESULT hres;
 	IShellLink* psl;
 	UnsafeArray<const WChar> wptr;
-	UOSInt i;
+	UIntOS i;
 
 	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
 	if (SUCCEEDED(hres))

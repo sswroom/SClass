@@ -16,8 +16,8 @@ namespace Media
 	{
 	public:
 		Int32 color;
-		UOSInt count;
-		UOSInt index;
+		UIntOS count;
+		UIntOS index;
 
 		ColorStat()
 		{
@@ -31,9 +31,9 @@ namespace Media
 
 		}
 
-		virtual OSInt CompareTo(NN<Data::Comparable> obj) const
+		virtual IntOS CompareTo(NN<Data::Comparable> obj) const
 		{
-			UOSInt cnt = NN<Media::ColorStat>::ConvertFrom(obj)->count;
+			UIntOS cnt = NN<Media::ColorStat>::ConvertFrom(obj)->count;
 			if (cnt > count)
 			{
 				return 1;
@@ -50,14 +50,14 @@ namespace Media
 	};
 }
 
-void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UnsafeArray<UInt8> palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UnsafeArray<UInt8> palette, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl)
 {
 	Data::ArrayListCmp *arr[256];
-	UOSInt i;
-	UOSInt j;
-	UOSInt h;
-	UOSInt l;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS h;
+	UIntOS l;
+	UIntOS k;
 	UnsafeArray<UInt8> currPtr;
 	UnsafeArray<UInt8> currPtr2;
 	UnsafeArray<UInt8> ptr;
@@ -66,7 +66,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 	Data::ArrayListCmp *cArr;
 	NN<Media::ColorStat> cs;
 	NN<Media::ColorStat> cs2;
-	UOSInt colorCnt = 0;
+	UIntOS colorCnt = 0;
 
 	i = 256;
 	while (i-- > 0)
@@ -123,9 +123,9 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 
 	if (colorCnt > 1024)
 	{
-		UOSInt rVal;
-		UOSInt gVal;
-		UOSInt bVal;
+		UIntOS rVal;
+		UIntOS gVal;
+		UIntOS bVal;
 		UnsafeArray<UInt8> cols;
 		i = 256;
 		while (i-- > 0)
@@ -221,9 +221,9 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 				}
 
 				*currPtr2 = (UInt8)((r << 5) | (g << 3) | b);
-				rVal = rVal - (UOSInt)((r << 5) | (r << 2) | (r >> 1));
-				gVal = gVal - (UOSInt)((g << 6) | (g << 4) | (g << 2) | g);
-				bVal = bVal - (UOSInt)((b << 5) | (b << 2) | (b >> 1));
+				rVal = rVal - (UIntOS)((r << 5) | (r << 2) | (r >> 1));
+				gVal = gVal - (UIntOS)((g << 6) | (g << 4) | (g << 2) | g);
+				bVal = bVal - (UIntOS)((b << 5) | (b << 2) | (b >> 1));
 
 				currPtr += 4;
 				currPtr2++;
@@ -244,17 +244,17 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 				cArr->AddAll(carr);
 			}
 		}
-		UOSInt arrSize;
+		UIntOS arrSize;
 		UnsafeArray<NN<Data::Comparable>> cmpArr = cArr->GetArr(arrSize);
-		Data::Sort::ArtificialQuickSort::SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
+		Data::Sort::ArtificialQuickSort::SortCmpO(cmpArr, 0, (IntOS)arrSize - 1);
 
 		UnsafeArray<Int32> cols = UnsafeArray<Int32>::ConvertFrom(palette);
 		if (cArr->GetCount() > 256)
 		{
-			OSInt colorProc = (OSInt)cArr->GetCount() - 256;
+			IntOS colorProc = (IntOS)cArr->GetCount() - 256;
 			Int32 currDiff;
 			Int32 minDiff;
-			UOSInt minIndex;
+			UIntOS minIndex;
 			i = 256;
 			while (i-- > 0)
 			{

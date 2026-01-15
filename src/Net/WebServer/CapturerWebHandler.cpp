@@ -28,10 +28,10 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = wifiCapture->GetLogList(mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"wifidet.html\">"));
 		sb.AppendC(UTF8STRC("Wifi Record count = "));
-		sb.AppendUOSInt(logList->GetCount());
+		sb.AppendUIntOS(logList->GetCount());
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
-		UOSInt i = logList->GetCount();
-		UOSInt j = 0;
+		UIntOS i = logList->GetCount();
+		UIntOS j = 0;
 		while (i-- > 0)
 		{
 			if (logList->GetItemNoCheck(i)->lastScanTime == lastScanTime)
@@ -41,7 +41,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		}
 		sb.AppendC(UTF8STRC("<a href=\"wificurr.html\">"));
 		sb.AppendC(UTF8STRC("Wifi current count = "));
-		sb.AppendUOSInt(j);
+		sb.AppendUIntOS(j);
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
 	NN<IO::BTCapturer> btCapture;
@@ -54,15 +54,15 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		logList.AddAll(btCapture->GetPublicList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdetpub.html\">"));
 		sb.AppendC(UTF8STRC("BT Public count = "));
-		sb.AppendUOSInt(logList.GetCount());
+		sb.AppendUIntOS(logList.GetCount());
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 		logList.AddAll(btCapture->GetRandomList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdet.html\">"));
 		sb.AppendC(UTF8STRC("BT Total count = "));
-		sb.AppendUOSInt(logList.GetCount());
+		sb.AppendUIntOS(logList.GetCount());
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
-		UOSInt i = logList.GetCount();
-		UOSInt j = 0;
+		UIntOS i = logList.GetCount();
+		UIntOS j = 0;
 		while (i-- > 0)
 		{
 			entry = logList.GetItemNoCheck(i);
@@ -73,7 +73,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		}
 		sb.AppendC(UTF8STRC("<a href=\"btcurr.html\">"));
 		sb.AppendC(UTF8STRC("BT current count = "));
-		sb.AppendUOSInt(j);
+		sb.AppendUIntOS(j);
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
 	NN<IO::GSMCellCapturer> gsmCapturer;
@@ -88,7 +88,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		cells = gsmCapturer->GetCells(mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"gsmdet.html\">"));
 		sb.AppendC(UTF8STRC("GSM Cell count = "));
-		sb.AppendUOSInt(cells->GetCount());
+		sb.AppendUIntOS(cells->GetCount());
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
 	NN<IO::RadioSignalLogger> radioLogger;
@@ -166,7 +166,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServe
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("All Bluetooth Count = "));
-	sb.AppendUOSInt(entryList.GetCount());
+	sb.AppendUIntOS(entryList.GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
 	AppendBTTable(sb, req, entryList, false);
 	mutUsage.EndUse();
@@ -199,7 +199,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebSe
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("Public Bluetooth Count = "));
-	sb.AppendUOSInt(entryList->GetCount());
+	sb.AppendUIntOS(entryList->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
 	AppendBTTable(sb, req, entryList, false);
 	mutUsage.EndUse();
@@ -267,7 +267,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebSer
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("<a href=\"wifidown.html\">Download</a><br/>\r\n"));
 	sb.AppendC(UTF8STRC("All WiFi Count = "));
-	sb.AppendUOSInt(entryList->GetCount());
+	sb.AppendUIntOS(entryList->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
 	AppendWiFiTable(sb, req, entryList, 0);
 	mutUsage.EndUse();
@@ -291,9 +291,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 		return true;
 	}
 	UTF8Char sbuff[64];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<UInt8> ieBuff;
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
@@ -379,7 +379,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::GSMDetailFunc(NN<Net::WebServ
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("GSM Cell Count = "));
-	sb.AppendUOSInt(cells->GetCount());
+	sb.AppendUIntOS(cells->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
 	AppendGSMTable(sb, req, cells, false);
 	mutUsage.EndUse();
@@ -398,8 +398,8 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 sort = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
@@ -472,8 +472,8 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 	UInt32 sort = 0;
 	NN<Text::String> s;
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::BTScanLog::ScanRecord3> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
@@ -582,8 +582,8 @@ void Net::WebServer::CapturerWebHandler::AppendGSMTable(NN<Text::StringBuilderUT
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::GSMModemController::CellSignal> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
@@ -632,7 +632,7 @@ void Net::WebServer::CapturerWebHandler::AppendGSMTable(NN<Text::StringBuilderUT
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2)
+IntOS __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2)
 {
 	if (obj1->lastRSSI == obj2->lastRSSI)
 	{
@@ -667,7 +667,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::W
 	}
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2)
+IntOS __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2)
 {
 	NN<Text::String> name1;
 	NN<Text::String> name2;

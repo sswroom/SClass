@@ -13,11 +13,11 @@ Text::TextBinEnc::UTF16BETextBinEnc::~UTF16BETextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
-	buffSize = buffSize & (UOSInt)~1;
-	UOSInt initSize = sb->leng;
-	UOSInt i = 0;
+	buffSize = buffSize & (UIntOS)~1;
+	UIntOS initSize = sb->leng;
+	UIntOS i = 0;
 	UInt16 c;
 	UInt16 c2;
 	while (i < buffSize)
@@ -37,12 +37,12 @@ UOSInt Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8
 	return sb->leng - initSize;
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::UTF16BETextBinEnc::CalcBinSize(Text::CStringNN str) const
 {
 	return Text::StrUTF8_UTF16CntC(str.v, str.leng) << 1;
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::UTF16BETextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UnsafeArray<UInt8> currBuff = dataBuff;
 	UnsafeArray<const UTF8Char> str = s.v;
@@ -63,7 +63,7 @@ UOSInt Text::TextBinEnc::UTF16BETextBinEnc::DecodeBin(Text::CStringNN s, UnsafeA
 			currBuff += 2;
 		}
 	}
-	return (UOSInt)(currBuff - dataBuff);
+	return (UIntOS)(currBuff - dataBuff);
 }
 
 Text::CStringNN Text::TextBinEnc::UTF16BETextBinEnc::GetName() const

@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnTargetSelChg(AnyType use
 	NN<Net::ChromeDevTools::ChromeTarget> target;
 	if (me->targets.SetTo(targets))
 	{
-		UOSInt i = me->lbTarget->GetSelectedIndex();
+		UIntOS i = me->lbTarget->GetSelectedIndex();
 		if (i != INVALID_INDEX && targets->GetNewItem(i).SetTo(target))
 		{
 			me->txtTargetDescription->SetText(target->GetDescription()->ToCString());
@@ -83,8 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolSelChg(AnyType u
 	NN<Net::ChromeDevTools::ChromeEvent> evt;
 	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeType>> types;
 	NN<Net::ChromeDevTools::ChromeType> type;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->lbProtocolDependencies->ClearItems();
 	me->lbProtocolCommands->ClearItems();
 	me->lbProtocolEvents->ClearItems();
@@ -245,8 +245,8 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolTypesSelChg(AnyT
 		}
 		if (type->GetEnum().SetTo(enums))
 		{
-			UOSInt i = 0;
-			UOSInt j = enums->GetCount();
+			UIntOS i = 0;
+			UIntOS j = enums->GetCount();
 			while (i < j)
 			{
 				me->lbProtocolTypesEnum->AddItem(enums->GetItemNoCheck(i), 0);
@@ -283,8 +283,8 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::ReloadTargets()
 			this->targets.Delete();
 			this->targets = targets;
 			this->lbTarget->ClearItems();
-			UOSInt i = 0;
-			UOSInt j = targets->GetCount();
+			UIntOS i = 0;
+			UIntOS j = targets->GetCount();
 			while (i < j)
 			{
 				if (targets->GetNewItem(i).SetTo(target))
@@ -309,8 +309,8 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::ReloadProtocol()
 	NN<Net::ChromeDevTools::ChromeProtocolVersion> ver;
 	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeDomain>> domains;
 	NN<Net::ChromeDevTools::ChromeDomain> domain;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->devTools.SetTo(devTools))
 	{
 		if (devTools->GetProtocol().SetTo(protocol))
@@ -345,8 +345,8 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::ReloadProtocol()
 
 void SSWR::AVIRead::AVIRChromeDevToolsForm::AppendParameters(NN<UI::GUIListView> lv, NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params)
 {
-	UOSInt i = 0;
-	UOSInt j = params->GetCount();
+	UIntOS i = 0;
+	UIntOS j = params->GetCount();
 	while (i < j)
 	{
 		AppendParameter(lv, params->GetItemNoCheck(i));
@@ -359,7 +359,7 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::AppendParameter(NN<UI::GUIListView> 
 	NN<Text::String> s;
 	NN<const Data::ArrayListStringNN> enums;
 	NN<Net::ChromeDevTools::ChromeReturnItem> item;
-	UOSInt i = lv->AddItem(param->GetName()->ToCString(), param);
+	UIntOS i = lv->AddItem(param->GetName()->ToCString(), param);
 	if (param->GetType().SetTo(s)) lv->SetSubItem(i, 1, s->ToCString());
 	else if (param->GetRef().SetTo(s)) lv->SetSubItem(i, 1, s->ToCString());
 	if (param->GetItems().SetTo(item))

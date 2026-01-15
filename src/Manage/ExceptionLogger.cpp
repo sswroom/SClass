@@ -15,17 +15,17 @@
 void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream> stm, NN<Manage::ThreadContext> context, NN<Manage::AddressResolver> addrResol)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
+	UIntOS i;
 
 	context->ToString(sb);
 	writer->WriteLine(sb.ToCString());
 
 	Manage::Process proc;
-	UOSInt size;
+	UIntOS size;
 	UInt8 buff[STACKDUMPSIZE];
 	if ((size = proc.ReadMemory(context->GetInstAddr(), buff, 256)) != 0)
 	{
-		UOSInt currAddr = context->GetInstAddr();
+		UIntOS currAddr = context->GetInstAddr();
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
@@ -54,7 +54,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 	}
 	if ((size = proc.ReadMemory(context->GetStackAddr(), buff, STACKDUMPSIZE)) != 0)
 	{
-		UOSInt currAddr = context->GetStackAddr();
+		UIntOS currAddr = context->GetStackAddr();
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
@@ -115,7 +115,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			sb.AppendC(UTF8STRC("("));
 			if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 			{
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLine(sb.ToCString());
 			}
@@ -127,7 +127,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			{
 				if ((size = proc.ReadMemory(currInst, buff, 256)) != 0)
 				{
-					UOSInt currAddr = currInst;
+					UIntOS currAddr = currInst;
 					UInt8 *currPtr = buff;
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Memory Dumps (Instructions):"));
@@ -189,7 +189,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLine(sb.ToCString());
 				}
@@ -237,7 +237,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			sb.AppendC(UTF8STRC("("));
 			if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 			{
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLine(sb.ToCString());
 			}
@@ -311,7 +311,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLine(sb.ToCString());
 				}
@@ -353,7 +353,7 @@ void Manage::ExceptionLogger::WriteStackTrace(NN<IO::Writer> writer, NN<Manage::
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CStringNN exName, UOSInt exAddr, NN<Manage::ThreadContext> context)
+Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CStringNN exName, UIntOS exAddr, NN<Manage::ThreadContext> context)
 {
 #ifndef _WIN32_WCE
 	Manage::Process proc;
@@ -363,8 +363,8 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	Data::Timestamp d = Data::Timestamp::Now();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Manage::SymbolResolver symResol(proc);
 	writer.WriteLine(CSTR("----------------------------------"));
 	sb.AppendC(UTF8STRC("Exception occurs: Code = 0x"));
@@ -387,9 +387,9 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 		if (symResol.GetModuleName(i).SetTo(s))
 			sb.Append(s);
 		sb.AppendC(UTF8STRC(", Addr="));
-		sb.AppendHexOS((UOSInt)symResol.GetModuleAddr(i));
+		sb.AppendHexOS((UIntOS)symResol.GetModuleAddr(i));
 		sb.AppendC(UTF8STRC(",size="));
-		sb.AppendHexOS((UOSInt)symResol.GetModuleSize(i));
+		sb.AppendHexOS((UIntOS)symResol.GetModuleSize(i));
 		writer.WriteLine(sb.ToCString());
 
 		i++;

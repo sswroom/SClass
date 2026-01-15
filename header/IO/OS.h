@@ -8,7 +8,7 @@ namespace IO
 	public:
 		static UnsafeArrayOpt<UTF8Char> GetDistro(UnsafeArray<UTF8Char> sbuff);
 		static UnsafeArrayOpt<UTF8Char> GetVersion(UnsafeArray<UTF8Char> sbuff);
-		static UOSInt GetBuildNumber();
+		static UIntOS GetBuildNumber();
 	};
 }
 #endif

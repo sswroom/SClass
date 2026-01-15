@@ -21,14 +21,14 @@ namespace Media
 
 		virtual NN<Media::RasterImage> Clone() const;
 		virtual Media::RasterImage::ImageType GetImageType() const;
-		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
-		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn, Bool waitForVBlank);
-		virtual UnsafeArrayOpt<UInt8> LockSurface(OutParam<OSInt> lineAdd);
+		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> drawSize, Bool clearScn, Bool waitForVBlank);
+		virtual UnsafeArrayOpt<UInt8> LockSurface(OutParam<IntOS> lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 

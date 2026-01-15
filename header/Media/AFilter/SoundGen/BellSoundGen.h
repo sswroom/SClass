@@ -20,7 +20,7 @@ namespace Media
 				BellSoundGen(UInt32 freq);
 				virtual ~BellSoundGen();
 
-				virtual void GenSignals(UnsafeArray<Double> buff, UOSInt sampleCnt);
+				virtual void GenSignals(UnsafeArray<Double> buff, UIntOS sampleCnt);
 				virtual SoundType GetSoundType();
 
 				virtual Bool GenSound(Double sampleVol);

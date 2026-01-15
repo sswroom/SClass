@@ -19,12 +19,12 @@ namespace Math
 			WT_FLAT_TOP
 		} WindowType;
 	private:
-		static Bool Forward(UnsafeArray<Double> complexData, UOSInt sampleCount);
-		static void ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount, WindowType wtype);
+		static Bool Forward(UnsafeArray<Double> complexData, UIntOS sampleCount);
+		static void ApplyWindow(UnsafeArray<Double> complexData, UIntOS sampleCount, WindowType wtype);
 	public:
-		static Bool Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount);
-		static Bool Inverse(UnsafeArray<ComplexNumber> data, UOSInt sampleCount);
-		static Bool ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify);
+		static Bool Forward(UnsafeArray<ComplexNumber> data, UIntOS sampleCount);
+		static Bool Inverse(UnsafeArray<ComplexNumber> data, UIntOS sampleCount);
+		static Bool ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, UIntOS sampleCount, UIntOS sampleAvg, UIntOS nBitPerSample, UIntOS nChannels, WindowType wtype, Double magnify);
 
 /*	protected:
 		static void Rearrange(const complex *const Input, complex *const Output, const unsigned int N);

@@ -33,8 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(AnyType userObj)
 	me->lvObjectsVal->ClearItems();
 	if (me->lvObjects->GetSelectedItem().GetOpt<Net::ASN1MIB::ObjectInfo>().SetTo(obj))
 	{
-		UOSInt i = 0;
-		UOSInt j = obj->valName.GetCount();
+		UIntOS i = 0;
+		UIntOS j = obj->valName.GetCount();
 		while (i < j)
 		{
 			me->lvObjectsVal->AddItem(Text::String::OrEmpty(obj->valName.GetItem(i)), 0);
@@ -61,8 +61,8 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	}
 	this->lvObjects->ClearItems();
 	this->lvOID->ClearItems();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::ASN1MIB::ObjectInfo> obj;
 	NN<Net::ASN1MIB::ModuleInfo> module;
 	if (!this->mib.GetModuleByFileName(fileName).SetTo(module))

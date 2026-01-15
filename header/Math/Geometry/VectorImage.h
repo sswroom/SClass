@@ -44,13 +44,13 @@ namespace Math
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const;
 			virtual void Convert(NN<Math::CoordinateConverter> converter);
 			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const;
-			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
+			virtual UIntOS GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
-			virtual UOSInt GetPointCount() const;
+			virtual UIntOS GetPointCount() const;
 			virtual Bool HasArea() const;
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const;
+			virtual UIntOS CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const;
 			virtual Math::Coord2DDbl GetDisplayCenter() const;
 
 			Optional<Text::String> GetSourceAddr() const;
@@ -64,7 +64,7 @@ namespace Math
 			void SetZIndex(Int32 zIndex);
 			Bool HasZIndex() const;
 			Int32 GetZIndex() const;
-			Math::RectAreaDbl GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi) const;
+			Math::RectAreaDbl GetScreenBounds(UIntOS scnWidth, UIntOS scnHeight, Double hdpi, Double vdpi) const;
 			Math::Size2DDbl GetVectorSize() const;
 			Bool IsScnCoord() const;
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);

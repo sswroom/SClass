@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> results;
 	me->txtSearchBase->GetText(sb);
 	me->txtSearchFilter->GetText(sb2);
-	if (!cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), results))
+	if (!cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetIntOS(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetIntOS(), 0, 0, false, sb2.ToString(), results))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
 	}
@@ -94,8 +94,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 		me->lvSearch->ClearItems();
 		me->cboSearchResult->ClearItems();
 		NN<Net::LDAPClient::SearchResObject> obj;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = me->dispResults.GetCount();
 		while (i < j)
@@ -119,9 +119,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType u
 	me->lvSearch->ClearItems();
 	if (me->cboSearchResult->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items.SetTo(items))
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		NN<Net::LDAPClient::SearchResItem> item;
 		Text::StringBuilderUTF8 sb;
 		i = 0;

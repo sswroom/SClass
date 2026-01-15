@@ -14,8 +14,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter *console;
 	Manage::HiResClock clk;
 	Double t;
-	UOSInt i = 10000000;
-	UOSInt res = 0;
+	UIntOS i = 10000000;
+	UIntOS res = 0;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Leng = "));
-	sb.AppendUOSInt(res);
+	sb.AppendUIntOS(res);
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(t);
 	console->WriteLine(sb.ToCString());

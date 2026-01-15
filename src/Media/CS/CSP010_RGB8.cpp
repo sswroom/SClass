@@ -5,14 +5,14 @@
 
 extern "C"
 {
-	void CSP010_RGB8_do_p010rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
-	void CSP010_RGB8_do_p010rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSP010_RGB8_do_p010rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, UIntOS isFirst, UIntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSP010_RGB8_do_p010rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, UIntOS isFirst, UIntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
 UInt32 Media::CS::CSP010_RGB8::WorkerThread(AnyType obj)
 {
 	NN<CSP010_RGB8> converter = obj.GetNN<CSP010_RGB8>();
-	UOSInt threadId = converter->currId;
+	UIntOS threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -45,7 +45,7 @@ UInt32 Media::CS::CSP010_RGB8::WorkerThread(AnyType obj)
 
 Media::CS::CSP010_RGB8::CSP010_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV10_RGB8(srcColor, destColor, yuvType, colorSess)
 {
-	UOSInt i;
+	UIntOS i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	stats = MemAllocArr(THREADSTAT, nThread);
@@ -71,7 +71,7 @@ Media::CS::CSP010_RGB8::CSP010_RGB8(NN<const Media::ColorProfile> srcColor, NN<c
 
 Media::CS::CSP010_RGB8::~CSP010_RGB8()
 {
-	UOSInt i = nThread;
+	UIntOS i = nThread;
 	Bool exited;
 	while (i-- > 0)
 	{
@@ -138,15 +138,15 @@ Media::CS::CSP010_RGB8::~CSP010_RGB8()
 }
 
 ///////////////////////////////////////////////////////
-void Media::CS::CSP010_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSP010_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	UOSInt isLast = 1;
-	UOSInt isFirst = 0;
-	UOSInt i = this->nThread;
-	UOSInt lastHeight = dispHeight;
-	UOSInt currHeight;
-	UOSInt cSize = dispWidth << 4;
+	UIntOS isLast = 1;
+	UIntOS isFirst = 0;
+	UIntOS i = this->nThread;
+	UIntOS lastHeight = dispHeight;
+	UIntOS currHeight;
+	UIntOS cSize = dispWidth << 4;
 	if (srcStoreWidth & 3)
 	{
 		srcStoreWidth = srcStoreWidth + 4 - (srcStoreWidth & 3);
@@ -161,11 +161,11 @@ void Media::CS::CSP010_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	{
 		if (i == 0)
 			isFirst = 1;
-		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~1;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UIntOS)~1;
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 1);
 		stats[i].uvPtr = srcPtr[0] + (srcStoreWidth * srcStoreHeight << 1) + (srcStoreWidth * currHeight);
-		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (IntOS)currHeight;
 		stats[i].isFirst = isFirst;
 		stats[i].isLast = isLast;
 		isLast = 0;
@@ -182,17 +182,17 @@ void Media::CS::CSP010_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 			stats[i].csLineSize = dispWidth;
 			stats[i].csNALineBuff = MemAlloc(UInt8, (cSize << 1) + 15);
 			stats[i].csNALineBuff2 = MemAlloc(UInt8, (cSize << 1) + 15);
-			if (((OSInt)stats[i].csNALineBuff) & 15)
+			if (((IntOS)stats[i].csNALineBuff) & 15)
 			{
-				stats[i].csLineBuff = stats[i].csNALineBuff + 16 - (((OSInt)stats[i].csNALineBuff) & 15);
+				stats[i].csLineBuff = stats[i].csNALineBuff + 16 - (((IntOS)stats[i].csNALineBuff) & 15);
 			}
 			else
 			{
 				stats[i].csLineBuff = stats[i].csNALineBuff;
 			}
-			if (((OSInt)stats[i].csNALineBuff2) & 15)
+			if (((IntOS)stats[i].csNALineBuff2) & 15)
 			{
-				stats[i].csLineBuff2 = stats[i].csNALineBuff2 + 16 - (((OSInt)stats[i].csNALineBuff2) & 15);
+				stats[i].csLineBuff2 = stats[i].csNALineBuff2 + 16 - (((IntOS)stats[i].csNALineBuff2) & 15);
 			}
 			else
 			{
@@ -223,7 +223,7 @@ void Media::CS::CSP010_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	}
 }
 
-UOSInt Media::CS::CSP010_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSP010_RGB8::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return (width * height * 3);
 }

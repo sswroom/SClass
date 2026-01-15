@@ -28,7 +28,7 @@ namespace Net
 		{
 		public:
 			UInt8 respBuff[512];
-			UOSInt respSize;
+			UIntOS respSize;
 			Sync::Event finEvt;
 		};
 
@@ -48,23 +48,23 @@ namespace Net
 		DNSClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> serverAddr, NN<IO::LogTool> log);
 		~DNSClient();
 
-		UOSInt GetByEmailDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
-		UOSInt GetByDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
-		UOSInt GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain, UInt16 type);
-		UOSInt GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answers, UInt32 ip);
-		UOSInt GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answers, NN<const Net::SocketUtil::AddressInfo> addr);
-		UOSInt GetServerName(NN<Data::ArrayListNN<RequestAnswer>> answers);
-		UOSInt GetCAARecord(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
+		UIntOS GetByEmailDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
+		UIntOS GetByDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
+		UIntOS GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain, UInt16 type);
+		UIntOS GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answers, UInt32 ip);
+		UIntOS GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answers, NN<const Net::SocketUtil::AddressInfo> addr);
+		UIntOS GetServerName(NN<Data::ArrayListNN<RequestAnswer>> answers);
+		UIntOS GetCAARecord(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain);
 
 		void UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr);
 
-		static UOSInt ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut); //return actEndOfst
-		static UOSInt ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
-		static NN<RequestAnswer> ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index);
+		static UIntOS ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UIntOS stringOfst, UIntOS endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut); //return actEndOfst
+		static UIntOS ParseAnswers(UnsafeArray<const UInt8> buff, UIntOS dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
+		static NN<RequestAnswer> ParseAnswer(UnsafeArray<const UInt8> buff, UIntOS dataSize, InOutParam<UIntOS> index);
 		static void FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers);
 		static void __stdcall FreeAnswer(NN<RequestAnswer> answer);
-		static UInt32 GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		static UOSInt SkipString(UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst);
+		static UInt32 GetResponseTTL(UnsafeArray<const UInt8> buff, UIntOS buffSize);
+		static UIntOS SkipString(UnsafeArray<const UInt8> buff, UIntOS stringOfst, UIntOS endOfst);
 		static Text::CString TypeGetID(UInt16 type);
 	};
 }

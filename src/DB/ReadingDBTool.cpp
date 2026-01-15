@@ -102,10 +102,10 @@ DB::ReadingDBTool::ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::Log
 	}
 }
 
-UOSInt DB::ReadingDBTool::SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
+UIntOS DB::ReadingDBTool::SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
-	UOSInt currCnt = 0;
-	OSInt quoteType = 0;
+	UIntOS currCnt = 0;
+	IntOS quoteType = 0;
 	Bool quoted = false;
 	Bool cmdStart = true;
 	Bool lineStart = true;
@@ -217,10 +217,10 @@ UOSInt DB::ReadingDBTool::SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs,
 	return currCnt;
 }
 
-UOSInt DB::ReadingDBTool::SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
+UIntOS DB::ReadingDBTool::SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
-	UOSInt currCnt = 0;
-	OSInt quoteType = 0;
+	UIntOS currCnt = 0;
+	IntOS quoteType = 0;
 	Bool quoted = false;
 	Bool cmdStart = true;
 	Bool lineStart = true;
@@ -341,7 +341,7 @@ UOSInt DB::ReadingDBTool::SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs,
 	return currCnt;
 }
 
-UOSInt DB::ReadingDBTool::SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
+UIntOS DB::ReadingDBTool::SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	return Text::StrSplit(outStrs, maxCnt, oriStr, ';');
 }
@@ -556,7 +556,7 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	Text::CStringNN nnschemaName;
 	{
@@ -633,11 +633,11 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 	}
 }
 
-UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr)
+UIntOS DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		UOSInt ret = 0;
+		UIntOS ret = 0;
 		DB::SQLBuilder sql(DB::SQLType::MSSQL, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
 		if (schemaName.leng == 0)
@@ -672,7 +672,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("show tables")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -698,7 +698,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("select name from sqlite_master where type = 'table'")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -724,7 +724,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("select name, type from MSysObjects where type = 1")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -750,14 +750,14 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	}
 }
 
-UOSInt DB::ReadingDBTool::QuerySchemaNames(NN<Data::ArrayListStringNN> arr)
+UIntOS DB::ReadingDBTool::QuerySchemaNames(NN<Data::ArrayListStringNN> arr)
 {
 	if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			NN<Text::String> s;
 			while (r->ReadNext())
 			{
@@ -780,7 +780,7 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(NN<Data::ArrayListStringNN> arr)
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("select s.name from sys.schemas s")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			NN<Text::String> s;
 			while (r->ReadNext())
 			{
@@ -810,7 +810,7 @@ Optional<DB::TableDef> DB::ReadingDBTool::GetTableDef(Text::CString schemaName, 
 	return this->db->GetTableDef(schemaName, tableName);
 }
 
-UOSInt DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
+UIntOS DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
 	NN<DB::DBReader> r;
 	switch (this->sqlType)
@@ -818,7 +818,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 	case DB::SQLType::MSSQL:
 		if (this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -839,7 +839,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 	case DB::SQLType::MySQL:
 		if (this->ExecuteReader(CSTR("show databases")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -861,12 +861,12 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> name = this->db->GetSourceNameObj();
-		UOSInt i = name->LastIndexOf((UTF8Char)IO::Path::PATH_SEPERATOR);
+		UIntOS i = name->LastIndexOf((UTF8Char)IO::Path::PATH_SEPERATOR);
 		sb.AppendC(&name->v[i + 1], name->leng - i - 1);
 		i = sb.IndexOf('.');
 		if (i != INVALID_INDEX)
 		{
-			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
+			sb.RemoveChars(sb.GetLength() - (UIntOS)i);
 		}
 		arr->Add(Text::String::New(sb.ToCString()));
 		return 1;
@@ -874,7 +874,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 	case DB::SQLType::PostgreSQL:
 		if (this->ExecuteReader(CSTR("SELECT datname FROM pg_database")).SetTo(r))
 		{
-			UOSInt ret = 0;
+			UIntOS ret = 0;
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
@@ -916,7 +916,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
-			OSInt rowChg = r->GetRowChanged();
+			IntOS rowChg = r->GetRowChanged();
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
@@ -937,7 +937,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
-			OSInt rowChg = r->GetRowChanged();
+			IntOS rowChg = r->GetRowChanged();
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
@@ -972,7 +972,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
-			OSInt rowChg = r->GetRowChanged();
+			IntOS rowChg = r->GetRowChanged();
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
@@ -1022,9 +1022,9 @@ Bool DB::ReadingDBTool::GetDBCollation(Text::CStringNN databaseName, NN<Collatio
 	return false;
 }
 
-UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars)
+UIntOS DB::ReadingDBTool::GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
 	{
@@ -1097,7 +1097,7 @@ UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<O
 void DB::ReadingDBTool::FreeVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
 	Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>> item = vars->GetItem(0);
-	UOSInt i = vars->GetCount();
+	UIntOS i = vars->GetCount();
 	while (i-- > 0)
 	{
 		item = vars->GetItem(i);
@@ -1107,9 +1107,9 @@ void DB::ReadingDBTool::FreeVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Op
 	vars->Clear();
 }
 
-UOSInt DB::ReadingDBTool::GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns)
+UIntOS DB::ReadingDBTool::GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<ConnectionInfo> conn;
 	NN<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
@@ -1181,7 +1181,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>
 void DB::ReadingDBTool::FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns)
 {
 	NN<ConnectionInfo> conn;
-	UOSInt i = conns->GetCount();
+	UIntOS i = conns->GetCount();
 	while (i-- > 0)
 	{
 		conn = conns->GetItemNoCheck(i);
@@ -1196,7 +1196,7 @@ void DB::ReadingDBTool::FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>>
 	conns->Clear();
 }
 
-UOSInt DB::ReadingDBTool::SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
+UIntOS DB::ReadingDBTool::SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UIntOS maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	if (this->sqlType == DB::SQLType::MySQL)
 	{

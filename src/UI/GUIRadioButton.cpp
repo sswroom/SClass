@@ -16,7 +16,7 @@ Text::CStringNN UI::GUIRadioButton::GetObjectClass() const
 
 void UI::GUIRadioButton::EventSelectedChange(Bool newState)
 {
-	UOSInt i = this->selectedChangeHdlrs.GetCount();
+	UIntOS i = this->selectedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<SelectedChangeHandler> cb = this->selectedChangeHdlrs.GetItem(i);

@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::HiResClock clk;
 	IO::ConsoleWriter console;
 	Double t;
-	OSInt i;
+	IntOS i;
 	while ((t = clk.GetTimeDiff()) == 0);
 	Text::StringBuilderUTF8 sb;
 	sb.ClearStr();

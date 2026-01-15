@@ -13,7 +13,7 @@ namespace Text
 	protected:
 		UnsafeArray<T> buff;
 		UnsafeArray<T> buffEnd;
-		UOSInt buffSize;
+		UIntOS buffSize;
 	public:
 		StringBuilder();
 		virtual ~StringBuilder();
@@ -25,8 +25,8 @@ namespace Text
 		NN<StringBuilder<T>> AppendI64(Int64 iVal);
 		NN<StringBuilder<T>> AppendU64(UInt64 iVal);
 		NN<StringBuilder<T>> AppendDate(NN<Data::DateTime> dt);
-		NN<StringBuilder<T>> AppendOSInt(OSInt iVal);
-		NN<StringBuilder<T>> AppendUOSInt(UOSInt iVal);
+		NN<StringBuilder<T>> AppendIntOS(IntOS iVal);
+		NN<StringBuilder<T>> AppendUIntOS(UIntOS iVal);
 		NN<StringBuilder<T>> AppendSB(NN<Text::StringBuilder<T>> sb);
 
 		NN<StringBuilder<T>> AppendHex8(UInt8 iVal);
@@ -36,19 +36,19 @@ namespace Text
 		NN<StringBuilder<T>> AppendHex32V(UInt32 iVal);
 		NN<StringBuilder<T>> AppendHex64(UInt64 iVal);
 		NN<StringBuilder<T>> AppendHex64V(UInt64 iVal);
-		NN<StringBuilder<T>> AppendHexOS(UOSInt iVal);
-		NN<StringBuilder<T>> AppendHex(UnsafeArray<const UInt8> buff, UOSInt buffSize, T seperator, LineBreakType lineBreak);
+		NN<StringBuilder<T>> AppendHexOS(UIntOS iVal);
+		NN<StringBuilder<T>> AppendHex(UnsafeArray<const UInt8> buff, UIntOS buffSize, T seperator, LineBreakType lineBreak);
 
 		void ClearStr();
-		void AllocLeng(UOSInt leng);
-		UOSInt GetLength();
-		void RemoveChars(UOSInt cnt);
-		void RemoveChars(UOSInt index, UOSInt cnt);
+		void AllocLeng(UIntOS leng);
+		UIntOS GetLength();
+		void RemoveChars(UIntOS cnt);
+		void RemoveChars(UIntOS index, UIntOS cnt);
 		void Trim();
 		void TrimWSCRLF();
 		void TrimRight();
-		void TrimToLength(UOSInt leng);
-		NN<StringBuilder<T>> SetSubstr(UOSInt index);
+		void TrimToLength(UIntOS leng);
+		NN<StringBuilder<T>> SetSubstr(UIntOS index);
 		void ToUpper();
 		void ToLower();
 		void ToCapital();
@@ -56,32 +56,32 @@ namespace Text
 		Bool ToUInt16(OutParam<UInt16> outVal);
 		Bool ToUInt32(OutParam<UInt32> outVal);
 		Bool ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal);
-		Bool ToUOSInt(OutParam<UOSInt> outVal);
+		Bool ToUIntOS(OutParam<UIntOS> outVal);
 		Bool ToInt32(OutParam<Int32> outVal);
 		Int32 ToInt32();
 		Bool ToInt64(OutParam<Int64> outVal);
 		Int64 ToInt64();
 		Bool ToUInt64(OutParam<UInt64> outVal);
 		UInt64 ToUInt64();
-		Bool ToOSInt(OutParam<OSInt> outVal);
-		UOSInt Hex2Bytes(OutParam<UInt8> buff);
+		Bool ToIntOS(OutParam<IntOS> outVal);
+		UIntOS Hex2Bytes(OutParam<UInt8> buff);
 
 		UnsafeArray<T> ToString();
 		T *ToPtr();
 		UnsafeArray<T> GetEndPtr();
 		void SetEndPtr(UnsafeArray<T> ptr);
-		UOSInt IndexOf(UnsafeArray<const T> s);
-		UOSInt IndexOf(UnsafeArray<const T> s, UOSInt index);
-		UOSInt IndexOf(T c);
-		UOSInt LastIndexOf(T c);
+		UIntOS IndexOf(UnsafeArray<const T> s);
+		UIntOS IndexOf(UnsafeArray<const T> s, UIntOS index);
+		UIntOS IndexOf(T c);
+		UIntOS LastIndexOf(T c);
 		Bool Equals(UnsafeArray<const T> s);
 		Bool EqualsICase(UnsafeArray<const T> s);
 		Bool StartsWith(UnsafeArray<const T> s);
 		Bool EndsWith(T c);
-		UnsafeArray<T> SubString(UnsafeArray<T> buff, UOSInt start, UOSInt length);
-		UOSInt Replace(T fromChar, T toChar);
-		UOSInt Replace(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr);
-		UOSInt ReplaceICase(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr);
+		UnsafeArray<T> SubString(UnsafeArray<T> buff, UIntOS start, UIntOS length);
+		UIntOS Replace(T fromChar, T toChar);
+		UIntOS Replace(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr);
+		UIntOS ReplaceICase(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr);
 	};
 
 	template <class T> Text::StringBuilder<T>::StringBuilder()
@@ -144,11 +144,11 @@ namespace Text
 		UnsafeArray<UTF8Char> sptr;
 		sptr = dt->ToString(sbuff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 		this->AllocLeng(19);
-		this->buffEnd = Text::StrConcatC(this->buffEnd.Ptr(), (const T*)sbuff, (UOSInt)(sptr - sbuff));
+		this->buffEnd = Text::StrConcatC(this->buffEnd.Ptr(), (const T*)sbuff, (UIntOS)(sptr - sbuff));
 		return NNTHIS;
 	}
 
-	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendOSInt(OSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendIntOS(IntOS iVal)
 	{
 	#if _OSINT_SIZE == 64
 		this->AllocLeng(22);
@@ -160,7 +160,7 @@ namespace Text
 		return NNTHIS;
 	}
 
-	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendUOSInt(UOSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendUIntOS(UIntOS iVal)
 	{
 	#if _OSINT_SIZE == 64
 		this->AllocLeng(22);
@@ -174,7 +174,7 @@ namespace Text
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendSB(NN<Text::StringBuilder<T>> sb)
 	{
-		UOSInt slen = (UOSInt)(sb->buffEnd - sb->buff);
+		UIntOS slen = (UIntOS)(sb->buffEnd - sb->buff);
 		this->AllocLeng(slen);
 		MemCopyNO(this->buffEnd.Ptr(), sb->buff, (slen + 1) * sizeof(T));
 		this->buffEnd = &this->buffEnd[slen];
@@ -230,7 +230,7 @@ namespace Text
 		return NNTHIS;
 	}
 
-	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHexOS(UOSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHexOS(UIntOS iVal)
 	{
 	#if _OSINT_SIZE == 64
 		return AppendHex64(iVal);
@@ -241,10 +241,10 @@ namespace Text
 	#endif
 	}
 
-	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex(UnsafeArray<const UInt8> buff, UOSInt buffSize, T seperator, LineBreakType lineBreak)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex(UnsafeArray<const UInt8> buff, UIntOS buffSize, T seperator, LineBreakType lineBreak)
 	{
-		UOSInt lbCnt = (buffSize >> 4);
-		OSInt i;
+		UIntOS lbCnt = (buffSize >> 4);
+		IntOS i;
 		if (buffSize == 0)
 			return NNTHIS;
 		if ((buffSize & 15) == 0)
@@ -327,10 +327,10 @@ namespace Text
 		this->buff[0] = 0;
 	}
 
-	template<class T> void Text::StringBuilder<T>::AllocLeng(UOSInt leng)
+	template<class T> void Text::StringBuilder<T>::AllocLeng(UIntOS leng)
 	{
-		UOSInt slen = leng * sizeof(T);
-		UOSInt currSize = (UOSInt)(this->buffEnd - this->buff + 1) * sizeof(T);
+		UIntOS slen = leng * sizeof(T);
+		UIntOS currSize = (UIntOS)(this->buffEnd - this->buff + 1) * sizeof(T);
 		while (slen + currSize > this->buffSize)
 		{
 			this->buffSize <<= 1;
@@ -342,14 +342,14 @@ namespace Text
 		}
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::GetLength()
+	template<class T> UIntOS Text::StringBuilder<T>::GetLength()
 	{
-		return (UOSInt)(this->buffEnd - this->buff);
+		return (UIntOS)(this->buffEnd - this->buff);
 	}
 
-	template<class T> void Text::StringBuilder<T>::RemoveChars(UOSInt cnt)
+	template<class T> void Text::StringBuilder<T>::RemoveChars(UIntOS cnt)
 	{
-		if ((OSInt)cnt >= (buffEnd - buff))
+		if ((IntOS)cnt >= (buffEnd - buff))
 		{
 			buffEnd = buff;
 		}
@@ -360,10 +360,10 @@ namespace Text
 		buffEnd[0] = 0;
 	}
 
-	template<class T> void Text::StringBuilder<T>::RemoveChars(UOSInt index, UOSInt cnt)
+	template<class T> void Text::StringBuilder<T>::RemoveChars(UIntOS index, UIntOS cnt)
 	{
-		UOSInt endOfst = index + cnt;
-		if (endOfst >= (UOSInt)(buffEnd - buff))
+		UIntOS endOfst = index + cnt;
+		if (endOfst >= (UIntOS)(buffEnd - buff))
 		{
 			this->TrimToLength(index); 
 		}
@@ -388,25 +388,25 @@ namespace Text
 		this->buffEnd = Text::StrRTrim(this->buff);
 	}
 
-	template<class T> void Text::StringBuilder<T>::TrimToLength(UOSInt leng)
+	template<class T> void Text::StringBuilder<T>::TrimToLength(UIntOS leng)
 	{
-		if ((this->buffEnd - this->buff) > (OSInt)leng)
+		if ((this->buffEnd - this->buff) > (IntOS)leng)
 		{
 			this->buffEnd = &this->buff[leng];
 			this->buffEnd[0] = 0;
 		}
 	}
 
-	template<class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::SetSubstr(UOSInt index)
+	template<class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::SetSubstr(UIntOS index)
 	{
-		if (index >= (UOSInt)(this->buffEnd - this->buff))
+		if (index >= (UIntOS)(this->buffEnd - this->buff))
 		{
 			buffEnd = buff;
 			buff[0] = 0;
 		}
 		else if (index > 0)
 		{
-			MemCopyO(this->buff, &this->buff[index], ((UOSInt)(this->buffEnd - this->buff) - index + 1) * sizeof(T));
+			MemCopyO(this->buff, &this->buff[index], ((UIntOS)(this->buffEnd - this->buff) - index + 1) * sizeof(T));
 			this->buffEnd -= index;
 		}
 		return NNTHIS;
@@ -442,9 +442,9 @@ namespace Text
 		return Text::StrToUInt32S(this->buff, outVal, failVal);
 	}
 
-	template<class T> Bool Text::StringBuilder<T>::ToUOSInt(OutParam<UOSInt> outVal)
+	template<class T> Bool Text::StringBuilder<T>::ToUIntOS(OutParam<UIntOS> outVal)
 	{
-		return Text::StrToUOSInt(this->buff, outVal);
+		return Text::StrToUIntOS(this->buff, outVal);
 	}
 
 	template<class T> Bool Text::StringBuilder<T>::ToInt32(OutParam<Int32> outVal)
@@ -452,9 +452,9 @@ namespace Text
 		return Text::StrToInt32(this->buff, outVal);
 	}
 
-	template<class T> Bool Text::StringBuilder<T>::ToOSInt(OutParam<OSInt> outVal)
+	template<class T> Bool Text::StringBuilder<T>::ToIntOS(OutParam<IntOS> outVal)
 	{
-		return Text::StrToOSInt(this->buff, outVal);
+		return Text::StrToIntOS(this->buff, outVal);
 	}
 
 	template<class T> Int32 Text::StringBuilder<T>::ToInt32()
@@ -482,7 +482,7 @@ namespace Text
 		return Text::StrToUInt64(this->buff);
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::Hex2Bytes(OutParam<UInt8> buff)
+	template<class T> UIntOS Text::StringBuilder<T>::Hex2Bytes(OutParam<UInt8> buff)
 	{
 		return Text::StrHex2Bytes(this->buff, buff);
 	}
@@ -506,38 +506,38 @@ namespace Text
 	{
 		if (ptr < this->buff)
 			return;
-		if (((UOSInt)(ptr - this->buff) * sizeof(T)) > this->buffSize - sizeof(T))
+		if (((UIntOS)(ptr - this->buff) * sizeof(T)) > this->buffSize - sizeof(T))
 		{
 			return;
 		}
 		this->buffEnd = ptr;
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(UnsafeArray<const T> s)
+	template<class T> UIntOS Text::StringBuilder<T>::IndexOf(UnsafeArray<const T> s)
 	{
 		return Text::StrIndexOf(this->buff, s);
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(UnsafeArray<const T> s, UOSInt index)
+	template<class T> UIntOS Text::StringBuilder<T>::IndexOf(UnsafeArray<const T> s, UIntOS index)
 	{
-		if (index >= (UOSInt)(this->buffEnd - this->buff))
+		if (index >= (UIntOS)(this->buffEnd - this->buff))
 		{
 			return INVALID_INDEX;
 		}
-		UOSInt retIndex = Text::StrIndexOf(&this->buff[index], s);
+		UIntOS retIndex = Text::StrIndexOf(&this->buff[index], s);
 		if (retIndex == INVALID_INDEX)
 			return INVALID_INDEX;
 		return retIndex + index;
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(T c)
+	template<class T> UIntOS Text::StringBuilder<T>::IndexOf(T c)
 	{
-		return Text::StrIndexOfCharC(this->buff, (UOSInt)(this->buffEnd - this->buff), c);
+		return Text::StrIndexOfCharC(this->buff, (UIntOS)(this->buffEnd - this->buff), c);
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::LastIndexOf(T c)
+	template<class T> UIntOS Text::StringBuilder<T>::LastIndexOf(T c)
 	{
-		return Text::StrLastIndexOfCharC(this->buff, (UOSInt)(this->buffEnd - this->buff), c);
+		return Text::StrLastIndexOfCharC(this->buff, (UIntOS)(this->buffEnd - this->buff), c);
 	}
 
 	template<class T> Bool Text::StringBuilder<T>::Equals(UnsafeArray<const T> s)
@@ -562,15 +562,15 @@ namespace Text
 		return this->buffEnd[-1] == c;
 	}
 
-	template<class T> UnsafeArray<T> Text::StringBuilder<T>::SubString(UnsafeArray<T> buff, UOSInt start, UOSInt length)
+	template<class T> UnsafeArray<T> Text::StringBuilder<T>::SubString(UnsafeArray<T> buff, UIntOS start, UIntOS length)
 	{
-		UOSInt strLen = (UOSInt)(this->buffEnd - this->buff);
+		UIntOS strLen = (UIntOS)(this->buffEnd - this->buff);
 		if (start >= strLen)
 		{
 			*buff = 0;
 			return buff;
 		}
-		UOSInt end = start + length;
+		UIntOS end = start + length;
 		if (end > strLen)
 		{
 			end = strLen;
@@ -586,16 +586,16 @@ namespace Text
 		return buff;
 	}
 
-	template <class T> UOSInt Text::StringBuilder<T>::Replace(T fromChar, T toChar)
+	template <class T> UIntOS Text::StringBuilder<T>::Replace(T fromChar, T toChar)
 	{
 		return Text::StrReplace(this->buff, fromChar, toChar);
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::Replace(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr)
+	template<class T> UIntOS Text::StringBuilder<T>::Replace(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr)
 	{
-		UOSInt fromCharSize = Text::StrCharCnt(fromStr);
-		UOSInt toCharSize = Text::StrCharCnt(toStr);
-		UOSInt changeCnt;
+		UIntOS fromCharSize = Text::StrCharCnt(fromStr);
+		UIntOS toCharSize = Text::StrCharCnt(toStr);
+		UIntOS changeCnt;
 		if (fromCharSize >= toCharSize)
 		{
 			changeCnt = Text::StrReplace(this->buff, fromStr, toStr);
@@ -603,8 +603,8 @@ namespace Text
 		}
 		else
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			changeCnt = 0;
 			i = 0;
 			while (true)
@@ -615,26 +615,26 @@ namespace Text
 				i += j + fromCharSize;
 				changeCnt++;
 			}
-			this->AllocLeng((UOSInt)(buffEnd - buff) + (toCharSize - fromCharSize) * changeCnt);
+			this->AllocLeng((UIntOS)(buffEnd - buff) + (toCharSize - fromCharSize) * changeCnt);
 			changeCnt = Text::StrReplace(this->buff, fromStr, toStr);
 			this->buffEnd += changeCnt * (toCharSize - fromCharSize);
 		}
 		return changeCnt;
 	}
 
-	template<class T> UOSInt Text::StringBuilder<T>::ReplaceICase(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr)
+	template<class T> UIntOS Text::StringBuilder<T>::ReplaceICase(UnsafeArray<const T> fromStr, UnsafeArray<const T> toStr)
 	{
-		UOSInt fromCharSize = Text::StrCharCnt(fromStr);
-		UOSInt toCharSize = Text::StrCharCnt(toStr);
-		UOSInt changeCnt;
+		UIntOS fromCharSize = Text::StrCharCnt(fromStr);
+		UIntOS toCharSize = Text::StrCharCnt(toStr);
+		UIntOS changeCnt;
 		if (fromCharSize >= toCharSize)
 		{
 			changeCnt = Text::StrReplaceICase(this->buff, fromStr, toStr);
 		}
 		else
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			changeCnt = 0;
 			i = 0;
 			while (true)

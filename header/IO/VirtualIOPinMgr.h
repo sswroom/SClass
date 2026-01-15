@@ -13,21 +13,21 @@ namespace IO
 		{
 			UInt32 pinNum;
 			Sync::Mutex mut;
-			OSInt useCnt;
+			IntOS useCnt;
 			Bool pullHigh;
 			Int32 outputCnt;
 			Bool outputHigh;
 		};
 	private:
 		PinStatus **pins;
-		UOSInt pinCnt;
+		UIntOS pinCnt;
 
 	public:
-		VirtualIOPinMgr(UOSInt pinCnt);
+		VirtualIOPinMgr(UIntOS pinCnt);
 		~VirtualIOPinMgr();
 
 		Optional<IO::IOPin> CreatePin(UInt32 pinNum);
-		UOSInt GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList);
+		UIntOS GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList);
 	};
 
 	class VirtualIOPin : public IOPin

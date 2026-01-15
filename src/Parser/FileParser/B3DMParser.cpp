@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	UOSInt ofst = 28;
+	UIntOS ofst = 28;
 	if (featureTableJSONByteLength != 0)
 	{
 		return nullptr;

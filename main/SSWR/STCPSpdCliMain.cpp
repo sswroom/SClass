@@ -68,8 +68,8 @@ UInt32 __stdcall DispThread(AnyType userObj)
 UInt32 __stdcall ProcThread(AnyType userObj)
 {
 	UInt8 *sendBuff;
-	UOSInt sendSize;
-	UOSInt sendBuffSize = 9000;
+	UIntOS sendSize;
+	UIntOS sendBuffSize = 9000;
 	Sync::Interlocked::IncrementU32(procRunning);
 	mainEvt->Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
@@ -103,7 +103,7 @@ UInt32 __stdcall ProcThread(AnyType userObj)
 
 UInt32 __stdcall RecvThread(AnyType userObj)
 {
-	UOSInt recvSize;
+	UIntOS recvSize;
 	recvRunning = true;
 	mainEvt->Set();
 	{
@@ -139,7 +139,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -166,8 +166,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASS(procEvt, Sync::Event(true));
 		NEW_CLASS(dispEvt, Sync::Event(true));
 
-		UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
-		UOSInt i;
+		UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
+		UIntOS i;
 		Sync::ThreadUtil::Create(DispThread, 0);
 		i = 0;
 		while (i < threadCnt)

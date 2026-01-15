@@ -115,7 +115,7 @@ NN<Media::DrawEngine> UI::Win::WinCore::CreateDrawEngine()
 	return deng;
 }
 
-typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR hmonitor, OSInt dpiType, UINT *dpiX, UINT *dpiY);
+typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR hmonitor, IntOS dpiType, UINT *dpiX, UINT *dpiY);
 
 Double UI::Win::WinCore::GetMagnifyRatio(Optional<MonitorHandle> hMonitor)
 {
@@ -198,19 +198,19 @@ void UI::Win::WinCore::Suspend()
 #endif
 }
 
-Math::Size2D<UOSInt> UI::Win::WinCore::GetDesktopSize()
+Math::Size2D<UIntOS> UI::Win::WinCore::GetDesktopSize()
 {
-	return Math::Size2D<UOSInt>((UOSInt)(OSInt)GetSystemMetrics(SM_CXFULLSCREEN),
-		(UOSInt)(OSInt)GetSystemMetrics(SM_CYFULLSCREEN));
+	return Math::Size2D<UIntOS>((UIntOS)(IntOS)GetSystemMetrics(SM_CXFULLSCREEN),
+		(UIntOS)(IntOS)GetSystemMetrics(SM_CYFULLSCREEN));
 }
 
-Math::Coord2D<OSInt> UI::Win::WinCore::GetCursorPos()
+Math::Coord2D<IntOS> UI::Win::WinCore::GetCursorPos()
 {
 	POINT pt;
 	pt.x = 0;
 	pt.y = 0;
 	::GetCursorPos(&pt);
-	return Math::Coord2D<OSInt>(pt.x, pt.y);
+	return Math::Coord2D<IntOS>(pt.x, pt.y);
 }
 
 typedef BOOL (WINAPI* SETAUTOROTATION)(BOOL bEnable);
@@ -356,7 +356,7 @@ NN<UI::GUIRadioButton> UI::Win::WinCore::NewRadioButton(NN<GUIClientControl> par
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
+NN<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::Win::WinRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinRealtimeLineChart(*this, parent, eng, colorSess, lineCnt, sampleCnt, updateIntervalMS));
@@ -384,7 +384,7 @@ NN<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NN<GUIClientControl> parent, Tex
 	return ctrl;
 }
 
-NN<UI::GUITrackBar> UI::Win::WinCore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::Win::WinCore::NewTrackBar(NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal)
 {
 	NN<UI::Win::WinTrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTrackBar(*this, parent, minVal, maxVal, currVal));
@@ -452,33 +452,33 @@ Bool UI::Win::WinCore::IsForwarded()
 	return false;
 }
 
-OSInt UI::Win::WinCore::MSGetWindowObj(Optional<ControlHandle> hWnd, OSInt index)
+IntOS UI::Win::WinCore::MSGetWindowObj(Optional<ControlHandle> hWnd, IntOS index)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)GetWindowLong((HWND)hWnd.OrNull(), (int)index);
+	return (IntOS)GetWindowLong((HWND)hWnd.OrNull(), (int)index);
 #else
-	return (OSInt)GetWindowLongPtr((HWND)hWnd.OrNull(), (int)index);
+	return (IntOS)GetWindowLongPtr((HWND)hWnd.OrNull(), (int)index);
 #endif
 }
 
-OSInt UI::Win::WinCore::MSSetWindowObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value)
+IntOS UI::Win::WinCore::MSSetWindowObj(Optional<ControlHandle> hWnd, IntOS index, IntOS value)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)SetWindowLong((HWND)hWnd.OrNull(), (int)index, value);
+	return (IntOS)SetWindowLong((HWND)hWnd.OrNull(), (int)index, value);
 #elif _OSINT_SIZE == 64
-	return (OSInt)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, value);
+	return (IntOS)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, value);
 #else
-	return (OSInt)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
+	return (IntOS)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
 #endif
 }
 
-OSInt UI::Win::WinCore::MSSetClassObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value)
+IntOS UI::Win::WinCore::MSSetClassObj(Optional<ControlHandle> hWnd, IntOS index, IntOS value)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)SetClassLong((HWND)hWnd.OrNull(), (int)index, value);
+	return (IntOS)SetClassLong((HWND)hWnd.OrNull(), (int)index, value);
 #elif _OSINT_SIZE == 64
-	return (OSInt)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, value);
+	return (IntOS)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, value);
 #else
-	return (OSInt)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
+	return (IntOS)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
 #endif
 }

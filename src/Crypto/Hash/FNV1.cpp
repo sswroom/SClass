@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	UInt32 FNV1_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal);
+	UInt32 FNV1_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal);
 }
 
 Crypto::Hash::FNV1::FNV1()
@@ -35,7 +35,7 @@ void Crypto::Hash::FNV1::Clear()
 	this->currVal = 0x811c9dc5;
 }
 
-void Crypto::Hash::FNV1::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::FNV1::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = FNV1_Calc(buff.Ptr(), buffSize, this->currVal);
 }
@@ -45,12 +45,12 @@ void Crypto::Hash::FNV1::GetValue(UnsafeArray<UInt8> buff) const
 	*(UInt32*)buff.Ptr() = this->currVal;
 }
 
-UOSInt Crypto::Hash::FNV1::GetBlockSize() const
+UIntOS Crypto::Hash::FNV1::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::FNV1::GetResultSize() const
+UIntOS Crypto::Hash::FNV1::GetResultSize() const
 {
 	return 4;
 }

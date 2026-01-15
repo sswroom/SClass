@@ -59,8 +59,8 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 	if (chData->packCnt >= chData->buffCnt)
 	{
 		Bool lastExist = false;
-		UOSInt i;
-		UOSInt minIndex = 0;
+		UIntOS i;
+		UIntOS minIndex = 0;
 		UInt32 minSeq = chData->packBuff[0].seqNum;
 		if (minSeq == 65535)
 			lastExist = true;
@@ -120,12 +120,12 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 	UInt8 tmpBuff[100];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt size = 0;
-	UOSInt ofst = 0;
-	UOSInt i;
+	UIntOS size = 0;
+	UIntOS ofst = 0;
+	UIntOS i;
 	while (ofst < data.GetSize())
 	{
-		size = (UOSInt)(ReadMUInt16(&data[ofst + 2]) + 1) << 2;
+		size = (UIntOS)(ReadMUInt16(&data[ofst + 2]) + 1) << 2;
 		if (size + ofst > data.GetSize())
 		{
 			break;
@@ -138,7 +138,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("SR: Len="));
-					sb.AppendUOSInt(size);
+					sb.AppendUIntOS(size);
 					sb.AppendC(UTF8STRC(",RC="));
 					sb.AppendU32(data[ofst +0] & 0x1f);
 					sb.AppendC(UTF8STRC(",SSRC="));
@@ -180,9 +180,9 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					i = 40;
 					tmpBuff[i] = 1;
 					sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
-					Text::StrConcatC(&tmpBuff[i + 2], sbuff, (UOSInt)(sptr - sbuff));
+					Text::StrConcatC(&tmpBuff[i + 2], sbuff, (UIntOS)(sptr - sbuff));
 					tmpBuff[i + 1] = (UInt8)(sptr - sbuff);
-					i += (UOSInt)(tmpBuff[i + 1] + 2);
+					i += (UIntOS)(tmpBuff[i + 1] + 2);
 					tmpBuff[i] = 0;
 					i++;
 					if (i & 3)
@@ -200,7 +200,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("SDES: Len="));
-					sb.AppendUOSInt(size);
+					sb.AppendUIntOS(size);
 					sb.AppendC(UTF8STRC(",RC="));
 					sb.AppendU32(data[ofst + 0] & 0x1f);
 					sb.AppendC(UTF8STRC(",SSRC="));
@@ -218,37 +218,37 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 							case 1:
 								sb.AppendC(UTF8STRC(", CNAME="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 2:
 								sb.AppendC(UTF8STRC(", NAME="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 3:
 								sb.AppendC(UTF8STRC(", EMAIL="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 4:
 								sb.AppendC(UTF8STRC(", PHONE="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 5:
 								sb.AppendC(UTF8STRC(", LOC="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 6:
 								sb.AppendC(UTF8STRC(", TOOL="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 7:
 								sb.AppendC(UTF8STRC(", NOTE="));
 								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
-								i += (UOSInt)(data[ofst + i + 1] + 2);
+								i += (UIntOS)(data[ofst + i + 1] + 2);
 								break;
 							case 8:
 								sb.AppendC(UTF8STRC(", PRIV="));
@@ -320,7 +320,7 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	NEW_CLASS(this->chData, ChannelData());
 	this->chData->useCnt = 1;
 
-	UOSInt i;
+	UIntOS i;
 	this->chData->sockf = sockf;
 	this->chData->rtpUDP = 0;
 	this->chData->rtcpUDP = 0;
@@ -369,7 +369,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 {
 	if (--this->chData->useCnt == 0)
 	{
-		UOSInt i;
+		UIntOS i;
 		Net::RTPPayloadHandler *plHdlr;
 		this->StopPlay();
 
@@ -427,21 +427,21 @@ void Net::RTPCliChannel::SetMediaType(Media::MediaType mediaType)
 	this->chData->mediaType = mediaType;
 }
 
-Optional<Media::VideoSource> Net::RTPCliChannel::GetVideo(UOSInt index)
+Optional<Media::VideoSource> Net::RTPCliChannel::GetVideo(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return nullptr;
 	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 }
 
-Optional<Media::AudioSource> Net::RTPCliChannel::GetAudio(UOSInt index)
+Optional<Media::AudioSource> Net::RTPCliChannel::GetAudio(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return nullptr;
 	return nullptr;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
 }
 
-Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
+Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return nullptr;
@@ -457,7 +457,7 @@ Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 	return vSrc;
 }
 
-Optional<Media::AudioSource> Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
+Optional<Media::AudioSource> Net::RTPCliChannel::CreateShadowAudio(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return nullptr;
@@ -571,15 +571,15 @@ NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> 
 	Text::PString sarr[5];
 	NN<Net::RTPCliChannel> ch;
 	UnsafeArray<const UTF8Char> desc;
-	UOSInt descLen;
+	UIntOS descLen;
 	NEW_CLASSNN(ch, Net::RTPCliChannel(sockf, 0, log));
 	ch->SetPlayControl(playCtrl->Clone());
 	Bool ctrlFound = false;
 	Int32 payloadType;
-	UOSInt k;
+	UIntOS k;
 
-	UOSInt i = 0;
-	UOSInt j = sdpDesc->GetCount();
+	UIntOS i = 0;
+	UIntOS j = sdpDesc->GetCount();
 	while (i < j)
 	{
 		desc = sdpDesc->GetItem(i).Or(U8STR(""));
@@ -612,7 +612,7 @@ NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> 
 		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=rtpmap:")))
 		{
 			sptr = Text::StrConcatC(sbuff, &desc[9], descLen - 9);
-			if (Text::StrSplitP(sarr, 3, {sbuff, (UOSInt)(sptr - sbuff)}, ' ') == 2)
+			if (Text::StrSplitP(sarr, 3, {sbuff, (UIntOS)(sptr - sbuff)}, ' ') == 2)
 			{
 				payloadType = Text::StrToInt32(sarr[0].v);
 				k = Text::StrSplitP(sarr, 4, sarr[1], '/');
@@ -633,7 +633,7 @@ NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> 
 		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=fmtp:")))
 		{
 			sptr = Text::StrConcatC(sbuff, &desc[7], descLen - 7);
-			if (Text::StrSplitP(sarr, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ' ') == 2)
+			if (Text::StrSplitP(sarr, 2, {sbuff, (UIntOS)(sptr - sbuff)}, ' ') == 2)
 			{
 				payloadType = Text::StrToInt32(sarr[0].v);
 				ch->SetPayloadFormat(payloadType, sarr[1].v);

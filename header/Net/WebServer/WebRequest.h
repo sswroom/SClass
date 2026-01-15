@@ -42,9 +42,9 @@ namespace Net
 			virtual ~WebRequest();
 
 			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) const = 0;
-			virtual UnsafeArrayOpt<UTF8Char> GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UOSInt buffLen) const = 0;
+			virtual UnsafeArrayOpt<UTF8Char> GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UIntOS buffLen) const = 0;
 			virtual Bool GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const = 0;
-			virtual UOSInt GetHeaderNames(NN<Data::ArrayListStringNN> names) const = 0;
+			virtual UIntOS GetHeaderNames(NN<Data::ArrayListStringNN> names) const = 0;
 			Bool GetRefererDomain(NN<Text::StringBuilderUTF8> sb) const;
 			Bool GetOrigin(NN<Text::StringBuilderUTF8> sb) const;
 			Bool GetIfModifiedSince(NN<Data::DateTime> dt) const;
@@ -52,11 +52,11 @@ namespace Net
 			Optional<Text::String> GetCookieAsNew(Text::CStringNN name) const;
 
 			virtual NN<Text::String> GetRequestURI() const = 0;
-			UnsafeArray<UTF8Char> GetRequestPath(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng);
-			UnsafeArrayOpt<UTF8Char> GetQueryString(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng);
+			UnsafeArray<UTF8Char> GetRequestPath(UnsafeArray<UTF8Char> sbuff, UIntOS maxLeng);
+			UnsafeArrayOpt<UTF8Char> GetQueryString(UnsafeArray<UTF8Char> sbuff, UIntOS maxLeng);
 			virtual RequestProtocol GetProtocol() const = 0;
 			virtual Optional<Text::String> GetQueryValue(Text::CStringNN name) = 0;
-			UnsafeArrayOpt<UTF8Char> GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
+			UnsafeArrayOpt<UTF8Char> GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
 			Bool GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val);
 			Bool GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val);
 			Bool GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val);
@@ -68,7 +68,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name) = 0;
-			virtual UnsafeArrayOpt<const UInt8> GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
+			virtual UnsafeArrayOpt<const UInt8> GetHTTPFormFile(Text::CStringNN formName, UIntOS index, UnsafeArrayOpt<UTF8Char> fileName, UIntOS fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UIntOS> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);
 			Bool GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut);
@@ -84,7 +84,7 @@ namespace Net
 			virtual UInt16 GetClientPort() const = 0;
 			virtual Bool IsSecure() const = 0;
 			virtual Optional<Crypto::Cert::X509Cert> GetClientCert() = 0;
-			virtual UnsafeArrayOpt<const UInt8> GetReqData(OutParam<UOSInt> dataSize) = 0;
+			virtual UnsafeArrayOpt<const UInt8> GetReqData(OutParam<UIntOS> dataSize) = 0;
 			void GetRequestAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 
 			Text::CStringNN GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }

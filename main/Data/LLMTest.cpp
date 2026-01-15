@@ -97,7 +97,7 @@ Int32 TestPage2_11()
 		Text::RegEx("([,.:;?_!\"()\\']|--|\\s)").Split(s->ToCString(), result);
 		Text::StringTool::RemoveEmptyOrWS(result);
 		printf("%d\r\n", (UInt32)result.GetCount());
-		UOSInt i = result.GetCount();
+		UIntOS i = result.GetCount();
 		while (i-- > 30)
 		{
 			if (result.RemoveAt(i).SetTo(s2)) s2->Release();
@@ -131,8 +131,8 @@ Int32 TestPage2_12()
 		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(result, result);
 		result.RemoveDuplicates();
 		printf("%d\r\n", (UInt32)result.GetCount());
-		UOSInt i = 0;
-		UOSInt j = result.GetCount();
+		UIntOS i = 0;
+		UIntOS j = result.GetCount();
 		while (i < j)
 		{
 			printf("%s, %d\r\n", result.GetItemNoCheck(i)->v.Ptr(), (UInt32)i);
@@ -149,14 +149,14 @@ class SimpleTokenizerV1
 {
 private:
 	Data::ArrayListStringNN intToStr;
-	Data::FastStringMapNative<UOSInt> strToInt;
+	Data::FastStringMapNative<UIntOS> strToInt;
 	Text::RegEx regEx;
 public:
 	SimpleTokenizerV1(NN<Data::ArrayListStringNN> vocab) : regEx("([,.:;?_!\"()\\']|--|\\s)")
 	{
 		this->intToStr.AddAll(vocab);
-		UOSInt i = 0;
-		UOSInt j = this->intToStr.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->intToStr.GetCount();
 		NN<Text::String> s;
 		while (i < j)
 		{
@@ -171,13 +171,13 @@ public:
 		this->intToStr.FreeAll();
 	}
 
-	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UOSInt>> ids) const
+	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UIntOS>> ids) const
 	{
 		Data::ArrayListStringNN result;
 		this->regEx.Split(text, result);
 		Text::StringTool::RemoveEmptyOrWS(result);
-		UOSInt i = 0;
-		UOSInt j = result.GetCount();
+		UIntOS i = 0;
+		UIntOS j = result.GetCount();
 		while (i < j)
 		{
 			ids->Add(this->strToInt.GetNN(result.GetItemNoCheck(i)));
@@ -186,12 +186,12 @@ public:
 		result.FreeAll();
 	}
 
-	void Decode(NN<Data::ArrayListNative<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
+	void Decode(NN<Data::ArrayListNative<UIntOS>> ids, NN<Text::StringBuilderUTF8> text) const
 	{
 		Text::CStringNN pun = CSTR(",.?\"()\\'");
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = ids->GetCount();
+		UIntOS i = 0;
+		UIntOS j = ids->GetCount();
 		while (i < j)
 		{
 			if (this->intToStr.GetItem(ids->GetItem(i)).SetTo(s))
@@ -238,7 +238,7 @@ Int32 TestPage2_16()
 		SimpleTokenizerV1 tokenizer(result);
 
 		Text::CStringNN text = CSTR("\"It's the last he painted, you know,\" Mrs. Gisburn said with pardonable pride.");
-		Data::ArrayListNative<UOSInt> ids;
+		Data::ArrayListNative<UIntOS> ids;
 		tokenizer.Encode(text, ids);
 		Text::TextWriteUtil::WriteArrayUOS(console, ids);
 		console.WriteLine();
@@ -253,14 +253,14 @@ class SimpleTokenizerV2
 {
 private:
 	Data::ArrayListStringNN intToStr;
-	Data::FastStringMapNative<UOSInt> strToInt;
+	Data::FastStringMapNative<UIntOS> strToInt;
 	Text::RegEx regEx;
 public:
 	SimpleTokenizerV2(NN<Data::ArrayListStringNN> vocab) : regEx("([,.:;?_!\"()\\']|--|\\s)")
 	{
 		this->intToStr.AddAll(vocab);
-		UOSInt i = 0;
-		UOSInt j = this->intToStr.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->intToStr.GetCount();
 		NN<Text::String> s;
 		while (i < j)
 		{
@@ -275,21 +275,21 @@ public:
 		this->intToStr.FreeAll();
 	}
 
-	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UOSInt>> ids) const
+	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UIntOS>> ids) const
 	{
 		Data::ArrayListStringNN result;
 		this->regEx.Split(text, result);
 		Text::StringTool::RemoveEmptyOrWS(result);
 		IO::ConsoleWriter console;
 		Text::TextWriteUtil::WriteArray(console, result);
-		UOSInt i = 0;
-		UOSInt j = result.GetCount();
-		OSInt k;
+		UIntOS i = 0;
+		UIntOS j = result.GetCount();
+		IntOS k;
 		while (i < j)
 		{
 			k = this->strToInt.IndexOf(result.GetItemNoCheck(i));
 			if (k >= 0)
-				ids->Add(this->strToInt.GetItem((UOSInt)k));
+				ids->Add(this->strToInt.GetItem((UIntOS)k));
 			else
 				ids->Add(this->strToInt.GetCount() - 1);
 			i++;
@@ -297,12 +297,12 @@ public:
 		result.FreeAll();
 	}
 
-	void Decode(NN<Data::ArrayListNative<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
+	void Decode(NN<Data::ArrayListNative<UIntOS>> ids, NN<Text::StringBuilderUTF8> text) const
 	{
 		Text::CStringNN pun = CSTR(",.?\"()\\'");
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = ids->GetCount();
+		UIntOS i = 0;
+		UIntOS j = ids->GetCount();
 		while (i < j)
 		{
 			if (this->intToStr.GetItem(ids->GetItem(i)).SetTo(s))
@@ -352,7 +352,7 @@ Int32 TestPage2_19()
 		SimpleTokenizerV2 tokenizer(result);
 
 		Text::CStringNN text = CSTR("Hello, do you like tea? <|endoftext|> In the sunlit terraces of the palace.");
-		Data::ArrayListNative<UOSInt> ids;
+		Data::ArrayListNative<UIntOS> ids;
 		tokenizer.Encode(text, ids);
 		Text::TextWriteUtil::WriteArrayUOS(console, ids);
 		console.WriteLine();
@@ -364,7 +364,7 @@ Int32 TestPage2_19()
 }
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 20191;
+	UIntOS page = 20191;
 	switch (page)
 	{
 	case 20070:

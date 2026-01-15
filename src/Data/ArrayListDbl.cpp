@@ -7,7 +7,7 @@ Data::ArrayListDbl::ArrayListDbl() : Data::SortableArrayListNative<Double>()
 {
 }
 
-Data::ArrayListDbl::ArrayListDbl(UOSInt capacity) : Data::SortableArrayListNative<Double>(capacity)
+Data::ArrayListDbl::ArrayListDbl(UIntOS capacity) : Data::SortableArrayListNative<Double>(capacity)
 {
 }
 
@@ -22,7 +22,7 @@ NN<Data::ArrayListNative<Double>> Data::ArrayListDbl::Clone() const
 Double Data::ArrayListDbl::FrobeniusNorm() const
 {
 	Double sum = 0;
-	UOSInt i = this->objCnt;
+	UIntOS i = this->objCnt;
 	while (i-- > 0)
 	{
 		sum += this->arr[i] * this->arr[i];
@@ -33,7 +33,7 @@ Double Data::ArrayListDbl::FrobeniusNorm() const
 Double Data::ArrayListDbl::Average() const
 {
 	Double sum = 0;
-	UOSInt i = this->objCnt;
+	UIntOS i = this->objCnt;
 	while (i-- > 0)
 	{
 		sum += this->arr[i];
@@ -46,7 +46,7 @@ Double Data::ArrayListDbl::StdDev() const
 	Double avg = this->Average();
 	Double sum = 0;
 	Double d;
-	UOSInt i = this->objCnt;
+	UIntOS i = this->objCnt;
 	while (i-- > 0)
 	{
 		d = this->arr[i] - avg;
@@ -55,7 +55,7 @@ Double Data::ArrayListDbl::StdDev() const
 	return Math_Sqrt(sum / (Double)this->objCnt);
 }
 
-UOSInt Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UOSInt firstIndex, UOSInt endIndex) const
+UIntOS Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UIntOS firstIndex, UIntOS endIndex) const
 {
 	if (firstIndex > this->objCnt)
 		firstIndex = this->objCnt;
@@ -69,7 +69,7 @@ UOSInt Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UOSInt firstIndex, U
 	return 0;
 }
 
-UOSInt Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UOSInt firstIndex) const
+UIntOS Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UIntOS firstIndex) const
 {
 	return Subset(outList, firstIndex, this->objCnt);
 }

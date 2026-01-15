@@ -20,8 +20,8 @@ namespace Net
 		protected:
 			Bool DoRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 			void AddResponseHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
-			Bool ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, OSInt cacheAge, Text::CStringNN json);
-			Bool ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UOSInt maxAge, Text::CStringNN options);
+			Bool ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json);
+			Bool ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UIntOS maxAge, Text::CStringNN options);
 		public:
 			WebStandardHandler();
 			virtual ~WebStandardHandler();

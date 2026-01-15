@@ -5,8 +5,8 @@
 
 Bool Net::MQTTUtil::TopicValid(UnsafeArray<const UTF8Char> topic)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = Text::StrIndexOfChar(topic, '#');
 	if (i != INVALID_INDEX)
 	{
@@ -38,7 +38,7 @@ Bool Net::MQTTUtil::TopicValid(UnsafeArray<const UTF8Char> topic)
 	return true;
 }
 
-Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UOSInt subscribeTopicLen)
+Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UIntOS topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UIntOS subscribeTopicLen)
 {
 	if (subscribeTopic[0] == '#' && subscribeTopic[1] == 0)
 	{
@@ -48,7 +48,7 @@ Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLe
 		}
 		return false;
 	}
-	UOSInt i;
+	UIntOS i;
 	while (true)
 	{
 		i = Text::StrIndexOfCharC(subscribeTopic, subscribeTopicLen, '+');
@@ -56,7 +56,7 @@ Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLe
 			break;
 		if (i > 0)
 		{
-			if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UOSInt)i))
+			if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UIntOS)i))
 			{
 				return false;
 			}
@@ -89,7 +89,7 @@ Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLe
 		return true;
 	}
 
-	if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UOSInt)i))
+	if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UIntOS)i))
 	{
 		return false;
 	}

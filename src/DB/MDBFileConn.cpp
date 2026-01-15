@@ -26,7 +26,7 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 		UTF8Char sbuff[16];
 		UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
 		sb.AppendC(UTF8STRC(";CharSet="));
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 
 /*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 		if (loc)
@@ -62,7 +62,7 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 			UTF8Char sbuff[16];
 			UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
 			sb.AppendC(UTF8STRC(";CharSet="));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 
 	/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 			if (loc)
@@ -99,7 +99,7 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 				UTF8Char sbuff[16];
 				UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
 				sb.AppendC(UTF8STRC(";CharSet="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 
 		/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 				if (loc)

@@ -13,11 +13,11 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 	UnsafeArray<UInt8> frameBuff2;
 	UInt32 lastFrameNum;
 	UInt32 frameNum;
-	UOSInt frameSize;
-	UOSInt currPart;
-	UOSInt nextPart;
+	UIntOS frameSize;
+	UIntOS currPart;
+	UIntOS nextPart;
 	Bool needNotify = false;
-	OSInt nextIndex;
+	IntOS nextIndex;
 
 	me->playing = true;
 	me->mainEvt.Set();
@@ -164,7 +164,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 UInt32 __stdcall Media::FileVideoSource::OutputThread(AnyType userObj)
 {
 	NN<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
-	OSInt nextIndex;
+	IntOS nextIndex;
 	me->outputRunning = true;
 	me->mainEvt.Set();
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
@@ -261,7 +261,7 @@ Text::CStringNN Media::FileVideoSource::GetFilterName()
 	return CSTR("FileVideoSource");
 }
 
-Bool Media::FileVideoSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::FileVideoSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	info->Set(this->frameInfo);
 	frameRateNorm.Set(this->frameRateNorm);
@@ -365,11 +365,11 @@ Data::Duration Media::FileVideoSource::SeekToTime(Data::Duration time)
 {
 	if (this->timeBased)
 	{
-		UOSInt lastKey = 0;
+		UIntOS lastKey = 0;
 		Data::Duration lastKeyTime = 0;
 		Data::Duration thisTime;
-		UOSInt i = 0;
-		UOSInt j = this->frameParts.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->frameParts.GetCount();
 		while (i < j)
 		{
 			if (this->frameIsKey.GetItem(i))
@@ -413,7 +413,7 @@ Bool Media::FileVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd
 	return false;
 }
 
-UOSInt Media::FileVideoSource::GetDataSeekCount()
+UIntOS Media::FileVideoSource::GetDataSeekCount()
 {
 	return this->data->GetSeekCount();
 }
@@ -423,12 +423,12 @@ Bool Media::FileVideoSource::HasFrameCount()
 	return true;
 }
 
-UOSInt Media::FileVideoSource::GetFrameCount()
+UIntOS Media::FileVideoSource::GetFrameCount()
 {
 	return this->frameParts.GetCount();
 }
 
-Data::Duration Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::FileVideoSource::GetFrameTime(UIntOS frameIndex)
 {
 	Data::Duration frameTime = this->frameTimes.GetItem(frameIndex);
 	if (frameTime.IsZero())
@@ -440,11 +440,11 @@ Data::Duration Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
 
 void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	UOSInt frameSize;
-	UOSInt currPart;
-	UOSInt nextPart;
-	UOSInt i = 0;
-	UOSInt j = this->frameParts.GetCount();
+	UIntOS frameSize;
+	UIntOS currPart;
+	UIntOS nextPart;
+	UIntOS i = 0;
+	UIntOS j = this->frameParts.GetCount();
 	UInt32 lastFrameTime = 0;
 	while (i < j)
 	{
@@ -523,7 +523,7 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userDa
 	}
 }
 
-UOSInt Media::FileVideoSource::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::FileVideoSource::GetFrameSize(UIntOS frameIndex)
 {
 	if (frameIndex >= this->frameSizes.GetCount())
 		return 0;
@@ -531,16 +531,16 @@ UOSInt Media::FileVideoSource::GetFrameSize(UOSInt frameIndex)
 	return this->frameSizes.GetItem(frameIndex);
 }
 
-UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> frameBuff)
+UIntOS Media::FileVideoSource::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> frameBuff)
 {
 	if(frameIndex >= this->frameSizes.GetCount())
 		return 0;
 
-	UOSInt frameSize = this->frameSizes.GetItem(frameIndex);
+	UIntOS frameSize = this->frameSizes.GetItem(frameIndex);
 	return this->data->GetRealData(this->frameOfsts.GetItem(frameIndex), frameSize, Data::ByteArray(frameBuff, frameSize));
 }
 
-UOSInt Media::FileVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::FileVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

@@ -30,9 +30,9 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	this->lvUser->ClearItems();
 	this->env->ReleaseWebUsers(this->userList);
 	this->env->GetWebUsers(this->userList);
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
 	NN<OrganWebUser> user;

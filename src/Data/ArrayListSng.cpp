@@ -8,7 +8,7 @@ Data::ArrayListSng::ArrayListSng() : Data::SortableArrayListNative<Single>()
 {
 }
 
-Data::ArrayListSng::ArrayListSng(OSInt Capacity) : Data::SortableArrayListNative<Single>(Capacity)
+Data::ArrayListSng::ArrayListSng(IntOS Capacity) : Data::SortableArrayListNative<Single>(Capacity)
 {
 }
 

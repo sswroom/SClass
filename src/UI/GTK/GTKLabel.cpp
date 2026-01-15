@@ -33,7 +33,7 @@ void UI::GTK::GTKLabel::SetText(Text::CStringNN text)
 	gtk_label_set_text((GtkLabel*)this->hwnd.OrNull(), (const Char*)text.v.Ptr());
 }
 
-OSInt UI::GTK::GTKLabel::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKLabel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

@@ -7,8 +7,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 {
 	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnCharSetSelChg(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<IntOS> boundary)
 {
 	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	UTF8Char sbuff[64];
@@ -79,8 +79,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text:
 		res->area = boundary;
 		res->resImg = currImg->CreateSubImage(boundary);
 		me->results.Add(res);
-		UOSInt i = me->lvText->AddItem(res->result, res.Ptr());
-		sptr = Text::StrOSInt(sbuff, boundary.GetArea());
+		UIntOS i = me->lvText->AddItem(res->result, res.Ptr());
+		sptr = Text::StrIntOS(sbuff, boundary.GetArea());
 		me->lvText->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, res->resImg->CalcColorRate());
 		me->lvText->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -116,8 +116,8 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("OCR"));
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> lang;
 	this->core = core;
 	this->currImg = nullptr;
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->pbImg = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UOSInt k = 0;
+	UIntOS k = 0;
 	i = 0;
 	j = this->langs.GetCount();
 	while (i < j)

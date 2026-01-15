@@ -43,7 +43,7 @@ namespace Data
 		void SetItemI64(UnsafeArray<const UTF8Char> name, Int64 val) { this->SetItem(name, Data::VariItem::NewI64(val)); }
 		void SetItemU64(UnsafeArray<const UTF8Char> name, UInt64 val) { this->SetItem(name, Data::VariItem::NewU64(val)); }
 		void SetItemBool(UnsafeArray<const UTF8Char> name, Bool val) { this->SetItem(name, Data::VariItem::NewBool(val)); }
-		void SetItemByteArray(UnsafeArray<const UTF8Char> name, const UInt8 *arr, UOSInt cnt) { this->SetItem(name, Data::VariItem::NewByteArr(arr, cnt)); }
+		void SetItemByteArray(UnsafeArray<const UTF8Char> name, const UInt8 *arr, UIntOS cnt) { this->SetItem(name, Data::VariItem::NewByteArr(arr, cnt)); }
 		void SetItemVector(UnsafeArray<const UTF8Char> name, Optional<Math::Geometry::Vector2D> vec) { this->SetItem(name, Data::VariItem::NewVector(vec)); }
 		void SetItemUUID(UnsafeArray<const UTF8Char> name, Data::UUID *uuid) { this->SetItem(name, Data::VariItem::NewUUID(uuid)); }
 		void SetItemVectorDirect(UnsafeArray<const UTF8Char> name, Optional<Math::Geometry::Vector2D> vec) { this->SetItem(name, Data::VariItem::NewVectorDirect(vec)); }

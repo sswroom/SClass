@@ -20,7 +20,7 @@ namespace IO
 
 		Bool IsModified();
 		void ReadLogs(NN<IO::Reader> reader);
-		void LogStr(UnsafeArray<const UTF8Char> s, UOSInt len);
+		void LogStr(UnsafeArray<const UTF8Char> s, UIntOS len);
 		void WriteLogs(NN<IO::Writer> writer);
 	};
 }

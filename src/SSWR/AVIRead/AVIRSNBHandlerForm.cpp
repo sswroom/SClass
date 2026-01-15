@@ -22,12 +22,12 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt val = me->cboType->GetSelectedItem().GetOSInt();
+	IntOS val = me->cboType->GetSelectedItem().GetIntOS();
 	me->handType = (IO::SNBDongle::HandleType)val;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBImg"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrOSInt(sptr, val);
+	sptr = Text::StrIntOS(sptr, val);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
 	me->pbImage->SetImage(nullptr);
@@ -70,13 +70,13 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientCont
 	this->pbImage = ui->NewPictureBox(*this, this->core->GetDrawEngine(), false, true);
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UOSInt i = 0;
-	UOSInt j = IO::SNBDongle::HT_LAST;
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = IO::SNBDongle::HT_LAST;
+	UIntOS k;
 	while (i <= j)
 	{
 		k = this->cboType->AddItem(IO::SNBDongle::GetHandleName((IO::SNBDongle::HandleType)i), (void*)i);
-		if (i == (UOSInt)handType)
+		if (i == (UIntOS)handType)
 		{
 			this->cboType->SetSelectedIndex(k);
 		}

@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 		me->txtDistance->SetText(CSTRP(sbuff, sptr));
 
 		me->lvSate->ClearItems();
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < me->recSateCnt)
 		{
 			me->lvSate->AddItem(Map::LocationService::SateTypeGetName(me->recSates[i].sateType), 0);
@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 		Sync::MutexUsage nmeaMutUsage(me->nmeaMut);
 		me->nmeaUpdated = false;
 		NN<Text::String> s;
-		UOSInt i = me->nmeaIndex;
+		UIntOS i = me->nmeaIndex;
 		me->lbNMEA->ClearItems();
 		if (me->nmeaBuff[i].SetTo(s))
 		{
@@ -248,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(AnyType userObj, 
 	me->SetAlwaysOnTop(newState);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, UnsafeArray<const UTF8Char> line, UOSInt lineLen)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, UnsafeArray<const UTF8Char> line, UIntOS lineLen)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Sync::MutexUsage mutUsage(me->nmeaMut);
@@ -496,7 +496,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 		this->relLocSvc = false;
 	}
 	this->wgs84.Delete();
-	UOSInt i = NMEAMAXSIZE;
+	UIntOS i = NMEAMAXSIZE;
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->nmeaBuff[i]);

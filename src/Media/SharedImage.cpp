@@ -15,7 +15,7 @@ Media::SharedImage::SharedImage(NN<Media::SharedImage::ImageStatus> status)
 
 Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Optional<Data::ArrayListNN<Media::StaticImage>> previewImages)
 {
-	UOSInt imgCnt = imgList->GetCount();
+	UIntOS imgCnt = imgList->GetCount();
 	NEW_CLASSNN(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
 	this->imgStatus->prevList = nullptr;
@@ -23,7 +23,7 @@ Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Optional<Data::Arr
 	this->imgStatus->imgIndex = 0;
 	this->imgStatus->imgDelay = 0;
 	this->imgStatus->lastTimeTick = 0;
-	UOSInt i = imgCnt;
+	UIntOS i = imgCnt;
 	while (i-- > 0)
 	{
 		imgList->ToStaticImage(i);
@@ -115,14 +115,14 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 		return this->GetImage(imgTimeMS);
 	}
 	NN<Media::StaticImage> currImg;
-	UOSInt i;
+	UIntOS i;
 	Optional<Media::StaticImage> minImg = nullptr;
-	UOSInt minWidth = 0;
+	UIntOS minWidth = 0;
 	i = nnprevList->GetCount();
 	while (i-- > 0)
 	{
 		currImg = nnprevList->GetItemNoCheck(i);
-		if (UOSInt2Double(currImg->info.dispSize.x) >= width && UOSInt2Double(currImg->info.dispSize.y) >= height)
+		if (UIntOS2Double(currImg->info.dispSize.x) >= width && UIntOS2Double(currImg->info.dispSize.y) >= height)
 		{
 			if (minImg.IsNull() || minWidth > currImg->info.dispSize.x)
 			{

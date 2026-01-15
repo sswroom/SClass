@@ -13,7 +13,7 @@ namespace UI
 		typedef struct
 		{
 			Optional<Map::MapEnv::GroupItem> group;
-			UOSInt index;
+			UIntOS index;
 			Map::MapEnv::ItemType itemType;
 			Optional<Map::MapEnv::MapItem> item;
 		} ItemIndex;
@@ -27,14 +27,14 @@ namespace UI
 	private:
 		void RemoveItems();
 		void FreeItem(NN<UI::GUITreeView::TreeItem> item);
-		void AddTreeNode(Optional<UI::GUITreeView::TreeItem> item, Optional<Map::MapEnv::GroupItem> group, UOSInt index);
+		void AddTreeNode(Optional<UI::GUITreeView::TreeItem> item, Optional<Map::MapEnv::GroupItem> group, UIntOS index);
 		void UpdateTreeStatus(NN<UI::GUITreeView::TreeItem> item);
 	public:
 		GUIMapTreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Map::MapEnv> env);
 		virtual ~GUIMapTreeView();
 
-		virtual OSInt EventBeginLabelEdit(NN<TreeItem> item);
-		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
+		virtual IntOS EventBeginLabelEdit(NN<TreeItem> item);
+		virtual IntOS EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
 		virtual Text::CStringNN GetObjectClass() const;
 

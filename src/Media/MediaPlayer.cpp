@@ -9,7 +9,7 @@
 
 extern "C"
 {
-	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
+	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UIntOS w, UIntOS h, UIntOS ySplit, UIntOS *crops);
 }
 
 void Media::MediaPlayer::PlayTime(Data::Duration time)
@@ -109,11 +109,11 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(AnyType userObj)
 void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img)
 {
 	NN<Media::MediaPlayer> me = userObj.GetNN<Media::MediaPlayer>();
-	UOSInt w = img->info.dispSize.x;
-	UOSInt h = img->info.dispSize.y;
+	UIntOS w = img->info.dispSize.x;
+	UIntOS h = img->info.dispSize.y;
 	UnsafeArray<UInt8> yptr = img->data;
-	UOSInt ySplit;
-	UOSInt crops[4];
+	UIntOS ySplit;
+	UIntOS crops[4];
 	NN<Media::VideoRenderer> vrenderer;
 	if (!me->vrenderer.SetTo(vrenderer))
 	{
@@ -247,7 +247,7 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 	}
 	this->currChapInfo = currFile->GetChapterInfo();
 
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int32 syncTime;
 	videoFound = false;
 	while (true)
@@ -320,7 +320,7 @@ Bool Media::MediaPlayer::SeekTo(Data::Duration time)
 	{
 		this->StopPlayback();
 		this->PlayTime(time);
-		this->pbLastChapter = (UOSInt)-1;
+		this->pbLastChapter = (UIntOS)-1;
 	}
 	else
 	{
@@ -329,7 +329,7 @@ Bool Media::MediaPlayer::SeekTo(Data::Duration time)
 	return true;
 }
 
-Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
+Bool Media::MediaPlayer::SwitchAudio(UIntOS index)
 {
 	this->ReleaseAudio();
 	NN<Media::MediaFile> currFile;
@@ -338,7 +338,7 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 		return true;
 	}
 
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int32 syncTime;
 	while (true)
 	{
@@ -379,7 +379,7 @@ Bool Media::MediaPlayer::IsPlaying()
 Bool Media::MediaPlayer::PrevChapter()
 {
 	NN<Media::ChapterInfo> currChapInfo;
-	UOSInt i;
+	UIntOS i;
 	if (this->IsPlaying() && this->currChapInfo.SetTo(currChapInfo))
 	{
 		currTime = this->clk.GetCurrTime();
@@ -406,7 +406,7 @@ Bool Media::MediaPlayer::PrevChapter()
 Bool Media::MediaPlayer::NextChapter()
 {
 	NN<Media::ChapterInfo> currChapInfo;
-	UOSInt i;
+	UIntOS i;
 	if (this->currChapInfo.SetTo(currChapInfo) && this->IsPlaying())
 	{
 		currTime = this->clk.GetCurrTime();
@@ -425,7 +425,7 @@ Bool Media::MediaPlayer::NextChapter()
 	return false;
 }
 
-Bool Media::MediaPlayer::GotoChapter(UOSInt chapter)
+Bool Media::MediaPlayer::GotoChapter(UIntOS chapter)
 {
 	NN<Media::ChapterInfo> currChapInfo;
 	if (this->currChapInfo.SetTo(currChapInfo))
@@ -445,15 +445,15 @@ Data::Duration Media::MediaPlayer::GetCurrTime()
 	return this->clk.GetCurrTime();
 }
 
-Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
+Bool Media::MediaPlayer::GetVideoSize(OutParam<UIntOS> w, OutParam<UIntOS> h)
 {
 	Media::FrameInfo info;
-	UOSInt cropLeft;
-	UOSInt cropTop;
-	UOSInt cropRight;
-	UOSInt cropBottom;
-	UOSInt vw;
-	UOSInt vh;
+	UIntOS cropLeft;
+	UIntOS cropTop;
+	UIntOS cropRight;
+	UIntOS cropBottom;
+	UIntOS vw;
+	UIntOS vh;
 	UInt32 tmpV;
 	NN<Media::VideoSource> vdecoder;
 	NN<Media::VideoSource> currVStm;
@@ -476,11 +476,11 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
 		}
 		if (info.par2 > 1)
 		{
-			vh = (UInt32)Double2Int32(UOSInt2Double(vh) * info.par2);
+			vh = (UInt32)Double2Int32(UIntOS2Double(vh) * info.par2);
 		}
 		else
 		{
-			vw = (UInt32)Double2Int32(UOSInt2Double(vw) / info.par2);
+			vw = (UInt32)Double2Int32(UIntOS2Double(vw) / info.par2);
 		}
 		w.Set(vw);
 		h.Set(vh);

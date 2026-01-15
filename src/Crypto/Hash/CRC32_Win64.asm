@@ -147,7 +147,7 @@ crc32itlop4:
 	pop rbx
 	ret
 
-;UInt32 CRC32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
+;UInt32 CRC32_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal)
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize

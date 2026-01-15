@@ -12,9 +12,9 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 
-		virtual Bool GetItemChecked(UOSInt index) = 0;
-		virtual void SetItemChecked(UOSInt index, Bool isChecked) = 0;
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual Bool GetItemChecked(UIntOS index) = 0;
+		virtual void SetItemChecked(UIntOS index, Bool isChecked) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 	};
 }
 #endif

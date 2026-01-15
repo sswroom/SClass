@@ -22,19 +22,19 @@ namespace SSWR
 			NN<AVIRMapNavigator> navi;
 			NN<Map::MapEnv> env;
 			Optional<Map::MapEnv::GroupItem> group;
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
-			Data::ArrayListNative<UOSInt> queryValueOfstList;
+			Data::ArrayListNative<UIntOS> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnItemSelChg(AnyType userObj);
 			void ClearQueryResults();
-			void SetQueryItem(UOSInt index);
+			void SetQueryItem(UIntOS index);
 		public:
 			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
 			virtual ~AVIRGISGroupQueryForm();

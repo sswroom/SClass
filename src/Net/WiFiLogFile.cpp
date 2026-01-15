@@ -9,18 +9,18 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-UOSInt Net::WiFiLogFile::DirectInsert(NN<LogFileEntry> newLog)
+UIntOS Net::WiFiLogFile::DirectInsert(NN<LogFileEntry> newLog)
 {
 	NN<Net::WiFiLogFile::LogFileEntry> log;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	i = 0;
-	j = (OSInt)this->logList.GetCount() - 1;
+	j = (IntOS)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList.GetItemNoCheck((UOSInt)k);
+		log = this->logList.GetItemNoCheck((UIntOS)k);
 		if (newLog->mac64Int > log->mac64Int)
 		{
 			i = k + 1;
@@ -31,12 +31,12 @@ UOSInt Net::WiFiLogFile::DirectInsert(NN<LogFileEntry> newLog)
 		}
 		else
 		{
-			this->logList.Insert((UOSInt)k, newLog);
-			return (UOSInt)k;
+			this->logList.Insert((UIntOS)k, newLog);
+			return (UIntOS)k;
 		}
 	}
-	this->logList.Insert((UOSInt)i, newLog);
-	return (UOSInt)i;
+	this->logList.Insert((UIntOS)i, newLog);
+	return (UIntOS)i;
 }
 
 Net::WiFiLogFile::WiFiLogFile()
@@ -56,9 +56,9 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 		Text::PString sarr[12];
 		Text::PString sarr2[7];
 		UInt8 buff[8];
-		UOSInt i;
-		UOSInt j;
-		OSInt k;
+		UIntOS i;
+		UIntOS j;
+		IntOS k;
 		NN<Net::WiFiLogFile::LogFileEntry> log;
 		Text::StringBuilderUTF8 sb;
 		UInt64 iMAC;
@@ -279,9 +279,9 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	UnsafeArray<UInt8> wieBuff;
 	Bool succ = false;
@@ -349,7 +349,7 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 
 void Net::WiFiLogFile::Clear()
 {
-	UOSInt i = this->logList.GetCount();
+	UIntOS i = this->logList.GetCount();
 	UnsafeArray<UInt8> wieBuff;
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	while (i-- > 0)
@@ -372,15 +372,15 @@ void Net::WiFiLogFile::Clear()
 Optional<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::Get(UInt64 iMAC)
 {
 	NN<Net::WiFiLogFile::LogFileEntry> log;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	i = 0;
-	j = (OSInt)this->logList.GetCount() - 1;
+	j = (IntOS)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList.GetItemNoCheck((UOSInt)k);
+		log = this->logList.GetItemNoCheck((UIntOS)k);
 		if (iMAC > log->mac64Int)
 		{
 			i = k + 1;
@@ -397,18 +397,18 @@ Optional<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::Get(UInt64 iMAC)
 	return nullptr;
 }
 
-OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
+IntOS Net::WiFiLogFile::GetIndex(UInt64 iMAC)
 {
 	NN<Net::WiFiLogFile::LogFileEntry> log;
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	i = 0;
-	j = (OSInt)this->logList.GetCount() - 1;
+	j = (IntOS)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList.GetItemNoCheck((UOSInt)k);
+		log = this->logList.GetItemNoCheck((UIntOS)k);
 		if (iMAC > log->mac64Int)
 		{
 			i = k + 1;
@@ -430,19 +430,19 @@ NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> Net::WiFiLogFile::GetLogLi
 	return this->logList;
 }
 
-Optional<const Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::GetItem(UOSInt index)
+Optional<const Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::GetItem(UIntOS index)
 {
 	return this->logList.GetItem(index);
 }
 
-NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::WirelessLAN::BSSInfo> bss, OutParam<OSInt> lastIndex)
+NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::WirelessLAN::BSSInfo> bss, OutParam<IntOS> lastIndex)
 {
 	UInt8 buff[8];
 	UInt64 imac;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
-	UOSInt ieLen;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
+	UIntOS ieLen;
 	UnsafeArray<const UInt8> ieBuff;
 	UnsafeArray<UInt8> wieBuff;
 	NN<Net::WirelessLANIE> ie;
@@ -462,7 +462,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	{
 		if (bss->GetIE(k).SetTo(ie))
 		{
-			ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
+			ieLen += (UIntOS)ie->GetIEBuff()[1] + 2;
 		}
 	}
 	if (!this->Get(imac).SetTo(log))
@@ -501,8 +501,8 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
-					m += (UOSInt)ieBuff[1] + 2;
+					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UIntOS)ieBuff[1] + 2);
+					m += (UIntOS)ieBuff[1] + 2;
 				}
 				k++;
 			}
@@ -517,7 +517,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	}
 	else
 	{
-		OSInt sk = this->GetIndex(imac);
+		IntOS sk = this->GetIndex(imac);
 		if (sk >= 0)
 		{
 			if (log->manuf.IsNull() && bss->GetManuf().SetTo(s))
@@ -537,7 +537,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				log->country = Text::String::NewNotNullSlow(ieBuff);
 			}
 		}
-		UOSInt l;
+		UIntOS l;
 		UnsafeArray<const UInt8> oui;
 		oui = oui1;
 		if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
@@ -614,8 +614,8 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
-					m += (UOSInt)ieBuff[1] + 2;
+					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UIntOS)ieBuff[1] + 2);
+					m += (UIntOS)ieBuff[1] + 2;
 				}
 				k++;
 			}

@@ -58,7 +58,7 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkSubdir;
 			NN<UI::GUITextBox> txtSubdir;
 			NN<UI::GUIButton> btnConvert;
-			UOSInt nThreads;
+			UIntOS nThreads;
 			UnsafeArrayOpt<ThreadState> threadStates;
 			Bool threadToStop;
 			Sync::Event threadEvt;

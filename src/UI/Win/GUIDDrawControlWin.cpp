@@ -36,9 +36,9 @@ typedef BOOL (WINAPI *CloseGestureInfoHandleFunc)(HGESTUREINFO hGestureInfo);
 #undef GetMonitorInfo
 Int32 UI::GUIDDrawControl::useCnt = 0;
 
-OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	if (me == 0)
 	{
 		switch (msg)
@@ -61,42 +61,42 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 	case WM_ERASEBKGND:
 		return 1;
 	case WM_LBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_LBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_LBUTTONDBLCLK:
-		me->OnMouseDblClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_RBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_RBUTTONDBLCLK:
-		me->OnMouseDblClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_MBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_XBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
 		return 0;
 	case WM_XBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
 		return 0;
 	case WM_MOUSEMOVE:
-		me->OnMouseMove(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
+		me->OnMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		return 0;
 	case WM_MOUSEWHEEL:
 		{
-			Math::Coord2D<OSInt> scnPos = me->GetScreenPosP();
-			me->OnMouseWheel(Math::Coord2D<OSInt>(-scnPos.x + (Int16)LOWORD(lParam), -scnPos.y + (Int16)HIWORD(lParam)), (Int16)HIWORD(wParam));
+			Math::Coord2D<IntOS> scnPos = me->GetScreenPosP();
+			me->OnMouseWheel(Math::Coord2D<IntOS>(-scnPos.x + (Int16)LOWORD(lParam), -scnPos.y + (Int16)HIWORD(lParam)), (Int16)HIWORD(wParam));
 		}
 		return 0;
 	case WM_SIZE:
@@ -121,19 +121,19 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomBegin(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGZoomBegin(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else if (gi.dwFlags & GF_END)
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomEnd(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGZoomEnd(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomStep(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGZoomStep(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 					}
 				}
@@ -159,7 +159,7 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 			ret = joyGetPosEx(me->joystickId - 1, &info);
 			if (ret == JOYERR_NOERROR)
 			{
-				OSInt i = 1;
+				IntOS i = 1;
 				UInt32 mask = 1;
 				while (i <= 32)
 				{
@@ -227,7 +227,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 	else
 	{
 		Sync::MutexUsage mutUsage(me->surfaceMut);
-		Math::Size2D<UOSInt> sz = me->GetSizeP();
+		Math::Size2D<UIntOS> sz = me->GetSizeP();
 		me->dispSize = sz;
 		me->ReleaseSubSurface();
 		me->CreateSubSurface();
@@ -237,11 +237,11 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Surface size changed to "));
-			sb.AppendUOSInt(me->dispSize.x);
+			sb.AppendUIntOS(me->dispSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(me->dispSize.y);
+			sb.AppendUIntOS(me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
-			sb.AppendOSInt((OSInt)me->GetHMonitor().OrNull());
+			sb.AppendIntOS((IntOS)me->GetHMonitor().OrNull());
 			me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (me->inited)
@@ -340,15 +340,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
-				sb.AppendUOSInt(primarySurface->info.dispSize.x);
+				sb.AppendUIntOS(primarySurface->info.dispSize.x);
 				sb.AppendC(UTF8STRC(" x "));
-				sb.AppendUOSInt(primarySurface->info.dispSize.y);
+				sb.AppendUIntOS(primarySurface->info.dispSize.y);
 				sb.AppendC(UTF8STRC(", bpl = "));
-				sb.AppendUOSInt(primarySurface->GetDataBpl());
+				sb.AppendUIntOS(primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
-				sb.AppendOSInt((OSInt)this->surfaceMon.OrNull());
+				sb.AppendIntOS((IntOS)this->surfaceMon.OrNull());
 				sb.AppendC(UTF8STRC(", hWnd = "));
-				sb.AppendOSInt((OSInt)hWnd.OrNull());
+				sb.AppendIntOS((IntOS)hWnd.OrNull());
 				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = primarySurface->info.storeBPP;
@@ -398,7 +398,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 				sb.AppendU32(h);
 				this->debugWriter->WriteLine(sb.ToCString());
 			}
-			this->dispSize = Math::Size2D<UOSInt>(w, h);
+			this->dispSize = Math::Size2D<UIntOS>(w, h);
 		}
 		this->bkBuffSize = this->dispSize;
 		if (this->rotType == Media::RotateType::CW_90 || this->rotType == Media::RotateType::CW_270 || this->rotType == Media::RotateType::HFLIP_CW_90 || this->rotType == Media::RotateType::HFLIP_CW_270)
@@ -414,7 +414,7 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 	this->buffSurface.Delete();
 }
 
-UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
+UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UIntOS targetWidth, UIntOS targetHeight, OutParam<IntOS> bpl)
 {
 	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
@@ -647,7 +647,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> drawSize, Bool clearScn)
 {
 	NN<Media::MonitorSurface> primarySurface;
 	if (this->primarySurface.SetTo(primarySurface))
@@ -665,7 +665,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		sb.AppendI32(fullScn?1:0);
 		sb.AppendI32(vfs?1:0);
 		sb.AppendC(UTF8STRC(", hMon="));
-		sb.AppendOSInt((OSInt)this->GetHMonitor().OrNull());
+		sb.AppendIntOS((IntOS)this->GetHMonitor().OrNull());
 		this->debugWriter->WriteLine(sb.ToCString());
 	}
 	if (fullScn)
@@ -866,23 +866,23 @@ Media::RotateType UI::GUIDDrawControl::GetRotateType() const
 	return this->rotType;
 }
 
-void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
+void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 amount)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
+void UI::GUIDDrawControl::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	if (button == MBTN_LEFT)
 	{
@@ -905,26 +905,26 @@ void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButt
 	}
 }
 
-void UI::GUIDDrawControl::OnGZoomBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomStep(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomStep(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnJSButtonDown(OSInt buttonId)
+void UI::GUIDDrawControl::OnJSButtonDown(IntOS buttonId)
 {
 }
 
-void UI::GUIDDrawControl::OnJSButtonUp(OSInt buttonId)
+void UI::GUIDDrawControl::OnJSButtonUp(IntOS buttonId)
 {
 }
 
-void UI::GUIDDrawControl::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4)
+void UI::GUIDDrawControl::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4)
 {
 }

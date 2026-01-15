@@ -89,11 +89,11 @@ void __stdcall SSWR::AVIRead::AVIRJMeterLogForm::OnExportClicked(AnyType userObj
 		Int64 minDur;
 		Int64 maxDur;
 		Int64 dur;
-		UOSInt cnt;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS cnt;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		i = 0;
 		j = groups.GetCount();
 		while (i < j)
@@ -188,17 +188,17 @@ void SSWR::AVIRead::AVIRJMeterLogForm::OpenFile(Text::CStringNN fileName)
 	Int64 minDur;
 	Int64 maxDur;
 	Int64 dur;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	i = 0;
 	j = groups.GetCount();
 	while (i < j)
 	{
 		group = groups.GetItemNoCheck(i);
 		this->lvGroup->AddItem(group->label, group);
-		sptr = Text::StrUOSInt(sbuff, group->logs.GetCount());
+		sptr = Text::StrUIntOS(sbuff, group->logs.GetCount());
 		this->lvGroup->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		totalDur = 0;
 		minDur = 1000000000;
@@ -214,7 +214,7 @@ void SSWR::AVIRead::AVIRJMeterLogForm::OpenFile(Text::CStringNN fileName)
 			if (dur > maxDur) maxDur = dur;
 			if (!item->success) l++;
 		}
-		sptr = Text::StrUOSInt(sbuff, l);
+		sptr = Text::StrUIntOS(sbuff, l);
 		this->lvGroup->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, ((Double)l * 100.0)/(Double)group->logs.GetCount());
 		this->lvGroup->SetSubItem(i, 3, CSTRP(sbuff, sptr));
@@ -234,7 +234,7 @@ void SSWR::AVIRead::AVIRJMeterLogForm::OpenFile(Text::CStringNN fileName)
 	{
 		thread = threads.GetItemNoCheck(i);
 		this->lvThread->AddItem(thread->name, thread);
-		sptr = Text::StrUOSInt(sbuff, thread->logs.GetCount());
+		sptr = Text::StrUIntOS(sbuff, thread->logs.GetCount());
 		this->lvThread->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		i++;
 	}
@@ -253,7 +253,7 @@ void SSWR::AVIRead::AVIRJMeterLogForm::OpenFile(Text::CStringNN fileName)
 		l = log->GetConcurrCnt(currTime);
 		sptr = Data::Timestamp(currTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 		k = this->lvConcurr->AddItem(CSTRP(sbuff, sptr), 0);
-		sptr = Text::StrUOSInt(sbuff, l);
+		sptr = Text::StrUIntOS(sbuff, l);
 		this->lvConcurr->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		currTime += 1000;
 	}

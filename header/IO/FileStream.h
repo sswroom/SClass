@@ -33,8 +33,8 @@ namespace IO
 		virtual ~FileStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();
@@ -58,7 +58,7 @@ namespace IO
 
 		static Optional<IO::FileStream> CreateNamedPipe(UnsafeArray<const UTF8Char> pipeName, UInt32 buffSize);
 		static Optional<IO::FileStream> OpenNamedPipe(UnsafeArrayOpt<const UTF8Char> server, UnsafeArray<const UTF8Char> pipeName);
-		static UOSInt LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UOSInt maxBuffSize);
+		static UIntOS LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UIntOS maxBuffSize);
 	};
 }
 #endif

@@ -163,7 +163,7 @@ void DB::MySQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
@@ -179,11 +179,11 @@ OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 		if (result)
 		{
 			mysql_free_result(result);
-			return (OSInt)mysql_affected_rows((MYSQL*)this->mysql);
+			return (IntOS)mysql_affected_rows((MYSQL*)this->mysql);
 		}
 		else
 		{
-			return (OSInt)mysql_affected_rows((MYSQL*)this->mysql);
+			return (IntOS)mysql_affected_rows((MYSQL*)this->mysql);
 		}
 	}
 	else
@@ -193,12 +193,12 @@ OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	}
 }
 
-/*OSInt DB::MySQLConn::ExecuteNonQuery(const WChar *sql)
+/*IntOS DB::MySQLConn::ExecuteNonQuery(const WChar *sql)
 {
 	if (this->mysql == 0)
 		return -2;
 
-	OSInt sqlLen;
+	IntOS sqlLen;
 	const UTF8Char *sqlBuff = Text::StrToUTF8New(sql);
 	sqlLen = Text::StrCharCnt(sqlBuff);
 	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sqlBuff, (Int32)sqlLen) == 0)
@@ -240,7 +240,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		{
 			NN<DB::DBReader> r;
 			this->lastDataError = DE_NO_ERROR;
-			NEW_CLASSNN(r, DB::MySQLReader((OSInt)mysql_affected_rows((MYSQL*)this->mysql), result));
+			NEW_CLASSNN(r, DB::MySQLReader((IntOS)mysql_affected_rows((MYSQL*)this->mysql), result));
 			return r;
 		}
 		else
@@ -292,21 +292,21 @@ void DB::MySQLConn::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
-UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt len;
-	UOSInt initCnt = names->GetCount();
+	UIntOS len;
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> rdr;
 	if (this->ExecuteReader(CSTR("show tables")).SetTo(rdr))
 	{
 		while (rdr->ReadNext())
 		{
 			sptr = rdr->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
-			len = (UOSInt)(sptr - sbuff);
+			len = (UIntOS)(sptr - sbuff);
 			names->Add(Text::String::New(sbuff, len));
 		}
 		this->CloseReader(rdr);
@@ -314,7 +314,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -362,7 +362,7 @@ Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, T
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
-		sb.AppendUOSInt(maxCnt);
+		sb.AppendUIntOS(maxCnt);
 	}
 	return this->ExecuteReader(sb.ToCString());
 }
@@ -460,7 +460,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	}
 }*/
 
-DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
+DB::MySQLReader::MySQLReader(IntOS rowChanged, void *result)
 {
 	this->rowChanged = rowChanged;
 	this->result = result;
@@ -468,8 +468,8 @@ DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 	this->row = 0;
 	this->lengs = 0;
 	this->names = MemAlloc(WChar *, this->colCount);
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = this->colCount;
 	while (i-- > 0)
 	{
@@ -483,7 +483,7 @@ DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 DB::MySQLReader::~MySQLReader()
 {
 	mysql_free_result((MYSQL_RES*)result);
-	UOSInt i = this->colCount;
+	UIntOS i = this->colCount;
 	while (i-- > 0)
 	{
 		MemFree(this->names[i]);
@@ -504,12 +504,12 @@ Bool DB::MySQLReader::ReadNext()
 	return true;
 }
 
-OSInt DB::MySQLReader::GetRowChanged()
+IntOS DB::MySQLReader::GetRowChanged()
 {
 	return this->rowChanged;
 }
 
-Int32 DB::MySQLReader::GetInt32(UOSInt colIndex)
+Int32 DB::MySQLReader::GetInt32(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -525,7 +525,7 @@ Int32 DB::MySQLReader::GetInt32(UOSInt colIndex)
 	}
 }
 
-Int64 DB::MySQLReader::GetInt64(UOSInt colIndex)
+Int64 DB::MySQLReader::GetInt64(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -541,7 +541,7 @@ Int64 DB::MySQLReader::GetInt64(UOSInt colIndex)
 	}
 }
 
-UnsafeArrayOpt<WChar> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::MySQLReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->row == 0)
 		return nullptr;
@@ -557,7 +557,7 @@ UnsafeArrayOpt<WChar> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar
 	}
 }
 
-Bool DB::MySQLReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::MySQLReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->row == 0)
 		return 0;
@@ -574,7 +574,7 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Optional<Text::String> DB::MySQLReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::MySQLReader::GetNewStr(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return nullptr;
@@ -590,7 +590,7 @@ Optional<Text::String> DB::MySQLReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (this->row == 0)
 		return nullptr;
@@ -606,7 +606,7 @@ UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<UT
 	}
 }
 
-Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::MySQLReader::GetTimestamp(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return Data::Timestamp(0);
@@ -623,7 +623,7 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::MySQLReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::MySQLReader::GetDblOrNAN(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return NAN;
@@ -639,7 +639,7 @@ Double DB::MySQLReader::GetDblOrNAN(UOSInt colIndex)
 	}
 }
 
-Bool DB::MySQLReader::GetBool(UOSInt colIndex)
+Bool DB::MySQLReader::GetBool(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -655,7 +655,7 @@ Bool DB::MySQLReader::GetBool(UOSInt colIndex)
 	}
 }
 
-UOSInt DB::MySQLReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::MySQLReader::GetBinarySize(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -664,7 +664,7 @@ UOSInt DB::MySQLReader::GetBinarySize(UOSInt colIndex)
 	return this->lengs[colIndex];
 }
 
-UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::MySQLReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->row == 0)
 		return 0;
@@ -674,7 +674,7 @@ UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	return this->lengs[colIndex];
 }
 
-Optional<Math::Geometry::Vector2D> DB::MySQLReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::MySQLReader::GetVector(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return nullptr;
@@ -683,17 +683,17 @@ Optional<Math::Geometry::Vector2D> DB::MySQLReader::GetVector(UOSInt colIndex)
 	return nullptr;
 }
 
-Bool DB::MySQLReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::MySQLReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UOSInt DB::MySQLReader::ColCount()
+UIntOS DB::MySQLReader::ColCount()
 {
 	return this->colCount;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (this->row == 0)
 		return nullptr;
@@ -702,7 +702,7 @@ UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetName(UOSInt colIndex, UnsafeArray<U
 	return Text::StrWChar_UTF8(buff, this->names[colIndex]);
 }
 
-Bool DB::MySQLReader::IsNull(UOSInt colIndex)
+Bool DB::MySQLReader::IsNull(UIntOS colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -718,7 +718,7 @@ Bool DB::MySQLReader::IsNull(UOSInt colIndex)
 	}
 }
 
-DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::MySQLReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (this->row == 0)
 		return DB::DBUtil::CT_Unknown;
@@ -729,7 +729,7 @@ DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	return ToColType(field->type, field->flags, field->length);
 }
 
-Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::MySQLReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	if (this->row == 0)
 		return false;
@@ -766,7 +766,7 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	return true;
 }
 
-DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSInt colSize)
+DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UIntOS colSize)
 {
 	switch (dbType)
 	{

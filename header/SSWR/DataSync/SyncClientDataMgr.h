@@ -17,10 +17,10 @@ namespace SSWR
 			SyncClientDataMgr();
 			~SyncClientDataMgr();
 
-			void AddUserData(const UInt8 *data, UOSInt dataSize);
-			UOSInt GetCount();
-			const UInt8 *GetData(UOSInt index, UOSInt *dataSize);
-			void RemoveData(UOSInt cnt);
+			void AddUserData(const UInt8 *data, UIntOS dataSize);
+			UIntOS GetCount();
+			const UInt8 *GetData(UIntOS index, UIntOS *dataSize);
+			void RemoveData(UIntOS cnt);
 		};
 	}
 }

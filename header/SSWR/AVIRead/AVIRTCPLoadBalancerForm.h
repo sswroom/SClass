@@ -47,8 +47,8 @@ namespace SSWR
 			NN<Net::TCPClientMgr> targetCliMgr;
 			Sync::Mutex sessMut;
 			Data::ArrayListNN<TCPSession> sessList;
-			UOSInt nextTarget;
-			UOSInt dispNextTarget;
+			UIntOS nextTarget;
+			UIntOS dispNextTarget;
 			Data::ArrayListNN<TCPTarget> targetList;
 			IO::LogTool log;
 			Data::Duration sessTimeout;

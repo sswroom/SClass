@@ -35,7 +35,7 @@ void Crypto::Hash::SHA1_SHA1::Clear()
 	this->sha1->Clear();
 }
 
-void Crypto::Hash::SHA1_SHA1::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::SHA1_SHA1::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->sha1->Calc(buff, buffSize);
 }
@@ -49,12 +49,12 @@ void Crypto::Hash::SHA1_SHA1::GetValue(UnsafeArray<UInt8> buff) const
 	innerSha1.GetValue(buff);
 }
 
-UOSInt Crypto::Hash::SHA1_SHA1::GetBlockSize() const
+UIntOS Crypto::Hash::SHA1_SHA1::GetBlockSize() const
 {
 	return this->sha1->GetBlockSize();
 }
 
-UOSInt Crypto::Hash::SHA1_SHA1::GetResultSize() const
+UIntOS Crypto::Hash::SHA1_SHA1::GetResultSize() const
 {
 	return this->sha1->GetResultSize();
 }

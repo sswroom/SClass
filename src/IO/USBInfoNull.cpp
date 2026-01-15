@@ -46,7 +46,7 @@ Text::CStringNN IO::USBInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
+UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 {
 	return 0;
 }

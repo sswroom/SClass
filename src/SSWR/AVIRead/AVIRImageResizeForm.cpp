@@ -11,17 +11,17 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
 	Text::StringBuilderUTF8 sb;
-	Math::Size2D<UOSInt> outSize = Math::Size2D<UOSInt>(0, 0);
-	UOSInt nTap = 0;
+	Math::Size2D<UIntOS> outSize = Math::Size2D<UIntOS>(0, 0);
+	UIntOS nTap = 0;
 	sb.ClearStr();
 	me->txtOutW->GetText(sb);
-	sb.ToUOSInt(outSize.x);
+	sb.ToUIntOS(outSize.x);
 	sb.ClearStr();
 	me->txtOutH->GetText(sb);
-	sb.ToUOSInt(outSize.y);
+	sb.ToUIntOS(outSize.y);
 	sb.ClearStr();
 	me->txtNTap->GetText(sb);
-	sb.ToUOSInt(nTap);
+	sb.ToUIntOS(nTap);
 	if (outSize.x == 0 || outSize.y == 0 || nTap < 3 || nTap > 32)
 	{
 		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("Error"), me);
@@ -103,10 +103,10 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientCo
 	this->SetCancelButton(this->btnCancel);
 	this->txtOutW->Focus();
 
-	sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.x);
+	sptr = Text::StrUIntOS(sbuff, this->srcImg->info.dispSize.x);
 	this->txtOriW->SetText(CSTRP(sbuff, sptr));
 	this->txtOutW->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.y);
+	sptr = Text::StrUIntOS(sbuff, this->srcImg->info.dispSize.y);
 	this->txtOriH->SetText(CSTRP(sbuff, sptr));
 	this->txtOutH->SetText(CSTRP(sbuff, sptr));
 }

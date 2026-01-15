@@ -8,10 +8,10 @@ namespace Data
 	{
 	public:
 		ArrayListICaseStrUTF8();
-		ArrayListICaseStrUTF8(UOSInt capacity);
+		ArrayListICaseStrUTF8(UIntOS capacity);
 
 		virtual NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> Clone() const;
-		virtual OSInt CompareItem(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const;
+		virtual IntOS CompareItem(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const;
 	};
 }
 #endif

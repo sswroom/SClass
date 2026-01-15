@@ -33,7 +33,7 @@ void DB::SharedDBConn::UseObject()
 
 void DB::SharedDBConn::UnuseObject()
 {
-	OSInt i;
+	IntOS i;
 	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
 	mutUsage.EndUse();

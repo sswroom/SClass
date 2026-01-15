@@ -83,11 +83,11 @@ namespace Text
 			Bool Undefine(Text::CStringNN defName);
 			Bool GetDefineVal(Text::CStringNN defName, Text::CString defParams, NN<Text::StringBuilderUTF8> sb);
 
-			UOSInt GetDefineCount();
-			Bool GetDefineInfo(UOSInt index, NN<DefineInfo> defInfo);
+			UIntOS GetDefineCount();
+			Bool GetDefineInfo(UIntOS index, NN<DefineInfo> defInfo);
 
-			UOSInt GetFileCount();
-			Optional<Text::String> GetFileName(UOSInt index);
+			UIntOS GetFileCount();
+			Optional<Text::String> GetFileName(UIntOS index);
 			NN<Text::String> GetCurrCodeFile() const;
 		};
 	}

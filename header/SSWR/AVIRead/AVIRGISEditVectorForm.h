@@ -35,18 +35,18 @@ namespace SSWR
 			NN<UI::GUIButton> btnEnd;
 			NN<UI::GUIButton> btnBack;
 
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 			Data::ArrayListA<Math::Coord2DDbl> points;
-			UOSInt status;
+			UIntOS status;
 			Double snapDist;
 			Data::ArrayListNN<Map::MapDrawLayer> snapLayers;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
 			NN<AVIRMapNavigator> navi;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 			static void __stdcall OnObjectsSelChg(AnyType userObj);
 			static void __stdcall OnNewClicked(AnyType userObj);
@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnBackClicked(AnyType userObj);
 			void UpdateList();
 			void DisplaySnap();
-			Math::Coord2DDbl SnapPoint(Math::Coord2D<OSInt> scnXY);
+			Math::Coord2DDbl SnapPoint(Math::Coord2D<IntOS> scnXY);
 		public:
 			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();

@@ -9,7 +9,7 @@
 #include "Net/SocketMonitor.h"
 
 
-void __stdcall OnPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
+void __stdcall OnPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize)
 {
 	NN<IO::PacketLogWriter> writer = userData.GetNN<IO::PacketLogWriter>();
 	writer->WritePacket(Data::ByteArrayR(packetData, packetSize));
@@ -35,9 +35,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 		NN<Net::ConnectionInfo> connInfo;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		UInt32 ip;
 		sockf.GetConnInfoList(connInfoList);
 		i = 0;

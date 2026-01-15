@@ -19,7 +19,7 @@ void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	UInt8 buff[16];
 	UInt64 ofst = 0;
 	UInt64 leng = fd->GetDataSize();
-	UOSInt packLen;
+	UIntOS packLen;
 	while (ofst < leng)
 	{
 		if (fd->GetRealData(ofst, 16, BYTEARR(buff)) < 5)
@@ -48,12 +48,12 @@ void __stdcall IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 	MemFreeNN(pack);
 }
 
-UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng)
+UIntOS IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UIntOS ofst, UIntOS totalLeng)
 {
 	UInt16 extType = buff.ReadMU16(ofst);
-	UOSInt extLen = buff.ReadMU16(ofst + 2);
-	UOSInt i;
-	UOSInt len;
+	UIntOS extLen = buff.ReadMU16(ofst + 2);
+	UIntOS i;
+	UIntOS len;
 	frame->AddUIntName(ofst, 2, CSTR("Extension Type"), extType, Net::SSLUtil::ExtensionTypeGetName(extType));
 	frame->AddUInt(ofst + 2, 2, CSTR("Length"), extLen);
 	if (extLen > 0) frame->AddArea(ofst + 4, extLen, Net::SSLUtil::ExtensionTypeGetName(extType));
@@ -97,12 +97,12 @@ Text::CStringNN IO::FileAnalyse::SSLFileAnalyse::GetFormatName()
 	return CSTR("SSL");
 }
 
-UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::SSLFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -115,16 +115,16 @@ Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	return true;
 }
 
-UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -135,13 +135,13 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
@@ -151,10 +151,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrame
 	if (!this->fd.SetTo(fd))
 		return nullptr;
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Data::ByteBuffer packBuff(pack->packSize);
 	fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

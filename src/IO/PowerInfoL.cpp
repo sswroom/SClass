@@ -6,7 +6,7 @@
 Bool Power_ReadIntFile(Text::CStringNN filePath, OutParam<Int32> val)
 {
 	UInt8 buff[128];
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool succ = false;
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -36,9 +36,9 @@ Bool Power_ReadIntFile(Text::CStringNN filePath, OutParam<Int32> val)
 	return succ;
 }
 
-Bool Power_ReadStrFile(Text::CStringNN filePath, UTF8Char *val, UOSInt maxCharCnt)
+Bool Power_ReadStrFile(Text::CStringNN filePath, UTF8Char *val, UIntOS maxCharCnt)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	Bool succ = false;
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())

@@ -27,12 +27,12 @@ Bool Net::HTTPOSClient::IsError() const
 	return true;
 }
 
-UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
+UIntOS Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(Data::ByteArrayR buff)
+UIntOS Net::HTTPOSClient::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

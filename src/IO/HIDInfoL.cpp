@@ -61,7 +61,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
+IntOS IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -72,7 +72,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 	NN<IO::Path::FindFileSession> sess2;
 	NN<ClassData> clsData;
 	IO::Path::PathType pt;
-	OSInt ret = 0;
+	IntOS ret = 0;
 	Int32 busType;
 	NN<IO::HIDInfo> hid;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/hid/devices/"));
@@ -111,8 +111,8 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 				{
 					if (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
-						sptr3 = Text::StrConcatC(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2, (UOSInt)(sptr3 - sptr2));
-						clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));
+						sptr3 = Text::StrConcatC(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2, (UIntOS)(sptr3 - sptr2));
+						clsData->devPath = Text::String::New(sbuff2, (UIntOS)(sptr3 - sbuff2));
 						NEW_CLASSNN(hid, IO::HIDInfo(clsData));
 						hidList->Add(hid);
 						ret++;

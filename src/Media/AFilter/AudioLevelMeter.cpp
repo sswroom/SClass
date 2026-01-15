@@ -8,7 +8,7 @@
 void Media::AFilter::AudioLevelMeter::ResetStatus()
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt i = this->soundBuffLeng;
+	UIntOS i = this->soundBuffLeng;
 	while (i-- > 0)
 	{
 		this->soundBuff[i] = 0;
@@ -62,13 +62,13 @@ Data::Duration Media::AFilter::AudioLevelMeter::SeekToTime(Data::Duration time)
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->bitCount == 16)
 	{
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
@@ -102,8 +102,8 @@ UOSInt Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 	}
 	else if (this->bitCount == 8)
 	{
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
@@ -138,7 +138,7 @@ UOSInt Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 	return readSize;
 }
 
-Double Media::AFilter::AudioLevelMeter::GetLevel(UOSInt channel)
+Double Media::AFilter::AudioLevelMeter::GetLevel(UIntOS channel)
 {
 	Double ret = 0;
 	Int32 v;
@@ -148,7 +148,7 @@ Double Media::AFilter::AudioLevelMeter::GetLevel(UOSInt channel)
 	if (this->status[channel].levelChanged)
 	{
 		this->status[channel].levelChanged = false;
-		UOSInt i = channel;
+		UIntOS i = channel;
 		Int32 v;
 		this->status[channel].minLevel = this->soundBuff[i];
 		this->status[channel].maxLevel = this->soundBuff[i];

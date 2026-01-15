@@ -99,8 +99,8 @@ Bool Net::Google::GoogleFCM::SendMessages(NN<Data::ArrayListNN<Text::String>> de
 
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectBeginArray(CSTR("registration_ids"));
-	UOSInt i = 0;
-	UOSInt j = devTokens->GetCount();
+	UIntOS i = 0;
+	UIntOS j = devTokens->GetCount();
 	while (i < j)
 	{
 		json.ArrayAddStr(devTokens->GetItemNoCheck(i));

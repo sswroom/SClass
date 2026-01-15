@@ -19,9 +19,9 @@ namespace Crypto
 			~SSHPubKey();
 
 			UnsafeArray<const UInt8> GetArr() const;
-			UOSInt GetSize() const;
-			UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UOSInt> size) const;
-			UnsafeArrayOpt<const UInt8> GetRSAPublicExponent(OptOut<UOSInt> size) const;
+			UIntOS GetSize() const;
+			UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UIntOS> size) const;
+			UnsafeArrayOpt<const UInt8> GetRSAPublicExponent(OptOut<UIntOS> size) const;
 
 			Optional<Crypto::Cert::X509Key> CreateKey() const;
 			static NN<SSHPubKey> CreateRSAPublicKey(Text::CStringNN name, Data::ByteArrayR modulus, Data::ByteArrayR publicExponent);

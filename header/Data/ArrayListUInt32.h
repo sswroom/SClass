@@ -8,7 +8,7 @@ namespace Data
 	{
 	public:
 		ArrayListUInt32();
-		ArrayListUInt32(UOSInt capacity);
+		ArrayListUInt32(UIntOS capacity);
 		virtual ~ArrayListUInt32();
 
 		virtual NN<ArrayListNative<UInt32>> Clone() const;

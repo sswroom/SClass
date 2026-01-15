@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (!me->selecting)
@@ -15,7 +15,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyTyp
 	return UI::EventState::StopEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
@@ -45,7 +45,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType 
 		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0] = me->selPt1;
 		ptList[1].x = me->selPt2.x;
@@ -61,7 +61,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType 
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
@@ -88,7 +88,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyTyp
 		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0] = mapPt1;
 		ptList[1].x = mapPt2.x;
@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClient
 	this->SetNoResize(true);
 	this->selecting = false;
 	this->isDown = false;
-	this->downPt = Math::Coord2D<OSInt>(0, 0);
+	this->downPt = Math::Coord2D<IntOS>(0, 0);
 	this->selPt1 = Math::Coord2DDbl(0, 0);
 	this->selPt2 = this->selPt1;
 

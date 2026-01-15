@@ -11,9 +11,9 @@ namespace Data
 		template <class T> class ArtificialQuickSortFunc
 		{
 		public:
-			typedef OSInt (CALLBACKFUNC CompareFunc)(T obj1, T obj2);
+			typedef IntOS (CALLBACKFUNC CompareFunc)(T obj1, T obj2);
 		private:
-			static void PreSort(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
+			static void PreSort(UnsafeArray<T> arr, CompareFunc func, IntOS left, IntOS right)
 			{
 				T temp;
 
@@ -30,7 +30,7 @@ namespace Data
 				}
 			}
 
-			static void PreSortInv(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
+			static void PreSortInv(UnsafeArray<T> arr, CompareFunc func, IntOS left, IntOS right)
 			{
 				T temp;
 
@@ -47,12 +47,12 @@ namespace Data
 				}
 			}
 
-			static void ISortB(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISortB(UnsafeArray<T> arr, CompareFunc func, IntOS left, IntOS right)
 			{
-				OSInt i;
-				OSInt j;
-				OSInt k;
-				OSInt l;
+				IntOS i;
+				IntOS j;
+				IntOS k;
+				IntOS l;
 				T temp;
 				T temp1;
 				T temp2;
@@ -78,7 +78,7 @@ namespace Data
 								j = l + 1;
 							}
 						}
-						MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+						MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
 						arr[j] = temp2;
 					}
 					else
@@ -89,10 +89,10 @@ namespace Data
 				}
 			}
 
-			static void ISort(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISort(UnsafeArray<T> arr, CompareFunc func, IntOS left, IntOS right)
 			{
-				OSInt i;
-				OSInt j;
+				IntOS i;
+				IntOS j;
 				T temp;
 				T temp1;
 				T temp2;
@@ -123,10 +123,10 @@ namespace Data
 				}
 			}
 
-			static void ISortInv(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISortInv(UnsafeArray<T> arr, CompareFunc func, IntOS left, IntOS right)
 			{
-				OSInt i;
-				OSInt j;
+				IntOS i;
+				IntOS j;
 				T temp;
 				T temp1;
 				T temp2;
@@ -158,22 +158,22 @@ namespace Data
 			}
 
 		public:
-			static void Sort(UnsafeArray<T> arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+			static void Sort(UnsafeArray<T> arr, CompareFunc func, IntOS firstIndex, IntOS lastIndex)
 			{
 #if _OSINT_SIZE == 16
-				OSInt levi[256];
-				OSInt desni[256];
+				IntOS levi[256];
+				IntOS desni[256];
 #else
-				UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
-				UnsafeArray<OSInt> desni = &levi[32768];
+				UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+				UnsafeArray<IntOS> desni = &levi[32768];
 #endif
-				OSInt index;
-				OSInt i;
-				OSInt left;
-				OSInt right;
+				IntOS index;
+				IntOS i;
+				IntOS left;
+				IntOS right;
 				T meja;
-				OSInt left1;
-				OSInt right1;
+				IntOS left1;
+				IntOS right1;
 				T temp;
 
 				PreSort(arr, func, firstIndex, lastIndex);
@@ -242,19 +242,19 @@ namespace Data
 #endif
 			}
 
-			static void SortInv(UnsafeArray<T> arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+			static void SortInv(UnsafeArray<T> arr, CompareFunc func, IntOS firstIndex, IntOS lastIndex)
 			{
-				OSInt levi[256];
-				OSInt desni[256];
+				IntOS levi[256];
+				IntOS desni[256];
 
-				OSInt index;
-				OSInt i;
-				OSInt j;
-				OSInt left;
-				OSInt right;
+				IntOS index;
+				IntOS i;
+				IntOS j;
+				IntOS left;
+				IntOS right;
 				T meja;
-				OSInt left1;
-				OSInt right1;
+				IntOS left1;
+				IntOS right1;
 				T temp1;
 				T temp2;
 				T temp;
@@ -320,9 +320,9 @@ namespace Data
 
 			static void Sort(NN<Data::ArrayCollection<T>> arr, CompareFunc func)
 			{
-				UOSInt j;
+				UIntOS j;
 				UnsafeArray<T> a = arr->GetArr(j);
-				Sort(a, func, 0, (OSInt)j - 1);
+				Sort(a, func, 0, (IntOS)j - 1);
 			}
 		};
 	}

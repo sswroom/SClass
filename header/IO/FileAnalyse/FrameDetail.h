@@ -52,8 +52,8 @@ namespace IO
 
 			UInt64 GetOffset() const;
 			UInt64 GetSize() const;
-			UOSInt GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const;
-			UOSInt GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const;
+			UIntOS GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const;
+			UIntOS GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const;
 			Optional<Data::ByteBuffer> GetDevrivedBuff() const;
 			Optional<IO::FileAnalyse::FileAnalyser> CreateDevrivedAnaylse() const;
 
@@ -63,7 +63,7 @@ namespace IO
 			virtual void AddFieldSeperstor(UInt64 ofst, Text::CStringNN name);
 			virtual void AddText(UInt64 ofst, Text::CStringNN name);
 			virtual void AddSubframe(UInt64 ofst, UInt64 size);
-			void AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name);
+			void AddArea(UInt64 ofst, UIntOS size, Text::CStringNN name);
 			void SetDevrivedBuff(Data::ByteArrayR buff);
 			void SetDevrivedAnaylse(NN<IO::FileAnalyse::FileAnalyserCreator> analyseCreator);
 

@@ -39,10 +39,10 @@ Bool IO::StreamLogger::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
+UIntOS IO::StreamLogger::Read(const Data::ByteArray &buff)
 {
 	NN<IO::FileStream> readLog;
-	UOSInt readCnt = this->stm->Read(buff);
+	UIntOS readCnt = this->stm->Read(buff);
 	if (readCnt > 0 && this->readLog.SetTo(readLog))
 	{
 		readLog->Write(buff.WithSize(readCnt));
@@ -50,10 +50,10 @@ UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
 	return readCnt;
 }
 
-UOSInt IO::StreamLogger::Write(Data::ByteArrayR buff)
+UIntOS IO::StreamLogger::Write(Data::ByteArrayR buff)
 {
 	NN<IO::FileStream> writeLog;
-	UOSInt writeCnt = this->stm->Write(buff);
+	UIntOS writeCnt = this->stm->Write(buff);
 	if (writeCnt > 0 && this->writeLog.SetTo(writeLog))
 	{
 		writeLog->Write(buff.WithSize(writeCnt));
@@ -78,12 +78,12 @@ Optional<IO::StreamReadReq> IO::StreamLogger::BeginRead(const Data::ByteArray &b
 	}
 }
 
-UOSInt IO::StreamLogger::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::StreamLogger::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	NN<IO::FileStream> readLog;
 	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
 	Bool incomp;
-	UOSInt readCnt = this->stm->EndRead(NN<IO::StreamReadReq>::ConvertFrom(myReqData->reqData), toWait, incomp);
+	UIntOS readCnt = this->stm->EndRead(NN<IO::StreamReadReq>::ConvertFrom(myReqData->reqData), toWait, incomp);
 	incomplete.Set(incomp);
 	if (!incomp)
 	{
@@ -120,11 +120,11 @@ Optional<IO::StreamWriteReq> IO::StreamLogger::BeginWrite(Data::ByteArrayR buff,
 	}
 }
 
-UOSInt IO::StreamLogger::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::StreamLogger::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
 	NN<IO::FileStream> writeLog;
 	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
-	UOSInt writeCnt = this->stm->EndWrite(myReqData->reqData, toWait);
+	UIntOS writeCnt = this->stm->EndWrite(myReqData->reqData, toWait);
 	if (writeCnt >= 0)
 	{
 		if (writeCnt > 0 && this->writeLog.SetTo(writeLog))

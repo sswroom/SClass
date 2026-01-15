@@ -7,7 +7,7 @@
 #include <avr/interrupt.h>
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
 
-void Sync::SimpleThread::Sleep(UOSInt ms)
+void Sync::SimpleThread::Sleep(UIntOS ms)
 {
 	while (ms-- > 0)
 	{
@@ -15,7 +15,7 @@ void Sync::SimpleThread::Sleep(UOSInt ms)
 	}
 }
 
-void Sync::SimpleThread::Sleepus(UOSInt us)
+void Sync::SimpleThread::Sleepus(UIntOS us)
 {
 #if F_CPU >= 24000000L
 	if (!us) return; //  = 3 cycles, (4 when true)

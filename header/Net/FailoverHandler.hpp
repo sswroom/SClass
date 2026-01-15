@@ -17,7 +17,7 @@ namespace Net
 	{
 	private:
 		Net::FailoverType foType;
-		UOSInt lastIndex;
+		UIntOS lastIndex;
 		Data::ArrayListNN<T> channelList;
 		Sync::Mutex mut;
 	public:
@@ -40,7 +40,7 @@ namespace Net
 	template <class T> FailoverHandler<T>::~FailoverHandler()
 	{
 		NN<T> channel;
-		UOSInt i = this->channelList.GetCount();
+		UIntOS i = this->channelList.GetCount();
 		while (i-- > 0)
 		{
 			channel = this->channelList.GetItemNoCheck(i);
@@ -55,8 +55,8 @@ namespace Net
 		{
 			return nullptr;
 		}
-		UOSInt initIndex;
-		UOSInt currIndex;
+		UIntOS initIndex;
+		UIntOS currIndex;
 		NN<T> channel;
 		switch (this->foType)
 		{
@@ -96,8 +96,8 @@ namespace Net
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		NN<T> channel;
-		UOSInt j = this->channelList.GetCount();
-		UOSInt i = (this->lastIndex + 1) % j;
+		UIntOS j = this->channelList.GetCount();
+		UIntOS i = (this->lastIndex + 1) % j;
 		while (i != this->lastIndex)
 		{
 			channel = this->channelList.GetItemNoCheck(i);
@@ -112,7 +112,7 @@ namespace Net
 	template <class T> void FailoverHandler<T>::SetCurrChannel(NN<T> channel)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		UOSInt i = this->channelList.IndexOf(channel);
+		UIntOS i = this->channelList.IndexOf(channel);
 		if (i != INVALID_INDEX)
 		{
 			this->lastIndex = i;

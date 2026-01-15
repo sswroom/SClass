@@ -141,7 +141,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return ERROR_SUCCESS == RemoveDev(&dev->Address);
 }
 
-UOSInt IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
+UIntOS IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
 	InternalData *me = (InternalData*)internalData;
 	BluetoothEnumerateInstalledServicesFunc EnumServices = (BluetoothEnumerateInstalledServicesFunc)me->lib->GetFunc("BluetoothEnumerateInstalledServices");
@@ -240,7 +240,7 @@ IO::BTController::~BTController()
 	}
 }
 
-OSInt IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
+IntOS IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	InternalData *me = (InternalData*)this->internalData;
 	BluetoothFindFirstDeviceFunc FindFirst = (BluetoothFindFirstDeviceFunc)me->lib->GetFunc("BluetoothFindFirstDevice");
@@ -249,7 +249,7 @@ OSInt IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, B
 	if (FindFirst == 0 || FindNext == 0 || FindClose == 0)
 		return 0;
 
-	OSInt ret = 0;
+	IntOS ret = 0;
 	BLUETOOTH_DEVICE_SEARCH_PARAMS dsp;
 	BLUETOOTH_DEVICE_INFO devInfo;
 	NN<IO::BTController::BTDevice> btDev;

@@ -23,7 +23,7 @@ namespace Data
 		public:
 			virtual ~Decompressor();
 
-			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff) = 0;
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff) = 0;
 			virtual Bool Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData) = 0;
 
 			static Optional<Data::Compress::Decompressor> CreateDecompressor(CompressMethod compMeth);

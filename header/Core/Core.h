@@ -16,7 +16,7 @@ namespace Core
 	struct ProgControl
 	{
 		typedef void (CALLBACKFUNC WaitForExitFunc)(NN<ProgControl> progCtrl);
-		typedef UnsafeArray<UnsafeArray<UTF8Char>> (CALLBACKFUNC GetCommandLinesFunc)(NN<ProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
+		typedef UnsafeArray<UnsafeArray<UTF8Char>> (CALLBACKFUNC GetCommandLinesFunc)(NN<ProgControl> progCtrl, OutParam<UIntOS> cmdCnt);
 
 		WaitForExitFunc WaitForExit;
 		WaitForExitFunc SignalExit;

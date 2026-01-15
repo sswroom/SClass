@@ -566,8 +566,8 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		pt = IO::Path::GetPathType(files[i]->ToCString());
@@ -1236,7 +1236,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
-				UOSInt i = fname->IndexOf(':');
+				UIntOS i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
@@ -1682,7 +1682,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEST:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
-		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 0, 18, this->core->GetTCPClientFactory(), this->ssl));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UIntOS)(sptr - sbuff)}, 0, 18, this->core->GetTCPClientFactory(), this->ssl));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
@@ -1754,7 +1754,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ACCELEROMETER:
 		{
 			IO::SensorManager sensors;
-			UOSInt cnt = sensors.GetAccelerometerCnt();
+			UIntOS cnt = sensors.GetAccelerometerCnt();
 			if (cnt > 0)
 			{
 				NN<IO::SensorAccelerometer> acc;

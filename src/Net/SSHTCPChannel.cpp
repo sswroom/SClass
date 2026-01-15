@@ -17,11 +17,11 @@ Bool Net::SSHTCPChannel::IsDown() const
 	return this->channel.IsNull();
 }
 
-UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
+UIntOS Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 {
 	NN<Net::TCPClient> cli;
 	NN<SSHChannelHandle> channel;
-	UOSInt readSize = 0;
+	UIntOS readSize = 0;
 	if (this->channel.SetTo(channel))
 	{
 		while (!this->conn->ChannelTryRead(channel, buff.Arr(), buff.GetSize(), readSize))
@@ -34,7 +34,7 @@ UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt Net::SSHTCPChannel::Write(Data::ByteArrayR buff)
+UIntOS Net::SSHTCPChannel::Write(Data::ByteArrayR buff)
 {
 	NN<SSHChannelHandle> channel;
 	if (this->channel.SetTo(channel))
@@ -69,7 +69,7 @@ IO::StreamType Net::SSHTCPChannel::GetStreamType() const
 	return IO::StreamType::SSHTCPChannel;
 }
 
-Bool Net::SSHTCPChannel::TryRead(UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHTCPChannel::TryRead(UInt8 *buff, UIntOS maxSize, OutParam<UIntOS> size)
 {
 	NN<SSHChannelHandle> channel;
 	if (this->channel.SetTo(channel))

@@ -13,7 +13,7 @@ UI::JavaUI::JUIProgressBar::~JUIProgressBar()
 {
 }
 
-OSInt UI::JavaUI::JUIProgressBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIProgressBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

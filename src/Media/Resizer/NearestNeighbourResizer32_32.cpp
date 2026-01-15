@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	void NearestNeighbourResizer32_32_Resize(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
+	void NearestNeighbourResizer32_32_Resize(const UInt8 *inPt, UInt8 *outPt, UIntOS dwidth, UIntOS dheight, IntOS dbpl, IntOS *xindex, IntOS *yindex);
 }
 
 Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : Media::ImageResizer(Media::AT_IGNORE_ALPHA)
@@ -21,8 +21,8 @@ Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : M
 
 Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 {
-	UnsafeArray<OSInt> xindex;
-	UnsafeArray<OSInt> yindex;
+	UnsafeArray<IntOS> xindex;
+	UnsafeArray<IntOS> yindex;
 	if (this->xindex.SetTo(xindex))
 	{
 		MemFreeArr(xindex);
@@ -35,12 +35,12 @@ Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 	}
 }
 
-void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight)
 {
-	UnsafeArray<OSInt> xindex;
-	UnsafeArray<OSInt> yindex;
-	UOSInt i;
-	UOSInt j;
+	UnsafeArray<IntOS> xindex;
+	UnsafeArray<IntOS> yindex;
+	UIntOS i;
+	UIntOS j;
 	Double v;
 	Double currV;
 	if (this->lastswidth != swidth || this->lastdwidth != dwidth || !this->xindex.SetTo(xindex))
@@ -49,7 +49,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		{
 			MemFreeArr(xindex);
 		}
-		this->xindex = xindex = MemAlloc(OSInt, dwidth);
+		this->xindex = xindex = MemAlloc(IntOS, dwidth);
 		this->lastswidth = swidth;
 		this->lastdwidth = dwidth;
 		v = swidth / (Double)dwidth;
@@ -57,13 +57,13 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		i = 0;
 		while (i < dwidth)
 		{
-			j = (UOSInt)currV;
+			j = (UIntOS)currV;
 			currV += v;
-			if (UOSInt2Double(j) >= swidth)
+			if (UIntOS2Double(j) >= swidth)
 			{
-				j = (UOSInt)swidth - 1;
+				j = (UIntOS)swidth - 1;
 			}
-			xindex[i] = (OSInt)j << 2;
+			xindex[i] = (IntOS)j << 2;
 			i++;
 		}
 	}
@@ -73,7 +73,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		{
 			MemFreeArr(yindex);
 		}
-		this->yindex = yindex = MemAlloc(OSInt, dheight);
+		this->yindex = yindex = MemAlloc(IntOS, dheight);
 		this->lastsheight = sheight;
 		this->lastdheight = dheight;
 		this->lastsbpl = sbpl;
@@ -82,13 +82,13 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		i = 0;
 		while (i < dheight)
 		{
-			j = (UOSInt)currV;
+			j = (UIntOS)currV;
 			currV += v;
-			if (UOSInt2Double(j) >= sheight)
+			if (UIntOS2Double(j) >= sheight)
 			{
-				j = (UOSInt)sheight - 1;
+				j = (UIntOS)sheight - 1;
 			}
-			yindex[i] = (OSInt)j * sbpl;
+			yindex[i] = (IntOS)j * sbpl;
 			i++;
 		}
 	}
@@ -106,13 +106,13 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NN<const Media::Static
 	destImg->info.color.Set(srcImg->info.color);
 	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispSize.x), UOSInt2Double(srcImg->info.dispSize.y), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info.dispSize.x, destImg->info.dispSize.y);
+		Resize(srcImg->data, (IntOS)srcImg->GetDataBpl(), UIntOS2Double(srcImg->info.dispSize.x), UIntOS2Double(srcImg->info.dispSize.y), 0, 0, destImg->data, (IntOS)destImg->GetDataBpl(), destImg->info.dispSize.x, destImg->info.dispSize.y);
 		return true;
 	}
 	else
 	{
-		OSInt dAdd = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispSize.x), UOSInt2Double(srcImg->info.dispSize.y), 0, 0, destImg->data + (OSInt)(destImg->info.storeSize.y - 1) * dAdd, -dAdd, destImg->info.dispSize.x, destImg->info.dispSize.y);
+		IntOS dAdd = (IntOS)destImg->GetDataBpl();
+		Resize(srcImg->data, (IntOS)srcImg->GetDataBpl(), UIntOS2Double(srcImg->info.dispSize.x), UIntOS2Double(srcImg->info.dispSize.y), 0, 0, destImg->data + (IntOS)(destImg->info.storeSize.y - 1) * dAdd, -dAdd, destImg->info.dispSize.x, destImg->info.dispSize.y);
 		return true;
 	}
 }
@@ -134,14 +134,14 @@ Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::Proce
 	{
 		return nullptr;
 	}
-	Math::Size2D<UOSInt> targetSize = this->targetSize;
+	Math::Size2D<UIntOS> targetSize = this->targetSize;
 	if (targetSize.x == 0)
 	{
-		targetSize.x = (UOSInt)Double2OSInt(srcBR.x - srcTL.x);
+		targetSize.x = (UIntOS)Double2IntOS(srcBR.x - srcTL.x);
 	}
 	if (targetSize.y == 0)
 	{
-		targetSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);
+		targetSize.y = (UIntOS)Double2IntOS(srcBR.y - srcTL.y);
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
 	destInfo.color.Set(srcImage->info.color);;
@@ -149,7 +149,7 @@ Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::Proce
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
+	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (IntOS)srcImage->GetDataBpl(), (IntOS)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (IntOS)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
 	return newImage;
 
 }

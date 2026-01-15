@@ -40,12 +40,12 @@ Text::CStringNN IO::FileAnalyse::TSFileAnalyse::GetFormatName()
 	return CSTR("Transport Stream (TS)");
 }
 
-UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
 {
-	return (UOSInt)(this->fileSize / this->packSize);
+	return (UIntOS)(this->fileSize / this->packSize);
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
@@ -57,7 +57,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringB
 	return true;
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	UInt64 fileOfst = index * this->packSize;
@@ -71,7 +71,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 	sb->AppendHexBuff(buff, this->packSize, ' ', Text::LineBreakType::CRLF);
 	sb->AppendC(UTF8STRC("\r\n"));
 
-	UOSInt currOfst;
+	UIntOS currOfst;
 	if (this->hasTime)
 	{
 		if (buff[4] == 0x47)
@@ -196,13 +196,13 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 					sb->AppendC(UTF8STRC("private_data="));
 					sb->AppendHexBuff(&buff[currOfst], transport_private_data_length, ' ', Text::LineBreakType::None);
 					sb->AppendC(UTF8STRC("\r\n"));
-					currOfst += 1 + (UOSInt)transport_private_data_length;
+					currOfst += 1 + (UIntOS)transport_private_data_length;
 				}
 				if (flags & 1)
 				{
 					UInt8 adaptation_field_extension_length = buff[currOfst];
 					UInt8 adflags = buff[currOfst + 1];
-					UOSInt endOfst = currOfst + 1 + adaptation_field_extension_length;
+					UIntOS endOfst = currOfst + 1 + adaptation_field_extension_length;
 					currOfst += 2;
 
 					sb->AppendC(UTF8STRC("adaptation_field_extension_length="));
@@ -267,16 +267,16 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 
 }
 
-UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst >= this->fileSize)
 	{
 		return INVALID_INDEX;
 	}
-	return (UOSInt)(ofst / this->packSize);
+	return (UIntOS)(ofst / this->packSize);
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::StreamData> fd;
@@ -292,7 +292,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 	UInt8 buff[192];
 	fd->GetRealData(fileOfst, this->packSize, BYTEARR(buff));
 
-	UOSInt currOfst;
+	UIntOS currOfst;
 	if (this->hasTime)
 	{
 		if (buff[4] == 0x47)
@@ -326,7 +326,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 			currOfst += 1;
 			if (adaptation_field_length > 0)
 			{
-				UOSInt adaptationEnd = currOfst + adaptation_field_length;
+				UIntOS adaptationEnd = currOfst + adaptation_field_length;
 				UInt8 flags = buff[currOfst];
 				frame->AddUInt(currOfst, 1, CSTR("discontinuity_indicator"), (flags & 0x80) >> 7);
 				frame->AddUInt(currOfst, 1, CSTR("random_access_indicator"), (flags & 0x40) >> 6);
@@ -366,13 +366,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 					UInt8 transport_private_data_length = buff[currOfst];
 					frame->AddUInt(currOfst, 1, CSTR("transport_private_data_length"), transport_private_data_length);
 					frame->AddHexBuff(currOfst + 1, transport_private_data_length, CSTR("private_data"), &buff[currOfst], false);
-					currOfst += 1 + (UOSInt)transport_private_data_length;
+					currOfst += 1 + (UIntOS)transport_private_data_length;
 				}
 				if (flags & 1)
 				{
 					UInt8 adaptation_field_extension_length = buff[currOfst];
 					UInt8 adflags = buff[currOfst + 1];
-					UOSInt endOfst = currOfst + 1 + adaptation_field_extension_length;
+					UIntOS endOfst = currOfst + 1 + adaptation_field_extension_length;
 					currOfst += 2;
 
 					frame->AddUInt(currOfst, 1, CSTR("adaptation_field_extension_length"), adaptation_field_extension_length);

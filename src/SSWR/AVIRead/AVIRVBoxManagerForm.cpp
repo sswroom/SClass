@@ -11,7 +11,7 @@ void SSWR::AVIRead::AVIRVBoxManagerForm::UpdateVMInfo()
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = this->lbVMS->GetSelectedIndex();
+	UIntOS i = this->lbVMS->GetSelectedIndex();
 	NN<IO::VBoxManager::VMId> vm;
 	NN<IO::VBoxVMInfo> info;
 	if (this->lbVMS->GetItem(i).GetOpt<IO::VBoxManager::VMId>().SetTo(vm))
@@ -84,8 +84,8 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientCo
 	}
 	NN<const Data::ArrayListNN<IO::VBoxManager::VMId>> vms = this->vbox.GetVMS();
 	NN<IO::VBoxManager::VMId> vm;
-	UOSInt i = 0;
-	UOSInt j = vms->GetCount();
+	UIntOS i = 0;
+	UIntOS j = vms->GetCount();
 	while (i < j)
 	{
 		vm = vms->GetItemNoCheck(i);

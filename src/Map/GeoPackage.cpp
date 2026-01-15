@@ -95,7 +95,7 @@ NN<Text::String> Map::GeoPackage::GetSourceNameObj()
 	return this->conn->GetSourceNameObj();
 }
 
-UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	Data::ArrayIterator<NN<Text::String>> it = this->allTables.Iterator();
 	while (it.HasNext())
@@ -105,7 +105,7 @@ UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return this->allTables.GetCount();
 }
 
-Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
@@ -124,7 +124,7 @@ Optional<DB::TableDef> Map::GeoPackage::GetTableDef(Text::CString schemaName, Te
 				NN<DB::ColDef> col = it.Next();
 				if (col->GetColType() == DB::DBUtil::CT_Vector)
 				{
-					col->SetColSize((UOSInt)DB::ColDef::GeometryTypeAdjust((DB::ColDef::GeometryType)col->GetColSize(), cont->hasZ, cont->hasM));
+					col->SetColSize((UIntOS)DB::ColDef::GeometryTypeAdjust((DB::ColDef::GeometryType)col->GetColSize(), cont->hasZ, cont->hasM));
 					col->SetColDP((UInt32)cont->srsId);
 				}
 			}
@@ -153,8 +153,8 @@ NN<Map::MapLayerCollection> Map::GeoPackage::CreateLayerCollection()
 {
 	NN<Map::MapLayerCollection> layerColl;
 	NN<Text::String> sourceName = this->conn->GetSourceNameObj();
-	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	UOSInt j;
+	UIntOS i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS j;
 	NN<Map::GeoPackageLayer> layer;
 	NN<Map::GeoPackage::ContentInfo> contentInfo;
 	NEW_CLASSNN(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));

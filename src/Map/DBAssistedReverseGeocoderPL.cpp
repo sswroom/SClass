@@ -12,7 +12,7 @@ Map::DBAssistedReverseGeocoderPL::AddressComparator::~AddressComparator()
 {
 }
 
-OSInt Map::DBAssistedReverseGeocoderPL::AddressComparator::Compare(NN<AddressEntry> a, NN<AddressEntry> b) const
+IntOS Map::DBAssistedReverseGeocoderPL::AddressComparator::Compare(NN<AddressEntry> a, NN<AddressEntry> b) const
 {
 	if (a->keyx > b->keyx)
 	{
@@ -80,7 +80,7 @@ Map::DBAssistedReverseGeocoderPL::DBAssistedReverseGeocoderPL(NN<DB::DBTool> db,
 		this->conn->CloseReader(r);
 
 		AddressComparator comparator;
-		UOSInt i = this->lcidMap.GetCount();
+		UIntOS i = this->lcidMap.GetCount();
 		while (i-- > 0)
 		{
 			Data::Sort::ArtificialQuickSort::Sort<NN<AddressEntry>>(this->lcidMap.GetItemNoCheck(i)->mainList, comparator);
@@ -91,8 +91,8 @@ Map::DBAssistedReverseGeocoderPL::DBAssistedReverseGeocoderPL(NN<DB::DBTool> db,
 
 Map::DBAssistedReverseGeocoderPL::~DBAssistedReverseGeocoderPL()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<LCIDInfo> lcid;
 	this->revGeos.DeleteAll();
 	this->conn.Delete();
@@ -113,7 +113,7 @@ Map::DBAssistedReverseGeocoderPL::~DBAssistedReverseGeocoderPL()
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	UnsafeArray<UTF8Char> nnsptr;
@@ -125,7 +125,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 	Text::String *addr;
 	NN<LCIDInfo> lcidInfo;
 	NN<AddressEntry> entry;
-	OSInt index;
+	IntOS index;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	if (!this->lcidMap.Get(lcid).SetTo(lcidInfo))
@@ -137,12 +137,12 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 	index = AddressIndexOf(lcidInfo->mainList, keyx, keyy);
 	if (index >= 0)
 	{
-		entry = lcidInfo->mainList.GetItemNoCheck((UOSInt)index);
+		entry = lcidInfo->mainList.GetItemNoCheck((UIntOS)index);
 		mutUsage.EndUse();
 		return entry->address->ConcatToS(buff, buffSize);
 	}
 
-	UOSInt i = this->revGeos.GetCount();
+	UIntOS i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
@@ -178,7 +178,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 		addr = this->strMap.Get(CSTRP(buff, nnsptr));
 		if (addr == 0)
 		{
-			NN<Text::String> s = Text::String::New(buff, (UOSInt)(nnsptr - buff));
+			NN<Text::String> s = Text::String::New(buff, (UIntOS)(nnsptr - buff));
 			addr = s.Ptr();
 			this->strMap.Put(s, addr);
 		}
@@ -186,7 +186,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 		entry->keyx = keyx;
 		entry->keyy = keyy;
 		entry->address = addr;
-		lcidInfo->mainList.Insert((UOSInt)~index, entry);
+		lcidInfo->mainList.Insert((UIntOS)~index, entry);
 		return sptr;
 	}
 	else
@@ -195,7 +195,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	return this->SearchName(buff, buffSize, pos, lcid);
 }
@@ -205,16 +205,16 @@ void Map::DBAssistedReverseGeocoderPL::AddReverseGeocoder(NN<Map::ReverseGeocode
 	this->revGeos.Add(revGeo);
 }
 
-OSInt Map::DBAssistedReverseGeocoderPL::AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy)
+IntOS Map::DBAssistedReverseGeocoderPL::AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)list->GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)list->GetCount() - 1;
+	IntOS k;
 	NN<AddressEntry> entry;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = list->GetItemNoCheck((UOSInt)k);
+		entry = list->GetItemNoCheck((UIntOS)k);
 		if (entry->keyx > keyx)
 		{
 			j = k - 1;

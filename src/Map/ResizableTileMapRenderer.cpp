@@ -205,7 +205,7 @@ Map::ResizableTileMapRenderer::ResizableTileMapRenderer(NN<Media::DrawEngine> en
 	this->updObj = 0;
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 4, &this->srcColor, &this->outputColor, sess, Media::AT_NO_ALPHA));
 
-	UOSInt i;
+	UIntOS i;
 	this->threadCnt = this->map->GetConcurrentCount();
 	if (this->threadCnt <= 0)
 		this->threadCnt = 1;
@@ -224,7 +224,7 @@ Map::ResizableTileMapRenderer::ResizableTileMapRenderer(NN<Media::DrawEngine> en
 Map::ResizableTileMapRenderer::~ResizableTileMapRenderer()
 {
 	CachedImage *cimg;
-	OSInt i;
+	IntOS i;
 	Bool running;
 	this->updHdlr = 0;
 	this->updObj = 0;
@@ -286,12 +286,12 @@ void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView 
 {
 	CachedImage *cimg;
 
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	Media::ImageList *imgList;
 	Data::ArrayListInt64 idList;
-	UOSInt level = map->GetNearestLevel(view->GetMapScale());
+	UIntOS level = map->GetNearestLevel(view->GetMapScale());
 
 	Data::ArrayListInt64 cacheIds;
 	Data::ArrayList<CachedImage *> cacheImgs;

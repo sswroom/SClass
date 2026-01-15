@@ -880,7 +880,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 	UInt8 buff[16];
 	DasmMIPS_Sess sess;
 	Text::StringBuilderUTF8 outStr;
-	OSInt initJmpCnt = jmpAddrs->GetCount();
+	IntOS initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(DasmMIPS_Regs));
@@ -910,7 +910,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		outStr.AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
-			OSInt i;
+			IntOS i;
 			i = 0;
 			while (i < 29)
 			{
@@ -932,7 +932,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		}
 		if (!ret)
 		{
-			OSInt buffSize;
+			IntOS buffSize;
 			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.pc, buff, 16);
 			if (buffSize > 0)
@@ -947,7 +947,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
-			OSInt i;
+			IntOS i;
 			UInt32 minAddr = 0xffffffff;
 			UInt32 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -1013,7 +1013,7 @@ void Manage::DasmMIPS::DeleteSess(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 	MemFreeNN(sess);
 }
 
-Bool Manage::DasmMIPS::DasmNext(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess, UTF8Char *buff, OSInt *outBuffSize)
+Bool Manage::DasmMIPS::DasmNext(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess, UTF8Char *buff, IntOS *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

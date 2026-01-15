@@ -7,9 +7,9 @@
 void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRSIDERunnerLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSIDERunnerLogForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
+	UIntOS k;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 		{
 			UInt64 fileLen;
 			UnsafeArray<UInt8> buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			NN<Text::JSONBase> json;
 			NN<IO::SeleniumIDE> side;
 			NN<IO::SeleniumTest> test;
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 			IO::FileStream fs(file->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!fs.IsError() && (fileLen = fs.GetLength()) >= 4 && fileLen <= 1048576)
 			{
-				buffSize = (UOSInt)fileLen;
+				buffSize = (UIntOS)fileLen;
 				buff = MemAllocArr(UInt8, buffSize + 1);
 				if (fs.Read(Data::ByteArray(buff, buffSize)) == buffSize)
 				{
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 									step->minTime = 0;
 									step->maxTime = 0;
 									me->steps.Add(step);
-									sptr = Text::StrUOSInt(sbuff, k);
+									sptr = Text::StrUIntOS(sbuff, k);
 									me->lvSteps->AddItem(CSTRP(sbuff, sptr), step);
 									if (command->GetCommand().SetTo(s)) me->lvSteps->SetSubItem(k, 1, s);
 									if (command->GetTarget().SetTo(s)) me->lvSteps->SetSubItem(k, 2, s);
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 					while (k-- > 0)
 					{
 						step = me->steps.GetItemNoCheck(k);
-						sptr = Text::StrUOSInt(sbuff, step->count);
+						sptr = Text::StrUIntOS(sbuff, step->count);
 						me->lvSteps->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 						sptr = Text::StrDoubleDP(sbuff, step->totalTime, 0, 6);
 						me->lvSteps->SetSubItem(k, 5, CSTRP(sbuff, sptr));
@@ -168,14 +168,14 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnExportClicked(AnyType use
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			UOSInt i;
+			UIntOS i;
 			
 			fs.Write(CSTR("Index,Command,Target,Value,Count,Total Time,Avg Time,Min Time,Max Time\r\n").ToByteArray());
 			i = 0;
 			while (test->GetCommand(i).SetTo(command) && me->steps.GetItem(i).SetTo(step))
 			{
 				sb.ClearStr();
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendUTF8Char(',');
 #define APPENDOPT(optstr) if (optstr.SetTo(s)) { s = Text::String::NewCSVRec(s->v); sb.Append(s); s->Release(); }
 				APPENDOPT(command->GetCommand())
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnExportClicked(AnyType use
 				APPENDOPT(command->GetValue())
 #undef APPENDOPT
 				sb.AppendUTF8Char(',');
-				sb.AppendUOSInt(step->count);
+				sb.AppendUIntOS(step->count);
 				sb.AppendUTF8Char(',');
 				sb.AppendDouble(step->totalTime);
 				sb.AppendUTF8Char(',');

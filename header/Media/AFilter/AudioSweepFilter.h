@@ -24,7 +24,7 @@ namespace Media
 			virtual ~AudioSweepFilter();
 
 			virtual void GetFormat(NN<AudioFormat> format);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void SetVolume(Double vol);
 			Bool StartSweep(Double startFreq, Double endFreq, UInt32 timeSeconds);

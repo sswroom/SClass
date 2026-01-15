@@ -32,7 +32,7 @@ Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 		return false;
 
 	UTF8Char sbuff[512];
-	UOSInt i;
+	UIntOS i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
 	i = progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -54,7 +54,7 @@ Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(": Updated procId as "));
-					sb.AppendUOSInt(prog->procId);
+					sb.AppendUIntOS(prog->procId);
 					this->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 					break;
 				}
@@ -65,7 +65,7 @@ Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 	return ret;
 }
 
-void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
+void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UIntOS procId)
 {
 	Manage::Process proc(procId, false);
 	if (proc.IsRunning())
@@ -121,8 +121,8 @@ void SSWR::ProcMonForm::SaveProgList()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<ProgInfo> prog;
 	NN<Text::String> progPath;
 
@@ -164,7 +164,7 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 	}
 	if (prog)
 	{
-		sptr = Text::StrUOSInt(sbuff, prog->procId);
+		sptr = Text::StrUIntOS(sbuff, prog->procId);
 		me->txtProcId->SetText(CSTRP(sbuff, sptr));
 	}
 	else
@@ -227,7 +227,7 @@ void __stdcall SSWR::ProcMonForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
-	UOSInt i;
+	UIntOS i;
 	NN<ProgInfo> prog;
 	NN<Text::String> progPath;
 	i = me->progList.GetCount();
@@ -261,7 +261,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 						sb.AppendC(UTF8STRC("Prog "));
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(" restarted, procId = "));
-						sb.AppendUOSInt(prog->procId);
+						sb.AppendUIntOS(prog->procId);
 						me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 						
 						if (me->notifyCmd)
@@ -356,7 +356,7 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 SSWR::ProcMonForm::~ProcMonForm()
 {
 	NN<ProgInfo> prog;
-	UOSInt i = this->progList.GetCount();
+	UIntOS i = this->progList.GetCount();
 	while (i-- > 0)
 	{
 		prog = this->progList.GetItemNoCheck(i);

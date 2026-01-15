@@ -53,12 +53,12 @@ void Text::CodeProject::AddConfig(NN<Text::CodeProjectCfg> cfg)
 	this->cfgList.Add(cfg);
 }
 
-UOSInt Text::CodeProject::GetConfigCnt() const
+UIntOS Text::CodeProject::GetConfigCnt() const
 {
 	return this->cfgList.GetCount();
 }
 
-Optional<Text::CodeProjectCfg> Text::CodeProject::GetConfig(UOSInt index) const
+Optional<Text::CodeProjectCfg> Text::CodeProject::GetConfig(UIntOS index) const
 {
 	return this->cfgList.GetItem(index);
 }

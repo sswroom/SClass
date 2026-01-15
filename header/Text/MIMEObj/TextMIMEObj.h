@@ -11,19 +11,19 @@ namespace Text
 		{
 		private:
 			UInt8 *textBuff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			UInt32 codePage;
 			Text::String *contType;
 
 			void BuildContentType();
 		public:
-			TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage);
+			TextMIMEObj(UnsafeArray<const UInt8> textBuff, UIntOS buffSize, UInt32 codePage);
 			TextMIMEObj(const WChar *txt, UInt32 codePage);
 			virtual ~TextMIMEObj();
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual UIntOS WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<MIMEObject> Clone() const;
 
 			void GetText(NN<Text::StringBuilderUTF8> sb) const;

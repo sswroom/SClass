@@ -10,9 +10,9 @@ namespace Media
 		class CSRGB8_RGB8 : public Media::CS::CSConverter
 		{
 		private:
-			UOSInt srcNBits;
+			UIntOS srcNBits;
 //			Media::PixelFormat srcPF;
-			UOSInt destNBits;
+			UIntOS destNBits;
 //			Media::PixelFormat destPF;
 			Media::ColorProfile srcColor;
 			Media::ColorProfile destColor;
@@ -26,11 +26,11 @@ namespace Media
 		private:
 			void UpdateRGBTable();
 		public:
-			CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess);
+			CSRGB8_RGB8(UIntOS srcNBits, Media::PixelFormat srcPF, UIntOS destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSRGB8_RGB8();
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
-			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
-			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UIntOS GetSrcFrameSize(UIntOS width, UIntOS height);
+			virtual UIntOS GetDestFrameSize(UIntOS width, UIntOS height);
 			virtual void SetPalette(UnsafeArray<UInt8> pal);
 
 			virtual void YUVParamChanged(NN<const YUVPARAM> yuv);

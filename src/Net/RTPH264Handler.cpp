@@ -23,8 +23,8 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->firstFrame = false;
 
 	this->frameInfo.fourcc = *(UInt32*)"H264";
-	this->frameInfo.dispSize = Math::Size2D<UOSInt>(0, 0);
-	this->frameInfo.storeSize = Math::Size2D<UOSInt>(0, 0);
+	this->frameInfo.dispSize = Math::Size2D<UIntOS>(0, 0);
+	this->frameInfo.storeSize = Math::Size2D<UIntOS>(0, 0);
 	this->frameInfo.storeBPP = 0;
 	this->frameInfo.pf = Media::PF_UNKNOWN;
 	this->frameInfo.byteSize = 0;
@@ -51,7 +51,7 @@ Net::RTPH264Handler::~RTPH264Handler()
 }
 
 
-void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
+void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UIntOS dataSize, UInt32 seqNum, UInt32 ts)
 {
 	UTF8Char sbuff[32];
 	Sync::MutexUsage mutUsage(this->mut);
@@ -63,11 +63,11 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		missSeq = true;
 	}
 	lastSeq = seqNum;
-	UOSInt frameSize;
+	UIntOS frameSize;
 	UnsafeArray<UInt8> frameBuff;
 
 	UInt8 tmpBuff[5];
-	UOSInt i = 0;
+	UIntOS i = 0;
 	switch (buff[0] & 0x1f)
 	{
 	case 1:
@@ -257,7 +257,7 @@ void Net::RTPH264Handler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 	UnsafeArray<UTF8Char> sarr[2];
 	UnsafeArray<UTF8Char> sarr2[2];
 	UInt8 buff[256];
-	UOSInt splitCnt;
+	UIntOS splitCnt;
 	Text::StrConcat(sbuff, fmtStr);
 	sarr[1] = sbuff;
 	while (true)
@@ -277,7 +277,7 @@ void Net::RTPH264Handler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 			{
 				Crypto::Encrypt::Base64 b64;
 
-				UOSInt txtSize = (UOSInt)(Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4]);
+				UIntOS txtSize = (UIntOS)(Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4]);
 				WriteMInt32(buff, 1);
 				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4]);
 
@@ -291,7 +291,7 @@ void Net::RTPH264Handler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 				
 				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, nullptr);
 
-				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
+				txtSize = (UIntOS)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);
 				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4]);
 
@@ -326,7 +326,7 @@ Text::CStringNN Net::RTPH264Handler::GetFilterName()
 	return CSTR("RTPH264Handler");
 }
 
-Bool Net::RTPH264Handler::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Net::RTPH264Handler::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->frameInfo.dispSize.x == 0 || this->frameInfo.dispSize.y == 0)
 		return false;
@@ -379,7 +379,7 @@ Data::Duration Net::RTPH264Handler::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-UOSInt Net::RTPH264Handler::GetDataSeekCount()
+UIntOS Net::RTPH264Handler::GetDataSeekCount()
 {
 	return 0;
 }
@@ -389,12 +389,12 @@ Bool Net::RTPH264Handler::HasFrameCount()
 	return false;
 }
 
-UOSInt Net::RTPH264Handler::GetFrameCount()
+UIntOS Net::RTPH264Handler::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
+Data::Duration Net::RTPH264Handler::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -413,7 +413,7 @@ Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, O
 	return false;
 }
 
-UOSInt Net::RTPH264Handler::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Net::RTPH264Handler::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

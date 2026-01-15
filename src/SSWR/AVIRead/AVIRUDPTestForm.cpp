@@ -95,12 +95,12 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Count is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
-	UOSInt i = me->threadCnt;
-	UOSInt lastCnt = cnt;
-	UOSInt thisCnt;
+	UIntOS i = me->threadCnt;
+	UIntOS lastCnt = cnt;
+	UIntOS thisCnt;
 	while (i-- > 0)
 	{
-		thisCnt = (UOSInt)(i * (UInt64)cnt / me->threadCnt);
+		thisCnt = (UIntOS)(i * (UInt64)cnt / me->threadCnt);
 		me->threads[i].reqCnt = lastCnt - thisCnt;
 		me->threads[i].destAddr = addr;
 		me->threads[i].destPort = port;
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(AnyType userObj)
 	UInt64 sendFailCnt;
 	Data::DateTime dt;
 	Int64 diffMS;
-	UOSInt i;
+	UIntOS i;
 	sendSuccCnt = 0;
 	sendFailCnt = 0;
 	i = me->threadCnt;
@@ -169,7 +169,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 {
 	NN<ThreadStatus> t = userObj.GetNN<ThreadStatus>();
 	UInt8 buff[32];
-	UOSInt i;
+	UIntOS i;
 	Net::SocketUtil::AddressInfo destAddr;
 	NN<Net::UDPServer> udp;
 	UInt16 destPort;
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 
 	this->AddTimer(100, OnTimerTick, this);
 
-	UOSInt i;
+	UIntOS i;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAllocArr(ThreadStatus, this->threadCnt);
 	i = this->threadCnt;
@@ -349,7 +349,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRUDPTestForm::~AVIRUDPTestForm()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found = true;
 	i = this->threadCnt;
 	while (i-- > 0)

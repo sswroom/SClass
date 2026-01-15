@@ -9,20 +9,20 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBuff)
+UIntOS PNGExporter_EstimateSize(const UInt8 *data, UIntOS dataSize, UInt8 *tmpBuff)
 {
 	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
 }
 
-UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<Crypto::Hash::CRC32R> crc)
+UIntOS PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<Crypto::Hash::CRC32R> crc)
 {
 	UnsafeArray<UInt8> palPtr;
 	if (!img->pal.SetTo(palPtr))
 		return 0;
-	UOSInt colorCnt = (UOSInt)1 << img->info.storeBPP;
+	UIntOS colorCnt = (UIntOS)1 << img->info.storeBPP;
 	UInt8 *tmpBuff = MemAlloc(UInt8, colorCnt * 3 + 12);
 	UInt8 *tmpPtr;
-	UOSInt i;
+	UIntOS i;
 	WriteMUInt32(&tmpBuff[0], (UInt32)(colorCnt * 3));
 	*(Int32*)&tmpBuff[4] = *(Int32*)"PLTE";
 	tmpPtr = &tmpBuff[8];
@@ -69,12 +69,12 @@ UInt8 PNGExporter_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx;
 	UInt8 thisPx;
 	UInt8 *lastLineStart = 0;
@@ -224,12 +224,12 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte2(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx[2];
 	UInt8 thisPx[2];
 	UInt8 *lastLineStart = 0;
@@ -399,12 +399,12 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte3(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx[3];
 	UInt8 thisPx[3];
 	UInt8 *lastLineStart = 0;
@@ -594,12 +594,12 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte4(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx[4];
 	UInt8 thisPx[4];
 	UInt8 *lastLineStart = 0;
@@ -809,12 +809,12 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte6(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx[6];
 	UInt8 thisPx[6];
 	UInt8 *lastLineStart = 0;
@@ -1064,12 +1064,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 	MemFree(tmpBuff2);
 }
 
-void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
+void PNGExporter_FilterByte8(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
-	UOSInt oriHeight = height;
-	UOSInt i;
-	UOSInt j;
-	UOSInt compSize[5];
+	UIntOS oriHeight = height;
+	UIntOS i;
+	UIntOS j;
+	UIntOS compSize[5];
 	UInt8 lastPx[8];
 	UInt8 thisPx[8];
 	UInt8 *lastLineStart = 0;
@@ -1417,7 +1417,7 @@ IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PNGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -1441,9 +1441,9 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UInt8 *tmpBuff2;
 	UnsafeArray<UInt8> imgPtr1;
 	UInt8 *imgPtr2;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Crypto::Hash::CRC32R crc;
 	UInt8 hdr[128];
 	hdr[0] = 0x89;

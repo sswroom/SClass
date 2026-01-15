@@ -112,7 +112,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP3BlockParser::ParseStrea
 	return audio;
 }
 
-Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NN<Media::AudioFormat> fmt)
+Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UIntOS buffSize, NN<Media::AudioFormat> fmt)
 {
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
 	{

@@ -26,13 +26,13 @@ void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NN<IO::Stream> stm, 
 	MemFreeNN(stat);
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UIntOS IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	NN<ProtocolStatus> stat = stmData.GetNN<ProtocolStatus>();
-	UOSInt skipStart = 0;
-	UOSInt i = 0;
-	UOSInt j;
-	UOSInt packetSize = 0;
+	UIntOS skipStart = 0;
+	UIntOS i = 0;
+	UIntOS j;
+	UIntOS packetSize = 0;
 	UInt8 v;
 	while (i < buff.GetSize())
 	{
@@ -103,7 +103,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, A
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	return 0;
 }

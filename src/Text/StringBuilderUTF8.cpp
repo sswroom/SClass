@@ -101,16 +101,16 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Text::CString s)
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const WChar> s)
 {
-	UOSInt charCnt = Text::StrWChar_UTF8Cnt(s);
+	UIntOS charCnt = Text::StrWChar_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrWChar_UTF8(&this->v[this->leng], s);
 	this->leng += charCnt;
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const WChar> s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const WChar> s, UIntOS len)
 {
-	UOSInt charCnt = Text::StrWChar_UTF8CntC(s, len);
+	UIntOS charCnt = Text::StrWChar_UTF8CntC(s, len);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrWChar_UTF8C(&this->v[this->leng], s, len);
 	this->leng += charCnt;
@@ -120,16 +120,16 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const W
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<const UTF16Char> s)
 {
-	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(s);
+	UIntOS charCnt = Text::StrUTF16_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrUTF16_UTF8(&this->v[this->leng], s);
 	this->leng += charCnt;
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<const UTF16Char> s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<const UTF16Char> s, UIntOS utf16Cnt)
 {
-	UOSInt charCnt = Text::StrUTF16_UTF8CntC(s, utf16Cnt);
+	UIntOS charCnt = Text::StrUTF16_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrUTF16_UTF8C(&this->v[this->leng], s, utf16Cnt);
 	this->leng += charCnt;
@@ -137,9 +137,9 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<con
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<const UInt8> s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<const UInt8> s, UIntOS utf16Cnt)
 {
-	UOSInt charCnt = Text::StrUTF16BE_UTF8CntC(s, utf16Cnt);
+	UIntOS charCnt = Text::StrUTF16BE_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrUTF16BE_UTF8C(&this->v[this->leng], s, utf16Cnt);
 	this->leng += charCnt;
@@ -149,16 +149,16 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<c
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(UnsafeArray<const UTF32Char> s)
 {
-	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(s);
+	UIntOS charCnt = Text::StrUTF32_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrUTF32_UTF8(&this->v[this->leng], s);
 	this->leng += charCnt;
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(UnsafeArray<const UTF32Char> s, UOSInt utf32Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(UnsafeArray<const UTF32Char> s, UIntOS utf32Cnt)
 {
-	UOSInt charCnt = Text::StrUTF32_UTF8CntC(s, utf32Cnt);
+	UIntOS charCnt = Text::StrUTF32_UTF8CntC(s, utf32Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
 	Text::StrUTF32_UTF8C(&this->v[this->leng], s, utf32Cnt);
 	this->leng += charCnt;
@@ -173,26 +173,26 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(UnsafeArrayOpt<c
 	{
 		return *this;
 	}
-	UOSInt len = Text::StrCharCnt(nns);
+	UIntOS len = Text::StrCharCnt(nns);
 	if (len > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(len);
-		this->leng = (UOSInt)(Text::StrConcatC(this->v + this->leng, nns, len) - this->v);
+		this->leng = (UIntOS)(Text::StrConcatC(this->v + this->leng, nns, len) - this->v);
 	}
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(UnsafeArray<const UTF8Char> s, UIntOS maxLen)
 {
 	if (maxLen > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(maxLen);
-		this->leng = (UOSInt)(Text::StrConcatS(this->v + this->leng, s, maxLen) - this->v);
+		this->leng = (UIntOS)(Text::StrConcatS(this->v + this->leng, s, maxLen) - this->v);
 	}
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt repCnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIntOS repCnt)
 {
 	UTF8Char oc[6];
 	UTF8Char *buffEnd;
@@ -287,14 +287,14 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOS
 		}
 	}
 	buffEnd[0] = 0;
-	this->leng = (UOSInt)(buffEnd - this->v);
+	this->leng = (UIntOS)(buffEnd - this->v);
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr, UIntOS nStr)
 {
 	NN<Text::String> s;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < nStr)
 	{
@@ -308,22 +308,22 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(UnsafeArray<Unsaf
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(UnsafeArray<const UTF8Char> s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(UnsafeArray<const UTF8Char> s, UIntOS len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
-	this->leng = (UOSInt)(Text::StrToUpperC(this->v + this->leng, s, len) - this->v);
+	this->leng = (UIntOS)(Text::StrToUpperC(this->v + this->leng, s, len) - this->v);
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(UnsafeArray<const UTF8Char> s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(UnsafeArray<const UTF8Char> s, UIntOS len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
-	this->leng = (UOSInt)(Text::StrToLowerC(this->v + this->leng, s, len) - this->v);
+	this->leng = (UIntOS)(Text::StrToLowerC(this->v + this->leng, s, len) - this->v);
 	return *this;
 }
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::RemoveANSIEscapes()
 {
-	this->leng = (UOSInt)(Text::StrRemoveANSIEscapes(this->v) - this->v);
+	this->leng = (UIntOS)(Text::StrRemoveANSIEscapes(this->v) - this->v);
 	return *this;
 }

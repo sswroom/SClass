@@ -47,14 +47,14 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	Media::MediaFile *mf = 0;
-	UOSInt currTrack;
-	UOSInt maxTrack = 0;
+	UIntOS currTrack;
+	UIntOS maxTrack = 0;
 	Text::String *fileName = 0;
 	Text::String *artists[100];
 	Text::String *titles[100];
 	UInt32 stmTime[100];
 	UInt32 lastTime;
-	UOSInt i;
+	UIntOS i;
 	Bool errorFound = false;
 	NN<Parser::ParserList> parsers;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".CUE")) || !this->parsers.SetTo(parsers))
@@ -73,8 +73,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	IO::StreamReader reader(stm, 0);
 	while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 	{
-		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
-		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
+		sptr = Text::StrTrimC(sbuff, (UIntOS)(sptr - sbuff));
+		if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("PERFORMER ")))
 		{
 			sptr2 = ReadString(sbuff2, &sbuff[10]);
 			if (artists[currTrack] != 0)
@@ -84,7 +84,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 			}
 			artists[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
 		}
-		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TITLE ")))
+		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TITLE ")))
 		{
 			sptr2 = ReadString(sbuff2, &sbuff[6]);
 			if (titles[currTrack] != 0)
@@ -94,7 +94,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 			}
 			titles[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
 		}
-		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE ")))
+		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
 			sptr = ReadString(sbuff2, &sbuff[5]);
 			if (fileName != 0)
@@ -102,9 +102,9 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 				errorFound = true;
 				break;
 			}
-			fileName = Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)).Ptr();
+			fileName = Text::String::New(sbuff2, (UIntOS)(sptr - sbuff2)).Ptr();
 		}
-		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TRACK ")))
+		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TRACK ")))
 		{
 			ReadString(sbuff2, &sbuff[6]);
 			currTrack = Text::StrToUInt32(sbuff2);
@@ -118,7 +118,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 				maxTrack = currTrack;
 			}
 		}
-		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("INDEX ")))
+		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("INDEX ")))
 		{
 			ReadString(sbuff2, &sbuff[6]);
 			i = Text::StrToUInt32(sbuff2);

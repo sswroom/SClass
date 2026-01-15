@@ -19,9 +19,9 @@ namespace SSWR
 			typedef struct
 			{
 				NN<Text::String> fileName;
-				UOSInt codeCnt;
-				UOSInt nonEmpyCnt;
-				UOSInt totalLineCnt;
+				UIntOS codeCnt;
+				UIntOS nonEmpyCnt;
+				UIntOS totalLineCnt;
 			} FileInfo;
 		private:
 			NN<UI::GUIPanel> pnlConfig;

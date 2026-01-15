@@ -10,7 +10,7 @@ namespace IO
 	private:
 		NN<IO::AMDGPUManager> gpuMgr;
 		AnyType adapter;
-		OSInt odrivever;
+		IntOS odrivever;
 		NN<Text::String> name;
 
 	public:

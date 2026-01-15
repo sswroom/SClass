@@ -25,7 +25,7 @@ namespace Sync
 		~Thread();
 
 		Bool Start();
-		UOSInt StartMulti(UOSInt cnt);
+		UIntOS StartMulti(UIntOS cnt);
 		void BeginStop();
 		void WaitForEnd();
 		void Stop();

@@ -17,7 +17,7 @@ namespace Media
 		~PageSplitter();
 
 		void SetDrawSize(Math::Size2DDbl size, Math::Unit::Distance::DistanceUnit unit);
-		UOSInt SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale);
+		UIntOS SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale);
 	};
 }
 #endif

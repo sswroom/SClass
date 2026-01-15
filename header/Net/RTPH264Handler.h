@@ -23,9 +23,9 @@ namespace Net
 		UInt32 lastSeq;
 		Bool missSeq;
 		UInt8 *sps;
-		UOSInt spsSize;
+		UIntOS spsSize;
 		UInt8 *pps;
-		UOSInt ppsSize;
+		UIntOS ppsSize;
 		Bool isKey;
 		Bool firstFrame;
 
@@ -34,14 +34,14 @@ namespace Net
 		RTPH264Handler(Int32 payloadType);
 		virtual ~RTPH264Handler();
 
-		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
+		virtual void MediaDataReceived(UInt8 *buff, UIntOS dataSize, UInt32 seqNum, UInt32 ts);
 		virtual void SetFormat(UnsafeArray<const UTF8Char> fmtStr);
 		virtual Int32 GetPayloadType();
 
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
@@ -53,14 +53,14 @@ namespace Net
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 
 		virtual Bool HasFrameCount();
-		virtual UOSInt GetFrameCount();
-		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+		virtual UIntOS GetFrameCount();
+		virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
+		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
 
 	};
 }

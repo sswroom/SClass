@@ -41,7 +41,7 @@ IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::XLSXExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -74,15 +74,15 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	Text::CStringNN nncsptr;
 	UnsafeArray<const UTF8Char> u8ptr;
 	IO::ZIPBuilder *zip;
-	UOSInt i;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
-	UOSInt n;
-	UOSInt drawingCnt = 0;
-	UOSInt chartCnt = 0;
+	UIntOS i;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
+	UIntOS n;
+	UIntOS drawingCnt = 0;
+	UIntOS chartCnt = 0;
 	Data::ArrayListNN<Text::String> sharedStrings;
-	Data::FastStringMapNative<UOSInt> stringMap;
+	Data::FastStringMapNative<UIntOS> stringMap;
 	ts = Data::Timestamp::UtcNow();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm, IO::ZIPOS::MSDOS));
 
@@ -127,9 +127,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.Append(s2);
 		s2->Release();
 		sb.AppendC(UTF8STRC(" sheetId=\""));
-		sb.AppendUOSInt(i + 1);
+		sb.AppendUIntOS(i + 1);
 		sb.AppendC(UTF8STRC("\" state=\"visible\" r:id=\"rId"));
-		sb.AppendUOSInt(i + 3);
+		sb.AppendUIntOS(i + 3);
 		sb.AppendC(UTF8STRC("\"/>"));
 		i++;
 	}
@@ -167,7 +167,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
 	{
-		Data::StringMapNative<UOSInt> numFmtMap;
+		Data::StringMapNative<UIntOS> numFmtMap;
 		Data::ArrayListObj<Text::CString> numFmts;
 		Data::ArrayListObj<BorderInfo*> borders;
 		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
@@ -230,14 +230,14 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		if (numFmts.GetCount() > 0)
 		{
 			sb.AppendC(UTF8STRC("<numFmts count=\""));
-			sb.AppendUOSInt(numFmts.GetCount());
+			sb.AppendUIntOS(numFmts.GetCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
 			k = numFmts.GetCount();
 			while (i < k)
 			{
 				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
-				sb.AppendUOSInt(i + 164);
+				sb.AppendUIntOS(i + 164);
 				sb.AppendC(UTF8STRC("\" formatCode="));
 				if (numFmts.GetItem(i).SetTo(nncsptr))
 				{
@@ -254,7 +254,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		if (workbook->GetFontCount() > 0)
 		{
 			sb.AppendC(UTF8STRC("<fonts count=\""));
-			sb.AppendUOSInt(workbook->GetFontCount());
+			sb.AppendUIntOS(workbook->GetFontCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
 			k = workbook->GetFontCount();
@@ -315,7 +315,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		i = 0;
 		k = borders.GetCount();
 		sb.AppendC(UTF8STRC("<borders count=\""));
-		sb.AppendUOSInt(k);
+		sb.AppendUIntOS(k);
 		sb.AppendC(UTF8STRC("\">"));
 		while (i < k)
 		{
@@ -379,7 +379,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		if (workbook->GetStyleCount() > 0)
 		{
 			sb.AppendC(UTF8STRC("<cellXfs count=\""));
-			sb.AppendUOSInt(workbook->GetStyleCount());
+			sb.AppendUIntOS(workbook->GetStyleCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
 			k = workbook->GetStyleCount();
@@ -421,8 +421,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	while (itSheet.HasNext())
 	{
 		sheet = itSheet.Next();
-		UOSInt maxRow = sheet->GetCount();
-		UOSInt maxCol = 1;
+		UIntOS maxRow = sheet->GetCount();
+		UIntOS maxCol = 1;
 		k = 0;
 		while (k < maxRow)
 		{
@@ -467,7 +467,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.AppendC(UTF8STRC("\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>"));
 		Bool found = false;
 		Double lastColWidth = -1;
-		UOSInt lastColIndex = INVALID_INDEX;
+		UIntOS lastColIndex = INVALID_INDEX;
 
 		k = 0;
 		l = sheet->GetColWidthCount();
@@ -483,9 +483,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						sb.AppendC(UTF8STRC("<cols>"));
 					}
 					sb.AppendC(UTF8STRC("<col min=\""));
-					sb.AppendUOSInt(lastColIndex + 1);
+					sb.AppendUIntOS(lastColIndex + 1);
 					sb.AppendC(UTF8STRC("\" max=\""));
-					sb.AppendUOSInt(k);
+					sb.AppendUIntOS(k);
 					sb.AppendC(UTF8STRC("\" width=\""));
 					if (lastColWidth >= 0)
 					{
@@ -512,9 +512,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<cols>"));
 			}
 			sb.AppendC(UTF8STRC("<col min=\""));
-			sb.AppendUOSInt(lastColIndex + 1);
+			sb.AppendUIntOS(lastColIndex + 1);
 			sb.AppendC(UTF8STRC("\" max=\""));
-			sb.AppendUOSInt(l);
+			sb.AppendUIntOS(l);
 			sb.AppendC(UTF8STRC("\" width=\""));
 			if (lastColWidth >= 0)
 			{
@@ -536,9 +536,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<cols>"));
 			}
 			sb.AppendC(UTF8STRC("<col min=\""));
-			sb.AppendUOSInt(l + 1);
+			sb.AppendUIntOS(l + 1);
 			sb.AppendC(UTF8STRC("\" max=\""));
-			sb.AppendUOSInt(sheet->GetMaxCol());
+			sb.AppendUIntOS(sheet->GetMaxCol());
 			sb.AppendC(UTF8STRC("\" width=\""));
 			sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 			sb.AppendC(UTF8STRC("\" customWidth=\"false\" collapsed=\"false\" hidden=\"false\" outlineLevel=\"0\" style=\"0\"/>"));
@@ -547,7 +547,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		{
 			sb.AppendC(UTF8STRC("</cols>"));
 		}
-		Data::ArrayListT<Math::RectArea<UOSInt>> mergeList;
+		Data::ArrayListT<Math::RectArea<UIntOS>> mergeList;
 		k = 0;
 		l = sheet->GetCount();
 		if (l > 0)
@@ -558,7 +558,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				if (sheet->GetItem(k).SetTo(row))
 				{
 					sb.AppendC(UTF8STRC("<row r=\""));
-					sb.AppendUOSInt(k + 1);
+					sb.AppendUIntOS(k + 1);
 					sb.AppendC(UTF8STRC("\" customFormat=\"false\" ht=\"12.8\" hidden=\"false\" customHeight=\"false\" outlineLevel=\"0\" collapsed=\"false\">"));
 
 					m = 0;
@@ -570,13 +570,13 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						if (row->cells.GetItem(m).SetTo(cell) && cell->cellValue.SetTo(cellValue) && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedUp)
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
-							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
-							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sptr = Text::StrUIntOS(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 							sb.AppendUTF8Char('"');
 							if (cell->style.SetTo(tmpStyle))
 							{
 								sb.AppendC(UTF8STRC(" s=\""));
-								sb.AppendUOSInt(tmpStyle->GetIndex());
+								sb.AppendUIntOS(tmpStyle->GetIndex());
 								sb.AppendUTF8Char('"');
 							}
 							switch (cell->cdt)
@@ -597,13 +597,13 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							{
 							case Text::SpreadSheet::CellDataType::String:
 								{
-									UOSInt sIndex = stringMap.GetNN(cellValue);
+									UIntOS sIndex = stringMap.GetNN(cellValue);
 									if (sIndex == 0 && stringMap.IndexOf(cellValue) < 0)
 									{
 										sIndex = sharedStrings.Add(cellValue);
 										stringMap.PutNN(cellValue, sIndex);
 									}
-									sb.AppendUOSInt(sIndex);
+									sb.AppendUIntOS(sIndex);
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::Number:
@@ -632,7 +632,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							}
 							if (cell->mergeHori > 1 || cell->mergeVert > 1)
 							{
-								mergeList.Add(Math::RectArea<UOSInt>(m, k, cell->mergeHori, cell->mergeVert));
+								mergeList.Add(Math::RectArea<UIntOS>(m, k, cell->mergeHori, cell->mergeVert));
 							}
 							
 							sb.AppendC(UTF8STRC("</v></c>"));
@@ -640,11 +640,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						else if (row->cells.GetItem(m).SetTo(cell) && cell->style.SetTo(tmpStyle))
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
-							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
-							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sptr = Text::StrUIntOS(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 							sb.AppendUTF8Char('"');
 							sb.AppendC(UTF8STRC(" s=\""));
-							sb.AppendUOSInt(tmpStyle->GetIndex());
+							sb.AppendUIntOS(tmpStyle->GetIndex());
 							sb.AppendUTF8Char('"');
 							sb.AppendC(UTF8STRC("></c>"));
 						}
@@ -660,14 +660,14 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			if (mergeList.GetCount() > 0)
 			{
 				sb.AppendC(UTF8STRC("<mergeCells count=\""));
-				sb.AppendUOSInt(mergeList.GetCount());
+				sb.AppendUIntOS(mergeList.GetCount());
 				sb.AppendC(UTF8STRC("\">"));
 				k = 0;
 				l = mergeList.GetCount();
 				while (k < l)
 				{
 					sb.AppendC(UTF8STRC("<mergeCell ref=\""));
-					Math::RectArea<UOSInt> rect = mergeList.GetItem(k);
+					Math::RectArea<UIntOS> rect = mergeList.GetItem(k);
 					sptr = Text::XLSUtil::GetCellID(sbuff, rect.min.x, rect.min.y);
 					*sptr++ = ':';
 					sptr = Text::XLSUtil::GetCellID(sptr, rect.max.x - 1, rect.max.y - 1);
@@ -680,7 +680,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 
 			if (links.GetCount() > 0)
 			{
-				UOSInt idBase = sheet->GetDrawingCount() + 1;
+				UIntOS idBase = sheet->GetDrawingCount() + 1;
 				sb.AppendC(UTF8STRC("<hyperlinks>"));
 				m = 0;
 				n = links.GetCount();
@@ -689,10 +689,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					link = links.GetItem(m);
 					sb.AppendC(UTF8STRC("<hyperlink ref=\""));
 					sptr = Text::SpreadSheet::Workbook::ColCode(sbuff, link->col);
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-					sb.AppendUOSInt(link->row + 1);
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
+					sb.AppendUIntOS(link->row + 1);
 					sb.AppendC(UTF8STRC("\" r:id=\"rId"));
-					sb.AppendUOSInt(idBase + m);
+					sb.AppendUIntOS(idBase + m);
 					sb.AppendC(UTF8STRC("\" display="));
 					s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(Text::String::OrEmpty(link->cell->cellValue)->v));
 					sb.Append(s);
@@ -731,7 +731,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		while (k < l)
 		{
 			sb.AppendC(UTF8STRC("<drawing r:id=\"rId"));
-			sb.AppendUOSInt(k + 1);
+			sb.AppendUIntOS(k + 1);
 			sb.AppendC(UTF8STRC("\"/>"));
 			k++;
 		}
@@ -746,10 +746,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			zip->AddDir(CSTR("xl/worksheets/"), ts, ts, ts, 0);
 			dirXlWs = true;
 		}
-		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
+		sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
 		zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 		sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-		sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"));
 
 		if (sheet->GetDrawingCount() > 0 || links.GetCount() > 0)
@@ -762,9 +762,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			while (k < l)
 			{
 				sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-				sb.AppendUOSInt(k + 1);
+				sb.AppendUIntOS(k + 1);
 				sb.AppendC(UTF8STRC("\" Target=\"../drawings/drawing"));
-				sb.AppendUOSInt(k + 1 + drawingCnt);
+				sb.AppendUIntOS(k + 1 + drawingCnt);
 				sb.AppendC(UTF8STRC(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing\"/>"));
 				k++;
 			}
@@ -774,7 +774,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			{
 				link = links.GetItem(m);
 				sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-				sb.AppendUOSInt(l + m + 1);
+				sb.AppendUIntOS(l + m + 1);
 				sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target="));
 				s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(Text::String::OrEmpty(link->cell->cellURL)->v));
 				sb.Append(s);
@@ -790,10 +790,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				dirXlWsRel = true;
 				zip->AddDir(CSTR("xl/worksheets/_rels/"), ts, ts, ts, 0);
 			}
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
 			zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 			sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-			sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 			k = 0;
@@ -810,66 +810,66 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				case Text::SpreadSheet::AnchorType::Absolute:
 					sb.AppendC(UTF8STRC("<xdr:absoluteAnchor>"));
 					sb.AppendC(UTF8STRC("<xdr:pos x=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
 					sb.AppendC(UTF8STRC("\" y=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("<xdr:ext cx=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
 					sb.AppendC(UTF8STRC("\" cy=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
 					sb.AppendC(UTF8STRC("\"/>"));
 					break;
 				case Text::SpreadSheet::AnchorType::OneCell:
 					sb.AppendC(UTF8STRC("<xdr:oneCellAnchor>"));
 					sb.AppendC(UTF8STRC("<xdr:from>"));
 					sb.AppendC(UTF8STRC("<xdr:col>"));
-					sb.AppendUOSInt(drawing->col1 + 1);
+					sb.AppendUIntOS(drawing->col1 + 1);
 					sb.AppendC(UTF8STRC("</xdr:col>"));
 					sb.AppendC(UTF8STRC("<xdr:colOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
 					sb.AppendC(UTF8STRC("</xdr:colOff>"));
 					sb.AppendC(UTF8STRC("<xdr:row>"));
-					sb.AppendUOSInt(drawing->row1 + 1);
+					sb.AppendUIntOS(drawing->row1 + 1);
 					sb.AppendC(UTF8STRC("</xdr:row>"));
 					sb.AppendC(UTF8STRC("<xdr:rowOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
 					sb.AppendC(UTF8STRC("</xdr:rowOff>"));
 					sb.AppendC(UTF8STRC("</xdr:from>"));
 					sb.AppendC(UTF8STRC("<xdr:ext cx=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
 					sb.AppendC(UTF8STRC("\" cy=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
 					sb.AppendC(UTF8STRC("\"/>"));
 					break;
 				case Text::SpreadSheet::AnchorType::TwoCell:
 					sb.AppendC(UTF8STRC("<xdr:twoCellAnchor editAs=\"twoCell\">"));
 					sb.AppendC(UTF8STRC("<xdr:from>"));
 					sb.AppendC(UTF8STRC("<xdr:col>"));
-					sb.AppendUOSInt(drawing->col1 + 1);
+					sb.AppendUIntOS(drawing->col1 + 1);
 					sb.AppendC(UTF8STRC("</xdr:col>"));
 					sb.AppendC(UTF8STRC("<xdr:colOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
 					sb.AppendC(UTF8STRC("</xdr:colOff>"));
 					sb.AppendC(UTF8STRC("<xdr:row>"));
-					sb.AppendUOSInt(drawing->row1 + 1);
+					sb.AppendUIntOS(drawing->row1 + 1);
 					sb.AppendC(UTF8STRC("</xdr:row>"));
 					sb.AppendC(UTF8STRC("<xdr:rowOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
 					sb.AppendC(UTF8STRC("</xdr:rowOff>"));
 					sb.AppendC(UTF8STRC("</xdr:from>"));
 					sb.AppendC(UTF8STRC("<xdr:to>"));
 					sb.AppendC(UTF8STRC("<xdr:col>"));
-					sb.AppendUOSInt(drawing->col2 + 1);
+					sb.AppendUIntOS(drawing->col2 + 1);
 					sb.AppendC(UTF8STRC("</xdr:col>"));
 					sb.AppendC(UTF8STRC("<xdr:colOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
 					sb.AppendC(UTF8STRC("</xdr:colOff>"));
 					sb.AppendC(UTF8STRC("<xdr:row>"));
-					sb.AppendUOSInt(drawing->row2 + 1);
+					sb.AppendUIntOS(drawing->row2 + 1);
 					sb.AppendC(UTF8STRC("</xdr:row>"));
 					sb.AppendC(UTF8STRC("<xdr:rowOff>"));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
 					sb.AppendC(UTF8STRC("</xdr:rowOff>"));
 					sb.AppendC(UTF8STRC("</xdr:to>"));
 					break;
@@ -879,28 +879,28 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("<xdr:graphicFrame>"));
 					sb.AppendC(UTF8STRC("<xdr:nvGraphicFramePr>"));
 					sb.AppendC(UTF8STRC("<xdr:cNvPr id=\""));
-					sb.AppendUOSInt(chartCnt);
+					sb.AppendUIntOS(chartCnt);
 					sb.AppendC(UTF8STRC("\" name=\"Diagramm"));
-					sb.AppendUOSInt(chartCnt);
+					sb.AppendUIntOS(chartCnt);
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("<xdr:cNvGraphicFramePr/>"));
 					sb.AppendC(UTF8STRC("</xdr:nvGraphicFramePr>"));
 					sb.AppendC(UTF8STRC("<xdr:xfrm>"));
 					sb.AppendC(UTF8STRC("<a:off x=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetXInch())));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetXInch())));
 					sb.AppendC(UTF8STRC("\" y=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetYInch())));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetYInch())));
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("<a:ext cx=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetWInch())));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetWInch())));
 					sb.AppendC(UTF8STRC("\" cy=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetHInch())));
+					sb.AppendIntOS(Double2IntOS(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetHInch())));
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("</xdr:xfrm>"));
 					sb.AppendC(UTF8STRC("<a:graphic>"));
 					sb.AppendC(UTF8STRC("<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">"));
 					sb.AppendC(UTF8STRC("<c:chart r:id=\"rId"));
-					sb.AppendUOSInt(chartCnt + 1);
+					sb.AppendUIntOS(chartCnt + 1);
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("</a:graphicData>"));
 					sb.AppendC(UTF8STRC("</a:graphic>"));
@@ -930,10 +930,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					dirXlDraw = true;
 					zip->AddDir(CSTR("xl/drawings/"), ts, ts, ts, 0);
 				}
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
 				zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 				sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-				sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>"));
 
 				if (drawing->chart.SetTo(chart))
@@ -942,7 +942,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"));
 					sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
 					sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Target=\"../charts/chart"));
-					sb.AppendUOSInt(chartCnt + 1);
+					sb.AppendUIntOS(chartCnt + 1);
 					sb.AppendC(UTF8STRC(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>"));
 					sb.AppendC(UTF8STRC("</Relationships>"));
 
@@ -951,10 +951,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						dirXlDrawRel = true;
 						zip->AddDir(CSTR("xl/drawings/_rels/"), ts, ts, ts, 0);
 					}
-					sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
+					sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
 					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-					sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 					chartCnt++;
@@ -990,13 +990,13 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						if (chart->GetCategoryAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(chart->GetAxisIndex(nnaxis));
+							sb.AppendUIntOS(chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
 						if (chart->GetValueAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(chart->GetAxisIndex(nnaxis));
+							sb.AppendUIntOS(chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
 						switch (chart->GetChartType())
@@ -1061,10 +1061,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						dirXlChart = true;
 						zip->AddDir(CSTR("xl/charts/"), ts, ts, ts, 0);
 					}
-					sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
+					sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
 					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-					sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>"));
 				}
 				k++;
@@ -1078,9 +1078,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 		sb.AppendC(UTF8STRC("<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\""));
-		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.AppendUIntOS(sharedStrings.GetCount());
 		sb.AppendC(UTF8STRC("\" uniqueCount=\""));
-		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.AppendUIntOS(sharedStrings.GetCount());
 		sb.AppendC(UTF8STRC("\">"));
 		i = 0;
 		k = sharedStrings.GetCount();
@@ -1123,16 +1123,16 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	while (i < k)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(i + 3);
+		sb.AppendUIntOS(i + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet"));
-		sb.AppendUOSInt(i + 1);
+		sb.AppendUIntOS(i + 1);
 		sb.AppendC(UTF8STRC(".xml\"/>"));
 		i++;
 	}
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(workbook->GetCount() + 3);
+		sb.AppendUIntOS(workbook->GetCount() + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>"));
 	}
 	sb.AppendC(UTF8STRC("\n</Relationships>"));
@@ -1151,10 +1151,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	{
 		sb.AppendC(UTF8STRC("<dcterms:created xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendUTF8Char('Z');
 		sb.AppendC(UTF8STRC("</dcterms:created>"));
 	}
@@ -1198,10 +1198,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	{
 		sb.AppendC(UTF8STRC("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendUTF8Char('Z');
 		sb.AppendC(UTF8STRC("</dcterms:modified>"));
 	}
@@ -1240,7 +1240,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("AVIRead/"));
 	IO::BuildTime::GetBuildTime(dt2);
 	sptr = dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("</Application>"));
 	sb.AppendC(UTF8STRC("<AppVersion>15.0000</AppVersion>"));
 	sb.AppendC(UTF8STRC("</Properties>"));
@@ -1331,7 +1331,7 @@ void Exporter::XLSXExporter::AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Opt
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
-void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index)
+void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UIntOS index)
 {
 	NN<Text::SpreadSheet::OfficeShapeProp> shapeProp;
 	NN<Text::SpreadSheet::OfficeChartAxis> nnaxis;
@@ -1354,7 +1354,7 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional
 		break;
 	}
 	sb->AppendC(UTF8STRC("<c:axId val=\""));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC("\"/>"));
 	sb->AppendC(UTF8STRC("<c:scaling>"));
 	sb->AppendC(UTF8STRC("<c:orientation val=\"minMax\"/>"));
@@ -1423,15 +1423,15 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional
 	}
 }
 
-void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UOSInt index)
+void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UIntOS index)
 {
 	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("<c:ser>"));
 	sb->AppendC(UTF8STRC("<c:idx val=\""));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC("\"/>"));
 	sb->AppendC(UTF8STRC("<c:order val=\""));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC("\"/>"));
 	if (series->GetTitle().SetTo(s))
 	{
@@ -1512,21 +1512,21 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC("</c:f>"));
-	UOSInt firstRow = valData->GetFirstRow();
-	UOSInt lastRow = valData->GetLastRow();
-	UOSInt firstCol = valData->GetFirstCol();
-	UOSInt lastCol = valData->GetLastCol();
+	UIntOS firstRow = valData->GetFirstRow();
+	UIntOS lastRow = valData->GetLastRow();
+	UIntOS firstCol = valData->GetFirstCol();
+	UIntOS lastCol = valData->GetLastCol();
 	if (firstRow == lastRow)
 	{
 		NN<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
-		sb->AppendUOSInt(lastCol - firstCol + 1);
+		sb->AppendUIntOS(lastCol - firstCol + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
 		NN<Worksheet::RowData> row;
 		NN<Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
-		UOSInt i;
+		UIntOS i;
 		if (sheet->GetItem(firstRow).SetTo(row))
 		{
 			i = firstCol;
@@ -1535,7 +1535,7 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 				if (row->cells.GetItem(i).SetTo(cell) && cell->cellValue.SetTo(cellValue) && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
 				{
 					sb->AppendC(UTF8STRC("<c:pt idx=\""));
-					sb->AppendUOSInt(i - firstCol);
+					sb->AppendUIntOS(i - firstCol);
 					sb->AppendC(UTF8STRC("\"><c:v>"));
 					sb->Append(cellValue);
 					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
@@ -1550,12 +1550,12 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 		NN<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
-		sb->AppendUOSInt(lastRow - firstRow + 1);
+		sb->AppendUIntOS(lastRow - firstRow + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
 		NN<Worksheet::RowData> row;
 		NN<Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
-		UOSInt i;
+		UIntOS i;
 		i = firstRow;
 		while (i <= lastRow)
 		{
@@ -1564,7 +1564,7 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 				if (row->cells.GetItem(firstCol).SetTo(cell) && cell->cellValue.SetTo(cellValue) && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
 				{
 					sb->AppendC(UTF8STRC("<c:pt idx=\""));
-					sb->AppendUOSInt(i - firstRow);
+					sb->AppendUIntOS(i - firstRow);
 					sb->AppendC(UTF8STRC("\"><c:v>"));
 					sb->Append(cellValue);
 					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
@@ -1654,9 +1654,9 @@ void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::
 	}
 }
 
-void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UOSInt>> numFmtMap)
+void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UIntOS>> numFmtMap)
 {
-	UOSInt k;
+	UIntOS k;
 	Text::CStringNN csptr;
 	BorderInfo *border;
 	Optional<Text::SpreadSheet::WorkbookFont> font = style->GetFont();
@@ -1671,7 +1671,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 		csptr = optS->ToCString();
 	}
 	sb->AppendC(UTF8STRC("<xf numFmtId=\""));
-	sb->AppendUOSInt(numFmtMap->Get(csptr) + 164);
+	sb->AppendUIntOS(numFmtMap->Get(csptr) + 164);
 	sb->AppendC(UTF8STRC("\" fontId=\""));
 	if (!font.SetTo(nnfont))
 	{
@@ -1679,7 +1679,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	}
 	else
 	{
-		sb->AppendUOSInt(workbook->GetFontIndex(nnfont));
+		sb->AppendUIntOS(workbook->GetFontIndex(nnfont));
 	}
 	sb->AppendC(UTF8STRC("\" fillId=\"0\" borderId=\""));
 	k = borders->GetCount();
@@ -1698,7 +1698,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	{
 		k = 0;
 	}
-	sb->AppendUOSInt(k);
+	sb->AppendUIntOS(k);
 	sb->AppendC(UTF8STRC("\" xfId=\"0\" applyFont=\""));
 	if (font.NotNull())
 	{

@@ -67,7 +67,7 @@ namespace Net
 		Sync::Mutex idpMut;
 		Text::EncodingFactory encFact;
 		UnsafeArray<SAMLAuthMethod> authMethods;
-		UOSInt nAuthMethods;
+		UIntOS nAuthMethods;
 
 	protected:
 		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response);
@@ -94,7 +94,7 @@ namespace Net
 		void SetIdp(NN<Net::SAMLIdpConfig> idp);
 		void SetHashType(Crypto::Hash::HashType hashType);
 		void SetAuthMethod(SAMLAuthMethod authMethod) { this->nAuthMethods = 1; this->authMethods[0] = authMethod; }
-		void SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UOSInt nAuthMethods);
+		void SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UIntOS nAuthMethods);
 
 		Bool GetLoginMessageURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sb, Text::CString nameID, Text::CString sessionId);

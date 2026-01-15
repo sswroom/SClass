@@ -10,11 +10,11 @@ namespace Media
 	public:
 		struct DeviceInfo
 		{
-			UOSInt count;
+			UIntOS count;
 			UInt32 state;
 
 			UnsafeArrayOpt<UTF8Char> sbuff;
-			UOSInt devNo;
+			UIntOS devNo;
 		};
 	private:
 		struct ClassData;
@@ -39,8 +39,8 @@ namespace Media
 		static UInt32 GetCurrTime(void *stream);
 		static Bool GetDeviceInfo(NN<DeviceInfo> devInfo);
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
+		static UIntOS GetDeviceCount();
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
 		
 		void OnEvent();
 
@@ -59,7 +59,7 @@ namespace Media
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
 
-		void WriteStream(UOSInt length);
+		void WriteStream(UIntOS length);
 	};
 }
 #endif

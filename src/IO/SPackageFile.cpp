@@ -54,7 +54,7 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		return;
 	UInt64 nextOfst;
 	UInt64 nextSize;
-	Data::ByteBuffer dirBuff((UOSInt)size);
+	Data::ByteBuffer dirBuff((UIntOS)size);
 	this->stm->SeekFromBeginning(ofst);
 	this->stm->Read(dirBuff);
 	nextOfst = ReadUInt64(&dirBuff[0]);
@@ -62,8 +62,8 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	this->ReadV2DirEnt(nextOfst, nextSize);
 
 	UnsafeArray<UTF8Char> sbuff;
-	UOSInt i;
-	UOSInt nameSize;
+	UIntOS i;
+	UIntOS nameSize;
 	FileInfo *file;
 	sbuff = MemAllocArr(UTF8Char, 512);
 	i = 16;
@@ -88,8 +88,8 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 
 void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UnsafeArray<UTF8Char> pathStart, UnsafeArray<UTF8Char> pathEnd)
 {
-	UOSInt i = 0;
-	UOSInt j = pkg->GetCount();
+	UIntOS i = 0;
+	UIntOS j = pkg->GetCount();
 	UnsafeArray<UTF8Char> sptr;
 	while (i < j)
 	{
@@ -118,7 +118,7 @@ void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSep
 				NN<IO::StreamData> fd;
 				if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
-					this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
+					this->AddFile(fd, {pathStart, (UIntOS)(sptr - pathStart)}, pkg->GetItemModTime(i));
 					fd.Delete();
 				}
 			}
@@ -131,10 +131,10 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 {
 	UInt64 lastOfst;
 	UInt64 lastSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool succ = true;
-	Data::ByteBuffer dirBuff((UOSInt)dirSize);
+	Data::ByteBuffer dirBuff((UIntOS)dirSize);
 	this->stm->SeekFromBeginning(dirOfst);
 	if (this->stm->Read(dirBuff) == dirSize)
 	{
@@ -161,14 +161,14 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			j = ReadUInt16(&dirBuff[i + 24]);
 			MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], j);
 			sbuff[j] = 0;
-			Data::ByteBuffer fileBuff((UOSInt)thisSize);
+			Data::ByteBuffer fileBuff((UIntOS)thisSize);
 			if (thisOfst != lastOfst + lastSize)
 			{
 				this->stm->SeekFromBeginning(thisOfst);
 			}
 			if (this->stm->Read(fileBuff) == thisSize)
 			{
-				newFile->AddFile(fileBuff.Arr(), (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
+				newFile->AddFile(fileBuff.Arr(), (UIntOS)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 				lastOfst = thisOfst;
 				lastSize = thisSize;
 			}
@@ -211,7 +211,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease)
 	this->mstm.Write(Data::ByteArrayR(hdr, 16));
 }
 
-IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff)
+IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UIntOS customSize, Data::ByteArrayR customBuff)
 {
 	UInt8 hdr[32];
 	this->stm = stm;
@@ -311,14 +311,14 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 				dirSize = flength - this->currOfst;
 				if (dirSize > 0)
 				{
-					Data::ByteBuffer dirBuff((UOSInt)dirSize);
+					Data::ByteBuffer dirBuff((UIntOS)dirSize);
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->stm->Read(dirBuff);
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->mstm.Write(dirBuff);
 
-					UOSInt i;
-					UOSInt nameSize;
+					UIntOS i;
+					UIntOS nameSize;
 					FileInfo *file;
 					i = 0;
 					while (i < dirSize)
@@ -386,7 +386,7 @@ IO::SPackageFile::~SPackageFile()
 {
 	UInt8 hdr[16];
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	if (!this->writeMode)
 	{
 		this->writeMode = true;
@@ -421,7 +421,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 	if (!this->fileMap.IsEmpty())
 	{
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<IO::SPackageFile::FileInfo*> fileArr = this->fileMap.ToArray(i);
 		while (i-- > 0)
 		{
@@ -435,7 +435,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
-	UOSInt writeSize;
+	UIntOS writeSize;
 	Bool needCommit = false;
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -462,7 +462,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	writeSize = 0;
 	if (dataSize > 1048576)
 	{
-		UOSInt readSize;
+		UIntOS readSize;
 		UInt64 sizeLeft = dataSize;
 		UInt64 fileOfst = 0;
 		Data::ByteBuffer fileBuff(1048576);
@@ -474,7 +474,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 			}
 			else
 			{
-				readSize = (UOSInt)sizeLeft;
+				readSize = (UIntOS)sizeLeft;
 			}
 			fd->GetRealData(fileOfst, readSize, fileBuff);
 			writeSize += this->stm->Write(fileBuff.WithSize(readSize));
@@ -484,8 +484,8 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	}
 	else
 	{
-		Data::ByteBuffer fileBuff((UOSInt)dataSize);
-		fd->GetRealData(0, (UOSInt)dataSize, fileBuff);
+		Data::ByteBuffer fileBuff((UIntOS)dataSize);
+		fd->GetRealData(0, (UIntOS)dataSize, fileBuff);
 		writeSize = this->stm->Write(fileBuff);
 	}
 	Bool succ = false;
@@ -516,7 +516,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	return succ;
 }
 
-Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
@@ -579,7 +579,7 @@ Bool IO::SPackageFile::AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperato
 
 Bool IO::SPackageFile::Commit()
 {
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<UInt8> buff;
 	UInt8 hdr[16];
 	Bool succ = false;
@@ -589,7 +589,7 @@ Bool IO::SPackageFile::Commit()
 	{
 		if (buffSize > 16)
 		{
-			UOSInt writeSize;
+			UIntOS writeSize;
 			if (!this->writeMode)
 			{
 				this->writeMode = true;
@@ -675,7 +675,7 @@ Optional<IO::StreamData> IO::SPackageFile::CreateStreamData(Text::CStringNN file
 	FileInfo *file = this->fileMap.Get(fileName);
 	if (file)
 	{
-		Data::ByteBuffer fileBuff((UOSInt)file->size);
+		Data::ByteBuffer fileBuff((UIntOS)file->size);
 		this->writeMode = false;
 		this->stm->SeekFromBeginning(file->ofst);
 		this->stm->Read(fileBuff);

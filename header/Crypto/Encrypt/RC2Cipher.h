@@ -13,14 +13,14 @@ namespace Crypto
 
 			UInt16 xkeys[64];
 		public:
-			RC2Cipher(UnsafeArray<const UInt8> key, UOSInt keyLen);
+			RC2Cipher(UnsafeArray<const UInt8> key, UIntOS keyLen);
 			virtual ~RC2Cipher();
 
-			Bool SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen);
-			Bool SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen, UOSInt effectiveBits);
+			Bool SetKey(UnsafeArray<const UInt8> key, UIntOS keyLen);
+			Bool SetKey(UnsafeArray<const UInt8> key, UIntOS keyLen, UIntOS effectiveBits);
 
-			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const; //return outSize
-			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const; //return outSize
+			virtual UIntOS EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const; //return outSize
+			virtual UIntOS DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const; //return outSize
 		};
 	}
 }

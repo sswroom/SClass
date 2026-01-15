@@ -59,9 +59,9 @@ Net::WebStatus::StatusInfo Net::WebStatus::statInfo[] = {
 
 Bool Net::WebStatus::IsExist(Int32 code)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(statInfo) / sizeof(statInfo[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(statInfo) / sizeof(statInfo[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -83,9 +83,9 @@ Bool Net::WebStatus::IsExist(Int32 code)
 
 Text::CString Net::WebStatus::GetCodeName(StatusCode code)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(statInfo) / sizeof(statInfo[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(statInfo) / sizeof(statInfo[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

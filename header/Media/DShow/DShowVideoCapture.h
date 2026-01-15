@@ -43,21 +43,21 @@ namespace Media
 			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 			virtual Text::CStringNN GetFilterName();
 
-			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();
 			virtual void Stop();
 			virtual Bool IsRunning();
 
-			virtual UOSInt GetDataSeekCount();
+			virtual UIntOS GetDataSeekCount();
 
 			virtual Bool HasFrameCount();
-			virtual UOSInt GetFrameCount();
-			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+			virtual UIntOS GetFrameCount();
+			virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom);
-			virtual UOSInt GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt);
+			virtual void SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom);
+			virtual UIntOS GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt);
 			virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		};
 
@@ -68,10 +68,10 @@ namespace Media
 		public:
 			DShowVideoCaptureMgr();
 			~DShowVideoCaptureMgr();
-			UOSInt GetDeviceCount();
-			UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
-			UnsafeArrayOpt<WChar> GetDeviceId(UnsafeArray<WChar> buff, UOSInt devNo);
-			DShowVideoCapture *GetDevice(UOSInt devNo);
+			UIntOS GetDeviceCount();
+			UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
+			UnsafeArrayOpt<WChar> GetDeviceId(UnsafeArray<WChar> buff, UIntOS devNo);
+			DShowVideoCapture *GetDevice(UIntOS devNo);
 		};
 	}
 }

@@ -95,11 +95,11 @@ void IO::BTCapturer::StoreStatus()
 		Sync::MutexUsage mutUsage;
 		btLog.AppendList(bt->GetPublicMap(mutUsage));
 		btLog.AppendList(bt->GetRandomMap(mutUsage));
-		UOSInt i;
+		UIntOS i;
 		Data::DateTime dt;
 		dt.SetCurrTime();
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		sptr = &sbuff[i + 1];
 		sptr = Text::StrConcatC(sptr, UTF8STRC("bt"));
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -112,7 +112,7 @@ void IO::BTCapturer::StoreStatus()
 				IO::Path::DeleteFile(lastFileName);
 				Text::StrDelNew(lastFileName);
 			}
-			this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+			this->lastFileName = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 		}
 	}
 }

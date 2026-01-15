@@ -34,8 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRWSDListenerForm::OnTimerTick(AnyType userData)
 				PacketInfoFree(packet);
 			}
 		}
-		UOSInt i = me->lvPackets->GetCount();
-		UOSInt j = me->packetList.GetCount();
+		UIntOS i = me->lvPackets->GetCount();
+		UIntOS j = me->packetList.GetCount();
 		while (i < j)
 		{
 			packet = me->packetList.GetItemNoCheck(i);

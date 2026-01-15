@@ -82,8 +82,8 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
 	UnsafeArrayOpt<const UTF8Char> colNames[] = {U8STR("Id"), U8STR("MaxWeight"), U8STR("Remarks")};
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
-	UOSInt colSize[] = {11, 32, 255};
-	UOSInt colDP[] = {0, 10, 0};
+	UIntOS colSize[] = {11, 32, 255};
+	UIntOS colDP[] = {0, 10, 0};
 	Map::VectorLayer *lyr = 0;
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
@@ -93,12 +93,12 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
 		UTF8Char sbuff2[64];
-		OSInt shapeCol = -1;
-		OSInt vrIdCol = -1;
-		OSInt maxWeightCol = -1;
-		OSInt remarksCol = -1;
-		UOSInt i;
-		UOSInt j;
+		IntOS shapeCol = -1;
+		IntOS vrIdCol = -1;
+		IntOS maxWeightCol = -1;
+		IntOS remarksCol = -1;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<UTF8Char> strs[3];
 		i = 0;
 		j = r->ColCount();
@@ -106,21 +106,21 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 		{
 			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Shape")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Shape")))
 				{
-					shapeCol = (OSInt)i;
+					shapeCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("VR_ID")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("VR_ID")))
 				{
-					vrIdCol = (OSInt)i;
+					vrIdCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAX_WEIGHT")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MAX_WEIGHT")))
 				{
-					maxWeightCol = (OSInt)i;
+					maxWeightCol = (IntOS)i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("REMARKS")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("REMARKS")))
 				{
-					remarksCol = (OSInt)i;
+					remarksCol = (IntOS)i;
 				}
 			}
 			i++;
@@ -128,20 +128,20 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 
 		while (r->ReadNext())
 		{
-			if (r->IsNull((UOSInt)maxWeightCol))
+			if (r->IsNull((UIntOS)maxWeightCol))
 			{
 			}
 			else
 			{
-				Double maxWeight = r->GetDblOr((UOSInt)maxWeightCol, 0);
+				Double maxWeight = r->GetDblOr((UIntOS)maxWeightCol, 0);
 				if (maxWeight != 0)
 				{
-					Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
+					Int32 vrId = r->GetInt32((UIntOS)vrIdCol);
 					NN<Math::Geometry::Vector2D> vec;
-					if (r->GetVector((UOSInt)shapeCol).SetTo(vec))
+					if (r->GetVector((UIntOS)shapeCol).SetTo(vec))
 					{
 						sbuff[0] = 0;
-						r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
+						r->GetStr((UIntOS)remarksCol, sbuff, sizeof(sbuff));
 
 						strs[0] = sbuff2;
 						strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
@@ -181,26 +181,26 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 	NN<Map::ShortestPath3D> shortestPath;
 	NN<DB::ReadingDB> fgdb;
 	NN<DB::DBReader> r;
-	UOSInt i;
+	UIntOS i;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (this->fgdb.SetTo(fgdb))
 	{
 		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
-			UOSInt routeIdCol = INVALID_INDEX;
-			UOSInt travelDirCol = INVALID_INDEX;
-			UOSInt shapeCol = INVALID_INDEX;
-			UOSInt colCount = r->ColCount();
+			UIntOS routeIdCol = INVALID_INDEX;
+			UIntOS travelDirCol = INVALID_INDEX;
+			UIntOS shapeCol = INVALID_INDEX;
+			UIntOS colCount = r->ColCount();
 			i = colCount;
 			while (i-- > 0)
 			{
 				sptr = r->GetName(i, sbuff).Or(sbuff);
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 					routeIdCol = i;
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TRAVEL_DIRECTION")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TRAVEL_DIRECTION")))
 					travelDirCol = i;
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SHAPE")))
 					shapeCol = i;
 			}
 			Data::Int32FastMapNN<Map::ShortestPath3D::LineInfo> lineMap;
@@ -246,16 +246,16 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 			{
 				if (fgdb->QueryTableData(nullptr, CSTR("INTERSECTION"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 				{
-					UOSInt id1 = INVALID_INDEX;
-					UOSInt id2 = INVALID_INDEX;
-					UOSInt id3 = INVALID_INDEX;
-					UOSInt id4 = INVALID_INDEX;
-					UOSInt id5 = INVALID_INDEX;
-					UOSInt id6 = INVALID_INDEX;
-					UOSInt id7 = INVALID_INDEX;
-					UOSInt id8 = INVALID_INDEX;
-					UOSInt id9 = INVALID_INDEX;
-					UOSInt id10 = INVALID_INDEX;
+					UIntOS id1 = INVALID_INDEX;
+					UIntOS id2 = INVALID_INDEX;
+					UIntOS id3 = INVALID_INDEX;
+					UIntOS id4 = INVALID_INDEX;
+					UIntOS id5 = INVALID_INDEX;
+					UIntOS id6 = INVALID_INDEX;
+					UIntOS id7 = INVALID_INDEX;
+					UIntOS id8 = INVALID_INDEX;
+					UIntOS id9 = INVALID_INDEX;
+					UIntOS id10 = INVALID_INDEX;
 					Int32 routeId;
 					shapeCol = INVALID_INDEX;
 					colCount = r->ColCount();
@@ -263,27 +263,27 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 					while (i-- > 0)
 					{
 						sptr = r->GetName(i, sbuff).Or(sbuff);
-						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+						if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SHAPE")))
 							shapeCol = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_1")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_1")))
 							id1 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_2")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_2")))
 							id2 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_3")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_3")))
 							id3 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_4")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_4")))
 							id4 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_5")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_5")))
 							id5 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_6")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_6")))
 							id6 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_7")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_7")))
 							id7 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_8")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_8")))
 							id8 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_9")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_9")))
 							id9 = i;
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RD_ID_10")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RD_ID_10")))
 							id10 = i;
 					}
 

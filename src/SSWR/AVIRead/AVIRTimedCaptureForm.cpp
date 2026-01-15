@@ -30,13 +30,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		Text::StringBuilderUTF8 sb;
 		Media::VideoCapturer::VideoFormat fmts[80];
 		NN<CaptureFormat> cfmt;
-		UOSInt bestSize = 0;
+		UIntOS bestSize = 0;
 		UInt32 bestFmt = 0;
-		UOSInt bestBPP = 0;
-		UOSInt bestIndex = 0;
-		UOSInt currSize;
-		UOSInt fmtCnt;
-		UOSInt i;
+		UIntOS bestBPP = 0;
+		UIntOS bestIndex = 0;
+		UIntOS currSize;
+		UIntOS fmtCnt;
+		UIntOS i;
 		Media::CS::CSConverter::GetSupportedCS(supportedCS);
 
 		UTF8Char sbuff[128];
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 			}
 			
 			sb.ClearStr();
-			sb.AppendUOSInt(cfmt->size.x);
+			sb.AppendUIntOS(cfmt->size.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(cfmt->size.y);
+			sb.AppendUIntOS(cfmt->size.y);
 			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -100,9 +100,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
 			me->currFormats.Add(cfmt);
 
-			devInfo.AppendUOSInt(cfmt->size.x);
+			devInfo.AppendUIntOS(cfmt->size.x);
 			devInfo.AppendC(UTF8STRC(" x "));
-			devInfo.AppendUOSInt(cfmt->size.y);
+			devInfo.AppendUIntOS(cfmt->size.y);
 			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -181,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			
 			UInt32 norm;
 			UInt32 denorm;
-			UOSInt frameSize;
+			UIntOS frameSize;
 			currCapture->GetVideoInfo(me->videoInfo, norm, denorm, frameSize);
 			me->lastSaveTime = (UInt32)-(Int32)me->interval;
 			me->frameCnt = 0;
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
@@ -238,12 +238,12 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 		Data::DateTime dt;
 		Optional<IO::FileExporter::ParamData> param;
 		UnsafeArray<UInt8> imgBuff;
-		UOSInt imgSize;
+		UIntOS imgSize;
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 		dt.SetCurrTimeUTC();
 
 		NEW_CLASSNN(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-		csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
+		csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (IntOS)simg->GetDataBpl(), frameType, ycOfst);
 		NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);
 		param = me->exporter->CreateParam(imgList);
@@ -346,13 +346,13 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	NEW_CLASSNN(this->captureMgr, Media::VideoCaptureMgr());
 	this->currCapture = nullptr;
 	this->captureMgr->GetDeviceList(this->devInfoList);
-	UOSInt cnt = this->devInfoList.GetCount();
+	UIntOS cnt = this->devInfoList.GetCount();
 	if (cnt == 0)
 	{
 		return;
 	}
 	NN<Media::VideoCaptureMgr::DeviceInfo> dev;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < cnt)
 	{

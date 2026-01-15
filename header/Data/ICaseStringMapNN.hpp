@@ -26,8 +26,8 @@ namespace Data
 	{
 		this->keys.Delete();
 		NEW_CLASSNN(this->keys, Data::ArrayListICaseString());
-		UOSInt i = 0;
-		UOSInt j = map->keys->GetCount();
+		UIntOS i = 0;
+		UIntOS j = map->keys->GetCount();
 		while (i < j)
 		{
 			this->keys->Add(map->keys->GetItem(i)->Clone().Ptr());

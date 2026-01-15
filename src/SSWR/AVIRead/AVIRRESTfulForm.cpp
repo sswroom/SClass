@@ -96,9 +96,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			Text::CStringNN tableName;
 			UTF8Char sbuff[32];
 			UnsafeArray<UTF8Char> sptr;
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
 			dbModel->GetTableNames(tableNames);
 			i = 0;
 			j = tableNames.GetCount();
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			{
 				tableName = tableNames.GetItem(i).OrEmpty();
 				k = me->lvTable->AddItem(tableName, 0);
-				sptr = Text::StrOSInt(sbuff, dbCache->GetRowCount(tableName));
+				sptr = Text::StrIntOS(sbuff, dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
@@ -196,7 +196,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	this->core = core;
 	this->SetText(CSTR("RESTful Server"));
 	this->SetFont(nullptr, 8.25, false);
@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 	this->lblLogDir = ui->NewLabel(this->grpParam, CSTR("Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
 	this->txtLogDir = ui->NewTextBox(this->grpParam, CSTRP(sbuff, sptr));

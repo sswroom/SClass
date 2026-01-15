@@ -12,12 +12,12 @@ namespace Media
 		public:
 			typedef struct
 			{
-				OSInt left;
-				OSInt top;
-				OSInt right;
-				OSInt bottom;
+				IntOS left;
+				IntOS top;
+				IntOS right;
+				IntOS bottom;
 			} ObjectRect;
-			typedef void (CALLBACKFUNC DetectResultFunc)(void *userObj, UOSInt objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
+			typedef void (CALLBACKFUNC DetectResultFunc)(void *userObj, UIntOS objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
 			
 		private:
 			void *cascade;

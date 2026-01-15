@@ -3,9 +3,9 @@
 #include "Math/Math_C.h"
 
 
-extern "C" void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+extern "C" void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 {
-	OSInt j;
+	IntOS j;
 	j = 0;
 	while (j < sampleCnt)
 	{
@@ -17,9 +17,9 @@ extern "C" void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Doub
 	}
 }
 
-extern "C" void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, OSInt sampleCnt, OSInt sampleAdd, Double sampleMul)
+extern "C" void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Double *sampleWindow, IntOS sampleCnt, IntOS sampleAdd, Double sampleMul)
 {
-	OSInt j;
+	IntOS j;
 	j = 0;
 	while (j < sampleCnt)
 	{
@@ -31,9 +31,9 @@ extern "C" void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Doub
 	}
 }
 
-extern "C" void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCnt)
+extern "C" void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, IntOS sampleCnt)
 {
-	OSInt j;
+	IntOS j;
 	Double f;
 	Double f2;
 	j = 0;
@@ -49,13 +49,13 @@ extern "C" void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCn
 #if !defined(TEST)
 extern "C"
 {
-	void FFTCalc_Rearrange(Double *complexData, OSInt sampleCount);
-	void FFTCalc_ForwardCalc(Double *complexData, OSInt sampleCount);
-	void FFTCalc_ForwardCalcR(Double *complexData, OSInt sampleCount);
+	void FFTCalc_Rearrange(Double *complexData, IntOS sampleCount);
+	void FFTCalc_ForwardCalc(Double *complexData, IntOS sampleCount);
+	void FFTCalc_ForwardCalcR(Double *complexData, IntOS sampleCount);
 }
 #endif
 
-extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
+extern "C" IntOS FFTCalc_Forward(Double *complexData, IntOS sampleCount)
 {
 	if (sampleCount == 1)
 		return 1;
@@ -65,10 +65,10 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 	if (sampleCount & (sampleCount - 1))
 		return 0;
 
-	OSInt n;
-	OSInt i;
-	OSInt j;
-	OSInt m;
+	IntOS n;
+	IntOS i;
+	IntOS j;
+	IntOS m;
 	Double tmpVal;
 	n = sampleCount << 1;
 	i = 0;
@@ -95,11 +95,11 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 	}
 //	FFTCalc_Rearrange(complexData, sampleCount);
 //	FFTCalc_ForwardCalcR(complexData, sampleCount);
-//	OSInt i;
+//	IntOS i;
 
-	OSInt thisSampleCount = 4;
-	OSInt groupCurr;
-	OSInt groupEnd;
+	IntOS thisSampleCount = 4;
+	IntOS groupCurr;
+	IntOS groupEnd;
 	Double kthMul = -2 * Math::PI / 4.0;
 	Double wk[2];
 	Double odd[2];
@@ -176,9 +176,9 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 
 /* Inplace (Error)
 
-	OSInt target = 0;
-	OSInt position = 0;
-	UOSInt mask;
+	IntOS target = 0;
+	IntOS position = 0;
+	UIntOS mask;
 	Double tmp0;
 	Double tmp1;
 	while (position < sampleCount)
@@ -203,23 +203,23 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 	}
 
 	const Double pi = (false) ? -Math::PI : Math::PI;
-	OSInt step = 1;
+	IntOS step = 1;
 	while (step < sampleCount)
 	{
-		const UOSInt jump = step << 1;
+		const UIntOS jump = step << 1;
 		const Double delta = pi / step;
 		const Double sine = Math_Sin(delta * .5);
 		const Double multiplier0 = -2. * sine * sine;
 		const Double multiplier1 = Math_Sin(delta);
 		Double factor0 = 1.0;
 		Double factor1 = 0.0;
-		OSInt group = 0;
+		IntOS group = 0;
 		while (group < step)
 		{
-			OSInt pair = group;
+			IntOS pair = group;
 			while (pair < sampleCount)
 			{
-				const UOSInt match = pair + step;
+				const UIntOS match = pair + step;
 				const Double product0 = factor0 * complexData[match * 2 + 0] - factor1 * complexData[match * 2 + 1];
 				const Double product1 = factor0 * complexData[match * 2 + 1] + factor1 * complexData[match * 2 + 0];
 				complexData[match * 2 + 0] = complexData[pair * 2 + 0] - product0;
@@ -245,9 +245,9 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 		return false;
 	if (sampleCount & 1)
 		return false;
-	OSInt j = sampleCount >> 1;
+	IntOS j = sampleCount >> 1;
 	Double *temp = MemAllocA(Double, sampleCount);
-	OSInt i;
+	IntOS i;
 	i = 0;
 	j = sampleCount >> 1;
 	while (i < j)

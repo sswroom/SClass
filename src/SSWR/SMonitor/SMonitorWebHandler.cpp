@@ -44,7 +44,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
@@ -114,7 +114,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 				Text::StringBuilderUTF8 sb;
 				sb.Append(reqOutput);
 				UnsafeArray<UTF8Char> sarr[3];
-				UOSInt i;
+				UIntOS i;
 				i = Text::StrSplit(sarr, 3, sb.v, ',');
 				if (i == 2)
 				{
@@ -127,10 +127,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 		NN<SMonitorCore::DeviceInfo> dev;
 		Data::DateTime dt;
 		me->core->UserGetDevices(userId, userType, devList);
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		writer->WriteLine(CSTR("<h2>Home</h2>"));
 		writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Last Reading Time</td><td>Readings Today</td><td>Digitals</td><td>Output</td></tr>"));
 		i = 0;
@@ -215,7 +215,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 				else
 				{
 					writer->Write(CSTR("Digital "));
-					sptr = Text::StrUOSInt(sbuff, k);
+					sptr = Text::StrUIntOS(sbuff, k);
 					writer->Write(CSTRP(sbuff, sptr));
 				}
 				writer->Write(CSTR(": "));
@@ -233,20 +233,20 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 			while (k < l)
 			{
 				writer->Write(CSTR("Output "));
-				sptr = Text::StrUOSInt(sbuff, k);
+				sptr = Text::StrUIntOS(sbuff, k);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR(": "));
 				writer->Write(CSTR("<a href=\"index?devid="));
 				sptr = Text::StrInt64(sbuff, dev->cliId);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("&output="));
-				sptr = Text::StrUOSInt(sbuff, k);
+				sptr = Text::StrUIntOS(sbuff, k);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR(",1\">On</a> <a href=\"index?devid="));
 				sptr = Text::StrInt64(sbuff, dev->cliId);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("&output="));
-				sptr = Text::StrUOSInt(sbuff, k);
+				sptr = Text::StrUIntOS(sbuff, k);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR(",0\">Off</a>"));
 				k++;
@@ -285,7 +285,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
 	UnsafeArrayOpt<const UTF8Char> msg = nullptr;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -373,7 +373,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UTF8Char> nns;
@@ -405,10 +405,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	NN<SMonitorCore::DeviceInfo> dev;
 	Data::DateTime dt;
 	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), devList);
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	writer->WriteLine(CSTR("<h2>Device</h2>"));
 	writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Platform Name</td><td>CPU Name</td><td>Version</td><td>Reading Time</td><td>Readings</td><td>Digitals</td><td>Action</td></tr>"));
 	i = 0;
@@ -493,7 +493,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 			else
 			{
 				writer->Write(CSTR("Digital "));
-				sptr = Text::StrUOSInt(sbuff, k);
+				sptr = Text::StrUIntOS(sbuff, k);
 				writer->Write(CSTRP(sbuff, sptr));
 			}
 			writer->Write(CSTR(": "));
@@ -542,7 +542,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
@@ -661,12 +661,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UTF8Char> nns;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<SMonitorCore::DeviceInfo> dev;
 	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -706,7 +706,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 				{
 					sb.AppendC(UTF8STRC("|"));
 				}
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("readingName")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("readingName")), i);
 				if (req->GetHTTPFormStr(CSTRP(sbuff, sptr)).SetTo(s))
 				{
 					sb.Append(s);
@@ -749,7 +749,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 	while (i < j)
 	{
 		writer->Write(CSTR("<tr><td>Reading "));
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		writer->Write(CSTRP(sbuff, sptr));
 		writer->Write(CSTR("</td><td><input type=\"text\" name=\"readingName"));
 		writer->Write(CSTRP(sbuff, sptr));
@@ -802,12 +802,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UTF8Char> nns;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<SMonitorCore::DeviceInfo> dev;
 	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -847,7 +847,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 				{
 					sb.AppendC(UTF8STRC("|"));
 				}
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("digitalName")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("digitalName")), i);
 				if (req->GetHTTPFormStr(CSTRP(sbuff, sptr)).SetTo(s))
 				{
 					sb.Append(s);
@@ -890,7 +890,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 	while (i < j)
 	{
 		writer->Write(CSTR("<tr><td>Digital "));
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		writer->Write(CSTRP(sbuff, sptr));
 		writer->Write(CSTR("</td><td><input type=\"text\" name=\"digitalName"));
 		writer->Write(CSTRP(sbuff, sptr));
@@ -990,12 +990,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		return true;
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<IO::MemoryStream> mstm;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	if (dev->valUpdated)
 	{
@@ -1024,11 +1024,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	NN<Media::DrawImage> dimg;
-	if (deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (deng->CreateImage32(Math::Size2D<UIntOS>(640, 120), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f;
 		NN<Media::DrawBrush> b;
-		UOSInt readingIndex = (UOSInt)-1;
+		UIntOS readingIndex = (UIntOS)-1;
 		Int32 readingTypeD;
 		Data::ChartPlotter *chart;
 		j = dev->nReading;
@@ -1052,7 +1052,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 			}
 			i++;
 		}
-		if (readingIndex == (UOSInt)-1)
+		if (readingIndex == (UIntOS)-1)
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
@@ -1070,7 +1070,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 			NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec;
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
-				UOSInt treadingIndex = (UOSInt)-1;
+				UIntOS treadingIndex = (UIntOS)-1;
 				Double tempDeg;
 				Double rh;
 				Bool hasTemp;
@@ -1116,7 +1116,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						}
 					}
 
-					if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 					{
 						hasTemp = true;
 						tempDeg = rec->readings[treadingIndex].reading;
@@ -1228,7 +1228,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				maxTime = dateList.GetItem(dateList.GetCount() - 1);
 				if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 				{
-					UOSInt treadingIndex = (UOSInt)-1;
+					UIntOS treadingIndex = (UIntOS)-1;
 					Double tempDeg;
 					Double rh;
 					Bool hasTemp;
@@ -1277,7 +1277,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 							}
 						}
 
-						if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+						if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 						{
 							hasTemp = true;
 							tempDeg = rec->readings[treadingIndex].reading;
@@ -1404,7 +1404,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				chart->SetFontHeightPt(10);
 				chart->SetTimeZoneQHR(32);
 				chart->SetTimeFormat(CSTR("HH:mm"));
-				chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
+				chart->Plot(dimg, 0, 0, UIntOS2Double(dimg->GetWidth()), UIntOS2Double(dimg->GetHeight()));
 				DEL_CLASS(chart);
 			}
 			else
@@ -1465,7 +1465,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 	Int32 userId = 0;
 	Int32 userType = 0;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
@@ -1476,10 +1476,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 		userType = sess->GetValueInt32(CSTR("UserType"));
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devList;
 	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	IO::MemoryStream mstm;
@@ -1644,19 +1644,19 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 	}
 
 	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DevRecord2> recList;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	NN<Media::DrawImage> dimg;
-	if (deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (deng->CreateImage32(Math::Size2D<UIntOS>(640, 120), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f;
 		NN<Media::DrawBrush> b;
-		UOSInt readingIndex = (UOSInt)-1;
+		UIntOS readingIndex = (UIntOS)-1;
 		Int32 readingType = 0;
 		Data::ChartPlotter *chart;
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
@@ -1671,7 +1671,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			}
 		}
 		mutUsage.EndUse();
-		if (readingIndex == (UOSInt)-1)
+		if (readingIndex == (UIntOS)-1)
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
@@ -1756,7 +1756,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 				chart->SetFontHeightPt(10);
 				chart->SetTimeZoneQHR(32);
 				chart->SetTimeFormat(CSTR("HH:mm"));
-				chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
+				chart->Plot(dimg, 0, 0, UIntOS2Double(dimg->GetWidth()), UIntOS2Double(dimg->GetHeight()));
 				DEL_CLASS(chart);
 			}
 			else
@@ -1808,7 +1808,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
 	Text::CString msg = nullptr;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -1835,7 +1835,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 		}
 		else
 		{
-			UOSInt len = pwd->leng;
+			UIntOS len = pwd->leng;
 			if (len < 3)
 			{
 				msg = CSTR("Password is too short");
@@ -1893,7 +1893,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::WebSession> sess;
@@ -1909,8 +1909,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 
 	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::WebUser> userList;
 	NN<SSWR::SMonitor::SMonitorCore::WebUser> user;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->core->UserGetList(userList);
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -1961,7 +1961,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -1980,7 +1980,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 		NN<Text::String> userName;
 		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && req->GetHTTPFormStr(CSTR("username")).SetTo(userName) && action->Equals(UTF8STRC("adduser")))
 		{
-			UOSInt len = userName->leng;
+			UIntOS len = userName->leng;
 			if (len >= 3 && len < 128)
 			{
 				if (me->core->UserAdd(userName->v, userName->v, 2))
@@ -2024,14 +2024,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonit
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::WebSession> sess;
 	NN<SSWR::SMonitor::SMonitorCore::WebUser> user;
 	Int32 userId;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 
 	if (!req->GetQueryValueI32(CSTR("id"), userId))

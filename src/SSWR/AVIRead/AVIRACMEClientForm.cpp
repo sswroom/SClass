@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 		return;
 	}
 	UInt16 port = 0;
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbKey;
 	me->txtHost->GetText(sb);

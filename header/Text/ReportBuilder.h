@@ -32,15 +32,15 @@ namespace Text
 
 		typedef struct
 		{
-			UOSInt col;
-			UOSInt row;
+			UIntOS col;
+			UIntOS row;
 			Double lat;
 			Double lon;
 		} ColURLLatLon;
 
 		typedef struct
 		{
-			UOSInt col;
+			UIntOS col;
 			Text::String *fileName;
 			Text::String *name;
 		} ColIcon;
@@ -53,9 +53,9 @@ namespace Text
 		struct HeaderInfo
 		{
 			NN<Text::String> name;
-			UOSInt nameCellCnt;
+			UIntOS nameCellCnt;
 			NN<Text::String> value;
-			UOSInt valueCellCnt;
+			UIntOS valueCellCnt;
 			Bool valueUnderline;
 			Bool isRight;
 		};
@@ -69,7 +69,7 @@ namespace Text
 		NN<Text::String> name;
 		Text::HAlignment nameHAlign;
 		NN<Text::String> fontName;
-		UOSInt colCount;
+		UIntOS colCount;
 		Data::ArrayListNN<HeaderInfo> preheaders;
 		Data::ArrayListNN<HeaderInfo> headers;
 		Data::ArrayListArr<TableCell> tableContent;
@@ -84,7 +84,7 @@ namespace Text
 
 		static Text::SpreadSheet::AxisType FromChartDataType(Data::ChartPlotter::DataType dataType);
 	public:
-		ReportBuilder(Text::CStringNN name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
+		ReportBuilder(Text::CStringNN name, UIntOS colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
 		~ReportBuilder();
 
 		void SetNameHAlign(Text::HAlignment hAlign);
@@ -94,17 +94,17 @@ namespace Text
 		void SetPaperHori(Bool paperHori);
 		void AddChart(Data::ChartPlotter *chart);
 		void AddPreHeader(Text::CStringNN name, Text::CStringNN val);
-		void AddPreHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right);
+		void AddPreHeader(Text::CStringNN name, UIntOS nameCellCnt, Text::CStringNN val, UIntOS valCellCnt, Bool valUnderline, Bool right);
 		void AddHeader(Text::CStringNN name, Text::CStringNN val);
-		void AddHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right);
+		void AddHeader(Text::CStringNN name, UIntOS nameCellCnt, Text::CStringNN val, UIntOS valCellCnt, Bool valUnderline, Bool right);
 		void AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
 		void AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
 		void AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
-		void AddIcon(UOSInt index, Text::CString fileName, Text::CString name);
-		void SetColumnWidthPts(UOSInt index, Double width);
-		void SetColumnType(UOSInt index, ColType colType);
-		void SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos);
-		void SetColHAlign(UOSInt index, HAlignment hAlign);
+		void AddIcon(UIntOS index, Text::CString fileName, Text::CString name);
+		void SetColumnWidthPts(UIntOS index, Double width);
+		void SetColumnType(UIntOS index, ColType colType);
+		void SetColURLLatLon(UIntOS index, Math::Coord2DDbl pos);
+		void SetColHAlign(UIntOS index, HAlignment hAlign);
 		Bool HasChart();
 		NN<Text::SpreadSheet::Workbook> CreateWorkbook();
 		NN<Media::VectorDocument> CreateVDoc(Int32 id, NN<Media::DrawEngine> deng);

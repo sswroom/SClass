@@ -10,7 +10,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Parser/FileParser/JSONParser.h"
 
-UOSInt testIndex;
+UIntOS testIndex;
 void PrintHelp(NN<IO::ConsoleWriter> console)
 {
 	console->WriteLine(CSTR("Usage: SIDERunner [options] your-project-file.side"));
@@ -25,15 +25,15 @@ void PrintHelp(NN<IO::ConsoleWriter> console)
 	console->WriteLine(CSTR("  --headless [bool]     Whether running at headless mode if supported, default is false"));
 }
 
-void __stdcall OnTestStep(AnyType userObj, UOSInt cmdIndex, Data::Duration dur)
+void __stdcall OnTestStep(AnyType userObj, UIntOS cmdIndex, Data::Duration dur)
 {
 	NN<IO::Stream> stm = userObj.GetNN<IO::Stream>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendTSNoZone(Data::Timestamp::Now());
 	sb.AppendUTF8Char(',');
-	sb.AppendUOSInt(testIndex);
+	sb.AppendUIntOS(testIndex);
 	sb.AppendUTF8Char(',');
-	sb.AppendUOSInt(cmdIndex);
+	sb.AppendUIntOS(cmdIndex);
 	sb.AppendUTF8Char(',');
 	sb.AppendDouble(dur.GetTotalSec());
 	sb.Append(CSTR("\r\n"));
@@ -44,7 +44,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	IO::ConsoleWriter console;
-	UOSInt cmdCnt;
+	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Text::CStringNN cmd;
 	Text::CStringNN param;
@@ -55,11 +55,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::CStringNN logPath = CSTR("log");
 	Text::CString sideFile = 0;
 	Text::CStringNN s;
-	UOSInt retryCnt = 3;
+	UIntOS retryCnt = 3;
 	IO::SeleniumIDERunner::RunOptions options;
 	Bool noPause = false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool hasError = false;
 	i = 1;
 	while (i < cmdCnt)
@@ -242,14 +242,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		else
 		{
 			NN<Text::JSONBase> json;
-			UnsafeArray<UInt8> fileBuff = MemAllocArr(UInt8, (UOSInt)fileLen + 1);
-			fileBuff[(UOSInt)fileLen] = 0;
-			if (fs.Read(Data::ByteArray(fileBuff, (UOSInt)fileLen)) != fileLen)
+			UnsafeArray<UInt8> fileBuff = MemAllocArr(UInt8, (UIntOS)fileLen + 1);
+			fileBuff[(UIntOS)fileLen] = 0;
+			if (fs.Read(Data::ByteArray(fileBuff, (UIntOS)fileLen)) != fileLen)
 			{
 				console.Write(CSTR("Error in reading side file: "));
 				console.WriteLine(s);
 			}
-			else if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, (UOSInt)fileLen)).SetTo(json))
+			else if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, (UIntOS)fileLen)).SetTo(json))
 			{
 				console.WriteLine(CSTR("Error in parsing side file, not json file"));
 			}
@@ -287,7 +287,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					NN<IO::MemoryStream> screenMstm;
 					Text::StringBuilderUTF8 sb;
 					Int64 startTime = Data::DateTimeUtil::GetCurrTimeMillis();
-					UOSInt procId = Manage::Process::GetCurrProcId();
+					UIntOS procId = Manage::Process::GetCurrProcId();
 					sb.Append(logPath);
 					IO::Path::CreateDirectory(sb.ToCString());
 					if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -300,7 +300,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					sb.AppendUTF8Char('.');
 					sb.AppendI64(startTime);
 					sb.AppendUTF8Char('.');
-					sb.AppendUOSInt(procId);
+					sb.AppendUIntOS(procId);
 					sb.Append(CSTR(".csv"));
 					IO::FileStream logFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal);
 					IO::MTStream logStm(logFS, 1048576);
@@ -330,7 +330,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 									sb.AppendUTF8Char('.');
 									sb.AppendI64(startTime);
 									sb.AppendUTF8Char('.');
-									sb.AppendUOSInt(procId);
+									sb.AppendUIntOS(procId);
 									sb.Append(CSTR(".err"));
 									IO::FileStream errFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 
@@ -338,7 +338,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 									sb.Append(CSTR("Error occurs while running the test ("));
 									sb.AppendOpt(test->GetName());
 									sb.Append(CSTR(") in step "));
-									sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+									sb.AppendIntOS((IntOS)runner.GetLastErrorIndex());
 									sb.Append(CSTR("\r\n"));
 									console.Write(sb.ToCString());
 									errFS.Write(sb.ToByteArray());
@@ -361,7 +361,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 										sb.AppendUTF8Char('.');
 										sb.AppendI64(startTime);
 										sb.AppendUTF8Char('.');
-										sb.AppendUOSInt(procId);
+										sb.AppendUIntOS(procId);
 										sb.Append(CSTR(".png"));
 										IO::FileStream screenFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 										screenFS.Write(screenMstm->GetArray());
@@ -383,7 +383,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 								sb.AppendUTF8Char('.');
 								sb.AppendI64(startTime);
 								sb.AppendUTF8Char('.');
-								sb.AppendUOSInt(procId);
+								sb.AppendUIntOS(procId);
 								sb.Append(CSTR(".err"));
 								IO::FileStream errFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 
@@ -391,7 +391,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 								sb.Append(CSTR("Error occurs while running the test ("));
 								sb.AppendOpt(test->GetName());
 								sb.Append(CSTR(") in step "));
-								sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+								sb.AppendIntOS((IntOS)runner.GetLastErrorIndex());
 								sb.Append(CSTR("\r\n"));
 								console.Write(sb.ToCString());
 								errFS.Write(sb.ToByteArray());

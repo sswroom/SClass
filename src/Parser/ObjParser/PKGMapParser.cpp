@@ -44,8 +44,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::PKGMapParser::ParseObject(NN<IO::P
 		return layers.GetItemNoCheck(0);
 	NN<Map::MapLayerCollection> mapColl;
 	NEW_CLASSNN(mapColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
-	UOSInt i = 0;
-	UOSInt j = layers.GetCount();
+	UIntOS i = 0;
+	UIntOS j = layers.GetCount();
 	while (i < j)
 	{
 		mapColl->Add(layers.GetItemNoCheck(i));
@@ -63,8 +63,8 @@ void Parser::ObjParser::PKGMapParser::ParsePackage(NN<IO::PackageFile> pkg, NN<D
 	Bool needRelease;
 	IO::PackageFile::PackObjectType pot;
 	NN<IO::StreamData> fd;
-	UOSInt i = 0;
-	UOSInt j = pkg->GetCount();
+	UIntOS i = 0;
+	UIntOS j = pkg->GetCount();
 	while (i < j)
 	{
 		pot = pkg->GetItemType(i);

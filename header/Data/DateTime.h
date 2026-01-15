@@ -51,8 +51,8 @@ namespace Data
 		NN<Data::DateTime> SetCurrTime();
 		NN<Data::DateTime> SetCurrTimeUTC();
 		void SetValue(NN<const DateTime> time);
-		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
-		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
+		void SetValue(Int32 year, IntOS month, IntOS day, IntOS hour, IntOS minute, IntOS second, IntOS ms, Int8 tzQhr);
+		void SetValue(Int32 year, IntOS month, IntOS day, IntOS hour, IntOS minute, IntOS second, IntOS ms);
 		void SetValue(Int64 ticks, Int8 tzQhr);
 		void SetValue(const Data::TimeInstant &instant, Int8 tzQhr);
 		void SetValueNoFix(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
@@ -70,20 +70,20 @@ namespace Data
 		UInt8 GetSecond();
 		UInt16 GetMS();
 		UInt32 GetNS();
-		NN<Data::DateTime> AddMonth(OSInt val);
-		NN<Data::DateTime> AddDay(OSInt val);
-		NN<Data::DateTime> AddHour(OSInt val);
-		NN<Data::DateTime> AddMinute(OSInt val);
-		NN<Data::DateTime> AddSecond(OSInt val);
-		NN<Data::DateTime> AddMS(OSInt val);
-		NN<Data::DateTime> AddNS(OSInt val);
-		void SetDate(Int32 year, OSInt month, OSInt day);
+		NN<Data::DateTime> AddMonth(IntOS val);
+		NN<Data::DateTime> AddDay(IntOS val);
+		NN<Data::DateTime> AddHour(IntOS val);
+		NN<Data::DateTime> AddMinute(IntOS val);
+		NN<Data::DateTime> AddSecond(IntOS val);
+		NN<Data::DateTime> AddMS(IntOS val);
+		NN<Data::DateTime> AddNS(IntOS val);
+		void SetDate(Int32 year, IntOS month, IntOS day);
 		void SetYear(Int32 year);
-		void SetMonth(OSInt month);
-		void SetDay(OSInt day);
-		void SetHour(OSInt hour);
-		void SetMinute(OSInt minute);
-		void SetSecond(OSInt second);
+		void SetMonth(IntOS month);
+		void SetDay(IntOS day);
+		void SetHour(IntOS hour);
+		void SetMinute(IntOS minute);
+		void SetSecond(IntOS second);
 		void SetNS(UInt32 ns);
 		void ClearTime();
 		Int64 GetMSPassedDate();
@@ -119,7 +119,7 @@ namespace Data
 		Bool operator<(DateTime dt);
 		
 		UnsafeArray<UTF8Char> ToLocalStr(UnsafeArray<UTF8Char> buff);
-		OSInt CompareTo(NN<Data::DateTime> obj);
+		IntOS CompareTo(NN<Data::DateTime> obj);
 		Int32 DateCompare(NN<Data::DateTime> dt);
 		Bool IsSameDay(NN<Data::DateTime> dt);
 

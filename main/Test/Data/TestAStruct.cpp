@@ -7,7 +7,7 @@
 ASTRUCT AlignedStruct
 {
 	Math::Coord2DDbl pos;
-	UOSInt tmp;
+	UIntOS tmp;
 };
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)

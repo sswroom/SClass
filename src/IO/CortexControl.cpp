@@ -13,8 +13,8 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 {
 	NN<IO::CortexControl> me = userObj.GetNN<IO::CortexControl>();
 	UInt8 buff[260];
-	UOSInt buffSize = 0;
-	UOSInt recvSize;
+	UIntOS buffSize = 0;
+	UIntOS recvSize;
 	NN<IO::Writer> errWriter;
 	if (me->errWriter.SetTo(errWriter)) errWriter->WriteLine(CSTR("Thread started"));
 	me->recvRunning = true;
@@ -60,7 +60,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 	return 0;
 }
 
-IO::CortexControl::CortexControl(UOSInt portNum, Optional<IO::Writer> errWriter) : protoHdlr(*this)
+IO::CortexControl::CortexControl(UIntOS portNum, Optional<IO::Writer> errWriter) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvToStop = false;
@@ -88,7 +88,7 @@ Bool IO::CortexControl::IsError()
 	return this->stm->IsError();
 }
 
-void IO::CortexControl::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void IO::CortexControl::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	if (cmdType == (this->sendType | 0x80))
 	{
@@ -203,14 +203,14 @@ void IO::CortexControl::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmd
 	}
 }
 
-void IO::CortexControl::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void IO::CortexControl::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 
 Bool IO::CortexControl::GetFWVersion(OutParam<Int32> majorVer, OutParam<Int32> minorVer)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -247,7 +247,7 @@ Bool IO::CortexControl::GetFWVersion(OutParam<Int32> majorVer, OutParam<Int32> m
 Bool IO::CortexControl::ReadDIO(OutParam<Int32> dioValues)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -284,7 +284,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 {
 	UInt8 buff[16];
 	UInt8 cmd[2];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -321,7 +321,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 Bool IO::CortexControl::ReadVin(OutParam<Int32> voltage)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -357,7 +357,7 @@ Bool IO::CortexControl::ReadVin(OutParam<Int32> voltage)
 Bool IO::CortexControl::ReadVBatt(OutParam<Int32> voltage)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -393,7 +393,7 @@ Bool IO::CortexControl::ReadVBatt(OutParam<Int32> voltage)
 Bool IO::CortexControl::ReadOdometerCounter(OutParam<Int32> odoCount)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -429,7 +429,7 @@ Bool IO::CortexControl::ReadOdometerCounter(OutParam<Int32> odoCount)
 Bool IO::CortexControl::ResetOdometerCounter()
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -464,7 +464,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 Bool IO::CortexControl::ReadEnvBrightness(OutParam<Int32> brightness)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -500,7 +500,7 @@ Bool IO::CortexControl::ReadEnvBrightness(OutParam<Int32> brightness)
 Bool IO::CortexControl::ReadTemperature(OutParam<Int32> temperature)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -536,7 +536,7 @@ Bool IO::CortexControl::ReadTemperature(OutParam<Int32> temperature)
 Bool IO::CortexControl::PowerOff()
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -572,7 +572,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 {
 	UInt8 buff[16];
 	UInt8 cmd;
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -608,7 +608,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 {
 	UInt8 buff[16];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;

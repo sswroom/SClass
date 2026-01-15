@@ -8,7 +8,7 @@ Data::ArrayListStrW::ArrayListStrW() : Data::SortableArrayList<const WChar*>()
 {
 }
 
-Data::ArrayListStrW::ArrayListStrW(UOSInt Capacity) : Data::SortableArrayList<const WChar*>(Capacity)
+Data::ArrayListStrW::ArrayListStrW(UIntOS Capacity) : Data::SortableArrayList<const WChar*>(Capacity)
 {
 }
 
@@ -20,17 +20,17 @@ NN<Data::ArrayList<const WChar*>> Data::ArrayListStrW::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrW::Compare(const WChar* obj1, const WChar* obj2) const
+IntOS Data::ArrayListStrW::Compare(const WChar* obj1, const WChar* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }
 
 UnsafeArray<const WChar> Data::ArrayListStrW::JoinNewStr() const
 {
-	OSInt j;
-	OSInt k;
+	IntOS j;
+	IntOS k;
 	k = j = this->objCnt;
-	OSInt strSize = 0;
+	IntOS strSize = 0;
 	while (j-- > 0)
 	{
 		strSize += Text::StrCharCnt(arr[j]);

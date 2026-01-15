@@ -818,7 +818,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> 
 	NN<Manage::AddressResolver> addrResol;
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
-	OSInt instCnt = 0;
+	IntOS instCnt = 0;
 	if (outEsp)
 	{
 		*outEsp = 0;
@@ -873,7 +873,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> 
 			Text::UTF8Writer console(fs);
 #endif
 			UInt8 *buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			buffSize = tmpSess.regs.EIP - funcAddr;
 			if (buffSize < 256)
 				buffSize = 256;
@@ -4937,7 +4937,7 @@ Bool __stdcall DasmX86_32_c2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 	else
 	{
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.ESP);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
 		buff = MemAlloc(UInt8, cnt);
@@ -5094,7 +5094,7 @@ Bool __stdcall DasmX86_32_ca(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 	else
 	{
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.ESP);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
 		buff = MemAlloc(UInt8, cnt);
@@ -6790,7 +6790,7 @@ Bool __stdcall DasmX86_32_e9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	UInt32 addr2;
-	UOSInt i;
+	UIntOS i;
 	if (sess->thisStatus & 1)
 	{
 		addr = sess->regs.EIP + 3 + (UInt32)(Int32)(Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -6826,7 +6826,7 @@ Bool __stdcall DasmX86_32_ea(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	UInt32 addr2;
-	UOSInt i;
+	UIntOS i;
 	if (sess->thisStatus & 1)
 	{
 		addr = (UInt32)(Int32)(Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -6866,7 +6866,7 @@ Bool __stdcall DasmX86_32_eb(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (sess->regs.EIP) + 2 + (UInt32)(Int32)(Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt32 addr2;
-	UOSInt i;
+	UIntOS i;
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jmp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
@@ -19193,7 +19193,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
 	Text::StringBuilderUTF8 outStr;
-	UOSInt initJmpCnt = jmpAddrs->GetCount();
+	UIntOS initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
@@ -19250,7 +19250,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 		}
 		if (!ret)
 		{
-			UOSInt buffSize;
+			UIntOS buffSize;
 			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.EIP, buff, 16);
 			if (buffSize > 0)
@@ -19265,7 +19265,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.EIP)
 		{
-			UOSInt i;
+			UIntOS i;
 			UInt32 minAddr = 0xffffffff;
 			UInt32 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -19350,13 +19350,13 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional
 		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](sess);
-		UOSInt sbuffLen = Text::StrCharCnt(sbuff);
+		UIntOS sbuffLen = Text::StrCharCnt(sbuff);
 		console.Write(Text::CStringNN(sbuff, sbuffLen));
 		outStr->AppendC(sbuff, sbuffLen);
 		if (!ret)
 		{
 			UInt8 buff[256];
-			UOSInt buffSize;
+			UIntOS buffSize;
 			buffSize = sess.memReader->ReadMemory(oriip, buff, 16);
 			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			if (buffSize > 0)
@@ -19400,7 +19400,7 @@ NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<M
 	sess = MemAllocNN(DasmX86_32_Sess);
 	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
 	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
-	sess->regs.EIP = (UInt32)(OSInt)addr;
+	sess->regs.EIP = (UInt32)(IntOS)addr;
 	sess->regs.ESP = 0;
 	sess->regs.EBP = 0;
 	sess->regs.EAX = 0;
@@ -19439,7 +19439,7 @@ UnsafeArrayOpt<UTF8Char> Manage::DasmX86_32::DasmNext(NN<DasmX86_32_Sess> sess, 
 	if (!ret)
 	{
 		UInt8 cbuff[16];
-		UOSInt buffSize;
+		UIntOS buffSize;
 		sptr = Text::StrConcatC(buff, UTF8STRC("Unknown opcode "));
 		buffSize = sess->memReader->ReadMemory(sess->regs.EIP, cbuff, 16);
 		if (buffSize > 0)
@@ -19462,9 +19462,9 @@ UnsafeArrayOpt<UTF8Char> Manage::DasmX86_32::DasmNext(NN<DasmX86_32_Sess> sess, 
 	return sptr;
 }
 
-OSInt Manage::DasmX86_32::SessGetCodeOffset(NN<DasmX86_32_Sess> sess)
+IntOS Manage::DasmX86_32::SessGetCodeOffset(NN<DasmX86_32_Sess> sess)
 {
-	return (OSInt)sess->regs.EIP;
+	return (IntOS)sess->regs.EIP;
 }
 
 Manage::DasmX86_32::EndType Manage::DasmX86_32::SessGetEndType(NN<DasmX86_32_Sess> sess)

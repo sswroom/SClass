@@ -49,8 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnBrowseClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
 	NN<AVIRSudokuImportForm> me = userObj.GetNN<AVIRSudokuImportForm>();
-	UOSInt i = 0;
-	UOSInt j = fileNames.GetSize();
+	UIntOS i = 0;
+	UIntOS j = fileNames.GetSize();
 	while (i < j)
 	{
 		if (me->LoadFile(fileNames[i]))
@@ -61,14 +61,14 @@ void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnFiles(AnyType userObj, Dat
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnNumberInput(AnyType userObj, UOSInt x, UOSInt y, UInt8 num)
+void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnNumberInput(AnyType userObj, UIntOS x, UIntOS y, UInt8 num)
 {
 	NN<AVIRSudokuImportForm> me = userObj.GetNN<AVIRSudokuImportForm>();
 	me->board.SetBoardNum(x, y, num, true);
 	me->svMain->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
+void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<IntOS> boundary)
 {
 #ifdef VERBOSE
 	printf("OCR Result: %s (Confidence: %lf)\n", txt->ToCString().v.Ptr(), confidence);
@@ -107,22 +107,22 @@ Bool SSWR::AVIRead::AVIRSudokuImportForm::LoadImage(NN<Media::ImageList> imgList
 
 void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 {
-	Math::RectArea<UOSInt> rect = CalcBoardRect(img);
+	Math::RectArea<UIntOS> rect = CalcBoardRect(img);
 	this->board.Clear();
 	Media::OCREngine ocr(Media::OCREngine::Language::English);
 	ocr.HandleOCRResult(OnOCRResult, this);
 	ocr.SetCharWhiteList("123456789");
 	ocr.SetParsingImage(img);
-	Math::Coord2D<UOSInt> currPos = rect.min;
-	Math::RectArea<UOSInt> boxRect = CalcBoxRect(img, Math::Coord2D<UOSInt>(currPos.x + 4, currPos.y + 4));
-	Math::Size2D<UOSInt> boxSize = boxRect.GetSize();
-	Math::RectArea<UOSInt> textRect;
-	UOSInt x;
-	UOSInt y = 0;
-	UOSInt minConfidence[] = {80, 60, 60, 60, 50, 60, 60, 60, 60};
+	Math::Coord2D<UIntOS> currPos = rect.min;
+	Math::RectArea<UIntOS> boxRect = CalcBoxRect(img, Math::Coord2D<UIntOS>(currPos.x + 4, currPos.y + 4));
+	Math::Size2D<UIntOS> boxSize = boxRect.GetSize();
+	Math::RectArea<UIntOS> textRect;
+	UIntOS x;
+	UIntOS y = 0;
+	UIntOS minConfidence[] = {80, 60, 60, 60, 50, 60, 60, 60, 60};
 	while (y < 9)
 	{
-		boxRect = CalcBoxRect(img, Math::Coord2D<UOSInt>(currPos.x + 4, currPos.y + 10));
+		boxRect = CalcBoxRect(img, Math::Coord2D<UIntOS>(currPos.x + 4, currPos.y + 10));
 		currPos.y = boxRect.min.y + 2;
 		x = 0;
 		while (x < 9)
@@ -132,7 +132,7 @@ void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 			if (CalcTextRect(img, boxRect, textRect))
 			{
 				NN<Text::String> s;
-				UOSInt confidence;
+				UIntOS confidence;
 				if (ocr.ParseInsideImage(textRect, confidence).SetTo(s))
 				{
 					if (s->v[0] >= '1' && s->v[0] <= '9')
@@ -157,17 +157,17 @@ void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 	}
 }
 
-Bool SSWR::AVIRead::AVIRSudokuImportForm::CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UOSInt> boxRect, OutParam<Math::RectArea<UOSInt>> textRect)
+Bool SSWR::AVIRead::AVIRSudokuImportForm::CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UIntOS> boxRect, OutParam<Math::RectArea<UIntOS>> textRect)
 {
-//	textRect.Set(Math::RectArea<UOSInt>(boxRect.min + 2, boxRect.max - 2));
+//	textRect.Set(Math::RectArea<UIntOS>(boxRect.min + 2, boxRect.max - 2));
 //	return true;
-	Math::RectArea<UOSInt> retRect = boxRect;
+	Math::RectArea<UIntOS> retRect = boxRect;
 	Bool found = false;
 	UnsafeArray<UInt8> dataPtr = img->data;
-	UOSInt bpl = img->GetDataBpl();
-	UOSInt currY = boxRect.min.y + 2;
-	UOSInt currX;
-	UOSInt ofst;
+	UIntOS bpl = img->GetDataBpl();
+	UIntOS currY = boxRect.min.y + 2;
+	UIntOS currX;
+	UIntOS ofst;
 	while (currY < boxRect.max.y - 2)
 	{
 		currX = boxRect.min.x + 2;
@@ -178,7 +178,7 @@ Bool SSWR::AVIRead::AVIRSudokuImportForm::CalcTextRect(NN<Media::StaticImage> im
 			{
 				if (!found)
 				{
-					retRect.min = Math::Coord2D<UOSInt>(currX, currY);
+					retRect.min = Math::Coord2D<UIntOS>(currX, currY);
 					retRect.max = retRect.min + 1;
 					found = true;
 				}
@@ -210,15 +210,15 @@ Bool SSWR::AVIRead::AVIRSudokuImportForm::CalcTextRect(NN<Media::StaticImage> im
 	return true;
 }
 
-Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UOSInt> pos)
+Math::RectArea<UIntOS> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UIntOS> pos)
 {
 	UnsafeArray<UInt8> dataPtr = img->data;
-	UOSInt bpl = img->GetDataBpl();
-	UOSInt currX = pos.x;
-	UOSInt currY = pos.y;
-	Math::Size2D<UOSInt> dispSize = img->info.dispSize;
-	UOSInt yOfst = currY * bpl;
-	Math::RectArea<UOSInt> ret;
+	UIntOS bpl = img->GetDataBpl();
+	UIntOS currX = pos.x;
+	UIntOS currY = pos.y;
+	Math::Size2D<UIntOS> dispSize = img->info.dispSize;
+	UIntOS yOfst = currY * bpl;
+	Math::RectArea<UIntOS> ret;
 	while (currX > 0)
 	{
 		if (dataPtr[yOfst + currX * 4] >= GRAYTHRESHOLD)
@@ -275,18 +275,18 @@ Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoxRect(NN<Media
 	return ret;
 }
 
-Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoardRect(NN<Media::StaticImage> img)
+Math::RectArea<UIntOS> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoardRect(NN<Media::StaticImage> img)
 {
 	img->ToB8G8R8A8();
-	Math::RectArea<UOSInt> rect = CalcBoxRect(img, img->info.dispSize / 2);
+	Math::RectArea<UIntOS> rect = CalcBoxRect(img, img->info.dispSize / 2);
 	if (rect.min.x == 0 || rect.min.y == 0 || rect.max.x == img->info.dispSize.x || rect.max.y == img->info.dispSize.y)
 	{
-		return Math::RectArea<UOSInt>(Math::Coord2D<UOSInt>(0, 0), img->info.dispSize);
+		return Math::RectArea<UIntOS>(Math::Coord2D<UIntOS>(0, 0), img->info.dispSize);
 	}
-	Math::RectArea<UOSInt> ret = rect;
-	Math::Size2D<UOSInt> boxSize = rect.GetSize();
-	Math::Coord2D<UOSInt> currPos = img->info.dispSize / 2;
-	Math::RectArea<UOSInt> thisRect = rect;
+	Math::RectArea<UIntOS> ret = rect;
+	Math::Size2D<UIntOS> boxSize = rect.GetSize();
+	Math::Coord2D<UIntOS> currPos = img->info.dispSize / 2;
+	Math::RectArea<UIntOS> thisRect = rect;
 	while (thisRect.min.x > boxSize.x)
 	{
 		currPos.x = thisRect.min.x - (boxSize.x >> 1);
@@ -319,20 +319,20 @@ Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoardRect(NN<Med
 #ifdef VERBOSE
 		printf("Board rect not found\r\n");
 #endif
-		return Math::RectArea<UOSInt>(Math::Coord2D<UOSInt>(0, 0), img->info.dispSize);
+		return Math::RectArea<UIntOS>(Math::Coord2D<UIntOS>(0, 0), img->info.dispSize);
 	}
 #ifdef VERBOSE
 	printf("Board rect: %d, %d - %d, %d\r\n", (Int32)ret.min.x, (Int32)ret.min.y, (Int32)thisRect.max.x, (Int32)thisRect.max.y);
 #endif
-	return Math::RectArea<UOSInt>(ret.min, thisRect.max);
+	return Math::RectArea<UIntOS>(ret.min, thisRect.max);
 }
 
-Bool SSWR::AVIRead::AVIRSudokuImportForm::SizeSimilar(Math::Size2D<UOSInt> size1, Math::Size2D<UOSInt> size2)
+Bool SSWR::AVIRead::AVIRSudokuImportForm::SizeSimilar(Math::Size2D<UIntOS> size1, Math::Size2D<UIntOS> size2)
 {
-	OSInt xMinDiff = (OSInt)(size1.x / 10);
-	OSInt yMinDiff = (OSInt)(size1.y / 10);
-	OSInt xDiff = (OSInt)size1.x - (OSInt)size2.x;
-	OSInt yDiff = (OSInt)size1.y - (OSInt)size2.y;
+	IntOS xMinDiff = (IntOS)(size1.x / 10);
+	IntOS yMinDiff = (IntOS)(size1.y / 10);
+	IntOS xDiff = (IntOS)size1.x - (IntOS)size2.x;
+	IntOS yDiff = (IntOS)size1.y - (IntOS)size2.y;
 	return (xDiff >= -xMinDiff && xDiff <= xMinDiff) && (yDiff >= -yMinDiff && yDiff <= yMinDiff);
 }
 

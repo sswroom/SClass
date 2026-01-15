@@ -13,7 +13,7 @@ namespace IO
 	private:
 		Sync::Mutex mut;
 		IO::LogHandler::LogType logStyle;
-		UOSInt nFiles;
+		UIntOS nFiles;
 		Int32 lastVal;
 		NN<Text::UTF8Writer> log;
 		NN<IO::FileStream> fileStm;
@@ -24,7 +24,7 @@ namespace IO
 
 		void SwapFiles();
 	public:
-		SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, UInt64 fileSize);
+		SizeRotateFileLog(Text::CStringNN fileName, UIntOS nFiles, UInt64 fileSize);
 		virtual ~SizeRotateFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

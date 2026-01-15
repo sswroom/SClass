@@ -23,9 +23,9 @@ namespace IO
 
 		virtual Bool Write(Text::CStringNN str);
 		virtual Bool WriteLine(Text::CStringNN str);
-		virtual Bool WriteW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteW(UnsafeArray<const WChar> str, UIntOS nChar);
 		virtual Bool WriteW(UnsafeArray<const WChar> str);
-		virtual Bool WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteLineW(UnsafeArray<const WChar> str, UIntOS nChar);
 		virtual Bool WriteLineW(UnsafeArray<const WChar> str);
 		virtual Bool WriteLine();
 

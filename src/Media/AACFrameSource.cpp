@@ -15,7 +15,7 @@ Media::AACFrameSource::~AACFrameSource()
 {
 }
 
-UOSInt Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
 {
 	if (this->readBlock >= this->blockCnt)
 		return 0;
@@ -36,14 +36,14 @@ UOSInt Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
 	blk[5] |= 0x1f;
 	blk[6] = 0xfc;
 	blk[6] |= 0; // number_of_raw_data_blocks_in_frame
-	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk.SubArray(7));
+	UIntOS readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk.SubArray(7));
 	this->readBlock++;
 	if (this->readEvt.SetTo(readEvt))
 		readEvt->Set();
 	return readSize + 7;
 }
 
-UOSInt Media::AACFrameSource::GetMinBlockSize()
+UIntOS Media::AACFrameSource::GetMinBlockSize()
 {
 	return this->maxBlockSize + 7;
 }

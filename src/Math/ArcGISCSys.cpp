@@ -5660,8 +5660,8 @@ Math::ArcGISCSys::CSysInfo Math::ArcGISCSys::projList[] = {
 
 Math::ArcGISCSys::ArcGISCSys()
 {
-	UOSInt i = 0;
-	UOSInt j = sizeof(projList) / sizeof(projList[0]);
+	UIntOS i = 0;
+	UIntOS j = sizeof(projList) / sizeof(projList[0]);
 	while (i < j)
 	{
 		if (this->projMap.GetC(Text::CStringNN(projList[i].name, projList[i].nameLen)).IsNull())

@@ -12,36 +12,36 @@ namespace Data
 	{
 	protected:
 		UnsafeArray<T> arr;
-		UOSInt objCnt;
-		UOSInt capacity;
+		UIntOS objCnt;
+		UIntOS capacity;
 
-		void Init(UOSInt capacity);
+		void Init(UIntOS capacity);
 	protected:
 		ArrayListObjBase();
-		ArrayListObjBase(UOSInt capacity);
+		ArrayListObjBase(UIntOS capacity);
 	public:
 		virtual ~ArrayListObjBase();
 
 		virtual Bool Remove(T val);
-		virtual UOSInt IndexOf(T val) const;
+		virtual UIntOS IndexOf(T val) const;
 		virtual void Clear();
 
-		virtual UOSInt GetCount() const;
-		virtual UOSInt GetCapacity() const;
+		virtual UIntOS GetCount() const;
+		virtual UIntOS GetCapacity() const;
 
-		virtual T GetItem(UOSInt index) const;
-		virtual void SetItem(UOSInt index, T val);
-		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
-		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual UnsafeArray<T> GetArr(OutParam<UOSInt> arraySize) const;
+		virtual T GetItem(UIntOS index) const;
+		virtual void SetItem(UIntOS index, T val);
+		void CopyItems(UIntOS destIndex, UIntOS srcIndex, UIntOS count);
+		UIntOS GetRange(UnsafeArray<T> outArr, UIntOS index, UIntOS cnt) const;
+		UIntOS RemoveRange(UIntOS index, UIntOS cnt);
+		virtual UnsafeArray<T> GetArr(OutParam<UIntOS> arraySize) const;
 		virtual UnsafeArray<T> Arr() const;
 		T Pop();
 		void Reverse();
 	};
 
 
-	template <class T> void ArrayListObjBase<T>::Init(UOSInt capacity)
+	template <class T> void ArrayListObjBase<T>::Init(UIntOS capacity)
 	{
 		objCnt = 0;
 		this->capacity = capacity;
@@ -53,7 +53,7 @@ namespace Data
 		Init(40);
 	}
 
-	template <class T> ArrayListObjBase<T>::ArrayListObjBase(UOSInt capacity)
+	template <class T> ArrayListObjBase<T>::ArrayListObjBase(UIntOS capacity)
 	{
 		Init(capacity);
 	}
@@ -65,9 +65,9 @@ namespace Data
 
 	template <class T> Bool ArrayListObjBase<T>::Remove(T val)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->objCnt;
-		UOSInt k = 0;
+		UIntOS i = 0;
+		UIntOS j = this->objCnt;
+		UIntOS k = 0;
 		while (i < j)
 		{
 			if (this->arr[i] == val)
@@ -92,9 +92,9 @@ namespace Data
 		return i != k;
 	}
 
-	template <class T> UOSInt ArrayListObjBase<T>::IndexOf(T val) const
+	template <class T> UIntOS ArrayListObjBase<T>::IndexOf(T val) const
 	{
-		UOSInt i = objCnt;
+		UIntOS i = objCnt;
 		while (i-- > 0)
 			if (arr[i] == val)
 				return i;
@@ -106,24 +106,24 @@ namespace Data
 		this->objCnt = 0;
 	}
 
-	template <class T> UOSInt ArrayListObjBase<T>::GetCount() const
+	template <class T> UIntOS ArrayListObjBase<T>::GetCount() const
 	{
 		return this->objCnt;
 	}
 
-	template <class T> UOSInt ArrayListObjBase<T>::GetCapacity() const
+	template <class T> UIntOS ArrayListObjBase<T>::GetCapacity() const
 	{
 		return this->capacity;
 	}
 
-	template <class T> T ArrayListObjBase<T>::GetItem(UOSInt index) const
+	template <class T> T ArrayListObjBase<T>::GetItem(UIntOS index) const
 	{
 		if (index >= this->objCnt)
 			return nullptr;
 		return this->arr[index];
 	}
 
-	template <class T> void ArrayListObjBase<T>::SetItem(UOSInt index, T val)
+	template <class T> void ArrayListObjBase<T>::SetItem(UIntOS index, T val)
 	{
 		if (index == objCnt)
 		{
@@ -139,7 +139,7 @@ namespace Data
 		}
 	}
 
-	template <class T> UnsafeArray<T> ArrayListObjBase<T>::GetArr(OutParam<UOSInt> arraySize) const
+	template <class T> UnsafeArray<T> ArrayListObjBase<T>::GetArr(OutParam<UIntOS> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
@@ -163,8 +163,8 @@ namespace Data
 		T tmp;
 		if (this->objCnt > 0)
 		{
-			UOSInt i = 0;
-			UOSInt j = this->objCnt - 1;
+			UIntOS i = 0;
+			UIntOS j = this->objCnt - 1;
 			while (i < j)
 			{
 				tmp = this->arr[i];

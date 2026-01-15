@@ -9,7 +9,7 @@ Media::APE::APEAudioSource::APEAudioSource(IAPEDecompress *ape, Media::APE::APEI
 	this->ape = ape;
 	this->io = io;
 	NEW_CLASS(this->fmt, Media::AudioFormat());
-	this->ape->GetInfo(APE_INFO_WAVEFORMATEX, (Int32)(OSInt)&waveFmt, 0);
+	this->ape->GetInfo(APE_INFO_WAVEFORMATEX, (Int32)(IntOS)&waveFmt, 0);
 	this->fmt->FromWAVEFORMATEX((UInt8*)&waveFmt);
 	this->evt = 0;
 }
@@ -66,7 +66,7 @@ void Media::APE::APEAudioSource::Stop()
 	this->evt = 0;
 }
 
-OSInt Media::APE::APEAudioSource::ReadBlock(UInt8 *buff, OSInt blkSize)
+IntOS Media::APE::APEAudioSource::ReadBlock(UInt8 *buff, IntOS blkSize)
 {
 	Int32 readSize = 0;
 	if (this->ape->GetData((Char*)buff, (Int32)(blkSize / (this->fmt->nChannels * this->fmt->bitpersample >> 3)), &readSize) != 0)
@@ -82,7 +82,7 @@ OSInt Media::APE::APEAudioSource::ReadBlock(UInt8 *buff, OSInt blkSize)
 	return readSize * this->fmt->nChannels * this->fmt->bitpersample >> 3;
 }
 
-OSInt Media::APE::APEAudioSource::GetMinBlockSize()
+IntOS Media::APE::APEAudioSource::GetMinBlockSize()
 {
 	return this->fmt->nChannels * this->fmt->bitpersample >> 3;
 }

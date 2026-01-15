@@ -13,7 +13,7 @@ Media::RealtimeVideoSource::~RealtimeVideoSource()
 {
 }
 
-void Media::RealtimeVideoSource::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
+void Media::RealtimeVideoSource::SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom)
 {
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
@@ -21,7 +21,7 @@ void Media::RealtimeVideoSource::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, 
 	this->cropBottom = cropBottom;
 }
 
-void Media::RealtimeVideoSource::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
+void Media::RealtimeVideoSource::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
 	cropLeft.Set(this->cropLeft);
 	cropTop.Set(this->cropTop);
@@ -64,12 +64,12 @@ Bool Media::RealtimeVideoSource::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::RealtimeVideoSource::GetFrameCount()
+UIntOS Media::RealtimeVideoSource::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Media::RealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::RealtimeVideoSource::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -78,7 +78,7 @@ void Media::RealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType us
 {
 }
 
-UOSInt Media::RealtimeVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::RealtimeVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	///////////////////////////////////////
 	return 0;

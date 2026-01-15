@@ -19,7 +19,7 @@ namespace Net
 		Crypto::Hash::CRC32RIEEE hash;
 		Net::HTTPQueue queue;
 
-		UnsafeArrayOpt<UTF8Char> GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
+		UnsafeArrayOpt<UTF8Char> GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UIntOS urlLen);
 	public:
 		WebBrowser(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir);
 		~WebBrowser();

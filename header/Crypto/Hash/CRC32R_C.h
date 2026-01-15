@@ -3,6 +3,6 @@
 extern "C"
 {
 	UInt32 CRC32R_Reverse(UInt32 polynomial);
-	UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
+	UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal);
 }
 #endif

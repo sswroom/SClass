@@ -68,7 +68,7 @@ namespace Manage
 		NN<DasmX86_32_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::MemoryReader> memReader);
 		void EndDasm(NN<DasmX86_32_Sess> sess);
 		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_32_Sess> sess, UnsafeArray<UTF8Char> buff);
-		OSInt SessGetCodeOffset(NN<DasmX86_32_Sess> sess);
+		IntOS SessGetCodeOffset(NN<DasmX86_32_Sess> sess);
 		EndType SessGetEndType(NN<DasmX86_32_Sess> sess);
 		Bool SessContJmp(NN<DasmX86_32_Sess> sess);
 	};

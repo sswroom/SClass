@@ -26,7 +26,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 		frm->SetExitOnClose(true);
 
-		UOSInt argc;
+		UIntOS argc;
 		UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 		while (argc-- > 1)
 		{

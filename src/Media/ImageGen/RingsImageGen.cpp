@@ -18,19 +18,19 @@ Text::CStringNN Media::ImageGen::RingsImageGen::GetName() const
 	return CSTR("Rings Image");
 }
 
-Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
 	Media::StaticImage *outImage;
 	UnsafeArray<Int64> imgPtr;
 	UnsafeArray<UInt8> imgPtr2;
 	UInt16 c[4];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double v;
 	Double dx;
 	Double dy;
-	Double dwidth = UOSInt2Double(size.x);
-	Double dheight = UOSInt2Double(size.y);
+	Double dwidth = UIntOS2Double(size.x);
+	Double dheight = UIntOS2Double(size.y);
 	Double d = dwidth;
 	if (dheight > d)
 	{
@@ -51,8 +51,8 @@ Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<co
 		i = 0;
 		while (i < size.x)
 		{
-			dx = (dwidth * 0.5) - UOSInt2Double(i) - 0.5;
-			dy = (dheight * 0.5) - UOSInt2Double(j) - 0.5;
+			dx = (dwidth * 0.5) - UIntOS2Double(i) - 0.5;
+			dy = (dheight * 0.5) - UIntOS2Double(j) - 0.5;
 			v = 0.5 + Math_Sin((dx * dx + dy * dy) / (d / 2)) * 0.5;
 			c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);
 			c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(v) * 65535.0);

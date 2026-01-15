@@ -27,24 +27,24 @@ Bool Net::Email::POP3Client::IsError()
 	return this->conn.IsError() || !this->loggedIn;
 }
 
-UOSInt Net::Email::POP3Client::GetMessageCount()
+UIntOS Net::Email::POP3Client::GetMessageCount()
 {
 	return this->msgCnt;
 }
 
-UOSInt Net::Email::POP3Client::GetMessageSize()
+UIntOS Net::Email::POP3Client::GetMessageSize()
 {
 	return this->msgSize;
 }
 
-Bool Net::Email::POP3Client::ReadMessageAsString(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Net::Email::POP3Client::ReadMessageAsString(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!this->loggedIn)
 		return false;
 	return this->conn.SendRetr(index, sb) == Net::Email::POP3Conn::ResultStatus::Success;
 }
 
-Bool Net::Email::POP3Client::DeleteMessage(UOSInt index)
+Bool Net::Email::POP3Client::DeleteMessage(UIntOS index)
 {
 	if (!this->loggedIn)
 		return false;

@@ -12,7 +12,7 @@ Media::ImageRemapper::ImageRemapper()
 	this->srcPal = nullptr;
 }
 
-void Media::ImageRemapper::SetSourceImage32(UnsafeArray<const UInt8> srcImgPtr, UOSInt srcBpl, UOSInt srcWidth, UOSInt srcHeight)
+void Media::ImageRemapper::SetSourceImage32(UnsafeArray<const UInt8> srcImgPtr, UIntOS srcBpl, UIntOS srcWidth, UIntOS srcHeight)
 {
 	this->srcImgPtr = srcImgPtr;
 	this->srcBpl = srcBpl;
@@ -32,7 +32,7 @@ void Media::ImageRemapper::SetSourceImage(NN<Media::StaticImage> srcImg)
 	this->srcPal = srcImg->pal;
 }
 
-Bool Media::ImageRemapper::Remap(UnsafeArray<UInt8> destImgPtr, UOSInt destBpl, UOSInt destWidth, UOSInt destHeight, Math::Quadrilateral destQuad)
+Bool Media::ImageRemapper::Remap(UnsafeArray<UInt8> destImgPtr, UIntOS destBpl, UIntOS destWidth, UIntOS destHeight, Math::Quadrilateral destQuad)
 {
 	UnsafeArray<const UInt8> srcImgPtr;
 	if (!this->srcImgPtr.SetTo(srcImgPtr) || this->srcWidth == 0 || this->srcHeight == 0 || destWidth == 0 || destHeight == 0)
@@ -45,17 +45,17 @@ Bool Media::ImageRemapper::Remap(UnsafeArray<UInt8> destImgPtr, UOSInt destBpl, 
 		return false;
 	}
 	Math::RectAreaDbl rect = destQuad.GetExterior();
-	OSInt left = (OSInt)rect.min.x;
-	OSInt top = (OSInt)rect.min.y;
-	OSInt right = (OSInt)rect.max.x;
-	OSInt bottom = (OSInt)rect.max.y;
-	OSInt x;
+	IntOS left = (IntOS)rect.min.x;
+	IntOS top = (IntOS)rect.min.y;
+	IntOS right = (IntOS)rect.max.x;
+	IntOS bottom = (IntOS)rect.max.y;
+	IntOS x;
 	Double y;
 	if (left < 0) left = 0;
 	if (top < 0) top = 0;
-	if (right >= (OSInt)destWidth) right = (OSInt)destWidth - 1;
-	if (bottom >= (OSInt)destHeight) bottom = (OSInt)destHeight - 1;
-	UOSInt destAdd = destBpl - (UOSInt)(right - left + 1) * 4;
+	if (right >= (IntOS)destWidth) right = (IntOS)destWidth - 1;
+	if (bottom >= (IntOS)destHeight) bottom = (IntOS)destHeight - 1;
+	UIntOS destAdd = destBpl - (UIntOS)(right - left + 1) * 4;
 	Math::Quadrilateral quad = destQuad;
 	Math::Triangle tlTri = Math::Triangle(quad.tl, quad.tr, quad.bl);
 	Math::Triangle brTri = Math::Triangle(quad.br, quad.bl, quad.tr);
@@ -65,10 +65,10 @@ Bool Media::ImageRemapper::Remap(UnsafeArray<UInt8> destImgPtr, UOSInt destBpl, 
 	Double xArr[4];
 	Double v;
 	Double dright = (Double)right;
-	UOSInt ptCnt;
-	UOSInt i;
-	UOSInt j;
-	destImgPtr += (UOSInt)top * destBpl + (UOSInt)left * 4;
+	UIntOS ptCnt;
+	UIntOS i;
+	UIntOS j;
+	destImgPtr += (UIntOS)top * destBpl + (UIntOS)left * 4;
 	while (top <= bottom)
 	{
 		y = (Double)top;

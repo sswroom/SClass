@@ -5,20 +5,20 @@ namespace Math
 	class BigIntUtil
 	{
 	public:
-		static void LSBNeg(UnsafeArray<UOSInt> valBuff, UOSInt valCnt);
-		static void LSBAdd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static void LSBSub(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static void LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static void LSBAnd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static void LSBOr(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static void LSBXor(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt);
-		static UOSInt LSBAddUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val); //return overflow value
-		static UOSInt LSBMulUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val); //return overflow value
-		static UOSInt LSBDivUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val); //return remainder
-		static void LSBAssignI(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, OSInt val);
-		static void LSBAssignU(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val);
-		static void LSBAssignStr(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UnsafeArray<const UTF8Char> val);
-		static UnsafeArray<UTF8Char> LSBToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const UOSInt> valArr, UnsafeArray<UOSInt> tmpArr, UOSInt valCnt);
+		static void LSBNeg(UnsafeArray<UIntOS> valBuff, UIntOS valCnt);
+		static void LSBAdd(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static void LSBSub(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static void LSBMul(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static void LSBAnd(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static void LSBOr(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static void LSBXor(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt);
+		static UIntOS LSBAddUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val); //return overflow value
+		static UIntOS LSBMulUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val); //return overflow value
+		static UIntOS LSBDivUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val); //return remainder
+		static void LSBAssignI(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, IntOS val);
+		static void LSBAssignU(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val);
+		static void LSBAssignStr(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UnsafeArray<const UTF8Char> val);
+		static UnsafeArray<UTF8Char> LSBToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const UIntOS> valArr, UnsafeArray<UIntOS> tmpArr, UIntOS valCnt);
 	};
 }
 #endif

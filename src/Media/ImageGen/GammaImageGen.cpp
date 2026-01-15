@@ -18,14 +18,14 @@ Text::CStringNN Media::ImageGen::GammaImageGen::GetName() const
 	return CSTR("Gamma Test");
 }
 
-Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
 	Media::StaticImage *outImage;
 	UnsafeArray<UInt8> imgPtr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt bpl = size.x << 3;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS bpl = size.x << 3;
 	if (size.x < 2 || size.y < 2)
 		return nullptr;
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
@@ -37,9 +37,9 @@ Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<co
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
-		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
-		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
+		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
+		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -50,9 +50,9 @@ Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<co
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
-		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
-		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
+		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
+		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
+		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -63,9 +63,9 @@ Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<co
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
-		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
-		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(i - 1)) * 255.0);
+		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
+		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
+		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(i - 1)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 
@@ -76,9 +76,9 @@ Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<co
 	j = 0;
 	while (j < i)
 	{
-		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
-		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
-		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(1 - UOSInt2Double(j) / UOSInt2Double(k)) * 255.0);
+		imgPtr[0] = (UInt8)Double2Int32(bfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
+		imgPtr[1] = (UInt8)Double2Int32(gfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
+		imgPtr[2] = (UInt8)Double2Int32(rfunc->ForwardTransfer(1 - UIntOS2Double(j) / UIntOS2Double(k)) * 255.0);
 		imgPtr[3] = 0xff;
 		imgPtr += 4;
 

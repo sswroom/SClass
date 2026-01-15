@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/CS/CSRGB16_RGB8.h"
 
-extern "C" void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, OSInt destNbits, UInt8 *rgbTable)
+extern "C" void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, IntOS destNbits, UInt8 *rgbTable)
 {
 }
 

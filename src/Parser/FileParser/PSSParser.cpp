@@ -97,7 +97,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		i = (hdr[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (*(Int32*)&hdr[(UOSInt)currOfst] != (Int32)0xbb010000)
+	if (*(Int32*)&hdr[(UIntOS)currOfst] != (Int32)0xbb010000)
 		return nullptr;
 
 	if (fd->GetFullFileName()->EndsWithICase(UTF8STRC("_1.vob")))
@@ -159,7 +159,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		formats[i]->formatId = 0;
 		audDelay[i] = 0;
 	}
-	i = ReadMUInt16(&hdr[(UOSInt)currOfst + 4]);
+	i = ReadMUInt16(&hdr[(UIntOS)currOfst + 4]);
 	currOfst += 6 + i;
 	UInt8 buff[256];
 	while (true)
@@ -205,7 +205,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			{
 				scr_base = (((Int64)(buff[4] & 0x38)) << 27) | ((buff[4] & 3) << 28) | (buff[5] << 20) | ((buff[6] & 0xf8) << 12) | ((buff[6] & 3) << 13) | (buff[7] << 5) | (buff[8] >> 3);
 //				scr_ext = ((buff[8] & 3) << 7) | (buff[9] >> 1);
-				currOfst += (UOSInt)(14 + (UInt32)(buff[13] & 7));
+				currOfst += (UIntOS)(14 + (UInt32)(buff[13] & 7));
 			}
 			if (initScr == -1)
 			{
@@ -383,7 +383,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			{
 				Int64 pts = 0;
 				Int64 dts = 0;
-				UOSInt j;
+				UIntOS j;
 				j = 6;
 				while (buff[j] & 0x80)
 				{
@@ -487,11 +487,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 				Bool isFrame = false;
 				Int64 pts = 0;
 				Int64 dts = 0;
-				UOSInt stmHdrSize;
+				UIntOS stmHdrSize;
 				Bool hasDTS = false;
 				if (v1)
 				{
-					UOSInt buffOfst = 6;
+					UIntOS buffOfst = 6;
 					while (buff[buffOfst] & 0x80)
 					{
 						buffOfst++;
@@ -596,9 +596,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					if (vstm && v1 && !isFrame)
 					{
 						Media::MPEGVideoParser::MPEGFrameProp prop;
-						UOSInt currPtr;
+						UIntOS currPtr;
 						Int32 srchByte;
-						UOSInt frameSize = i - stmHdrSize - 3;
+						UIntOS frameSize = i - stmHdrSize - 3;
 						Data::ByteBuffer frameBuff(frameSize);
 						fd->GetRealData(currOfst + 9 + stmHdrSize, frameSize, frameBuff);
 						WriteMInt32((UInt8*)&srchByte, 0x00000100);

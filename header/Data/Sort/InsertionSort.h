@@ -10,19 +10,19 @@ namespace Data
 		class InsertionSort
 		{
 		public:
-			template <class T> static void SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T, class V> static void SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
-			static void SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex);
+			template <class T, class V> static void SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS firstIndex, IntOS lastIndex);
+			static void SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }
 
-template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	T temp;
 	T temp1;
 	T temp2;
@@ -48,7 +48,7 @@ template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else
@@ -60,12 +60,12 @@ template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<
 }
 
 
-template <class T, class V> void Data::Sort::InsertionSort::SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt left, OSInt right)
+template <class T, class V> void Data::Sort::InsertionSort::SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	T temp;
 	T temp1;
 	T temp2;
@@ -93,8 +93,8 @@ template <class T, class V> void Data::Sort::InsertionSort::SortBKV(UnsafeArray<
 					j = l + 1;
 				}
 			}
-			MemCopyO(&keyArr[j + 1], &keyArr[j], (UOSInt)(i - j) * sizeof(keyArr[0]));
-			MemCopyO(&valArr[j + 1], &valArr[j], (UOSInt)(i - j) * sizeof(valArr[0]));
+			MemCopyO(&keyArr[j + 1], &keyArr[j], (UIntOS)(i - j) * sizeof(keyArr[0]));
+			MemCopyO(&valArr[j + 1], &valArr[j], (UIntOS)(i - j) * sizeof(valArr[0]));
 			keyArr[j] = temp2;
 			valArr[j] = val2;
 		}

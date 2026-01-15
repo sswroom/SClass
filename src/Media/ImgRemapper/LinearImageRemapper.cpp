@@ -14,10 +14,10 @@ UInt32 __stdcall Media::ImgRemapper::LinearImageRemapper::GetPixel32_B8G8R8A8(Un
 	Int32 x = (Int32)srcCoord.x;
 	Int32 y = (Int32)srcCoord.y;
 	if (x < 0) { x = 0; srcCoord.x = 0; xSingle = true; }
-	if (x >= (OSInt)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
+	if (x >= (IntOS)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
 	if (y < 0) { y = 0; srcCoord.x = 0; ySingle = true; }
-	if (y >= (OSInt)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
-	srcImgPtr += x * 4 + y * (OSInt)me->srcBpl;
+	if (y >= (IntOS)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
+	srcImgPtr += x * 4 + y * (IntOS)me->srcBpl;
 	c00 = ReadNUInt32(&srcImgPtr[0]);
 	if (xSingle)
 	{
@@ -77,10 +77,10 @@ UInt32 __stdcall Media::ImgRemapper::LinearImageRemapper::GetPixel32_PAL8(Unsafe
 		Int32 x = (Int32)srcCoord.x;
 		Int32 y = (Int32)srcCoord.y;
 		if (x < 0) { x = 0; srcCoord.x = 0; xSingle = true; }
-		if (x >= (OSInt)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
+		if (x >= (IntOS)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
 		if (y < 0) { y = 0; srcCoord.x = 0; ySingle = true; }
-		if (y >= (OSInt)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
-		srcImgPtr += x + y * (OSInt)me->srcBpl;
+		if (y >= (IntOS)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
+		srcImgPtr += x + y * (IntOS)me->srcBpl;
 		c00 = ReadNUInt32(&pal[srcImgPtr[0] * 4]);
 		if (xSingle)
 		{
@@ -142,10 +142,10 @@ UInt32 __stdcall Media::ImgRemapper::LinearImageRemapper::GetPixel32_PAL4(Unsafe
 		Int32 x = (Int32)srcCoord.x;
 		Int32 y = (Int32)srcCoord.y;
 		if (x < 0) { x = 0; srcCoord.x = 0; xSingle = true; }
-		if (x >= (OSInt)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
+		if (x >= (IntOS)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
 		if (y < 0) { y = 0; srcCoord.x = 0; ySingle = true; }
-		if (y >= (OSInt)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
-		srcImgPtr += (x >> 1) + y * (OSInt)me->srcBpl;
+		if (y >= (IntOS)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
+		srcImgPtr += (x >> 1) + y * (IntOS)me->srcBpl;
 		if (x & 1)
 		{
 			c00 = ReadNUInt32(&pal[(srcImgPtr[0] & 15) * 4]);
@@ -232,14 +232,14 @@ UInt32 __stdcall Media::ImgRemapper::LinearImageRemapper::GetPixel32_PAL1(Unsafe
 		UInt32 c01;
 		UInt32 c10;
 		UInt32 c11;
-		UOSInt i;
+		UIntOS i;
 		Int32 x = (Int32)srcCoord.x;
 		Int32 y = (Int32)srcCoord.y;
 		if (x < 0) { x = 0; srcCoord.x = 0; xSingle = true; }
-		if (x >= (OSInt)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
+		if (x >= (IntOS)me->srcWidth - 1) { x = (Int32)me->srcWidth - 1; srcCoord.x = x; xSingle = true; }
 		if (y < 0) { y = 0; srcCoord.x = 0; ySingle = true; }
-		if (y >= (OSInt)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
-		srcImgPtr += (x >> 3) + y * (OSInt)me->srcBpl;
+		if (y >= (IntOS)me->srcHeight - 1) { y = (Int32)me->srcHeight - 1; srcCoord.y = y; ySingle = true; }
+		srcImgPtr += (x >> 3) + y * (IntOS)me->srcBpl;
 		if ((x & 7) == 7)
 		{
 			i = (srcImgPtr[0] >> (7 - (x & 7))) & 1;

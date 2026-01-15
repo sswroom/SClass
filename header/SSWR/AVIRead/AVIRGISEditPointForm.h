@@ -31,14 +31,14 @@ namespace SSWR
 			NN<UI::GUIButton> btnNew;
 			NN<UI::GUIButton> btnDelete;
 
-			UOSInt status;
+			UIntOS status;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
 			NN<AVIRMapNavigator> navi;
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 			static void __stdcall OnObjectsSelChg(AnyType userObj);
 			static void __stdcall OnNewClicked(AnyType userObj);

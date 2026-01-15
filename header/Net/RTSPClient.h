@@ -28,7 +28,7 @@ namespace Net
 			Sync::Event reqEvt;
 			Sync::Mutex reqMut;
 			UInt8 *reqReply;
-			UOSInt reqReplySize;
+			UIntOS reqReplySize;
 			Int32 reqReplyStatus;
 			Bool reqSuccess;
 			Text::String *reqStrs;
@@ -42,7 +42,7 @@ namespace Net
 		static UInt32 __stdcall ControlThread(AnyType userObj);
 		Int32 NextRequest();
 		Bool WaitForReply();
-		Bool SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Bool SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 
 		RTSPClient(const RTSPClient *cli);
 	public:

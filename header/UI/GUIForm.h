@@ -39,7 +39,7 @@ namespace UI
 		} CloseReason;
 		typedef Bool (CALLBACKFUNC FormClosingEvent)(AnyType userObj, CloseReason reason); //true to cancel
 		typedef void (CALLBACKFUNC FormClosedEvent)(AnyType userObj, NN<UI::GUIForm> frm);
-		typedef void (CALLBACKFUNC KeyEvent)(AnyType userObj, UOSInt keyCode, Bool extendedKey);
+		typedef void (CALLBACKFUNC KeyEvent)(AnyType userObj, UIntOS keyCode, Bool extendedKey);
 
 	private:
 		Bool virtualMode;
@@ -71,7 +71,7 @@ namespace UI
 
 	private:
 		static Int32 useCnt;
-		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+		static IntOS __stdcall FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		static void Init(Optional<InstanceHandle> hInst);
 		static void Deinit(Optional<InstanceHandle> hInst);
 
@@ -94,7 +94,7 @@ namespace UI
 		void MakeForeground();
 		virtual void Close();
 		virtual void SetText(Text::CStringNN text);
-		virtual Math::Size2D<UOSInt> GetSizeP();
+		virtual Math::Size2D<UIntOS> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
 		virtual NN<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
@@ -111,7 +111,7 @@ namespace UI
 		virtual Bool IsChildVisible();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual Bool OnPaint();
 		void OnDropFiles(void *hDrop);
@@ -129,10 +129,10 @@ namespace UI
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void EventClosed();
-		void EventTimer(UOSInt tmrId);
+		void EventTimer(UIntOS tmrId);
 		virtual void OnFocus();
 		virtual void OnFocusLost();
-		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
+		virtual void OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight);
 		void OnFileDrop(Data::DataArray<NN<Text::String>> files);
 
 		void ToFullScn();

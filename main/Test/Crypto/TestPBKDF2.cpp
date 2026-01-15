@@ -7,7 +7,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-UnsafeArray<UTF8Char> Test(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> pwd, UOSInt pwdLen, UnsafeArray<const UTF8Char> salt, UOSInt saltLen, UOSInt cnt, UOSInt dkLen)
+UnsafeArray<UTF8Char> Test(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> pwd, UIntOS pwdLen, UnsafeArray<const UTF8Char> salt, UIntOS saltLen, UIntOS cnt, UIntOS dkLen)
 {
 	UInt8 *dk = MemAlloc(UInt8, dkLen);
 	Crypto::Hash::SHA1 sha1;
@@ -24,27 +24,27 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	//rfc6070
 	sptr = Test(sbuff, UTF8STRC("password"), UTF8STRC("salt"), 1, 20);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0C60C80F961F0E71F3A9B524AF6012062FE037A6")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("0C60C80F961F0E71F3A9B524AF6012062FE037A6")))
 	{
 		return 1;
 	}
 	sptr = Test(sbuff, UTF8STRC("password"), UTF8STRC("salt"), 2, 20);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EA6C014DC72D6F8CCD1ED92ACE1D41F0D8DE8957")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("EA6C014DC72D6F8CCD1ED92ACE1D41F0D8DE8957")))
 	{
 		return 1;
 	}
 	sptr = Test(sbuff, UTF8STRC("password"), UTF8STRC("salt"), 4096, 20);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("4B007901B765489ABEAD49D926F721D065A429C1")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("4B007901B765489ABEAD49D926F721D065A429C1")))
 	{
 		return 1;
 	}
 /*	sptr = Test(sbuff, UTF8STRC("password"), UTF8STRC("salt"), 16777216, 20);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EEFE3D61CD4DA4E4E9945B3D6BA2158C2634E984")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("EEFE3D61CD4DA4E4E9945B3D6BA2158C2634E984")))
 	{
 		return 1;
 	}*/
 	sptr = Test(sbuff, UTF8STRC("passwordPASSWORDpassword"), UTF8STRC("saltSALTsaltSALTsaltSALTsaltSALTsalt"), 4096, 25);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3D2EEC4FE41C849B80C8D83662C0E44A8B291A964CF2F07038")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("3D2EEC4FE41C849B80C8D83662C0E44A8B291A964CF2F07038")))
 	{
 		return 1;
 	}

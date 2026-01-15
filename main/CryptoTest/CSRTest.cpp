@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
-	UOSInt buffSize = IO::FileStream::LoadFile(CSTRP(sbuff, sptr), buff, 4096);
+	UIntOS buffSize = IO::FileStream::LoadFile(CSTRP(sbuff, sptr), buff, 4096);
 	if (buffSize == 0)
 	{
 		console.WriteLine(CSTR("Error in loading ACMEKey.pem"));

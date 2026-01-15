@@ -2,7 +2,7 @@ section .text
 
 global _AutoCropFilter_CropCalc
 
-;void AutoCropFilter_CropCalc(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+;void AutoCropFilter_CropCalc(UInt8 *yptr, IntOS w, IntOS h, IntOS ySplit, IntOS *crops)
 ;0 edi
 ;4 esi
 ;8 ebx

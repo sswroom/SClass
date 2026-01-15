@@ -11,7 +11,7 @@ namespace IO
 		class SIM7000 : public IO::GSMModemController
 		{
 		public:
-			typedef void (CALLBACKFUNC ReceiveHandler)(AnyType userObj, UOSInt index, UInt32 ip, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			typedef void (CALLBACKFUNC ReceiveHandler)(AnyType userObj, UIntOS index, UInt32 ip, UInt16 port, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		private:
 			Sync::Event respEvt;
 			Sync::Mutex dnsMut;
@@ -19,17 +19,17 @@ namespace IO
 			Net::SocketUtil::AddressInfo *dnsResp;
 			Bool dnsResult;
 
-			UOSInt connInd;
+			UIntOS connInd;
 			Int32 connResult;
 			Bool nextReceive;
-			UOSInt recvIndex;
-			UOSInt recvSize;
+			UIntOS recvIndex;
+			UIntOS recvSize;
 			UInt32 recvIP;
 			UInt16 recvPort;
 			ReceiveHandler recvHdlr;
 			AnyType recvHdlrObj;
 
-			static Bool __stdcall CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+			static Bool __stdcall CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 		public:
 			SIM7000(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~SIM7000();
@@ -73,15 +73,15 @@ namespace IO
 			//AT+CENG
 
 			Bool NetSetMultiIP(Bool multiIP); //AT+CIPMUX
-			Bool NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
-			Bool NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
-			Bool NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff, UOSInt buffSize); //AT+CIPSEND
+			Bool NetIPStartTCP(UIntOS index, UInt32 ip, UInt16 port); //AT+CIPSTART
+			Bool NetIPStartUDP(UIntOS index, UInt32 ip, UInt16 port); //AT+CIPSTART
+			Bool NetIPSend(UIntOS index, UnsafeArray<const UInt8> buff, UIntOS buffSize); //AT+CIPSEND
 			//AT+CIPQSEND
 			//AT+CIPACK
-			Bool NetCloseSocket(UOSInt index); //AT+CIPCLOSE
+			Bool NetCloseSocket(UIntOS index); //AT+CIPCLOSE
 			//AT+CIPSHUT
-			Bool NetSetLocalPortTCP(UOSInt index, UInt16 port); //AT+CLPORT
-			Bool NetSetLocalPortUDP(UOSInt index, UInt16 port); //AT+CLPORT
+			Bool NetSetLocalPortTCP(UIntOS index, UInt16 port); //AT+CLPORT
+			Bool NetSetLocalPortUDP(UIntOS index, UInt16 port); //AT+CLPORT
 			Bool NetSetAPN(Text::CStringNN apn); //AT+CSTT
 			Bool NetDataStart(); //AT+CIICR
 			UnsafeArrayOpt<UTF8Char> NetGetIFAddr(UnsafeArray<UTF8Char> addr); //AT+CIFSR

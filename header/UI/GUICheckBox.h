@@ -22,7 +22,7 @@ namespace UI
 		void EventCheckedChange(Bool newState);
 		void HandleCheckedChange(CheckedChangeHandler hdlr, AnyType obj);
 
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual Bool IsChecked() = 0;
 		virtual void SetChecked(Bool checked) = 0;
 	};

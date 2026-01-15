@@ -29,7 +29,7 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 	UnsafeArray<UTF8Char> sptr;
 
 	UInt8 *ipAddr = (UInt8*)&ip;
-	UOSInt i;
+	UIntOS i;
 	Text::CStringNN nnprefix;
 	if (prefix.SetTo(nnprefix))
 	{
@@ -46,7 +46,7 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 
 	NEW_CLASSNN(rec, Net::WhoisRecord(ip));
 	Net::TCPClient cli(sockf, whoisIP, 43, timeout);
-	cli.Write(Data::ByteArrayR((UInt8*)sbuff, (UOSInt)(sptr - sbuff)));
+	cli.Write(Data::ByteArrayR((UInt8*)sbuff, (UIntOS)(sptr - sbuff)));
 	Text::UTF8Reader reader(cli);
 	while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 	{
@@ -56,13 +56,13 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 		}
 		else
 		{
-			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '#');
+			i = Text::StrIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '#');
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
 				sptr = &sbuff[i];
 			}
-			rec->AddItem(sbuff, (UOSInt)(sptr - sbuff));
+			rec->AddItem(sbuff, (UIntOS)(sptr - sbuff));
 		}
 	}
 	return rec;

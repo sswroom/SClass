@@ -76,17 +76,17 @@ UInt32 Media::FBMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
 	return 0;
 }
 
-MonitorHandle *Media::FBMonitorSurfaceMgr::GetMonitorHandle(UOSInt monIndex)
+MonitorHandle *Media::FBMonitorSurfaceMgr::GetMonitorHandle(UIntOS monIndex)
 {
 	return (MonitorHandle*)(1 + monIndex);
 }
 
-UOSInt Media::FBMonitorSurfaceMgr::GetMonitorCount()
+UIntOS Media::FBMonitorSurfaceMgr::GetMonitorCount()
 {
 	return 1;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));

@@ -41,7 +41,7 @@ namespace SSWR
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
 			static void __stdcall OnRecentSelChg(AnyType userObj);
-			static void __stdcall OnItemsDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnItemsDblClick(AnyType userObj, UIntOS index);
 
 			void RSSListLoad();
 			void RSSListStore();

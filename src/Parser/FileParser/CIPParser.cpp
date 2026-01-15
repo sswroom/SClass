@@ -35,12 +35,12 @@ Optional<IO::ParsedObject> Parser::FileParser::CIPParser::ParseFileHdr(NN<IO::St
 {
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	if (!fd->IsFullFile())
 		return nullptr;
 	sptr = fd->GetFullFileName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".CIP")))
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".CIP")))
 	{
 		return nullptr;
 	}

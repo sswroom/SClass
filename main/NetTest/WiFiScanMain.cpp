@@ -20,14 +20,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt thisLen;
-		UOSInt maxSSIDLen;
-		UOSInt maxManuLen;
-		UOSInt maxModelLen;
-		UOSInt maxSNLen;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS thisLen;
+		UIntOS maxSSIDLen;
+		UIntOS maxManuLen;
+		UIntOS maxModelLen;
+		UIntOS maxSNLen;
 		UInt8 buff[8];
 		UnsafeArray<const UInt8> macPtr;
 		NN<Text::String> s;

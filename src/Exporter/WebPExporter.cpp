@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::WebPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::WebPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -68,7 +68,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		return false;
 	if (img->info.pf == Media::PF_B8G8R8)
 	{
-		UOSInt bpl = img->GetDataBpl();
+		UIntOS bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
 		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
@@ -83,7 +83,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	else if (img->info.pf == Media::PF_R8G8B8)
 	{
-		UOSInt bpl = img->GetDataBpl();
+		UIntOS bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
 		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
@@ -98,13 +98,13 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	else if (img->info.pf == Media::PF_B8G8R8A8)
 	{
-		UOSInt bpl = img->GetDataBpl();
+		UIntOS bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
 		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (img->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);
-			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)bpl, (OSInt)img->info.dispSize.x * 3);
+			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (IntOS)bpl, (IntOS)img->info.dispSize.x * 3);
 			if (quality < 0)
 			{
 				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, &vp8);
@@ -132,7 +132,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	{
 		NN<Media::StaticImage> simg = img->CreateStaticImage();
 		simg->ToB8G8R8A8();
-		UOSInt bpl = simg->GetDataBpl();
+		UIntOS bpl = simg->GetDataBpl();
 		if (quality < 0)
 		{
 			vp8len = WebPEncodeLosslessBGRA(simg->data.Ptr(), (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, &vp8);
@@ -166,7 +166,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			UInt32 l;
 			UInt8 *exifBuff;
 			exif->GetExifBuffSize(exifSize, endOfst);
-			exifBuff = MemAlloc(UInt8, (UOSInt)exifSize + 8);
+			exifBuff = MemAlloc(UInt8, (UIntOS)exifSize + 8);
 			WriteInt16(&exifBuff[0], ReadInt16((const UInt8*)"II"));
 			WriteInt16(&exifBuff[2], 42);
 			WriteInt32(&exifBuff[4], 8);
@@ -181,7 +181,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 		WebPMuxAssemble(mux, &data);
 		WebPMuxDelete(mux);
-		stm->Write(Data::ByteArrayR(data.bytes, (UOSInt)data.size));
+		stm->Write(Data::ByteArrayR(data.bytes, (UIntOS)data.size));
 		WebPDataClear(&data);
 		WebPFree(vp8);
 		return true;
@@ -189,7 +189,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	return false;
 }
 
-UOSInt Exporter::WebPExporter::GetParamCnt()
+UIntOS Exporter::WebPExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -210,7 +210,7 @@ void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::WebPExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -222,7 +222,7 @@ Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -237,7 +237,7 @@ Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 	return false;
 }
 
-Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

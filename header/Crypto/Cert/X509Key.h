@@ -26,23 +26,23 @@ namespace Crypto
 			virtual NN<Net::ASN1Names> CreateNames() const;
 
 			KeyType GetKeyType() const;
-			UOSInt GetKeySizeBits() const;
+			UIntOS GetKeySizeBits() const;
 			Bool IsPrivateKey() const;
 			Optional<Crypto::Cert::X509Key> ExtractPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
-			UOSInt GetDataBlockSize() const;
+			UIntOS GetDataBlockSize() const;
 
-			virtual UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAPublicExponent(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAPrivateExponent(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAPrime1(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAPrime2(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAExponent1(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSAExponent2(OptOut<UOSInt> size) const;
-			virtual UnsafeArrayOpt<const UInt8> GetRSACoefficient(OptOut<UOSInt> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAPublicExponent(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAPrivateExponent(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAPrime1(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAPrime2(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAExponent1(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSAExponent2(OptOut<UIntOS> size) const;
+			virtual UnsafeArrayOpt<const UInt8> GetRSACoefficient(OptOut<UIntOS> size) const;
 
-			UnsafeArrayOpt<const UInt8> GetECPrivate(OptOut<UOSInt> size) const;
-			UnsafeArrayOpt<const UInt8> GetECPublic(OptOut<UOSInt> size) const;
+			UnsafeArrayOpt<const UInt8> GetECPrivate(OptOut<UIntOS> size) const;
+			UnsafeArrayOpt<const UInt8> GetECPublic(OptOut<UIntOS> size) const;
 			ECName GetECName() const;
 
 			static NN<X509Key> FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID);

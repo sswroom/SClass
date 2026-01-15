@@ -14,9 +14,9 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 {
 	NN<IO::MODBUSRTUMaster> me = userObj.GetNN<IO::MODBUSRTUMaster>();
 	UInt8 buff[1024];
-	UOSInt buffSize = 0;
-	UOSInt readSize;
-	UOSInt i;
+	UIntOS buffSize = 0;
+	UIntOS readSize;
+	UIntOS i;
 	Bool incomplete;
 	NN<AddrResultCb> cb;
 	me->threadRunning = true;
@@ -46,13 +46,13 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 						{
 							if (i + 5 + buff[i + 2] <= buffSize)
 							{
-								if (me->IsCRCValid(&buff[i], 5 + (UOSInt)buff[i + 2]))
+								if (me->IsCRCValid(&buff[i], 5 + (UIntOS)buff[i + 2]))
 								{
 									if (me->cbMap.Get(buff[i]).SetTo(cb) && cb->readFunc)
 									{
 										cb->readFunc(cb->userObj, buff[i + 1], &buff[i + 3], buff[i + 2]);
 									}
-									i += 5 + (UOSInt)buff[i + 2];
+									i += 5 + (UIntOS)buff[i + 2];
 								}
 								else
 								{
@@ -127,7 +127,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 	return 0;
 }
 
-void IO::MODBUSRTUMaster::CalcCRC(UnsafeArray<UInt8> rtu, UOSInt rtuSize)
+void IO::MODBUSRTUMaster::CalcCRC(UnsafeArray<UInt8> rtu, UIntOS rtuSize)
 {
 	UInt8 crcTmp[2];
 	Sync::MutexUsage mutUsage(this->crcMut);
@@ -139,7 +139,7 @@ void IO::MODBUSRTUMaster::CalcCRC(UnsafeArray<UInt8> rtu, UOSInt rtuSize)
 	rtu[rtuSize - 1] = (UInt8)~crcTmp[0];
 }
 
-Bool IO::MODBUSRTUMaster::IsCRCValid(UnsafeArray<UInt8> rtu, UOSInt rtuSize)
+Bool IO::MODBUSRTUMaster::IsCRCValid(UnsafeArray<UInt8> rtu, UIntOS rtuSize)
 {
 	UInt8 crcTmp[2];
 	Sync::MutexUsage mutUsage(this->crcMut);
@@ -167,7 +167,7 @@ IO::MODBUSRTUMaster::MODBUSRTUMaster(NN<IO::Stream> stm) : crc(Crypto::Hash::CRC
 
 IO::MODBUSRTUMaster::~MODBUSRTUMaster()
 {
-	UOSInt i;
+	UIntOS i;
 	//if (this->stm)
 	{
 		this->threadToStop = true;
@@ -200,7 +200,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
@@ -228,7 +228,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
@@ -256,7 +256,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
@@ -284,7 +284,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
@@ -319,7 +319,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
@@ -347,7 +347,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
 //		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
@@ -373,27 +373,27 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	WriteMInt16(&buff[2], regAddr);
 	WriteMUInt16(&buff[4], cnt);
 	buff[6] = (UInt8)(cnt << 1);
-	MemCopyNO(&buff[7], val.Ptr(), (UOSInt)cnt * 2);
-	this->CalcCRC(buff, (UOSInt)cnt * 2 + 9);
+	MemCopyNO(&buff[7], val.Ptr(), (UIntOS)cnt * 2);
+	this->CalcCRC(buff, (UIntOS)cnt * 2 + 9);
 //	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UIntOS)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
 //		sb.AppendHexBuff(buff, cnt * 2 + 9, ' ', Text::LineBreakType::None);
 //		printf("Send: %s\r\n", sb.ToString());
 
-		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 9));
+		this->stm->Write(Data::ByteArrayR(buff, (UIntOS)cnt * 2 + 9));
 		this->clk.Start();
 	}
 /*	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, (UOSInt)cnt * 2 + 9, ' ', Text::LineBreakType::None);
+		sb.AppendHexBuff(buff, (UIntOS)cnt * 2 + 9, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
 	}*/
 	return true;

@@ -11,10 +11,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Bool showHelp;
 	Bool asmListing = false;
 	Bool infoMode = false;
-	UOSInt cmdCnt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS cmdCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	showHelp = true;
 	Bool asyncMode = true;
@@ -105,7 +105,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			if (cmdLines[i][0] != '-')
 			{
-				UOSInt cmdLineLen = Text::StrCharCnt(cmdLines[i]); 
+				UIntOS cmdLineLen = Text::StrCharCnt(cmdLines[i]); 
 				if (Text::StrEqualsC(cmdLines[i], cmdLineLen, UTF8STRC("clean")))
 				{
 					showHelp = false;
@@ -117,8 +117,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					{
 						NN<const IO::SMake::ProgramItem> progItem;
 						NN<Text::String> s;
-						UOSInt i2;
-						UOSInt j2;
+						UIntOS i2;
+						UIntOS j2;
 						if (smake.GetProgItem({cmdLines[i], cmdLineLen}).SetTo(progItem))
 						{
 							showHelp = false;

@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::RAWAnalyzer *analyzer;
 	IO::Writer *console;
 	UInt16 portNum = 8089;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

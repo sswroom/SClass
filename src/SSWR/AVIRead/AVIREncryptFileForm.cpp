@@ -12,8 +12,8 @@
 
 Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCrypto()
 {
-	UOSInt keySize;
-	UOSInt algType = this->cboAlgorithm->GetSelectedIndex();
+	UIntOS keySize;
+	UIntOS algType = this->cboAlgorithm->GetSelectedIndex();
 	switch (algType)
 	{
 	case 0:
@@ -37,7 +37,7 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 		return nullptr;
 	}
 	NN<Text::TextBinEnc::TextBinEnc> enc = GetTextEncType(this->cboKeyType);
-	UOSInt buffSize = enc->CalcBinSize(sb.ToCString());
+	UIntOS buffSize = enc->CalcBinSize(sb.ToCString());
 	if (buffSize == 0)
 	{
 		enc.Delete();
@@ -69,12 +69,12 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 	default:
 		return nullptr;
 	}
-	crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetOSInt());
-	crypto->SetPaddingMode((Crypto::Encrypt::PaddingMode)this->cboPaddingMode->GetSelectedItem().GetOSInt());
+	crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS());
+	crypto->SetPaddingMode((Crypto::Encrypt::PaddingMode)this->cboPaddingMode->GetSelectedItem().GetIntOS());
 	return crypto;
 }
 
-UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitInput(UOSInt blockSize, OutParam<UOSInt> dataSize)
+UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtInputFile->GetText(sb);
@@ -100,19 +100,19 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitInput(UOSInt block
 		this->ui->ShowMsgOK(CSTR("Input File is empty"), CSTR("Encrypt File"), this);
 		return nullptr;
 	}
-	UOSInt buffSize = (UOSInt)fileSize;
-	UOSInt nBlock = (buffSize + blockSize) / blockSize;
+	UIntOS buffSize = (UIntOS)fileSize;
+	UIntOS nBlock = (buffSize + blockSize) / blockSize;
 	dataSize.Set(buffSize);
 	buffSize = nBlock * blockSize;
 	UnsafeArray<UInt8> input = MemAllocArr(UInt8, buffSize);
-	fs.Read(Data::ByteArray(input, (UOSInt)fileSize));
+	fs.Read(Data::ByteArray(input, (UIntOS)fileSize));
 	return input;
 }
 
-UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc)
+UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS blockSize, Bool enc)
 {
 	UInt8 tmpbuff[256];
-	UOSInt ivType = this->cboIV->GetSelectedIndex();
+	UIntOS ivType = this->cboIV->GetSelectedIndex();
 	switch (ivType)
 	{
 	case 0:
@@ -126,7 +126,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt File"), this);
 				return nullptr;
 			}
-			UOSInt ivLeng = sb.Hex2Bytes(tmpbuff);
+			UIntOS ivLeng = sb.Hex2Bytes(tmpbuff);
 			if (ivLeng > blockSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt File"), this);
@@ -150,7 +150,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 				return nullptr;
 			}
 			Text::TextBinEnc::Base64Enc b64;
-			UOSInt ivLeng = b64.DecodeBin(sb.ToCString(), tmpbuff);
+			UIntOS ivLeng = b64.DecodeBin(sb.ToCString(), tmpbuff);
 			if (ivLeng > blockSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt File"), this);
@@ -188,7 +188,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 	return nullptr;
 }
 
-void SSWR::AVIRead::AVIREncryptFileForm::SaveOutput(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIREncryptFileForm::SaveOutput(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtOutputFile->GetText(sb);
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnEncryptClicked(AnyType user
 	NN<Crypto::Encrypt::Encryption> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
 		if (me->InitInput(crypto->GetEncBlockSize(), buffSize).SetTo(buff))
 		{
@@ -267,7 +267,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnEncryptClicked(AnyType user
 			if (me->InitIV(crypto, buff, buffSize, crypto->GetEncBlockSize(), true).SetTo(dataBuff))
 			{
 				buffSize = crypto->Encrypt(dataBuff, buffSize, dataBuff);
-				me->SaveOutput(buff, buffSize + (UOSInt)(dataBuff - buff));
+				me->SaveOutput(buff, buffSize + (UIntOS)(dataBuff - buff));
 			}
 			MemFreeArr(buff);
 		}
@@ -281,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnDecryptClicked(AnyType user
 	NN<Crypto::Encrypt::Encryption> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
 		if (me->InitInput(crypto->GetDecBlockSize(), buffSize).SetTo(buff))
 		{

@@ -14,9 +14,9 @@ Text::CStringNN UI::GUITrackBar::GetObjectClass() const
 	return CSTR("TrackBar");
 }
 
-void UI::GUITrackBar::EventScrolled(UOSInt scrollPos)
+void UI::GUITrackBar::EventScrolled(UIntOS scrollPos)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->scrollHandlers.GetCount();
 	while (i-- > 0)
 	{

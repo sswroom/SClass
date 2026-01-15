@@ -61,8 +61,8 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 	me->txtDir->SetReadOnly(true);
 	me->UpdateCurrencyList(mgr);
 	NN<Data::Invest::Asset> ass;
-	UOSInt i = 0;
-	UOSInt j = mgr->GetAssetCount();
+	UIntOS i = 0;
+	UIntOS j = mgr->GetAssetCount();
 	while (i < j)
 	{
 		if (mgr->GetAsset(i).SetTo(ass))
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyHistSelChg(AnyType u
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
 	NN<Text::String> s;
-	UOSInt i = me->lvCurrencyHist->GetSelectedIndex();
+	UIntOS i = me->lvCurrencyHist->GetSelectedIndex();
 	if (me->lvCurrencyHist->GetItemTextNew(i).SetTo(s))
 	{
 		me->txtCurrencyHistDate->SetText(s->ToCString());
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsAddClicked(AnyType use
 			NN<Data::Invest::Asset> ass;
 			if (mgr->AddAsset(shortName, fullName, currency).SetTo(ass))
 			{
-				UOSInt i = me->lbAssets->AddItem(ass->shortName, ass);
+				UIntOS i = me->lbAssets->AddItem(ass->shortName, ass);
 				me->lbAssets->SetSelectedIndex(i);
 				me->DisplayAsset(ass);
 				if (me->lbCurrency->GetCount() != mgr->GetCurrencyCount())
@@ -303,7 +303,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistSelChg(AnyType use
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
 	NN<Text::String> s;
-	UOSInt i = me->lvAssetsHist->GetSelectedIndex();
+	UIntOS i = me->lvAssetsHist->GetSelectedIndex();
 	if (me->lvAssetsHist->GetItemTextNew(i).SetTo(s))
 	{
 		me->txtAssetsHistDate->SetText(s->ToCString());
@@ -387,7 +387,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType userObj, UIntOS index)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
 	NN<Data::Invest::TradeEntry> ent;
@@ -422,7 +422,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnMonthlySelChg(AnyType userOb
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		me->DisplayMonthly(mgr, (Int32)me->cboMonthlyYear->GetSelectedItem().GetOSInt(), (UInt8)me->cboMonthlyMonth->GetSelectedItem().GetUOSInt());
+		me->DisplayMonthly(mgr, (Int32)me->cboMonthlyYear->GetSelectedItem().GetIntOS(), (UInt8)me->cboMonthlyMonth->GetSelectedItem().GetUIntOS());
 	}
 }
 
@@ -438,7 +438,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlySelChg(AnyType userObj
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		me->DisplayYearly(mgr, (Int32)me->cboYearlyYear->GetSelectedItem().GetOSInt());
+		me->DisplayYearly(mgr, (Int32)me->cboYearlyYear->GetSelectedItem().GetIntOS());
 	}
 }
 
@@ -457,8 +457,8 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlyGridSelChg(AnyType use
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
 {
 	NN<Data::Invest::Currency> curr;
-	UOSInt i = 0;
-	UOSInt j = mgr->GetCurrencyCount();
+	UIntOS i = 0;
+	UIntOS j = mgr->GetCurrencyCount();
 	while (i < j)
 	{
 		if (mgr->GetCurrencyInfo(i).SetTo(curr))
@@ -482,15 +482,15 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateMonthly(NN<Data::Invest::Investmen
 	Data::Timestamp now = Data::Timestamp::Now();
 	Int32 startYear = ts.GetTimeValue().year;
 	Data::DateTimeUtil::TimeValue tv = now.GetTimeValue();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 endYear = tv.year;
 	this->cboMonthlyYear->ClearItems();
 	while (startYear <= endYear)
 	{
 		sptr = Text::StrInt32(sbuff, startYear);
-		k = this->cboMonthlyYear->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)startYear);
+		k = this->cboMonthlyYear->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)startYear);
 		if (startYear == endYear)
 		{
 			this->cboMonthlyYear->SetSelectedIndex(k);
@@ -503,7 +503,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateMonthly(NN<Data::Invest::Investmen
 	j = 12;
 	while (i <= j)
 	{
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		k = this->cboMonthlyMonth->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		if (i == tv.month)
 		{
@@ -522,13 +522,13 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateYearly(NN<Data::Invest::Investment
 	Data::Timestamp now = Data::Timestamp::Now();
 	Int32 startYear = ts.GetTimeValue().year;
 	Data::DateTimeUtil::TimeValue tv = now.GetTimeValue();
-	UOSInt k;
+	UIntOS k;
 	Int32 endYear = tv.year;
 	this->cboYearlyYear->ClearItems();
 	while (startYear <= endYear)
 	{
 		sptr = Text::StrInt32(sbuff, startYear);
-		k = this->cboYearlyYear->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)startYear);
+		k = this->cboYearlyYear->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)startYear);
 		if (startYear == endYear)
 		{
 			this->cboYearlyYear->SetSelectedIndex(k);
@@ -540,7 +540,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateYearly(NN<Data::Invest::Investment
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currency> curr)
 {
-	UOSInt dp = Data::Currency::GetDecimal(curr->c);
+	UIntOS dp = Data::Currency::GetDecimal(curr->c);
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (curr->invert)
@@ -560,10 +560,10 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 	NN<Data::Invest::TradeDetail> t;
 	Optional<Data::Invest::TradeDetail> optt;
 	NN<Data::Invest::Asset> ass;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	i = 0;
 	j = curr->trades.GetCount();
 	while (i < j)
@@ -579,7 +579,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (this->mgr.SetTo(mgr))
 	{
-		UOSInt refDP = Data::Currency::GetDecimal(mgr->GetRefCurrency());
+		UIntOS refDP = Data::Currency::GetDecimal(mgr->GetRefCurrency());
 		if (curr->c == mgr->GetRefCurrency())
 		{
 			this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
@@ -784,7 +784,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Currency> curr)
 {
-	Math::Size2D<UOSInt> sz = this->pbCurrency->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbCurrency->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	NN<Media::StaticImage> simg;
 	if (this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
@@ -806,7 +806,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 			{
 				yData->Invert();
 			}
-			UOSInt range = this->cboCurrencyRange->GetSelectedIndex();
+			UIntOS range = this->cboCurrencyRange->GetSelectedIndex();
 			if (range == 1)
 			{
 				xData->KeepAfter<Double>(Data::Timestamp::Now().AddYear(-1), yData);
@@ -852,10 +852,10 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	NN<Data::Invest::TradeDetail> t;
 	Data::Timestamp ts;
 	this->txtAssetsShortName->SetText(ass->shortName->ToCString());
@@ -902,7 +902,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		i++;
 	}
 	
-	UOSInt buyCnt = 0;
+	UIntOS buyCnt = 0;
 	i = 0;
 	j = ass->trades.GetCount();
 	if (j > 0)
@@ -961,7 +961,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 			else
 			{
 				Double a = -t->amount;
-				UOSInt i2 = 0;
+				UIntOS i2 = 0;
 				while (i2 < k)
 				{
 					if (summ[i2].amountLeft > 0)
@@ -1124,7 +1124,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> ass)
 {
-	Math::Size2D<UOSInt> sz = this->pbAssets->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbAssets->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	NN<Media::StaticImage> simg;
 	if (this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
@@ -1142,7 +1142,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 			Data::ChartPlotter chart(0);
 			NN<Data::ChartPlotter::DoubleData> yData = Data::ChartPlotter::NewData(ass->valList);
 			NN<Data::ChartPlotter::TimeData> xData = Data::ChartPlotter::NewData(ass->tsList);
-			UOSInt range = this->cboAssetsRange->GetSelectedIndex();
+			UIntOS range = this->cboAssetsRange->GetSelectedIndex();
 			if (range == 1)
 			{
 				xData->KeepAfter<Double>(Data::Timestamp::Now().AddYear(-1), yData);
@@ -1181,10 +1181,10 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	this->lvTransaction->ClearItems();
-	UOSInt i = 0;
-	UOSInt j = mgr->GetTransactionCount();
+	UIntOS i = 0;
+	UIntOS j = mgr->GetTransactionCount();
 	NN<Data::Invest::TradeEntry> ent;
-	UOSInt k;
+	UIntOS k;
 	UInt32 fromC;
 	UInt32 toC;
 	while (i < j)
@@ -1314,7 +1314,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearly(NN<Data::Invest::Investmen
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthlyImg()
 {
-	Math::Size2D<UOSInt> sz = this->pbMonthly->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbMonthly->GetSizeP();
 	NN<Data::ChartPlotter> chart;
 	NN<Media::DrawImage> dimg;
 	NN<Media::StaticImage> simg;
@@ -1335,13 +1335,13 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthlyImg()
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearlyImg()
 {
-	Math::Size2D<UOSInt> sz = this->pbYearly->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbYearly->GetSizeP();
 	NN<Data::ChartPlotter> chart;
 	NN<Media::DrawImage> dimg;
 	NN<Media::StaticImage> simg;
 	if (this->yearlyChart.SetTo(chart) && this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
 	{
-		chart->SetGridType((Data::ChartPlotter::GridType)this->cboYearlyGrid->GetSelectedItem().GetOSInt());
+		chart->SetGridType((Data::ChartPlotter::GridType)this->cboYearlyGrid->GetSelectedItem().GetIntOS());
 		dimg->SetHDPI(this->pbYearly->GetHDPI());
 		dimg->SetVDPI(this->pbYearly->GetHDPI());
 		chart->Plot(dimg, 0, 0, (Double)sz.GetWidth(), (Double)sz.GetHeight());
@@ -1361,10 +1361,10 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	NN<Data::Invest::Asset> ass;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt assetCnt = mgr->GetAssetCount();
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS assetCnt = mgr->GetAssetCount();
 	Data::ArrayListNN<Data::Invest::Asset> assList;
 	Data::Timestamp startTime = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
 	Data::Timestamp endTime = Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr());
@@ -1399,7 +1399,7 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 		i++;
 	}
 	assetCnt = assList.GetCount();
-	UOSInt currencyCnt = mgr->GetCurrencyCount();
+	UIntOS currencyCnt = mgr->GetCurrencyCount();
 	listView->ClearAll();
 	listView->ChangeColumnCnt(currencyCnt + assetCnt + 3);
 	listView->AddColumn(CSTR("Date"), 100);
@@ -1436,7 +1436,7 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	Double initValue;
 	Double rate;
 	Double initTotal;
-	UOSInt dp;
+	UIntOS dp;
 	Data::ArrayListTS dateList;
 	Data::ArrayListNative<Double> totalList;
 	Data::ArrayListNative<Double> valList;
@@ -1918,7 +1918,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 		UnsafeArray<WChar> wptr;
 		if (reg->GetValueStr(L"Investment", wbuff).SetTo(wptr))
 		{
-			NN<Text::String> s = Text::String::NewW(wbuff, (UOSInt)(wptr - wbuff));
+			NN<Text::String> s = Text::String::NewW(wbuff, (UIntOS)(wptr - wbuff));
 			this->txtDir->SetText(s->ToCString());
 			s->Release();
 			OnDirClicked(this);

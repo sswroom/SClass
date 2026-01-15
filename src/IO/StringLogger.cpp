@@ -30,13 +30,13 @@ void IO::StringLogger::ReadLogs(NN<IO::Reader> reader)
 	this->modified = false;
 }
 
-void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UOSInt len)
+void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UIntOS len)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->strList.SortedIndexOfC(Text::CStringNN(s, len));
+	IntOS i = this->strList.SortedIndexOfC(Text::CStringNN(s, len));
 	if (i < 0)
 	{
-		this->strList.Insert((UOSInt)~i, Text::String::New(s, len));
+		this->strList.Insert((UIntOS)~i, Text::String::New(s, len));
 		this->modified = true;
 	}
 }
@@ -45,8 +45,8 @@ void IO::StringLogger::WriteLogs(NN<IO::Writer> writer)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt j = this->strList.GetCount();	
+	UIntOS i = 0;
+	UIntOS j = this->strList.GetCount();	
 	this->modified = false;
 	while (i < j)
 	{

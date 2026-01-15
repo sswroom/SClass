@@ -19,12 +19,12 @@ struct AnyType
 		this->p = 0;
 	}
 
-	AnyType(OSInt p)
+	AnyType(IntOS p)
 	{
 		this->p = (void*)p;
 	}
 
-	AnyType(UOSInt p)
+	AnyType(UIntOS p)
 	{
 		this->p = (void*)p;
 	}*/
@@ -59,14 +59,14 @@ struct AnyType
 		return UnsafeArrayOpt<T>((T*)this->p);
 	}
 
-	OSInt GetOSInt() const
+	IntOS GetIntOS() const
 	{
-		return (OSInt)this->p;
+		return (IntOS)this->p;
 	}
 
-	UOSInt GetUOSInt() const
+	UIntOS GetUIntOS() const
 	{
-		return (UOSInt)this->p;
+		return (UIntOS)this->p;
 	}
 
 	Bool IsNull() const

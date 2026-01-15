@@ -4,9 +4,9 @@
 #include "Text/MyStringW.h"
 #include "Text/XML.h"
 
-UOSInt Text::XML::GetXMLTextLen(UnsafeArray<const UTF8Char> text)
+UIntOS Text::XML::GetXMLTextLen(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const UTF8Char> sptr = text;
 	while (true)
 	{
@@ -39,9 +39,9 @@ UOSInt Text::XML::GetXMLTextLen(UnsafeArray<const UTF8Char> text)
 	}
 }
 
-UOSInt Text::XML::GetXMLTextLen(UnsafeArray<const WChar> text)
+UIntOS Text::XML::GetXMLTextLen(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const WChar> wptr = text;
 	WChar c;
 	while ((c = *wptr++) != 0)
@@ -74,9 +74,9 @@ UOSInt Text::XML::GetXMLTextLen(UnsafeArray<const WChar> text)
 	return cnt;
 }
 
-UOSInt Text::XML::GetXMLTextLiteLen(UnsafeArray<const UTF8Char> text)
+UIntOS Text::XML::GetXMLTextLiteLen(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const UTF8Char> sptr = text;
 	UTF8Char c;
 	while ((c = *sptr++) != 0)
@@ -100,9 +100,9 @@ UOSInt Text::XML::GetXMLTextLiteLen(UnsafeArray<const UTF8Char> text)
 	return cnt;
 }
 
-UOSInt Text::XML::GetXMLTextLiteLen(UnsafeArray<const WChar> text)
+UIntOS Text::XML::GetXMLTextLiteLen(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const WChar> wptr = text;
 	WChar c;
 	while ((c = *wptr++) != 0)
@@ -126,9 +126,9 @@ UOSInt Text::XML::GetXMLTextLiteLen(UnsafeArray<const WChar> text)
 	return cnt;
 }
 
-UOSInt Text::XML::GetHTMLBodyTextLen(UnsafeArray<const UTF8Char> text)
+UIntOS Text::XML::GetHTMLBodyTextLen(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const UTF8Char> sptr = text;
 	UTF8Char c;
 	while (true)
@@ -167,9 +167,9 @@ UOSInt Text::XML::GetHTMLBodyTextLen(UnsafeArray<const UTF8Char> text)
 	}
 }
 
-UOSInt Text::XML::GetHTMLElementTextLen(UnsafeArray<const UTF8Char> text)
+UIntOS Text::XML::GetHTMLElementTextLen(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const UTF8Char> sptr = text;
 	UTF8Char c;
 	while (true)
@@ -203,9 +203,9 @@ UOSInt Text::XML::GetHTMLElementTextLen(UnsafeArray<const UTF8Char> text)
 	}
 }
 
-UOSInt Text::XML::GetHTMLBodyTextLen(UnsafeArray<const WChar> text)
+UIntOS Text::XML::GetHTMLBodyTextLen(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UnsafeArray<const WChar> wptr = text;
 	WChar c;
 	while ((c = *wptr++) != 0)
@@ -720,7 +720,7 @@ UnsafeArray<WChar> Text::XML::ToAttrText(UnsafeArray<WChar> buff, UnsafeArray<co
 
 NN<Text::String> Text::XML::ToNewXMLText(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = GetXMLTextLen(text);
+	UIntOS cnt = GetXMLTextLen(text);
 	NN<Text::String> s = Text::String::New(cnt);
 	ToXMLText(s->v, text);
 	return s;
@@ -728,7 +728,7 @@ NN<Text::String> Text::XML::ToNewXMLText(UnsafeArray<const UTF8Char> text)
 
 UnsafeArray<const WChar> Text::XML::ToNewXMLTextW(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = GetXMLTextLen(text) + 1;
+	UIntOS cnt = GetXMLTextLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToXMLTextW(dptr, text);
 	return dptr;
@@ -736,7 +736,7 @@ UnsafeArray<const WChar> Text::XML::ToNewXMLTextW(UnsafeArray<const WChar> text)
 
 NN<Text::String> Text::XML::ToNewXMLTextLite(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = GetXMLTextLiteLen(text);
+	UIntOS cnt = GetXMLTextLiteLen(text);
 	NN<Text::String> s = Text::String::New(cnt);
 	ToXMLTextLite(s->v, text);
 	return s;
@@ -744,7 +744,7 @@ NN<Text::String> Text::XML::ToNewXMLTextLite(UnsafeArray<const UTF8Char> text)
 
 UnsafeArray<const WChar> Text::XML::ToNewXMLTextLite(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = GetXMLTextLiteLen(text) + 1;
+	UIntOS cnt = GetXMLTextLiteLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToXMLTextLite(dptr, text);
 	return dptr;
@@ -752,7 +752,7 @@ UnsafeArray<const WChar> Text::XML::ToNewXMLTextLite(UnsafeArray<const WChar> te
 
 NN<Text::String> Text::XML::ToNewHTMLBodyText(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = GetHTMLBodyTextLen(text);
+	UIntOS cnt = GetHTMLBodyTextLen(text);
 	NN<Text::String> s = Text::String::New(cnt);
 	ToHTMLBodyText(s->v, text);
 	return s;
@@ -760,7 +760,7 @@ NN<Text::String> Text::XML::ToNewHTMLBodyText(UnsafeArray<const UTF8Char> text)
 
 NN<Text::String> Text::XML::ToNewHTMLElementText(UnsafeArray<const UTF8Char> text)
 {
-	UOSInt cnt = GetHTMLElementTextLen(text);
+	UIntOS cnt = GetHTMLElementTextLen(text);
 	NN<Text::String> s = Text::String::New(cnt);
 	ToHTMLElementText(s->v, text);
 	return s;
@@ -768,7 +768,7 @@ NN<Text::String> Text::XML::ToNewHTMLElementText(UnsafeArray<const UTF8Char> tex
 
 UnsafeArray<const WChar> Text::XML::ToNewHTMLBodyTextW(UnsafeArray<const WChar> text)
 {
-	UOSInt cnt = GetHTMLBodyTextLen(text) + 1;
+	UIntOS cnt = GetHTMLBodyTextLen(text) + 1;
 	UnsafeArray<WChar> dptr = MemAllocArr(WChar, cnt);
 	ToHTMLBodyText(dptr, text);
 	return dptr;
@@ -790,7 +790,7 @@ NN<Text::String> Text::XML::ToNewAttrText(UnsafeArrayOpt<const UTF8Char> text)
 	}
 	else
 	{
-		UOSInt cnt = GetXMLTextLen(nntext) + 2;
+		UIntOS cnt = GetXMLTextLen(nntext) + 2;
 		s = Text::String::New(cnt);
 		buff = s->v;
 		*buff++ = '"';
@@ -817,7 +817,7 @@ UnsafeArray<const WChar> Text::XML::ToNewAttrTextW(UnsafeArrayOpt<const WChar> t
 	}
 	else
 	{
-		UOSInt cnt = GetXMLTextLen(nntext) + 3;
+		UIntOS cnt = GetXMLTextLen(nntext) + 3;
 		dptr = MemAlloc(WChar, cnt);
 		buff = dptr;
 		*buff++ = '"';
@@ -1101,7 +1101,7 @@ void Text::XML::ParseStr(NN<Text::String> out, UnsafeArray<const UTF8Char> xmlSt
 		}
 	}
 	*currPtr = 0;
-	out->leng = (UOSInt)(currPtr - out->v);
+	out->leng = (UIntOS)(currPtr - out->v);
 }
 
 void Text::XML::ParseStr(UnsafeArray<UTF8Char> out, UnsafeArray<const UTF8Char> xmlStart, UnsafeArray<const UTF8Char> xmlEnd)
@@ -1338,7 +1338,7 @@ void Text::XML::ParseStr(UnsafeArray<WChar> out, UnsafeArray<const WChar> xmlSta
 	*currPtr = 0;
 }
 
-Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt refSize, NN<IO::Stream> stm)
+Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UIntOS refSize, NN<IO::Stream> stm)
 {
 	UTF8Char sbuff[6];
 	UTF32Char wcs;
@@ -1464,7 +1464,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 	return false;
 }
 
-Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt refSize, NN<Text::StringBuilderUTF8> sb)
+Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UIntOS refSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[6];
 	UTF32Char wcs;

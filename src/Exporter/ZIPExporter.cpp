@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::ZIPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -54,8 +54,8 @@ Bool Exporter::ZIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UnsafeArray<UTF8Char> buffStart, UnsafeArray<UTF8Char> buffEnd, NN<IO::PackageFile> pkg)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<UTF8Char> sptr;
 	IO::PackageFile::PackObjectType itemType;
 	NN<IO::StreamData> fd;
@@ -76,9 +76,9 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UnsafeArray<
 				if (NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i).SetTo(pitem) && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
 				{
 					UInt64 dataSize = pitem->dataLength;
-					UOSInt readSize;
-					Data::ByteBuffer buff((UOSInt)dataSize);
-					if ((readSize = pitem->fullFd->GetRealData(NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff)) != dataSize)
+					UIntOS readSize;
+					Data::ByteBuffer buff((UIntOS)dataSize);
+					if ((readSize = pitem->fullFd->GetRealData(NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UIntOS)dataSize, buff)) != dataSize)
 					{
 #if defined(VERBOSE)
 						printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v.Ptr());

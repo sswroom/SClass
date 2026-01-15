@@ -14,7 +14,7 @@ namespace UI
 			WinProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~WinProgressBar();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 			virtual void ProgressStart(Text::CStringNN name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);

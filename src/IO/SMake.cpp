@@ -38,22 +38,22 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::SMake::ConfigItem> cfg;
 	UnsafeArray<const UTF8Char> valEnd = &val.v[val.leng];
-	UOSInt i = 0;
-	UOSInt j;
-	while ((j = Text::StrIndexOfC(&val.v[i], (UOSInt)(valEnd - &val.v[i]), UTF8STRC("$("))) != INVALID_INDEX)
+	UIntOS i = 0;
+	UIntOS j;
+	while ((j = Text::StrIndexOfC(&val.v[i], (UIntOS)(valEnd - &val.v[i]), UTF8STRC("$("))) != INVALID_INDEX)
 	{
 		if (j > 0)
 		{
 			sb->AppendC(&val.v[i], j);
 			i += j;
 		}
-		j = Text::StrIndexOfCharC(&val.v[i], (UOSInt)(valEnd - &val.v[i]), ')');
+		j = Text::StrIndexOfCharC(&val.v[i], (UIntOS)(valEnd - &val.v[i]), ')');
 		if (j == INVALID_INDEX)
 			break;
-		if (Text::StrStartsWithC(&val.v[i + 2], (UOSInt)(valEnd - &val.v[i + 1]), UTF8STRC("shell ")))
+		if (Text::StrStartsWithC(&val.v[i + 2], (UIntOS)(valEnd - &val.v[i + 1]), UTF8STRC("shell ")))
 		{
 			Text::StringBuilderUTF8 sbCmd;
-			sbCmd.AppendC(&val.v[i + 8], (UOSInt)j - 8);
+			sbCmd.AppendC(&val.v[i + 8], (UIntOS)j - 8);
 			i += j + 1;
 			Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
@@ -63,7 +63,7 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 		}
 		else
 		{
-			sptr = Text::StrConcatC(sbuff, &val.v[i + 2], (UOSInt)j - 2);
+			sptr = Text::StrConcatC(sbuff, &val.v[i + 2], (UIntOS)j - 2);
 			i += j + 1;
 			if (this->cfgMap.GetC(CSTRP(sbuff, sptr)).SetTo(cfg))
 			{
@@ -71,7 +71,7 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 			}
 		}
 	}
-	sb->AppendC(&val.v[i], (UOSInt)(valEnd - &val.v[i]));
+	sb->AppendC(&val.v[i], (UIntOS)(valEnd - &val.v[i]));
 }
 
 void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path)
@@ -99,7 +99,7 @@ void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN pa
 void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
 {
 	Text::CStringNN compileCfg = compileCfgC.OrEmpty();
-	UOSInt i = compileCfg.IndexOf('`');
+	UIntOS i = compileCfg.IndexOf('`');
 	if (i != INVALID_INDEX)
 	{
 		Text::StringBuilderUTF8 sb2;
@@ -118,7 +118,7 @@ void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileC
 				break;
 			}
 			sb2.ClearStr();
-			AppendCfgItem(sb2, Text::CStringNN(compileCfg.v, (UOSInt)i));
+			AppendCfgItem(sb2, Text::CStringNN(compileCfg.v, (UIntOS)i));
 			Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
@@ -187,7 +187,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 	Text::StringBuilderUTF8 sb2;
 	Text::PString str1;
 	Text::PString str2;
-	UOSInt i;
+	UIntOS i;
 	NN<IO::SMake::ConfigItem> cfg;
 	Optional<IO::SMake::ProgramItem> prog = nullptr;
 	NN<ProgramItem> nnprog;
@@ -230,7 +230,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 sbCmd;
-					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], (UOSInt)i - 2));
+					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], (UIntOS)i - 2));
 					Text::StringBuilderUTF8 result;
 					Int32 ret;
 					if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
@@ -434,7 +434,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 
 Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 {
-	UOSInt i;
+	UIntOS i;
 	Text::PString str2;
 	Text::PString str3;
 	if (str1.StartsWith(UTF8STRC("?(")))
@@ -444,7 +444,7 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 		{
 			str2 = str1.Substring(i + 1);
 			Text::StringBuilderUTF8 sb2;
-			sb2.AppendC(&str1.v[2], (UOSInt)i - 2);
+			sb2.AppendC(&str1.v[2], (UIntOS)i - 2);
 			str1 = sb2.TrimAsNew();
 			Data::CompareCondition cond = Data::CompareCondition::Unknown;
 			if ((i = str1.IndexOf(UTF8STRC(">="))) != INVALID_INDEX)
@@ -637,7 +637,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMapNative<Int32>> objList,
 	lastTime = fs.GetModifyTime().ToTicks();
 	Text::PString line;
 	Text::PString str1;
-	UOSInt i;
+	UIntOS i;
 	NN<IO::SMake::ProgramItem> prog;
 	Text::UTF8Reader reader(fs);
 	tmpSb->ClearStr();
@@ -672,7 +672,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMapNative<Int32>> objList,
 						{
 							Text::CStringNN nnsrc;
 							Text::PString currPath = str1;
-							UOSInt j;
+							UIntOS j;
 							Text::StringBuilderUTF8 sb2;
 							if (!sourceRefPath.SetTo(nnsrc) || (j = nnsrc.LastIndexOf('/')) == INVALID_INDEX)
 							{
@@ -701,9 +701,9 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMapNative<Int32>> objList,
 								return false;
 							}
 						}
-						if (objParsedProgs->SortedIndexOf((UOSInt)prog.Ptr()) < 0)
+						if (objParsedProgs->SortedIndexOf((UIntOS)prog.Ptr()) < 0)
 						{
-							objParsedProgs->SortedInsert((UOSInt)prog.Ptr());
+							objParsedProgs->SortedInsert((UIntOS)prog.Ptr());
 							NN<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
@@ -803,7 +803,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMapNative<Int32>> objList,
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Int64 thisTime;
 	NN<Data::ArrayListStringNN> nnheaderList;
 	sb2.Append(cfg->value);
@@ -846,14 +846,14 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMapNative<Int32>> objList,
 	tmpSb->TrimToLength(i);
 	UnsafeArray<const UTF8Char> currHeader = headerFile->v;
 	UnsafeArray<const UTF8Char> currHeaderEnd = &headerFile->v[headerFile->leng];
-	while (Text::StrStartsWithC(currHeader, (UOSInt)(currHeaderEnd - currHeader), UTF8STRC("../")))
+	while (Text::StrStartsWithC(currHeader, (UIntOS)(currHeaderEnd - currHeader), UTF8STRC("../")))
 	{
 		i = tmpSb->LastIndexOf('/');
 		tmpSb->TrimToLength(i);
 		currHeader = currHeader + 3;
 	}
 	tmpSb->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-	tmpSb->AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
+	tmpSb->AppendC(currHeader, (UIntOS)(currHeaderEnd - currHeader));
 	sptr = IO::Path::GetRealPath(sbuff, tmpSb->ToString(), tmpSb->GetLength());
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
@@ -1501,8 +1501,8 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			sb.AppendUTF8Char(' ');
 			sb.Append(cfg->value);
 		}
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = libList.GetCount();
 		while (i < j)
@@ -1554,8 +1554,8 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				sb.AppendUTF8Char(' ');
 				sb.Append(cfg->value);
 			}
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			i = 0;
 			j = libList.GetCount();
 			while (i < j)
@@ -1653,13 +1653,13 @@ void IO::SMake::SetErrorMsg(Text::CStringNN msg)
 	this->errorMsg = Text::String::New(msg);
 }
 
-IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer> messageWriter) : IO::ParsedObject(cfgFile)
+IO::SMake::SMake(Text::CStringNN cfgFile, UIntOS threadCnt, Optional<IO::Writer> messageWriter) : IO::ParsedObject(cfgFile)
 {
 	NEW_CLASSNN(this->tasks, Sync::ParallelTask(threadCnt, false));
 	this->errorMsg = nullptr;
 	this->error = false;
 	this->asyncMode = false;
-	UOSInt i = cfgFile.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = cfgFile.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
 	if (i != INVALID_INDEX)
 	{
@@ -1673,7 +1673,7 @@ IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer>
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			*sptr = 0;
 		}
-		this->basePath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		this->basePath = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	this->messageWriter = messageWriter;
 	this->cmdWriter = nullptr;
@@ -1684,8 +1684,8 @@ IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer>
 
 IO::SMake::~SMake()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::SMake::ConfigItem> cfg;
 	NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
@@ -1741,7 +1741,7 @@ void IO::SMake::ClearLinks()
 void IO::SMake::ClearStatus()
 {
 	this->error = false;
-	UOSInt i = this->progMap.GetCount();
+	UIntOS i = this->progMap.GetCount();
 	while (i-- > 0)
 	{
 		this->progMap.GetItemNoCheck(i)->compiled = false;
@@ -1795,7 +1795,7 @@ void IO::SMake::SetDebugObj(Text::CString debugObj)
 	}
 }
 
-void IO::SMake::SetThreadCnt(UOSInt threadCnt)
+void IO::SMake::SetThreadCnt(UIntOS threadCnt)
 {
 	if (this->tasks->GetThreadCnt() != threadCnt)
 	{
@@ -1813,7 +1813,7 @@ void IO::SMake::AsyncPostCompile()
 {
 	this->tasks->WaitForIdle();
 	NN<Text::String> cmd;
-	UOSInt i = this->linkCmds.GetCount();
+	UIntOS i = this->linkCmds.GetCount();
 	while (!this->error)
 	{
 		if (i == 0)
@@ -1921,13 +1921,13 @@ void IO::SMake::CleanFiles()
 	}
 }
 
-UOSInt IO::SMake::GetProgList(NN<Data::ArrayListNN<Text::String>> progList)
+UIntOS IO::SMake::GetProgList(NN<Data::ArrayListNN<Text::String>> progList)
 {
 //	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
 	NN<Text::String> prog;
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = this->progMap.GetCount();
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = this->progMap.GetCount();
 	while (i < j)
 	{
 		if (this->progMap.GetKey(i).SetTo(prog))

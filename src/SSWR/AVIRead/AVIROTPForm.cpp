@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base32Enc.h"
 
-void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
+void SSWR::AVIRead::AVIROTPForm::RandBytes(UIntOS len)
 {
 	Data::RandomBytesGenerator random;
 	UInt8 buff[32];
@@ -57,9 +57,9 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 		return;
 	}
 
-	UOSInt type = me->cboType->GetSelectedIndex();
+	UIntOS type = me->cboType->GetSelectedIndex();
 	UInt8 buff[32];
-	UOSInt keySize;
+	UIntOS keySize;
 	Text::TextBinEnc::Base32Enc b32;
 	keySize = b32.DecodeBin(sbKey.ToCString(), buff);
 	NN<EntryInfo> entry;
@@ -76,11 +76,11 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 		entry->lastCounter = 0;
 	}
 	me->entryList.Add(entry);
-	UOSInt i = me->lvEntry->AddItem(entry->name, entry);
+	UIntOS i = me->lvEntry->AddItem(entry->name, entry);
 	me->lvEntry->SetSubItem(i, 1, CSTR("-"));
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[32];
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
 	NN<EntryInfo> entry;
-	UOSInt i = me->entryList.GetCount();
+	UIntOS i = me->entryList.GetCount();
 	while (i-- > 0)
 	{
 		entry = me->entryList.GetItemNoCheck(i);
@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, N
 SSWR::AVIRead::AVIROTPForm::~AVIROTPForm()
 {
 	NN<EntryInfo> entry;
-	UOSInt i = this->entryList.GetCount();
+	UIntOS i = this->entryList.GetCount();
 	while (i-- > 0)
 	{
 		entry = this->entryList.GetItemNoCheck(i);

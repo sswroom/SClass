@@ -18,7 +18,7 @@ struct UI::GUIDDrawControl::ClassData
 {
 	Bool pSurfaceUpdated;
 	GtkWidget *imgCtrl;
-	UOSInt drawPause;
+	UIntOS drawPause;
 	GdkPixbuf *pixBuf;
 };
 
@@ -83,7 +83,7 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDown(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->OnMouseDown(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	else if (evt->type == GDK_2BUTTON_PRESS)
 	{
@@ -107,7 +107,7 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDblClick(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->OnMouseDblClick(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -138,7 +138,7 @@ gboolean GUIDDrawControl_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer 
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseUp(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
+		me->OnMouseUp(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
 	}
 	return false;
 }
@@ -147,7 +147,7 @@ gboolean GUIDDrawControl_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointe
 {
 	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
-	me->OnMouseMove(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
+	me->OnMouseMove(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 	return false;
 }
 
@@ -168,7 +168,7 @@ gboolean GUIDDrawControl_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpoint
 	{
 		scrollY = 1;
 	}
-	me->OnMouseWheel(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), scrollY);
+	me->OnMouseWheel(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), scrollY);
 	return true;
 }
 
@@ -219,7 +219,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 	else
 	{
 		Sync::MutexUsage mutUsage(data->me->surfaceMut);
-		data->me->dispSize = Math::Size2D<UOSInt>((UOSInt)data->allocation->width, (UOSInt)data->allocation->height);
+		data->me->dispSize = Math::Size2D<UIntOS>((UIntOS)data->allocation->width, (UIntOS)data->allocation->height);
 		data->me->ReleaseSubSurface();
 		data->me->CreateSubSurface();
 		mutUsage.EndUse();
@@ -228,11 +228,11 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Display size changed to "));
-			sb.AppendUOSInt(data->me->dispSize.x);
+			sb.AppendUIntOS(data->me->dispSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(data->me->dispSize.y);
+			sb.AppendUIntOS(data->me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
-			sb.AppendOSInt((OSInt)data->me->GetHMonitor().OrNull());
+			sb.AppendIntOS((IntOS)data->me->GetHMonitor().OrNull());
 			data->me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (data->me->inited)
@@ -306,15 +306,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
-				sb.AppendUOSInt(this->primarySurface->info.dispSize.x);
+				sb.AppendUIntOS(this->primarySurface->info.dispSize.x);
 				sb.AppendC(UTF8STRC(" x "));
-				sb.AppendUOSInt(this->primarySurface->info.dispSize.y);
+				sb.AppendUIntOS(this->primarySurface->info.dispSize.y);
 				sb.AppendC(UTF8STRC(", bpl = "));
-				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
+				sb.AppendUIntOS(this->primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
-				sb.AppendOSInt((OSInt)this->surfaceMon);
+				sb.AppendIntOS((IntOS)this->surfaceMon);
 				sb.AppendC(UTF8STRC(", hWnd = "));
-				sb.AppendOSInt((OSInt)hWnd);
+				sb.AppendIntOS((IntOS)hWnd);
 				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = this->primarySurface->info.storeBPP;
@@ -362,7 +362,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	GdkPixbuf *buf;
 	if (this->primarySurface.SetTo(surface))
 	{
-		buf = gdk_pixbuf_new_from_data((const guchar*)surface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->dispSize.x, (int)(OSInt)this->dispSize.y, (int)(OSInt)this->dispSize.x * 4, 0, 0);
+		buf = gdk_pixbuf_new_from_data((const guchar*)surface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(IntOS)this->dispSize.x, (int)(IntOS)this->dispSize.y, (int)(IntOS)this->dispSize.x * 4, 0, 0);
 		if (buf == 0)
 		{
 			this->primarySurface.Delete();
@@ -371,7 +371,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		else
 		{
 			surface->info.atype = Media::AT_ALPHA;
-			OSInt lineAdd;
+			IntOS lineAdd;
 			UnsafeArray<UInt8> buff;
 			if (surface->LockSurface(lineAdd).SetTo(buff))
 			{
@@ -406,7 +406,7 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 	}
 }
 
-UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
+UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UIntOS targetWidth, UIntOS targetHeight, OutParam<IntOS> bpl)
 {
 	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
@@ -462,8 +462,8 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->inited = false;
 	this->primarySurface = nullptr;
 	this->buffSurface = nullptr;
-	this->dispSize = Math::Size2D<UOSInt>(0, 0);
-	this->bkBuffSize = Math::Size2D<UOSInt>(0, 0);
+	this->dispSize = Math::Size2D<UIntOS>(0, 0);
+	this->bkBuffSize = Math::Size2D<UIntOS>(0, 0);
 	this->imgCopy = 0;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
@@ -552,7 +552,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> drawSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	NN<Media::MonitorSurface> primarySurface;
@@ -643,23 +643,23 @@ Media::RotateType UI::GUIDDrawControl::GetRotateType() const
 	return this->rotType;
 }
 
-void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
+void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 amount)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
+void UI::GUIDDrawControl::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	if (button == MBTN_LEFT)
 	{
@@ -682,27 +682,27 @@ void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButt
 	}
 }
 
-void UI::GUIDDrawControl::OnGZoomBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomStep(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomStep(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnJSButtonDown(OSInt buttonId)
+void UI::GUIDDrawControl::OnJSButtonDown(IntOS buttonId)
 {
 }
 
-void UI::GUIDDrawControl::OnJSButtonUp(OSInt buttonId)
+void UI::GUIDDrawControl::OnJSButtonUp(IntOS buttonId)
 {
 }
 
-void UI::GUIDDrawControl::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4)
+void UI::GUIDDrawControl::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4)
 {
 }
 

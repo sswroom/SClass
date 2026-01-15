@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include <windows.h>
 
-Media::AVIUtl::AUIAudio::AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples)
+Media::AVIUtl::AUIAudio::AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UIntOS nSamples)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -41,7 +41,7 @@ Data::Duration Media::AVIUtl::AUIAudio::GetStreamTime()
 
 Data::Duration Media::AVIUtl::AUIAudio::SeekToTime(Data::Duration time)
 {
-	this->currSample = (UOSInt)time.MultiplyU64(this->format->frequency);
+	this->currSample = (UIntOS)time.MultiplyU64(this->format->frequency);
 	if (this->currSample > this->nSamples)
 		this->currSample = this->nSamples;
 	return Data::Duration::FromRatioU64(this->currSample, this->format->frequency);
@@ -58,7 +58,7 @@ void Media::AVIUtl::AUIAudio::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AVIUtl::AUIAudio::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::AVIUtl::AUIAudio::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> playEvt;
 	this->playEvt = evt;
@@ -72,18 +72,18 @@ void Media::AVIUtl::AUIAudio::Stop()
 	this->playEvt = 0;
 }
 
-UOSInt Media::AVIUtl::AUIAudio::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AVIUtl::AUIAudio::ReadBlock(Data::ByteArray blk)
 {
 	NN<Sync::Event> playEvt;
-	UOSInt nSample = blk.GetSize() / this->format->align;
-	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, blk.Arr().Ptr());
+	UIntOS nSample = blk.GetSize() / this->format->align;
+	UIntOS readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, blk.Arr().Ptr());
 	this->currSample += readCnt;
 	if (this->playEvt.SetTo(playEvt))
 		playEvt->Set();
 	return readCnt * this->format->align;
 }
 
-UOSInt Media::AVIUtl::AUIAudio::GetMinBlockSize()
+UIntOS Media::AVIUtl::AUIAudio::GetMinBlockSize()
 {
 	return this->format->align;
 }

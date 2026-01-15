@@ -47,9 +47,9 @@ namespace IO
 				IBWE_WING_DOWN = 0x4
 			} IBuddyWingEffect;
 
-			static UOSInt GetNumDevice();
+			static UIntOS GetNumDevice();
 
-			IBuddy(UOSInt devNo);
+			IBuddy(UIntOS devNo);
 			~IBuddy();
 
 			Bool IsError();

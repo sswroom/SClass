@@ -398,7 +398,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			{
 				BITMAPINFOHEADER *bmih = (BITMAPINFOHEADER*)strl[i].strf;
 				Media::FrameInfo info;
-				info.dispSize = Math::Size2D<UOSInt>((UInt32)bmih->biWidth, (UInt32)bmih->biHeight);
+				info.dispSize = Math::Size2D<UIntOS>((UInt32)bmih->biWidth, (UInt32)bmih->biHeight);
 				info.storeSize = info.dispSize;
 				info.fourcc = bmih->biCompression;
 				info.storeBPP = bmih->biBitCount;
@@ -720,7 +720,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	return mf;
 }
 
-UInt32 Parser::FileParser::AVIParser::EstimateDecodeSize(NN<Media::AudioFormat> fmt, UInt64 totalSize, UOSInt frameSize)
+UInt32 Parser::FileParser::AVIParser::EstimateDecodeSize(NN<Media::AudioFormat> fmt, UInt64 totalSize, UIntOS frameSize)
 {
 	if (fmt->formatId == 1)
 	{

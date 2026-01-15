@@ -90,10 +90,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(AnyType userObj)
 	me->UpdateSchemaList();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	UOSInt i = me->lbConn->GetSelectedIndex();
+	UIntOS i = me->lbConn->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		me->mnuConn->ShowMenu(me->lbConn, scnPos);
@@ -124,10 +124,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(AnyType userObj)
 	me->UpdateTableList();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	UOSInt i = me->lbSchema->GetSelectedIndex();
+	UIntOS i = me->lbSchema->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		me->mnuSchema->ShowMenu(me->lbSchema, scnPos);
@@ -145,10 +145,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(AnyType userObj)
 	OPTSTR_DEL(tableName);
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	UOSInt i = me->lbTable->GetSelectedIndex();
+	UIntOS i = me->lbTable->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		me->mnuTable->ShowMenu(me->lbTable, scnPos);
@@ -174,13 +174,13 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterKeyDown(
 	return UI::EventState::ContinueEvent;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableResultDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableResultDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCSV;
-	UOSInt i = 0;
-	UOSInt j = me->lvTableResult->GetColumnCnt();
+	UIntOS i = 0;
+	UIntOS j = me->lvTableResult->GetColumnCnt();
 	while (i < j)
 	{
 		sb.ClearStr();
@@ -240,7 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userOb
 	OPTSTR_DEL(tableName);
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
@@ -250,7 +250,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyTyp
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
@@ -258,8 +258,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType 
 		if (me->mapDownPos == scnPos)
 		{
 			NN<Map::GetObjectSess> sess;
-			UOSInt k;
-			UOSInt l;
+			UIntOS k;
+			UIntOS l;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
 			NN<Math::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
 			NN<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
@@ -280,7 +280,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType 
 			{
 				Data::ArrayListInt64 arr;
 				Optional<Map::NameArray> nameArr;
-				UOSInt nameCol = me->dbLayer->GetNameCol();
+				UIntOS nameCol = me->dbLayer->GetNameCol();
 				Text::StringBuilderUTF8 sb;
 				me->dbLayer->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				k = 0;
@@ -419,7 +419,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userOb
 						me->lvSQLResult->ChangeColumnCnt(1);
 						me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
 						sb.ClearStr();
-						sb.AppendOSInt(r->GetRowChanged());
+						sb.AppendIntOS(r->GetRowChanged());
 						me->lvSQLResult->AddItem(sb.ToCString(), nullptr);
 					}
 					else
@@ -485,10 +485,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(AnyType us
 	NN<DB::ReadingDB> currDB;
 	if (me->currDB.SetTo(currDB) && currDB->IsDBTool() && NN<DB::ReadingDBTool>::ConvertFrom(currDB)->CanModify())
 	{
-		UOSInt index = me->lvSvrConn->GetSelectedIndex();
+		UIntOS index = me->lvSvrConn->GetSelectedIndex();
 		if (index != INVALID_INDEX)
 		{
-			Int32 id = (Int32)me->lvSvrConn->GetItem(index).GetOSInt();
+			Int32 id = (Int32)me->lvSvrConn->GetItem(index).GetIntOS();
 			if (NN<DB::DBTool>::ConvertFrom(currDB)->KillConnection(id))
 			{
 				me->UpdateSvrConnList();
@@ -508,8 +508,8 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 		db = NN<DB::ReadingDBTool>::ConvertFrom(currDB);
 	}
 	Bool isSQLTab = (me->tcMain->GetSelectedPage().OrNull() == me->tpSQL.Ptr());
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (isSQLTab && db.SetTo(nndb) && files[i]->EndsWith(UTF8STRC(".sql")))
@@ -549,12 +549,12 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapItemSelChg(AnyType userObj
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt id = me->cboMapItem->GetSelectedItem().GetOSInt();
+	IntOS id = me->cboMapItem->GetSelectedItem().GetIntOS();
 	Data::ArrayListInt64 arr;
 	Optional<Map::NameArray> nameArr;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->dbLayer->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(me->mapItemPt, me->mapItemPt), true);
 	me->lvMapRecord->ClearItems();
 	i = 0;
@@ -636,8 +636,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 		return;
 	}
 	Data::ArrayListStringNN schemaNames;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	currDB->QuerySchemaNames(schemaNames);
 	if (schemaNames.GetCount() == 0)
@@ -671,8 +671,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 	NN<Text::String> tableName;
 	Data::ArrayListStringNN tableNames;
-	UOSInt i = 0;
-	UOSInt j = currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
+	UIntOS i = 0;
+	UIntOS j = currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
 	ArtificialQuickSort_SortAList(&tableNames);
 	while (i < j)
@@ -732,7 +732,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	{
 		UpdateResult(r, this->lvTableResult);
 
-		UOSInt k;
+		UIntOS k;
 		if (tabDef.SetTo(nntabDef))
 		{
 			NN<DB::ColDef> col;
@@ -769,8 +769,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 		else
 		{
 			DB::ColDef col(Text::String::NewEmpty());
-			UOSInt j = r->ColCount();
-			UOSInt i = 0;
+			UIntOS j = r->ColCount();
+			UIntOS i = 0;
 			while (i < j)
 			{
 				r->GetColDef(i, col);
@@ -801,10 +801,10 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NN<DB::DBReader> r, NN<UI::GUIListView> lv)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt *colSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS *colSize;
 
 	lv->ClearAll();
 
@@ -814,7 +814,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NN<DB::DBReader> r, NN<UI::G
 		j = r->ColCount();
 		lv->ChangeColumnCnt(j);
 		i = 0;
-		colSize = MemAlloc(UOSInt, j);
+		colSize = MemAlloc(UIntOS, j);
 		while (i < j)
 		{
 			if (r->GetColDef(i, col))
@@ -830,7 +830,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NN<DB::DBReader> r, NN<UI::G
 		}
 	}
 
-	OSInt rowCnt = 0;
+	IntOS rowCnt = 0;
 	while (r->ReadNext())
 	{
 		i = 1;
@@ -863,13 +863,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NN<DB::DBReader> r, NN<UI::G
 	if (k > 0)
 	{
 		Double w = lv->GetSize().x;
-		w -= 20 + UOSInt2Double(j) * 6;
+		w -= 20 + UIntOS2Double(j) * 6;
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			lv->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
+			lv->SetColumnWidth(i, (UIntOS2Double(colSize[i]) * w / UIntOS2Double(k) + 6));
 			i++;
 		}
 	}
@@ -885,8 +885,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 	if (this->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetVariables(vars);
+		UIntOS i = 0;
+		UIntOS j = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetVariables(vars);
 		while (i < j)
 		{
 			item = vars.GetItem(i);
@@ -909,13 +909,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 		Data::ArrayListNN<DB::ReadingDBTool::ConnectionInfo> conns;
 		NN<DB::ReadingDBTool::ConnectionInfo> conn;
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetConnectionInfo(conns);
+		UIntOS i = 0;
+		UIntOS j = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetConnectionInfo(conns);
 		while (i < j)
 		{
 			conn = conns.GetItemNoCheck(i);
 			sptr = Text::StrInt32(sbuff, conn->id);
-			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
+			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)conn->id);
 			if (conn->status.SetTo(s)) this->lvSvrConn->SetSubItem(i, 1, s);
 			if (conn->user.SetTo(s)) this->lvSvrConn->SetSubItem(i, 2, s);
 			if (conn->clientHostName.SetTo(s)) this->lvSvrConn->SetSubItem(i, 3, s);
@@ -981,8 +981,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateFilter()
 
 void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<Text::String> fileName)
 {
-	UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	UOSInt rowInd;
+	UIntOS i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS rowInd;
 	if (!this->sqlFileMode)
 	{
 		this->lvSQLResult->ClearAll();
@@ -995,13 +995,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<T
 	this->lvSQLResult->SetSubItem(rowInd, 1, CSTR("0"));
 	this->ui->ProcessMessages();
 	Text::StringBuilderUTF8 sb;
-	UOSInt rowsChanged = 0;
+	UIntOS rowsChanged = 0;
 	Int64 lastShowTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	Int64 t;
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		DB::SQLFileReader reader(fs, db->GetSQLType(), true);
-		OSInt thisRows;
+		IntOS thisRows;
 		while (reader.NextSQL(sb))
 		{
 			NN<DB::DBReader> r;
@@ -1012,14 +1012,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<T
 					thisRows = r->GetRowChanged();
 					if (thisRows > 0)
 					{
-						rowsChanged += (UOSInt)thisRows;
+						rowsChanged += (UIntOS)thisRows;
 					}
 					t = Data::DateTimeUtil::GetCurrTimeMillis();
 					if (t - lastShowTime >= 1000)
 					{
 						lastShowTime = t;							
 						sb.ClearStr();
-						sb.AppendUOSInt(rowsChanged);
+						sb.AppendUIntOS(rowsChanged);
 						this->lvSQLResult->SetSubItem(rowInd, 1, sb.ToCString());
 						this->ui->ProcessMessages();
 					}
@@ -1037,7 +1037,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<T
 		}
 	}
 	sb.ClearStr();
-	sb.AppendUOSInt(rowsChanged);
+	sb.AppendUIntOS(rowsChanged);
 	this->lvSQLResult->SetSubItem(rowInd, 1, sb.ToCString());
 	this->ui->ProcessMessages();
 }
@@ -1397,7 +1397,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 		layer->AddUpdatedHandler(OnLayerUpdated, this);
 	}
 	NEW_CLASSNN(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
-	UOSInt i = this->mapEnv->AddLayer(nullptr, this->dbLayer, true);
+	UIntOS i = this->mapEnv->AddLayer(nullptr, this->dbLayer, true);
 	Map::MapEnv::LayerItem settings;
 	this->mapEnv->GetLayerProp(settings, nullptr, i);
 	settings.fillStyle = 0xc0ff905b;
@@ -1649,8 +1649,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<DB::DBManagerCtrl> ctrl;
-		UOSInt i = 0;
-		UOSInt j = this->dbList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->dbList.GetCount();
 		while (i < j)
 		{
 			ctrl = this->dbList.GetItemNoCheck(i);
@@ -1684,7 +1684,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
 	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), this->dbList);
-	UOSInt i = this->dbList.GetCount();
+	UIntOS i = this->dbList.GetCount();
 	NN<DB::DBManagerCtrl> ctrl;
 	while (i-- > 0)
 	{
@@ -1767,7 +1767,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TOOL_COPY_TABLES:
 		{
 			SSWR::AVIRead::AVIRDBCopyTablesForm dlg(nullptr, this->ui, this->core, this->dbList);
-			UOSInt i = this->lbConn->GetSelectedIndex();
+			UIntOS i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
 				dlg.SetSourceDB(i);
@@ -1777,7 +1777,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_CONN_REMOVE:
 		{
-			UOSInt i = this->lbConn->GetSelectedIndex();
+			UIntOS i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
 				NN<DB::DBManagerCtrl> ctrl;
@@ -1897,8 +1897,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			if (this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
+				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, sb);
@@ -1916,8 +1916,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			if (this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
+				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, sb);
@@ -2002,12 +2002,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(NN<DB::DBConn> conn)
 	this->lbConn->AddItem(sb.ToCString(), ctrl);
 }
 
-UOSInt SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceCount() const
+UIntOS SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceCount() const
 {
 	return this->dbList.GetCount();
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+void SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceName(UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	NN<DB::DBManagerCtrl> ctrl;
 	if (this->dbList.GetItem(index).SetTo(ctrl))
@@ -2016,7 +2016,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceName(UOSInt index, NN<Text::
 	}
 }
 
-Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBManagerForm::OpenDataSource(UOSInt index)
+Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBManagerForm::OpenDataSource(UIntOS index)
 {
 	NN<DB::DBManagerCtrl> ctrl;
 	if (this->dbList.GetItem(index).SetTo(ctrl))

@@ -57,7 +57,7 @@ Win32::WMIReader::WMIReader(void *pEnum)
 
 Win32::WMIReader::~WMIReader()
 {
-	UOSInt i;
+	UIntOS i;
 	WMIColumn *col;
 
 	if (this->pObject)
@@ -121,17 +121,17 @@ Bool Win32::WMIReader::ReadNext()
 	}
 }
 
-UOSInt Win32::WMIReader::ColCount()
+UIntOS Win32::WMIReader::ColCount()
 {
 	return this->columns->GetCount();
 }
 
-OSInt Win32::WMIReader::GetRowChanged()
+IntOS Win32::WMIReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 Win32::WMIReader::GetInt32(UOSInt colIndex)
+Int32 Win32::WMIReader::GetInt32(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -200,7 +200,7 @@ Int32 Win32::WMIReader::GetInt32(UOSInt colIndex)
 	return ret;
 }
 
-Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
+Int64 Win32::WMIReader::GetInt64(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -269,7 +269,7 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 	return ret;
 }
 
-UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -353,7 +353,7 @@ UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<WCha
 	return ret;
 }
 
-Bool Win32::WMIReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Win32::WMIReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -452,7 +452,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	return ret;
 }
 
-Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Win32::WMIReader::GetNewStr(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -477,11 +477,11 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 			{
 			case CIM_SINT8:
 				sptr = Text::StrInt32(sbuff, V_I1(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_UINT8:
 				sptr = Text::StrInt32(sbuff, V_UI1(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
@@ -493,35 +493,35 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 				break;
 			case CIM_SINT16:
 				sptr = Text::StrInt32(sbuff, V_I2(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_UINT16:
 				sptr = Text::StrInt32(sbuff, V_UI2(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_SINT32:
 				sptr = Text::StrInt32(sbuff, V_I4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_UINT32:
 				sptr = Text::StrUInt32(sbuff, V_UI4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_SINT64:
 				sptr = Text::StrInt64(sbuff, V_I8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_UINT64:
 				sptr = Text::StrUInt64(sbuff, V_UI8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_REAL32:
 				sptr = Text::StrDouble(sbuff, V_R4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_REAL64:
 				sptr = Text::StrDouble(sbuff, V_R8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				break;
 			case CIM_BOOLEAN:
 				ret = Text::String::New((V_BOOL(&v))?CSTR("True"):CSTR("False"));
@@ -537,7 +537,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 					Data::DateTime dt;
 					dt.SetValueVariTime(V_DATE(&v));
 					sptr = dt.ToString(sbuff);
-					ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+					ret = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				}
 				break;
 			}
@@ -547,7 +547,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 	return ret;
 }
 
-UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -634,7 +634,7 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<U
 	return buff;
 }
 
-Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Win32::WMIReader::GetTimestamp(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -667,7 +667,7 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
 	return ret;
 }
 
-Double Win32::WMIReader::GetDblOrNAN(UOSInt colIndex)
+Double Win32::WMIReader::GetDblOrNAN(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -737,18 +737,18 @@ Double Win32::WMIReader::GetDblOrNAN(UOSInt colIndex)
 	return ret;
 }
 
-Bool Win32::WMIReader::GetBool(UOSInt colIndex)
+Bool Win32::WMIReader::GetBool(UIntOS colIndex)
 {
 	return GetInt32(colIndex) != 0;
 }
 
-UOSInt Win32::WMIReader::GetBinarySize(UOSInt colIndex)
+UIntOS Win32::WMIReader::GetBinarySize(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
 		return 0;
 
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -776,13 +776,13 @@ UOSInt Win32::WMIReader::GetBinarySize(UOSInt colIndex)
 	return ret;
 }
 
-UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Win32::WMIReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
 		return 0;
 
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -811,17 +811,17 @@ UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	return ret;
 }
 
-Optional<Math::Geometry::Vector2D> Win32::WMIReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Win32::WMIReader::GetVector(UIntOS colIndex)
 {
 	return 0;
 }
 
-Bool Win32::WMIReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Win32::WMIReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool Win32::WMIReader::IsNull(UOSInt colIndex)
+Bool Win32::WMIReader::IsNull(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -850,7 +850,7 @@ Bool Win32::WMIReader::IsNull(UOSInt colIndex)
 	return ret;
 }
 
-UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
@@ -858,7 +858,7 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UOSInt colIndex, UnsafeArray<
 	return Text::StrWChar_UTF8(buff, col->name);
 }
 
-DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Win32::WMIReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
@@ -898,7 +898,7 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Win32::WMIReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Win32::WMIReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)

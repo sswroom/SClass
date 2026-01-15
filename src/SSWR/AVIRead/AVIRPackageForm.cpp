@@ -54,8 +54,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 	NN<Text::String> fname;
 	Text::CStringNN fileName;
 	ActionType atype = AT_COPY;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Optional<Text::String> foundName;
 	Bool lastFound = false;
 	me->threadRunning = true;
@@ -224,14 +224,14 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	if (me->statusChg)
 	{
-		UOSInt k;
-		OSInt scrVPos = me->lvStatus->GetScrollVPos();
+		UIntOS k;
+		IntOS scrVPos = me->lvStatus->GetScrollVPos();
 		NN<Text::String> fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
 		Sync::MutexUsage mutUsage(me->fileMut);
 		Data::ArrayIterator<NN<Text::String>> it = me->fileNames.Iterator();
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (it.HasNext())
 		{
 			fname = it.Next();
@@ -388,13 +388,13 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	me->OpenItem(index);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	Sync::MutexUsage mutUsage(me->fileMut);
@@ -410,18 +410,18 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
-	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<OSInt>(Double2OSInt(coord.x), Double2OSInt(coord.y)));
+	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<IntOS>(Double2IntOS(coord.x), Double2IntOS(coord.y)));
 }
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
-	UOSInt nFiles = files.GetCount();
+	UIntOS nFiles = files.GetCount();
 	Data::ArrayListStringNN fileNames(nFiles);
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < nFiles)
 	{
 		fileNames.Add(files[i]);
@@ -437,12 +437,12 @@ void SSWR::AVIRead::AVIRPackageForm::GoUpLevel()
 	if (this->packFile->GetParent(needRelease).SetTo(pkg))
 	{
 		NN<Text::String> name = this->packFile->GetSourceNameObj();
-		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->UpdatePackFile(pkg, needRelease, name->ToCString().Substring(i + 1));
 	}
 }
 
-void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
+void SSWR::AVIRead::AVIRPackageForm::OpenItem(UIntOS index)
 {
 	if (index == 0 && this->packFile->HasParent())
 	{
@@ -508,8 +508,8 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 	Bool needDelete;
 	Data::Timestamp startTime;
 	Data::Timestamp endTime;
-	UOSInt i = 0;
-	UOSInt j = pack->GetCount();
+	UIntOS i = 0;
+	UIntOS j = pack->GetCount();
 	while (i < j)
 	{
 		switch (pack->GetItemType(i))
@@ -536,7 +536,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				else
 				{
 					sess->sbError->Append(CSTR("file["));
-					sess->sbError->AppendUOSInt(i);
+					sess->sbError->AppendUIntOS(i);
 					sess->sbError->AppendUTF8Char(']');
 				}
 				sess->sbError->Append(CSTR(" Error in getting directory object\r\n"));
@@ -582,7 +582,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 						else
 						{
 							sess->sbError->Append(CSTR("file["));
-							sess->sbError->AppendUOSInt(i);
+							sess->sbError->AppendUIntOS(i);
 							sess->sbError->AppendUTF8Char(']');
 						}
 						sess->sbError->Append(CSTR(" read size different from file size\r\n"));
@@ -617,7 +617,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 						else
 						{
 							sess->sbError->Append(CSTR("file["));
-							sess->sbError->AppendUOSInt(i);
+							sess->sbError->AppendUIntOS(i);
 							sess->sbError->AppendUTF8Char(']');
 						}
 						sess->sbError->Append(CSTR(" read size different from file size\r\n"));
@@ -638,7 +638,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				else
 				{
 					sess->sbError->Append(CSTR("file["));
-					sess->sbError->AppendUOSInt(i);
+					sess->sbError->AppendUIntOS(i);
 					sess->sbError->AppendUTF8Char(']');
 				}
 				sess->sbError->Append(CSTR(" Error in opening file for reading\r\n"));
@@ -656,7 +656,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 			else
 			{
 				sess->sbError->Append(CSTR("file["));
-				sess->sbError->AppendUOSInt(i);
+				sess->sbError->AppendUIntOS(i);
 				sess->sbError->AppendUTF8Char(']');
 			}
 			sess->sbError->Append(CSTR(" file type is not supported\r\n"));
@@ -671,13 +671,13 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp ts;
-	UOSInt maxWidth = 0;
-	UOSInt w;
+	UIntOS maxWidth = 0;
+	UIntOS w;
 	this->lvFiles->ClearItems();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt selIndex = INVALID_INDEX;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS selIndex = INVALID_INDEX;
 	IO::PackageFile::PackObjectType pot;
 	if (packFile->HasParent())
 	{
@@ -753,7 +753,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
+UIntOS SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UIntOS lvIndex)
 {
 	if (lvIndex == INVALID_INDEX)
 	{
@@ -877,8 +877,8 @@ void SSWR::AVIRead::AVIRPackageForm::WriteFileListInner(NN<IO::TableWriter> writ
 	IO::PackageFile::PackObjectType pot;
 	NN<IO::PackageFile> innerPack;
 	Bool needRelease;
-	UOSInt i = 0;
-	UOSInt j = packFile->GetCount();
+	UIntOS i = 0;
+	UIntOS j = packFile->GetCount();
 	while (i < j)
 	{
 		if (!packFile->GetItemName(sptr, i).SetTo(sptr2))
@@ -955,7 +955,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->statusFileChg = false;
 	this->statusFile = nullptr;
 	this->statusFileSize = 0;
-	this->statusDispSize = (UOSInt)-1;
+	this->statusDispSize = (UIntOS)-1;
 	this->statusDispSpd = -1;
 	this->statusBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
 	this->statusDispBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
@@ -1115,15 +1115,15 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_COPYTO:
 		{
-			Data::ArrayListNative<UOSInt> selIndices;
+			Data::ArrayListNative<UIntOS> selIndices;
 			this->lvFiles->GetSelectedIndices(&selIndices);
-			UOSInt i = selIndices.GetCount();
+			UIntOS i = selIndices.GetCount();
 			if (i > 0)
 			{
 				NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
 				if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 				{
-					UOSInt j;
+					UIntOS j;
 					j = 0;
 					while (j < i)
 					{
@@ -1145,8 +1145,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
 			if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 			{
-				UOSInt i = 0;
-				UOSInt j = packFile->GetCount();
+				UIntOS i = 0;
+				UIntOS j = packFile->GetCount();
 				while (i < j)
 				{
 					if (!packFile->CopyTo(i, dlg->GetFolder()->ToCString(), false))
@@ -1167,7 +1167,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OPEN_HEX_VIEWER:
 		{
-			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			UIntOS i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
 			if (i != INVALID_INDEX)
 			{
 				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
@@ -1203,7 +1203,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OPEN_TEXT_VIEWER:
 		{
-			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			UIntOS i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
 			if (i != INVALID_INDEX)
 			{
 				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
@@ -1223,7 +1223,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					else
 					{
 						UInt8 buff[2048];
-						UOSInt buffSize = fd->GetRealData(0, 2048, BYTEARR(buff));
+						UIntOS buffSize = fd->GetRealData(0, 2048, BYTEARR(buff));
 						if (buffSize == 0)
 						{
 							this->ui->ShowMsgOK(CSTR("Cannot read content of the file"), CSTR("Package"), this);
@@ -1253,7 +1253,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_DELETE_ITEM:
 		{
-			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			UIntOS i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
 			if (i != INVALID_INDEX && this->packFile->GetItemName(sbuff, i).SetTo(sptr))
@@ -1339,7 +1339,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				sb.Append(CSTR("Files Read error found: "))->AppendUOSInt(sess.errorCnt)->Append(CSTR("\r\n"));
+				sb.Append(CSTR("Files Read error found: "))->AppendUIntOS(sess.errorCnt)->Append(CSTR("\r\n"));
 				sb.Append(sbError);
 			}
 			sb.Append(CSTR("\r\n"));
@@ -1347,8 +1347,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			sb.Append(CSTR("Start Time = "))->AppendTSNoZone(startTime)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("End Time = "))->AppendTSNoZone(endTime)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Total Time = "))->AppendDur(totalTime)->Append(CSTR("\r\n"));
-			sb.Append(CSTR("File Count = "))->AppendUOSInt(sess.fileCnt)->Append(CSTR("\r\n"));
-			sb.Append(CSTR("Dir Count = "))->AppendUOSInt(sess.dirCnt)->Append(CSTR("\r\n"));
+			sb.Append(CSTR("File Count = "))->AppendUIntOS(sess.fileCnt)->Append(CSTR("\r\n"));
+			sb.Append(CSTR("Dir Count = "))->AppendUIntOS(sess.dirCnt)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Total decompressed size = "))->AppendU64(sess.totalSize)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Total store size = "))->AppendU64(sess.totalStoreSize)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Average Rate = "))->AppendDouble(UInt64_Double(sess.totalSize) / totalTime.GetTotalSec())->Append(CSTR("\r\n"));
@@ -1373,7 +1373,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OPEN_SELECTED:
 		{
-			UOSInt i = this->lvFiles->GetSelectedIndex();
+			UIntOS i = this->lvFiles->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
 				this->OpenItem(i);

@@ -76,8 +76,8 @@ void Net::MQTTStaticClient::Connect()
 	}
 	this->packetId = 1;
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = 0;
-	UOSInt j = this->hdlrList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->hdlrList.GetCount();
 	while (i < j)
 	{
 		Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr> cb = this->hdlrList.GetItem(i);

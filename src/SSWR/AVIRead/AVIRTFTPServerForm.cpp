@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientCont
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	this->core = core;
 	this->SetText(CSTR("TFTP Server"));
 	this->SetFont(nullptr, 8.25, false);
@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientCont
 	this->lblFilePath = ui->NewLabel(this->tpControl, CSTR("File Path"));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

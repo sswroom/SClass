@@ -12,11 +12,11 @@ IO::UDPFileLog::UDPFileLog(NN<IO::StreamData> fd) : IO::UDPLog(fd->GetFullName()
 	UInt64 currPos;
 	UInt64 buffPos;
 	UInt64 fdSize;
-	UOSInt buffSize;
-	UOSInt endOfst;
-	UOSInt readSize;
+	UIntOS buffSize;
+	UIntOS endOfst;
+	UIntOS readSize;
 	UInt32 packetSize;
-	UOSInt i;
+	UIntOS i;
 
 	Data::ByteBuffer buff(1048576);
 	fdSize = this->fd->GetDataSize();
@@ -28,7 +28,7 @@ IO::UDPFileLog::UDPFileLog(NN<IO::StreamData> fd) : IO::UDPLog(fd->GetFullName()
 		readSize = 1048576 - buffSize;
 		if (readSize > fdSize - currPos)
 		{
-			readSize = (UOSInt)(fdSize - currPos);
+			readSize = (UIntOS)(fdSize - currPos);
 		}
 		this->fd->GetRealData(currPos, readSize, buff.SubArray(buffSize));
 		buffPos = currPos - buffSize;
@@ -73,7 +73,7 @@ IO::UDPFileLog::~UDPFileLog()
 	this->fd.Delete();
 }
 
-UOSInt IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const
+UIntOS IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const
 {
 	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
@@ -89,7 +89,7 @@ UOSInt IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, OutParam<Data::Timestamp> ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
+Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UIntOS index, OutParam<Data::Timestamp> ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
 	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
@@ -130,7 +130,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt ind
 	return true;
 }
 
-Bool IO::UDPFileLog::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+Bool IO::UDPFileLog::GetLogDescription(IO::LogHandler::LogLevel logLevel, UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{

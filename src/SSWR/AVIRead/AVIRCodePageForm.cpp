@@ -9,10 +9,10 @@
 void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
-	UOSInt selInd = me->lbCodePages->GetSelectedIndex();
+	UIntOS selInd = me->lbCodePages->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
-		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem(selInd).p);
+		me->core->SetCodePage((UInt32)(UIntOS)me->lbCodePages->GetItem(selInd).p);
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -50,9 +50,9 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl>
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt ind;
+	UIntOS i;
+	UIntOS j;
+	UIntOS ind;
 	UInt32 codePage;
 	UInt32 currCodePage = this->core->GetCurrCodePage();
 	Data::ArrayListUInt32 codePages;
@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl>
 	{
 		codePage = codePages.GetItem(i);
 		sptr = Text::EncodingFactory::GetName(Text::StrConcatC(Text::StrUInt32(sbuff, codePage), UTF8STRC(" ")), codePage);
-		ind = this->lbCodePages->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)codePage);
+		ind = this->lbCodePages->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)codePage);
 		if (codePage == currCodePage)
 		{
 			this->lbCodePages->SetSelectedIndex(ind);

@@ -63,7 +63,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 			reader.ReadStream(fs, bnt);
 			if (fileSize == readSess.readSize)
 			{
-				UOSInt i = path.LastIndexOf(IO::Path::PATH_SEPERATOR);
+				UIntOS i = path.LastIndexOf(IO::Path::PATH_SEPERATOR);
 				hash->GetValue(hashBuff);
 				fchk->AddEntry(path.Substring(i + 1), hashBuff);
 			}
@@ -88,7 +88,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
-		UOSInt i = (UOSInt)(path.ConcatTo(&sbuff[2]) - sbuff);
+		UIntOS i = (UIntOS)(path.ConcatTo(&sbuff[2]) - sbuff);
 		sbuff[0] = '.';
 		sbuff[1] = IO::Path::PATH_SEPERATOR;
 		if (sbuff[i - 1] == IO::Path::PATH_SEPERATOR)
@@ -174,7 +174,7 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8
 			}
 			else if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASSNN(fs, IO::FileStream({fullPath, (UOSInt)(sptr2 - fullPath)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+				NEW_CLASSNN(fs, IO::FileStream({fullPath, (UIntOS)(sptr2 - fullPath)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())
 				{
 					fs.Delete();
@@ -268,7 +268,7 @@ IO::FileCheck::~FileCheck()
 	MemFreeArr(this->chkValues);
 }
 
-UOSInt IO::FileCheck::GetHashSize() const
+UIntOS IO::FileCheck::GetHashSize() const
 {
 	return this->hashSize;
 }
@@ -278,17 +278,17 @@ Crypto::Hash::HashType IO::FileCheck::GetCheckType() const
 	return this->chkType;
 }
 
-UOSInt IO::FileCheck::GetCount() const
+UIntOS IO::FileCheck::GetCount() const
 {
 	return this->fileNames.GetCount();
 }
 
-Optional<Text::String> IO::FileCheck::GetEntryName(UOSInt index) const
+Optional<Text::String> IO::FileCheck::GetEntryName(UIntOS index) const
 {
 	return this->fileNames.GetItem(index);
 }
 
-Bool IO::FileCheck::GetEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal) const
+Bool IO::FileCheck::GetEntryHash(UIntOS index, UnsafeArray<UInt8> hashVal) const
 {
 	if (index >= this->fileNames.GetCount())
 		return false;
@@ -298,7 +298,7 @@ Bool IO::FileCheck::GetEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal) const
 
 void IO::FileCheck::AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVal)
 {
-	UOSInt index = this->fileNames.Add(Text::String::New(fileName));
+	UIntOS index = this->fileNames.Add(Text::String::New(fileName));
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;
@@ -310,12 +310,12 @@ void IO::FileCheck::AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVa
 	MemCopyNO(&this->chkValues[index * this->hashSize], hashVal.Ptr(), this->hashSize);
 }
 
-Bool IO::FileCheck::CheckEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const
+Bool IO::FileCheck::CheckEntryHash(UIntOS index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptrEnd;
-	UOSInt i;
+	UIntOS i;
 	NN<Crypto::Hash::HashAlgorithm> hash;
 	NN<IO::Writer> writer;
 	NN<IO::ProgressHandler> nnprogress;
@@ -333,7 +333,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal, Opt
 		writer->WriteLine(fileName->ToCString());
 	}
 	sptr = this->sourceName->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
 		sptr = sbuff;
@@ -420,8 +420,8 @@ Bool IO::FileCheck::MergeFrom(NN<FileCheck> chk)
 		return false;
 	NN<Text::String> s;
 	UInt8 val[64];
-	UOSInt i = 0;
-	UOSInt j = chk->GetCount();
+	UIntOS i = 0;
+	UIntOS j = chk->GetCount();
 	while (i < j)
 	{
 		if (chk->GetEntryName(i).SetTo(s) && chk->GetEntryHash(i, val))

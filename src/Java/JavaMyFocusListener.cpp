@@ -11,7 +11,7 @@ JNIEXPORT void JNICALL Java_MyFocusListener_focusGained(JNIEnv *env, jobject obj
 	jmethodID mid = env->GetMethodID(cls, "getFocusGainedHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::UIEvent hdlr = (UI::UIEvent)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr) hdlr(userObj);
 }
 
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_MyFocusListener_focusLost(JNIEnv *env, jobject obj, 
 	jmethodID mid = env->GetMethodID(cls, "getFocusLostHdlr", "()J");
 	jmethodID mid2 = env->GetMethodID(cls, "getUserObj", "()J");
 	UI::UIEvent hdlr = (UI::UIEvent)env->CallLongMethod(obj, mid);
-	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
+	AnyType userObj = (void*)(IntOS)env->CallLongMethod(obj, mid2);
 	if (hdlr) hdlr(userObj);
 }
 }
@@ -57,5 +57,5 @@ jobject Java::JavaMyFocusListener::NewObject(AnyType userObj)
 {
 	jclass cls = GetClass();
 	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(J)V");
-	return jniEnv->NewObject(cls, mid, (Int64)userObj.GetOSInt());
+	return jniEnv->NewObject(cls, mid, (Int64)userObj.GetIntOS());
 }

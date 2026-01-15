@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(AnyType u
 		{
 			return;
 		}
-		DeviceType dt = (DeviceType)me->cboDevice->GetSelectedItem().GetOSInt();
+		DeviceType dt = (DeviceType)me->cboDevice->GetSelectedItem().GetIntOS();
 		switch (dt)
 		{
 		case DT_SDM120:
@@ -320,8 +320,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		NN<MODBUSEntry> entry;
-		UOSInt i = 0;
-		UOSInt j = me->entryList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = me->entryList.GetCount();
 		while (i < j)
 		{
 			Single f32Val;
@@ -499,7 +499,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, 
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Received: "));
-	sb.AppendUOSInt(data.GetSize());
+	sb.AppendUIntOS(data.GetSize());
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
@@ -513,7 +513,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, 
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Sent: "));
-	sb.AppendUOSInt(data.GetSize());
+	sb.AppendUIntOS(data.GetSize());
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
@@ -695,7 +695,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	DeviceType dt = DT_FIRST;
 	while (dt <= DT_LAST)
 	{
-		this->cboDevice->AddItem(DeviceTypeGetName(dt), (void*)(OSInt)dt);
+		this->cboDevice->AddItem(DeviceTypeGetName(dt), (void*)(IntOS)dt);
 		dt = (DeviceType)(dt + 1);
 	}
 	this->cboDevice->SetSelectedIndex(0);
@@ -740,7 +740,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 {
 	StopStream(false);
 	NN<MODBUSEntry> entry;
-	UOSInt i = this->entryList.GetCount();
+	UIntOS i = this->entryList.GetCount();
 	while (i-- > 0)
 	{
 		entry = this->entryList.GetItemNoCheck(i);

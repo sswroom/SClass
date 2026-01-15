@@ -8,21 +8,21 @@ namespace DB
 	class PageRequest
 	{
 	private:
-		UOSInt pageNum;
-		UOSInt pageSize;
+		UIntOS pageNum;
+		UIntOS pageSize;
 		Optional<Data::ArrayListArr<const UTF8Char>> sortList;
 		Optional<Data::ArrayListNative<Bool>> sortDescList;
 	public:
-		PageRequest(UOSInt pageNum, UOSInt pageSize);
+		PageRequest(UIntOS pageNum, UIntOS pageSize);
 		~PageRequest();
 
-		UOSInt GetPageNum();
-		UOSInt GetPageSize();
+		UIntOS GetPageNum();
+		UIntOS GetPageSize();
 
 		void Sort(UnsafeArray<const UTF8Char> colName, Bool descending);
-		UOSInt GetSortingCount();
-		UnsafeArrayOpt<const UTF8Char> GetSortColumn(UOSInt index);
-		Bool IsSortDesc(UOSInt index);
+		UIntOS GetSortingCount();
+		UnsafeArrayOpt<const UTF8Char> GetSortColumn(UIntOS index);
+		Bool IsSortDesc(UIntOS index);
 	};
 }
 #endif

@@ -271,7 +271,7 @@ void IO::ProtocolBuffersMessageFast::AddEnum(Bool required, UInt8 id)
 
 void IO::ProtocolBuffersMessageFast::ClearValues()
 {
-	UOSInt i = this->fieldMap.GetCount();
+	UIntOS i = this->fieldMap.GetCount();
 	while (i-- > 0)
 	{
 		NN<FieldInfo> fieldInfo = this->fieldMap.GetItemNoCheck(i);
@@ -571,13 +571,13 @@ Bool IO::ProtocolBuffersMessageFast::GetEnum(UInt8 id, OutParam<Int32> val) cons
 	return true;
 }
 
-Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<IO::ProtocolBuffersMessageFast> subMsgVal;
 	NN<FieldInfo> fieldInfo;
 	UInt64 v;
 	Int64 iv;
-	UOSInt ofst = 0;
+	UIntOS ofst = 0;
 	while (ofst < buffSize)
 	{
 		UInt64 key;
@@ -766,8 +766,8 @@ Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff,
 			ofst = ProtocolBuffersUtil::ReadVarUInt(buff, ofst, v);
 			if (ofst + v > buffSize)
 				return false;
-			fieldInfo->val.strVal = Text::String::New(&buff[ofst], (UOSInt)v);
-			ofst += (UOSInt)v;
+			fieldInfo->val.strVal = Text::String::New(&buff[ofst], (UIntOS)v);
+			ofst += (UIntOS)v;
 			fieldInfo->valExist = true;
 			break;
 		case ProtocolBuffersUtil::FieldType::Bytes:
@@ -780,8 +780,8 @@ Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff,
 			ofst = ProtocolBuffersUtil::ReadVarUInt(buff, ofst, v);
 			if (ofst + v > buffSize)
 				return false;
-			NEW_CLASSOPT(fieldInfo->val.bytesVal, Data::ByteBuffer(Data::ByteArrayR(&buff[ofst], (UOSInt)v)));
-			ofst += (UOSInt)v;
+			NEW_CLASSOPT(fieldInfo->val.bytesVal, Data::ByteBuffer(Data::ByteArrayR(&buff[ofst], (UIntOS)v)));
+			ofst += (UIntOS)v;
 			fieldInfo->valExist = true;
 			break;
 		case ProtocolBuffersUtil::FieldType::SubMsg:
@@ -796,11 +796,11 @@ Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff,
 			{
 				return false;
 			}
-			if (!subMsgVal->ParseMsssage(&buff[ofst], (UOSInt)v))
+			if (!subMsgVal->ParseMsssage(&buff[ofst], (UIntOS)v))
 			{
 				return false;
 			}
-			ofst += (UOSInt)v;
+			ofst += (UIntOS)v;
 			fieldInfo->valExist = true;
 			break;
 		default:

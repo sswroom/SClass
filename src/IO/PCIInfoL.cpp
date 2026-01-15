@@ -46,7 +46,7 @@ Text::CStringNN IO::PCIInfo::GetDispName()
 UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 {
 	UInt8 buff[33];
-	UOSInt readSize;
+	UIntOS readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	readSize = fs.Read(BYTEARR(buff).WithSize(32));
 	buff[readSize] = 0;
@@ -65,11 +65,11 @@ UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
+UIntOS IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 {
 	ClassData clsData;
 	NN<IO::PCIInfo> pci;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;

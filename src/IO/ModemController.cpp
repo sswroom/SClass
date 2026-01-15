@@ -6,7 +6,7 @@
 
 void IO::ModemController::ClearCmdResult()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->cmdResults.GetCount();
 	while (i-- > 0)
 	{
@@ -17,18 +17,18 @@ void IO::ModemController::ClearCmdResult()
 Bool IO::ModemController::IsCmdSucceed()
 {
 	NN<Text::String> s;
-	UOSInt i = this->cmdResults.GetCount();
+	UIntOS i = this->cmdResults.GetCount();
 	if (i <= 0 || !this->cmdResults.GetItem(i - 1).SetTo(s))
 		return false;
 	return s->Equals(UTF8STRC("OK"));
 }
 
-UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
+UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
-	UOSInt i = this->cmdResults.GetCount();
-	UOSInt j;
+	UIntOS i = this->cmdResults.GetCount();
+	UIntOS j;
 	NN<Text::String> val;
 //	printf("SendStringCommand, count = %d\r\n", i);
 	if (i > 1)
@@ -69,12 +69,12 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8
 	}
 }
 
-Bool IO::ModemController::SendStringCommand(NN<Data::ArrayListStringNN> resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendStringCommand(NN<Data::ArrayListStringNN> resList, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
-	UOSInt i = this->cmdResults.GetCount();
-	UOSInt j;
+	UIntOS i = this->cmdResults.GetCount();
+	UIntOS j;
 	NN<Text::String> val;
 	if (i > 1)
 	{
@@ -106,12 +106,12 @@ Bool IO::ModemController::SendStringCommand(NN<Data::ArrayListStringNN> resList,
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
+UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
-	UOSInt i = this->cmdResults.GetCount();
-	UOSInt j;
+	UIntOS i = this->cmdResults.GetCount();
+	UIntOS j;
 	NN<Text::String> val;
 	j = 0;
 	while (j < i - 1)
@@ -139,12 +139,12 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArra
 	return nullptr;
 }
 
-Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, 3000);
-	UOSInt i = this->cmdResults.GetCount();
-	UOSInt j;
+	UIntOS i = this->cmdResults.GetCount();
+	UIntOS j;
 	NN<Text::String> val;
 	if (i > 1)
 	{
@@ -177,12 +177,12 @@ Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	return SendBoolCommandC(cmd, cmdLen, 3000);
 }
 
-Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Data::Duration timeout)
 {
 	Bool isSucc;
 	Sync::MutexUsage mutUsage(this->cmdMut);
@@ -192,11 +192,11 @@ Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSI
 	return isSucc;
 }
 
-IO::ModemController::DialResult IO::ModemController::SendDialCommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+IO::ModemController::DialResult IO::ModemController::SendDialCommand(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendDialCommand(this->cmdResults, cmd, cmdLen, 30000);
-	UOSInt i = this->cmdResults.GetCount();
+	UIntOS i = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	if (i >= 1 && this->cmdResults.GetItem(i - 1).SetTo(val))
 	{

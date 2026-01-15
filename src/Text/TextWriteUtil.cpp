@@ -12,7 +12,7 @@ void Text::TextWriteUtil::WriteString(NN<Text::StyledTextWriter> writer, NN<Text
 	nns->Release();
 }
 
-void Text::TextWriteUtil::WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr, UOSInt startIndex, UOSInt endIndex)
+void Text::TextWriteUtil::WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr, UIntOS startIndex, UIntOS endIndex)
 {
 	writer->WriteChar('[');
 	if (endIndex > arr->GetCount())
@@ -33,7 +33,7 @@ void Text::TextWriteUtil::WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<
 	writer->WriteChar(']');
 }
 
-void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr, UOSInt startIndex, UOSInt endIndex)
+void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UIntOS>> arr, UIntOS startIndex, UIntOS endIndex)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -44,7 +44,7 @@ void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, 
 	}
 	if (startIndex < endIndex)
 	{
-		sptr = Text::StrUOSInt(sbuff, arr->GetItem(startIndex));
+		sptr = Text::StrUIntOS(sbuff, arr->GetItem(startIndex));
 		writer->SetTextColor(Text::StandardColor::Magenta);
 		writer->Write(CSTRP(sbuff, sptr));
 		writer->ResetTextColor();
@@ -52,7 +52,7 @@ void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, 
 		while (startIndex < endIndex)
 		{
 			writer->Write(CSTR(", "));
-			sptr = Text::StrUOSInt(sbuff, arr->GetItem(startIndex));
+			sptr = Text::StrUIntOS(sbuff, arr->GetItem(startIndex));
 			writer->SetTextColor(Text::StandardColor::Magenta);
 			writer->Write(CSTRP(sbuff, sptr));
 			writer->ResetTextColor();
@@ -67,7 +67,7 @@ void Text::TextWriteUtil::WriteArray(NN<Text::StyledTextWriter> writer, NN<Data:
 	WriteArrayRange(writer, arr, 0, arr->GetCount());
 }
 
-void Text::TextWriteUtil::WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr)
+void Text::TextWriteUtil::WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UIntOS>> arr)
 {
 	WriteArrayUOSRange(writer, arr, 0, arr->GetCount());
 }
@@ -84,10 +84,10 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 		writer->ResetTextColor();
 		return;
 	}
-	Math::Size2D<UOSInt> thisSize;
-	UOSInt colCnt = r->ColCount();
-	UOSInt *maxW = MemAlloc(UOSInt, colCnt);
-	UOSInt i;
+	Math::Size2D<UIntOS> thisSize;
+	UIntOS colCnt = r->ColCount();
+	UIntOS *maxW = MemAlloc(UIntOS, colCnt);
+	UIntOS i;
 	NN<Text::String> s;
 	i = 0;
 	while (i < colCnt)
@@ -137,7 +137,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 
 	Bool hasMoreLine;
 	Bool thisMoreLine;
-	UOSInt j;
+	UIntOS j;
 	UnsafeArray<Optional<Text::String>> valArr = MemAllocArr(Optional<Text::String>, colCnt);
 	UnsafeArray<Text::PString> sArr = MemAllocArr(Text::PString, colCnt);
 	hasMoreLine = false;
@@ -293,13 +293,13 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 	MemFree(maxW);
 }
 
-void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data, UOSInt nTop, UOSInt nBottom)
+void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data, UIntOS nTop, UIntOS nBottom)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<DB::DBReader> r;
-	UOSInt rowCnt = 0;
-	UOSInt currRow;
+	UIntOS rowCnt = 0;
+	UIntOS currRow;
 	if (!data->GetTableData().SetTo(r))
 	{
 		writer->SetTextColor(Text::StandardColor::Red);
@@ -325,10 +325,10 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 		writer->ResetTextColor();
 		return;
 	}
-	Math::Size2D<UOSInt> thisSize;
-	UOSInt colCnt = r->ColCount();
-	UOSInt *maxW = MemAlloc(UOSInt, colCnt);
-	UOSInt i;
+	Math::Size2D<UIntOS> thisSize;
+	UIntOS colCnt = r->ColCount();
+	UIntOS *maxW = MemAlloc(UIntOS, colCnt);
+	UIntOS i;
 	NN<Text::String> s;
 	i = 0;
 	while (i < colCnt)
@@ -383,7 +383,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 
 	Bool hasMoreLine;
 	Bool thisMoreLine;
-	UOSInt j;
+	UIntOS j;
 	UnsafeArray<Optional<Text::String>> valArr = MemAllocArr(Optional<Text::String>, colCnt);
 	UnsafeArray<Text::PString> sArr = MemAllocArr(Text::PString, colCnt);
 	hasMoreLine = false;
@@ -579,13 +579,13 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 	MemFree(maxW);
 }
 
-Bool Text::TextWriteUtil::WriteColumnLine(NN<Text::StyledTextWriter> writer, NN<Text::PString> column, UOSInt colSize)
+Bool Text::TextWriteUtil::WriteColumnLine(NN<Text::StyledTextWriter> writer, NN<Text::PString> column, UIntOS colSize)
 {
 	Text::PString sarr[2];
-	UOSInt n = Text::StrSplitLineP(sarr, 2, column.Ptr()[0]);
-	Math::Size2D<UOSInt> size = Text::StringTool::GetMonospaceSize(sarr[0].v);
+	UIntOS n = Text::StrSplitLineP(sarr, 2, column.Ptr()[0]);
+	Math::Size2D<UIntOS> size = Text::StringTool::GetMonospaceSize(sarr[0].v);
 	writer->Write(sarr[0].ToCString());
-	UOSInt i = size.GetWidth();
+	UIntOS i = size.GetWidth();
 	while (i < colSize)
 	{
 		writer->WriteChar(' ');

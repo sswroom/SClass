@@ -35,7 +35,7 @@ namespace Net
 		class ConnectionEntry
 		{
 		public:
-			UOSInt index;
+			UIntOS index;
 			UnsafeArrayOpt<const Char> internalName;
 			UnsafeArrayOpt<const UTF8Char> name;
 			UnsafeArrayOpt<const UTF8Char> description;
@@ -47,7 +47,7 @@ namespace Net
 			Data::Timestamp dhcpLeaseTime;
 			Data::Timestamp dhcpLeaseExpire;
 			UInt8 *physicalAddr;
-			UOSInt physicalAddrLeng;
+			UIntOS physicalAddrLeng;
 			UInt32 mtu;
 			Bool dhcpEnabled;
 			ConnectionType connType;
@@ -69,11 +69,11 @@ namespace Net
 		UnsafeArrayOpt<UTF8Char> GetDescription(UnsafeArray<UTF8Char> buff);
 		UnsafeArrayOpt<UTF8Char> GetDNSSuffix(UnsafeArray<UTF8Char> buff);
 
-		UInt32 GetIPAddress(UOSInt index);
-		UInt32 GetDNSAddress(UOSInt index);
+		UInt32 GetIPAddress(UIntOS index);
+		UInt32 GetDNSAddress(UIntOS index);
 		UInt32 GetDefaultGW();
-		UOSInt GetIndex();
-		UOSInt GetPhysicalAddress(UInt8 *buff, UOSInt buffSize);
+		UIntOS GetIndex();
+		UIntOS GetPhysicalAddress(UInt8 *buff, UIntOS buffSize);
 		UInt32 GetMTU();
 		Bool IsDhcpEnabled();
 		UInt32 GetDhcpServer();

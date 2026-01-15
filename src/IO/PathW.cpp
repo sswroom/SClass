@@ -33,9 +33,9 @@ struct IO::Path::FindFileSession
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'\\';
 UnsafeArray<const UTF8Char> IO::Path::ALL_FILES = U8STR("*.*");
-UOSInt IO::Path::ALL_FILES_LEN = 3;
+UIntOS IO::Path::ALL_FILES_LEN = 3;
 
-UnsafeArray<UTF8Char> IO::Path::GetTempFile(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName, UOSInt fileNameLen)
+UnsafeArray<UTF8Char> IO::Path::GetTempFile(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName, UIntOS fileNameLen)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
@@ -95,7 +95,7 @@ Bool IO::Path::CreateDirectory(Text::CStringNN dirInput)
 	Text::StrUTF8_WChar(dir, dirInput.v, 0);
 	if (IsDirectoryExistW(dir))
 		return true;
-	UOSInt i = Text::StrLastIndexOfCharW(dir, '\\');
+	UIntOS i = Text::StrLastIndexOfCharW(dir, '\\');
 	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
@@ -113,7 +113,7 @@ Bool IO::Path::CreateDirectoryW(UnsafeArray<const WChar> dirInput)
 	Text::StrConcat(dir, dirInput);
 	if (IsDirectoryExistW(dir))
 		return true;
-	UOSInt i = Text::StrLastIndexOfCharW(dir, '\\');
+	UIntOS i = Text::StrLastIndexOfCharW(dir, '\\');
 	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
@@ -151,12 +151,12 @@ Bool IO::Path::DeleteFileW(UnsafeArray<const WChar> fileName)
 	return ::DeleteFileW(fileName.Ptr()) != 0;
 }
 
-OSInt IO::Path::FileNameCompare(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
+IntOS IO::Path::FileNameCompare(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
 {
 	return Text::StrCompareICase(file1, file2);
 }
 
-OSInt IO::Path::FileNameCompareW(UnsafeArray<const WChar> file1, UnsafeArray<const WChar> file2)
+IntOS IO::Path::FileNameCompareW(UnsafeArray<const WChar> file1, UnsafeArray<const WChar> file2)
 {
 	return Text::StrCompareICase(file1, file2);
 }
@@ -171,10 +171,10 @@ UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, Uns
 	WChar *ptr3 = 0;
 	if (fileName[1] == ':')
 	{
-		UOSInt i = Text::StrLastIndexOfChar(fileName, '\\');
+		UIntOS i = Text::StrLastIndexOfChar(fileName, '\\');
 		if (i != INVALID_INDEX)
 		{
-			return Text::StrConcatC(buff, fileName, (UOSInt)i);
+			return Text::StrConcatC(buff, fileName, (UIntOS)i);
 		}
 		else
 		{
@@ -271,7 +271,7 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UOSInt extLen)
+UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UIntOS extLen)
 {
 	UnsafeArrayOpt<UTF8Char> oldExt = 0;
 	UTF8Char c;
@@ -319,13 +319,13 @@ UnsafeArray<WChar> IO::Path::ReplaceExtW(UnsafeArray<WChar> fileName, UnsafeArra
 	return Text::StrConcat(nnoldExt, ext);
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, UnsafeArray<const UTF8Char> path, UOSInt pathLen)
+UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, UnsafeArray<const UTF8Char> path, UIntOS pathLen)
 {
 	if (pathLen >= 4 && path[pathLen - 4] == '.')
 	{
 		return Text::StrConcatC(fileBuff, &path[pathLen - 3], 3);
 	}
-	UOSInt i = pathLen;
+	UIntOS i = pathLen;
 	while (i-- > 0)
 	{
 		if (path[i] == '.')
@@ -344,7 +344,7 @@ UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, Unsaf
 
 UnsafeArray<WChar> IO::Path::GetFileExtW(UnsafeArray<WChar> fileBuff, UnsafeArray<const WChar> path)
 {
-	UOSInt i = Text::StrLastIndexOfCharW(path, '\\');
+	UIntOS i = Text::StrLastIndexOfCharW(path, '\\');
 	if (i != INVALID_INDEX)
 	{
 		path = &path[i + 1];
@@ -366,8 +366,8 @@ UnsafeArray<UTF8Char> IO::Path::AppendPath(UnsafeArray<UTF8Char> path, UnsafeArr
 	UnsafeArray<UTF8Char> lastSep;
 	UnsafeArray<UTF8Char> firstSep;
 	Text::PString pathArr[5];
-	UOSInt pathCnt;
-	UOSInt j;
+	UIntOS pathCnt;
+	UIntOS j;
 	UInt32 i;
 	Int32 k;
 	if (toAppend.v[1] == ':' && toAppend.v[2] == '\\')
@@ -380,7 +380,7 @@ UnsafeArray<UTF8Char> IO::Path::AppendPath(UnsafeArray<UTF8Char> path, UnsafeArr
 	}
 	if (path[0] == '\\' && path[1] == '\\')
 	{
-		firstSep = &path[2 + Text::StrIndexOfCharC(&path[2], (UOSInt)(pathEnd - &path[2]), '\\')];
+		firstSep = &path[2 + Text::StrIndexOfCharC(&path[2], (UIntOS)(pathEnd - &path[2]), '\\')];
 	}
 	else if (path[1] == ':' && path[2] == '\\')
 	{
@@ -401,7 +401,7 @@ UnsafeArray<UTF8Char> IO::Path::AppendPath(UnsafeArray<UTF8Char> path, UnsafeArr
 	{
 		return toAppend.ConcatTo(firstSep);
 	}
-	lastSep = &path[Text::StrLastIndexOfCharC(path, (UOSInt)(pathEnd - path), '\\')];
+	lastSep = &path[Text::StrLastIndexOfCharC(path, (UIntOS)(pathEnd - path), '\\')];
 	if (lastSep < path)
 	{
 		lastSep = path;
@@ -505,8 +505,8 @@ UnsafeArray<WChar> IO::Path::AppendPathW(UnsafeArray<WChar> path, UnsafeArray<co
 	UnsafeArray<WChar> lastSep;
 	UnsafeArray<WChar> firstSep;
 	UnsafeArray<WChar> pathArr[5];
-	UOSInt pathCnt;
-	UOSInt j;
+	UIntOS pathCnt;
+	UIntOS j;
 	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
@@ -637,14 +637,14 @@ UnsafeArray<WChar> IO::Path::AppendPathW(UnsafeArray<WChar> path, UnsafeArray<co
 	}
 }
 
-Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> toAppend, UIntOS toAppendLen)
 {
 	UTF8Char pathTmp[512];
 	UnsafeArray<UTF8Char> lastSep;
 	UnsafeArray<UTF8Char> firstSep;
 	Text::PString pathArr[5];
-	UOSInt pathCnt;
-	UOSInt j;
+	UIntOS pathCnt;
+	UIntOS j;
 	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
@@ -961,10 +961,10 @@ IO::Path::PathType IO::Path::GetPathTypeW(UnsafeArray<const WChar> path)
 #endif
 }
 
-Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNameLen, UnsafeArray<const UTF8Char> searchPattern, UOSInt patternLen)
+Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UIntOS fileNameLen, UnsafeArray<const UTF8Char> searchPattern, UIntOS patternLen)
 {
 	UnsafeArray<const UTF8Char> fileNameEnd = &fileName[fileNameLen];
-	UOSInt i;
+	UIntOS i;
 	Bool isWC = false;
 	UnsafeArrayOpt<const UTF8Char> patternStart = 0;
 	UnsafeArray<const UTF8Char> nnpatternStart;
@@ -980,11 +980,11 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 			{
 				if (!patternStart.SetTo(nnpatternStart))
 					return true;
-				return Text::StrEndsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart));
+				return Text::StrEndsWithICaseC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart));
 			}
 			else if (patternStart.SetTo(nnpatternStart))
 			{
-				return Text::StrEqualsICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart));
+				return Text::StrEqualsICaseC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart));
 			}
 			else
 			{
@@ -996,7 +996,7 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 			{
 				if (!patternStart.SetTo(nnpatternStart))
 					return false;
-				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart))) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart))) == INVALID_INDEX)
 					return false;
 				fileName += i + (currPattern - nnpatternStart);
 				patternStart = 0;
@@ -1004,7 +1004,7 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 			}
 			else if (patternStart.SetTo(nnpatternStart))
 			{
-				if (!Text::StrStartsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart)))
+				if (!Text::StrStartsWithICaseC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart)))
 					return false;
 				fileName += currPattern - nnpatternStart;
 				patternStart = 0;
@@ -1035,16 +1035,16 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 	}
 }
 
-Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UOSInt pathLen, UnsafeArray<const UTF8Char> searchPattern, UOSInt patternLen)
+Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UIntOS pathLen, UnsafeArray<const UTF8Char> searchPattern, UIntOS patternLen)
 {
-	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
+	UIntOS i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
 	return FileNameMatch(&path[i + 1], pathLen - i - 1, searchPattern, patternLen);
 }
 
 Bool IO::Path::FilePathMatchW(UnsafeArray<const WChar> path, UnsafeArray<const WChar> searchPattern)
 {
 	WChar wbuff[256];
-	UOSInt i = Text::StrLastIndexOfCharW(path, '\\');
+	UIntOS i = Text::StrLastIndexOfCharW(path, '\\');
 	const WChar *fileName = &path[i + 1];
 	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;
@@ -1278,7 +1278,7 @@ UnsafeArrayOpt<WChar> IO::Path::GetCurrDirectoryW(UnsafeArray<WChar> buff)
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, L"\\");
 #else
-	return buff + (UOSInt)::GetCurrentDirectoryW(512, buff.Ptr());
+	return buff + (UIntOS)::GetCurrentDirectoryW(512, buff.Ptr());
 #endif
 }
 
@@ -1314,7 +1314,7 @@ Bool IO::Path::IsSearchPattern(UnsafeArray<const UTF8Char> path)
 	return isSrch;
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> path, UOSInt pathLen)
+UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> path, UIntOS pathLen)
 {
 	UnsafeArray<UTF8Char> sptr;
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
@@ -1327,10 +1327,10 @@ UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeA
 	}
 	Text::StrReplace(sbuff, '/', '\\');
 	UnsafeArray<UTF8Char> sptr2 = sbuff;
-	UOSInt i;
+	UIntOS i;
 	while (true)
 	{
-		i = Text::StrIndexOfCharC(sptr2, (UOSInt)(sptr - sptr2), IO::Path::PATH_SEPERATOR);
+		i = Text::StrIndexOfCharC(sptr2, (UIntOS)(sptr - sptr2), IO::Path::PATH_SEPERATOR);
 		if (i == INVALID_INDEX)
 		{
 			break;
@@ -1338,7 +1338,7 @@ UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeA
 		sptr2 = &sptr2[i + 1];
 		if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == 0)
 		{
-			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
@@ -1354,7 +1354,7 @@ UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeA
 		}
 		else if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == IO::Path::PATH_SEPERATOR)
 		{
-			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
@@ -1362,7 +1362,7 @@ UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeA
 				}
 				else
 				{
-					sptr = Text::StrConcatC(&sbuff[i + 1], &sptr2[3], (UOSInt)(sptr - &sptr2[3]));
+					sptr = Text::StrConcatC(&sbuff[i + 1], &sptr2[3], (UIntOS)(sptr - &sptr2[3]));
 					sptr2 = &sbuff[i + 1];
 				}
 			}

@@ -25,7 +25,7 @@ void Net::ASN1Names::FreeContainer(RuleContainer *container)
 void Net::ASN1Names::ClearRules(NN<Data::ArrayListNN<NameRule>> rules)
 {
 	NN<NameRule> rule;
-	UOSInt i = rules->GetCount();
+	UIntOS i = rules->GetCount();
 	while (i-- > 0)
 	{
 		if (rules->GetItem(i).SetTo(rule))
@@ -62,7 +62,7 @@ void Net::ASN1Names::ReadBegin()
 	this->readLastOIDLen = 0;
 }
 
-Text::CStringNN Net::ASN1Names::ReadName(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff)
+Text::CStringNN Net::ASN1Names::ReadName(Net::ASN1Util::ItemType itemType, UIntOS len, const UInt8 *buff)
 {
 	Text::CStringNN name;
 	if (ReadNameNoDef(itemType, len, buff).SetTo(name))
@@ -70,7 +70,7 @@ Text::CStringNN Net::ASN1Names::ReadName(Net::ASN1Util::ItemType itemType, UOSIn
 	return Net::ASN1Util::ItemTypeGetName(itemType);
 }
 
-Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff)
+Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UIntOS len, const UInt8 *buff)
 {
 	Bool anyMatch = false;
 	if (itemType == Net::ASN1Util::IT_OID)
@@ -301,7 +301,7 @@ NN<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
 	return *this;
 }
 
-NN<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt)
+NN<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStringNN *enumVals, UIntOS enumCnt)
 {
 	NN<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;

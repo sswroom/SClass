@@ -25,19 +25,19 @@ Map::MapLayerData::MapLayerData(Text::CStringNN filePath)
 	this->blkFile = nullptr;
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cip"));
-	NEW_CLASSNN(this->cipFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->cipFileObj, FILEBUFFER(fileName, (UIntOS)(sptrEnd - fileName)));
 	this->cipFile = this->cipFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cix"));
-	NEW_CLASSNN(this->cixFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->cixFileObj, FILEBUFFER(fileName, (UIntOS)(sptrEnd - fileName)));
 	this->cixFile = this->cixFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".ciu"));
-	NEW_CLASSNN(this->ciuFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->ciuFileObj, FILEBUFFER(fileName, (UIntOS)(sptrEnd - fileName)));
 	this->ciuFile = this->ciuFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".blk"));
-	NEW_CLASSNN(this->blkFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->blkFileObj, FILEBUFFER(fileName, (UIntOS)(sptrEnd - fileName)));
 	this->blkFile = this->blkFileObj->GetPointer();
 }
 
@@ -54,7 +54,7 @@ Bool Map::MapLayerData::IsError() const
 	return this->cixFile.IsNull() || this->ciuFile.IsNull() || this->cipFile.IsNull() || this->blkFile.IsNull();
 }
 
-Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UIntOS strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkx;
@@ -207,7 +207,7 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 
 					if (n & 1)
 					{
-						sb->AppendUTF16((UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
+						sb->AppendUTF16((UTF16Char*)&strRec[5], (UIntOS)strRec[4] >> 1);
 						outCoord.Set(coord);
 						return true;
 					}
@@ -222,7 +222,7 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	return false;
 }
 
-Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UIntOS strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkCnt;
@@ -433,7 +433,7 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 				{
 					foundRec = true;
 					sb->ClearStr();
-					sb->AppendUTF16((UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
+					sb->AppendUTF16((UTF16Char*)&strRec[5], (UIntOS)strRec[4] >> 1);
 					outCoord.Set(Math::Coord2DDbl(calPtX / 200000.0, calPtY / 200000.0));
 				}
 			}

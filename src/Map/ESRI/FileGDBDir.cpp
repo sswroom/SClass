@@ -49,10 +49,10 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	this->tableNames.FreeAll();
 }
 
-UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	UOSInt i = 0;
-	UOSInt j = this->tableNames.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->tableNames.GetCount();
 	while (i < j)
 	{
 		names->Add(this->tableNames.GetItemNoCheck(i)->Clone());
@@ -61,7 +61,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data:
 	return j;
 }
 
-Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<FileGDBTable> table;
 	if (!this->GetTable(tableName).SetTo(table))
@@ -141,10 +141,10 @@ Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringN
 	NN<IO::StreamData> tableFD;
 	NN<FileGDBTable> innerTable;
 	sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
-	sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	sptr = Text::StrToLowerC(sbuff, sbuff, (UIntOS)(sptr - sbuff));
 	indexFD = this->pkg->GetItemStmDataNew(CSTRP(sbuff, sptr));
 	sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
-	sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	sptr = Text::StrToLowerC(sbuff, sbuff, (UIntOS)(sptr - sbuff));
 	if (pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).SetTo(tableFD))
 	{
 		NEW_CLASSNN(innerTable, FileGDBTable(name, tableFD, indexFD, prjParser));

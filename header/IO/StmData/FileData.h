@@ -21,7 +21,7 @@ namespace IO
 				NN<Text::String> fullName;
 				NN<Text::String> filePath;
 				Bool deleteOnClose;
-				UOSInt seekCnt;
+				UIntOS seekCnt;
 
 				Sync::Mutex mut;
 				UInt32 objectCnt;
@@ -47,7 +47,7 @@ namespace IO
 			FileData(Text::CStringNN fileName, Bool deleteOnClose);
 			virtual ~FileData();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
+			virtual UIntOS GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer);
 			virtual NN<Text::String> GetFullName() const;
 			virtual Text::CString GetShortName() const;
 			virtual void SetFullName(Text::CStringNN fullName);
@@ -58,7 +58,7 @@ namespace IO
 			virtual Bool IsFullFile() const;
 			virtual NN<Text::String> GetFullFileName() const;
 			virtual Bool IsLoading() const;
-			virtual UOSInt GetSeekCount() const;
+			virtual UIntOS GetSeekCount() const;
 
 			IO::FileStream *GetFileStream();
 			Bool IsError();

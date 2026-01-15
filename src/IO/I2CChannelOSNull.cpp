@@ -18,12 +18,12 @@ Bool IO::I2CChannelOS::IsError()
 	return this->hand == 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UOSInt buffSize)
+UIntOS IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	return 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UIntOS IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	return 0;
 }

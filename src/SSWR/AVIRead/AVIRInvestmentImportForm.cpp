@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentImportForm::OnOKClicked(AnyType user
 	{
 		me->timeCol = me->cboTimeCol->GetSelectedIndex();
 		me->valueCol = me->cboValueCol->GetSelectedIndex();
-		me->fmt = (Data::Invest::DateFormat)me->cboDateFormat->GetSelectedItem().GetOSInt();
+		me->fmt = (Data::Invest::DateFormat)me->cboDateFormat->GetSelectedItem().GetIntOS();
 		me->invert = me->chkInvert->IsChecked();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -26,8 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentImportForm::OnCancelClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRInvestmentImportForm::OnFile(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<AVIRInvestmentImportForm> me = userObj.GetNN<AVIRInvestmentImportForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
 	while (i < j)
 	{
 		me->LoadFile(files[i]->ToCString());
@@ -48,14 +48,14 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 			UnsafeArray<UTF8Char> sptr;
 			NN<Text::String> s;
 			Bool succ = false;
-			UOSInt i = 0;
-			UOSInt j = r->ColCount();
-			UOSInt k;
-			UOSInt l;
+			UIntOS i = 0;
+			UIntOS j = r->ColCount();
+			UIntOS k;
+			UIntOS l;
 			if (j > 0)
 			{
-				UOSInt timeCol = 0;
-				UOSInt priceCol = 0;
+				UIntOS timeCol = 0;
+				UIntOS priceCol = 0;
 				Data::Invest::DateFormat fmt = Data::Invest::DateFormat::MMDDYYYY;
 				succ = true;
 				this->cboTimeCol->ClearItems();
@@ -112,7 +112,7 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 				}
 				this->cboTimeCol->SetSelectedIndex(timeCol);
 				this->cboValueCol->SetSelectedIndex(priceCol);
-				this->cboDateFormat->SetSelectedIndex((UOSInt)fmt);
+				this->cboDateFormat->SetSelectedIndex((UIntOS)fmt);
 				k = 100;
 				while (k-- > 0 && r->ReadNext())
 				{
@@ -188,8 +188,8 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 	this->lblDateFormat->SetRect(4, 52, 100, 23, false);
 	this->cboDateFormat = ui->NewComboBox(this->pnlMain, false);
 	this->cboDateFormat->SetRect(104, 52, 200, 23, false);
-	this->cboDateFormat->AddItem(CSTR("MMDDYYYY"), (void*)(OSInt)Data::Invest::DateFormat::MMDDYYYY);
-	this->cboDateFormat->AddItem(CSTR("DDMMYYYY"), (void*)(OSInt)Data::Invest::DateFormat::DDMMYYYY);
+	this->cboDateFormat->AddItem(CSTR("MMDDYYYY"), (void*)(IntOS)Data::Invest::DateFormat::MMDDYYYY);
+	this->cboDateFormat->AddItem(CSTR("DDMMYYYY"), (void*)(IntOS)Data::Invest::DateFormat::DDMMYYYY);
 	this->cboDateFormat->SetSelectedIndex(0);
 	this->chkInvert = ui->NewCheckBox(this->pnlMain, CSTR("Invert"), invert);
 	this->chkInvert->SetRect(104, 76, 100, 23, false);

@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Media/CS/CSUYVY_RGB8.h"
 
-extern "C" void CSUYVY_RGB8_do_uyvy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *y2r, UInt8 *rgbGammaCorr)
+extern "C" void CSUYVY_RGB8_do_uyvy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *y2r, UInt8 *rgbGammaCorr)
 {
 	UInt8 *yuv2rgb = (UInt8*)y2r;
-	OSInt wsize = (width >> 1) - 2;
-	OSInt dAdd = dbpl - (width << 2);
-	OSInt i;
+	IntOS wsize = (width >> 1) - 2;
+	IntOS dAdd = dbpl - (width << 2);
+	IntOS i;
 	Int32 ca;
 	Int32 cr;
 	Int32 cg;

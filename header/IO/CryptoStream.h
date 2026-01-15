@@ -11,19 +11,19 @@ namespace IO
 		NN<Crypto::Encrypt::Encryption> crypto;
 		Optional<IO::Stream> stm;
 		UnsafeArray<UInt8> encBuff;
-		OSInt encBuffSize;
+		IntOS encBuffSize;
 		UnsafeArray<UInt8> decBuff;
-		OSInt decBuffSize;
+		IntOS decBuffSize;
 		UnsafeArrayOpt<UInt8> tmpBuff;
-		OSInt tmpBuffSize;
+		IntOS tmpBuffSize;
 
 
 	public:
 		CryptoStream(NN<IO::Stream> srcStream, NN<Crypto::Encrypt::Encryption> crypto);
 		virtual ~CryptoStream();
 
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

@@ -175,7 +175,7 @@ namespace SSWR
 			Data::ArrayListNN<Net::ConnectionInfo> conns;
 			Data::ArrayListNN<Net::WirelessLAN::Interface> wlanIfs;
 			Net::WirelessLAN wlan;
-			OSInt wlanScanCnt;
+			IntOS wlanScanCnt;
 
 			static void __stdcall OnAdaptorSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);

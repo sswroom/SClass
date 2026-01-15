@@ -158,7 +158,7 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Doubl
 	Double rad2deg = 180.0 / Math::PI;
 
 	UInt32 zoneNumber;
-	UOSInt latZone;
+	UIntOS latZone;
 	Double easting;
 	Double northing;
 
@@ -170,13 +170,13 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Doubl
 	Double lat;
 	Double lon;
 
-	UOSInt eastZone;
-	UOSInt northZone;
+	UIntOS eastZone;
+	UIntOS northZone;
 	
 	const UTF8Char *letters = (const UTF8Char*)"ABCDEFGHJKLMNPQRSTUVWXYZ";
 	UTF8Char ch;
 	
-	UOSInt i;
+	UIntOS i;
 	Int32 v;
 	zoneNumber = 0;
 	while (true)
@@ -214,12 +214,12 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Doubl
 	{
 		return false;
 	}
-	easting += UOSInt2Double((eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000);
+	easting += UIntOS2Double((eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000);
 	if ((zoneNumber & 1) == 0)
 	{
 		northZone = (northZone + 15) % 20;
 	}
-	northing += UOSInt2Double(northZone * 100000);
+	northing += UIntOS2Double(northZone * 100000);
 	if (latZone < 12)
 	{
 		northing -= 10000000.0;

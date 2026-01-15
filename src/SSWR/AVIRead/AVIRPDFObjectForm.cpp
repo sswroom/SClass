@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 		{
 			NN<Media::PDFParameter::ParamEntry> entry;
 			NN<Text::String> s;
-			UOSInt i = 0;
-			UOSInt j = param->GetCount();
+			UIntOS i = 0;
+			UIntOS j = param->GetCount();
 			while (i < j)
 			{
 				entry = param->GetItemNoCheck(i);
@@ -57,12 +57,12 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 			UInt64 size = stmData->GetDataSize();
 			if (size > 0 && size <= 1048576)
 			{
-				Data::ByteBuffer buff((UOSInt)size + 1);
-				stmData->GetRealData(0, (UOSInt)size, buff);
-				if (Text::StringTool::IsTextUTF8(buff.SubArray(0, (UOSInt)size)))
+				Data::ByteBuffer buff((UIntOS)size + 1);
+				stmData->GetRealData(0, (UIntOS)size, buff);
+				if (Text::StringTool::IsTextUTF8(buff.SubArray(0, (UIntOS)size)))
 				{
-					buff[(UOSInt)size] = 0;
-					me->txtStream->SetText(Text::CStringNN(buff.Arr(), (UOSInt)size));
+					buff[(UIntOS)size] = 0;
+					me->txtStream->SetText(Text::CStringNN(buff.Arr(), (UIntOS)size));
 					found = true;
 				}
 			}
@@ -176,8 +176,8 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	NN<Text::String> s;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = this->doc->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->doc->GetCount();
 	while (i < j)
 	{
 		obj = this->doc->GetItemNoCheck(i);
@@ -215,13 +215,13 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<Text::String> folder = dlg->GetFolder();
 			Text::CStringNN fileName = this->doc->GetSourceNameObj()->ToCString();
-			UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+			UIntOS i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 				fileName = fileName.Substring(i + 1);
 			Text::StringBuilderUTF8 sb;
 			NN<Media::PDFObject> obj;
 			i = 0;
-			UOSInt j = this->doc->GetCount();
+			UIntOS j = this->doc->GetCount();
 			while (i < j)
 			{
 				obj = this->doc->GetItemNoCheck(i);

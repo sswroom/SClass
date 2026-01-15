@@ -65,7 +65,7 @@ Bool Math::Geometry::Polygon::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 
 Bool Math::Geometry::Polygon::InsideOrTouch(Math::Coord2DDbl coord) const
 {
-	UOSInt insideCnt = 0;
+	UIntOS insideCnt = 0;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
@@ -77,20 +77,20 @@ Bool Math::Geometry::Polygon::InsideOrTouch(Math::Coord2DDbl coord) const
 
 /*Bool Math::Geometry::Polygon::HasJunction() const
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UInt32 nextPart;
 	Double lastPtX;
 	Double lastPtY;
-	UOSInt lastIndex;
+	UIntOS lastIndex;
 	Double thisPtX;
 	Double thisPtY;
 	UInt32 nextChkPart;
 	Double lastChkPtX;
 	Double lastChkPtY;
-	UOSInt lastChkIndex;
+	UIntOS lastChkIndex;
 	Double thisChkPtX;
 	Double thisChkPtY;
 
@@ -190,13 +190,13 @@ Bool Math::Geometry::Polygon::InsideOrTouch(Math::Coord2DDbl coord) const
 
 void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Polygon*> *results)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Math::Geometry::Polygon *tmpPG;
 	Math::Coord2DDbl *points;
 	Double *zArr;
 	Double *mArr;
-	UOSInt nPoints;
+	UIntOS nPoints;
 	Data::ArrayListDbl *junctionX;
 	Data::ArrayListDbl *junctionY;
 	Data::ArrayListInt32 *junctionPtNum;
@@ -204,12 +204,12 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 	Double lastPtY;
 	Double thisPtX;
 	Double thisPtY;
-	UOSInt lastIndex;
+	UIntOS lastIndex;
 	Double lastChkPtX;
 	Double lastChkPtY;
 	Double thisChkPtX;
 	Double thisChkPtY;
-	UOSInt lastChkIndex;
+	UIntOS lastChkIndex;
 	Double m1;
 	Double m2 = 0;
 	Double intX;
@@ -330,7 +330,7 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 		lastPtY = thisPtY;
 		lastIndex = i;
 	}
-//	OSInt junctionCnt = junctionPtNum->GetCount();
+//	IntOS junctionCnt = junctionPtNum->GetCount();
 	///////////////////////////////////////////////////////
 
 	DEL_CLASS(junctionPtNum);
@@ -353,7 +353,7 @@ NN<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() c
 	NN<Math::Geometry::Polygon> pg;
 	NN<Math::Geometry::LinearRing> lr;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
-	UOSInt k;
+	UIntOS k;
 	Bool found;
 	while (it.HasNext())
 	{
@@ -384,13 +384,13 @@ NN<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() c
 	return mpg;
 }
 
-void Math::Geometry::Polygon::AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSInt nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UOSInt nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList)
+void Math::Geometry::Polygon::AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UIntOS nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UIntOS nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList)
 {
 	NN<LinearRing> linearRing;
-	UOSInt i = 0;
-	UOSInt j;
-	UOSInt k;
-	UOSInt tmp;
+	UIntOS i = 0;
+	UIntOS j;
+	UIntOS k;
+	UIntOS tmp;
 	UnsafeArray<Math::Coord2DDbl> ptArr;
 	UnsafeArray<Double> zArr;
 	UnsafeArray<Double> mArr;
@@ -419,17 +419,17 @@ void Math::Geometry::Polygon::AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSI
 	}
 }
 
-UOSInt Math::Geometry::Polygon::FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const
+UIntOS Math::Geometry::Polygon::FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const
 {
-	UOSInt totalCnt = 0;
-	UOSInt nPoint;
+	UIntOS totalCnt = 0;
+	UIntOS nPoint;
 	NN<LineString> lineString;
 	UnsafeArray<Math::Coord2DDbl> thisPtList;
 	UnsafeArray<Double> dList;
 	UnsafeArray<Double> nnList;
-	UOSInt k;
+	UIntOS k;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (it.HasNext())
 	{
 		ptOfstList[i] = (UInt32)totalCnt;

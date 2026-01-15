@@ -50,7 +50,7 @@ namespace Net
 		Bool axisAware;
 		UInt32 connId;
 		UInt8 authPluginData[20];
-		UOSInt authPluginDataSize;
+		UIntOS authPluginDataSize;
 		Net::MySQLUtil::AuthenType authenType;
 		UInt32 svrCap;
 		UInt16 svrCS;
@@ -59,7 +59,7 @@ namespace Net
 
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
-		UOSInt cmdSeqNum;
+		UIntOS cmdSeqNum;
 		Optional<MySQLTCPReader> cmdTCPReader;
 		Optional<MySQLTCPBinaryReader> cmdBinReader;
 		CmdResultType cmdResultType;
@@ -82,7 +82,7 @@ namespace Net
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
 		Optional<DB::DBReader> ExecuteReaderText(Text::CStringNN sql);
 		Optional<DB::DBReader> ExecuteReaderBinary(Text::CStringNN sql);
@@ -95,8 +95,8 @@ namespace Net
 		virtual void Commit(NN<DB::DBTransaction> tran);
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		Bool ChangeSchema(UnsafeArray<const UTF8Char> schemaName);
 
 		Bool IsError();
@@ -104,7 +104,7 @@ namespace Net
 		Bool ServerInfoRecv();
 		Optional<Text::String> GetServerVer();
 		UInt32 GetConnId();
-		UOSInt GetAuthPluginData(UnsafeArray<UInt8> buff);
+		UIntOS GetAuthPluginData(UnsafeArray<UInt8> buff);
 		UInt32 GetServerCap() const;
 		UInt16 GetServerCS() const;
 

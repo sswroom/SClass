@@ -75,8 +75,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	NN<Parser::ParserList> parsers;
 	NN<Map::MapManager> mapMgr;
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	
 	if (!this->parsers.SetTo(parsers))
 		return nullptr;
@@ -246,7 +246,7 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 	UnsafeArray<WChar> wptr;
 	UnsafeArray<const WChar> cwptr;
 	UInt32 pos = currPos.Get();
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < itemCnt)
 	{
 		fd->GetRealData(pos, 4, BYTEARR(buff));
@@ -285,7 +285,7 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 			{
 				s->Release();
 				Map::MapEnv::LayerItem setting;
-				UOSInt layerId = env->AddLayer(group, layer, false);
+				UIntOS layerId = env->AddLayer(group, layer, false);
 				env->GetLayerProp(setting, group, layerId);
 
 				if (ReadUInt32(&buff[16]) == 1)

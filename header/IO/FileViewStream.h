@@ -18,8 +18,8 @@ namespace IO
 		virtual ~FileViewStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(const UInt8 *buff, UIntOS size);
 
 		virtual Int32 Flush();
 		virtual void Close();

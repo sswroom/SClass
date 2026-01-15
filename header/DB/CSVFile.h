@@ -20,8 +20,8 @@ namespace DB
 		UInt32 codePage;
 		Bool noHeader;
 		Bool nullIfEmpty;
-		UOSInt indexCol;
-		Data::ArrayListNative<UOSInt> timeCols;
+		UIntOS indexCol;
+		Data::ArrayListNative<UIntOS> timeCols;
 
 		void InitReader(NN<CSVReader> r);
 	public:
@@ -31,18 +31,18 @@ namespace DB
 		CSVFile(NN<IO::StreamData> fd, UInt32 codePage);
 		virtual ~CSVFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 		void SetNoHeader(Bool noHeader);
 		void SetNullIfEmpty(Bool nullIfEmpty);
-		void SetIndexCol(UOSInt indexCol);
-		void SetTimeCols(Data::DataArray<UOSInt> timeCols);
+		void SetIndexCol(UIntOS indexCol);
+		void SetTimeCols(Data::DataArray<UIntOS> timeCols);
 
-		static Optional<Data::TableData> LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UOSInt indexCol, Data::DataArray<UOSInt> timeCols);
+		static Optional<Data::TableData> LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UIntOS indexCol, Data::DataArray<UIntOS> timeCols);
 	};
 
 	class CSVReader : public DB::DBReader, public Data::ObjectGetter
@@ -50,23 +50,23 @@ namespace DB
 	private:
 		struct CSVColumn
 		{
-			UOSInt colSize;
+			UIntOS colSize;
 			UnsafeArray<UTF8Char> value;
 			DB::DBUtil::ColType colType;
 		};
 	private:
 		Optional<IO::Stream> stm;
 		NN<IO::Reader> rdr;
-		UOSInt nCol;
-		UOSInt nHdr;
+		UIntOS nCol;
+		UIntOS nHdr;
 		UnsafeArray<UTF8Char> row;
-		UOSInt rowBuffSize;
+		UIntOS rowBuffSize;
 		UnsafeArray<CSVColumn> cols;
 		UnsafeArray<UTF8Char> hdr;
 		UnsafeArray<Text::PString> hdrs;
 		Bool noHeader;
 		Bool nullIfEmpty;
-		UOSInt indexCol;
+		UIntOS indexCol;
 		Optional<Data::QueryConditions> condition;
 
 	public:
@@ -74,31 +74,31 @@ namespace DB
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();
-		virtual UOSInt ColCount();
-		virtual OSInt GetRowChanged();
-		virtual Int32 GetInt32(UOSInt colIndex);
-		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDblOrNAN(UOSInt colIndex);
-		virtual Bool GetBool(UOSInt colIndex);
-		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
-		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
+		virtual UIntOS ColCount();
+		virtual IntOS GetRowChanged();
+		virtual Int32 GetInt32(UIntOS colIndex);
+		virtual Int64 GetInt64(UIntOS colIndex);
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff);
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb);
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex);
+		virtual Double GetDblOrNAN(UIntOS colIndex);
+		virtual Bool GetBool(UIntOS colIndex);
+		virtual UIntOS GetBinarySize(UIntOS colIndex);
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
+		virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item);
 
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
-		virtual Bool IsNull(UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
+		virtual Bool IsNull(UIntOS colIndex);
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 
 		virtual NN<Data::VariItem> GetNewItem(Text::CStringNN name);
-		void SetIndexCol(UOSInt indexCol);
-		void AddTimeCol(UOSInt timeCol);
+		void SetIndexCol(UIntOS indexCol);
+		void AddTimeCol(UIntOS timeCol);
 	};
 }
 #endif

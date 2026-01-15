@@ -55,7 +55,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 			relObj = pkg.Ptr();
 		}
 	}
-	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));
+	UIntOS index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));
 	if (index == INVALID_INDEX)
 	{
 		SDEL_CLASS(relObj);
@@ -89,7 +89,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		if (layers.GetCount() == 0)
 		{
 			fgdb->QueryTableNames(0, layers);
-			UOSInt i = layers.GetCount();
+			UIntOS i = layers.GetCount();
 			while (i-- > 0)
 			{
 				layerName = layers.GetItemNoCheck(i);
@@ -107,11 +107,11 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 			Map::MapLayerCollection *layerColl;
 			NN<Map::FileGDBLayer> layer;
 			NN<DB::SharedReadingDB> db;
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
 			sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
-			i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
 			i = 0;
 			j = layers.GetCount();

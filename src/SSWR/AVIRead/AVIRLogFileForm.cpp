@@ -14,9 +14,9 @@ typedef enum
 void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 {
 	this->lvLogs->ClearItems();
-	UOSInt i;
-	UOSInt j = this->logFile->GetCount(this->logLevel);
-	UOSInt k;
+	UIntOS i;
+	UIntOS j = this->logFile->GetCount(this->logLevel);
+	UIntOS k;
 	i = 0;
 	if (j > 0)
 	{
@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::AVIRead::AVIRLogFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogFileForm>();
 	Text::StringBuilderUTF8 sb;
@@ -93,8 +93,8 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Data::Timestamp ts = 0;
 				Text::StringBuilderUTF8 sb;
-				UOSInt i;
-				UOSInt j;
+				UIntOS i;
+				UIntOS j;
 				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				i = 0;

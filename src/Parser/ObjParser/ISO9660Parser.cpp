@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 	NN<IO::SectorData> data;
 	IO::SectorData *cdData;
 	UInt8 sector[2048];
-	UOSInt sectorSize;
+	UIntOS sectorSize;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return nullptr;
 
@@ -185,7 +185,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFi
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);
-	UOSInt sizeLeft = recSize;
+	UIntOS sizeLeft = recSize;
 	Bool err = false;
 	while (sizeLeft > 0)
 	{
@@ -211,7 +211,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFi
 	if (!err)
 	{
 		Data::DateTime dt;
-		UOSInt fileRecSize;
+		UIntOS fileRecSize;
 		UInt32 sectorNum;
 		UInt32 fileSize;
 		NN<IO::StreamData> fd;
@@ -249,7 +249,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFi
 			}
 			else
 			{
-				UOSInt i;
+				UIntOS i;
 				sptr = enc.UTF8FromBytes(fileNameEnd, &recBuff[33], recBuff[32], 0);
 				i = Text::StrIndexOfChar(fileNameEnd, ';');
 				if (i != INVALID_INDEX)

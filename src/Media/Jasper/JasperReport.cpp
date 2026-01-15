@@ -37,7 +37,7 @@ Media::Jasper::JasperReport::~JasperReport()
 	OPTSTR_DEL(this->reportName);
 	this->title.Delete();
 
-	UOSInt i = this->properties.GetCount();
+	UIntOS i = this->properties.GetCount();
 	while (i-- > 0)
 	{
 		NN<JasperProperty> property = this->properties.GetItemNoCheck(i);

@@ -42,14 +42,14 @@ namespace SSWR
 				Optional<Text::String> country;
 				UInt8 ouis[3][3];
 				UInt64 neighbour[20];
-				UOSInt ieLen;
+				UIntOS ieLen;
 				UnsafeArrayOpt<UInt8> ieBuff;
 			} WifiLog;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
-			OSInt wlanScan;
+			IntOS wlanScan;
 			Data::FastMapNN<UInt64, BSSStatus> bssMap;
 			Data::FastMapNN<UInt64, WifiLog> wifiLogMap;
 			Int64 lastTimeTick;
@@ -66,7 +66,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnLogWifiSaveClicked(AnyType userObj);
 			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);

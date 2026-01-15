@@ -58,8 +58,8 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 	NN<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> str;
-	UOSInt sthreadCnt = 0;
-	UOSInt i;
+	UIntOS sthreadCnt = 0;
+	UIntOS i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;
@@ -178,8 +178,8 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 	NN<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> str;
-	UOSInt sthreadCnt = 0;
-	UOSInt i;
+	UIntOS sthreadCnt = 0;
+	UIntOS i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;
@@ -330,7 +330,7 @@ void Net::TCPServer::AcceptSocket(NN<Socket> svrSoc)
 		}
 /*		str = Text::StrConcatC(buff, UTF8STRC("Client connected: ");
 		str = this->socf->GetRemoteName(str, (UInt32*)s);
-		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Action);
+		this->AddLogMsgC(buff, (UIntOS)(str - buff), IO::LogHandler::LogLevel::Action);
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }

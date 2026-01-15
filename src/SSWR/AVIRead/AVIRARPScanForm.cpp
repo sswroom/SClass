@@ -90,9 +90,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 
@@ -144,8 +144,8 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 
 	this->arpUpdated = false;
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Data::ArrayListNN<Net::ARPInfo> arpList;
 	Net::ARPInfo::ARPType arpType;
@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt k;
+	UIntOS k;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
@@ -224,7 +224,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	i = this->adapters.GetCount();

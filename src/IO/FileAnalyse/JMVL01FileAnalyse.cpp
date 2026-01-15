@@ -65,7 +65,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NN<Sync::Thread> 
 		{
 			tag = MemAllocNN(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag);
 			tag->ofst = ofst;
-			tag->size = (UOSInt)tagHdr[2] + 5;
+			tag->size = (UIntOS)tagHdr[2] + 5;
 			tag->tagType = tagHdr[3];
 			me->tags.Add(tag);
 			ofst += tag->size;
@@ -74,7 +74,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NN<Sync::Thread> 
 		{
 			tag = MemAllocNN(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag);
 			tag->ofst = ofst;
-			tag->size = (UOSInt)ReadMUInt16(&tagHdr[2]) + 6;
+			tag->size = (UIntOS)ReadMUInt16(&tagHdr[2]) + 6;
 			tag->tagType = tagHdr[4];
 			me->tags.Add(tag);
 			ofst += tag->size;
@@ -118,12 +118,12 @@ Text::CStringNN IO::FileAnalyse::JMVL01FileAnalyse::GetFormatName()
 	return CSTR("JM-VL01");
 }
 
-UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
 	Text::CStringNN name;
@@ -139,21 +139,21 @@ Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 		sb->AppendC(UTF8STRC(")"));
 	}
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	return true;
 }
 
 
-UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<JMVL01Tag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -164,13 +164,13 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
@@ -183,14 +183,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(tag->size);
 	fd->GetRealData(tag->ofst, tag->size, tagData);
 	frame->AddHexBuff(0, CSTR("Start of Packet"), tagData.WithSize(2), false);
-	UOSInt frameSize;
-	UOSInt currOfst;
+	UIntOS frameSize;
+	UIntOS currOfst;
 	Bool parsed = false;
 	if (tagData[0] == 0x79 && tagData[1] == 0x79)
 	{
@@ -214,7 +214,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 			if (frameSize == 17)
 			{
 				frame->AddHex16(currOfst + 9, CSTR("Type identification code"), ReadMUInt16(&tagData[currOfst + 9]));
-				UOSInt tz = (UOSInt)ReadMUInt16(&tagData[currOfst + 11]) >> 4;
+				UIntOS tz = (UIntOS)ReadMUInt16(&tagData[currOfst + 11]) >> 4;
 				if (tagData[currOfst + 12] & 8)
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT-"));
@@ -223,14 +223,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT+"));
 				}
-				sptr = Text::StrUOSInt(sptr, tz / 100);
+				sptr = Text::StrUIntOS(sptr, tz / 100);
 				*sptr++ = ':';
 				tz = (tz % 100) * 3 / 5;
 				if (tz < 10)
 				{
 					*sptr++ = '0';
 				}
-				sptr = Text::StrUOSInt(sptr, (tz % 100) * 3 / 5);
+				sptr = Text::StrUIntOS(sptr, (tz % 100) * 3 / 5);
 				frame->AddField(currOfst + 11, 2, CSTR("Time Zone"), CSTRP(sbuff, sptr));
 			}
 			parsed = true;
@@ -243,7 +243,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 			dt.SetValue((UInt16)(2000 + tagData[currOfst + 1]), tagData[currOfst + 2], tagData[currOfst + 3], tagData[currOfst + 4], tagData[currOfst + 5], tagData[currOfst + 6], 0, 0);
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			frame->AddField(currOfst + 1, 6, CSTR("Date Time"), CSTRP(sbuff, sptr));
-			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UOSInt)tagData[currOfst + 7] >> 4);
+			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UIntOS)tagData[currOfst + 7] >> 4);
 			frame->AddUInt(currOfst + 7, 1, CSTR("Quantity of positioning satellites"), tagData[currOfst + 7] & 15);
 			Double lat = ReadMUInt32(&tagData[currOfst + 8]) / 1800000.0;
 			Double lon = ReadMUInt32(&tagData[currOfst + 12]) / 1800000.0;
@@ -267,7 +267,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 			frame->AddUInt(currOfst + 17, 1, CSTR("North Latitude"), (tagData[currOfst + 17] & 0x4) >> 2);
 			frame->AddUInt(currOfst + 19, 2, CSTR("MCC"), ReadMUInt16(&tagData[currOfst + 19]) & 0x7fff);
 
-			UOSInt i;
+			UIntOS i;
 			if (tagData[currOfst + 19] & 0x80)
 			{
 				frame->AddUInt(currOfst + 21, 2, CSTR("MNC"), ReadMUInt16(&tagData[currOfst + 21]));
@@ -316,7 +316,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 			dt.SetValue((UInt16)(2000 + tagData[currOfst + 1]), tagData[currOfst + 2], tagData[currOfst + 3], tagData[currOfst + 4], tagData[currOfst + 5], tagData[currOfst + 6], 0, 0);
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			frame->AddField(currOfst + 1, 6, CSTR("Date Time"), CSTRP(sbuff, sptr));
-			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UOSInt)tagData[currOfst + 7] >> 4);
+			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UIntOS)tagData[currOfst + 7] >> 4);
 			frame->AddUInt(currOfst + 7, 1, CSTR("Quantity of positioning satellites"), tagData[currOfst + 7] & 15);
 			Double lat = ReadMUInt32(&tagData[currOfst + 8]) / 1800000.0;
 			Double lon = ReadMUInt32(&tagData[currOfst + 12]) / 1800000.0;
@@ -340,7 +340,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 			frame->AddUInt(currOfst + 17, 1, CSTR("North Latitude"), (tagData[currOfst + 17] & 0x4) >> 2);
 			frame->AddUInt(currOfst + 19, 2, CSTR("MCC"), ReadMUInt16(&tagData[currOfst + 19]) & 0x7fff);
 
-			UOSInt i;
+			UIntOS i;
 			if (tagData[currOfst + 19] & 0x80)
 			{
 				frame->AddUInt(currOfst + 21, 2, CSTR("MNC"), ReadMUInt16(&tagData[currOfst + 21]));

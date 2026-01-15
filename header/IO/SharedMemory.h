@@ -8,16 +8,16 @@ namespace IO
 	private:
 		void *hand;
 		UInt8 *memPtr;
-		OSInt memSize;
+		IntOS memSize;
 
-		SharedMemory(void *hand, UInt8 *memPtr, OSInt memSize);
+		SharedMemory(void *hand, UInt8 *memPtr, IntOS memSize);
 
 	public:
 		~SharedMemory();
 		UInt8 *GetPointer();
 
-		static Optional<IO::SharedMemory> Create(const UTF8Char *name, OSInt size);
-		static Optional<IO::SharedMemory> Open(const UTF8Char *name, OSInt size);
+		static Optional<IO::SharedMemory> Create(const UTF8Char *name, IntOS size);
+		static Optional<IO::SharedMemory> Open(const UTF8Char *name, IntOS size);
 	};
 }
 #endif

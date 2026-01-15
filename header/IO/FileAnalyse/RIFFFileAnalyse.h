@@ -15,9 +15,9 @@ namespace IO
 		private:
 			typedef struct
 			{
-				UOSInt lev;
+				UIntOS lev;
 				UInt64 fileOfst;
-				UOSInt packSize;
+				UIntOS packSize;
 				Int32 packType;
 				Int32 subPackType;
 			} PackInfo;
@@ -27,21 +27,21 @@ namespace IO
 
 			Bool pauseParsing;
 			Sync::Thread thread;
-			UOSInt maxLev;
+			UIntOS maxLev;
 
-			void ParseRange(NN<IO::StreamData> fd, UOSInt lev, UInt64 ofst, UInt64 size);
+			void ParseRange(NN<IO::StreamData> fd, UIntOS lev, UInt64 ofst, UInt64 size);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
+			UIntOS GetFrameIndex(UIntOS lev, UInt64 ofst);
 		public:
 			RIFFFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~RIFFFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

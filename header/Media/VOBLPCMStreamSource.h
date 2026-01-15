@@ -17,9 +17,9 @@ namespace Media
 
 		Sync::Mutex buffMut;
 		UInt8 *dataBuff;
-		UOSInt buffSize;
-		UOSInt buffStart;
-		UOSInt buffEnd;
+		UIntOS buffSize;
+		UIntOS buffStart;
+		UIntOS buffEnd;
 		UInt64 buffSample;
 
 
@@ -35,17 +35,17 @@ namespace Media
 
 		virtual void GetFormat(NN<AudioFormat> format);
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 
-		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
+		virtual void DetectStreamInfo(UInt8 *header, UIntOS headerSize);
 		virtual void ClearFrameBuff();
 		virtual void SetStreamTime(Data::Duration time);
-		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
+		virtual void WriteFrameStream(UInt8 *buff, UIntOS buffSize);
 		virtual Data::Duration GetFrameStreamTime();
 		virtual void EndFrameStream();
 		virtual UInt64 GetBitRate();

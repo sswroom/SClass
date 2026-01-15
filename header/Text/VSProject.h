@@ -36,9 +36,9 @@ namespace Text
 		virtual void SetContainerName(Text::CStringNN contName);
 		virtual NN<Text::String> GetContainerName() const;
 
-		virtual UOSInt GetChildCount() const;
-		virtual NN<CodeObject> GetChildNoCheck(UOSInt index) const;
-		virtual Optional<CodeObject> GetChildObj(UOSInt index) const;
+		virtual UIntOS GetChildCount() const;
+		virtual NN<CodeObject> GetChildNoCheck(UIntOS index) const;
+		virtual Optional<CodeObject> GetChildObj(UIntOS index) const;
 
 		virtual void AddChild(NN<Text::CodeObject> obj);
 	};
@@ -70,9 +70,9 @@ namespace Text
 		virtual void SetProjectName(Text::CStringNN projName);
 		virtual NN<Text::String> GetContainerName() const;
 
-		virtual UOSInt GetChildCount() const;
-		virtual NN<CodeObject> GetChildNoCheck(UOSInt index) const;
-		virtual Optional<CodeObject> GetChildObj(UOSInt index) const;
+		virtual UIntOS GetChildCount() const;
+		virtual NN<CodeObject> GetChildNoCheck(UIntOS index) const;
+		virtual Optional<CodeObject> GetChildObj(UIntOS index) const;
 
 		virtual void AddChild(NN<Text::CodeObject> obj);
 		VisualStudioVersion GetVSVersion() const;

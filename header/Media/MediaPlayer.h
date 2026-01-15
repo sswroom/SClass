@@ -32,7 +32,7 @@ namespace Media
 		Bool videoPlaying;
 		Bool audioPlaying;
 		Data::Duration currTime;
-		UOSInt pbLastChapter;
+		UIntOS pbLastChapter;
 
 		PBEndHandler endHdlr;
 		AnyType endObj;
@@ -51,7 +51,7 @@ namespace Media
 		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj);
 		virtual Bool LoadMedia(Optional<Media::MediaFile> file);
 		virtual Bool SeekTo(Data::Duration time);
-		virtual Bool SwitchAudio(UOSInt index);
+		virtual Bool SwitchAudio(UIntOS index);
 
 		virtual Bool IsPlaying();
 		virtual Bool StartPlayback();
@@ -60,8 +60,8 @@ namespace Media
 		virtual Bool NextChapter();
 		virtual Data::Duration GetCurrTime();
 
-		virtual Bool GotoChapter(UOSInt chapter);
-		virtual Bool GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h);
+		virtual Bool GotoChapter(UIntOS chapter);
+		virtual Bool GetVideoSize(OutParam<UIntOS> w, OutParam<UIntOS> h);
 		virtual void DetectCrop();
 
 		Optional<Media::VideoRenderer> GetVideoRenderer();

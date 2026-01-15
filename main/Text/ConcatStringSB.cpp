@@ -12,8 +12,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Manage::HiResClock clk;
 	clk.Start();
 	i = 10000;

@@ -34,13 +34,13 @@ Text::TextBinEnc::Base32Enc::~Base32Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	UnsafeArray<const UTF8Char> encArr = GetEncArr();
-	UOSInt outSize;
+	UIntOS outSize;
 	UTF8Char sptr[8];
-	UOSInt tmp1 = buffSize * 8 / 5;
-	UOSInt tmp2 = buffSize * 8 % 5;
+	UIntOS tmp1 = buffSize * 8 / 5;
+	UIntOS tmp2 = buffSize * 8 % 5;
 	if (tmp2)
 	{
 		outSize = tmp1 + 1;
@@ -104,9 +104,9 @@ UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, Un
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::Base32Enc::CalcBinSize(Text::CStringNN str) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> sbuff = str.v;
 	while ((c = *sbuff++) != 0)
@@ -119,9 +119,9 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(Text::CStringNN str) const
 	return cnt * 5 / 8;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff) const
+UIntOS Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff) const
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	WChar c;
 	while ((c = *sbuff++) != 0)
 	{
@@ -133,9 +133,9 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 5 / 8;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::Base32Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
-	UOSInt decSize = 0;
+	UIntOS decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;

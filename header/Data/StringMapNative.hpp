@@ -23,9 +23,9 @@ namespace Data
 		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T Remove(Text::CStringNN key);
-		OSInt GetIndexC(Text::CStringNN key) const;
+		IntOS GetIndexC(Text::CStringNN key) const;
 		Bool ContainsKeyC(Text::CStringNN key) const;
-		virtual Optional<Text::String> GetKey(UOSInt index) const;
+		virtual Optional<Text::String> GetKey(UIntOS index) const;
 		virtual void Clear();
 		virtual NN<StringMapNative<T>> Clone() const;
 	};
@@ -37,8 +37,8 @@ namespace Data
 
 	template <class T> StringMapNative<T>::StringMapNative(NN<const StringMapNative<T>> map) : ArrayCmpMapNative<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
-		UOSInt i = 0;
-		UOSInt j = map->keys->GetCount();
+		UIntOS i = 0;
+		UIntOS j = map->keys->GetCount();
 		while (i < j)
 		{
 			this->keys->Add(Text::String::CopyOrNull(map->keys->GetItem(i)));
@@ -50,7 +50,7 @@ namespace Data
 	template <class T> StringMapNative<T>::~StringMapNative()
 	{
 		NN<Text::String> s;
-		UOSInt i = this->keys->GetCount();
+		UIntOS i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			if (this->keys->GetItem(i).SetTo(s))
@@ -61,65 +61,65 @@ namespace Data
 
 	template <class T> T StringMapNative<T>::Put(Optional<Text::String> key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::CopyOrNull(key));
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, Text::String::CopyOrNull(key));
+			this->vals.Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T> T StringMapNative<T>::PutNN(NN<Text::String> key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key->Clone());
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, key->Clone());
+			this->vals.Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T> T StringMapNative<T>::Put(Text::CStringNN key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, Text::String::New(key.v, key.leng));
+			this->vals.Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T> T StringMapNative<T>::Get(Optional<Text::String> key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -129,11 +129,11 @@ namespace Data
 
 	template <class T> T StringMapNative<T>::GetNN(NN<Text::String> key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -143,11 +143,11 @@ namespace Data
 
 	template <class T> T StringMapNative<T>::Get(Text::CStringNN key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -158,13 +158,13 @@ namespace Data
 	template <class T> T StringMapNative<T>::Remove(Optional<Text::String> key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -175,13 +175,13 @@ namespace Data
 	template <class T> T StringMapNative<T>::RemoveNN(NN<Text::String> key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -192,13 +192,13 @@ namespace Data
 	template <class T> T StringMapNative<T>::Remove(Text::CStringNN key)
 	{
 		NN<Text::String> s;
-		OSInt i;
+		IntOS i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+			if (this->keys->RemoveAt((UIntOS)i).SetTo(s))
 				s->Release();
-			return this->vals.RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -206,28 +206,28 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<Text::String> StringMapNative<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> StringMapNative<T>::GetKey(UIntOS index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T> OSInt StringMapNative<T>::GetIndexC(Text::CStringNN key) const
+	template <class T> IntOS StringMapNative<T>::GetIndexC(Text::CStringNN key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		return i;
 	}
 	
 	template <class T> Bool StringMapNative<T>::ContainsKeyC(Text::CStringNN key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		return i >= 0;
 	}
 	template <class T> void StringMapNative<T>::Clear()
 	{
 		NN<Text::String> s;
-		UOSInt i;
+		UIntOS i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

@@ -10,8 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 	NN<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{

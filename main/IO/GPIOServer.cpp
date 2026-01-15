@@ -45,8 +45,8 @@ public:
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		
 		sb.AppendC(UTF8STRC("<html><head><title>GPIO Status</title></head>\r\n"));
 		sb.AppendC(UTF8STRC("<body>"));
@@ -55,7 +55,7 @@ public:
 		if (cpu.GetCPUName(sbuff).SetTo(sptr))
 		{
 			sb.AppendC(UTF8STRC("<h2>CPU: "));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</h2>\r\n"));
 		}
 		if (this->gpio->IsError())
@@ -71,7 +71,7 @@ public:
 			while (i < j)
 			{
 				sb.AppendC(UTF8STRC("<tr><td>Pin "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC("</td>"));
 				if (this->gpio->IsPinHigh(i))
 				{
@@ -97,11 +97,11 @@ public:
 				if (outVal == 1)
 				{
 					sb.AppendC(UTF8STRC("<a href=\"/?pin="));
-					sb.AppendUOSInt(i);
+					sb.AppendUIntOS(i);
 					sb.AppendC(UTF8STRC("&output=1\">High</a>"));
 
 					sb.AppendC(UTF8STRC(" <a href=\"/?pin="));
-					sb.AppendUOSInt(i);
+					sb.AppendUIntOS(i);
 					sb.AppendC(UTF8STRC("&output=0\">Low</a>"));
 				}
 				sb.AppendC(UTF8STRC("</td></tr>"));

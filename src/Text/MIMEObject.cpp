@@ -26,14 +26,14 @@ IO::ParserType Text::MIMEObject::GetParserType() const
 Optional<Text::MIMEObject> Text::MIMEObject::ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType)
 {
 	NN<Text::MIMEObject> obj;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	if (data->GetDataSize() > 104857600)
 	{
 		return nullptr;
 	}
 	if (contentType.leng == 0)
 	{
-		buffSize = (UOSInt)data->GetDataSize();
+		buffSize = (UIntOS)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
 		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Arr(), buffSize, 0));
@@ -46,12 +46,12 @@ Optional<Text::MIMEObject> Text::MIMEObject::ParseFromData(NN<IO::StreamData> da
 	}
 	else if (contentType.StartsWith(UTF8STRC("text/plain")))
 	{
-		UOSInt i = contentType.IndexOf(UTF8STRC("charset="));
+		UIntOS i = contentType.IndexOf(UTF8STRC("charset="));
 		UInt32 codePage = 0;
 		if (i != INVALID_INDEX && i > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt j;
+			UIntOS j;
 			sb.AppendC(&contentType.v[i + 8], contentType.leng - i - 8);
 			j = sb.IndexOf(';');
 			if (j != INVALID_INDEX)
@@ -62,7 +62,7 @@ Optional<Text::MIMEObject> Text::MIMEObject::ParseFromData(NN<IO::StreamData> da
 			codePage = encFact.GetCodePage(sb.ToCString());
 		}
 
-		buffSize = (UOSInt)data->GetDataSize();
+		buffSize = (UIntOS)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
 		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Arr(), buffSize, codePage));
@@ -76,7 +76,7 @@ Optional<Text::MIMEObject> Text::MIMEObject::ParseFromData(NN<IO::StreamData> da
 		if (Optional<MIMEObject>::ConvertFrom(Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data)).SetTo(obj))
 			return obj;
 	}
-	buffSize = (UOSInt)data->GetDataSize();
+	buffSize = (UIntOS)data->GetDataSize();
 	Data::ByteBuffer buff(buffSize);
 	data->GetRealData(0, buffSize, buff);
 	NEW_CLASSNN(obj, Text::MIMEObj::UnknownMIMEObj(buff.Arr(), buffSize, contentType));

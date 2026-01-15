@@ -8,10 +8,10 @@ Media::MediaType Media::AudioSource::GetMediaType()
 	return Media::MEDIA_TYPE_AUDIO;
 }
 
-UOSInt Media::AudioSource::ReadBlockLPCM(Data::ByteArray blk, NN<const AudioFormat> format)
+UIntOS Media::AudioSource::ReadBlockLPCM(Data::ByteArray blk, NN<const AudioFormat> format)
 {
-	UOSInt ret;
-	UOSInt i;
+	UIntOS ret;
+	UIntOS i;
 	UInt8 tmp;
 	if (format->intType == Media::AudioFormat::IT_BIGENDIAN16)
 	{
@@ -117,7 +117,7 @@ Bool Media::AudioSource::SupportSampleRead()
 	return false;
 }
 
-UOSInt Media::AudioSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff)
+UIntOS Media::AudioSource::ReadSample(UInt64 sampleOfst, UIntOS sampleCount, Data::ByteArray buff)
 {
 	return 0;
 }

@@ -10,12 +10,12 @@ namespace Data
 	{
 	public:
 		ArrayListStringNN();
-		ArrayListStringNN(UOSInt capacity);
+		ArrayListStringNN(UIntOS capacity);
 
 		virtual NN<Data::ArrayListNN<Text::String>> Clone() const;
-		virtual OSInt Compare(NN<Text::String> obj1, NN<Text::String> obj2) const;
-		virtual OSInt SortedIndexOfC(Text::CStringNN val) const;
-		UOSInt IndexOfC(Text::CStringNN val) const;
+		virtual IntOS Compare(NN<Text::String> obj1, NN<Text::String> obj2) const;
+		virtual IntOS SortedIndexOfC(Text::CStringNN val) const;
+		UIntOS IndexOfC(Text::CStringNN val) const;
 
 		NN<Text::String> JoinString() const;
 		NN<Text::String> JoinString(Text::CStringNN s) const;

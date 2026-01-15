@@ -13,7 +13,7 @@ namespace Map
 	public:
 		struct LineInfo
 		{
-			UOSInt index;
+			UIntOS index;
 			NN<Math::Geometry::LineString> vec;
 			Math::RectAreaDbl rect;
 			Math::Coord2DDbl startPos;
@@ -36,8 +36,8 @@ namespace Map
 
 		struct AreaInfo
 		{
-			OSInt x;
-			OSInt y;
+			IntOS x;
+			IntOS y;
 			Data::ArrayListNN<NodeInfo> nodes;
 		};
 
@@ -61,8 +61,8 @@ namespace Map
 
 		struct AreaSession
 		{
-			OSInt x;
-			OSInt y;
+			IntOS x;
+			IntOS y;
 			Data::ArrayListNN<NodeSession> nodes;
 		};
 
@@ -83,7 +83,7 @@ namespace Map
 			LineComparator();
 			virtual ~LineComparator();
 
-			virtual OSInt Compare(NN<LineInfo> a, NN<LineInfo> b) const;
+			virtual IntOS Compare(NN<LineInfo> a, NN<LineInfo> b) const;
 		};
 
 		class PathResultComparator : public Data::Comparator<NN<PathResult>>
@@ -92,7 +92,7 @@ namespace Map
 			PathResultComparator();
 			virtual ~PathResultComparator();
 
-			virtual OSInt Compare(NN<PathResult> a, NN<PathResult> b) const;
+			virtual IntOS Compare(NN<PathResult> a, NN<PathResult> b) const;
 		};
 
 		class NodeDistanceComparator : public Data::Comparator<NN<NodeSession>>
@@ -101,7 +101,7 @@ namespace Map
 			NodeDistanceComparator();
 			virtual ~NodeDistanceComparator();
 
-			virtual OSInt Compare(NN<NodeSession> a, NN<NodeSession> b) const;
+			virtual IntOS Compare(NN<NodeSession> a, NN<NodeSession> b) const;
 		};
 
 		NN<Math::CoordinateSystem> csys;
@@ -122,7 +122,7 @@ namespace Map
 		NN<AreaInfo> GetArea(Math::Coord2DDbl pos);
 		Optional<AreaInfo> GetAreaOpt(Math::Coord2DDbl pos) const;
 		NN<AreaSession> GetAreaSess(NN<PathSession> sess, Math::Coord2DDbl pos) const;
-		Optional<AreaInfo> GetExistingArea(OSInt areaX, OSInt areaY) const;
+		Optional<AreaInfo> GetExistingArea(IntOS areaX, IntOS areaY) const;
 		NN<NodeInfo> GetNode(Math::Coord2DDbl pos, Double z);
 		NN<NodeInfo> GetNodeOrUnknown(Math::Coord2DDbl pos, Double z) const;
 		NN<NodeSession> GetNodeSess(NN<PathSession> sess, Math::Coord2DDbl pos, Double z) const;

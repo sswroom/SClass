@@ -23,11 +23,11 @@ IO::BitWriterMSB::~BitWriterMSB()
 	MemFreeArr(this->buff);
 }
 
-Bool IO::BitWriterMSB::WriteBits(UInt32 code, UOSInt bitCount)
+Bool IO::BitWriterMSB::WriteBits(UInt32 code, UIntOS bitCount)
 {
 	if (this->currBitPos != 0)
 	{
-		OSInt rShift = (OSInt)(bitCount - 8 + this->currBitPos);
+		IntOS rShift = (IntOS)(bitCount - 8 + this->currBitPos);
 		if (rShift > 0)
 		{
 			this->buff[this->currBytePos] = (UInt8)((this->buff[this->currBytePos] | (code >> rShift)) & 0xff);

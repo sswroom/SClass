@@ -16,7 +16,7 @@ namespace Data
 		virtual T Put(const WChar *key, T val);
 		virtual T Get(const WChar *key);
 		virtual T Remove(const WChar *key);
-		virtual const WChar *GetKey(OSInt index);
+		virtual const WChar *GetKey(IntOS index);
 		virtual void Clear();
 	};
 
@@ -28,7 +28,7 @@ namespace Data
 
 	template <class T> StringWMap<T>::~StringWMap()
 	{
-		OSInt i = this->keys->GetCount();
+		IntOS i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew((WChar*)this->keys->GetItem(i));
@@ -38,7 +38,7 @@ namespace Data
 
 	template <class T> T StringWMap<T>::Put(const WChar *key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -56,7 +56,7 @@ namespace Data
 
 	template <class T> T StringWMap<T>::Get(const WChar *key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -70,7 +70,7 @@ namespace Data
 
 	template <class T> T StringWMap<T>::Remove(const WChar *key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -83,14 +83,14 @@ namespace Data
 		}
 	}
 
-	template <class T> const WChar *StringWMap<T>::GetKey(OSInt index)
+	template <class T> const WChar *StringWMap<T>::GetKey(IntOS index)
 	{
 		return this->keys->GetItem(index);
 	}
 
 	template <class T> void StringWMap<T>::Clear()
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

@@ -26,16 +26,16 @@ struct Net::WinSSLClient::ClassData
 {
 	CredHandle *hCred;
 	CtxtHandle ctxt;
-	UOSInt step;
+	UIntOS step;
 	SecPkgContext_StreamSizes stmSizes;
 	UInt8 *recvBuff;
-	UOSInt recvBuffSize;
-	UOSInt recvOfst;
+	UIntOS recvBuffSize;
+	UIntOS recvOfst;
 	UInt8 *decBuff;
-	UOSInt decSize;
+	UIntOS decSize;
 
 	UInt8 *readBuff;
-	UOSInt readSize;
+	UIntOS readSize;
 	Optional<Net::SocketRecvSess> readData;
 	Optional<Sync::Event> readEvt;
 	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
@@ -53,7 +53,7 @@ Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void
 	MemClear(&this->clsData->stmSizes, sizeof(this->clsData->stmSizes));
 	
 	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_STREAM_SIZES, &this->clsData->stmSizes);
-	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + (UOSInt)this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
+	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + (UIntOS)this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
 	this->clsData->recvBuff = MemAlloc(UInt8, this->clsData->recvBuffSize);
 	this->clsData->recvOfst = 0;
 	this->clsData->decBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbMaximumMessage);
@@ -106,7 +106,7 @@ Net::WinSSLClient::~WinSSLClient()
 	}
 	if (this->clsData->remoteCerts)
 	{
-		UOSInt i = this->clsData->remoteCerts->GetCount();
+		UIntOS i = this->clsData->remoteCerts->GetCount();
 		while (i-- > 0)
 		{
 			NN<Crypto::Cert::Certificate> cert = this->clsData->remoteCerts->GetItemNoCheck(i);
@@ -117,7 +117,7 @@ Net::WinSSLClient::~WinSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
+UIntOS Net::WinSSLClient::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->step == 0)
 	{
@@ -128,7 +128,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	Data::DateTime debugDt;
 #endif
 	Data::ByteArray myBuff = buff;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (this->clsData->decSize > 0)
 	{
 		if (this->clsData->decSize >= myBuff.GetSize())
@@ -176,7 +176,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
+			UIntOS recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 			if (recvSize <= 0)
 			{
 				this->flags |= 2;
@@ -209,7 +209,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		}
 
 		this->clsData->recvOfst = 0;
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < 4)
 		{
 			if (buffs[i].BufferType == SECBUFFER_DATA)
@@ -282,7 +282,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::WinSSLClient::Write(Data::ByteArrayR buff)
+UIntOS Net::WinSSLClient::Write(Data::ByteArrayR buff)
 {
 	if (this->clsData->step == 0)
 	{
@@ -295,11 +295,11 @@ UOSInt Net::WinSSLClient::Write(Data::ByteArrayR buff)
 		UTF8Char debugBuff[64];
 		Data::DateTime debugDt;
 #endif
-		UOSInt writeSize = 0;
+		UIntOS writeSize = 0;
 		while (buff.GetSize() > this->clsData->stmSizes.cbMaximumMessage)
 		{
 			writeSize += Write(buff.WithSize(this->clsData->stmSizes.cbMaximumMessage));
-			buff += (UOSInt)this->clsData->stmSizes.cbMaximumMessage;
+			buff += (UIntOS)this->clsData->stmSizes.cbMaximumMessage;
 		}
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
@@ -327,16 +327,16 @@ UOSInt Net::WinSSLClient::Write(Data::ByteArrayR buff)
 			return 0;
 		}
 		Net::SocketFactory::ErrorType et;
-		UOSInt ret = this->sockf->SendData(s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, et);// SSL_write(this->clsData->ssl, buff, (int)size);
+		UIntOS ret = this->sockf->SendData(s, encBuff, (UIntOS)outputBuff[0].cbBuffer + (UIntOS)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, et);// SSL_write(this->clsData->ssl, buff, (int)size);
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s Sent %d bytes\r\n", debugBuff, (UInt32)ret);
 #endif
 		MemFree(encBuff);
-		if (ret > (UOSInt)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
+		if (ret > (UIntOS)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
 		{
-			ret -= (UOSInt)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
+			ret -= (UIntOS)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
 			this->currCnt += ret;
 			return ret + writeSize;
 		}
@@ -380,7 +380,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 			Data::DateTime debugDt;
 #endif
 			this->clsData->recvOfst = 0;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < 4)
 			{
 				if (buffs[i].BufferType == SECBUFFER_DATA)
@@ -440,7 +440,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 	return NN<IO::StreamReadReq>::ConvertFrom(data);
 }
 
-UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s))
@@ -452,7 +452,7 @@ UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 	UTF8Char debugBuff[64];
 	Data::DateTime debugDt;
 #endif
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Net::SocketRecvSess> readData;
 	if (this->clsData->decSize > 0)
 	{
@@ -489,7 +489,7 @@ UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 	SecBufferDesc buffDesc;
 	SecBuffer buffs[4];
 	SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
-	UOSInt recvSize;
+	UIntOS recvSize;
 	Bool incomp;
 
 	status = SEC_E_INCOMPLETE_MESSAGE;
@@ -558,7 +558,7 @@ UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 		}
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
+			UIntOS recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -600,7 +600,7 @@ UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 #endif
 
 	this->clsData->recvOfst = 0;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 4)
 	{
 		if (buffs[i].BufferType == SECBUFFER_DATA)
@@ -672,7 +672,7 @@ void Net::WinSSLClient::CancelRead(NN<IO::StreamReadReq> reqData)
 
 Optional<IO::StreamWriteReq> Net::WinSSLClient::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	UOSInt ret = this->Write(buff);
+	UIntOS ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();
@@ -680,9 +680,9 @@ Optional<IO::StreamWriteReq> Net::WinSSLClient::BeginWrite(Data::ByteArrayR buff
 	return (IO::StreamWriteReq*)ret;
 }
 
-UOSInt Net::WinSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS Net::WinSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void Net::WinSSLClient::CancelWrite(NN<IO::StreamWriteReq> reqData)

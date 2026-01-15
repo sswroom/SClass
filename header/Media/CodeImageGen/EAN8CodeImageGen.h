@@ -13,9 +13,9 @@ namespace Media
 			virtual ~EAN8CodeImageGen();
 
 			virtual CodeType GetCodeType();
-			virtual UOSInt GetMinLength();
-			virtual UOSInt GetMaxLength();
-			virtual Optional<Media::DrawImage> GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng);
+			virtual UIntOS GetMinLength();
+			virtual UIntOS GetMaxLength();
+			virtual Optional<Media::DrawImage> GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng);
 		};
 	}
 }

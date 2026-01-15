@@ -11,7 +11,7 @@ Net::WebServer::WebController::WebController(Text::CStringNN svcPath)
 Net::WebServer::WebController::~WebController()
 {
 	NN<ServiceInfo> service;
-	UOSInt i = this->services.GetCount();
+	UIntOS i = this->services.GetCount();
 	while (i-- > 0)
 	{
 		service = this->services.GetItemNoCheck(i);
@@ -45,8 +45,8 @@ Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::WebRequest
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = 0;
-			UOSInt j = nnservice->funcs.GetCount();
+			UIntOS i = 0;
+			UIntOS j = nnservice->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)

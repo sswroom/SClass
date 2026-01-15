@@ -24,18 +24,18 @@ Manage::CPUInfo::CPUInfo()
 	if (sysctlbyname("machdep.cpu.brand_string", sbuff, &size, 0, 0) == 0)
 	{
 		this->clsData = (void*)Text::StrCopyNewC(sbuff, size).Ptr();
-		if (Text::StrStartsWithC(sbuff, (UOSInt)size, UTF8STRC("Apple")))
+		if (Text::StrStartsWithC(sbuff, (UIntOS)size, UTF8STRC("Apple")))
 		{
 			this->brand = Manage::CPUVendor::CB_APPLE;
 		}
-		else if (Text::StrStartsWithC(sbuff, (UOSInt)size, UTF8STRC("Intel")))
+		else if (Text::StrStartsWithC(sbuff, (UIntOS)size, UTF8STRC("Intel")))
 		{
 			this->brand = Manage::CPUVendor::CB_INTEL;
 		}
 	}
 #else
-	UOSInt i;
-	OSInt sysType = 0;
+	UIntOS i;
+	IntOS sysType = 0;
 
 	IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -169,12 +169,12 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
 
-UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
+UIntOS Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	return false;
 }
@@ -192,12 +192,12 @@ Manage::CPUInfo::~CPUInfo()
 	this->clsData = 0;
 }
 
-UOSInt Manage::CPUInfo::GetInfoCnt()
+UIntOS Manage::CPUInfo::GetInfoCnt()
 {
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 0 || index >= this->infoCnt)
 		return false;
@@ -241,17 +241,17 @@ Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UIntOS index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UIntOS index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UIntOS index)
 {
 	return CSTR("Unknown");
 }

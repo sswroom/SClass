@@ -22,7 +22,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
 		{
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
@@ -135,9 +135,9 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 	return 0;
 }
 
-Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt threadCnt)
+Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UIntOS threadCnt)
 {
-	UOSInt i;
+	UIntOS i;
 	this->threadCnt = threadCnt;
 	this->sockf = sockf;
 	this->hdlr = hdlr;
@@ -183,7 +183,7 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 
 Net::IPScanDetector::~IPScanDetector()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Socket> soc;
 	if (this->threadStats)
 	{

@@ -28,7 +28,7 @@ Int32 Exporter::GUIJPGExporter::GetName()
 	return *(Int32*)"GPJP";
 }
 
-Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GUIJPGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -99,7 +99,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
 	UnsafeArray<UInt8> jpgBuff;
-	UOSInt jpgSize;
+	UIntOS jpgSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		imgList = NN<Media::ImageList>::ConvertFrom(pobj);
@@ -109,8 +109,8 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	NN<Media::EXIFData> exif;
 	if (srcImg.SetTo(nnsrcImg) && nnsrcImg->exif.SetTo(exif) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		exif = exif->Clone();
 		exif->Remove(254); //NewSubfileType
 		exif->Remove(256); //Width
@@ -145,7 +145,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				UnsafeArray<const UInt8> iccBuff;
 				if (nnsrcImg->info.color.GetRAWICC().SetTo(iccBuff))
 				{
-					UOSInt iccLeng = ReadMUInt32(&iccBuff[0]);
+					UIntOS iccLeng = ReadMUInt32(&iccBuff[0]);
 					UInt8 iccHdr[18];
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;
@@ -166,7 +166,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 				UInt8 *exifBuff;
 				exif->GetExifBuffSize(exifSize, endOfst);
-				exifBuff = MemAlloc(UInt8, (UOSInt)exifSize + 18);
+				exifBuff = MemAlloc(UInt8, (UIntOS)exifSize + 18);
 				exifBuff[0] = 0xff;
 				exifBuff[1] = 0xe1;
 				WriteMInt16(&exifBuff[2], (Int16)exifSize + 16);
@@ -186,11 +186,11 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			}
 			else if (jpgBuff[i + 1] == 0xe1)
 			{
-				i += (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				i += (UIntOS)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 			}
 			else
 			{
-				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				j = (UIntOS)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 				stm->Write(Data::ByteArrayR(&jpgBuff[i], j));
 				i += j;
 			}
@@ -205,7 +205,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 #endif
 }
 
-UOSInt Exporter::GUIJPGExporter::GetParamCnt()
+UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -226,7 +226,7 @@ void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -238,7 +238,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -253,7 +253,7 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt i
 	return false;
 }
 
-Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

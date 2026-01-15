@@ -19,7 +19,7 @@ private:
 	{
 		NN<Text::String> progName;
 		Text::String *progPath;
-		UOSInt procId;
+		UIntOS procId;
 		Data::Timestamp lastSent;
 	};
 
@@ -50,9 +50,9 @@ private:
 			sptr = prog->progName->ConcatTo(&buff[21]);
 			crc.Clear();
 			crc.Calc(host.v, 7);
-			crc.Calc(buff, (UOSInt)(sptr - buff));
+			crc.Calc(buff, (UIntOS)(sptr - buff));
 			WriteMUInt32(&sptr[0], crc.GetValueU32());
-			this->udp.SendTo(addr, 5080, buff, (UOSInt)(sptr - buff + 4));
+			this->udp.SendTo(addr, 5080, buff, (UIntOS)(sptr - buff + 4));
 		}
 		prog->lastSent = currTime;
 	}
@@ -64,7 +64,7 @@ private:
 			return false;
 
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		Bool ret = false;
 		Manage::Process::ProcessInfo info;
 		i = Text::StrLastIndexOfCharC(progPath->v, progPath->leng, IO::Path::PATH_SEPERATOR);
@@ -87,7 +87,7 @@ private:
 						sb.AppendC(UTF8STRC("Prog "));
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(": Updated procId as "));
-						sb.AppendUOSInt(prog->procId);
+						sb.AppendUIntOS(prog->procId);
 						this->myLog.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 						break;
 					}
@@ -98,7 +98,7 @@ private:
 		return ret;
 	}
 
-	void AddProg(UnsafeArray<const UTF8Char> progName, UOSInt progNameLen, UnsafeArrayOpt<const UTF8Char> progPath, UOSInt progPathLen)
+	void AddProg(UnsafeArray<const UTF8Char> progName, UIntOS progNameLen, UnsafeArrayOpt<const UTF8Char> progPath, UIntOS progPathLen)
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
@@ -162,7 +162,7 @@ private:
 	static void __stdcall OnTimerTick(AnyType userObj)
 	{
 		NN<ProcMonitorCore> me = userObj.GetNN<ProcMonitorCore>();
-		UOSInt i;
+		UIntOS i;
 		ProgInfo *prog;
 		i = me->progList.GetCount();
 		while (i-- > 0)
@@ -196,7 +196,7 @@ private:
 							sb.AppendC(UTF8STRC("Prog "));
 							sb.Append(prog->progName);
 							sb.AppendC(UTF8STRC(" restarted, procId = "));
-							sb.AppendUOSInt(prog->procId);
+							sb.AppendUIntOS(prog->procId);
 							me->myLog.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 						}
 					}
@@ -233,7 +233,7 @@ public:
 	~ProcMonitorCore()
 	{
 		ProgInfo *prog;
-		UOSInt i = this->progList.GetCount();
+		UIntOS i = this->progList.GetCount();
 		while (i-- > 0)
 		{
 			prog = this->progList.GetItem(i);

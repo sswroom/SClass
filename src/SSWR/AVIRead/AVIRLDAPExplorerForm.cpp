@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	}
 	succ = false;
 	NN<Net::LDAPClient::SearchResItem> item;
-	UOSInt i = items->GetCount();
+	UIntOS i = items->GetCount();
 	while (i-- > 0)
 	{
 		item = items->GetItemNoCheck(i);
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::PString sarr[32];
-			UOSInt j;
+			UIntOS j;
 			sb.Append(item->value);
 			j = Text::StrSplitP(sarr, 32, sb, ',');
 			me->rootLev = j;
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	NN<Net::LDAPClient> cli;
-	UOSInt i = me->lbPath->GetSelectedIndex();
+	UIntOS i = me->lbPath->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
 		return;
@@ -180,8 +180,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj
 	}
 	if (cli->Search(sb.ToCString(), Net::LDAPClient::ST_SINGLE_LEVEL, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", results))
 	{
-		UOSInt j;
-		UOSInt k;
+		UIntOS j;
+		UIntOS k;
 		i = 0;
 		j = results.GetCount();
 		while (i < j)
@@ -244,9 +244,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(AnyType user
 	me->lvValues->ClearItems();
 	if (me->lbObjects->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items.SetTo(items))
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		NN<Net::LDAPClient::SearchResItem> item;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -268,11 +268,11 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType user
 	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = me->lbObjects->GetSelectedIndex();
+	UIntOS i = me->lbObjects->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
 	sptr = me->lbObjects->GetItemText(sbuff, i).Or(sbuff);
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".")))
 	{
 		i = me->lbPath->GetSelectedIndex();
 		if (i >= me->rootLev)
@@ -282,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType user
 	}
 	else
 	{
-		UOSInt j = me->lbPath->AddItem(CSTRP(sbuff, sptr), 0);
+		UIntOS j = me->lbPath->AddItem(CSTRP(sbuff, sptr), 0);
 		me->lbPath->SetSelectedIndex(j);
 	}
 }

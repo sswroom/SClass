@@ -45,7 +45,7 @@ Bool Media::HTRecFile::HTRecReader::ReadNext()
 	}
 }
 
-UOSInt Media::HTRecFile::HTRecReader::ColCount()
+UIntOS Media::HTRecFile::HTRecReader::ColCount()
 {
 	if (this->setting)
 	{
@@ -57,14 +57,14 @@ UOSInt Media::HTRecFile::HTRecReader::ColCount()
 	}
 }
 
-OSInt Media::HTRecFile::HTRecReader::GetRowChanged()
+IntOS Media::HTRecFile::HTRecReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
+Int32 Media::HTRecFile::HTRecReader::GetInt32(UIntOS colIndex)
 {
-	UOSInt currRow = this->nextRow - 1;
+	UIntOS currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex == 1)
@@ -136,12 +136,12 @@ Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 	}
 }
 
-Int64 Media::HTRecFile::HTRecReader::GetInt64(UOSInt colIndex)
+Int64 Media::HTRecFile::HTRecReader::GetInt64(UIntOS colIndex)
 {
 	return GetInt32(colIndex);
 }
 
-UnsafeArrayOpt<WChar> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Media::HTRecFile::HTRecReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	UTF8Char sbuff[40];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)).IsNull())
@@ -149,26 +149,26 @@ UnsafeArrayOpt<WChar> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Uns
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 }
 
-Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Media::HTRecFile::HTRecReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[40];
 	UnsafeArray<UTF8Char> sptr;
 	if (!GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 		return false;
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	return true;
 }
 
-Optional<Text::String> Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Media::HTRecFile::HTRecReader::GetNewStr(UIntOS colIndex)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (!GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 		return nullptr;
-	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	return Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 }
 
-UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (this->setting)
 	{
@@ -230,7 +230,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 			case 4:
 				return this->file->GetSettingTime().ToString(buff, "yyyy-MM-dd HH:mm:ss");
 			case 5:
-				return Text::StrUOSInt(buff, this->file->GetTotalRec());
+				return Text::StrUIntOS(buff, this->file->GetTotalRec());
 			case 6:
 				return Text::StrUInt32(buff, this->file->GetRecInterval());
 			case 7:
@@ -256,7 +256,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 			case 14:
 				return this->file->GetStartTime().ToString(buff, "yyyy-MM-dd HH:mm:ss");
 			case 15:
-				return Text::StrUOSInt(buff, this->file->GetRecCount());
+				return Text::StrUIntOS(buff, this->file->GetRecCount());
 			case 16:
 				*buff = 0;
 				return buff;
@@ -275,7 +275,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 			return nullptr;
 		if (colIndex == 0)
 		{
-			return Text::StrUOSInt(buff, this->nextRow);
+			return Text::StrUIntOS(buff, this->nextRow);
 		}
 		else if (colIndex == 1)
 		{
@@ -296,9 +296,9 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 	}
 }
 
-Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UIntOS colIndex)
 {
-	UOSInt currRow = this->nextRow - 1;
+	UIntOS currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex == 1)
@@ -324,7 +324,7 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
 			return Data::Timestamp(0);
 		if (colIndex == 1)
 		{
-			Data::Timestamp ts = this->file->GetAdjStartTime().AddMS((OSInt)currRow * this->file->GetAdjRecInterval());
+			Data::Timestamp ts = this->file->GetAdjStartTime().AddMS((IntOS)currRow * this->file->GetAdjRecInterval());
 			return ts;
 		}
 		else
@@ -334,9 +334,9 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
+Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UIntOS colIndex)
 {
-	UOSInt currRow = this->nextRow - 1;
+	UIntOS currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex != 1)
@@ -347,7 +347,7 @@ Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 		}
 		else if (currRow == 5)
 		{
-			return UOSInt2Double(this->file->GetTotalRec());
+			return UIntOS2Double(this->file->GetTotalRec());
 		}
 		else if (currRow == 6)
 		{
@@ -371,7 +371,7 @@ Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 		}
 		else if (currRow == 15)
 		{
-			return UOSInt2Double(this->file->GetRecCount());
+			return UIntOS2Double(this->file->GetRecCount());
 		}
 
 		return NAN;
@@ -382,7 +382,7 @@ Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 			return NAN;
 		if (colIndex == 0)
 		{
-			return UOSInt2Double(currRow + 1);
+			return UIntOS2Double(currRow + 1);
 		}
 		else if (colIndex == 1)
 		{
@@ -391,13 +391,13 @@ Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 		else if (colIndex == 2)
 		{
 			const UInt8 *recBuff = this->file->GetRecBuff();
-			UOSInt i = currRow * 3;
+			UIntOS i = currRow * 3;
 			return (recBuff[i] | ((recBuff[i + 2] & 0xf) << 8)) * 0.1 - 40.0;
 		}
 		else if (colIndex == 3)
 		{
 			const UInt8 *recBuff = this->file->GetRecBuff();
-			UOSInt i = currRow * 3;
+			UIntOS i = currRow * 3;
 			return (recBuff[i + 1] | ((recBuff[i + 2] & 0xf0) << 4)) * 0.1;
 		}
 		else
@@ -407,32 +407,32 @@ Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 	}
 }
 
-Bool Media::HTRecFile::HTRecReader::GetBool(UOSInt colIndex)
+Bool Media::HTRecFile::HTRecReader::GetBool(UIntOS colIndex)
 {
 	return false;
 }
 
-UOSInt Media::HTRecFile::HTRecReader::GetBinarySize(UOSInt colIndex)
+UIntOS Media::HTRecFile::HTRecReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt Media::HTRecFile::HTRecReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::HTRecFile::HTRecReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Media::HTRecFile::HTRecReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Media::HTRecFile::HTRecReader::GetVector(UIntOS colIndex)
 {
 	return nullptr;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Media::HTRecFile::HTRecReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	Text::CStringNN s;
 	if (!GetName(colIndex, this->setting).SetTo(s))
@@ -440,12 +440,12 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex,
 	return s.ConcatTo(buff);
 }
 
-Bool Media::HTRecFile::HTRecReader::IsNull(UOSInt colIndex)
+Bool Media::HTRecFile::HTRecReader::IsNull(UIntOS colIndex)
 {
 	return false;
 }
 
-DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (this->setting)
 	{
@@ -480,12 +480,12 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, O
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Media::HTRecFile::HTRecReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->setting);
 }
 
-Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setting)
+Text::CString Media::HTRecFile::HTRecReader::GetName(UIntOS colIndex, Bool setting)
 {
 	if (setting)
 	{
@@ -514,7 +514,7 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setti
 	return nullptr;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool setting)
+Bool Media::HTRecFile::HTRecReader::GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef, Bool setting)
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == 0);
@@ -601,7 +601,7 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 	this->serialNo = Text::StrCopyNew(sbuff).Ptr();
 	wptr = (const WChar*)&buff[19];
 	dptr = sbuff;
-	OSInt charLeft = 36;
+	IntOS charLeft = 36;
 	while (true)
 	{
 		if (charLeft-- <= 0)
@@ -634,7 +634,7 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 		Int64 tick2 = this->time3TS + (Int64)(this->recCount * this->recInterval) * 1000 - tick1;
 		tick1 = this->time1TS * 1000 - tick1;
 		this->adjRecInterval = (UInt32)(recInterval * 1000 * (UInt64)tick1 / (UInt64)tick2); 
-		this->adjStTimeTicks = this->time1TS * 1000 - (OSInt)this->recCount * this->adjRecInterval;
+		this->adjStTimeTicks = this->time1TS * 1000 - (IntOS)this->recCount * this->adjRecInterval;
 	}
 	else
 	{
@@ -651,7 +651,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->recBuff.GetSize() == 0 || schemaName.leng != 0)
 	{
@@ -665,7 +665,7 @@ UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::Arra
 	}
 }
 
-Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
@@ -684,8 +684,8 @@ Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName
 
 Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS j;
 	NN<DB::ColDef> col;
 	DB::TableDef *tab = 0;
 	if (tableName.Equals(UTF8STRC("Setting")))
@@ -744,7 +744,7 @@ Data::Timestamp Media::HTRecFile::GetSettingTime()
 	return Data::Timestamp(this->time2TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-UOSInt Media::HTRecFile::GetTotalRec()
+UIntOS Media::HTRecFile::GetTotalRec()
 {
 	return this->totalRecords;
 }
@@ -779,7 +779,7 @@ Data::Timestamp Media::HTRecFile::GetStartTime()
 	return Data::Timestamp(this->time3TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-UOSInt Media::HTRecFile::GetRecCount()
+UIntOS Media::HTRecFile::GetRecCount()
 {
 	return this->recCount;
 }

@@ -15,18 +15,18 @@ namespace Net
 		private:
 			Net::Email::POP3Conn conn;
 			Bool loggedIn;
-			UOSInt msgCnt;
-			UOSInt msgSize;
+			UIntOS msgCnt;
+			UIntOS msgSize;
 
 		public:
 			POP3Client(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, Optional<IO::Writer> logWriter, Text::CStringNN username, Text::CStringNN password, Data::Duration timeout);
 			~POP3Client();
 
 			Bool IsError();
-			UOSInt GetMessageCount();
-			UOSInt GetMessageSize();
-			Bool ReadMessageAsString(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			Bool DeleteMessage(UOSInt index);
+			UIntOS GetMessageCount();
+			UIntOS GetMessageSize();
+			Bool ReadMessageAsString(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			Bool DeleteMessage(UIntOS index);
 		};
 	}
 }

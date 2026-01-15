@@ -34,7 +34,7 @@ void Crypto::Hash::ExcelHash::Clear()
 	this->charCnt = 0;
 }
 
-void Crypto::Hash::ExcelHash::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::ExcelHash::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->charCnt = (UInt16)(this->charCnt + buffSize);
 	while (buffSize > 0)
@@ -53,12 +53,12 @@ void Crypto::Hash::ExcelHash::GetValue(UnsafeArray<UInt8> buff) const
 	WriteMInt16(buff, this->currVal ^ 0xCE4B ^ this->charCnt);
 }
 
-UOSInt Crypto::Hash::ExcelHash::GetBlockSize() const
+UIntOS Crypto::Hash::ExcelHash::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::ExcelHash::GetResultSize() const
+UIntOS Crypto::Hash::ExcelHash::GetResultSize() const
 {
 	return 2;
 }

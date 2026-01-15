@@ -14,14 +14,14 @@ namespace Net
 		MACInfoList();
 		~MACInfoList();
 
-		UOSInt GetCount() const;
-		NN<const Net::MACInfo::MACEntry> GetItemNoCheck(UOSInt index) const;
-		Optional<const Net::MACInfo::MACEntry> GetItem(UOSInt index) const;
-		OSInt GetIndex(UInt64 mac64Int);
+		UIntOS GetCount() const;
+		NN<const Net::MACInfo::MACEntry> GetItemNoCheck(UIntOS index) const;
+		Optional<const Net::MACInfo::MACEntry> GetItem(UIntOS index) const;
+		IntOS GetIndex(UInt64 mac64Int);
 		Optional<const Net::MACInfo::MACEntry> GetEntry(UInt64 mac64Int);
 		Optional<const Net::MACInfo::MACEntry> GetEntryOUI(const UInt8 *oui);
-		UOSInt SetEntry(UInt64 mac64Int, Text::CStringNN name);
-		UOSInt SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name);
+		UIntOS SetEntry(UInt64 mac64Int, Text::CStringNN name);
+		UIntOS SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name);
 		void Load();
 		Bool Store();
 	};

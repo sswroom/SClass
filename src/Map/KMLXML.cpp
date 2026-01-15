@@ -32,7 +32,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 
 	NN<const Data::ArrayListObj<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
-	UOSInt ui = styleList->GetCount();
+	UIntOS ui = styleList->GetCount();
 	while (ui-- > 0)
 	{
 		style = styleList->GetItem(ui);
@@ -47,7 +47,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
 {
 	KMLStyle *style;
-	UOSInt i;
+	UIntOS i;
 	NN<Text::XMLAttrib> attr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -930,8 +930,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 								rec.speed = 0;
 								rec.valid = true;
 								Data::DateTime dt;
-								UOSInt i = 0;
-								UOSInt j = timeList.GetCount();
+								UIntOS i = 0;
+								UIntOS j = timeList.GetCount();
 								while (i < j)
 								{
 									NN<Text::String> s;
@@ -960,7 +960,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 							}
 							else
 							{
-								UOSInt i = timeList.GetCount();
+								UIntOS i = timeList.GetCount();
 								while (i-- > 0)
 								{
 									OPTSTR_DEL(timeList.GetItem(i));
@@ -973,7 +973,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 								timeList.Clear();
 								coordList.Clear();
 							}
-							UOSInt recCnt;
+							UIntOS recCnt;
 							UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 							if (lyr->GetTrack(0, recCnt).SetTo(recs))
 							{
@@ -989,8 +989,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 												Text::StringBuilderUTF8 sb;
 												NN<Text::String> nnval;
 												Bool found = false;
-												UOSInt i;
-												UOSInt j;
+												UIntOS i;
+												UIntOS j;
 												i = reader->GetAttribCount();
 												while (i-- > 0)
 												{
@@ -1113,8 +1113,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 						rec.speed = 0;
 						rec.valid = true;
 						Data::DateTime dt;
-						UOSInt i = 0;
-						UOSInt j = timeList.GetCount();
+						UIntOS i = 0;
+						UIntOS j = timeList.GetCount();
 						while (i < j)
 						{
 							NN<Text::String> s;
@@ -1143,7 +1143,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 					}
 					else
 					{
-						UOSInt i = timeList.GetCount();
+						UIntOS i = timeList.GetCount();
 						while (i-- > 0)
 						{
 							OPTSTR_DEL(timeList.GetItem(i));
@@ -1210,8 +1210,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 				Data::DateTime dt;
 				UTF8Char sbuff[256];
 				UnsafeArray<UTF8Char> strs[4];
-				UOSInt i = 0;
-				UOSInt j = timeList.GetCount();
+				UIntOS i = 0;
+				UIntOS j = timeList.GetCount();
 				while (i < j)
 				{
 					NN<Text::String> s;
@@ -1239,7 +1239,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 			}
 			else
 			{
-				UOSInt i = timeList.GetCount();
+				UIntOS i = timeList.GetCount();
 				while (i-- > 0)
 				{
 					OPTSTR_DEL(timeList.GetItem(i));
@@ -1389,7 +1389,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 								{
 									if (style->iconColor != 0)
 									{
-										UOSInt j = imgList->GetCount();
+										UIntOS j = imgList->GetCount();
 										while (j-- > 0)
 										{
 											imgList->ToStaticImage(j);
@@ -1409,11 +1409,11 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 						{
 							if (style->iconSpotX == -1 || style->iconSpotY == -1)
 							{
-								lyr->SetIconStyle(shimg, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
+								lyr->SetIconStyle(shimg, (IntOS)(img->info.dispSize.x >> 1), (IntOS)(img->info.dispSize.y >> 1));
 							}
 							else
 							{
-								lyr->SetIconStyle(shimg, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
+								lyr->SetIconStyle(shimg, style->iconSpotX, (IntOS)img->info.dispSize.y - style->iconSpotY);
 							}
 						}
 					}
@@ -1464,7 +1464,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 	{
 		return layers.GetItem(0);
 	}
-	UOSInt i = layers.GetCount();
+	UIntOS i = layers.GetCount();
 	while (i-- > 0)
 	{
 		layers.GetItem(i).Delete();
@@ -1489,7 +1489,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				UnsafeArray<UTF8Char> sptr2;
 				UTF8Char sbuff[256];
 				UnsafeArray<UTF8Char> sarr[4];
-				UOSInt i;
+				UIntOS i;
 
 				Text::StringBuilderUTF8 sb;
 				reader->ReadNodeText(sb);
@@ -1518,7 +1518,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 						sptr2++;
 					}
 					*sptr2 = 0;
-					Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
+					Text::StrConcatC(sbuff, sptr, (UIntOS)(sptr2 - sptr));
 					*sptr2 = c;
 					sptr = sptr2;
 					i = Text::StrSplit(sarr, 4, sbuff, ',');
@@ -1535,7 +1535,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				if (coord.GetCount() > 0)
 				{
 					NN<Math::Geometry::LineString> pl;
-					UOSInt nPoints;
+					UIntOS nPoints;
 					UnsafeArray<Math::Coord2DDbl> ptArr;
 					UnsafeArray<Double> altArr;
 
@@ -1570,7 +1570,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				Double x;
 				Double y;
 				Double z;
-				UOSInt i;
+				UIntOS i;
 				UnsafeArray<UTF8Char> sarr[4];
 				i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
 				if (i == 3)
@@ -1626,7 +1626,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 			if (coord.GetCount() > 0)
 			{
 				NN<Math::Geometry::LinearRing> lr;
-				UOSInt nPoints;
+				UIntOS nPoints;
 				UnsafeArray<Math::Coord2DDbl> ptArr;
 				UnsafeArray<Double> zList;
 
@@ -1735,7 +1735,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 		Text::StringBuilderUTF8 sb;
 		reader->ReadNodeText(sb);
 		colValues->Add(Text::String::New(sb.ToCString()));
-		UOSInt len = sb.leng;
+		UIntOS len = sb.leng;
 		if (len < 256)
 			len = 256;
 		colInfos->Add(Map::VectorLayer::ColInfo(DB::DBUtil::CT_VarUTF8Char, len, 0));
@@ -1745,7 +1745,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 
 void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayListNative<Double>> altList)
 {
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	UTF8Char c;
@@ -1788,7 +1788,7 @@ void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayLis
 					sptr2++;
 				}
 				*sptr2 = 0;
-				Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
+				Text::StrConcatC(sbuff, sptr, (UIntOS)(sptr2 - sptr));
 				*sptr2 = c;
 				sptr = sptr2;
 				i = Text::StrSplit(sarr, 4, sbuff, ',');

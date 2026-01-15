@@ -90,7 +90,7 @@ global ImageUtil_CopyShiftW
 global ImageUtil_UVInterleaveShiftW
 global ImageUtil_YUV_Y416ShiftW
 
-;void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
+;void ImageUtil_SwapRGB(UInt8 *imgPtr, IntOS pixelCnt, IntOS bpp)
 ;0 rsi
 ;8 retAddr
 ;rcx imgPtr
@@ -187,7 +187,7 @@ srgbexit:
 	pop rsi
 	ret
 	
-;void ImageUtil_ColorReplace32(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col);
+;void ImageUtil_ColorReplace32(UInt8 *pixelPtr, IntOS w, IntOS h, Int32 col);
 ;0 rbx
 ;8 retAddr
 ;rcx pixelPtr
@@ -215,7 +215,7 @@ clop2:
 	pop rbx
 	ret
 
-;void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col);
+;void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, IntOS w, IntOS h, Int32 col);
 ;0 retAddr
 ;rcx pixelPtr
 ;rdx w
@@ -252,7 +252,7 @@ dslop1:
 	jnz dslop1
 	ret
 
-;void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col);
+;void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, IntOS w, IntOS h, Int32 col);
 ;0 retAddr
 ;rcx pixelPtr
 ;rdx w
@@ -293,7 +293,7 @@ cr32a2lop2b:
 	jnz cr32a2lop2a
 	ret
 
-;void ImageUtil_ColorFill32(UInt8 *pixelPtr, OSInt pixelCnt, Int32 color);
+;void ImageUtil_ColorFill32(UInt8 *pixelPtr, IntOS pixelCnt, Int32 color);
 ;0 rdi
 ;8 retAddr
 ;rcx pixelPtr
@@ -310,7 +310,7 @@ ImageUtil_ColorFill32:
 	pop rdi
 	ret
 
-;void ImageUtil_ImageColorReplace32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col)
+;void ImageUtil_ImageColorReplace32(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col)
 ;0 edi
 ;8 esi
 ;16 retAddr
@@ -355,7 +355,7 @@ icr32lop12:
 	pop rsi
 	ret
 	
-;void ImageUtil_ImageMaskABlend32(UInt8 *maskPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col);
+;void ImageUtil_ImageMaskABlend32(UInt8 *maskPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col);
 ;0 edi
 ;8 esi
 ;16 retAddr
@@ -430,7 +430,7 @@ imab32lop12a:
 	pop rsi
 	ret
 
-;void ImageUtil_ImageMask2ABlend32(UInt8 *maskPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col1, Int32 col2)
+;void ImageUtil_ImageMask2ABlend32(UInt8 *maskPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, Int32 col1, Int32 col2)
 ;0 xmm6
 ;16 xmm7
 ;32 rdi
@@ -546,7 +546,7 @@ im2ab32lop1:
 	pop rsi
 	ret
 	
-;void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, OSInt buffSize)
+;void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, IntOS buffSize)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -633,7 +633,7 @@ icb32lop3:
 	pop rbp
 	ret
 
-;void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, Int32 col)
+;void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, Int32 col)
 ;0 edi
 ;8 retAddr
 ;rcx pixelPtr
@@ -659,7 +659,7 @@ icf32lop4:
 	pop rdi
 	ret
 
-;void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, Int32 col)
+;void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, Int32 col)
 ;0 xmm6
 ;16 xmm7
 ;32 retAddr
@@ -748,7 +748,7 @@ icbl32lop3:
 	add rsp,32
 	ret
 	
-;void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt8 a);
+;void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt8 a);
 ;0 retAddr
 ;rcx pixelPtr
 ;rdx w
@@ -777,7 +777,7 @@ ifa32lop2:
 	jnz ifa32lop
 	ret
 
-;void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 a);
+;void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 a);
 ;0 rdi
 ;8 rbx
 ;16 retAddr
@@ -816,7 +816,7 @@ iam32lop:
 	pop rbx
 	ret
 
-;void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 c);
+;void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 c);
 ;0 rdi
 ;8 rbx
 ;16 retAddr
@@ -858,7 +858,7 @@ icm32lop:
 	pop rbx
 	ret
 	
-;void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 col)
+;void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS bpl, UInt32 col)
 ;0 rbx
 ;8 retAddr
 ;rcx pixelPtr
@@ -928,7 +928,7 @@ drna32exit:
 	pop rbx
 	ret
 
-;void ImageUtil_ConvP1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1091,7 +1091,7 @@ cp1_bgra8exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP2_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP2_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1215,7 +1215,7 @@ cp2_bgra8exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP4_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP4_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1302,7 +1302,7 @@ cp4_bgra8exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1342,7 +1342,7 @@ cp8_bgra8lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP1_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP1_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1512,7 +1512,7 @@ cp1_a1_bgra8lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP2_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP2_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1663,7 +1663,7 @@ cp2_a1_bgra8lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP4_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP4_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1793,7 +1793,7 @@ cp4_a1_bgra8lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP8_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP8_A1_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -1906,7 +1906,7 @@ cp8_a1_bgra8lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvB5G5R5_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB5G5R5_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -1956,7 +1956,7 @@ cb5g5r5_bgra8lop2:
 	jnz cb5g5r5_bgra8lop
 	ret
 
-;void ImageUtil_ConvB5G6R5_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB5G6R5_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2005,7 +2005,7 @@ cb5g6r5_bgra8lop2:
 	jnz cb5g6r5_bgra8lop
 	ret
 
-;void ImageUtil_ConvB8G8R8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB8G8R8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2041,7 +2041,7 @@ cbgr8_bgra8lop2:
 	jnz cbgr8_bgra8lop
 	ret
 	
-;void ImageUtil_ConvR8G8B8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2078,7 +2078,7 @@ crgb8_bgra8lop2:
 	jnz crgb8_bgra8lop
 	ret
 	
-;void ImageUtil_ConvB8G8R8A8_B8G8R8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB8G8R8A8_B8G8R8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2113,7 +2113,7 @@ cbgra8_bgr8lop2:
 	jnz cbgra8_bgr8lop
 	ret
 	
-;void ImageUtil_ConvR8G8B8A8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8A8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2149,7 +2149,7 @@ crgba8_bgra8lop2:
 	jnz crgba8_bgra8lop
 	ret
 	
-;void ImageUtil_ConvR8G8B8N8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8N8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2185,7 +2185,7 @@ crgbn8_bgra8lop2:
 	jnz crgbn8_bgra8lop
 	ret
 
-;void ImageUtil_ConvB16G16R16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB16G16R16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2223,7 +2223,7 @@ cbgr16_bgra8lop2:
 	jnz cbgr16_bgra8lop
 	ret
 
-;void ImageUtil_ConvR16G16B16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR16G16B16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2261,7 +2261,7 @@ crgb16_bgra8lop2:
 	jnz crgb16_bgra8lop
 	ret
 
-;void ImageUtil_ConvB16G16R16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB16G16R16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2296,7 +2296,7 @@ cbgra16_bgra8lop2:
 	jnz cbgra16_bgra8lop
 	ret
 
-;void ImageUtil_ConvR16G16B16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR16G16B16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2331,7 +2331,7 @@ crgba16_bgra8lop2:
 	jnz crgba16_bgra8lop
 	ret
 
-;void ImageUtil_ConvA2B10G10R10_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvA2B10G10R10_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2376,7 +2376,7 @@ ca2b10g10r10_bgra8lop2:
 	jnz ca2b10g10r10_bgra8lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2417,7 +2417,7 @@ cfbgra32_bgra8lop2:
 	jnz cfbgra32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2459,7 +2459,7 @@ cfrgba32_bgra8lop2:
 	jnz cfrgba32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2503,7 +2503,7 @@ cfbgr32_bgra8lop2:
 	jnz cfbgr32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFR32G32B32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFR32G32B32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2548,7 +2548,7 @@ cfrgb32_bgra8lop2:
 	jnz cfrgb32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFW32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFW32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2592,7 +2592,7 @@ cfwa32_bgra8lop2:
 	jnz cfwa32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFW32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFW32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -2636,7 +2636,7 @@ cfw32_bgra8lop2:
 	jnz cfw32_bgra8lop
 	ret
 
-;void ImageUtil_ConvP1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -2811,7 +2811,7 @@ cp1_bgra16exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP2_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP2_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -2939,7 +2939,7 @@ cp2_bgra16exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP4_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP4_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3026,7 +3026,7 @@ cp4_bgra16exit:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3067,7 +3067,7 @@ cp8_bgra16lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP1_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP1_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3245,7 +3245,7 @@ cp1_a1_bgra16lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP2_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP2_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3400,7 +3400,7 @@ cp2_a1_bgra16lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP4_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP4_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3533,7 +3533,7 @@ cp4_a1_bgra16lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvP8_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
+;void ImageUtil_ConvP8_A1_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl, UInt8 *pal);
 ;0 rsi
 ;8 retAddr
 ;rcx srcPtr
@@ -3648,7 +3648,7 @@ cp8_a1_bgra16lop4b:
 	pop rsi
 	ret
 
-;void ImageUtil_ConvB5G5R5_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB5G5R5_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3696,7 +3696,7 @@ cb5g5r5_bgra16lop2:
 	jnz cb5g5r5_bgra16lop
 	ret
 
-;void ImageUtil_ConvB5G6R5_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB5G6R5_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3743,7 +3743,7 @@ cb5g6r5_bgra16lop2:
 	jnz cb5g6r5_bgra16lop
 	ret
 
-;void ImageUtil_ConvB8G8R8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB8G8R8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3781,7 +3781,7 @@ cbgr8_bgra16lop2:
 	jnz cbgr8_bgra16lop
 	ret
 	
-;void ImageUtil_ConvR8G8B8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3820,7 +3820,7 @@ crgb8_bgra16lop2:
 	jnz crgb8_bgra16lop
 	ret
 	
-;void ImageUtil_ConvR8G8B8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3859,7 +3859,7 @@ crgba8_bgra16lop2:
 	jnz crgba8_bgra16lop
 	ret
 	
-;void ImageUtil_ConvB8G8R8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB8G8R8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3893,7 +3893,7 @@ cbgra8_bgra16lop2:
 	jnz cbgra8_bgra16lop
 	ret
 
-;void ImageUtil_ConvB16G16R16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB16G16R16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3930,7 +3930,7 @@ cbgr16_bgra16lop2:
 	jnz cbgr16_bgra16lop
 	ret
 
-;void ImageUtil_ConvR16G16B16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR16G16B16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -3969,7 +3969,7 @@ crgb16_bgra16lop2:
 	jnz crgb16_bgra16lop
 	ret
 
-;void ImageUtil_ConvR16G16B16A16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR16G16B16A16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4004,7 +4004,7 @@ crgba16_bgra16lop2:
 	jnz crgba16_bgra16lop
 	ret
 
-;void ImageUtil_ConvA2B10G10R10_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvA2B10G10R10_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4065,7 +4065,7 @@ ca2b10g10r10_bgra16lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4114,7 +4114,7 @@ cfbgra32_lbgra16lop2:
 	jnz cfbgra32_lbgra16lop
 	ret
 
-;void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4164,7 +4164,7 @@ cfrgba32_lbgra16lop2:
 	jnz cfrgba32_lbgra16lop
 	ret
 
-;void ImageUtil_ConvFR32G32B32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFR32G32B32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4217,7 +4217,7 @@ cfrgba32_bgra16lop2:
 	jnz cfrgba32_bgra16lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4269,7 +4269,7 @@ cfbgra32_bgra16lop2:
 	jnz cfbgra32_bgra16lop
 	ret
 
-;void ImageUtil_ConvFW32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFW32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4320,7 +4320,7 @@ cfwa32_bgra16lop2:
 	jnz cfwa32_bgra16lop
 	ret
 
-;void ImageUtil_ConvFW32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFW32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4373,7 +4373,7 @@ cfw32_bgra16lop2:
 	jnz cfw32_bgra16lop
 	ret
 
-;void ImageUtil_ConvW16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4413,7 +4413,7 @@ cw16_bgra8lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvW16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4453,7 +4453,7 @@ cwa16_bgra8lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvW8A8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW8A8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4493,7 +4493,7 @@ cwa8_bgra8lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvW16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4531,7 +4531,7 @@ cw16_bgra16lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvW16A16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW16A16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4568,7 +4568,7 @@ cwa16_bgra16lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvW8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvW8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4610,7 +4610,7 @@ cwa8_bgra16lop2:
 	ret
 
 
-;void ImageUtil_ConvP1_P8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvP1_P8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -4703,7 +4703,7 @@ cp1_p8lop5:
 	jnz cp1_p8lop4
 	ret
 
-;void ImageUtil_Rotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4745,7 +4745,7 @@ r32cw90lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_Rotate32_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate32_CW180(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4789,7 +4789,7 @@ r32cw180lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_Rotate32_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate32_CW270(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4831,7 +4831,7 @@ r32cw270lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_Rotate64_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate64_CW90(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4873,7 +4873,7 @@ r64cw90lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_Rotate64_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate64_CW180(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4917,7 +4917,7 @@ r64cw180lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_Rotate64_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_Rotate64_CW270(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rdi
 ;8 rsi
 ;16 retAddr
@@ -4960,7 +4960,7 @@ r64cw270lop2:
 	ret
 
 
-;void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+;void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown);
 ;0 retAddr
 ;rcx rdi srcPtr
 ;rdx rsi destPtr
@@ -5005,7 +5005,7 @@ hf32lop3:
 	jnz hf32lop2
 	ret
 
-;void ImageUtil_HFRotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rsi
 ;8 retAddr
 ;rcx rdi srcPtr
@@ -5045,7 +5045,7 @@ hfr32cw90lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_HFRotate32_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate32_CW180(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx rdi srcPtr
 ;rdx rsi destPtr
@@ -5079,7 +5079,7 @@ hfr32cw180lop:
 	mov rdi,rdx
 	ret
 
-;void ImageUtil_HFRotate32_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate32_CW270(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rsi
 ;8 retAddr
 ;rcx rdi srcPtr
@@ -5117,7 +5117,7 @@ hfr32cw270lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+;void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown);
 ;0 retAddr
 ;rcx rdi srcPtr
 ;rdx rsi destPtr
@@ -5162,7 +5162,7 @@ hf64lop3:
 	jnz hf64lop2
 	ret
 
-;void ImageUtil_HFRotate64_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate64_CW90(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rsi
 ;8 retAddr
 ;rcx rdi srcPtr
@@ -5202,7 +5202,7 @@ hfr64cw90lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_HFRotate64_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate64_CW180(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 retAddr
 ;rcx rdi srcPtr
 ;rdx rsi destPtr
@@ -5236,7 +5236,7 @@ hfr64cw180lop:
 	mov rdi,rdx
 	ret
 
-;void ImageUtil_HFRotate64_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_HFRotate64_CW270(UInt8 *srcPtr, UInt8 *destPtr, IntOS srcWidth, IntOS srcHeight, IntOS sbpl, IntOS dbpl);
 ;0 rsi
 ;8 retAddr
 ;rcx rdi srcPtr
@@ -5273,7 +5273,7 @@ hfr64cw270lop2:
 	pop rsi
 	ret
 
-;void ImageUtil_CopyShiftW(UInt8 *srcPtr, UInt8 *destPtr, OSInt byteSize, OSInt shiftCnt); //Assume aligned
+;void ImageUtil_CopyShiftW(UInt8 *srcPtr, UInt8 *destPtr, IntOS byteSize, IntOS shiftCnt); //Assume aligned
 ;0 retAddr
 ;rcx srcPtr
 ;rdx destPtr
@@ -5372,7 +5372,7 @@ cswlop1:
 	jnz cswlop1
 	ret
 
-;void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, UInt8 *uptr, UInt8 *vptr, OSInt pixelCnt, OSInt shiftCnt);
+;void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, UInt8 *uptr, UInt8 *vptr, IntOS pixelCnt, IntOS shiftCnt);
 ;0 retAddr
 ;rcx destPtr
 ;rdx uptr
@@ -5441,7 +5441,7 @@ uviswlop0:
 	jnz uviswlop0
 	ret
 
-;void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, UInt8 *yptr, UInt8 *uptr, UInt8 *vptr, OSInt pixelCnt, OSInt shiftCnt);
+;void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, UInt8 *yptr, UInt8 *uptr, UInt8 *vptr, IntOS pixelCnt, IntOS shiftCnt);
 ;0 rbx
 ;8 rdi
 ;16 rsi

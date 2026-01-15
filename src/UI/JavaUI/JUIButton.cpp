@@ -26,13 +26,13 @@ void __stdcall JUIButton_ButtonClick(AnyType userObj)
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonClick();
 }
 
-Bool __stdcall JUIButton_ButtonDown(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
+Bool __stdcall JUIButton_ButtonDown(AnyType userObj, Math::Coord2D<IntOS> scnCoord, UI::GUIControl::MouseButton btn)
 {
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonDown();
 	return false;
 }
 
-Bool __stdcall JUIButton_ButtonUp(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
+Bool __stdcall JUIButton_ButtonUp(AnyType userObj, Math::Coord2D<IntOS> scnCoord, UI::GUIControl::MouseButton btn)
 {
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonUp();
 	return false;
@@ -88,7 +88,7 @@ void UI::JavaUI::JUIButton::SetFont(Text::CString fontName, Double fontHeightPt,
 	}
 }
 
-OSInt UI::JavaUI::JUIButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

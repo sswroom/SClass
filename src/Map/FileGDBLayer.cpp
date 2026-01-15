@@ -17,8 +17,8 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>
 	{
 		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
-		UOSInt colCnt = this->colNames.GetCount();
-		UOSInt i;
+		UIntOS colCnt = this->colNames.GetCount();
+		UIntOS i;
 		Int32 objId;
 
 		NEW_CLASS(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
@@ -35,7 +35,7 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>
 				}
 				else if (r->GetStr(i, sbuff, sizeof(sbuff)).SetTo(sptr))
 				{
-					names[i] = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+					names[i] = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 				}
 				else
 				{
@@ -68,7 +68,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 	this->maxPos = Math::Coord2DDbl(0, 0);
 	this->objIdCol = 0;
 	this->shapeCol = 1;
-	UOSInt nameCol = 0;
+	UIntOS nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
@@ -76,8 +76,8 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 	NN<DB::DBReader> r;
 	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, 0, nullptr).SetTo(r))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		DB::ColDef colDef(CSTR(""));
 		i = 0;
 		j = r->ColCount();
@@ -98,7 +98,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 					}
 					else
 					{
-						UOSInt tmp;
+						UIntOS tmp;
 						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, tmp);
 					}
 					if (csys2.SetTo(nncsys2))
@@ -164,7 +164,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 
 Map::FileGDBLayer::~FileGDBLayer()
 {
-	UOSInt i;
+	UIntOS i;
 
 	this->conn->UnuseObject();
 	i = this->colNames.GetCount();
@@ -188,14 +188,14 @@ Map::DrawLayerType Map::FileGDBLayer::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	if (nameArr.IsNotNull())
 	{
 		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
-	UOSInt i = 0;
-	UOSInt j = this->objects.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->objects.GetCount();
 	while (i < j)
 	{
 		outArr->Add(this->objects.GetKey(i));
@@ -204,21 +204,21 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 	return j;
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::FileGDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr.IsNotNull())
 	{
 		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	NN<Math::Geometry::Vector2D> vec;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->objects.GetCount();
 	while (i < j)
@@ -239,7 +239,7 @@ Int64 Map::FileGDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
-UOSInt Map::FileGDBLayer::GetRecordCnt() const
+UIntOS Map::FileGDBLayer::GetRecordCnt() const
 {
 	return this->objects.GetCount();
 }
@@ -249,9 +249,9 @@ void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
 	if (Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 	{
-		UOSInt i = names->GetCount();
-		UOSInt colCnt = this->colNames.GetCount();
-		UOSInt j;
+		UIntOS i = names->GetCount();
+		UIntOS colCnt = this->colNames.GetCount();
+		UIntOS j;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
 		UnsafeArray<const UTF8Char> nameStr;
 		while (i-- > 0)
@@ -271,7 +271,7 @@ void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	}
 }
 
-Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	if (strIndex == this->shapeCol)
 	{
@@ -298,12 +298,12 @@ Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameA
 	return true;
 }
 
-UOSInt Map::FileGDBLayer::GetColumnCnt() const
+UIntOS Map::FileGDBLayer::GetColumnCnt() const
 {
 	return this->colNames.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
@@ -313,12 +313,12 @@ UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> 
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::FileGDBLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	NN<DB::ColDef> col;
@@ -368,7 +368,7 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -376,7 +376,7 @@ UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	return 1;
 }
 
-Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
@@ -421,7 +421,7 @@ void Map::FileGDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-UOSInt Map::FileGDBLayer::GetGeomCol() const
+UIntOS Map::FileGDBLayer::GetGeomCol() const
 {
 	return this->shapeCol;
 }
@@ -449,97 +449,97 @@ Bool Map::FileGDBLReader::ReadNext()
 	return this->r->ReadNext();
 }
 
-UOSInt Map::FileGDBLReader::ColCount()
+UIntOS Map::FileGDBLReader::ColCount()
 {
 	return this->r->ColCount() - 1;
 }
 
-OSInt Map::FileGDBLReader::GetRowChanged()
+IntOS Map::FileGDBLReader::GetRowChanged()
 {
 	return this->r->GetRowChanged();
 }
 
-Int32 Map::FileGDBLReader::GetInt32(UOSInt colIndex)
+Int32 Map::FileGDBLReader::GetInt32(UIntOS colIndex)
 {
 	return this->r->GetInt32((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-Int64 Map::FileGDBLReader::GetInt64(UOSInt colIndex)
+Int64 Map::FileGDBLReader::GetInt64(UIntOS colIndex)
 {
 	return this->r->GetInt64((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UnsafeArrayOpt<WChar> Map::FileGDBLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Map::FileGDBLReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Map::FileGDBLReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
 
-Optional<Text::String> Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::FileGDBLReader::GetNewStr(UIntOS colIndex)
 {
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff, buffSize);
 }
 
-Data::Timestamp Map::FileGDBLReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Map::FileGDBLReader::GetTimestamp(UIntOS colIndex)
 {
 	return this->r->GetTimestamp((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-Double Map::FileGDBLReader::GetDblOrNAN(UOSInt colIndex)
+Double Map::FileGDBLReader::GetDblOrNAN(UIntOS colIndex)
 {
 	return this->r->GetDblOrNAN((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-Bool Map::FileGDBLReader::GetBool(UOSInt colIndex)
+Bool Map::FileGDBLReader::GetBool(UIntOS colIndex)
 {
 	return this->r->GetBool((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UOSInt Map::FileGDBLReader::GetBinarySize(UOSInt colIndex)
+UIntOS Map::FileGDBLReader::GetBinarySize(UIntOS colIndex)
 {
 	return this->r->GetBinarySize((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UOSInt Map::FileGDBLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Map::FileGDBLReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Optional<Math::Geometry::Vector2D> Map::FileGDBLReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::FileGDBLReader::GetVector(UIntOS colIndex)
 {
 	return this->r->GetVector(colIndex);
 }
 
-Bool Map::FileGDBLReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Map::FileGDBLReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return this->r->GetUUID(colIndex, uuid);
 }
 
-Bool Map::FileGDBLReader::IsNull(UOSInt colIndex)
+Bool Map::FileGDBLReader::IsNull(UIntOS colIndex)
 {
 	return this->r->IsNull((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	return this->r->GetName((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }
 
-Bool Map::FileGDBLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::FileGDBLReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
 }

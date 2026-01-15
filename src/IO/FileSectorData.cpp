@@ -18,7 +18,7 @@ UInt64 IO::FileSectorData::GetSectorCount() const
 	return this->data->GetDataSize() / sectorSize;
 }
 
-UOSInt IO::FileSectorData::GetBytesPerSector() const
+UIntOS IO::FileSectorData::GetBytesPerSector() const
 {
 	return this->sectorSize;
 }
@@ -40,7 +40,7 @@ NN<IO::StreamData> IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 
 	return this->data->GetPartialData(startSector * sectorSize, dataSize);
 }
 
-UOSInt IO::FileSectorData::GetSeekCount() const
+UIntOS IO::FileSectorData::GetSeekCount() const
 {
 	return this->data->GetSeekCount();
 }

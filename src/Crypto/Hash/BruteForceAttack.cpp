@@ -47,7 +47,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 	NN<Crypto::Hash::BruteForceAttack> me = userObj.GetNN<Crypto::Hash::BruteForceAttack>();
 	UInt8 keyBuff[256];
 	UTF8Char result[64];
-	UOSInt keySize;
+	UIntOS keySize;
 	NN<Crypto::Hash::HashValidatorSess> sess;
 	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	sess = me->validator->CreateSess();;
@@ -68,14 +68,14 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 	return 0;
 }
 
-UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff)
+UIntOS Crypto::Hash::BruteForceAttack::GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff)
 {
-	UOSInt ret;
-	UOSInt len;
-	UOSInt i;
+	UIntOS ret;
+	UIntOS len;
+	UIntOS i;
 	UInt8 c;
 	Sync::MutexUsage mutUsage(this->keyMut);
-	len = (UOSInt)(Text::StrConcat(resultBuff, this->keyBuff) - resultBuff);
+	len = (UIntOS)(Text::StrConcat(resultBuff, this->keyBuff) - resultBuff);
 	if (len > this->maxLeng)
 	{
 		mutUsage.EndUse();
@@ -197,9 +197,9 @@ UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetCurrKey(UnsafeArray<
 	return nullptr;
 }
 
-UOSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
+UIntOS Crypto::Hash::BruteForceAttack::GetKeyLeng()
 {
-	UOSInt len;
+	UIntOS len;
 	if (this->threadCnt > 0)
 	{
 		Sync::MutexUsage mutUsage(this->keyMut);
@@ -222,7 +222,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetResult(UnsafeArray<U
 	return nullptr;
 }
 
-Bool Crypto::Hash::BruteForceAttack::Start(UnsafeArray<const UTF8Char> hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng)
+Bool Crypto::Hash::BruteForceAttack::Start(UnsafeArray<const UTF8Char> hashStr, UIntOS hashLen, UIntOS minLeng, UIntOS maxLeng)
 {
 	if (this->threadCnt > 0)
 	{
@@ -249,7 +249,7 @@ Bool Crypto::Hash::BruteForceAttack::Start(UnsafeArray<const UTF8Char> hashStr, 
 	while (this->keyLimit[c] == 0)
 		c++;
 	this->keyFirst = c;
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < minLeng)
 	{

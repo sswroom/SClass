@@ -132,8 +132,8 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnCreateClicked(AnyType userObj)
 void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 {
 	Data::ArrayListNN<IO::ServiceManager::ServiceItem> svcList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::ServiceManager::ServiceItem> svc;
 	this->svcMgr.QueryServiceList(svcList);
 	IO::ServiceManager::ServiceComparator comparator;

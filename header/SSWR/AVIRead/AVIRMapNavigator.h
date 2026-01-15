@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRMapNavigator
 		{
 		public:
-			typedef UI::EventState (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			typedef UI::EventState (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 
 			virtual UInt32 GetSRID() = 0;
 			virtual Bool InMap(Math::Coord2DDbl pos) = 0;
@@ -28,8 +28,8 @@ namespace SSWR
 			virtual Double GetScnDPI() const = 0;
 			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
 
-			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos) = 0;
-			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos) = 0;
+			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos) = 0;
+			virtual Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos) = 0;
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType) = 0;
 			virtual void HandleMapMouseLDown(MouseEvent evt, AnyType userObj) = 0;
 			virtual void HandleMapMouseLUp(MouseEvent evt, AnyType userObj) = 0;

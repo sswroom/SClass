@@ -23,7 +23,7 @@ Media::StaticEngine::~StaticEngine()
 	this->iab32.Delete();
 }
 
-Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UIntOS> size, Media::AlphaType atype)
 {
 //	Media::StaticDrawImage *simg;
 //	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
@@ -125,7 +125,7 @@ Media::StaticBrush::~StaticBrush()
 {
 }
 
-Media::StaticPen::StaticPen(UInt32 color, Double thick, UnsafeArrayOpt<const UInt8> pattern, UOSInt nPattern)
+Media::StaticPen::StaticPen(UInt32 color, Double thick, UnsafeArrayOpt<const UInt8> pattern, UIntOS nPattern)
 {
 	this->color = color;
 	this->thick = thick;
@@ -158,7 +158,7 @@ Double Media::StaticPen::GetThick()
 	return this->thick;
 }
 
-Media::StaticDrawImage::StaticDrawImage(NN<StaticEngine> eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticDrawImage::StaticDrawImage(NN<StaticEngine> eng, Math::Size2D<UIntOS> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, IntOS maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->eng = eng;
 }
@@ -168,12 +168,12 @@ Media::StaticDrawImage::~StaticDrawImage()
 {
 }
 
-UOSInt Media::StaticDrawImage::GetWidth() const
+UIntOS Media::StaticDrawImage::GetWidth() const
 {
 	return this->info.dispSize.x;
 }
 
-UOSInt Media::StaticDrawImage::GetHeight() const
+UIntOS Media::StaticDrawImage::GetHeight() const
 {
 	return this->info.dispSize.y;
 }
@@ -245,9 +245,9 @@ Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coor
 			Int32 y = Double2Int32(tl.y);
 			Int32 sx = 0;
 			Int32 sy = 0;
-			OSInt w = img->info.dispSize.x;
-			OSInt h = img->info.dispSize.y;
-			OSInt bpl = this->info.storeSize.x << 2;
+			IntOS w = img->info.dispSize.x;
+			IntOS h = img->info.dispSize.y;
+			IntOS bpl = this->info.storeSize.x << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -260,11 +260,11 @@ Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coor
 				sy = -y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispSize.x)
+			if (x + w > (IntOS)this->info.dispSize.x)
 			{
 				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispSize.y)
+			if (y + h > (IntOS)this->info.dispSize.y)
 			{
 				h = this->info.dispSize.y - y;
 			}
@@ -275,12 +275,12 @@ Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coor
 		}
 		else
 		{
-			OSInt w = img->info.dispSize.x;
-			OSInt h = img->info.dispSize.y;
+			IntOS w = img->info.dispSize.x;
+			IntOS h = img->info.dispSize.y;
 			UnsafeArray<UInt8> dbits = this->data;
 			UnsafeArray<UInt8> sbits = img->data;
-			OSInt dbpl = this->info.storeSize.x << 2;
-			OSInt sbpl = img->info.storeSize.x << 2;
+			IntOS dbpl = this->info.storeSize.x << 2;
+			IntOS sbpl = img->info.storeSize.x << 2;
 
 			if (tl.x < 0)
 			{
@@ -332,9 +332,9 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 			Int32 y = Double2Int32(destTL.y);
 			Int32 sx = Double2Int32(srcTL.x);
 			Int32 sy = Double2Int32(srcTL.y);
-			OSInt w = Double2Int32(srcSize.x);
-			OSInt h = Double2Int32(srcSize.y);
-			OSInt bpl = this->info.storeSize.x << 2;
+			IntOS w = Double2Int32(srcSize.x);
+			IntOS h = Double2Int32(srcSize.y);
+			IntOS bpl = this->info.storeSize.x << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -347,11 +347,11 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispSize.x)
+			if (x + w > (IntOS)this->info.dispSize.x)
 			{
 				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispSize.y)
+			if (y + h > (IntOS)this->info.dispSize.y)
 			{
 				h = this->info.dispSize.y - y;
 			}
@@ -366,12 +366,12 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 			Int32 y = Double2Int32(destTL.y);
 			Int32 sx = Double2Int32(srcTL.x);
 			Int32 sy = Double2Int32(srcTL.y);
-			OSInt w = Double2Int32(srcSize.x);
-			OSInt h = Double2Int32(srcSize.y);
+			IntOS w = Double2Int32(srcSize.x);
+			IntOS h = Double2Int32(srcSize.y);
 			UnsafeArray<UInt8> dbits = this->data;
 			UnsafeArray<UInt8> sbits = simg->data;
-			OSInt dbpl = this->info.storeSize.x << 2;
-			OSInt sbpl = simg->info.storeSize.x << 2;
+			IntOS dbpl = this->info.storeSize.x << 2;
+			IntOS sbpl = simg->info.storeSize.x << 2;
 
 			if (x < 0)
 			{
@@ -385,11 +385,11 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispSize.x)
+			if (x + w > (IntOS)this->info.dispSize.x)
 			{
 				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispSize.y)
+			if (y + h > (IntOS)this->info.dispSize.y)
 			{
 				h = this->info.dispSize.y - y;
 			}
@@ -406,7 +406,7 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 	return false;
 }
 
-NN<Media::DrawPen> Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
 {
 	NN<Media::StaticPen> p;
 	NEW_CLASSNN(p, Media::StaticPen(color, thick, pattern, nPattern));
@@ -437,7 +437,7 @@ Optional<Media::StaticImage> Media::StaticDrawImage::ToStaticImage() const
 	return NN<Media::StaticImage>::ConvertFrom(this->Clone());
 }
 
-UOSInt Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
+UIntOS Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
 	NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(this->Clone());
 	if (!simg->ToPal8())

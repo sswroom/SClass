@@ -99,7 +99,7 @@ void IO::Console::PrintStrO(UnsafeArray<const UTF8Char> str1)
 	fflush(stdout);
 }
 
-UOSInt IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UIntOS size)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__CYGWIN__)
 	Int32 ret = _write(1, buff.Ptr(), (UInt32)size);
@@ -109,7 +109,7 @@ UOSInt IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UOSInt size)
 	}
 	else
 	{
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 	}
 #else
 	return fwrite(buff, 1, size, stdout);

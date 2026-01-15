@@ -51,7 +51,7 @@ void IO::LogFileManager::QueryLogByMonth(NN<Data::ArrayListNative<UInt32>> dates
 	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrUInt32(sptr, month);
-	UOSInt i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = this->logPath->ToCString().Substring(i).ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("????????.log"));
 	NN<IO::Path::FindFileSession> sess;
@@ -84,7 +84,7 @@ Optional<IO::Stream> IO::LogFileManager::OpenLogFile(UInt32 date)
 	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrUInt32(sptr, date / 100);
-	UOSInt i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UIntOS i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = this->logPath->ToCString().Substring(i).ConcatTo(sptr);
 	sptr = Text::StrUInt32(sptr, date);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".log"));
@@ -111,7 +111,7 @@ void IO::LogFileManager::WriteLogText(NN<IO::Stream> fs, NN<Text::StyledTextWrit
 		}
 		else if (sb.v[4] == '-' && sb.v[7] == '-' && sb.v[10] == ' ')
 		{
-			UOSInt i = sb.IndexOf('\t', 11);
+			UIntOS i = sb.IndexOf('\t', 11);
 			if (i != INVALID_INDEX)
 			{
 				writer->SetTextColor(Text::StandardColor::Blue);

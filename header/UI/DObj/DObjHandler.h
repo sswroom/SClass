@@ -37,10 +37,10 @@ namespace UI
 			void BeginUpdate();
 			void EndUpdate();
 
-			void OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button);
-			void OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button);
-			void OnMouseMove(Math::Coord2D<OSInt> scnPos);
-			virtual void SizeChanged(Math::Size2D<UOSInt> size);
+			void OnMouseDown(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button);
+			void OnMouseUp(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button);
+			void OnMouseMove(Math::Coord2D<IntOS> scnPos);
+			virtual void SizeChanged(Math::Size2D<UIntOS> size);
 		};
 	}
 }

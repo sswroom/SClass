@@ -22,7 +22,7 @@ namespace Media
 
 		void SetSrcAlphaType(Media::AlphaType alphaType);
 
-		virtual void DeintResize(DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown) = 0;
+		virtual void DeintResize(DeintType dType, UnsafeArray<UInt8> src, UIntOS sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UIntOS dbpl, UIntOS dwidth, UIntOS dheight, Bool upsideDown) = 0;
 		virtual void SetDISrcRefLuminance(Double srcRefLuminance);
 	};
 }

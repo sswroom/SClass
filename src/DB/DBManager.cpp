@@ -207,7 +207,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			Text::String *uid = 0;
 			Text::String *pwd = 0;
 			Text::String *schema = 0;
-			UOSInt cnt;
+			UIntOS cnt;
 			sb.Append(connStr.Substring(5));
 			Text::PString sarr[2];
 			sarr[1] = sb;
@@ -276,7 +276,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Optional<Text::String> pwd = nullptr;
 		NN<Text::String> nnpwd;
 		Text::String *schema = 0;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(6));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -380,7 +380,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::String *pwd = 0;
 		Text::String *schema = 0;
 		addr.addrType = Net::AddrType::Unknown;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(9));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -448,7 +448,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::String *uid = 0;
 		Text::String *pwd = 0;
 		Text::String *schema = 0;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(11));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -546,7 +546,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::String *uid = 0;
 		Text::String *pwd = 0;
 		Text::String *schema = 0;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(4));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -583,7 +583,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		UInt16 port = 1433;
 		if (server && uid && pwd)
 		{
-			UOSInt i = server->IndexOf(':');
+			UIntOS i = server->IndexOf(':');
 			if (i >= 0)
 			{
 				Text::StrToUInt16(&server->v[i + 1], port);
@@ -618,7 +618,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(connStr.Substring(5));
-			UOSInt cnt;
+			UIntOS cnt;
 			Text::PString sarr[2];
 			sarr[1] = sb;
 			while (true)
@@ -648,7 +648,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 	{
 		sbOut->AppendC(UTF8STRC("mysql:"));
 		Text::StringBuilderUTF8 sb;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(6));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -694,7 +694,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 	{
 		sbOut->AppendC(UTF8STRC("mysqltcp:"));
 		Text::StringBuilderUTF8 sb;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(9));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -725,7 +725,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 	{
 		sbOut->AppendC(UTF8STRC("pgsql:"));
 		Text::StringBuilderUTF8 sb;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(11));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -756,7 +756,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 	{
 		sbOut->AppendC(UTF8STRC("tds:"));
 		Text::StringBuilderUTF8 sb;
-		UOSInt cnt;
+		UIntOS cnt;
 		sb.Append(connStr.Substring(4));
 		Text::PString sarr[2];
 		sarr[1] = sb;
@@ -781,7 +781,7 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 	else if (connStr.StartsWith(UTF8STRC("file:")))
 	{
 		sbOut->AppendC(UTF8STRC("file:"));
-		UOSInt i = connStr.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = connStr.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sbOut->Append(connStr.Substring(i + 1));
 	}
 }
@@ -801,8 +801,8 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 		Text::StringBuilderUTF8 sb;
 		NN<DB::DBManagerCtrl> ctrl;
 		NN<Text::String> connStr;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = ctrlList->GetCount();
 		while (i < j)
@@ -817,7 +817,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 		}
 		
 		UInt8 keyBuff[32];
-		UOSInt outSize;
+		UIntOS outSize;
 		Crypto::Hash::MD5 md5;
 		md5.Calc((const UInt8*)ENCKEY, ENCKEYLEN);
 		md5.GetValue(keyBuff);
@@ -848,12 +848,12 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 	UInt64 len = fs->GetLength();
 	if (len > 0 && len < 65536)
 	{
-		Data::ByteBuffer fileBuff((UOSInt)len);
-		UInt8 *decBuff = MemAlloc(UInt8, (UOSInt)len + 1);
+		Data::ByteBuffer fileBuff((UIntOS)len);
+		UInt8 *decBuff = MemAlloc(UInt8, (UIntOS)len + 1);
 		Text::PString sarr[2];
 		fs->Read(fileBuff);
 		UInt8 keyBuff[32];
-		UOSInt cnt;
+		UIntOS cnt;
 		Crypto::Hash::MD5 md5;
 		md5.Calc((const UInt8*)ENCKEY, ENCKEYLEN);
 		md5.GetValue(keyBuff);
@@ -861,13 +861,13 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		aes.Decrypt(fileBuff.Arr().Ptr(), (UOSInt)len, decBuff);
-		decBuff[(UOSInt)len] = 0;
-		while (len > 0 && decBuff[(UOSInt)len - 1] == 0)
+		aes.Decrypt(fileBuff.Arr().Ptr(), (UIntOS)len, decBuff);
+		decBuff[(UIntOS)len] = 0;
+		while (len > 0 && decBuff[(UIntOS)len - 1] == 0)
 		{
 			len--;
 		}
-		sarr[1] = Text::PString(decBuff, (UOSInt)len);
+		sarr[1] = Text::PString(decBuff, (UIntOS)len);
 		while (true)
 		{
 			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);

@@ -11,7 +11,7 @@ Map::MapManager::MapManager()
 
 Map::MapManager::~MapManager()
 {
-	UOSInt i = this->layerArr.GetCount();
+	UIntOS i = this->layerArr.GetCount();
 	while (i-- > 0)
 	{
 		NN<Map::MapManager::MapLayerInfo> info = this->layerArr.GetItemNoCheck(i);
@@ -53,8 +53,8 @@ Optional<Map::MapDrawLayer> Map::MapManager::LoadLayer(Text::CStringNN fileName,
 
 void Map::MapManager::ClearMap(NN<Map::MapEnv> env)
 {
-	UOSInt i = this->layerArr.GetCount();
-	UOSInt j;
+	UIntOS i = this->layerArr.GetCount();
+	UIntOS j;
 	NN<Map::MapManager::MapLayerInfo> info;
 	while (i-- > 0)
 	{

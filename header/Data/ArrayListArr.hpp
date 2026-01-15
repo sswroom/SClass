@@ -11,37 +11,37 @@ namespace Data
 	{
 	protected:
 		UnsafeArray<UnsafeArray<T>> arr;
-		UOSInt objCnt;
-		UOSInt capacity;
+		UIntOS objCnt;
+		UIntOS capacity;
 
-		void Init(UOSInt capacity);
+		void Init(UIntOS capacity);
 	public:
 		ArrayListArr();
-		ArrayListArr(UOSInt capacity);
+		ArrayListArr(UIntOS capacity);
 		ArrayListArr(const ArrayListArr<T> &list);
 		virtual ~ArrayListArr();
 
-		virtual UOSInt Add(UnsafeArray<T> val);
-		UOSInt AddAll(NN<const ReadingListArr<T>> arr);
-		virtual UOSInt AddRange(UnsafeArray<UnsafeArray<T>> arr, UOSInt cnt);
+		virtual UIntOS Add(UnsafeArray<T> val);
+		UIntOS AddAll(NN<const ReadingListArr<T>> arr);
+		virtual UIntOS AddRange(UnsafeArray<UnsafeArray<T>> arr, UIntOS cnt);
 		virtual Bool Remove(UnsafeArray<T> val);
-		virtual UnsafeArrayOpt<T> RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, UnsafeArray<T> val);
-		virtual UOSInt IndexOf(UnsafeArray<T> val) const;
+		virtual UnsafeArrayOpt<T> RemoveAt(UIntOS index);
+		virtual void Insert(UIntOS index, UnsafeArray<T> val);
+		virtual UIntOS IndexOf(UnsafeArray<T> val) const;
 		virtual void Clear();
 		virtual NN<ArrayListArr<T>> Clone() const;
 
-		virtual UOSInt GetCount() const;
-		virtual UOSInt GetCapacity() const;
-		void EnsureCapacity(UOSInt capacity);
+		virtual UIntOS GetCount() const;
+		virtual UIntOS GetCapacity() const;
+		void EnsureCapacity(UIntOS capacity);
 
-		virtual UnsafeArrayOpt<T> GetItem(UOSInt index) const;
-		virtual UnsafeArray<T> GetItemNoCheck(UOSInt index) const;
-		virtual void SetItem(UOSInt index, UnsafeArray<T> val);
-		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
-		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual UnsafeArray<UnsafeArray<T>> GetArr(OutParam<UOSInt> arraySize) const;
+		virtual UnsafeArrayOpt<T> GetItem(UIntOS index) const;
+		virtual UnsafeArray<T> GetItemNoCheck(UIntOS index) const;
+		virtual void SetItem(UIntOS index, UnsafeArray<T> val);
+		void CopyItems(UIntOS destIndex, UIntOS srcIndex, UIntOS count);
+		UIntOS GetRange(UnsafeArray<T> outArr, UIntOS index, UIntOS cnt) const;
+		UIntOS RemoveRange(UIntOS index, UIntOS cnt);
+		virtual UnsafeArray<UnsafeArray<T>> GetArr(OutParam<UIntOS> arraySize) const;
 		virtual UnsafeArray<UnsafeArray<T>> Arr() const;
 		UnsafeArrayOpt<T> Pop();
 		ArrayListArr<T> &operator =(const ArrayListArr<T> &v);
@@ -49,7 +49,7 @@ namespace Data
 	};
 
 
-	template <class T> void ArrayListArr<T>::Init(UOSInt capacity)
+	template <class T> void ArrayListArr<T>::Init(UIntOS capacity)
 	{
 		objCnt = 0;
 		this->capacity = capacity;
@@ -61,7 +61,7 @@ namespace Data
 		Init(40);
 	}
 
-	template <class T> ArrayListArr<T>::ArrayListArr(UOSInt capacity)
+	template <class T> ArrayListArr<T>::ArrayListArr(UIntOS capacity)
 	{
 		Init(capacity);
 	}
@@ -77,9 +77,9 @@ namespace Data
 		MemFreeArr(arr);
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::Add(UnsafeArray<T> val)
+	template <class T> UIntOS ArrayListArr<T>::Add(UnsafeArray<T> val)
 	{
-		UOSInt ret;
+		UIntOS ret;
 		if (objCnt == this->capacity)
 		{
 			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity << 1);
@@ -97,9 +97,9 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::AddAll(NN<const ReadingListArr<T>> arr)
+	template <class T> UIntOS ArrayListArr<T>::AddAll(NN<const ReadingListArr<T>> arr)
 	{
-		UOSInt cnt = arr->GetCount();
+		UIntOS cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
 		{
 			while (objCnt + cnt >= this->capacity)
@@ -109,7 +109,7 @@ namespace Data
 			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity);
 			if (objCnt > 0)
 			{
-				UOSInt i = 0;
+				UIntOS i = 0;
 				while (i < objCnt)
 				{
 					newArr[i] = this->arr[i];
@@ -119,7 +119,7 @@ namespace Data
 			MemFreeArr(this->arr);
 			this->arr = newArr;
 		}
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < cnt)
 		{
 			this->arr[this->objCnt + i] = arr->GetItemNoCheck(i);
@@ -129,9 +129,9 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::AddRange(UnsafeArray<UnsafeArray<T>> arr, UOSInt cnt)
+	template <class T> UIntOS ArrayListArr<T>::AddRange(UnsafeArray<UnsafeArray<T>> arr, UIntOS cnt)
 	{
-		UOSInt i;
+		UIntOS i;
 		if (objCnt + cnt >= this->capacity)
 		{
 			while (objCnt + cnt >= this->capacity)
@@ -163,9 +163,9 @@ namespace Data
 
 	template <class T> Bool ArrayListArr<T>::Remove(UnsafeArray<T> val)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->objCnt;
-		UOSInt k = 0;
+		UIntOS i = 0;
+		UIntOS j = this->objCnt;
+		UIntOS k = 0;
 		while (i < j)
 		{
 			if (this->arr[i] == val)
@@ -190,11 +190,11 @@ namespace Data
 		return i != k;
 	}
 
-	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::RemoveAt(UOSInt index)
+	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::RemoveAt(UIntOS index)
 	{
 		if (index >= this->objCnt)
 			return nullptr;
-		UOSInt i = this->objCnt - index - 1;
+		UIntOS i = this->objCnt - index - 1;
 		UnsafeArray<T> o = arr[index];
 		if (i > 0)
 		{
@@ -209,9 +209,9 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayListArr<T>::Insert(UOSInt index, UnsafeArray<T> val)
+	template <class T> void ArrayListArr<T>::Insert(UIntOS index, UnsafeArray<T> val)
 	{
-		UOSInt i;
+		UIntOS i;
 		if (objCnt == this->capacity)
 		{
 			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity << 1);
@@ -239,7 +239,7 @@ namespace Data
 		}
 		else
 		{
-			UOSInt j = this->objCnt;
+			UIntOS j = this->objCnt;
 			while (j > index)
 			{
 				this->arr[j] = this->arr[j - 1];
@@ -250,9 +250,9 @@ namespace Data
 		objCnt++;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::IndexOf(UnsafeArray<T> val) const
+	template <class T> UIntOS ArrayListArr<T>::IndexOf(UnsafeArray<T> val) const
 	{
-		UOSInt i = objCnt;
+		UIntOS i = objCnt;
 		while (i-- > 0)
 			if (arr[i] == val)
 				return i;
@@ -272,17 +272,17 @@ namespace Data
 		return newArr;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::GetCount() const
+	template <class T> UIntOS ArrayListArr<T>::GetCount() const
 	{
 		return this->objCnt;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::GetCapacity() const
+	template <class T> UIntOS ArrayListArr<T>::GetCapacity() const
 	{
 		return this->capacity;
 	}
 
-	template <class T> void ArrayListArr<T>::EnsureCapacity(UOSInt capacity)
+	template <class T> void ArrayListArr<T>::EnsureCapacity(UIntOS capacity)
 	{
 		if (capacity > this->capacity)
 		{
@@ -292,7 +292,7 @@ namespace Data
 			}
 
 			UnsafeArray<T> newArr = MemAllocArr(T, this->capacity);
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->objCnt)
 			{
 				newArr[i] = this->arr[i];
@@ -303,19 +303,19 @@ namespace Data
 		}
 	}
 
-	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::GetItem(UOSInt index) const
+	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::GetItem(UIntOS index) const
 	{
 		if (index >= this->objCnt || index < 0)
 			return nullptr;
 		return this->arr[index];
 	}
 
-	template <class T> UnsafeArray<T> ArrayListArr<T>::GetItemNoCheck(UOSInt index) const
+	template <class T> UnsafeArray<T> ArrayListArr<T>::GetItemNoCheck(UIntOS index) const
 	{
 		return this->arr[index];
 	}
 
-	template <class T> void ArrayListArr<T>::SetItem(UOSInt index, UnsafeArray<T> val)
+	template <class T> void ArrayListArr<T>::SetItem(UIntOS index, UnsafeArray<T> val)
 	{
 		if (index == objCnt)
 		{
@@ -331,9 +331,9 @@ namespace Data
 		}
 	}
 
-	template <class T> void ArrayListArr<T>::CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count)
+	template <class T> void ArrayListArr<T>::CopyItems(UIntOS destIndex, UIntOS srcIndex, UIntOS count)
 	{
-		UOSInt i;
+		UIntOS i;
 		if (destIndex > srcIndex)
 		{
 			i = count;
@@ -353,10 +353,10 @@ namespace Data
 		}
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::GetRange(UnsafeArray<T> outArr, UOSInt Index, UOSInt cnt) const
+	template <class T> UIntOS ArrayListArr<T>::GetRange(UnsafeArray<T> outArr, UIntOS Index, UIntOS cnt) const
 	{
-		UOSInt startIndex = Index;
-		UOSInt endIndex = Index + cnt;
+		UIntOS startIndex = Index;
+		UIntOS endIndex = Index + cnt;
 		if (endIndex > objCnt)
 		{
 			endIndex = objCnt;
@@ -371,10 +371,10 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UOSInt ArrayListArr<T>::RemoveRange(UOSInt index, UOSInt cnt)
+	template <class T> UIntOS ArrayListArr<T>::RemoveRange(UIntOS index, UIntOS cnt)
 	{
-		UOSInt startIndex = index;
-		UOSInt endIndex = index + cnt;
+		UIntOS startIndex = index;
+		UIntOS endIndex = index + cnt;
 		if (endIndex > objCnt)
 		{
 			endIndex = objCnt;
@@ -385,8 +385,8 @@ namespace Data
 		{
 			return 0;
 		}
-		UOSInt i = startIndex;
-		UOSInt j = endIndex;
+		UIntOS i = startIndex;
+		UIntOS j = endIndex;
 		while (j < objCnt)
 		{
 			arr[i++] = arr[j++];
@@ -395,7 +395,7 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::GetArr(OutParam<UOSInt> arraySize) const
+	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::GetArr(OutParam<UIntOS> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
@@ -427,8 +427,8 @@ namespace Data
 		NN<T> tmp;
 		if (this->objCnt > 0)
 		{
-			UOSInt i = 0;
-			UOSInt j = this->objCnt - 1;
+			UIntOS i = 0;
+			UIntOS j = this->objCnt - 1;
 			while (i < j)
 			{
 				tmp = this->arr[i];

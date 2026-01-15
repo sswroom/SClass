@@ -93,10 +93,10 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	NN<IO::Registry> reg;
 	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
-		OSInt i = 0;
+		IntOS i = 0;
 		while (true)
 		{
-			Text::StrOSInt(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
+			Text::StrIntOS(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
 			if (reg->GetValueStr(wbuff2, wbuff).NotNull())
 			{
 				NN<Text::String> devName = Text::String::NewNotNull(wbuff);
@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 
 SSWR::AVIRead::AVIRCore::~AVIRCore()
 {
-	UOSInt i;
+	UIntOS i;
 	this->CloseAllForm();
 	this->parsers.Delete();
 	this->browser.Delete();
@@ -367,7 +367,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Optional<Data::ArrayListStringN
 {
 	NN<Data::ArrayListStringNN> nndevList;
 	WChar wbuff[32];
-	UOSInt i;
+	UIntOS i;
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
@@ -387,13 +387,13 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Optional<Data::ArrayListStringN
 			i = 0;
 			while (it.HasNext())
 			{
-				Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
+				Text::StrUIntOS(Text::StrConcat(wbuff, L"AudioDevice"), i);
 				UnsafeArray<const WChar> wptr = Text::StrToWCharNew(it.Next()->v);
 				reg->SetValue(wbuff, wptr);
 				Text::StrDelNew(wptr);
 				i++;
 			}
-			Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
+			Text::StrUIntOS(Text::StrConcat(wbuff, L"AudioDevice"), i);
 			reg->DelValue(wbuff);
 		}
 		IO::Registry::CloseRegistry(reg);
@@ -438,14 +438,14 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NN<Media::DrawImage> img, NN<Media:
 	img->DelBrush(b);
 
 	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, nullptr, 0);
-	img->DrawLine(0, UOSInt2Double(img->GetHeight()) * 0.5, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()) * 0.5, p);
+	img->DrawLine(0, UIntOS2Double(img->GetHeight()) * 0.5, UIntOS2Double(img->GetWidth()), UIntOS2Double(img->GetHeight()) * 0.5, p);
 	img->DelPen(p);
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS lineStyle, NN<Media::ColorConv> colorConv)
 {
-	Math::Size2D<UOSInt> size = img->GetSize();
+	Math::Size2D<UIntOS> size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	if (lineStyle >= env->GetLineStyleCount())
 	{
@@ -467,23 +467,23 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	img->DelBrush(b);
 
 	UInt32 color;
-	UOSInt layerId = 0;
+	UIntOS layerId = 0;
 	Double thick;
 	UnsafeArrayOpt<UInt8> pattern;
-	UOSInt npattern;
+	UIntOS npattern;
 
 	while (env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 	{
 		p = img->NewPenARGB(colorConv->ConvRGB8(color), thick * dpi / 96.0, pattern, npattern);
-		img->DrawLine(0, UOSInt2Double(size.y >> 1), UOSInt2Double(size.x), UOSInt2Double(size.y >> 1), p);
+		img->DrawLine(0, UIntOS2Double(size.y >> 1), UIntOS2Double(size.x), UIntOS2Double(size.y >> 1), p);
 		img->DelPen(p);
 	}
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt fontStyle, NN<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS fontStyle, NN<Media::ColorConv> colorConv)
 {
-	Math::Size2D<UOSInt> size = img->GetSize();
+	Math::Size2D<UIntOS> size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	
 	if (fontStyle >= env->GetFontStyleCount())
@@ -512,16 +512,16 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	Double fontSizePt;
 	Bool bold;
 	UInt32 fontColor;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt32 buffColor;
 	Math::Size2DDbl sz;
 
 	if (env->GetFontStyle(fontStyle, fontName, fontSizePt, bold, fontColor, buffSize, buffColor))
 	{
-		buffSize = (UOSInt)Double2Int32(UOSInt2Double(buffSize) * dpi / 96.0);
+		buffSize = (UIntOS)Double2Int32(UIntOS2Double(buffSize) * dpi / 96.0);
 		if (!env->GetFontStyleName(fontStyle, sbuff).SetTo(sptr))
 		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Style ")), fontStyle);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Style ")), fontStyle);
 		}
 		f = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
@@ -557,7 +557,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NN<Media::DrawImage> img, NN<Media:
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));
 	f = img->NewFontPt(fontName, fontSizePt, Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 	sz = img->GetTextSize(f, fontName);
-	img->DrawString(Math::Coord2DDbl((UOSInt2Double(img->GetWidth()) - sz.x) * 0.5, (UOSInt2Double(img->GetHeight()) - sz.y) * 0.5), fontName, f, b);
+	img->DrawString(Math::Coord2DDbl((UIntOS2Double(img->GetWidth()) - sz.x) * 0.5, (UIntOS2Double(img->GetHeight()) - sz.y) * 0.5), fontName, f, b);
 	img->DelFont(f);
 	img->DelBrush(b);
 	return true;
@@ -572,7 +572,7 @@ void SSWR::AVIRead::AVIRCore::ShowForm(NN<UI::GUIForm> frm)
 void SSWR::AVIRead::AVIRCore::CloseAllForm()
 {
 	NN<UI::GUIForm> frm;
-	UOSInt i = this->frms.GetCount();
+	UIntOS i = this->frms.GetCount();
 	while (i-- > 0)
 	{
 		if (this->frms.GetItem(i).SetTo(frm))

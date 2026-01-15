@@ -9,14 +9,14 @@ template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNative<T> *
 
 template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNative<T> *arr)
 {
-	UOSInt size;
+	UIntOS size;
 	T *a = arr->GetArray(&size);
-	ArtificialQuickSort_Sort(a, 0, (OSInt)size - 1);
+	ArtificialQuickSort_Sort(a, 0, (IntOS)size - 1);
 }
 
 template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNN<T> *arr)
 {
-	ArtificialQuickSort_Sort(arr->Arr().Ptr(), 0, (OSInt)arr->GetCount() - 1);
+	ArtificialQuickSort_Sort(arr->Arr().Ptr(), 0, (IntOS)arr->GetCount() - 1);
 }
 
 

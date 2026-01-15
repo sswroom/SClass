@@ -8,9 +8,9 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UnsafeArray<DB::DBUtil::ColType> strTypes;
-	OSInt xCol;
-	UOSInt i;
-	UOSInt j;
+	IntOS xCol;
+	UIntOS i;
+	UIntOS j;
 	Data::DateTime dt;
 	if (!me->strTypes.SetTo(strTypes))
 	{
@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please add a data column first"), CSTR("Error"), me);
 		return;
 	}
-	xCol = me->cboXAxis->GetSelectedItem().GetOSInt();
+	xCol = me->cboXAxis->GetSelectedItem().GetIntOS();
 	if (xCol < 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Current Version does not support integer X-Axis"), CSTR("Error"), me);
 		return;
 	}
 
-	UOSInt colCount;
+	UIntOS colCount;
 	ColInfo *colInfos;
 	NN<DB::DBReader> reader;
 	if (!me->db->QueryTableData(OPTSTR_CSTR(me->schemaName), me->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(reader))
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 	{
 		if (i == 0)
 		{
-			colInfos[i].colIndex = (UOSInt)xCol;
+			colInfos[i].colIndex = (UIntOS)xCol;
 		}
 		else
 		{
@@ -248,14 +248,14 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = me->cboYAxis->GetSelectedIndex();
-	UOSInt col;
+	UIntOS i = me->cboYAxis->GetSelectedIndex();
+	UIntOS col;
 	if (i == INVALID_INDEX)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a column first"), CSTR("Error"), me);
 		return;
 	}
-	col = me->cboYAxis->GetItem(i).GetUOSInt();
+	col = me->cboYAxis->GetItem(i).GetUIntOS();
 	sbuff[0] = 0;
 	sptr = me->cboYAxis->GetItemText(sbuff, i).Or(sbuff);
 	me->lbYAxis->AddItem(CSTRP(sbuff, sptr), (void*)col);
@@ -266,10 +266,10 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UnsafeArray<DB::DBUtil::ColType> strTypes;
-	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
+	UIntOS selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX && me->strTypes.SetTo(strTypes))
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
+		UIntOS colInd = (UIntOS)me->lbStrCols->GetItem(selInd).p;
 		strTypes[colInd] = DB::DBUtil::CT_Double;
 		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
@@ -283,10 +283,10 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType u
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UnsafeArray<DB::DBUtil::ColType> strTypes;
-	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
+	UIntOS selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX && me->strTypes.SetTo(strTypes))
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
+		UIntOS colInd = (UIntOS)me->lbStrCols->GetItem(selInd).p;
 		strTypes[colInd] = DB::DBUtil::CT_Int32;
 		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
@@ -361,8 +361,8 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 		this->cboXAxis->AddItem(CSTR("Auto Number"), (void*)-1);
 		this->cboXAxis->SetSelectedIndex(0);
 		UnsafeArray<DB::DBUtil::ColType> strTypes;
-		UOSInt i;
-		UOSInt j = reader->ColCount();
+		UIntOS i;
+		UIntOS j = reader->ColCount();
 		DB::ColDef colDef(CSTR(""));
 		this->strTypes = strTypes = MemAllocArr(DB::DBUtil::ColType, j);
 		i = 0;

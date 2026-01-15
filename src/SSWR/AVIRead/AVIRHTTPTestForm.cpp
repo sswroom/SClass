@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 	}
 	
 	UnsafeArray<NN<Sync::Thread>> threads;
-	UOSInt i;
+	UIntOS i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("HTTPTest"));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		NEW_CLASSNN(threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
 		threads[i]->Start();
 	}
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(AnyType userObj)
 	}
 	me->txtURL->GetText(sb);
 	NN<Net::JMeter::JMeterHTTPSamplerProxy> httpRequest;
-	Net::WebUtil::RequestMethod method = (Net::WebUtil::RequestMethod)me->cboMethod->GetSelectedItem().GetOSInt();
+	Net::WebUtil::RequestMethod method = (Net::WebUtil::RequestMethod)me->cboMethod->GetSelectedItem().GetIntOS();
 	if (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://")))
 	{
 		NEW_CLASSNN(httpRequest, Net::JMeter::JMeterHTTPSamplerProxy(CSTR("HTTP Request"), method, sb.ToCString(), false, me->chkKAConn->IsChecked(), me->chkGZip->IsChecked()));
@@ -132,8 +132,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
 	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 cnt;
 	Data::ArrayListNN<Net::JMeter::JMeterStep> steps;
 	NN<Net::JMeter::JMeterStep> step;
@@ -212,7 +212,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 	{
 		if (this->threadCurrCnt > 0)
 		{
-			UOSInt i = this->threadCnt;
+			UIntOS i = this->threadCnt;
 			while (i-- > 0)
 			{
 				threads[i]->BeginStop();
@@ -223,7 +223,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 				threads[i]->WaitForEnd();
 			}
 		}
-		UOSInt i = this->threadCnt;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			threads[i].Delete();
@@ -331,8 +331,8 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->cboMethod = ui->NewComboBox(this->pnlURL, false);
 	this->cboMethod->SetRect(4, 0, 100, 23, false);
-	this->cboMethod->AddItem(CSTR("GET"), (void*)(OSInt)Net::WebUtil::RequestMethod::HTTP_GET);
-	this->cboMethod->AddItem(CSTR("POST"), (void*)(OSInt)Net::WebUtil::RequestMethod::HTTP_POST);
+	this->cboMethod->AddItem(CSTR("GET"), (void*)(IntOS)Net::WebUtil::RequestMethod::HTTP_GET);
+	this->cboMethod->AddItem(CSTR("POST"), (void*)(IntOS)Net::WebUtil::RequestMethod::HTTP_POST);
 	this->cboMethod->SetSelectedIndex(0);
 	this->txtURL = ui->NewTextBox(this->pnlURL, CSTR(""));
 	this->txtURL->SetRect(104, 0, 700, 23, false);

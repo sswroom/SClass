@@ -86,7 +86,7 @@ Bool Net::WebServer::WebRequest::GetRefererDomain(NN<Text::StringBuilderUTF8> sb
 		return false;
 	}
 	sptr = Text::URLString::GetURLDomain(domain, hdr->ToCString(), 0);
-	sb->AppendC(domain, (UOSInt)(sptr - domain));
+	sb->AppendC(domain, (UIntOS)(sptr - domain));
 	return true;
 }
 
@@ -100,7 +100,7 @@ Bool Net::WebServer::WebRequest::GetOrigin(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->GetSHeader(CSTR("Referer")).SetTo(hdr))
 	{
-		UOSInt i = hdr->IndexOf(CSTR("://"));
+		UIntOS i = hdr->IndexOf(CSTR("://"));
 		if (i == INVALID_INDEX)
 			return false;
 		i = hdr->IndexOf('/', i + 3);
@@ -136,7 +136,7 @@ Bool Net::WebServer::WebRequest::GetCookie(Text::CStringNN name, NN<Text::String
 
 	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
-	UOSInt strCnt = 2;
+	UIntOS strCnt = 2;
 	Bool found = false;
 
 	sbuff = MemAllocArr(UTF8Char, cookie->leng + 1);
@@ -168,7 +168,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetCookieAsNew(Text::CStringN
 
 	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
-	UOSInt strCnt = 2;
+	UIntOS strCnt = 2;
 	Text::String *ret = 0;
 
 	sbuff = MemAllocArr(UTF8Char, cookie->leng + 1);
@@ -189,7 +189,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetCookieAsNew(Text::CStringN
 	return ret;
 }
 
-UnsafeArray<UTF8Char> Net::WebServer::WebRequest::GetRequestPath(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng)
+UnsafeArray<UTF8Char> Net::WebServer::WebRequest::GetRequestPath(UnsafeArray<UTF8Char> sbuff, UIntOS maxLeng)
 {
 	UnsafeArray<const UTF8Char> uri = this->GetRequestURI()->v;
 	UTF8Char c;
@@ -207,10 +207,10 @@ UnsafeArray<UTF8Char> Net::WebServer::WebRequest::GetRequestPath(UnsafeArray<UTF
 	return sbuff;
 }
 
-UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryString(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng)
+UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryString(UnsafeArray<UTF8Char> sbuff, UIntOS maxLeng)
 {
 	NN<Text::String> s = this->GetRequestURI();
-	UOSInt i = s->IndexOf('?');
+	UIntOS i = s->IndexOf('?');
 	if (i == INVALID_INDEX)
 		return nullptr;
 	UnsafeArray<const UTF8Char> uri = &s->v[i + 1];
@@ -231,7 +231,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryString(UnsafeArray<
 	
 }
 
-UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
@@ -424,7 +424,7 @@ void Net::WebServer::WebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo>
 	Text::PString s;
 	Text::PString nextStr;
 	Bool ended = false;
-	UOSInt i;
+	UIntOS i;
 	if (this->GetHeaderC(sb, CSTR("Forwarded")))
 	{
 		s = sb;

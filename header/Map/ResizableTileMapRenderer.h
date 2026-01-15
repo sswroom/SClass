@@ -24,7 +24,7 @@ namespace Map
 			Double tly;
 			Double brx;
 			Double bry;
-			OSInt level;
+			IntOS level;
 			Bool isFinish;
 			Bool isCancel;
 			Media::StaticImage *img;
@@ -45,11 +45,11 @@ namespace Map
 		Media::ColorProfile srcColor;
 		Media::ColorProfile outputColor;
 
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		ThreadStat *threads;
-		UOSInt threadNext;
+		UIntOS threadNext;
 
-		OSInt lastLevel;
+		IntOS lastLevel;
 		Data::ArrayListInt64 lastIds;
 		Data::ArrayList<CachedImage *> lastImgs;
 		Data::ArrayList<CachedImage *> idleImgs;

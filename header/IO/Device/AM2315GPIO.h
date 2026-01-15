@@ -20,8 +20,8 @@ namespace IO
 			Bool I2CReadByte(UInt8 *b, Bool isLast); //return isLast
 			Bool I2CEnd();
 
-			OSInt DirectRead(UInt8 *buff, OSInt readSize);
-			OSInt DirectWrite(const UInt8 *buff, OSInt writeSize);
+			IntOS DirectRead(UInt8 *buff, IntOS readSize);
+			IntOS DirectWrite(const UInt8 *buff, IntOS writeSize);
 			void Wait();
 			Bool ReadWord(UInt8 regAddr, UInt8 *data);
 		public:

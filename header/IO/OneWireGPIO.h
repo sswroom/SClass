@@ -16,8 +16,8 @@ namespace IO
 
 		Bool Init();
 
-		void SendBits(const UInt8 *buff, OSInt nBits);
-		OSInt ReadBits(UInt8 *buff, OSInt nBits);
+		void SendBits(const UInt8 *buff, IntOS nBits);
+		IntOS ReadBits(UInt8 *buff, IntOS nBits);
 	};
 }
 #endif

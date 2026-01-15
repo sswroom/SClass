@@ -9,11 +9,11 @@ namespace SSWR
 		class ElevationFilter : public MapFilter
 		{
 		private:
-			UOSInt colIndex;
+			UIntOS colIndex;
 			Int32 value;
 
 		public:
-			ElevationFilter(UOSInt colIndex, Int32 val);
+			ElevationFilter(UIntOS colIndex, Int32 val);
 			virtual ~ElevationFilter();
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const;

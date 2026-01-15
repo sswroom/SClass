@@ -36,12 +36,12 @@ UInt8 PNGParser_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, OSInt pxMask, OSInt pxAMask, OSInt pxShift)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UInt8 *destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, IntOS pxMask, IntOS pxAMask, IntOS pxShift)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
-	OSInt pxId;
+	UIntOS currX;
+	UIntOS currY;
+	IntOS pxId;
 	UInt8 px;
 	currY = initY;
 	switch (pxShift)
@@ -148,11 +148,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UInt8 *
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsBits1(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits1(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -170,11 +170,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsBits1(UnsafeArray<UInt8> srcData, Unsafe
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsBits2(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits2(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -192,11 +192,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsBits2(UnsafeArray<UInt8> srcData, Unsafe
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsBits4(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits4(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -214,11 +214,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsBits4(UnsafeArray<UInt8> srcData, Unsafe
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsByte(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsByte(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -341,11 +341,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsByte(UnsafeArray<UInt8> srcData, UnsafeA
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsWord(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsWord(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -498,11 +498,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsWord(UnsafeArray<UInt8> srcData, UnsafeA
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsRGB24(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsRGB24(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -676,11 +676,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsRGB24(UnsafeArray<UInt8> srcData, Unsafe
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsRGB48(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsRGB48(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -917,11 +917,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsRGB48(UnsafeArray<UInt8> srcData, Unsafe
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsARGB32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsARGB32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, Bool *alphaFound)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -1116,11 +1116,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsARGB32(UnsafeArray<UInt8> srcData, Unsaf
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsARGB64(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsARGB64(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, Bool *alphaFound)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -1442,11 +1442,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsARGB64(UnsafeArray<UInt8> srcData, Unsaf
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsAW16(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsAW16(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, Bool *alphaFound)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -1641,11 +1641,11 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsAW16(UnsafeArray<UInt8> srcData, UnsafeA
 	return srcData;
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, Bool *alphaFound)
 {
 	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
-	UOSInt currX;
-	UOSInt currY;
+	UIntOS currX;
+	UIntOS currY;
 	UInt8 px;
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
@@ -1893,12 +1893,12 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 	case 0: //Grayscale
 		if (bitDepth < 8)
 		{
-			UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
+			UIntOS storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispSize.y);
 			UnsafeArray<UInt8> lineStart;
-			OSInt pxMask;
-			OSInt pxAMask;
-			OSInt pxShift;
+			IntOS pxMask;
+			IntOS pxAMask;
+			IntOS pxShift;
 			if (bitDepth == 1)
 			{
 				pxMask = 7;
@@ -1950,7 +1950,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 
 			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeSize.x = storeWidth;
-			UOSInt byteCnt;
+			UIntOS byteCnt;
 			if (bitDepth == 1)
 			{
 				info->storeBPP = 1;
@@ -2089,7 +2089,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		}
 		else if (bitDepth == 16)
 		{
-			UOSInt lineAdd;
+			UIntOS lineAdd;
 
 			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 16;
@@ -2105,27 +2105,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
 
-			UOSInt bpl = simg->GetDataBpl();
+			UIntOS bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8);
 				//Pass2
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8);
 				//Pass3
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8);
 				//Pass4
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4);
 				//Pass5
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4);
 				//Pass6
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2);
 				//Pass7
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2);
 			}
 			else
 			{
-				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1);
+				dataBuff = PNGParser_ParsePixelsWord(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1);
 			}
 			imgList->AddImage(simg, imgDelay);
 		}
@@ -2133,7 +2133,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 	case 2: //RGB
 		if (bitDepth == 8)
 		{
-			UOSInt lineAdd;
+			UIntOS lineAdd;
 
 			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 24;
@@ -2148,33 +2148,33 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
-			UOSInt bpl = simg->GetDataBpl();
+			UIntOS bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 0, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 0, 0, imgW, imgH, 8, 8);
 				//Pass2
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 4, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 4, 0, imgW, imgH, 8, 8);
 				//Pass3
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 0, 4, imgW, imgH, 4, 8);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 0, 4, imgW, imgH, 4, 8);
 				//Pass4
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 2, 0, imgW, imgH, 4, 4);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 2, 0, imgW, imgH, 4, 4);
 				//Pass5
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 0, 2, imgW, imgH, 2, 4);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 0, 2, imgW, imgH, 2, 4);
 				//Pass6
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 1, 0, imgW, imgH, 2, 2);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 1, 0, imgW, imgH, 2, 2);
 				//Pass7
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 0, 1, imgW, imgH, 1, 2);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 0, 1, imgW, imgH, 1, 2);
 			}
 			else
 			{
-				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 3, bpl, 0, 0, imgW, imgH, 1, 1);
+				dataBuff = PNGParser_ParsePixelsRGB24(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 3, bpl, 0, 0, imgW, imgH, 1, 1);
 			}
 			imgList->AddImage(simg, imgDelay);
 		}
 		else if (bitDepth == 16)
 		{
-			UOSInt lineAdd;
+			UIntOS lineAdd;
 
 			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 48;
@@ -2189,27 +2189,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
-			UOSInt bpl = simg->GetDataBpl();
+			UIntOS bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
 			{
 				//Pass1
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 0, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 0, 0, imgW, imgH, 8, 8);
 				//Pass2
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 4, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 4, 0, imgW, imgH, 8, 8);
 				//Pass3
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 0, 4, imgW, imgH, 4, 8);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 0, 4, imgW, imgH, 4, 8);
 				//Pass4
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 2, 0, imgW, imgH, 4, 4);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 2, 0, imgW, imgH, 4, 4);
 				//Pass5
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 0, 2, imgW, imgH, 2, 4);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 0, 2, imgW, imgH, 2, 4);
 				//Pass6
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 1, 0, imgW, imgH, 2, 2);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 1, 0, imgW, imgH, 2, 2);
 				//Pass7
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 0, 1, imgW, imgH, 1, 2);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 0, 1, imgW, imgH, 1, 2);
 			}
 			else
 			{
-				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 6, bpl, 0, 0, imgW, imgH, 1, 1);
+				dataBuff = PNGParser_ParsePixelsRGB48(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 6, bpl, 0, 0, imgW, imgH, 1, 1);
 			}
 			imgList->AddImage(simg, imgDelay);
 		}
@@ -2219,7 +2219,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			if (bitDepth < 8)
 			{
-				UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
+				UIntOS storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 				UnsafeArray<UInt8> lineStart;
 
 				info->atype = palHasAlpha?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF;
@@ -2381,7 +2381,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			Bool semiTr = false;
 			if (bitDepth == 8)
 			{
-				UOSInt lineAdd;
+				UIntOS lineAdd;
 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 16;
@@ -2397,27 +2397,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
-				UOSInt bpl = simg->GetDataBpl();
+				UIntOS bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
 				{
 					//Pass1
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass2
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass3
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
 					//Pass4
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
 					//Pass5
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
 					//Pass6
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
 					//Pass7
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
 				}
 				else
 				{
-					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
 				}
 				if (!semiTr)
 				{
@@ -2427,7 +2427,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			else if (bitDepth == 16)
 			{
-				UOSInt lineAdd;
+				UIntOS lineAdd;
 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 32;
@@ -2443,27 +2443,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
-				UOSInt bpl = simg->GetDataBpl();
+				UIntOS bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
 				{
 					//Pass1
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass2
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass3
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
 					//Pass4
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
 					//Pass5
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
 					//Pass6
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
 					//Pass7
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
 				}
 				else
 				{
-					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
 				}
 				if (!semiTr)
 				{
@@ -2478,7 +2478,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			Bool semiTr = false;
 			if (bitDepth == 8)
 			{
-				UOSInt lineAdd;
+				UIntOS lineAdd;
 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 32;
@@ -2494,27 +2494,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
-				UOSInt bpl = simg->GetDataBpl();
+				UIntOS bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
 				{
 					//Pass1
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass2
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass3
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
 					//Pass4
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
 					//Pass5
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
 					//Pass6
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
 					//Pass7
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
 				}
 				else
 				{
-					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
 				}
 				if (!semiTr)
 				{
@@ -2524,7 +2524,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			else if (bitDepth == 16)
 			{
-				UOSInt lineAdd;
+				UIntOS lineAdd;
 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 64;
@@ -2540,27 +2540,27 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
-				UOSInt bpl = simg->GetDataBpl();
+				UIntOS bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
 				{
 					//Pass1
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass2
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
 					//Pass3
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
 					//Pass4
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
 					//Pass5
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
 					//Pass6
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
 					//Pass7
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
 				}
 				else
 				{
-					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UIntOS)imgX * 8, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
 				}
 				if (!semiTr)
 				{
@@ -2620,7 +2620,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	Optional<IO::MemoryStream> mstm = nullptr;
 	Optional<Data::Compress::Inflater> cstm = nullptr;
 	IO::WriteCacheStream *wcstm = 0;
-	UOSInt imgSize = 0;
+	UIntOS imgSize = 0;
 	UInt32 imgDelay = 0;
 	UInt32 imgX = 0;
 	UInt32 imgY = 0;
@@ -2715,7 +2715,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 					}
 					UInt8 *palPtr = palette;
 					UnsafeArray<UInt8> dataBuff = chunkData.Arr();
-					UOSInt sizeLeft = size;
+					UIntOS sizeLeft = size;
 					while (sizeLeft > 0)
 					{
 						palPtr[0] = dataBuff[2];
@@ -2743,7 +2743,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					UOSInt i = 0;
+					UIntOS i = 0;
 					while (i < size)
 					{
 						palette[i * 4 + 3] = chunkData[i];
@@ -2761,7 +2761,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 			Data::ByteBuffer chunkData(size);
 			if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 			{
-				UOSInt i = Text::StrCharCnt(chunkData.Arr()) + 1;
+				UIntOS i = Text::StrCharCnt(chunkData.Arr()) + 1;
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;
@@ -2836,7 +2836,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				NN<IO::MemoryStream> nnmstm;
 				if (mstm.SetTo(nnmstm))
 				{
-					UOSInt dataSize;
+					UIntOS dataSize;
 					UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 					if (dataSize == imgSize || imgSize != 0)
 					{
@@ -2906,23 +2906,23 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 					{
 						if (colorType == 0)
 						{
-							imgSize = ((((UOSInt)imgW * bitDepth) >> 3) + 1) * imgH;
+							imgSize = ((((UIntOS)imgW * bitDepth) >> 3) + 1) * imgH;
 						}
 						else if (colorType == 2)
 						{
-							imgSize = (imgW * (UOSInt)(bitDepth >> 3) * 3 + 1) * imgH;
+							imgSize = (imgW * (UIntOS)(bitDepth >> 3) * 3 + 1) * imgH;
 						}
 						else if (colorType == 3)
 						{
-							imgSize = ((((UOSInt)imgW * bitDepth) >> 3) + 1) * imgH;
+							imgSize = ((((UIntOS)imgW * bitDepth) >> 3) + 1) * imgH;
 						}
 						else if (colorType == 4)
 						{
-							imgSize = (imgW * (UOSInt)(bitDepth >> 3) * 2 + 1) * imgH;
+							imgSize = (imgW * (UIntOS)(bitDepth >> 3) * 2 + 1) * imgH;
 						}
 						else if (colorType == 6)
 						{
-							imgSize = (imgW * (UOSInt)(bitDepth >> 3) * 4 + 1) * imgH;
+							imgSize = (imgW * (UIntOS)(bitDepth >> 3) * 4 + 1) * imgH;
 						}
 						else
 						{
@@ -2957,7 +2957,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 			if (mstm.SetTo(nnmstm))
 			{
 				wcstm->Flush();
-				UOSInt dataSize;
+				UIntOS dataSize;
 				UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
@@ -2975,7 +2975,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	if (mstm.SetTo(nnmstm))
 	{
 		wcstm->Flush();
-		UOSInt dataSize;
+		UIntOS dataSize;
 		UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
@@ -3005,18 +3005,18 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	}
 }
 
-UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UInt8 bitDepth, UInt8 colorType, UInt8 interlaceMeth)
+UIntOS Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UInt8 bitDepth, UInt8 colorType, UInt8 interlaceMeth)
 {
-	UOSInt byteDepth = (UOSInt)bitDepth >> 3;
-	UOSInt imgSize;
+	UIntOS byteDepth = (UIntOS)bitDepth >> 3;
+	UIntOS imgSize;
 	if (colorType == 0)
 	{
 		if (interlaceMeth == 1 && bitDepth <= 8)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
-			UOSInt andMask;
-			UOSInt shiftCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
+			UIntOS andMask;
+			UIntOS shiftCnt;
 			imgSize = 0;
 
 			if (bitDepth == 1)
@@ -3131,8 +3131,8 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 		}
 		else if (interlaceMeth == 1 && bitDepth == 16)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
 			imgSize = 0;
 
 			//Pass1
@@ -3172,15 +3172,15 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 		}
 		else
 		{
-			imgSize = ((((UOSInt)imgW * bitDepth) >> 3) + 1) * imgH;
+			imgSize = ((((UIntOS)imgW * bitDepth) >> 3) + 1) * imgH;
 		}
 	}
 	else if (colorType == 2)
 	{
 		if (interlaceMeth == 1)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
 			imgSize = 0;
 
 			//Pass1
@@ -3225,8 +3225,8 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 	}
 	else if (colorType == 3)
 	{
-		UOSInt andMask;
-		UOSInt shiftCnt;
+		UIntOS andMask;
+		UIntOS shiftCnt;
 		if (bitDepth == 1)
 		{
 			andMask = 7;
@@ -3255,8 +3255,8 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 
 		if (interlaceMeth == 1 && bitDepth <= 8)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
 			imgSize = 0;
 
 
@@ -3369,24 +3369,24 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 		{
 			if (imgW & andMask)
 			{
-				imgSize = (2 + ((UOSInt)imgW >> shiftCnt)) * (UOSInt)imgH;
+				imgSize = (2 + ((UIntOS)imgW >> shiftCnt)) * (UIntOS)imgH;
 			}
 			else
 			{
-				imgSize = (1 + ((UOSInt)imgW >> shiftCnt)) * (UOSInt)imgH;
+				imgSize = (1 + ((UIntOS)imgW >> shiftCnt)) * (UIntOS)imgH;
 			}
 		}
 		else
 		{
-			imgSize = ((((UOSInt)imgW * bitDepth) >> 3) + 1) * (UOSInt)imgH;
+			imgSize = ((((UIntOS)imgW * bitDepth) >> 3) + 1) * (UIntOS)imgH;
 		}
 	}
 	else if (colorType == 4)
 	{
 		if (interlaceMeth == 1)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
 			imgSize = 0;
 
 			//Pass1
@@ -3440,8 +3440,8 @@ UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UI
 	{
 		if (interlaceMeth == 1)
 		{
-			UOSInt linePxCnt;
-			UOSInt lineCnt;
+			UIntOS linePxCnt;
+			UIntOS lineCnt;
 			imgSize = 0;
 
 			//Pass1

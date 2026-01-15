@@ -27,7 +27,7 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 	}
 	while (IO::Path::FindNextFile(sptr, sess, modTime, pt, 0).SetTo(sptr2))
 	{
-		if (Text::StrStartsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("REVGEO_")))
+		if (Text::StrStartsWithICaseC(sptr, (UIntOS)(sptr2 - sptr), UTF8STRC("REVGEO_")))
 		{
 			errWriter->Write(CSTR("Loading search file "));
 			errWriter->Write(CSTRP(sptr, sptr2));
@@ -35,7 +35,7 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 			
 			Map::RevGeoCfg *revGeo;
 			NN<RevGeoFile> file;
-			UOSInt i;
+			UIntOS i;
 			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), &this->mapSrchMgr));
 			file = MemAllocNN(RevGeoFile);
 			file->cfg = revGeo;
@@ -61,7 +61,7 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 Map::RevGeoDir::~RevGeoDir()
 {
 	NN<RevGeoFile> file;
-	UOSInt i = this->files.GetCount();
+	UIntOS i = this->files.GetCount();
 	while (i-- > 0)
 	{
 		file = this->files.GetItemNoCheck(i);
@@ -70,9 +70,9 @@ Map::RevGeoDir::~RevGeoDir()
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	UOSInt i;
+	UIntOS i;
 	Optional<RevGeoFile> file;
 	NN<RevGeoFile> tmpFile;
 	file = this->files.GetItem(0);
@@ -95,7 +95,7 @@ UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::SearchName(UnsafeArray<UTF8Char> buff, 
 	return tmpFile->cfg->GetStreetName(buff, buffSize, pos);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	return SearchName(buff, buffSize, pos, lcid);
 }

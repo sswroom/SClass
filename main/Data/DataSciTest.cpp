@@ -18,7 +18,7 @@
 Int32 TestPage26()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -31,7 +31,7 @@ Int32 TestPage26()
 Int32 TestPage27()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::DataSet> ds;
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
@@ -62,7 +62,7 @@ Int32 TestPage27()
 Int32 TestPage28()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::DataSet> ds;
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
@@ -92,7 +92,7 @@ Int32 TestPage28()
 Int32 TestPage29()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -115,7 +115,7 @@ Int32 TestPage29()
 Int32 TestPage29_2()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -138,7 +138,7 @@ Int32 TestPage29_2()
 Int32 TestPage31()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -166,7 +166,7 @@ Int32 TestPage31()
 Int32 TestPage37()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -180,7 +180,7 @@ Int32 TestPage37()
 Int32 TestPage37_2()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -222,7 +222,7 @@ void Page38AddChart(NN<Data::ChartPlotter> chart, NN<Data::TableData> dfInfo, NN
 Int32 TestPage38()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -245,7 +245,7 @@ Int32 TestPage38()
 Int32 TestPage39()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -256,8 +256,8 @@ Int32 TestPage39()
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
 			Data::VariItem item;
-			UOSInt i = 0;
-			UOSInt j = 10;
+			UIntOS i = 0;
+			UIntOS j = 10;
 			while (i < j)
 			{
 				if (ds2->GetKey(i, item))
@@ -284,7 +284,7 @@ Int32 TestPage39()
 Int32 TestPage40()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -298,8 +298,8 @@ Int32 TestPage40()
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			Data::VariItem item;
-			UOSInt i = 0;
-			UOSInt j = 10;
+			UIntOS i = 0;
+			UIntOS j = 10;
 			while (i < j)
 			{
 				if (ds2->GetKey(i, item))
@@ -330,7 +330,7 @@ Int32 TestPage40()
 Int32 TestPage41()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -344,8 +344,8 @@ Int32 TestPage41()
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			Data::VariItem item;
-			UOSInt i = 11;
-			UOSInt j = 20;
+			UIntOS i = 11;
+			UIntOS j = 20;
 			while (i < j)
 			{
 				if (ds2->GetKey(i, item))
@@ -376,18 +376,18 @@ Int32 TestPage41()
 Int32 TestPage42()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
 		Data::Timestamp targetDate = Data::Timestamp::FromTimeValue(2020, 3, 1, 0, 0, 0, 0, Data::DateTimeUtil::GetLocalTzQhr());
 		dfInfo->SetCondition(Data::QueryConditions::New()->TimeBefore(CSTR("日期"), targetDate));
 		Text::TextWriteUtil::WriteTableDataPart(console, dfInfo, 5, 5);
-		UOSInt rowCntPre = dfInfo->GetRowCount();
+		UIntOS rowCntPre = dfInfo->GetRowCount();
 		dfInfo->SetCondition(Data::QueryConditions::New()->TimeOnOrAfter(CSTR("日期"), targetDate));
-		UOSInt rowCntPost = dfInfo->GetRowCount();
+		UIntOS rowCntPost = dfInfo->GetRowCount();
 		dfInfo->SetCondition(nullptr);
-		UOSInt rowCntAll = dfInfo->GetRowCount();
+		UIntOS rowCntAll = dfInfo->GetRowCount();
 		console.WriteLine(Text::StringBuilderUTF8().UOS(rowCntPre + rowCntPost)->AppendUTF8Char(' ')->UOS(rowCntAll)->ToCString());
 		dfInfo.Delete();
 	}
@@ -397,7 +397,7 @@ Int32 TestPage42()
 Int32 TestPage43()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::TableData> dfInfoPre;
 	NN<Data::TableData> dfInfoPost;
@@ -418,8 +418,8 @@ Int32 TestPage43()
 
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
-			UOSInt i = 0;
-			UOSInt j = 200;
+			UIntOS i = 0;
+			UIntOS j = 200;
 			Data::VariItem item;
 			while (i < j)
 			{
@@ -459,7 +459,7 @@ Int32 TestPage43()
 Int32 TestPage44()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::TableData> dfInfoPre;
 	NN<Data::TableData> dfInfoPost;
@@ -479,8 +479,8 @@ Int32 TestPage44()
 
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
-			UOSInt i = 0;
-			UOSInt j = 200;
+			UIntOS i = 0;
+			UIntOS j = 200;
 			Data::VariItem item;
 			while (i < j)
 			{
@@ -519,7 +519,7 @@ Int32 TestPage44()
 Int32 TestPage46()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::TableData> dfInfoPre;
 	NN<Data::TableData> dfInfoPost;
@@ -540,8 +540,8 @@ Int32 TestPage46()
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
 			UInt32 thresholdPost = 50;
-			UOSInt i = 0;
-			UOSInt j = 200;
+			UIntOS i = 0;
+			UIntOS j = 200;
 			Data::VariItem item;
 			NN<Text::String> id;
 			UInt32 tempColor;
@@ -597,7 +597,7 @@ Int32 TestPage46()
 Int32 TestPage48()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::TableData> dfInfoPre;
 	NN<Data::TableData> dfInfoPost;
@@ -618,8 +618,8 @@ Int32 TestPage48()
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
 			UInt32 thresholdPost = 50;
-			UOSInt i = 0;
-			UOSInt j = 200;
+			UIntOS i = 0;
+			UIntOS j = 200;
 			Data::VariItem item;
 			Data::VariItem item2;
 			NN<Text::String> id;
@@ -688,7 +688,7 @@ Int32 TestPage48()
 Int32 TestPage52()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
@@ -701,7 +701,7 @@ Int32 TestPage52()
 Int32 TestPage53()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::DataSet> ds;
 	NN<Data::DataSet> ds2;
@@ -714,8 +714,8 @@ Int32 TestPage53()
 			ds.Delete();
 		}
 		Data::VariItem item;
-		UOSInt iRank = 1;
-		UOSInt jRank = 2;
+		UIntOS iRank = 1;
+		UIntOS jRank = 2;
 		Optional<Text::String> iId = nullptr;
 		Optional<Text::String> jId = nullptr;
 		NN<Text::String> s;
@@ -773,7 +773,7 @@ Int32 TestPage53()
 Int32 TestPage54()
 {
 	IO::ConsoleWriter console;
-	UOSInt tsCols[] = {0};
+	UIntOS tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::DataSet> ds;
 	NN<Data::DataSet> ds2;
@@ -786,8 +786,8 @@ Int32 TestPage54()
 			ds.Delete();
 		}
 		Data::VariItem item;
-		UOSInt iRank = 1;
-		UOSInt jRank = 2;
+		UIntOS iRank = 1;
+		UIntOS jRank = 2;
 		Optional<Text::String> iId = nullptr;
 		Optional<Text::String> jId = nullptr;
 		NN<Text::String> s;
@@ -825,8 +825,8 @@ Int32 TestPage54()
 		if (cntsI.GetCount() > 0 && cntsI.GetCount() == cntsJ.GetCount())
 		{
 			Data::ArrayListDbl dx;
-			UOSInt i = 0;
-			UOSInt j = cntsI.GetCount();
+			UIntOS i = 0;
+			UIntOS j = cntsI.GetCount();
 			while (i < j)
 			{
 				Double v = (Double)cntsI.GetItem(i).value - (Double)cntsJ.GetItem(i).value;
@@ -846,7 +846,7 @@ Int32 TestPage54()
 Int32 TestPage81()
 {
 	IO::ConsoleWriter console;
-	UOSInt num = 365*2;
+	UIntOS num = 365*2;
 	Double ave = 0.0;
 	Double std = 1.0;
 	Data::RandomMT19937 random(0);
@@ -857,7 +857,7 @@ Int32 TestPage81()
 	Double xStd = x.StdDev();
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(xAve)->ToCString());
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("標準差:"))->F64(xStd)->ToCString());
-	UOSInt numBin = 21;
+	UIntOS numBin = 21;
 	Data::ChartPlotter chart(0);
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(x), numBin, 0xff000000, 0xff000000);
@@ -873,11 +873,11 @@ Int32 TestPage81()
 	}
 	chart.SavePng(deng, {640, 480}, CSTR("Chapter3-1.png"));
 
-	UOSInt numSample = 30;
-	UOSInt numTrial = 10000;
+	UIntOS numSample = 30;
+	UIntOS numTrial = 10000;
 	Data::ArrayListDbl xTrial;
 	Data::ArrayListDbl xSample;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < numTrial)
 	{
 		xSample.Clear();
@@ -909,7 +909,7 @@ Int32 TestPage81()
 Int32 TestPage112()
 {
 	IO::ConsoleWriter console;
-	//UOSInt n = 8;
+	//UIntOS n = 8;
 	NN<Data::TableData> vertices;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter4/vertices.csv"), 65001, INVALID_INDEX, 0).SetTo(vertices))
 	{
@@ -936,12 +936,12 @@ Int32 TestPage323()
 	return 0;
 }
 
-void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, NN<Data::ArrayListArr<Double>> futureData, UOSInt historySteps, UOSInt futureSteps)
+void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, NN<Data::ArrayListArr<Double>> futureData, UIntOS historySteps, UIntOS futureSteps)
 {
 	UnsafeArray<UnsafeArray<Double>> data;
-	UOSInt i = 0;
-	UOSInt j = srcData->GetCount() - historySteps - futureSteps;
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = srcData->GetCount() - historySteps - futureSteps;
+	UIntOS k;
 	while (i < j)
 	{
 		data = MemAllocArr(UnsafeArray<Double>, historySteps);
@@ -959,7 +959,7 @@ void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<UnsafeA
 
 void FreeDataSet(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData)
 {
-	UOSInt i = historyData->GetCount();
+	UIntOS i = historyData->GetCount();
 	while (i-- > 0)
 	{
 		MemFreeArr(historyData->GetItemNoCheck(i));
@@ -967,13 +967,13 @@ void FreeDataSet(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData)
 	historyData->Clear();
 }
 
-void PredictAll(NN<Data::ML::MLModel> model, NN<Data::ArrayListArr<UnsafeArray<Double>>> xTest, NN<Data::ArrayListArr<Double>> yTest, UOSInt historySteps, Text::CStringNN imgFileName)
+void PredictAll(NN<Data::ML::MLModel> model, NN<Data::ArrayListArr<UnsafeArray<Double>>> xTest, NN<Data::ArrayListArr<Double>> yTest, UIntOS historySteps, Text::CStringNN imgFileName)
 {
 	UnsafeArray<UnsafeArray<Double>> dataArr = MemAllocArr(UnsafeArray<Double>, historySteps);
 	UnsafeArray<UnsafeArray<Double>> xTmp = xTest->GetItemNoCheck(0);
-	UOSInt i = 0;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j;
+	UIntOS k;
 	while (i < historySteps)
 	{
 		dataArr[i] = xTmp[i];
@@ -1016,11 +1016,11 @@ Int32 TestPage330()
 		IO::LogTool log;
 		Data::ArrayListDbl trainData;
 		Data::ArrayListDbl testData;
-		UOSInt splitIndex = data.GetCount() * 3 / 4;
+		UIntOS splitIndex = data.GetCount() * 3 / 4;
 		data.Subset(trainData, 0, splitIndex);
 		data.Subset(testData, splitIndex);
-		UOSInt historySteps = 10;
-		UOSInt futureSteps = 5;
+		UIntOS historySteps = 10;
+		UIntOS futureSteps = 5;
 		Data::ArrayListArr<UnsafeArray<Double>> xTrain;
 		Data::ArrayListArr<Double> yTrain;
 		Data::ArrayListArr<UnsafeArray<Double>> xTest;
@@ -1029,8 +1029,8 @@ Int32 TestPage330()
 		CreateDataSet(trainData, xTrain, yTrain, historySteps, futureSteps);
 		CreateDataSet(testData, xTest, yTest, historySteps, futureSteps);
 
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Data::ML::MLModel> model;
 		if (Data::ML::Keras::LoadModel(CSTR("/home/sswroom/Temp/cnn_model.json"), log).SetTo(model))
 		{
@@ -1082,11 +1082,11 @@ Int32 TestPage331()
 		IO::LogTool log;
 		Data::ArrayListDbl trainData;
 		Data::ArrayListDbl testData;
-		UOSInt splitIndex = data.GetCount() * 3 / 4;
+		UIntOS splitIndex = data.GetCount() * 3 / 4;
 		data.Subset(trainData, 0, splitIndex);
 		data.Subset(testData, splitIndex);
-		UOSInt historySteps = 10;
-		UOSInt futureSteps = 5;
+		UIntOS historySteps = 10;
+		UIntOS futureSteps = 5;
 		Data::ArrayListArr<UnsafeArray<Double>> xTrain;
 		Data::ArrayListArr<Double> yTrain;
 		Data::ArrayListArr<UnsafeArray<Double>> xTest;
@@ -1109,7 +1109,7 @@ Int32 TestPage331()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 81;
+	UIntOS page = 81;
 	switch (page)
 	{
 	// Chapter 1

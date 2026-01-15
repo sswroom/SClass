@@ -195,8 +195,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<TopicStatus> topicSt;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
@@ -218,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj
 			}
 			me->lvTopic->AddItem(topicSt->topic, topicSt);
 			me->lvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
-			sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+			sptr = Text::StrUIntOS(sbuff, topicSt->recvCnt);
 			me->lvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			dt.SetTicks(topicSt->lastRecvTime);
 			dt.ToLocalTime();
@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj
 			{
 				topicSt->updated = false;
 				me->lvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
-				sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+				sptr = Text::StrUIntOS(sbuff, topicSt->recvCnt);
 				me->lvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				dt.SetTicks(topicSt->lastRecvTime);
 				dt.ToLocalTime();
@@ -292,7 +292,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 		topicSt->lastRecvTime = dt.ToTicks();
 	}
 	Double dVal;
-	UOSInt i;
+	UIntOS i;
 	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = topicSt->lastRecvTime;
 	if (Text::StrToDouble(topicSt->currValue, dVal))
 	{
@@ -305,7 +305,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 		if (i != INVALID_INDEX && i > 0)
 		{
 			sb.ClearStr();
-			sb.AppendC(topicSt->currValue, (UOSInt)i);
+			sb.AppendC(topicSt->currValue, (UIntOS)i);
 			Text::StrToDouble(sb.ToString(), dVal);
 		}
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
@@ -317,7 +317,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 {
 	Optional<Media::DrawImage> dimg;
 	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Math::Size2D<UOSInt> sz = this->pbTopic->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->pbTopic->GetSizeP();
 	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
@@ -344,16 +344,16 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 			{
 				if (currTopic->recvCnt < 256)
 				{
-					UOSInt recvCnt = currTopic->recvCnt;
+					UIntOS recvCnt = currTopic->recvCnt;
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewDataDate(currTopic->dateList, recvCnt), 0xFFFF0000);
-					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 					DEL_CLASS(chart);
 				}
 				else
 				{
-					UOSInt recvCnt = currTopic->recvCnt;
+					UIntOS recvCnt = currTopic->recvCnt;
 					Int64 *dateList = MemAlloc(Int64, 256);
 					Double *valueList = MemAlloc(Double, 256);
 					if (recvCnt & 255)
@@ -372,7 +372,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewDataDate(currTopic->dateList, 256), 0xFFFF0000);
-					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 					DEL_CLASS(chart);
 					MemFree(dateList);
 					MemFree(valueList);
@@ -488,7 +488,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 {
 	this->ServerStop();
-	UOSInt i;
+	UIntOS i;
 	NN<TopicStatus> topicSt;
 	NN<const Data::ArrayListNN<TopicStatus>> topicList;
 	NN<Media::DrawImage> img;

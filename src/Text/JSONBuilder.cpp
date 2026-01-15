@@ -65,12 +65,12 @@ void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)
 		}
 		if (sptr - sbuff >= 254)
 		{
-			this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 void Text::JSONBuilder::AppendStrW(UnsafeArray<const WChar> val)
@@ -113,12 +113,12 @@ void Text::JSONBuilder::AppendStrW(UnsafeArray<const WChar> val)
 		}
 		if (sptr - sbuff >= 250)
 		{
-			this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 void Text::JSONBuilder::AppendDouble(Double val)
@@ -172,13 +172,13 @@ void Text::JSONBuilder::AppendCoord2D(Math::Coord2DDbl coord)
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendCoord2DArray(UnsafeArray<const Math::Coord2DDbl> coordList, UOSInt nPoints)
+void Text::JSONBuilder::AppendCoord2DArray(UnsafeArray<const Math::Coord2DDbl> coordList, UIntOS nPoints)
 {
 	this->sb.AppendUTF8Char('[');
 	if (nPoints > 0)
 	{
 		this->AppendCoord2D(coordList[0]);
-		UOSInt i = 1;
+		UIntOS i = 1;
 		while (i < nPoints)
 		{
 			this->sb.AppendUTF8Char(',');
@@ -197,13 +197,13 @@ void Text::JSONBuilder::AppendCoordPL(NN<Math::Geometry::Polyline> pl)
 	if (it.HasNext())
 	{
 		ls = it.Next();
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		while (it.HasNext())
 		{
 			ls = it.Next();
-			UOSInt nPoints;
+			UIntOS nPoints;
 			UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 			this->sb.AppendUTF8Char(',');
 			this->AppendCoord2DArray(ptList, nPoints);
@@ -220,13 +220,13 @@ void Text::JSONBuilder::AppendCoordPG(NN<Math::Geometry::Polygon> pg)
 	if (it.HasNext())
 	{
 		lr = it.Next();
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<const Math::Coord2DDbl> ptList = lr->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		while (it.HasNext())
 		{
 			lr = it.Next();
-			UOSInt nPoints;
+			UIntOS nPoints;
 			UnsafeArray<const Math::Coord2DDbl> ptList = lr->GetPointListRead(nPoints);
 			this->sb.AppendUTF8Char(',');
 			this->AppendCoord2DArray(ptList, nPoints);
@@ -249,7 +249,7 @@ void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 	{
 		NN<Math::Geometry::LineString> ls = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"LineString\",\"coordinates\":"));
-		UOSInt nPoints;
+		UIntOS nPoints;
 		UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		this->sb.AppendUTF8Char('}');
@@ -556,8 +556,8 @@ Bool Text::JSONBuilder::ArrayAdd(NN<Text::JSONArray> arr)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
-	UOSInt i = 0;
-	UOSInt j = arr->GetArrayLength();
+	UIntOS i = 0;
+	UIntOS j = arr->GetArrayLength();
 	NN<Text::JSONBase> json;
 	while (i < j)
 	{
@@ -642,7 +642,7 @@ Bool Text::JSONBuilder::ArrayEnd()
 {
 	if (this->currType != OT_ARRAY)
 		return false;
-	UOSInt i = this->objTypes.GetCount();
+	UIntOS i = this->objTypes.GetCount();
 	if (i <= 0)
 		return false;
 	this->currType = this->objTypes.RemoveAt(i - 1);
@@ -895,8 +895,8 @@ Bool Text::JSONBuilder::ObjectAddArrayStr(Text::CStringNN name, Text::CStringNN 
 	{
 		Data::ArrayListStringNN strs;
 		Text::StringTool::SplitAsNewString(value, splitChar, strs);
-		UOSInt i = 0;
-		UOSInt j = strs.GetCount();
+		UIntOS i = 0;
+		UIntOS j = strs.GetCount();
 		while (i < j)
 		{
 			if (i > 0)
@@ -1002,8 +1002,8 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data:
 	}
 	else
 	{
-		UOSInt i = 0;
-		UOSInt j = nni32Arr->GetCount();
+		UIntOS i = 0;
+		UIntOS j = nni32Arr->GetCount();
 		this->sb.AppendC(UTF8STRC(":["));
 		while (i < j)
 		{
@@ -1052,8 +1052,8 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Dat
 	else
 	{
 		Math::Coord2DDbl coord;
-		UOSInt i = 0;
-		UOSInt j = nncoordArr->GetCount();
+		UIntOS i = 0;
+		UIntOS j = nncoordArr->GetCount();
 		this->sb.AppendC(UTF8STRC(":["));
 		while (i < j)
 		{
@@ -1266,7 +1266,7 @@ Bool Text::JSONBuilder::ObjectEnd()
 {
 	if (this->currType != OT_OBJECT)
 		return false;
-	UOSInt i = this->objTypes.GetCount();
+	UIntOS i = this->objTypes.GetCount();
 	if (i <= 0)
 		return false;
 	this->currType = this->objTypes.RemoveAt(i - 1);
@@ -1277,7 +1277,7 @@ Bool Text::JSONBuilder::ObjectEnd()
 
 Text::CStringNN Text::JSONBuilder::Build()
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->currType == OT_ARRAY)
 	{
 		this->sb.AppendUTF8Char(']');

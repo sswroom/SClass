@@ -24,9 +24,9 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual UOSInt AddSource(NN<Media::MediaSource> src, Int32 syncTime); //-1 = fail
-		virtual Optional<Media::MediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
-		virtual void KeepStream(UOSInt index, Bool toKeep);
+		virtual UIntOS AddSource(NN<Media::MediaSource> src, Int32 syncTime); //-1 = fail
+		virtual Optional<Media::MediaSource> GetStream(UIntOS index, OptOut<Int32> syncTime);
+		virtual void KeepStream(UIntOS index, Bool toKeep);
 
 		Optional<Media::ChapterInfo> GetChapterInfo() const;
 		void SetChapterInfo(Optional<Media::ChapterInfo> chapters, Bool releaseChapter);

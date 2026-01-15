@@ -13,7 +13,7 @@ typedef struct
 {
 	AnyType cliData;
 	Optional<Text::String> cliId;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt8 recvBuff[20000];
 	UInt16 keepAlive;
 	Bool connected;
@@ -52,7 +52,7 @@ void __stdcall Net::MQTTBroker::OnClientReady(NN<Net::TCPClient> cli, AnyType us
 {
 	NN<Listener> listener = userObj.GetNN<Listener>();
 	listener->cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
-	UOSInt cnt = listener->cliMgr->GetClientCount();
+	UIntOS cnt = listener->cliMgr->GetClientCount();
 	if (cnt > listener->me->infoCliMax)
 	{
 		listener->me->infoCliMax = cnt;
@@ -80,26 +80,26 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 	NN<Net::MQTTBroker> me = userObj.GetNN<Net::MQTTBroker>();
 	Data::DateTime *dt;
 	UTF8Char sbuff[64];
-	UOSInt i;
-	UOSInt j;
-	UOSInt totalCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS totalCnt;
 	NN<Listener> listener;
 	NEW_CLASS(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
-	i = (UOSInt)(dt->ToString(Text::StrConcatC(sbuff, UTF8STRC("SMQTT ")), "yyyyMMdd") - sbuff);
+	i = (UIntOS)(dt->ToString(Text::StrConcatC(sbuff, UTF8STRC("SMQTT ")), "yyyyMMdd") - sbuff);
 	me->UpdateTopic(CSTR("$SYS/broker/version"), sbuff, i, true);
 	me->sysInfoRunning = true;
 	while (!me->sysInfoToStop)
 	{
 		dt->SetCurrTimeUTC();
-		i = (UOSInt)(Text::StrConcatC(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), UTF8STRC(" seconds")) - sbuff);
+		i = (UIntOS)(Text::StrConcatC(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), UTF8STRC(" seconds")) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/uptime"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/load/bytes/received"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoTotalSent) - sbuff);
+		i = (UIntOS)(Text::StrUInt64(sbuff, me->infoTotalSent) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/load/bytes/sent"), sbuff, i, true);
 
 		totalCnt = 0;
@@ -116,34 +116,34 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 				totalCnt += listener->listener->GetClientCount();
 			}
 		}
-		i = (UOSInt)(Text::StrUOSInt(sbuff, totalCnt) - sbuff);
+		i = (UIntOS)(Text::StrUIntOS(sbuff, totalCnt) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/clients/connected"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/clients/disconnected"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoCliMax) - sbuff);
+		i = (UIntOS)(Text::StrUInt64(sbuff, me->infoCliMax) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/clients/maximum"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgRecv) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoMsgRecv) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/received"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgSent) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoMsgSent) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/sent"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubDrop) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoPubDrop) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/dropped"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubRecv) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoPubRecv) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/received"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubSent) - sbuff);
+		i = (UIntOS)(Text::StrInt64(sbuff, me->infoPubSent) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/sent"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrUOSInt(sbuff, me->topicMap.GetCount()) - sbuff);
+		i = (UIntOS)(Text::StrUIntOS(sbuff, me->topicMap.GetCount()) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/messages/retained/count"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrUOSInt(sbuff, me->subscribeList.GetCount()) - sbuff);
+		i = (UIntOS)(Text::StrUIntOS(sbuff, me->subscribeList.GetCount()) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/subscriptions/count"), sbuff, i, true);
 
 		me->sysInfoEvt.Wait(10000);
@@ -153,14 +153,14 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
 	UInt8 packet2[256];
-	UOSInt i;
-	UOSInt j;
-	UOSInt sent;
+	UIntOS i;
+	UIntOS j;
+	UIntOS sent;
 	Sync::Interlocked::IncrementI64(this->infoMsgRecv);
 	switch (cmdType >> 4)
 	{
@@ -176,7 +176,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				Text::StringBuilderUTF8 sb;
 				Text::StringBuilderUTF8 sb2;
 				sb.AppendC(UTF8STRC("Packet Type = CONNECT, size = "));
-				sb.AppendUOSInt(cmdSize);
+				sb.AppendUIntOS(cmdSize);
 				sb.AppendC(UTF8STRC(" bytes, protoName = "));
 				i = 0;
 				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
@@ -261,7 +261,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						SDEL_STRING(userName);
 						break;
 					}
-					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
+					UIntOS pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
 						sb.AppendC(UTF8STRC(", data = "));
@@ -335,7 +335,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						SDEL_STRING(userName);
 						break;
 					}
-					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
+					UIntOS pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
 						SDEL_STRING(clientId);
@@ -418,7 +418,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = CONNACK, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(", data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -429,7 +429,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			Text::StringBuilderUTF8 topicSb;
 			UInt16 packetId = 0;
 			const UInt8 *message;
-			UOSInt messageSize;
+			UIntOS messageSize;
 			Sync::Interlocked::IncrementI64(this->infoPubRecv);
 			if (this->log->HasHandler())
 			{
@@ -551,7 +551,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBACK, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -562,7 +562,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBREC, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -573,7 +573,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBREL, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -584,7 +584,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBCOMP, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -596,7 +596,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			UInt16 packetId = 0;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = SUBSCRIBE, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(", Packet Id = "));
 			if (cmdSize >= 2)
 			{
@@ -693,7 +693,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = SUBACK, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -704,7 +704,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = UNSUBSCRIBE, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -715,7 +715,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = UNSUBACK, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -726,7 +726,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PINGREQ, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -740,7 +740,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PINGRESP, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -751,7 +751,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = DISCONNECT, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -762,7 +762,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = Reserved, size = "));
-			sb.AppendUOSInt(cmdSize);
+			sb.AppendUIntOS(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
@@ -771,11 +771,11 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 	}
 }
 
-void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 
-void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize, Bool suppressUnchg)
+void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize, Bool suppressUnchg)
 {
 	NN<TopicInfo> topicInfo;
 	Bool unchanged = false;
@@ -800,7 +800,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8
 		}
 		else
 		{
-			UOSInt i = msgSize;
+			UIntOS i = msgSize;
 			unchanged = true;
 			while (i-- > 0)
 			{
@@ -832,7 +832,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8
 	}
 
 	NN<SubscribeInfo> subscribe;
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
@@ -853,9 +853,9 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 	UInt8 packet2[128];
 	UInt8 *packetBuff1;
 	UInt8 *packetBuff2;
-	UOSInt i;
-	UOSInt sent;
-	UOSInt topicLen = topic->topic->leng;
+	UIntOS i;
+	UIntOS sent;
+	UIntOS topicLen = topic->topic->leng;
 	Sync::Interlocked::IncrementI64(this->infoPubSent);
 	Sync::Interlocked::IncrementI64(this->infoMsgSent);
 	if (topicLen + topic->msgSize + 4 <= 128)
@@ -899,17 +899,17 @@ AnyType Net::MQTTBroker::StreamCreated(NN<IO::Stream> stm)
 void Net::MQTTBroker::StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	NN<ClientData> data = stmData.GetNN<ClientData>();
-	Sync::Interlocked::AddI64(this->infoTotalRecv, (OSInt)buff.GetSize());
+	Sync::Interlocked::AddI64(this->infoTotalRecv, (IntOS)buff.GetSize());
 
 	if (this->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received "));
-		sb.AppendUOSInt(buff.GetSize());
+		sb.AppendUIntOS(buff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	UOSInt i;
+	UIntOS i;
 	if (data->buffSize > 0)
 	{
 		MemCopyNO(&data->recvBuff[data->buffSize], buff.Arr().Ptr(), buff.GetSize());
@@ -943,7 +943,7 @@ void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 	OPTSTR_DEL(data->cliId);
 	MemFree(data.Ptr());
 
-	UOSInt i;
+	UIntOS i;
 	NN<SubscribeInfo> subscribe;
 	Sync::MutexUsage mutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
@@ -1008,7 +1008,7 @@ Net::MQTTBroker::~MQTTBroker()
 			Sync::SimpleThread::Sleep(1);
 		}
 	}
-	UOSInt i = this->listeners.GetCount();
+	UIntOS i = this->listeners.GetCount();
 	NN<Listener> listener;
 	while (i-- > 0)
 	{
@@ -1093,7 +1093,7 @@ Bool Net::MQTTBroker::Start()
 {
 	Bool found = false;
 	NN<Listener> listener;
-	UOSInt i = this->listeners.GetCount();
+	UIntOS i = this->listeners.GetCount();
 	while (i-- > 0)
 	{
 		listener = this->listeners.GetItemNoCheck(i);
@@ -1144,8 +1144,8 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, AnyType
 	if (this->topicUpdHdlr)
 	{
 		NN<TopicInfo> topic;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Sync::MutexUsage mutUsage(this->topicMut);
 		i = 0;
 		j = this->topicMap.GetCount();

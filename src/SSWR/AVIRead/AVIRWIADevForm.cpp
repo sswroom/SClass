@@ -54,8 +54,8 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(Optional<UI::GUIClientControl> par
 	this->SetCancelButton(this->btnCancel);
 
 	NEW_CLASSNN(this->wiaMgr, Media::WIAManager());
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->wiaMgr->GetDeviceCount();
 	while (i < j)

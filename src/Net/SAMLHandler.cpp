@@ -36,9 +36,9 @@ void Net::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::
 Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response)
 {
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt8 signBuff[512];
-	UOSInt signSize;
+	UIntOS signSize;
 	NN<Net::SSLEngine> ssl;
 	NN<Crypto::Cert::X509PrivKey> privKey;
 	NN<Crypto::Cert::X509Key> key;
@@ -154,20 +154,20 @@ Net::SAMLSignError Net::SAMLHandler::VerifyHTTPRedirect(NN<Net::SSLEngine> ssl, 
 	{
 		return SAMLSignError::QueryStringGetError;
 	}
-	UOSInt i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&Signature="));
+	UIntOS i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("&Signature="));
 	if (i == INVALID_INDEX)
 	{
 		return SAMLSignError::QueryStringSearchError;
 	}
-	UOSInt j = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&SigAlg="));
+	UIntOS j = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("&SigAlg="));
 	if (j != INVALID_INDEX && j > i)
 	{
-		MemCopyO(&sbuff[i], &sbuff[j], (UOSInt)(sptr - &sbuff[j]));
-		i += (UOSInt)(sptr - &sbuff[j]);
+		MemCopyO(&sbuff[i], &sbuff[j], (UIntOS)(sptr - &sbuff[j]));
+		i += (UIntOS)(sptr - &sbuff[j]);
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, signature->leng);
-	UOSInt signSize = b64.DecodeBin(signature->ToCString(), signBuff);
+	UIntOS signSize = b64.DecodeBin(signature->ToCString(), signBuff);
 	NN<Crypto::Cert::X509Key> key;
 	if (!signCert->GetNewPublicKey().SetTo(key))
 	{
@@ -190,7 +190,7 @@ void Net::SAMLHandler::ParseSAMLLogoutResponse(NN<SAMLLogoutResponse> saml, NN<I
 	NN<Text::XMLAttrib> attr;
 	Text::CStringNN cs;
 	NN<Text::String> s;
-	UOSInt i;
+	UIntOS i;
 	Text::XMLReader reader(this->encFact, stm, Text::XMLReader::PM_XML);
 	if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutResponse")))
 	{
@@ -236,7 +236,7 @@ void Net::SAMLHandler::ParseSAMLLogoutRequest(NN<SAMLLogoutRequest> saml, NN<IO:
 	NN<Text::XMLAttrib> attr;
 	Text::CStringNN cs;
 	NN<Text::String> s;
-	UOSInt i;
+	UIntOS i;
 	Text::XMLReader reader(this->encFact, stm, Text::XMLReader::PM_XML);
 	if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutRequest")))
 	{
@@ -504,7 +504,7 @@ void Net::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
 	this->hashType = hashType;
 }
 
-void Net::SAMLHandler::SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UOSInt nAuthMethods)
+void Net::SAMLHandler::SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UIntOS nAuthMethods)
 {
 	if (this->nAuthMethods < nAuthMethods)
 	{
@@ -571,7 +571,7 @@ Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 		else
 		{
 			sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"minimum\">"));
-			UOSInt i = 0;
+			UIntOS i = 0;
 			while (i < this->nAuthMethods)
 			{
 				sb.Append(CSTR("<saml:AuthnContextClassRef>"));
@@ -666,12 +666,12 @@ Bool Net::SAMLHandler::GetMetadataXML(NN<Text::StringBuilderUTF8> sb)
 		sptr = metadataPath->ConcatTo(sptr);
 		Text::StrReplace(sbuff, ':', '_');
 		Text::StrReplace(sbuff, '/', '_');
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC("\" entityID=\""));
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
 		sptr = serverHost->ConcatTo(sptr);
 		sptr = metadataPath->ConcatTo(sptr);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC("\">"));
 		sb->AppendC(UTF8STRC("<md:SPSSODescriptor AuthnRequestsSigned=\"true\" WantAssertionsSigned=\"true\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">"));
 		sb->AppendC(UTF8STRC("<md:KeyDescriptor use=\"signing\">"));
@@ -857,8 +857,8 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 			sb.Append(CSTR("<br/>"));
 			sb.Append(CSTR("<font color=\"red\">SessionIndex:</font> "));
 			NN<const Data::ArrayListStringNN> sessionIndex = msg->GetSessionIndex();
-			UOSInt i = 0;
-			UOSInt j = sessionIndex->GetCount();
+			UIntOS i = 0;
+			UIntOS j = sessionIndex->GetCount();
 			while (i < j)
 			{
 				if (i > 0) sb.Append(CSTR("<br/>"));
@@ -912,7 +912,7 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> s;
 	NN<SAMLSSOResponse> saml;
@@ -935,7 +935,7 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, s->leng);
-		UOSInt buffSize = b64.DecodeBin(s->ToCString(), buff);
+		UIntOS buffSize = b64.DecodeBin(s->ToCString(), buff);
 		buff[buffSize] = 0;
 		NN<Crypto::Cert::X509Key> key;
 		NN<Crypto::Cert::X509PrivKey> privKey;
@@ -1270,14 +1270,14 @@ NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::We
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlResponse->leng);
-	UOSInt dataSize = b64.DecodeBin(samlResponse->ToCString(), dataBuff);
+	UIntOS dataSize = b64.DecodeBin(samlResponse->ToCString(), dataBuff);
 	IO::MemoryStream mstm;
 	{
 		Data::Compress::Inflater inflater(mstm, false);
 		inflater.WriteCont(dataBuff, dataSize);
 	}
 	NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::Success, CSTR("Decompressed")));
-	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
+	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength()));
 
 	mstm.SeekFromBeginning(0);
 	this->ParseSAMLLogoutResponse(saml, mstm);
@@ -1349,14 +1349,14 @@ NN<Net::SAMLLogoutRequest> Net::SAMLHandler::DoLogoutReq(NN<Net::WebServer::WebR
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlRequest->leng);
-	UOSInt dataSize = b64.DecodeBin(samlRequest->ToCString(), dataBuff);
+	UIntOS dataSize = b64.DecodeBin(samlRequest->ToCString(), dataBuff);
 	IO::MemoryStream mstm;
 	{
 		Data::Compress::Inflater inflater(mstm, false);
 		inflater.WriteCont(dataBuff, dataSize);
 	}
 	NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::Success, CSTR("Decompressed")));
-	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
+	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength()));
 	mstm.SeekFromBeginning(0);
 	this->ParseSAMLLogoutRequest(saml, mstm);
 	MemFreeArr(dataBuff);

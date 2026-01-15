@@ -33,7 +33,7 @@ gboolean UI::GTK::GTKVSplitter::SignalMouseDown(GtkWidget *widget, GdkEvent *eve
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseDown(btn, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
+			me->EventMouseDown(btn, Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 		}
 	}
 	return false;
@@ -67,7 +67,7 @@ gboolean UI::GTK::GTKVSplitter::SignalMouseUp(GtkWidget *widget, GdkEvent *event
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseUp(btn, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
+			me->EventMouseUp(btn, Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 		}
 	}
 	return false;
@@ -92,12 +92,12 @@ UI::GTK::GTKVSplitter::~GTKVSplitter()
 {
 }
 
-OSInt UI::GTK::GTKVSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKVSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GTK::GTKVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::GTK::GTKVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
@@ -108,7 +108,7 @@ void UI::GTK::GTKVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math
 	}
 }
 
-void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
@@ -117,11 +117,11 @@ void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 		{
 			NN<UI::GUIControl> ctrl;
 			Bool foundThis = false;
-			OSInt drawY = pos.y - this->dragY;
+			IntOS drawY = pos.y - this->dragY;
 			pos = this->GetPositionP();
 			drawY += pos.y;
-			Math::Size2D<UOSInt> sz;
-			UOSInt i = nnparent->GetChildCount();
+			Math::Size2D<UIntOS> sz;
+			UIntOS i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
 				if (nnparent->GetChild(i).SetTo(ctrl))
@@ -137,7 +137,7 @@ void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+							ctrl->SetAreaP(pos.x, drawY, pos.x + (IntOS)sz.x, pos.y + (IntOS)sz.y, false);
 							nnparent->UpdateChildrenSize(true);
 							break;
 						}
@@ -145,7 +145,7 @@ void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
+							ctrl->SetAreaP(pos.x, pos.y, pos.x + (IntOS)sz.x, drawY, false);
 							nnparent->UpdateChildrenSize(true);
 							break;
 						}

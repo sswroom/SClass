@@ -53,17 +53,17 @@ NN<Text::String> Text::VSContainer::GetContainerName() const
 	return this->contName;
 }
 
-UOSInt Text::VSContainer::GetChildCount() const
+UIntOS Text::VSContainer::GetChildCount() const
 {
 	return this->childList.GetCount();
 }
 
-NN<Text::CodeObject> Text::VSContainer::GetChildNoCheck(UOSInt index) const
+NN<Text::CodeObject> Text::VSContainer::GetChildNoCheck(UIntOS index) const
 {
 	return this->childList.GetItemNoCheck(index);
 }
 
-Optional<Text::CodeObject> Text::VSContainer::GetChildObj(UOSInt index) const
+Optional<Text::CodeObject> Text::VSContainer::GetChildObj(UIntOS index) const
 {
 	return this->childList.GetItem(index);
 }
@@ -77,17 +77,17 @@ Text::VSProject::VSProject(Text::CStringNN name, VisualStudioVersion ver) : Text
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &name.v[i + 1], name.leng - i - 1);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
 		sptr = &sbuff[i];
 	}
 	this->ver = ver;
-	this->projName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	this->projName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Text::VSProject::~VSProject()
@@ -124,17 +124,17 @@ NN<Text::String> Text::VSProject::GetContainerName() const
 	return this->projName;
 }
 
-UOSInt Text::VSProject::GetChildCount() const
+UIntOS Text::VSProject::GetChildCount() const
 {
 	return this->childList.GetCount();
 }
 
-NN<Text::CodeObject> Text::VSProject::GetChildNoCheck(UOSInt index) const
+NN<Text::CodeObject> Text::VSProject::GetChildNoCheck(UIntOS index) const
 {
 	return this->childList.GetItemNoCheck(index);
 }
 
-Optional<Text::CodeObject> Text::VSProject::GetChildObj(UOSInt index) const
+Optional<Text::CodeObject> Text::VSProject::GetChildObj(UIntOS index) const
 {
 	return this->childList.GetItem(index);
 }

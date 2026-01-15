@@ -41,11 +41,11 @@ void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 	Int32 i;
 	UInt32 refStart;
 	UInt32 audStartTime;	
-	UOSInt readBuffLeng = BUFFLENG;
-	UOSInt outBuffLeng;
-	UOSInt outBitPerSample;
-	UOSInt outNChannels;
-	UOSInt minLeng;
+	UIntOS readBuffLeng = BUFFLENG;
+	UIntOS outBuffLeng;
+	UIntOS outBitPerSample;
+	UIntOS outNChannels;
+	UIntOS minLeng;
 	UInt32 thisT;
 	UInt32 lastT;
 
@@ -96,11 +96,11 @@ void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 		lastT = thisT = GetCurrTime(me->hand);
 		refStart = thisT - audStartTime;
 
-		UOSInt buffSize[2];
-		UOSInt outSize[2];
+		UIntOS buffSize[2];
+		UIntOS outSize[2];
 		UInt8 *outBuff[2];
-		OSInt nextBlock;
-		UOSInt readSize = 0;
+		IntOS nextBlock;
+		UIntOS readSize = 0;
 		UInt8 *readBuff = 0;
 		Bool isFirst = true;
 		if (me->dataConv)
@@ -183,7 +183,7 @@ void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 						
 					}
 				}
-				i = (Int32)(i * (OSInt)(outBitPerSample >> 3) * (OSInt)outNChannels);
+				i = (Int32)(i * (IntOS)(outBitPerSample >> 3) * (IntOS)outNChannels);
 				while (i > 0)
 				{
 					if (buffSize[nextBlock] == 0)
@@ -192,7 +192,7 @@ void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 						me->audsrc->Stop();
 						break;
 					}
-					if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
+					if ((UIntOS)i >= buffSize[nextBlock] - outSize[nextBlock])
 					{
 						err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
 						if (err < 0)
@@ -412,7 +412,7 @@ Bool Media::PulseAudioRenderer::GetDeviceInfo(NN<DeviceInfo> devInfo)
 	return true;
 }
 
-UOSInt Media::PulseAudioRenderer::GetDeviceCount()
+UIntOS Media::PulseAudioRenderer::GetDeviceCount()
 {
 	DeviceInfo devInfo;
 	devInfo.sbuff = nullptr;
@@ -422,7 +422,7 @@ UOSInt Media::PulseAudioRenderer::GetDeviceCount()
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::PulseAudioRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::PulseAudioRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	DeviceInfo devInfo;
 	devInfo.sbuff = buff;
@@ -645,7 +645,7 @@ void Media::PulseAudioRenderer::SetBufferTime(UInt32 ms)
 	}*/
 }
 
-void Media::PulseAudioRenderer::WriteStream(UOSInt length)
+void Media::PulseAudioRenderer::WriteStream(UIntOS length)
 {
 	//////////////////////////////////////
 }

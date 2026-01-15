@@ -3,9 +3,9 @@
 #include "Math/LanczosFilter.h"
 #include <float.h>
 
-Math::LanczosFilter::LanczosFilter(UOSInt nTap)
+Math::LanczosFilter::LanczosFilter(UIntOS nTap)
 {
-	this->nTap = UOSInt2Double(nTap);
+	this->nTap = UIntOS2Double(nTap);
 	this->iTap = 2 / this->nTap;
 }
 

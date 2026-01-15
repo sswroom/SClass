@@ -10,13 +10,13 @@ namespace Media
 		UInt8 *fontBuff;
 
 	public:
-		MSFontRenderer(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UOSInt buffSize);
+		MSFontRenderer(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize);
 		virtual ~MSFontRenderer();
 
 		Bool IsError();
 		virtual UTF32Char GetMinChar() const;
 		virtual UTF32Char GetMaxChar() const;
-		virtual Optional<Media::StaticImage> CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const;
+		virtual Optional<Media::StaticImage> CreateImage(UTF32Char charCode, Math::Size2D<UIntOS> targetSize) const;
 	};
 }
 #endif

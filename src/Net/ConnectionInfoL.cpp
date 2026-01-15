@@ -27,7 +27,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 {
 	ConnectionData *data = (ConnectionData*)info;
 	ifreq ifr;
-	UOSInt nameLen = Text::StrCharCntCh(data->name);
+	UIntOS nameLen = Text::StrCharCntCh(data->name);
 	Text::StrConcatC(ifr.ifr_name, data->name, nameLen);
 	UInt8 buff[64];
 
@@ -143,7 +143,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		sb.AppendSlow((const UTF8Char*)data->name);
 		sb.AppendC(UTF8STRC("/address"));
 	
-		UOSInt readSize;
+		UIntOS readSize;
 		{
 			IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			readSize = fs.Read(BYTEARR(buff).WithSize(63));

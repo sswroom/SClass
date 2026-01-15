@@ -11,28 +11,28 @@ namespace Media
 		{
 		protected:
 			Double osSize;
-			UOSInt odSize;
-			OSInt osStep;
-			UnsafeArrayOpt<OSInt> oIndex;
+			UIntOS odSize;
+			IntOS osStep;
+			UnsafeArrayOpt<IntOS> oIndex;
 			UnsafeArrayOpt<Int64> oWeight;
-			UOSInt oTap;
+			UIntOS oTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> oFilter;
 
 			Double esSize;
-			UOSInt edSize;
-			OSInt esStep;
-			UnsafeArrayOpt<OSInt> eIndex;
+			UIntOS edSize;
+			IntOS esStep;
+			UnsafeArrayOpt<IntOS> eIndex;
 			UnsafeArrayOpt<Int64> eWeight;
-			UOSInt eTap;
+			UIntOS eTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> eFilter;
 
 			void DestoryVertO();
 			void DestoryVertE();
 		public:
-			DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
+			DeintResizerLR_C32(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
 			virtual ~DeintResizerLR_C32();
 
-			virtual void DeintResize(Media::DeinterlacingResizer::DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown);
+			virtual void DeintResize(Media::DeinterlacingResizer::DeintType dType, UnsafeArray<UInt8> src, UIntOS sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UIntOS dbpl, UIntOS dwidth, UIntOS dheight, Bool upsideDown);
 			virtual void SetDISrcRefLuminance(Double srcRefLuminance);
 		};
 	}

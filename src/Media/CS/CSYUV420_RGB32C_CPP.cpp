@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 
-extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weighti64, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb14i64, Int64 *rgbGammaCorri64)
+extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, UInt8 *inVPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weighti64, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS ystep, IntOS dstep, Int64 *yuv2rgb14i64, Int64 *rgbGammaCorri64)
 {
 	if (tap != 4)
 		return;
@@ -11,12 +11,12 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 	UInt8 *rgbGammaCorr = (UInt8*)rgbGammaCorri64;
 	UInt8 *yuv2rgb = (UInt8*)yuv2rgb14i64;
 
-	OSInt yAdd = ystep - width;
-	OSInt sWidth = width >> 3;
-	OSInt cSub = (width >> 1) - 2;
+	IntOS yAdd = ystep - width;
+	IntOS sWidth = width >> 3;
+	IntOS cSub = (width >> 1) - 2;
 
 	Int32x4 tmpV = PInt32x4SetA(32768);
-	OSInt i;
+	IntOS i;
 	UInt8 *tmpPtr;
 	UInt8 *tmpPtr2;
 	UInt8 *tmpPtr3;
@@ -29,7 +29,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 
 	if (width & 7)
 	{
-		OSInt widthLeft = (width & 7) >> 2;
+		IntOS widthLeft = (width & 7) >> 2;
 		while (height-- > 0)
 		{
 			tmpPtr = csLineBuff2;
@@ -149,7 +149,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 	}
 	else
 	{
-//		OSInt widthLeft = (width & 7) >> 2;
+//		IntOS widthLeft = (width & 7) >> 2;
 		while (height-- > 0)
 		{
 			tmpPtr = csLineBuff2;
@@ -241,24 +241,24 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 	}
 }
 
-extern "C" void CSYUV420_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgbi64, Int64 *rgbGammaCorri64)
+extern "C" void CSYUV420_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS yBpl, IntOS uvBpl, Int64 *yuv2rgbi64, Int64 *rgbGammaCorri64)
 {
 /*	UInt8 *rgbGammaCorr = (UInt8*)rgbGammaCorri64;
 	UInt8 *yuv2rgb = (UInt8*)yuv2rgbi64;
 
-	OSInt yAdd = yBpl - width;
-	OSInt sWidth = width >> 3;
-	OSInt cSub = (width >> 1) - 2;
-	OSInt cSize = width << 3;
-	OSInt uvAdd = uvBpl - (width >> 1);
+	IntOS yAdd = yBpl - width;
+	IntOS sWidth = width >> 3;
+	IntOS cSub = (width >> 1) - 2;
+	IntOS cSize = width << 3;
+	IntOS uvAdd = uvBpl - (width >> 1);
 	Int32 tmpV = 32768;
-	OSInt i;
+	IntOS i;
 	UInt8 *tmpPtr;
 	UInt8 *tmpPtr2;
 	UInt8 *tmpPtr3;
 	Int32 valTmp[8];
 
-	OSInt widthLeft = (width & 7) >> 2;
+	IntOS widthLeft = (width & 7) >> 2;
 
 	tmpPtr = csLineBuff;
 	i = width;
@@ -944,7 +944,7 @@ yv2r8flopexit:
 	ret*/
 }
 
-extern "C" void CSYUV420_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
+extern "C" void CSYUV420_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS yBpl, IntOS uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
 {
 }
 

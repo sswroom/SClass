@@ -60,8 +60,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	UInt64 fileSize;
 	UInt32 fnameLen;
 	Int32 flags;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char fileName[256];
 	UTF8Char srcPath[512];
 	UnsafeArray<UTF8Char> srcPtr;
@@ -99,7 +99,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 			fd->GetRealData(i + 8, customSize, customBuff);
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
-			j = 2 + (UOSInt)customBuff[1];
+			j = 2 + (UIntOS)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
 			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 0, 18, clif, this->ssl));
 			i = 1;
@@ -121,8 +121,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	NN<IO::PackageFile> pf3;
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
-	UOSInt k;
-	UOSInt l;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptrEnd;
 	if (flags & 2)
@@ -131,8 +131,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 		dirSize = ReadUInt64(&hdr[16]);
 		while (dirOfst != 0 && dirSize >= 16 && dirOfst + dirSize <= fileSize)
 		{
-			Data::ByteBuffer dirBuff((UOSInt)dirSize);
-			fd->GetRealData(dirOfst, (UOSInt)dirSize, dirBuff);
+			Data::ByteBuffer dirBuff((UIntOS)dirSize);
+			fd->GetRealData(dirOfst, (UIntOS)dirSize, dirBuff);
 			i = 16;
 			while (i < dirSize)
 			{
@@ -192,7 +192,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	{
 		if (dirOfst < fileSize)
 		{
-			j = (UOSInt)(fileSize - dirOfst);
+			j = (UIntOS)(fileSize - dirOfst);
 			Data::ByteBuffer dirBuff(j);
 			fd->GetRealData(dirOfst, j, dirBuff);
 			i = 0;

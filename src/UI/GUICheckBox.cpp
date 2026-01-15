@@ -16,7 +16,7 @@ Text::CStringNN UI::GUICheckBox::GetObjectClass() const
 
 void UI::GUICheckBox::EventCheckedChange(Bool newState)
 {
-	UOSInt i = this->checkedChangeHdlrs.GetCount();
+	UIntOS i = this->checkedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<CheckedChangeHandler> cb = this->checkedChangeHdlrs.GetItem(i);

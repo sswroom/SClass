@@ -18,8 +18,8 @@ namespace IO
 		AMDGPUManager();
 		~AMDGPUManager();
 
-		UOSInt GetGPUCount();
-		Optional<IO::GPUControl> CreateGPUControl(UOSInt index);
+		UIntOS GetGPUCount();
+		Optional<IO::GPUControl> CreateGPUControl(UIntOS index);
 
 		int Overdrive_Caps(int iAdapterIndex, int *iSupported, int *iEnabled, int *iVersion);
 		int Overdrive5_ThermalDevices_Enum(int iAdapterIndex, int iThermalControllerIndex, void *lpThermalControllerInfo);

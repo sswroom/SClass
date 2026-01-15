@@ -16,7 +16,7 @@ namespace Manage
 
 		Text::CString GetCPUModel();
 		Int32 GetTCC(); //Thermal Control Circuit value
-		Bool GetCPUTemp(UOSInt index, OutParam<Double> temp);
+		Bool GetCPUTemp(UIntOS index, OutParam<Double> temp);
 	};
 }
 

@@ -65,12 +65,12 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 	return 0;
 }
 
-Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle> channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle> channel, UnsafeArray<UInt8> buff, UIntOS maxSize, OutParam<UIntOS> size)
 {
 	return false;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	return 0;
 }

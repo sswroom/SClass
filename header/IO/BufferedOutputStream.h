@@ -9,16 +9,16 @@ namespace IO
 	private:
 		NN<IO::Stream> outStm;
 		UnsafeArray<UInt8> cacheBuff;
-		UOSInt cacheBuffSize;
-		UOSInt cacheSize;
+		UIntOS cacheBuffSize;
+		UIntOS cacheSize;
 		UInt64 totalWrite;
 	public:
-		BufferedOutputStream(NN<IO::Stream> outStm, UOSInt buffSize);
+		BufferedOutputStream(NN<IO::Stream> outStm, UIntOS buffSize);
 		virtual ~BufferedOutputStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR size);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR size);
 
 		virtual Int32 Flush();
 		virtual void Close();

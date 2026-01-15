@@ -8,8 +8,8 @@ void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 	NN<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool found;
 
 	sptr = sbuff;
@@ -75,7 +75,7 @@ void Net::DNSServer::HandleRequest(DNSRequest hdlr, AnyType userObj)
 	this->reqObj = userObj;
 }
 
-void Net::DNSServer::ReplyRequest(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+void Net::DNSServer::ReplyRequest(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UIntOS dataSize)
 {
 	this->svr->SendTo(addr, port, buff, dataSize);
 }

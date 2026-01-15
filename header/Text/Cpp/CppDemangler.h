@@ -15,11 +15,11 @@ namespace Text
 				UnsafeArray<const UTF8Char> funcName;
 				Bool valid;
 				Bool constFunc;
-				UOSInt strId;
+				UIntOS strId;
 				Text::PString substr[32];
-				UOSInt nstrId;
+				UIntOS nstrId;
 				Text::PString nstr[32];
-				UOSInt tplId;
+				UIntOS tplId;
 				Text::PString tplstr[4];
 			};
 

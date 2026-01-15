@@ -22,7 +22,7 @@ UI::GTK::GTKTimer::~GTKTimer()
 	g_source_remove((guint)this->id);
 }
 
-UOSInt UI::GTK::GTKTimer::GetId()
+UIntOS UI::GTK::GTKTimer::GetId()
 {
 	return this->id;
 }

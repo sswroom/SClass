@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::Win::WinTrackBar::WinTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::Win::WinTrackBar::WinTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal) : UI::GUITrackBar(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -30,7 +30,7 @@ UI::Win::WinTrackBar::~WinTrackBar()
 {
 }
 
-OSInt UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -51,20 +51,20 @@ OSInt UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Win::WinTrackBar::SetPos(UOSInt pos)
+void UI::Win::WinTrackBar::SetPos(UIntOS pos)
 {
 	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETPOS, TRUE, (LPARAM)pos);
 	EventScrolled(GetPos());
 //	InvalidateRect((HWND)this->hwnd, 0, false);
 }
 
-void UI::Win::WinTrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
+void UI::Win::WinTrackBar::SetRange(UIntOS minVal, UIntOS maxVal)
 {
 	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMIN, 0, (LPARAM)minVal);
 	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 }
 
-UOSInt UI::Win::WinTrackBar::GetPos()
+UIntOS UI::Win::WinTrackBar::GetPos()
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), TBM_GETPOS, 0, 0);
+	return (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), TBM_GETPOS, 0, 0);
 }

@@ -191,7 +191,7 @@ Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, 
 		d[1] = pt.y - tl.y;
 		d[2] = br.x - pt.x;
 		d[3] = br.y - pt.y;
-		UOSInt minIndex = 0;
+		UIntOS minIndex = 0;
 		if (d[minIndex] > d[1])
 		{
 			minIndex = 1;
@@ -318,7 +318,7 @@ Bool Math::Geometry::VectorImage::Equals(NN<const Vector2D> vec, Bool sameTypeOn
 	return false;
 }
 
-UOSInt Math::Geometry::VectorImage::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::VectorImage::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	if (this->scnCoord)
 	{
@@ -356,7 +356,7 @@ void Math::Geometry::VectorImage::MultiplyCoordinatesXY(Double v)
 	this->size = this->size * v;
 }
 
-UOSInt Math::Geometry::VectorImage::GetPointCount() const
+UIntOS Math::Geometry::VectorImage::GetPointCount() const
 {
 	return 4;
 }
@@ -366,7 +366,7 @@ Bool Math::Geometry::VectorImage::HasArea() const
 	return true;
 }
 
-UOSInt Math::Geometry::VectorImage::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+UIntOS Math::Geometry::VectorImage::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (y >= this->tl.y && y < this->br.y)
 	{
@@ -439,7 +439,7 @@ Int32 Math::Geometry::VectorImage::GetZIndex() const
 	return this->zIndex;
 }
 
-Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi) const
+Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UIntOS scnWidth, UIntOS scnHeight, Double hdpi, Double vdpi) const
 {
 	NN<Media::StaticImage> simg;
 	if (!this->img->GetImage(0).SetTo(simg))
@@ -453,27 +453,27 @@ Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, 
 
 	if (this->size.x == 0 && this->size.y == 0)
 	{
-		sizeX = UOSInt2Double(simg->info.dispSize.x) * hdpi / simg->info.hdpi;
-		sizeY = UOSInt2Double(simg->info.dispSize.y) * vdpi / simg->info.vdpi;
+		sizeX = UIntOS2Double(simg->info.dispSize.x) * hdpi / simg->info.hdpi;
+		sizeY = UIntOS2Double(simg->info.dispSize.y) * vdpi / simg->info.vdpi;
 	}
 	else if (this->size.x == 0)
 	{
-		sizeY = UOSInt2Double(scnHeight) * this->size.y;
-		sizeX = UOSInt2Double(scnHeight) * this->size.y * UOSInt2Double(simg->info.dispSize.x) / UOSInt2Double(simg->info.dispSize.y);
+		sizeY = UIntOS2Double(scnHeight) * this->size.y;
+		sizeX = UIntOS2Double(scnHeight) * this->size.y * UIntOS2Double(simg->info.dispSize.x) / UIntOS2Double(simg->info.dispSize.y);
 	}
 	else if (this->size.y == 0)
 	{
-		sizeX = UOSInt2Double(scnWidth) * this->size.x;
-		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispSize.y) / UOSInt2Double(simg->info.dispSize.x);
+		sizeX = UIntOS2Double(scnWidth) * this->size.x;
+		sizeY = UIntOS2Double(scnWidth) * this->size.x * UIntOS2Double(simg->info.dispSize.y) / UIntOS2Double(simg->info.dispSize.x);
 	}
 	else
 	{
-		sizeX = UOSInt2Double(scnWidth) * this->size.x;
-		sizeY = UOSInt2Double(scnHeight) * this->size.y;
+		sizeX = UIntOS2Double(scnWidth) * this->size.x;
+		sizeY = UIntOS2Double(scnHeight) * this->size.y;
 	}
 
-	scnX = UOSInt2Double(scnWidth) * this->tl.x - sizeX * this->br.x;
-	scnY = UOSInt2Double(scnHeight) * (1 - this->tl.y) - sizeY * (1 - this->br.y);
+	scnX = UIntOS2Double(scnWidth) * this->tl.x - sizeX * this->br.x;
+	scnY = UIntOS2Double(scnHeight) * (1 - this->tl.y) - sizeY * (1 - this->br.y);
 	return Math::RectAreaDbl(scnX, scnY, sizeX, sizeY);
 }
 

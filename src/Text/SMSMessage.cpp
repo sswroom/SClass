@@ -259,7 +259,7 @@ UnsafeArrayOpt<const UTF16Char> Text::SMSMessage::GetContent()
 	return nullptr;
 }
 
-UOSInt Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
+UIntOS Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
 {
 	NN<SMSUserData> ud;
 	UnsafeArray<const UTF16Char> address;
@@ -282,7 +282,7 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
 	*currPtr++ = 0;
 	*currPtr++ = (UInt8)ud->GetDCS();
 	currPtr += ud->GetBytes(currPtr);
-	return (UOSInt)(currPtr - buff);
+	return (UIntOS)(currPtr - buff);
 }
 
 Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UInt8> pduBytes)

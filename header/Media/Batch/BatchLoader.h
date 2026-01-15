@@ -36,9 +36,9 @@ namespace Media
 			Sync::Mutex reqMut;
 			Data::SyncCircularBuffNN<Text::String> fileNames;
 			Data::SyncCircularBuffNN<DataInfo> datas;
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			UnsafeArray<ThreadState> threadStates;
-			UOSInt nextThread;
+			UIntOS nextThread;
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:

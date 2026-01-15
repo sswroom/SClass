@@ -118,7 +118,7 @@ void Media::DDrawRendererLR::CreateSubSurface()
 		ddsd.dwHeight = rc.bottom - rc.top;
 		this->surfaceW = ddsd.dwWidth;
 		this->surfaceH = ddsd.dwHeight;
-		OSInt i = FRAMEBUFFSIZE;
+		IntOS i = FRAMEBUFFSIZE;
 		while (i-- > 0)
 		{
 			HRESULT res = lpDD->CreateSurface( &ddsd, (LPDIRECTDRAWSURFACE7*)&surfaceBuff[i].surface, NULL );
@@ -130,7 +130,7 @@ void Media::DDrawRendererLR::CreateSubSurface()
 
 void Media::DDrawRendererLR::ReleaseSubSurface()
 {
-	OSInt i = FRAMEBUFFSIZE;
+	IntOS i = FRAMEBUFFSIZE;
 	while (i-- > 0)
 	{
 		if (this->surfaceBuff[i].surface)
@@ -143,7 +143,7 @@ void Media::DDrawRendererLR::ReleaseSubSurface()
 
 void Media::DDrawRendererLR::CreateFrameSrcBuff()
 {
-	OSInt i = FRAMESRCSIZE;
+	IntOS i = FRAMESRCSIZE;
 	while (i-- > 0)
 	{
 		this->frameSources[i].frameData = MemAlloc(UInt8, this->frameSrcSize);
@@ -152,7 +152,7 @@ void Media::DDrawRendererLR::CreateFrameSrcBuff()
 
 void Media::DDrawRendererLR::ReleaseFrameSrcBuff()
 {
-	OSInt i = FRAMESRCSIZE;
+	IntOS i = FRAMESRCSIZE;
 	while (i-- > 0)
 	{
 		if (this->frameSources[i].frameData)
@@ -163,7 +163,7 @@ void Media::DDrawRendererLR::ReleaseFrameSrcBuff()
 	}
 }
 
-OSInt Media::DDrawRendererLR::GetNextSurface(Int32 frameTime)
+IntOS Media::DDrawRendererLR::GetNextSurface(Int32 frameTime)
 {
 	if (!this->rendering)
 		return -1;
@@ -177,7 +177,7 @@ OSInt Media::DDrawRendererLR::GetNextSurface(Int32 frameTime)
 	return this->surfaceBuffEnd;
 }
 
-void Media::DDrawRendererLR::PutNextSurface(OSInt index)
+void Media::DDrawRendererLR::PutNextSurface(IntOS index)
 {
 	if (index != this->surfaceBuffEnd)
 		return;
@@ -255,7 +255,7 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 				}
 
 				LPDIRECTDRAWSURFACE7 surface;
-				OSInt i = me->GetNextSurface(me->frameSources[me->frameProcStart].frameTime);
+				IntOS i = me->GetNextSurface(me->frameSources[me->frameProcStart].frameTime);
 				if (i != -1)
 				{
 					RECT rc;
@@ -445,7 +445,7 @@ Media::DDrawRendererLR::DDrawRendererLR(void *hwnd, Media::ColorManager *colorMg
 	this->surfaceBuff = MemAlloc(FrameBuffer, FRAMEBUFFSIZE);
 	this->surfaceBuffStart = 0;
 	this->surfaceBuffEnd = 0;
-	OSInt i = FRAMEBUFFSIZE;
+	IntOS i = FRAMEBUFFSIZE;
 	while (i-- > 0)
 	{
 		this->surfaceBuff[i].surface = 0;

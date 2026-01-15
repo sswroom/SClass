@@ -41,7 +41,7 @@ Double Media::PhotoInfo::ParseFractionOr(NN<Text::String> s, Double orVal)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sarr[3];
-	UOSInt cnt;
+	UIntOS cnt;
 	s->ConcatTo(sbuff);
 	cnt = Text::StrSplit(sarr, 3, sbuff, '/');
 	if (cnt == 1)
@@ -246,7 +246,7 @@ void Media::PhotoInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 	{
 		sb->AppendC(UTF8STRC(" f/"));
 		sptr = Text::StrDoubleFmt(sbuff, this->fNumber, "0.0");
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	}
 
 	if (this->expTime != 0)
@@ -255,7 +255,7 @@ void Media::PhotoInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 		if (this->expTime >= 1)
 		{
 			sptr = Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		else if (this->expTime < 0.3)
 		{
@@ -273,7 +273,7 @@ void Media::PhotoInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 			else
 			{
 				sptr = Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 		}
 		sb->AppendC(UTF8STRC("sec"));

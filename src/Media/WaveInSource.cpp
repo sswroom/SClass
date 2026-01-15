@@ -198,13 +198,13 @@ void Media::WaveInSource::GetFormat(NN<AudioFormat> format)
 	format->align = this->nChannels * (UInt32)this->nbits >> 3;
 }
 
-Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	Stop();
-	UOSInt bSize = blkSize / (this->nChannels * (UOSInt)this->nbits >> 3);
+	UIntOS bSize = blkSize / (this->nChannels * (UIntOS)this->nbits >> 3);
 	if (bSize < 10)
 		bSize = 10;
-	blkSize = bSize * (this->nChannels * (UOSInt)this->nbits >> 3);
+	blkSize = bSize * (this->nChannels * (UIntOS)this->nbits >> 3);
 	this->evt = evt;
 
 	this->hdrsCnt = 4;
@@ -243,10 +243,10 @@ void Media::WaveInSource::Stop()
 	}
 }
 
-UOSInt Media::WaveInSource::ReadBlock(Data::ByteArray blk)
+UIntOS Media::WaveInSource::ReadBlock(Data::ByteArray blk)
 {
 	UInt32 j = (UInt32)-1;
-	UOSInt k = this->nextId;
+	UIntOS k = this->nextId;
 	UInt32 i = this->hdrsCnt;
 	WAVEHDR *hdr;
 	while (i-- > 0)
@@ -290,9 +290,9 @@ UOSInt Media::WaveInSource::ReadBlock(Data::ByteArray blk)
 	return 0;
 }
 
-UOSInt Media::WaveInSource::GetMinBlockSize()
+UIntOS Media::WaveInSource::GetMinBlockSize()
 {
-	return this->nChannels * (UOSInt)this->nbits >> 3;
+	return this->nChannels * (UIntOS)this->nbits >> 3;
 }
 
 Data::Duration Media::WaveInSource::GetCurrTime()

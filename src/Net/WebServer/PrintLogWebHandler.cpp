@@ -20,7 +20,7 @@ void Net::WebServer::PrintLogWebHandler::DoWebRequest(NN<WebRequest> req, NN<Web
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).Or(sbuff), UTF8STRC(": "));
 	Text::StringBuilderUTF8 sb;
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	Text::CStringNN reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
 	sb.AppendUTF8Char(' ');
@@ -35,7 +35,7 @@ void Net::WebServer::PrintLogWebHandler::DoWebRequest(NN<WebRequest> req, NN<Web
 	while (it.HasNext())
 	{
 		sb.ClearStr();
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		header = it.Next();
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));

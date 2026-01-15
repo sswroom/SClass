@@ -17,22 +17,22 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN2CodeImageGe
 	return Media::CodeImageGen::CodeImageGen::CT_EAN2;
 }
 
-UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMinLength()
+UIntOS Media::CodeImageGen::EAN2CodeImageGen::GetMinLength()
 {
 	return 2;
 }
 
-UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
+UIntOS Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 {
 	return 2;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
-	UOSInt i = 2;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i = 2;
+	UIntOS j;
+	UIntOS k;
 	UnsafeArray<const UTF8Char> tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
@@ -278,12 +278,12 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 	}
 	codePtr = codePtr - 2;
 
-	UOSInt h = codeWidth * 70;
-	UOSInt y = h - codeWidth;
-	Double fh = 12.0 * UOSInt2Double(codeWidth);
+	UIntOS h = codeWidth * 70;
+	UIntOS y = h - codeWidth;
+	Double fh = 12.0 * UIntOS2Double(codeWidth);
 
 	NN<Media::DrawImage> dimg;
-	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (!eng->CreateImage32(Math::Size2D<UIntOS>((4 + 21) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		return nullptr;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
@@ -318,9 +318,9 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *codePtr++;
 	sbuff[1] = 0;
-	dimg->DrawString(Math::Coord2DDbl((Double)(2 + 5) * UOSInt2Double(codeWidth), (Double)codeWidth), {sbuff, 1}, f, b);
+	dimg->DrawString(Math::Coord2DDbl((Double)(2 + 5) * UIntOS2Double(codeWidth), (Double)codeWidth), {sbuff, 1}, f, b);
 	sbuff[0] = *codePtr++;
-	dimg->DrawString(Math::Coord2DDbl((Double)(2 + 5 + 7 + 2) * UOSInt2Double(codeWidth), (Double)codeWidth), {sbuff, 1}, f, b);
+	dimg->DrawString(Math::Coord2DDbl((Double)(2 + 5 + 7 + 2) * UIntOS2Double(codeWidth), (Double)codeWidth), {sbuff, 1}, f, b);
 
 	dimg->DelBrush(b);
 	dimg->DelFont(f);

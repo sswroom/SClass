@@ -18,10 +18,10 @@ Text::CStringNN IO::ProtoDec::TK109ProtocolDecoder::GetName() const
 	return CSTR("TK109");
 }
 
-UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize)
+UIntOS IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 protoSize;
 	Text::StringBuilderUTF8 sb;
 	j = 0;
@@ -102,7 +102,7 @@ UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyT
 	return j;
 }
 
-Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (buffSize < 7)
 		return false;
@@ -462,7 +462,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> bu
 	return true;
 }
 
-Bool IO::ProtoDec::TK109ProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize)
+Bool IO::ProtoDec::TK109ProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	return buff[0] == 0x67 && buff[1] == 0x67;
 }

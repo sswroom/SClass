@@ -3,12 +3,12 @@
 #include "Data/ArrayListNative.hpp"
 #include "Data/DataComparer.h"
 
-template <class T> void InsertionSort_SortB(T *arr, OSInt left, OSInt right)
+template <class T> void InsertionSort_SortB(T *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	T temp;
 	T temp1;
 	T temp2;
@@ -34,7 +34,7 @@ template <class T> void InsertionSort_SortB(T *arr, OSInt left, OSInt right)
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(T));
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(T));
 			arr[j] = temp2;
 		}
 		else
@@ -45,20 +45,20 @@ template <class T> void InsertionSort_SortB(T *arr, OSInt left, OSInt right)
 	}
 }
 
-template <class T> void InsertionSort_SortB(Data::ArrayListNative<T> *arr, OSInt left, OSInt right)
+template <class T> void InsertionSort_SortB(Data::ArrayListNative<T> *arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	T temp;
 	T temp1;
 	T temp2;
-	temp1 = arr->GetItem((UOSInt)left);
+	temp1 = arr->GetItem((UIntOS)left);
 	i = left + 1;
 	while (i <= right)
 	{
-		temp2 = arr->GetItem((UOSInt)i);
+		temp2 = arr->GetItem((UIntOS)i);
 		if ( Data::DataComparer::Compare(temp1, temp2) > 0)
 		{
 			j = left;
@@ -66,7 +66,7 @@ template <class T> void InsertionSort_SortB(Data::ArrayListNative<T> *arr, OSInt
 			while (j <= k)
 			{
 				l = (j + k) >> 1;
-				temp = arr->GetItem((UOSInt)l);
+				temp = arr->GetItem((UIntOS)l);
 				if (Data::DataComparer::Compare(temp, temp2) > 0)
 				{
 					k = l - 1;
@@ -76,8 +76,8 @@ template <class T> void InsertionSort_SortB(Data::ArrayListNative<T> *arr, OSInt
 					j = l + 1;
 				}
 			}
-			arr->CopyItems((UOSInt)j + 1, (UOSInt)j, (UOSInt)(i - j));
-			arr->SetItem((UOSInt)j, temp2);
+			arr->CopyItems((UIntOS)j + 1, (UIntOS)j, (UIntOS)(i - j));
+			arr->SetItem((UIntOS)j, temp2);
 		}
 		else
 		{

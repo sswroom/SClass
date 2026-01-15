@@ -21,9 +21,9 @@ void Media::AFilter::ToneGenerator::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
+UIntOS Media::AFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff);
+	UIntOS readSize = this->sourceAudio->ReadBlock(buff);
 
 	if (this->format.bitpersample == 16)
 	{

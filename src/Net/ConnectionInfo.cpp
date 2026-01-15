@@ -77,14 +77,14 @@ UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDNSSuffix(UnsafeArray<UTF8Char>
 	return nullptr;
 }
 
-UInt32 Net::ConnectionInfo::GetIPAddress(UOSInt index)
+UInt32 Net::ConnectionInfo::GetIPAddress(UIntOS index)
 {
 	if (this->ent.ipaddr.GetCount() <= index)
 		return 0;
 	return (UInt32)this->ent.ipaddr.GetItem(index);
 }
 
-UInt32 Net::ConnectionInfo::GetDNSAddress(UOSInt index)
+UInt32 Net::ConnectionInfo::GetDNSAddress(UIntOS index)
 {
 	if (this->ent.dnsaddr.GetCount() <= index)
 		return 0;
@@ -96,12 +96,12 @@ UInt32 Net::ConnectionInfo::GetDefaultGW()
 	return this->ent.defGW;
 }
 
-UOSInt Net::ConnectionInfo::GetIndex()
+UIntOS Net::ConnectionInfo::GetIndex()
 {
 	return this->ent.index;
 }
 
-UOSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UOSInt buffSize)
+UIntOS Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UIntOS buffSize)
 {
 	if (buffSize >= this->ent.physicalAddrLeng)
 	{

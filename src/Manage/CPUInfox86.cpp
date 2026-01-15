@@ -110,7 +110,7 @@ Manage::CPUInfo::CPUInfo()
 	}
 #else
 	{
-		UOSInt i;
+		UIntOS i;
 		IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
@@ -217,7 +217,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 }
 
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	Int32 cpuInfo[4];
 	switch (index)
@@ -357,7 +357,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	case 12:
 		{
 			UInt8 buff[16];
-			OSInt i;
+			IntOS i;
 			Bool firstFound;
 			Text::CStringNN cstr;
 			X86Util_cpuid(cpuInfo, 2);
@@ -389,13 +389,13 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
+UIntOS Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	if (this->infoCnt <= 13)
 		return 0;
 	UInt8 buff[16];
-	OSInt i;
-	UOSInt retCnt = 0;
+	IntOS i;
+	UIntOS retCnt = 0;
 	Text::CStringNN cstr;
 	Int32 cpuInfo[4];
 	X86Util_cpuid(cpuInfo, 2);
@@ -439,12 +439,12 @@ Manage::CPUInfo::~CPUInfo()
 #endif
 }
 
-UOSInt Manage::CPUInfo::GetInfoCnt()
+UIntOS Manage::CPUInfo::GetInfoCnt()
 {
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -825,7 +825,7 @@ Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand
 	return CSTR("Unknown");
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UIntOS index)
 {
 	static Text::CStringNN shortNames[64] = {
 		CSTR("FPU"),
@@ -905,7 +905,7 @@ Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 	return shortNames[index];
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UIntOS index)
 {
 	static Text::CStringNN names[64] = {
 		CSTR("Floating Point Unit On-Chip"),
@@ -985,7 +985,7 @@ Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
 	return names[index];
 }
 
-Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UIntOS index)
 {
 	static Text::CStringNN desc[64] = {
 		CSTR("The processor contains an x87 FPU"),

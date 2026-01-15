@@ -31,7 +31,7 @@ Math::Vector3 Math::CoordinateSystemConverter::Convert3D(Math::Vector3 vec3) con
 	return Math::CoordinateSystem::Convert3D(this->srcCsys, this->destCsys, vec3);
 }
 
-void Math::CoordinateSystemConverter::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const
+void Math::CoordinateSystemConverter::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints) const
 {
 	Math::CoordinateSystem::ConvertArray(this->srcCsys, this->destCsys, srcArr, destArr, nPoints);
 }

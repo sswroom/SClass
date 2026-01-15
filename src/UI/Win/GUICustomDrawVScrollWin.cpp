@@ -15,9 +15,9 @@
 #define CLASSNAME L"CustomDrawVScroll"
 Int32 UI::GUICustomDrawVScroll::useCnt = 0;
 
-OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
+IntOS __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam)
 {
-	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	SCROLLINFO si;
 	Int32 xPos;
 	Int32 yPos;
@@ -65,14 +65,14 @@ OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<OSInt>(xPos, yPos), UI::GUIClientControl::MBTN_LEFT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MBTN_LEFT, keys);
 		return 0;
 	case WM_RBUTTONDOWN:
 		me->Focus();
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<OSInt>(xPos, yPos), UI::GUIClientControl::MBTN_RIGHT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MBTN_RIGHT, keys);
 		return 0;
 	case WM_LBUTTONDBLCLK:
 		me->EventDblClk();
@@ -200,14 +200,14 @@ Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
 	return CSTR("CustomDrawVScroll");
 }
 
-OSInt UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
 void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -215,7 +215,7 @@ void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void UI::GUICustomDrawVScroll::OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
 }
 
@@ -235,7 +235,7 @@ void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, AnyType userObj)
 
 void UI::GUICustomDrawVScroll::EventSelChg()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -246,7 +246,7 @@ void UI::GUICustomDrawVScroll::EventSelChg()
 
 void UI::GUICustomDrawVScroll::EventDblClk()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -255,23 +255,23 @@ void UI::GUICustomDrawVScroll::EventDblClk()
 	}
 }
 
-void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize)
+void UI::GUICustomDrawVScroll::SetVScrollBar(UIntOS min, UIntOS max, UIntOS pageSize)
 {
 	SCROLLINFO si;
 	si.cbSize = sizeof(SCROLLINFO);
-	si.nMin = (int)(OSInt)min;
-	si.nMax = (int)(OSInt)max;
+	si.nMin = (int)(IntOS)min;
+	si.nMax = (int)(IntOS)max;
 	si.nPage = (UINT)pageSize;
 	si.fMask = SIF_PAGE | SIF_RANGE;
 	SetScrollInfo((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
 }
 
-UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
+UIntOS UI::GUICustomDrawVScroll::GetVScrollPos()
 {
 	return (UInt32)GetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT);
 }
 
-Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
+Bool UI::GUICustomDrawVScroll::MakeVisible(UIntOS firstIndex, UIntOS lastIndex)
 {
 	SCROLLINFO si;
 	si.cbSize = sizeof (si);
@@ -289,23 +289,23 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 	if (firstIndex < (UInt32)si.nMin)
 		return false;
 
-	if (si.nPos > (OSInt)firstIndex)
+	if (si.nPos > (IntOS)firstIndex)
 	{
 		si.fMask = SIF_POS;
-		si.nPos = (Int32)(OSInt)firstIndex;
+		si.nPos = (Int32)(IntOS)firstIndex;
 		SetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
 		GetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si);
 		this->Redraw();
 		return true;
 	}
-	else if ((si.nPos + (Int32)si.nPage) > (OSInt)lastIndex)
+	else if ((si.nPos + (Int32)si.nPage) > (IntOS)lastIndex)
 	{
 		return false;
 	}
 	else
 	{
 		si.fMask = SIF_POS;
-		si.nPos = (Int32)(OSInt)lastIndex - (Int32)si.nPage + 1;
+		si.nPos = (Int32)(IntOS)lastIndex - (Int32)si.nPage + 1;
 		SetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
 		GetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si);
 		this->Redraw();

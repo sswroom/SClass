@@ -29,7 +29,7 @@ namespace SSWR
 			Optional<Media::StaticImage> destPrevImg;
 			NN<UI::GUIPictureBoxDD> previewCtrl;
 			NN<Media::GRFilter> grFilter;
-			UOSInt currLayer;
+			UIntOS currLayer;
 			Bool modifying;
 
 			NN<UI::GUIPanel> pnlLayers;
@@ -53,9 +53,9 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnHOfstChanged(AnyType userObj, UOSInt newPos);
-			static void __stdcall OnVOfstChanged(AnyType userObj, UOSInt newPos);
-			static void __stdcall OnLevelChanged(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnHOfstChanged(AnyType userObj, UIntOS newPos);
+			static void __stdcall OnVOfstChanged(AnyType userObj, UIntOS newPos);
+			static void __stdcall OnLevelChanged(AnyType userObj, UIntOS newPos);
 			static void __stdcall OnTypeChanged(AnyType userObj);
 			static void __stdcall OnEnableChanged(AnyType userObj, Bool newVal);
 			static void __stdcall OnAddLayerClicked(AnyType userObj);

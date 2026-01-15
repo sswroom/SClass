@@ -8,21 +8,21 @@ namespace Data
 	{
 	protected:
 		UnsafeArray<T> arr;
-		UOSInt cnt;
+		UIntOS cnt;
 
 	public:
-		ReadonlyArray(UnsafeArray<const T> arr, UOSInt cnt);
+		ReadonlyArray(UnsafeArray<const T> arr, UIntOS cnt);
 		~ReadonlyArray();
 
-		UOSInt GetCount() const;
+		UIntOS GetCount() const;
 		const T *GetArray() const;
-		T GetItem(UOSInt index) const;
-		T operator [](UOSInt index) const;
+		T GetItem(UIntOS index) const;
+		T operator [](UIntOS index) const;
 		NN<ReadonlyArray<T>> Clone() const;
 		Bool Equals(ReadonlyArray<T> *arr2) const;
 	};
 
-	template <class T> ReadonlyArray<T>::ReadonlyArray(UnsafeArray<const T> arr, UOSInt cnt)
+	template <class T> ReadonlyArray<T>::ReadonlyArray(UnsafeArray<const T> arr, UIntOS cnt)
 	{
 		this->arr = MemAllocArr(T, cnt);
 		this->arr.CopyFromNO(arr, cnt);
@@ -34,7 +34,7 @@ namespace Data
 		MemFreeArr(this->arr);
 	}
 
-	template <class T> UOSInt ReadonlyArray<T>::GetCount() const
+	template <class T> UIntOS ReadonlyArray<T>::GetCount() const
 	{
 		return this->cnt;
 	}
@@ -44,12 +44,12 @@ namespace Data
 		return this->arr.Ptr();
 	}
 
-	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index) const
+	template <class T> T ReadonlyArray<T>::GetItem(UIntOS index) const
 	{
 		return NNTHIS[index];
 	}
 	
-	template <class T> T ReadonlyArray<T>::operator [](UOSInt index) const
+	template <class T> T ReadonlyArray<T>::operator [](UIntOS index) const
 	{
 		if (index >= this->cnt)
 		{
@@ -75,7 +75,7 @@ namespace Data
 		{
 			return false;
 		}
-		UOSInt i = this->cnt;
+		UIntOS i = this->cnt;
 		while (i-- > 0)
 		{
 			if (Data::DataComparer::Compare(this->arr[i], arr2->arr[i])	!= 0)

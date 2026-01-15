@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::XMLReader::ParseMode mode;
-	UOSInt i;
+	UIntOS i;
 	this->lvXML->ClearItems();
 	this->txtFile->SetText(fileName);
 	i = fileName.LastIndexOf('.');
@@ -62,7 +62,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in parsing the file, code = "));
-		sb.AppendUOSInt(reader.GetErrorCode());
+		sb.AppendUIntOS(reader.GetErrorCode());
 		this->ui->ShowMsgOK(sb.ToCString(), CSTR("XML Walk"), this);
 	}
 }

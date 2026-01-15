@@ -1,14 +1,14 @@
 #include "Stdafx.h"
 #include "Text/PString.h"
 
-void Text::PString::Trim(UOSInt index)
+void Text::PString::Trim(UIntOS index)
 {
-	this->leng = (UOSInt)(Text::StrTrimC(this->v + index, this->leng - index) - this->v);
+	this->leng = (UIntOS)(Text::StrTrimC(this->v + index, this->leng - index) - this->v);
 }
 
 void Text::PString::RTrim()
 {
-	UOSInt len = this->leng;
+	UIntOS len = this->leng;
 	while (len > 0)
 	{
 		UTF8Char c = this->v[len - 1];
@@ -27,7 +27,7 @@ void Text::PString::RTrim()
 
 void Text::PString::TrimWSCRLF()
 {
-	this->leng = (UOSInt)(Text::StrTrimWSCRLFC(this->v, this->leng) - this->v);
+	this->leng = (UIntOS)(Text::StrTrimWSCRLFC(this->v, this->leng) - this->v);
 }
 
 void Text::PString::ToUpper()
@@ -45,7 +45,7 @@ void Text::PString::ToCapital()
 	Text::StrToCapital(this->v, this->v);
 }
 
-UOSInt Text::PString::Replace(UTF8Char fromChar, UTF8Char toChar)
+UIntOS Text::PString::Replace(UTF8Char fromChar, UTF8Char toChar)
 {
 	return Text::StrReplace(this->v, fromChar, toChar);
 }
@@ -71,7 +71,7 @@ void Text::PString::RemoveWS()
 		sptr++;
 	}
 	*dptr = 0;
-	this->leng = (UOSInt)(dptr - this->v);
+	this->leng = (UIntOS)(dptr - this->v);
 }
 
 void Text::PString::RemoveChar(UTF8Char ch)
@@ -88,12 +88,12 @@ void Text::PString::RemoveChar(UTF8Char ch)
 		sptr++;
 	}
 	*dptr = 0;
-	this->leng = (UOSInt)(dptr - this->v);
+	this->leng = (UIntOS)(dptr - this->v);
 }
 
-UOSInt Text::StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
+UIntOS Text::StrSplitP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 1;
+	UIntOS i = 1;
 	UTF8Char c;
 	UnsafeArray<UTF8Char> sptr = strToSplit.v;
 	strs[0] = strToSplit;
@@ -102,7 +102,7 @@ UOSInt Text::StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToS
 		if (c == splitChar)
 		{
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(sptr - strs[i - 1].v - 1);
+			strs[i - 1].leng = (UIntOS)(sptr - strs[i - 1].v - 1);
 			strs[i].v = sptr;
 			strs[i].leng -= strs[i - 1].leng + 1;
 			sptr[-1] = 0;
@@ -116,9 +116,9 @@ UOSInt Text::StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToS
 	return i;
 }
 
-UOSInt Text::StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
+UIntOS Text::StrSplitTrimP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
 	UnsafeArray<UTF8Char> lastPtr;
 	UnsafeArray<UTF8Char> thisPtr;
@@ -128,7 +128,7 @@ UOSInt Text::StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 		sptr++;
 	}
 	strs[i].v = lastPtr = sptr;
-	strs[i].leng = strToSplit.leng - (UOSInt)(sptr - strToSplit.v);
+	strs[i].leng = strToSplit.leng - (UIntOS)(sptr - strToSplit.v);
 	i++;
 	while (i < maxStrs)
 	{
@@ -148,7 +148,7 @@ UOSInt Text::StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 					break;
 				}
 			}
-			strs[i - 1].leng = (UOSInt)(thisPtr - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(thisPtr - strs[i - 1].v);
 			break;
 		}
 		if (c == splitChar)
@@ -165,21 +165,21 @@ UOSInt Text::StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 					break;
 			}
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(thisPtr - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(thisPtr - strs[i - 1].v);
 
 			while (*sptr == ' ' || *sptr == '\r' || *sptr == '\n' || *sptr == '\t')
 				sptr++;
 			strs[i].v = lastPtr = sptr;
-			strs[i].leng = strs[i].leng - (UOSInt)(strs[i].v - strs[i - 1].v);
+			strs[i].leng = strs[i].leng - (UIntOS)(strs[i].v - strs[i - 1].v);
 			i++;
 		}
 	}
 	return i;
 }
 
-UOSInt Text::StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit)
+UIntOS Text::StrSplitLineP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
 	UnsafeArray<UTF8Char> sptr = strToSplit.v;
 	strs[i] = strToSplit;
@@ -193,7 +193,7 @@ UOSInt Text::StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 		{
 			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(&sptr[-1] - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(&sptr[-1] - strs[i - 1].v);
 			if (*sptr == 10)
 			{
 				sptr++;
@@ -211,7 +211,7 @@ UOSInt Text::StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 		{
 			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(&sptr[-1] - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(&sptr[-1] - strs[i - 1].v);
 			strs[i].v = sptr;
 			strs[i].leng -= strs[i - 1].leng + 1;
 			i++;
@@ -220,11 +220,11 @@ UOSInt Text::StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString st
 	return i;
 }
 
-UOSInt Text::StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit)
+UIntOS Text::StrSplitWSP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
-	UOSInt strLen = strToSplit.leng;
+	UIntOS strLen = strToSplit.leng;
 	UnsafeArray<UTF8Char> sptr = strToSplit.v;
 	strs[0].v = sptr;
 	while (true)
@@ -236,7 +236,7 @@ UOSInt Text::StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strT
 		}
 		if (c != 32 && c != '\t')
 		{
-			strs[0].leng = strLen - (UOSInt)(sptr - strs[0].v - 1);
+			strs[0].leng = strLen - (UIntOS)(sptr - strs[0].v - 1);
 			strs[0].v = sptr - 1;
 			i = 1;
 			break;
@@ -251,7 +251,7 @@ UOSInt Text::StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strT
 		{
 			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(sptr - strs[i - 1].v - 1);
+			strs[i - 1].leng = (UIntOS)(sptr - strs[i - 1].v - 1);
 			while (true)
 			{
 				c = *sptr++;
@@ -262,7 +262,7 @@ UOSInt Text::StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strT
 				if (c != 32 && c != '\t')
 				{
 					strs[i].v = sptr - 1;
-					strs[i].leng = strs[i].leng - (UOSInt)(sptr - strs[i - 1].v - 1);
+					strs[i].leng = strs[i].leng - (UIntOS)(sptr - strs[i - 1].v - 1);
 					i++;
 					break;
 				}
@@ -272,11 +272,11 @@ UOSInt Text::StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strT
 	return i;
 }
 
-UOSInt Text::StrCSVSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit)
+UIntOS Text::StrCSVSplitP(UnsafeArray<PString> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit)
 {
 	Bool quoted = false;
 	Bool first = true;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UnsafeArray<UTF8Char> strCurr;
 	UTF8Char c;
 	strs[i++].v = strCurr = strToSplit;
@@ -286,7 +286,7 @@ UOSInt Text::StrCSVSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, UnsafeArray
 		if (c == 0)
 		{
 			*strCurr = 0;
-			strs[i - 1].leng = (UOSInt)(strCurr - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(strCurr - strs[i - 1].v);
 			break;
 		}
 		if (c == '"')
@@ -310,7 +310,7 @@ UOSInt Text::StrCSVSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, UnsafeArray
 		else if (c == ',' && !quoted)
 		{
 			*strCurr = 0;
-			strs[i - 1].leng = (UOSInt)(strCurr - strs[i - 1].v);
+			strs[i - 1].leng = (UIntOS)(strCurr - strs[i - 1].v);
 			strs[i++].v = strCurr = strToSplit;
 			first = true;
 		}

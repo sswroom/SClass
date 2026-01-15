@@ -29,7 +29,7 @@ namespace Media
 		Bool allowTimeSkip;
 		Sync::Event evt;
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData);
 		static void __stdcall OnAudioEnd(AnyType userData);
 	public:

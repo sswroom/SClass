@@ -62,8 +62,8 @@ Bool Net::Email::AWSEmailClient::Send(NN<Net::Email::EmailMessage> message)
 	Aws::SES::Model::Destination destination;
 	NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
 	NN<Net::Email::EmailMessage::EmailAddress> addr;
-	UOSInt i = 0;
-	UOSInt j = recpList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = recpList->GetCount();
 	while (i < j)
 	{
 		addr = recpList->GetItemNoCheck(i);
@@ -87,7 +87,7 @@ Bool Net::Email::AWSEmailClient::Send(NN<Net::Email::EmailMessage> message)
 	Aws::SES::Model::Body messageBody;
 	NN<Text::String> contentType;
 	UnsafeArray<UInt8> content;
-	UOSInt contentLen;
+	UIntOS contentLen;
 	if (!message->GetContentType().SetTo(contentType) || !message->GetContent(contentLen).SetTo(content))
 	{
 		return false;

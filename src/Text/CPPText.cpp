@@ -97,7 +97,7 @@ void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<cons
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str, UOSInt leng)
+void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str, UIntOS leng)
 {
 	UnsafeArray<const UTF8Char> strEnd = str + leng;
 	UTF32Char c;

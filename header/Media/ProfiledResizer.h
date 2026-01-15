@@ -43,7 +43,7 @@ namespace Media
 
 	private:
 		Data::ArrayListNN<ResizeProfile> profiles;
-		UOSInt currProfile;
+		UIntOS currProfile;
 
 		NN<Media::Resizer::LanczosResizerLR_C32> resizer;
 		NN<Media::Batch::BatchLoader> loader;
@@ -58,14 +58,14 @@ namespace Media
 		ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng);
 		~ProfiledResizer();
 
-		UOSInt GetProfileCount() const;
-		UOSInt GetCurrProfileIndex();
+		UIntOS GetProfileCount() const;
+		UIntOS GetCurrProfileIndex();
 		Optional<const ResizeProfile> GetCurrProfile();
-		void SetCurrentProfile(UOSInt index);
-		Optional<const ResizeProfile> GetProfile(UOSInt index) const;
-		NN<const ResizeProfile> GetProfileNoCheck(UOSInt index) const;
+		void SetCurrentProfile(UIntOS index);
+		Optional<const ResizeProfile> GetProfile(UIntOS index) const;
+		NN<const ResizeProfile> GetProfileNoCheck(UIntOS index) const;
 		Bool AddProfile(Text::CStringNN profileName, Text::CStringNN suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
-		Bool RemoveProfile(UOSInt index);
+		Bool RemoveProfile(UIntOS index);
 
 		void ProcessFile(Text::CStringNN fileName);
 		Bool SaveProfile(Text::CStringNN fileName);

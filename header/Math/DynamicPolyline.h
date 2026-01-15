@@ -7,7 +7,7 @@ namespace Math
 	class DynamicPolyline : public Math::Polyline
 	{
 	protected:
-		OSInt pointCapacity;
+		IntOS pointCapacity;
 
 	public:
 		DynamicPolyline(Double x, Double y);

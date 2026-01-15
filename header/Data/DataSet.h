@@ -19,7 +19,7 @@ namespace Data
 
 	protected:
 		virtual NN<Data::SortableArrayListNative<K>> CreateKeyIndex() const = 0;
-		virtual UOSInt GetKeyIndex(NN<Data::SortableArrayListNative<K>> keyIndex, UOSInt dataIndex) const = 0;
+		virtual UIntOS GetKeyIndex(NN<Data::SortableArrayListNative<K>> keyIndex, UIntOS dataIndex) const = 0;
 	public:
 		void Sum(NN<Data::ArrayListNative<Data::TwinItemNative<K, Double>>> result) const;
 		void Count(NN<Data::ArrayListNative<Data::TwinItemNative<K, UInt32>>> result) const;
@@ -31,24 +31,24 @@ namespace Data
 		DataSetMonthGrouper(NN<DataSet> ds) : DataSetGrouper<Data::Timestamp>(ds){};
 	protected:
 		virtual NN<Data::SortableArrayListNative<Data::Timestamp>> CreateKeyIndex() const;
-		virtual UOSInt GetKeyIndex(NN<Data::SortableArrayListNative<Data::Timestamp>> keyIndex, UOSInt dataIndex) const;
+		virtual UIntOS GetKeyIndex(NN<Data::SortableArrayListNative<Data::Timestamp>> keyIndex, UIntOS dataIndex) const;
 	};
 
 	class DataSet
 	{
 	private:
 		UnsafeArray<VariItem> items;
-		UOSInt capacity;
-		UOSInt itemCnt;
+		UIntOS capacity;
+		UIntOS itemCnt;
 
 	public:
 		DataSet();
 		~DataSet();
 
 		void AddItem(const VariItem& key, const VariItem& value);
-		UOSInt GetCount() const { return this->itemCnt; }
-		Bool GetKey(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
-		Bool GetValue(UOSInt index, NN<VariItem> val) const { if (index < itemCnt) {val->Set(items[(index << 1) + 1]); return true;} return false; }
+		UIntOS GetCount() const { return this->itemCnt; }
+		Bool GetKey(UIntOS index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
+		Bool GetValue(UIntOS index, NN<VariItem> val) const { if (index < itemCnt) {val->Set(items[(index << 1) + 1]); return true;} return false; }
 		DataSetMonthGrouper GroupKeyByMonth() { return DataSetMonthGrouper(NNTHIS); }
 		void ValueCounts(NN<Data::ArrayListNative<UInt32>> result) const;
 		NN<DataSet> ValueCountsAsDS() const;
@@ -59,9 +59,9 @@ namespace Data
 		void SortByKey();
 		void SortByKeyInv();
 	private:
-		void Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt left, OSInt right, NN<Data::Comparator<NN<VariItem>>> comparator);
-		void Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt firstIndex, OSInt lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
-		void ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt firstIndex, OSInt lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
+		void Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS left, IntOS right, NN<Data::Comparator<NN<VariItem>>> comparator);
+		void Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS firstIndex, IntOS lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
+		void ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS firstIndex, IntOS lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
 	};
 
 	template <class K> void DataSetGrouper<K>::Sum(NN<Data::ArrayListNative<Data::TwinItemNative<K, Double>>> result) const
@@ -73,9 +73,9 @@ namespace Data
 			sumVal.Add(0);
 		}
 		VariItem item;
-		UOSInt i = 0;
-		UOSInt j = this->ds->GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = this->ds->GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			if (this->ds->GetValue(i, item))
@@ -108,9 +108,9 @@ namespace Data
 			countVal.Add(0);
 		}
 		VariItem item;
-		UOSInt i = 0;
-		UOSInt j = this->ds->GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = this->ds->GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			if (this->ds->GetValue(i, item))

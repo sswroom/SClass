@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 	Crypto::Hash::CRC32RC crc;
 	sbuff[0] = 0;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrHexVal32(&sbuff[i + 1], crc.CalcDirect(sb.v, sb.leng));
 	NEW_CLASSOPT(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetTCPClientFactory(), me->ssl));
 	me->SetDialogResult(UI::GUIForm::DR_OK);

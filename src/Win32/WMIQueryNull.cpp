@@ -62,13 +62,13 @@ void Win32::WMIQuery::Close()
 {
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
+IntOS Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
+IntOS Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -105,7 +105,7 @@ void Win32::WMIQuery::Rollback(NN<DB::DBTransaction> tran)
 }
 
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->pService == 0)
 	{
@@ -114,7 +114,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return 0;
 }
 
-Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
@@ -138,15 +138,15 @@ UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 	return this->ns;
 }
 
-UOSInt Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
+UIntOS Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	return ret;
 }
 
 void Win32::WMIQuery::FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
-	UOSInt i = nsList->GetCount();
+	UIntOS i = nsList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nsList->GetItemNoCheck(i));

@@ -8,7 +8,7 @@ Data::ArrayListICaseStrW::ArrayListICaseStrW() : Data::ArrayListStrW()
 {
 }
 
-Data::ArrayListICaseStrW::ArrayListICaseStrW(UOSInt Capacity) : Data::ArrayListStrW(Capacity)
+Data::ArrayListICaseStrW::ArrayListICaseStrW(UIntOS Capacity) : Data::ArrayListStrW(Capacity)
 {
 }
 
@@ -20,7 +20,7 @@ NN<Data::ArrayList<const WChar*>> Data::ArrayListICaseStrW::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStrW::Compare(const WChar* obj1, const WChar* obj2) const
+IntOS Data::ArrayListICaseStrW::Compare(const WChar* obj1, const WChar* obj2) const
 {
 	return Text::StrCompareICase(obj1, obj2);
 }

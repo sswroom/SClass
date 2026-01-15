@@ -34,7 +34,7 @@ namespace Map
 		HK80Conv();
 		~HK80Conv();
 
-		void ToWGS84(UnsafeArray<Math::Coord2DDbl> pt_hk80, UnsafeArray<Math::Coord2DDbl> pt_wgs84, UOSInt ptCnt); //Y, X, Y, X, ...
+		void ToWGS84(UnsafeArray<Math::Coord2DDbl> pt_hk80, UnsafeArray<Math::Coord2DDbl> pt_wgs84, UIntOS ptCnt); //Y, X, Y, X, ...
 	};
 }
 #endif

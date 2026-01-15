@@ -3,7 +3,7 @@ section .text
 global _CSP216_LRGBC_do_yuy2rgb
 global CSP216_LRGBC_do_yuy2rgb
 
-;void CSP216_LRGBC_do_yuy2rgb(UInt8 *srcY, UInt8 *srcUV, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+;void CSP216_LRGBC_do_yuy2rgb(UInt8 *srcY, UInt8 *srcUV, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 ;0 edi
 ;4 esi
 ;8 ebx

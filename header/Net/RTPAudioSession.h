@@ -22,9 +22,9 @@ namespace Net
 		Sync::Mutex readMut;
 		Sync::Event *readEvt;
 		UInt8 *readBuff;
-		UOSInt readBuffSize;
+		UIntOS readBuffSize;
 		Sync::Event readBuffEvt;
-		UOSInt sizeRead;
+		UIntOS sizeRead;
 		UInt32 lastSSRC;
 
 		Int32 fmtFreq;
@@ -38,7 +38,7 @@ namespace Net
 		Int32 outSSRC;
 
 	private:
-		static void __stdcall UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UIntOS dataSize, void *userData);
 		static UInt32 __stdcall SendThread(void *userObj);
 	public:
 		RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log);
@@ -57,8 +57,8 @@ namespace Net
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS ReadBlock(UInt8 *buff, UIntOS blkSize); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 	};
 };
 #endif

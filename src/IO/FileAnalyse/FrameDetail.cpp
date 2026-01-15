@@ -47,7 +47,7 @@ UInt64 IO::FileAnalyse::FrameDetail::GetSize() const
 	return this->size;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const
+UIntOS IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -55,9 +55,9 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NN<Data::ArrayLi
 	}
 	NN<FieldInfo> field;
 	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = this->fields.GetCount();
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = this->fields.GetCount();
 	while (i < j)
 	{
 		field = this->fields.GetItemNoCheck(i);
@@ -71,7 +71,7 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NN<Data::ArrayLi
 	return ret;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const
+UIntOS IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -79,9 +79,9 @@ UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NN<Data::ArrayLis
 	}
 	NN<FieldInfo> field;
 	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = this->fields.GetCount();
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = this->fields.GetCount();
 	while (i < j)
 	{
 		field = this->fields.GetItemNoCheck(i);
@@ -142,7 +142,7 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 	this->AddFieldInfo(ofst, size, CSTR("Subframe"), nullptr, FT_SUBFRAME);
 }
 
-void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name)
+void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UIntOS size, Text::CStringNN name)
 {
 	this->AddFieldInfo(ofst, size, name, nullptr, FT_AREA);
 }
@@ -171,11 +171,11 @@ void IO::FileAnalyse::FrameDetail::ToString(NN<Text::StringBuilderUTF8> sb) cons
 	}
 
 	NN<FieldInfo> field;
-	UOSInt j = this->fields.GetCount();
+	UIntOS j = this->fields.GetCount();
 	if (j > 0)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < j)
 		{
 			field = this->fields.GetItemNoCheck(i);

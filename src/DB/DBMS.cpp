@@ -65,14 +65,14 @@ namespace DB
 	class DBMSReader : public DB::DBReader
 	{
 	private:
-		UOSInt colCount;
-		OSInt rowChanged;
+		UIntOS colCount;
+		IntOS rowChanged;
 		Data::ArrayListObj<Text::String **> *rows;
 		DB::DBUtil::ColType *colTypes;
 		UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> colNames;
-		OSInt rowIndex;
+		IntOS rowIndex;
 	public:
-		DBMSReader(UOSInt colCount, OSInt rowChanged)
+		DBMSReader(UIntOS colCount, IntOS rowChanged)
 		{
 			this->colCount = colCount;
 			this->rowChanged = rowChanged;
@@ -82,7 +82,7 @@ namespace DB
 				NEW_CLASS(this->rows, Data::ArrayListObj<Text::String**>());
 				this->colTypes = MemAlloc(DB::DBUtil::ColType, this->colCount);
 				this->colNames = nncolNames = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->colCount);
-				UOSInt i;
+				UIntOS i;
 				i = 0;
 				while (i < this->colCount)
 				{
@@ -104,8 +104,8 @@ namespace DB
 		{
 			if (this->rows)
 			{
-				UOSInt i;
-				UOSInt j;
+				UIntOS i;
+				UIntOS j;
 				Text::String **row;
 				i = this->rows->GetCount();
 				while (i-- > 0)
@@ -144,7 +144,7 @@ namespace DB
 			this->rows->Add(newRow);
 		}
 
-		void SetColumn(UOSInt colIndex, Text::CStringNN colName, DB::DBUtil::ColType colType)
+		void SetColumn(UIntOS colIndex, Text::CStringNN colName, DB::DBUtil::ColType colType)
 		{
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
 			if (this->rows && this->colNames.SetTo(nncolNames) && colIndex < this->colCount)
@@ -161,7 +161,7 @@ namespace DB
 			{
 				return false;
 			}
-			if (this->rowIndex + 1 < (OSInt)this->rows->GetCount())
+			if (this->rowIndex + 1 < (IntOS)this->rows->GetCount())
 			{
 				this->rowIndex++;
 				return true;
@@ -169,82 +169,82 @@ namespace DB
 			return false;
 		}
 
-		virtual UOSInt ColCount()
+		virtual UIntOS ColCount()
 		{
 			return this->colCount;
 		}
 
-		virtual OSInt GetRowChanged()
+		virtual IntOS GetRowChanged()
 		{
 			return this->rowChanged;
 		}
 
-		virtual Int32 GetInt32(UOSInt colIndex)
+		virtual Int32 GetInt32(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return row[colIndex]->ToInt32();
 		}
 
-		virtual Int64 GetInt64(UOSInt colIndex)
+		virtual Int64 GetInt64(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			return row[colIndex]->ToInt64();
 		}
 
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return nullptr;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return nullptr;
 			return Text::StrUTF8_WCharC(buff, row[colIndex]->v, row[colIndex]->leng, 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return false;
 			sb->Append(row[colIndex]);
 			return true;
 		}
 
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return nullptr;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return nullptr;
 			return row[colIndex]->Clone();
 		}
 
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return nullptr;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return nullptr;
 			return Text::StrConcatS(buff, row[colIndex]->v, buffSize);
 		}
 
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return Data::Timestamp(0);
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == nullptr)
 				return Data::Timestamp(0);
 			if (row[colIndex] == nullptr)
@@ -252,69 +252,69 @@ namespace DB
 			return Data::Timestamp(row[colIndex]->ToCString(), 0);
 		}
 
-		virtual Double GetDblOrNAN(UOSInt colIndex)
+		virtual Double GetDblOrNAN(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return NAN;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return NAN;
 			return row[colIndex]->ToDoubleOrNAN();
 		}
 
-		virtual Bool GetBool(UOSInt colIndex)
+		virtual Bool GetBool(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return false;
 			return row[colIndex]->ToInt32() != 0;
 		}
 
-		virtual UOSInt GetBinarySize(UOSInt colIndex)
+		virtual UIntOS GetBinarySize(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == nullptr || row[colIndex] == nullptr)
 				return 0;
 			return row[colIndex]->leng;
 		}
 
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			UOSInt cnt = row[colIndex]->leng;
+			UIntOS cnt = row[colIndex]->leng;
 			MemCopyNO(buff.Ptr(), row[colIndex]->v.Ptr(), cnt);
 			return cnt;
 		}
 
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 		{
 			return nullptr;
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 		{
 			return false;
 		}
 
-		virtual Bool IsNull(UOSInt colIndex)
+		virtual Bool IsNull(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return true;
-			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
+			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return true;
 			return false;
 		}
 
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 		{
 			if (this->rowChanged != -1)
 				return nullptr;
@@ -328,12 +328,12 @@ namespace DB
 			}
 			else
 			{
-				return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("column")), colIndex + 1);
+				return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("column")), colIndex + 1);
 			}
 
 		}
 
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 		{
 			if (this->rowChanged != -1)
 				return DB::DBUtil::CT_Unknown;
@@ -343,7 +343,7 @@ namespace DB
 			return this->colTypes[colIndex];
 		}
 
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
 			UTF8Char sbuff[256];
 			UnsafeArray<UTF8Char> sptr;
@@ -359,7 +359,7 @@ namespace DB
 			}
 			else
 			{
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
 				colDef->SetColName(CSTRP(sbuff, sptr));
 			}
 			colDef->SetColType(this->colTypes[colIndex]);
@@ -407,13 +407,13 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 				if (sptr[0] == '+' || sptr[0] == '-' || sptr[0] == '*' || sptr[0] == '/')
 				{
 					sptr++;
-					nameBuff = Text::StrConcatC(nameBuff, sql, (UOSInt)(sptr - sql));
+					nameBuff = Text::StrConcatC(nameBuff, sql, (UIntOS)(sptr - sql));
 					sql = sptr;
 
 					while (Text::CharUtil::PtrIsWS(sptr));
 					if (sptr > sql)
 					{
-						nameBuff = Text::StrConcatC(nameBuff, sql, (UOSInt)(sptr - sql));
+						nameBuff = Text::StrConcatC(nameBuff, sql, (UIntOS)(sptr - sql));
 						sql = sptr;
 					}
 					return SQLParseName(nameBuff, sql);
@@ -608,7 +608,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 			if (sptr[0] == '(')
 			{
 				sptr++;
-				MemCopyNO(nameBuff.Ptr(), sql.Ptr(), (UOSInt)(sptr - sql));
+				MemCopyNO(nameBuff.Ptr(), sql.Ptr(), (UIntOS)(sptr - sql));
 				nameBuff += sptr - sql;
 				sql = sptr;
 				if (sql[0] == ')')
@@ -623,7 +623,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 					if (!SQLParseName(nameBuff, sql).SetTo(sql))
 						return nullptr;
 					while (Text::CharUtil::PtrIsWS(sql));
-					MemCopyNO(nameBuff.Ptr(), sptr.Ptr(), (UOSInt)(sql - sptr));
+					MemCopyNO(nameBuff.Ptr(), sptr.Ptr(), (UIntOS)(sql - sptr));
 					nameBuff += sql - sptr;
 					if (sql[0] == ')')
 					{
@@ -639,7 +639,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 						while (Text::CharUtil::PtrIsWS(sql));
 						if (sptr != sql)
 						{
-							MemCopyNO(nameBuff.Ptr(), sptr.Ptr(), (UOSInt)(sql - sptr));
+							MemCopyNO(nameBuff.Ptr(), sptr.Ptr(), (UIntOS)(sql - sptr));
 							nameBuff += sql - sptr;
 						}
 					}
@@ -723,10 +723,10 @@ Bool DB::DBMS::SysVarExist(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varNa
 #if defined(VERBOSE)
 	printf("SysVarExist: %s\r\n", varName.v.Ptr());
 #endif
-	OSInt i = 0;
-	OSInt j = sizeof(sysVarList) / sizeof(sysVarList[0]) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = sizeof(sysVarList) / sizeof(sysVarList[0]) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -934,7 +934,7 @@ Bool DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionInf
 	return false;
 }
 
-void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
+void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -944,7 +944,7 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, UnsafeArray
 		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@@")), varName);
 		nncolName = CSTRP(sbuff, sptr);
 	}
-	UOSInt varNameLen = Text::StrCharCnt(varName);
+	UIntOS varNameLen = Text::StrCharCnt(varName);
 	
 	if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("autocommit")))
 	{
@@ -1064,7 +1064,7 @@ Bool DB::DBMS::SysVarSet(NN<DB::DBMS::SessionInfo> sess, Bool isGlobal, Text::CS
 		SQLMODE sqlMode = (SQLMODE)0;
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[2];
-		UOSInt i;
+		UIntOS i;
 		sb.Append(val);
 		sarr[1] = sb;
 		i = 2;
@@ -1171,7 +1171,7 @@ Bool DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionIn
 	return false;
 }
 
-void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
+void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -1201,7 +1201,7 @@ Bool DB::DBMS::UserVarSet(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varNam
 	return true;
 }
 
-Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<DB::DBMS::SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid)
+Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<DB::DBMS::SessionInfo> sess, DB::DBMSReader *reader, UIntOS colIndex, Text::CString colName, Bool *valid)
 {
 	UnsafeArray<const UTF8Char> val = valPtr.Get();
 	if (Text::StrStartsWith(val, U8STR("@@")))
@@ -1793,8 +1793,8 @@ DB::DBMS::~DBMS()
 	this->versionStr->Release();
 	NN<DB::DBMS::LoginInfo> login;
 	NN<DB::DBMS::UserInfo> user;
-	UOSInt i = this->loginMap.GetCount();
-	UOSInt j;
+	UIntOS i = this->loginMap.GetCount();
+	UIntOS j;
 	while (i-- > 0)
 	{
 		login = this->loginMap.GetItemNoCheck(i);
@@ -1829,7 +1829,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CStringNN p
 {
 	NN<DB::DBMS::LoginInfo> login;
 	NN<DB::DBMS::UserInfo> user;
-	UOSInt i;
+	UIntOS i;
 	Bool succ;
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName.v.Ptr(), password.v.Ptr(), host.v.Ptr());
@@ -1842,7 +1842,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CStringNN p
 		this->loginMap.PutC(userName, login);
 
 		user = MemAllocNN(DB::DBMS::UserInfo);
-		user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
+		user->hostLen = (UIntOS)(host.ConcatTo(user->host) - user->host);
 		this->loginSHA1.Clear();
 		this->loginSHA1.Calc(password.v, password.leng);
 		this->loginSHA1.GetValue(user->pwdSha1);
@@ -1866,7 +1866,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CStringNN p
 		if (succ)
 		{
 			user = MemAllocNN(DB::DBMS::UserInfo);
-			user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
+			user->hostLen = (UIntOS)(host.ConcatTo(user->host) - user->host);
 			this->loginSHA1.Clear();
 			this->loginSHA1.Calc(password.v, password.leng);
 			this->loginSHA1.GetValue(user->pwdSha1);
@@ -1883,7 +1883,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, UnsafeArr
 	NN<DB::DBMS::LoginInfo> login;
 	NN<DB::DBMS::UserInfo> user;
 	UInt8 hashBuff[20];
-	UOSInt j;
+	UIntOS j;
 	Int32 userId = 0;
 	#if defined(VERBOSE)
 	printf("mysql_native_password auth\r\n");
@@ -1891,7 +1891,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, UnsafeArr
 	Sync::MutexUsage mutUsage(this->loginMut);
 	if (this->loginMap.GetC(userName).SetTo(login))
 	{
-		UOSInt i = login->userList.GetCount();
+		UIntOS i = login->userList.GetCount();
 		while (i-- > 0)
 		{
 			user = login->userList.GetItemNoCheck(i);
@@ -1964,14 +1964,14 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, UnsafeArr
 	return userId;
 }
 
-DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> sql, UOSInt sqlLen)
+DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> sql, UIntOS sqlLen)
 {
 	UnsafeArray<const UTF8Char> sptr1;
 	UnsafeArray<const UTF8Char> sptr2;
 	UnsafeArray<const UTF8Char> sptr3;
 	UnsafeArray<const UTF8Char> sqlEnd = sql + sqlLen;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char nameBuff[128];
 	UTF8Char nameBuff2[128];
 	NN<DB::DBMS::SessionInfo> sess;
@@ -1981,7 +1981,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 	}
 	sptr1 = sql;
 	while (Text::CharUtil::PtrIsWS(sptr1));
-	if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SELECT")) && Text::CharUtil::IsWS(sptr1 + 6))
+	if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("SELECT")) && Text::CharUtil::IsWS(sptr1 + 6))
 	{
 		sptr1 += 6;
 		Data::ArrayListObj<DB::DBMS::SQLColumn*> cols;
@@ -2005,7 +2005,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-				sb.AppendC(sptr2, (UOSInt)(sqlEnd - sptr2));
+				sb.AppendC(sptr2, (UIntOS)(sqlEnd - sptr2));
 				sb.AppendC(UTF8STRC("' at line 1"));
 				SDEL_STRING(sess->lastError);
 				sess->lastError = Text::String::New(sb.ToCString()).Ptr();
@@ -2028,7 +2028,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 					sptr1++;
 				}
 			}
-			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("AS")) && Text::CharUtil::IsWS(sptr1 + 2))
+			else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("AS")) && Text::CharUtil::IsWS(sptr1 + 2))
 			{
 				sptr1 += 2;
 				while (Text::CharUtil::PtrIsWS(sptr1));
@@ -2046,7 +2046,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.AppendC(sptr3, (UOSInt)(sqlEnd - sptr3));
+					sb.AppendC(sptr3, (UIntOS)(sqlEnd - sptr3));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
 					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
@@ -2069,7 +2069,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 						sptr1++;
 					}
 				}
-				else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
+				else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 				{
 					hasFrom = true;
 					sptr1 += 4;
@@ -2088,14 +2088,14 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
+					sb.AppendC(sptr1, (UIntOS)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
 					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 			}
-			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
+			else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 			{
 				hasFrom = true;
 				sptr1 += 4;
@@ -2140,7 +2140,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 						sptr1++;
 					}
 				}
-				else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
+				else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 				{
 					hasFrom = true;
 					sptr1 += 4;
@@ -2159,7 +2159,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
+					sb.AppendC(sptr1, (UIntOS)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
 					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
@@ -2248,7 +2248,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			}
 		}
 	}
-	else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SET")) && Text::CharUtil::IsWS(sptr1 + 3))
+	else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("SET")) && Text::CharUtil::IsWS(sptr1 + 3))
 	{
 		sptr1 += 3;
 
@@ -2272,12 +2272,12 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 					if (c == '.')
 					{
 						*namePtr = 0;
-						if (Text::StrEqualsICaseC(nameBuff, (UOSInt)(namePtr - nameBuff), UTF8STRC("GLOBAL")))
+						if (Text::StrEqualsICaseC(nameBuff, (UIntOS)(namePtr - nameBuff), UTF8STRC("GLOBAL")))
 						{
 							isGlobal = true;
 							namePtr = nameBuff;
 						}
-						else if (Text::StrEqualsICaseC(nameBuff, (UOSInt)(namePtr - nameBuff), UTF8STRC("SESSION")))
+						else if (Text::StrEqualsICaseC(nameBuff, (UIntOS)(namePtr - nameBuff), UTF8STRC("SESSION")))
 						{
 							namePtr = nameBuff;
 						}
@@ -2848,11 +2848,11 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			}
 		}
 	}
-	else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SHOW")) && Text::CharUtil::IsWS(sptr1 + 4))
+	else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("SHOW")) && Text::CharUtil::IsWS(sptr1 + 4))
 	{
 		sptr1 += 4;
 		while (Text::CharUtil::PtrIsWS(sptr1));
-		if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("ENGINES")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
+		if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("ENGINES")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2862,7 +2862,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			SDEL_STRING(sess->lastError);
 			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
-		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("CHARSET")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("CHARSET")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2872,7 +2872,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			SDEL_STRING(sess->lastError);
 			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
-		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("COLLATION")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("COLLATION")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2882,7 +2882,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			SDEL_STRING(sess->lastError);
 			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
-		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("VARIABLES")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("VARIABLES")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
 			sptr1 += 9;
 			while (Text::CharUtil::PtrIsWS(sptr1));
@@ -2890,8 +2890,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 			if (sptr1[0] == 0)
 			{
 				DB::DBMSReader *reader;
-				OSInt i;
-				OSInt j;
+				IntOS i;
+				IntOS j;
 				Text::String *row[2];
 				Text::StringBuilderUTF8 sb;
 				NEW_CLASS(reader, DB::DBMSReader(2, -1));
@@ -2910,7 +2910,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 				}
 				return reader;
 			}
-			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("LIKE")) && Text::CharUtil::IsWS(sptr1 + 4))
+			else if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("LIKE")) && Text::CharUtil::IsWS(sptr1 + 4))
 			{
 				sptr1 += 4;
 				while (Text::CharUtil::PtrIsWS(sptr1));
@@ -2929,8 +2929,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 					if (sptr1[0] == 0 && val != 0)
 					{
 						DB::DBMSReader *reader;
-						OSInt i;
-						OSInt j;
+						IntOS i;
+						IntOS j;
 						Text::String *row[2];
 						Text::StringBuilderUTF8 sb;
 						NEW_CLASS(reader, DB::DBMSReader(2, -1));
@@ -3051,7 +3051,7 @@ void DB::DBMS::SessEnd(Int32 sessId)
 void DB::DBMS::SessDelete(NN<DB::DBMS::SessionInfo> sess)
 {
 	NN<const Data::ArrayListNN<Text::String>> varList = sess->userVars.GetValues();
-	UOSInt i = varList->GetCount();
+	UIntOS i = varList->GetCount();
 	NN<Text::String> var;
 	while (i-- > 0)
 	{

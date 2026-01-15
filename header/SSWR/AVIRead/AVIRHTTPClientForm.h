@@ -122,7 +122,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::String> reqURL;
 			UnsafeArrayOpt<const UTF8Char> reqBody;
-			UOSInt reqBodyLen;
+			UIntOS reqBodyLen;
 			Optional<Text::String> reqBodyType;
 			Optional<Text::String> reqUserName;
 			Optional<Text::String> reqPassword;

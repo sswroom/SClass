@@ -18,10 +18,10 @@ namespace Net
 		Sync::Mutex readMut;
 		UInt32 readCnt;
 		UInt8 *readBuff;
-		UOSInt readBuffPtr1;
-		UOSInt readBuffPtr2;
+		UIntOS readBuffPtr1;
+		UIntOS readBuffPtr2;
 		UInt8 *writeBuff;
-		UOSInt writeBuffSize;
+		UIntOS writeBuffSize;
 
 		static void __stdcall ConnHandler(NN<Socket> s, AnyType userObj);
 		static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
@@ -32,8 +32,8 @@ namespace Net
 		~TCPBoardcastStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

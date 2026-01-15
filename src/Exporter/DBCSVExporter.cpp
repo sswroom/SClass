@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::DBCSVExporter::IsObjectSupported(NN<IO::
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DBCSVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::DBCSVExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -64,7 +64,7 @@ Bool Exporter::DBCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStri
 	return DB::DBExporter::GenerateCSV(db, nullptr, Text::String::OrEmpty(name)->ToCString(), nullptr, CSTR("\"\""), stm, this->codePage);
 }
 
-UOSInt Exporter::DBCSVExporter::GetParamCnt()
+UIntOS Exporter::DBCSVExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -90,7 +90,7 @@ void Exporter::DBCSVExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::DBCSVExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::ParamInfo> info)
+Bool Exporter::DBCSVExporter::GetParamInfo(UIntOS index, NN<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -105,17 +105,17 @@ Bool Exporter::DBCSVExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::Pa
 	}
 }
 
-Bool Exporter::DBCSVExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
+Bool Exporter::DBCSVExporter::SetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
 
-Bool Exporter::DBCSVExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::DBCSVExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	return false;
 }
 
-Bool Exporter::DBCSVExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
+Bool Exporter::DBCSVExporter::SetParamSel(Optional<ParamData> param, UIntOS index, UIntOS selCol)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -127,17 +127,17 @@ Bool Exporter::DBCSVExporter::SetParamSel(Optional<ParamData> param, UOSInt inde
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	return nullptr;
 }
 
-Int32 Exporter::DBCSVExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::DBCSVExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	return 0;
 }
 
-Int32 Exporter::DBCSVExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::DBCSVExporter::GetParamSel(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -148,7 +148,7 @@ Int32 Exporter::DBCSVExporter::GetParamSel(Optional<ParamData> param, UOSInt ind
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamSelItems(Optional<ParamData> param, UIntOS index, UIntOS itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

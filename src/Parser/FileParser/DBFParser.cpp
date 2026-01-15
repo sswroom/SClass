@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::DBFParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 	
-	if (fd->GetRealData((UOSInt)ReadUInt16(&hdr[8]) - 1, 1, Data::ByteArray(&hdr2, 1)) != 1)
+	if (fd->GetRealData((UIntOS)ReadUInt16(&hdr[8]) - 1, 1, Data::ByteArray(&hdr2, 1)) != 1)
 	{
 		return nullptr;
 	}

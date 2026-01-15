@@ -14,7 +14,7 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(AnyType us
 		if (height > 0)
 		{
 			NN<ElevationFilter> filter;
-			NEW_CLASSNN(filter, SSWR::SHPConv::ElevationFilter((UOSInt)me->cboCol->GetSelectedIndex(), height));
+			NEW_CLASSNN(filter, SSWR::SHPConv::ElevationFilter((UIntOS)me->cboCol->GetSelectedIndex(), height));
 			me->filter = filter;
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
@@ -56,8 +56,8 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<U
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = this->dbf->GetColCount();
+	UIntOS i = 0;
+	UIntOS j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{

@@ -39,7 +39,7 @@ namespace Media
 		public:
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuv);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgb);
-			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
+			virtual UIntOS GetDestFrameSize(UIntOS width, UIntOS height);
 		};
 	}
 }

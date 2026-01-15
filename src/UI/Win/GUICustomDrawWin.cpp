@@ -34,9 +34,9 @@ typedef BOOL (WINAPI *CloseGestureInfoHandleFunc)(HGESTUREINFO hGestureInfo);
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::GUICustomDraw *me = (UI::GUICustomDraw*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUICustomDraw *me = (UI::GUICustomDraw*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	if (me == 0)
 	{
 		return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
@@ -57,19 +57,19 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
 		return 0;
 	case WM_LBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
 		return 0;
 	case WM_MOUSEMOVE:
-		me->OnMouseMove(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
+		me->OnMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		return 0;
 	case WM_MOUSEWHEEL:
 		{
 			RECT rcWnd;
 			GetWindowRect((HWND)hWnd, &rcWnd);
-			me->OnMouseWheel(Math::Coord2D<OSInt>((Int16)LOWORD(lParam) - rcWnd.left, (Int16)HIWORD(lParam) - rcWnd.top), (Int16)HIWORD(wParam));
+			me->OnMouseWheel(Math::Coord2D<IntOS>((Int16)LOWORD(lParam) - rcWnd.left, (Int16)HIWORD(lParam) - rcWnd.top), (Int16)HIWORD(wParam));
 		}
 		return 0;
 	case WM_GESTURE:
@@ -90,19 +90,19 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGestureBegin(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGestureBegin(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else if (gi.dwFlags & GF_END)
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGestureEnd(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGestureEnd(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGestureStep(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
+							me->OnGestureStep(Math::Coord2D<IntOS>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 					}
 				}
@@ -134,7 +134,7 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 			ret = joyGetPosEx((UINT)(me->joystickId - 1), &info);
 			if (ret == JOYERR_NOERROR)
 			{
-				OSInt i = 1;
+				IntOS i = 1;
 				UInt32 mask = 1;
 				while (i <= 32)
 				{
@@ -260,51 +260,51 @@ Text::CStringNN UI::GUICustomDraw::GetObjectClass() const
 	return CSTR("CustomDraw");
 }
 
-OSInt UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-Bool UI::GUICustomDraw::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool UI::GUICustomDraw::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	return false;
 }
 
-Bool UI::GUICustomDraw::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool UI::GUICustomDraw::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	return false;
 }
 
-void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<OSInt> scnPos)
+void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 }
 
-Bool UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
+Bool UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta)
 {
 	return false;
 }
 
-void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureStep(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
+void UI::GUICustomDraw::OnGestureEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUICustomDraw::OnJSButtonDown(OSInt buttonId)
+void UI::GUICustomDraw::OnJSButtonDown(IntOS buttonId)
 {
 }
 
-void UI::GUICustomDraw::OnJSButtonUp(OSInt buttonId)
+void UI::GUICustomDraw::OnJSButtonUp(IntOS buttonId)
 {
 }
 
-void UI::GUICustomDraw::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4)
+void UI::GUICustomDraw::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4)
 {
 }
 

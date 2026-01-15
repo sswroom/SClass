@@ -49,8 +49,8 @@ namespace Media
 		void SetGVals(Double gadd, Double gmul, Double gpow);
 		void SetBVals(Double badd, Double bmul, Double bpow);
 		void SetGammas(Int32 rgamma, Int32 ggamma, Int32 bgamma);
-		void CorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height);
-		void UncorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height);
+		void CorrImage32(const UInt8 *src, IntOS sbpl, UInt32 sgamma, UInt8 *dest, IntOS dbpl, UInt32 width, UInt32 height);
+		void UncorrImage32(const UInt8 *src, IntOS sbpl, UInt32 sgamma, UInt8 *dest, IntOS dbpl, UInt32 width, UInt32 height);
 	};
 }
 #endif

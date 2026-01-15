@@ -16,8 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRValgrindLogForm::OnFileClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRValgrindLogForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRValgrindLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRValgrindLogForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
 	while (i < j)
 	{
 		if (me->LoadFile(files[i]))
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIRValgrindLogForm::OnLeakSelChg(AnyType userObj)
 		UnsafeArray<UTF8Char> sptr;
 		NN<IO::ValgrindLog::StackEntry> stack;
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = leak->stacks.GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = leak->stacks.GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			stack = leak->stacks.GetItemNoCheck(i);
@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRValgrindLogForm::OnErrorSelChg(AnyType userObj
 		UnsafeArray<UTF8Char> sptr;
 		NN<IO::ValgrindLog::StackEntry> stack;
 		NN<Text::String> s;
-		UOSInt i = 0;
-		UOSInt j = err->stacks.GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = err->stacks.GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			stack = err->stacks.GetItemNoCheck(i);
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRValgrindLogForm::OnErrorSelChg(AnyType userObj
 		case IO::ValgrindLog::AddressType::Stack:
 			sb.ClearStr();
 			sb.Append(CSTR("is on thread "));
-			sb.AppendUOSInt(err->threadId);
+			sb.AppendUIntOS(err->threadId);
 			sb.Append(CSTR("'s stack"));
 			me->lvErrorDetail->SetSubItem(k, 1, sb.ToCString());
 			break;
@@ -134,15 +134,15 @@ Bool SSWR::AVIRead::AVIRValgrindLogForm::LoadFile(NN<Text::String> file)
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::ValgrindLog> log;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (IO::ValgrindLog::LoadFile(file->ToCString()).SetTo(log))
 	{
 		this->log.Delete();
 		this->log = log;
-		sptr = Text::StrUOSInt(sbuff, log->GetPPID());
+		sptr = Text::StrUIntOS(sbuff, log->GetPPID());
 		this->txtPPID->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, log->GetMainPID());
+		sptr = Text::StrUIntOS(sbuff, log->GetMainPID());
 		this->txtPID->SetText(CSTRP(sbuff, sptr));
 		this->txtVersion->SetText(Text::String::OrEmpty(log->GetVersion())->ToCString());
 		this->txtCommandLine->SetText(Text::String::OrEmpty(log->GetCommandLine())->ToCString());
@@ -208,8 +208,8 @@ Bool SSWR::AVIRead::AVIRValgrindLogForm::LoadFile(NN<Text::String> file)
 Optional<IO::ValgrindLog::StackEntry> SSWR::AVIRead::AVIRValgrindLogForm::GetOptimalStack(NN<Data::ArrayListNN<IO::ValgrindLog::StackEntry>> stacks)
 {
 	NN<IO::ValgrindLog::StackEntry> stack;
-	UOSInt i = 0;
-	UOSInt j = stacks->GetCount();
+	UIntOS i = 0;
+	UIntOS j = stacks->GetCount();
 	while (i < j)
 	{
 		stack = stacks->GetItemNoCheck(i);

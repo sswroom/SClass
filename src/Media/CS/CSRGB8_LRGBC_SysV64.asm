@@ -33,7 +33,7 @@ global _CSRGB8_LRGBC_ConvertP4_A1
 global CSRGB8_LRGBC_ConvertP8_A1
 global _CSRGB8_LRGBC_ConvertP8_A1
 
-;void CSRGB8_LRGB_UpdateRGBTable(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, OSInt nColor)
+;void CSRGB8_LRGB_UpdateRGBTable(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, IntOS nColor)
 ;0 retAddr
 ;rdi srcPal
 ;rsi destPal
@@ -58,7 +58,7 @@ urtlop:
 	jnz urtlop
 	ret
 
-;void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -91,7 +91,7 @@ _CSRGB8_LRGBC_Convert:
 	jz crgb1start
 	jmp crgbexit
 	
-;void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -112,7 +112,7 @@ _CSRGB8_LRGBC_ConvertW8A8:
 	jz ca8w8start
 	jmp crgbexit
 
-;void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -133,7 +133,7 @@ _CSRGB8_LRGBC_ConvertB5G5R5:
 	jz crgb15start
 	jmp crgbexit
 
-;void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -154,7 +154,7 @@ _CSRGB8_LRGBC_ConvertB5G6R5:
 	jz crgb16start
 	jmp crgbexit
 
-;void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -175,7 +175,7 @@ _CSRGB8_LRGBC_ConvertR8G8B8:
 	jz crgb24rstart
 	jmp crgbexit
 
-;void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -196,7 +196,7 @@ _CSRGB8_LRGBC_ConvertR8G8B8A8:
 	jz crgb32rstart
 	jmp crgbexit
 
-;void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -214,7 +214,7 @@ _CSRGB8_LRGBC_ConvertP1_A1:
 	mov r10,rbx
 	jmp cp1_a1start
 
-;void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -232,7 +232,7 @@ _CSRGB8_LRGBC_ConvertP2_A1:
 	mov r10,rbx
 	jmp cp2_a1start
 
-;void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -250,7 +250,7 @@ _CSRGB8_LRGBC_ConvertP4_A1:
 	mov r10,rbx
 	jmp cp4_a1start
 
-;void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr

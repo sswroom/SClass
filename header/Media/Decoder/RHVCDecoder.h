@@ -12,18 +12,18 @@ namespace Media
 		class RHVCDecoder : public VDecoderBase
 		{
 		private:
-			UOSInt maxFrameSize;
+			UIntOS maxFrameSize;
 			Sync::Mutex frameMut;
 			UnsafeArray<UInt8> frameBuff;
-			UOSInt frameSize;
+			UIntOS frameSize;
 			Bool lastIsField;
 			Bool spsFound;
 			UInt8 *sps;
-			UOSInt spsSize;
+			UIntOS spsSize;
 			UInt8 *pps;
-			UOSInt ppsSize;
+			UIntOS ppsSize;
 			UInt8 *vps;
-			UOSInt vpsSize;
+			UIntOS vpsSize;
 			Bool toRelease;
 			Bool firstFrame;
 			Bool discontTime;
@@ -31,9 +31,9 @@ namespace Media
 			Bool finfoMode;
 			Data::CallbackStorage<Media::VideoSource::FrameInfoCallback> finfoCb;
 
-			static UOSInt CalcNALSize(const UInt8 *buff, UOSInt buffSize);
-			static UInt8 *AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UOSInt srcBuffSize);
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static UIntOS CalcNALSize(const UInt8 *buff, UIntOS buffSize);
+			static UInt8 *AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UIntOS srcBuffSize);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease);
 			virtual ~RHVCDecoder();
@@ -41,13 +41,13 @@ namespace Media
 			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool HasFrameCount();
-			virtual UOSInt GetFrameCount();
-			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+			virtual UIntOS GetFrameCount();
+			virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
-			virtual UOSInt GetFrameSize(UOSInt frameIndex);
-			virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
+			virtual UIntOS GetFrameSize(UIntOS frameIndex);
+			virtual UIntOS ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff);
 
-			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		};
 	}
 }

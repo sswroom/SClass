@@ -19,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 	{
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListNN<Text::String> nameList;
-		UOSInt i = 0;
-		UOSInt j = wmts->GetLayerNames(nameList);
+		UIntOS i = 0;
+		UIntOS j = wmts->GetLayerNames(nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
@@ -52,8 +52,8 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 	{
 		wmts->SetLayer(me->cboLayer->GetSelectedIndex());
 		Data::ArrayListStringNN nameList;
-		UOSInt i = 0;
-		UOSInt j = wmts->GetMatrixSetNames(nameList);
+		UIntOS i = 0;
+		UIntOS j = wmts->GetMatrixSetNames(nameList);
 		me->cboMatrixSet->ClearItems();
 		while (i < j)
 		{

@@ -53,7 +53,7 @@ void __stdcall Net::Email::POP3Server::ClientEvent(NN<Net::TCPClient> cli, AnyTy
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
-		UOSInt i;
+		UIntOS i;
 		if (cliStatus->cliName)
 		{
 			Text::StrDelNew(cliStatus->cliName);
@@ -100,8 +100,8 @@ void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyTyp
 		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Arr().Ptr(), buff.GetSize());
 		cliStatus->buffSize += buff.GetSize();
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	j = 0;
 	i = 0;
 	while (i < cliStatus->buffSize)
@@ -134,7 +134,7 @@ void __stdcall Net::Email::POP3Server::ClientTimeout(NN<Net::TCPClient> cli, Any
 {
 }
 
-UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success, Text::CString msg)
+UIntOS Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success, Text::CString msg)
 {
 	Text::StringBuilderUTF8 sb;
 	if (success)
@@ -156,7 +156,7 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 	printf("%s", sb.ToPtr());
 #endif
 
-	UOSInt buffSize;
+	UIntOS buffSize;
 	buffSize = cli->Write(sb.ToByteArray());
 	if (this->rawLog)
 	{
@@ -165,9 +165,9 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 	return buffSize;
 }
 
-UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UOSInt msgLen)
+UIntOS Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UIntOS msgLen)
 {
-	UOSInt buffSize;
+	UIntOS buffSize;
 	buffSize = cli->Write(Data::ByteArrayR(msg, msgLen));
 	if (this->rawLog)
 	{
@@ -176,7 +176,7 @@ UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<cons
 	return buffSize;
 }
 
-void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 #if defined(VERBOSE)
 	printf("%s\r\n", cmd.Ptr());
@@ -237,13 +237,13 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		}
 		else
 		{
-			UOSInt mailCnt;
-			UOSInt mailSize;
+			UIntOS mailCnt;
+			UIntOS mailSize;
 			mailCnt = this->mailCtrl->GetMessageStat(cliStatus->userId, mailSize);
 			Text::StringBuilderUTF8 sb;
-			sb.AppendUOSInt(mailCnt);
+			sb.AppendUIntOS(mailCnt);
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendUOSInt(mailSize);
+			sb.AppendUIntOS(mailSize);
 			WriteMessage(cli, true, sb.ToCString());
 		}
 	}
@@ -256,8 +256,8 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		else
 		{
 			Data::ArrayListUInt32 unreadList;
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			UInt32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, unreadList))
 			{
@@ -273,7 +273,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					{
 						sb.AppendU32(id + 1);
 						sb.AppendC(UTF8STRC(" "));
-						sb.AppendUOSInt(info.size);
+						sb.AppendUIntOS(info.size);
 						sb.AppendC(UTF8STRC("\r\n"));
 					}
 					i++;
@@ -309,7 +309,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);
 					sb.AppendC(UTF8STRC(" "));
-					sb.AppendUOSInt(info.size);
+					sb.AppendUIntOS(info.size);
 					WriteMessage(cli, true, sb.ToCString());
 				}
 				else
@@ -339,7 +339,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, mstm))
 				{
 					WriteMessage(cli, true, CSTR("Content follows"));
-					UOSInt buffSize;
+					UIntOS buffSize;
 					UnsafeArray<UInt8> buff;
 					buff = mstm.GetBuff(buffSize);
 					cli->Write(Data::ByteArrayR(buff, buffSize));
@@ -372,7 +372,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			{
 				WriteMessage(cli, false, CSTR("invalid param"));
 			}
-			else if (Text::StrSplitWSP(sarr, 3, Text::PString(sbuff, (UOSInt)(Text::StrConcatC(sbuff, &cmd[4], cmdLen - 4) - sbuff))) != 2)
+			else if (Text::StrSplitWSP(sarr, 3, Text::PString(sbuff, (UIntOS)(Text::StrConcatC(sbuff, &cmd[4], cmdLen - 4) - sbuff))) != 2)
 			{
 				WriteMessage(cli, false, CSTR("invalid param"));
 			}
@@ -466,8 +466,8 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		else
 		{
 			Data::ArrayListUInt32 unreadList;
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			UInt32 id;
 			if (this->mailCtrl->GetUnreadList(cliStatus->userId, unreadList))
 			{

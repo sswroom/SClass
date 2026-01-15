@@ -45,9 +45,9 @@ namespace Media
 			FF_FORCEDISP = 16
 		} FrameFlag;
 
-		typedef void (CALLBACKFUNC FrameCallback)(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		typedef void (CALLBACKFUNC FrameCallback)(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		typedef void (CALLBACKFUNC FrameChangeCallback)(FrameChange frChg, AnyType userData);
-		typedef Bool (CALLBACKFUNC FrameInfoCallback)(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst); //return true to continue
+		typedef Bool (CALLBACKFUNC FrameInfoCallback)(Data::Duration frameTime, UIntOS frameNum, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst); //return true to continue
 		typedef void (CALLBACKFUNC ImageCallback)(AnyType userData, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 
 		VideoSource();
@@ -58,9 +58,9 @@ namespace Media
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Text::CStringNN GetFilterName() = 0;
 
-		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom) = 0;
-		virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom) = 0;
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
+		virtual void SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom) = 0;
+		virtual void GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom) = 0;
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize) = 0;
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData) = 0;
 		virtual Bool Start() = 0; //true = succeed
 		virtual void Stop() = 0;
@@ -72,18 +72,18 @@ namespace Media
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 
-		virtual UOSInt GetDataSeekCount() = 0;
+		virtual UIntOS GetDataSeekCount() = 0;
 
 		virtual Bool HasFrameCount() = 0;
-		virtual UOSInt GetFrameCount() = 0;
-		virtual Data::Duration GetFrameTime(UOSInt frameIndex) = 0;
+		virtual UIntOS GetFrameCount() = 0;
+		virtual Data::Duration GetFrameTime(UIntOS frameIndex) = 0;
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData) = 0;
-		virtual UOSInt GetFrameSize(UOSInt frameIndex);
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
+		virtual UIntOS GetFrameSize(UIntOS frameIndex);
+		virtual UIntOS ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff);
 		virtual Bool ReadFrameBegin();
 		virtual Bool ReadFrameEnd();
 
-		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype) = 0; //ret 0 = no more frames
+		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype) = 0; //ret 0 = no more frames
 		void SetProp(Int32 propName, UnsafeArray<const UInt8> propBuff, UInt32 propBuffSize);
 		virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
 

@@ -35,7 +35,7 @@ void Crypto::Hash::Adler32::Clear()
 	this->abVal = 1;
 }
 
-void Crypto::Hash::Adler32::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::Adler32::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->abVal = Adler32_Calc(buff.Ptr(), buffSize, this->abVal);
 }
@@ -45,12 +45,12 @@ void Crypto::Hash::Adler32::GetValue(UnsafeArray<UInt8> buff) const
 	WriteMUInt32(buff.Ptr(), this->abVal);
 }
 
-UOSInt Crypto::Hash::Adler32::GetBlockSize() const
+UIntOS Crypto::Hash::Adler32::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::Adler32::GetResultSize() const
+UIntOS Crypto::Hash::Adler32::GetResultSize() const
 {
 	return 4;
 }

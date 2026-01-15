@@ -29,12 +29,12 @@ Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 	WChar *initFileName;
 	WChar *multiBuff = 0;
 	WChar *fnameBuff;
-	OSInt fnameBuffSize;
+	IntOS fnameBuffSize;
 	NN<Text::String> s;
 	UnsafeArray<const WChar> ws;
 	Text::StringBuilderUTF16 sb;
-	UOSInt i = 0;
-	UOSInt filterCnt = this->names.GetCount();
+	UIntOS i = 0;
+	UIntOS filterCnt = this->names.GetCount();
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -165,12 +165,12 @@ Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 	ofn.lpstrFilter = sb.ToPtr();
 	ofn.lpstrCustomFilter = 0; 
 	ofn.nMaxCustFilter = 0;
-	if (this->filterIndex == (UOSInt)-1)
+	if (this->filterIndex == (UIntOS)-1)
 	{
 		if (this->isSave && fnameBuff && fnameBuff[0] != 0)
 		{
 			Bool found = false;
-			UOSInt foundIndexLeng = 0;
+			UIntOS foundIndexLeng = 0;
 			NN<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
 			NN<Text::String> pattern;
 			i = 0;

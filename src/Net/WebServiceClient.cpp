@@ -26,7 +26,7 @@ Net::WebServiceClient::~WebServiceClient()
 	this->serviceAddr->Release();
 	this->serviceName->Release();
 	this->targetNS->Release();
-	UOSInt i;
+	UIntOS i;
 	NN<ParamInfo> param;
 	i = this->paramList.GetCount();
 	while (i-- > 0)
@@ -61,8 +61,8 @@ void Net::WebServiceClient::SetSOAPAction(Text::CString soapAction)
 Bool Net::WebServiceClient::Request(RequestType rt)
 {
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<ParamInfo> param;
 	UInt8 *buff;
 	UTF8Char sbuff[512];
@@ -137,7 +137,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		}
 		cli->AddHeaderC(CSTR("Content-Type"), CSTR("text/xml; charset=utf-8"));
 		buff = mstm->GetBuff(i);
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 
 		cli->Write(buff, i);
@@ -153,7 +153,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				i = 0;
 				while (i < contLeng)
 				{
-					j = cli->Read(Data::ByteArray(&buff[i], (UOSInt)contLeng - i));
+					j = cli->Read(Data::ByteArray(&buff[i], (UIntOS)contLeng - i));
 					if (j == 0)
 						break;
 					i += j;
@@ -186,7 +186,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Result"));
@@ -194,7 +194,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(sb);
@@ -293,7 +293,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				i = 0;
 				while (i < contLeng)
 				{
-					j = cli->Read(Data::ByteArray(&buff[i], (UOSInt)contLeng - i));
+					j = cli->Read(Data::ByteArray(&buff[i], (UIntOS)contLeng - i));
 					if (j == 0)
 						break;
 					i += j;
@@ -326,7 +326,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Result"));
@@ -334,7 +334,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(sb);

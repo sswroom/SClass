@@ -54,8 +54,8 @@ IO::ParserType Text::SpreadSheet::Workbook::GetParserType() const
 
 NN<Text::SpreadSheet::Workbook> Text::SpreadSheet::Workbook::Clone() const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::SpreadSheet::Workbook> newWB;
 	NEW_CLASSNN(newWB, Text::SpreadSheet::Workbook());
 	newWB->author = Text::StrSCopyNew(this->author);
@@ -288,7 +288,7 @@ void Text::SpreadSheet::Workbook::SetWindowHeight(Int32 windowHeight)
 	this->windowHeight = windowHeight;
 }
 
-void Text::SpreadSheet::Workbook::SetActiveSheet(UOSInt index)
+void Text::SpreadSheet::Workbook::SetActiveSheet(UIntOS index)
 {
 	this->activeSheet = index;
 }
@@ -313,7 +313,7 @@ Int32 Text::SpreadSheet::Workbook::GetWindowHeight()
 	return this->windowHeight;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetActiveSheet()
+UIntOS Text::SpreadSheet::Workbook::GetActiveSheet()
 {
 	return this->activeSheet;
 }
@@ -352,23 +352,23 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(Optio
 	return style;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetStyleCount() const
+UIntOS Text::SpreadSheet::Workbook::GetStyleCount() const
 {
 	return this->styles.GetCount();
 }
 
-OSInt Text::SpreadSheet::Workbook::GetStyleIndex(NN<CellStyle> style) const
+IntOS Text::SpreadSheet::Workbook::GetStyleIndex(NN<CellStyle> style) const
 {
-	UOSInt i = this->styles.GetCount();
+	UIntOS i = this->styles.GetCount();
 	while (i-- > 0)
 	{
 		if (this->styles.GetItem(i).OrNull() == style.Ptr())
-			return (OSInt)i;
+			return (IntOS)i;
 	}
 	return -1;
 }
 
-Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetStyle(UOSInt index) const
+Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetStyle(UIntOS index) const
 {
 	return this->styles.GetItem(index);
 }
@@ -376,7 +376,7 @@ Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetStyle(UOS
 NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCreateStyle(NN<const CellStyle> tmpStyle)
 {
 	NN<CellStyle> style;
-	UOSInt i = this->styles.GetCount();
+	UIntOS i = this->styles.GetCount();
 	while (i-- > 0)
 	{
 		if (this->styles.GetItem(i).SetTo(style))
@@ -418,7 +418,7 @@ NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::SpreadSheet::Worksheet> ws;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
 	this->sheets.Add(ws);
 	return ws;
@@ -440,7 +440,7 @@ NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(Text:
 	return ws;
 }
 
-NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CStringNN name)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UIntOS index, Text::CStringNN name)
 {
 	NN<Text::SpreadSheet::Worksheet> ws;
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
@@ -448,12 +448,12 @@ NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UO
 	return ws;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetCount() const
+UIntOS Text::SpreadSheet::Workbook::GetCount() const
 {
 	return this->sheets.GetCount();
 }
 
-Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetItem(UOSInt index) const
+Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetItem(UIntOS index) const
 {
 	return this->sheets.GetItem(index);
 }
@@ -463,7 +463,7 @@ Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> Text::SpreadSheet::Workboo
 	return this->sheets.Iterator();
 }
 
-void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
+void Text::SpreadSheet::Workbook::RemoveAt(UIntOS index)
 {
 	this->sheets.RemoveAt(index).Delete();
 }
@@ -481,24 +481,24 @@ Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheet
 	return nullptr;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetFontCount() const
+UIntOS Text::SpreadSheet::Workbook::GetFontCount() const
 {
 	return this->fonts.GetCount();
 }
 
-NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFontNoCheckc(UOSInt index) const
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFontNoCheckc(UIntOS index) const
 {
 	return this->fonts.GetItemNoCheck(index);
 }
 
-Optional<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFont(UOSInt index) const
+Optional<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFont(UIntOS index) const
 {
 	return this->fonts.GetItem(index);
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetFontIndex(NN<WorkbookFont> font)
+UIntOS Text::SpreadSheet::Workbook::GetFontIndex(NN<WorkbookFont> font)
 {
-	UOSInt i = this->fonts.GetCount();
+	UIntOS i = this->fonts.GetCount();
 	while (i-- > 0)
 	{
 		if (this->fonts.GetItemNoCheck(i) == font)
@@ -522,7 +522,7 @@ void Text::SpreadSheet::Workbook::GetDefPalette(UInt32 *palette)
 	MemCopyNO(palette, Text::SpreadSheet::Workbook::defPalette, sizeof(Text::SpreadSheet::Workbook::defPalette));
 }
 
-UnsafeArray<UTF8Char> Text::SpreadSheet::Workbook::ColCode(UnsafeArray<UTF8Char> sbuff, UOSInt col)
+UnsafeArray<UTF8Char> Text::SpreadSheet::Workbook::ColCode(UnsafeArray<UTF8Char> sbuff, UIntOS col)
 {
 	if (col < 26)
 	{

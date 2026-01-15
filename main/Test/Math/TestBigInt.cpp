@@ -6,9 +6,9 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 //	IO::ConsoleWriter console;
-	UOSInt i = 1;
-	UOSInt j = 300;
-	UOSInt k;
+	UIntOS i = 1;
+	UIntOS j = 300;
+	UIntOS k;
 	Text::StringBuilderUTF8 sb;
 	Math::BigIntLSB bi(256);
 	Math::BigIntLSB bi2(256);
@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		bi *= i;
 		sb.ClearStr();
-		sb.AppendUOSInt(i)->Append(CSTR("! = "));
+		sb.AppendUIntOS(i)->Append(CSTR("! = "));
 		k = sb.leng;
 		bi.ToString(sb);
 //		console.WriteLine(sb.ToCString());

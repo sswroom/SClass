@@ -23,7 +23,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 	this->cli2 = nullptr;
 	this->codePage = codePage;
 
-	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP://")))
+	if (!Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FTP://")))
 		return;
 	sptr = &sbuff[6];
 	host = sptr;
@@ -46,7 +46,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 					this->password = Text::StrCopyNew(nns).Ptr();
 				}
 			}
-			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1)).Ptr();
+			this->host = Text::String::New(host, (UIntOS)(sptr - host - 1)).Ptr();
 			if (port.SetTo(nns))
 			{
 				if (!Text::StrToUInt16(nns, this->port))
@@ -67,7 +67,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 			if (this->conn->IsLogged())
 			{
 				sptr = Text::StrConcat(sbuff, this->path);
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
+				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
 				Bool dirOk;
 				if (i == INVALID_INDEX || i == 0)
 				{
@@ -148,7 +148,7 @@ Bool Net::FTPClient::IsDown() const
 	return this->cli2.IsNull();
 }
 
-UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
+UIntOS Net::FTPClient::Read(const Data::ByteArray &buff)
 {
 	NN<Net::TCPClient> cli2;
 	if (this->cli2.SetTo(cli2))
@@ -161,7 +161,7 @@ UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::FTPClient::Write(Data::ByteArrayR buff)
+UIntOS Net::FTPClient::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

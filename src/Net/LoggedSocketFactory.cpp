@@ -88,7 +88,7 @@ Bool Net::LoggedSocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Bind v4: "));
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(", "));
 	if (ret)
 	{
@@ -141,50 +141,50 @@ Optional<Socket> Net::LoggedSocketFactory::SocketAccept(NN<Socket> socket)
 	{
 		sb.AppendC(UTF8STRC("Success, remote: "));
 		sptr = this->sockf->GetRemoteName(sbuff, soc).Or(sbuff);
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS Net::LoggedSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
-	UOSInt ret = this->sockf->SendData(socket, buff, buffSize, et);
+	UIntOS ret = this->sockf->SendData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Sent "));
-	sb.AppendOSInt(ret);
+	sb.AppendIntOS(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS Net::LoggedSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
-	UOSInt ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
+	UIntOS ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Received "));
-	sb.AppendOSInt(ret);
+	sb.AppendIntOS(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-Optional<Net::SocketRecvSess> Net::LoggedSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> Net::LoggedSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
 	return this->sockf->BeginReceiveData(socket, buff, buffSize, evt, et);
 }
 
-UOSInt Net::LoggedSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS Net::LoggedSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	UOSInt ret = this->sockf->EndReceiveData(reqData, toWait, incomplete);
+	UIntOS ret = this->sockf->EndReceiveData(reqData, toWait, incomplete);
 	if (toWait || ret > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendOpt(this->logPrefix);
 		sb.AppendC(UTF8STRC("End Received "));
-		sb.AppendOSInt(ret);
+		sb.AppendIntOS(ret);
 		sb.AppendC(UTF8STRC(" bytes"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
@@ -196,11 +196,11 @@ void Net::LoggedSocketFactory::CancelReceiveData(NN<Net::SocketRecvSess> reqData
 	this->sockf->CancelReceiveData(reqData);
 }
 
-UOSInt Net::LoggedSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UIntOS Net::LoggedSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	ErrorType etTmp;
 	UInt16 portTmp;
-	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, portTmp, etTmp);
+	UIntOS ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, portTmp, etTmp);
 	et.Set(etTmp);
 	port.Set(portTmp);
 	Text::StringBuilderUTF8 sb;
@@ -216,25 +216,25 @@ UOSInt Net::LoggedSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8
 	}
 	else
 	{
-		sb.AppendOSInt(ret);
+		sb.AppendIntOS(ret);
 		sb.AppendC(UTF8STRC(" bytes from"));
 		sptr = Net::SocketUtil::GetAddrName(sbuff, addr, portTmp).Or(sbuff);
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+UIntOS Net::LoggedSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
-	UOSInt ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
+	UIntOS ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Send To "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port).Or(sbuff);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(": "));
 	if (ret == 0)
 	{
@@ -242,7 +242,7 @@ UOSInt Net::LoggedSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UIn
 	}
 	else
 	{
-		sb.AppendUOSInt(ret);
+		sb.AppendUIntOS(ret);
 		sb.AppendC(UTF8STRC(" bytes"));
 	}
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);

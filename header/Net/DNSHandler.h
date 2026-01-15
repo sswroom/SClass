@@ -31,8 +31,8 @@ namespace Net
 	
 		Bool GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
 		Bool GetByDomainNamev6(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
-		UOSInt GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
-		UOSInt GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
+		UIntOS GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
+		UIntOS GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
 
 		Bool AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
 		void UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr);

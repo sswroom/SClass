@@ -12,12 +12,12 @@ Math::SRESRIWKTWriter::~SRESRIWKTWriter()
 
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buff, UInt32 srid, UIntOS lev, Text::LineBreakType lbt)
 {
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::PrimemType primem, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (primem)
 	{
@@ -30,7 +30,7 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> b
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::UnitType unit, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (unit)
 	{
@@ -53,7 +53,7 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buf
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CoordinateSystem> pcsys, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CoordinateSystem> pcsys, UIntOS lev, Text::LineBreakType lbt)
 {
 	return buff;
 }

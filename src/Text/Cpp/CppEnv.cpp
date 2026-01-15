@@ -16,7 +16,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> csptr;
 	Optional<IO::ConfigFile> cfg;
-	UOSInt i;
+	UIntOS i;
 	if (!IsCompilerExist(vsv))
 		return false;
 	if (!IO::Path::GetLocAppDataPath(sbuff).SetTo(sptr))
@@ -83,7 +83,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 			if (c == 0 || c == ';')
 			{
 				*sptr = 0;
-				while ((i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(VCInstallDir)"))) != INVALID_INDEX)
+				while ((i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(VCInstallDir)"))) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -96,9 +96,9 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 					if (sptr[-1] == '\\' && sbuff[i + 15] == '\\')
 						sptr--;
 					sptr = Text::StrConcat(sptr, &sbuff[i + 15]);
-					sptr = Text::StrConcatC(sbuff, sbuff3, (UOSInt)(sptr - sbuff3));
+					sptr = Text::StrConcatC(sbuff, sbuff3, (UIntOS)(sptr - sbuff3));
 				}
-				while ((i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(WindowsSdkDir)"))) != INVALID_INDEX)
+				while ((i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(WindowsSdkDir)"))) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -111,14 +111,14 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 					if (sptr[-1] == '\\' && sbuff[i + 16] == '\\')
 						sptr--;
 					sptr = Text::StrConcat(sptr, &sbuff[i + 16]);
-					sptr = Text::StrConcatC(sbuff, sbuff3, (UOSInt)(sptr - sbuff3));
+					sptr = Text::StrConcatC(sbuff, sbuff3, (UIntOS)(sptr - sbuff3));
 				}
-				if (Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(")) != INVALID_INDEX)
+				if (Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(")) != INVALID_INDEX)
 				{
 				}
 				else
 				{
-					this->includePaths.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					this->includePaths.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;
@@ -160,7 +160,7 @@ Text::Cpp::CppEnv::CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> c
 			if (nncfg->GetValue(CSTR("AdditionalIncludeDirectories")).SetTo(inclDir))
 			{
 				Text::PString sarr[2];
-				UOSInt cnt;
+				UIntOS cnt;
 				Text::StringBuilderUTF8 sb;
 				sb.Append(inclDir);
 				sarr[1] = sb;
@@ -179,7 +179,7 @@ Text::Cpp::CppEnv::CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> c
 
 Text::Cpp::CppEnv::~CppEnv()
 {
-	UOSInt i = this->includePaths.GetCount();
+	UIntOS i = this->includePaths.GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->includePaths.GetItem(i));
@@ -196,7 +196,7 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetIncludeFilePath(UnsafeArray<UTF8C
 {
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt i;
+	UIntOS i;
 /*	if (includeFile.IndexOf(UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
 		i = 0;
@@ -204,7 +204,7 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetIncludeFilePath(UnsafeArray<UTF8C
 	if (sourceFile)
 	{
 		sptr = sourceFile->ConcatTo(buff);
-		i = Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr - buff), IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(buff, (UIntOS)(sptr - buff), IO::Path::PATH_SEPERATOR);
 		sptr2 = includeFile.ConcatTo(&buff[i + 1]);
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
@@ -298,7 +298,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> csptr;
 	Optional<IO::ConfigFile> cfg;
-	UOSInt i;
+	UIntOS i;
 	if (!IsCompilerExist(vsv))
 		return 0;
 	if (!IO::Path::GetLocAppDataPath(sbuff).SetTo(sptr))
@@ -368,7 +368,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 			if (c == 0 || c == ';')
 			{
 				*sptr = 0;
-				while ((i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(VCInstallDir)"))) != INVALID_INDEX)
+				while ((i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(VCInstallDir)"))) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -381,9 +381,9 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 					if (sptr[-1] == '\\' && sbuff[i + 15] == '\\')
 						sptr--;
 					sptr = Text::StrConcat(sptr, &sbuff[i + 15]);
-					sptr = Text::StrConcatC(sbuff, sbuff3, (UOSInt)(sptr - sbuff3));
+					sptr = Text::StrConcatC(sbuff, sbuff3, (UIntOS)(sptr - sbuff3));
 				}
-				while ((i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(WindowsSdkDir)"))) != INVALID_INDEX)
+				while ((i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(WindowsSdkDir)"))) != INVALID_INDEX)
 				{
 					sptr = sbuff3;
 					if (i > 0)
@@ -396,14 +396,14 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 					if (sptr[-1] == '\\' && sbuff[i + 16] == '\\')
 						sptr--;
 					sptr = Text::StrConcat(sptr, &sbuff[i + 16]);
-					sptr = Text::StrConcatC(sbuff, sbuff3, (UOSInt)(sptr - sbuff3));
+					sptr = Text::StrConcatC(sbuff, sbuff3, (UIntOS)(sptr - sbuff3));
 				}
-				if (Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$(")) != INVALID_INDEX)
+				if (Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("$(")) != INVALID_INDEX)
 				{
 				}
 				else
 				{
-					env->includePaths.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					env->includePaths.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;

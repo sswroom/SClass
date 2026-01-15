@@ -41,7 +41,7 @@ namespace Media
 			Sync::Event evtMain;
 			Sync::Mutex mut;
 			UnsafeArray<LRTHREADSTAT> stats;
-			UOSInt nThread;
+			UIntOS nThread;
 
 			Double hsSize;
 			Int32 hdSize;
@@ -77,7 +77,7 @@ namespace Media
 			LanczosResizer8_8(Int32 nTap);
 			virtual ~LanczosResizer8_8();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight);
 
 			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
 			virtual Optional<Media::StaticImage> ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);

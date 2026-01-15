@@ -24,8 +24,8 @@ Text::CStringNN Text::MIMEObj::MailMessage::GetClassName() const
 NN<Text::MIMEObject> Text::MIMEObj::MailMessage::Clone() const
 {
 	NN<Text::MIMEObj::MailMessage> msg;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> name;
 	NN<Text::String> value;
 	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
@@ -80,9 +80,9 @@ UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetReplyTo(UnsafeArray<UTF8
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UOSInt Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const
+UIntOS Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	NN<Text::String> hdr;
 	if (GetHeader(UTF8STRC("To")).SetTo(hdr))
 		i += ParseAddrList(hdr->v, hdr->leng, recpList, AT_TO);
@@ -94,7 +94,7 @@ UOSInt Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayListNN<MailAddress>
 void Text::MIMEObj::MailMessage::FreeRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const
 {
 	NN<MailAddress> addr;
-	UOSInt i;
+	UIntOS i;
 	i = recpList->GetCount();
 	while (i-- > 0)
 	{
@@ -168,12 +168,12 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetContentMajor() const
 	return nullptr;
 }
 
-Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
+Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(IntOS index, NN<Text::StringBuilderUTF8> name) const
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	NN<Text::String> s;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -198,7 +198,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index
 						if (index == 0)
 						{
 							sptr = ParseHeaderStr(sbuff, s->v);
-							k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("filename="));
+							k = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("filename="));
 							if (k != INVALID_INDEX)
 							{
 								if (sbuff[k + 9] == '\"')
@@ -210,7 +210,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index
 									}
 									else
 									{
-										name->AppendC(&sbuff[k + 10], (UOSInt)(sptr - &sbuff[k + 10]));
+										name->AppendC(&sbuff[k + 10], (UIntOS)(sptr - &sbuff[k + 10]));
 									}
 								}
 								else
@@ -222,7 +222,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index
 									}
 									else
 									{
-										name->AppendC(&sbuff[k + 9], (UOSInt)(sptr - &sbuff[k + 9]));
+										name->AppendC(&sbuff[k + 9], (UIntOS)(sptr - &sbuff[k + 9]));
 									}
 								}
 							}
@@ -258,14 +258,14 @@ Optional<Text::MIMEObj::MailMessage> Text::MIMEObj::MailMessage::ParseFile(NN<IO
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const
+UIntOS Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr, UIntOS hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const
 {
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> ptr1;
 	UnsafeArray<UTF8Char> ptr1End;
 	UnsafeArray<UTF8Char> ptr2;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char c;
 	Bool isEnd;
 	Bool quoted;
@@ -315,7 +315,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr
 			{
 				*ptr2++ = 0;
 				ptr1End = Text::StrTrim(ptr1);
-				addr->name = Text::String::New(ptr1, (UOSInt)(ptr1End - ptr1)).Ptr();
+				addr->name = Text::String::New(ptr1, (UIntOS)(ptr1End - ptr1)).Ptr();
 				ptr1 = ptr2;
 				while (true)
 				{
@@ -323,7 +323,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr
 					if (c == '0' || c == '>')
 					{
 						ptr2[-1] = 0;
-						addr->address = Text::String::New(ptr1, (UOSInt)(ptr2 - ptr1 - 1));
+						addr->address = Text::String::New(ptr1, (UIntOS)(ptr2 - ptr1 - 1));
 						break;
 					}
 				}
@@ -331,7 +331,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr
 			}
 			else if (c == 0)
 			{
-				addr->address = Text::String::New(ptr1, (UOSInt)(ptr2 - ptr1));
+				addr->address = Text::String::New(ptr1, (UIntOS)(ptr2 - ptr1));
 				addr->name = 0;
 				break;
 			}

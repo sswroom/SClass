@@ -18,7 +18,7 @@ namespace IO
 			Bool packed;
 			Bool deltaCoded;
 			NN<Text::String> name;
-			UOSInt valCount;
+			UIntOS valCount;
 			union
 			{
 				Int32 int32Val;
@@ -78,8 +78,8 @@ namespace IO
 		NN<ProtocolBuffersMessage> Clone() const;
 		NN<Text::String> GetName() const;
 
-		Bool ParseMsssage(NN<IO::FileAnalyse::FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt buffOfst, UOSInt buffSize);
-		void ToString(NN<Text::StringBuilderUTF8> sb, UOSInt level);
+		Bool ParseMsssage(NN<IO::FileAnalyse::FrameDetail> frame, UnsafeArray<const UInt8> buff, UIntOS buffOfst, UIntOS buffSize);
+		void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level);
 	};
 }
 #endif

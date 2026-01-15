@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
 
-Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb, Bool detail) const
+Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb, Bool detail) const
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -879,7 +879,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						sb->AppendC(UTF8STRC("\r\nServer IP = "));
 						sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
-						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
 						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));
@@ -891,7 +891,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						sb->AppendC(UTF8STRC("\r\nServer IP = "));
 						sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
-						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
 						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));

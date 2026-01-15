@@ -42,7 +42,7 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-UOSInt Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UIntOS Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
 {
 	if (this->phyAddr)
 	{
@@ -65,7 +65,7 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
+UIntOS Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
 {
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	if (sock == -1)
@@ -93,7 +93,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 	}
 	close(sock);
 
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Text::PString sarr[7];
 	UnsafeArray<UTF8Char> sarr2[7];
 	Text::StringBuilderUTF8 sb;

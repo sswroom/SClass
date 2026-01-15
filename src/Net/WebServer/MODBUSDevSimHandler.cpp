@@ -52,8 +52,8 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::WebR
 			sb.AppendC(UTF8STRC("</form>\r\n"));
 
 			sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Value</td><td>Action</td></tr>\r\n"));
-			UOSInt i = 0;
-			UOSInt j = dev->GetValueCount();
+			UIntOS i = 0;
+			UIntOS j = dev->GetValueCount();
 			while (i < j)
 			{
 				sb.AppendC(UTF8STRC("<tr><td>"));
@@ -68,7 +68,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::WebR
 				s->Release();
 				sb.AppendC(UTF8STRC("</td><td>"));
 				sb.AppendC(UTF8STRC("<input type=\"button\" onclick=\"submitToggle("));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC(");\" value=\"Toggle\" /></td></tr>\r\n"));
 
 				i++;

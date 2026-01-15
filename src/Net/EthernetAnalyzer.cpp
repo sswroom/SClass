@@ -19,7 +19,7 @@ mDNS:
 https://www.ietf.org/rfc/rfc6762.txt
 */
 
-void Net::EthernetAnalyzer::NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize)
+void Net::EthernetAnalyzer::NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UIntOS nameSize)
 {
 	UnsafeArray<UTF8Char> destPtr = nameBuff;
 	while (nameSize >= 2)
@@ -47,14 +47,14 @@ void Net::EthernetAnalyzer::MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans)
 {
 	Sync::MutexUsage mutUsage(this->mdnsMut);
 	NN<Net::DNSClient::RequestAnswer> rans;
-	OSInt i = 0;
-	OSInt j = (OSInt)this->mdnsList.GetCount() - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->mdnsList.GetCount() - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		rans = this->mdnsList.GetItemNoCheck((UOSInt)k);
+		rans = this->mdnsList.GetItemNoCheck((UIntOS)k);
 		l = Text::StrCompare(rans->name->v, ans->name->v);
 		if (l < 0)
 		{
@@ -78,7 +78,7 @@ void Net::EthernetAnalyzer::MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans)
 			return;
 		}
 	}
-	this->mdnsList.Insert((UOSInt)i, ans);
+	this->mdnsList.Insert((UIntOS)i, ans);
 }
 
 Net::EthernetAnalyzer::EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType aType, NN<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
@@ -103,8 +103,8 @@ Net::EthernetAnalyzer::EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeT
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<UInt8> packetData;
 	NN<MACStatus> mac;
 	i = this->macMap.GetCount();
@@ -228,7 +228,7 @@ NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> Net::Ethernet
 	return this->ipTranMap;
 }
 
-UOSInt Net::EthernetAnalyzer::IPTranGetCount() const
+UIntOS Net::EthernetAnalyzer::IPTranGetCount() const
 {
 	return this->ipTranMap.GetCount();
 }
@@ -253,18 +253,18 @@ NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> Net::Etherne
 	return this->dnsCliInfos;
 }
 
-UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
+UIntOS Net::EthernetAnalyzer::DNSCliGetCount()
 {
 	return this->dnsCliInfos.GetCount();
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList)
+UIntOS Net::EthernetAnalyzer::DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	return reqList->AddAllOpt(this->dnsReqv4Map.GetKeys());
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
+UIntOS Net::EthernetAnalyzer::DNSReqv4GetCount()
 {
 	return this->dnsReqv4Map.GetCount();
 }
@@ -288,13 +288,13 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CStringNN req, NN<Data::ArrayL
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList)
+UIntOS Net::EthernetAnalyzer::DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	return reqList->AddAllOpt(this->dnsReqv6Map.GetKeys());
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
+UIntOS Net::EthernetAnalyzer::DNSReqv6GetCount()
 {
 	return this->dnsReqv6Map.GetCount();
 }
@@ -318,13 +318,13 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CStringNN req, NN<Data::ArrayL
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList)
+UIntOS Net::EthernetAnalyzer::DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	return reqList->AddAllOpt(this->dnsReqOthMap.GetKeys());
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
+UIntOS Net::EthernetAnalyzer::DNSReqOthGetCount()
 {
 	return this->dnsReqOthMap.GetCount();
 }
@@ -348,13 +348,13 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CStringNN req, NN<Data::Array
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSTargetGetList(NN<Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo>> targetList)
+UIntOS Net::EthernetAnalyzer::DNSTargetGetList(NN<Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo>> targetList)
 {
 	Sync::MutexUsage mutUsage(this->dnsTargetMut);
 	return targetList->AddAll(this->dnsTargetMap);
 }
 
-UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
+UIntOS Net::EthernetAnalyzer::DNSTargetGetCount()
 {
 	return this->dnsTargetMap.GetCount();
 }
@@ -373,13 +373,13 @@ Optional<Text::String> Net::EthernetAnalyzer::DNSTargetGetName(UInt32 ip) const
 	return nullptr;
 }
 
-UOSInt Net::EthernetAnalyzer::MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
+UIntOS Net::EthernetAnalyzer::MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
 {
 	Sync::MutexUsage mutUsage(this->mdnsMut);
 	return mdnsList->AddAll(this->mdnsList);
 }
 
-UOSInt Net::EthernetAnalyzer::MDNSGetCount()
+UIntOS Net::EthernetAnalyzer::MDNSGetCount()
 {
 	return this->mdnsList.GetCount();
 }
@@ -404,17 +404,17 @@ NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> Net::EthernetAna
 	return this->ipLogMap;
 }
 
-UOSInt Net::EthernetAnalyzer::IPLogGetCount() const
+UIntOS Net::EthernetAnalyzer::IPLogGetCount() const
 {
 	return this->ipLogMap.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::TCP4SYNIsDiff(UOSInt lastIndex) const
+Bool Net::EthernetAnalyzer::TCP4SYNIsDiff(UIntOS lastIndex) const
 {
 	return this->tcp4synList.GetPutIndex() != lastIndex;
 }
 
-UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const
+UIntOS Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UIntOS> thisIndex) const
 {
 	Sync::MutexUsage mutUsage(this->tcp4synMut);
 	thisIndex.Set(this->tcp4synList.GetPutIndex());
@@ -427,7 +427,7 @@ NN<Data::FastMapNN<UInt32, Net::EthernetAnalyzer::BandwidthStat>> Net::EthernetA
 	return this->bandwidthMap;
 }
 
-Bool Net::EthernetAnalyzer::PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	switch (linkType)
 	{
@@ -443,7 +443,7 @@ Bool Net::EthernetAnalyzer::PacketData(IO::PacketAnalyse::LinkType linkType, Uns
 	return false;
 }
 
-Bool Net::EthernetAnalyzer::PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketNull(UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	UInt32 packetType;
 	Bool valid;
@@ -482,7 +482,7 @@ Bool Net::EthernetAnalyzer::PacketNull(UnsafeArray<const UInt8> packet, UOSInt p
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	UInt16 etherType;
 	UInt64 destAddr;
@@ -519,7 +519,7 @@ Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSI
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	UInt16 etherType;
 	UInt64 destAddr;
@@ -572,7 +572,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt 
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetData2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64)
+Bool Net::EthernetAnalyzer::PacketEthernetData2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -584,9 +584,9 @@ Bool Net::EthernetAnalyzer::PacketEthernetData2(UnsafeArray<const UInt8> packet,
 	}
 	Sync::MutexUsage mutUsage(this->macMut);
 	UnsafeArray<UInt8> packetData;
-	UOSInt cnt;
+	UIntOS cnt;
 	mac = this->MAC64Get(srcMAC64);
-	cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
+	cnt = (UIntOS)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
 	mac->packetTime[cnt & 15] = dt.ToInstant();
 	mac->packetSize[cnt & 15] = packetSize;
 	mac->packetDestMAC[cnt & 15] = destMAC64;
@@ -726,7 +726,7 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
+Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 //	Net::SocketUtil::AddressInfo addr;
 //	UInt16 port;
@@ -738,12 +738,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<MACStatus> mac;
-	UOSInt i;
+	UIntOS i;
 	Bool valid = true;
 	if ((packet[0] & 0xf0) == 0x40)
 	{
 		const UInt8 *ipData;
-		UOSInt ipDataSize;
+		UIntOS ipDataSize;
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
@@ -966,11 +966,11 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 						break;
 					}
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
-					sb.AppendUOSInt(ipDataSize);
+					sb.AppendUIntOS(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
@@ -1078,11 +1078,11 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 						break;
 					}
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
-					sb.AppendUOSInt(ipDataSize);
+					sb.AppendUIntOS(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
@@ -1180,8 +1180,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 									}
 									if (this->atype & AT_DNSTARGET)
 									{
-										UOSInt i;
-										UOSInt j;
+										UIntOS i;
+										UIntOS j;
 										UInt32 resIP;
 										UInt32 sortIP;
 										NN<DNSTargetInfo> dnsTarget;
@@ -1202,14 +1202,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 												}
 												Sync::MutexUsage mutUsage(dnsTarget->mut);
 												dnsTargetMutUsage.EndUse();
-												OSInt si;
+												IntOS si;
 												if ((si = dnsTarget->addrList.SortedIndexOf(answer->name)) < 0)
 												{
 													dnsTarget->addrList.SortedInsert(dnsTarget->currName = answer->name->Clone());
 												}
 												else
 												{
-													dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UOSInt)si);
+													dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UIntOS)si);
 												}
 												j = i;
 												while (j-- > 0)
@@ -1223,7 +1223,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 														}
 														else
 														{
-															dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UOSInt)si);
+															dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UIntOS)si);
 														}
 													}
 												}
@@ -1420,8 +1420,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 								}
 								else if (t == 6 && len > 0 && (len & 3) == 0 && (msgType == 2 || msgType == 5))
 								{
-									OSInt i = 0;
-									OSInt cnt = len >> 2;
+									IntOS i = 0;
+									IntOS cnt = len >> 2;
 									if (cnt > 4)
 										cnt = 4;
 									while (i < cnt)
@@ -1484,7 +1484,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 									sb.AppendU16(srcPort);
 									sb.AppendC(UTF8STRC(" NTP request to "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
@@ -1514,10 +1514,10 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 									sb.AppendU16(destPort);
 									sb.AppendC(UTF8STRC(" NTP reply from "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
-									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									sb.AppendC(UTF8STRC(", time = "));
 									sptr = Net::NTPServer::ReadTime(&ipData[40]).ToStringNoZone(sbuff);
-									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+									sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
@@ -1543,14 +1543,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 							{
 								UInt16 questType = ReadMUInt16(&ipData[54]);
 								UInt16 leng = ReadMUInt16(&ipData[62]);
-								if (ipDataSize >= 64 + (UOSInt)leng)
+								if (ipDataSize >= 64 + (UIntOS)leng)
 								{
 									if (questType == 33) //NBSTAT
 									{
 										UInt8 nName = ipData[64];
 										if (nName * 18 + 1 <= leng)
 										{
-											UOSInt i = 0;
+											UIntOS i = 0;
 											while (i < nName)
 											{
 												UInt16 flags = ReadMUInt16(&ipData[65 + i * 18 + 16]);
@@ -1563,7 +1563,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
 														sbuff[15] = 0;
 														sptr = Text::StrRTrim(sbuff);
-														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+														mac->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 													}
 													mutUsage.EndUse();
 													break;
@@ -1638,7 +1638,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 										MemCopyNO(sbuff, &ipData[23], 32);
 										NetBIOSDecName(sbuff, 32);
 										sptr = Text::StrRTrim(sbuff);
-										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+										mac->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 /*										NetBIOSDecName(&ipData[57], 32);
 										console->Write(&ipData[23]);
 										console->Write(CSTR(", ");
@@ -1691,9 +1691,9 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							sb.AppendU16(srcPort);
 							sb.AppendC(UTF8STRC(" SSDP to "));
 							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 //							ipData[udpLeng] = 0;
-							UOSInt i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
+							UIntOS i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
 							if (i != INVALID_INDEX && i > 0)
 							{
 								sb.AppendC(UTF8STRC(", method = "));
@@ -1738,8 +1738,8 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 						if ((flags & 0xf800) == 0x8000) //Response query
 						{
 							UInt16 nAns = ReadMUInt16(&ipData[14]);
-							UOSInt i = 12;
-							UOSInt j = 0;
+							UIntOS i = 12;
+							UIntOS j = 0;
 							NN<Net::DNSClient::RequestAnswer> ans;
 							while (j < nAns)
 							{
@@ -1766,7 +1766,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							if (mac->name.IsNull())
 							{
 								sptr = Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
-								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+								mac->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 							}
 							mutUsage.EndUse();
 						}
@@ -1803,7 +1803,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv6_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
+Bool Net::EthernetAnalyzer::PacketIPv6_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -1837,11 +1837,11 @@ Bool Net::EthernetAnalyzer::PacketIPv6_2(UnsafeArray<const UInt8> packet, UOSInt
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketARP_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
+Bool Net::EthernetAnalyzer::PacketARP_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	Bool valid = true;
 	NN<MACStatus> mac;
-	UOSInt i;
+	UIntOS i;
 	if (packetSize >= 28)
 	{
 		UInt16 htype = ReadMUInt16(&packet[0]);

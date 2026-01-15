@@ -55,10 +55,10 @@ Optional<IO::ParsedObject> Parser::FileParser::MapsforgeParser::ParseFileHdr(NN<
 		Math::Coord2DDbl(ReadMInt32(&hdrBuff[24]) * 0.000001, ReadMInt32(&hdrBuff[20]) * 0.000001),
 		Math::Coord2DDbl(ReadMInt32(&hdrBuff[32]) * 0.000001, ReadMInt32(&hdrBuff[28]) * 0.000001)));
 	UInt64 v;
-	UOSInt ofst = 38;
-	UOSInt nextOfst;
+	UIntOS ofst = 38;
+	UIntOS nextOfst;
 	nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-	ofst = nextOfst + (UOSInt)v;
+	ofst = nextOfst + (UIntOS)v;
 	UInt8 flags = hdrBuff[ofst];
 	ofst++;
 	if (flags & 0x40)
@@ -72,66 +72,66 @@ Optional<IO::ParsedObject> Parser::FileParser::MapsforgeParser::ParseFileHdr(NN<
 	if (flags & 0x10)
 	{
 		nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-		ofst = nextOfst + (UOSInt)v;
+		ofst = nextOfst + (UIntOS)v;
 	}
 	if (flags & 0x8)
 	{
 		nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-		osmData->SetNote(Text::CStringNN(hdrBuff + nextOfst, (UOSInt)v));
-		ofst = nextOfst + (UOSInt)v;
+		osmData->SetNote(Text::CStringNN(hdrBuff + nextOfst, (UIntOS)v));
+		ofst = nextOfst + (UIntOS)v;
 	}
 	if (flags & 0x4)
 	{
 		nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-		ofst = nextOfst + (UOSInt)v;
+		ofst = nextOfst + (UIntOS)v;
 	}
-	UOSInt i;
-	UOSInt nodeTagsCnt = ReadMUInt16(&hdrBuff[ofst]);
-	UOSInt index;
+	UIntOS i;
+	UIntOS nodeTagsCnt = ReadMUInt16(&hdrBuff[ofst]);
+	UIntOS index;
 	ofst += 2;
 	UnsafeArray<TagInfo> nodeTags = MemAllocArr(TagInfo, nodeTagsCnt);
 	i = 0;
 	while (i < nodeTagsCnt)
 	{
 		nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-		index = Text::StrIndexOfCharC(hdrBuff + nextOfst, (UOSInt)v, '=');
+		index = Text::StrIndexOfCharC(hdrBuff + nextOfst, (UIntOS)v, '=');
 		if (index == INVALID_INDEX)
 		{
-			nodeTags[i].k = Text::String::New(&hdrBuff[nextOfst], (UOSInt)v);
+			nodeTags[i].k = Text::String::New(&hdrBuff[nextOfst], (UIntOS)v);
 			nodeTags[i].v = Text::String::NewEmpty();
 		}
 		else
 		{
 			nodeTags[i].k = Text::String::New(&hdrBuff[nextOfst], index);
-			nodeTags[i].v = Text::String::New(&hdrBuff[nextOfst + index + 1], (UOSInt)v - index - 1);
+			nodeTags[i].v = Text::String::New(&hdrBuff[nextOfst + index + 1], (UIntOS)v - index - 1);
 		}
-		ofst = nextOfst + (UOSInt)v;
+		ofst = nextOfst + (UIntOS)v;
 		i++;
 	}
-	UOSInt wayTagsCnt = ReadMUInt16(&hdrBuff[ofst]);
+	UIntOS wayTagsCnt = ReadMUInt16(&hdrBuff[ofst]);
 	ofst += 2;
 	UnsafeArray<TagInfo> wayTags = MemAllocArr(TagInfo, wayTagsCnt);
 	i = 0;
 	while (i < wayTagsCnt)
 	{
 		nextOfst = Map::MapsforgeUtil::ReadVBEU(hdrBuff, ofst, v);
-		index = Text::StrIndexOfCharC(hdrBuff + nextOfst, (UOSInt)v, '=');
+		index = Text::StrIndexOfCharC(hdrBuff + nextOfst, (UIntOS)v, '=');
 		if (index == INVALID_INDEX)
 		{
-			wayTags[i].k = Text::String::New(&hdrBuff[nextOfst], (UOSInt)v);
+			wayTags[i].k = Text::String::New(&hdrBuff[nextOfst], (UIntOS)v);
 			wayTags[i].v = Text::String::NewEmpty();
 		}
 		else
 		{
 			wayTags[i].k = Text::String::New(&hdrBuff[nextOfst], index);
-			wayTags[i].v = Text::String::New(&hdrBuff[nextOfst + index + 1], (UOSInt)v - index - 1);
+			wayTags[i].v = Text::String::New(&hdrBuff[nextOfst + index + 1], (UIntOS)v - index - 1);
 		}
-		ofst = nextOfst + (UOSInt)v;
+		ofst = nextOfst + (UIntOS)v;
 		i++;
 	}
 	UInt8 zoomIntCnt = hdrBuff[ofst];
-	UOSInt nodeCnt = 0;
-	UOSInt wayCnt = 0;
+	UIntOS nodeCnt = 0;
+	UIntOS wayCnt = 0;
 	ofst++;
 	i = zoomIntCnt - 1; //0;
 	ofst += 19 * i;
@@ -163,20 +163,20 @@ Optional<IO::ParsedObject> Parser::FileParser::MapsforgeParser::ParseFileHdr(NN<
 	return osmData;
 }
 
-void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN<Map::OSM::OSMData> osmData, UnsafeArray<TagInfo> nodeTags, UnsafeArray<TagInfo> wayTags, UInt8 baseZoomLevel, UInt8 minZoomLevel, UInt8 maxZoomLevel, UInt64 subfileOfst, UInt64 subfileSize, InOutParam<UOSInt> nodeCnt, InOutParam<UOSInt> wayCnt, UOSInt nodeTagsCnt, UOSInt wayTagsCnt)
+void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN<Map::OSM::OSMData> osmData, UnsafeArray<TagInfo> nodeTags, UnsafeArray<TagInfo> wayTags, UInt8 baseZoomLevel, UInt8 minZoomLevel, UInt8 maxZoomLevel, UInt64 subfileOfst, UInt64 subfileSize, InOutParam<UIntOS> nodeCnt, InOutParam<UIntOS> wayCnt, UIntOS nodeTagsCnt, UIntOS wayTagsCnt)
 {
 	Math::RectAreaDbl bounds = osmData->GetDataBounds();
-	UnsafeArray<UInt8> subfileBuff = MemAllocArr(UInt8, (UOSInt)subfileSize);
-	if (fd->GetRealData(subfileOfst, subfileSize, Data::ByteArray(subfileBuff, (UOSInt)subfileSize)) != subfileSize)
+	UnsafeArray<UInt8> subfileBuff = MemAllocArr(UInt8, (UIntOS)subfileSize);
+	if (fd->GetRealData(subfileOfst, subfileSize, Data::ByteArray(subfileBuff, (UIntOS)subfileSize)) != subfileSize)
 	{
 		printf("MapsforgeParser: Error reading subfile: %lld, %lld\r\n", subfileOfst, subfileSize);
 		MemFreeArr(subfileBuff);
 		return;
 	}
 
-	UOSInt currNodeCnt = nodeCnt.Get();
-	UOSInt currWayCnt = wayCnt.Get();
-	UOSInt ofst = 0;
+	UIntOS currNodeCnt = nodeCnt.Get();
+	UIntOS currWayCnt = wayCnt.Get();
+	UIntOS ofst = 0;
 	UInt64 v;
 	Int64 sv;
 	Int32 x;
@@ -191,7 +191,7 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayListNN<Map::OSM::NodeInfo> wayNodeList;
-	UOSInt tagIds[16];
+	UIntOS tagIds[16];
 	y = y1;
 	while (ofst < subfileSize && y <= y2)
 	{
@@ -207,17 +207,17 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 			{
 				Double tileLat = Map::OSM::OSMTileMap::TileY2Lat(y, baseZoomLevel);
 				Double tileLon = Map::OSM::OSMTileMap::TileX2Lon(x, baseZoomLevel);
-				UOSInt tileStartOfst;
-				UOSInt tileOfst = (UOSInt)v;
-				UOSInt totalNodeCnt = 0;
-				UOSInt totalWayCnt = 0;
+				UIntOS tileStartOfst;
+				UIntOS tileOfst = (UIntOS)v;
+				UIntOS totalNodeCnt = 0;
+				UIntOS totalWayCnt = 0;
 				UInt8 z = minZoomLevel;
 				while (z <= maxZoomLevel)
 				{
 					tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-					totalNodeCnt += (UOSInt)v;
+					totalNodeCnt += (UIntOS)v;
 					tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-					totalWayCnt += (UOSInt)v;
+					totalWayCnt += (UIntOS)v;
 					z++;
 				}
 				UInt64 firstWayOfst;
@@ -225,7 +225,7 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 				tileStartOfst = tileOfst;
 				NN<Text::String> s1;
 				NN<Text::String> s2;
-				UOSInt i = 0;
+				UIntOS i = 0;
 				Double lat;
 				Double lon;
 				while (i < totalNodeCnt)
@@ -236,9 +236,9 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 					lon = tileLon + (Double)sv * 0.000001;
 					currNodeCnt++;
 					NN<Map::OSM::NodeInfo> node = osmData->NewNode((Int64)currNodeCnt, lat, lon);
-					UOSInt ntags = subfileBuff[tileOfst] & 15;
+					UIntOS ntags = subfileBuff[tileOfst] & 15;
 					tileOfst++;
-					UOSInt j = 0;
+					UIntOS j = 0;
 					while (j < ntags)
 					{
 						tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
@@ -246,7 +246,7 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 						{
 							printf("MapsforgeParser: Tile x=%d, y=%d, z=%d: Invalid node tag index: %llu at Ofst %llu\r\n", x, y, baseZoomLevel, v, tileOfst + subfileOfst);
 						}
-						osmData->ElementAddTag(node, nodeTags[(UOSInt)v].k, nodeTags[(UOSInt)v].v);
+						osmData->ElementAddTag(node, nodeTags[(UIntOS)v].k, nodeTags[(UIntOS)v].v);
 						j++;
 					}
 					UInt8 flags = subfileBuff[tileOfst];
@@ -255,11 +255,11 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 					{
 						tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
 						sb.ClearStr();
-						sb.AppendC(&subfileBuff[tileOfst], (UOSInt)v);
-						tileOfst += (UOSInt)v;
+						sb.AppendC(&subfileBuff[tileOfst], (UIntOS)v);
+						tileOfst += (UIntOS)v;
 						sarr[1] = sb;
-						UOSInt k;
-						UOSInt l;
+						UIntOS k;
+						UIntOS l;
 						while (true)
 						{
 							k = Text::StrSplitLineP(sarr, 2, sarr[1]);
@@ -290,10 +290,10 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 					if (flags & 0x40)
 					{
 						tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-						s2 = Text::String::New(&subfileBuff[tileOfst], (UOSInt)v);
+						s2 = Text::String::New(&subfileBuff[tileOfst], (UIntOS)v);
 						osmData->ElementAddTag(node, strHouseNum, s2);
 						s2->Release();
-						tileOfst += (UOSInt)v;
+						tileOfst += (UIntOS)v;
 					}
 					if (flags & 0x20)
 					{
@@ -315,17 +315,17 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 					i = 0;
 					while (i < totalWayCnt)
 					{
-						UOSInt wayDataSize;
-						UOSInt wayEndOfst;
+						UIntOS wayDataSize;
+						UIntOS wayEndOfst;
 						tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-						wayDataSize = (UOSInt)v;
+						wayDataSize = (UIntOS)v;
 						wayEndOfst = tileOfst + wayDataSize;
 						tileOfst += 2;
-						UOSInt tagCnt = subfileBuff[tileOfst] & 15;
+						UIntOS tagCnt = subfileBuff[tileOfst] & 15;
 						tileOfst++;
-						UOSInt k;
-						UOSInt l;
-						UOSInt j = 0;
+						UIntOS k;
+						UIntOS l;
+						UIntOS j = 0;
 						while (j < tagCnt)
 						{
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
@@ -336,37 +336,37 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 							}
 							else
 							{
-								tagIds[j] = (UOSInt)v;
+								tagIds[j] = (UIntOS)v;
 							}
 							j++;
 						}
 						tagIds[j] = INVALID_INDEX;
-						UOSInt ndataBlocks = 1;
-						UOSInt flags = subfileBuff[tileOfst];
-						UOSInt nameOfst = INVALID_INDEX;
-						UOSInt nameLeng = 0;
-						UOSInt houseNumOfst = INVALID_INDEX;
-						UOSInt houseNumLeng = 0;
+						UIntOS ndataBlocks = 1;
+						UIntOS flags = subfileBuff[tileOfst];
+						UIntOS nameOfst = INVALID_INDEX;
+						UIntOS nameLeng = 0;
+						UIntOS houseNumOfst = INVALID_INDEX;
+						UIntOS houseNumLeng = 0;
 						Bool valid = true;
 						tileOfst++;
 						if (flags & 0x80)
 						{
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
 							nameOfst = tileOfst;
-							nameLeng = (UOSInt)v;
-							tileOfst += (UOSInt)v;
+							nameLeng = (UIntOS)v;
+							tileOfst += (UIntOS)v;
 						}
 						if (flags & 0x40)
 						{
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
 							houseNumOfst = tileOfst;
-							houseNumLeng = (UOSInt)v;
-							tileOfst += (UOSInt)v;
+							houseNumLeng = (UIntOS)v;
+							tileOfst += (UIntOS)v;
 						}
 						if (flags & 0x20)
 						{
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-							tileOfst += (UOSInt)v;
+							tileOfst += (UIntOS)v;
 						}
 						if (flags & 0x10)
 						{
@@ -376,15 +376,15 @@ void Parser::FileParser::MapsforgeParser::ParseSubFile(NN<IO::StreamData> fd, NN
 						if (flags & 0x8)
 						{
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-							ndataBlocks = (UOSInt)v;
+							ndataBlocks = (UIntOS)v;
 						}
 						wayNodeList.Clear();
 						j = 0;
 						while (valid && j < ndataBlocks)
 						{
-							UOSInt nCoords;
+							UIntOS nCoords;
 							tileOfst = Map::MapsforgeUtil::ReadVBEU(subfileBuff, tileOfst, v);
-							nCoords = (UOSInt)v;
+							nCoords = (UIntOS)v;
 							k = 0;
 							while (valid && k < nCoords)
 							{

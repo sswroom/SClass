@@ -13,15 +13,15 @@
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
-	IO::StreamType st = (IO::StreamType)me->cboStreamType->GetSelectedItem().GetOSInt();
+	IO::StreamType st = (IO::StreamType)me->cboStreamType->GetSelectedItem().GetIntOS();
 	UTF8Char sbuff[256];
 
 	switch (st)
 	{
 	case IO::StreamType::SerialPort:
 		{
-			UOSInt i = me->cboSerialPort->GetSelectedIndex();
-			UInt32 portNum = (UInt32)me->cboSerialPort->GetItem(i).GetUOSInt();
+			UIntOS i = me->cboSerialPort->GetSelectedIndex();
+			UInt32 portNum = (UInt32)me->cboSerialPort->GetItem(i).GetUIntOS();
 			if (portNum == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("Select Serial Port"), me);
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Please input a valid baud rate"), CSTR("Select Serial Port"), me);
 				return;
 			}
-			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)me->cboParity->GetSelectedItem().GetOSInt();
+			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)me->cboParity->GetSelectedItem().GetIntOS();
 			IO::SerialPort *port;
 			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, parity, false));
 			if (port->IsError())
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 			}
 			me->stm = nullptr;
 			if (me->siLabDriver.SetTo(siLabDriver))
-				me->stm = siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
+				me->stm = siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUIntOS(), baudRate);
 			if (me->stm.NotNull())
 			{
 				me->stmType = st;
@@ -378,10 +378,10 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
-	UOSInt i = me->cboStreamType->GetSelectedIndex();
+	UIntOS i = me->cboStreamType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		IO::StreamType st = (IO::StreamType)me->cboStreamType->GetItem(i).GetOSInt();
+		IO::StreamType st = (IO::StreamType)me->cboStreamType->GetItem(i).GetIntOS();
 		if (st == IO::StreamType::SerialPort)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSerialPort);
@@ -412,9 +412,9 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UnsafeArray<UTF8Char> sptr;
 
 	this->SetText(CSTR("Select Stream"));
@@ -481,9 +481,9 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	this->lblParity->SetRect(8, 56, 100, 23, false);
 	this->cboParity = ui->NewComboBox(this->tpSerialPort, false);
 	this->cboParity->SetRect(108, 56, 100, 23, false);
-	this->cboParity->AddItem(CSTR("None"), (void*)(OSInt)IO::SerialPort::PARITY_NONE);
-	this->cboParity->AddItem(CSTR("Odd"), (void*)(OSInt)IO::SerialPort::PARITY_ODD);
-	this->cboParity->AddItem(CSTR("Even"), (void*)(OSInt)IO::SerialPort::PARITY_EVEN);
+	this->cboParity->AddItem(CSTR("None"), (void*)(IntOS)IO::SerialPort::PARITY_NONE);
+	this->cboParity->AddItem(CSTR("Odd"), (void*)(IntOS)IO::SerialPort::PARITY_ODD);
+	this->cboParity->AddItem(CSTR("Even"), (void*)(IntOS)IO::SerialPort::PARITY_EVEN);
 	this->cboParity->SetSelectedIndex(0);
 
 	NN<IO::SiLabDriver> siLabDriver;
@@ -558,8 +558,8 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 		while (i < j)
 		{
 			UInt32 v;
-			sptr = Text::StrUOSInt(sbuff, i);
-			k = this->lvSLPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)i);
+			sptr = Text::StrUIntOS(sbuff, i);
+			k = this->lvSLPort->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)i);
 			v = 0;
 			if (siLabDriver->GetDeviceVID((UInt32)i, &v))
 			{
@@ -679,13 +679,13 @@ void SSWR::AVIRead::AVIRSelStreamForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(IO::StreamType stype)
 {
 	IO::StreamType st;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->cboStreamType->GetCount();
 	while (i < j)
 	{
-		st = (IO::StreamType)this->cboStreamType->GetItem(i).GetOSInt();
+		st = (IO::StreamType)this->cboStreamType->GetItem(i).GetIntOS();
 		if (st == stype)
 		{
 			this->cboStreamType->SetSelectedIndex(i);
@@ -695,16 +695,16 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(IO::StreamType stype)
 	}
 }
 
-void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
+void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UIntOS port)
 {
-	UOSInt p;
-	UOSInt i;
-	UOSInt j;
+	UIntOS p;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->cboSerialPort->GetCount();
 	while (i < j)
 	{
-		p = this->cboSerialPort->GetItem(i).GetUOSInt();
+		p = this->cboSerialPort->GetItem(i).GetUIntOS();
 		if (p == port)
 		{
 			this->cboSerialPort->SetSelectedIndex(i);

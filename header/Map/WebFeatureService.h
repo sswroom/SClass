@@ -45,8 +45,8 @@ namespace Map
 		virtual ~WebFeatureService();
 
 		Bool IsError() const;
-		void SetFeature(UOSInt index);
-		UOSInt GetFeatureNames(Data::ArrayListStringNN *nameList) const;
+		void SetFeature(UIntOS index);
+		UIntOS GetFeatureNames(Data::ArrayListStringNN *nameList) const;
 
 		Optional<Map::MapDrawLayer> LoadAsLayer();
 	};

@@ -136,7 +136,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
-			OSInt wlanScan;
+			IntOS wlanScan;
 			Int64 wlanLastTime;
 			Data::ArrayListNN<Net::WirelessLAN::BSSInfo> wlanBSSList;
 
@@ -148,7 +148,7 @@ namespace SSWR
 			Map::GPSTrack::GPSRecord3 gnssRecCurr;
 			Sync::Mutex gnssRecMut;
 			Bool gnssRecUpdated;
-			UOSInt gnssRecSateCnt;
+			UIntOS gnssRecSateCnt;
 			Map::LocationService::SateStatus gnssRecSates[32];
 			Int64 gnssLastUpdateTime;
 
@@ -191,7 +191,7 @@ namespace SSWR
 			static void __stdcall OnWiFiClicked(AnyType userObj);
 			static void __stdcall OnWiFiSelChg(AnyType userObj);
 			static void __stdcall OnBluetoothClicked(AnyType userObj);
-			static void __stdcall OnDashboardDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnDashboardDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
 			static void __stdcall OnGNSSPortClicked(AnyType userObj);
 			static void __stdcall OnGNSSClicked(AnyType userObj);
@@ -202,7 +202,7 @@ namespace SSWR
 			void ToggleBT();
 			void ToggleGNSS();
 			void ToggleCellular();
-			UOSInt AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime);
+			UIntOS AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime);
 			Bool CloseCellular();
 		public:
 			AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

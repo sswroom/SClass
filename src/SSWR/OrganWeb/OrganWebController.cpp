@@ -8,12 +8,12 @@
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
 
-UOSInt SSWR::OrganWeb::OrganWebController::GetPreviewSize()
+UIntOS SSWR::OrganWeb::OrganWebController::GetPreviewSize()
 {
 	return PREVIEW_SIZE;
 }
 
-UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
+UIntOS SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
 {
 	if (isMobile)
 	{
@@ -131,7 +131,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mut
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListNN<GroupInfo> groupList;
-	UOSInt i;
+	UIntOS i;
 	while (true)
 	{
 		groupList.Add(group);
@@ -208,7 +208,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NN<Sync::RWMutexUsage>
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<GroupInfo> groupList;
-	UOSInt i;
+	UIntOS i;
 	Bool found = false;
 	while (true)
 	{
@@ -258,8 +258,8 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = groupList->GetCount();
 	if (j > 0)
@@ -352,7 +352,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							sb.AppendI32(PREVIEW_SIZE);
 							sb.AppendC(UTF8STRC("&file="));
 							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, Text::String::OrEmpty(photoSpObj->photo)->v);
-							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 							s = Text::XML::ToNewAttrText(sb.ToString());
 							writer->Write(s->ToCString());
 							s->Release();
@@ -387,11 +387,11 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 						sb.AppendC(UTF8STRC(" "));
 						sb.Append(group->engName);
 						sb.AppendC(UTF8STRC(" ("));
-						sb.AppendUOSInt(group->myPhotoCount);
+						sb.AppendUIntOS(group->myPhotoCount);
 						sb.AppendC(UTF8STRC("/"));
-						sb.AppendUOSInt(group->photoCount);
+						sb.AppendUIntOS(group->photoCount);
 						sb.AppendC(UTF8STRC("/"));
-						sb.AppendUOSInt(group->totalCount);
+						sb.AppendUIntOS(group->totalCount);
 						sb.AppendC(UTF8STRC(")"));
 						s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 						writer->Write(s->ToCString());
@@ -405,11 +405,11 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 						sb.AppendC(UTF8STRC(" "));
 						sb.Append(group->engName);
 						sb.AppendC(UTF8STRC(" ("));
-						sb.AppendUOSInt(group->myPhotoCount);
+						sb.AppendUIntOS(group->myPhotoCount);
 						sb.AppendC(UTF8STRC("/"));
-						sb.AppendUOSInt(group->photoCount);
+						sb.AppendUIntOS(group->photoCount);
 						sb.AppendC(UTF8STRC("/"));
-						sb.AppendUOSInt(group->totalCount);
+						sb.AppendUIntOS(group->totalCount);
 						sb.AppendC(UTF8STRC(")"));
 						s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 						writer->Write(s->ToCString());
@@ -454,8 +454,8 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
-	UOSInt i = 0;
-	UOSInt j = spList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = spList->GetCount();
 	if (j > 0)
 	{
 		writer->WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
@@ -501,7 +501,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 					if (sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
 					{
 						this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
-						this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
+						this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UIntOS)-1, (UIntOS)-1);
 					}
 				}
 				if (sp->photoId != 0)
@@ -564,7 +564,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 					sb.AppendI32(PREVIEW_SIZE);
 					sb.AppendC(UTF8STRC("&file="));
 					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, s->v);
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					s = Text::XML::ToNewAttrText(sb.ToString());
 					writer->Write(s->ToCString());
 					s->Release();
@@ -671,8 +671,8 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<RequestEnv> env, UnsafeArray<const UTF8Char> url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	UInt32 colCount = env->scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
@@ -901,20 +901,20 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 
 void SSWR::OrganWeb::OrganWebController::WriteDataFiles(NN<IO::Writer> writer, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
 {
-	OSInt startIndex;
-	OSInt endIndex;
+	IntOS startIndex;
+	IntOS endIndex;
 	Text::StringBuilderUTF8 sb;
 	startIndex = fileMap->GetIndex(Data::Timestamp(startTimeTicks, 0));
 	if (startIndex < 0)
 		startIndex = ~startIndex;
-	if (startIndex > 0 && fileMap->GetItemNoCheck((UOSInt)startIndex - 1)->endTime.ToTicks() > startTimeTicks)
+	if (startIndex > 0 && fileMap->GetItemNoCheck((UIntOS)startIndex - 1)->endTime.ToTicks() > startTimeTicks)
 		startIndex--;
 	endIndex = fileMap->GetIndex(Data::Timestamp(endTimeTicks, 0));
 	if (endIndex < 0)
 		endIndex = ~endIndex;
 	while (startIndex < endIndex)
 	{
-		NN<DataFileInfo> dataFile = fileMap->GetItemNoCheck((UOSInt)startIndex);
+		NN<DataFileInfo> dataFile = fileMap->GetItemNoCheck((UIntOS)startIndex);
 		sb.ClearStr();
 		//sb.AppendC(UTF8STRC("<a href=\"datafile.html\">"));
 		if (dataFile->fileType == DataFileType::GPSTrack)

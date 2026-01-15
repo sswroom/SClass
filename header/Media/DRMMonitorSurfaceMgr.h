@@ -17,10 +17,10 @@ namespace Media
 		Media::ColorManagerSess *colorSess;
 		UI::GUICore *ui;
 
-		Bool OpenCard(UOSInt cardNum);
+		Bool OpenCard(UIntOS cardNum);
 	public:
-		DRMMonitorSurfaceMgr(UOSInt cardNum, NN<UI::GUICore> ui, Media::ColorManagerSess *colorSess);
-		DRMMonitorSurfaceMgr(UOSInt cardNum, Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		DRMMonitorSurfaceMgr(UIntOS cardNum, NN<UI::GUICore> ui, Media::ColorManagerSess *colorSess);
+		DRMMonitorSurfaceMgr(UIntOS cardNum, Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~DRMMonitorSurfaceMgr();
 
 		Double GetMonitorDPI(MonitorHandle *hMonitor);
@@ -30,10 +30,10 @@ namespace Media
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
 		virtual void WaitForVBlank(MonitorHandle *hMon);
 		virtual UInt32 GetRefreshRate(MonitorHandle *hMon);
-		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
-		virtual UOSInt GetMonitorCount();
+		virtual MonitorHandle *GetMonitorHandle(UIntOS monIndex);
+		virtual UIntOS GetMonitorCount();
 
-		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
+		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth);
 		virtual Optional<MonitorSurface> CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow);
 		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface);
 	};

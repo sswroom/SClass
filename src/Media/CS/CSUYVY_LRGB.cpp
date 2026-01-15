@@ -5,13 +5,13 @@
 
 extern "C"
 {
-	void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+	void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
-/*void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
+/*void CSUYVY_LRGB_do_uyvy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
 {
 	Int32 hleft;
-	OSInt wsize = (width >> 1) - 2;
+	IntOS wsize = (width >> 1) - 2;
 	Int32 cnt;
 	Int64 tmpVal;
 
@@ -173,7 +173,7 @@ u2rlop2:
 UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 {
 	NN<CSUYVY_LRGB> converter = obj.GetNN<CSUYVY_LRGB>();
-	UOSInt threadId = converter->currId;
+	UIntOS threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -199,7 +199,7 @@ UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 
 Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
-	UOSInt i;
+	UIntOS i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	stats = MemAllocArr(THREADSTAT, nThread);
@@ -220,7 +220,7 @@ Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NN<const Media::ColorProfile> srcColor, Medi
 
 Media::CS::CSUYVY_LRGB::~CSUYVY_LRGB()
 {
-	UOSInt i = nThread;
+	UIntOS i = nThread;
 	Bool exited;
 	while (i-- > 0)
 	{
@@ -272,12 +272,12 @@ Media::CS::CSUYVY_LRGB::~CSUYVY_LRGB()
 	MemFreeArr(stats);
 }
 
-void Media::CS::CSUYVY_LRGB::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSUYVY_LRGB::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
-	UOSInt i = this->nThread;
-	UOSInt lastHeight = dispWidth;
-	UOSInt currHeight;
+	UIntOS i = this->nThread;
+	UIntOS lastHeight = dispWidth;
+	UIntOS currHeight;
 //	Int32 cSize = width << 4;
 
 	while (i-- > 0)
@@ -314,7 +314,7 @@ void Media::CS::CSUYVY_LRGB::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	}
 }
 
-UOSInt Media::CS::CSUYVY_LRGB::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSUYVY_LRGB::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 1;
 }

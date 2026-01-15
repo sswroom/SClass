@@ -22,21 +22,21 @@ Bool Map::KMLGenerator::GenKMLPoints(IO::Stream *fs, Data::ArrayList<const UTF8C
 	writer.WriteLine(CSTR("    <Folder>"));
 	writer.WriteLine(CSTR("      <name>Items</name>"));
 	writer.WriteLine(CSTR("      <open>1</open>"));
-	UOSInt i = 0;
-	UOSInt j = names->GetCount();
+	UIntOS i = 0;
+	UIntOS j = names->GetCount();
 	while (i < j)
 	{
 		writer.WriteLine(CSTR("      <Placemark>"));
 		writer.Write(CSTR("        <name>"));
 		sptr = Text::XML::ToXMLText(buff, names->GetItem(i));
-		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
+		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
 		writer.WriteLine(CSTR("</name>"));
 		writer.Write(CSTR("        <Point><coordinates>"));
 		sptr = Text::StrDouble(buff, lons->GetItem(i));
-		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
+		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
 		writer.Write(CSTR(","));
 		sptr = Text::StrDouble(buff, lats->GetItem(i));
-		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
+		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
 		writer.WriteLine(CSTR(",0</coordinates></Point>"));
 		writer.WriteLine(CSTR("      </Placemark>"));
 		i++;

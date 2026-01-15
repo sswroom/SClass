@@ -27,7 +27,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 
 Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name) const
 {
-	UOSInt index = GetItemIndex(name);
+	UIntOS index = GetItemIndex(name);
 	if (index == INVALID_INDEX)
 	{
 		return nullptr;
@@ -40,8 +40,8 @@ Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name
 
 Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, OutParam<Bool> needRelease) const
 {
-	UOSInt i = path.IndexOf('\\');
-	UOSInt j = path.IndexOf('/');
+	UIntOS i = path.IndexOf('\\');
+	UIntOS j = path.IndexOf('/');
 	if (i == INVALID_INDEX)
 		i = j;
 	else if (j == INVALID_INDEX)

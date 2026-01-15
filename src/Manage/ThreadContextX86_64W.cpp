@@ -8,7 +8,7 @@
 #define CONTEXT_TYPE CONTEXT
 
 
-Manage::ThreadContextX86_64::ThreadContextX86_64(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextX86_64::ThreadContextX86_64(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -21,13 +21,13 @@ Manage::ThreadContextX86_64::~ThreadContextX86_64()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextX86_64::GetRegisterCnt() const
+UIntOS Manage::ThreadContextX86_64::GetRegisterCnt() const
 {
-	UOSInt cnt = 46;
+	UIntOS cnt = 46;
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_64::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_64::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 	CONTEXT_TYPE *ctx = (CONTEXT_TYPE*)this->context;
 	switch (index)
@@ -227,9 +227,9 @@ void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -274,42 +274,42 @@ Manage::ThreadContext::ContextType Manage::ThreadContextX86_64::GetType() const
 	return Manage::ThreadContext::ContextType::X86_64;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetThreadId() const
+UIntOS Manage::ThreadContextX86_64::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetProcessId() const
+UIntOS Manage::ThreadContextX86_64::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetInstAddr() const
+UIntOS Manage::ThreadContextX86_64::GetInstAddr() const
 {
 	return this->GetRIP();
 }
 
-UOSInt Manage::ThreadContextX86_64::GetStackAddr() const
+UIntOS Manage::ThreadContextX86_64::GetStackAddr() const
 {
 	return this->GetRSP();
 }
 
-UOSInt Manage::ThreadContextX86_64::GetFrameAddr() const
+UIntOS Manage::ThreadContextX86_64::GetFrameAddr() const
 {
 	return this->GetRBP();
 }
 
-void Manage::ThreadContextX86_64::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextX86_64::SetInstAddr(UIntOS instAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Rip = instAddr;
 }
 
-void Manage::ThreadContextX86_64::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextX86_64::SetStackAddr(UIntOS stackAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Rsp = stackAddr;
 }
 
-void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextX86_64::SetFrameAddr(UIntOS frameAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Rbp = frameAddr;
 }

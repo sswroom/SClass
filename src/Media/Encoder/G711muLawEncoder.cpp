@@ -98,7 +98,7 @@ void Media::Encoder::G711muLawEncoder::Stop()
 	}
 }
 
-OSInt Media::Encoder::G711muLawEncoder::ReadBlock(UInt8 *buff, OSInt blkSize)
+IntOS Media::Encoder::G711muLawEncoder::ReadBlock(UInt8 *buff, IntOS blkSize)
 {
 	static UInt8 muLawCompressTable[] = {
 	0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -123,7 +123,7 @@ OSInt Media::Encoder::G711muLawEncoder::ReadBlock(UInt8 *buff, OSInt blkSize)
 		return 0;
 	}
 	blkSize = blkSize / this->align * this->align;
-	OSInt readSize = blkSize << 1;
+	IntOS readSize = blkSize << 1;
 	if (this->readBuffSize < readSize)
 	{
 		if (this->readBuff)
@@ -172,7 +172,7 @@ OSInt Media::Encoder::G711muLawEncoder::ReadBlock(UInt8 *buff, OSInt blkSize)
 	return readSize >> 1;
 }
 
-OSInt Media::Encoder::G711muLawEncoder::GetMinBlockSize()
+IntOS Media::Encoder::G711muLawEncoder::GetMinBlockSize()
 {
 	return this->align;
 }

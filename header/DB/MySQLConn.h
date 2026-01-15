@@ -38,7 +38,7 @@ namespace DB
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
@@ -49,8 +49,8 @@ namespace DB
 		virtual void Commit(NN<DB::DBTransaction> tran);
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 
 		Bool IsConnError();
 		NN<Text::String> GetConnServer();
@@ -67,42 +67,42 @@ namespace DB
 	class MySQLReader : public DB::DBReader
 	{
 	private:
-		OSInt rowChanged;
+		IntOS rowChanged;
 		void *result;
-		UOSInt colCount;
+		UIntOS colCount;
 		Char **row;
 		UInt32 *lengs;
 		WChar **names;
 
 	public:
-		MySQLReader(OSInt rowChanged, void *result);
+		MySQLReader(IntOS rowChanged, void *result);
 		virtual ~MySQLReader();
 
 		virtual Bool ReadNext();
-		virtual UOSInt ColCount();
-		virtual OSInt GetRowChanged();
+		virtual UIntOS ColCount();
+		virtual IntOS GetRowChanged();
 
-		virtual Int32 GetInt32(UOSInt colIndex);
-		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDblOrNAN(UOSInt colIndex);
-		virtual Bool GetBool(UOSInt colIndex);
-		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Int32 GetInt32(UIntOS colIndex);
+		virtual Int64 GetInt64(UIntOS colIndex);
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff);
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb);
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex);
+		virtual Double GetDblOrNAN(UIntOS colIndex);
+		virtual Bool GetBool(UIntOS colIndex);
+		virtual UIntOS GetBinarySize(UIntOS colIndex);
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
 
-//		virtual WChar *GetName(OSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
-		virtual Bool IsNull(UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+//		virtual WChar *GetName(IntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
+		virtual Bool IsNull(UIntOS colIndex);
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 	
-		DB::DBUtil::ColType ToColType(Int32 dbType, UInt32 flags, UOSInt colSize);
+		DB::DBUtil::ColType ToColType(Int32 dbType, UInt32 flags, UIntOS colSize);
 	};
 }
 #endif

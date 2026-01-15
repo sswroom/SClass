@@ -11,7 +11,7 @@ namespace Text
 	private:
 		static String emptyStr;
 	public:
-		UOSInt useCnt;
+		UIntOS useCnt;
 		UTF8Char vbuff[1];
 
 		static Optional<String> NewOrNullSlow(UnsafeArrayOpt<const UTF8Char> str);
@@ -29,7 +29,7 @@ namespace Text
 			return s;
 		}
 
-		static NN<String> New(UnsafeArray<const UTF8Char> str, UOSInt len)
+		static NN<String> New(UnsafeArray<const UTF8Char> str, UIntOS len)
 		{
 			if (len == 0) return NewEmpty();
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
@@ -44,7 +44,7 @@ namespace Text
 		static NN<String> NewP(UnsafeArray<const UTF8Char> str, UnsafeArrayOpt<const UTF8Char> strEnd);
 		static NN<String> NewP(UnsafeArray<const UTF8Char> str, UnsafeArray<const UTF8Char> strEnd);
 
-		static NN<String> New(UOSInt len)
+		static NN<String> New(UIntOS len)
 		{
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 			s->v = UARR(s->vbuff);
@@ -56,12 +56,12 @@ namespace Text
 
 		static Optional<String> NewOrNull(UnsafeArrayOpt<const UTF16Char> str);
 		static NN<String> NewNotNull(UnsafeArray<const UTF16Char> str);
-		static NN<String> NewW(UnsafeArray<const UTF16Char> str, UOSInt len);
+		static NN<String> NewW(UnsafeArray<const UTF16Char> str, UIntOS len);
 		static Optional<String> NewOrNull(UnsafeArrayOpt<const UTF32Char> str);
 		static NN<String> NewNotNull(UnsafeArray<const UTF32Char> str);
-		static NN<String> NewW(UnsafeArray<const UTF32Char> str, UOSInt len);
+		static NN<String> NewW(UnsafeArray<const UTF32Char> str, UIntOS len);
 		static NN<String> NewCSVRec(UnsafeArray<const UTF8Char> str);
-		static NN<String> NewSubstr(Text::CStringNN s, UOSInt index, UOSInt maxLen);
+		static NN<String> NewSubstr(Text::CStringNN s, UIntOS index, UIntOS maxLen);
 		static NN<String> NewEmpty() { return emptyStr.Clone(); }
 		static NN<String> OrEmpty(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret; return emptyStr.Clone(); }
 		static Optional<String> CopyOrNull(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret->Clone(); return nullptr; }
@@ -71,7 +71,7 @@ namespace Text
 
 		NN<String> ToNewLower() const;
 	private:
-		String(UOSInt cnt);
+		String(UIntOS cnt);
 		~String();
 	};
 }

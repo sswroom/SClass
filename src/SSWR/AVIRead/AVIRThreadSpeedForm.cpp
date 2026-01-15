@@ -25,13 +25,13 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(AnyType userObj
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Double t;
-	UOSInt i;
+	UIntOS i;
 	me->lvResult->ClearItems();
 
 	me->t = 0;
 
 	i = me->lvResult->AddItem(CSTR("Thread Count"), 0);
-	sptr = Text::StrUOSInt(sbuff, Sync::ThreadUtil::GetThreadCnt());
+	sptr = Text::StrUIntOS(sbuff, Sync::ThreadUtil::GetThreadCnt());
 	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk.Start();

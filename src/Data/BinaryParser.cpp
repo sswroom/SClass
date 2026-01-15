@@ -122,7 +122,7 @@ Text::CString Data::BinaryParser::NextStr()
 		this->error = true;
 		return 0;
 	}
-	UOSInt len = ReadUInt32(&this->buff[this->currOfst + 2]) + 65534;
+	UIntOS len = ReadUInt32(&this->buff[this->currOfst + 2]) + 65534;
 	if (this->currOfst + 6 + len > this->buff.GetSize())
 	{
 		this->error = true;
@@ -257,7 +257,7 @@ Data::ByteArrayR Data::BinaryParser::NextBArr()
 		return empty;
 	}
 	UInt8 b = this->buff[this->currOfst];
-	UOSInt size;
+	UIntOS size;
 	if (b < 0x80)
 	{
 		size = b;

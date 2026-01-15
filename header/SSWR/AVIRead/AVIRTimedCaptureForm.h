@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Math::Size2D<UOSInt> size;
+				Math::Size2D<UIntOS> size;
 				UInt32 fourcc;
 				UInt32 bpp;
 				Media::PixelFormat pf;
@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnDevChg(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData);
 
 			void StopCapture();

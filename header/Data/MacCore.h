@@ -75,7 +75,7 @@ namespace Data
 		virtual ~MacData();
 
 		const UInt8 *Ptr() const;
-		UOSInt GetSize() const;
+		UIntOS GetSize() const;
 		Data::ByteArrayR GetArray() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
@@ -86,8 +86,8 @@ namespace Data
 		MacArray(CFArrayRef val);
 		virtual ~MacArray();
 
-		CFTypeRef GetItem(UOSInt i) const;
-		UOSInt GetCount() const;
+		CFTypeRef GetItem(UIntOS i) const;
+		UIntOS GetCount() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
@@ -99,7 +99,7 @@ namespace Data
 
 		CFTypeRef Get(Text::CString name) const;
 		CFTypeRef Get(CFStringRef name) const;
-		UOSInt GetCount() const;
+		UIntOS GetCount() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }

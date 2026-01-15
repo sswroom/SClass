@@ -140,9 +140,9 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	NN<Net::WirelessLAN::Interface> wlanInterf;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int64 currTime;
 	UInt8 id[8];
 	UInt64 imac;
@@ -195,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 
 					i++;
 				}
-				sptr = Text::StrUOSInt(sbuff, j);
+				sptr = Text::StrUIntOS(sbuff, j);
 				me->lvDashboard->SetSubItem(0, 2, CSTRP(sbuff, sptr));
 
 				wlanInterf->Scan();
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 		if (me->btUpdated || (me->btMinTime != 0 && me->btMinTime + 60000 < currTime))
 		{
 			me->btUpdated = false;
-			UOSInt cnt = 0;
+			UIntOS cnt = 0;
 			Int64 minTime;
 			Int64 minTime2;
 			me->lvBluetooth->ClearItems();
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			else if (minTime2 != 0 && minTime > minTime2)
 				minTime = minTime2;
 			me->btMinTime = minTime;
-			sptr = Text::StrUOSInt(sbuff, cnt);
+			sptr = Text::StrUIntOS(sbuff, cnt);
 			me->lvDashboard->SetSubItem(1, 2, CSTRP(sbuff, sptr));
 		}
 	}
@@ -272,8 +272,8 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 		me->txtGNSSNSateViewBD->SetText(CSTRP(sbuff, sptr));
 
 		me->lvGNSSSatellite->ClearItems();
-		UOSInt actCnt = 0;
-		UOSInt i = 0;
+		UIntOS actCnt = 0;
+		UIntOS i = 0;
 		while (i < me->gnssRecSateCnt)
 		{
 			me->lvGNSSSatellite->AddItem(Map::LocationService::SateTypeGetName(me->gnssRecSates[i].sateType), 0);
@@ -291,9 +291,9 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			}
 			i++;
 		}
-		sptr = Text::StrUOSInt(sbuff, actCnt);
+		sptr = Text::StrUIntOS(sbuff, actCnt);
 		*sptr++ = '/';
-		sptr = Text::StrUOSInt(sptr, me->gnssRecSateCnt);
+		sptr = Text::StrUIntOS(sptr, me->gnssRecSateCnt);
 		me->lvDashboard->SetSubItem(2, 2, CSTRP(sbuff, sptr));
 
 		me->gnssRecUpdated = false;
@@ -410,7 +410,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			if (!Math::IsNAN(cell->sinr2)) { sptr = Text::StrDouble(sbuff, cell->sinr2); me->lvCellularCells->SetSubItem(i, 14, CSTRP(sbuff, sptr)); }
 			i++;
 		}
-		sptr = Text::StrUOSInt(sbuff, j);
+		sptr = Text::StrUIntOS(sbuff, j);
 		me->lvDashboard->SetSubItem(3, 2, CSTRP(sbuff, sptr));
 	}
 }
@@ -431,8 +431,8 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnWiFiSelChg(AnyType userObj)
 	}
 	else
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Net::WirelessLANIE> ie;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
@@ -459,7 +459,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnBluetoothClicked(AnyType user
 	me->ToggleBT();
 }
 
-void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	if (index == 0)
@@ -532,7 +532,7 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleWiFi()
 	}
 	else
 	{
-		UOSInt i;
+		UIntOS i;
 		Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
 		this->wlan.GetInterfaces(interfList);
 		this->wlanInterf = interfList.GetItem(0);
@@ -677,18 +677,18 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleCellular()
 
 }
 
-UOSInt SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime)
+UIntOS SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime)
 {
 	Int64 mTime = 0;
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	NN<IO::BTScanLog::ScanRecord3> rec;
 	Int64 expTime = currTime - 60000;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	UOSInt k;
-	UOSInt i = 0;
-	UOSInt j = devMap->GetCount();
+	UIntOS k;
+	UIntOS i = 0;
+	UIntOS j = devMap->GetCount();
 	while (i < j)
 	{
 		rec = devMap->GetItemNoCheck(i);

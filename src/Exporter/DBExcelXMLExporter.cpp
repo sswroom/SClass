@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::DBExcelXMLExporter::IsObjectSupported(NN
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DBExcelXMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::DBExcelXMLExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{

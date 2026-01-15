@@ -15,9 +15,9 @@ IO::BTManager::~BTManager()
 	
 }
 
-UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
+UIntOS IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<IO::BTController> btCtrl;
 	int i = 0;
 	int res;
@@ -27,7 +27,7 @@ UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> 
 		res = hci_devinfo(i, &di);
 		if (res < 0)
 			break;
-		NEW_CLASSNN(btCtrl, IO::BTController(0, (void*)(OSInt)i));
+		NEW_CLASSNN(btCtrl, IO::BTController(0, (void*)(IntOS)i));
 		ctrlList->Add(btCtrl);
 		ret++;
 		i++;

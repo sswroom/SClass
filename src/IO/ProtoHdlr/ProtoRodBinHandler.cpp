@@ -20,7 +20,7 @@ void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NN<IO::Stream> stm, Any
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;
@@ -54,7 +54,7 @@ UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"Af";
 	*(Int16*)&buff[2] = cmdType;
@@ -68,10 +68,10 @@ UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UnsafeArray<UInt8> buff, I
 	return cmdSize + 10;
 }
 
-UInt16 IO::ProtoHdlr::ProtoRodBinHandler::CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UInt16 IO::ProtoHdlr::ProtoRodBinHandler::CalCheck(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UInt8 chkBytes[2];
-	UOSInt i;
+	UIntOS i;
 	chkBytes[0] = 0;
 	chkBytes[1] = 0;
 	i = 0;

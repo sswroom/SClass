@@ -72,7 +72,7 @@ Data::Duration Media::Decoder::XADecoder::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::Decoder::XADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::Decoder::XADecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	NN<Media::AudioSource> sourceAudio;
@@ -101,10 +101,10 @@ void Media::Decoder::XADecoder::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
+UIntOS Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 {
-	UOSInt outSize;
-	UOSInt readSize;
+	UIntOS outSize;
+	UIntOS readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
 	NN<Sync::Event> readEvt;
@@ -112,7 +112,7 @@ UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 	if (!this->sourceAudio.SetTo(sourceAudio))
 		return 0;
 
-	UOSInt blkSize = buff.GetSize() / 448;
+	UIntOS blkSize = buff.GetSize() / 448;
 	readSize = blkSize << 7;
 	if (readBuff.GetSize() < readSize)
 	{
@@ -135,7 +135,7 @@ UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 	return outSize;
 }
 
-UOSInt Media::Decoder::XADecoder::GetMinBlockSize()
+UIntOS Media::Decoder::XADecoder::GetMinBlockSize()
 {
 	return 448;
 }

@@ -7,13 +7,13 @@
 void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnNetworkClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
-	UOSInt i = me->cboNetwork->GetSelectedItem().GetUOSInt();
+	UIntOS i = me->cboNetwork->GetSelectedItem().GetUIntOS();
 	if (i > 0)
 	{
 		Data::ArrayListNN<Math::Geometry::LineString> lineList;
 		me->spath.GetNetworkLines(lineList, (UInt32)i);
 		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
-		UOSInt j = lineList.GetCount();
+		UIntOS j = lineList.GetCount();
 		if (j > 0)
 		{
 			Math::RectAreaDbl rect;
@@ -74,8 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
 		Data::ArrayListT<Data::DataArray<Optional<Text::String>>> propList;
 		NN<Math::Geometry::Vector2D> vec;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		if (!pathCsys->Equals(mapCsys))
 		{
 			startPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, startPos);
@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
 	UTF8Char sbuff[256];
@@ -185,12 +185,12 @@ void SSWR::AVIRead::AVIRGISShortestPathForm::UpdatePaths(NN<Data::ArrayListNN<Ma
 	Data::ArrayListNative<Double> dirList;
 	Data::ArrayListNative<Bool> reverseList;
 	Map::ShortestPath3D::CalcDirReverse(lineList, dirList, reverseList);
-	UOSInt eName = INVALID_INDEX;
-	UOSInt cName = INVALID_INDEX;
-	UOSInt type = INVALID_INDEX;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS eName = INVALID_INDEX;
+	UIntOS cName = INVALID_INDEX;
+	UIntOS type = INVALID_INDEX;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<DB::TableDef> tableDef;
 	NN<DB::ColDef> colDef;
 	if (this->spath.GetPropDef().SetTo(tableDef))
@@ -310,11 +310,11 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt networkCnt = this->spath.GetNetworkCnt();
-	UOSInt i = 1;
+	UIntOS networkCnt = this->spath.GetNetworkCnt();
+	UIntOS i = 1;
 	while (i <= networkCnt)
 	{
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		this->cboNetwork->AddItem(CSTRP(sbuff, sptr), AnyType((void*)i));
 		i++;
 	}

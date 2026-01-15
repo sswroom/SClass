@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::PDFExporter::GetOutputName(OSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PDFExporter::GetOutputName(IntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -51,10 +51,10 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt i;
-	OSInt j;
-	OSInt pageContentId;
-	OSInt infoId;
+	IntOS i;
+	IntOS j;
+	IntOS pageContentId;
+	IntOS infoId;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayList<Int64> objPos;
@@ -88,10 +88,10 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			//////////////////
 
 			sb2.ClearStr();
-			sb2.AppendOSInt(pageContentId);
+			sb2.AppendIntOS(pageContentId);
 			sb2.AppendC(UTF8STRC(" 0 obj\r"));
 			sb2.AppendC(UTF8STRC("<</Length "));
-			sb2.AppendOSInt(sb.GetLength());
+			sb2.AppendIntOS(sb.GetLength());
 			sb2.AppendC(UTF8STRC(">>\r"));
 			sb2.AppendC(UTF8STRC("stream\r"));
 			sb2.AppendSB(sb);
@@ -104,7 +104,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 			pageList.Add((Int32)objPos.GetCount());
 			sb.ClearStr();
-			sb.AppendOSInt(objPos.GetCount());
+			sb.AppendIntOS(objPos.GetCount());
 			sb.AppendC(UTF8STRC(" 0 obj\r"));
 			sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
 			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
@@ -113,7 +113,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			sb.AppendC(UTF8STRC("]\r"));
 			sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
 			sb.AppendC(UTF8STRC("/Contents "));
-			sb.AppendOSInt(pageContentId);
+			sb.AppendIntOS(pageContentId);
 			sb.AppendC(UTF8STRC(" 0 R\r"));
 			sb.AppendC(UTF8STRC(">>\r"));
 			sb.AppendC(UTF8STRC("endobj\r"));
@@ -138,7 +138,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i++;
 	}
 	sb.AppendC(UTF8STRC("] /Count "));
-	sb.AppendOSInt(pageList.GetCount());
+	sb.AppendIntOS(pageList.GetCount());
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
@@ -148,7 +148,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	infoId = objPos.GetCount();
 	objPos.Add(currPos);
 	sb.ClearStr();
-	sb.AppendOSInt(infoId);
+	sb.AppendIntOS(infoId);
 	sb.AppendC(UTF8STRC(" 0 obj\r"));
 	sb.AppendC(UTF8STRC("<<\r"));
 	if (vdoc->GetDocName().SetTo(s))
@@ -192,7 +192,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sb.AppendC(UTF8STRC("/CreationDate (D:"));
 		dt.SetTicks(vdoc->GetCreateTime());
 		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));
 	}
 	if (vdoc->GetModifyTime())
@@ -200,7 +200,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sb.AppendC(UTF8STRC("/ModDate (D:"));
 		dt.SetTicks(vdoc->GetModifyTime());
 		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));
 	}
 	sb.AppendC(UTF8STRC(">>\r"));
@@ -213,7 +213,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("xref\r"));
 	sb.AppendC(UTF8STRC("0 "));
-	sb.AppendOSInt(objPos.GetCount());
+	sb.AppendIntOS(objPos.GetCount());
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("0000000000 65535 f \r"));
 	i = 1;
@@ -226,17 +226,17 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		else
 		{
 			sb.AppendChar('0', 10 - (sptr - sbuff));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" 00000 n \r"));
 		}
 		i++;
 	}
 	sb.AppendC(UTF8STRC("trailer\r"));
 	sb.AppendC(UTF8STRC("<< /Size "));
-	sb.AppendOSInt(j);
+	sb.AppendIntOS(j);
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("/Info "));
-	sb.AppendOSInt(infoId);
+	sb.AppendIntOS(infoId);
 	sb.AppendC(UTF8STRC(" 0 R\r"));
 	sb.AppendC(UTF8STRC("/Root 1 0 R\r"));
 	sb.AppendC(UTF8STRC(">>\r"));

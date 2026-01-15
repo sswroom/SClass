@@ -17,22 +17,22 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN8CodeImageGe
 	return Media::CodeImageGen::CodeImageGen::CT_EAN8;
 }
 
-UOSInt Media::CodeImageGen::EAN8CodeImageGen::GetMinLength()
+UIntOS Media::CodeImageGen::EAN8CodeImageGen::GetMinLength()
 {
 	return 8;
 }
 
-UOSInt Media::CodeImageGen::EAN8CodeImageGen::GetMaxLength()
+UIntOS Media::CodeImageGen::EAN8CodeImageGen::GetMaxLength()
 {
 	return 8;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
-	UOSInt i = 8;
-	UOSInt j = 0;
-	UOSInt k;
+	UIntOS i = 8;
+	UIntOS j = 0;
+	UIntOS k;
 	UnsafeArray<const UTF8Char> tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
@@ -42,11 +42,11 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 			return nullptr;
 		if (i & 1)
 		{
-			j += (UOSInt)(c - '0') * 3;
+			j += (UIntOS)(c - '0') * 3;
 		}
 		else
 		{
-			j += (UOSInt)(c - '0');
+			j += (UIntOS)(c - '0');
 		}
 	}
 	if (*tmpStr != 0)
@@ -268,13 +268,13 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 	j += 3;
 	codePtr = codePtr - 8;
 
-	UOSInt h = codeWidth * 70;
-	UOSInt y = h - codeWidth;
+	UIntOS h = codeWidth * 70;
+	UIntOS y = h - codeWidth;
 	Double y2;
-	Double fh = 12.0 * UOSInt2Double(codeWidth);
+	Double fh = 12.0 * UIntOS2Double(codeWidth);
 
 	NN<Media::DrawImage> dimg;
-	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 67) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (!eng->CreateImage32(Math::Size2D<UIntOS>((4 + 67) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		return nullptr;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
@@ -298,10 +298,10 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 			case 34:
 			case 64:
 			case 66:
-				y2 = UOSInt2Double(y) - fh * 0.5;
+				y2 = UIntOS2Double(y) - fh * 0.5;
 				break;
 			default:
-				y2 = UOSInt2Double(y) - fh;
+				y2 = UIntOS2Double(y) - fh;
 				break;
 			}
 
@@ -328,7 +328,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 	while (j-- > 0)
 	{
 		sbuff[0] = *codePtr++;
-		dimg->DrawString(Math::Coord2DDbl((Double)i, UOSInt2Double(y) - fh), {sbuff, 1}, f, b);
+		dimg->DrawString(Math::Coord2DDbl((Double)i, UIntOS2Double(y) - fh), {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	i += 5 * codeWidth;
@@ -336,7 +336,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 	while (j-- > 0)
 	{
 		sbuff[0] = *codePtr++;
-		dimg->DrawString(Math::Coord2DDbl((Double)i, UOSInt2Double(y) - fh), {sbuff, 1}, f, b);
+		dimg->DrawString(Math::Coord2DDbl((Double)i, UIntOS2Double(y) - fh), {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	dimg->DelBrush(b);

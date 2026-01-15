@@ -20,12 +20,12 @@ namespace Media
 
 			WChar currTone;
 			UInt8 *sampleBuff;
-			UOSInt sampleBuffSize;
-			UOSInt sampleOfst;
-			UOSInt sampleCnt;
+			UIntOS sampleBuffSize;
+			UIntOS sampleOfst;
+			UIntOS sampleCnt;
 			Sync::Mutex sampleMut;
-			UOSInt calcLeft;
-			UOSInt calcInt;
+			UIntOS calcLeft;
+			UIntOS calcInt;
 			UInt8 *calcBuff;
 			Bool calcReady;
 			Sync::Mutex calcMut;
@@ -39,11 +39,11 @@ namespace Media
 			static void __stdcall CalcThread(NN<Sync::Thread> thread);
 			void ResetStatus();
 		public:
-			DTMFDecoder(NN<Media::AudioSource> audSrc, UOSInt calcInt);
+			DTMFDecoder(NN<Media::AudioSource> audSrc, UIntOS calcInt);
 			virtual ~DTMFDecoder();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void HandleToneChange(ToneChangeEvent hdlr, AnyType userObj);
 		};

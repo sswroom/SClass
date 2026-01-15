@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 	sb.ClearStr();
 	me->txtHashValue->GetText(sb);
 	NN<Crypto::Hash::HashValidator> validator;
-	OSInt hashType = me->cboHashType->GetSelectedItem().GetOSInt();
+	IntOS hashType = me->cboHashType->GetSelectedItem().GetIntOS();
 	if (hashType < 1000)
 	{
 		if (!Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType).SetTo(hash))
@@ -61,8 +61,8 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 		return;
 	}
 	Crypto::Hash::BruteForceAttack *bforce;
-	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)me->cboEncoding->GetSelectedItem().GetOSInt()));
-	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)me->cboCharType->GetSelectedItem().GetOSInt());
+	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)me->cboEncoding->GetSelectedItem().GetIntOS()));
+	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)me->cboCharType->GetSelectedItem().GetIntOS());
 	me->lastCnt = 0;
 	me->lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	if (!bforce->Start(sb.ToString(), sb.GetLength(), minLeng, maxLeng))
@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 			this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
 			hash.Delete();
 		}
-		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
+		currHash = (Crypto::Hash::HashType)((IntOS)currHash + 1);
 	}
 	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);
 	this->cboHashType->SetSelectedIndex(0);
@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 	while (currLimit <= Crypto::Hash::BruteForceAttack::CharLimit::Last)
 	{
 		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName(currLimit), (void*)currLimit);
-		currLimit = (Crypto::Hash::BruteForceAttack::CharLimit)((OSInt)currLimit + 1);
+		currLimit = (Crypto::Hash::BruteForceAttack::CharLimit)((IntOS)currLimit + 1);
 	}
 	this->cboCharType->SetSelectedIndex(0);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));

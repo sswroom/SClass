@@ -51,12 +51,12 @@ void SSWR::SHPConv::SHPConvGroupForm::AddGroup(Text::CStringNN grpName)
 	this->lbGroup->AddItem(grpName, 0);
 }
 
-void SSWR::SHPConv::SHPConvGroupForm::SetCurrGroup(UOSInt currGroup)
+void SSWR::SHPConv::SHPConvGroupForm::SetCurrGroup(UIntOS currGroup)
 {
 	this->lbGroup->SetSelectedIndex(currGroup + 1);
 }
 
-UOSInt SSWR::SHPConv::SHPConvGroupForm::GetCurrGroup()
+UIntOS SSWR::SHPConv::SHPConvGroupForm::GetCurrGroup()
 {
-	return (UOSInt)(this->lbGroup->GetSelectedIndex() - 1);
+	return (UIntOS)(this->lbGroup->GetSelectedIndex() - 1);
 }

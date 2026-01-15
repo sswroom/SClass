@@ -50,8 +50,8 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
 		return nullptr;
 
-	Data::ByteBuffer fileData((UOSInt)fileLen);
-	if (fd->GetRealData(0, (UOSInt)fileLen, fileData) != fileLen)
+	Data::ByteBuffer fileData((UIntOS)fileLen);
+	if (fd->GetRealData(0, (UIntOS)fileLen, fileData) != fileLen)
 	{
 		return nullptr;
 	}
@@ -70,17 +70,17 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 
 	Data::ArrayListNN<Media::StaticImage> imgList;
 	Data::ArrayListNative<Int32> imgDur;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::StaticImage> simg;
 	WebPIterator iter;
 	if (WebPDemuxGetFrame(demux, 1, &iter))
 	{
 		do
 		{
-			NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, iter.has_alpha?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT))
+			NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, iter.has_alpha?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT))
 			simg->FillColor(0);
-			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr() + iter.x_offset * 4 + (OSInt)simg->GetDataBpl() * iter.y_offset, simg->GetDataBpl() * (simg->info.dispSize.y - (UInt32)iter.y_offset), (int)simg->GetDataBpl());
+			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr() + iter.x_offset * 4 + (IntOS)simg->GetDataBpl() * iter.y_offset, simg->GetDataBpl() * (simg->info.dispSize.y - (UInt32)iter.y_offset), (int)simg->GetDataBpl());
 			imgList.Add(simg);
 			imgDur.Add(iter.duration);
 		} while (WebPDemuxNextFrame(&iter));
@@ -93,7 +93,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	{
  		WebPDemuxGetChunk(demux, "ICCP", 1, &chunk_iter);
 		NN<Media::ICCProfile> profile;
-		if (Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size)).SetTo(profile))
+		if (Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UIntOS)chunk_iter.chunk.size)).SetTo(profile))
 		{
 			i = 0;
 			j = imgList.GetCount();

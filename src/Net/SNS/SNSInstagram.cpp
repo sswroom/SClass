@@ -31,7 +31,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 		this->chDesc = s->Clone();
 	}
 	this->ctrl->FreeChannelInfo(chInfo);
-	UOSInt i = itemList.GetCount();
+	UIntOS i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
@@ -76,7 +76,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 
 Net::SNS::SNSInstagram::~SNSInstagram()
 {
-	UOSInt i;
+	UIntOS i;
 	this->ctrl.Delete();
 	this->chName->Release();
 	OPTSTR_DEL(this->chDesc);
@@ -114,9 +114,9 @@ UnsafeArray<UTF8Char> Net::SNS::SNSInstagram::GetDirName(UnsafeArray<UTF8Char> d
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
+UIntOS Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
-	UOSInt initCnt = itemList->GetCount();
+	UIntOS initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
@@ -134,13 +134,13 @@ Int32 Net::SNS::SNSInstagram::GetMinIntevalMS()
 Bool Net::SNS::SNSInstagram::Reload()
 {
 	NN<SNSItem> snsItem;
-	OSInt si;
+	IntOS si;
 	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
 	Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;
 	Data::ArrayListString idList;
 	Bool changed = false;
-	UOSInt i = 0;
-	UOSInt j = this->itemMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->itemMap.GetCount();
 	idList.EnsureCapacity(j);
 	while (i < j)
 	{
@@ -159,7 +159,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 			si = idList.SortedIndexOf(item->shortCode.Ptr());
 			if (si >= 0)
 			{
-				idList.RemoveAt((UOSInt)si);
+				idList.RemoveAt((UIntOS)si);
 			}
 			else
 			{

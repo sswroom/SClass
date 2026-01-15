@@ -6,11 +6,11 @@
 #include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 
-OSInt Map::DBAssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)
+IntOS Map::DBAssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)
 {
-	OSInt i = 0;
-	OSInt j = this->langMaps.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = this->langMaps.GetCount() - 1;
+	IntOS k;
 	NN<LangMap> langMap;
 	while (i <= j)
 	{
@@ -44,7 +44,7 @@ Map::DBAssistedRReverseGeocoder::~DBAssistedRReverseGeocoder()
 {
 	this->revGeos.DeleteAll();
 	NN<LangMap> langMap;
-	UOSInt i = this->langMaps.GetCount();
+	UIntOS i = this->langMaps.GetCount();
 	while (i-- > 0)
 	{
 		if (this->langMaps.RemoveAt(i).SetTo(langMap))
@@ -55,12 +55,12 @@ Map::DBAssistedRReverseGeocoder::~DBAssistedRReverseGeocoder()
 	this->conn.Delete();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = 0;
-	OSInt i;
+	IntOS i;
 	Int32 lang;
 	NN<DB::DBTool> conn;
 	if (!this->conn.SetTo(conn))
@@ -135,13 +135,13 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	NN<DB::DBTool> conn;
-	OSInt i;
+	IntOS i;
 	Int32 lang;
 	if (!this->conn.SetTo(conn))
 		return 0;
@@ -228,7 +228,7 @@ void Map::DBAssistedRReverseGeocoder::AddReverseGeocoder(NN<Map::ReverseGeocoder
 
 void Map::DBAssistedRReverseGeocoder::AddLangMap(Int32 lcid, Int32 lang)
 {
-	OSInt index = GetLangIndex(lcid);
+	IntOS index = GetLangIndex(lcid);
 	if (index < 0)
 	{
 		NN<LangMap> langMap = MemAllocNN(LangMap);
@@ -241,7 +241,7 @@ void Map::DBAssistedRReverseGeocoder::AddLangMap(Int32 lcid, Int32 lang)
 Int32 Map::DBAssistedRReverseGeocoder::ToLang(const UTF8Char *name)
 {
 	Char sbuff[4];
-	OSInt i = 4;
+	IntOS i = 4;
 	while (i-- > 0)
 	{
 		if ((sbuff[3 - i] = (Char)*name++) == 0)

@@ -20,7 +20,7 @@ namespace SSWR
 			Optional<IO::FileExporter::ParamData> param;
 			NN<IO::FileExporter> exporter;
 			UnsafeArray<Optional<UI::GUIControl>> ctrls;
-			UOSInt ctrlsCnt;
+			UIntOS ctrlsCnt;
 
 		private:
 			static void __stdcall OnOKClicked(AnyType userObj);

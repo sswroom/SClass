@@ -173,7 +173,7 @@ namespace IO
 		{
 			Int32 index;
 			SMSStatus status;
-			UOSInt pduLeng;
+			UIntOS pduLeng;
 			UnsafeArray<UInt8> pduMessage;
 		} SMSMessage;
 
@@ -300,7 +300,7 @@ namespace IO
 
 		// Phonebook Commands
 		UnsafeArrayOpt<UTF8Char> PBGetCharset(UnsafeArray<UTF8Char> cs);
-		Bool PBSetCharset(UnsafeArray<const UTF8Char> cs, UOSInt csLen);
+		Bool PBSetCharset(UnsafeArray<const UTF8Char> cs, UIntOS csLen);
 		Bool PBSetStorage(PBStorage storage);
 		Bool PBGetStorage(OptOut<PBStorage> storage, OptOut<Int32> usedEntry, OptOut<Int32> freeEntry);
 		Bool PBGetStorageStatus(OptOut<Int32> startEntry, OptOut<Int32> endEntry, OptOut<Int32> maxNumberLen, OptOut<Int32> maxTextLen);
@@ -310,7 +310,7 @@ namespace IO
 		void PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetICCID(UnsafeArray<UTF8Char> sbuff);
-		virtual UOSInt QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
+		virtual UIntOS QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
 	public:
 		static Int32 RSSIGetdBm(RSSI rssi);
 		static UnsafeArray<UTF8Char> RSSIGetName(UnsafeArray<UTF8Char> buff, RSSI rssi);

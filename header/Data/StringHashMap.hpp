@@ -17,7 +17,7 @@ namespace Data
 
 	template <typename T> struct HashNodeLayer
 	{
-		UOSInt capacity;
+		UIntOS capacity;
 		HashNodeLayer<T> *parentLayer;
 		HashNodeLayer<T> *nextLayer;
 		HashNodeItem<T> items[1];
@@ -30,7 +30,7 @@ namespace Data
 		HashNodeLayer<T> *rootNode;
 
 	protected:
-		void ReleaseNode(HashNodeLayer<T> *layer, UOSInt index);
+		void ReleaseNode(HashNodeLayer<T> *layer, UIntOS index);
 		void CreateNextLayer(HashNodeLayer<T> *layer);
 
 		virtual UInt32 CalHash(Text::String *key);
@@ -42,11 +42,11 @@ namespace Data
 		virtual T Get(Text::String *key);
 		virtual T Remove(Text::String *key);
 		virtual Bool IsEmpty();
-		virtual T *ToArray(UOSInt *objCnt);
+		virtual T *ToArray(UIntOS *objCnt);
 		virtual void Clear();
 	};
 
-	template <class T> void StringHashMap<T>::ReleaseNode(HashNodeLayer<T> *layer, UOSInt index)
+	template <class T> void StringHashMap<T>::ReleaseNode(HashNodeLayer<T> *layer, UIntOS index)
 	{
 		layer->items[index].str->Release();
 		layer->items[index].str = 0;
@@ -69,7 +69,7 @@ namespace Data
 		layer->nextLayer->capacity = layer->capacity << 1;
 		layer->nextLayer->nextLayer = 0;
 		layer->nextLayer->parentLayer = layer;
-		UOSInt i = layer->nextLayer->capacity;
+		UIntOS i = layer->nextLayer->capacity;
 		while (i-- > 0)
 		{
 			layer->nextLayer->items[i].str = 0;
@@ -102,7 +102,7 @@ namespace Data
 	template <class T> T StringHashMap<T>::Put(Text::String *key, T val)
 	{
 		UInt32 hash = this->CalHash(key);
-		UOSInt index;
+		UIntOS index;
 		HashNodeLayer<T> *currLayer;
 		if (this->rootNode == 0)
 		{
@@ -116,7 +116,7 @@ namespace Data
 			this->rootNode->items[0].hash = hash;
 			return 0;
 		}
-		OSInt i;
+		IntOS i;
 		currLayer = this->rootNode;
 		index = 0;
 		while (true)
@@ -178,8 +178,8 @@ namespace Data
 			return 0;
 		}
 		UInt32 hash = this->CalHash(key);
-		UOSInt index = 0;
-		OSInt i;
+		UIntOS index = 0;
+		IntOS i;
 		HashNodeLayer<T> *currLayer = this->rootNode;
 		while (true)
 		{
@@ -231,7 +231,7 @@ namespace Data
 		return this->rootNode == 0 || this->rootNode->items[0].str == 0;
 	}
 
-	template <class T> T *StringHashMap<T>::ToArray(UOSInt *objCnt)
+	template <class T> T *StringHashMap<T>::ToArray(UIntOS *objCnt)
 	{
 		//////////////////////////////
 		return 0;

@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 		}
 		me->currFile = currFile;
 		me->currDec = protoDec;
-		UOSInt buffSize;
-		UOSInt readSize;
+		UIntOS buffSize;
+		UIntOS readSize;
 		UInt64 fileOfst;
 		Data::ByteBuffer buff(65536);
 		buffSize = 0;
@@ -97,13 +97,13 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UIntOS size, Text::CStringNN typeName)
 {
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	NN<ProtocolItem> item;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	item = MemAllocNN(ProtocolItem);
 	item->fileOfst = fileOfst;
 	item->size = size;
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj,
 
 void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 {
-	UOSInt i = this->itemList.GetCount();
+	UIntOS i = this->itemList.GetCount();
 	while (i-- > 0)
 	{
 		MemFreeNN(this->itemList.GetItemNoCheck(i));
@@ -168,8 +168,8 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 	this->lvLogs->AddColumn(CSTR("Type"), 200);
 	this->lvLogs->HandleSelChg(OnLogSelChg, this);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<IO::ProtoDec::ProtocolDecoder> protoDec;
 	i = 0;
 	j = this->decList.GetCount();

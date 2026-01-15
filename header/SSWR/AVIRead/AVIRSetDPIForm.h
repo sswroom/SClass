@@ -40,7 +40,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			static void __stdcall OnPreviewChanged(AnyType userObj);
-			static void __stdcall OnDPIChanged(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnDPIChanged(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnStandardClicked(AnyType userObj);
 			static void __stdcall On1xClicked(AnyType userObj);
 			static void __stdcall OnLaptopClicked(AnyType userObj);

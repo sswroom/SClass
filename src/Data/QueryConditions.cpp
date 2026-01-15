@@ -18,8 +18,8 @@ NN<Data::Conditions::ConditionObject> Data::Conditions::BooleanAnd::Clone() cons
 {
 	NN<BooleanAnd> cond;
 	NEW_CLASSNN(cond, BooleanAnd());
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	while (i < j)
 	{
 		cond->andList.Add(NN<BooleanObject>::ConvertFrom(this->andList.GetItemNoCheck(i)->Clone()));
@@ -28,10 +28,10 @@ NN<Data::Conditions::ConditionObject> Data::Conditions::BooleanAnd::Clone() cons
 	return cond;
 }
 
-Bool Data::Conditions::BooleanAnd::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanAnd::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	if (j == 0)
 		return false;
 	while (i < j)
@@ -64,10 +64,10 @@ Bool Data::Conditions::BooleanAnd::ToWhereClause(NN<Text::StringBuilderUTF8> sb,
 	return true;
 }
 
-Bool Data::Conditions::BooleanAnd::ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const
+Bool Data::Conditions::BooleanAnd::ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	if (j == 0)
 		return false;
 	NN<BooleanObject> cond;
@@ -104,10 +104,10 @@ Bool Data::Conditions::BooleanAnd::ToWhereClauseOrClient(NN<Text::StringBuilderU
 	return true;
 }
 
-Bool Data::Conditions::BooleanAnd::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanAnd::CanWhereClause(UIntOS maxDBItem) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	if (j == 0)
 		return false;
 	while (i < j)
@@ -121,8 +121,8 @@ Bool Data::Conditions::BooleanAnd::CanWhereClause(UOSInt maxDBItem) const
 
 void Data::Conditions::BooleanAnd::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	while (i < j)
 	{
 		this->andList.GetItemNoCheck(i)->GetFieldList(fieldList);
@@ -132,8 +132,8 @@ void Data::Conditions::BooleanAnd::GetFieldList(NN<Data::ArrayListStringNN> fiel
 
 Bool Data::Conditions::BooleanAnd::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	if (j == 0)
 		return false;
 	Bool v;
@@ -154,8 +154,8 @@ Bool Data::Conditions::BooleanAnd::Eval(NN<Data::VariObject> obj, OutParam<Bool>
 
 Bool Data::Conditions::BooleanAnd::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->andList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
 	if (j == 0)
 		return false;
 	Bool v;
@@ -174,7 +174,7 @@ Bool Data::Conditions::BooleanAnd::Eval(NN<Data::ObjectGetter> getter, OutParam<
 	return true;
 }
 
-UOSInt Data::Conditions::BooleanAnd::GetCount() const
+UIntOS Data::Conditions::BooleanAnd::GetCount() const
 {
 	return this->andList.GetCount();
 }
@@ -197,8 +197,8 @@ NN<Data::Conditions::ConditionObject> Data::Conditions::BooleanOr::Clone() const
 {
 	NN<BooleanOr> cond;
 	NEW_CLASSNN(cond, BooleanOr());
-	UOSInt i = 0;
-	UOSInt j = this->orList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
 	while (i < j)
 	{
 		cond->orList.Add(NN<BooleanObject>::ConvertFrom(this->orList.GetItemNoCheck(i)->Clone()));
@@ -207,11 +207,11 @@ NN<Data::Conditions::ConditionObject> Data::Conditions::BooleanOr::Clone() const
 	return cond;
 }
 
-Bool Data::Conditions::BooleanOr::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanOr::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	NN<BooleanObject> obj;
-	UOSInt i = 0;
-	UOSInt j = this->orList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
 	if (j == 0)
 		return false;
 	while (i < j)
@@ -238,9 +238,9 @@ Bool Data::Conditions::BooleanOr::ToWhereClause(NN<Text::StringBuilderUTF8> sb, 
 	return true;
 }
 
-Bool Data::Conditions::BooleanOr::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanOr::CanWhereClause(UIntOS maxDBItem) const
 {
-	UOSInt i = this->orList.GetCount();
+	UIntOS i = this->orList.GetCount();
 	if (i == 0)
 		return false;
 	while (i-- > 0)
@@ -253,7 +253,7 @@ Bool Data::Conditions::BooleanOr::CanWhereClause(UOSInt maxDBItem) const
 
 void Data::Conditions::BooleanOr::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
-	UOSInt i = this->orList.GetCount();
+	UIntOS i = this->orList.GetCount();
 	while (i-- > 0)
 	{
 		this->orList.GetItemNoCheck(i)->GetFieldList(fieldList);
@@ -263,8 +263,8 @@ void Data::Conditions::BooleanOr::GetFieldList(NN<Data::ArrayListStringNN> field
 Bool Data::Conditions::BooleanOr::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	Bool v;
-	UOSInt i = 0;
-	UOSInt j = this->orList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
 	if (j == 0)
 		return false;
 	while (i < j)
@@ -285,8 +285,8 @@ Bool Data::Conditions::BooleanOr::Eval(NN<Data::VariObject> obj, OutParam<Bool> 
 Bool Data::Conditions::BooleanOr::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
 {
 	Bool v;
-	UOSInt i = 0;
-	UOSInt j = this->orList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
 	if (j == 0)
 		return false;
 	while (i < j)
@@ -304,7 +304,7 @@ Bool Data::Conditions::BooleanOr::Eval(NN<Data::ObjectGetter> getter, OutParam<B
 	return true;
 }
 
-UOSInt Data::Conditions::BooleanOr::GetCount() const
+UIntOS Data::Conditions::BooleanOr::GetCount() const
 {
 	return this->orList.GetCount();
 }
@@ -329,7 +329,7 @@ Data::Conditions::NumberField::~NumberField()
 	this->fieldName->Release();
 }
 
-Bool Data::Conditions::NumberField::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::NumberField::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -465,7 +465,7 @@ Data::Conditions::TimeField::~TimeField()
 	this->fieldName->Release();
 }
 
-Bool Data::Conditions::TimeField::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::TimeField::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -545,7 +545,7 @@ Bool Data::Conditions::NumberCondition::FloatCompare(Double left, Double right, 
 	}
 }
 
-Bool Data::Conditions::NumberCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::NumberCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (!this->left->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
 		return false;
@@ -650,7 +650,7 @@ Bool Data::Conditions::TimeCondition::TSCompare(Data::Timestamp left, Data::Time
 	}
 }
 
-Bool Data::Conditions::TimeCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::TimeCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (!this->left->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
 		return false;
@@ -762,22 +762,22 @@ Data::Conditions::ObjectType Data::Conditions::TimeBetweenCondition::GetType() c
 	return ObjectType::TimeBetween;
 }
 
-Bool Data::Conditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" between "));
 	sptr = DB::DBUtil::SDBTS(sbuff, this->t1, sqlType, tzQhr);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" and "));
 	sptr = DB::DBUtil::SDBTS(sbuff, this->t2, sqlType, tzQhr);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	return true;
 }
 
-Bool Data::Conditions::TimeBetweenCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::TimeBetweenCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return true;
 }
@@ -834,7 +834,7 @@ Data::Conditions::ObjectType Data::Conditions::Int32InCondition::GetType() const
 	return ObjectType::Int32In;
 }
 
-Bool Data::Conditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem)
 	{
@@ -845,7 +845,7 @@ Bool Data::Conditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
 		Text::StringTool::Int32Join(sb, this->vals, CSTR(", "));
 		sb->AppendC(UTF8STRC(")"));
@@ -853,7 +853,7 @@ Bool Data::Conditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF
 	}
 }
 
-Bool Data::Conditions::Int32InCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::Int32InCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return this->vals.GetCount() <= maxDBItem;
 }
@@ -907,7 +907,7 @@ Bool Data::Conditions::Int32InCondition::TestValid(NN<Data::VariItem> item) cons
 	default:
 		return false;
 	}
-	UOSInt i = this->vals.GetCount();
+	UIntOS i = this->vals.GetCount();
 	while (i-- > 0)
 	{
 		if (iVal == this->vals.GetItem(i))
@@ -920,8 +920,8 @@ Bool Data::Conditions::Int32InCondition::TestValid(NN<Data::VariItem> item) cons
 
 Data::Conditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, NN<const Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
 {
-	UOSInt i = 0;
-	UOSInt j = val->GetCount();
+	UIntOS i = 0;
+	UIntOS j = val->GetCount();
 	while (i < j)
 	{
 		this->vals.Add(Text::StrCopyNew(val->GetItemNoCheck(i)));
@@ -931,8 +931,8 @@ Data::Conditions::StringInCondition::StringInCondition(Text::CStringNN fieldName
 
 Data::Conditions::StringInCondition::~StringInCondition()
 {
-	UOSInt i = 0;
-	UOSInt j = this->vals.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->vals.GetCount();
 	while (i < j)
 	{
 		Text::StrDelNew(this->vals.GetItemNoCheck(i));
@@ -945,7 +945,7 @@ Data::Conditions::ObjectType Data::Conditions::StringInCondition::GetType() cons
 	return ObjectType::StringIn;
 }
 
-Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
 	{
@@ -957,12 +957,12 @@ Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUT
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArrayOpt<UTF8Char> sptrTmp = nullptr;
 		UnsafeArray<UTF8Char> nnsptrTmp;
-		UOSInt sptrSize = 0;
-		UOSInt thisSize;
-		UOSInt i;
-		UOSInt j;
+		UIntOS sptrSize = 0;
+		UIntOS thisSize;
+		UIntOS i;
+		UIntOS j;
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
 		i = 0;
 		j = this->vals.GetCount();
@@ -976,7 +976,7 @@ Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUT
 			if (thisSize < 512)
 			{
 				sptr = DB::DBUtil::SDBStrUTF8(sbuff, this->vals.GetItem(i), sqlType);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			else
 			{
@@ -993,7 +993,7 @@ Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUT
 				if (sptrTmp.SetTo(nnsptrTmp))
 				{
 					sptr = DB::DBUtil::SDBStrUTF8(nnsptrTmp, this->vals.GetItem(i), sqlType);
-					sb->AppendC(nnsptrTmp, (UOSInt)(sptr - nnsptrTmp));
+					sb->AppendC(nnsptrTmp, (UIntOS)(sptr - nnsptrTmp));
 				}
 			}
 			i++;
@@ -1007,7 +1007,7 @@ Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUT
 	}
 }
 
-Bool Data::Conditions::StringInCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::StringInCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return this->vals.GetCount() > 0 && this->vals.GetCount() <= maxDBItem;
 }
@@ -1015,7 +1015,7 @@ Bool Data::Conditions::StringInCondition::CanWhereClause(UOSInt maxDBItem) const
 Bool Data::Conditions::StringInCondition::TestValid(NN<Data::VariItem> item) const
 {
 	UnsafeArray<const UTF8Char> csptr;
-	UOSInt i;
+	UIntOS i;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
@@ -1066,8 +1066,8 @@ Bool Data::Conditions::StringInCondition::TestValid(NN<Data::VariItem> item) con
 
 Data::Conditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fieldName, NN<const Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
 {
-	UOSInt i = 0;
-	UOSInt j = val->GetCount();
+	UIntOS i = 0;
+	UIntOS j = val->GetCount();
 	while (i < j)
 	{
 		this->vals.Add(Text::StrCopyNew(val->GetItemNoCheck(i)));
@@ -1077,8 +1077,8 @@ Data::Conditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fie
 
 Data::Conditions::StringNotInCondition::~StringNotInCondition()
 {
-	UOSInt i = 0;
-	UOSInt j = this->vals.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->vals.GetCount();
 	while (i < j)
 	{
 		Text::StrDelNew(this->vals.GetItemNoCheck(i));
@@ -1091,7 +1091,7 @@ Data::Conditions::ObjectType Data::Conditions::StringNotInCondition::GetType() c
 	return ObjectType::StringNotIn;
 }
 
-Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
 	{
@@ -1103,12 +1103,12 @@ Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilde
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArrayOpt<UTF8Char> sptrTmp = nullptr;
 		UnsafeArray<UTF8Char> nnsptrTmp;
-		UOSInt sptrSize = 0;
-		UOSInt thisSize;
-		UOSInt i;
-		UOSInt j;
+		UIntOS sptrSize = 0;
+		UIntOS thisSize;
+		UIntOS i;
+		UIntOS j;
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" not in ("));
 		i = 0;
 		j = this->vals.GetCount();
@@ -1122,7 +1122,7 @@ Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilde
 			if (thisSize < 512)
 			{
 				sptr = DB::DBUtil::SDBStrUTF8(sbuff, this->vals.GetItem(i), sqlType);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			else
 			{
@@ -1139,7 +1139,7 @@ Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilde
 				if (sptrTmp.SetTo(nnsptrTmp))
 				{
 					sptr = DB::DBUtil::SDBStrUTF8(nnsptrTmp, this->vals.GetItem(i), sqlType);
-					sb->AppendC(nnsptrTmp, (UOSInt)(sptr - nnsptrTmp));
+					sb->AppendC(nnsptrTmp, (UIntOS)(sptr - nnsptrTmp));
 				}
 			}
 			i++;
@@ -1153,7 +1153,7 @@ Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilde
 	}
 }
 
-Bool Data::Conditions::StringNotInCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::StringNotInCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return this->vals.GetCount() > 0 && this->vals.GetCount() <= maxDBItem;
 }
@@ -1161,7 +1161,7 @@ Bool Data::Conditions::StringNotInCondition::CanWhereClause(UOSInt maxDBItem) co
 Bool Data::Conditions::StringNotInCondition::TestValid(NN<Data::VariItem> item) const
 {
 	UnsafeArray<const UTF8Char> csptr;
-	UOSInt i;
+	UIntOS i;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
@@ -1225,34 +1225,34 @@ Data::Conditions::ObjectType Data::Conditions::StringContainsCondition::GetType(
 	return ObjectType::StringContains;
 }
 
-Bool Data::Conditions::StringContainsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::StringContainsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr2;
 	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" like "));
 	Text::StringBuilderUTF8 sb2;
 	sb2.AppendUTF8Char('%');
 	sb2.Append(this->val);
 	sb2.AppendUTF8Char('%');
-	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(sb2.ToString(), sqlType);
+	UIntOS size = DB::DBUtil::SDBStrUTF8Leng(sb2.ToString(), sqlType);
 	if (size < 512)
 	{
 		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, sb2.ToString(), sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
 	}
 	else
 	{
 		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, size + 1);
 		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, sb2.ToString(), sqlType);
-		sb->AppendC(sptr, (UOSInt)(sptr2 - sptr));
+		sb->AppendC(sptr, (UIntOS)(sptr2 - sptr));
 		MemFreeArr(sptr);
 	}
 	return true;
 }
 
-Bool Data::Conditions::StringContainsCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::StringContainsCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return true;
 }
@@ -1307,30 +1307,30 @@ Data::Conditions::ObjectType Data::Conditions::StringEqualsCondition::GetType() 
 	return ObjectType::StringEquals;
 }
 
-Bool Data::Conditions::StringEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::StringEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr2;
 	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" = "));
-	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(UnsafeArray<const UTF8Char>(this->val->v), sqlType);
+	UIntOS size = DB::DBUtil::SDBStrUTF8Leng(UnsafeArray<const UTF8Char>(this->val->v), sqlType);
 	if (size < 512)
 	{
 		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
-		sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
 	}
 	else
 	{
 		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, size + 1);
 		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
-		sb->AppendC(sptr, (UOSInt)(sptr2 - sptr));
+		sb->AppendC(sptr, (UIntOS)(sptr2 - sptr));
 		MemFreeArr(sptr);
 	}
 	return true;
 }
 
-Bool Data::Conditions::StringEqualsCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::StringEqualsCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return true;
 }
@@ -1384,7 +1384,7 @@ Data::Conditions::ObjectType Data::Conditions::BooleanCondition::GetType() const
 	return ObjectType::Boolean;
 }
 
-Bool Data::Conditions::BooleanCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (!this->val)
 	{
@@ -1393,11 +1393,11 @@ Bool Data::Conditions::BooleanCondition::ToWhereClause(NN<Text::StringBuilderUTF
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	return true;
 }
 
-Bool Data::Conditions::BooleanCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::BooleanCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return true;
 }
@@ -1456,7 +1456,7 @@ Bool Data::Conditions::BooleanCondition::TestValid(NN<Data::VariItem> item) cons
 	return bVal == this->val;
 }
 
-Bool Data::Conditions::NullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+Bool Data::Conditions::NullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1469,7 +1469,7 @@ Bool Data::Conditions::NullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> 
 	return true;
 }
 
-Bool Data::Conditions::NullCondition::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::Conditions::NullCondition::CanWhereClause(UIntOS maxDBItem) const
 {
 	return true;
 }
@@ -1581,7 +1581,7 @@ Bool Data::QueryConditions::IsValid(NN<Data::ObjectGetter> getter, OutParam<Bool
 	return this->cond->Eval(getter, outVal);
 }
 
-Bool Data::QueryConditions::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<Conditions::BooleanObject>> clientConditions)
+Bool Data::QueryConditions::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem, NN<Data::ArrayListNN<Conditions::BooleanObject>> clientConditions)
 {
 	if (this->andCond.Ptr() == this->cond.Ptr())
 	{
@@ -1597,7 +1597,7 @@ Bool Data::QueryConditions::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQ
 	}
 }
 
-Bool Data::QueryConditions::CanWhereClause(UOSInt maxDBItem) const
+Bool Data::QueryConditions::CanWhereClause(UIntOS maxDBItem) const
 {
 	return this->cond->CanWhereClause(maxDBItem);
 }

@@ -10,7 +10,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	UOSInt cmdCnt;
+	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Media::Decoder::FFMPEGDecoder::Enable();
 

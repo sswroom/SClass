@@ -18,7 +18,7 @@ namespace DB
 
 		Bool LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CString schemaName);
 		Optional<TableDef> GetTable(Text::CStringNN tableName);
-		UOSInt GetTableNames(NN<Data::ArrayListObj<Text::CString>> tableNames);
+		UIntOS GetTableNames(NN<Data::ArrayListObj<Text::CString>> tableNames);
 	};
 }
 #endif

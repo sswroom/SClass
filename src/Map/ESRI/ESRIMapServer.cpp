@@ -19,10 +19,10 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt32 codePage;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->url = Text::String::New(url);
 	this->clif = clif;
 	this->ssl = ssl;
@@ -38,19 +38,19 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 
 	sptr = url.ConcatTo(sbuff);
-	if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/MapServer")))
+	if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("/MapServer")))
 	{
 		sptr -= 10;
 		*sptr = 0;
 	}
-	i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/services/"));
+	i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("/services/"));
 	if (i != INVALID_INDEX)
 	{
 		this->name = Text::String::NewP(&sbuff[i + 10], sptr);
 	}
 	else
 	{
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
 		this->name = Text::String::NewP(&sbuff[i + 1], sptr);
 	}
 
@@ -77,7 +77,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::Encoding enc(codePage);
-			UOSInt charsCnt;
+			UIntOS charsCnt;
 			UnsafeArray<UTF8Char> jsonStr;
 			charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
 			jsonStr = MemAllocArr(UTF8Char, charsCnt + 1);
@@ -145,7 +145,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 						sb.Append(NN<Text::JSONString>::ConvertFrom(o)->GetValue());
 						Text::PString sarr[2];
 						sarr[1] = sb;
-						UOSInt sarrCnt;
+						UIntOS sarrCnt;
 						while (true)
 						{
 							sarrCnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
@@ -165,8 +165,8 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 					if (jobj->GetObjectValue(CSTR("tileInfo")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
 						NN<Text::JSONObject> tinfo = NN<Text::JSONObject>::ConvertFrom(o);
-						this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
-						this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
+						this->tileHeight = (UIntOS)tinfo->GetObjectInt32(CSTR("rows"));
+						this->tileWidth = (UIntOS)tinfo->GetObjectInt32(CSTR("cols"));
 						if (tinfo->GetObjectValue(CSTR("origin")).SetTo(v) && v->GetType() == Text::JSONType::Object)
 						{
 							NN<Text::JSONObject> origin = NN<Text::JSONObject>::ConvertFrom(v);
@@ -264,22 +264,22 @@ Math::RectAreaDbl Map::ESRI::ESRIMapServer::GetBounds() const
 	return this->bounds;
 }
 
-UOSInt Map::ESRI::ESRIMapServer::TileGetLevelCount() const
+UIntOS Map::ESRI::ESRIMapServer::TileGetLevelCount() const
 {
 	return this->tileLevels.GetCount();
 }
 
-Double Map::ESRI::ESRIMapServer::TileGetLevelResolution(UOSInt level) const
+Double Map::ESRI::ESRIMapServer::TileGetLevelResolution(UIntOS level) const
 {
 	return this->tileLevels.GetItem(level);
 }
 
-UOSInt Map::ESRI::ESRIMapServer::TileGetWidth() const
+UIntOS Map::ESRI::ESRIMapServer::TileGetWidth() const
 {
 	return this->tileWidth;
 }
 
-UOSInt Map::ESRI::ESRIMapServer::TileGetHeight() const
+UIntOS Map::ESRI::ESRIMapServer::TileGetHeight() const
 {
 	return this->tileHeight;
 }
@@ -289,11 +289,11 @@ Math::Coord2DDbl Map::ESRI::ESRIMapServer::TileGetOrigin() const
 	return this->tileOrigin;
 }
 
-UnsafeArray<UTF8Char> Map::ESRI::ESRIMapServer::TileGetURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 tileX, Int32 tileY) const
+UnsafeArray<UTF8Char> Map::ESRI::ESRIMapServer::TileGetURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Int32 tileX, Int32 tileY) const
 {
 	sbuff = this->url->ConcatTo(sbuff);
 	sbuff = Text::StrConcatC(sbuff, UTF8STRC("/tile/"));
-	sbuff = Text::StrUOSInt(sbuff, level);
+	sbuff = Text::StrUIntOS(sbuff, level);
 	sbuff = Text::StrConcatC(sbuff, UTF8STRC("/"));
 	sbuff = Text::StrInt32(sbuff, tileY);
 	sbuff = Text::StrConcatC(sbuff, UTF8STRC("/"));
@@ -301,11 +301,11 @@ UnsafeArray<UTF8Char> Map::ESRI::ESRIMapServer::TileGetURL(UnsafeArray<UTF8Char>
 	return sbuff;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Int32 tileX, Int32 tileY) const
 {
 	sb->Append(this->url);
 	sb->AppendC(UTF8STRC("/tile/"));
-	sb->AppendUOSInt(level);
+	sb->AppendUIntOS(level);
 	sb->AppendUTF8Char('/');
 	sb->AppendI32(tileY);
 	sb->AppendUTF8Char('/');
@@ -313,12 +313,12 @@ Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileLoadToStream(NN<IO::Stream> stm, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileLoadToStream(NN<IO::Stream> stm, UIntOS level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt readSize;
+	UIntOS readSize;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -334,10 +334,10 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(NN<IO::Stream> stm, UOSInt level
 	return succ;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UIntOS level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
@@ -385,13 +385,13 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 dataBuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/identify?geometryType=esriGeometryPoint&geometry="));
 	sptr = Text::StrDouble(sptr, coord.x);
@@ -437,8 +437,8 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 				NN<Math::Geometry::Vector2D> vec;
 				NN<Text::JSONArray> results = NN<Text::JSONArray>::ConvertFrom(o);
 				succ = true;
-				UOSInt i = 0;
-				UOSInt j = results->GetArrayLength();
+				UIntOS i = 0;
+				UIntOS j = results->GetArrayLength();
 				while (i < j)
 				{
 					if (results->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Object)
@@ -493,7 +493,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 dataBuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt32 srid = 0;
 	srid = this->csys->GetSRID();
 	sptr = this->url->ConcatTo(url);
@@ -515,14 +515,14 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 		sptr = Text::StrUInt32(sptr, srid);
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&size="));
-	sptr = Text::StrUOSInt(sptr, width);
+	sptr = Text::StrUIntOS(sptr, width);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
-	sptr = Text::StrUOSInt(sptr, height);
+	sptr = Text::StrUIntOS(sptr, height);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=image"));
 
 	NN<Text::StringBuilderUTF8> sb;
 	if (sbUrl.SetTo(sb))
-		sb->AppendC(url, (UOSInt)(sptr - url));
+		sb->AppendC(url, (UIntOS)(sptr - url));
 
 	Optional<Media::ImageList> ret = nullptr;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -535,7 +535,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
 		Parser::FileParser::PNGParser parser;
-		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UIntOS)mstm.GetLength());
 		ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 	}
 	cli.Delete();
@@ -559,16 +559,16 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
 			NN<Text::JSONArray> rings = NN<Text::JSONArray>::ConvertFrom(o);
-			UOSInt i = 0;
-			UOSInt j = rings->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = rings->GetArrayLength();
 			while (i < j)
 			{
 				if (rings->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Array)
 				{
 					NN<Text::JSONArray> ring = NN<Text::JSONArray>::ConvertFrom(o);
 					ptArr.Clear();
-					UOSInt k = 0;
-					UOSInt l = ring->GetArrayLength();
+					UIntOS k = 0;
+					UIntOS l = ring->GetArrayLength();
 					while (k < l)
 					{
 						if (ring->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)
@@ -600,16 +600,16 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			Data::ArrayListNative<UInt32> ptOfstArr;
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
 			NN<Text::JSONArray> paths = NN<Text::JSONArray>::ConvertFrom(o);
-			UOSInt i = 0;
-			UOSInt j = paths->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = paths->GetArrayLength();
 			while (i < j)
 			{
 				if (paths->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Array)
 				{
 					NN<Text::JSONArray> path = NN<Text::JSONArray>::ConvertFrom(o);
 					ptOfstArr.Add((UInt32)ptArr.GetCount());
-					UOSInt k = 0;
-					UOSInt l = path->GetArrayLength();
+					UIntOS k = 0;
+					UIntOS l = path->GetArrayLength();
 					while (k < l)
 					{
 						if (path->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)

@@ -13,7 +13,7 @@ namespace Media
 		{
 			UInt64 offset;
 			UInt32 length;
-			UOSInt sampleOffset;
+			UIntOS sampleOffset;
 			UInt32 decodedSample;
 		} AudioFrame;
 
@@ -22,15 +22,15 @@ namespace Media
 		NN<IO::StreamData> data;
 		NN<Text::String> name;
 
-		UOSInt readBlock;
-		UOSInt readBlockOfst;
+		UIntOS readBlock;
+		UIntOS readBlockOfst;
 		Optional<Sync::Event> readEvt;
 
 		UnsafeArray<AudioFrame> blocks;
 		UInt32 blockCnt;
 		UInt32 maxBlockCnt;
-		UOSInt maxBlockSize;
-		UOSInt totalSampleCnt;
+		UIntOS maxBlockSize;
+		UIntOS totalSampleCnt;
 		UInt64 totalSize;
 	public:
 		AudioFrameSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, NN<Text::String> name);
@@ -45,10 +45,10 @@ namespace Media
 
 		virtual void GetFormat(NN<AudioFormat> format);
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 

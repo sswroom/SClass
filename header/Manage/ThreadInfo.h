@@ -8,22 +8,22 @@ namespace Manage
 	class ThreadInfo
 	{
 	private:
-		UOSInt threadId;
-		UOSInt procId;
+		UIntOS threadId;
+		UIntOS procId;
 		Sync::ThreadHandle *hand;
 
 	private:
-		static Manage::ThreadContext *GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand);
-		ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand);
+		static Manage::ThreadContext *GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand);
+		ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand);
 	public:
-		ThreadInfo(UOSInt procId, UOSInt threadId);
+		ThreadInfo(UIntOS procId, UIntOS threadId);
 		~ThreadInfo();
 
 		Manage::ThreadContext *GetThreadContext();
 		UInt64 GetStartAddress();
 		Bool WaitForThreadExit(UInt32 waitTimeout); //true = exited
 		UInt32 GetExitCode();
-		UOSInt GetThreadId();
+		UIntOS GetThreadId();
 		UnsafeArrayOpt<UTF8Char> GetName(UnsafeArray<UTF8Char> buff);
 		Bool Suspend();
 		Bool Resume();

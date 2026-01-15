@@ -17,22 +17,22 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::EAN5CodeImageGe
 	return Media::CodeImageGen::CodeImageGen::CT_EAN5;
 }
 
-UOSInt Media::CodeImageGen::EAN5CodeImageGen::GetMinLength()
+UIntOS Media::CodeImageGen::EAN5CodeImageGen::GetMinLength()
 {
 	return 5;
 }
 
-UOSInt Media::CodeImageGen::EAN5CodeImageGen::GetMaxLength()
+UIntOS Media::CodeImageGen::EAN5CodeImageGen::GetMaxLength()
 {
 	return 5;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
-	UOSInt i = 5;
-	UOSInt j = 0;
-	UOSInt k;
+	UIntOS i = 5;
+	UIntOS j = 0;
+	UIntOS k;
 	UnsafeArray<const UTF8Char> tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
@@ -42,11 +42,11 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::
 			return nullptr;
 		if (i & 1)
 		{
-			j += (UOSInt)(c - '0') * 9;
+			j += (UIntOS)(c - '0') * 9;
 		}
 		else
 		{
-			j += (UOSInt)(c - '0') * 3;
+			j += (UIntOS)(c - '0') * 3;
 		}
 	}
 	if (*tmpStr != 0)
@@ -298,12 +298,12 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::
 	}
 	codePtr = codePtr - 5;
 
-	UOSInt h = codeWidth * 70;
-	UOSInt y = h - codeWidth;
-	Double fh = 12.0 * UOSInt2Double(codeWidth);
+	UIntOS h = codeWidth * 70;
+	UIntOS y = h - codeWidth;
+	Double fh = 12.0 * UIntOS2Double(codeWidth);
 
 	NN<Media::DrawImage> dimg;
-	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 48) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
+	if (!eng->CreateImage32(Math::Size2D<UIntOS>((4 + 48) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		return nullptr;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
@@ -322,7 +322,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::
 			k = codeWidth;
 			while (k-- > 0)
 			{
-				dimg->DrawLine((Double)j, UOSInt2Double(codeWidth) + fh, (Double)j, (Double)y, p);
+				dimg->DrawLine((Double)j, UIntOS2Double(codeWidth) + fh, (Double)j, (Double)y, p);
 				j++;
 			}
 		}

@@ -18,32 +18,32 @@ namespace UI
 			Sync::Mutex imgMut;
 			Optional<Media::ImageList> imgList;
 			Bool noRelease;
-			OSInt frameDelay;
+			IntOS frameDelay;
 			Optional<Manage::HiResClock> clk;
 			Double startTime;
-			OSInt lastFrameNum;
-			Math::Size2D<UOSInt> size;
+			IntOS lastFrameNum;
+			Math::Size2D<UIntOS> size;
 			NN<Media::Resizer::LanczosResizerRGB_C8> resizer;
 			Sync::Mutex dispMut;
 			Optional<Media::StaticImage> dispImg;
-			UOSInt dispFrameNum;
+			UIntOS dispFrameNum;
 			Math::Coord2DDbl drawOfst;
 
 		public:
-			SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizerRGB_C8> resizer);
+			SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizerRGB_C8> resizer);
 			virtual ~SizedOverlayDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();
 			virtual void OnMouseClick();
 
-			void SetFrameDelay(OSInt frameDelay);
-			void SetSize(Math::Size2D<UOSInt> size);
+			void SetFrameDelay(IntOS frameDelay);
+			void SetSize(Math::Size2D<UIntOS> size);
 			void SetImage(Text::CStringNN fileName, NN<Parser::ParserList> parsers);
 		};
 	}

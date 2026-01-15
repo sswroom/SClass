@@ -1138,9 +1138,9 @@ void Media::EXIFData::FreeItem(NN<Media::EXIFData::EXIFItem> item)
 void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::ReadingListNN<Media::EXIFData::EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
 {
 	UInt32 objCnt;
-	UOSInt i;
+	UIntOS i;
 	UInt32 j;
-	UOSInt k;
+	UIntOS k;
 	NN<EXIFItem> exif;
 
 	objCnt = 0;
@@ -1159,14 +1159,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt);
+				MemCopyNO(&buff[j + 8], &exif->value, (UIntOS)exif->cnt);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UOSInt)exif->cnt);
-				k += (UOSInt)exif->cnt;
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UIntOS)exif->cnt);
+				k += (UIntOS)exif->cnt;
 				j += 12;
 			}
 			objCnt++;
@@ -1178,14 +1178,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], exif->dataBuff.GetOpt<UTF8Char>().OrNull(), (UOSInt)exif->cnt);
+				MemCopyNO(&buff[j + 8], exif->dataBuff.GetOpt<UTF8Char>().OrNull(), (UIntOS)exif->cnt);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UTF8Char>().OrNull(), (UOSInt)exif->cnt);
-				k += (UOSInt)exif->cnt;
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UTF8Char>().OrNull(), (UIntOS)exif->cnt);
+				k += (UIntOS)exif->cnt;
 				j += 12;
 			}
 			objCnt++;
@@ -1197,14 +1197,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 2)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 1);
+				MemCopyNO(&buff[j + 8], &exif->value, (UIntOS)exif->cnt << 1);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt16>().OrNull(), (UOSInt)exif->cnt << 1);
-				k += (UOSInt)(exif->cnt << 1);
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt16>().OrNull(), (UIntOS)exif->cnt << 1);
+				k += (UIntOS)(exif->cnt << 1);
 				j += 12;
 			}
 			objCnt++;
@@ -1216,14 +1216,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 1)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 2);
+				MemCopyNO(&buff[j + 8], &exif->value, (UIntOS)exif->cnt << 2);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt32>().OrNull(), (UOSInt)exif->cnt << 2);
-				k += (UOSInt)(exif->cnt << 2);
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt32>().OrNull(), (UIntOS)exif->cnt << 2);
+				k += (UIntOS)(exif->cnt << 2);
 				j += 12;
 			}
 			objCnt++;
@@ -1233,7 +1233,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			WriteInt16(&buff[j + 2], 5);
 			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			WriteUInt32(&buff[j + 8], (UInt32)k);
-			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt32>().OrNull(), (UOSInt)exif->cnt << 3);
+			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt32>().OrNull(), (UIntOS)exif->cnt << 3);
 			k += exif->cnt << 3;
 			j += 12;
 			objCnt++;
@@ -1245,14 +1245,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UOSInt)exif->cnt);
+				MemCopyNO(&buff[j + 8], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UIntOS)exif->cnt);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UOSInt)exif->cnt);
-				k += (UOSInt)exif->cnt;
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt8>().OrNull(), (UIntOS)exif->cnt);
+				k += (UIntOS)exif->cnt;
 				j += 12;
 			}
 			objCnt++;
@@ -1264,14 +1264,14 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			if (exif->cnt <= 2)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 1);
+				MemCopyNO(&buff[j + 8], &exif->value, (UIntOS)exif->cnt << 1);
 				j += 12;
 			}
 			else
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
-				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Int16>().OrNull(), (UOSInt)exif->cnt << 1);
-				k += (UOSInt)(exif->cnt << 1);
+				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Int16>().OrNull(), (UIntOS)exif->cnt << 1);
+				k += (UIntOS)(exif->cnt << 1);
 				j += 12;
 			}
 			objCnt++;
@@ -1290,7 +1290,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			{
 				WriteUInt32(&buff[j + 8], (UInt32)k);
 				MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Int32>().OrNull(), exif->cnt << 2);
-				k += (UOSInt)(exif->cnt << 2);
+				k += (UIntOS)(exif->cnt << 2);
 				j += 12;
 			}
 			objCnt++;
@@ -1309,7 +1309,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Int32>().OrNull(), exif->cnt << 3);
-			k += (UOSInt)(exif->cnt << 3);
+			k += (UIntOS)(exif->cnt << 3);
 			j += 12;
 			objCnt++;
 			break;
@@ -1319,7 +1319,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Double>().OrNull(), exif->cnt << 3);
-			k += (UOSInt)(exif->cnt << 3);
+			k += (UIntOS)(exif->cnt << 3);
 			j += 12;
 			objCnt++;
 			break;
@@ -1329,7 +1329,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<UInt64>().OrNull(), exif->cnt << 3);
-			k += (UOSInt)(exif->cnt << 3);
+			k += (UIntOS)(exif->cnt << 3);
 			j += 12;
 			objCnt++;
 			break;
@@ -1339,7 +1339,7 @@ void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::Rea
 			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff.GetOpt<Int64>().OrNull(), exif->cnt << 3);
-			k += (UOSInt)(exif->cnt << 3);
+			k += (UIntOS)(exif->cnt << 3);
 			j += 12;
 			objCnt++;
 			break;
@@ -1372,7 +1372,7 @@ void Media::EXIFData::GetExifBuffSize(NN<const Data::ReadingListNN<EXIFItem>> ex
 {
 	UInt64 i = 6;
 	UInt64 j = 6;
-	UOSInt k;
+	UIntOS k;
 	UInt64 l;
 	UInt64 m;
 	NN<EXIFItem> exif;
@@ -1476,7 +1476,7 @@ Media::EXIFData::EXIFData(EXIFMaker exifMaker)
 
 Media::EXIFData::~EXIFData()
 {
-	UOSInt i = this->exifMap.GetCount();
+	UIntOS i = this->exifMap.GetCount();
 	while (i-- > 0)
 	{
 		FreeItem(this->exifMap.GetItemNoCheck(i));
@@ -1491,8 +1491,8 @@ Media::EXIFData::EXIFMaker Media::EXIFData::GetEXIFMaker() const
 NN<Media::EXIFData> Media::EXIFData::Clone() const
 {
 	NN<Media::EXIFData::EXIFItem> item;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::EXIFData> newExif;
 	NEW_CLASSNN(newExif, Media::EXIFData(this->exifMaker));
 	i = 0;
@@ -1835,10 +1835,10 @@ Bool Media::EXIFData::RemoveLargest()
 {
 	UInt32 largestId = 0;
 	UInt64 largestSize = 0;
-	UOSInt i = 0;
-	UOSInt j = this->exifMap.GetCount();
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = this->exifMap.GetCount();
+	UIntOS k;
+	UIntOS l;
 	NN<EXIFItem> item;
 	while (i < j)
 	{
@@ -1900,10 +1900,10 @@ Bool Media::EXIFData::RemoveLargest()
 	return true;
 }
 
-UOSInt Media::EXIFData::GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const
+UIntOS Media::EXIFData::GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const
 {
-	UOSInt cnt = this->exifMap.GetCount();
-	UOSInt i = 0;
+	UIntOS cnt = this->exifMap.GetCount();
+	UIntOS i = 0;
 	while (i < cnt)
 	{
 		idArr->Add(this->exifMap.GetItemNoCheck(i)->id);
@@ -2409,7 +2409,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			if (item2->type == Media::EXIFData::ET_STRING && item2->cnt >= 10 && item2->cnt <= 11)
 			{
 				Char dateStr[12];
-				UOSInt dateCnt;
+				UIntOS dateCnt;
 				UnsafeArray<Char> dateArr[3];
 				MemCopyNO(dateStr, item2->dataBuff.GetOpt<UTF8Char>().OrNull(), item2->cnt);
 				dateStr[item2->cnt] = 0;
@@ -2439,7 +2439,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 	return false;
 }
 
-Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const
+Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UIntOS> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const
 {
 	UInt32 fileSRID = 0;
 	NN<Media::EXIFData::EXIFItem> item;
@@ -2447,8 +2447,8 @@ Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32
 	if (this->exifMap.Get(34735).SetTo(item2))
 	{
 		UInt16 *keyBuff = item2->dataBuff.GetOpt<UInt16>().OrNull();
-		UOSInt keyCnt = item2->cnt >> 2;
-		UOSInt i = 1;
+		UIntOS keyCnt = item2->cnt >> 2;
+		UIntOS i = 1;
 		while (i < keyCnt)
 		{
 			if (keyBuff[(i << 2)] == 3072)
@@ -2476,8 +2476,8 @@ Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32
 
 		minX.Set(mapX - imgX * mppX);
 		maxY.Set(mapY + imgY * mppY);
-		maxX.Set(mapX + (UOSInt2Double(imgSize.x) - imgX) * mppX);
-		minY.Set(mapY - (UOSInt2Double(imgSize.y) - imgY) * mppY);
+		maxX.Set(mapX + (UIntOS2Double(imgSize.x) - imgX) * mppX);
+		minY.Set(mapY - (UIntOS2Double(imgSize.y) - imgY) * mppY);
 
 		return true;
 	}
@@ -2631,9 +2631,9 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 {
 	Data::ArrayListNative<UInt32> exifIds;
 	NN<Media::EXIFData::EXIFItem> exItem;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 v;
 
 	sb->AppendC(UTF8STRC("EXIF Content:"));
@@ -2654,8 +2654,8 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 			if (exItem->type == Media::EXIFData::ET_SUBEXIF)
 			{
 				Data::ArrayListNative<UInt32> subExIds;
-				UOSInt i2;
-				UOSInt j2;
+				UIntOS i2;
+				UIntOS j2;
 				UInt32 v2;
 				NN<Media::EXIFData::EXIFItem> subExItem;
 				NN<Media::EXIFData> subExif = exItem->dataBuff.GetNN<Media::EXIFData>();
@@ -3259,11 +3259,11 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
-	UOSInt k;
+	UIntOS k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -4171,7 +4171,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb
 			break;
 		default:
 			sb->AppendC(UTF8STRC("Unknown("));
-			sb->AppendUOSInt(k);
+			sb->AppendUIntOS(k);
 			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
@@ -4189,11 +4189,11 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
-	UOSInt k;
+	UIntOS k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -4233,7 +4233,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, T
 			break;
 		default:
 			sb->AppendC(UTF8STRC("Unknown("));
-			sb->AppendUOSInt(k);
+			sb->AppendUIntOS(k);
 			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
@@ -4251,11 +4251,11 @@ Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, T
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
-	UOSInt k;
+	UIntOS k;
 	k = 0;
 	while (k < valCnt)
 	{
@@ -4518,7 +4518,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text
 			break;
 		default:
 			sb->AppendC(UTF8STRC("Unknown("));
-			sb->AppendUOSInt(k);
+			sb->AppendUIntOS(k);
 			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
@@ -4553,7 +4553,7 @@ void Media::EXIFData::GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> en
 	GetExifBuffSize(this->exifMap, size, endOfst);
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt8> buff, UOSInt buffSize) const
+Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt8> buff, UIntOS buffSize) const
 {
 	Optional<Media::EXIFData> ret = nullptr;
 	if (Text::StrEquals(buff, U8STR("Panasonic")))
@@ -4678,7 +4678,7 @@ Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id)
 Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId)
 {
 	EXIFInfo *infos;
-	UOSInt cnt;
+	UIntOS cnt;
 	if (id == 0)
 	{
 		switch (exifMaker)
@@ -4772,9 +4772,9 @@ Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UIn
 	{
 		return CSTR("Unknown");
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)cnt - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)cnt - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -4869,13 +4869,13 @@ Text::CString Media::EXIFData::GetFieldTypeName(UInt32 ftype)
 	}
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> bo, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> optbasePtr)
+Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::ByteOrder> bo, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> optbasePtr)
 {
 	Media::EXIFData *exif;
 	const UInt8 *ifdEntries;
-	OSInt ifdCnt;
-	OSInt i;
-	OSInt ifdOfst;
+	IntOS ifdCnt;
+	IntOS i;
+	IntOS ifdOfst;
 	UInt32 tag;
 	UInt32 ftype;
 	UInt32 fcnt;
@@ -5083,7 +5083,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 				if (tag == 34665 || tag == 34853)
 				{
 					NN<Media::EXIFData> subexif;
-					if (ParseIFD(&basePtr[tmp], buffSize - (UOSInt)(&basePtr[tmp] - buff), bo, 0, exifMaker, basePtr).SetTo(subexif))
+					if (ParseIFD(&basePtr[tmp], buffSize - (UIntOS)(&basePtr[tmp] - buff), bo, 0, exifMaker, basePtr).SetTo(subexif))
 					{
 						exif->AddSubEXIF(tag, subexif);
 					}
@@ -5128,7 +5128,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 			}
 			else
 			{
-				UOSInt ofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
+				UIntOS ofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				if (ofst + fcnt > buffSize)
 				{
 					ofst = buffSize - fcnt;
@@ -5213,7 +5213,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 		case 13: //Olympus innerIFD
 		{
 			NN<Media::EXIFData> subexif;
-			if (ParseIFD(&basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], buffSize - (UOSInt)(&basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])] - buff), bo, 0, exifMaker, basePtr).SetTo(subexif))
+			if (ParseIFD(&basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], buffSize - (UIntOS)(&basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])] - buff), bo, 0, exifMaker, basePtr).SetTo(subexif))
 			{
 				exif->AddSubEXIF(tag, subexif);
 			}
@@ -5235,10 +5235,10 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 {
 	NN<Media::EXIFData> exif;
 	UInt8 ifdBuff[2];
-	UOSInt ifdCnt;
-	UOSInt i;
-	UOSInt readSize;
-	OSInt ifdOfst;
+	UIntOS ifdCnt;
+	UIntOS i;
+	UIntOS readSize;
+	IntOS ifdOfst;
 	UInt32 tag;
 	UInt32 ftype;
 	UInt32 fcnt;
@@ -5470,9 +5470,9 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 	NN<Media::EXIFData> exif;
 	UInt8 ifdBuff[8];
 	UInt64 ifdCnt;
-	UOSInt i;
-	UOSInt readSize;
-	OSInt ifdOfst;
+	UIntOS i;
+	UIntOS readSize;
+	IntOS ifdOfst;
 	UInt32 tag;
 	UInt32 ftype;
 	UInt64 fcnt;
@@ -5488,7 +5488,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 		return nullptr;
 	}
 
-	UOSInt j;
+	UIntOS j;
 	NEW_CLASSNN(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 
 	ifdOfst = 0;
@@ -5769,11 +5769,11 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 		ifdOfst += 20;
 		i++;
 	}
-	nextOfst.Set(bo->GetUInt32(&ifdEntries[(UOSInt)(ifdCnt * 12)]));
+	nextOfst.Set(bo->GetUInt32(&ifdEntries[(UIntOS)(ifdCnt * 12)]));
 	return exif;
 }
 
-Bool Media::EXIFData::ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst)
+Bool Media::EXIFData::ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS frameOfst, NN<IO::StreamData> fd, UInt64 ofst)
 {
 	UInt8 hdr[8];
 	if (fd->GetRealData(ofst, 8, BYTEARR(hdr)) != 8)
@@ -5807,7 +5807,7 @@ Bool Media::EXIFData::ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> fra
 	frame->AddUInt(frameOfst + 2, 2, CSTR("Signature"), 42);
 	frame->AddUInt(frameOfst + 4, 4, CSTR("IFD Offset"), 8);
 	UInt32 nextOfst = 8;
-	UOSInt i = 3;
+	UIntOS i = 3;
 	while (i-- > 0)
 	{
 		if (!Media::EXIFData::ParseFrame(frame, frameOfst + nextOfst, fd, ofst + nextOfst, bo, nextOfst, 0, ofst))
@@ -5825,13 +5825,13 @@ Bool Media::EXIFData::ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> fra
 	return true;
 }
 
-Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> bo, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase)
+Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> bo, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase)
 {
 	UInt8 ifdBuff[2];
-	UOSInt ifdCnt;
-	UOSInt i;
-	UOSInt readSize;
-	UOSInt ifdOfst;
+	UIntOS ifdCnt;
+	UIntOS i;
+	UIntOS readSize;
+	UIntOS ifdOfst;
 	UInt32 tag;
 	UInt32 ftype;
 	UInt32 fcnt;
@@ -5880,7 +5880,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
+				frame->AddHexBuff((UIntOS)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 			}
 			break;
 		case 2:
@@ -5899,7 +5899,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff.Arr());
+				frame->AddStrS((UIntOS)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff.Arr());
 			}
 			break;
 		case 3:
@@ -5923,7 +5923,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				while (j > 0)
 				{
 					j -= 2;
-					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt16(&tmpBuff[j]));
+					frame->AddUInt((UIntOS)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt16(&tmpBuff[j]));
 				}
 			}
 			break;
@@ -5934,7 +5934,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				if (tag == 34665 || tag == 34853)
 				{
 					frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-					ParseFrame(frame, (UOSInt)(fofst + readBase - ofst + frameOfst), fd, fofst + readBase, bo, 0, tag, readBase);
+					ParseFrame(frame, (UIntOS)(fofst + readBase - ofst + frameOfst), fd, fofst + readBase, bo, 0, tag, readBase);
 				}
 				else
 				{
@@ -5951,7 +5951,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				while (j > 0)
 				{
 					j -= 4;
-					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 4, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt32(&tmpBuff[j]));
+					frame->AddUInt((UIntOS)(fofst + readBase + j - ofst + frameOfst), 4, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt32(&tmpBuff[j]));
 				}
 			}
 			break;
@@ -5970,7 +5970,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				sb.AppendU32(bo->GetUInt32(&tmpBuff[j]));
 				sb.AppendC(UTF8STRC(" / "));
 				sb.AppendU32(bo->GetUInt32(&tmpBuff[j + 4]));
-				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
+				frame->AddField((UIntOS)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
 			break;
 		}
@@ -5990,7 +5990,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
+				frame->AddHexBuff((UIntOS)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 			}
 			break;
 		case 8:
@@ -6014,7 +6014,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				while (j > 0)
 				{
 					j -= 2;
-					frame->AddInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetInt16(&tmpBuff[j]));
+					frame->AddInt((UIntOS)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetInt16(&tmpBuff[j]));
 				}
 			}
 			break;
@@ -6033,7 +6033,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				sb.AppendI32(bo->GetInt32(&tmpBuff[j]));
 				sb.AppendC(UTF8STRC(" / "));
 				sb.AppendI32(bo->GetInt32(&tmpBuff[j + 4]));
-				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
+				frame->AddField((UIntOS)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
 			break;
 		}
@@ -6047,7 +6047,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 			while (j > 0)
 			{
 				j -= 8;
-				frame->AddFloat((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), ReadDouble(&tmpBuff[j]));
+				frame->AddFloat((UIntOS)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), ReadDouble(&tmpBuff[j]));
 			}
 			break;
 		}
@@ -6066,7 +6066,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 	return true;
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseExifJPG(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Media::EXIFData> Media::EXIFData::ParseExifJPG(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buff[4] == 'E' && buff[5] == 'x' && buff[6] == 'i' && buff[7] == 'f' && buff[8] == 0)
 	{
@@ -6075,7 +6075,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseExifJPG(UnsafeArray<const UInt8>
 	return nullptr;
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<Data::ByteOrder> bo;
 	if (*(Int16*)&buff[0] == *(Int16*)"II")

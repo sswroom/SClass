@@ -93,43 +93,43 @@ Net::OSSocketFactory::~OSSocketFactory()
 Optional<Socket> Net::OSSocketFactory::CreateTCPSocketv4()
 {
 	int s = socket(AF_INET, SOCK_STREAM, 0) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateTCPSocketv6()
 {
 	int s = socket(AF_INET6, SOCK_STREAM, 0) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateUDPSocketv4()
 {
 	int s = socket(AF_INET, SOCK_DGRAM, 0) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateUDPSocketv6()
 {
 	int s = socket(AF_INET6, SOCK_DGRAM, 0) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateICMPIPv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_UDP) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 {
 	int s = socket(AF_INET, SOCK_RAW, IPPROTO_IP) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateARPSocket()
@@ -147,7 +147,7 @@ Optional<Socket> Net::OSSocketFactory::CreateARPSocket()
 		s_ll.sll_ifindex = 0; // all ifaces 
 		bind(s - 1, (struct sockaddr *)&s_ll, sizeof(s_ll));
 	}
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 #endif
 }
 
@@ -157,7 +157,7 @@ Optional<Socket> Net::OSSocketFactory::CreateRAWSocket()
 	return 0;
 #else
 	int s = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL)) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 #endif
 }
 
@@ -212,7 +212,7 @@ Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, Optional<const Net::Soc
 	}
 }
 
-Bool Net::OSSocketFactory::SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex)
+Bool Net::OSSocketFactory::SocketBindRAWIf(NN<Socket> socket, UIntOS ifIndex)
 {
 #if defined(__APPLE__) || defined(__FreeBSD__)
 	return false;
@@ -243,7 +243,7 @@ Optional<Socket> Net::OSSocketFactory::SocketAccept(NN<Socket> socket)
 	socklen_t addrlen = sizeof(saddr);
 	int s;
 	s = accept((Int32)this->SocketGetFD(socket), (sockaddr*)&saddr, &addrlen) + 1;
-	return (Socket*)(OSInt)s;
+	return (Socket*)(IntOS)s;
 }
 
 Int32 Net::OSSocketFactory::SocketGetLastError()
@@ -332,9 +332,9 @@ Bool Net::OSSocketFactory::GetLocalAddr(NN<Socket> socket, NN<Net::SocketUtil::A
 	}
 }
 
-OSInt Net::OSSocketFactory::SocketGetFD(NN<Socket> socket)
+IntOS Net::OSSocketFactory::SocketGetFD(NN<Socket> socket)
 {
-	return -1 + (OSInt)socket.Ptr();
+	return -1 + (IntOS)socket.Ptr();
 }
 
 Bool Net::OSSocketFactory::SocketWait(NN<Socket> socket, Data::Duration dur)
@@ -451,13 +451,13 @@ void Net::OSSocketFactory::AddIPMembership(NN<Socket> socket, UInt32 ip)
 	setsockopt((Int32)this->SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS Net::OSSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
 	int flags = 0;
 #if defined(MSG_NOSIGNAL)
 	flags = MSG_NOSIGNAL;
 #endif
-	OSInt ret = send((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, flags);
+	IntOS ret = send((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, flags);
 	if (ret == -1)
 	{
 		if (et.IsNotNull())
@@ -486,14 +486,14 @@ UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8
 	else
 	{
 		et.Set(ET_NO_ERROR);
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 	}
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
+UIntOS Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et)
 {
-	OSInt ret = recv((Int32)this->SocketGetFD(socket), (char*)buff.Ptr(), (size_t)buffSize, 0);
-//	OSInt ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
+	IntOS ret = recv((Int32)this->SocketGetFD(socket), (char*)buff.Ptr(), (size_t)buffSize, 0);
+//	IntOS ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
 	if (ret == -1)
 	{
 		if (et.IsNotNull())
@@ -522,13 +522,13 @@ UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> b
 	else
 	{
 		et.Set(ET_NO_ERROR);
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 	}
 }
 
-Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
-	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
+	UIntOS ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
 	{
 		evt->Set();
@@ -536,19 +536,19 @@ Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> 
 	return (SocketRecvSess*)ret;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS Net::OSSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void Net::OSSocketFactory::CancelReceiveData(NN<Net::SocketRecvSess> reqData)
 {
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UIntOS Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
-	OSInt recvSize;
+	IntOS recvSize;
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
@@ -589,25 +589,25 @@ UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> bu
 			addr->addrType = Net::AddrType::IPv4;
 			*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
 			port.Set(ntohs(((sockaddr_in*)&addrBuff)->sin_port));
-			return (UOSInt)recvSize;
+			return (UIntOS)recvSize;
 		}
 		else if (saddr->sa_family == AF_INET6)
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &saddr->sa_data[6], 20);
 			port.Set(ntohs(((sockaddr_in6*)&addrBuff)->sin6_port));
-			return (UOSInt)recvSize;
+			return (UIntOS)recvSize;
 		}
 		else
 		{
 //			printf("UDPReceive: unknown family %d\r\n", saddr->sa_family);
 		}
 		
-		return (UOSInt)recvSize;
+		return (UIntOS)recvSize;
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+UIntOS Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	sockaddr_storage addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -639,18 +639,18 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> 
 	{
 		return 0;
 	}
-	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
+	IntOS ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;
 	}
 	else
 	{
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
+UIntOS Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	sockaddr addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -660,18 +660,18 @@ UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8
 	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName.Ptr());
 	addrSize = sizeof(sockaddr);
 
-	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
+	IntOS ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;
 	}
 	else
 	{
-		return (UOSInt)ret;
+		return (UIntOS)ret;
 	}
 }
 
-UInt16 ICMPChecksum(UInt8 *buff, OSInt buffSize)
+UInt16 ICMPChecksum(UInt8 *buff, IntOS buffSize)
 {
     UInt32 sum = 0xffff;
     while (buffSize > 1)
@@ -741,7 +741,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 		WriteInt16(&hdr[4], 0); //id
 		WriteInt16(&hdr[6], 0); //seq;
 		WriteInt16(&hdr[2], ICMPChecksum(hdr, sizeof(hdr)));
-		OSInt retSize = sendto(rs, (const char*)hdr, sizeof(hdr), 0, addrBuff, addrSize);
+		IntOS retSize = sendto(rs, (const char*)hdr, sizeof(hdr), 0, addrBuff, addrSize);
 		Int64 timeStart = Manage::HiResClock::GetRelTime_us();
 		if (retSize < 1)
 		{
@@ -797,12 +797,12 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 		if (ret == 0)
 		{
 			Text::PString sarr[4];
-			UOSInt i = Text::StrSplitLineP(sarr, 3, sb);
+			UIntOS i = Text::StrSplitLineP(sarr, 3, sb);
 			if (i == 3)
 			{
 				i = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC(": "));
 				UnsafeArray<UTF8Char> linePtr = sarr[1].v;
-				UOSInt lineLen = sarr[1].leng;
+				UIntOS lineLen = sarr[1].leng;
 				if (i != INVALID_INDEX)
 				{
 					linePtr = &sarr[1].v[i + 2];
@@ -1006,14 +1006,14 @@ Bool Net::OSSocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 	return ret;
 }
 
-UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
+UIntOS Net::OSSocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
 		return false;
 	}
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
@@ -1053,7 +1053,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsLis
 Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 {
 	Net::SocketUtil::AddressInfo addr;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	IO::FileStream fs(CSTR("/etc/hosts"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1091,20 +1091,20 @@ Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 	return true;
 }
 
-Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
+Bool Net::OSSocketFactory::ARPAddRecord(UIntOS ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
 {
 	return false;
 }
 
 
-UOSInt Net::OSSocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList)
+UIntOS Net::OSSocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList)
 {
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	if (sock == -1)
 		return 0;
 
 	NN<Net::ConnectionInfo> connInfo;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 #if !defined(__APPLE__)
 	ConnectionData data;
 	Char buff[1024];
@@ -1117,7 +1117,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::Connectio
 	if (ioctl(sock, SIOCGIFCONF, &ifc) >= 0)
 	{
 		ifrcurr = ifc.ifc_req;
-		ifrend = ifrcurr + ((UOSInt)(UInt32)ifc.ifc_len / sizeof(ifreq));
+		ifrend = ifrcurr + ((UIntOS)(UInt32)ifc.ifc_len / sizeof(ifreq));
 		while (ifrcurr != ifrend)
 		{
 			data.sock = sock;
@@ -1135,7 +1135,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::Connectio
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt32 gw;
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<UTF8Char> sarr[4];
 	IO::FileStream fs(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -1231,9 +1231,9 @@ Bool Net::OSSocketFactory::GetUDPInfo(NN<UDPInfo> info)
 	return true;
 }
 
-UOSInt OSSocketFactory_LoadPortInfo(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
+UIntOS OSSocketFactory_LoadPortInfo(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Net::SocketFactory::PortInfo> port;
 	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1329,9 +1329,9 @@ UOSInt OSSocketFactory_LoadPortInfo(NN<Data::ArrayListNN<Net::SocketFactory::Por
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov4(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
+UIntOS OSSocketFactory_LoadPortInfov4(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Net::SocketFactory::PortInfo3> port;
 	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1428,9 +1428,9 @@ UOSInt OSSocketFactory_LoadPortInfov4(NN<Data::ArrayListNN<Net::SocketFactory::P
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
+UIntOS OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Net::SocketFactory::PortInfo3> port;
 	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1540,9 +1540,9 @@ UOSInt OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::P
 	return ret;
 }
 
-UOSInt Net::OSSocketFactory::QueryPortInfos(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId)
+UIntOS Net::OSSocketFactory::QueryPortInfos(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
 		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, CSTR("/proc/net/tcp"), PT_TCP);
@@ -1563,9 +1563,9 @@ void Net::OSSocketFactory::FreePortInfos(NN<Data::ArrayListNN<Net::SocketFactory
 	portInfoList->MemFreeAll();
 }
 
-UOSInt Net::OSSocketFactory::QueryPortInfos2(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId)
+UIntOS Net::OSSocketFactory::QueryPortInfos2(NN<Data::ArrayListNN<Net::SocketFactory::PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
 		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, CSTR("/proc/net/tcp"), PT_TCP);
@@ -1698,7 +1698,7 @@ Bool Net::OSSocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enabl
 #endif
 }
 
-UOSInt Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayListNative<UInt32>> addrs)
+UIntOS Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayListNative<UInt32>> addrs)
 {
 	return 0;
 }

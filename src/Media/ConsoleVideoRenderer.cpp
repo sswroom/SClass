@@ -67,7 +67,7 @@ void Media::ConsoleVideoRenderer::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->mut);
 }
 
-void Media::ConsoleVideoRenderer::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void Media::ConsoleVideoRenderer::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::MonitorSurface> primarySurface;

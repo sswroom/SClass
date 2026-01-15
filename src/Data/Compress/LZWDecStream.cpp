@@ -8,9 +8,9 @@
 
 void Data::Compress::LZWDecStream::ResetTable()
 {
-	this->currTableSize = ((UOSInt)1 << this->minCodeSize) + 2;
+	this->currTableSize = ((UIntOS)1 << this->minCodeSize) + 2;
 	this->currCodeSize = this->minCodeSize + 1;
-	this->nextTableSize = ((UOSInt)1 << (this->currCodeSize));
+	this->nextTableSize = ((UIntOS)1 << (this->currCodeSize));
 	*(Int32*)&this->lzwTable[this->resetCode * 4] = 0;
 	*(Int32*)&this->lzwTable[this->endCode * 4] = 0;
 
@@ -29,9 +29,9 @@ void Data::Compress::LZWDecStream::ResetTable()
 	this->localCode = (UInt32)-1;
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UIntOS minCodeSize, UIntOS maxCodeSize, UIntOS codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
-	this->tableSize = ((UOSInt)1 << maxCodeSize);
+	this->tableSize = ((UIntOS)1 << maxCodeSize);
 	this->lzwTable = MemAllocArr(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -52,9 +52,9 @@ Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt 
 	ResetTable();
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(NN<IO::BitReader> reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
+Data::Compress::LZWDecStream::LZWDecStream(NN<IO::BitReader> reader, Bool toRelease, UIntOS minCodeSize, UIntOS maxCodeSize, UIntOS codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
 {
-	this->tableSize = ((UOSInt)1 << maxCodeSize);
+	this->tableSize = ((UIntOS)1 << maxCodeSize);
 	this->lzwTable = MemAllocArr(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -83,9 +83,9 @@ Bool Data::Compress::LZWDecStream::IsDown() const
 	return false;
 }
 
-UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt writeSize = 0;
+	UIntOS writeSize = 0;
 	UInt32 code;
 	Data::ByteArray myBuff = buff;
 
@@ -148,8 +148,8 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 				}
 				else
 				{
-					UOSInt codeSize = 1;
-					UOSInt i;
+					UIntOS codeSize = 1;
+					UIntOS i;
 					*(UInt16*)&this->lzwTable[this->currTableSize * 4] = (UInt16)this->localCode;
 					this->localCode = code;
 					while (code >= this->resetCode)
@@ -165,7 +165,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 						if (this->currCodeSize < this->maxCodeSize)
 						{
 							this->currCodeSize = this->currCodeSize + 1;
-							this->nextTableSize = ((UOSInt)1 << this->currCodeSize);
+							this->nextTableSize = ((UIntOS)1 << this->currCodeSize);
 						}
 					}
 	
@@ -206,7 +206,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 	return writeSize;
 }
 
-UOSInt Data::Compress::LZWDecStream::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::LZWDecStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

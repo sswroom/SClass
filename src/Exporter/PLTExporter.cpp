@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::PLTExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::PLTExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PLTExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -60,10 +60,10 @@ Bool Exporter::PLTExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	Data::DateTime dt;
 	Data::DateTime refTime;
@@ -123,7 +123,7 @@ UnsafeArray<UTF8Char> Exporter::PLTExporter::FixDouble(UnsafeArray<UTF8Char> sbu
 {
 	UTF8Char sbuff2[16];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt i;
+	IntOS i;
 	sptr = Text::StrDoubleFmt(sbuff2, val, format);
 	i = colSize - (sptr - sbuff2);
 	while (i-- > 0)

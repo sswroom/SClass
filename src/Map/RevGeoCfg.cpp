@@ -26,7 +26,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 		IO::StreamReader reader(fs);
 		while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 		{
-			if (Text::StrSplitP(sptrs, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ',') == 2)
+			if (Text::StrSplitP(sptrs, 2, {sbuff, (UIntOS)(sptr - sbuff)}, ',') == 2)
 			{
 				srchType = Text::StrToInt32(sptrs[0].v);
 				if (srchType == 0)
@@ -62,8 +62,8 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 
 Map::RevGeoCfg::~RevGeoCfg()
 {
-	UOSInt i = REVGEO_MAXID;
-	UOSInt j;
+	UIntOS i = REVGEO_MAXID;
+	UIntOS j;
 	NN<Map::RevGeoCfg::SearchLayer> layer;
 	while (i-- > 0)
 	{
@@ -80,7 +80,7 @@ Map::RevGeoCfg::~RevGeoCfg()
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> Map::RevGeoCfg::GetStreetName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoCfg::GetStreetName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sb;
 	if (GetStreetName(sb, pos))
@@ -91,11 +91,11 @@ UnsafeArrayOpt<UTF8Char> Map::RevGeoCfg::GetStreetName(UnsafeArray<UTF8Char> buf
 Bool Map::RevGeoCfg::GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sbTmp;
-	UOSInt lastStrPos = 0;
+	UIntOS lastStrPos = 0;
 	Bool hasStr = false;
-	UOSInt i = 0;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j;
+	UIntOS k;
 	Math::Coord2DDbl posOut;
 	Double minDist;
 	Double thisDist;

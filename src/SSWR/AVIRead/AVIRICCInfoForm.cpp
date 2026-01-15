@@ -9,10 +9,10 @@
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
-	UOSInt i;
+	UIntOS i;
 	Data::ByteBuffer buff(1048576);
-	UOSInt fileSize;
-	UOSInt fileCnt = files.GetCount();
+	UIntOS fileSize;
+	UIntOS fileCnt = files.GetCount();
 	i = 0;
 	while (i < fileCnt)
 	{

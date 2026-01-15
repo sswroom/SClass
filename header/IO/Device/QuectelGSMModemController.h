@@ -157,13 +157,13 @@ namespace IO
 			virtual ~QuectelGSMModemController();
 
 			virtual UnsafeArrayOpt<UTF8Char> GetICCID(UnsafeArray<UTF8Char> sbuff);
-			virtual UOSInt QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
+			virtual UIntOS QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
 
 			// (U)SIM Related Commands
 			UnsafeArrayOpt<UTF8Char> QuectelGetICCID(UnsafeArray<UTF8Char> iccid); //AT+QCCID
 
 			// Network Service Command
-			UOSInt QuectelQueryServingCell(UnsafeArray<ServingCell> cell); // AT+QENG="servingcell"
+			UIntOS QuectelQueryServingCell(UnsafeArray<ServingCell> cell); // AT+QENG="servingcell"
 			Bool QuectelQueryNeighbourCells(NN<Data::ArrayListNN<NeighbourCell>> cells); // AT+QENG="neighbourcell"
 		};
 	}

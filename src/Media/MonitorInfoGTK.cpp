@@ -8,7 +8,7 @@
 
 Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 {
-	OSInt monNum = ((OSInt)hMonitor.OrNull()) - 1;
+	IntOS monNum = ((IntOS)hMonitor.OrNull()) - 1;
 	GdkRectangle rect;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -68,7 +68,7 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 		this->bottom = 240;
 	}
 
-	UOSInt size;
+	UIntOS size;
 	UnsafeArray<UInt8> edid;
 	Media::DDCReader reader(hMonitor);
 	if (reader.GetEDID(size).SetTo(edid))
@@ -78,7 +78,7 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 		{
 			this->name = Text::String::NewNotNullSlow(info.monitorName);
 			sptr = Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
-			this->monId = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			this->monId = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		else
 		{

@@ -56,7 +56,7 @@ IO::WPDManager::~WPDManager()
 	CoUninitialize();
 }
 
-OSInt IO::WPDManager::GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList)
+IntOS IO::WPDManager::GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList)
 {
 	WChar **sarr;
 	NN<WPDeviceInfo> dev;
@@ -85,7 +85,7 @@ OSInt IO::WPDManager::GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList)
 		i++;
 	}
 	MemFree(sarr);
-	return (OSInt)devCnt;
+	return (IntOS)devCnt;
 }
 
 Bool IO::WPDManager::GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb)

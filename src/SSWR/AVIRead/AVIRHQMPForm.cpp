@@ -175,8 +175,8 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	NN<Media::MediaPlayer> player;
 
 	if (me->player.SetTo(player)) player->StopPlayback();
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		sb.AppendI32(dbg.avOfst);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Seek Count: "));
-		sb.AppendUOSInt(dbg.seekCnt);
+		sb.AppendUIntOS(dbg.seekCnt);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Frame Displayed: "));
 		sb.AppendU32(dbg.frameDispCnt);
@@ -253,14 +253,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		sb.AppendI32(dbg.buffReady);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendUOSInt(dbg.srcSize.x);
+		sb.AppendUIntOS(dbg.srcSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(dbg.srcSize.y);
+		sb.AppendUIntOS(dbg.srcSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Size: "));
-		sb.AppendUOSInt(dbg.dispSize.x);
+		sb.AppendUIntOS(dbg.dispSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(dbg.dispSize.y);
+		sb.AppendUIntOS(dbg.dispSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		sb.AppendDouble(dbg.par);
@@ -333,8 +333,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 	{
 		me->pbEnd = false;
 		UTF8Char sbuff[512];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptrEnd;
 		Int32 partNum;
@@ -347,7 +347,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		{
 			sptrEnd = Text::StrConcatC(sbuff, UTF8STRC("Untitled"));
 		}
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptrEnd - sbuff), '.');
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptrEnd - sbuff), '.');
 		j = Text::StrIndexOfICase(sbuff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{
@@ -392,7 +392,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(AnyType userObj)
 	me->pbEnd = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	if (ma == UI::GUIVideoBoxDD::MA_START)
@@ -417,8 +417,8 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Media::ChapterInfo> currChapInfo;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
@@ -806,10 +806,10 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	NN<Media::MediaPlayer> player;
 	NN<Media::Playlist> playlist;
 	NN<Media::PBControl> currPBC;
-	UOSInt i;
+	UIntOS i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
-		i = (UOSInt)(cmdId - MNU_PB_CHAPTERS);
+		i = (UIntOS)(cmdId - MNU_PB_CHAPTERS);
 		if (this->currChapInfo.NotNull() && this->player.SetTo(player))
 		{
 			player->GotoChapter(i);
@@ -825,7 +825,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
-				UOSInt i = fname->IndexOf(':');
+				UIntOS i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
 					this->OpenFile(fname->ToCString(), dlg.GetParserType());
@@ -972,7 +972,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_VIDEO_ORISIZE:
 		if (this->player.SetTo(player))
 		{
-			Math::Size2D<UOSInt> vSize;
+			Math::Size2D<UIntOS> vSize;
 			IO::DebugWriter debug;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
@@ -988,8 +988,8 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			debug.WriteLine(sb.ToCString());
 			if (player->GetVideoSize(vSize.x, vSize.y))
 			{
-				Math::Size2D<UOSInt> sz1;
-				Math::Size2D<UOSInt> sz2;
+				Math::Size2D<UIntOS> sz1;
+				Math::Size2D<UIntOS> sz2;
 
 				sb.ClearStr();
 				sb.AppendTSNoZone(Data::Timestamp::UtcNow());

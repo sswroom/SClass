@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderBase.h"
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->ProcVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
@@ -26,12 +26,12 @@ Media::Decoder::VDecoderBase::~VDecoderBase()
 {
 }
 
-void Media::Decoder::VDecoderBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
+void Media::Decoder::VDecoderBase::SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom)
 {
 	this->sourceVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::Decoder::VDecoderBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
+void Media::Decoder::VDecoderBase::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
 	this->sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
@@ -117,14 +117,14 @@ Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimT
 	return false;
 }
 
-UOSInt Media::Decoder::VDecoderBase::GetDataSeekCount()
+UIntOS Media::Decoder::VDecoderBase::GetDataSeekCount()
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->GetDataSeekCount();
 	return 0;
 }
 
-UOSInt Media::Decoder::VDecoderBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::Decoder::VDecoderBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

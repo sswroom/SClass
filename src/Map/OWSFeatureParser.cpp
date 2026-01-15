@@ -8,15 +8,15 @@
 #include "Parser/FileParser/XMLParser.h"
 #include "Text/JSON.h"
 
-Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	txt.RTrim();
 	if (txt.StartsWith('@') && txt.EndsWith(';'))
 	{
 		Text::PString nameArr[2];
 		Text::PString valueArr[2];
-		UOSInt nameCnt;
-		UOSInt i = txt.IndexOf(' ');
+		UIntOS nameCnt;
+		UIntOS i = txt.IndexOf(' ');
 		if (i == INVALID_INDEX)
 			return false;
 		txt = txt.Substring(i + 1);
@@ -50,7 +50,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 	{
 		Text::PString lineArr[2];
 		Text::PString sarr[2];
-		UOSInt lineCnt;
+		UIntOS lineCnt;
 		Bool newVec = true;
 		lineArr[1] = txt;
 		while (true)
@@ -81,7 +81,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 	}
 }
 
-Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONStr(txt).SetTo(json))
@@ -103,8 +103,8 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 		if (json->GetValue(CSTR("features")).SetTo(featuresObj) && featuresObj->GetType() == Text::JSONType::Array)
 		{
 			NN<Text::JSONArray> features = NN<Text::JSONArray>::ConvertFrom(featuresObj);
-			UOSInt i = 0;
-			UOSInt j = features->GetArrayLength();
+			UIntOS i = 0;
+			UIntOS j = features->GetArrayLength();
 			while (i < j)
 			{
 				NN<Text::JSONBase> feature;
@@ -158,7 +158,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	UTF8Char tmpBuff[1024];
 	UnsafeArray<UTF8Char> tmpPtr;
@@ -177,8 +177,8 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 			{
 				Text::StringBuilderUTF8 sb;
 				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
-				UOSInt i = 0;
-				UOSInt j = idArr.GetCount();
+				UIntOS i = 0;
+				UIntOS j = idArr.GetCount();
 				while (i < j)
 				{
 					NN<Math::Geometry::Vector2D> vec;
@@ -189,8 +189,8 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 							vec->SwapXY();
 						}
 						valueOfstList->Add(nameList->GetCount());
-						UOSInt k = 0;
-						UOSInt l = layer->GetColumnCnt();
+						UIntOS k = 0;
+						UIntOS l = layer->GetColumnCnt();
 						while (k < l)
 						{
 							tmpPtr = layer->GetColumnName(tmpBuff, k).Or(tmpBuff);
@@ -216,7 +216,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
 	IO::MemoryReadingStream mstm(xml.v, xml.leng);
 	NN<Text::String> nodeText;
@@ -236,7 +236,7 @@ Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, 
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseESRIFeatureInfoResponse(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfoResponse(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
 	Bool succ = true;
 	Bool found = false;
@@ -257,7 +257,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfoResponse(NN<Text::XMLReader> rea
 	return found && succ;
 }
 
-Bool Map::OWSFeatureParser::ParseESRIFeatureInfoCollection(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfoCollection(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
 	Bool succ = true;
 	NN<Text::String> nodeText;
@@ -276,7 +276,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfoCollection(NN<Text::XMLReader> r
 	return succ;
 }
 
-Bool Map::OWSFeatureParser::ParseESRIFeatureInfo(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfo(NN<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
 	Bool succ = true;
 	Bool found = false;
@@ -386,7 +386,7 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 			Text::StringBuilderUTF8 sb;
 			reader->ReadNodeText(sb);
 			Text::PString sarr[4];
-			UOSInt i = Text::StrSplitP(sarr, 4, sb, ',');
+			UIntOS i = Text::StrSplitP(sarr, 4, sb, ',');
 			if (i == 2)
 			{
 				vec.Delete();
@@ -415,15 +415,15 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 	return vec;
 }
 
-Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, Math::Coord2DDbl coord, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, Math::Coord2DDbl coord, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	IO::MemoryReadingStream mstm(xml.v, xml.leng);
 	NN<Text::String> nodeText;
 	NN<Math::Geometry::Vector2D> vec;
 	NN<Text::XMLAttrib> attr;
 	Bool found = false;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::ParseMode::PM_XML);
 	while (reader.NextElementName().SetTo(nodeText))
 	{

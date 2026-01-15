@@ -21,7 +21,7 @@ namespace SSWR
 			Optional<Map::MapDrawLayer> layer;
 			
 			static void __stdcall OnMapsSelChg(AnyType userObj);
-			static void __stdcall OnMapsDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnMapsDblClk(AnyType userObj, UIntOS index);
 		public:
 			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCSys);
 			virtual ~AVIRRegionalMapForm();

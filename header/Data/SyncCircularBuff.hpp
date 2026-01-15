@@ -10,9 +10,9 @@ namespace Data
 	private:
 		Sync::Mutex mut;
 		UnsafeArray<T> buff;
-		UOSInt capacity;
-		UOSInt getIndex;
-		UOSInt putIndex;
+		UIntOS capacity;
+		UIntOS getIndex;
+		UIntOS putIndex;
 
 	public:
 		SyncCircularBuff();
@@ -23,8 +23,8 @@ namespace Data
 		T Get();
 		T GetNoRemove();
 		T GetLastNoRemove();
-		UOSInt GetCount();
-		UOSInt IndexOf(T item);
+		UIntOS GetCount();
+		UIntOS IndexOf(T item);
 	};
 }
 
@@ -52,7 +52,7 @@ template<typename T> void Data::SyncCircularBuff<T>::Put(T item)
 	Sync::MutexUsage mutUsage(this->mut);
 	if (((this->putIndex + 1) & (this->capacity - 1)) == this->getIndex)
 	{
-		UOSInt oldCapacity = this->capacity;
+		UIntOS oldCapacity = this->capacity;
 		this->capacity = oldCapacity << 1;
 		UnsafeArray<T> newBuff = MemAllocArr(T, this->capacity);
 		if (this->getIndex < this->putIndex)
@@ -102,11 +102,11 @@ template<typename T> T Data::SyncCircularBuff<T>::GetLastNoRemove()
 	{
 		return 0;
 	}
-	UOSInt lastIndex = (this->putIndex - 1) & (this->capacity - 1);
+	UIntOS lastIndex = (this->putIndex - 1) & (this->capacity - 1);
 	return this->buff[lastIndex];
 }
 
-template<typename T> UOSInt Data::SyncCircularBuff<T>::GetCount()
+template<typename T> UIntOS Data::SyncCircularBuff<T>::GetCount()
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex <= this->putIndex)
@@ -119,12 +119,12 @@ template<typename T> UOSInt Data::SyncCircularBuff<T>::GetCount()
 	}
 }
 
-template<typename T> UOSInt Data::SyncCircularBuff<T>::IndexOf(T item)
+template<typename T> UIntOS Data::SyncCircularBuff<T>::IndexOf(T item)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt andVal = this->capacity - 1;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS andVal = this->capacity - 1;
+	UIntOS i = 0;
+	UIntOS j;
 	while (true)
 	{
 		j = (this->getIndex + i) & andVal;

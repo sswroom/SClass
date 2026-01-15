@@ -14,7 +14,7 @@ namespace Manage
 		static void WriteContext(NN<IO::Writer> writer, NN<IO::Stream> stm, NN<Manage::ThreadContext> context, NN<Manage::AddressResolver> addrResol);
 		static void WriteStackTrace(NN<IO::Writer> writer, NN<Manage::StackTracer> tracer, NN<Manage::AddressResolver> addrResol);
 	public:
-		static Bool LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CStringNN exName, UOSInt exAddr, NN<Manage::ThreadContext> context);
+		static Bool LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CStringNN exName, UIntOS exAddr, NN<Manage::ThreadContext> context);
 	};
 }
 

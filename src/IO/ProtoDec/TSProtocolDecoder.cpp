@@ -21,10 +21,10 @@ Text::CStringNN IO::ProtoDec::TSProtocolDecoder::GetName() const
 	return CSTR("TS");
 }
 
-UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize)
+UIntOS IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 cmdSize;
 	UInt16 cmdType;
 	Int32 seqId;
@@ -172,8 +172,8 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 		}
 		else if (buff[i] == 'T' && buff[i + 1] == 'S')
 		{
-			UOSInt tmpVal1;
-			UOSInt tmpVal2;
+			UIntOS tmpVal1;
+			UIntOS tmpVal2;
 			Crypto::Encrypt::Base64 b64;
 
 			if (j != i)
@@ -329,7 +329,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 	return j;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (buffSize < 10)
 		return false;
@@ -344,8 +344,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 	}
 	else if (buff[0] == 'T' && buff[1] == 'S')
 	{
-		UOSInt tmpVal1;
-		UOSInt tmpVal2;
+		UIntOS tmpVal1;
+		UIntOS tmpVal2;
 		Crypto::Encrypt::Base64 b64;
 		b64.Decrypt(&buff[2], 8, this->protoBuff);
 		cmdSize = ReadUInt16(&this->protoBuff[0]);
@@ -390,7 +390,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 		break;
 	case 1:
 		{
-			OSInt ofst = 14;
+			IntOS ofst = 14;
 			sb->AppendC(UTF8STRC("KA Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("DevStatus=0x"));
@@ -491,8 +491,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 		break;
 	case 10:
 		{
-			OSInt i;
-			OSInt j;
+			IntOS i;
+			IntOS j;
 			sb->AppendC(UTF8STRC("Send Task List"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Cnt="));
@@ -552,8 +552,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (cmdSize >= 42)
 			{
-				OSInt i;
-				OSInt j;
+				IntOS i;
+				IntOS j;
 				sb->AppendC(UTF8STRC("Start Time="));
 				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[12]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -590,8 +590,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 		break;
 	case 17:
 		{
-			OSInt i;
-			OSInt j;
+			IntOS i;
+			IntOS j;
 			sb->AppendC(UTF8STRC("Request Area Detail Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("AreaId="));
@@ -733,8 +733,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 		break;
 	case 29:
 		{
-			OSInt i;
-			OSInt j;
+			IntOS i;
+			IntOS j;
 			sb->AppendC(UTF8STRC("Dev Task List Resp"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Cmd Id="));
@@ -826,7 +826,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 	return true;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize)
+Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	return buff[0] == 'T' && buff[1] == 's';
 }

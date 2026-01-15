@@ -36,7 +36,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 {
 	UInt8 footer[8];
 	UTF8Char sbuff[512];
-	UOSInt byteConv = 0;
+	UIntOS byteConv = 0;
 	UInt64 fileLeng;
 	UnsafeArray<UTF8Char> sptr;
 
@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	if (hdr[3] & 8)
 	{
 		sptr = Text::StrConcat(sbuff, &hdr[10]);
-		byteConv = (UOSInt)(sptr - sbuff);
+		byteConv = (UIntOS)(sptr - sbuff);
 		if (byteConv >= 247)
 			return nullptr;
 		

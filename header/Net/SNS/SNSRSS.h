@@ -28,7 +28,7 @@ namespace Net
 			Data::Duration timeout;
 			NN<IO::LogTool> log;			
 
-			void CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal);
+			void CalcCRC(UnsafeArray<const UInt8> buff, UIntOS size, UnsafeArray<UInt8> hashVal);
 		public:
 			SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId, NN<IO::LogTool> log);
 			virtual ~SNSRSS();
@@ -38,7 +38,7 @@ namespace Net
 			virtual NN<Text::String> GetChannelId() const;
 			virtual NN<Text::String> GetName() const;
 			virtual UnsafeArray<UTF8Char> GetDirName(UnsafeArray<UTF8Char> dirName);
-			virtual UOSInt GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
+			virtual UIntOS GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
 			virtual UnsafeArray<UTF8Char> GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();

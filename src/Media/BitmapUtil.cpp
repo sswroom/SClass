@@ -4,14 +4,14 @@
 #include "Math/Unit/Distance.h"
 #include "Media/BitmapUtil.h"
 
-Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, UOSInt dataSize)
+Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, UIntOS dataSize)
 {
-	OSInt imgWidth;
-	OSInt imgHeight;
+	IntOS imgWidth;
+	IntOS imgHeight;
 	UInt32 bpp;
 	Double hdpi = 96.0;
 	Double vdpi = 96.0;
-	UOSInt imgPos;
+	UIntOS imgPos;
 	Media::StaticImage *outImg = 0;
 
 	if (ReadInt32(&dataBuff[0]) == 12)
@@ -41,19 +41,19 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 		inv = false;
 		imgHeight = -imgHeight;
 	}
-	UOSInt palSize = 0;
+	UIntOS palSize = 0;
 	if (bpp <= 8)
 	{
-		palSize = (UOSInt)(4 << bpp);
+		palSize = (UIntOS)(4 << bpp);
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)imgWidth, (UOSInt)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)imgWidth, (UIntOS)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	outImg->info.hdpi = hdpi;
 	outImg->info.vdpi = vdpi;
 	UnsafeArray<UInt8> pBits = outImg->data;
-	UOSInt lineW;
-	UOSInt lineW2;
-	UOSInt currOfst;
+	UIntOS lineW;
+	UIntOS lineW2;
+	UIntOS currOfst;
 	UnsafeArray<UInt8> pal;
 	Int32 i;
 	if (inv)
@@ -74,13 +74,13 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 					pal[(i << 2) + 3] = 0xff;
 				}
 			}
-			lineW = (UOSInt)((imgWidth >> 1) + (imgWidth & 1));
+			lineW = (UIntOS)((imgWidth >> 1) + (imgWidth & 1));
 			lineW2 = lineW;
 			if (lineW & 3)
 			{
 				lineW = lineW + 4 - (lineW & 3);
 			}
-			currOfst = (lineW * (UOSInt)imgHeight) + imgPos;
+			currOfst = (lineW * (UIntOS)imgHeight) + imgPos;
 			if (currOfst > dataSize)
 			{
 				DEL_CLASS(outImg);
@@ -110,27 +110,27 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 					pal[(i << 2) + 3] = 0xff;
 				}
 			}
-			lineW = (UOSInt)imgWidth;
+			lineW = (UIntOS)imgWidth;
 			if (lineW & 3)
 			{
 				lineW = lineW + 4 - (lineW & 3);
 			}
-			currOfst = (lineW * (UOSInt)imgHeight) + imgPos;
+			currOfst = (lineW * (UIntOS)imgHeight) + imgPos;
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
-				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgWidth);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UIntOS)imgWidth);
 				pBits += imgWidth;
 			}
 			break;
 		case 16:
-			lineW = (UOSInt)imgWidth << 1;
+			lineW = (UIntOS)imgWidth << 1;
 			if (lineW & 3)
 			{
 				lineW = lineW + 4 - (lineW & 3);
 			}
-			lineW2 = (UOSInt)imgWidth << 1;
-			currOfst = (lineW * (UOSInt)imgHeight) + imgPos;
+			lineW2 = (UIntOS)imgWidth << 1;
+			currOfst = (lineW * (UIntOS)imgHeight) + imgPos;
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
@@ -139,13 +139,13 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			}
 			break;
 		case 24:
-			lineW = (UOSInt)imgWidth * 3;
+			lineW = (UIntOS)imgWidth * 3;
 			if (lineW & 3)
 			{
 				lineW = lineW + 4 - (lineW & 3);
 			}
-			lineW2 = (UOSInt)imgWidth * 3;
-			currOfst = (lineW * (UOSInt)imgHeight) + imgPos;
+			lineW2 = (UIntOS)imgWidth * 3;
+			currOfst = (lineW * (UIntOS)imgHeight) + imgPos;
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
@@ -159,8 +159,8 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			while (imgHeight-- > 0)
 			{
 				pBits -= imgWidth << 2;
-				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgWidth << 2);
-				currOfst += (UOSInt)imgWidth << 2;
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UIntOS)imgWidth << 2);
+				currOfst += (UIntOS)imgWidth << 2;
 			}
 			break;
 		default:
@@ -172,7 +172,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 	else
 	{
 		currOfst = imgPos;
-		lineW = ((UOSInt)imgWidth * bpp >> 3);
+		lineW = ((UIntOS)imgWidth * bpp >> 3);
 		if (lineW & 3)
 		{
 			lineW2 = lineW + 4 - (lineW & 3);
@@ -185,7 +185,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 		}
 		else
 		{
-			MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgHeight * lineW);
+			MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UIntOS)imgHeight * lineW);
 		}
 	}
 	return outImg;

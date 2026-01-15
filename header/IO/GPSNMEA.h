@@ -15,7 +15,7 @@ namespace IO
 	class GPSNMEA : public Map::LocationService
 	{
 	public:
-		typedef void (CALLBACKFUNC CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		typedef void (CALLBACKFUNC CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 
 	private:
 		enum class ParseStatus
@@ -28,7 +28,7 @@ namespace IO
 
 		struct SateRecord
 		{
-			UOSInt sateCnt;
+			UIntOS sateCnt;
 			SateStatus sates[32];
 		};
 	protected:
@@ -43,8 +43,8 @@ namespace IO
 		Bool threadRunning;
 		Bool threadToStop;
 	private:
-		virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
-		static ParseStatus ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, NN<SateRecord> sateRec);
+		virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
+		static ParseStatus ParseNMEALine(UnsafeArray<UTF8Char> line, UIntOS lineLen, NN<Map::GPSTrack::GPSRecord3> record, NN<SateRecord> sateRec);
 		static UInt32 __stdcall NMEAThread(AnyType userObj);
 	public:
 		GPSNMEA(NN<IO::Stream> stm, Bool relStm);
@@ -58,7 +58,7 @@ namespace IO
 
 		void HandleCommand(CommandHandler cmdHdlr, AnyType userObj);
 
-		static UOSInt GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UnsafeArray<UInt8> buff);
+		static UIntOS GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, UnsafeArray<UInt8> buff);
 		static NN<Map::GPSTrack> NMEA2Track(NN<IO::Stream> stm, Text::CStringNN sourceName);
 	};
 }

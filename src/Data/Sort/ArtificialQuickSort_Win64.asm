@@ -2,7 +2,7 @@ section .text
 
 global ArtificialQuickSort_DoPreSortInt32_2
 
-;void ArtificialQuickSort_DoPreSortInt32_2(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+;void ArtificialQuickSort_DoPreSortInt32_2(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 ;0 retAddr
 ;rcx arr
 ;rdx firstIndex

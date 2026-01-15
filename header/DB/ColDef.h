@@ -57,8 +57,8 @@ namespace DB
 		NN<Text::String> colName;
 		DB::DBUtil::ColType colType;
 		Optional<Text::String> nativeType;
-		UOSInt colSize;
-		UOSInt colDP;
+		UIntOS colSize;
+		UIntOS colDP;
 		Bool notNull;
 		Bool pk;
 		AutoIncType autoInc;
@@ -67,7 +67,7 @@ namespace DB
 		Optional<Text::String> defVal;
 		Optional<Text::String> attr;
 
-		static void AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
+		static void AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UIntOS colSize);
 	public:
 		ColDef(Text::CStringNN colName);
 		ColDef(NN<Text::String> colName);
@@ -76,8 +76,8 @@ namespace DB
 		NN<Text::String> GetColName() const;
 		DB::DBUtil::ColType GetColType() const;
 		Optional<Text::String> GetNativeType() const;
-		UOSInt GetColSize() const;
-		UOSInt GetColDP() const;
+		UIntOS GetColSize() const;
+		UIntOS GetColDP() const;
 		Bool IsNotNull() const;
 		Bool IsPK() const;
 		Bool IsAutoInc() const;
@@ -96,8 +96,8 @@ namespace DB
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetNativeType(Optional<Text::String> nativeType);
 		void SetNativeType(Text::CString nativeType);
-		void SetColSize(UOSInt colSize);
-		void SetColDP(UOSInt colDP);
+		void SetColSize(UIntOS colSize);
+		void SetColDP(UIntOS colDP);
 		void SetNotNull(Bool notNull);
 		void SetPK(Bool pk);
 		void SetAutoIncNone();

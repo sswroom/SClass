@@ -58,7 +58,7 @@ namespace DB
 			AnyType userData;
 			AnyType userData2;
 
-			SQLCmd(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+			SQLCmd(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLCmd();			
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -127,31 +127,31 @@ namespace DB
 
 	private:
 		Sync::Mutex mut;
-		UOSInt dbSize;
-		UOSInt nextDB;
+		UIntOS dbSize;
+		UIntOS nextDB;
 
 	public:
-		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize);
-		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UOSInt dbSize);
-		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize);
+		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UIntOS dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize);
 		~DBQueue();
 
 		void AddDB(NN<DB::DBTool> db);
 
 		void ToStop();
-		void AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen);
-		void AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+		void AddSQL(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen);
+		void AddSQL(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 		void RemoveSQLs(Int32 progId);
-		UOSInt GetDataCnt() const;
-		UOSInt GetQueueCnt() const;
-		UOSInt GetConnCnt() const;
+		UIntOS GetDataCnt() const;
+		UIntOS GetQueueCnt() const;
+		UIntOS GetConnCnt() const;
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
 		Int8 GetTzQhr() const;
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
-		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
+		UIntOS GetNextCmds(IDBCmd **cmds); //max 200 cmds
 		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> buff, Data::DateTime *dat);
 		UnsafeArray<UTF8Char> DBInt32(UnsafeArray<UTF8Char> buff, Int32 val);
 		UnsafeArray<UTF8Char> DBInt64(UnsafeArray<UTF8Char> buff, Int64 val);

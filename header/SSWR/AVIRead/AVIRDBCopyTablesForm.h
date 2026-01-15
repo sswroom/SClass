@@ -63,7 +63,7 @@ namespace SSWR
 			static void __stdcall OnSourceSelectClicked(AnyType userObj);
 			static void __stdcall OnDestDBChg(AnyType userObj);
 			static void __stdcall OnCopyClicked(AnyType userObj);
-			static void __stdcall OnDataDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnDataDblClk(AnyType userObj, UIntOS index);
 			static void __stdcall OnDataSelectAllClicked(AnyType userObj);
 			static void __stdcall OnDataSelectNoneClicked(AnyType userObj);
 			void SetAllSelect(Bool selected);
@@ -73,7 +73,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void SetSourceDB(UOSInt index);
+			void SetSourceDB(UIntOS index);
 		};
 	}
 }

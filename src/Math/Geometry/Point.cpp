@@ -94,7 +94,7 @@ Bool Math::Geometry::Point::Equals(NN<const Math::Geometry::Vector2D> vec, Bool 
 	}
 }
 
-UOSInt Math::Geometry::Point::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::Point::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->pos);
 	return 1;
@@ -115,7 +115,7 @@ Bool Math::Geometry::Point::InsideOrTouch(Math::Coord2DDbl coord) const
 	return this->pos == coord;
 }
 
-UOSInt Math::Geometry::Point::GetPointCount() const
+UIntOS Math::Geometry::Point::GetPointCount() const
 {
 	return 1;
 }
@@ -125,7 +125,7 @@ Bool Math::Geometry::Point::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::Point::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+UIntOS Math::Geometry::Point::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	return 0;
 }

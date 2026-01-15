@@ -16,7 +16,7 @@ Int32 Exporter::GUITIFExporter::GetName()
 	return *(Int32*)"GPTI";
 }
 
-Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GUITIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -55,7 +55,7 @@ Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	return false;
 }
 
-UOSInt Exporter::GUITIFExporter::GetParamCnt()
+UIntOS Exporter::GUITIFExporter::GetParamCnt()
 {
 	return 0;
 //	return 1;
@@ -74,7 +74,7 @@ void Exporter::GUITIFExporter::DeleteParam(Optional<ParamData> param)
 //	MemFree(param);
 }
 
-Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::GUITIFExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 /*	if (index == 0)
 	{
@@ -86,7 +86,7 @@ Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Bool val)
+Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UIntOS index, Bool val)
 {
 /*	if (index == 0)
 	{
@@ -96,7 +96,7 @@ Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UOSInt in
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::GetParamBool(Optional<ParamData> param, UOSInt index)
+Bool Exporter::GUITIFExporter::GetParamBool(Optional<ParamData> param, UIntOS index)
 {
 /*	if (index == 0)
 	{

@@ -44,7 +44,7 @@ void Media::AudioFilter::GetFormat(NN<AudioFormat> format)
 	this->sourceAudio->GetFormat(format);
 }
 
-Bool Media::AudioFilter::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::AudioFilter::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->sourceAudio->Start(evt, blkSize);
 	return true;
@@ -55,7 +55,7 @@ void Media::AudioFilter::Stop()
 	this->sourceAudio->Stop();
 }
 
-UOSInt Media::AudioFilter::GetMinBlockSize()
+UIntOS Media::AudioFilter::GetMinBlockSize()
 {
 	return this->sourceAudio->GetMinBlockSize();
 }

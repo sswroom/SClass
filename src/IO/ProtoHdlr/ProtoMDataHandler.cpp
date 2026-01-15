@@ -26,7 +26,7 @@ void IO::ProtoHdlr::ProtoMDataHandler::DeleteStreamData(NN<IO::Stream> stm, AnyT
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
@@ -61,7 +61,7 @@ UOSInt IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NN<IO::Stream> stm, AnyTy
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoMDataHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"MD";
 	WriteInt16(&buff[2], (cmdSize + 8));

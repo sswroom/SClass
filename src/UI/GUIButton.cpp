@@ -23,7 +23,7 @@ void UI::GUIButton::EventFocus()
 
 void UI::GUIButton::EventFocusLost()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->btnFocusLostHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -34,7 +34,7 @@ void UI::GUIButton::EventFocusLost()
 
 void UI::GUIButton::EventButtonClick()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->btnClkHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -45,7 +45,7 @@ void UI::GUIButton::EventButtonClick()
 
 void UI::GUIButton::EventButtonDown()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -56,7 +56,7 @@ void UI::GUIButton::EventButtonDown()
 
 void UI::GUIButton::EventButtonUp()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{

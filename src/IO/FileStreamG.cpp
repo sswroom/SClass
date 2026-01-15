@@ -101,22 +101,22 @@ Bool IO::FileStream::IsError() const
 	return this->handle == 0;
 }
 
-UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
+UIntOS IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (handle == 0)
 		return 0;
-	OSInt readSize = fread(buff.Ptr(), 1, buff.GetSize(), (FILE*)handle);
-	this->currPos += (UOSInt)readSize;
-	return (UOSInt)readSize;
+	IntOS readSize = fread(buff.Ptr(), 1, buff.GetSize(), (FILE*)handle);
+	this->currPos += (UIntOS)readSize;
+	return (UIntOS)readSize;
 }
 
-UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
+UIntOS IO::FileStream::Write(const UInt8 *buff, UIntOS size)
 {
 	if (handle == 0)
 		return 0;
-	OSInt readSize = fwrite(buff, 1, size, (FILE*)handle);
-	this->currPos += (UOSInt)readSize;
-	return (UOSInt)readSize;
+	IntOS readSize = fwrite(buff, 1, size, (FILE*)handle);
+	this->currPos += (UIntOS)readSize;
+	return (UIntOS)readSize;
 }
 
 Int32 IO::FileStream::Flush()
@@ -242,7 +242,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 {
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
+UIntOS IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UIntOS maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())
@@ -254,7 +254,7 @@ UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt ma
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
+	UIntOS readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

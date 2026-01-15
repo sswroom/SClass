@@ -19,7 +19,7 @@ void Media::Jasper::JasperBand::SetSplitType(Optional<Text::String> splitType)
 	this->splitType = Text::String::CopyOrNull(splitType);
 }
 
-void Media::Jasper::JasperBand::SetHeight(UOSInt height)
+void Media::Jasper::JasperBand::SetHeight(UIntOS height)
 {
 	this->height = height;
 }
@@ -34,7 +34,7 @@ Bool Media::Jasper::JasperBand::HasHeight() const
 	return this->height == INVALID_INDEX;
 }
 
-UOSInt Media::Jasper::JasperBand::GetHeight() const
+UIntOS Media::Jasper::JasperBand::GetHeight() const
 {
 	return this->height;
 }
@@ -44,12 +44,12 @@ void Media::Jasper::JasperBand::AddElement(NN<JasperElement> element)
 	this->elements.Add(element);
 }
 
-UOSInt Media::Jasper::JasperBand::GetCount() const
+UIntOS Media::Jasper::JasperBand::GetCount() const
 {
 	return this->elements.GetCount();
 }
 
-Optional<Media::Jasper::JasperElement> Media::Jasper::JasperBand::GetElement(UOSInt index) const
+Optional<Media::Jasper::JasperElement> Media::Jasper::JasperBand::GetElement(UIntOS index) const
 {
 	return this->elements.GetItem(index);
 }

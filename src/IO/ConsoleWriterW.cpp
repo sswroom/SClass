@@ -60,9 +60,9 @@ IO::ConsoleWriter::~ConsoleWriter()
 	DEL_CLASS(this->clsData);
 }
 /*
-Bool IO::ConsoleWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::Write(const UTF8Char *str, UIntOS nChar)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str, nChar);
+	UIntOS strLen = Text::StrUTF8_WCharCnt(str, nChar);
 	WChar *wstr = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(wstr, str, nChar, 0);
 	wstr[strLen] = 0;
@@ -79,9 +79,9 @@ Bool IO::ConsoleWriter::Write(const UTF8Char *str)
 	return ret;
 }
 
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UIntOS nChar)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str, nChar);
+	UIntOS strLen = Text::StrUTF8_WCharCnt(str, nChar);
 	WChar *wstr = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(wstr, str, nChar, 0);
 	wstr[strLen] = 0;
@@ -104,7 +104,7 @@ Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 	UInt32 nChar;
 	if (this->clsData->enc == 0)
 	{
-		UOSInt strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
+		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		WChar *str = MemAlloc(WChar, strLen + 1);
 		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
@@ -121,7 +121,7 @@ Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 	}
 	else
 	{
-		UOSInt nBytes;
+		UIntOS nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)s.leng;
 		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar);
@@ -154,7 +154,7 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 	UInt32 nChar;
 	if (this->clsData->enc == 0)
 	{
-		UOSInt strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
+		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		WChar *str = MemAlloc(WChar, strLen + 2);
 		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 #if defined(__CYGWIN__)
@@ -178,7 +178,7 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 	}
 	else
 	{
-		UOSInt nBytes;
+		UIntOS nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)s.leng;
 		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar) + 1;
@@ -285,10 +285,10 @@ void IO::ConsoleWriter::ResetTextColor()
 	SetTextColor(Text::StandardColor::Gray);
 }
 
-UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UIntOS IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	WChar c;
-	UOSInt size = 0;
+	UIntOS size = 0;
 	while ((c = *str++) != 0)
 	{
 		if (c < 32)
@@ -318,7 +318,7 @@ UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return size;
 }
 
-UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UIntOS nChar)
 {
 #if defined(__CYGWIN__)
 	Char buff[512];
@@ -397,13 +397,13 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return this->clsData->fileOutput;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UIntOS displayWidth)
 {
 	if (this->clsData->fileOutput || this->clsData->enc == 0)
 	{
 		return;
 	}
-	UOSInt width = GetDisplayWidth(str);
+	UIntOS width = GetDisplayWidth(str);
 	if (width <= displayWidth)
 	{
 		NN<Text::String> s = Text::String::NewNotNull(str);
@@ -461,13 +461,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 	}
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UIntOS IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	if (this->clsData->fileOutput || this->clsData->enc == 0)
 	{
 		return Text::StrCharCnt(str);
 	}
-	UOSInt size = 0;
+	UIntOS size = 0;
 	WChar c;
 	while ((c = *str++) != 0)
 	{
@@ -477,10 +477,10 @@ UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 	return size;
 }
 
-UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UIntOS IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	UInt8 buff[4];
-	UOSInt size = this->clsData->enc->WToBytesC(buff, &c, 1);
+	UIntOS size = this->clsData->enc->WToBytesC(buff, &c, 1);
 	if (size == 1 && buff[0] < 128)
 		return 1;
 
@@ -501,7 +501,7 @@ UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 	}
 	else
 	{
-		size = (UOSInt)info2.dwCursorPosition.X;
+		size = (UIntOS)info2.dwCursorPosition.X;
 	}
 	SetConsoleCursorPosition(this->clsData->hand, info.dwCursorPosition);
 	return size;

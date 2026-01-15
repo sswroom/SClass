@@ -19,7 +19,7 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
 	NN<Socket> s;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	state->status = ThreadStatus::NewClient;
 	while (!state->me->threadToStop)
@@ -58,7 +58,7 @@ Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAllocArr(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
-	UOSInt i = this->maxThreadCnt;
+	UIntOS i = this->maxThreadCnt;
 	while (i-- > 0)
 	{
 		this->threadSt[i].status = ThreadStatus::NotRunning;
@@ -69,7 +69,7 @@ Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 Net::SSLEngine::~SSLEngine()
 {
 	this->threadToStop = true;
-	UOSInt i = this->currThreadCnt;
+	UIntOS i = this->currThreadCnt;
 	while (i-- > 0)
 	{
 		this->threadSt[i].evt->Set();
@@ -117,8 +117,8 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	NN<Crypto::Cert::X509File> certASN1;
 	NN<Crypto::Cert::X509File> keyASN1;
 	Data::ArrayListNN<Crypto::Cert::X509Cert> cacerts;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (certFile.leng > 0)
 	{
 		if (!Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(certFile)).SetTo(certASN1))
@@ -237,8 +237,8 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 
 void Net::SSLEngine::ServerInit(NN<Socket> s, ClientReadyHandler readyHdlr, AnyType userObj)
 {
-	UOSInt i = 0;
-	UOSInt j = INVALID_INDEX;
+	UIntOS i = 0;
+	UIntOS j = INVALID_INDEX;
 	Bool found = false;
 	Sync::MutexUsage mutUsage(this->threadMut);
 	while (!found)
@@ -315,7 +315,7 @@ NN<Crypto::Cert::CertStore> Net::SSLEngine::GetTrustStore()
 	}
 }
 
-UOSInt Net::SSLEngine::GetRSAKeyLength()
+UIntOS Net::SSLEngine::GetRSAKeyLength()
 {
 	return 3072;
 }

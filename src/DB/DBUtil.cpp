@@ -422,9 +422,9 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrUTF8(UnsafeArray<UTF8Char> sqlstr, Unsaf
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> optval, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> optval, DB::SQLType sqlType)
 {
-	UOSInt leng = 0;
+	UIntOS leng = 0;
 	UnsafeArray<const UTF8Char> val;
 	UTF8Char c;
 	if (!optval.SetTo(val))
@@ -948,9 +948,9 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeAr
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrWLeng(UnsafeArrayOpt<const WChar> val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBStrWLeng(UnsafeArrayOpt<const WChar> val, DB::SQLType sqlType)
 {
-	UOSInt leng = 0;
+	UIntOS leng = 0;
 	UTF32Char c;
 	UnsafeArray<const WChar> nnval;
 	if (!val.SetTo(nnval))
@@ -1199,10 +1199,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 v
 	return Text::StrInt32(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBInt32Leng(Int32 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[12];
-	return (UOSInt)(Text::StrInt32(buff, val) - buff);
+	return (UIntOS)(Text::StrInt32(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val, DB::SQLType sqlType)
@@ -1210,10 +1210,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 v
 	return Text::StrInt64(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBInt64Leng(Int64 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[22];
-	return (UOSInt)(Text::StrInt64(buff, val) - buff);
+	return (UIntOS)(Text::StrInt64(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt32(UnsafeArray<UTF8Char> sqlstr, UInt32 val, DB::SQLType sqlType)
@@ -1221,10 +1221,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt32(UnsafeArray<UTF8Char> sqlstr, UInt32
 	return Text::StrUInt32(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[12];
-	return (UOSInt)(Text::StrUInt32(buff, val) - buff);
+	return (UIntOS)(Text::StrUInt32(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt64(UnsafeArray<UTF8Char> sqlstr, UInt64 val, DB::SQLType sqlType)
@@ -1232,10 +1232,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt64(UnsafeArray<UTF8Char> sqlstr, UInt64
 	return Text::StrUInt64(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[22];
-	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
+	return (UIntOS)(Text::StrUInt64(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Optional<Data::DateTime> dat, DB::SQLType sqlType, Int8 tzQhr)
@@ -1307,7 +1307,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Opti
 	}
 }
 
-UOSInt DB::DBUtil::SDBDateTimeLeng(Optional<Data::DateTime> dat, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBDateTimeLeng(Optional<Data::DateTime> dat, DB::SQLType sqlType)
 {
 	NN<Data::DateTime> nnDat;
 	if (!dat.SetTo(nnDat))
@@ -1316,7 +1316,7 @@ UOSInt DB::DBUtil::SDBDateTimeLeng(Optional<Data::DateTime> dat, DB::SQLType sql
 	if (sqlType == DB::SQLType::Access)
 	{
 		UTF8Char buff[100];
-		return (UOSInt)(nnDat->ToLocalStr(buff) - buff + 2);
+		return (UIntOS)(nnDat->ToLocalStr(buff) - buff + 2);
 	}
 	else if (sqlType == DB::SQLType::MSSQL || sqlType == DB::SQLType::SQLite)
 	{
@@ -1405,7 +1405,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBTS(UnsafeArray<UTF8Char> sqlstr, const Data
 	}
 }
 
-UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
+UIntOS DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 {
 	if (ts.IsNull())
 		return 4;
@@ -1500,7 +1500,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDate(UnsafeArray<UTF8Char> sqlstr, const Da
 	}
 }
 
-UOSInt DB::DBUtil::SDBDateLeng(const Data::Date &d, SQLType sqlType)
+UIntOS DB::DBUtil::SDBDateLeng(const Data::Date &d, SQLType sqlType)
 {
 	if (d.IsNull())
 		return 4;
@@ -1538,10 +1538,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDbl(UnsafeArray<UTF8Char> sqlstr, Double va
 	}
 }
 
-UOSInt DB::DBUtil::SDBDblLeng(Double val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBDblLeng(Double val, DB::SQLType sqlType)
 {
 	UTF8Char buff[128];
-	return (UOSInt)(Text::StrDouble(buff, val) - buff);
+	return (UIntOS)(Text::StrDouble(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBSng(UnsafeArray<UTF8Char> sqlstr, Single val, DB::SQLType sqlType)
@@ -1549,10 +1549,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBSng(UnsafeArray<UTF8Char> sqlstr, Single va
 	return Text::StrDouble(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBSngLeng(Single val, DB::SQLType sqlType)
 {
 	UTF8Char buff[128];
-	return (UOSInt)(Text::StrDouble(buff, val) - buff);
+	return (UIntOS)(Text::StrDouble(buff, val) - buff);
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBBool(UnsafeArray<UTF8Char> sqlStr, Bool val, DB::SQLType sqlType)
@@ -1590,7 +1590,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBBool(UnsafeArray<UTF8Char> sqlStr, Bool val
 	return sqlStr;
 }
 
-UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 {
 	if (sqlType == DB::SQLType::Oracle)
 	{
@@ -1606,7 +1606,7 @@ UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 }
 
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UInt8> buff, UIntOS size, DB::SQLType sqlType)
 {
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> nnbuff;
@@ -1634,7 +1634,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArr
 	}
 }
 
-UOSInt DB::DBUtil::SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UIntOS size, DB::SQLType sqlType)
 {
 	if (buff.Ptr() == 0)
 	{
@@ -1800,7 +1800,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 		}
 		if (writer.Write(mstm, nnvec))
 		{
-			return SDBBin(sqlstr, UnsafeArray<const UInt8>(mstm.GetBuff()), (UOSInt)mstm.GetLength(), sqlType);
+			return SDBBin(sqlstr, UnsafeArray<const UInt8>(mstm.GetBuff()), (UIntOS)mstm.GetLength(), sqlType);
 		}
 		else
 		{
@@ -1813,7 +1813,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 	}
 }
 
-UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType)
 {
 	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
@@ -1842,7 +1842,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 			{
 				if (writer.ToText(sb, nnvec))
 				{
-					UOSInt ret = 21 + sb.GetLength();
+					UIntOS ret = 21 + sb.GetLength();
 					sb.ClearStr();
 					sb.AppendU32(nnvec->GetSRID());
 					ret += sb.GetLength();
@@ -1864,7 +1864,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 		{
 			if (writer.ToText(sb, nnvec))
 			{
-				UOSInt ret = 21 + sb.GetLength();
+				UIntOS ret = 21 + sb.GetLength();
 				sb.ClearStr();
 				sb.AppendU32(nnvec->GetSRID());
 				ret += sb.GetLength();
@@ -1882,7 +1882,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(sb, nnvec))
 		{
-			UOSInt ret = 21 + sb.GetLength();
+			UIntOS ret = 21 + sb.GetLength();
 			sb.ClearStr();
 			sb.AppendU32(nnvec->GetSRID());
 			ret += sb.GetLength();
@@ -1899,12 +1899,12 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 		IO::MemoryStream mstm;
 		if (writer.Write(mstm, nnvec))
 		{
-			UOSInt headerSize = 40;
+			UIntOS headerSize = 40;
 			if (nnvec->HasZ())
 				headerSize += 16;
 			if (nnvec->HasM())
 				headerSize += 16;
-			return SDBBinLeng(UnsafeArray<const UInt8>(mstm.GetBuff()), (UOSInt)mstm.GetLength() + headerSize, sqlType);
+			return SDBBinLeng(UnsafeArray<const UInt8>(mstm.GetBuff()), (UIntOS)mstm.GetLength() + headerSize, sqlType);
 		}
 		else
 		{
@@ -2031,9 +2031,9 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, Unsaf
 	}
 }
 
-UOSInt DB::DBUtil::SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, DB::SQLType sqlType)
 {
-	UOSInt leng = 0;
+	UIntOS leng = 0;
 	UTF8Char c;
 	switch (sqlType)
 	{
@@ -2122,10 +2122,10 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeAr
 	return ret;
 }
 
-UOSInt DB::DBUtil::SDBColWLeng(UnsafeArray<const WChar> colName, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBColWLeng(UnsafeArray<const WChar> colName, DB::SQLType sqlType)
 {
 	UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(colName);
-	UOSInt ret = SDBColUTF8Leng(sptr, sqlType);
+	UIntOS ret = SDBColUTF8Leng(sptr, sqlType);
 	Text::StrDelNew(sptr);
 	return ret;
 }
@@ -2142,7 +2142,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CS
 	}
 }
 
-UOSInt DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
+UIntOS DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
 {
 	if (sqlType == DB::SQLType::MSSQL)
 	{
@@ -2154,12 +2154,12 @@ UOSInt DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, InOutParam<UOSInt> colSize, InOutParam<UOSInt> colDP)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, InOutParam<UIntOS> colSize, InOutParam<UIntOS> colDP)
 {
 	UTF8Char typeName[64];
-	UOSInt typeNameLen;
-	UOSInt i;
-	typeNameLen = (UOSInt)(Text::StrConcat(typeName, tName) - typeName);
+	UIntOS typeNameLen;
+	UIntOS i;
+	typeNameLen = (UIntOS)(Text::StrConcat(typeName, tName) - typeName);
 
 	if (sqlType == DB::SQLType::MySQL)
 	{
@@ -2655,27 +2655,27 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POINT")))
 		{
-			colSize.Set((UOSInt)DB::ColDef::GeometryType::Point);
+			colSize.Set((UIntOS)DB::ColDef::GeometryType::Point);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("LINESTRING")))
 		{
-			colSize.Set((UOSInt)DB::ColDef::GeometryType::Polyline);
+			colSize.Set((UIntOS)DB::ColDef::GeometryType::Polyline);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POLYGON")))
 		{
-			colSize.Set((UOSInt)DB::ColDef::GeometryType::Polygon);
+			colSize.Set((UIntOS)DB::ColDef::GeometryType::Polygon);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MULTIPOLYGON")))
 		{
-			colSize.Set((UOSInt)DB::ColDef::GeometryType::MultiPolygon);
+			colSize.Set((UIntOS)DB::ColDef::GeometryType::MultiPolygon);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("GEOMETRY")))
 		{
-			colSize.Set((UOSInt)DB::ColDef::GeometryType::Any);
+			colSize.Set((UIntOS)DB::ColDef::GeometryType::Any);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BOOLEAN")))
@@ -2695,7 +2695,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 	}
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP)
+UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP)
 {
 	switch (colType)
 	{
@@ -2704,29 +2704,29 @@ UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, 
 	case DB::DBUtil::CT_Int32:
 		return Text::StrConcatC(sbuff, UTF8STRC("INTEGER"));
 	case DB::DBUtil::CT_UTF8Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_UTF16Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UTF16CHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("UTF16CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_UTF32Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UTF32CHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("UTF32CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_VarUTF8Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARCHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("VARCHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_VarUTF16Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARUTF16CHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("VARUTF16CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_VarUTF32Char:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARUTF32CHAR(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("VARUTF32CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Date:
 		return Text::StrConcatC(sbuff, UTF8STRC("DATE"));
 	case DB::DBUtil::CT_DateTime:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DATETIME(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("DATETIME(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_DateTimeTZ:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DATETIMETZ(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("DATETIMETZ(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Double:
 		return Text::StrConcatC(sbuff, UTF8STRC("DOUBLE"));
 	case DB::DBUtil::CT_Float:
 		return Text::StrConcatC(sbuff, UTF8STRC("FLOAT"));
 	case DB::DBUtil::CT_Decimal:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DECIMAL(")), colSize), UTF8STRC(",")), colDP), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("DECIMAL(")), colSize), UTF8STRC(",")), colDP), UTF8STRC(")"));
 	case DB::DBUtil::CT_Bool:
 		return Text::StrConcatC(sbuff, UTF8STRC("BIT"));
 	case DB::DBUtil::CT_Byte:
@@ -2740,7 +2740,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, 
 	case DB::DBUtil::CT_UInt64:
 		return Text::StrConcatC(sbuff, UTF8STRC("UNSIGNED BIGINT"));
 	case DB::DBUtil::CT_Binary:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("BINARY(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("BINARY(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Vector:
 		if (colDP == 0 && colSize == 0)
 			return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
@@ -2749,14 +2749,14 @@ UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, 
 			sbuff = Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY("));
 			sbuff = DB::ColDef::GeometryTypeGetName((DB::ColDef::GeometryType)colSize).ConcatTo(sbuff);
 			*sbuff++ = ',';
-			sbuff = Text::StrUOSInt(sbuff, colDP);
+			sbuff = Text::StrUIntOS(sbuff, colDP);
 			return Text::StrConcatC(sbuff, UTF8STRC(")"));
 		}
 	case DB::DBUtil::CT_UUID:
 		return Text::StrConcatC(sbuff, UTF8STRC("UUID"));
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));
+		return Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));
 	}
 }
 
@@ -2843,7 +2843,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBCollation(UnsafeArray<UTF8Char> sqlstr, NN<
 
 Bool DB::DBUtil::CollationParseMySQL(Text::CStringNN collName, NN<Collation> collation)
 {
-	UOSInt i;
+	UIntOS i;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	if (collName.leng > 127)
@@ -2855,42 +2855,42 @@ Bool DB::DBUtil::CollationParseMySQL(Text::CStringNN collName, NN<Collation> col
 	collation->widthSensitive = false;
 	while (true)
 	{
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ws")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_ws")))
 		{
 			collation->widthSensitive = true;
 			sptr -= 3;
 			*sptr = 0;
 			continue;
 		}
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ks")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_ks")))
 		{
 			collation->kanaSensitive = true;
 			sptr -= 3;
 			*sptr = 0;
 			continue;
 		}
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_cs")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_cs")))
 		{
 			collation->caseSensitive = true;
 			sptr -= 3;
 			*sptr = 0;
 			continue;
 		}
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ci")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_ci")))
 		{
 			collation->caseSensitive = false;
 			sptr -= 3;
 			*sptr = 0;
 			continue;
 		}
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_as")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_as")))
 		{
 			collation->accentSensitive = true;
 			sptr -= 3;
 			*sptr = 0;
 			continue;
 		}
-		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ai")))
+		if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("_ai")))
 		{
 			collation->accentSensitive = false;
 			sptr -= 3;
@@ -2899,22 +2899,22 @@ Bool DB::DBUtil::CollationParseMySQL(Text::CStringNN collName, NN<Collation> col
 		}
 		break;
 	}
-	if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8_")))
+	if (Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("utf8_")))
 	{
 		i = 5;
 		collation->charset = Charset::UTF8;
 	}
-	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8mb4_")))
+	else if (Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("utf8mb4_")))
 	{
 		i = 8;
 		collation->charset = Charset::UTF8MB4;
 	}
-	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8mb3_")))
+	else if (Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("utf8mb3_")))
 	{
 		i = 8;
 		collation->charset = Charset::UTF8;
 	}
-	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("latin1_")))
+	else if (Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("latin1_")))
 	{
 		i = 7;
 		collation->charset = Charset::Latin1;
@@ -2924,15 +2924,15 @@ Bool DB::DBUtil::CollationParseMySQL(Text::CStringNN collName, NN<Collation> col
 		return false;
 	}
 
-	if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("general")))
+	if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC("general")))
 	{
 		collation->lang = Language::General;	
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("0900")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC("0900")))
 	{
 		collation->lang = Language::Unicode0900;	
 	}
-	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("swedish")))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC("swedish")))
 	{
 		collation->lang = Language::Swedish;	
 	}

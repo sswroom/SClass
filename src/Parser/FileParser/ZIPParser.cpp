@@ -87,7 +87,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	UInt8 z64eocd[56];
 	UInt64 ofst;
 	UInt32 recType;
-	UOSInt i;
+	UIntOS i;
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
 
@@ -102,7 +102,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	Data::StringMapNative<UInt64> ofsts;
-	UOSInt ui;
+	UIntOS ui;
 	Bool parseFile = true;
 	dt.ToLocalTime();
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
@@ -128,14 +128,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
 						if (cdSize <= 1048576)
 						{
-							Data::ByteBuffer cdBuff((UOSInt)cdSize);
-							fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
+							Data::ByteBuffer cdBuff((UIntOS)cdSize);
+							fd->GetRealData(cdOfst, (UIntOS)cdSize, cdBuff);
 							ParseCentDir(pf, enc, fd, cdBuff, cdOfst);
 						}
 						else
 						{
 							Data::ByteBuffer cdBuff(1048576);
-							UOSInt buffSize = 0;
+							UIntOS buffSize = 0;
 							ofst = 0;
 							while (ofst < cdSize)
 							{
@@ -146,7 +146,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 								}
 								else
 								{
-									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
+									i = fd->GetRealData(cdOfst + ofst + buffSize, (UIntOS)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
@@ -271,8 +271,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				Data::Timestamp createTime = 0;
 				dt.ToLocalTime();
 				dt.SetMSDOSTime(modDate, modTime);
-				UOSInt extraStart = 30 + fnameSize;
-				UOSInt extraEnd = extraStart + extraSize;
+				UIntOS extraStart = 30 + fnameSize;
+				UIntOS extraEnd = extraStart + extraSize;
 				UInt16 extraHdr;
 				UInt16 extraData;
 				UInt32 unixAttr = 0;
@@ -304,7 +304,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 					{
 						modDate = 0;
 					}
-					extraStart += (UOSInt)extraData + 4;
+					extraStart += (UIntOS)extraData + 4;
 				}
 				if (buff[30 + fnameSize - 1] == '/')
 				{
@@ -337,8 +337,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						else
 						{
 							sb.AppendC(UTF8STRC("\\"));
-							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-							if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
+							sb.AppendC(sptr, (UIntOS)(sptrEnd - sptr));
+							if (!pf2->GetPackFile({sptr, (UIntOS)(sptrEnd - sptr)}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
@@ -472,7 +472,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	return pf;
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, NN<Text::Encoding> enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
+UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, NN<Text::Encoding> enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	IO::VirtualPackageFile *pf2;
 	NN<IO::PackageFile> pf3;
@@ -492,8 +492,8 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 	Data::Timestamp modTime;
 	Data::Timestamp accTime;
 	Data::Timestamp createTime;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	while (i < buff.GetSize())
 	{
@@ -531,13 +531,13 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 		accTime = 0;
 		createTime = 0;
 
-		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buff.GetSize())
+		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buff.GetSize())
 		{
 			return i;
 		}
 		if (extraLen > 0)
 		{
-			const UInt8 *extraBuff = &buff[i + 46 + (UOSInt)fnameLen];
+			const UInt8 *extraBuff = &buff[i + 46 + (UIntOS)fnameLen];
 			j = 0;
 			UInt16 extraTag;
 			UInt16 extraSize;
@@ -576,7 +576,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 					accTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
 					createTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 28], Data::DateTimeUtil::GetLocalTzQhr());
 				}
-				j += 4 + (UOSInt)extraSize;
+				j += 4 + (UIntOS)extraSize;
 			}
 		}
 		if (flags & 0x800)
@@ -610,7 +610,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 				}
 				else
 				{
-					if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
+					if (!pf2->GetPackFile({sptr, (UIntOS)(sptrEnd - sptr)}).SetTo(pf3))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, sptrEnd)));
 						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
@@ -644,7 +644,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 					break;
 				}
 			}
-			UOSInt hdrLen = 30 + (UOSInt)fnameLen;
+			UIntOS hdrLen = 30 + (UIntOS)fnameLen;
 			if (compSize >= 0xffffffffLL || uncompSize >= 0xffffffffLL)
 			{
 				hdrLen += 4;
@@ -677,7 +677,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 			}
 		}
 
-		i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+		i += 46 + (UIntOS)fnameLen + extraLen + commentLen;
 	}
 	return i;
 }

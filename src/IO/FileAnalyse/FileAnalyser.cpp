@@ -36,7 +36,7 @@ IO::FileAnalyse::FileAnalyser::~FileAnalyser()
 {
 }
 
-Bool IO::FileAnalyse::FileAnalyser::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FileAnalyser::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (!this->GetFrameDetail(index).SetTo(frame))
@@ -51,7 +51,7 @@ Bool IO::FileAnalyse::FileAnalyser::GetFrameDetail(UOSInt index, NN<Text::String
 Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFile(NN<IO::StreamData> fd)
 {
 	UInt8 buff[256];
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	NN<Text::String> fileName = fd->GetFullFileName();
 	buffSize = fd->GetRealData(0, 256, BYTEARR(buff));
@@ -151,7 +151,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
 	}
-	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UOSInt)buff[126] + 1) << 7) <= fd->GetDataSize() && (fd->GetDataSize() & 127) == 0)
+	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UIntOS)buff[126] + 1) << 7) <= fd->GetDataSize() && (fd->GetDataSize() & 127) == 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
 	}

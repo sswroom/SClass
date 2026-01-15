@@ -235,7 +235,7 @@ void Media::CS::CSYUV_LRGB::RGBParamChanged(NN<const Media::ColorHandler::RGBPAR
 	this->rgbParam.Set(rgb);
 }
 
-UOSInt Media::CS::CSYUV_LRGB::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV_LRGB::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 3;
 }

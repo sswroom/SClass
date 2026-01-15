@@ -55,7 +55,7 @@ UnsafeArrayOpt<const UTF8Char> Math::WKTReader::NextDouble(UnsafeArray<const UTF
 		}
 		wkt++;
 	}
-	UOSInt len = (UOSInt)(wkt - sptr);
+	UIntOS len = (UIntOS)(wkt - sptr);
 	if (len > 100 || len == 0)
 	{
 		return nullptr;
@@ -195,7 +195,7 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 	{
 		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 	}
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<Math::Coord2DDbl> ptArr = pl->GetPointList(i);
 	MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
 	UnsafeArray<Double> zArr;
@@ -284,7 +284,7 @@ Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArra
 		hasZ = true;
 	}
 	NEW_CLASS(lr, Math::Geometry::LinearRing(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(i);
 	MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
 	UnsafeArray<Double> zArr;
@@ -692,7 +692,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				hasZ = true;
 			}
 			NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, ptList.GetCount() >> 1, hasZ, hasM));
-			UOSInt i;
+			UIntOS i;
 			UnsafeArray<Math::Coord2DDbl> ptArr = lineString->GetPointList(i);
 			MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
 			UnsafeArray<Double> zArr;

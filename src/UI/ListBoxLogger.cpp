@@ -13,14 +13,14 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 
 	if (me->logCnt > 0)
 	{
-		UOSInt curr;
-		UOSInt cnt;
-		UOSInt i;
+		UIntOS curr;
+		UIntOS cnt;
+		UIntOS i;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->mut);
 		cnt = me->logCnt;
 		curr = me->logIndex - cnt;
-		if ((OSInt)curr < 0)
+		if ((IntOS)curr < 0)
 		{
 			curr += me->maxLog;
 		}
@@ -44,7 +44,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 			}
 			else
 			{
-				UOSInt lbCnt = me->lb->GetCount();
+				UIntOS lbCnt = me->lb->GetCount();
 				while (lbCnt + cnt > me->maxLog)
 				{
 					lbCnt--;
@@ -71,7 +71,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 			}
 			else
 			{
-				UOSInt lbCnt = me->lb->GetCount();
+				UIntOS lbCnt = me->lb->GetCount();
 				while (lbCnt + cnt > me->maxLog)
 				{
 					me->lb->RemoveItem(0);
@@ -108,9 +108,9 @@ void __stdcall UI::ListBoxLogger::OnListBoxSelChg(AnyType userObj)
 	}
 }
 
-UI::ListBoxLogger::ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse)
+UI::ListBoxLogger::ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UIntOS maxLog, Bool reverse)
 {
-	UOSInt i;
+	UIntOS i;
 	this->lb = lb;
 	this->maxLog = maxLog;
 	this->reverse = reverse;
@@ -133,7 +133,7 @@ UI::ListBoxLogger::~ListBoxLogger()
 {
 	this->frm->RemoveTimer(this->tmr);
 
-	UOSInt i = this->maxLog;
+	UIntOS i = this->maxLog;
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->logArr[i]);
@@ -182,7 +182,7 @@ void UI::ListBoxLogger::SetTimeFormat(UnsafeArray<const Char> timeFormat)
 	this->timeFormat = Text::StrCopyNewCh(timeFormat);
 }
 
-NN<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse)
+NN<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UIntOS maxLog, Bool reverse)
 {
 	NN<UI::GUITextBox> txt;
 	NN<UI::GUIListBox> lb;

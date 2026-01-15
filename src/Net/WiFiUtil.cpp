@@ -8,8 +8,8 @@ UnsafeArrayOpt<UTF8Char> Net::WiFiUtil::GuessDeviceType(UnsafeArray<UTF8Char> sb
 	UnsafeArray<const UInt8> ieBuff;
 	UnsafeArray<const UInt8> buffPtr;
 	UnsafeArray<const UInt8> buffEnd;
-	UOSInt i = 0;
-	UOSInt j = bss->GetIECount();
+	UIntOS i = 0;
+	UIntOS j = bss->GetIECount();
 	while (i < j)
 	{
 		if (bss->GetIE(i).SetTo(ie))

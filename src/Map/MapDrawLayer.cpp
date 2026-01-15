@@ -18,7 +18,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2)
+IntOS __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2)
 {
 	if (obj1->objDist > obj2->objDist)
 	{
@@ -42,7 +42,7 @@ OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectI
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::CopyOrNull(layerName);
@@ -57,7 +57,7 @@ Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Opt
 	this->flags = 0;
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::NewOrNull(layerName);
@@ -133,8 +133,8 @@ Optional<DB::TableDef> Map::MapDrawLayer::CreateLayerTableDef() const
 void Map::MapDrawLayer::AddColDefs(NN<DB::TableDef> tableDef) const
 {
 	NN<DB::ColDef> col;
-	UOSInt i = 0;
-	UOSInt j = this->GetColumnCnt();
+	UIntOS i = 0;
+	UIntOS j = this->GetColumnCnt();
 	while (i < j)
 	{
 		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
@@ -152,7 +152,7 @@ void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -160,7 +160,7 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	return 1;
 }
 
-Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBReader> r;
 	NEW_CLASSNN(r, Map::MapLayerReader(*this));
@@ -178,8 +178,8 @@ Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, 
 		MapLayerReader::GetShapeColDef(col, *this);
 		tab->AddCol(col);
 	}
-	UOSInt i = 0;
-	UOSInt j = this->GetColumnCnt();
+	UIntOS i = 0;
+	UIntOS j = this->GetColumnCnt();
 	while (i < j)
 	{
 		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
@@ -204,12 +204,12 @@ void Map::MapDrawLayer::Reconnect()
 {
 }
 
-UOSInt Map::MapDrawLayer::GetNameCol() const
+UIntOS Map::MapDrawLayer::GetNameCol() const
 {
 	return this->nameCol;
 }
 
-void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
+void Map::MapDrawLayer::SetNameCol(UIntOS nameCol)
 {
 	this->nameCol = nameCol;
 }
@@ -269,7 +269,7 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 		this->GetBounds(minMax);
 		this->GetAllObjectIds(idList, 0);
 		
-		Double tVal = minMax.GetArea() / UOSInt2Double(idList.GetCount());
+		Double tVal = minMax.GetArea() / UIntOS2Double(idList.GetCount());
 		if (minMax.max.x > 180)
 		{
 			blkSize = Double2Int32(Math_Sqrt(tVal) * 3);
@@ -309,7 +309,7 @@ Bool Map::MapDrawLayer::IsError() const
 	return false;
 }
 
-Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UIntOS strIndex)
 {
 	Bool retVal = false;
 
@@ -321,7 +321,7 @@ Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Optional<Map::NameArray> names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
-	UOSInt i;
+	UIntOS i;
 	Int64 thisId;
 	GetObjectIdsMapXY(arr, names, Math::RectAreaDbl(coord, coord), false);
 	lastId = -1;
@@ -358,7 +358,7 @@ Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	return retVal;
 }
 
-Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UIntOS strIndex)
 {
 	Bool retVal = 0;
 	Map::DrawLayerType layerType = this->GetLayerType();
@@ -371,7 +371,7 @@ Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	Int64 thisId;
-	UOSInt i;
+	UIntOS i;
 	NN<Math::Geometry::Vector2D> vec;
 	Math::Coord2DDbl nearPt;
 	Double thisDist;
@@ -419,7 +419,7 @@ Bool Map::MapDrawLayer::CanQuery()
 	return false;
 }
 
-Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return false;
 }
@@ -437,7 +437,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(NN<GetObjectSess> session, Math::Coo
 		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
-	UOSInt i = objIds.GetCount();
+	UIntOS i = objIds.GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
@@ -476,7 +476,7 @@ void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coo
 		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
-	UOSInt i = objIds.GetCount();
+	UIntOS i = objIds.GetCount();
 	Double minDist = 0x7fffffff;
 	Double dist;
 	Int64 id;
@@ -507,7 +507,7 @@ void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coo
 	nearPt.Set(near);
 }
 
-OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
+IntOS Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -520,7 +520,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::Arra
 		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
-	UOSInt i = objIds.GetCount();
+	UIntOS i = objIds.GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
@@ -528,7 +528,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::Arra
 	Math::Coord2DDbl nearPt = Math::Coord2DDbl(0, 0);
 	Double sqrMaxDist = maxDist * maxDist;
 	NN<ObjectInfo> objInfo;
-	OSInt ret = 0;
+	IntOS ret = 0;
 
 	while (i-- > 0)
 	{
@@ -574,7 +574,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::Arra
 void Map::MapDrawLayer::FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList)
 {
 	NN<ObjectInfo> objInfo;
-	UOSInt i;
+	UIntOS i;
 	i = objList->GetCount();
 	while (i-- > 0)
 	{
@@ -589,7 +589,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt *ofsts;
+	UIntOS *ofsts;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sptrs;
 	NN<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
@@ -597,15 +597,15 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	NN<Math::Geometry::Vector2D> nnvec;
 	Optional<NameArray> nameArr;
 	NN<GetObjectSess> sess;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt geomCol = this->GetGeomCol();
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS geomCol = this->GetGeomCol();
 
 	k = this->GetColumnCnt();
 	i = k;
-	ofsts = MemAlloc(UOSInt, k);
+	ofsts = MemAlloc(UIntOS, k);
 	sptrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, k);
 	sb.AllocLeng(65536);
 	sptr = sb.v;
@@ -640,7 +640,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			}
 		}
 	}
-	UOSInt nameCol = this->GetNameCol();
+	UIntOS nameCol = this->GetNameCol();
 	if (geomCol < nameCol)
 	{
 		nameCol--;
@@ -724,7 +724,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	return lyr;
 }
 
-Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex)
+Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UIntOS strIndex)
 {
 	if (strIndex >= this->GetColumnCnt())
 		return nullptr;
@@ -732,7 +732,7 @@ Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::Te
 	Text::SearchIndexer *searching;
 	Data::ArrayListInt64 objIds;
 	Optional<NameArray> nameArr;
-	UOSInt i;
+	UIntOS i;
 
 	NEW_CLASS(searching, Text::SearchIndexer(ta));
 	this->GetAllObjectIds(objIds, nameArr);
@@ -750,7 +750,7 @@ Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::Te
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UOSInt maxResult, UOSInt strIndex)
+UIntOS Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UIntOS maxResult, UIntOS strIndex)
 {
 	Text::PString s;
 
@@ -762,10 +762,10 @@ UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text
 	srchInd->SearchString(objIds, srchStr, maxResult * 10);
 	
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = objIds.GetCount();
-	OSInt k;
-	UOSInt resCnt = 0;
+	UIntOS i = 0;
+	UIntOS j = objIds.GetCount();
+	IntOS k;
+	UIntOS resCnt = 0;
 	while (i < j)
 	{
 		sb.ClearStr();
@@ -776,7 +776,7 @@ UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text
 			k = strList.SortedIndexOfPtr(s.v, s.leng);
 			if (k < 0)
 			{
-				strList.Insert((UOSInt)~k, Text::String::New(s.v, s.leng).Ptr());
+				strList.Insert((UIntOS)~k, Text::String::New(s.v, s.leng).Ptr());
 				if (++resCnt >= maxResult)
 					break;
 			}
@@ -794,7 +794,7 @@ void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 	strArr->FreeAll();
 }
 
-Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)
+Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UIntOS strIndex)
 {
 	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	NN<Math::Geometry::Vector2D> nnvec;
@@ -802,8 +802,8 @@ Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::Se
 	srchInd->SearchString(objIds, srchStr.v, 10000);
 
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = objIds.GetCount();
+	UIntOS i = 0;
+	UIntOS j = objIds.GetCount();
 	while (i < j)
 	{
 		sb.ClearStr();
@@ -856,7 +856,7 @@ void Map::MapDrawLayer::SetPGStyle(UInt32 pgColor)
 	this->pgColor = pgColor;
 }
 
-void Map::MapDrawLayer::SetIconStyle(NN<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY)
+void Map::MapDrawLayer::SetIconStyle(NN<Media::SharedImage> iconImg, IntOS iconSpotX, IntOS iconSpotY)
 {
 	this->iconImg.Delete();
 	this->iconImg = iconImg->Clone();
@@ -884,12 +884,12 @@ Optional<Media::SharedImage> Map::MapDrawLayer::GetIconStyleImg()
 	return this->iconImg;
 }
 
-OSInt Map::MapDrawLayer::GetIconStyleSpotX()
+IntOS Map::MapDrawLayer::GetIconStyleSpotX()
 {
 	return this->iconSpotX;
 }
 
-OSInt Map::MapDrawLayer::GetIconStyleSpotY()
+IntOS Map::MapDrawLayer::GetIconStyleSpotY()
 {
 	return this->iconSpotY;
 }
@@ -950,7 +950,7 @@ Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vecto
 
 Int64 Map::MapLayerReader::GetCurrObjId()
 {
-	return this->objIds.GetItem((UOSInt)this->currIndex);
+	return this->objIds.GetItem((UIntOS)this->currIndex);
 }
 
 Map::MapLayerReader::MapLayerReader(NN<Map::MapDrawLayer> layer) : DB::DBReader()
@@ -968,13 +968,13 @@ Map::MapLayerReader::~MapLayerReader()
 Bool Map::MapLayerReader::ReadNext()
 {
 	this->currIndex++;
-	if ((UOSInt)this->currIndex >= this->objIds.GetCount())
+	if ((UIntOS)this->currIndex >= this->objIds.GetCount())
 		return false;
 	else
 		return true;
 }
 
-UOSInt Map::MapLayerReader::ColCount()
+UIntOS Map::MapLayerReader::ColCount()
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 		return this->layer->GetColumnCnt() + 1;
@@ -982,12 +982,12 @@ UOSInt Map::MapLayerReader::ColCount()
 		return this->layer->GetColumnCnt();
 }
 
-OSInt Map::MapLayerReader::GetRowChanged()
+IntOS Map::MapLayerReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
+Int32 Map::MapLayerReader::GetInt32(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1000,7 +1000,7 @@ Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
 	return sb.ToInt32();
 }
 
-Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
+Int64 Map::MapLayerReader::GetInt64(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1013,7 +1013,7 @@ Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 	return sb.ToInt64();
 }
 
-UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1042,7 +1042,7 @@ UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<W
 	return nullptr;
 }
 
-Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Map::MapLayerReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1061,7 +1061,7 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb
 	return this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 }
 
-Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::MapLayerReader::GetNewStr(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1088,7 +1088,7 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1115,7 +1115,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArra
 	return nullptr;
 }
 
-Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Map::MapLayerReader::GetTimestamp(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1131,7 +1131,7 @@ Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
 	return 0;
 }
 
-Double Map::MapLayerReader::GetDblOrNAN(UOSInt colIndex)
+Double Map::MapLayerReader::GetDblOrNAN(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1146,7 +1146,7 @@ Double Map::MapLayerReader::GetDblOrNAN(UOSInt colIndex)
 	return sb.ToDoubleOrNAN();
 }
 
-Bool Map::MapLayerReader::GetBool(UOSInt colIndex)
+Bool Map::MapLayerReader::GetBool(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1161,19 +1161,19 @@ Bool Map::MapLayerReader::GetBool(UOSInt colIndex)
 	return sb.ToBool() != 0;
 }
 
-UOSInt Map::MapLayerReader::GetBinarySize(UOSInt colIndex)
+UIntOS Map::MapLayerReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Map::MapLayerReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UIntOS colIndex)
 {
-	UOSInt geomCol = this->layer->GetGeomCol();
+	UIntOS geomCol = this->layer->GetGeomCol();
 	if (geomCol == INVALID_INDEX)
 	{
  		if (colIndex != 0)
@@ -1183,7 +1183,7 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colInde
 	{
 		return nullptr;
 	}
-	if ((UOSInt)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
+	if ((UIntOS)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
 		return nullptr;
 	NN<GetObjectSess> sess = this->layer->BeginGetObject();
 	Optional<Math::Geometry::Vector2D> vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
@@ -1191,12 +1191,12 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colInde
 	return vec;
 }
 
-Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Map::MapLayerReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
  
-Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
+Bool Map::MapLayerReader::IsNull(UIntOS colIndex)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1210,7 +1210,7 @@ Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 	return !this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1221,7 +1221,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetName(UOSInt colIndex, UnsafeArr
 	return this->layer->GetColumnName(buff, colIndex);
 }
 
-DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::MapLayerReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1232,7 +1232,7 @@ DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, OptOut<UOSI
 	return this->layer->GetColumnType(colIndex, colSize);
 }
 
-Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::MapLayerReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1260,30 +1260,30 @@ void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::Ma
 	colDef->SetPK(false);
 }
 
-UOSInt Map::MapLayerReader::GetShapeColSize(Map::DrawLayerType layerType)
+UIntOS Map::MapLayerReader::GetShapeColSize(Map::DrawLayerType layerType)
 {
 	switch (layerType)
 	{
 	case Map::DRAW_LAYER_UNKNOWN:
 	case Map::DRAW_LAYER_MIXED:
 	default:
-		return (UOSInt)DB::ColDef::GeometryType::Any;
+		return (UIntOS)DB::ColDef::GeometryType::Any;
 	case Map::DRAW_LAYER_POINT:
-		return (UOSInt)DB::ColDef::GeometryType::Point;
+		return (UIntOS)DB::ColDef::GeometryType::Point;
 	case Map::DRAW_LAYER_POLYLINE:
-		return (UOSInt)DB::ColDef::GeometryType::Polyline;
+		return (UIntOS)DB::ColDef::GeometryType::Polyline;
 	case Map::DRAW_LAYER_POLYGON:
-		return (UOSInt)DB::ColDef::GeometryType::Polygon;
+		return (UIntOS)DB::ColDef::GeometryType::Polygon;
 	case Map::DRAW_LAYER_POINT3D:
-		return (UOSInt)DB::ColDef::GeometryType::PointZ;
+		return (UIntOS)DB::ColDef::GeometryType::PointZ;
 	case Map::DRAW_LAYER_POLYLINE3D:
-		return (UOSInt)DB::ColDef::GeometryType::PolylineZ;
+		return (UIntOS)DB::ColDef::GeometryType::PolylineZ;
 	case Map::DRAW_LAYER_IMAGE:
-		return (UOSInt)DB::ColDef::GeometryType::Any;
+		return (UIntOS)DB::ColDef::GeometryType::Any;
 	}
 }
 
-Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
+Bool Map::MapLayerReader::GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
 {
 	if (layer->GetGeomCol() == INVALID_INDEX)
 	{

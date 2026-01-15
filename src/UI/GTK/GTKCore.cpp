@@ -100,7 +100,7 @@ void UI::GTK::GTKCore::Suspend()
 {
 }
 
-Math::Size2D<UOSInt> UI::GTK::GTKCore::GetDesktopSize()
+Math::Size2D<UIntOS> UI::GTK::GTKCore::GetDesktopSize()
 {
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 	GdkDisplay *display = gdk_display_get_default();
@@ -135,14 +135,14 @@ Math::Size2D<UOSInt> UI::GTK::GTKCore::GetDesktopSize()
 		}
 		i++;
 	}
-	return Math::Size2D<UOSInt>((UOSInt)(maxX - minX), (UOSInt)(maxY - minY));
+	return Math::Size2D<UIntOS>((UIntOS)(maxX - minX), (UIntOS)(maxY - minY));
 #else
 	GdkScreen *scn = gdk_screen_get_default();
-	return Math::Size2D<UOSInt>(gdk_screen_get_width(scn), gdk_screen_get_height(scn));
+	return Math::Size2D<UIntOS>(gdk_screen_get_width(scn), gdk_screen_get_height(scn));
 #endif
 }
 
-Math::Coord2D<OSInt> UI::GTK::GTKCore::GetCursorPos()
+Math::Coord2D<IntOS> UI::GTK::GTKCore::GetCursorPos()
 {
 	GdkDisplay *display = gdk_display_get_default();
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
@@ -155,14 +155,14 @@ Math::Coord2D<OSInt> UI::GTK::GTKCore::GetCursorPos()
 	{
 		gdk_device_get_position(dev, &scn, &outx, &outy);
 	}
-	return Math::Coord2D<OSInt>(outx, outy);
+	return Math::Coord2D<IntOS>(outx, outy);
 #else
 	GdkDeviceManager *devMgr = gdk_display_get_device_manager(display);
 	GdkDevice *dev = gdk_device_manager_get_client_pointer(devMgr);
 	gint outx;
 	gint outy;
 	gdk_device_get_position(dev, 0, &outx, &outy);
-	return Math::Coord2D<OSInt>(outx, outy);
+	return Math::Coord2D<IntOS>(outx, outy);
 #endif
 }
 
@@ -306,7 +306,7 @@ NN<UI::GUIRadioButton> UI::GTK::GTKCore::NewRadioButton(NN<GUIClientControl> par
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
+NN<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::GTK::GTKRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS, colorSess));
@@ -334,7 +334,7 @@ NN<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NN<GUIClientControl> parent, Tex
 	return ctrl;
 }
 
-NN<UI::GUITrackBar> UI::GTK::GTKCore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::GTK::GTKCore::NewTrackBar(NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal)
 {
 	NN<UI::GTK::GTKTrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTrackBar(*this, parent, minVal, maxVal, currVal));

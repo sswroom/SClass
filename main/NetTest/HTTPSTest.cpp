@@ -9,7 +9,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	Optional<Net::SSLEngine> ssl;
 	NN<Net::HTTPClient> cli;
 	Net::OSSocketFactory sockf(false);

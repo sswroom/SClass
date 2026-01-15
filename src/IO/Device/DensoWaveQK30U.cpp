@@ -15,8 +15,8 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 	NN<IO::Device::DensoWaveQK30U> me = userObj.GetNN<IO::Device::DensoWaveQK30U>();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
-	UOSInt recvSize;
-	UOSInt i;
+	UIntOS recvSize;
+	UIntOS i;
 	Bool found;
 	me->recvRunning = true;
 	sbuff = MemAlloc(UTF8Char, RECVBUFFSIZE + 1);
@@ -134,9 +134,9 @@ Bool IO::Device::DensoWaveQK30U::WaitForReply(UInt32 timeToWait)
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	UOSInt currBuffSize = 0;
-	UOSInt startIndex;
-	UOSInt i;
+	UIntOS currBuffSize = 0;
+	UIntOS startIndex;
+	UIntOS i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -173,9 +173,9 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, OutParam<Int
 	Data::DateTime startTime;
 	Data::DateTime currTime;
 	Int32 t;
-	UOSInt currBuffSize = 0;
-	UOSInt startIndex;
-	UOSInt i;
+	UIntOS currBuffSize = 0;
+	UIntOS startIndex;
+	UIntOS i;
 	startTime.SetCurrTimeUTC();
 	i = 0;
 	while (true)
@@ -204,7 +204,7 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, OutParam<Int
 	}
 }
 
-Int32 IO::Device::DensoWaveQK30U::ReadCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen)
+Int32 IO::Device::DensoWaveQK30U::ReadCommand(UnsafeArray<const Char> cmdStr, UIntOS cmdLen)
 {
 	Int32 result;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -226,7 +226,7 @@ Int32 IO::Device::DensoWaveQK30U::ReadCommand(UnsafeArray<const Char> cmdStr, UO
 	return result;
 }
 
-Bool IO::Device::DensoWaveQK30U::WriteCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen)
+Bool IO::Device::DensoWaveQK30U::WriteCommand(UnsafeArray<const Char> cmdStr, UIntOS cmdLen)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -333,9 +333,9 @@ void IO::Device::DensoWaveQK30U::HandleCodeScanned(ScanHandler hdlr, AnyType use
 	this->scanHdlrObj = userObj;
 }
 
-UOSInt IO::Device::DensoWaveQK30U::GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList)
+UIntOS IO::Device::DensoWaveQK30U::GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList)
 {
-	UOSInt initCnt = cmdList->GetCount();
+	UIntOS initCnt = cmdList->GetCount();
 /*	cmdList->Add(DC_GET_READ_MODE);
 	cmdList->Add(DC_SET_READ_MODE);
 	cmdList->Add(DC_GET_BW_MODE);

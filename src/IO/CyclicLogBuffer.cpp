@@ -2,18 +2,18 @@
 #include "IO/CyclicLogBuffer.h"
 #include "Sync/MutexUsage.h"
 
-IO::CyclicLogBuffer::CyclicLogBuffer(UOSInt buffSize)
+IO::CyclicLogBuffer::CyclicLogBuffer(UIntOS buffSize)
 {
 	this->buffSize = buffSize;
 	this->logBuff = MemAllocArr(UnsafeArrayOpt<UTF8Char>, this->buffSize);
-	this->logLeng = MemAlloc(UOSInt, this->buffSize);
+	this->logLeng = MemAlloc(UIntOS, this->buffSize);
 	this->logInd = 0;
 	MemClear(this->logBuff.Ptr(), sizeof(UnsafeArray<UTF8Char>) * this->buffSize);
 }
 
 IO::CyclicLogBuffer::~CyclicLogBuffer()
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < this->buffSize)
 	{
 		if (this->logBuff[i].IsNull())
@@ -38,7 +38,7 @@ void IO::CyclicLogBuffer::LogAdded(const Data::Timestamp &logTime, Text::CString
 	{
 		MemFreeArr(this->logBuff[this->logInd]);
 	}
-	this->logLeng[this->logInd] = (UOSInt)(sptr - strBuff);
+	this->logLeng[this->logInd] = (UIntOS)(sptr - strBuff);
 	this->logBuff[this->logInd++] = strBuff;
 	if (this->logInd >= this->buffSize)
 	{
@@ -54,7 +54,7 @@ void IO::CyclicLogBuffer::LogClosed()
 void IO::CyclicLogBuffer::GetLogs(NN<Text::StringBuilderUTF8> sb, Text::CStringNN seperator)
 {
 	Sync::MutexUsage mutUsage(this->logMut);
-	UOSInt i = this->logInd;
+	UIntOS i = this->logInd;
 	while (i-- > 0)
 	{
 		sb->AppendC(UnsafeArrayOpt<const UTF8Char>(this->logBuff[i]).Or(U8STR("")), this->logLeng[i]);

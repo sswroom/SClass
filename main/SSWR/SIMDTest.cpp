@@ -10,7 +10,7 @@
 Bool failOnly = false;
 IO::ConsoleWriter *console;
 
-void UInt8x4Cmp(UInt8x4 u8x4, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4)
+void UInt8x4Cmp(UInt8x4 u8x4, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4)
 {
 	UInt8 buff[4];
 	Text::StringBuilderUTF8 sb;
@@ -34,7 +34,7 @@ void UInt8x4Cmp(UInt8x4 u8x4, UnsafeArray<const UTF8Char> funcName, UOSInt nameL
 	}
 }
 
-void UInt8x8Cmp(UInt8x8 u8x8, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4, UInt8 val5, UInt8 val6, UInt8 val7, UInt8 val8)
+void UInt8x8Cmp(UInt8x8 u8x8, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4, UInt8 val5, UInt8 val6, UInt8 val7, UInt8 val8)
 {
 	UInt8 buff[8];
 	Text::StringBuilderUTF8 sb;
@@ -58,7 +58,7 @@ void UInt8x8Cmp(UInt8x8 u8x8, UnsafeArray<const UTF8Char> funcName, UOSInt nameL
 	}
 }
 
-void UInt8x16Cmp(UInt8x16 u8x16, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4, UInt8 val5, UInt8 val6, UInt8 val7, UInt8 val8,
+void UInt8x16Cmp(UInt8x16 u8x16, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4, UInt8 val5, UInt8 val6, UInt8 val7, UInt8 val8,
 		UInt8 val9, UInt8 val10, UInt8 val11, UInt8 val12, UInt8 val13, UInt8 val14, UInt8 val15, UInt8 val16)
 {
 	UInt8 buff[16];
@@ -84,7 +84,7 @@ void UInt8x16Cmp(UInt8x16 u8x16, UnsafeArray<const UTF8Char> funcName, UOSInt na
 	}
 }
 
-void Int16x4Cmp(Int16x4 i16x4, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, Int16 val1, Int16 val2, Int16 val3, Int16 val4)
+void Int16x4Cmp(Int16x4 i16x4, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, Int16 val1, Int16 val2, Int16 val3, Int16 val4)
 {
 	Int16 buff[4];
 	Text::StringBuilderUTF8 sb;
@@ -108,7 +108,7 @@ void Int16x4Cmp(Int16x4 i16x4, UnsafeArray<const UTF8Char> funcName, UOSInt name
 	}
 }
 
-void UInt16x4Cmp(UInt16x4 u16x4, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, UInt16 val1, UInt16 val2, UInt16 val3, UInt16 val4)
+void UInt16x4Cmp(UInt16x4 u16x4, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt16 val1, UInt16 val2, UInt16 val3, UInt16 val4)
 {
 	UInt16 buff[4];
 	Text::StringBuilderUTF8 sb;
@@ -132,7 +132,7 @@ void UInt16x4Cmp(UInt16x4 u16x4, UnsafeArray<const UTF8Char> funcName, UOSInt na
 	}
 }
 
-void Int16x8Cmp(Int16x8 i16x8, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, Int16 val1, Int16 val2, Int16 val3, Int16 val4, Int16 val5, Int16 val6, Int16 val7, Int16 val8)
+void Int16x8Cmp(Int16x8 i16x8, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, Int16 val1, Int16 val2, Int16 val3, Int16 val4, Int16 val5, Int16 val6, Int16 val7, Int16 val8)
 {
 	Int16 buff[8];
 	Text::StringBuilderUTF8 sb;
@@ -156,7 +156,7 @@ void Int16x8Cmp(Int16x8 i16x8, UnsafeArray<const UTF8Char> funcName, UOSInt name
 	}
 }
 
-void UInt16x8Cmp(UInt16x8 u16x8, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, UInt16 val1, UInt16 val2, UInt16 val3, UInt16 val4, UInt16 val5, UInt16 val6, UInt16 val7, UInt16 val8)
+void UInt16x8Cmp(UInt16x8 u16x8, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt16 val1, UInt16 val2, UInt16 val3, UInt16 val4, UInt16 val5, UInt16 val6, UInt16 val7, UInt16 val8)
 {
 	UInt16 buff[8];
 	Text::StringBuilderUTF8 sb;
@@ -180,7 +180,7 @@ void UInt16x8Cmp(UInt16x8 u16x8, UnsafeArray<const UTF8Char> funcName, UOSInt na
 	}
 }
 
-void Int32x4Cmp(Int32x4 i32x4, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen, Int32 val1, Int32 val2, Int32 val3, Int32 val4)
+void Int32x4Cmp(Int32x4 i32x4, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, Int32 val1, Int32 val2, Int32 val3, Int32 val4)
 {
 	Int32 buff[4];
 	Text::StringBuilderUTF8 sb;
@@ -204,7 +204,7 @@ void Int32x4Cmp(Int32x4 i32x4, UnsafeArray<const UTF8Char> funcName, UOSInt name
 	}
 }
 
-void CmpResult(Bool result, UnsafeArray<const UTF8Char> funcName, UOSInt nameLen)
+void CmpResult(Bool result, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen)
 {
 	if (!failOnly || !result)
 	{

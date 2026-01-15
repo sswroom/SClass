@@ -9,19 +9,19 @@ namespace IO
 	{
 	private:
 		UnsafeArray<UInt8> buff;
-		UOSInt buffSize;
-		UOSInt currBytePos;
-		UOSInt currBitPos;
+		UIntOS buffSize;
+		UIntOS currBytePos;
+		UIntOS currBitPos;
 		Optional<IO::Stream> stm;
 
 	public:
 		BitReaderLSB(NN<IO::Stream> stm);
-		BitReaderLSB(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		BitReaderLSB(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		virtual ~BitReaderLSB();
 
-		virtual Bool ReadBits(OutParam<UInt32> code, UOSInt bitCount);
+		virtual Bool ReadBits(OutParam<UInt32> code, UIntOS bitCount);
 		virtual Bool ByteAlign();
-		virtual UOSInt ReadBytes(UnsafeArray<UInt8> buff, UOSInt cnt);
+		virtual UIntOS ReadBytes(UnsafeArray<UInt8> buff, UIntOS cnt);
 	};
 }
 #endif

@@ -19,28 +19,28 @@ namespace Media
 				Int32 status; //0 = not running, 1 = running/idle, 2 = toStop, 3 = stopped, 4 = Blend, 5 = BlendPA
 
 				UnsafeArray<UInt8> dest;
-				OSInt dbpl;
+				IntOS dbpl;
 				UnsafeArray<const UInt8> src;
-				OSInt sbpl;
-				UOSInt width;
-				UOSInt height;
+				IntOS sbpl;
+				UIntOS width;
+				UIntOS height;
 			} ThreadStat;
 		private:
 			UnsafeArray<ThreadStat> stats;
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			Sync::Mutex mut;
 			Sync::Event mainEvt;
 			
-			void MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
-			void MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
+			void MTBlendPA(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
 
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			AlphaBlend8_8();
 			virtual ~AlphaBlend8_8();
 
-			virtual void Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
-			virtual void PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
+			virtual void Blend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height, Media::AlphaType srcAType);
+			virtual void PremulAlpha(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
 		};
 	}
 }

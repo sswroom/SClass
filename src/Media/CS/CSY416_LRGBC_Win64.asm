@@ -2,7 +2,7 @@ section .text
 
 global CSY416_LRGBC_convert
 
-;void CSY416_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
+;void CSY416_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 ; 0 rdi
 ; 8 rsi
 ; 16 rbx

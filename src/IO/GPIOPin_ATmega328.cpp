@@ -14,7 +14,7 @@
 #define DDRD (*(volatile UInt8*)0x2A)
 #define PORTD (*(volatile UInt8*)0x2B)*/
 
-IO::GPIOPin::GPIOPin(OSInt pinNum)
+IO::GPIOPin::GPIOPin(IntOS pinNum)
 {
 	this->pinNum = pinNum;
 }
@@ -150,7 +150,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::GPIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrOSInt(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
+	return Text::StrIntOS(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)
@@ -177,10 +177,10 @@ void IO::GPIOPin::ClearEvent()
 {
 }
 
-OSInt IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
+IntOS IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
 {
-	OSInt i = 0;
-	OSInt j = 23;
+	IntOS i = 0;
+	IntOS j = 23;
 	while (i < j)
 	{
 		pinList->Add((Int32)i);

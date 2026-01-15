@@ -8,7 +8,7 @@ namespace Math
 		Double nTap;
 		Double iTap;
 	public:
-		LanczosFilter(UOSInt nTap);
+		LanczosFilter(UIntOS nTap);
 		~LanczosFilter();
 
 		Double Weight(Double phase);

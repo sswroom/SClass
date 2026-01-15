@@ -23,14 +23,14 @@ namespace Crypto
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
-			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
-			virtual UOSInt GetBlockSize() const;
-			virtual UOSInt GetResultSize() const;
+			virtual UIntOS GetBlockSize() const;
+			virtual UIntOS GetResultSize() const;
 
 			UInt16 Reverse(UInt16 polynomial);
 
-			UInt16 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+			UInt16 CalcDirect(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 			{
 				return (UInt16)~CRC16R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), 0xffff);
 			}

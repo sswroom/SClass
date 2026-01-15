@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/SizedOverlayDObj.h"
 
-UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizerRGB_C8> resizer) : DirectObject(tl)
+UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizerRGB_C8> resizer) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -31,7 +31,7 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::C
 			UInt32 frameDelay = imgList->GetImageDelay(0);
 			if (frameDelay > 0)
 			{
-				this->frameDelay = (OSInt)frameDelay;
+				this->frameDelay = (IntOS)frameDelay;
 			}
 		}
 		this->startTime = 0;
@@ -65,11 +65,11 @@ Bool UI::DObj::SizedOverlayDObj::IsChanged()
 		if (this->dispImg.IsNull())
 			return true;
 		Double t = clk->GetTimeDiff();
-		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-		while (i >= (OSInt)imgList->GetCount())
+		IntOS i = Double2Int32((t - this->startTime) * 1000 / IntOS2Double(this->frameDelay));
+		while (i >= (IntOS)imgList->GetCount())
 		{
-			i -= (OSInt)imgList->GetCount();
-			this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
+			i -= (IntOS)imgList->GetCount();
+			this->startTime += IntOS2Double(this->frameDelay * (IntOS)imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
 	}
@@ -88,7 +88,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 	NN<Manage::HiResClock> clk;
 	if (this->imgList.SetTo(imgList) && this->clk.SetTo(clk))
 	{
-		UOSInt frameNum;
+		UIntOS frameNum;
 		if (imgList->GetCount() <= 1)
 		{
 			frameNum = 0;
@@ -96,11 +96,11 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		else
 		{
 			Double t = clk->GetTimeDiff();
-			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
+			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / IntOS2Double(this->frameDelay));
 			while (frameNum >= imgList->GetCount())
 			{
 				frameNum -= imgList->GetCount();
-				this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
+				this->startTime += IntOS2Double(this->frameDelay * (IntOS)imgList->GetCount()) * 0.001;
 			}
 		}
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -138,7 +138,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 }
 
-Bool UI::DObj::SizedOverlayDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::SizedOverlayDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	return false;
 }
@@ -155,7 +155,7 @@ void UI::DObj::SizedOverlayDObj::OnMouseClick()
 {
 }
 
-void UI::DObj::SizedOverlayDObj::SetFrameDelay(OSInt frameDelay)
+void UI::DObj::SizedOverlayDObj::SetFrameDelay(IntOS frameDelay)
 {
 	if (frameDelay > 0)
 	{
@@ -163,7 +163,7 @@ void UI::DObj::SizedOverlayDObj::SetFrameDelay(OSInt frameDelay)
 	}
 }
 
-void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UOSInt> size)
+void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UIntOS> size)
 {
 	this->size = size;
 	Sync::MutexUsage mutUsage(this->dispMut);

@@ -18,7 +18,7 @@ namespace IO
 
 		struct LeakInfo
 		{
-			UOSInt threadId;
+			UIntOS threadId;
 			NN<Text::String> message;
 			Data::ArrayListNN<StackEntry> stacks;
 		};
@@ -32,7 +32,7 @@ namespace IO
 		};
 		struct ExceptionInfo
 		{
-			UOSInt threadId;
+			UIntOS threadId;
 			NN<Text::String> message;
 			UInt64 accessAddress;
 			AddressType addrType;
@@ -42,8 +42,8 @@ namespace IO
 			Data::ArrayListNN<StackEntry> allocStacks;
 		};
 	private:
-		UOSInt ppid;
-		UOSInt mainPID;
+		UIntOS ppid;
+		UIntOS mainPID;
 		Optional<Text::String> version;
 		Optional<Text::String> commandLine;
 		UInt64 bytesInUse;
@@ -58,11 +58,11 @@ namespace IO
 		Optional<ExceptionInfo> currException;
 		Optional<Data::ArrayListNN<StackEntry>> currStack;
 
-		void SetPPID(UOSInt ppid);
+		void SetPPID(UIntOS ppid);
 		void SetVersion(Text::CStringNN version);
 		void SetCommandLine(Text::CStringNN commandLine);
-		void BeginLeak(UOSInt threadId, Text::CStringNN message);
-		void BeginException(UOSInt threadId, Text::CStringNN message);
+		void BeginLeak(UIntOS threadId, Text::CStringNN message);
+		void BeginException(UIntOS threadId, Text::CStringNN message);
 		void NewStack(UInt64 address, Text::CStringNN funcName, Text::CString source);
 		void SetExceptionAccessAddress(UInt64 address, AddressType addrType);
 		void SetExceptionStackSize(UInt32 size);
@@ -74,11 +74,11 @@ namespace IO
 		static void __stdcall FreeLeak(NN<LeakInfo> leak);
 		static void __stdcall FreeException(NN<ExceptionInfo> ex);
 	public:
-		ValgrindLog(UOSInt mainPID);
+		ValgrindLog(UIntOS mainPID);
 		~ValgrindLog();
 
-		UOSInt GetMainPID() const;
-		UOSInt GetPPID() const;
+		UIntOS GetMainPID() const;
+		UIntOS GetPPID() const;
 		Optional<Text::String> GetVersion() const;
 		Optional<Text::String> GetCommandLine() const;
 		UInt64 GetBytesInUse() const;

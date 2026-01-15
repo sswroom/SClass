@@ -13,7 +13,7 @@ typedef struct
 {
 	ASensorManager *mgr;
 	ASensorList sensorList;
-	OSInt sensorCnt;
+	IntOS sensorCnt;
 } ClassData;
 
 IO::SensorManager::SensorManager()
@@ -35,13 +35,13 @@ IO::SensorManager::~SensorManager()
 	MemFree(me);
 }
 
-UOSInt IO::SensorManager::GetSensorCnt()
+UIntOS IO::SensorManager::GetSensorCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	return me->sensorCnt;
 }
 
-IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
+IO::Sensor::SensorType IO::SensorManager::GetSensorType(UIntOS index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (index >= me->sensorCnt)
@@ -70,7 +70,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
+IO::Sensor *IO::SensorManager::CreateSensor(UIntOS index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (index < 0 || index >= me->sensorCnt)
@@ -115,14 +115,14 @@ IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 	}
 }
 
-UOSInt IO::SensorManager::GetAccelerometerCnt()
+UIntOS IO::SensorManager::GetAccelerometerCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0)
 		return 0;
 
-	OSInt ret = 0;
-	OSInt i = this->GetSensorCnt();
+	IntOS ret = 0;
+	IntOS i = this->GetSensorCnt();
 	while (i-- > 0)
 	{
 		if (this->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
@@ -133,15 +133,15 @@ UOSInt IO::SensorManager::GetAccelerometerCnt()
 	return ret;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
+IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UIntOS index)
 {
 	IO::SensorAccelerometer *ret = 0;
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0 || index < 0)
 		return 0;
 
-	OSInt i = 0;
-	OSInt j = this->GetSensorCnt();
+	IntOS i = 0;
+	IntOS j = this->GetSensorCnt();
 	while (i < j)
 	{
 		if (this->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)

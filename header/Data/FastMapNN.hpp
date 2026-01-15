@@ -11,7 +11,7 @@ namespace Data
 	{
 	private:
 		NN<const Data::ArrayListNative<TwinItemNN<T, V>>> arr;
-		UOSInt nextIndex;
+		UIntOS nextIndex;
 
 	public:
 		FastMapNNIterator(NN<const Data::ArrayListNative<TwinItemNN<T, V>>> arr)
@@ -43,18 +43,18 @@ namespace Data
 		virtual Optional<V> Put(T key, NN<V> val);
 		virtual Optional<V> Get(T key) const;
 		virtual Optional<V> Remove(T key);
-		OSInt GetIndex(T key) const;
+		IntOS GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
-		void AllocSize(UOSInt cnt);
-		UOSInt AddKeysTo(NN<List<T>> list);
-		virtual UOSInt GetCount() const;
-		virtual T GetKey(UOSInt index) const;
-		virtual Optional<V> GetItem(UOSInt index) const;
-		virtual NN<V> GetItemNoCheck(UOSInt index) const;
-		Optional<V> RemoveAt(UOSInt index);
+		void AllocSize(UIntOS cnt);
+		UIntOS AddKeysTo(NN<List<T>> list);
+		virtual UIntOS GetCount() const;
+		virtual T GetKey(UIntOS index) const;
+		virtual Optional<V> GetItem(UIntOS index) const;
+		virtual NN<V> GetItemNoCheck(UIntOS index) const;
+		Optional<V> RemoveAt(UIntOS index);
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<Optional<V>> ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<Optional<V>> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 		FastMapNNIterator<T,V> Iterator() const;
 		void DeleteAll();
@@ -72,28 +72,28 @@ namespace Data
 
 	template <class T, class V> Optional<V> FastMapNN<T, V>::Put(T key, NN<V> val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			Optional<V> oldVal = this->values.GetItem((UOSInt)i).value;
-            this->values.SetItem((UOSInt)i, TwinItemNN<T,V>(key, val));
+			Optional<V> oldVal = this->values.GetItem((UIntOS)i).value;
+            this->values.SetItem((UIntOS)i, TwinItemNN<T,V>(key, val));
 			return oldVal;
 		}
 		else
 		{
-			this->values.Insert((UOSInt)~i, TwinItemNN<T,V>(key, val));
+			this->values.Insert((UIntOS)~i, TwinItemNN<T,V>(key, val));
 			return nullptr;
 		}
 	}
 
 	template <class T, class V> Optional<V> FastMapNN<T, V>::Get(T key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			return this->values.GetItem((UOSInt)i).value;
+			return this->values.GetItem((UIntOS)i).value;
 		}
 		else
 		{
@@ -103,11 +103,11 @@ namespace Data
 
 	template <class T, class V> Optional<V> FastMapNN<T, V>::Remove(T key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->GetIndex(key);
 		if (i >= 0)
 		{
-			return this->values.RemoveAt((UOSInt)i).value;
+			return this->values.RemoveAt((UIntOS)i).value;
 		}
 		else
 		{
@@ -115,18 +115,18 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> OSInt FastMapNN<T, V>::GetIndex(T key) const
+	template <class T, class V> IntOS FastMapNN<T, V>::GetIndex(T key) const
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
+		IntOS i;
+		IntOS j;
+		IntOS k;
 		T l;
 		i = 0;
-		j = (OSInt)this->values.GetCount() - 1;
+		j = (IntOS)this->values.GetCount() - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			l = this->values.GetItem((UOSInt)k).key;
+			l = this->values.GetItem((UIntOS)k).key;
 			if (l > key)
 			{
 				j = k - 1;
@@ -148,16 +148,16 @@ namespace Data
 		return this->GetIndex(key) >= 0;
 	}
 
-	template <class T, class V> void FastMapNN<T, V>::AllocSize(UOSInt cnt)
+	template <class T, class V> void FastMapNN<T, V>::AllocSize(UIntOS cnt)
 	{
-		UOSInt newSize = this->values.GetCount() + cnt;
+		UIntOS newSize = this->values.GetCount() + cnt;
 		this->values.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> UOSInt FastMapNN<T, V>::AddKeysTo(NN<List<T>> list)
+	template <class T, class V> UIntOS FastMapNN<T, V>::AddKeysTo(NN<List<T>> list)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->values.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->values.GetCount();
 		while (i < j)
 		{
 			list->Add(this->values.GetItem(i).key);
@@ -166,29 +166,29 @@ namespace Data
 		return j;
 	}
 
-	template <class T, class V> UOSInt FastMapNN<T, V>::GetCount() const
+	template <class T, class V> UIntOS FastMapNN<T, V>::GetCount() const
 	{
 		return this->values.GetCount();
 	}
 
-	template <class T, class V> T FastMapNN<T, V>::GetKey(UOSInt index) const
+	template <class T, class V> T FastMapNN<T, V>::GetKey(UIntOS index) const
 	{
 		return this->values.GetItem(index).key;
 	}
 
-	template <class T, class V> Optional<V> FastMapNN<T, V>::GetItem(UOSInt index) const
+	template <class T, class V> Optional<V> FastMapNN<T, V>::GetItem(UIntOS index) const
 	{
 		if (index >= this->values.GetCount())
 			return nullptr;
 		return this->values.GetItem(index).value;
 	}
 
-	template <class T, class V> NN<V> FastMapNN<T, V>::GetItemNoCheck(UOSInt index) const
+	template <class T, class V> NN<V> FastMapNN<T, V>::GetItemNoCheck(UIntOS index) const
 	{
 		return this->values.GetItem(index).value;
 	}
 
-	template <class T, class V> Optional<V> FastMapNN<T, V>::RemoveAt(UOSInt index)
+	template <class T, class V> Optional<V> FastMapNN<T, V>::RemoveAt(UIntOS index)
 	{
 		return this->values.RemoveAt(index).value;
 	}
@@ -198,9 +198,9 @@ namespace Data
 		return this->values.GetCount() == 0;
 	}
 
-	template <class T, class V> UnsafeArray<Optional<V>> FastMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<Optional<V>> FastMapNN<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt = this->values.GetCount();
+		UIntOS cnt = this->values.GetCount();
 		UnsafeArray<Optional<V>> outArr = MemAlloc(Optional<V>, cnt);
 		objCnt.Set(cnt);
 		while (cnt-- > 0)
@@ -222,7 +222,7 @@ namespace Data
 
 	template <class T, class V> void FastMapNN<T, V>::DeleteAll()
 	{
-		UOSInt i = this->values.GetCount();
+		UIntOS i = this->values.GetCount();
 		while (i-- > 0)
 		{
 			this->values.GetItem(i).value.Delete();
@@ -232,7 +232,7 @@ namespace Data
 
 	template <class T, class V> void FastMapNN<T, V>::MemFreeAll()
 	{
-		UOSInt i = this->values.GetCount();
+		UIntOS i = this->values.GetCount();
 		while (i-- > 0)
 		{
 			MemFreeNN(this->values.GetItem(i).value);

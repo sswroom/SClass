@@ -22,9 +22,9 @@ namespace Media
 		{
 			UInt8 *frame;
 			Data::Duration frameTime;
-			UOSInt frameSize;
-			OSInt pictureStart;
-			UOSInt frameNum;
+			UIntOS frameSize;
+			IntOS pictureStart;
+			UIntOS frameNum;
 		} FrameBuff;
 
 		NN<Media::MediaStreamControl> pbc;
@@ -34,19 +34,19 @@ namespace Media
 		Media::FrameInfo info;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
-		UOSInt maxFrameSize;
+		UIntOS maxFrameSize;
 
 		UInt64 totalFrameSize;
 		UInt32 totalFrameCnt;
 
 		UInt8 *frameBuff;
-		UOSInt frameBuffSize;
+		UIntOS frameBuffSize;
 		Data::Duration thisFrameTime;
 		Data::Duration syncFrameTime;
-		UOSInt syncFieldCnt;
+		UIntOS syncFieldCnt;
 		Bool firstFrame;
-		UOSInt frameStart;
-		UOSInt frameNum;
+		UIntOS frameStart;
+		UIntOS frameNum;
 		Int32 writeCnt;
 
 		Bool playing;
@@ -57,8 +57,8 @@ namespace Media
 		Sync::Mutex playMut;
 		Sync::Mutex pbcMut;
 		FrameBuff *playBuff;
-		OSInt playBuffStart;
-		OSInt playBuffEnd;
+		IntOS playBuffStart;
+		IntOS playBuffEnd;
 		Double par;
 		UInt64 bitRate;
 
@@ -69,7 +69,7 @@ namespace Media
 		IO::Writer *debugLog;
 		Sync::Mutex *debugMut;
 
-		void SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart);
+		void SubmitFrame(UIntOS frameSize, UIntOS frameStart, UIntOS pictureStart);
 		void ClearPlayBuff();
 		static UInt32 __stdcall PlayThread(AnyType userObj);
 	public:
@@ -79,7 +79,7 @@ namespace Media
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
@@ -91,21 +91,21 @@ namespace Media
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 
 		virtual Bool HasFrameCount();
-		virtual UOSInt GetFrameCount();
-		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+		virtual UIntOS GetFrameCount();
+		virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
-		virtual UOSInt GetFrameSize(UOSInt frameIndex);
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
+		virtual UIntOS GetFrameSize(UIntOS frameIndex);
+		virtual UIntOS ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff);
 
-		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
+		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
 
-		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
+		virtual void DetectStreamInfo(UInt8 *header, UIntOS headerSize);
 		virtual void ClearFrameBuff();
 		virtual void SetStreamTime(Data::Duration time);
-		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
+		virtual void WriteFrameStream(UInt8 *buff, UIntOS buffSize);
 		virtual Data::Duration GetFrameStreamTime();
 		virtual void EndFrameStream();
 		virtual UInt64 GetBitRate();

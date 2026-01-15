@@ -15,7 +15,7 @@
 
 UInt64 Media::SSRC::SleefRNG::Xrandom64()
 {
-	UOSInt n;
+	UIntOS n;
 	this->state = NextState(this->state);
 	UInt64 s = this->state.u ^ this->state.l;
 	UInt64 t = s;
@@ -95,9 +95,9 @@ UInt64 Media::SSRC::SleefRNG::Next64()
 	return this->Xrandom64();
 }
 
-void Media::SSRC::SleefRNG::NextBytes(UInt8 *ptr, UOSInt z)
+void Media::SSRC::SleefRNG::NextBytes(UInt8 *ptr, UIntOS z)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < (z & ~7))
 	{
 		WriteNUInt64(&ptr[i], this->Xrandom64());
@@ -121,9 +121,9 @@ Double Media::SSRC::SleefRNG::NextRectangularDouble(Double min, Double max)
 	return min + (Double)this->Xrandom64() * (1.0 / (1ULL << 32) / (1ULL << 32)) * (max - min);
 }
 
-void Media::SSRC::SleefRNG::FillRectangularDouble(Double *ptr, UOSInt z, Double min, Double max)
+void Media::SSRC::SleefRNG::FillRectangularDouble(Double *ptr, UIntOS z, Double min, Double max)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < z)
 	{
 		ptr[i] = min + (Double)this->Xrandom64() * (1.0 / (1ULL << 32) / (1ULL << 32)) * (max - min);
@@ -136,9 +136,9 @@ Double Media::SSRC::SleefRNG::NextTriangularDouble(Double peak)
 	return ((Double)this->Xrandom64() - (Double)this->Xrandom64()) * (1.0 / (1ULL << 32) / (1ULL << 32)) * peak;
 }
 
-void Media::SSRC::SleefRNG::FillTriangularDouble(Double *ptr, UOSInt z, Double peak)
+void Media::SSRC::SleefRNG::FillTriangularDouble(Double *ptr, UIntOS z, Double peak)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < z)
 	{
 		ptr[i] = ((Double)this->Xrandom64() - (Double)this->Xrandom64()) * (1.0 / (1ULL << 32) / (1ULL << 32)) * peak;
@@ -151,9 +151,9 @@ Double Media::SSRC::SleefRNG::NextTwoLevelDouble(Double peak)
 	return (this->Next(1) != 0) ? -peak : peak;
 }
 
-void Media::SSRC::SleefRNG::FillTwoLevelDouble(Double *ptr, UOSInt z, Double peak)
+void Media::SSRC::SleefRNG::FillTwoLevelDouble(Double *ptr, UIntOS z, Double peak)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < z)
 	{
 		ptr[i] = (this->Next(1) != 0) ? -peak : peak;

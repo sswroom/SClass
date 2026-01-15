@@ -72,7 +72,7 @@ Net::OpenSSLClient::~OpenSSLClient()
 	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
 	if (this->clsData->remoteCerts.SetTo(certList))
 	{
-		UOSInt i = certList->GetCount();
+		UIntOS i = certList->GetCount();
 		NN<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
@@ -86,11 +86,11 @@ Net::OpenSSLClient::~OpenSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
+UIntOS Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 {
 	if (this->s.NotNull() && (this->flags & 6) == 0)
 	{
-		int ret = SSL_read(this->clsData->ssl, buff.Arr().Ptr(), (int)(OSInt)buff.GetSize());
+		int ret = SSL_read(this->clsData->ssl, buff.Arr().Ptr(), (int)(IntOS)buff.GetSize());
 		if (ret > 0)
 		{
 #if defined(VERBOSE)
@@ -116,18 +116,18 @@ UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::OpenSSLClient::Write(Data::ByteArrayR buff)
+UIntOS Net::OpenSSLClient::Write(Data::ByteArrayR buff)
 {
 	if (this->s.NotNull() && (this->flags & 5) == 0)
 	{
-		UOSInt totalWrite = 0;
+		UIntOS totalWrite = 0;
 		while (buff.GetSize() > 0)
 		{
 			int ret = SSL_write(this->clsData->ssl, buff.Arr().Ptr(), (int)buff.GetSize());
 			if (ret > 0)
 			{
 	#if defined(VERBOSE)
-				printf("OSSLClient: Write %d bytes\r\n", (UOSInt)ret);
+				printf("OSSLClient: Write %d bytes\r\n", (UIntOS)ret);
 	#endif
 				this->currCnt += (UInt32)ret;
 				totalWrite += (UInt32)ret;
@@ -149,7 +149,7 @@ UOSInt Net::OpenSSLClient::Write(Data::ByteArrayR buff)
 
 Optional<IO::StreamReadReq> Net::OpenSSLClient::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	UOSInt ret = this->Read(buff);
+	UIntOS ret = this->Read(buff);
 	if (ret)
 	{
 		evt->Set();
@@ -157,10 +157,10 @@ Optional<IO::StreamReadReq> Net::OpenSSLClient::BeginRead(const Data::ByteArray 
 	return (IO::StreamReadReq*)ret;
 }
 
-UOSInt Net::OpenSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS Net::OpenSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void Net::OpenSSLClient::CancelRead(NN<IO::StreamReadReq> reqData)
@@ -170,7 +170,7 @@ void Net::OpenSSLClient::CancelRead(NN<IO::StreamReadReq> reqData)
 
 Optional<IO::StreamWriteReq> Net::OpenSSLClient::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	UOSInt ret = this->Write(buff);
+	UIntOS ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();
@@ -178,9 +178,9 @@ Optional<IO::StreamWriteReq> Net::OpenSSLClient::BeginWrite(Data::ByteArrayR buf
 	return (IO::StreamWriteReq*)ret;
 }
 
-UOSInt Net::OpenSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS Net::OpenSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void Net::OpenSSLClient::CancelWrite(NN<IO::StreamWriteReq> reqData)

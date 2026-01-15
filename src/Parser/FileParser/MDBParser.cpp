@@ -97,7 +97,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	mdb->QueryTableNames(nullptr, tableNames);
 	
 	Bool hasSpRef = false;
-	UOSInt i = tableNames.GetCount();
+	UIntOS i = tableNames.GetCount();
 	while (i-- > 0)
 	{
 		NN<Text::String> tableName;
@@ -110,20 +110,20 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 			{
 				if (rdr->ColCount() >= 2)
 				{
-					OSInt objCol = -1;
-					OSInt shapeCol = -1;
-					UOSInt j;
+					IntOS objCol = -1;
+					IntOS shapeCol = -1;
+					UIntOS j;
 					j = rdr->ColCount();
 					while (j-- > 0)
 					{
 						rdr->GetColDef(j, colDef);
 						if (colDef.GetColName()->EqualsICase(UTF8STRC("OBJECTID")) && colDef.GetColType() == DB::DBUtil::CT_Int32)
 						{
-							objCol = (OSInt)j;
+							objCol = (IntOS)j;
 						}
 						else if (colDef.GetColName()->EqualsICase(UTF8STRC("SHAPE")) && (colDef.GetColType() == DB::DBUtil::CT_Binary || colDef.GetColType() == DB::DBUtil::CT_VarUTF8Char))
 						{
-							shapeCol = (OSInt)j;
+							shapeCol = (IntOS)j;
 						}
 					}
 					if (objCol != -1 && shapeCol != -1)
@@ -153,7 +153,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 			{
 				if (rdr->ColCount() >= 2)
 				{
-					if (rdr->GetName(1, sbuff).SetTo(sptr) && Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SRTEXT")))
+					if (rdr->GetName(1, sbuff).SetTo(sptr) && Text::StrEqualsICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SRTEXT")))
 					{
 						if (rdr->ReadNext())
 						{
@@ -173,7 +173,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		NEW_CLASSNN(conn, DB::SharedDBConn(mdb));
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
 
-		UOSInt i;
+		UIntOS i;
 		i = shpTables.GetCount();
 		while (i-- > 0)
 		{

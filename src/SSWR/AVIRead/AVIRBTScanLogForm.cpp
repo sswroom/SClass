@@ -20,8 +20,8 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(AnyType userObj)
 	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = 0;
-		UOSInt j = dlg.GetFileNameCount();
+		UIntOS i = 0;
+		UIntOS j = dlg.GetFileNameCount();
 		while (i < j)
 		{
 			me->btLog->LoadFile(dlg.GetFileNames(i));
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
 	NN<const IO::BTScanLog::DevEntry> log;
@@ -71,12 +71,12 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType use
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		UnsafeArray<const UTF8Char> name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name);
+		UIntOS i = me->macList->SetEntry(log->macInt, name);
 		Text::StrDelNew(name);
 		entry = me->macList->GetItem(i);
 		me->UpdateStatus();
 
-		UOSInt j;
+		UIntOS j;
 		i = 0;
 		j = me->lvContent->GetCount();
 		while (i < j)
@@ -119,9 +119,9 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	Text::CStringNN cstr;
 	UInt8 mac[8];
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS l;
 	this->lvContent->ClearItems();
 	i = 0;
 	j = logList.GetCount();
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		if (log->name.SetTo(s))
 			this->lvContent->SetSubItem(l, 5, s);
-		sptr = Text::StrUOSInt(sbuff, log->logs->GetCount());
+		sptr = Text::StrUIntOS(sbuff, log->logs->GetCount());
 		this->lvContent->SetSubItem(l, 6, CSTRP(sbuff, sptr));
 		sptr = Text::StrInt16(sbuff, log->measurePower);
 		this->lvContent->SetSubItem(l, 7, CSTRP(sbuff, sptr));
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 void SSWR::AVIRead::AVIRBTScanLogForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList.GetCount());
+	sb.AppendUIntOS(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }

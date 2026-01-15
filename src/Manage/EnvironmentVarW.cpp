@@ -47,7 +47,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 
 Manage::EnvironmentVar::~EnvironmentVar()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<const Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList = this->names.GetValues();
 	UnsafeArray<const UTF8Char> name;
 	i = nameList->GetCount();

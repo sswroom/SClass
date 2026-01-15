@@ -14,10 +14,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::HiResClock clk;
 	Double t1;
 	Double t2;
-	UOSInt cnt = 10000;
-	UOSInt i;
-	UOSInt res = 0;
-	UOSInt res2;
+	UIntOS cnt = 10000;
+	UIntOS i;
+	UIntOS res = 0;
+	UIntOS res2;
 	Text::StringBuilderUTF8 sb;
 	
 	clk.Start();
@@ -36,9 +36,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	t2 = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Leng = "));
-	sb.AppendUOSInt(res);
+	sb.AppendUIntOS(res);
 	sb.AppendC(UTF8STRC(", strlen = "));
-	sb.AppendUOSInt(res2);
+	sb.AppendUIntOS(res2);
 	sb.AppendC(UTF8STRC(", t1 = "));
 	sb.AppendDouble(t1);
 	sb.AppendC(UTF8STRC(", t1 = "));

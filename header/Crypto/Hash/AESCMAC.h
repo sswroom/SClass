@@ -17,7 +17,7 @@ namespace Crypto
 
 			UInt8 x[16];
 			UInt8 buff[16];
-			UOSInt buffSize;
+			UIntOS buffSize;
 
 			void GenSubKey();
 		public:
@@ -27,10 +27,10 @@ namespace Crypto
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
-			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
-			virtual UOSInt GetBlockSize() const;
-			virtual UOSInt GetResultSize() const;
+			virtual UIntOS GetBlockSize() const;
+			virtual UIntOS GetResultSize() const;
 		};
 	}
 }

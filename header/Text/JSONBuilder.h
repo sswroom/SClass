@@ -35,7 +35,7 @@ namespace Text
 		void AppendTSStr(Data::Timestamp ts);
 		void AppendDateStr(Data::Date dat);
 		void AppendCoord2D(Math::Coord2DDbl coord);
-		void AppendCoord2DArray(UnsafeArray<const Math::Coord2DDbl> coordList, UOSInt nPoints);
+		void AppendCoord2DArray(UnsafeArray<const Math::Coord2DDbl> coordList, UIntOS nPoints);
 		void AppendCoordPL(NN<Math::Geometry::Polyline> pl);
 		void AppendCoordPG(NN<Math::Geometry::Polygon> pg);
 		void AppendGeometry(NN<Math::Geometry::Vector2D> vec);

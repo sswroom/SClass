@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-IO::I2C::I2C(NN<IO::I2CChannel> channel, UOSInt delayMS)
+IO::I2C::I2C(NN<IO::I2CChannel> channel, UIntOS delayMS)
 {
 	this->channel = channel;
 	this->delayMS = delayMS;
@@ -45,5 +45,5 @@ Bool IO::I2C::WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8> data)
 	UInt8 buff[64];
 	buff[0] = regAddr;
 	MemCopyNO(&buff[1], &data[0], len);
-	return this->channel->I2CWrite(buff, (UOSInt)len + 1) == (UOSInt)(len + 1);
+	return this->channel->I2CWrite(buff, (UIntOS)len + 1) == (UIntOS)(len + 1);
 }

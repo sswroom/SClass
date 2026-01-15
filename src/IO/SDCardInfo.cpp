@@ -19,13 +19,13 @@ IO::SDCardInfo::~SDCardInfo()
 	this->name->Release();
 }
 
-OSInt IO::SDCardInfo::GetCID(UInt8 *cid)
+IntOS IO::SDCardInfo::GetCID(UInt8 *cid)
 {
 	MemCopyNO(cid, this->cid, 16);
 	return 16;
 }
 
-OSInt IO::SDCardInfo::GetCSD(UInt8 *csd)
+IntOS IO::SDCardInfo::GetCSD(UInt8 *csd)
 {
 	MemCopyNO(csd, this->csd, 16);
 	return 16;

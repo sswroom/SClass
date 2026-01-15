@@ -8,7 +8,7 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 4226
-Crypto::HOTP::HOTP(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter) : OTP(6)
+Crypto::HOTP::HOTP(UnsafeArray<const UInt8> key, UIntOS keySize, UInt64 counter) : OTP(6)
 {
 	this->key = MemAllocArr(UInt8, keySize);
 	this->keySize = keySize;
@@ -53,7 +53,7 @@ Bool Crypto::HOTP::IsValid(UInt32 code)
 	return false;
 }
 
-UInt32 Crypto::HOTP::CalcCode(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter, UInt32 nDigits)
+UInt32 Crypto::HOTP::CalcCode(UnsafeArray<const UInt8> key, UIntOS keySize, UInt64 counter, UInt32 nDigits)
 {
 	UInt8 buff[20];
 	NN<Crypto::Hash::SHA1> hash;

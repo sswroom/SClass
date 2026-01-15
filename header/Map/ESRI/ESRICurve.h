@@ -15,8 +15,8 @@ namespace Map
 		private:
 			struct CurveInfo
 			{
-				UOSInt type;
-				UOSInt startIndex;
+				UIntOS type;
+				UIntOS startIndex;
 			};
 			struct ArcInfo : public CurveInfo
 			{
@@ -47,12 +47,12 @@ namespace Map
 			Data::ArrayListNative<Double> mList;
 			Data::ArrayListNN<CurveInfo> curveList;
 		public:
-			ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOSInt nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);
+			ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UIntOS nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);
 			~ESRICurve();
 
-			void AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 bits);
-			void AddBezier3Curve(UOSInt index, Math::Coord2DDbl point1, Math::Coord2DDbl point2);
-			void AddEllipticArc(UOSInt index, Math::Coord2DDbl center, Double rotation, Double semiMajor, Double minorMajorRatio, UInt32 bits);
+			void AddArc(UIntOS index, Math::Coord2DDbl center, UInt32 bits);
+			void AddBezier3Curve(UIntOS index, Math::Coord2DDbl point1, Math::Coord2DDbl point2);
+			void AddEllipticArc(UIntOS index, Math::Coord2DDbl center, Double rotation, Double semiMajor, Double minorMajorRatio, UInt32 bits);
 			NN<Math::Geometry::Vector2D> CreatePolygon() const;
 			NN<Math::Geometry::Vector2D> CreatePolyline() const;
 		};

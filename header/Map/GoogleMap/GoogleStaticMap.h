@@ -16,7 +16,7 @@ namespace Map
 			Optional<Text::String> gooKey;
 			Optional<Text::String> gooCliId;
 			UnsafeArrayOpt<UInt8> gooPrivKey;
-			UOSInt gooPrivKeyLeng;
+			UIntOS gooPrivKeyLeng;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			
@@ -27,7 +27,7 @@ namespace Map
 
 			static UInt32 Level2Scale(UInt32 level);
 			static UInt32 Scale2Level(UInt32 scale);
-			UOSInt GetMap(UnsafeArray<UInt8> buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon); //lang = en-us, zh-cn, zh-tw, format = 0:png, 1:gif, 2:jpg
+			UIntOS GetMap(UnsafeArray<UInt8> buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UIntOS> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon); //lang = en-us, zh-cn, zh-tw, format = 0:png, 1:gif, 2:jpg
 		};
 	}
 }

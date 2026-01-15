@@ -64,8 +64,8 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 	UInt64 endOfst;
 	UInt64 fileSize;
 	UInt64 sizeLeft;
-	UOSInt thisSize;
-	UOSInt readSize;
+	UIntOS thisSize;
+	UIntOS readSize;
 	IO::FileStream *srcFS;
 	IO::FileStream *destFS;
 	me->txtStartOfst->GetText(sb);
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 	{
 		thisSize = 1048576;
 		if (thisSize > sizeLeft)
-			thisSize = (UOSInt)sizeLeft;
+			thisSize = (UIntOS)sizeLeft;
 		readSize = srcFS->Read(buff.WithSize(thisSize));
 		if (readSize == 0)
 			break;

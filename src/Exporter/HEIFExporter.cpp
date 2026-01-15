@@ -27,7 +27,7 @@ IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::HEIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -42,7 +42,7 @@ heif_error HEIFExporter_Write(struct heif_context* ctx, const void* data, size_t
 {
 	IO::SeekableStream *stm = (IO::SeekableStream*)userdata;
 	heif_error heif_error;
-	if (stm->Write(Data::ByteArrayR((const UInt8*)data, (UOSInt)size)) == (UOSInt)size)
+	if (stm->Write(Data::ByteArrayR((const UInt8*)data, (UIntOS)size)) == (UIntOS)size)
 	{
 		heif_error.code = heif_error_Ok;
 		heif_error.subcode = heif_suberror_Unspecified;
@@ -149,7 +149,7 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 
 		simg = img->CreateStaticImage();
 		simg->ToB8G8R8A8();
-		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		simg.Delete();
 		break;
@@ -157,42 +157,42 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		break;
 	case Media::PF_R8G8B8A8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_B8G8R8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 24);
 		break;
 	case Media::PF_R8G8B8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_LE_B16G16R16:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 48);
 		break;
 	case Media::PF_LE_R16G16B16:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_LE_W16:
@@ -209,7 +209,7 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 
 		simg = img->CreateStaticImage();
 		simg->ToB16G16R16A16();
-		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
+		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UIntOS)stride, false, simg->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		simg.Delete();
 		break;
@@ -217,14 +217,14 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		break;
 	case Media::PF_LE_R16G16B16A16:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)stride, false, img->info.rotateType);
 		break;
 	default:
 	case Media::PF_UNKNOWN:
@@ -254,8 +254,8 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
 	heif_encoder_set_lossy_quality(encoder, quality);
 
-	UOSInt i = 0;
-	UOSInt j = imgList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = imgList->GetCount();
 	while (i < j)
 	{
 		if (imgList->GetImage(i, 0).SetTo(nnimg))
@@ -279,7 +279,7 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	return err.code == heif_error_Ok;
 }
 
-UOSInt Exporter::HEIFExporter::GetParamCnt()
+UIntOS Exporter::HEIFExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -300,7 +300,7 @@ void Exporter::HEIFExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::HEIFExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -312,7 +312,7 @@ Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -327,7 +327,7 @@ Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 	return false;
 }
 
-Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

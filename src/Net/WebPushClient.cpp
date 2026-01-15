@@ -13,7 +13,7 @@ Net::WebPushClient::~WebPushClient()
 {
 }
 
-Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key> key, Text::CStringNN email, UOSInt ttl) const
+Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key> key, Text::CStringNN email, UIntOS ttl) const
 {
 	if (key->GetKeyType() != Crypto::Cert::X509File::KeyType::ECDSA)
 	{
@@ -24,18 +24,18 @@ Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key
 		return false;
 	}
 	UnsafeArray<const UInt8> keyBuff;
-	UOSInt keyLeng;
+	UIntOS keyLeng;
 	if (!key->GetECPublic(keyLeng).SetTo(keyBuff))
 	{
 		return false;
 	}
 	Text::CStringNN header = CSTR("{\"typ\":\"JWT\",\"alg\":\"ES256\"}");
 	Text::StringBuilderUTF8 sbClaim;
-	UOSInt i;
+	UIntOS i;
 	UInt8 signData[256];
-	UOSInt signLen;
+	UIntOS signLen;
 	UInt8 signRAW[256];
-	UOSInt signRAWLen;
+	UIntOS signRAWLen;
 	sbClaim.Append(CSTR("{\"aud\":\""));
 	i = endPoint.IndexOf('/', 8);
 	sbClaim.AppendC(endPoint.v, i);
@@ -68,7 +68,7 @@ Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 	cli->AddHeaderC(CSTR("Crypto-Key"), sbKey.ToCString());
 	sb.ClearStr();
-	sb.AppendUOSInt(ttl);
+	sb.AppendUIntOS(ttl);
 	cli->AddHeaderC(CSTR("TTL"), sb.ToCString());
 	cli->WriteCont(signData, 0);
 	sb.ClearStr();

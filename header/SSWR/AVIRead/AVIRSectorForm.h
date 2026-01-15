@@ -20,7 +20,7 @@ namespace SSWR
 			NN<IO::SectorData> data;
 
 			UnsafeArray<UInt8> sectorData;
-			UOSInt sectorSize;
+			UIntOS sectorSize;
 
 			static void __stdcall OnParseClicked(AnyType userObj);
 		public:

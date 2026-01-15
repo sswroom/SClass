@@ -27,8 +27,8 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> avalue;
 	NN<Text::String> name;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = itemNode->GetAttribCnt();
 	while (i < j)
@@ -59,7 +59,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 			{
 				if (node->GetChildCnt() == 0)
 				{
-					UOSInt k = node->GetAttribCnt();
+					UIntOS k = node->GetAttribCnt();
 					while (k-- > 0)
 					{
 						if (node->GetAttrib(k).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
@@ -173,7 +173,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 			}
 			else if (name->EqualsICase(UTF8STRC("media:group")))
 			{
-				UOSInt k = node->GetChildCnt();
+				UIntOS k = node->GetChildCnt();
 				NN<Text::XMLNode> node2;
 				while (k-- > 0)
 				{
@@ -225,8 +225,8 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> name;
 	NN<Text::String> avalue;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = reader->GetAttribCount();
 	while (i < j)
@@ -252,7 +252,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 		else if (name->EqualsICase(UTF8STRC("link")))
 		{
 			Bool found = false;
-			UOSInt k = reader->GetAttribCount();
+			UIntOS k = reader->GetAttribCount();
 			while (k-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(k);
@@ -468,20 +468,20 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 	DEL_CLASS(stm);
 
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = doc.GetChildCnt();
+	UIntOS i = doc.GetChildCnt();
 	while (i-- > 0)
 	{
 		Text::XMLNode *node = doc.GetChild(i);
 		if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("RSS")))
 		{
-			UOSInt j = node->GetChildCnt();
+			UIntOS j = node->GetChildCnt();
 			while (j-- > 0)
 			{
 				Text::XMLNode *node2 = node->GetChild(j);
 				if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("Channel")))
 				{
-					UOSInt k = 0;
-					UOSInt l = node2->GetChildCnt();
+					UIntOS k = 0;
+					UIntOS l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
@@ -579,15 +579,15 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 		}
 		else if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("rdf:RDF")))
 		{
-			UOSInt j = node->GetChildCnt();
-			UOSInt i2 = 0;
+			UIntOS j = node->GetChildCnt();
+			UIntOS i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
 				if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("Channel")))
 				{
-					UOSInt k = 0;
-					UOSInt l = node2->GetChildCnt();
+					UIntOS k = 0;
+					UIntOS l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
@@ -687,8 +687,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 		else if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("feed")))
 		{
 			Text::XMLAttrib *attr;
-			UOSInt j = node->GetChildCnt();
-			UOSInt i2 = 0;
+			UIntOS j = node->GetChildCnt();
+			UIntOS i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
@@ -711,8 +711,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 					else if (node2->name->EqualsICase(UTF8STRC("link")))
 					{
 						Int32 linkType = 0;
-						UOSInt k = 0;
-						UOSInt l = node2->GetAttribCnt();
+						UIntOS k = 0;
+						UIntOS l = node2->GetAttribCnt();
 						while (k < l)
 						{
 							attr = node2->GetAttrib(k);
@@ -753,8 +753,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("author")))
 					{
-						UOSInt k;
-						UOSInt l;
+						UIntOS k;
+						UIntOS l;
 						Text::XMLNode *node3;
 						k = 0;
 						l = node2->GetChildCnt();
@@ -1049,8 +1049,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 				else if (name->EqualsICase(UTF8STRC("link")))
 				{
 					Int32 linkType = 0;
-					UOSInt k = 0;
-					UOSInt l = reader.GetAttribCount();
+					UIntOS k = 0;
+					UIntOS l = reader.GetAttribCount();
 					while (k < l)
 					{
 						attr = reader.GetAttribNoCheck(k);
@@ -1172,7 +1172,7 @@ Net::RSS::~RSS()
 	OPTSTR_DEL(this->webMaster);
 	OPTSTR_DEL(this->generator);
 	OPTSTR_DEL(this->docs);
-	UOSInt i = this->items.GetCount();
+	UIntOS i = this->items.GetCount();
 	NN<RSSItem> item;
 	while (i-- > 0)
 	{
@@ -1186,22 +1186,22 @@ Bool Net::RSS::IsError()
 	return this->items.GetCount() == 0;
 }
 
-UOSInt Net::RSS::Add(NN<Net::RSSItem> val)
+UIntOS Net::RSS::Add(NN<Net::RSSItem> val)
 {
 	return this->items.Add(val);
 }
 
-UOSInt Net::RSS::GetCount() const
+UIntOS Net::RSS::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-NN<Net::RSSItem> Net::RSS::GetItemNoCheck(UOSInt Index) const
+NN<Net::RSSItem> Net::RSS::GetItemNoCheck(UIntOS Index) const
 {
 	return this->items.GetItemNoCheck(Index);
 }
 
-Optional<Net::RSSItem> Net::RSS::GetItem(UOSInt Index) const
+Optional<Net::RSSItem> Net::RSS::GetItem(UIntOS Index) const
 {
 	return this->items.GetItem(Index);
 }

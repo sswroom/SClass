@@ -11,7 +11,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
 	UInt8 *dataBuff = 0;
-	UOSInt buffSize = 0;
+	UIntOS buffSize = 0;
 	UInt8 buffTmp[1024];
 
 	{
@@ -54,8 +54,8 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
 					fs.SeekFromBeginning(ofst);
-					UOSInt totalRead = 0;
-					UOSInt thisRead;
+					UIntOS totalRead = 0;
+					UIntOS thisRead;
 					while (totalRead < buffSize)
 					{
 						thisRead = fs.Read(Data::ByteArray(&dataBuff[totalRead], buffSize - totalRead));
@@ -78,7 +78,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		UnsafeArray<UTF8Char> sptr2;
 		UTF8Char sbuff[512];
 		NN<IO::Path::FindFileSession> sess;
-		UOSInt readSize;
+		UIntOS readSize;
 		IO::MemoryStream mstm;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/firmware/dmi/entries/"));
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC("*"));

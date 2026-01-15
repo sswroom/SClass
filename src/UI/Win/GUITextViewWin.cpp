@@ -34,15 +34,15 @@
 #define HK_SLINEHOME 21
 #define HK_SLINEEND 22
 
-OSInt UI::GUITextView::useCnt = 0;
+IntOS UI::GUITextView::useCnt = 0;
 
 #ifndef GWL_USERDATA
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
+IntOS __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam)
 {
-	UI::GUITextView *me = (UI::GUITextView*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::GUITextView *me = (UI::GUITextView*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	NMHDR *nmhdr;
 	SCROLLINFO si;
@@ -52,7 +52,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	switch (msg)
 	{
 	case WM_COMMAND:
-		ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(HIWORD(wParam), 0);
@@ -325,7 +325,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		return 0;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(nmhdr->code, (void*)lParam);
@@ -337,14 +337,14 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	case WM_SIZE:
 		if (me)
 		{
-			UOSInt scnW = (UInt16)LOWORD(lParam);
-			UOSInt scnH = (UInt16)HIWORD(lParam);
+			UIntOS scnW = (UInt16)LOWORD(lParam);
+			UIntOS scnH = (UInt16)HIWORD(lParam);
 			NN<Media::DrawImage> img;
 			if (me->drawBuff.SetTo(img))
 			{
 				me->deng->DeleteImage(img);
 			}
-			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_IGNORE_ALPHA);
+			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UIntOS>(scnW, scnH), Media::AT_IGNORE_ALPHA);
 			if (me->drawBuff.SetTo(img))
 			{
 				img->SetHDPI(me->GetHDPI());
@@ -448,27 +448,27 @@ Bool UI::GUITextView::IsShiftPressed()
 	return (shiftLock & 0x80) != 0;
 }
 
-void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
+void UI::GUITextView::SetScrollHPos(UIntOS pos, Bool redraw)
 {
-	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)pos, redraw?TRUE:FALSE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(IntOS)pos, redraw?TRUE:FALSE);
 }
 
-void UI::GUITextView::SetScrollVPos(UOSInt pos, Bool redraw)
+void UI::GUITextView::SetScrollVPos(UIntOS pos, Bool redraw)
 {
-	SetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT, (int)(OSInt)pos, redraw?TRUE:FALSE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT, (int)(IntOS)pos, redraw?TRUE:FALSE);
 }
 
-void UI::GUITextView::SetScrollHRange(UOSInt min, UOSInt max)
+void UI::GUITextView::SetScrollHRange(UIntOS min, UIntOS max)
 {
-	SetScrollRange((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)min, (int)(OSInt)max, TRUE);	
+	SetScrollRange((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(IntOS)min, (int)(IntOS)max, TRUE);	
 }
 
-void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
+void UI::GUITextView::SetScrollVRange(UIntOS min, UIntOS max)
 {
-	SetScrollRange((HWND)this->hwnd.OrNull(), SB_VERT, (int)(OSInt)min, (int)(OSInt)max, TRUE);
+	SetScrollRange((HWND)this->hwnd.OrNull(), SB_VERT, (int)(IntOS)min, (int)(IntOS)max, TRUE);
 }
 
-UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth)
+UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UIntOS strLen, UIntOS pxWidth)
 {
 	NN<Media::GDIImage> img;
 	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
@@ -480,7 +480,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 			HDC hdc = (HDC)img->hdcBmp;
 			SelectObject(hdc, (HFONT)fnt->hfont);
 			Int32 textX;
-			GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+			GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(IntOS)strLen, (int)(IntOS)pxWidth, &textX, 0, &sz);
 			img->DelFont(fnt);
 			return (UInt32)textX;
 		}
@@ -499,13 +499,13 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 			SelectObject(hdc, fnt);
 		}
 		Int32 textX;
-		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(IntOS)strLen, (int)(IntOS)pxWidth, &textX, 0, &sz);
 		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
 		return (UInt32)textX;
 	}
 }
 
-void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height)
+void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UIntOS strLen, OutParam<UIntOS> width, OutParam<UIntOS> height)
 {
 	NN<Media::GDIImage> img;
 	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
@@ -514,9 +514,9 @@ void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, O
 		NN<Media::DrawFont> fnt;
 		if (this->CreateDrawFont(img).SetTo(fnt))
 		{
-			sz = img->GetTextSize(fnt, str, (OSInt)strLen);
-			width.Set((UOSInt)Double2OSInt(sz.x));
-			height.Set((UOSInt)Double2OSInt(sz.y));
+			sz = img->GetTextSize(fnt, str, (IntOS)strLen);
+			width.Set((UIntOS)Double2IntOS(sz.x));
+			height.Set((UIntOS)Double2IntOS(sz.y));
 			img->DelFont(fnt);
 		}
 		else
@@ -534,14 +534,14 @@ void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, O
 		{
 			SelectObject(hdc, fnt);
 		}
-		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, 0, 0, 0, &sz);
+		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(IntOS)strLen, 0, 0, 0, &sz);
 		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
 		width.Set((UInt32)sz.cx);
 		height.Set((UInt32)sz.cy);
 	}
 }
 
-void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
+void UI::GUITextView::SetCaretPos(IntOS scnX, IntOS scnY)
 {
 	::SetCaretPos((int)scnX, (int)scnY);
 }
@@ -595,7 +595,7 @@ Text::CStringNN UI::GUITextView::GetObjectClass() const
 	return CSTR("TextFileView");
 }
 
-OSInt UI::GUITextView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITextView::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -607,12 +607,12 @@ void UI::GUITextView::UpdateFont()
 	this->Redraw();
 }
 
-OSInt UI::GUITextView::GetScrollHPos()
+IntOS UI::GUITextView::GetScrollHPos()
 {
 	return ::GetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ);
 }
 
-OSInt UI::GUITextView::GetScrollVPos()
+IntOS UI::GUITextView::GetScrollVPos()
 {
 	return ::GetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT);
 }

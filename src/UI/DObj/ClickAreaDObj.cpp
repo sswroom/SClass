@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/DObj/ClickAreaDObj.h"
 
-UI::DObj::ClickAreaDObj::ClickAreaDObj(NN<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
+UI::DObj::ClickAreaDObj::ClickAreaDObj(NN<Media::DrawEngine> deng, Math::Coord2D<IntOS> tl, IntOS width, IntOS height, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->width = width;
@@ -28,9 +28,9 @@ void UI::DObj::ClickAreaDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 }
 
-Bool UI::DObj::ClickAreaDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::ClickAreaDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
-	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	Math::Coord2D<IntOS> tl = this->GetCurrPos();
 	if (scnPos.x >= tl.x && scnPos.x < tl.x + this->width && scnPos.y >= tl.y && scnPos.y < tl.y + this->height)
 		return true;
 	return false;

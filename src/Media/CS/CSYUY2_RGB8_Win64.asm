@@ -2,7 +2,7 @@ section .text
 
 global CSYUY2_RGB8_do_yuy2rgb
 
-;void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 edi
 ;8 esi
 ;16 ebx
@@ -25,7 +25,7 @@ CSYUY2_RGB8_do_yuy2rgb:
 	mov rdi,rdx ;dest
 	lea rdx,[r8*4] ;width
 	shr r8,1
-	sub r8,2 ;width				OSInt wsize = (width >> 1) - 2;
+	sub r8,2 ;width				IntOS wsize = (width >> 1) - 2;
 	sub qword [rsp+64],rdx ;dbpl
 
 	mov rbx,qword [rsp+72] ;yuv2rgb

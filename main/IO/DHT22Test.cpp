@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Double rh;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

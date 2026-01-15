@@ -8,12 +8,12 @@
 #include "Data/ByteBuffer.h"
 #include "Data/RandomBytesGenerator.h"
 
-UOSInt Crypto::Encrypt::RNCryptor::RemovePadding(UnsafeArray<UInt8> buff, UOSInt buffSize)
+UIntOS Crypto::Encrypt::RNCryptor::RemovePadding(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	UInt8 paddingSize = buff[buffSize - 1];
 	if (paddingSize > 0 && paddingSize <= 15)
 	{
-		UOSInt i = paddingSize;
+		UIntOS i = paddingSize;
 		while (i-- > 0)
 		{
 			if (buff[buffSize - i - 1] != paddingSize)
@@ -46,7 +46,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 		aes.SetChainMode(Crypto::Encrypt::ChainMode::CBC);
 		aes.SetIV(&header[18]);
 		UInt64 sizeLeft = fileLength - 66;
-		UOSInt readSize;
+		UIntOS readSize;
 		UInt8 *destBuff;
 		Bool succ = true;
 		Crypto::Hash::SHA256 sha256;
@@ -75,7 +75,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 			}
 			if (succ && sizeLeft > 0)
 			{
-				readSize = srcStream->Read(srcBuff.WithSize((UOSInt)sizeLeft));
+				readSize = srcStream->Read(srcBuff.WithSize((UIntOS)sizeLeft));
 				if (readSize != sizeLeft)
 				{
 					succ = false;
@@ -95,7 +95,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 		}
 		else
 		{
-			readSize = (UOSInt)sizeLeft;
+			readSize = (UIntOS)sizeLeft;
 			Data::ByteBuffer srcBuff(readSize);
 			destBuff = MemAlloc(UInt8, readSize);
 			readSize = srcStream->Read(srcBuff);
@@ -145,26 +145,26 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO
 	Data::RandomBytesGenerator rand;
 	rand.NextBytes(&header[2], 32);
 	UInt8 paddingSize = 0;
-	Data::ByteBuffer srcBuff((UOSInt)fileLength + 16);
-	if (srcStream->Read(srcBuff.WithSize((UOSInt)fileLength)) != fileLength)
+	Data::ByteBuffer srcBuff((UIntOS)fileLength + 16);
+	if (srcStream->Read(srcBuff.WithSize((UIntOS)fileLength)) != fileLength)
 	{
 		return false;
 	}
 	if (fileLength & 15)
 	{
 		paddingSize = (UInt8)(16 - (fileLength & 15));
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < paddingSize)
 		{
-			srcBuff[(UOSInt)fileLength + i] = paddingSize;
+			srcBuff[(UIntOS)fileLength + i] = paddingSize;
 			i++;
 		}
-		fileLength += (UOSInt)paddingSize;
+		fileLength += (UIntOS)paddingSize;
 	}
 	UInt8 encKey[32];
 	UInt8 hmacKey[32];
 	UInt8 hmacCalc[32];
-	UInt8 *destBuff = MemAlloc(UInt8, (UOSInt)fileLength);
+	UInt8 *destBuff = MemAlloc(UInt8, (UIntOS)fileLength);
 
 	Crypto::Hash::SHA1 sha1;
 	Crypto::Hash::HMAC hmacSHA1(sha1, password.v, password.leng);
@@ -176,12 +176,12 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO
 	Crypto::Hash::SHA256 sha256;
 	Crypto::Hash::HMAC hmac(sha256, hmacKey, 32);
 	hmac.Calc(header, 34);
-	aes.Encrypt(srcBuff.Arr().Ptr(), (UOSInt)fileLength, destBuff);
-	hmac.Calc(destBuff, (UOSInt)fileLength);
+	aes.Encrypt(srcBuff.Arr().Ptr(), (UIntOS)fileLength, destBuff);
+	hmac.Calc(destBuff, (UIntOS)fileLength);
 	hmac.GetValue(hmacCalc);
 	Bool succ = true;
 	if (destStream->Write(Data::ByteArrayR(header, 34)) != 34 ||
-		destStream->Write(Data::ByteArrayR(destBuff, (UOSInt)fileLength)) != fileLength ||
+		destStream->Write(Data::ByteArrayR(destBuff, (UIntOS)fileLength)) != fileLength ||
 		destStream->Write(Data::ByteArrayR(hmacCalc, 32)) != 32)
 	{
 		succ = false;

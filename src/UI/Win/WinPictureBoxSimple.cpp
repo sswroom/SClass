@@ -14,7 +14,7 @@ Int32 UI::Win::WinPictureBoxSimple::useCnt = 0;
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::Win::WinPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
 	UI::Win::WinPictureBoxSimple *me = (UI::Win::WinPictureBoxSimple*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
@@ -27,25 +27,25 @@ OSInt __stdcall UI::Win::WinPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, 
 		me->OnPaint();
 		return 0;
 	case WM_LBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_LBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_MOUSEMOVE:
-		me->EventMouseMove(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
+		me->EventMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		return 0;
 	}
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
@@ -73,8 +73,8 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 	NN<Media::DrawImage> prevImageD;
 	if (this->prevImageD.SetTo(prevImageD))
 	{
-		OSInt x = (rc.right - rc.left - (OSInt)prevImageD->GetWidth()) >> 1;
-		OSInt y = (rc.bottom - rc.top - (OSInt)prevImageD->GetHeight()) >> 1;
+		IntOS x = (rc.right - rc.left - (IntOS)prevImageD->GetWidth()) >> 1;
+		IntOS y = (rc.bottom - rc.top - (IntOS)prevImageD->GetHeight()) >> 1;
 
 		if (this->noBGColor || prevImageD->GetAlphaType() == Media::AT_IGNORE_ALPHA || prevImageD->GetAlphaType() == Media::AT_ALPHA_ALL_FF)
 		{
@@ -189,7 +189,7 @@ UI::Win::WinPictureBoxSimple::~WinPictureBoxSimple()
 	}
 }
 
-OSInt UI::Win::WinPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

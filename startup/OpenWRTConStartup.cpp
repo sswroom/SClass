@@ -10,7 +10,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl);
 struct LinuxProgControl : public Core::ProgControl
 {
 	UTF8Char **argv;
-	OSInt argc;
+	IntOS argc;
 };
 
 void LinuxProgControl_OnSignal(Int32 sigNum)
@@ -35,17 +35,17 @@ Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgCo
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
 	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
-void LinuxProgControl_Create(LinuxProgControl *ctrl, OSInt argc, Char **argv)
+void LinuxProgControl_Create(LinuxProgControl *ctrl, IntOS argc, Char **argv)
 {
-	OSInt buffSize;
-	OSInt i;
+	IntOS buffSize;
+	IntOS i;
 	ctrl->argv = (UTF8Char**)argv;
 	ctrl->argc = argc;
 

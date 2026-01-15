@@ -34,13 +34,13 @@ namespace SSWR
 			NN<Text::String> colName;
 			Text::CString schema;
 			Text::CStringNN table;
-			UOSInt colIndex;
+			UIntOS colIndex;
 			Data::ArrayListStringNN nameList;
 
 			void Generate();
 			static void __stdcall OnUpdate(AnyType userObj);
 		public:
-			AVIRDBGenEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, UOSInt colIndex);
+			AVIRDBGenEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, UIntOS colIndex);
 			virtual ~AVIRDBGenEnumForm();
 
 			virtual void OnMonitorChanged();

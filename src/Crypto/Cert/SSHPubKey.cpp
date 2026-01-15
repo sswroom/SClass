@@ -16,16 +16,16 @@ UnsafeArray<const UInt8> Crypto::Cert::SSHPubKey::GetArr() const
 	return this->buff.Arr();
 }
 
-UOSInt Crypto::Cert::SSHPubKey::GetSize() const
+UIntOS Crypto::Cert::SSHPubKey::GetSize() const
 {
 	return this->buff.GetSize();
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAModulus(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAModulus(OptOut<UIntOS> size) const
 {
 	if (this->buff.GetSize() < 15)
 		return nullptr;
-	UOSInt i;
+	UIntOS i;
 	UInt32 buffSize;
 	if (this->buff.ReadMU32(0) != 7 || !Text::CStringNN(&this->buff[4], 7).Equals(CSTR("ssh-rsa")))
 		return nullptr;
@@ -41,11 +41,11 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAModulus(OptOut<UOSInt
 	return &this->buff[i];	
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAPublicExponent(OptOut<UOSInt> size) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAPublicExponent(OptOut<UIntOS> size) const
 {
 	if (this->buff.GetSize() < 15)
 		return nullptr;
-	UOSInt i;
+	UIntOS i;
 	UInt32 buffSize;
 	if (this->buff.ReadMU32(0) != 7 || !Text::CStringNN(&this->buff[4], 7).Equals(CSTR("ssh-rsa")))
 		return nullptr;
@@ -60,9 +60,9 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAPublicExponent(OptOut
 Optional<Crypto::Cert::X509Key> Crypto::Cert::SSHPubKey::CreateKey() const
 {
 	UnsafeArray<const UInt8> modulus;
-	UOSInt modulusSize;
+	UIntOS modulusSize;
 	UnsafeArray<const UInt8> publicExponent;
-	UOSInt publicExponentSize;
+	UIntOS publicExponentSize;
 	if (GetRSAModulus(modulusSize).SetTo(modulus) && GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent))
 	{
 		return Crypto::Cert::X509Key::CreateRSAPublicKey(this->sourceNameObj->ToCString(), Data::ByteArrayR(modulus, modulusSize), Data::ByteArrayR(publicExponent, publicExponentSize));
@@ -74,7 +74,7 @@ NN<Crypto::Cert::SSHPubKey> Crypto::Cert::SSHPubKey::CreateRSAPublicKey(Text::CS
 {
 	static UInt8 header[] = {0x00, 0x00, 0x00, 0x07, 0x73, 0x73, 0x68, 0x2D, 0x72, 0x73, 0x61};
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, modulus.GetSize() + publicExponent.GetSize() + 19);
-	UOSInt i;
+	UIntOS i;
 	MemCopyNO(buff.Ptr(), header, sizeof(header));
 	i = sizeof(header);
 	WriteMUInt32(&buff[i], publicExponent.GetSize());

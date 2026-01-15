@@ -14,8 +14,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 	if (sb.GetLength() > 0)
 	{
 		Data::DateTime dt;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
 		NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());

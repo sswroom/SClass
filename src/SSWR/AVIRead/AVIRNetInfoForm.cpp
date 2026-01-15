@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[16];
 	UInt32 ipAddr;
-	UOSInt i;
+	UIntOS i;
 	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	Net::ConnectionInfo::ConnectionType connType;
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
-	UOSInt i = me->tcMain->GetSelectedIndex();
+	UIntOS i = me->tcMain->GetSelectedIndex();
 	if (i == 1)
 	{
 		me->UpdateIPStats();
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(AnyType us
 		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), true))
 		{
-			UOSInt i = me->lbAdaptors->GetSelectedIndex();
+			UIntOS i = me->lbAdaptors->GetSelectedIndex();
 			me->UpdateConns();
 			me->lbAdaptors->SetSelectedIndex(i);
 		}
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(AnyType u
 		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), false))
 		{
-			UOSInt i = me->lbAdaptors->GetSelectedIndex();
+			UIntOS i = me->lbAdaptors->GetSelectedIndex();
 			me->UpdateConns();
 			me->lbAdaptors->SetSelectedIndex(i);
 		}
@@ -388,14 +388,14 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateUDPStats()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 ipAddr;
 	UInt8 buff[32];
-	UOSInt v;
+	UIntOS v;
 
 
 	Data::ArrayListNN<Net::ARPInfo> arpList;
@@ -447,7 +447,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 {
 	NN<Net::ConnectionInfo> connInfo;
-	UOSInt i;
+	UIntOS i;
 	i = this->conns.GetCount();
 	while (i-- > 0)
 	{
@@ -462,8 +462,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	UnsafeArray<UTF8Char> sptr;
 	this->ReleaseConns();
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::ConnectionInfo> connInfo;
 	this->lbAdaptors->ClearItems();
 	i = 0;
@@ -485,8 +485,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::ReleaseWIFIIFs()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::WirelessLAN::Interface> interf;
 	if (!this->wlan.IsError())
 	{
@@ -515,9 +515,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		Data::ArrayListNN<Net::WirelessLAN::Network> networks;
 		NN<Net::WirelessLAN::Network> network;
 		interf->GetNetworks(networks);
@@ -586,9 +586,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SocketFactory::PortInfo3> portInfo;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	this->lvPortInfo->ClearItems();
 	this->core->GetSocketFactory()->QueryPortInfos2(portInfoList, Net::SocketFactory::PT_ALL, 0);
 	i = 0;

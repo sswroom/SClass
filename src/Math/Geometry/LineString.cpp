@@ -7,7 +7,7 @@
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 
-Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : Vector2D(srid)
+Math::Geometry::LineString::LineString(UInt32 srid, UIntOS nPoint, Bool hasZ, Bool hasM) : Vector2D(srid)
 {
 	this->pointArr = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
@@ -30,7 +30,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
-Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : Vector2D(srid)
+Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : Vector2D(srid)
 {
 	this->pointArr = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
@@ -75,7 +75,7 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LineString::GetVectorType()
 Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 {
 	UnsafeArray<const Math::Coord2DDbl> points;
-	UOSInt nPoints;
+	UIntOS nPoints;
 
 	Double maxX;
 	Double maxY;
@@ -89,7 +89,7 @@ Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 	}
 	else
 	{
-		UOSInt i = nPoints;
+		UIntOS i = nPoints;
 		minX = maxX = points[0].x;
 		minY = maxY = points[0].y;
 
@@ -127,7 +127,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 
 Math::RectAreaDbl Math::Geometry::LineString::GetBounds() const
 {
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	Math::Coord2DDbl min;
 	Math::Coord2DDbl max;
 	min = max = this->pointArr[0];
@@ -142,7 +142,7 @@ Math::RectAreaDbl Math::Geometry::LineString::GetBounds() const
 
 Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
-	UOSInt l;
+	UIntOS l;
 	UnsafeArray<Math::Coord2DDbl> points;
 
 	points = this->pointArr;
@@ -252,9 +252,9 @@ Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> v
 		return false;
 	}
 	NN<LineString> ls = NN<LineString>::ConvertFrom(vec);
-	UOSInt nPoint;
-	UOSInt i;
-	UOSInt j;
+	UIntOS nPoint;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<const Math::Coord2DDbl> points = ls->GetPointListRead(nPoint);
 	UnsafeArray<Math::Coord2DDbl> newPoints;
 	if (points[0] == this->pointArr[this->nPoint - 1])
@@ -329,7 +329,7 @@ Bool Math::Geometry::LineString::GetZBounds(OutParam<Double> min, OutParam<Doubl
 		return false;
 	Double minVal = zArr[0];
 	Double maxVal = minVal;
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 1)
 	{
 		if (zArr[i] < minVal)
@@ -349,7 +349,7 @@ Bool Math::Geometry::LineString::GetMBounds(OutParam<Double> min, OutParam<Doubl
 		return false;
 	Double minVal = mArr[0];
 	Double maxVal = minVal;
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 1)
 	{
 		if (mArr[i] < minVal)
@@ -368,7 +368,7 @@ void Math::Geometry::LineString::Convert(NN<Math::CoordinateConverter> converter
 	if (this->zArr.SetTo(zArr))
 	{
 		Math::Vector3 tmpPos;
-		UOSInt i = this->nPoint;
+		UIntOS i = this->nPoint;
 		while (i-- > 0)
 		{
 			tmpPos = converter->Convert3D(Math::Vector3(this->pointArr[i], zArr[i]));
@@ -393,7 +393,7 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 	if (vec->GetVectorType() == this->GetVectorType() && (no3DGeometry || (this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())))
 	{
 		NN<Math::Geometry::LineString> pl = NN<Math::Geometry::LineString>::ConvertFrom(vec);
-		UOSInt nPoint;
+		UIntOS nPoint;
 		UnsafeArray<Math::Coord2DDbl> ptList = pl->GetPointList(nPoint);
 		UnsafeArray<Double> thisArr;
 		UnsafeArray<Double> valArr;
@@ -401,7 +401,7 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 		{
 			return false;
 		}
-		UOSInt i;
+		UIntOS i;
 		if (nearlyVal)
 		{
 			i = nPoint;
@@ -482,7 +482,7 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 	}
 }
 
-UOSInt Math::Geometry::LineString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::LineString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	return coordList->AddRange(this->pointArr, this->nPoint);
 }
@@ -493,8 +493,8 @@ Bool Math::Geometry::LineString::InsideOrTouch(Math::Coord2DDbl coord) const
 	Double thisY;
 	Double lastX;
 	Double lastY;
-	UOSInt j;
-	UOSInt l;
+	UIntOS j;
+	UIntOS l;
 	Double tmpX;
 
 	l = this->nPoint;
@@ -538,7 +538,7 @@ Bool Math::Geometry::LineString::InsideOrTouch(Math::Coord2DDbl coord) const
 
 void Math::Geometry::LineString::SwapXY()
 {
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 0)
 	{
 		this->pointArr[i] = this->pointArr[i].SwapXY();
@@ -547,14 +547,14 @@ void Math::Geometry::LineString::SwapXY()
 
 void Math::Geometry::LineString::MultiplyCoordinatesXY(Double v)
 {
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 0)
 	{
 		this->pointArr[i] = this->pointArr[i] * v;
 	}
 }
 
-UOSInt Math::Geometry::LineString::GetPointCount() const
+UIntOS Math::Geometry::LineString::GetPointCount() const
 {
 	return this->nPoint;
 }
@@ -564,13 +564,13 @@ Bool Math::Geometry::LineString::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::LineString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
+UIntOS Math::Geometry::LineString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (this->nPoint < 2)
 		return 0;
-	UOSInt initCnt = xList->GetCount();
-	UOSInt i = 1;
-	UOSInt j = this->nPoint;
+	UIntOS initCnt = xList->GetCount();
+	UIntOS i = 1;
+	UIntOS j = this->nPoint;
 	Math::Coord2DDbl lastPt = this->pointArr[0];
 	Math::Coord2DDbl thisPt;
 	Double thisX;
@@ -610,7 +610,7 @@ Math::Coord2DDbl Math::Geometry::LineString::GetDisplayCenter() const
 	return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
 }
 
-Math::Coord2DDbl Math::Geometry::LineString::GetPoint(UOSInt index) const
+Math::Coord2DDbl Math::Geometry::LineString::GetPoint(UIntOS index) const
 {
 	if (index >= this->nPoint)
 	{
@@ -626,7 +626,7 @@ Double Math::Geometry::LineString::CalcHLength() const
 {
 	Double leng = 0;
 	Math::Coord2DDbl diff;
-	UOSInt i = this->nPoint;
+	UIntOS i = this->nPoint;
 	while (i-- > 1)
 	{
 		diff = this->pointArr[i] - this->pointArr[i - 1];
@@ -643,7 +643,7 @@ Double Math::Geometry::LineString::Calc3DLength() const
 		Double leng = 0;
 		Math::Coord2DDbl diff;
 		Double zDiff;
-		UOSInt i = this->nPoint;
+		UIntOS i = this->nPoint;
 		while (i-- > 1)
 		{
 			diff = this->pointArr[i] - this->pointArr[i - 1];
@@ -662,8 +662,8 @@ void Math::Geometry::LineString::Reverse()
 {
 	if (this->nPoint == 0)
 		return;
-	UOSInt i = 0;
-	UOSInt j = this->nPoint - 1;
+	UIntOS i = 0;
+	UIntOS j = this->nPoint - 1;
 	Math::Coord2DDbl pos;
 	Double tmpZ;
 	Double tmpM;
@@ -766,14 +766,14 @@ void Math::Geometry::LineString::GetNearEnd(Math::Coord2DDbl coord, OutParam<Mat
 
 Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)
 {
-	UOSInt l;
+	UIntOS l;
 	l = this->nPoint;
 
 	Math::Coord2DDbl calPt;
 	Double calZ;
 	Double calM;
 	Bool isPoint;
-	UOSInt minId = (UOSInt)this->GetPointNo(pt, isPoint, calPt, calZ, calM);
+	UIntOS minId = (UIntOS)this->GetPointNo(pt, isPoint, calPt, calZ, calM);
 
 	UnsafeArray<Math::Coord2DDbl> oldPoints;
 	UnsafeArray<Math::Coord2DDbl> newPoints;
@@ -786,7 +786,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 	Math::Geometry::LineString *newPL;
 	if (isPoint)
 	{
-		if (minId == this->nPoint - 1 || minId == 0 || minId == (UOSInt)-1)
+		if (minId == this->nPoint - 1 || minId == 0 || minId == (UIntOS)-1)
 		{
 			return nullptr;
 		}
@@ -929,9 +929,9 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 	}
 }
 
-OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPtOutPtr, OptOut<Double> calZOutPtr, OptOut<Double> calMOutPtr)
+IntOS Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPtOutPtr, OptOut<Double> calZOutPtr, OptOut<Double> calMOutPtr)
 {
-	UOSInt l;
+	UIntOS l;
 	UnsafeArray<Math::Coord2DDbl> points;
 	UnsafeArrayOpt<Double> zArr;
 	UnsafeArrayOpt<Double> mArr;
@@ -954,7 +954,7 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> i
 	Double calM;
 	Double calD;
 	Double dist = 0x7fffffff;
-	OSInt minId = -1;
+	IntOS minId = -1;
 	Bool isPointI = false;
 
 	l--;
@@ -1073,7 +1073,7 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> i
 			calZOut = calZ;
 			calMOut = calM;
 			isPointI = false;
-			minId = (OSInt)l;
+			minId = (IntOS)l;
 		}
 	}
 	l = this->nPoint;
@@ -1088,7 +1088,7 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> i
 			calPtOut = points[l];
 			calZOut = zArr.SetTo(arr)?arr[l]:0;
 			calMOut = mArr.SetTo(arr)?arr[l]:0;
-			minId = (OSInt)l;
+			minId = (IntOS)l;
 			isPointI = true;
 		}
 	}
@@ -1115,7 +1115,7 @@ Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDis
 	Double t1;
 	Double t2;
 	Double deg;
-	UOSInt i;
+	UIntOS i;
 
 	deg = Math_ArcTan2(this->pointArr[1].x - this->pointArr[0].x, this->pointArr[1].y - this->pointArr[0].y);
 	lastPtX = -Math_Cos(deg) * dist + this->pointArr[0].x;
@@ -1223,7 +1223,7 @@ Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDis
 
 	Math::Geometry::Polygon *pg;
 	NN<Math::Geometry::LinearRing> lr;
-	UOSInt nPoints;
+	UIntOS nPoints;
 	UnsafeArray<Math::Coord2DDbl> pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount() >> 1, false, false));
@@ -1253,11 +1253,11 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Da
 		return nullptr;
 	Bool hasZ = true;
 	Bool hasM = true;
-	UOSInt nPoints = 0;
+	UIntOS nPoints = 0;
 	Math::Coord2DDbl lastPt;
-	UOSInt i = 1;
-	UOSInt j = lines->GetCount();
-	UOSInt k;
+	UIntOS i = 1;
+	UIntOS j = lines->GetCount();
+	UIntOS k;
 	NN<LineString> ls;
 	NN<LineString> ls2;
 	UInt32 srid;
@@ -1319,10 +1319,10 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Da
 	UnsafeArray<Math::Coord2DDbl> sptList;
 	UnsafeArray<Double> sList;
 	UnsafeArray<Double> nList;
-	UOSInt i2;
-	UOSInt j2;
-	UOSInt tmp;
-	UOSInt startI;
+	UIntOS i2;
+	UIntOS j2;
+	UIntOS tmp;
+	UIntOS startI;
 	ptList = newLine->GetPointList(tmp);
 	k = 0;
 	i = 0;

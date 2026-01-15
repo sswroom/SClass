@@ -30,9 +30,9 @@ namespace Media
 		Optional<Text::String> GetSubtype() const;
 		Optional<Text::String> GetFilter() const;
 		Optional<Text::String> GetColorSpace() const;
-		UOSInt GetBitPerComponent() const;
-		UOSInt GetWidth() const;
-		UOSInt GetHeight() const;
+		UIntOS GetBitPerComponent() const;
+		UIntOS GetWidth() const;
+		UIntOS GetHeight() const;
 		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 		Optional<IO::StreamData> GetRAWData() const;
 		Optional<IO::StreamData> GetData();

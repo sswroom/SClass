@@ -13,7 +13,7 @@ Media::VideoSourceBase::~VideoSourceBase()
 {
 }
 
-void Media::VideoSourceBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
+void Media::VideoSourceBase::SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom)
 {
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
@@ -21,7 +21,7 @@ void Media::VideoSourceBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSI
 	this->cropBottom = cropBottom;
 }
 
-void Media::VideoSourceBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
+void Media::VideoSourceBase::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
 	cropLeft.Set(this->cropLeft);
 	cropTop.Set(this->cropTop);

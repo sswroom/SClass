@@ -36,7 +36,7 @@ namespace Map
 		ASTRUCT GPSRecordFull : public GPSRecord3
 		{
 			UnsafeArrayOpt<const UInt8> extraData;
-			UOSInt extraDataSize;
+			UIntOS extraDataSize;
 		};
 
 		typedef struct
@@ -46,7 +46,7 @@ namespace Map
 			Double minLat;
 			Double minLon;
 			Optional<Text::String> name;
-			UOSInt nRecords;
+			UIntOS nRecords;
 			UnsafeArray<GPSRecordFull> records;
 			Bool trackUnsorted;
 		} TrackRecord;
@@ -56,9 +56,9 @@ namespace Map
 		public:
 			virtual ~GPSExtraParser() {};
 			
-			virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize) = 0;
-			virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual UIntOS GetExtraCount(UnsafeArray<const UInt8> buff, UIntOS buffSize) = 0;
+			virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
 		};
 	private:
 		UInt32 codePage;
@@ -89,17 +89,17 @@ namespace Map
 		virtual ~GPSTrack();
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
-		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UIntOS GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
+		virtual UIntOS GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UIntOS GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
-		virtual UOSInt GetRecordCnt() const;
+		virtual UIntOS GetRecordCnt() const;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
-		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex);
-		virtual UOSInt GetColumnCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const;
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const;
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex);
+		virtual UIntOS GetColumnCnt() const;
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const;
+		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const;
+		virtual Bool GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const;
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
@@ -109,36 +109,36 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names); // no need to release
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names); // no need to release
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
-		virtual UOSInt GetGeomCol() const;
+		virtual UIntOS GetGeomCol() const;
 		virtual ObjectClass GetObjectClass() const;
 		
 		void NewTrack();
-		UOSInt AddRecord(NN<GPSRecord3> rec);
-		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
+		UIntOS AddRecord(NN<GPSRecord3> rec);
+		Bool RemoveRecordRange(UIntOS index, UIntOS recStart, UIntOS recEnd);
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);
 		void GetTrackNames(NN<Data::ArrayListString> nameArr);
-		Optional<Text::String> GetTrackName(UOSInt index);
-		Bool GetTrackStartTime(UOSInt index, NN<Data::DateTime> dt);
-		Data::Timestamp GetTrackStartTime(UOSInt index);
-		Bool GetTrackEndTime(UOSInt index, NN<Data::DateTime> dt);
-		Data::Timestamp GetTrackEndTime(UOSInt index);
+		Optional<Text::String> GetTrackName(UIntOS index);
+		Bool GetTrackStartTime(UIntOS index, NN<Data::DateTime> dt);
+		Data::Timestamp GetTrackStartTime(UIntOS index);
+		Bool GetTrackEndTime(UIntOS index, NN<Data::DateTime> dt);
+		Data::Timestamp GetTrackEndTime(UIntOS index);
 
-		UOSInt GetTrackCnt();
-		UnsafeArrayOpt<GPSRecordFull> GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
+		UIntOS GetTrackCnt();
+		UnsafeArrayOpt<GPSRecordFull> GetTrack(UIntOS index, OutParam<UIntOS> recordCnt);
 		Math::Coord2DDbl GetPosByTime(const Data::Timestamp &ts);
 		Math::Coord2DDbl GetPosByTime(NN<Data::DateTime> dt);
 		Math::Coord2DDbl GetPosByTicks(Int64 tiemTicks);
 
 		void SetExtraParser(Optional<GPSExtraParser> parser);
-		void SetExtraDataIndex(UOSInt recIndex, UnsafeArray<const UInt8> data, UOSInt dataSize);
-		UnsafeArrayOpt<const UInt8> GetExtraData(UOSInt trackIndex, UOSInt recIndex, OutParam<UOSInt> dataSize);
-		UOSInt GetExtraCount(UOSInt trackIndex, UOSInt recIndex);
-		Bool GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);
-		Bool GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);
+		void SetExtraDataIndex(UIntOS recIndex, UnsafeArray<const UInt8> data, UIntOS dataSize);
+		UnsafeArrayOpt<const UInt8> GetExtraData(UIntOS trackIndex, UIntOS recIndex, OutParam<UIntOS> dataSize);
+		UIntOS GetExtraCount(UIntOS trackIndex, UIntOS recIndex);
+		Bool GetExtraName(UIntOS trackIndex, UIntOS recIndex, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb);
+		Bool GetExtraValueStr(UIntOS trackIndex, UIntOS recIndex, UIntOS extIndex, NN<Text::StringBuilderUTF8> sb);
 		void SortRecords();
 	};
 
@@ -155,37 +155,37 @@ namespace Map
 	{
 	private:
 		NN<Map::GPSTrack> gps;
-		OSInt currRow;
+		IntOS currRow;
 		Optional<GPSTrack::GPSRecordFull> currRec;
 	public:
 		GPSDataReader(NN<Map::GPSTrack> gps);
 		virtual ~GPSDataReader();
 
 		virtual Bool ReadNext();
-		virtual UOSInt ColCount();
-		virtual OSInt GetRowChanged();
+		virtual UIntOS ColCount();
+		virtual IntOS GetRowChanged();
 
-		virtual Int32 GetInt32(UOSInt colIndex);
-		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
-		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
-		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
-		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDblOrNAN(UOSInt colIndex);
-		virtual Bool GetBool(UOSInt colIndex);
-		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
-		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Int32 GetInt32(UIntOS colIndex);
+		virtual Int64 GetInt64(UIntOS colIndex);
+		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff);
+		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb);
+		virtual Optional<Text::String> GetNewStr(UIntOS colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize);
+		virtual Data::Timestamp GetTimestamp(UIntOS colIndex);
+		virtual Double GetDblOrNAN(UIntOS colIndex);
+		virtual Bool GetBool(UIntOS colIndex);
+		virtual UIntOS GetBinarySize(UIntOS colIndex);
+		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
+		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
 
-		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
-		virtual Bool IsNull(UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
+		virtual Bool IsNull(UIntOS colIndex);
+		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
+		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 
-		static Text::CString GetName(UOSInt colIndex, Bool hasAltitude);
-		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool hasAltitude);
+		static Text::CString GetName(UIntOS colIndex, Bool hasAltitude);
+		static Bool GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef, Bool hasAltitude);
 	};
 }
 #endif

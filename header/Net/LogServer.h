@@ -24,7 +24,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 *buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			Optional<IPStatus> status;
 		} ClientStatus;
 
@@ -56,8 +56,8 @@ namespace Net
 		Bool IsError();
 		void HandleClientLog(ClientLogHandler hdlr, AnyType userObj);
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	};
 }
 #endif

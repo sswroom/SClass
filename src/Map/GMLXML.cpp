@@ -17,14 +17,14 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 	ParseEnv env;
 	env.csys = nullptr;
 	env.srid = 0;
-	UOSInt colCnt = 0;
+	UIntOS colCnt = 0;
 	Data::ArrayListArr<const UTF8Char> nameList;
 	Data::ArrayListObj<Text::String *> valList;
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> ccols;
-	UOSInt i;
+	UIntOS i;
 	NN<Math::Geometry::Vector2D> newVec;
 	while (reader->NextElementName().SetTo(nodeText))
 	{
@@ -118,7 +118,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 					}
 					else
 					{
-						UOSInt i = nodeText->IndexOf(':');
+						UIntOS i = nodeText->IndexOf(':');
 						if (i != INVALID_INDEX)
 						{
 							nameList.Add(Text::StrCopyNew(reader->GetNodeTextNN()->v + i + 1).Ptr());
@@ -291,15 +291,15 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 {
 	UnsafeArray<UTF8Char> sarr[4];
 	UnsafeArray<UTF8Char> sarr2[4];
-	UOSInt sarr2Cnt;
+	UIntOS sarr2Cnt;
 	Math::Geometry::Vector2D *vec = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::XMLAttrib> attr;
 	NN<Math::CoordinateSystem> csys;
 	NN<Text::String> aname;
 	Bool axisInvert = false;
-	UOSInt dimension = 0;
+	UIntOS dimension = 0;
 	i = reader->GetAttribCount();
 	while (i-- > 0)
 	{
@@ -315,7 +315,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		}
 		else if (aname->Equals(UTF8STRC("srsDimension")))
 		{
-			dimension = Text::String::OrEmpty(attr->value)->ToUOSInt();
+			dimension = Text::String::OrEmpty(attr->value)->ToUIntOS();
 		}
 	}
 

@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Manage::HiResClock *clk;
 	UInt32 i;
-	OSInt j;
+	IntOS j;
 	Double t;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(clk, Manage::HiResClock());

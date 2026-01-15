@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::FNTParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[118];
-	OSInt hdrSize;
+	IntOS hdrSize;
 	UInt32 fsize;
 	Int32 ver;
 	if (fd->GetRealData(0, 118, BYTEARR(hdr)) != 118)
@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 		return 0;
 	}
 	Media::FontRenderer *font = 0;
-	if ((OSInt)fsize > hdrSize && fsize <= fd->GetDataSize())
+	if ((IntOS)fsize > hdrSize && fsize <= fd->GetDataSize())
 	{
 		Data::ByteBuffer fontBuff(fsize);
 		if (fd->GetRealData(0, fsize, fontBuff) == fsize)
@@ -71,7 +71,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 	return font;
 }
 
-Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UOSInt buffSize)
+Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize)
 {
 	UInt32 ver;
 	if (buffSize < 118)
@@ -102,13 +102,13 @@ Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::Strin
 	return font;
 }
 
-UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb)
+UIntOS Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (fileSize < 100)
 		return 0;
 	UInt16 ver = ReadUInt16(&fileBuff[0]);
 	UInt32 fsize = ReadUInt32(&fileBuff[2]);
-	UOSInt hdrSize;
+	UIntOS hdrSize;
 	if (ver == 0x200)
 	{
 		hdrSize = 118;
@@ -180,7 +180,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	sb->AppendC(UTF8STRC("\r\nFace Offset = 0x"));
 	sb->AppendHex32(ReadUInt32(&fileBuff[105]));
 	UInt32 ofst = ReadUInt32(&fileBuff[105]);
-	if (ofst != 0 && ofst < (UOSInt)fileSize)
+	if (ofst != 0 && ofst < (UIntOS)fileSize)
 	{
 		sb->AppendC(UTF8STRC("\r\nFace Name = "));
 		sb->AppendSlow((UTF8Char*)&fileBuff[ofst]);
@@ -192,7 +192,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 		sb->AppendC(UTF8STRC("\r\nBits Offset = 0x"));
 		sb->AppendHex32(ReadUInt32(&fileBuff[113]));
 	}
-	UOSInt i;
+	UIntOS i;
 	UInt32 c;
 	if (ver == 0x200)
 	{
@@ -243,12 +243,12 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	return hdrSize;
 }
 
-void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb)
+void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt nFonts = ReadUInt16(&fileBuff[0]);
-	UOSInt i = 2;
+	UIntOS nFonts = ReadUInt16(&fileBuff[0]);
+	UIntOS i = 2;
 	sb->AppendC(UTF8STRC("Number of Fonts = "));
-	sb->AppendUOSInt(nFonts);
+	sb->AppendUIntOS(nFonts);
 	while (i < fileSize && nFonts-- > 0)
 	{
 		sb->AppendC(UTF8STRC("\r\nUnique Ordinal Identifier = "));

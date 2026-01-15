@@ -46,8 +46,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 		Data::ArrayListStringNN schemaNames;
 		NN<Text::String> s;
 		db->QuerySchemaNames(schemaNames);
-		UOSInt i = 0;
-		UOSInt j = schemaNames.GetCount();
+		UIntOS i = 0;
+		UIntOS j = schemaNames.GetCount();
 		if (j > 0)
 		{
 			while (i < j)
@@ -92,8 +92,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyTyp
 		me->dataSchema = Text::String::NewP(sbuff, sptr);
 		me->dataTables.AddAll(tableNames);
 		me->lvData->ClearItems();
-		UOSInt i = 0;
-		UOSInt j = tableNames.GetCount();
+		UIntOS i = 0;
+		UIntOS j = tableNames.GetCount();
 		while (i < j)
 		{
 			me->dataTableSelected.Add(true);
@@ -126,8 +126,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 		Data::ArrayListStringNN schemaNames;
 		NN<Text::String> s;
 		db->QuerySchemaNames(schemaNames);
-		UOSInt i = 0;
-		UOSInt j = schemaNames.GetCount();
+		UIntOS i = 0;
+		UIntOS j = schemaNames.GetCount();
 		if (j > 0)
 		{
 			while (i < j)
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
 		return;
 	}
-	UOSInt destTableType = me->cboDestTableType->GetSelectedIndex();
+	UIntOS destTableType = me->cboDestTableType->GetSelectedIndex();
 	Bool copyData = me->chkDestCopyData->IsChecked();
 	Bool createDB = me->chkDestCreateDDB->IsChecked();
 	DB::SQLBuilder sql(destDBTool);
@@ -241,8 +241,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 			return;
 		}
 	}
-	UOSInt i = 0;
-	UOSInt j = me->dataTables.GetCount();
+	UIntOS i = 0;
+	UIntOS j = me->dataTables.GetCount();
 	while (i < j)
 	{
 		if (me->dataTables.GetItem(i).SetTo(tableName) && me->dataTableSelected.GetItem(i))
@@ -312,11 +312,11 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 			}
 			if (succ && copyData)
 			{
-				UOSInt rowCopied = 0;
+				UIntOS rowCopied = 0;
 				if (dataConn->QueryTableData(OPTSTR_CSTR(me->dataSchema), tableName->ToCString(), nullptr, 0, 0, 0, nullptr).SetTo(r))
 				{
 					Text::StringBuilderUTF8 sbInsert;
-					UOSInt nInsert = 0;
+					UIntOS nInsert = 0;
 
 					while (r->ReadNext())
 					{
@@ -325,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 							DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, r);
 						else
 							DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
-						UOSInt k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
+						UIntOS k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
 						if (true) //k == INVALID_INDEX)
 						{
 							if (destDBTool->ExecuteNonQuery(sql.ToCString()) != 1)
@@ -399,7 +399,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 					if (succ)
 					{
 						sb.ClearStr();
-						sb.AppendUOSInt(rowCopied);
+						sb.AppendUIntOS(rowCopied);
 						sb.AppendC(UTF8STRC(" rows copied"));
 						me->lvData->SetSubItem(i, 2, sb.ToCString());
 					}
@@ -417,7 +417,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDataDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDataDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	if (index != INVALID_INDEX)
@@ -443,8 +443,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDataSelectNoneClicked(AnyT
 
 void SSWR::AVIRead::AVIRDBCopyTablesForm::SetAllSelect(Bool selected)
 {
-	UOSInt i = 0;
-	UOSInt j = this->dataTableSelected.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->dataTableSelected.GetCount();
 	Bool currSel;
 	while (i < j)
 	{
@@ -548,9 +548,9 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBManagerCtrl> ctrl;
-	UOSInt firstActive = INVALID_INDEX;
-	UOSInt i = 0;
-	UOSInt j = this->dbList->GetCount();
+	UIntOS firstActive = INVALID_INDEX;
+	UIntOS i = 0;
+	UIntOS j = this->dbList->GetCount();
 	while (i < j)
 	{
 		ctrl = this->dbList->GetItemNoCheck(i);
@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRDBCopyTablesForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRDBCopyTablesForm::SetSourceDB(UOSInt index)
+void SSWR::AVIRead::AVIRDBCopyTablesForm::SetSourceDB(UIntOS index)
 {
 	this->cboSourceConn->SetSelectedIndex(index);
 }

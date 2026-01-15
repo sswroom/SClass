@@ -8,7 +8,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 
 	if (argc != 2)

@@ -17,7 +17,7 @@ void __stdcall IO::FileAnalyse::OSMPBFFileAnalyse::ParseThread(NN<Sync::Thread> 
 	if (!me->fd.SetTo(fd))
 		return;
 	Data::ByteBuffer packetBuff(256);
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	ProtocolBuffersMessageFast blobHeader;
 	blobHeader.AddString(true, 1); //type
@@ -68,7 +68,7 @@ void __stdcall IO::FileAnalyse::OSMPBFFileAnalyse::ParseThread(NN<Sync::Thread> 
 			break;
 		}
 		blobHeader.ClearValues();
-		if (!blobHeader.ParseMsssage(packetBuff.Arr(), (UOSInt)thisSize))
+		if (!blobHeader.ParseMsssage(packetBuff.Arr(), (UIntOS)thisSize))
 		{
 			break;
 		}
@@ -127,12 +127,12 @@ Text::CStringNN IO::FileAnalyse::OSMPBFFileAnalyse::GetFormatName()
 	return CSTR("OSMPBF");
 }
 
-UOSInt IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	NN<PackInfo> pack;
@@ -149,22 +149,22 @@ Bool IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 	fd->GetRealData(pack->fileOfst, pack->packSize, packetBuff);
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(", psize="));
-	sb->AppendUOSInt(pack->packSize);
+	sb->AppendUIntOS(pack->packSize);
 	sb->AppendC(UTF8STRC(", "));
 	sb->Append(PackTypeGetName(pack->packType));
 	return true;
 }
 
-UOSInt IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -175,13 +175,13 @@ UOSInt IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
@@ -208,7 +208,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 			blobHeader.AddString(true, CSTR("type"), 1, false);
 			blobHeader.AddBytes(false, CSTR("indexdata"), 2, false);
 			blobHeader.AddInt32(true, CSTR("datasize"), 3, false);
-			blobHeader.ParseMsssage(frame, packetBuff.Arr(), 0, (UOSInt)pack->packSize);
+			blobHeader.ParseMsssage(frame, packetBuff.Arr(), 0, (UIntOS)pack->packSize);
 		}
 		break;
 	case PackType::Blob:
@@ -222,20 +222,20 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 			blob.AddBytes(false, CSTR("lz4_data"), 6, false);
 			blob.AddBytes(false, CSTR("zstd_data"), 7, false);
 			Int32 rawSize;
-			if (blob.ParseMsssage(frame, packetBuff.Arr(), 0, (UOSInt)pack->packSize) && blob.GetInt32(2, rawSize) && rawSize > 0)
+			if (blob.ParseMsssage(frame, packetBuff.Arr(), 0, (UIntOS)pack->packSize) && blob.GetInt32(2, rawSize) && rawSize > 0)
 			{
 				NN<Data::ByteBuffer> sourceData;
-				if (blob.GetBytes(1, sourceData) && sourceData->GetSize() == (UOSInt)rawSize)
+				if (blob.GetBytes(1, sourceData) && sourceData->GetSize() == (UIntOS)rawSize)
 				{
 					frame->SetDevrivedBuff(sourceData->SubArray(0));
 				}
 				else if (blob.GetBytes(3, sourceData))
 				{
-					Data::ByteBuffer devBuff((UOSInt)rawSize);
-					UOSInt devSize;
+					Data::ByteBuffer devBuff((UIntOS)rawSize);
+					UIntOS devSize;
 					Bool succ = Data::Compress::Inflater::DecompressDirect(devBuff, devSize, sourceData->SubArray(0), true);
 					//printf("Zlib Decompress: %s, devSize = %llu, rawSize = %d\r\n", succ?"succ":"fail", devSize, rawSize);
-					if (succ && devSize == (UOSInt)rawSize)
+					if (succ && devSize == (UIntOS)rawSize)
 					{
 						frame->SetDevrivedBuff(devBuff);
 					}

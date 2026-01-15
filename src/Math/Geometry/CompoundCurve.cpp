@@ -41,11 +41,11 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() const
 	return newObj;
 }
 
-UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList) const
+UIntOS Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList) const
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<LineString> ls;
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<const Math::Coord2DDbl> ptArr;
 	Data::ArrayIterator<NN<LineString>> it = this->Iterator();
 	while (it.HasNext())
@@ -54,7 +54,7 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Co
 		ptArr = ls->GetPointListRead(nPoint);
 		if (nPoint > 2 && (nPoint & 1) != 0 && ls->GetVectorType() == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
-			UOSInt i = 2;
+			UIntOS i = 2;
 			while (i < nPoint)
 			{
 				if (ret > 0)

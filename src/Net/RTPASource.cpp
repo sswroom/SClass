@@ -43,7 +43,7 @@ void Net::RTPASource::GetFormat(NN<Media::AudioFormat> format)
 	return this->hdlr->GetFormat(format);
 }
 
-Bool Net::RTPASource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Net::RTPASource::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->hdlr->Start(evt, blkSize);
 	this->ch->StartPlay();
@@ -56,12 +56,12 @@ void Net::RTPASource::Stop()
 	this->hdlr->Stop();
 }
 
-UOSInt Net::RTPASource::ReadBlock(Data::ByteArray blk)
+UIntOS Net::RTPASource::ReadBlock(Data::ByteArray blk)
 {
 	return this->hdlr->ReadBlock(blk);
 }
 
-UOSInt Net::RTPASource::GetMinBlockSize()
+UIntOS Net::RTPASource::GetMinBlockSize()
 {
 	return this->hdlr->GetMinBlockSize();
 }

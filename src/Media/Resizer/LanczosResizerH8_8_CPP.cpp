@@ -5,14 +5,14 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-extern "C" void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+extern "C" void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
-	OSInt i;
-	OSInt j;
-	OSInt *currIndex;
+	IntOS i;
+	IntOS j;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	UInt8 *currw;
-	UOSInt v;
+	UIntOS v;
 	Int16x8 cvals;
 	Int16x8 cvals2;
 	Int16x8 cvals3;
@@ -137,11 +137,11 @@ extern "C" void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, 
 	}
 }
 
-extern "C" void LanczosResizerH8_8_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+extern "C" void LanczosResizerH8_8_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
-	OSInt i;
-	OSInt j;
-	OSInt *currIndex;
+	IntOS i;
+	IntOS j;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	UInt8 *currw;
 	if ((width & 3) == 0 && tap == 8)
@@ -236,16 +236,16 @@ extern "C" void LanczosResizerH8_8_horizontal_filter8(UInt8 *inPt, UInt8 *outPt,
 	}
 }
 
-extern "C" void LanczosResizerH8_8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+extern "C" void LanczosResizerH8_8_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
-	OSInt i;
-	OSInt j;
-	OSInt *currIndex;
+	IntOS i;
+	IntOS j;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	UInt8 *currIn;
 	dstep -= width << 3;
 
-	if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+	if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 	{
 		Int16x4 cvals;
 		UInt8x4 v;
@@ -375,9 +375,9 @@ extern "C" void LanczosResizerH8_8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OS
 	}
 }
 
-extern "C" void LanczosResizerH8_8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep)
+extern "C" void LanczosResizerH8_8_expand(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep)
 {
-	OSInt i;
+	IntOS i;
 	sstep -= width << 2;
 	dstep -= width << 3;
 	UInt8x4 v;
@@ -396,9 +396,9 @@ extern "C" void LanczosResizerH8_8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width
 	}
 }
 
-extern "C" void LanczosResizerH8_8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep)
+extern "C" void LanczosResizerH8_8_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep)
 {
-	OSInt i;
+	IntOS i;
 	sstep -= width << 3;
 	dstep -= width << 2;
 	Int16x4 addval1 = PInt16x4SetA(-128);

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RC4Cipher.h"
 
-Crypto::Encrypt::RC4Cipher::RC4Cipher(UnsafeArray<const UInt8> key, UOSInt keyLen)
+Crypto::Encrypt::RC4Cipher::RC4Cipher(UnsafeArray<const UInt8> key, UIntOS keyLen)
 {
 	this->SetKey(key, keyLen);
 }
@@ -10,9 +10,9 @@ Crypto::Encrypt::RC4Cipher::~RC4Cipher()
 {
 }
 
-void Crypto::Encrypt::RC4Cipher::SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen)
+void Crypto::Encrypt::RC4Cipher::SetKey(UnsafeArray<const UInt8> key, UIntOS keyLen)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 256)
 	{
 		this->s[i] = (UInt8)i;
@@ -48,9 +48,9 @@ void Crypto::Encrypt::RC4Cipher::SetKey(UnsafeArray<const UInt8> key, UOSInt key
 	this->j = 0;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::RC4Cipher::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
-	UOSInt lengLeft = inSize;
+	UIntOS lengLeft = inSize;
 	UInt8 tmp1;
 	UInt8 tmp2;
 	while (lengLeft-- > 0)
@@ -67,9 +67,9 @@ UOSInt Crypto::Encrypt::RC4Cipher::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::RC4Cipher::Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
-	UOSInt lengLeft = inSize;
+	UIntOS lengLeft = inSize;
 	UInt8 tmp1;
 	UInt8 tmp2;
 	while (lengLeft-- > 0)
@@ -86,12 +86,12 @@ UOSInt Crypto::Encrypt::RC4Cipher::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::RC4Cipher::GetEncBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::RC4Cipher::GetDecBlockSize() const
 {
 	return 1;
 }

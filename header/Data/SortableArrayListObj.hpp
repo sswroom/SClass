@@ -9,19 +9,19 @@ namespace Data
 	{
 	public:
 		SortableArrayListObj() : ArrayListObj<T>() {};
-		SortableArrayListObj(UOSInt capacity) : ArrayListObj<T>() {};
-		UOSInt SortedInsert(T val);
-		OSInt SortedIndexOf(T val) const;
+		SortableArrayListObj(UIntOS capacity) : ArrayListObj<T>() {};
+		UIntOS SortedInsert(T val);
+		IntOS SortedIndexOf(T val) const;
 	};
 
-	template <class T> UOSInt Data::SortableArrayListObj<T>::SortedInsert(T val)
+	template <class T> UIntOS Data::SortableArrayListObj<T>::SortedInsert(T val)
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		IntOS i;
+		IntOS j;
+		IntOS k;
+		IntOS l;
 		i = 0;
-		j = (OSInt)this->objCnt - 1;
+		j = (IntOS)this->objCnt - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -40,18 +40,18 @@ namespace Data
 				break;
 			}
 		}
-		this->Insert((UOSInt)i, val);
-		return (UOSInt)i;
+		this->Insert((UIntOS)i, val);
+		return (UIntOS)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayListObj<T>::SortedIndexOf(T val) const
+	template <class T> IntOS Data::SortableArrayListObj<T>::SortedIndexOf(T val) const
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
-		OSInt l;
+		IntOS i;
+		IntOS j;
+		IntOS k;
+		IntOS l;
 		i = 0;
-		j = (OSInt)this->objCnt - 1;
+		j = (IntOS)this->objCnt - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;

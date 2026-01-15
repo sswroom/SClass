@@ -14,9 +14,9 @@ namespace IO
 			virtual ~TK109ProtocolDecoder();
 
 			virtual Text::CStringNN GetName() const;
-			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize);
-			virtual Bool GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize);
+			virtual UIntOS ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UIntOS buffSize);
+			virtual Bool GetProtocolDetail(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool IsValid(UnsafeArray<UInt8> buff, UIntOS buffSize);
 
 			void AppendDevStatus(NN<Text::StringBuilderUTF8> sb, UInt16 status);
 		};

@@ -89,9 +89,9 @@ SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<U
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	this->txtCmdLine->SetText(CSTRP(sbuff, sptr));
-	UOSInt j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
+	UIntOS j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), '.');
 	if (j != INVALID_INDEX)
 	{
 		sbuff[i + 1 + j] = 0;

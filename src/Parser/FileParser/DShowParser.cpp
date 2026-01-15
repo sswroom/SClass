@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::DShowParser::ParseFile(NN<IO::StreamData> 
 {
 #ifdef USE_DSHOW
 	WChar wbuff[256];
-	OSInt i;
+	IntOS i;
 	if (!fd->IsFullFile())
 		return 0;
 	Media::DShow::DShowGraph *graph = 0;//Media::DShow::DShowGraph::ParseFile(fd->GetFullName());

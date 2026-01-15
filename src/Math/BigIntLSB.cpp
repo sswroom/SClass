@@ -5,7 +5,7 @@
 #include "Math/BigIntUtil.h"
 #include "Text/MyString.h"
 
-Math::BigIntLSB::BigIntLSB(UOSInt valSize)
+Math::BigIntLSB::BigIntLSB(UIntOS valSize)
 {
 	if (valSize & 15)
 	{
@@ -13,12 +13,12 @@ Math::BigIntLSB::BigIntLSB(UOSInt valSize)
 	}
 	if (valSize < 16)
 		valSize = 16;
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocA(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocA(UOSInt, this->valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocA(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocA(UIntOS, this->valCnt);
 }
 
-Math::BigIntLSB::BigIntLSB(UOSInt valSize, Text::CStringNN val)
+Math::BigIntLSB::BigIntLSB(UIntOS valSize, Text::CStringNN val)
 {
 	if (valSize & 15)
 	{
@@ -26,13 +26,13 @@ Math::BigIntLSB::BigIntLSB(UOSInt valSize, Text::CStringNN val)
 	}
 	if (valSize < 16)
 		valSize = 16;
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocA(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocA(UOSInt, this->valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocA(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocA(UIntOS, this->valCnt);
 	this->AssignStr(val.v);
 }
 
-Math::BigIntLSB::BigIntLSB(UOSInt valSize, UnsafeArray<const UInt8> val)
+Math::BigIntLSB::BigIntLSB(UIntOS valSize, UnsafeArray<const UInt8> val)
 {
 	if (valSize & 15)
 	{
@@ -40,9 +40,9 @@ Math::BigIntLSB::BigIntLSB(UOSInt valSize, UnsafeArray<const UInt8> val)
 	}
 	if (valSize < 16)
 		valSize = 16;
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocAArr(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocAArr(UOSInt, this->valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocAArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocAArr(UIntOS, this->valCnt);
 	MemCopyAC(this->valArr.Ptr(), val.Ptr(), valSize);
 }
 
@@ -55,7 +55,7 @@ Math::BigIntLSB::~BigIntLSB()
 
 Bool Math::BigIntLSB::IsNeg() const
 {
-	return ((OSInt)this->valArr[this->valCnt - 1]) < 0;
+	return ((IntOS)this->valArr[this->valCnt - 1]) < 0;
 }
 
 Bool Math::BigIntLSB::IsOdd() const
@@ -70,9 +70,9 @@ Bool Math::BigIntLSB::IsEven() const
 
 void Math::BigIntLSB::ByteSwap()
 {
-	UOSInt i = this->valCnt;
-	UnsafeArray<UOSInt> srcPtr = this->valArr;
-	UnsafeArray<UOSInt> destPtr = (this->tmpArr + i - 1);
+	UIntOS i = this->valCnt;
+	UnsafeArray<UIntOS> srcPtr = this->valArr;
+	UnsafeArray<UIntOS> destPtr = (this->tmpArr + i - 1);
 #if (_OSINT_SIZE == 64)
 	while (i-- > 0)
 	{
@@ -88,7 +88,7 @@ void Math::BigIntLSB::ByteSwap()
 		srcPtr++;
 	}
 #endif
-	UnsafeArray<UOSInt> vArr = this->valArr;
+	UnsafeArray<UIntOS> vArr = this->valArr;
 	this->valArr = this->tmpArr;
 	this->tmpArr = vArr;
 }
@@ -96,18 +96,18 @@ void Math::BigIntLSB::ByteSwap()
 void Math::BigIntLSB::SetRandom(NN<Data::Random> rnd)
 {
 	UnsafeArray<Int32> ptr = UnsafeArray<Int32>::ConvertFrom(this->valArr);
-	UOSInt iSize = this->valCnt * sizeof(UOSInt) >> 2;
+	UIntOS iSize = this->valCnt * sizeof(UIntOS) >> 2;
 	while (iSize-- > 0)
 		*ptr++ = rnd->NextInt32();
 }
 
-void Math::BigIntLSB::FromBytesMSB(UnsafeArray<const UInt8> valBuff, UOSInt buffLen)
+void Math::BigIntLSB::FromBytesMSB(UnsafeArray<const UInt8> valBuff, UIntOS buffLen)
 {
 	UnsafeArray<UInt8> destPtr = UnsafeArray<UInt8>::ConvertFrom(this->valArr);
-	UOSInt valSize = this->valCnt * sizeof(UOSInt);
+	UIntOS valSize = this->valCnt * sizeof(UIntOS);
 	if (valSize > buffLen)
 	{
-		UOSInt i = buffLen;
+		UIntOS i = buffLen;
 		while (i-- > 0)
 		{
 			*destPtr++ = valBuff[i];
@@ -135,9 +135,9 @@ void Math::BigIntLSB::FromBytesMSB(UnsafeArray<const UInt8> valBuff, UOSInt buff
 	}
 }
 
-UOSInt Math::BigIntLSB::GetOccupiedSize() const
+UIntOS Math::BigIntLSB::GetOccupiedSize() const
 {
-	UOSInt size = this->valCnt * sizeof(UOSInt);
+	UIntOS size = this->valCnt * sizeof(UIntOS);
 	UnsafeArray<const UInt8> valArr = UnsafeArray<const UInt8>::ConvertFrom(this->valArr);
 	if (valArr[size - 1] & 0x80)
 	{
@@ -172,19 +172,19 @@ UOSInt Math::BigIntLSB::GetOccupiedSize() const
 	}
 }
 
-UOSInt Math::BigIntLSB::GetStoreSize() const
+UIntOS Math::BigIntLSB::GetStoreSize() const
 {
-	return this->valCnt * sizeof(UOSInt);
+	return this->valCnt * sizeof(UIntOS);
 }
 
-UOSInt Math::BigIntLSB::GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOnly) const
+UIntOS Math::BigIntLSB::GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOnly) const
 {
-	UOSInt size;
+	UIntOS size;
 	if (occupiedOnly)
 		size = this->GetOccupiedSize();
 	else
-		size = this->valCnt * sizeof(UOSInt);
-	UOSInt i = size;
+		size = this->valCnt * sizeof(UIntOS);
+	UIntOS i = size;
 	UnsafeArray<const UInt8> valArr = UnsafeArray<const UInt8>::ConvertFrom(this->valArr);
 	while (i-- > 0)
 	{
@@ -195,8 +195,8 @@ UOSInt Math::BigIntLSB::GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOn
 
 Bool Math::BigIntLSB::EqualsToUI32(UInt32 val)
 {
-	UOSInt i = this->valCnt - 1;
-	UnsafeArray<UOSInt> buff = UnsafeArray<UOSInt>::ConvertFrom(this->valArr);
+	UIntOS i = this->valCnt - 1;
+	UnsafeArray<UIntOS> buff = UnsafeArray<UIntOS>::ConvertFrom(this->valArr);
 	if (*buff != val)
 		return false;
 	while (i-- > 0)
@@ -210,8 +210,8 @@ Bool Math::BigIntLSB::EqualsToUI32(UInt32 val)
 
 Bool Math::BigIntLSB::EqualsToI32(Int32 val)
 {
-	UOSInt i = this->valCnt - 1;
-	UnsafeArray<OSInt> buff = UnsafeArray<OSInt>::ConvertFrom(this->valArr);
+	UIntOS i = this->valCnt - 1;
+	UnsafeArray<IntOS> buff = UnsafeArray<IntOS>::ConvertFrom(this->valArr);
 	if (*buff != val)
 		return false;
 	val = val >> 31;
@@ -263,14 +263,14 @@ void Math::BigIntLSB::AssignBI(NN<const BigIntLSB> val)
 {
 	if (this->valCnt <= val->valCnt)
 	{
-		MemCopyAC(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+		MemCopyAC(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
 	}
 	else
 	{
-		MemCopyAC(this->valArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UOSInt));
+		MemCopyAC(this->valArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UIntOS));
 		if (val->IsNeg())
 		{
-			MemFillB((UInt8*)&this->valArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UOSInt), 0xff);
+			MemFillB((UInt8*)&this->valArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UIntOS), 0xff);
 		}
 		else
 		{
@@ -299,9 +299,9 @@ void Math::BigIntLSB::XorBI(NN<const BigIntLSB> val)
 	BigIntUtil::LSBXor(this->valArr, val->valArr, this->valCnt, val->valCnt);
 }
 
-Bool Math::BigIntLSB::SetFactorial(UOSInt val)
+Bool Math::BigIntLSB::SetFactorial(UIntOS val)
 {
-	UOSInt i;
+	UIntOS i;
 	*this = 2;
 	i = 3;
 	while (i <= val)
@@ -315,12 +315,12 @@ Bool Math::BigIntLSB::SetFactorial(UOSInt val)
 	return false;
 }
 
-UOSInt Math::BigIntLSB::MultiplyBy(UOSInt val)
+UIntOS Math::BigIntLSB::MultiplyBy(UIntOS val)
 {
 	return BigIntUtil::LSBMulUOS(this->valArr, this->valCnt, val);
 }
 
-UOSInt Math::BigIntLSB::DivideBy(UOSInt val)
+UIntOS Math::BigIntLSB::DivideBy(UIntOS val)
 {
 	return BigIntUtil::LSBDivUOS(this->valArr, this->valCnt, val);
 }
@@ -386,13 +386,13 @@ NN<Math::BigIntLSB> Math::BigIntLSB::operator |=(NN<const Math::BigIntLSB> val)
 	return *this;
 }
 
-NN<Math::BigIntLSB> Math::BigIntLSB::operator *=(UOSInt val)
+NN<Math::BigIntLSB> Math::BigIntLSB::operator *=(UIntOS val)
 {
 	BigIntUtil::LSBMulUOS(this->valArr, this->valCnt, val);
 	return *this;
 }
 
-NN<Math::BigIntLSB> Math::BigIntLSB::operator /=(UOSInt val)
+NN<Math::BigIntLSB> Math::BigIntLSB::operator /=(UIntOS val)
 {
 	BigIntUtil::LSBDivUOS(this->valArr, this->valCnt, val);
 	return *this;
@@ -400,12 +400,12 @@ NN<Math::BigIntLSB> Math::BigIntLSB::operator /=(UOSInt val)
 
 Bool Math::BigIntLSB::operator ==(NN<const BigIntLSB> val)
 {
-	UOSInt thisCnt = this->valCnt;
-	UOSInt valCnt = val->valCnt;
-	UOSInt i;
-	UOSInt v;
-	UnsafeArray<UOSInt> thisVal = this->valArr;
-	UnsafeArray<UOSInt> valVal = val->valArr;
+	UIntOS thisCnt = this->valCnt;
+	UIntOS valCnt = val->valCnt;
+	UIntOS i;
+	UIntOS v;
+	UnsafeArray<UIntOS> thisVal = this->valArr;
+	UnsafeArray<UIntOS> valVal = val->valArr;
 	if (thisCnt > valCnt)
 	{
 		i = 0;
@@ -414,7 +414,7 @@ Bool Math::BigIntLSB::operator ==(NN<const BigIntLSB> val)
 			if (thisVal[i] != valVal[i]) return false;
 			i++;
 		}
-		v = ((OSInt)valVal[valCnt - 1] < 0)?(UOSInt)-1:0;
+		v = ((IntOS)valVal[valCnt - 1] < 0)?(UIntOS)-1:0;
 		while (i < thisCnt)
 		{
 			if (thisVal[i] != v) return false;
@@ -429,7 +429,7 @@ Bool Math::BigIntLSB::operator ==(NN<const BigIntLSB> val)
 			if (thisVal[i] != valVal[i]) return false;
 			i++;
 		}
-		v = ((OSInt)thisVal[thisCnt - 1] < 0)?(UOSInt)-1:0;
+		v = ((IntOS)thisVal[thisCnt - 1] < 0)?(UIntOS)-1:0;
 		while (i < valCnt)
 		{
 			if (valVal[i] != v) return false;
@@ -454,7 +454,7 @@ UnsafeArray<UTF8Char> Math::BigIntLSB::ToString(UnsafeArray<UTF8Char> buff) cons
 UnsafeArray<UTF8Char> Math::BigIntLSB::ToHex(UnsafeArray<UTF8Char> buff)
 {
 	UnsafeArray<UTF8Char> currPtr = buff;
-	UOSInt vSize = this->valCnt * sizeof(UOSInt);
+	UIntOS vSize = this->valCnt * sizeof(UIntOS);
 	UnsafeArray<UInt8> ptr = UnsafeArray<UInt8>::ConvertFrom(this->valArr) + vSize;
 	while (vSize--)
 	{
@@ -467,7 +467,7 @@ UnsafeArray<UTF8Char> Math::BigIntLSB::ToHex(UnsafeArray<UTF8Char> buff)
 UnsafeArray<UTF8Char> Math::BigIntLSB::ToByteStr(UnsafeArray<UTF8Char> buff)
 {
 	UnsafeArray<UTF8Char> currPtr = buff;
-	UOSInt vSize = this->valCnt * sizeof(UOSInt);
+	UIntOS vSize = this->valCnt * sizeof(UIntOS);
 	UnsafeArray<UInt8> ptr = UnsafeArray<UInt8>::ConvertFrom(this->valArr);
 	while (vSize--)
 	{
@@ -480,7 +480,7 @@ UnsafeArray<UTF8Char> Math::BigIntLSB::ToByteStr(UnsafeArray<UTF8Char> buff)
 
 void Math::BigIntLSB::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, this->valCnt * 3 * sizeof(UOSInt) + 1);
+	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, this->valCnt * 3 * sizeof(UIntOS) + 1);
 	UnsafeArray<UTF8Char> sptr = ToString(sbuff);
 	sb->AppendP(sbuff, sptr);
 	MemFreeArr(sbuff);

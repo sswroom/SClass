@@ -9,9 +9,9 @@ Text::TextBinEnc::ASCII85Enc::~ASCII85Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
-	UOSInt initLen = sb->GetCharCnt();
+	UIntOS initLen = sb->GetCharCnt();
 	UInt32 v;
 	while (buffSize >= 4)
 	{
@@ -61,7 +61,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, U
 	return sb->GetCharCnt() - initLen;
 }
 
-UnsafeArray<UTF8Char> Text::TextBinEnc::ASCII85Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UnsafeArray<UTF8Char> Text::TextBinEnc::ASCII85Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	UInt32 v;
 	while (buffSize >= 4)
@@ -115,13 +115,13 @@ UnsafeArray<UTF8Char> Text::TextBinEnc::ASCII85Enc::EncodeBin(UnsafeArray<UTF8Ch
 	return sbuff;
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
+UIntOS Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 {
-	UOSInt zCnt = 0;
-	UOSInt validCnt = 0;
-	UOSInt lastU = 0;
+	UIntOS zCnt = 0;
+	UIntOS validCnt = 0;
+	UIntOS lastU = 0;
 	UTF8Char c;
-	UOSInt strLen = str.leng;
+	UIntOS strLen = str.leng;
 	UnsafeArray<const UTF8Char> a85Str = str.v;
 	while (strLen-- > 0)
 	{
@@ -157,7 +157,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 	{
 		validCnt -= lastU;
 	}
-	UOSInt left = validCnt % 5;
+	UIntOS left = validCnt % 5;
 	if (left > 0)
 	{
 		return zCnt * 4 + validCnt / 5 * 4 + left - 1;
@@ -168,14 +168,14 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 	}
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	UnsafeArray<UInt8> destBuff = dataBuff;
 	UTF8Char sbuff[5];
-	UOSInt validCnt = 0;
-	UOSInt lastU = 0;
+	UIntOS validCnt = 0;
+	UIntOS lastU = 0;
 	UTF8Char c;
-	UOSInt strLen = str.leng;
+	UIntOS strLen = str.leng;
 	UnsafeArray<const UTF8Char> a85Str = str.v;
 	while (strLen-- > 0)
 	{
@@ -248,7 +248,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UnsafeArray<
 	{
 		destBuff -= lastU;
 	}
-	return (UOSInt)(destBuff - dataBuff);
+	return (UIntOS)(destBuff - dataBuff);
 }
 
 Text::CStringNN Text::TextBinEnc::ASCII85Enc::GetName() const

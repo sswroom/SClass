@@ -8,9 +8,9 @@ namespace SSWR
 		class AVIRDBManager
 		{
 		public:
-			virtual UOSInt GetDataSourceCount() const = 0;
-			virtual void GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const = 0;
-			virtual Optional<DB::ReadingDB> OpenDataSource(UOSInt index) = 0;
+			virtual UIntOS GetDataSourceCount() const = 0;
+			virtual void GetDataSourceName(UIntOS index, NN<Text::StringBuilderUTF8> sb) const = 0;
+			virtual Optional<DB::ReadingDB> OpenDataSource(UIntOS index) = 0;
 		};
 	}
 }

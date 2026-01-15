@@ -12,7 +12,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 *buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			AnyType cliObj;
 		} ClientData;
 
@@ -22,14 +22,14 @@ namespace Net
 		public:
 			virtual AnyType NewConn(NN<Net::TCPClient> cli) = 0;
 			virtual void EndConn(NN<Net::TCPClient> cli, AnyType cliObj) = 0;
-			virtual UOSInt ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff) = 0; //Return buff size unprocessed
+			virtual UIntOS ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff) = 0; //Return buff size unprocessed
 		};
 
 	private:
 		Net::TCPClientMgr *cliMgr;
 		Net::TCPServer *svr;
 		NN<Net::SocketFactory> sockf;
-		UOSInt maxBuffSize;
+		UIntOS maxBuffSize;
 		TCPServerHandler *hdlr;
 
 	private:
@@ -38,14 +38,14 @@ namespace Net
 		static void __stdcall DataHdlr(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 		static void __stdcall TimeoutHdlr(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 	public:
-		TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart);
+		TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UIntOS maxBuffSize, TCPServerHandler *hdlr, UIntOS workerCnt, Int32 timeoutSec, Bool autoStart);
 		~TCPServerController();
 
 		Bool Start();
 		Bool IsError();
 		void UseGetCli(NN<Sync::MutexUsage> mutUsage);
-		UOSInt GetCliCount();
-		Optional<Net::TCPClient> GetClient(UOSInt index, OutParam<AnyType> cliObj);
+		UIntOS GetCliCount();
+		Optional<Net::TCPClient> GetClient(UIntOS index, OutParam<AnyType> cliObj);
 	};
 }
 #endif

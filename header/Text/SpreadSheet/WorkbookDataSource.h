@@ -10,21 +10,21 @@ namespace Text
 		{
 		private:
 			NN<Worksheet> sheet;
-			UOSInt firstRow;
-			UOSInt lastRow;
-			UOSInt firstCol;
-			UOSInt lastCol;
+			UIntOS firstRow;
+			UIntOS lastRow;
+			UIntOS firstCol;
+			UIntOS lastCol;
 
 		public:
-			WorkbookDataSource(NN<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
+			WorkbookDataSource(NN<Worksheet> sheet, UIntOS firstRow, UIntOS lastRow, UIntOS firstCol, UIntOS lastCol);
 			~WorkbookDataSource();
 
 			UnsafeArray<UTF8Char> ToCodeRange(UnsafeArray<UTF8Char> sbuff) const;
 			NN<Worksheet> GetSheet() const;
-			UOSInt GetFirstRow() const;
-			UOSInt GetLastRow() const;
-			UOSInt GetFirstCol() const;
-			UOSInt GetLastCol() const;
+			UIntOS GetFirstRow() const;
+			UIntOS GetLastRow() const;
+			UIntOS GetFirstCol() const;
+			UIntOS GetLastCol() const;
 		};
 	}
 }

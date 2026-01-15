@@ -281,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < nFiles)
 	{
 		pt = IO::Path::GetPathType(files[i]->ToCString());
@@ -777,7 +777,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Text::String *fname = frm.GetFileName();
-				UOSInt i = fname->IndexOf(':');
+				UIntOS i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
@@ -1285,7 +1285,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ACCELEROMETER:
 		{
 			IO::SensorManager sensors;
-			OSInt cnt = sensors.GetAccelerometerCnt();
+			IntOS cnt = sensors.GetAccelerometerCnt();
 			if (cnt > 0)
 			{
 				IO::SensorAccelerometer *acc = sensors.CreateAccelerometer(0);

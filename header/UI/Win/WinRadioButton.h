@@ -16,7 +16,7 @@ namespace UI
 			WinRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~WinRadioButton();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual Bool IsSelected();
 			virtual void Select();
 		};

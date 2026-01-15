@@ -12,7 +12,7 @@ namespace Net
 	{
 	private:
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 
 		Int32 version;
 		Optional<Text::String> sessName;
@@ -39,7 +39,7 @@ namespace Net
 
 		void InitSDP();
 	public:
-		SDPFile(UInt8 *buff, UOSInt buffSize);
+		SDPFile(UInt8 *buff, UIntOS buffSize);
 		SDPFile();
 		~SDPFile();
 
@@ -63,10 +63,10 @@ namespace Net
 		Bool BuildBuff();
 
 		Bool WriteToStream(NN<IO::Stream> stm);
-		UOSInt GetLength();
+		UIntOS GetLength();
 
-		UOSInt GetMediaCount();
-		Optional<Data::ArrayListStrUTF8> GetMediaDesc(UOSInt index);
+		UIntOS GetMediaCount();
+		Optional<Data::ArrayListStrUTF8> GetMediaDesc(UIntOS index);
 	};
 }
 #endif

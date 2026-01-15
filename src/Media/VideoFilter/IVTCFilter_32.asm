@@ -3,7 +3,7 @@ section .text
 global _IVTCFilter_CalcField
 global _IVTCFilter_CalcFieldP
 
-;void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, OSInt w, OSInt h, Int32 *fieldStats)
+;void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, IntOS w, IntOS h, Int32 *fieldStats)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -594,7 +594,7 @@ cfslop2:
 	pop ebp
 	ret
 
-;void IVTCFilter_CalcFieldP(UInt8 *framePtr, OSInt w, OSInt h, Int32 *fieldStats)
+;void IVTCFilter_CalcFieldP(UInt8 *framePtr, IntOS w, IntOS h, Int32 *fieldStats)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -616,7 +616,7 @@ _IVTCFilter_CalcFieldP:
 	sub eax,2
 	mul dword [esp+24] ;w
 	shr eax,4
-	mov ebp,eax ;OSInt wLeft = w * (h - 2) >> 4;
+	mov ebp,eax ;IntOS wLeft = w * (h - 2) >> 4;
 
 	mov edx,dword [esp+24] ;w
 	mov esi,dword [esp+20] ;framePtr

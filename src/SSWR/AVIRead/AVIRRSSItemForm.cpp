@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRRSSItemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSItemForm>();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = me->cboImage->GetSelectedIndex();
+	UIntOS i = me->cboImage->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
 	sptr = me->cboImage->GetItemText(sbuff, i).Or(sbuff);
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 
 SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::RSSItem> rssItem) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	UOSInt i;
+	UIntOS i;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("RSS Item"));

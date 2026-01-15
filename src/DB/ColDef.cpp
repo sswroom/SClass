@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
-void DB::ColDef::AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize)
+void DB::ColDef::AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UIntOS colSize)
 {
 	if (defVal.StartsWith(UTF8STRC("b'")))
 	{
@@ -118,12 +118,12 @@ Optional<Text::String> DB::ColDef::GetNativeType() const
 	return this->nativeType;
 }
 
-UOSInt DB::ColDef::GetColSize() const
+UIntOS DB::ColDef::GetColSize() const
 {
 	return this->colSize;
 }
 
-UOSInt DB::ColDef::GetColDP() const
+UIntOS DB::ColDef::GetColDP() const
 {
 	return this->colDP;
 }
@@ -235,12 +235,12 @@ void DB::ColDef::SetNativeType(Text::CString nativeType)
 	this->nativeType = Text::String::NewOrNull(nativeType);
 }
 
-void DB::ColDef::SetColSize(UOSInt colSize)
+void DB::ColDef::SetColSize(UIntOS colSize)
 {
 	this->colSize = colSize;
 }
 
-void DB::ColDef::SetColDP(UOSInt colDP)
+void DB::ColDef::SetColDP(UIntOS colDP)
 {
 	this->colDP = colDP;
 }

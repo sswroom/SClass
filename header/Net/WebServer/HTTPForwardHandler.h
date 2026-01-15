@@ -23,7 +23,7 @@ namespace Net
 		private:
 			Data::ArrayListStringNN forwardAddrs;
 			Data::ArrayListStringNN injHeaders;
-			UOSInt nextURL;
+			UIntOS nextURL;
 			Sync::Mutex mut;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;

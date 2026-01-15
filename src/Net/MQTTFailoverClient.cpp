@@ -12,7 +12,7 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CString
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)
 	{
 		Sync::MutexUsage mutUsage(cliInfo->me->hdlrMut);
-		UOSInt i = cliInfo->me->hdlrList.GetCount();
+		UIntOS i = cliInfo->me->hdlrList.GetCount();
 		while (i-- > 0)
 		{
 			Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr> cb = cliInfo->me->hdlrList.GetItem(i);
@@ -52,7 +52,7 @@ Bool Net::MQTTFailoverClient::Subscribe(Text::CStringNN topic)
 {
 	Data::ArrayListNN<Net::MQTTStaticClient> cliList;
 	this->foHdlr.GetAllChannels(cliList);
-	UOSInt i = cliList.GetCount();
+	UIntOS i = cliList.GetCount();
 	while (i-- > 0)
 	{
 		cliList.GetItemNoCheck(i)->Subscribe(topic);
@@ -73,8 +73,8 @@ Bool Net::MQTTFailoverClient::Publish(Text::CStringNN topic, Text::CStringNN mes
 	}
 	Data::ArrayListNN<Net::MQTTStaticClient> cliList;
 	this->foHdlr.GetOtherChannels(cliList);
-	UOSInt i = 0;
-	UOSInt j = cliList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = cliList.GetCount();
 	while (i < j)
 	{
 		if (cliList.GetItemNoCheck(i)->Publish(topic, message, dup, qos, retain))

@@ -2,7 +2,7 @@
 #include "Data/BinTool.h"
 #include "Core/ByteTool_C.h"
 
-Bool Data::BinTool::Equals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UOSInt len)
+Bool Data::BinTool::Equals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UIntOS len)
 {
 #if _OSINT_SIZE == 64
 	while (len >= 8)

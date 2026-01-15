@@ -17,7 +17,7 @@ namespace Media
 			Int32 useCnt;
 
 			UInt32 imgDelay;
-			UOSInt imgIndex;
+			UIntOS imgIndex;
 			Int64 lastTimeTick;
 		};
 	private:

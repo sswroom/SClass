@@ -34,7 +34,7 @@ namespace IO
 
 	public:
 		Optional<Registry> OpenSubReg(UnsafeArray<const WChar> name);
-		UnsafeArrayOpt<WChar> GetSubReg(UnsafeArray<WChar> buff, UOSInt index);
+		UnsafeArrayOpt<WChar> GetSubReg(UnsafeArray<WChar> buff, UIntOS index);
 
 		void SetValue(UnsafeArray<const WChar> name, Int32 value);
 		void SetValue(UnsafeArray<const WChar> name, UnsafeArrayOpt<const WChar> value);
@@ -45,7 +45,7 @@ namespace IO
 
 		Bool GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> value);
 
-		UnsafeArrayOpt<WChar> GetName(UnsafeArray<WChar> nameBuff, UOSInt index);
+		UnsafeArrayOpt<WChar> GetName(UnsafeArray<WChar> nameBuff, UIntOS index);
 	};
 }
 #endif

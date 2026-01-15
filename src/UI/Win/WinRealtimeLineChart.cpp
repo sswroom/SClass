@@ -19,7 +19,7 @@ Int32 UI::Win::WinRealtimeLineChart::useCnt = 0;
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam)
 {
 	UI::Win::WinRealtimeLineChart *me = (UI::Win::WinRealtimeLineChart*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
@@ -75,7 +75,7 @@ void UI::Win::WinRealtimeLineChart::Deinit(Optional<InstanceHandle> hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
-UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
+UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UIntOS lineCnt, UIntOS sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
 {
 	this->colorSess = colorSess;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)

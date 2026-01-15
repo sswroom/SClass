@@ -34,10 +34,10 @@ namespace SSWR
 
 			static void __stdcall OnSearchClicked(AnyType userObj);
 			static void __stdcall OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnFilesDblClk(AnyType userObj, UIntOS itemIndex);
 
 			void ClearFiles();
-			void FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UOSInt searchLen);
+			void FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UIntOS searchLen);
 		public:
 			AVIRFileSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileSearchForm();

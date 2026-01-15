@@ -55,7 +55,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 	return pkg;
 }
 
-Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data::ByteArrayR hdr, NN<IO::VirtualPackageFile> pkgFile, UOSInt rOfst, UOSInt cOfst)
+Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data::ByteArrayR hdr, NN<IO::VirtualPackageFile> pkgFile, UIntOS rOfst, UIntOS cOfst)
 {
 	if (ReadUInt32(&hdr[0]) != 3)
 		return false;
@@ -77,9 +77,9 @@ Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data
 	Data::Timestamp now = Data::Timestamp::Now();
 	UInt64 idx;
 	UInt64 tileOfst;
-	UOSInt tileSize;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS tileSize;
+	UIntOS i = 0;
+	UIntOS j;
 	while (i < 128)
 	{
 		rowPkg = nullptr;
@@ -88,13 +88,13 @@ Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data
 		{
 			idx = ReadUInt64(&index[i * 1024 + j * 8]);
 			tileOfst = idx % 0x10000000000LL;
-			tileSize = (UOSInt)(idx / 0x10000000000LL);
+			tileSize = (UIntOS)(idx / 0x10000000000LL);
 			if (tileSize == 0)
 				break;
 			if (!rowPkg.SetTo(nnrowPkg))
 			{
 				sb.ClearStr();
-				sb.AppendUOSInt(i + rOfst);
+				sb.AppendUIntOS(i + rOfst);
 				if (!pkgFile->GetPackFile(sb.ToCString()).SetTo(nnpkg))
 				{
 					NEW_CLASSNN(nnrowPkg, IO::VirtualPackageFileFast(sb.ToCString()));
@@ -108,7 +108,7 @@ Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data
 				}
 			}
 			sb.ClearStr();
-			sb.AppendUOSInt(j + cOfst);
+			sb.AppendUIntOS(j + cOfst);
 			sb.Append(CSTR(".png"));
 			nnrowPkg->AddData(fd, tileOfst, tileSize, IO::PackFileItem::HeaderType::No, sb.ToCString(), now, now, now, 0);
 			j++;

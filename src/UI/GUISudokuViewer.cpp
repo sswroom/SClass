@@ -16,16 +16,16 @@ UI::GUISudokuViewer::~GUISudokuViewer()
 {
 }
 
-UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->Focus();
 
-		Math::Size2D<UOSInt> sz;
-		UOSInt size;
-		UOSInt tlx;
-		UOSInt tly;
+		Math::Size2D<UIntOS> sz;
+		UIntOS size;
+		UIntOS tlx;
+		UIntOS tly;
 		sz = this->GetSizeP();
 		if (sz.x > sz.y)
 		{
@@ -39,10 +39,10 @@ UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, Mou
 			tlx = 0;
 			tly = (sz.y - sz.x) >> 1;
 		}
-		if (scnPos.x >= (OSInt)tlx && scnPos.x < (OSInt)(tlx + size) && scnPos.y >= (OSInt)tly && scnPos.y < (OSInt)(tly + size))
+		if (scnPos.x >= (IntOS)tlx && scnPos.x < (IntOS)(tlx + size) && scnPos.y >= (IntOS)tly && scnPos.y < (IntOS)(tly + size))
 		{
-			tlx = ((UOSInt)scnPos.x - tlx) * 9 / size;
-			tly = ((UOSInt)scnPos.y - tly) * 9 / size;
+			tlx = ((UIntOS)scnPos.x - tlx) * 9 / size;
+			tly = ((UIntOS)scnPos.y - tly) * 9 / size;
 			if (tlx != this->selX || tly != this->selY)
 			{
 				this->selX = tlx;
@@ -56,7 +56,7 @@ UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, Mou
 
 UI::EventState UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 {
-	UOSInt i;
+	UIntOS i;
 	if (key >= UI::GUIControl::GK_0 && key <= UI::GUIControl::GK_9)
 	{
 		NumberInputEvent hdlr;
@@ -120,11 +120,11 @@ UI::EventState UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 
 void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 {
-	Math::Size2D<UOSInt> sz;
-	UOSInt size;
-	UOSInt blockSize;
-	UOSInt tlx;
-	UOSInt tly;
+	Math::Size2D<UIntOS> sz;
+	UIntOS size;
+	UIntOS blockSize;
+	UIntOS tlx;
+	UIntOS tly;
 	NN<Media::DrawBrush> b3;
 	sz = this->GetSizeP();
 	b3 = img->NewBrushARGB(0xffffffff);
@@ -133,16 +133,16 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 		size = sz.y;
 		tly = 0;
 		tlx = (sz.x - sz.y) >> 1;
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(tlx), UOSInt2Double(sz.y)), nullptr, b3);
-		img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + size), 0), Math::Size2DDbl(UOSInt2Double(sz.x - tlx - size), UOSInt2Double(sz.y)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(tlx), UIntOS2Double(sz.y)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(UIntOS2Double(tlx + size), 0), Math::Size2DDbl(UIntOS2Double(sz.x - tlx - size), UIntOS2Double(sz.y)), nullptr, b3);
 	}
 	else
 	{
 		size = sz.x;
 		tlx = 0;
 		tly = (sz.y - sz.x) >> 1;
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(tly)), nullptr, b3);
-		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(tly + size)), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(sz.y - tly - size)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(sz.x), UIntOS2Double(tly)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(0, UIntOS2Double(tly + size)), Math::Size2DDbl(UIntOS2Double(sz.x), UIntOS2Double(sz.y - tly - size)), nullptr, b3);
 	}
 	blockSize = ((size - 4) / 9) - 2;
 
@@ -152,10 +152,10 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawBrush> redBrush;
 	NN<Media::DrawFont> f;
 	NN<Media::DrawFont> fSmall;
-	UOSInt lastPos;
-	UOSInt currPos;
-	UOSInt i;
-	UOSInt j;
+	UIntOS lastPos;
+	UIntOS currPos;
+	UIntOS i;
+	UIntOS j;
 	UInt16 v;
 
 	p = img->NewPenARGB(0xff000000, 1, nullptr, 0);
@@ -164,17 +164,17 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	while (i-- > 0)
 	{
 		currPos = MulDivUOS(size - 4, i, 9) + (i / 3) * 2;
-		img->DrawLine(UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly), UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly + size), p);
-		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + lastPos - 1), UOSInt2Double(tlx + size), UOSInt2Double(tly + lastPos - 1), p);
-		img->DrawLine(UOSInt2Double(tlx + currPos), UOSInt2Double(tly), UOSInt2Double(tlx + currPos), UOSInt2Double(tly + size), p);
-		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos), p);
+		img->DrawLine(UIntOS2Double(tlx + lastPos - 1), UIntOS2Double(tly), UIntOS2Double(tlx + lastPos - 1), UIntOS2Double(tly + size), p);
+		img->DrawLine(UIntOS2Double(tlx), UIntOS2Double(tly + lastPos - 1), UIntOS2Double(tlx + size), UIntOS2Double(tly + lastPos - 1), p);
+		img->DrawLine(UIntOS2Double(tlx + currPos), UIntOS2Double(tly), UIntOS2Double(tlx + currPos), UIntOS2Double(tly + size), p);
+		img->DrawLine(UIntOS2Double(tlx), UIntOS2Double(tly + currPos), UIntOS2Double(tlx + size), UIntOS2Double(tly + currPos), p);
 		if ((i != 0) && (i % 3) == 0)
 		{
 			currPos -= 2;
-			img->DrawLine(UOSInt2Double(tlx + currPos), UOSInt2Double(tly), UOSInt2Double(tlx + currPos), UOSInt2Double(tly + size), p);
-			img->DrawLine(UOSInt2Double(tlx + currPos + 1), UOSInt2Double(tly), UOSInt2Double(tlx + currPos + 1), UOSInt2Double(tly + size), p);
-			img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos), p);
-			img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos + 1), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos + 1), p);
+			img->DrawLine(UIntOS2Double(tlx + currPos), UIntOS2Double(tly), UIntOS2Double(tlx + currPos), UIntOS2Double(tly + size), p);
+			img->DrawLine(UIntOS2Double(tlx + currPos + 1), UIntOS2Double(tly), UIntOS2Double(tlx + currPos + 1), UIntOS2Double(tly + size), p);
+			img->DrawLine(UIntOS2Double(tlx), UIntOS2Double(tly + currPos), UIntOS2Double(tlx + size), UIntOS2Double(tly + currPos), p);
+			img->DrawLine(UIntOS2Double(tlx), UIntOS2Double(tly + currPos + 1), UIntOS2Double(tlx + size), UIntOS2Double(tly + currPos + 1), p);
 		}
 		lastPos = currPos;
 	}
@@ -185,11 +185,11 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	j = MulDivUOS(size - 4, this->selX + 1, 9) + (this->selX / 3) * 2;
 	currPos = MulDivUOS(size - 4, this->selY, 9) + (this->selY / 3) * 2;
 	lastPos = MulDivUOS(size - 4, this->selY + 1, 9) + (this->selY / 3) * 2;
-	img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + i), UOSInt2Double(tly + currPos)), Math::Size2DDbl(UOSInt2Double(j - i - 1), UOSInt2Double(lastPos - currPos - 1)), p, nullptr);
+	img->DrawRect(Math::Coord2DDbl(UIntOS2Double(tlx + i), UIntOS2Double(tly + currPos)), Math::Size2DDbl(UIntOS2Double(j - i - 1), UIntOS2Double(lastPos - currPos - 1)), p, nullptr);
 	img->DelPen(p);
 
-	f = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
-	fSmall = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.25, Media::DrawEngine::DFS_NORMAL, 65001);
+	f = img->NewFontPx(CSTR("Arial"), UIntOS2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
+	fSmall = img->NewFontPx(CSTR("Arial"), UIntOS2Double(blockSize) * 0.25, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
 	redBrush = img->NewBrushARGB(0xffff0000);
@@ -203,8 +203,8 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 			UTF8Char ch[2];
 			ch[1] = 0;
 			UInt8 val;
-			Math::Coord2D<UOSInt> pt;
-			Math::Coord2D<UOSInt> pt2;
+			Math::Coord2D<UIntOS> pt;
+			Math::Coord2D<UIntOS> pt2;
 			Math::Size2DDbl sz;
 			val = this->board->GetBoardNum(i, j, isDefault);
 			pt.x = tlx + 1 + MulDivUOS(size - 4, i, 9) + (i / 3) * 2;

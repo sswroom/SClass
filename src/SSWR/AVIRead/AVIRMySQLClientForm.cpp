@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[48];
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> s;
 	NN<Net::MySQLTCPClient> cli;
 	if (me->cli.SetTo(cli))
@@ -177,11 +177,11 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 {
-	OSInt rowChg;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt *colSize;
+	IntOS rowChg;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS *colSize;
 
 	rowChg = r->GetRowChanged();
 	if (rowChg == -1)
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 		j = r->ColCount();
 		this->lvQueryResult->ChangeColumnCnt(j);
 		i = 0;
-		colSize = MemAlloc(UOSInt, j);
+		colSize = MemAlloc(UIntOS, j);
 		while (i < j)
 		{
 			if (r->GetColDef(i, col))
@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 			i++;
 		}
 
-		OSInt rowCnt = 0;
+		IntOS rowCnt = 0;
 		while (r->ReadNext())
 		{
 			i = 1;
@@ -242,13 +242,13 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 		if (k > 0)
 		{
 			Double w = this->lvQueryResult->GetSize().x;
-			w -= UOSInt2Double(20 + j * 6);
+			w -= UIntOS2Double(20 + j * 6);
 			if (w < 0)
 				w = 0;
 			i = 0;
 			while (i < j)
 			{
-				this->lvQueryResult->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
+				this->lvQueryResult->SetColumnWidth(i, (UIntOS2Double(colSize[i]) * w / UIntOS2Double(k) + 6));
 				i++;
 			}
 		}
@@ -259,7 +259,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 		this->lvQueryResult->ClearItems();
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Record changed = "));
-		sb.AppendOSInt(rowChg);
+		sb.AppendIntOS(rowChg);
 		this->txtQueryStatus->SetText(sb.ToCString());
 	}
 }

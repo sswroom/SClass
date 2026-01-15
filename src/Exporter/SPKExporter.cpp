@@ -48,7 +48,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::SPKExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -86,9 +86,9 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 				IO::SPackageFile *spkg;
 				UInt8 *customBuff = MemAlloc(UInt8, 2048);
-				UOSInt buffSize = 1;
-				UOSInt i = 0;
-				UOSInt bSize;
+				UIntOS buffSize = 1;
+				UIntOS i = 0;
+				UIntOS bSize;
 				NN<Text::String> url;
 				while (true)
 				{
@@ -124,12 +124,12 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			UTF8Char sbuff[256];
 			UnsafeArray<UTF8Char> sptr;
 			UnsafeArray<const UInt8> fileBuff;
-			UOSInt fileSize;
+			UIntOS fileSize;
 			Int64 modTimeTicks;
 
 			UInt32 i;
 			UInt32 j;
-			UOSInt k;
+			UIntOS k;
 			NEW_CLASS(spkg, IO::SPackageFile(stm, false));
 			IO::MemoryStream mstm;
 			i = 0;
@@ -176,8 +176,8 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 void Exporter::SPKExporter::ExportPackageFile(NN<IO::SPackageFile> spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::StreamData> fd;
 	IO::PackageFile::PackObjectType pot;
@@ -204,7 +204,7 @@ void Exporter::SPKExporter::ExportPackageFile(NN<IO::SPackageFile> spkg, NN<IO::
 		{
 			if (pkgFile->GetItemName(buffEnd, i).SetTo(sptr) && pkgFile->GetItemStmDataNew(i).SetTo(fd))
 			{
-				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));
+				spkg->AddFile(fd, {buff, (UIntOS)(sptr - buff)}, pkgFile->GetItemModTime(i));
 				fd.Delete();
 			}
 		}

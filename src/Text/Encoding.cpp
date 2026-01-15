@@ -47,7 +47,7 @@ UnsafeArray<UTF8Char> Text::Encoding::ToString(UnsafeArray<UTF8Char> buff)
 	return Text::EncodingFactory::GetName(buff, this->codePage);
 }
 
-UOSInt Text::Encoding::CountWChars(UnsafeArray<const UInt8> bytes, UOSInt byteSize)
+UIntOS Text::Encoding::CountWChars(UnsafeArray<const UInt8> bytes, UIntOS byteSize)
 {
 	if (this->codePage == 65001)
 	{
@@ -64,16 +64,16 @@ UOSInt Text::Encoding::CountWChars(UnsafeArray<const UInt8> bytes, UOSInt byteSi
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
+		return (UIntOS)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 #else
 		return byteSize;
 #endif
 	}
 }
 
-UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArray<const UInt8> bytes, UIntOS byteSize, OptOut<UIntOS> byteConv)
 {
-	UOSInt size = byteSize * 2 + 2;
+	UIntOS size = byteSize * 2 + 2;
 
 	if (this->codePage == 65001)
 	{
@@ -86,14 +86,14 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 	}
 	if (this->codePage == 1200)
 	{
-		if (byteSize == (UOSInt)-1)
+		if (byteSize == (UIntOS)-1)
 		{
 			UnsafeArray<WChar> oriBuff = buff;
 			while ((*buff++ = ReadUInt16(&bytes[0])) != 0)
 			{
 				bytes += 2;
 			}
-			byteConv.Set((UOSInt)(buff - oriBuff) * 2);
+			byteConv.Set((UIntOS)(buff - oriBuff) * 2);
 			return buff - 1;
 		}
 		else
@@ -111,14 +111,14 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 	}
 	else if (this->codePage == 1201)
 	{
-		if (byteSize == (UOSInt)-1)
+		if (byteSize == (UIntOS)-1)
 		{
 			UnsafeArray<WChar> oriBuff = buff;
 			while ((*buff++ = ReadMUInt16(&bytes[0])) != 0)
 			{
 				bytes += 2;
 			}
-			byteConv.Set((UOSInt)(buff - oriBuff) * 2);
+			byteConv.Set((UIntOS)(buff - oriBuff) * 2);
 			return buff - 1;
 		}
 		else
@@ -201,7 +201,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 				*buff = 0;
 			}
 		}
-		byteConv.Set((UOSInt)(bytes - oriBytes));
+		byteConv.Set((UIntOS)(bytes - oriBytes));
 		return buff;
 	}
 #endif
@@ -210,7 +210,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		if (byteConv.IsNotNull())
 		{
-			UOSInt convSize = byteSize;
+			UIntOS convSize = byteSize;
 			Int32 iRet = 0;
 			while (iRet <= 0)
 			{
@@ -261,7 +261,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 	}
 }
 
-UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byteSize)
+UIntOS Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UIntOS byteSize)
 {
 	if (this->codePage == 65001)
 	{
@@ -269,7 +269,7 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	}
 	else if (this->codePage == 1200)
 	{
-		UOSInt byteCnt = 0;
+		UIntOS byteCnt = 0;
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
@@ -316,7 +316,7 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	}
 	else if (this->codePage == 1201)
 	{
-		UOSInt byteCnt = 0;
+		UIntOS byteCnt = 0;
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
@@ -364,7 +364,7 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
+		UIntOS charCnt = (UIntOS)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 		WChar *buff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, buff, (Int32)charCnt);
 		charCnt = Text::StrWChar_UTF8Cnt(buff);
@@ -376,7 +376,7 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	}
 }
 
-UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> bytes, UIntOS byteSize, OptOut<UIntOS> byteConv)
 {
 	if (this->codePage == 65001)
 	{
@@ -389,7 +389,7 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
-		UOSInt retSize = byteSize << 1;
+		UIntOS retSize = byteSize << 1;
 		while (byteSize-- > 0)
 		{
 			c = ReadUInt16(bytes.Ptr());
@@ -460,7 +460,7 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
-		UOSInt retSize = byteSize << 1;
+		UIntOS retSize = byteSize << 1;
 		while (byteSize-- > 0)
 		{
 			c = ReadMUInt16(bytes);
@@ -528,13 +528,13 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
+		UIntOS charCnt = (UIntOS)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, wbuff, (Int32)charCnt);
 		wbuff[charCnt] = 0;
 		UnsafeArray<UTF8Char> dest = Text::StrWChar_UTF8(buff, wbuff);
 		MemFree(wbuff);
-		byteConv.Set((UOSInt)(dest - buff));
+		byteConv.Set((UIntOS)(dest - buff));
 		return dest;
 #else
 		byteConv.Set(byteSize);
@@ -543,7 +543,7 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 	}
 }
 
-UOSInt Text::Encoding::WCountBytes(UnsafeArray<const WChar> stri)
+UIntOS Text::Encoding::WCountBytes(UnsafeArray<const WChar> stri)
 {
 	if (this->codePage == 65001)
 	{
@@ -560,43 +560,43 @@ UOSInt Text::Encoding::WCountBytes(UnsafeArray<const WChar> stri)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), -1, 0, 0, 0, 0);
+		return (UIntOS)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), -1, 0, 0, 0, 0);
 #else
 		return StrWChar_UTF8Cnt(stri) + 1;
 #endif
 	}
 }
 
-UOSInt Text::Encoding::WCountBytesC(UnsafeArray<const WChar> stri, UOSInt strLen)
+UIntOS Text::Encoding::WCountBytesC(UnsafeArray<const WChar> stri, UIntOS strLen)
 {
 	if (this->codePage == 65001)
 	{
-		return StrWChar_UTF8CntC(stri, (UOSInt)strLen);
+		return StrWChar_UTF8CntC(stri, (UIntOS)strLen);
 	}
 	else if (this->codePage == 1200)
 	{
-		return (UOSInt)strLen << 1;
+		return (UIntOS)strLen << 1;
 	}
 	else if (this->codePage == 1201)
 	{
-		return (UOSInt)strLen << 1;
+		return (UIntOS)strLen << 1;
 	}
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), (Int32)strLen, 0, 0, 0, 0);
+		return (UIntOS)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), (Int32)strLen, 0, 0, 0, 0);
 #else
-		return (UOSInt)strLen;
+		return (UIntOS)strLen;
 #endif
 	}
 }
 
-UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr)
+UIntOS Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr)
 {
-	UOSInt size;
+	UIntOS size;
 	if (this->codePage == 65001)
 	{
-		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
+		return (UIntOS)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
 	}
 	else if (this->codePage == 1200)
 	{
@@ -633,19 +633,19 @@ UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const WCha
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = 1024;
 		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr.Ptr(), -1, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
-		return (UOSInt)iRet;
+		return (UIntOS)iRet;
 #else
-		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
+		return (UIntOS)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
 #endif
 	}
 }
 
-UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr, UOSInt strLen)
+UIntOS Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr, UIntOS strLen)
 {
-	UOSInt size;
+	UIntOS size;
 	if (this->codePage == 65001)
 	{
-		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
+		return (UIntOS)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
 	}
 	else if (this->codePage == 1200)
 	{
@@ -674,16 +674,16 @@ UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const WCh
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		size = (UOSInt)(strLen * 3);
+		size = (UIntOS)(strLen * 3);
 		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr.Ptr(), (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
-		return (UOSInt)iRet;
+		return (UIntOS)iRet;
 #else
-		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
+		return (UIntOS)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
 #endif
 	}
 }
 
-UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
+UIntOS Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 {
 	if (this->codePage == 65001)
 	{
@@ -691,7 +691,7 @@ UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 	}
 	else if (this->codePage == 1200 || this->codePage == 1201)
 	{
-		UOSInt charCnt = 0;
+		UIntOS charCnt = 0;
 		while (str[0])
 		{
 			if ((str[0] & 0x80) == 0)
@@ -731,8 +731,8 @@ UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
-		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
-		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, 0, 0, 0, 0) + 1;
+		IntOS strLen = (IntOS)Text::StrCharCnt(wptr);
+		UIntOS ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, 0, 0, 0, 0) + 1;
 		Text::StrDelNew(wptr);
 		return ret;
 #else
@@ -741,7 +741,7 @@ UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 	}
 }
 
-UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt strLen)
+UIntOS Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UIntOS strLen)
 {
 	if (this->codePage == 65001)
 	{
@@ -749,7 +749,7 @@ UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt s
 	}
 	else if (this->codePage == 1200 || this->codePage == 1201)
 	{
-		UOSInt charCnt = 0;
+		UIntOS charCnt = 0;
 		while (strLen > 0)
 		{
 			if ((str[0] & 0x80) == 0)
@@ -794,10 +794,10 @@ UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt s
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+		UIntOS ret = Text::StrUTF8_WCharCntC(str, strLen);
 		WChar *wptr = MemAlloc(WChar, ret + 1);
 		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
+		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
 		MemFree(wptr);
 		return ret;
 #else
@@ -806,11 +806,11 @@ UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt s
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str)
+UIntOS Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str)
 {
 	if (this->codePage == 65001)
 	{
-		return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
+		return (UIntOS)(Text::StrConcat(bytes, str) - bytes + 1);
 	}
 	else if (this->codePage == 1200)
 	{
@@ -867,7 +867,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const U
 		}
 		WriteInt16(&bytes[0], 0);
 		bytes += 2;
-		return (UOSInt)(bytes - oriBytes);
+		return (UIntOS)(bytes - oriBytes);
 	}
 	else if (this->codePage == 1201)
 	{
@@ -924,23 +924,23 @@ UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const U
 		}
 		WriteMInt16(bytes, 0);
 		bytes += 2;
-		return (UOSInt)(bytes - oriBytes);
+		return (UIntOS)(bytes - oriBytes);
 	}
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
-		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
-		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)(strLen * 3), 0, 0);
+		IntOS strLen = (IntOS)Text::StrCharCnt(wptr);
+		UIntOS ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)(strLen * 3), 0, 0);
 		Text::StrDelNew(wptr);
 		return ret;
 #else
-		return (UOSInt)(Text::StrConcat(bytes, str) - bytes + 1);
+		return (UIntOS)(Text::StrConcat(bytes, str) - bytes + 1);
 #endif
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen)
+UIntOS Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str, UIntOS strLen)
 {
 	if (this->codePage == 65001)
 	{
@@ -1001,7 +1001,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const 
 				str += 6;
 			}
 		}
-		return (UOSInt)(bytes - oriBytes);
+		return (UIntOS)(bytes - oriBytes);
 	}
 	else if (this->codePage == 1201)
 	{
@@ -1056,19 +1056,19 @@ UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const 
 				str += 6;
 			}
 		}
-		return (UOSInt)(bytes - oriBytes);
+		return (UIntOS)(bytes - oriBytes);
 	}
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
+		UIntOS ret = Text::StrUTF8_WCharCntC(str, strLen);
 		WChar *wptr = MemAlloc(WChar, ret + 1);
 		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes.Ptr(), (Int32)(ret * 3), 0, 0) + 1;
+		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes.Ptr(), (Int32)(ret * 3), 0, 0) + 1;
 		MemFree(wptr);
 		return ret;
 #else
-		return (UOSInt)(Text::StrConcatC(bytes, str, strLen) - bytes);
+		return (UIntOS)(Text::StrConcatC(bytes, str, strLen) - bytes);
 #endif
 	}
 }

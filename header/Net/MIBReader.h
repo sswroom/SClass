@@ -18,7 +18,7 @@ namespace Net
 	private:
 		Text::UTF8Reader reader;
 		Text::StringBuilderUTF8 sbLine;
-		UOSInt currOfst;
+		UIntOS currOfst;
 		EscapeType escapeType;
 
 		Bool ReadLineInner(NN<Text::StringBuilderUTF8> sb);

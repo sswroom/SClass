@@ -10,15 +10,15 @@ void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(AnyType userObj)
 
 void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 {
-	UOSInt defVal = this->env->GetDefLineStyle();
-	UOSInt currPos = this->GetVScrollPos();
-	UOSInt i = 0;
-	UOSInt j = this->env->GetLineStyleCount();
+	UIntOS defVal = this->env->GetDefLineStyle();
+	UIntOS currPos = this->GetVScrollPos();
+	UIntOS i = 0;
+	UIntOS j = this->env->GetLineStyleCount();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	UOSInt w = img->GetWidth();;
-	UOSInt h = img->GetHeight();
+	UIntOS w = img->GetWidth();;
+	UIntOS h = img->GetHeight();
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
 	UInt32 itemH = (UInt32)Double2Int32(22 * hdpi / ddpi);
@@ -29,21 +29,21 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawImage> tmpBmp;
 	if (w >= itemW)
 	{
-		if (!deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
+		if (!deng->CreateImage32(Math::Size2D<UIntOS>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
 		{
 			return;
 		}
 	}
 	else if (w >= 10)
 	{
-		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
+		if (!deng->CreateImage32(Math::Size2D<UIntOS>(w - 10, itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
 		{
 			return;
 		}
 	}
 	else
 	{
-		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
+		if (!deng->CreateImage32(Math::Size2D<UIntOS>(w, itemH), Media::AT_ALPHA_ALL_FF).SetTo(tmpBmp))
 		{
 			return;
 		}
@@ -58,31 +58,31 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 		if (currPos == defVal)
 		{
 			NN<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(itemTH)), nullptr, bDef);
+			img->DrawRect(Math::Coord2DDbl(0, UIntOS2Double(i)), Math::Size2DDbl(UIntOS2Double(w), UIntOS2Double(itemTH)), nullptr, bDef);
 			img->DelBrush(bDef);
 		}
 		else
 		{
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), nullptr, bWhite);
+			img->DrawRect(Math::Coord2DDbl(0, UIntOS2Double(i)), Math::Size2DDbl(UIntOS2Double(w), itemTH), nullptr, bWhite);
 		}
 		this->core->GenLineStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currLineStyle)
 		{
 			NN<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(itemW, itemTH), nullptr, bRed);
+			img->DrawRect(Math::Coord2DDbl(0, UIntOS2Double(i)), Math::Size2DDbl(itemW, itemTH), nullptr, bRed);
 			img->DelBrush(bRed);
 		}
 		if (w >= itemW)
 		{
-			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(itemL, UOSInt2Double(i + 1)));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(itemL, UIntOS2Double(i + 1)));
 		}
 		else if (w >= 10)
 		{
-			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(5, UOSInt2Double(i + 1)));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(5, UIntOS2Double(i + 1)));
 		}
 		else
 		{
-			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(0, UOSInt2Double(i + 1)));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(0, UIntOS2Double(i + 1)));
 		}
 		sbuff[0] = 0;
 		if (this->env->GetLineStyleName(currPos, sbuff).SetTo(sptr) && sbuff[0])
@@ -90,7 +90,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 			NN<Media::DrawFont> fnt;
 			if (this->CreateDrawFont(img).SetTo(fnt))
 			{
-				img->DrawString(Math::Coord2DDbl(itemW, UOSInt2Double(i + 1)), CSTRP(sbuff, sptr), fnt, bBlack);
+				img->DrawString(Math::Coord2DDbl(itemW, UIntOS2Double(i + 1)), CSTRP(sbuff, sptr), fnt, bBlack);
 				img->DelFont(fnt);
 			}
 		}
@@ -100,32 +100,32 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 	}
 	if (i < h)
 	{
-		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h - i)), nullptr, bWhite);
+		img->DrawRect(Math::Coord2DDbl(0, UIntOS2Double(i)), Math::Size2DDbl(UIntOS2Double(w), UIntOS2Double(h - i)), nullptr, bWhite);
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
 	deng->DeleteImage(tmpBmp);
 }
 
-void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	OSInt i = scrollY + (pos.y / Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
-	if (i >= (OSInt)this->env->GetLineStyleCount())
+	IntOS i = scrollY + (pos.y / Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
+	if (i >= (IntOS)this->env->GetLineStyleCount())
 	{
 		i = -1;
 	}
 	else
 	{
-		if (i != (OSInt)this->currLineStyle)
+		if (i != (IntOS)this->currLineStyle)
 		{
-			this->currLineStyle = (UOSInt)i;
+			this->currLineStyle = (UIntOS)i;
 			this->EventSelChg();
 			this->Redraw();
 		}
 		NN<UI::GUIPopupMenu> mnu;
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnu))
 		{
-			Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
+			Math::Coord2D<IntOS> scnPos = this->GetScreenPosP();
 			mnu->ShowMenu(*this, scnPos + pos);
 		}
 	}
@@ -135,7 +135,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnKeyDown(UInt32 keyCode)
 {
 }
 
-SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initLineStyle, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine(), colorSess)
+SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UIntOS initLineStyle, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine(), colorSess)
 {
 	this->core = core;
 	this->env = env;
@@ -176,13 +176,13 @@ void SSWR::AVIRead::AVIRLineSelector::SetPopupMenu(Optional<UI::GUIPopupMenu> mn
 void SSWR::AVIRead::AVIRLineSelector::UpdateLineStyles()
 {
 	Math::Size2DDbl sz = this->GetSize();
-	UOSInt page = (UOSInt)(sz.y / 24);
+	UIntOS page = (UIntOS)(sz.y / 24);
 	if (page <= 0)
 		page = 1;
 	this->SetVScrollBar(0, this->env->GetLineStyleCount(), page);
 }
 
-UOSInt SSWR::AVIRead::AVIRLineSelector::GetSelectedLineStyle()
+UIntOS SSWR::AVIRead::AVIRLineSelector::GetSelectedLineStyle()
 {
 	return this->currLineStyle;
 }

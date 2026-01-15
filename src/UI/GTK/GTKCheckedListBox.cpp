@@ -14,7 +14,7 @@ typedef struct
 {
 	GtkListStore *listStore;
 	GtkWidget *treeView;
-	OSInt colCnt;
+	IntOS colCnt;
 	Double *colSizes;
 	Data::ArrayListObj<MyRow*> *rows;
 	UI::ListViewStyle lvstyle;
@@ -29,7 +29,7 @@ UI::GTK::GTKCheckedListBox::~GTKCheckedListBox()
 {
 }
 
-Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UOSInt index)
+Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UIntOS index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -40,7 +40,7 @@ Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UOSInt index)
 	return ret;
 }
 
-void UI::GTK::GTKCheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
+void UI::GTK::GTKCheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -49,7 +49,7 @@ void UI::GTK::GTKCheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 	gtk_list_store_set(data->listStore, &r->iter, 1, isChecked, -1);
 }
 
-OSInt UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, void *lParam)
 {
 	if (code == 0x1234)
 	{

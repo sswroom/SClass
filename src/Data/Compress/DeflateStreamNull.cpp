@@ -15,12 +15,12 @@ Bool Data::Compress::DeflateStream::IsDown() const
 	return true;
 }
 
-UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::DeflateStream::Write(const UInt8 *buff, UOSInt size)
+UIntOS Data::Compress::DeflateStream::Write(const UInt8 *buff, UIntOS size)
 {
 	return 0;
 }

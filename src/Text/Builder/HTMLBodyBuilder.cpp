@@ -8,7 +8,7 @@ Text::Builder::HTMLBodyBuilder::HTMLBodyBuilder(NN<Text::StringBuilderUTF8> sb) 
 
 Text::Builder::HTMLBodyBuilder::~HTMLBodyBuilder()
 {
-	UOSInt i = this->elements.GetCount();
+	UIntOS i = this->elements.GetCount();
 	while (i-- > 0)
 	{
 		this->sb->AppendC(UTF8STRC("</"));
@@ -75,17 +75,17 @@ void Text::Builder::HTMLBodyBuilder::BeginTableRow()
 	this->elements.Add(CSTR("tr"));
 }
 
-void Text::Builder::HTMLBodyBuilder::BeginTableRowPixelHeight(UOSInt pxHeight)
+void Text::Builder::HTMLBodyBuilder::BeginTableRowPixelHeight(UIntOS pxHeight)
 {
 	this->sb->AppendC(UTF8STRC("<tr height=\""));
-	this->sb->AppendUOSInt(pxHeight);
+	this->sb->AppendUIntOS(pxHeight);
 	this->sb->AppendC(UTF8STRC("px\">"));
 	this->elements.Add(CSTR("tr"));
 }
 
 void Text::Builder::HTMLBodyBuilder::EndElement()
 {
-	UOSInt i = this->elements.GetCount();
+	UIntOS i = this->elements.GetCount();
 	if (i-- > 0)
 	{
 		this->sb->AppendC(UTF8STRC("</"));
@@ -108,19 +108,19 @@ void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CStringNN content)
 	this->sb->AppendC(UTF8STRC("</td>"));
 }
 
-void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CStringNN content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign)
+void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CStringNN content, UIntOS colSpan, UIntOS rowSpan, HAlignment halign, VAlignment valign)
 {
 	this->sb->AppendC(UTF8STRC("<td"));
 	if (colSpan > 1)
 	{
 		this->sb->AppendC(UTF8STRC(" colspan=\""));
-		this->sb->AppendUOSInt(colSpan);
+		this->sb->AppendUIntOS(colSpan);
 		this->sb->AppendUTF8Char('\"');
 	}
 	if (rowSpan > 1)
 	{
 		this->sb->AppendC(UTF8STRC(" rowspan=\""));
-		this->sb->AppendUOSInt(rowSpan);
+		this->sb->AppendUIntOS(rowSpan);
 		this->sb->AppendUTF8Char('\"');
 	}
 	switch (halign)

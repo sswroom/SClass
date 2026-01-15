@@ -9,7 +9,7 @@ namespace IO
 		class TelitLE910 : public IO::GSMModemController
 		{
 		private:
-			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
+			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UIntOS cmdLen);
 		public:
 			TelitLE910(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~TelitLE910();

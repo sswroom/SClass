@@ -30,8 +30,8 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(AnyType user
 	sptr = Text::StrDoubleFmt(sbuff, t, "0.0000000000");
 	me->txtRespTime->SetText(CSTRP(sbuff, sptr));
 	me->lbResponse->ClearItems();
-	UOSInt i = 0;
-	UOSInt j = rec->GetCount();
+	UIntOS i = 0;
+	UIntOS j = rec->GetCount();
 	while (i < j)
 	{
 		me->lbResponse->AddItem(Text::String::OrEmpty(rec->GetItem(i)), 0);

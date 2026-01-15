@@ -2,28 +2,28 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/UVOffsetFilter.h"
 
-void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 	{
 		Int32 uOfst = this->uOfst;
 		Int32 vOfst = this->vOfst;
-		UOSInt w = this->videoInfo.storeSize.x;
-		UOSInt h = this->videoInfo.storeSize.y;
-		UOSInt hh = h >> 1;
-		UOSInt wh = w >> 1;
+		UIntOS w = this->videoInfo.storeSize.x;
+		UIntOS h = this->videoInfo.storeSize.y;
+		UIntOS hh = h >> 1;
+		UIntOS wh = w >> 1;
 		UnsafeArray<UInt8> imgPtr = imgData[0] + w * h;
 		if (vOfst > 0)
 		{
-			UOSInt moveSize = wh - (UOSInt)(OSInt)vOfst;
-			UOSInt hLeft = hh;
-			UOSInt wLeft;
+			UIntOS moveSize = wh - (UIntOS)(IntOS)vOfst;
+			UIntOS hLeft = hh;
+			UIntOS wLeft;
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
 				MemCopyO(imgPtr.Ptr() + vOfst, imgPtr.Ptr(), moveSize);
 				v = *imgPtr;
-				wLeft = (UOSInt)vOfst;
+				wLeft = (UIntOS)vOfst;
 				while (wLeft-- > 1)
 				{
 					imgPtr[wLeft] = v;
@@ -33,19 +33,19 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 		}
 		else if (vOfst < 0)
 		{
-			UOSInt moveSize = wh + (UOSInt)(OSInt)vOfst;
-			UOSInt hLeft = hh;
-			UOSInt wLeft;
+			UIntOS moveSize = wh + (UIntOS)(IntOS)vOfst;
+			UIntOS hLeft = hh;
+			UIntOS wLeft;
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
 				MemCopyO(imgPtr.Ptr(), imgPtr.Ptr() - vOfst, moveSize);
 				imgPtr += wh;
 				v = imgPtr[-1];
-				wLeft = (UOSInt)-vOfst;
+				wLeft = (UIntOS)-vOfst;
 				while (wLeft-- > 1)
 				{
-					imgPtr[-1 - (OSInt)wLeft] = v;
+					imgPtr[-1 - (IntOS)wLeft] = v;
 				}
 			}
 		}
@@ -55,15 +55,15 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 		}
 		if (uOfst > 0)
 		{
-			UOSInt moveSize = wh - (UOSInt)(OSInt)uOfst;
-			UOSInt hLeft = hh;
-			UOSInt wLeft;
+			UIntOS moveSize = wh - (UIntOS)(IntOS)uOfst;
+			UIntOS hLeft = hh;
+			UIntOS wLeft;
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
 				MemCopyO(imgPtr.Ptr() + uOfst, imgPtr.Ptr(), moveSize);
 				v = *imgPtr;
-				wLeft = (UOSInt)uOfst;
+				wLeft = (UIntOS)uOfst;
 				while (wLeft-- > 1)
 				{
 					imgPtr[wLeft] = v;
@@ -73,19 +73,19 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 		}
 		else if (uOfst < 0)
 		{
-			UOSInt moveSize = wh + (UOSInt)(OSInt)uOfst;
-			UOSInt hLeft = hh;
-			UOSInt wLeft;
+			UIntOS moveSize = wh + (UIntOS)(IntOS)uOfst;
+			UIntOS hLeft = hh;
+			UIntOS wLeft;
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
 				MemCopyO(imgPtr.Ptr(), imgPtr.Ptr() - uOfst, moveSize);
 				imgPtr += wh;
 				v = imgPtr[-1];
-				wLeft = (UOSInt)-uOfst;
+				wLeft = (UIntOS)-uOfst;
 				while (wLeft-- > 1)
 				{
-					imgPtr[-1 - (OSInt)wLeft] = v;
+					imgPtr[-1 - (IntOS)wLeft] = v;
 				}
 			}
 		}

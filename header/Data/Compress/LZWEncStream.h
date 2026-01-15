@@ -19,31 +19,31 @@ namespace Data
 				UInt8 reserved2;
 			} TableItem;
 		private:
-			OSInt minCodeSize;
-			OSInt maxCodeSize;
-			OSInt currCodeSize;
-			OSInt currTableSize;
-			OSInt nextTableSize;
+			IntOS minCodeSize;
+			IntOS maxCodeSize;
+			IntOS currCodeSize;
+			IntOS currTableSize;
+			IntOS nextTableSize;
 			UnsafeArray<TableItem> lzwTable;
 			UnsafeArray<UInt8> encBuff;
-			OSInt buffSize;
+			IntOS buffSize;
 			Int32 resetCode;
 			Int32 endCode;
-			OSInt tableSize;
-			OSInt codeSizeAdj;
+			IntOS tableSize;
+			IntOS codeSizeAdj;
 			NN<IO::BitWriter> writer;
 			Bool toRelease;
-			OSInt maxCodeLeng;
+			IntOS maxCodeLeng;
 
 
 		private:
 			void ResetTable();
 		public:
-			LZWEncStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
+			LZWEncStream(NN<IO::Stream> stm, Bool lsb, UIntOS minCodeSize, UIntOS maxCodeSize, UIntOS codeSizeAdj);
 			virtual ~LZWEncStream();
 
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

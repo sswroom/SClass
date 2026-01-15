@@ -34,7 +34,7 @@ UnsafeArrayOpt<UTF8Char> Media::OpenCV::OCVUtil::GetDataPath(UnsafeArray<UTF8Cha
 	const UTF8Char **paths;
 	UnsafeArray<UTF8Char> sptr;
 	const UTF8Char *path;
-	OSInt i;
+	IntOS i;
 	if (IO::Path::PATH_SEPERATOR == '/')
 	{
 		paths = (const UTF8Char**)OCVUtil_LinuxPaths;

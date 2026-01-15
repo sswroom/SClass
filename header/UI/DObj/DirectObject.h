@@ -19,23 +19,23 @@ namespace UI
 				MT_ACCDEACC
 			} MoveType;
 		private:
-			Math::Coord2D<OSInt> tl;
+			Math::Coord2D<IntOS> tl;
 			MoveType currMoveType;
-			Math::Coord2D<OSInt> destTL;
+			Math::Coord2D<IntOS> destTL;
 			Data::DateTime moveTime;
 			Double moveDur;
 		public:
-			DirectObject(Math::Coord2D<OSInt> tl);
+			DirectObject(Math::Coord2D<IntOS> tl);
 			virtual ~DirectObject();
 
-			Math::Coord2D<OSInt> GetCurrPos();
+			Math::Coord2D<IntOS> GetCurrPos();
 			Bool IsMoving();
-			void MoveToPos(Math::Coord2D<OSInt> destTL, Double dur, MoveType mType);
+			void MoveToPos(Math::Coord2D<IntOS> destTL, Double dur, MoveType mType);
 			virtual Bool IsChanged() = 0;
 			virtual Bool DoEvents() = 0;
 			virtual void DrawObject(NN<Media::DrawImage> dimg) = 0;
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos) = 0;
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos) = 0;
 //			virtual System::Windows::Forms::Cursor ^GetCursor() = 0;
 			virtual void OnMouseDown() = 0;
 			virtual void OnMouseUp() = 0;

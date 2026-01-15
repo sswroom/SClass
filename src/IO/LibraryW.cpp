@@ -40,7 +40,7 @@ void *IO::Library::GetFunc(UnsafeArray<const Char> funcName)
 #endif
 }
 
-void *IO::Library::GetFuncNum(OSInt num)
+void *IO::Library::GetFuncNum(IntOS num)
 {
 #if defined(_WIN32_WCE)
 	return (void*)GetProcAddress((HMODULE)this->hModule, (LPCWSTR)num);

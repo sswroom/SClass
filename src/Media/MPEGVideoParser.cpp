@@ -3,7 +3,7 @@
 #include "IO/BitReaderMSB.h"
 #include "Media/MPEGVideoParser.h"
 
-Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, OutParam<UInt32> fRateNorm, OutParam<UInt32> fRateDenorm, OptOut<UInt64> bitRate, Bool decoderFix)
+Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UIntOS frameSize, NN<Media::FrameInfo> frameInfo, OutParam<UInt32> fRateNorm, OutParam<UInt32> fRateDenorm, OptOut<UInt64> bitRate, Bool decoderFix)
 {
 	decoderFix = false;
 	if (ReadMInt32(&frame[0]) != 0x1b3)
@@ -13,7 +13,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frame
 //	Bool progressive_sequence = false;
 	Bool mpg2 = false;
 
-	UOSInt ofst;
+	UIntOS ofst;
 
 	UInt32 horizontal_size = (UInt32)((frame[4] << 4) | (frame[5] >> 4));
 	UInt32 vertical_size = (UInt32)(((frame[5] & 0xf) << 8) | frame[6]);
@@ -84,7 +84,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frame
 		break;
 	}
 	//MPEG-1: Color = BT601
-	frameInfo->storeSize = Math::Size2D<UOSInt>(horizontal_size, vertical_size);
+	frameInfo->storeSize = Math::Size2D<UIntOS>(horizontal_size, vertical_size);
 	frameInfo->dispSize = frameInfo->storeSize;
 	frameInfo->fourcc = *(UInt32*)"MPG2"; // 0 = bmp
 	frameInfo->storeBPP = 0;
@@ -134,7 +134,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frame
 			frameRateNorm *= (frame_rate_extension_n + 1);
 			frameRateDenorm *= (frame_rate_extension_d + 1);
 
-			frameInfo->storeSize = Math::Size2D<UOSInt>(horizontal_size, vertical_size);
+			frameInfo->storeSize = Math::Size2D<UIntOS>(horizontal_size, vertical_size);
 			frameInfo->dispSize = frameInfo->storeSize;
 
 			ofst += 10;
@@ -352,7 +352,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frame
 	return true;
 }
 
-Bool Media::MPEGVideoParser::GetFrameProp(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<MPEGFrameProp> prop)
+Bool Media::MPEGVideoParser::GetFrameProp(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<MPEGFrameProp> prop)
 {
 	if (ReadMInt32(&frame[0]) != 0x00000100)
 		return false;

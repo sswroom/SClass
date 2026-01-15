@@ -64,7 +64,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	Text::Encoding enc(932);
 	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
-	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
+	if (!fd->GetFullName()->EndsWith(fileName, (UIntOS)(sptr - fileName)))
 	{
 		return nullptr;
 	}

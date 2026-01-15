@@ -21,11 +21,11 @@ namespace Map
 		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS);
 		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, AnyType userObj);
 
-		UOSInt Add(NN<Map::MapRenderer> renderer);
+		UIntOS Add(NN<Map::MapRenderer> renderer);
 		void Clear();
-		virtual UOSInt GetCount();
-		virtual NN<Map::MapRenderer> GetItemNoCheck(UOSInt index);
-		virtual Optional<Map::MapRenderer> GetItem(UOSInt index);
+		virtual UIntOS GetCount();
+		virtual NN<Map::MapRenderer> GetItemNoCheck(UIntOS index);
+		virtual Optional<Map::MapRenderer> GetItem(UIntOS index);
 
 		void BeginUpdate();
 		void EndUpdate();

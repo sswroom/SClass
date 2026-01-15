@@ -17,7 +17,7 @@ extern "C"
 struct LinuxProgControl : public Core::ProgControl
 {
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
-	OSInt argc;
+	IntOS argc;
 };
 
 void LinuxProgControl_OnSignal(Int32 sigNum)
@@ -40,10 +40,10 @@ Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgCo
 	return ui;
 }
 
-UnsafeArray<UnsafeArray<UTF8Char>> __stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	NN<LinuxProgControl> ctrl = NN<LinuxProgControl>::ConvertFrom(progCtrl);
-	cmdCnt.Set((UOSInt)ctrl->argc);
+	cmdCnt.Set((UIntOS)ctrl->argc);
 	return ctrl->argv;
 }
 
@@ -65,7 +65,7 @@ extern "C"
 	{
 		Int32 ret;
 		LinuxProgControl conCtrl;
-		OSInt i;
+		IntOS i;
 		jobject sobj;
 		const jchar *strArr;
 		jboolean isCopy;

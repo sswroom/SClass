@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	port = 80;
 #endif
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

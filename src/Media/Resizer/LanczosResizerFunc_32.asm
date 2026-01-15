@@ -57,7 +57,7 @@ global LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8
 global _LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8
 global LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8
 
-;void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -511,7 +511,7 @@ hfpaexit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -910,7 +910,7 @@ hfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_HorizontalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1267,7 +1267,7 @@ hf24_exit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *pal8Table, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *pal8Table, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1581,7 +1581,7 @@ hfp8exit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1938,7 +1938,7 @@ hfrgb16_exit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbaTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbaTable, IntOS swidth, UInt8 *tmpbuff)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2295,7 +2295,7 @@ hfbgr16_exit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+;void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2589,7 +2589,7 @@ vfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+;void LanczosResizerFunc_VerticalFilterB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2866,7 +2866,7 @@ vf24_exit:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2940,7 +2940,7 @@ exppalop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3006,7 +3006,7 @@ explop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ExpandB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3069,7 +3069,7 @@ exp24lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *pal8Table)
+;void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *pal8Table)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3126,7 +3126,7 @@ expp8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3190,7 +3190,7 @@ exprgb16lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3254,7 +3254,7 @@ expbgr16lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+;void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 ;	Int64 toAdd = 0xff80ff80ff80ff80;
 ;	Int64 toAdd2 = 0x80808080;
 ;0 edi
@@ -3319,7 +3319,7 @@ collop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable)
+;void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 ;	Int64 toAdd = 0xff80ff80ff80ff80;
 ;	Int64 toAdd2 = 0x80808080;
 ;0 edi
@@ -3381,7 +3381,7 @@ col24lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3448,7 +3448,7 @@ icbgra8_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3557,7 +3557,7 @@ icbgra8pa_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3625,7 +3625,7 @@ icbgr8_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
+;void LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3687,7 +3687,7 @@ icp8_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3755,7 +3755,7 @@ icrgb16_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3823,7 +3823,7 @@ icbgr16_bgra8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3892,7 +3892,7 @@ icbgra8_bgr8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3958,7 +3958,7 @@ icbgr8_bgr8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyPal8_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
+;void LanczosResizerFunc_ImgCopyPal8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *pal8Table)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -4018,7 +4018,7 @@ icp8_bgr8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -4085,7 +4085,7 @@ icrgb16_bgr8lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx

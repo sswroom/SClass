@@ -15,9 +15,9 @@
 
 #include <stdio.h>
 
-UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
+UIntOS Map::ESRI::FileGDBReader::GetFieldIndex(UIntOS colIndex)
 {
-	NN<Data::ArrayListNative<UOSInt>> columnIndices;
+	NN<Data::ArrayListNative<UIntOS>> columnIndices;
 	if (this->columnIndices.SetTo(columnIndices))
 	{
 		if (colIndex >= columnIndices->GetCount())
@@ -35,7 +35,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize)
+Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -45,7 +45,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<F
 	this->tableInfo = Map::ESRI::FileGDBUtil::TableInfoClone(tableInfo);
 	this->rowSize = 0;
 	this->objectId = 0;
-	UOSInt fieldCnt = tableInfo->fields->GetCount();
+	UIntOS fieldCnt = tableInfo->fields->GetCount();
 	this->fieldNull = MemAllocArr(UInt8, fieldCnt);
 	this->fieldOfst = MemAllocArr(UInt32, fieldCnt);
 	MemClear(&this->fieldNull[0], fieldCnt);
@@ -60,14 +60,14 @@ Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<F
 	this->columnIndices = nullptr;
 	this->conditions = conditions;
 	NN<Data::ArrayListStringNN> nncolumnNames;
-	NN<Data::ArrayListNative<UOSInt>> columnIndices;
+	NN<Data::ArrayListNative<UIntOS>> columnIndices;
 	if (columnNames.SetTo(nncolumnNames))
 	{
-		NEW_CLASSNN(columnIndices, Data::ArrayListNative<UOSInt>());
+		NEW_CLASSNN(columnIndices, Data::ArrayListNative<UIntOS>());
 		this->columnIndices = columnIndices;
-		UOSInt i = 0;
-		UOSInt j = nncolumnNames->GetCount();
-		UOSInt k = 0;
+		UIntOS i = 0;
+		UIntOS j = nncolumnNames->GetCount();
+		UIntOS k = 0;
 		while (i < j)
 		{
 			Bool found = false;
@@ -188,12 +188,12 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 		}
 		this->rowOfst = this->currOfst;
 		this->currOfst += 4 + this->rowSize;
-		UOSInt rowOfst = (UOSInt)(this->tableInfo->nullableCnt + 7) >> 3;
-		UOSInt nullIndex = 0;
+		UIntOS rowOfst = (UIntOS)(this->tableInfo->nullableCnt + 7) >> 3;
+		UIntOS nullIndex = 0;
 		NN<FileGDBFieldInfo> field;
 		UInt64 v;
-		UOSInt i = 0;
-		UOSInt j = this->tableInfo->fields->GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->tableInfo->fields->GetCount();
 		while (i < j)
 		{
 			field = this->tableInfo->fields->GetItemNoCheck(i);
@@ -226,7 +226,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 					{
 						return false;
 					}
-					rowOfst += (UOSInt)v;
+					rowOfst += (UIntOS)v;
 					break;
 				case 5:
 					rowOfst += 8;
@@ -235,11 +235,11 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 					break;
 				case 7:
 					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-					rowOfst += (UOSInt)v;
+					rowOfst += (UIntOS)v;
 					break;
 				case 8:
 					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-					rowOfst += (UOSInt)v;
+					rowOfst += (UIntOS)v;
 					break;
 				case 9:
 					//////////////////////////////
@@ -250,7 +250,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 					break;
 				case 12:
 					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-					rowOfst += (UOSInt)v;
+					rowOfst += (UIntOS)v;
 					break;
 				}
 			}
@@ -281,9 +281,9 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 	return true;
 }
 
-UOSInt Map::ESRI::FileGDBReader::ColCount()
+UIntOS Map::ESRI::FileGDBReader::ColCount()
 {
-	NN<Data::ArrayListNative<UOSInt>> columnIndices;
+	NN<Data::ArrayListNative<UIntOS>> columnIndices;
 	if (this->columnIndices.SetTo(columnIndices))
 	{
 		return columnIndices->GetCount();
@@ -294,14 +294,14 @@ UOSInt Map::ESRI::FileGDBReader::ColCount()
 	}
 }
 
-OSInt Map::ESRI::FileGDBReader::GetRowChanged()
+IntOS Map::ESRI::FileGDBReader::GetRowChanged()
 {
 	return 0;
 }
 
-Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
+Int32 Map::ESRI::FileGDBReader::GetInt32(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return 0;
@@ -330,17 +330,17 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			UIntOS ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
+			sb.AppendC(&this->rowData[ofst], (UIntOS)v);
 			return sb.ToInt32();
 		}
 	}
 	return 0;
 }
 
-Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
+Int64 Map::ESRI::FileGDBReader::GetInt64(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return 0;
@@ -369,15 +369,15 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			UIntOS ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
+			sb.AppendC(&this->rowData[ofst], (UIntOS)v);
 			return sb.ToInt64();
 		}
 	}
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -387,9 +387,9 @@ UnsafeArrayOpt<WChar> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UnsafeAr
 	return nullptr;
 }
 
-Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return false;
@@ -400,7 +400,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF
 		return false;
 	}
 	UInt64 v;
-	UOSInt ofst;
+	UIntOS ofst;
 	switch (field->fieldType)
 	{
 	case 0:
@@ -418,7 +418,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		sb->AppendC(&this->rowData[ofst], (UOSInt)v);
+		sb->AppendC(&this->rowData[ofst], (UIntOS)v);
 		return true;
 	case 5:
 		{
@@ -442,7 +442,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF
 		return false;
 	case 8:
 		{
-			UOSInt size = this->GetBinarySize(colIndex);
+			UIntOS size = this->GetBinarySize(colIndex);
 			UInt8 *binBuff = MemAlloc(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			sb->AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
@@ -460,11 +460,11 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF
 	return false;
 }
 
-Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UIntOS colIndex)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return nullptr;
@@ -475,7 +475,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return nullptr;
 	}
 	UInt64 v;
-	UOSInt ofst;
+	UIntOS ofst;
 	switch (field->fieldType)
 	{
 	case 0:
@@ -493,7 +493,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		return Text::String::New(&this->rowData[ofst], (UOSInt)v);
+		return Text::String::New(&this->rowData[ofst], (UIntOS)v);
 	case 5:
 		{
 			sptr = Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS().ToString(sbuff);
@@ -518,7 +518,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	case 8:
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt size = this->GetBinarySize(colIndex);
+			UIntOS size = this->GetBinarySize(colIndex);
 			UInt8 *binBuff = MemAlloc(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			sb.AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
@@ -537,7 +537,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -547,9 +547,9 @@ UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Unsaf
 	return nullptr;
 }
 
-Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return Data::Timestamp(0);
@@ -572,17 +572,17 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			UIntOS ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
+			sb.AppendC(&this->rowData[ofst], (UIntOS)v);
 			return Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 	}
 	return Data::Timestamp(0);
 }
 
-Double Map::ESRI::FileGDBReader::GetDblOrNAN(UOSInt colIndex)
+Double Map::ESRI::FileGDBReader::GetDblOrNAN(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return NAN;
@@ -611,22 +611,22 @@ Double Map::ESRI::FileGDBReader::GetDblOrNAN(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			UIntOS ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
+			sb.AppendC(&this->rowData[ofst], (UIntOS)v);
 			return sb.ToDoubleOrNAN();
 		}
 	}
 	return NAN;
 }
 
-Bool Map::ESRI::FileGDBReader::GetBool(UOSInt colIndex)
+Bool Map::ESRI::FileGDBReader::GetBool(UIntOS colIndex)
 {
 	return this->GetInt32(colIndex) != 0;
 }
 
-UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
+UIntOS Map::ESRI::FileGDBReader::GetBinarySize(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return 0;
@@ -650,17 +650,17 @@ UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 	case 12:
 	case 4:
 		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		return (UOSInt)v;
+		return (UIntOS)v;
 	case 5:
 		return 8;
 	case 6:
 		return 4;
 	case 7:
 		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		return (UOSInt)v;
+		return (UIntOS)v;
 	case 8:
 		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		return (UOSInt)v;
+		return (UIntOS)v;
 	case 10:
 	case 11:
 		return 16;
@@ -668,9 +668,9 @@ UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Map::ESRI::FileGDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return 0;
@@ -681,7 +681,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> b
 		return 0;
 	}
 	UInt64 v;
-	UOSInt ofst;
+	UIntOS ofst;
 	switch (field->fieldType)
 	{
 	case 0:
@@ -699,8 +699,8 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> b
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
-		return (UOSInt)v;
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UIntOS)v);
+		return (UIntOS)v;
 	case 5:
 		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 8);
 		return 8;
@@ -709,12 +709,12 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> b
 		return 4;
 	case 7:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
-		return (UOSInt)v;
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UIntOS)v);
+		return (UIntOS)v;
 	case 8:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
-		return (UOSInt)v;
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UIntOS)v);
+		return (UIntOS)v;
 	case 10:
 	case 11:
 		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 16);
@@ -723,9 +723,9 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> b
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return nullptr;
@@ -741,7 +741,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 	}
 	UInt64 geometryLen;
 	UInt64 geometryType;
-	UOSInt ofst;
+	UIntOS ofst;
 	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], geometryLen);
 	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, geometryType);
 	Double x;
@@ -843,17 +843,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			{
 				srid = csys->GetSRID();
 			}
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
+			UIntOS i;
+			UIntOS j;
+			UIntOS k;
 			NN<Math::Geometry::LineString> lineString;
 			UInt32 *ptOfstList;
 			UnsafeArray<Math::Coord2DDbl> points;
 			UnsafeArray<Double> zArr;
 			UnsafeArray<Double> mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
-			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
+			//, (UIntOS)nParts, (UIntOS)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
+			ptOfstList = MemAlloc(UInt32, (UIntOS)nParts);
 			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -953,18 +953,18 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				srid = csys->GetSRID();
 			}
 			NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
-			UOSInt i;
-			UInt32 *parts = MemAlloc(UInt32, (UOSInt)nParts);
-			Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, (UOSInt)nPoints);
+			UIntOS i;
+			UInt32 *parts = MemAlloc(UInt32, (UIntOS)nParts);
+			Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, (UIntOS)nPoints);
 			Double *zArr = 0;
 			Double *mArr = 0;
 			if ((this->tableInfo->geometryFlags & 0x80) != 0)
 			{
-				zArr = MemAlloc(Double, (UOSInt)nPoints);
+				zArr = MemAlloc(Double, (UIntOS)nPoints);
 			}
 			if ((this->tableInfo->geometryFlags & 0x40) != 0)
 			{
-				mArr = MemAlloc(Double, (UOSInt)nPoints);
+				mArr = MemAlloc(Double, (UIntOS)nPoints);
 			}
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
@@ -1056,16 +1056,16 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			{
 				srid = csys->GetSRID();
 			}
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			UnsafeArray<UInt32> ptOfstList;
 			UnsafeArray<Math::Coord2DDbl> points;
 			UnsafeArrayOpt<Double> zArr = nullptr;
 			UnsafeArrayOpt<Double> mArr = nullptr;
 
 			UnsafeArray<Double> nnArr;
-			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
-			ptOfstList = MemAllocArr(UInt32, (UOSInt)nParts);
+			//, (UIntOS)nParts, (UIntOS)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
+			ptOfstList = MemAllocArr(UInt32, (UIntOS)nParts);
 			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1076,7 +1076,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				ptOfstList[i] = ptOfst;
 				i++;
 			}
-			points = MemAllocAArr(Math::Coord2DDbl, (UOSInt)nPoints);
+			points = MemAllocAArr(Math::Coord2DDbl, (UIntOS)nPoints);
 			Int64 iv;
 			Int64 dx = 0;
 			Int64 dy = 0;
@@ -1097,7 +1097,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			}
 			if ((this->tableInfo->geometryFlags & 0x80))
 			{
-				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				nnArr = MemAllocArr(Double, (UIntOS)nPoints);
 				zArr = nnArr;
 				j = 0;
 				while (j < nPoints)
@@ -1111,7 +1111,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			}
 			if ((this->tableInfo->geometryFlags & 0x40))
 			{
-				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				nnArr = MemAllocArr(Double, (UIntOS)nPoints);
 				mArr = nnArr;
 				j = 0;
 				while (j < nPoints)
@@ -1127,7 +1127,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			Map::ESRI::ESRICurve curve(srid, ptOfstList, nParts, points, nPoints, zArr, mArr);
 			if (nCurves > 0)
 			{
-				UOSInt type;
+				UIntOS type;
 				UInt64 uv;
 				i = 0;
 				while (i < nCurves)
@@ -1136,17 +1136,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
 					}
 					else if (type == 4) //esriSegmentBezier3Curve
 					{
-						curve.AddBezier3Curve((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						curve.AddBezier3Curve((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
 						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						curve.AddEllipticArc((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						curve.AddEllipticArc((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
 						ofst += 45;
 					}
 					else
@@ -1192,7 +1192,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			srid = 0;
-			UOSInt i;
+			UIntOS i;
 			if (this->tableInfo->csys.SetTo(csys))
 			{
 				srid = csys->GetSRID();
@@ -1202,8 +1202,8 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			UnsafeArrayOpt<Double> zArr = nullptr;
 			UnsafeArrayOpt<Double> mArr = nullptr;
 			UnsafeArray<Double> nnArr;
-			parts = MemAllocArr(UInt32, (UOSInt)nParts);
-			points = MemAllocAArr(Math::Coord2DDbl, (UOSInt)nPoints);
+			parts = MemAllocArr(UInt32, (UIntOS)nParts);
+			points = MemAllocAArr(Math::Coord2DDbl, (UIntOS)nPoints);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1214,7 +1214,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				parts[i] = ptOfst;
 				i++;
 			}
-			UOSInt j;
+			UIntOS j;
 			Int64 dx = 0;
 			Int64 dy = 0;
 			Int64 dz = 0;
@@ -1225,38 +1225,38 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dx += iv;
-				x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+				x = IntOS2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dy += iv;
-				y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+				y = IntOS2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 				points[j].x = x;
 				points[j].y = y;
 				j++;
 			}
 			if (geometryType & 0x80000000)
 			{
-				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				nnArr = MemAllocArr(Double, (UIntOS)nPoints);
 				zArr = nnArr;
 				j = 0;
 				while (j < nPoints)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dz += iv;
-					z = OSInt2Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					z = IntOS2Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 					nnArr[j] = z;
 					j++;
 				}
 			}
 			if (geometryType & 0x40000000)
 			{
-				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				nnArr = MemAllocArr(Double, (UIntOS)nPoints);
 				mArr = nnArr;
 				j = 0;
 				while (j < nPoints)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dm += iv;
-					m = OSInt2Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					m = IntOS2Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					nnArr[j] = m;
 					j++;
 				}
@@ -1265,7 +1265,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			Map::ESRI::ESRICurve curve(srid, parts, nParts, points, nPoints, zArr, mArr);
 			if (nCurves > 0)
 			{
-				UOSInt type;
+				UIntOS type;
 				UInt64 startIndex;
 				i = 0;
 				while (i < nCurves)
@@ -1274,17 +1274,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
 					}
 					else if (type == 4) //esriSegmentBezier3Curve
 					{
-						curve.AddBezier3Curve((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						curve.AddBezier3Curve((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
 						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						curve.AddEllipticArc((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						curve.AddEllipticArc((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
 						ofst += 45;
 					}
 					else
@@ -1313,9 +1313,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 	return nullptr;
 }
 
-Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Map::ESRI::FileGDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return false;
@@ -1335,9 +1335,9 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+Bool Map::ESRI::FileGDBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
 		return false;
@@ -1352,7 +1352,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> i
 		item->SetNull();
 		return true;
 	}
-	UOSInt ofst;
+	UIntOS ofst;
 	UInt64 v;
 	switch (field->fieldType)
 	{
@@ -1372,7 +1372,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> i
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
-			NN<Text::String> s = Text::String::New(&this->rowData[ofst], (UOSInt)v);
+			NN<Text::String> s = Text::String::New(&this->rowData[ofst], (UIntOS)v);
 			item->SetStr(s);
 			s->Release();
 			return true;
@@ -1399,7 +1399,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> i
 	case 8:
 		{
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-			item->SetByteArr(&this->rowData[ofst], (UOSInt)v);
+			item->SetByteArr(&this->rowData[ofst], (UIntOS)v);
 			return true;
 		}
 	case 10:
@@ -1417,12 +1417,12 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> i
 
 NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 {
-	UOSInt colIndex = INVALID_INDEX;
-	UOSInt fieldIndex = INVALID_INDEX;
-	UOSInt i;
-	UOSInt j;
+	UIntOS colIndex = INVALID_INDEX;
+	UIntOS fieldIndex = INVALID_INDEX;
+	UIntOS i;
+	UIntOS j;
 	NN<FileGDBFieldInfo> field;
-	NN<Data::ArrayListNative<UOSInt>> columnIndices;
+	NN<Data::ArrayListNative<UIntOS>> columnIndices;
 	if (this->columnIndices.SetTo(columnIndices))
 	{
 		i = columnIndices->GetCount();
@@ -1457,7 +1457,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	}
 	if (this->fieldNull[fieldIndex])
 		return Data::VariItem::NewNull();
-	UOSInt ofst;
+	UIntOS ofst;
 	UInt64 v;
 	switch (field->fieldType)
 	{
@@ -1473,7 +1473,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
-			return Data::VariItem::NewStr(Text::CStringNN(&this->rowData[ofst], (UOSInt)v));
+			return Data::VariItem::NewStr(Text::CStringNN(&this->rowData[ofst], (UIntOS)v));
 		}
 	case 5:
 		{
@@ -1494,7 +1494,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 		}
 	case 8:
 		{
-			UOSInt size = this->GetBinarySize(colIndex);
+			UIntOS size = this->GetBinarySize(colIndex);
 			UInt8 *binBuff = MemAlloc(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			NN<Data::VariItem> item = Data::VariItem::NewByteArr(binBuff, size);
@@ -1511,9 +1511,9 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	return Data::VariItem::NewUnknown();
 }
 
-Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)
+Bool Map::ESRI::FileGDBReader::IsNull(UIntOS colIndex)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (fieldIndex >= this->tableInfo->fields->GetCount())
 	{
 		return true;
@@ -1521,9 +1521,9 @@ Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)
 	return this->fieldNull[fieldIndex] != 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	NN<Map::ESRI::FileGDBFieldInfo> field;
 	if (this->tableInfo->fields->GetItem(fieldIndex).SetTo(field))
 	{
@@ -1532,9 +1532,9 @@ UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, Unsa
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	NN<Map::ESRI::FileGDBFieldInfo> field;
 	if (this->tableInfo->fields->GetItem(fieldIndex).SetTo(field))
 	{
@@ -1579,9 +1579,9 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
-	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	NN<Map::ESRI::FileGDBFieldInfo> field;
 	if (!this->tableInfo->fields->GetItem(fieldIndex).SetTo(field))
 	{
@@ -1590,7 +1590,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Math::CoordinateSystem> csys;
-	UOSInt colSize;
+	UIntOS colSize;
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);
 	colDef->SetColType(this->GetColType(colIndex, colSize));
@@ -1640,73 +1640,73 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		case 0:
 		case 7:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::AnyM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Any);
 			break;
 		case 1:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PointZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PointZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PointM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Point);
 			break;
 		case 2:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::MultipointZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::MultipointZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::MultipointM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Multipoint);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Multipoint);
 			break;
 		case 3:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolylineZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolylineZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolylineM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Polyline);
 			break;
 		case 4:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolygonZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolygonZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PolygonM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Polygon);
 			break;
 		case 5:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::RectangleZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::RectangleZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::RectangleM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Rectangle);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Rectangle);
 			break;
 		case 6:
 			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZ);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PathZ);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PathZM);
 			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathM);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::PathM);
 			else
-				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Path);
+				colDef->SetColSize((UIntOS)DB::ColDef::GeometryType::Path);
 			break;
 		}
 	}
@@ -1769,12 +1769,12 @@ UInt64 Map::ESRI::FileGDBReader::GetRowFileOfst() const
 	return this->rowOfst;
 }
 
-void Map::ESRI::FileGDBReader::SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt)
+void Map::ESRI::FileGDBReader::SetIndex(NN<IO::StreamData> fd, UIntOS indexCnt)
 {
 	if (this->indexBuff.GetSize() == 0)
 	{
 		this->indexCnt = indexCnt;
-		UOSInt len = this->indexCnt * 5;
+		UIntOS len = this->indexCnt * 5;
 		this->indexBuff.ChangeSizeAndClear(len);
 		if (fd->GetRealData(16, len, this->indexBuff) != len)
 		{

@@ -17,10 +17,10 @@ Int64 Map::ShortestPathFinder::CoordToId(Double x, Double y)
 
 Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointList, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY)
 {
-	UOSInt i;
+	UIntOS i;
 	Math::Polyline *pl;
-	UOSInt fromPointNo;
-	UOSInt toPointNo;
+	UIntOS fromPointNo;
+	UIntOS toPointNo;
 	Int64 toId1;
 	Int64 toId2;
 	UTF8Char sbuff1[256];
@@ -36,10 +36,10 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		Double xDiff;
 		Double yDiff;
 		Double *points;
-		UOSInt nPoints;
+		UIntOS nPoints;
 		Int64 nextId;
 		Int64 lastId;
-		OSInt pathCnt;
+		IntOS pathCnt;
 		NodeInfo *node;
 		NeighbourInfo *neighbour;
 		Bool valid = true;
@@ -227,7 +227,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 	}
 }
 
-Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol)
+Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol)
 {
 	this->layer = layer;
 	this->toRelease = toRelease;
@@ -247,14 +247,14 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRel
 	NeighbourInfo *frNeighbour;
 	NeighbourInfo *toNeighbour;
 	Double dist;
-	UOSInt nPoints;
+	UIntOS nPoints;
 	Double *points;
 	Double xDiff;
 	Double yDiff;
 	void *sess;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	layer->GetAllObjectIds(&idList, &this->nameArr);
 	sess = layer->BeginGetObject();
 	i = 0;
@@ -360,8 +360,8 @@ Map::ShortestPathFinder::~ShortestPathFinder()
 	{
 		DEL_CLASS(this->layer);
 	}
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	NodeInfo *node;
 	NeighbourInfo *neighbour;
 	Data::ArrayList<NodeInfo*> *nodeList = this->nodeMap->GetValues();
@@ -388,11 +388,11 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 {
 	Math::Polyline *retPl = 0;
 	Data::ArrayList<Double> pointList;
-	OSInt i;
-	OSInt j;
-	OSInt fromCnt;
-	OSInt toCnt;
-	UOSInt nPoints;
+	IntOS i;
+	IntOS j;
+	IntOS fromCnt;
+	IntOS toCnt;
+	UIntOS nPoints;
 	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> fromObjs;
 	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> toObjs;
 	Map::MapDrawLayer::ObjectInfo *fromObj;

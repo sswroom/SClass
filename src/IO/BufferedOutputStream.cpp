@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "IO/BufferedOutputStream.h"
 
-IO::BufferedOutputStream::BufferedOutputStream(NN<IO::Stream> outStm, UOSInt buffSize) : IO::Stream(outStm->GetSourceNameObj())
+IO::BufferedOutputStream::BufferedOutputStream(NN<IO::Stream> outStm, UIntOS buffSize) : IO::Stream(outStm->GetSourceNameObj())
 {
 	this->outStm = outStm;
 	this->cacheBuffSize = buffSize;
@@ -26,12 +26,12 @@ Bool IO::BufferedOutputStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
+UIntOS IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
 {
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
+UIntOS IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
 {
 	this->totalWrite += buff.GetSize();
 	if (this->cacheSize + buff.GetSize() < this->cacheBuffSize)
@@ -50,14 +50,14 @@ UOSInt IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
 		return this->outStm->WriteCont(buff.Arr(), buff.GetSize());
 	}
 	
-	UOSInt ret = this->cacheBuffSize - this->cacheSize;
+	UIntOS ret = this->cacheBuffSize - this->cacheSize;
 	if (ret > 0)
 	{
 		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), ret);
 		buff += ret;
 	}
 
-	UOSInt writeSize = this->outStm->WriteCont(this->cacheBuff, this->cacheBuffSize);
+	UIntOS writeSize = this->outStm->WriteCont(this->cacheBuff, this->cacheBuffSize);
 	if (writeSize == 0)
 	{
 		return ret;

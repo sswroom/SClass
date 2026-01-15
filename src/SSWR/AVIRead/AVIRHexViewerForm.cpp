@@ -20,8 +20,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(AnyType userObj, Da
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	Bool dynamicSize = me->chkDynamicSize->IsChecked();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->LoadFile(files[i]->ToCString(), dynamicSize))
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	UInt8 buff[8];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt readSize = me->hexView->GetFileData(ofst, 8, BYTEARR(buff));
+	UIntOS readSize = me->hexView->GetFileData(ofst, 8, BYTEARR(buff));
 	Bool bigEndian = me->radEndianBig->IsSelected();
 	if (readSize >= 1)
 	{
@@ -163,8 +163,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 		}
 		else
 		{
-			UOSInt i;
-			UOSInt j = areaList.GetCount();
+			UIntOS i;
+			UIntOS j = areaList.GetCount();
 			sb.ClearStr();
 			if (j > 0)
 			{
@@ -286,7 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 		return;
 	}
 	endOfst -= beginOfst;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HexViewerExtract", true);
 	dlg->AddFilter(CSTR("*.dat"), CSTR("Data File"));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -294,8 +294,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (endOfst < 1048576)
 		{
-			Data::ByteBuffer buff((UOSInt)endOfst);
-			buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
+			Data::ByteBuffer buff((UIntOS)endOfst);
+			buffSize = me->hexView->GetFileData(beginOfst, (UIntOS)endOfst, buff);
 			fs.Write(buff.WithSize(buffSize));
 		}
 		else
@@ -316,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 			}
 			if (!hasError && endOfst > 0)
 			{
-				buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
+				buffSize = me->hexView->GetFileData(beginOfst, (UIntOS)endOfst, buff);
 				fs.Write(buff.WithSize(buffSize));
 				beginOfst += endOfst;
 				if (buffSize != endOfst)

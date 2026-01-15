@@ -131,7 +131,7 @@ namespace IO
 			IO::DBusManager::DestroyFunction destroyFunc;
 			ServiceData *data;
 			void *userData;
-			UOSInt id;
+			UIntOS id;
 		};
 
 		typedef struct
@@ -146,7 +146,7 @@ namespace IO
 			const Char *argument;
 			Data::ArrayListNN<ListenerCallbacks> *callbacks;
 			Data::ArrayListNN<ListenerCallbacks> *processed;
-			UOSInt nameWatch;
+			UIntOS nameWatch;
 			Bool lock;
 			Bool registered;
 		} Listener;
@@ -233,7 +233,7 @@ namespace IO
 		Listener *ListenerFindMatch(const Char *name, const Char *owner, const Char *path, const Char *interface, const Char *member, const Char *argument);
 		Listener *ListenerGet(RawMessageFunction filter, const Char *sender, const Char *path, const Char *interface, const Char *member, const Char *argument);
 		ListenerCallbacks *ListenerAddCallback(Listener *listener, WatchFunction connect, WatchFunction disconnect, SignalFunction signal, DestroyFunction destroy, void *userData);
-		ListenerCallbacks *ListenerFindCallback(Listener *listener, UOSInt id);
+		ListenerCallbacks *ListenerFindCallback(Listener *listener, UIntOS id);
 		Bool ListenerRemoveCallback(Listener *listener, ListenerCallbacks *cb);
 		void ListenerFree(Listener *listener);
 		void ListenerCheckService(const Char *name, ListenerCallbacks *callback);
@@ -242,10 +242,10 @@ namespace IO
 		
 	public:
 		HandlerResult WatchMessageFilter(Message *message);
-		UOSInt AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy);
-		UOSInt AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy);
-		UOSInt AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy);
-		Bool RemoveWatch(UOSInt id);
+		UIntOS AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy);
+		UIntOS AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy);
+		UIntOS AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy);
+		Bool RemoveWatch(UIntOS id);
 		void RemoveAllWatches();
 
 		//polkit

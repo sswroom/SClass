@@ -20,7 +20,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Double rh;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
@@ -57,8 +57,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		Data::ArrayListNative<Double> times;
 		Data::ArrayListNative<Int32> isHighs;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		if (pinCapture.GetCaptureData(times, isHighs) > 0)
 		{
 			IO::FileStream fs(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

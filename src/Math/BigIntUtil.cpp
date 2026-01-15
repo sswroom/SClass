@@ -2,9 +2,9 @@
 #include "Math/BigIntUtil.h"
 #include "Text/MyString.h"
 
-void Math::BigIntUtil::LSBNeg(UnsafeArray<UOSInt> valBuff, UOSInt valCnt)
+void Math::BigIntUtil::LSBNeg(UnsafeArray<UIntOS> valBuff, UIntOS valCnt)
 {
-	UnsafeArray<UOSInt> tmpPtr = valBuff;
+	UnsafeArray<UIntOS> tmpPtr = valBuff;
 	while (valCnt-- > 0)
 	{
 		*tmpPtr = ~*tmpPtr;
@@ -18,10 +18,10 @@ void Math::BigIntUtil::LSBNeg(UnsafeArray<UOSInt> valBuff, UOSInt valCnt)
 	}
 }
 
-void Math::BigIntUtil::LSBAdd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBAdd(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
-	UOSInt i;
-	UOSInt carry = 0;
+	UIntOS i;
+	UIntOS carry = 0;
 	if (srcCnt < destCnt)
 	{
 		destCnt -= srcCnt;
@@ -32,7 +32,7 @@ void Math::BigIntUtil::LSBAdd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 			srcBuff++;
 			destBuff++;
 		}
-		if ((OSInt)srcBuff[-1] < 0)
+		if ((IntOS)srcBuff[-1] < 0)
 		{
 			while (destCnt-- > 0)
 			{
@@ -61,10 +61,10 @@ void Math::BigIntUtil::LSBAdd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 	}
 }
 
-void Math::BigIntUtil::LSBSub(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBSub(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
-	UOSInt i;
-	UOSInt carry = 0;
+	UIntOS i;
+	UIntOS carry = 0;
 	if (srcCnt < destCnt)
 	{
 		destCnt -= srcCnt;
@@ -93,30 +93,30 @@ void Math::BigIntUtil::LSBSub(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 	}
 }
 
-void Math::BigIntUtil::LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBMul(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
 	Bool neg = false;
-	UnsafeArray<UOSInt> tmpBuff;
-	UnsafeArrayOpt<UOSInt> soriBuff = nullptr;
-	UnsafeArray<UOSInt> sBuff;
-	UOSInt i;
-	UOSInt v;
-	UOSInt lastHi;
-	tmpBuff = MemAlloc(UOSInt, destCnt + srcCnt);
-	if ((OSInt)destBuff[destCnt - 1] < 0)
+	UnsafeArray<UIntOS> tmpBuff;
+	UnsafeArrayOpt<UIntOS> soriBuff = nullptr;
+	UnsafeArray<UIntOS> sBuff;
+	UIntOS i;
+	UIntOS v;
+	UIntOS lastHi;
+	tmpBuff = MemAlloc(UIntOS, destCnt + srcCnt);
+	if ((IntOS)destBuff[destCnt - 1] < 0)
 	{
 		LSBNeg(destBuff, destCnt);
 		neg = !neg;
 	}
-	if ((OSInt)srcBuff[srcCnt - 1] < 0)
+	if ((IntOS)srcBuff[srcCnt - 1] < 0)
 	{
-		sBuff = MemAllocArr(UOSInt, srcCnt);
+		sBuff = MemAllocArr(UIntOS, srcCnt);
 		soriBuff = sBuff;
-		MemCopyNO(sBuff.Ptr(), srcBuff.Ptr(), srcCnt * sizeof(UOSInt));
+		MemCopyNO(sBuff.Ptr(), srcBuff.Ptr(), srcCnt * sizeof(UIntOS));
 		srcBuff = sBuff;
 		neg = !neg;
 	}
-	MemClear(&tmpBuff[0], (destCnt + srcCnt) * sizeof(UOSInt));
+	MemClear(&tmpBuff[0], (destCnt + srcCnt) * sizeof(UIntOS));
 	sBuff = tmpBuff;
 	while (srcCnt > 0)
 	{
@@ -125,7 +125,7 @@ void Math::BigIntUtil::LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 		i = 0;
 		while (i < destCnt)
 		{
-			UOSInt tmpVal = lastHi;
+			UIntOS tmpVal = lastHi;
 			lastHi += MyADD_UOS(sBuff[i], MyMUL_UOS(destBuff[i], v, &lastHi), &sBuff[i]);
 			lastHi += MyADD_UOS(sBuff[i], tmpVal, &sBuff[i]);
 			i++;
@@ -140,7 +140,7 @@ void Math::BigIntUtil::LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 		srcCnt--;
 	}
 
-	MemCopyNO(destBuff.Ptr(), tmpBuff.Ptr(), destCnt * sizeof(UOSInt));
+	MemCopyNO(destBuff.Ptr(), tmpBuff.Ptr(), destCnt * sizeof(UIntOS));
 	if (soriBuff.SetTo(sBuff))
 	{
 		MemFreeArr(sBuff);
@@ -152,9 +152,9 @@ void Math::BigIntUtil::LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 	}
 }
 
-void Math::BigIntUtil::LSBAnd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBAnd(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
-	UOSInt i;
+	UIntOS i;
 	if (srcCnt < destCnt)
 	{
 		destCnt -= srcCnt;
@@ -165,9 +165,9 @@ void Math::BigIntUtil::LSBAnd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 			srcBuff++;
 			destBuff++;
 		}
-		if ((OSInt)srcBuff[-1] >= 0)
+		if ((IntOS)srcBuff[-1] >= 0)
 		{
-			MemClear(&destBuff[0], destCnt * sizeof(UOSInt));
+			MemClear(&destBuff[0], destCnt * sizeof(UIntOS));
 		}
 	}
 	else
@@ -182,9 +182,9 @@ void Math::BigIntUtil::LSBAnd(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 	}
 }
 
-void Math::BigIntUtil::LSBOr(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBOr(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
-	UOSInt i;
+	UIntOS i;
 	if (srcCnt < destCnt)
 	{
 		destCnt -= srcCnt;
@@ -195,11 +195,11 @@ void Math::BigIntUtil::LSBOr(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOS
 			srcBuff++;
 			destBuff++;
 		}
-		if ((OSInt)srcBuff[-1] >= 0)
+		if ((IntOS)srcBuff[-1] >= 0)
 		{
 			while (destCnt-- > 0)
 			{
-				*destBuff = (UOSInt)-1;
+				*destBuff = (UIntOS)-1;
 				destBuff++;
 			}
 		}
@@ -217,9 +217,9 @@ void Math::BigIntUtil::LSBOr(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOS
 }
 
 
-void Math::BigIntUtil::LSBXor(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UOSInt> srcBuff, UOSInt destCnt, UOSInt srcCnt)
+void Math::BigIntUtil::LSBXor(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UIntOS> srcBuff, UIntOS destCnt, UIntOS srcCnt)
 {
-	UOSInt i;
+	UIntOS i;
 	if (srcCnt < destCnt)
 	{
 		destCnt -= srcCnt;
@@ -230,7 +230,7 @@ void Math::BigIntUtil::LSBXor(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 			srcBuff++;
 			destBuff++;
 		}
-		if ((OSInt)srcBuff[-1] < 0)
+		if ((IntOS)srcBuff[-1] < 0)
 		{
 			while (destCnt-- > 0)
 			{
@@ -251,7 +251,7 @@ void Math::BigIntUtil::LSBXor(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 	}
 }
 
-UOSInt Math::BigIntUtil::LSBAddUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val) //return overflow value
+UIntOS Math::BigIntUtil::LSBAddUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val) //return overflow value
 {
 	while (val != 0 && valCnt-- > 0)
 	{
@@ -261,11 +261,11 @@ UOSInt Math::BigIntUtil::LSBAddUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, U
 	return val;
 }
 
-UOSInt Math::BigIntUtil::LSBMulUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val) //return overflow value
+UIntOS Math::BigIntUtil::LSBMulUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val) //return overflow value
 {
-	UOSInt i = valCnt;
+	UIntOS i = valCnt;
 	Bool neg;
-	if ((OSInt)valBuff[valCnt - 1] < 0)
+	if ((IntOS)valBuff[valCnt - 1] < 0)
 	{
 		neg = true;
 		LSBNeg(valBuff, valCnt);
@@ -274,11 +274,11 @@ UOSInt Math::BigIntUtil::LSBMulUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, U
 	{
 		neg = false;
 	}
-	UnsafeArray<UOSInt> tmpPtr = valBuff;
-	UOSInt hiVal = 0;
+	UnsafeArray<UIntOS> tmpPtr = valBuff;
+	UIntOS hiVal = 0;
 	while (i-- > 0)
 	{
-		UOSInt tmpVal = hiVal;
+		UIntOS tmpVal = hiVal;
 		hiVal += MyADD_UOS(tmpVal, MyMUL_UOS(*tmpPtr, val, &hiVal), tmpPtr.Ptr());
 		tmpPtr++;
 	}
@@ -289,11 +289,11 @@ UOSInt Math::BigIntUtil::LSBMulUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, U
 	return hiVal;
 }
 
-UOSInt Math::BigIntUtil::LSBDivUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val) //return remainder
+UIntOS Math::BigIntUtil::LSBDivUOS(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val) //return remainder
 {
-	UOSInt i = valCnt;
+	UIntOS i = valCnt;
 	Bool neg;
-	if ((OSInt)valBuff[valCnt - 1] < 0)
+	if ((IntOS)valBuff[valCnt - 1] < 0)
 	{
 		neg = true;
 		LSBNeg(valBuff, valCnt);
@@ -302,7 +302,7 @@ UOSInt Math::BigIntUtil::LSBDivUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, U
 	{
 		neg = false;
 	}
-	UOSInt reminder = 0;
+	UIntOS reminder = 0;
 	while (i-- > 0)
 	{
 		valBuff[i] = MyDIV_UOS(valBuff[i], reminder, val, &reminder);
@@ -314,13 +314,13 @@ UOSInt Math::BigIntUtil::LSBDivUOS(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, U
 	return reminder;
 }
 
-void Math::BigIntUtil::LSBAssignI(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, OSInt val)
+void Math::BigIntUtil::LSBAssignI(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, IntOS val)
 {
-	UOSInt v;
-	UnsafeArray<OSInt>::ConvertFrom(valBuff)[0] = val;
+	UIntOS v;
+	UnsafeArray<IntOS>::ConvertFrom(valBuff)[0] = val;
 	if (val < 0)
 	{
-		v = (UOSInt)-1;
+		v = (UIntOS)-1;
 	}
 	else
 	{
@@ -334,7 +334,7 @@ void Math::BigIntUtil::LSBAssignI(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, OS
 	}
 }
 
-void Math::BigIntUtil::LSBAssignU(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UOSInt val)
+void Math::BigIntUtil::LSBAssignU(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UIntOS val)
 {
 	valBuff[0] = val;
 	valBuff++;
@@ -345,10 +345,10 @@ void Math::BigIntUtil::LSBAssignU(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UO
 	}
 }
 
-void Math::BigIntUtil::LSBAssignStr(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, UnsafeArray<const UTF8Char> val)
+void Math::BigIntUtil::LSBAssignStr(UnsafeArray<UIntOS> valBuff, UIntOS valCnt, UnsafeArray<const UTF8Char> val)
 {
-	UOSInt maxCnt = 0;
-	UnsafeArray<UOSInt> valPtr;
+	UIntOS maxCnt = 0;
+	UnsafeArray<UIntOS> valPtr;
 	Bool neg;
 	UTF8Char c;
 	if (val[0] == '-')
@@ -369,12 +369,12 @@ void Math::BigIntUtil::LSBAssignStr(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, 
 		}
 		if (c < '0' || c > '9')
 		{
-			MemClear(&valBuff[0], valCnt * sizeof(UOSInt));
+			MemClear(&valBuff[0], valCnt * sizeof(UIntOS));
 			return;
 		}
-		UOSInt v = (UOSInt)c - '0';
-		UOSInt v2;
-		UOSInt i = maxCnt;
+		UIntOS v = (UIntOS)c - '0';
+		UIntOS v2;
+		UIntOS i = maxCnt;
 		valPtr = valBuff;
 		while (i-- > 0)
 		{
@@ -390,7 +390,7 @@ void Math::BigIntUtil::LSBAssignStr(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, 
 	}
 	if (maxCnt < valCnt)
 	{
-		MemClear(&valBuff[maxCnt], (valCnt - maxCnt) * sizeof(UOSInt));
+		MemClear(&valBuff[maxCnt], (valCnt - maxCnt) * sizeof(UIntOS));
 	}
 	if (neg)
 	{
@@ -398,17 +398,17 @@ void Math::BigIntUtil::LSBAssignStr(UnsafeArray<UOSInt> valBuff, UOSInt valCnt, 
 	}
 }
 
-UnsafeArray<UTF8Char> Math::BigIntUtil::LSBToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const UOSInt> valArr, UnsafeArray<UOSInt> tmpArr, UOSInt valCnt)
+UnsafeArray<UTF8Char> Math::BigIntUtil::LSBToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const UIntOS> valArr, UnsafeArray<UIntOS> tmpArr, UIntOS valCnt)
 {
-	UnsafeArray<UTF8Char> buffEnd = buff + valCnt * 3 * sizeof(UOSInt);
+	UnsafeArray<UTF8Char> buffEnd = buff + valCnt * 3 * sizeof(UIntOS);
 	UnsafeArray<UTF8Char> buffCurr = buffEnd;
-	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), valCnt * sizeof(UOSInt));
-	if ((OSInt)tmpArr[valCnt - 1] < 0)
+	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), valCnt * sizeof(UIntOS));
+	if ((IntOS)tmpArr[valCnt - 1] < 0)
 	{
 		*buff++ = '-';
 		LSBNeg(tmpArr, valCnt);
 	}
-	UOSInt maxCnt = valCnt;
+	UIntOS maxCnt = valCnt;
 	while (maxCnt > 0 && tmpArr[maxCnt - 1] == 0)
 	{
 		maxCnt--;
@@ -421,8 +421,8 @@ UnsafeArray<UTF8Char> Math::BigIntUtil::LSBToString(UnsafeArray<UTF8Char> buff, 
 	}
 	while (maxCnt > 0)
 	{
-		UOSInt reminder = 0;
-		UOSInt i = maxCnt;
+		UIntOS reminder = 0;
+		UIntOS i = maxCnt;
 		while (i-- > 0)
 		{
 			tmpArr[i] = MyDIV_UOS(tmpArr[i], reminder, 10, &reminder);
@@ -431,5 +431,5 @@ UnsafeArray<UTF8Char> Math::BigIntUtil::LSBToString(UnsafeArray<UTF8Char> buff, 
 		if (tmpArr[maxCnt - 1] == 0)
 			maxCnt--;
 	}
-	return Text::StrConcatC(buff, buffCurr, (UOSInt)(buffEnd - buffCurr));
+	return Text::StrConcatC(buff, buffCurr, (UIntOS)(buffEnd - buffCurr));
 }

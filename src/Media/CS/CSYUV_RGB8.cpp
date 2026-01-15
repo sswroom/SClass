@@ -144,10 +144,10 @@ void Media::CS::CSYUV_RGB8::SetupYUV_RGB13()
 	Double c;
 	NN<Media::ColorManagerSess> nncolorSess;
 
-	OSInt i;
+	IntOS i;
 
-	OSInt updateY = 1;
-	OSInt updateC = 1;
+	IntOS updateY = 1;
+	IntOS updateC = 1;
 	if (updateY)
 	{
 		i = 16;
@@ -471,7 +471,7 @@ void Media::CS::CSYUV_RGB8::RGBParamChanged(NN<const Media::ColorHandler::RGBPAR
 	this->rgbUpdated = true;
 }
 
-UOSInt Media::CS::CSYUV_RGB8::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYUV_RGB8::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height << 2;
 }

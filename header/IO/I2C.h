@@ -8,9 +8,9 @@ namespace IO
 	{
 	protected:
 		NN<IO::I2CChannel> channel;
-		UOSInt delayMS;
+		UIntOS delayMS;
 	public:
-		I2C(NN<IO::I2CChannel> channel, UOSInt delayMS);
+		I2C(NN<IO::I2CChannel> channel, UIntOS delayMS);
 		virtual ~I2C();
 
 		void Wait();

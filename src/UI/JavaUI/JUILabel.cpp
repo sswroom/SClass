@@ -27,7 +27,7 @@ void UI::JavaUI::JUILabel::SetText(Text::CStringNN text)
 	}
 }
 
-OSInt UI::JavaUI::JUILabel::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUILabel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

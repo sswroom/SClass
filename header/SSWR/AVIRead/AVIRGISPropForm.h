@@ -74,34 +74,34 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Media::ColorConv> colorConv;
 			Optional<Map::MapEnv::GroupItem> group;
-			UOSInt index;
+			UIntOS index;
 			Int32 lineType;
-			UOSInt lineStyle;
+			UIntOS lineStyle;
 			Double lineThick;
 			UInt32 lineColor;
 			UInt32 fillStyle;
 			Map::MapEnv::FontType fontType;
-			UOSInt fontStyle;
+			UIntOS fontStyle;
 			Optional<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
-			UOSInt imgIndex;
+			UIntOS imgIndex;
 
 		private:
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
-			static UI::EventState __stdcall OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-			static UI::EventState __stdcall OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static UI::EventState __stdcall OnFillClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static UI::EventState __stdcall OnLineDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
 			static void __stdcall OnLineModifyClicked(AnyType userObj);
 			static void __stdcall OnLineStyleClicked(AnyType userObj);
-			static UI::EventState __stdcall OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-			static UI::EventState __stdcall OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static UI::EventState __stdcall OnIconClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static UI::EventState __stdcall OnFontModifyDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
 			static void __stdcall OnFontModifyClicked(AnyType userObj);
 			static void __stdcall OnFontStyleClicked(AnyType userObj);
 
 		public:
-			AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index);
+			AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UIntOS index);
 			virtual ~AVIRGISPropForm();
 
 			virtual void OnMonitorChanged();

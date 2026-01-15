@@ -19,25 +19,25 @@ IO::StmData::BlockStreamData::~BlockStreamData()
 	this->sd.Delete();
 }
 
-UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
-	OSInt i = this->dataOfstList.SortedIndexOf(offset);
-	UOSInt totalLength = 0;
-	UOSInt thisLength;
-	UOSInt thisOfst;
-	OSInt j = (OSInt)this->stmOfstList.GetCount();
+	IntOS i = this->dataOfstList.SortedIndexOf(offset);
+	UIntOS totalLength = 0;
+	UIntOS thisLength;
+	UIntOS thisOfst;
+	IntOS j = (IntOS)this->stmOfstList.GetCount();
 	if (offset >= totalSize)
 		return 0;
 	if (i < 0)
 	{
 		i = ~i - 1;
-		thisOfst = (UOSInt)(offset - this->dataOfstList.GetItem((UOSInt)i));
-		thisLength = this->lengthList.GetItem((UOSInt)i) - thisOfst;
+		thisOfst = (UIntOS)(offset - this->dataOfstList.GetItem((UIntOS)i));
+		thisLength = this->lengthList.GetItem((UIntOS)i) - thisOfst;
 		if (thisLength > length)
 		{
 			thisLength = length;
 		}
-		totalLength += this->sd->GetRealData(this->stmOfstList.GetItem((UOSInt)i) + thisOfst, thisLength, buffer);
+		totalLength += this->sd->GetRealData(this->stmOfstList.GetItem((UIntOS)i) + thisOfst, thisLength, buffer);
 		buffer += thisLength;
 		length -= thisLength;
 		i++;
@@ -47,12 +47,12 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, D
 		if (length <= 0)
 			break;
 
-		thisLength = this->lengthList.GetItem((UOSInt)i);
+		thisLength = this->lengthList.GetItem((UIntOS)i);
 		if (thisLength > length)
 		{
 			thisLength = length;
 		}
-		totalLength += this->sd->GetRealData(this->stmOfstList.GetItem((UOSInt)i), thisLength, buffer);
+		totalLength += this->sd->GetRealData(this->stmOfstList.GetItem((UIntOS)i), thisLength, buffer);
 		buffer += thisLength;
 		length -= thisLength;
 		i++;
@@ -84,24 +84,24 @@ NN<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, U
 {
 	NN<IO::StmData::BlockStreamData> data;
 	NEW_CLASSNN(data, IO::StmData::BlockStreamData(this->sd));
-	OSInt i = this->dataOfstList.SortedIndexOf(offset);
+	IntOS i = this->dataOfstList.SortedIndexOf(offset);
 	UInt64 totalLength = 0;
-	UOSInt thisLength;
-	UOSInt thisOfst;
-	OSInt j = (OSInt)this->stmOfstList.GetCount();
+	UIntOS thisLength;
+	UIntOS thisOfst;
+	IntOS j = (IntOS)this->stmOfstList.GetCount();
 	if (offset >= totalSize)
 		return data;
 	if (i < 0)
 	{
 		i = ~i - 1;
-		thisOfst = (UOSInt)(offset - this->stmOfstList.GetItem((UOSInt)i));
-		thisLength = this->lengthList.GetItem((UOSInt)i) - thisOfst;
+		thisOfst = (UIntOS)(offset - this->stmOfstList.GetItem((UIntOS)i));
+		thisLength = this->lengthList.GetItem((UIntOS)i) - thisOfst;
 		if (thisLength > length)
 		{
-			thisLength = (UOSInt)length;
+			thisLength = (UIntOS)length;
 		}
 		data->dataOfstList.Add(totalLength);
-		data->stmOfstList.Add(this->stmOfstList.GetItem((UOSInt)i) + thisOfst);
+		data->stmOfstList.Add(this->stmOfstList.GetItem((UIntOS)i) + thisOfst);
 		data->lengthList.Add((UInt32)thisLength);
 		length -= thisLength;
 		totalLength += thisLength;
@@ -112,13 +112,13 @@ NN<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, U
 		if (length <= 0)
 			break;
 
-		thisLength = this->lengthList.GetItem((UOSInt)i);
+		thisLength = this->lengthList.GetItem((UIntOS)i);
 		if (thisLength > length)
 		{
-			thisLength = (UOSInt)length;
+			thisLength = (UIntOS)length;
 		}
 		data->dataOfstList.Add(totalLength);
-		data->stmOfstList.Add(this->stmOfstList.GetItem((UOSInt)i));
+		data->stmOfstList.Add(this->stmOfstList.GetItem((UIntOS)i));
 		data->lengthList.Add((UInt32)thisLength);
 		length -= thisLength;
 		totalLength += thisLength;
@@ -138,7 +138,7 @@ Bool IO::StmData::BlockStreamData::IsLoading() const
 	return this->sd->IsLoading();
 }
 
-UOSInt IO::StmData::BlockStreamData::GetSeekCount() const
+UIntOS IO::StmData::BlockStreamData::GetSeekCount() const
 {
 	return this->sd->GetSeekCount();
 }

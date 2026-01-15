@@ -20,7 +20,7 @@
 Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
-OSInt mcBreakPt = 0;
+IntOS mcBreakPt = 0;
 const UTF8Char *mcLogFile = 0;
 Sync::MutexData mcMut;
 
@@ -28,7 +28,7 @@ Int32 mcBlockId = 0;
 
 void MemPtrChk(void *ptr)
 {
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory");
@@ -54,7 +54,7 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
+void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
 {
 	if (mcLogFile)
 	{
@@ -79,13 +79,13 @@ void MemUnlock()
 }
 
 #if defined(THREADSAFE)
-void *MAlloc(UOSInt size)
+void *MAlloc(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	void *ptr = malloc(size + 4);
-	if ((OSInt)ptr == 0)
+	if ((IntOS)ptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory: size = %d", (UInt32)size);
@@ -102,7 +102,7 @@ void *MAlloc(UOSInt size)
 	return &((UInt8*)ptr)[4];
 }
 
-void *MAllocA(UOSInt size)
+void *MAllocA(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
@@ -110,7 +110,7 @@ void *MAllocA(UOSInt size)
 	UInt8 *mptr = (UInt8*)malloc(size + 32);
 	UInt8 *sptr = mptr;
 //	wprintf(L"MAllocA %x\r\n", mptr);
-	if ((OSInt)mptr == 0)
+	if ((IntOS)mptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory: Asize = %d", (UInt32)size);
@@ -122,13 +122,13 @@ void *MAllocA(UOSInt size)
 	}
 	Sync::Mutex_Unlock(&mcMut);
 	mptr += 16;
-	mptr += 16 - (15 & (OSInt)mptr);
+	mptr += 16 - (15 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 //	wprintf(L"MAllocA ret %x\r\n", mptr);
 	return mptr;
 }
 
-void *MAllocA64(UOSInt size)
+void *MAllocA64(UIntOS size)
 {
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
@@ -136,7 +136,7 @@ void *MAllocA64(UOSInt size)
 	UInt8 *mptr = (UInt8*)malloc(size + 80);
 	UInt8 *sptr = mptr;
 //	wprintf(L"MAllocA64 %lx\r\n", mptr);
-	if ((OSInt)mptr == 0)
+	if ((IntOS)mptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of A64Memory: size = %lld", (UInt64)size);
@@ -148,7 +148,7 @@ void *MAllocA64(UOSInt size)
 	}
 	Sync::Mutex_Unlock(&mcMut);
 	mptr += 16;
-	mptr += 64 - (63 & (OSInt)mptr);
+	mptr += 64 - (63 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
@@ -158,7 +158,7 @@ void MemFree(void *ptr)
 	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt--;
 	ptr = &((UInt8*)ptr)[-4];
-/*	if (((OSInt)ptr) & 0xf != 0)
+/*	if (((IntOS)ptr) & 0xf != 0)
 	{
 		raise(SIGABRT);
 	}*/
@@ -176,12 +176,12 @@ void MemFreeA(void *ptr)
 	Sync::Mutex_Unlock(&mcMut);
 }
 #else
-void *MAlloc(UOSInt size)
+void *MAlloc(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	REGVAR void *ptr = malloc(size + 4);
-	if ((OSInt)ptr == 0)
+	if ((IntOS)ptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory: size = %d", (UInt32)size);
@@ -195,13 +195,13 @@ void *MAlloc(UOSInt size)
 	return &((UInt8*)ptr)[4];
 }
 
-void *MAllocA(UOSInt size)
+void *MAllocA(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	REGVAR UInt8 *mptr = (UInt8*)malloc(size + 32);
 	REGVAR UInt8 *sptr = mptr;
-	if ((OSInt)mptr == 0)
+	if ((IntOS)mptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory: Asize = %d", (UInt32)size);
@@ -213,18 +213,18 @@ void *MAllocA(UOSInt size)
 	}
 	*(Int32*)mptr = Interlocked_IncrementI32(&mcBlockId);
 	mptr += 16;
-	mptr += 16 - (15 & (OSInt)mptr);
+	mptr += 16 - (15 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }
 
-void *MAllocA64(UOSInt size)
+void *MAllocA64(UIntOS size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
 	REGVAR UInt8 *mptr = (UInt8*)malloc(size + 80);
 	REGVAR UInt8 *sptr = mptr;
-	if ((OSInt)mptr == 0)
+	if ((IntOS)mptr == 0)
 	{
 #if defined(DEBUGCON)
 		syslog(LOG_DEBUG, "Out of Memory: A64size = %lld", (UInt64)size);
@@ -236,7 +236,7 @@ void *MAllocA64(UOSInt size)
 	}
 	*(Int32*)mptr = Interlocked_IncrementI32(&mcBlockId);
 	mptr += 16;
-	mptr += 64 - (63 & (OSInt)mptr);
+	mptr += 64 - (63 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }

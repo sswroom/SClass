@@ -11,8 +11,8 @@
 
 Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 {
-	UOSInt baseAddr;
-	UOSInt size;
+	UIntOS baseAddr;
+	UIntOS size;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	this->proc = proc;
@@ -43,8 +43,8 @@ Manage::SymbolResolver::~SymbolResolver()
 
 UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	SYMBOL_INFO *symb;
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
 	DWORD64 disp;
@@ -72,7 +72,7 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 	if ((ret = SymFromAddr(this->proc->GetHandle(), address, &disp, symb)) == 0)
 	{
 		UInt8 jmpBuff[5];
-		OSInt readSize;
+		IntOS readSize;
 		if (ReadProcessMemory((HANDLE)this->proc->GetHandle(), (void*)address, jmpBuff, 5, (SIZE_T*)&readSize) && readSize == 5)
 		{
 			if (jmpBuff[0] == 0xe9)
@@ -110,7 +110,7 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 	line.SizeOfStruct = sizeof(line);
 	if (SymGetLineFromAddr64(this->proc->GetHandle(), address, (DWORD*)&displacement, &line))
 	{
-		UOSInt i = Text::StrLastIndexOfCharCh(line.FileName, '\\');
+		UIntOS i = Text::StrLastIndexOfCharCh(line.FileName, '\\');
 		buff = Text::StrConcatC(buff, UTF8STRC(" "));
 		buff = Text::StrConcat(buff, (const UTF8Char*)&line.FileName[i + 1]);
 		buff = Text::StrConcatC(buff, UTF8STRC("("));
@@ -128,22 +128,22 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 	}
 }
 
-UOSInt Manage::SymbolResolver::GetModuleCount()
+UIntOS Manage::SymbolResolver::GetModuleCount()
 {
 	return this->modNames.GetCount();
 }
 
-Optional<Text::String> Manage::SymbolResolver::GetModuleName(UOSInt index)
+Optional<Text::String> Manage::SymbolResolver::GetModuleName(UIntOS index)
 {
 	return this->modNames.GetItem(index);
 }
 
-UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
+UInt64 Manage::SymbolResolver::GetModuleAddr(UIntOS index)
 {
 	return this->modBaseAddrs.GetItem(index);
 }
 
-UInt64 Manage::SymbolResolver::GetModuleSize(UOSInt index)
+UInt64 Manage::SymbolResolver::GetModuleSize(UIntOS index)
 {
 	return this->modSizes.GetItem(index);
 }

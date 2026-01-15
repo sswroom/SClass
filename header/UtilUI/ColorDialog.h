@@ -22,10 +22,10 @@ namespace UtilUI
 			NN<ColorDialog> me;
 			Int32 status;// 1 = running, 2 = queued task, 3 = processing, 4 = toStop
 			UnsafeArray<UInt8> imgPtr;
-			UOSInt startIndex;
-			UOSInt endIndex;
-			UOSInt w;
-			UOSInt h;
+			UIntOS startIndex;
+			UIntOS endIndex;
+			UIntOS w;
+			UIntOS h;
 			NN<Sync::Event> evt;
 		} ThreadStat;
 
@@ -101,18 +101,18 @@ namespace UtilUI
 		Bool subDowned;
 		Bool mainDowned;
 
-		UOSInt genThreadCnt;
+		UIntOS genThreadCnt;
 		NN<Sync::Event> genEvt;
 		UnsafeArray<ThreadStat> genStats;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
 		static void __stdcall OnCancelClicked(AnyType userObj);
-		static UI::EventState __stdcall OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-		static UI::EventState __stdcall OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-		static UI::EventState __stdcall OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-		static UI::EventState __stdcall OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-		static UI::EventState __stdcall OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
-		static UI::EventState __stdcall OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnSubDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnSubMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnSubUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnMainDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnMainMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static UI::EventState __stdcall OnMainUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn);
 		static void __stdcall OnTransChange(AnyType userObj);
 		static void __stdcall OnRedChange(AnyType userObj, Bool newState);
 		static void __stdcall OnGreenChange(AnyType userObj, Bool newState);
@@ -142,7 +142,7 @@ namespace UtilUI
 		static Math::Vector3 RGB2YIQ(Math::Vector3 rgb);
 		static Math::Vector3 RGB2HSV(Math::Vector3 rgb);
 
-		void GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h);
+		void GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS startIndex, UIntOS endIndex, UIntOS w, UIntOS h);
 		void GenMainImage();
 		void GenSubImage();
 		void StoreColor();
@@ -157,7 +157,7 @@ namespace UtilUI
 		void ShowAlpha();
 
 		virtual void OnMonitorChanged();
-		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
+		virtual void OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight);
 
 		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 		virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);

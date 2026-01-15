@@ -10,7 +10,7 @@ namespace Net
 		{
 		private:
 			UnsafeArrayOpt<UInt8> faviconBuff;
-			UOSInt faviconSize;
+			UIntOS faviconSize;
 
 		protected:
 			Bool DoRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);

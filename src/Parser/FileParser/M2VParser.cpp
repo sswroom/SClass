@@ -37,20 +37,20 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
-	OSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
+	IntOS readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
 	Media::FrameInfo info;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, 0, false))
 		return 0;
 
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int64 fleng = fd->GetDataSize();
 	Int64 gopStart;
-	OSInt gopFrameCnt = 0;
+	IntOS gopFrameCnt = 0;
 	Int64 thisGop;
-	OSInt totalFrameCnt = 0;
+	IntOS totalFrameCnt = 0;
 	Int64 currOfst;
 	NN<Media::FileVideoSource> vSource;
 	Int32 hdr;

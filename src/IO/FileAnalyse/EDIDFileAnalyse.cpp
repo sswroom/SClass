@@ -8,7 +8,7 @@
 
 //https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
 
-void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt ofst)
+void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, UnsafeArray<const UInt8> buff, UIntOS ofst)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -25,27 +25,27 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 		if (type == 0xFF)
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
-			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = Text::StrTrimC(sbuff, (UIntOS)(sptr - sbuff));
 			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Display serial number"), CSTRP(sbuff, sptr));
 		}
 		else if (type == 0xFE)
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
-			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = Text::StrTrimC(sbuff, (UIntOS)(sptr - sbuff));
 			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Unspecified text"), CSTRP(sbuff, sptr));
 		}
 		else if (type == 0xFD)
 		{
-			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), (UOSInt)buff[ofst + 4] >> 4);
+			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), (UIntOS)buff[ofst + 4] >> 4);
 			frame->AddUInt(ofst + 4, 1, CSTR("Horizontal rate offsets"), (buff[ofst + 4] >> 2) & 3);
 			frame->AddUInt(ofst + 4, 1, CSTR("Vertical rate offsets"), buff[ofst + 4] & 3);
-			frame->AddUInt(ofst + 5, 1, CSTR("Vertical minimum field rate (Hz)"), (buff[ofst + 4] & 1)?(UOSInt)(buff[ofst + 5] + 255):buff[ofst + 5]);
-			frame->AddUInt(ofst + 6, 1, CSTR("Vertical maximum field rate (Hz)"), (buff[ofst + 4] & 2)?(UOSInt)(buff[ofst + 6] + 255):buff[ofst + 6]);
-			frame->AddUInt(ofst + 7, 1, CSTR("Horizontal minimum field rate (kHz)"), (buff[ofst + 4] & 4)?(UOSInt)(buff[ofst + 7] + 255):buff[ofst + 7]);
-			frame->AddUInt(ofst + 8, 1, CSTR("Horizontal maximum field rate (kHz)"), (buff[ofst + 4] & 8)?(UOSInt)(buff[ofst + 8] + 255):buff[ofst + 8]);
-			frame->AddUInt(ofst + 9, 1, CSTR("Maximum pixel clock rate (MHz)"), (UOSInt)buff[ofst + 9] * 10);
+			frame->AddUInt(ofst + 5, 1, CSTR("Vertical minimum field rate (Hz)"), (buff[ofst + 4] & 1)?(UIntOS)(buff[ofst + 5] + 255):buff[ofst + 5]);
+			frame->AddUInt(ofst + 6, 1, CSTR("Vertical maximum field rate (Hz)"), (buff[ofst + 4] & 2)?(UIntOS)(buff[ofst + 6] + 255):buff[ofst + 6]);
+			frame->AddUInt(ofst + 7, 1, CSTR("Horizontal minimum field rate (kHz)"), (buff[ofst + 4] & 4)?(UIntOS)(buff[ofst + 7] + 255):buff[ofst + 7]);
+			frame->AddUInt(ofst + 8, 1, CSTR("Horizontal maximum field rate (kHz)"), (buff[ofst + 4] & 8)?(UIntOS)(buff[ofst + 8] + 255):buff[ofst + 8]);
+			frame->AddUInt(ofst + 9, 1, CSTR("Maximum pixel clock rate (MHz)"), (UIntOS)buff[ofst + 9] * 10);
 			switch (buff[ofst + 10])
 			{
 			case 0:
@@ -59,7 +59,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 			case 2:
 				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("Secondary GTF supported"));
 				frame->AddUInt(ofst + 11, 1, CSTR("Reserved"), buff[ofst + 11]);
-				frame->AddUInt(ofst + 12, 1, CSTR("Start frequency for secondary curve"), (UOSInt)buff[ofst + 12] * 2);
+				frame->AddUInt(ofst + 12, 1, CSTR("Start frequency for secondary curve"), (UIntOS)buff[ofst + 12] * 2);
 				frame->AddFloat(ofst + 13, 1, CSTR("GTF C value"), buff[ofst + 13] * 0.5);
 				frame->AddUInt(ofst + 14, 2, CSTR("GTF M value"), ReadUInt16(&buff[ofst + 14]));
 				frame->AddUInt(ofst + 16, 1, CSTR("GTF K value"), buff[ofst + 16]);
@@ -67,17 +67,17 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 				break;
 			case 4:
 				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("CVT"));
-				frame->AddUInt(ofst + 11, 1, CSTR("CVT major version"), (UOSInt)buff[ofst + 11] >> 4);
+				frame->AddUInt(ofst + 11, 1, CSTR("CVT major version"), (UIntOS)buff[ofst + 11] >> 4);
 				frame->AddUInt(ofst + 11, 1, CSTR("CVT minor version"), buff[ofst + 11] & 15);
 				frame->AddFloat(ofst + 12, 1, CSTR("Maximum pixel clock rate (High precision)"), buff[ofst + 9] * 10.0 + (buff[ofst + 12] >> 2) * 0.25);
-				frame->AddUInt(ofst + 13, 1, CSTR("Maximum active pixels per line"), buff[ofst + 13] + ((UOSInt)(buff[ofst + 12] & 3) * 256));
+				frame->AddUInt(ofst + 13, 1, CSTR("Maximum active pixels per line"), buff[ofst + 13] + ((UIntOS)(buff[ofst + 12] & 3) * 256));
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 4:3"), (buff[ofst + 14] >> 7) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 16:9"), (buff[ofst + 14] >> 6) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 16:10"), (buff[ofst + 14] >> 5) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 5:4"), (buff[ofst + 14] >> 4) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 15:9"), (buff[ofst + 14] >> 3) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Reserved"), buff[ofst + 14] & 7);
-				frame->AddUIntName(ofst + 15, 1, CSTR("Aspect ratio preference"), (UOSInt)buff[ofst + 15] >> 5, AspectRatioPreferenceGetName((UOSInt)buff[ofst + 15] >> 5));
+				frame->AddUIntName(ofst + 15, 1, CSTR("Aspect ratio preference"), (UIntOS)buff[ofst + 15] >> 5, AspectRatioPreferenceGetName((UIntOS)buff[ofst + 15] >> 5));
 				frame->AddUInt(ofst + 15, 1, CSTR("CVT-RB reduced blanking"), (buff[ofst + 15] >> 4) & 1);
 				frame->AddUInt(ofst + 15, 1, CSTR("CVT standard blanking"), (buff[ofst + 15] >> 3) & 1);
 				frame->AddUInt(ofst + 15, 1, CSTR("Reserved"), buff[ofst + 15] & 7);
@@ -96,7 +96,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 		else if (type == 0xFC)
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
-			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = Text::StrTrimC(sbuff, (UIntOS)(sptr - sbuff));
 			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Display name"), CSTRP(sbuff, sptr));
 		}
@@ -113,19 +113,19 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 	else
 	{
 		frame->AddFloat(ofst, 2, CSTR("Pixel clock (MHz)"), ReadUInt16(&buff[ofst]) * 0.01);
-		frame->AddUInt(ofst + 2, 1, CSTR("Horizontal active pixels"), buff[ofst + 2] + ((UOSInt)(buff[ofst + 4] & 0xF0)) * 16);
-		frame->AddUInt(ofst + 3, 1, CSTR("Horizontal blanking pixels"), buff[ofst + 3] + ((UOSInt)(buff[ofst + 4] & 0xF)) * 256);
+		frame->AddUInt(ofst + 2, 1, CSTR("Horizontal active pixels"), buff[ofst + 2] + ((UIntOS)(buff[ofst + 4] & 0xF0)) * 16);
+		frame->AddUInt(ofst + 3, 1, CSTR("Horizontal blanking pixels"), buff[ofst + 3] + ((UIntOS)(buff[ofst + 4] & 0xF)) * 256);
 		frame->AddHex8(ofst + 4, CSTR("Horizontal pixels msbits"), buff[ofst + 4]);
-		frame->AddUInt(ofst + 5, 1, CSTR("Vertical active lines"), buff[ofst + 5] + ((UOSInt)(buff[ofst + 7] & 0xF0)) * 16);
-		frame->AddUInt(ofst + 6, 1, CSTR("Vertical blanking lines"), buff[ofst + 6] + ((UOSInt)(buff[ofst + 7] & 0xF)) * 256);
+		frame->AddUInt(ofst + 5, 1, CSTR("Vertical active lines"), buff[ofst + 5] + ((UIntOS)(buff[ofst + 7] & 0xF0)) * 16);
+		frame->AddUInt(ofst + 6, 1, CSTR("Vertical blanking lines"), buff[ofst + 6] + ((UIntOS)(buff[ofst + 7] & 0xF)) * 256);
 		frame->AddHex8(ofst + 7, CSTR("Vertical lines msbits"), buff[ofst + 7]);
-		frame->AddUInt(ofst + 8, 1, CSTR("Horizontal front porch pixels"), buff[ofst + 8] + ((UOSInt)(buff[ofst + 11] & 0xC0)) * 4);
-		frame->AddUInt(ofst + 9, 1, CSTR("Horizontal sync pulse width pixels"), buff[ofst + 9] + ((UOSInt)(buff[ofst + 11] & 0x30)) * 16);
-		frame->AddUInt(ofst + 10, 1, CSTR("Vertical front porch pixels"), ((UOSInt)buff[ofst + 10] >> 4) + ((UOSInt)(buff[ofst + 11] & 0xC)) * 4);
-		frame->AddUInt(ofst + 10, 1, CSTR("Vertical sync pulse width pixels"), (buff[ofst + 10] & 15) + ((UOSInt)(buff[ofst + 11] & 0x3)) * 16);
+		frame->AddUInt(ofst + 8, 1, CSTR("Horizontal front porch pixels"), buff[ofst + 8] + ((UIntOS)(buff[ofst + 11] & 0xC0)) * 4);
+		frame->AddUInt(ofst + 9, 1, CSTR("Horizontal sync pulse width pixels"), buff[ofst + 9] + ((UIntOS)(buff[ofst + 11] & 0x30)) * 16);
+		frame->AddUInt(ofst + 10, 1, CSTR("Vertical front porch pixels"), ((UIntOS)buff[ofst + 10] >> 4) + ((UIntOS)(buff[ofst + 11] & 0xC)) * 4);
+		frame->AddUInt(ofst + 10, 1, CSTR("Vertical sync pulse width pixels"), (buff[ofst + 10] & 15) + ((UIntOS)(buff[ofst + 11] & 0x3)) * 16);
 		frame->AddHex8(ofst + 11, CSTR("Front porch and sync pulse width msbits"), buff[ofst + 11]);
-		frame->AddUInt(ofst + 12, 1, CSTR("Horizontal image size (mm)"), buff[ofst + 12] + ((UOSInt)(buff[ofst + 14] & 0xF0)) * 16);
-		frame->AddUInt(ofst + 13, 1, CSTR("Vertical image size (mm)"), buff[ofst + 13] + ((UOSInt)(buff[ofst + 14] & 0xF)) * 256);
+		frame->AddUInt(ofst + 12, 1, CSTR("Horizontal image size (mm)"), buff[ofst + 12] + ((UIntOS)(buff[ofst + 14] & 0xF0)) * 16);
+		frame->AddUInt(ofst + 13, 1, CSTR("Vertical image size (mm)"), buff[ofst + 13] + ((UIntOS)(buff[ofst + 14] & 0xF)) * 256);
 		frame->AddHex8(ofst + 14, CSTR("Image size msbits"), buff[ofst + 14]);
 		frame->AddUInt(ofst + 15, 1, CSTR("Horizontal border pixels"), buff[ofst + 15]);
 		frame->AddUInt(ofst + 16, 1, CSTR("Vertical border pixels"), buff[ofst + 16]);
@@ -209,14 +209,14 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UnsafeArray<UTF8Char> sbuf
 IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NN<IO::StreamData> fd)
 {
 	UInt8 buff[128];
-	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
+	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UIntOS)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
 	{
 		this->fd = nullptr;
 		this->blockCnt = 0;
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	this->blockCnt = (UOSInt)buff[126] + 1;
+	this->blockCnt = (UIntOS)buff[126] + 1;
 }
 
 IO::FileAnalyse::EDIDFileAnalyse::~EDIDFileAnalyse()
@@ -229,26 +229,26 @@ Text::CStringNN IO::FileAnalyse::EDIDFileAnalyse::GetFormatName()
 	return CSTR("EDID");
 }
 
-UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
 {
 	return this->blockCnt;
 }
 
-Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	if (index >= this->blockCnt)
 	{
 		if (index == this->blockCnt && this->fd.SetTo(fd) && this->blockCnt * 128 < fd->GetDataSize())
 		{
-			sb->AppendUOSInt(index * 128);
+			sb->AppendUIntOS(index * 128);
 			sb->AppendC(UTF8STRC(": Type=Dummy, size="));
 			sb->AppendU64(fd->GetDataSize() - index * 128);
 			return true;
 		}
 		return false;
 	}
-	sb->AppendUOSInt(index * 128);
+	sb->AppendUIntOS(index * 128);
 	sb->AppendC(UTF8STRC(": Type="));
 	if (index > 0)
 	{
@@ -262,10 +262,10 @@ Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	NN<IO::StreamData> fd;
-	UOSInt blockId = (UOSInt)(ofst >> 7);
+	UIntOS blockId = (UIntOS)(ofst >> 7);
 	if (blockId >= this->blockCnt)
 	{
 		if (this->fd.SetTo(fd) && ofst < fd->GetDataSize())
@@ -277,7 +277,7 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return blockId;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::FrameDetail> frame;
@@ -285,7 +285,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 	{
 		if (index == this->blockCnt && this->fd.SetTo(fd) && this->blockCnt * 128 < fd->GetDataSize())
 		{
-			UOSInt blockSize = (UOSInt)(fd->GetDataSize() - index * 128);
+			UIntOS blockSize = (UIntOS)(fd->GetDataSize() - index * 128);
 			Data::ByteBuffer dummyBlock(blockSize);
 			if (fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
 			{
@@ -298,9 +298,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 		return nullptr;
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -318,7 +318,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 		frame->AddHex16(10, CSTR("Manufacturer product code"), ReadUInt16(&buff[10]));
 		frame->AddUInt(12, 4, CSTR("Serial number"), ReadUInt32(&buff[12]));
 		frame->AddUInt(16, 1, CSTR("Week of manufacture"), buff[16]);
-		frame->AddUInt(17, 1, CSTR("Year of manufacture"), (UOSInt)buff[17] + 1990);
+		frame->AddUInt(17, 1, CSTR("Year of manufacture"), (UIntOS)buff[17] + 1990);
 		frame->AddUInt(18, 1, CSTR("EDID version"), buff[18]);
 		frame->AddUInt(19, 1, CSTR("EDID revision"), buff[19]);
 		if (buff[20] & 0x80)
@@ -403,24 +403,24 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 		{
 			if (buff[38 + i * 2] == 1 && buff[38 + i * 2 + 1] == 1)
 			{
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i);
 				frame->AddField(38 + i * 2, 2, CSTRP(sbuff, sptr), CSTR("Unused"));
 			}
 			else
 			{
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" X resolution"));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" X resolution"));
 				if (buff[38 + i * 2] == 0)
 				{
 					frame->AddField(38 + i * 2, 1, CSTRP(sbuff, sptr), CSTR("reserved"));
 				}
 				else
 				{
-					frame->AddUInt(38 + i * 2, 1, CSTRP(sbuff, sptr), (31 + (UOSInt)buff[38 + i * 2]) * 8);
+					frame->AddUInt(38 + i * 2, 1, CSTRP(sbuff, sptr), (31 + (UIntOS)buff[38 + i * 2]) * 8);
 				}
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Image aspect ratio"));
-				frame->AddUIntName(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), (UOSInt)buff[38 + i * 2 + 1] >> 6, ImageAspectRatioGetName((UOSInt)buff[38 + i * 2 + 1] >> 6));
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Vertical frequency"));
-				frame->AddUInt(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), 60 + (UOSInt)(buff[38 + i * 2 + 1] & 0x3F));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Image aspect ratio"));
+				frame->AddUIntName(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), (UIntOS)buff[38 + i * 2 + 1] >> 6, ImageAspectRatioGetName((UIntOS)buff[38 + i * 2 + 1] >> 6));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Vertical frequency"));
+				frame->AddUInt(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), 60 + (UIntOS)(buff[38 + i * 2 + 1] & 0x3F));
 			}
 			i++;
 		}
@@ -452,7 +452,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 				switch (buff[i] >> 5)
 				{
 				case 1:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("audio"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("audio"));
 					if ((byteCnt % 3) == 0)
 					{
 						k = 0;
@@ -463,15 +463,15 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 							frame->AddUIntName(i + 1 + k, 1, CSTR("Audio Format Tag"), fmt, AudioFormatGetName(fmt));
 							if (fmt == 15 && extFmt == 11)
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("MPEG-H 3D Audio Level"), (UOSInt)(buff[i + 1 + k] & 7) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("MPEG-H 3D Audio Level"), (UIntOS)(buff[i + 1 + k] & 7) + 1);
 							}
 							else if (fmt == 15 && extFmt == 13)
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), ((buff[i + 1 + k] & 7) | ((UOSInt)(buff[i + 1 + k] & 0x80) >> 4) | ((UOSInt)(buff[i + 1 + k + 1] & 0x80) >> 3)) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), ((buff[i + 1 + k] & 7) | ((UIntOS)(buff[i + 1 + k] & 0x80) >> 4) | ((UIntOS)(buff[i + 1 + k + 1] & 0x80) >> 3)) + 1);
 							}
 							else
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), (UOSInt)(buff[i + 1 + k] & 7) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), (UIntOS)(buff[i + 1 + k] & 7) + 1);
 							}
 							frame->AddBit(i + 1 + k + 1, CSTR("reserved"), buff[i + 1 + k + 1], 7);
 							frame->AddBit(i + 1 + k + 1, CSTR("Support 192kHz"), buff[i + 1 + k + 1], 6);
@@ -489,7 +489,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 							}
 							else if (fmt <= 8)
 							{
-								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Maximum bit rate (kbps)"), (UOSInt)buff[i + 1 + k + 2] * 8);
+								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Maximum bit rate (kbps)"), (UIntOS)buff[i + 1 + k + 2] * 8);
 							}
 							else if (fmt == 10)
 							{
@@ -532,13 +532,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 					}
 					break;
 				case 2:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("video"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("video"));
 					break;
 				case 3:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("vendor specific"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("vendor specific"));
 					break;
 				case 4:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("speaker allocation"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("speaker allocation"));
 					if (byteCnt >= 3)
 					{
 						frame->AddBit(i + 1, CSTR("FL/FR - Front Left/Right"), buff[i + 1], 0);
@@ -562,17 +562,17 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 						frame->AddBit(i + 3, CSTR("BtFL/BtFR - Bottom Front Left/Right"), buff[i + 3], 2);
 						frame->AddBit(i + 3, CSTR("TpLS/TpRS - Top Left/Right Surround"), buff[i + 3], 3);
 						frame->AddBit(i + 3, CSTR("LSd/RSd - Left/Right Surround Direct"), buff[i + 3], 4);
-						frame->AddUInt(i + 3, 1, CSTR("reserved"), (UOSInt)buff[i + 3] >> 5);
+						frame->AddUInt(i + 3, 1, CSTR("reserved"), (UIntOS)buff[i + 3] >> 5);
 					}
 					break;
 				case 5:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
 					break;
 				case 6:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("reserved"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("reserved"));
 					break;
 				case 7:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("Use Extended Tag"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UIntOS)buff[i] >> 5, CSTR("Use Extended Tag"));
 					switch (buff[i + 1])
 					{
 					case 0:
@@ -751,7 +751,7 @@ Bool IO::FileAnalyse::EDIDFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalBitDepthGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalBitDepthGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -776,7 +776,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalBitDepthGetName(UOSInt va
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalVideoInterfaceGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalVideoInterfaceGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -797,7 +797,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalVideoInterfaceGetName(UOS
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalDisplayTypeGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalDisplayTypeGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -814,7 +814,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::DigitalDisplayTypeGetName(UOSInt
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogLevelGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogLevelGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -831,7 +831,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogLevelGetName(UOSInt val)
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogDisplayTypeGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogDisplayTypeGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -848,7 +848,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::AnalogDisplayTypeGetName(UOSInt 
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::ImageAspectRatioGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::ImageAspectRatioGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -922,7 +922,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::ExtensionTagGetName(UInt8 val)
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::AspectRatioPreferenceGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AspectRatioPreferenceGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -941,7 +941,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::AspectRatioPreferenceGetName(UOS
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioFormatGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioFormatGetName(UIntOS val)
 {
 	switch (val)
 	{
@@ -982,7 +982,7 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioFormatGetName(UOSInt val)
 	}
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioExtFormatGetName(UOSInt val)
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioExtFormatGetName(UIntOS val)
 {
 	switch (val)
 	{

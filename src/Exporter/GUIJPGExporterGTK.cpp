@@ -21,7 +21,7 @@ Int32 Exporter::GUIJPGExporter::GetName()
 	return *(Int32*)"GPJP";
 }
 
-Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GUIJPGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -79,7 +79,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	return false;
 }
 
-UOSInt Exporter::GUIJPGExporter::GetParamCnt()
+UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -100,7 +100,7 @@ void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -112,7 +112,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -127,7 +127,7 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt i
 	return false;
 }
 
-Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

@@ -2,7 +2,7 @@ section .text
 
 global LRGBLimiter_LimitImageLRGB
 
-;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
+;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, IntOS w, IntOS h);
 ;0 rdi
 ;8 rsi
 ;16 rbx

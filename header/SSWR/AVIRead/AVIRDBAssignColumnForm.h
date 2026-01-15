@@ -30,7 +30,7 @@ namespace SSWR
 			UnsafeArrayOpt<ColumnItem> colsItem;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Data::ArrayListNative<UOSInt>> colInd;
+			NN<Data::ArrayListNative<UIntOS>> colInd;
 			NN<Data::ArrayListStringNN> colStr;
 			NN<DB::TableDef> dbTable;
 			NN<DB::ReadingDB> dataFile;
@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayListNative<UOSInt>> colInd, NN<Data::ArrayListStringNN> colStr);
+			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayListNative<UIntOS>> colInd, NN<Data::ArrayListStringNN> colStr);
 			virtual ~AVIRDBAssignColumnForm();
 
 			virtual void OnMonitorChanged();

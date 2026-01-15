@@ -199,10 +199,10 @@ IO::AndroidDB::AndroidInfo IO::AndroidDB::androids[] = {
 
 const IO::AndroidDB::AndroidInfo *IO::AndroidDB::GetAndroidInfo(Text::CStringNN androidId)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(androids) / sizeof(androids[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(androids) / sizeof(androids[0])) - 1;
+	IntOS k;
+	IntOS l;
 
 	while (i <= j)
 	{

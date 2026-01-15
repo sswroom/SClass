@@ -28,7 +28,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
 	NN<Media::RasterImage> img;
-	UOSInt i = imgList->GetCount();
+	UIntOS i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -44,7 +44,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::ICOExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::ICOExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -64,7 +64,7 @@ Bool Exporter::ICOExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	UOSInt buffSize = Exporter::CURExporter::CalcBuffSize(imgList);
+	UIntOS buffSize = Exporter::CURExporter::CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
 	UInt8 *buff = MemAlloc(UInt8, buffSize);

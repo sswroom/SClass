@@ -24,7 +24,7 @@ void UI::GUIMapTreeView::FreeItem(NN<UI::GUITreeView::TreeItem> item)
 	NN<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	MemFreeNN(ind);
 	NN<TreeItem> child;
-	UOSInt i = item->GetChildCount();
+	UIntOS i = item->GetChildCount();
 	while (i-- > 0)
 	{
 		if (item->GetChild(i).SetTo(child))
@@ -32,7 +32,7 @@ void UI::GUIMapTreeView::FreeItem(NN<UI::GUITreeView::TreeItem> item)
 	}
 }
 
-void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeItem, Optional<Map::MapEnv::GroupItem> group, UOSInt index)
+void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeItem, Optional<Map::MapEnv::GroupItem> group, UIntOS index)
 {
 	NN<Map::MapEnv::MapItem> item;
 	NN<ItemIndex> ind;
@@ -42,7 +42,7 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 		{
 			NN<Map::MapEnv::LayerItem> layer = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
 			NN<Text::String> name = layer->layer->GetName();
-			UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+			UIntOS i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			ind = MemAllocNN(ItemIndex);
 			ind->group = group;
 			ind->index = index;
@@ -53,8 +53,8 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
 			NN<Map::MapEnv::GroupItem> grp = NN<Map::MapEnv::GroupItem>::ConvertFrom(item);
-			UOSInt i;
-			UOSInt j = this->env->GetItemCount(grp);
+			UIntOS i;
+			UIntOS j = this->env->GetItemCount(grp);
 			ind = MemAllocNN(ItemIndex);
 			ind->group = group;
 			ind->index = index;
@@ -95,7 +95,7 @@ void UI::GUIMapTreeView::UpdateTreeStatus(NN<UI::GUITreeView::TreeItem> item)
 	if (ind->itemType != Map::MapEnv::IT_UNKNOWN)
 	{
 		NN<TreeItem> child;
-		UOSInt i = item->GetChildCount();
+		UIntOS i = item->GetChildCount();
 		while (i-- > 0)
 		{
 			if (item->GetChild(i).SetTo(child))
@@ -119,7 +119,7 @@ UI::GUIMapTreeView::~GUIMapTreeView()
 	RemoveItems();
 }
 
-OSInt UI::GUIMapTreeView::EventBeginLabelEdit(NN<TreeItem> item)
+IntOS UI::GUIMapTreeView::EventBeginLabelEdit(NN<TreeItem> item)
 {
 	NN<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	if (ind->item.NotNull() && ind->itemType == Map::MapEnv::IT_GROUP)
@@ -128,7 +128,7 @@ OSInt UI::GUIMapTreeView::EventBeginLabelEdit(NN<TreeItem> item)
 		return 1;
 }
 
-OSInt UI::GUIMapTreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
+IntOS UI::GUIMapTreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
 {
 	NN<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	NN<Map::MapEnv::MapItem> mitem;
@@ -167,8 +167,8 @@ void UI::GUIMapTreeView::SetEnv(NN<Map::MapEnv> env)
 
 void UI::GUIMapTreeView::UpdateTree()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<ItemIndex> ind;
 	NN<TreeItem> item;
 
@@ -179,7 +179,7 @@ void UI::GUIMapTreeView::UpdateTree()
 	this->RemoveItems();
 	ind = MemAllocNN(ItemIndex);
 	ind->group = nullptr;
-	ind->index = (UOSInt)-1;
+	ind->index = (UIntOS)-1;
 	ind->itemType = Map::MapEnv::IT_GROUP;
 	ind->item = nullptr;
 	if (this->InsertItem(nullptr, nullptr, CSTR("ROOT"), ind).SetTo(item))
@@ -261,7 +261,7 @@ void UI::GUIMapTreeView::ExpandColl(NN<UI::GUIMapTreeView::ItemIndex> ind)
 			NN<Map::MapLayerCollection> lyrColl = NN<Map::MapLayerCollection>::ConvertFrom(lyr);
 			NN<Map::MapEnv::GroupItem> grp;
 			NN<Map::MapDrawLayer> layer;
-			UOSInt i = this->env->GetItemCount(ind->group);
+			UIntOS i = this->env->GetItemCount(ind->group);
 			grp = this->env->AddGroup(ind->group, lyrColl->GetName());
 			Sync::RWMutexUsage mutUsage;
 			Data::ArrayIterator<NN<Map::MapDrawLayer>> it = lyrColl->Iterator(mutUsage);

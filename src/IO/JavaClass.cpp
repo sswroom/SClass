@@ -124,7 +124,7 @@ void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, NN<Text::StringBuilder
 	}
 }
 
-void IO::JavaClass::AppendCond(NN<Text::StringBuilderUTF8> sb, NN<DecompileEnv> env, UOSInt index, CondType ct, Bool inv)
+void IO::JavaClass::AppendCond(NN<Text::StringBuilderUTF8> sb, NN<DecompileEnv> env, UIntOS index, CondType ct, Bool inv)
 {
 	NN<Text::String> s;
 	if (!env->stackTypes->GetItem(index).SetTo(s))
@@ -210,7 +210,7 @@ UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, Optional<const MethodInfo> m
 		return paramIndex;
 	}
 	UInt32 i = 0;
-	UOSInt j = nnmethod->lvList.GetCount();
+	UIntOS j = nnmethod->lvList.GetCount();
 	while (i < j)
 	{
 		NN<LocalVariableInfo> lv = nnmethod->lvList.GetItemNoCheck(i);
@@ -223,7 +223,7 @@ UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, Optional<const MethodInfo> m
 	return paramIndex;
 }
 
-void IO::JavaClass::AppendIndent(NN<Text::StringBuilderUTF8> sb, UOSInt lev) const
+void IO::JavaClass::AppendIndent(NN<Text::StringBuilderUTF8> sb, UIntOS lev) const
 {
 	sb->AppendChar('\t', lev);
 }
@@ -236,9 +236,9 @@ void IO::JavaClass::AppendLineNum(NN<Text::StringBuilderUTF8> sb, NN<DecompileEn
 		return;
 	}
 	NN<LineNumberInfo> lineNum;
-	UOSInt i = 0;
-	UOSInt j = env->method->lineNumList.GetCount();
-	UOSInt k = INVALID_INDEX;
+	UIntOS i = 0;
+	UIntOS j = env->method->lineNumList.GetCount();
+	UIntOS k = INVALID_INDEX;
 	while (i < j)
 	{
 		lineNum = env->method->lineNumList.GetItemNoCheck(i);
@@ -257,7 +257,7 @@ void IO::JavaClass::AppendLineNum(NN<Text::StringBuilderUTF8> sb, NN<DecompileEn
 	}
 }
 
-UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8> attr, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8> attr, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -270,7 +270,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 	if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 	{
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendUTF8Char(')');
 	}
 	else
@@ -282,7 +282,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 	sb->AppendC(UTF8STRC("Attr Length = "));
 	sb->AppendU32(len);
 	sb->AppendC(UTF8STRC("\r\n"));
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ConstantValue")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ConstantValue")))
 	{
 		UInt16 i = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -291,7 +291,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 		this->DetailConstVal(i, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Code")))
 	{
 		UnsafeArray<const UInt8> ptr;
 		UInt32 codeLen = ReadMUInt32(&attr[10]);
@@ -361,7 +361,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			i++;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Exceptions")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Exceptions")))
 	{
 		UInt16 number_of_exceptions = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -382,7 +382,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			ptr += 2;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("InnerClasses")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("InnerClasses")))
 	{
 		UInt16 number_of_classes = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -415,7 +415,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			if (this->GetConstName(sbuff, clsIndex).SetTo(sptr))
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendUTF8Char(')');
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -430,7 +430,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			ptr += 8;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EnclosingMethod")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("EnclosingMethod")))
 	{
 		UInt16 clsIndex;
 		const UInt8 *ptr = &attr[6];
@@ -451,7 +451,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 		}
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LineNumberTable")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LineNumberTable")))
 	{
 		UInt16 line_number_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -472,7 +472,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			ptr += 4;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
 	{
 		UInt16 local_variable_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -498,7 +498,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			if (this->GetConstName(sbuff, ReadMUInt16(&ptr[4])).SetTo(sptr))
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC(")"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -506,7 +506,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			ptr += 10;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
 	{
 		UInt16 local_variable_type_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -532,7 +532,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			if (this->GetConstName(sbuff, ReadMUInt16(&ptr[4])).SetTo(sptr))
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC(")"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -540,7 +540,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			ptr += 10;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Signature")))
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -549,7 +549,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 		this->DetailName(snameIndex, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SourceFile")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SourceFile")))
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -558,7 +558,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 		this->DetailName(snameIndex, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
 	{
 		UInt16 num_annotations = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -579,7 +579,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 			i++;
 		}
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("StackMapTable")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("StackMapTable")))
 	{
 		UInt16 number_of_entries = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -600,7 +600,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 	{
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("Attr "));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" (not supported)\r\n"));
 	}
 
@@ -782,12 +782,12 @@ void IO::JavaClass::DetailClassNameStr(UInt16 index, NN<Text::StringBuilderUTF8>
 			c = *ptr++;
 			if (c == '/')
 			{
-				sb->AppendC(strStart, (UOSInt)(ptr - strStart - 1));
+				sb->AppendC(strStart, (UIntOS)(ptr - strStart - 1));
 				sb->AppendUTF8Char('.');
 				strStart = ptr;
 			}
 		}
-		sb->AppendC(strStart, (UOSInt)(strEnd - strStart));
+		sb->AppendC(strStart, (UIntOS)(strEnd - strStart));
 	}
 	sb->AppendUTF8Char(')');
 }
@@ -836,12 +836,12 @@ void IO::JavaClass::DetailFieldRef(UInt16 index, NN<Text::StringBuilderUTF8> sb)
 		c = *ptr++;
 		if (c == '/')
 		{
-			sb->AppendC(strStart, (UOSInt)(ptr - strStart - 1));
+			sb->AppendC(strStart, (UIntOS)(ptr - strStart - 1));
 			sb->AppendUTF8Char('.');
 			strStart = ptr;
 		}
 	}
-	sb->AppendC(strStart, (UOSInt)(strEnd - strStart));
+	sb->AppendC(strStart, (UIntOS)(strEnd - strStart));
 	sb->AppendUTF8Char(',');
 	this->DetailNameAndType(nameIndex, this->thisClass, sb);
 }
@@ -890,12 +890,12 @@ void IO::JavaClass::DetailMethodRef(UInt16 index, NN<Text::StringBuilderUTF8> sb
 		c = *ptr++;
 		if (c == '/' || c == '$')
 		{
-			sb->AppendC(strStart, (UOSInt)(ptr - strStart - 1));
+			sb->AppendC(strStart, (UIntOS)(ptr - strStart - 1));
 			sb->AppendUTF8Char('.');
 			strStart = ptr;
 		}
 	}
-	sb->AppendC(strStart, (UOSInt)(strEnd - strStart));
+	sb->AppendC(strStart, (UIntOS)(strEnd - strStart));
 	sb->AppendUTF8Char(',');
 	this->DetailNameAndType(nameIndex, classIndex, sb);
 }
@@ -971,8 +971,8 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	UnsafeArray<const UInt8> strEnd;
 	UInt32 paramIndex;
 	UInt32 paramId;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::String *paramName;
 	NN<MethodInfo> nnmethod;
 	if (method.SetTo(nnmethod))
@@ -983,7 +983,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 		{
 			if (this->GetConstName(sbuff, nnmethod->lvList.GetItemNoCheck(i)->nameIndex).SetTo(sptr))
 			{
-				typeNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
+				typeNames.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr());
 			}
 			else
 			{
@@ -1071,7 +1071,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 				startPtr = ptr;
 			}
 		}
-		sb->AppendC(startPtr, (UOSInt)(endPtr - startPtr));
+		sb->AppendC(startPtr, (UIntOS)(endPtr - startPtr));
 	}
 	else
 	{
@@ -1097,17 +1097,17 @@ void IO::JavaClass::DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb,
 	AppendCodeType2String(sb, ptr, importList, packageName);
 }
 
-void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UIntOS codeLen, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	UInt16 val;
-	UOSInt codeOfst = 0;
+	UIntOS codeOfst = 0;
 	while (codeLen > 0)
 	{
 		switch (codePtr[codeOfst + 0])
 		{
 		case 0x00:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1117,7 +1117,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x01:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1127,7 +1127,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x02:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1137,7 +1137,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x03:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1147,7 +1147,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x04:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1157,7 +1157,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x05:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1167,7 +1167,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x06:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1177,7 +1177,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x07:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1187,7 +1187,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x08:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1197,7 +1197,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x09:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1207,7 +1207,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1217,7 +1217,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1227,7 +1227,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1237,7 +1237,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1247,7 +1247,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1257,7 +1257,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x0F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1267,7 +1267,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x10:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1280,7 +1280,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x11:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -1293,7 +1293,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x12:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1307,7 +1307,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x13:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -1321,7 +1321,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x14:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -1335,7 +1335,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x15:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1347,7 +1347,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x16:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1359,7 +1359,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x17:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1371,7 +1371,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x18:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1383,7 +1383,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x19:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1395,7 +1395,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1405,7 +1405,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1415,7 +1415,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1425,7 +1425,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1435,7 +1435,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1445,7 +1445,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x1F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1455,7 +1455,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x20:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1465,7 +1465,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x21:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1475,7 +1475,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x22:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1485,7 +1485,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x23:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1495,7 +1495,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x24:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1505,7 +1505,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x25:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1515,7 +1515,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x26:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1525,7 +1525,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x27:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1535,7 +1535,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x28:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1545,7 +1545,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x29:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1555,7 +1555,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1565,7 +1565,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1575,7 +1575,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1585,7 +1585,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1595,7 +1595,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1605,7 +1605,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x2F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1615,7 +1615,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x30:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1625,7 +1625,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x31:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1635,7 +1635,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x32:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1645,7 +1645,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x33:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1655,7 +1655,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x34:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1665,7 +1665,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x35:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1675,7 +1675,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x36:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1687,7 +1687,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x37:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1699,7 +1699,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x38:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1711,7 +1711,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x39:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1723,7 +1723,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -1735,7 +1735,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1745,7 +1745,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1755,7 +1755,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1765,7 +1765,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1775,7 +1775,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x3F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1785,7 +1785,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x40:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1795,7 +1795,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x41:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1805,7 +1805,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x42:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1815,7 +1815,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x43:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1825,7 +1825,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x44:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1835,7 +1835,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x45:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1845,7 +1845,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x46:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1855,7 +1855,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x47:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1865,7 +1865,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x48:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1875,7 +1875,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x49:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1885,7 +1885,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1895,7 +1895,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1905,7 +1905,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1915,7 +1915,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1925,7 +1925,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1935,7 +1935,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x4F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1945,7 +1945,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x50:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1955,7 +1955,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x51:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1965,7 +1965,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x52:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1975,7 +1975,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x53:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1985,7 +1985,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x54:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -1995,7 +1995,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x55:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2005,7 +2005,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x56:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2015,7 +2015,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x57:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2025,7 +2025,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x58:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2035,7 +2035,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x59:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2045,7 +2045,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2055,7 +2055,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2065,7 +2065,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2075,7 +2075,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2085,7 +2085,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2095,7 +2095,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x5F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2105,7 +2105,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x60:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2115,7 +2115,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x61:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2125,7 +2125,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x62:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2135,7 +2135,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x63:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2145,7 +2145,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x64:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2155,7 +2155,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x65:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2165,7 +2165,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x66:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2175,7 +2175,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x67:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2185,7 +2185,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x68:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2195,7 +2195,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x69:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2205,7 +2205,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2215,7 +2215,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2225,7 +2225,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2235,7 +2235,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2245,7 +2245,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2255,7 +2255,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x6F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2265,7 +2265,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x70:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2275,7 +2275,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x71:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2285,7 +2285,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x72:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2295,7 +2295,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x73:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2305,7 +2305,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x74:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2315,7 +2315,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x75:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2325,7 +2325,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x76:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2335,7 +2335,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x77:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2345,7 +2345,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x78:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2355,7 +2355,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x79:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2365,7 +2365,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2375,7 +2375,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2385,7 +2385,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2395,7 +2395,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2405,7 +2405,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2415,7 +2415,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x7F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2425,7 +2425,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x80:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2435,7 +2435,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x81:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2445,7 +2445,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x82:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2455,7 +2455,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x83:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2465,7 +2465,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x84:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2479,7 +2479,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x85:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2489,7 +2489,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x86:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2499,7 +2499,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x87:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2509,7 +2509,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x88:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2519,7 +2519,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x89:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2529,7 +2529,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2539,7 +2539,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2549,7 +2549,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2559,7 +2559,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2569,7 +2569,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2579,7 +2579,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x8F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2589,7 +2589,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x90:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2599,7 +2599,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x91:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2609,7 +2609,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x92:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2619,7 +2619,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x93:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2629,7 +2629,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x94:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2639,7 +2639,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x95:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2649,7 +2649,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x96:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2659,7 +2659,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x97:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2669,7 +2669,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x98:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2679,7 +2679,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x99:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2691,7 +2691,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9A:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2703,7 +2703,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9B:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2715,7 +2715,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9C:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2727,7 +2727,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9D:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2739,7 +2739,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9E:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2751,7 +2751,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0x9F:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2763,7 +2763,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA0:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2775,7 +2775,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA1:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2787,7 +2787,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA2:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2799,7 +2799,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA3:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2811,7 +2811,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA4:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2823,7 +2823,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA5:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2835,7 +2835,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA6:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2847,7 +2847,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA7:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2859,7 +2859,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA8:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -2871,7 +2871,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xA9:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -2884,9 +2884,9 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 		case 0xAA:
 			{
 				this->AppendIndent(sb, lev);
-				sb->AppendUOSInt(codeOfst);
+				sb->AppendUIntOS(codeOfst);
 				sb->AppendUTF8Char('\t');
-				UOSInt currOfst = codeOfst + 1;
+				UIntOS currOfst = codeOfst + 1;
 				while (currOfst & 3)
 				{
 					currOfst += 1;
@@ -2906,7 +2906,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 				while (currIndex < npairs && codeLen >= 8)
 				{
 					this->AppendIndent(sb, lev);
-					sb->AppendUOSInt(codeOfst);
+					sb->AppendUIntOS(codeOfst);
 					sb->AppendUTF8Char('\t');
 					sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
 					sb->AppendUTF8Char(' ');
@@ -2924,9 +2924,9 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 		case 0xAB:
 			{
 				this->AppendIndent(sb, lev);
-				sb->AppendUOSInt(codeOfst);
+				sb->AppendUIntOS(codeOfst);
 				sb->AppendUTF8Char('\t');
-				UOSInt currOfst = codeOfst + 1;
+				UIntOS currOfst = codeOfst + 1;
 				while (currOfst & 3)
 				{
 					currOfst += 1;
@@ -2946,7 +2946,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 				while (currIndex < npairs && codeLen >= 8)
 				{
 					this->AppendIndent(sb, lev);
-					sb->AppendUOSInt(codeOfst);
+					sb->AppendUIntOS(codeOfst);
 					sb->AppendUTF8Char('\t');
 					sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
 					sb->AppendUTF8Char(' ');
@@ -2963,7 +2963,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xAC:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2973,7 +2973,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xAD:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2983,7 +2983,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xAE:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -2993,7 +2993,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xAF:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3003,7 +3003,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB0:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3013,7 +3013,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB1:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3023,7 +3023,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB2:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3037,7 +3037,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB3:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3051,7 +3051,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB4:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3065,7 +3065,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB5:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3079,7 +3079,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB6:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3093,7 +3093,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB7:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3107,7 +3107,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB8:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3121,7 +3121,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xB9:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendUTF8Char(' ');
@@ -3138,7 +3138,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBA:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendUTF8Char(' ');
@@ -3152,7 +3152,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBB:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3166,7 +3166,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBC:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
@@ -3206,7 +3206,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBD:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3220,7 +3220,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBE:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3230,7 +3230,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xBF:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3240,7 +3240,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC0:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3254,7 +3254,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC1:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3268,7 +3268,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC2:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3278,7 +3278,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC3:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3288,7 +3288,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC4:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			//////////////////////////////////////////
 			sb->AppendHex8(codePtr[codeOfst + 0]);
@@ -3299,7 +3299,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC5:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 4, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 4);
@@ -3316,7 +3316,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC6:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3328,7 +3328,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC7:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
@@ -3340,7 +3340,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC8:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendUTF8Char(' ');
@@ -3352,7 +3352,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xC9:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendUTF8Char(' ');
@@ -3364,7 +3364,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xCA:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3374,7 +3374,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xFE:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3384,7 +3384,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		case 0xFF:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3394,7 +3394,7 @@ void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen,
 			break;
 		default:
 			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
+			sb->AppendUIntOS(codeOfst);
 			sb->AppendUTF8Char('\t');
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
@@ -3415,7 +3415,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAnnotation(UnsafeArray<const UInt8
 	}
 	UInt16 type_index = ReadMUInt16(&annoPtr[0]);
 	UInt16 num_element_value_pairs = ReadMUInt16(&annoPtr[2]);
-	UOSInt i;
+	UIntOS i;
 	annoPtr += 4;
 	this->DetailType(type_index, sb, importList, packageName);
 	if (num_element_value_pairs > 0)
@@ -3475,7 +3475,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailElementValue(UnsafeArray<const UIn
 	if (annoPtr[0] == '[')
 	{
 		UInt16 num_values = ReadMUInt16(&annoPtr[1]);
-		UOSInt i;
+		UIntOS i;
 		sb->AppendUTF8Char('{');
 		annoPtr += 3;
 		i = 0;
@@ -3504,7 +3504,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailElementValue(UnsafeArray<const UIn
 		this->DetailType(type_name_index, sb, importList, packageName);
 		sb->AppendUTF8Char('.');
 		sptr = this->GetConstName(sbuff, const_name_index).Or(sbuff);
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		annoPtr += 5;
 		return annoPtr;
 	}
@@ -3515,7 +3515,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailElementValue(UnsafeArray<const UIn
 	}
 }
 
-UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (currPtr >= ptrEnd)
 	{
@@ -3579,7 +3579,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UI
 		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
 		sb->AppendC(UTF8STRC("\r\n"));
-		UOSInt i = (UOSInt)currPtr[0];
+		UIntOS i = (UIntOS)currPtr[0];
 		i -= 251;
 		currPtr += 3;
 		while (i-- > 0)
@@ -3590,7 +3590,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UI
 	}
 	else if (currPtr[0] == 255)
 	{
-		UOSInt i;
+		UIntOS i;
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("Frame Type = FULL_FRAME\r\n"));
 		this->AppendIndent(sb, lev);
@@ -3603,7 +3603,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UI
 			i = ReadMUInt16(currPtr);
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("Frame number_of_locals = "));
-			sb->AppendUOSInt(i);
+			sb->AppendUIntOS(i);
 			sb->AppendC(UTF8STRC("\r\n"));
 			while (i-- > 0)
 			{
@@ -3615,7 +3615,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UI
 			i = ReadMUInt16(currPtr);
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("Frame number_of_stack_items = "));
-			sb->AppendUOSInt(i);
+			sb->AppendUIntOS(i);
 			sb->AppendC(UTF8STRC("\r\n"));
 			while (i-- > 0)
 			{
@@ -3633,7 +3633,7 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UI
 	}
 }
 
-UnsafeArray<const UInt8> IO::JavaClass::DetailVerificationTypeInfo(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailVerificationTypeInfo(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (currPtr >= ptrEnd)
 	{
@@ -3753,32 +3753,32 @@ Bool IO::JavaClass::ClassNameString(UInt16 index, NN<Text::StringBuilderUTF8> sb
 			c = *ptr++;
 			if (c == '/')
 			{
-				sb->AppendC(strStart, (UOSInt)(ptr - strStart - 1));
+				sb->AppendC(strStart, (UIntOS)(ptr - strStart - 1));
 				sb->AppendUTF8Char('.');
 				strStart = ptr;
 			}
 			else if (c == '$')
 			{
-				sb->AppendC(strStart, (UOSInt)(ptr - strStart - 1));
+				sb->AppendC(strStart, (UIntOS)(ptr - strStart - 1));
 				sb->AppendUTF8Char('.');
 				strStart = ptr;
 			}
 		}
-		sb->AppendC(strStart, (UOSInt)(strEnd - strStart));
+		sb->AppendC(strStart, (UIntOS)(strEnd - strStart));
 	}
 	return true;
 }
 
-UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UOSInt codeOfst) const
+UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UIntOS codeOfst) const
 {
 	if (true) //method)
 	{
-		UOSInt i = 0;
-		UOSInt j = method->lvList.GetCount();
+		UIntOS i = 0;
+		UIntOS j = method->lvList.GetCount();
 		while (i < j)
 		{
 			NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
-			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UOSInt)lv->length > codeOfst)
+			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UIntOS)lv->length > codeOfst)
 			{
 				UnsafeArray<UTF8Char> ret;
 				if (this->GetConstName(sbuff, lv->nameIndex).SetTo(ret))
@@ -3793,18 +3793,18 @@ UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt
 	return Text::StrUInt16(sbuff, index);
 }
 
-UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UOSInt codeOfst, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UIntOS codeOfst, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	if (true) //method)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = method->lvtList.GetCount();
 		while (i < j)
 		{
 			NN<LocalVariableTypeInfo> lvt = method->lvtList.GetItemNoCheck(i);
-			if (lvt->index == index && lvt->startPC <= codeOfst && lvt->startPC + (UOSInt)lvt->length > codeOfst)
+			if (lvt->index == index && lvt->startPC <= codeOfst && lvt->startPC + (UIntOS)lvt->length > codeOfst)
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				this->DetailType(lvt->signatureIndex, sbTmp, importList, packageName);
@@ -3818,7 +3818,7 @@ UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt
 		while (i < j)
 		{
 			NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
-			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UOSInt)lv->length > codeOfst)
+			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UIntOS)lv->length > codeOfst)
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				this->DetailType(lv->descriptorIndex, sbTmp, importList, packageName);
@@ -3853,7 +3853,7 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 		sbuff[0] = 0;
 		if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 		{
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
+			if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Code")))
 			{
 				UnsafeArray<UInt8> code;
 				UInt32 codeLen = ReadMUInt32(&ptr[10]);
@@ -3886,11 +3886,11 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 					sbuff[0] = 0;
 					if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 					{
-						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
+						if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
 						{
 							const UInt8 *lvTable = &ptr2[6];
-							UOSInt local_variable_table_length = ReadMUInt16(lvTable);
-							UOSInt k;
+							UIntOS local_variable_table_length = ReadMUInt16(lvTable);
+							UIntOS k;
 							NN<LocalVariableInfo> lv;
 							if (local_variable_table_length * 10 + 2 <= len)
 							{
@@ -3908,11 +3908,11 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 								}
 							}
 						}
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
 						{
 							const UInt8 *lvtTable = &ptr2[6];
-							UOSInt local_variable_type_table_length = ReadMUInt16(lvtTable);
-							UOSInt k;
+							UIntOS local_variable_type_table_length = ReadMUInt16(lvtTable);
+							UIntOS k;
 							NN<LocalVariableTypeInfo> lvt;
 							if (local_variable_type_table_length * 10 + 2 <= len)
 							{
@@ -3930,7 +3930,7 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 								}
 							}
 						}
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LineNumberTable")))
+						else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("LineNumberTable")))
 						{
 							UInt16 line_number_table_length = ReadMUInt16(&ptr2[6]);
 							UInt16 k = 0;
@@ -3950,7 +3950,7 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 					j++;
 				}
 			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Exceptions")))
+			else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Exceptions")))
 			{
 				UInt16 exCnt = ReadMUInt16(&ptr[6]);
 				UInt16 j = 0;
@@ -3960,7 +3960,7 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> 
 					j++;
 				}
 			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
+			else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Signature")))
 			{
 				if (len == 2)
 				{
@@ -3991,8 +3991,8 @@ void IO::JavaClass::MethodFree(NN<MethodInfo> method) const
 
 void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> className, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
-	UOSInt classNameLen = Text::StrCharCnt(className);
-	UOSInt i = Text::StrLastIndexOfCharC(className, classNameLen, '.');
+	UIntOS classNameLen = Text::StrCharCnt(className);
+	UIntOS i = Text::StrLastIndexOfCharC(className, classNameLen, '.');
 	if (i == INVALID_INDEX)
 	{
 		sb->AppendC(className, classNameLen);
@@ -4039,7 +4039,7 @@ void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeAr
 	}
 }
 
-void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSInt lev, UnsafeArray<const UTF8Char> className, NN<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName)
+void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UIntOS lev, UnsafeArray<const UTF8Char> className, NN<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName)
 {
 	this->AppendIndent(sb, lev);
 	if (this->accessFlags & 1) //ACC_PUBLIC
@@ -4107,8 +4107,8 @@ void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSIn
 	sb->AppendSlow(className);
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->signatureIndex != 0 && this->GetConstName(sbuff, this->signatureIndex).NotNull())
 	{
 		UnsafeArray<const UTF8Char> ptr = sbuff;
@@ -4231,7 +4231,7 @@ void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSIn
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -4254,7 +4254,7 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index
 		sbuff[0] = 0;
 		if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 		{
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ConstantValue")))
+			if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ConstantValue")))
 			{
 				nameIndex = ReadMUInt16(&ptr[6]);
 				if (nameIndex > 0 && nameIndex < this->constPoolCnt && this->constPool[nameIndex] != 0)
@@ -4315,7 +4315,7 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index
 					}
 				}
 			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
+			else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Signature")))
 			{
 				if (len == 2)
 				{
@@ -4367,18 +4367,18 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index
 	}
 	sb->AppendUTF8Char(' ');
 	sptr = this->GetConstName(sbuff, nameIndex).Or(sbuff);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(sbValue.ToString(), sbValue.GetLength());
 }
 
-void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS index, UIntOS lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 *ptr = this->methods[index];
 	UInt16 i;
-	UOSInt j;
+	UIntOS j;
 	UTF8Char typeBuff[256];
 	MethodInfo method;
 	MethodParse(method, ptr);
@@ -4394,7 +4394,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 		sbuff[0] = 0;
 		if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 		{
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
+			if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
 			{
 				UInt16 num_annotations = ReadMUInt16(&ptr[6]);
 				UnsafeArray<const UInt8> annptr = &ptr[8];
@@ -4493,7 +4493,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 			sbuff[0] = 0;
 			if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Code")))
 				{
 					UInt32 codeLen = ReadMUInt32(&ptr[10]);
 					this->DetailCode(&ptr[14], codeLen, (lev + 1), sb);
@@ -4517,7 +4517,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 			sbuff[0] = 0;
 			if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Code")))
 				{
 					this->AppendCodeMethodCodes(sb, lev + 1, importList, packageName, ptr, typeBuff, method);
 				}
@@ -4532,7 +4532,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 	MethodFree(method);
 }
 
-void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt lev, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, UnsafeArray<const UInt8> codeAttr, UnsafeArray<const UTF8Char> typeBuff, NN<const MethodInfo> method) const
+void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UIntOS lev, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, UnsafeArray<const UInt8> codeAttr, UnsafeArray<const UTF8Char> typeBuff, NN<const MethodInfo> method) const
 {
 	IO::JavaClass::DecompileEnv env;
 	UInt16 maxLocal = ReadMUInt16(&codeAttr[8]);
@@ -4540,7 +4540,7 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 	Data::ArrayListStringNN stackVal;
 	Data::ArrayListStringNN stackTypes;
 	UTF8Char sbuff[256];
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sbTmp;
 	env.localTypes = MemAllocArr(Optional<Text::String>, maxLocal);
 	env.method = method;
@@ -4562,7 +4562,7 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 		{
 			env.localTypes[i] = nullptr;
 			sbuff[0] = 'v';
-			Text::StrUOSInt(&sbuff[1], i);
+			Text::StrUIntOS(&sbuff[1], i);
 		}
 	}
 
@@ -4651,7 +4651,7 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> typeStr, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName)
 {
 	NN<Data::ArrayListStringNN> nnimportList;
-	OSInt arrLev = 0;
+	IntOS arrLev = 0;
 	UInt8 c;
 	c = *typeStr++;
 	while (c == '[')
@@ -4688,8 +4688,8 @@ UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::String
 		if (importList.NotNull() || packageName.NotNull())
 		{
 			Text::StringBuilderUTF8 sbTmp;
-			UOSInt subcls = INVALID_INDEX;
-			UOSInt tmpIndex = INVALID_INDEX;
+			UIntOS subcls = INVALID_INDEX;
+			UIntOS tmpIndex = INVALID_INDEX;
 			while (true)
 			{
 				c = *typeStr++;
@@ -4742,8 +4742,8 @@ UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::String
 				}
 			}
 			UnsafeArray<UTF8Char> sptr = sbTmp.v;
-			UOSInt sptrLen = sbTmp.GetLength();
-			UOSInt i;
+			UIntOS sptrLen = sbTmp.GetLength();
+			UIntOS i;
 			if (subcls != INVALID_INDEX)
 			{
 				sptr[subcls] = 0;
@@ -4933,7 +4933,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	this->fileBuff = MemAlloc(UInt8, buff.GetSize());
 	MemCopyNO(this->fileBuff, buff.Arr().Ptr(), buff.GetSize());
 
-	UOSInt ofst;
+	UIntOS ofst;
 	UInt16 constant_pool_count = ReadMUInt16(&this->fileBuff[8]);
 	UInt16 i;
 	UInt16 j;
@@ -4963,7 +4963,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 				valid = false;
 				break;
 			}
-			ofst += 3 + (UOSInt)strLen;
+			ofst += 3 + (UIntOS)strLen;
 			break;
 		case 3: //CONSTANT_Integer
 			if (ofst + 5 > this->fileBuffSize)
@@ -5212,7 +5212,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 			UInt16 nameIndex = ReadMUInt16(&this->fileBuff[ofst + 0]);
 			if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")) && len == 2)
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Signature")) && len == 2)
 				{
 					this->signatureIndex = ReadMUInt16(&this->fileBuff[ofst + 6]);
 				}
@@ -5285,16 +5285,16 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendU16(ReadMUInt16(&this->fileBuff[4]));
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("constant_pool_count = "));
-	sb->AppendUOSInt(this->constPoolCnt);
+	sb->AppendUIntOS(this->constPoolCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
-	UOSInt i;
+	UIntOS i;
 	UInt16 j;
 	i = 1;
 	while (i < this->constPoolCnt)
 	{
 		UInt16 strLen;
 		sb->AppendC(UTF8STRC("Const "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(": "));
 		if (this->constPool[i] == 0)
 		{
@@ -5391,42 +5391,42 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 	this->DetailClassName(this->superClass, sb);
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("interfaces_count = "));
-	sb->AppendUOSInt(this->interfaceCnt);
+	sb->AppendUIntOS(this->interfaceCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->interfaceCnt)
 	{
 		sb->AppendC(UTF8STRC("interfaces["));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC("] = "));
 		sb->AppendU16(ReadMUInt16(&this->interfaces[i * 2]));
 		sb->AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
 	sb->AppendC(UTF8STRC("fields_count = "));
-	sb->AppendUOSInt(this->fieldsCnt);
+	sb->AppendUIntOS(this->fieldsCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->fieldsCnt)
 	{
 		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" Access Flags = "));
 		DetailAccessFlags(ReadMUInt16(&this->fields[i][0]), sb);
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" name index = "));
 		sb->AppendU16(ReadMUInt16(&this->fields[i][2]));
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" descriptor index = "));
 		sb->AppendU16(ReadMUInt16(&this->fields[i][4]));
 		sb->AppendC(UTF8STRC("\r\n"));
 		UInt16 attributes_count = ReadMUInt16(&this->fields[i][6]);
 		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
 		sb->AppendC(UTF8STRC("\r\n"));
@@ -5440,7 +5440,7 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 		i++;
 	}
 	sb->AppendC(UTF8STRC("methods_count = "));
-	sb->AppendUOSInt(this->methodCnt);
+	sb->AppendUIntOS(this->methodCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->methodCnt)
@@ -5448,24 +5448,24 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 		MethodInfo method;
 		this->MethodParse(method, this->methods[i]);
 		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" Access Flags = "));
 		DetailAccessFlags(accessFlags, sb);
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" name index = "));
 		sb->AppendU16(ReadMUInt16(&this->methods[i][2]));
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" descriptor index = "));
 		sb->AppendU16(ReadMUInt16(&this->methods[i][4]));
 		this->DetailNameType(ReadMUInt16(&this->methods[i][2]), ReadMUInt16(&this->methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, nullptr, &method, nullptr, nullptr);
 		sb->AppendC(UTF8STRC("\r\n"));
 		UInt16 attributes_count = ReadMUInt16(&this->methods[i][6]);
 		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUOSInt(i);
+		sb->AppendUIntOS(i);
 		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
 		sb->AppendC(UTF8STRC("\r\n"));
@@ -5481,7 +5481,7 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 	}
 
 	sb->AppendC(UTF8STRC("attributes_count = "));
-	sb->AppendUOSInt(this->attrCnt);
+	sb->AppendUIntOS(this->attrCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->attrCnt)
@@ -5492,12 +5492,12 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 	return true;
 }
 
-UOSInt IO::JavaClass::FieldsGetCount() const
+UIntOS IO::JavaClass::FieldsGetCount() const
 {
 	return this->fieldsCnt;
 }
 
-Bool IO::JavaClass::FieldsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+Bool IO::JavaClass::FieldsGetDecl(UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (index >= this->fieldsCnt)
 	{
@@ -5507,12 +5507,12 @@ Bool IO::JavaClass::FieldsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb) 
 	return true;
 }
 
-UOSInt IO::JavaClass::MethodsGetCount() const
+UIntOS IO::JavaClass::MethodsGetCount() const
 {
 	return this->methodCnt;
 }
 
-Bool IO::JavaClass::MethodsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+Bool IO::JavaClass::MethodsGetDecl(UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (index >= this->methodCnt)
 	{
@@ -5565,7 +5565,7 @@ Bool IO::JavaClass::MethodsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool IO::JavaClass::MethodsGetDetail(UOSInt index, UOSInt lev, Bool disasm, NN<Text::StringBuilderUTF8> sb) const
+Bool IO::JavaClass::MethodsGetDetail(UIntOS index, UIntOS lev, Bool disasm, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (index >= this->methodCnt)
 	{
@@ -5584,8 +5584,8 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 	}
 	UnsafeArrayOpt<const UTF8Char> packageName = nullptr;
 	Data::ArrayListStringNN importList;
-	UOSInt i = sbTmp.LastIndexOf('.');
-	UOSInt j;
+	UIntOS i = sbTmp.LastIndexOf('.');
+	UIntOS j;
 	if (i != INVALID_INDEX)
 	{
 		sb->AppendC(UTF8STRC("package "));
@@ -5617,7 +5617,7 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 	SDEL_TEXT(packageName);
 }
 
-IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, NN<IO::JavaClass::DecompileEnv> env, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::StringBuilderUTF8 sbTmp;
 	Text::StringBuilderUTF8 sbTmp2;
@@ -5633,9 +5633,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 		{
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("// stack and type count mismatch: "));
-			sb->AppendUOSInt(env->stacks->GetCount());
+			sb->AppendUIntOS(env->stacks->GetCount());
 			sb->AppendC(UTF8STRC(" vs "));
-			sb->AppendUOSInt(env->stackTypes->GetCount());
+			sb->AppendUIntOS(env->stackTypes->GetCount());
 			sb->AppendC(UTF8STRC(", next code = "));
 			sb->AppendHex8(codePtr[0]);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -5748,31 +5748,31 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			codePtr += 3;
 			break;
 		case 0x15: //iload
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x16: //lload
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x17: //fload
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x18: //dload
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x19: //aload
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
@@ -5780,175 +5780,175 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 		case 0x1A: //iload_0
 			if ((env->method->accessFlags & 8) != 0)
 			{
-				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1B: //iload_1
-			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1C: //iload_2
-			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1D: //iload_3
-			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1E: //lload_0
 			if ((env->method->accessFlags & 8) != 0)
 			{
-				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1F: //lload_1
-			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x20: //lload_2
-			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x21: //lload_3
-			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x22: //fload_0
 			if ((env->method->accessFlags & 8) != 0)
 			{
-				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x23: //fload_1
-			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x24: //fload_2
-			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x25: //fload_3
-			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x26: //dload_0
 			if ((env->method->accessFlags & 8) != 0)
 			{
-				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x27: //dload_1
-			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x28: //dload_2
-			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x29: //dload_3
-			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2A: //aload_0
 			if ((env->method->accessFlags & 8) != 0)
 			{
-				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 0, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2B: //aload_1
-			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 1, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2C: //aload_2
-			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 2, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2D: //aload_3
-			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			sptr = this->GetLVType(sbuff, 3, env->method, (UIntOS)(codePtr - env->codeStart), env->importList, env->packageName);
 			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
@@ -5957,7 +5957,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// iaload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -5979,7 +5979,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// laload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6001,7 +6001,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// faload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6023,7 +6023,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// daload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6045,7 +6045,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// aaload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6078,7 +6078,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// baload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6100,7 +6100,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// caload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6122,7 +6122,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// saload stack invalid: count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -6140,103 +6140,103 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			codePtr++;
 			break;
 		case 0x36: //istore
-			this->DecompileStore(codePtr[1], env, lev, sb, (UOSInt)(codePtr - env->codeStart + 2));
+			this->DecompileStore(codePtr[1], env, lev, sb, (UIntOS)(codePtr - env->codeStart + 2));
 			codePtr += 2;
 			break;
 		case 0x37: //lstore
-			this->DecompileStore(codePtr[1], env, lev, sb, (UOSInt)(codePtr - env->codeStart + 2));
+			this->DecompileStore(codePtr[1], env, lev, sb, (UIntOS)(codePtr - env->codeStart + 2));
 			codePtr += 2;
 			break;
 		case 0x38: //fstore
-			this->DecompileStore(codePtr[1], env, lev, sb, (UOSInt)(codePtr - env->codeStart + 2));
+			this->DecompileStore(codePtr[1], env, lev, sb, (UIntOS)(codePtr - env->codeStart + 2));
 			codePtr += 2;
 			break;
 		case 0x39: //dstore
-			this->DecompileStore(codePtr[1], env, lev, sb, (UOSInt)(codePtr - env->codeStart + 2));
+			this->DecompileStore(codePtr[1], env, lev, sb, (UIntOS)(codePtr - env->codeStart + 2));
 			codePtr += 2;
 			break;
 		case 0x3A: //astore
-			this->DecompileStore(codePtr[1], env, lev, sb, (UOSInt)(codePtr - env->codeStart + 2));
+			this->DecompileStore(codePtr[1], env, lev, sb, (UIntOS)(codePtr - env->codeStart + 2));
 			codePtr += 2;
 			break;
 		case 0x3B: //istore_0
-			this->DecompileStore(0, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(0, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x3C: //istore_1
-			this->DecompileStore(1, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(1, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x3D: //istore_2
-			this->DecompileStore(2, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(2, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x3E: //istore_3
-			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(3, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x3F: //lstore_0
-			this->DecompileStore(0, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(0, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x40: //lstore_1
-			this->DecompileStore(1, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(1, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x41: //lstore_2
-			this->DecompileStore(2, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(2, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x42: //lstore_3
-			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(3, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x43: //fstore_0
-			this->DecompileStore(0, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(0, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x44: //fstore_1
-			this->DecompileStore(1, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(1, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x45: //fstore_2
-			this->DecompileStore(2, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(2, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x46: //fstore_3
-			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(3, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x47: //dstore_0
-			this->DecompileStore(0, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(0, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x48: //dstore_1
-			this->DecompileStore(1, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(1, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x49: //dstore_2
-			this->DecompileStore(2, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(2, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4A: //dstore_3
-			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(3, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4B: //astore_0
-			this->DecompileStore(0, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(0, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4C: //astore_1
-			this->DecompileStore(1, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(1, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4D: //astore_2
-			this->DecompileStore(2, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(2, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4E: //astore_3
-			this->DecompileStore(3, env, lev, sb, (UOSInt)(codePtr - env->codeStart + 1));
+			this->DecompileStore(3, env, lev, sb, (UIntOS)(codePtr - env->codeStart + 1));
 			codePtr++;
 			break;
 		case 0x4F: //iastore
@@ -6351,7 +6351,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 					{
 						if (sbTmp.ToString()[sbTmp.GetLength() - 1] == ']')
 						{
-							UOSInt tmpI = sbTmp.LastIndexOf('[');
+							UIntOS tmpI = sbTmp.LastIndexOf('[');
 							if (tmpI != INVALID_INDEX)
 							{
 								sbTmp.TrimToLength(tmpI + 1);
@@ -6484,7 +6484,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
-				UOSInt cnt = env->stacks->GetCount();
+				UIntOS cnt = env->stacks->GetCount();
 				env->stacks->Insert(cnt - 2, Text::String::OrEmpty(env->stacks->GetItem(cnt - 1))->Clone());
 				env->stackTypes->Insert(cnt - 2, Text::String::OrEmpty(env->stackTypes->GetItem(cnt - 1))->Clone());
 				codePtr++;
@@ -7097,8 +7097,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			break;
 		case 0x84: //iinc
 			this->AppendIndent(sb, lev);
-			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UIntOS)(codePtr - env->codeStart));
+			sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb->AppendC(UTF8STRC(" += "));
 			sb->AppendI16((Int16)codePtr[2]);
 			sb->AppendC(UTF8STRC(";"));
@@ -7141,7 +7141,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// lcmp stack invalid: "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -7189,7 +7189,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// lcmpl stack invalid: "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -7605,7 +7605,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 					return EndType::Goto;
 				}
 				sbTmp.ClearStr();
-				UOSInt stackCnt = env->stacks->GetCount();
+				UIntOS stackCnt = env->stacks->GetCount();
 				EndType et = EndType::CodeEnd;//this->DecompileCode(codePtr + 3, codePtr + i, env, lev + 1, &sbTmp);
 				if (et == EndType::Error)
 				{
@@ -7798,7 +7798,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				this->AppendCodeClassName(sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 				sbTmp2.AppendUTF8Char('.');
 				sptr = this->GetConstName(sbuff, classIndex).Or(sbuff);
-				sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				this->GetConstName(sbuff, nameTypeIndex);
 				sbTmp.ClearStr();
 				Type2String(sbuff, sbTmp);
@@ -7853,7 +7853,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				this->AppendCodeClassName(sb, sbTmp.ToString(), env->importList, env->packageName);
 				sb->AppendUTF8Char('.');
 				sptr = this->GetConstName(sbuff, classIndex).Or(sbuff);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC(" = "));
 				sb->AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sb->AppendC(UTF8STRC(";"));
@@ -7908,7 +7908,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sbTmp2.AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sbTmp2.AppendUTF8Char('.');
 				sptr = this->GetConstName(sbuff, classIndex).Or(sbuff);
-				sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				this->GetConstName(sbuff, nameTypeIndex);
 				sbTmp.ClearStr();
 				Type2String(sbuff, sbTmp);
@@ -7925,7 +7925,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// putfield stack invalid: "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -7964,7 +7964,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 2));
 				sb->AppendUTF8Char('.');
 				sptr = this->GetConstName(sbuff, classIndex).Or(sbuff);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC(" = "));
 				NN<Text::String> s = Text::String::OrEmpty(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				this->GetConstName(sbuff, nameTypeIndex);
@@ -8011,7 +8011,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// invokevirtual Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8020,7 +8020,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sbTmp2.ClearStr();
 				sbTmp2.AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sbTmp2.AppendUTF8Char('.');
-				sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				OPTSTR_DEL(env->stacks->Pop());
 				OPTSTR_DEL(env->stackTypes->Pop());
@@ -8054,7 +8054,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// invokespecial Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8063,7 +8063,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				NN<Text::String> nns;
 				Bool isInit = false;
 				sbTmp2.ClearStr();
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("<init>")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("<init>")))
 				{
 					isInit = true;
 					if (Text::String::OrEmpty(env->stacks->GetItem(env->stacks->GetCount() - 1))->Equals(UTF8STRC("this")))
@@ -8100,7 +8100,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 						sbTmp2.AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 1));
 						sbTmp2.AppendUTF8Char('.');
 					}
-					sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				}
 				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				OPTSTR_DEL(env->stacks->Pop());
@@ -8141,7 +8141,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			this->ClassNameString(classIndex, sbTmp3);
 			this->AppendCodeClassName(sbTmp2, sbTmp3.ToString(), env->importList, env->packageName);
 			sbTmp2.AppendUTF8Char('.');
-			sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			if (typeBuff[0])
 			{
@@ -8172,7 +8172,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// invokeinterface Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8181,7 +8181,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sbTmp2.ClearStr();
 				sbTmp2.AppendOpt(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sbTmp2.AppendUTF8Char('.');
-				sbTmp2.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sbTmp2.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				OPTSTR_DEL(env->stacks->Pop());
 				OPTSTR_DEL(env->stackTypes->Pop());
@@ -8301,7 +8301,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// arraylength Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8319,7 +8319,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// athrow Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8338,7 +8338,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// checkcast Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8375,7 +8375,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// monitorenter Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8395,7 +8395,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// monitorexit Stack error: stack count = "));
-				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->AppendUIntOS(env->stacks->GetCount());
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
@@ -8525,7 +8525,7 @@ void IO::JavaClass::DecompileLDC(UInt16 index, NN<IO::JavaClass::DecompileEnv> e
 	}
 }
 
-void IO::JavaClass::DecompileStore(UInt16 index, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb, UOSInt codeOfst) const
+void IO::JavaClass::DecompileStore(UInt16 index, NN<IO::JavaClass::DecompileEnv> env, UIntOS lev, NN<Text::StringBuilderUTF8> sb, UIntOS codeOfst) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -8544,7 +8544,7 @@ void IO::JavaClass::DecompileStore(UInt16 index, NN<IO::JavaClass::DecompileEnv>
 		sb->AppendUTF8Char(' ');
 	}
 	sptr = this->GetLVName(sbuff, index, env->method, codeOfst);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" = "));
 	NN<Text::String> s = Text::String::OrEmpty(env->stacks->GetItem(env->stacks->GetCount() - 1));
 	if (st->Equals(UTF8STRC("boolean")))
@@ -8573,12 +8573,12 @@ void IO::JavaClass::DecompileStore(UInt16 index, NN<IO::JavaClass::DecompileEnv>
 	OPTSTR_DEL(env->stacks->Pop());
 }
 
-IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, CondType ct, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, CondType ct, NN<IO::JavaClass::DecompileEnv> env, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (codePtr > codeEnd)
 	{
 		Text::StringBuilderUTF8 sbTmp;
-		UOSInt initStackCnt = env->stacks->GetCount();
+		UIntOS initStackCnt = env->stacks->GetCount();
 		if (initStackCnt > env->method->maxStacks)
 		{
 			sb->AppendC(UTF8STRC("//Stack overflow\r\n"));
@@ -8634,9 +8634,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt
 		}
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("// CondBranch: unknown type2: Stacks = "));
-		sb->AppendUOSInt(initStackCnt);
+		sb->AppendUIntOS(initStackCnt);
 		sb->AppendC(UTF8STRC(", "));
-		sb->AppendUOSInt(env->stacks->GetCount());
+		sb->AppendUIntOS(env->stacks->GetCount());
 		sb->AppendC(UTF8STRC(", et = "));
 		sb->Append(EndTypeGetName(et));
 		sb->AppendC(UTF8STRC("\r\n"));
@@ -8661,7 +8661,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt
 		return EndType::CodeEnd;
 	}
 	Text::StringBuilderUTF8 sbTmp;
-	UOSInt initStackCnt = env->stacks->GetCount();
+	UIntOS initStackCnt = env->stacks->GetCount();
 	EndType et = DecompileCode(codePtr, codeEnd, env, lev + 1, sbTmp);
 	if (et == EndType::Error)
 	{
@@ -8773,9 +8773,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt
 
 	this->AppendIndent(sb, lev);
 	sb->AppendC(UTF8STRC("// CondBranch: unknown type: Stacks = "));
-	sb->AppendUOSInt(initStackCnt);
+	sb->AppendUIntOS(initStackCnt);
 	sb->AppendC(UTF8STRC(", "));
-	sb->AppendUOSInt(env->stacks->GetCount());
+	sb->AppendUIntOS(env->stacks->GetCount());
 	sb->AppendC(UTF8STRC(", et = "));
 	sb->Append(EndTypeGetName(et));
 	sb->AppendC(UTF8STRC("\r\n"));
@@ -8825,7 +8825,7 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 	}
 
 	retType[0] = 0;
-	UOSInt paramCnt = 0;
+	UIntOS paramCnt = 0;
 	UInt8 c;
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char params[32];
@@ -8890,14 +8890,14 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 	if (paramCnt > env->stacks->GetCount())
 	{
 		sb->AppendC(UTF8STRC("// invokespecial Stack error: paramCnt = "));
-		sb->AppendUOSInt(paramCnt);
+		sb->AppendUIntOS(paramCnt);
 		sb->AppendC(UTF8STRC(", stack count = "));
-		sb->AppendUOSInt(env->stacks->GetCount());
+		sb->AppendUIntOS(env->stacks->GetCount());
 		sb->AppendC(UTF8STRC("\r\n"));
 		return nullptr;
 	}
 
-	UOSInt i;
+	UIntOS i;
 	NN<Text::String> paramStr;
 	sb->AppendUTF8Char('(');
 	i = 0;
@@ -8933,7 +8933,7 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 			{
 				Text::StrWriteChar(sbuff, (UTF32Char)c)[0] = 0;
 				sptr = Text::JSText::ToJSText(sbuff2, sbuff);
-				sb->AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+				sb->AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
 			}
 			else
 			{
@@ -8964,7 +8964,7 @@ Optional<IO::JavaClass> IO::JavaClass::ParseFile(Text::CStringNN fileName)
 	fileLen = fs.GetLength();
 	if (fileLen >= 26 && fileLen <= 1048576)
 	{
-		Data::ByteBuffer buff((UOSInt)fileLen);
+		Data::ByteBuffer buff((UIntOS)fileLen);
 		if (fs.Read(buff) == fileLen)
 		{
 			cls = ParseBuff(fileName, buff);

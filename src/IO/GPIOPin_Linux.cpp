@@ -81,7 +81,7 @@ Bool IO::GPIOPin::IsPinOutput()
 		Text::UTF8Reader reader(&fs);
 		if ((sptr = reader.ReadLine(sbuff, 120)) != 0)
 		{
-			isOutput = Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("out"));
+			isOutput = Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("out"));
 		}
 	}
 	return isOutput;

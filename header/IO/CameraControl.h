@@ -20,9 +20,9 @@ namespace IO
 		typedef struct
 		{
 			UTF8Char fileName2[20];
-			UOSInt fileNameLen;
+			UIntOS fileNameLen;
 			UTF8Char filePath2[64];
-			UOSInt filePathLen;
+			UIntOS filePathLen;
 			UInt64 fileSize;
 			Int64 fileTimeTicks;
 			FileType fileType;
@@ -32,9 +32,9 @@ namespace IO
 		CameraControl() {};
 		virtual ~CameraControl() {};
 
-		virtual UOSInt GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList) = 0;
+		virtual UIntOS GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList) = 0;
 		virtual void FreeInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList) = 0;
-		virtual UOSInt GetFileList(NN<Data::ArrayListNN<FileInfo>> fileList) = 0;
+		virtual UIntOS GetFileList(NN<Data::ArrayListNN<FileInfo>> fileList) = 0;
 		virtual Bool GetFile(NN<FileInfo> file, NN<IO::Stream> outStm) = 0;
 		virtual Bool GetThumbnailFile(NN<FileInfo> file, NN<IO::Stream> outStm) = 0;
 	};

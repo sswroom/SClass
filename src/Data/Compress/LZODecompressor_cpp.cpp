@@ -2,13 +2,13 @@
 #include "Core/ByteTool_C.h"
 #include "Data/Compress/LZODecompressor_C.h"
 
-Bool LZODecompressor_Decompress(const UInt8 *in, UOSInt in_len, UInt8 *out, UOSInt *out_len)
+Bool LZODecompressor_Decompress(const UInt8 *in, UIntOS in_len, UInt8 *out, UIntOS *out_len)
 {
 	const UInt8 * const ip_end = in + in_len;
 	const UInt8 *ip = in;
 	UInt8 *op = out;
 	const UInt8 *m_pos;
-	OSInt t;
+	IntOS t;
 
 	*out_len = 0;
 
@@ -203,29 +203,29 @@ match_next:
 		}
 	}
 
-	*out_len = (UOSInt)(op - out);
+	*out_len = (UIntOS)(op - out);
 	return false; //LZO_E_EOF_NOT_FOUND;
 
 eof_found:
-	*out_len = (UOSInt)(op - out);
+	*out_len = (UIntOS)(op - out);
 	return ip == ip_end;
 
 input_overrun:
-	*out_len = (UOSInt)(op - out);
+	*out_len = (UIntOS)(op - out);
 	return false; //LZO_E_INPUT_OVERRUN;
 
 lookbehind_overrun:
-	*out_len = (UOSInt)(op - out);
+	*out_len = (UIntOS)(op - out);
 	return false; //LZO_E_LOOKBEHIND_OVERRUN;
 }
 
-UOSInt LZODecompressor_CalcDecSize(const UInt8 *in, UOSInt in_len)
+UIntOS LZODecompressor_CalcDecSize(const UInt8 *in, UIntOS in_len)
 {
 	const UInt8 * const ip_end = in + in_len;
 	const UInt8 *ip = in;
 	const UInt8 *op = ip_end;
 	const UInt8 *m_pos;
-	OSInt t;
+	IntOS t;
 
 	if (*ip > 17)
 	{
@@ -386,7 +386,7 @@ match_next:
 
 eof_found:
 	if (ip == ip_end)
-		return (UOSInt)(op - ip_end);
+		return (UIntOS)(op - ip_end);
 	return 0;
 
 input_overrun:

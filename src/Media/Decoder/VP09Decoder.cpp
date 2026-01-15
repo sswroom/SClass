@@ -4,9 +4,9 @@
 #include "Core/ByteTool_C.h"
 #include "Media/Decoder/VP09Decoder.h"
 
-void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	UOSInt nextFrameNum = 0;
+	UIntOS nextFrameNum = 0;
 	VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
 	if (frInfo)
 	{
@@ -103,7 +103,7 @@ Media::Decoder::VP09Decoder::VP09Decoder(NN<VideoSource> sourceVideo, Bool toRel
 
 Media::Decoder::VP09Decoder::~VP09Decoder()
 {
-	UOSInt i = this->frameList.GetCount();
+	UIntOS i = this->frameList.GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->frameList.GetItem(i));
@@ -124,11 +124,11 @@ Bool Media::Decoder::VP09Decoder::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::Decoder::VP09Decoder::GetFrameCount()
+UIntOS Media::Decoder::VP09Decoder::GetFrameCount()
 {
 	if (this->sourceVideo && this->sourceVideo->HasFrameCount())
 	{
-		UOSInt srcFrameCount = this->sourceVideo->GetFrameCount();
+		UIntOS srcFrameCount = this->sourceVideo->GetFrameCount();
 		VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
 		if (frInfo && frInfo->srcFrameIndex == srcFrameCount - 1)
 		{
@@ -139,7 +139,7 @@ UOSInt Media::Decoder::VP09Decoder::GetFrameCount()
 	return 0;
 }
 
-Data::Duration Media::Decoder::VP09Decoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VP09Decoder::GetFrameTime(UIntOS frameIndex)
 {
 	VP9FrameInfo *frInfo = this->frameList.GetItem(frameIndex);
 	if (frInfo && this->sourceVideo)
@@ -157,20 +157,20 @@ void Media::Decoder::VP09Decoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 {
 }
 
-UOSInt Media::Decoder::VP09Decoder::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 {
 	if (this->sourceVideo == 0)
 		return 0;
 	VP9FrameInfo *frInfo;
 	if (frameIndex == this->frameList.GetCount())
 	{
-		UOSInt nextFrameIndex = 0;
+		UIntOS nextFrameIndex = 0;
 		frInfo = this->frameList.GetItem(frameIndex - 1);
 		if (frInfo)
 		{
 			nextFrameIndex = frInfo->srcFrameIndex + 1;
 		}
-		UOSInt frameSize = this->sourceVideo->GetFrameSize(nextFrameIndex);
+		UIntOS frameSize = this->sourceVideo->GetFrameSize(nextFrameIndex);
 		if (frameSize <= 0)
 			return 0;
 
@@ -250,20 +250,20 @@ UOSInt Media::Decoder::VP09Decoder::GetFrameSize(UOSInt frameIndex)
 	}
 }
 
-UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo == 0)
 		return 0;
 	VP9FrameInfo *frInfo;
 	if (frameIndex == this->frameList.GetCount())
 	{
-		UOSInt nextFrameIndex = 0;
+		UIntOS nextFrameIndex = 0;
 		frInfo = this->frameList.GetItem(frameIndex - 1);
 		if (frInfo)
 		{
 			nextFrameIndex = frInfo->srcFrameIndex + 1;
 		}
-		UOSInt frameSize = this->sourceVideo->GetFrameSize(nextFrameIndex);
+		UIntOS frameSize = this->sourceVideo->GetFrameSize(nextFrameIndex);
 		if (frameSize <= 0)
 			return 0;
 
@@ -347,7 +347,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UIn
 		else
 		{
 			UInt8 *frameBuff = MemAlloc(UInt8, frInfo->fullFrameSize);
-			UOSInt frameSize = this->sourceVideo->ReadFrame(frInfo->srcFrameIndex, frameBuff);
+			UIntOS frameSize = this->sourceVideo->ReadFrame(frInfo->srcFrameIndex, frameBuff);
 			if (frameSize == frInfo->fullFrameSize)
 			{
 				MemCopyNO(buff.Ptr(), &frameBuff[frInfo->frameOfst], frInfo->frameSize);
@@ -363,7 +363,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UIn
 	}
 }
 
-Bool Media::Decoder::VP09Decoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VP09Decoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

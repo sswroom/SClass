@@ -5,7 +5,7 @@
 #include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
 
-Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
+Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize)
 {
 	this->exif = nullptr;
 	this->hasHotSpot = false;
@@ -29,7 +29,7 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
 	this->pal = nullptr;
 }
 
-Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
+Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize, Math::Size2D<UIntOS> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UIntOS maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = nullptr;
 	this->hasHotSpot = false;
@@ -131,7 +131,7 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSI
 		}
 		else if (bpp <= 8)
 		{
-			UOSInt palSize = ((UOSInt)4 << bpp);
+			UIntOS palSize = ((UIntOS)4 << bpp);
 			this->pal = MemAllocArr(UInt8, palSize);
 		}
 	}
@@ -186,8 +186,8 @@ void Media::RasterImage::InitGrayPal()
 		else if (this->info.storeBPP == 8)
 		{
 			UnsafeArray<UInt8> ptr = pal;
-			UOSInt i = 0;
-			UOSInt j = 256;
+			UIntOS i = 0;
+			UIntOS j = 256;
 			while (i < j)
 			{
 				UInt32 c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
@@ -199,7 +199,7 @@ void Media::RasterImage::InitGrayPal()
 	}
 }
 
-UOSInt Media::RasterImage::GetDataBpl() const
+UIntOS Media::RasterImage::GetDataBpl() const
 {
 	if (this->info.fourcc == *(UInt32*)"LRGB")
 	{
@@ -236,7 +236,7 @@ Bool Media::RasterImage::IsUpsideDown() const
 	return false;
 }
 
-void Media::RasterImage::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)
+void Media::RasterImage::SetHotSpot(IntOS hotSpotX, IntOS hotSpotY)
 {
 	this->hotSpotX = hotSpotX;
 	this->hotSpotY = hotSpotY;
@@ -248,12 +248,12 @@ Bool Media::RasterImage::HasHotSpot() const
 	return this->hasHotSpot;
 }
 
-OSInt Media::RasterImage::GetHotSpotX() const
+IntOS Media::RasterImage::GetHotSpotX() const
 {
 	return this->hotSpotX;
 }
 
-OSInt Media::RasterImage::GetHotSpotY() const
+IntOS Media::RasterImage::GetHotSpotY() const
 {
 	return this->hotSpotY;
 }
@@ -272,25 +272,25 @@ NN<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 	UnsafeArray<UInt8> outPal;
 	if (this->pal.SetTo(pal) && outImg->pal.SetTo(outPal))
 	{
-		UOSInt size;
+		UIntOS size;
 		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
 		{
-			size = ((UOSInt)4 << (this->info.storeBPP - 1));
+			size = ((UIntOS)4 << (this->info.storeBPP - 1));
 		}
 		else
 		{
-			size = ((UOSInt)4 << this->info.storeBPP);
+			size = ((UIntOS)4 << this->info.storeBPP);
 		}
 		MemCopyNO(&outPal[0], &pal[0], size);
 	}
 	return outImg;
 }
 
-NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> area) const
+NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<IntOS> area) const
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(this->info);
-	frameInfo.dispSize = Math::Size2D<UOSInt>((UOSInt)area.GetWidth(), (UOSInt)area.GetHeight());
+	frameInfo.dispSize = Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight());
 	frameInfo.storeSize = frameInfo.dispSize;
 	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);
 	NN<Media::StaticImage> outImg;
@@ -305,14 +305,14 @@ NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> 
 	UnsafeArray<UInt8> outPal;
 	if (this->pal.SetTo(pal) && outImg->pal.SetTo(outPal))
 	{
-		UOSInt size;
+		UIntOS size;
 		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
 		{
-			size = ((UOSInt)4 << (this->info.storeBPP - 1));
+			size = ((UIntOS)4 << (this->info.storeBPP - 1));
 		}
 		else
 		{
-			size = ((UOSInt)4 << this->info.storeBPP);
+			size = ((UIntOS)4 << this->info.storeBPP);
 		}
 		MemCopyNO(&outPal[0], &pal[0], size);
 	}
@@ -332,9 +332,9 @@ void Media::RasterImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->HasHotSpot())
 	{
 		sb->AppendC(UTF8STRC("\r\nHot Spot: ("));
-		sb->AppendOSInt(this->GetHotSpotX());
+		sb->AppendIntOS(this->GetHotSpotX());
 		sb->AppendC(UTF8STRC(", "));
-		sb->AppendOSInt(this->GetHotSpotY());
+		sb->AppendIntOS(this->GetHotSpotY());
 		sb->AppendC(UTF8STRC(")"));
 	}
 
@@ -346,7 +346,7 @@ void Media::RasterImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Bool Media::RasterImage::IsDispSize(Math::Size2D<UOSInt> dispSize)
+Bool Media::RasterImage::IsDispSize(Math::Size2D<UIntOS> dispSize)
 {
 	return this->info.dispSize == dispSize;
 }

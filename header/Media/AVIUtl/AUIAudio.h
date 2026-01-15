@@ -13,12 +13,12 @@ namespace Media
 			NN<Media::AVIUtl::AUIPlugin> plugin;
 			NN<Media::AVIUtl::AUIPlugin::AUIInput> input;
 			NN<Media::AudioFormat> format;
-			UOSInt nSamples;
-			UOSInt currSample;
+			UIntOS nSamples;
+			UIntOS currSample;
 			Optional<Sync::Event> playEvt;
 
 		public:
-			AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples);
+			AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UIntOS nSamples);
 			~AUIAudio();
 
 			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
@@ -29,10 +29,10 @@ namespace Media
 
 			virtual void GetFormat(NN<AudioFormat> format);
 
-			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 			virtual void Stop();
-			virtual UOSInt ReadBlock(Data::ByteArray blk);
-			virtual UOSInt GetMinBlockSize();
+			virtual UIntOS ReadBlock(Data::ByteArray blk);
+			virtual UIntOS GetMinBlockSize();
 			virtual Data::Duration GetCurrTime();
 			virtual Bool IsEnd();
 		};

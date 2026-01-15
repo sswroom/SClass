@@ -873,10 +873,10 @@ Net::UserAgentDB::UAEntry Net::UserAgentDB::uaList[] = {
 
 Optional<const Net::UserAgentDB::UAEntry> Net::UserAgentDB::GetUserAgentInfo(UnsafeArray<const UTF8Char> userAgent)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(uaList) / sizeof(uaList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(uaList) / sizeof(uaList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -897,7 +897,7 @@ Optional<const Net::UserAgentDB::UAEntry> Net::UserAgentDB::GetUserAgentInfo(Uns
 	return nullptr;
 }
 
-Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUAEntryList(UOSInt *cnt)
+Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUAEntryList(UIntOS *cnt)
 {
 	*cnt = sizeof(uaList) / sizeof(uaList[0]);
 	return uaList;
@@ -916,7 +916,7 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 	ent->userAgent = userAgent.v;
 	ent->userAgentLen = userAgent.leng;
 
-	UOSInt i;
+	UIntOS i;
 	if (userAgent.Equals(UTF8STRC("Microsoft Windows Network Diagnostics")))
 	{
 		ent->browser = Net::BrowserInfo::BT_WINDIAG;
@@ -987,10 +987,10 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 	Text::PString strs2[10];
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
-	UOSInt nstrs;
-	UOSInt nstrs2;
-	UOSInt j;
-	UOSInt k;
+	UIntOS nstrs;
+	UIntOS nstrs2;
+	UIntOS j;
+	UIntOS k;
 	Bool bst;
 	Bool lastIsAndroid;
 	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, userAgent.leng + 1);
@@ -1002,7 +1002,7 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 		sbuff[0] = ' ';
 		sbuffEnd = Text::StrTrimC(sbuff, userAgent.leng - 1);
 	}
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sbuffEnd - sbuff), UTF8STRC("nlpproject.info research")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sbuffEnd - sbuff), UTF8STRC("nlpproject.info research")))
 	{
 		ent->browser = Net::BrowserInfo::BT_NLPPROJECT;
 		MemFreeArr(sbuff);
@@ -1018,7 +1018,7 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 		if (c == ' ' && !bst)
 		{
 			sptr[0] = 0;
-			strs[nstrs - 1].leng = (UOSInt)(sptr - strs[nstrs - 1].v);
+			strs[nstrs - 1].leng = (UIntOS)(sptr - strs[nstrs - 1].v);
 			strs[nstrs++].v = sptr + 1;
 			if (nstrs >= 30)
 			{
@@ -1036,13 +1036,13 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 		}
 		sptr++;
 	}
-	strs[nstrs - 1].leng = (UOSInt)(sptr - strs[nstrs - 1].v);
+	strs[nstrs - 1].leng = (UIntOS)(sptr - strs[nstrs - 1].v);
 	i = 0;
 	while (i < nstrs)
 	{
 		if (strs[i].v[0] == '(')
 		{
-			UOSInt charCnt = strs[i].leng;
+			UIntOS charCnt = strs[i].leng;
 			if (strs[i].v[charCnt - 1] == ')')
 			{
 				strs[i].v[charCnt - 1] = 0;
@@ -1580,9 +1580,9 @@ Text::CStringNN Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OSType os, Net::
 	Text::CStringNN ua = CSTR("sswr/1.0");
 	UnsafeArray<const UTF8Char> nns;
 	UnsafeArray<const UTF8Char> nns2;
-	OSInt comp;
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(uaList) / sizeof(uaList[0])) - 1;
+	IntOS comp;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(uaList) / sizeof(uaList[0])) - 1;
 	while (i < j)
 	{
 		if (uaList[i].browser == browser && uaList[i].os == os)

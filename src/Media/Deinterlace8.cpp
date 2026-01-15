@@ -12,12 +12,12 @@
 
 extern "C"
 {
-	void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
-	void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
-	void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, UOSInt sstep, OSInt dstep);
+	void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, UIntOS sstep, IntOS dstep);
+	void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, UIntOS sstep, IntOS dstep);
+	void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, UIntOS width, UIntOS height, UIntOS tap, IntOS *index, Int64 *weight, UIntOS sstep, IntOS dstep);
 }
 
-/*void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep)
+/*void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, Int32 *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	Int32 currWidth;
 	Int32 currHeight;
@@ -93,11 +93,11 @@ vflop3:
 	}
 }
 
-void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, Int32 *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	Int32 currWidth;
 	Int32 currHeight;
-	if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+	if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 	{
 		_asm
 		{
@@ -313,11 +313,11 @@ vfolop3:
 	}
 }
 
-void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, Int32 tap, Int32 *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, Int32 tap, Int32 *index, Int64 *weight, IntOS sstep, IntOS dstep)
 {
 	Int32 currWidth;
 	Int32 currHeight;
-	if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+	if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 	{
 		_asm
 		{
@@ -553,7 +553,7 @@ Double Media::Deinterlace8::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<DI8PARAMETER> out, UOSInt indexSep, Double offsetCorr)
+void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UIntOS result_length, NN<DI8PARAMETER> out, UIntOS indexSep, Double offsetCorr)
 {
 	UInt32 i,j;
 	Int32 n;
@@ -564,15 +564,15 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
 	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(OSInt, out->length * out->tap);
+	out->index = MemAllocA(IntOS, out->length * out->tap);
 
 	work = MemAlloc(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i+0.5) * UOSInt2Double(source_length);
-		pos = pos / UOSInt2Double(result_length) + offsetCorr;
+		pos = (i+0.5) * UIntOS2Double(source_length);
+		pos = pos / UIntOS2Double(result_length) + offsetCorr;
 		n = (Int32)floor(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
 		pos = (n+0.5-pos);
 		sum = 0;
@@ -580,10 +580,10 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 		{
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
-			}else if((UOSInt)n >= source_length){
-				out->index[i * out->tap + j] = (OSInt)((source_length - 1) * indexSep);
+			}else if((UIntOS)n >= source_length){
+				out->index[i * out->tap + j] = (IntOS)((source_length - 1) * indexSep);
 			}else{
-				out->index[i * out->tap + j] = (OSInt)((UInt32)n * indexSep);
+				out->index[i * out->tap + j] = (IntOS)((UInt32)n * indexSep);
 			}
 			work[j] = lanczos3_weight(pos);
 			sum += work[j];
@@ -649,7 +649,7 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
 	return 0;
 }
 
-Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
+Media::Deinterlace8::Deinterlace8(UIntOS fieldCnt, UIntOS fieldSep)
 {
 	this->oddParam.index = 0;
 	this->oddParam.weight = 0;
@@ -666,7 +666,7 @@ Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 	}
 
 	this->stats = MemAlloc(DI8THREADSTAT, nCore);
-	UOSInt i = nCore;
+	UIntOS i = nCore;
 
 	NEW_CLASS(evtMain, Sync::Event());
 	while (i-- > 0)
@@ -686,7 +686,7 @@ Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 
 Media::Deinterlace8::~Deinterlace8()
 {
-	UOSInt i = nCore;
+	UIntOS i = nCore;
 	while (i-- > 0)
 	{
 		stats[i].status = 4;
@@ -733,7 +733,7 @@ Media::Deinterlace8::~Deinterlace8()
 	}
 }
 
-void Media::Deinterlace8::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
+void Media::Deinterlace8::Reinit(UIntOS fieldCnt, UIntOS fieldSep)
 {
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
@@ -758,21 +758,21 @@ void Media::Deinterlace8::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
 	this->fieldSep = fieldSep;
 }
 
-void Media::Deinterlace8::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UOSInt width, OSInt dstep)
+void Media::Deinterlace8::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UIntOS width, IntOS dstep)
 {
 	if (!bottomField)
 	{
-		UOSInt imgHeight = oddParam.length >> 1;
+		UIntOS imgHeight = oddParam.length >> 1;
 
-		UOSInt thisLine;
-		UOSInt lastLine = imgHeight << 1;
-		UOSInt i = nCore;
+		UIntOS thisLine;
+		UIntOS lastLine = imgHeight << 1;
+		UIntOS i = nCore;
 		while (i-- > 0)
 		{
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * (OSInt)thisLine;
+			stats[i].outPt = dest + dstep * (IntOS)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = oddParam.tap;
@@ -806,17 +806,17 @@ void Media::Deinterlace8::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8>
 	}
 	else
 	{
-		UOSInt imgHeight = evenParam.length >> 1;
+		UIntOS imgHeight = evenParam.length >> 1;
 
-		UOSInt thisLine;
-		UOSInt lastLine = imgHeight << 1;
-		UOSInt i = nCore;
+		UIntOS thisLine;
+		UIntOS lastLine = imgHeight << 1;
+		UIntOS i = nCore;
 		while (i-- > 0)
 		{
 			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
 			stats[i].inPt = src;
 			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * (OSInt)thisLine;
+			stats[i].outPt = dest + dstep * (IntOS)thisLine;
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = evenParam.tap;

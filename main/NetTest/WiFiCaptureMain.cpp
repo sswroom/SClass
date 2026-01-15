@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

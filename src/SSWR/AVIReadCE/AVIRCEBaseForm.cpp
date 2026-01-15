@@ -68,7 +68,7 @@ typedef enum
 	MNU_EXIT
 } MenuItems;
 
-void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, const UTF8Char **files, UIntOS nFiles)
 {
 	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
 	IO::Path::PathType pt;
@@ -77,10 +77,10 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, con
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < nFiles)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		UIntOS fileNameLen = Text::StrCharCnt(files[i]);
 		pt = IO::Path::GetPathType(Text::CStringNN(files[i], fileNameLen));
 		if (pt == IO::Path::PathType::Directory)
 		{
@@ -109,11 +109,11 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, con
 void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnCategoryChg(AnyType userObj)
 {
 	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
-	Int32 item = (Int32)me->lbCategory->GetSelectedItem().GetOSInt();
+	Int32 item = (Int32)me->lbCategory->GetSelectedItem().GetIntOS();
 	NN<Data::ArrayListNN<MenuInfo>> menu;
 	NN<MenuInfo> info;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->lbContent->ClearItems();
 	if (me->menuItems.Get(item).SetTo(menu))
 	{
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnCategoryChg(AnyType userObj)
 void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnContentClick(AnyType userObj)
 {
 	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
-	Int32 item = (Int32)me->lbContent->GetSelectedItem().GetOSInt();
+	Int32 item = (Int32)me->lbContent->GetSelectedItem().GetIntOS();
 	if (item)
 	{
 		me->EventMenuClicked((UInt16)item);
@@ -156,7 +156,7 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(Optional<UI::GUIClientControl> p
 
 	NN<Data::ArrayListNN<MenuInfo>> menu;
 
-	Math::Size2D<UOSInt> sz = this->GetSizeP();
+	Math::Size2D<UIntOS> sz = this->GetSizeP();
 	this->lbCategory = ui->NewListBox(*this, true);
 	this->lbCategory->SetRect(0, 0, (sz.x >> 1) - 3, 23, false);
 	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -253,8 +253,8 @@ SSWR::AVIReadCE::AVIRCEBaseForm::~AVIRCEBaseForm()
 {
 	NN<Data::ArrayListNN<MenuInfo>> menu;
 	NN<MenuInfo> info;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = this->menuItems.GetCount();
 	while (i-- > 0)
 	{
@@ -477,7 +477,7 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const WChar *fname = frm.GetFileName();
-				UOSInt i = Text::StrIndexOfChar(fname, ':');
+				UIntOS i = Text::StrIndexOfChar(fname, ':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData *fd;

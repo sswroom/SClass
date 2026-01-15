@@ -26,8 +26,8 @@ Map::MultiMapRenderer::~MultiMapRenderer()
 
 void Map::MultiMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(this->bgColor);
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
@@ -51,9 +51,9 @@ void Map::MultiMapRenderer::SetUpdatedHandler(UpdatedHandler updHdlr, AnyType us
 	this->updObj = userObj;
 }
 
-UOSInt Map::MultiMapRenderer::Add(NN<Map::MapRenderer> renderer)
+UIntOS Map::MultiMapRenderer::Add(NN<Map::MapRenderer> renderer)
 {
-	UOSInt ret = this->renderers.Add(renderer);
+	UIntOS ret = this->renderers.Add(renderer);
 	renderer->SetUpdatedHandler(OnUpdated, this);
 	if (!this->updating && this->updHdlr)
 	{
@@ -64,7 +64,7 @@ UOSInt Map::MultiMapRenderer::Add(NN<Map::MapRenderer> renderer)
 void Map::MultiMapRenderer::Clear()
 {
 	NN<Map::MapRenderer> renderer;
-	OSInt i;
+	IntOS i;
 	i = this->renderers.GetCount();
 	if (i <= 0)
 		return;
@@ -82,17 +82,17 @@ void Map::MultiMapRenderer::Clear()
 	}
 }
 
-UOSInt Map::MultiMapRenderer::GetCount()
+UIntOS Map::MultiMapRenderer::GetCount()
 {
 	return this->renderers.GetCount();
 }
 
-NN<Map::MapRenderer> Map::MultiMapRenderer::GetItemNoCheck(UOSInt index)
+NN<Map::MapRenderer> Map::MultiMapRenderer::GetItemNoCheck(UIntOS index)
 {
 	return this->renderers.GetItemNoCheck(index);
 }
 
-Optional<Map::MapRenderer> Map::MultiMapRenderer::GetItem(UOSInt index)
+Optional<Map::MapRenderer> Map::MultiMapRenderer::GetItem(UIntOS index)
 {
 	return this->renderers.GetItem(index);
 }

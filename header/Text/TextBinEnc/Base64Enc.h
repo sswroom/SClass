@@ -23,13 +23,13 @@ namespace Text
 			Base64Enc();
 			Base64Enc(Charset cs, Bool noPadding);
 			virtual ~Base64Enc();
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
-			UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine) const;
-			UnsafeArray<UTF8Char> EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize);
-			virtual UOSInt CalcBinSize(Text::CStringNN b64Str) const;
-			UOSInt CalcBinSize(UnsafeArray<const WChar> sbuff) const;
-			virtual UOSInt DecodeBin(Text::CStringNN b64Str, UnsafeArray<UInt8> dataBuff) const;
-			UOSInt DecodeBin(UnsafeArray<const WChar> sbuff, UnsafeArray<UInt8> dataBuff) const;
+			virtual UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const;
+			UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize, Text::LineBreakType lbt, UIntOS charsPerLine) const;
+			UnsafeArray<UTF8Char> EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize);
+			virtual UIntOS CalcBinSize(Text::CStringNN b64Str) const;
+			UIntOS CalcBinSize(UnsafeArray<const WChar> sbuff) const;
+			virtual UIntOS DecodeBin(Text::CStringNN b64Str, UnsafeArray<UInt8> dataBuff) const;
+			UIntOS DecodeBin(UnsafeArray<const WChar> sbuff, UnsafeArray<UInt8> dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 	}

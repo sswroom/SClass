@@ -103,7 +103,7 @@ namespace Manage
 		NN<DasmMIPS_Sess> CreateSess(NN<DasmMIPS_Regs> regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(NN<DasmMIPS_Sess> sess);
 
-		Bool DasmNext(NN<DasmMIPS_Sess> sess, UTF8Char *buff, OSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmMIPS_Sess> sess, UTF8Char *buff, IntOS *outBuffSize); //True = succ
 	};
 };
 

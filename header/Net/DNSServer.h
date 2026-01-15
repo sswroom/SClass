@@ -26,7 +26,7 @@ namespace Net
 		Bool IsError();
 		void HandleRequest(DNSRequest hdlr, AnyType userObj);
 
-		void ReplyRequest(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
+		void ReplyRequest(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UIntOS dataSize);
 	};
 }
 #endif

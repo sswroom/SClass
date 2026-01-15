@@ -9,7 +9,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 	if (this->bmpBkg.SetTo(bmpBkg))
 	{
 		NN<Media::DrawImage> bmpBuff;
-		Math::Size2D<UOSInt> scnSize = dimg->GetSize();
+		Math::Size2D<UIntOS> scnSize = dimg->GetSize();
 		if (this->bmpBuff.SetTo(bmpBuff))
 		{
 			if (bmpBuff->GetWidth() != scnSize.x && bmpBuff->GetHeight() != scnSize.y)

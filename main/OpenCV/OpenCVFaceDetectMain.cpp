@@ -17,24 +17,24 @@
 #include "Media/OpenCV/OCVUtil.h"
 #include "Text/MyString.h"
 
-UOSInt lastCnt;
-OSInt rangeLeft;
-OSInt rangeTop;
-OSInt rangeRight;
-OSInt rangeBottom;
+UIntOS lastCnt;
+IntOS rangeLeft;
+IntOS rangeTop;
+IntOS rangeRight;
+IntOS rangeBottom;
 UInt32 preferedFormat;
-UOSInt preferedWidth;
-UOSInt preferedHeight;
+UIntOS preferedWidth;
+UIntOS preferedHeight;
 Optional<Media::CS::CSConverter> csConv;
 Exporter::GUIJPGExporter *exporter;
 
-void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
+void __stdcall OnDetectResult(void *userObj, UIntOS objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
 {
 	IO::ConsoleWriter *console = (IO::ConsoleWriter*)userObj;
-	UOSInt thisCnt = objCnt;
+	UIntOS thisCnt = objCnt;
 	if (rangeLeft < rangeRight && rangeTop < rangeBottom)
 	{
-		UOSInt i = 0;
+		UIntOS i = 0;
 		thisCnt = 0;
 		while (i < objCnt)
 		{
@@ -49,7 +49,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("People detected, cnt = "));
-		sb.AppendUOSInt(thisCnt);
+		sb.AppendUIntOS(thisCnt);
 		console->WriteLine(sb.ToCString());
 
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
@@ -69,11 +69,11 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
 			NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_IGNORE_ALPHA, frInfo->ycOfst));
-			nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (OSInt)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
-			UOSInt i = 0;
+			nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (IntOS)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
+			UIntOS i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data.Ptr() + (OSInt)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data.Ptr() + (IntOS)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UIntOS)(objRects[i].right - objRects[i].left), (UIntOS)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
 				i++;
 			}
 			Media::ImageList imgList(CSTR("ImageCapture"));
@@ -91,14 +91,14 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 	lastCnt = thisCnt;
 }
 
-Optional<Media::VideoCapturer> OpenCapture(UOSInt defIndex)
+Optional<Media::VideoCapturer> OpenCapture(UIntOS defIndex)
 {
 	Optional<Media::VideoCapturer> capture = nullptr;
 	NN<Media::VideoCapturer> nncapture;
 	Media::VideoCaptureMgr *videoCap;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Media::VideoCaptureMgr::DeviceInfo> dev;
 	NEW_CLASS(videoCap, Media::VideoCaptureMgr());
 	videoCap->GetDeviceList(devList);
@@ -162,18 +162,18 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<Media::VideoCapturer> capture;
 	IO::ConsoleWriter *console;
-	UOSInt defIndex;
+	UIntOS defIndex;
 	lastCnt = 0;
-	OSInt frameSkip;
+	IntOS frameSkip;
 
 	Media::Decoder::FFMPEGDecoder::Enable();
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
-		defIndex = Text::StrToUOSInt(argv[1]);
+		defIndex = Text::StrToUIntOS(argv[1]);
 	}
 	else
 	{
@@ -197,23 +197,23 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("FrameSkip")).SetTo(s))
 		{
-			frameSkip = s->ToOSInt();
+			frameSkip = s->ToIntOS();
 		}
 		if (cfg->GetValue(CSTR("RangeLeft")).SetTo(s))
 		{
-			rangeLeft = s->ToOSInt();
+			rangeLeft = s->ToIntOS();
 		}
 		if (cfg->GetValue(CSTR("RangeTop")).SetTo(s))
 		{
-			rangeTop = s->ToOSInt();
+			rangeTop = s->ToIntOS();
 		}
 		if (cfg->GetValue(CSTR("RangeRight")).SetTo(s))
 		{
-			rangeRight = s->ToOSInt();
+			rangeRight = s->ToIntOS();
 		}
 		if (cfg->GetValue(CSTR("RangeBottom")).SetTo(s))
 		{
-			rangeBottom = s->ToOSInt();
+			rangeBottom = s->ToIntOS();
 		}
 		if (cfg->GetValue(CSTR("PreferedFormat")).SetTo(s))
 		{
@@ -222,11 +222,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		if (cfg->GetValue(CSTR("PreferedWidth")).SetTo(s))
 		{
-			preferedWidth = s->ToUOSInt();
+			preferedWidth = s->ToUIntOS();
 		}
 		if (cfg->GetValue(CSTR("PreferedHeight")).SetTo(s))
 		{
-			preferedHeight = s->ToUOSInt();
+			preferedHeight = s->ToUIntOS();
 		}
 		cfg.Delete();
 	}

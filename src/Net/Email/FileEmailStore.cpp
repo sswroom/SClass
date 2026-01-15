@@ -21,10 +21,10 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 	Text::String *fromAddr = 0;
 	recvTime.SetTicks(0);
 	
-	UOSInt i = 0;
-	UOSInt j = mail->GetHeaderCount();
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = mail->GetHeaderCount();
+	UIntOS k;
+	UIntOS l;
 	while (i < j)
 	{
 		NN<Text::String> name;
@@ -76,7 +76,7 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 	if (fromAddr != 0 && remoteIP != 0 && recvTime.ToTicks() != 0 && rcptList.GetCount() > 0)
 	{
 		Int64 id;
-		k = Text::StrIndexOfCharC(fileNameStart, (UOSInt)(filePathEnd - fileNameStart), '.');
+		k = Text::StrIndexOfCharC(fileNameStart, (UIntOS)(filePathEnd - fileNameStart), '.');
 		sb.ClearStr();
 		sb.AppendC(fileNameStart, k);
 		id = sb.ToInt64();
@@ -87,7 +87,7 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 		email->fromAddr = fromAddr->Clone();
 		email->recvTime = recvTime.ToTicks();
 		email->isDeleted = false;
-		email->fileSize = (UOSInt)fileSize;
+		email->fileSize = (UIntOS)fileSize;
 
 		NN<FileInfo> file;
 		NEW_CLASSNN(file, FileInfo());
@@ -146,8 +146,8 @@ Net::Email::FileEmailStore::FileEmailStore()
 Net::Email::FileEmailStore::~FileEmailStore()
 {
 	NN<FileInfo> file;
-	UOSInt i = this->fileMap.GetCount();
-	UOSInt j;
+	UIntOS i = this->fileMap.GetCount();
+	UIntOS j;
 	while (i-- > 0)
 	{
 		file = this->fileMap.GetItemNoCheck(i);
@@ -174,8 +174,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 {
 	Data::DateTime currTime;
 	NN<EmailInfo> email;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(sb);
 	IO::Path::AppendPath(sb, UTF8STRC("SMTP"));
@@ -188,7 +188,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email->fromAddr = mail->mailFrom->Clone();
 	email->recvTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	email->isDeleted = false;
-	email->fileSize = (UOSInt)mail->dataStm->GetLength();
+	email->fileSize = (UIntOS)mail->dataStm->GetLength();
 
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -197,7 +197,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
@@ -240,7 +240,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 		i++;
 	}
 	{
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		buff = mail->dataStm->GetBuff(buffSize);
@@ -258,8 +258,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Text::MIMEObj::MailMessage> mail)
 {
 	Data::DateTime currTime;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
@@ -275,7 +275,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
@@ -335,7 +335,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email->fromAddr = Text::String::NewP(sbuff, sptr);
 	email->recvTime = currTime.ToTicks();
 	email->isDeleted = false;
-	email->fileSize = (UOSInt)fileSize;
+	email->fileSize = (UIntOS)fileSize;
 	Sync::MutexUsage mutUsage(this->mailMut);
 	this->mailList.Add(email);
 	mutUsage.ReplaceMutex(this->fileMut);
@@ -359,7 +359,7 @@ UnsafeArrayOpt<const UTF8Char> Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 	return fileInfo->uid;
 }
 
-UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList)
+UIntOS Net::Email::FileEmailStore::GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList)
 {
 	Sync::MutexUsage mutUsage(this->fileMut);
 	NN<FileInfo> fileInfo;
@@ -368,7 +368,7 @@ UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NN<Data::ArrayListStrin
 	return rcptList->AddAll(fileInfo->rcptList);
 }
 
-Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessage(Text::CString userName, UOSInt msgIndex)
+Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessage(Text::CString userName, UIntOS msgIndex)
 {
 	NN<Net::Email::EmailStore::EmailInfo> email;
 	Sync::MutexUsage mutUsage(this->mailMut);
@@ -385,7 +385,7 @@ Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessa
 	}
 }
 
-Optional<Net::Email::EmailStore::EmailInfo> Net::Email::FileEmailStore::GetEmailByIndex(Text::CString userName, UOSInt msgIndex)
+Optional<Net::Email::EmailStore::EmailInfo> Net::Email::FileEmailStore::GetEmailByIndex(Text::CString userName, UIntOS msgIndex)
 {
 	Sync::MutexUsage mutUsage(this->mailMut);
 	return this->mailList.GetItem(msgIndex);
@@ -393,10 +393,10 @@ Optional<Net::Email::EmailStore::EmailInfo> Net::Email::FileEmailStore::GetEmail
 
 void Net::Email::FileEmailStore::GetMessageStat(Text::CString userName, NN<MessageStat> stat)
 {
-	UOSInt unreadCount;
+	UIntOS unreadCount;
 	UInt64 unreadSize;
-	UOSInt totalCnt;
-	UOSInt i;
+	UIntOS totalCnt;
+	UIntOS i;
 	NN<EmailInfo> email;
 	unreadSize = 0;
 	unreadCount = 0;
@@ -418,10 +418,10 @@ void Net::Email::FileEmailStore::GetMessageStat(Text::CString userName, NN<Messa
 	stat->unreadSize = unreadSize;
 }
 
-UOSInt Net::Email::FileEmailStore::GetUnreadIndices(Text::CString userName, NN<Data::ArrayListNative<UOSInt>> indices)
+UIntOS Net::Email::FileEmailStore::GetUnreadIndices(Text::CString userName, NN<Data::ArrayListNative<UIntOS>> indices)
 {
-	UOSInt totalCnt;
-	UOSInt i;
+	UIntOS totalCnt;
+	UIntOS i;
 	NN<EmailInfo> email;
 
 	Sync::MutexUsage mutUsage(this->mailMut);

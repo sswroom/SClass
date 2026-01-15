@@ -15,14 +15,14 @@
 
 struct UI::GUICustomDrawVScroll::ClassData
 {
-	UOSInt currPos;
-	UOSInt min;
-	UOSInt max;
-	UOSInt pageSize;
+	UIntOS currPos;
+	UIntOS min;
+	UIntOS max;
+	UIntOS pageSize;
 	Bool scrollDown;
-	OSInt scrollDownY;
-	UOSInt scrollDownPos;
-	OSInt scrollSize;
+	IntOS scrollDownY;
+	UIntOS scrollDownPos;
+	IntOS scrollSize;
 };
 
 Int32 UI::GUICustomDrawVScroll::useCnt = 0;
@@ -31,32 +31,32 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
 	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
-	clsData->scrollSize = Double2OSInt(8 * me->GetHDPI() / me->GetDDPI());
-	OSInt width = gtk_widget_get_allocated_width(widget);
-	OSInt height = gtk_widget_get_allocated_height(widget);
+	clsData->scrollSize = Double2IntOS(8 * me->GetHDPI() / me->GetDDPI());
+	IntOS width = gtk_widget_get_allocated_width(widget);
+	IntOS height = gtk_widget_get_allocated_height(widget);
 	if ((clsData->max - clsData->min) > clsData->pageSize)
 	{
-		NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(width - clsData->scrollSize, height), me->colorSess);
+		NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(0, 0), Math::Coord2D<IntOS>(width - clsData->scrollSize, height), me->colorSess);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->OnDraw(dimg);
 		me->deng->DeleteImage(dimg);
 		
-		dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(width - clsData->scrollSize, 0), Math::Coord2D<OSInt>(clsData->scrollSize, height), me->colorSess);
+		dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(width - clsData->scrollSize, 0), Math::Coord2D<IntOS>(clsData->scrollSize, height), me->colorSess);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), OSInt2Double(height)), nullptr, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(IntOS2Double(clsData->scrollSize), IntOS2Double(height)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xffcccccc);
-		UOSInt range = clsData->max - clsData->min;
-		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range)), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range)), nullptr, b);
+		UIntOS range = clsData->max - clsData->min;
+		dimg->DrawRect(Math::Coord2DDbl(0, UIntOS2Double((UIntOS)height * (clsData->currPos - clsData->min) / range)), Math::Size2DDbl(IntOS2Double(clsData->scrollSize), UIntOS2Double((UIntOS)height * clsData->pageSize / range)), nullptr, b);
 		dimg->DelBrush(b);
 		me->deng->DeleteImage(dimg);
 	}
 	else
 	{
-		NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(width, height), me->colorSess);
+		NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<IntOS>(0, 0), Math::Coord2D<IntOS>(width, height), me->colorSess);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->OnDraw(dimg);
@@ -73,8 +73,8 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 	me->Focus();
 	if (evt->type == GDK_BUTTON_PRESS)
 	{
-		OSInt width = gtk_widget_get_allocated_width(widget);
-		OSInt height = gtk_widget_get_allocated_height(widget);
+		IntOS width = gtk_widget_get_allocated_width(widget);
+		IntOS height = gtk_widget_get_allocated_height(widget);
 		UI::GUIControl::MouseButton btn;
 		switch (evt->button)
 		{
@@ -95,14 +95,14 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		if ((clsData->max - clsData->min) > clsData->pageSize && evt->x >= OSInt2Double(width - SCROLLWIDTH))
+		if ((clsData->max - clsData->min) > clsData->pageSize && evt->x >= IntOS2Double(width - SCROLLWIDTH))
 		{
 			if (btn == UI::GUIControl::MBTN_LEFT)
 			{
-				UOSInt range = clsData->max - clsData->min;
-				UOSInt scrollY1 = (UOSInt)height * (clsData->currPos - clsData->min) / range;
-				UOSInt scrollY2 = (UOSInt)height * clsData->pageSize / range + scrollY1;
-				if (evt->y >= UOSInt2Double(scrollY1) && evt->y < UOSInt2Double(scrollY2))
+				UIntOS range = clsData->max - clsData->min;
+				UIntOS scrollY1 = (UIntOS)height * (clsData->currPos - clsData->min) / range;
+				UIntOS scrollY2 = (UIntOS)height * clsData->pageSize / range + scrollY1;
+				if (evt->y >= UIntOS2Double(scrollY1) && evt->y < UIntOS2Double(scrollY2))
 				{
 					clsData->scrollDownY = Double2Int32(evt->y);
 					clsData->scrollDownPos = clsData->currPos;
@@ -110,7 +110,7 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 				}
 				else
 				{
-					clsData->currPos = (UInt32)Double2Int32(evt->y * UOSInt2Double(clsData->max - clsData->min - clsData->pageSize) / OSInt2Double(height));
+					clsData->currPos = (UInt32)Double2Int32(evt->y * UIntOS2Double(clsData->max - clsData->min - clsData->pageSize) / IntOS2Double(height));
 					me->Redraw();
 				}
 			}
@@ -126,7 +126,7 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 			{
 				keys = (UI::GUICustomDrawVScroll::KeyButton)(keys | UI::GUICustomDrawVScroll::KBTN_CONTROL);
 			}
-			me->OnMouseDown((OSInt)clsData->currPos, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn, keys);
+			me->OnMouseDown((IntOS)clsData->currPos, Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn, keys);
 		}
 	}
 	return false;
@@ -172,13 +172,13 @@ gboolean GUICustomDrawVScroll_OnMouseMove(GtkWidget *widget, GdkEvent *event, gp
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
 	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
-	OSInt height = gtk_widget_get_allocated_height(widget);
+	IntOS height = gtk_widget_get_allocated_height(widget);
 	GdkEventMotion *evt = (GdkEventMotion*)event;
 	if (clsData->scrollDown)
 	{
-		UOSInt range = clsData->max - clsData->min;
-		UOSInt scrollPos = clsData->scrollDownPos + (UOSInt)((Double2Int32(evt->y) - clsData->scrollDownY) * (OSInt)range / height);
-		if ((OSInt)scrollPos < (OSInt)clsData->min)
+		UIntOS range = clsData->max - clsData->min;
+		UIntOS scrollPos = clsData->scrollDownPos + (UIntOS)((Double2Int32(evt->y) - clsData->scrollDownY) * (IntOS)range / height);
+		if ((IntOS)scrollPos < (IntOS)clsData->min)
 		{
 			clsData->currPos = clsData->min;
 		}
@@ -203,7 +203,7 @@ gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, g
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
 	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
-	UOSInt scrollSize = clsData->pageSize >> 2;
+	UIntOS scrollSize = clsData->pageSize >> 2;
 	if (scrollSize < 1)
 	{
 		scrollSize = 1;
@@ -242,7 +242,7 @@ void UI::GUICustomDrawVScroll::ClearBackground(NN<Media::DrawImage> img)
 {
 	GtkStyleContext *context;
 	context = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
-	gtk_render_background(context, (cairo_t*)((Media::GTKDrawImage*)img.Ptr())->GetCairo(), 0, 0, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()));
+	gtk_render_background(context, (cairo_t*)((Media::GTKDrawImage*)img.Ptr())->GetCairo(), 0, 0, UIntOS2Double(img->GetWidth()), UIntOS2Double(img->GetHeight()));
 }
 
 UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUIControl(ui, parent)
@@ -284,14 +284,14 @@ Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
 	return CSTR("CustomDrawVScroll");
 }
 
-OSInt UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
 void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -299,7 +299,7 @@ void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, UI::GUICustomDrawVScroll::KeyButton keys)
+void UI::GUICustomDrawVScroll::OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, UI::GUICustomDrawVScroll::KeyButton keys)
 {
 }
 
@@ -319,7 +319,7 @@ void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, AnyType userObj)
 
 void UI::GUICustomDrawVScroll::EventSelChg()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -330,7 +330,7 @@ void UI::GUICustomDrawVScroll::EventSelChg()
 
 void UI::GUICustomDrawVScroll::EventDblClk()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -339,7 +339,7 @@ void UI::GUICustomDrawVScroll::EventDblClk()
 	}
 }
 
-void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize)
+void UI::GUICustomDrawVScroll::SetVScrollBar(UIntOS min, UIntOS max, UIntOS pageSize)
 {
 	NN<ClassData> data = this->clsData;
 	data->min = min;
@@ -356,13 +356,13 @@ void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt page
 	this->Redraw();
 }
 
-UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
+UIntOS UI::GUICustomDrawVScroll::GetVScrollPos()
 {
 	NN<ClassData> data = this->clsData;
 	return data->currPos;
 }
 
-Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
+Bool UI::GUICustomDrawVScroll::MakeVisible(UIntOS firstIndex, UIntOS lastIndex)
 {
 	NN<ClassData> data = this->clsData;
 	if (lastIndex >= data->max)

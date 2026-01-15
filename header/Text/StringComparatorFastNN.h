@@ -8,7 +8,7 @@ namespace Text
 	class StringComparatorFastNN : public Data::Comparator<NN<Text::String>>
 	{
 	public:
-		virtual OSInt Compare(NN<Text::String> a, NN<Text::String> b) const
+		virtual IntOS Compare(NN<Text::String> a, NN<Text::String> b) const
 		{
 			return a->CompareToFast(b->ToCString());
 		}

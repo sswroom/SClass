@@ -5,10 +5,10 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	OSInt i = 0;
+	IntOS i = 0;
 	UTF8Char sbuff[10];
 
 	i = 10 / i;
-	Text::StrOSInt(sbuff, i);
+	Text::StrIntOS(sbuff, i);
 	return 0;
 }

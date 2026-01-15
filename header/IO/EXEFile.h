@@ -87,7 +87,7 @@ namespace IO
 		typedef struct
 		{
 			UInt8 *b16Codes;
-			UOSInt b16CodeLen;
+			UIntOS b16CodeLen;
 			Manage::Dasm::DasmX86_16_Regs *b16Regs;
 			Bool b16HasPSP;
 			UInt16 b16CodeSegm;
@@ -110,7 +110,7 @@ namespace IO
 			NN<Text::String> name;
 			UInt32 codePage;
 			const UInt8 *data;
-			UOSInt dataSize;
+			UIntOS dataSize;
 		} ResourceInfo;
 	private:
 		Data::ArrayListStringNN propNames;
@@ -128,32 +128,32 @@ namespace IO
 		virtual IO::ParserType GetParserType() const;
 
 		void AddProp(Text::CStringNN name, Text::CStringNN value);
-		UOSInt GetPropCount() const;
-		Optional<Text::String> GetPropName(UOSInt index) const;
-		Optional<Text::String> GetPropValue(UOSInt index) const;
+		UIntOS GetPropCount() const;
+		Optional<Text::String> GetPropName(UIntOS index) const;
+		Optional<Text::String> GetPropValue(UIntOS index) const;
 		
 
-		UOSInt AddImportModule(Text::CStringNN moduleName);
-		void AddImportFunc(UOSInt modIndex, Text::CStringNN funcName);
-		UOSInt GetImportCount() const;
-		Optional<Text::String> GetImportName(UOSInt modIndex) const;
-		UOSInt GetImportFuncCount(UOSInt modIndex) const;
-		Optional<Text::String> GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
+		UIntOS AddImportModule(Text::CStringNN moduleName);
+		void AddImportFunc(UIntOS modIndex, Text::CStringNN funcName);
+		UIntOS GetImportCount() const;
+		Optional<Text::String> GetImportName(UIntOS modIndex) const;
+		UIntOS GetImportFuncCount(UIntOS modIndex) const;
+		Optional<Text::String> GetImportFunc(UIntOS modIndex, UIntOS funcIndex) const;
 
 		void AddExportFunc(Text::CStringNN funcName);
-		UOSInt GetExportCount() const;
-		Optional<Text::String> GetExportName(UOSInt index) const;
+		UIntOS GetExportCount() const;
+		Optional<Text::String> GetExportName(UIntOS index) const;
 
 		Bool HasDOS() const;
-		void AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
-		UInt8 *GetDOSCodePtr(OutParam<UOSInt> codeLen) const;
+		void AddDOSEnv(UIntOS b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
+		UInt8 *GetDOSCodePtr(OutParam<UIntOS> codeLen) const;
 		void SetDOSHasPSP(Bool hasPSP);
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const;
 		UInt16 GetDOSCodeSegm() const;
 
-		void AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
-		UOSInt GetResourceCount() const;
-		Optional<const ResourceInfo> GetResource(UOSInt index) const;
+		void AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UIntOS dataSize, UInt32 codePage, ResourceType rt);
+		UIntOS GetResourceCount() const;
+		Optional<const ResourceInfo> GetResource(UIntOS index) const;
 	public:
 		static Bool GetFileTime(Text::CStringNN fileName, NN<Data::DateTime> fileTimeOut);
 		static Data::Timestamp GetFileTime(Text::CStringNN fileName);

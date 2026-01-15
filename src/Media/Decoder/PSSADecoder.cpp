@@ -80,7 +80,7 @@ Data::Duration Media::Decoder::PSSADecoder::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::Decoder::PSSADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::Decoder::PSSADecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	NN<Media::AudioSource> sourceAudio;
@@ -109,12 +109,12 @@ void Media::Decoder::PSSADecoder::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
+UIntOS Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 {
 	NN<Sync::Event> readEvt;
-	UOSInt blkSize = buff.GetSize();
-	UOSInt outSize = 0;
-	UOSInt readSize;
+	UIntOS blkSize = buff.GetSize();
+	UIntOS outSize = 0;
+	UIntOS readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
 	NN<Media::AudioSource> sourceAudio;
@@ -168,7 +168,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 			if (this->buffSize >= this->nBlockAlign)
 			{
 				dest = buff.SubArray(2);
-				UOSInt j;
+				UIntOS j;
 				j = this->nBlockAlign >> 5;
 				while (j-- > 0)
 				{
@@ -214,7 +214,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 	}
 }
 
-UOSInt Media::Decoder::PSSADecoder::GetMinBlockSize()
+UIntOS Media::Decoder::PSSADecoder::GetMinBlockSize()
 {
 	if (this->nChannels == 1)
 	{

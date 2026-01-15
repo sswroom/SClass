@@ -114,9 +114,9 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 	UTF8Char *sptr;
 	ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
-	UOSInt i;
+	UIntOS i;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

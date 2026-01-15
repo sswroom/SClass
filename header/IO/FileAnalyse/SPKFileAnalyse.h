@@ -23,7 +23,7 @@ namespace IO
 			typedef struct
 			{
 				UInt64 fileOfst;
-				UOSInt packSize;
+				UIntOS packSize;
 				PackType packType;
 				Optional<Text::String> fileName;
 			} PackInfo;
@@ -43,16 +43,16 @@ namespace IO
 			virtual ~SPKFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			void GetDetailDirs(UnsafeArray<const UInt8> dirBuff, UOSInt dirSize, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetail> frame);
+			void GetDetailDirs(UnsafeArray<const UInt8> dirBuff, UIntOS dirSize, UIntOS frameOfst, NN<IO::FileAnalyse::FrameDetail> frame);
 		};
 	}
 }

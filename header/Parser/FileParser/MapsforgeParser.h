@@ -24,7 +24,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 		private:
-			static void ParseSubFile(NN<IO::StreamData> fd, NN<Map::OSM::OSMData> osmData, UnsafeArray<TagInfo> nodeTags, UnsafeArray<TagInfo> wayTags, UInt8 baseZoomLevel, UInt8 minZoomLevel, UInt8 maxZoomLevel, UInt64 subfileOfst, UInt64 subfileSize, InOutParam<UOSInt> nodeCnt, InOutParam<UOSInt> wayCnt, UOSInt nodeTagsCnt, UOSInt wayTagsCnt);
+			static void ParseSubFile(NN<IO::StreamData> fd, NN<Map::OSM::OSMData> osmData, UnsafeArray<TagInfo> nodeTags, UnsafeArray<TagInfo> wayTags, UInt8 baseZoomLevel, UInt8 minZoomLevel, UInt8 maxZoomLevel, UInt64 subfileOfst, UInt64 subfileSize, InOutParam<UIntOS> nodeCnt, InOutParam<UIntOS> wayCnt, UIntOS nodeTagsCnt, UIntOS wayTagsCnt);
 		};
 	}
 }

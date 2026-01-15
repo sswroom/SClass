@@ -9,8 +9,8 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 {
 	Net::ProtoClient *me = (Net::ProtoClient *)userObj;
 	UInt8 buff[4096];
-	OSInt buffSize;
-	OSInt readSize;
+	IntOS buffSize;
+	IntOS readSize;
 
 
 	me->threadRunning = true;
@@ -144,10 +144,10 @@ Bool Net::ProtoClient::IsConnected()
 	return this->connected;//this->cli != 0;
 }
 
-Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, Int32 seqId)
+Bool Net::ProtoClient::SendPacket(UInt8 *buff, IntOS buffSize, Int32 cmdType, Int32 seqId)
 {
 	UInt8 sendBuff[2048];
-	OSInt sendSize;
+	IntOS sendSize;
 	Bool succ = true;
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
@@ -165,7 +165,7 @@ Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, In
 	return succ;
 }
 
-Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize)
+Bool Net::ProtoClient::SendPacket(UInt8 *buff, IntOS buffSize)
 {
 	Bool succ = true;
 	Sync::MutexUsage mutUsage(this->cliMut);

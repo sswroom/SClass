@@ -11,21 +11,21 @@ namespace Media
 		{
 		private:
 			Data::ArrayListNN<JasperElement> elements;
-			UOSInt height;
+			UIntOS height;
 			Optional<Text::String> splitType;
 		public:
 			JasperBand();
 			~JasperBand();
 
 			void SetSplitType(Optional<Text::String> splitType);
-			void SetHeight(UOSInt height);
+			void SetHeight(UIntOS height);
 			Optional<Text::String> GetSplitType() const;
 			Bool HasHeight() const;
-			UOSInt GetHeight() const;
+			UIntOS GetHeight() const;
 			void AddElement(NN<JasperElement> element);
 
-			UOSInt GetCount() const;
-			Optional<JasperElement> GetElement(UOSInt index) const;
+			UIntOS GetCount() const;
+			Optional<JasperElement> GetElement(UIntOS index) const;
 		};
 	}
 }

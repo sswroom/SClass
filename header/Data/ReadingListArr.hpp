@@ -6,9 +6,9 @@ namespace Data
 	template <class T> class ReadingListArr : public Data::ReadingList<UnsafeArrayOpt<T>>
 	{
 	public:
-		virtual UOSInt GetCount() const = 0;
-		virtual UnsafeArrayOpt<T> GetItem(UOSInt index) const = 0;
-		virtual UnsafeArray<T> GetItemNoCheck(UOSInt index) const = 0;
+		virtual UIntOS GetCount() const = 0;
+		virtual UnsafeArrayOpt<T> GetItem(UIntOS index) const = 0;
+		virtual UnsafeArray<T> GetItemNoCheck(UIntOS index) const = 0;
 	};
 }
 #endif

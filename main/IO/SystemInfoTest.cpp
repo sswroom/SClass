@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::CPUInfoDetail *cpuInfo;
 	IO::ConsoleWriter console;
 	Double temp;
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Temp "));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		sb.AppendC(UTF8STRC(" = "));
 		sb.AppendDouble(temp);
 		console.WriteLine(sb.ToCString());

@@ -15,8 +15,8 @@ namespace Media
 				NN<Sync::Event> evt;
 				UnsafeArray<const UInt8> inPt;
 				UnsafeArray<UInt8> outPt;
-				UOSInt width;
-				UOSInt height;
+				UIntOS width;
+				UIntOS height;
 				Int32 tap;
 				UnsafeArray<Int32> index;
 				UnsafeArray<Int64> weight;
@@ -26,7 +26,7 @@ namespace Media
 
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				UnsafeArray<Int64> weight;
 				UnsafeArray<Int32> index;
 				Int32 tap;
@@ -38,7 +38,7 @@ namespace Media
 			Int32 nTap;
 			NN<Sync::Event> evtMain;
 			UnsafeArray<LRH13THREADSTAT> stats;
-			UOSInt nThread;
+			UIntOS nThread;
 
 			Int32 hsSize;
 			Int32 hdSize;
@@ -57,17 +57,17 @@ namespace Media
 			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Double Lanczos3Weight(Double phase);
-			void SetupInterpolationParameter(Int32 source_length, UOSInt result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Double offsetCorr);
-			void SetupDecimationParameter(Int32 source_length, UOSInt result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Int32 offsetCorr);
-			static void HorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt,UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
-			static void VerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
-			static void Expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
-			static void Collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
+			void SetupInterpolationParameter(Int32 source_length, UIntOS result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Double offsetCorr);
+			void SetupDecimationParameter(Int32 source_length, UIntOS result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Int32 offsetCorr);
+			static void HorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt,UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
+			static void VerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
+			static void Expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep);
+			static void Collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep);
 
-			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
-			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
-			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
-			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
+			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep);
 
 			static UInt32 WorkerThread(AnyType obj);
 			void DestoryHori();
@@ -76,7 +76,7 @@ namespace Media
 			LanczosResizerH13_8(Int32 nTap);
 			virtual ~LanczosResizerH13_8();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, Int32 sbpl, Int32 swidth, Int32 sheight, UnsafeArray<UInt8> dest, Int32 dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, Int32 sbpl, Int32 swidth, Int32 sheight, UnsafeArray<UInt8> dest, Int32 dbpl, UIntOS dwidth, UIntOS dheight);
 		};
 	}
 }

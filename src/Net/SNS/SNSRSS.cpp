@@ -6,7 +6,7 @@
 #include "Text/HTMLUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Net::SNS::SNSRSS::CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal)
+void Net::SNS::SNSRSS::CalcCRC(UnsafeArray<const UInt8> buff, UIntOS size, UnsafeArray<UInt8> hashVal)
 {
 	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
@@ -42,7 +42,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 	{
 		this->chDesc = s->Clone();
 	}
-	UOSInt i = rss->GetCount();
+	UIntOS i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	while (i-- > 0)
@@ -90,7 +90,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 
 Net::SNS::SNSRSS::~SNSRSS()
 {
-	UOSInt i;
+	UIntOS i;
 	OPTSTR_DEL(this->userAgent);
 	this->chName->Release();
 	OPTSTR_DEL(this->chDesc);
@@ -130,9 +130,9 @@ UnsafeArray<UTF8Char> Net::SNS::SNSRSS::GetDirName(UnsafeArray<UTF8Char> dirName
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
+UIntOS Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
-	UOSInt initCnt = itemList->GetCount();
+	UIntOS initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
@@ -152,12 +152,12 @@ Int32 Net::SNS::SNSRSS::GetMinIntevalMS()
 Bool Net::SNS::SNSRSS::Reload()
 {
 	NN<SNSItem> snsItem;
-	OSInt si;
+	IntOS si;
 	NN<Net::RSSItem> item;
 	Data::ArrayListStringNN idList;
 	Bool changed = false;
-	UOSInt i;
-	UOSInt j = this->itemMap.GetCount();
+	UIntOS i;
+	UIntOS j = this->itemMap.GetCount();
 	idList.EnsureCapacity(j);
 	i = 0;
 	while (i < j)
@@ -180,7 +180,7 @@ Bool Net::SNS::SNSRSS::Reload()
 			si = idList.SortedIndexOf(Text::String::OrEmpty(item->guid));
 			if (si >= 0)
 			{
-				idList.RemoveAt((UOSInt)si);
+				idList.RemoveAt((UIntOS)si);
 			}
 			else
 			{

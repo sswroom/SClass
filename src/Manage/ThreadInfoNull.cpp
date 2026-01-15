@@ -3,20 +3,20 @@
 #include "Manage/Process.h"
 #include "Manage/ThreadInfo.h"
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, void *hand)
+Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, void *hand)
 {
 	Manage::ThreadContext *outContext = 0;
 	return 0;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, void *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, void *hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
 	this->hand = hand;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -52,7 +52,7 @@ UInt32 Manage::ThreadInfo::GetExitCode()
 }
 
 
-UOSInt Manage::ThreadInfo::GetThreadId()
+UIntOS Manage::ThreadInfo::GetThreadId()
 {
 	return this->threadId;
 }

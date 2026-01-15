@@ -94,7 +94,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NN<Net::WebServer
 			NN<WebUserInfo> user;
 			sptr = me->env->PasswordEnc(sbuff, pwd->ToCString());
 			env.user = me->env->UserGetByName(mutUsage, userName).OrNull();
-			if (env.user.SetTo(user) && user->pwd.SetTo(pwd) && pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (env.user.SetTo(user) && user->pwd.SetTo(pwd) && pwd->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 			{
 				mutUsage.EndUse();
 				NN<Net::WebServer::WebSession> sess = me->sessMgr->CreateSession(req, resp);
@@ -143,8 +143,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NN<Net::WebSer
 	NN<Data::ReadingListNN<CategoryInfo>> cateList = me->env->CateGetList(mutUsage);
 	NN<CategoryInfo> cate;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
-	UOSInt i = 0;
-	UOSInt j = cateList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = cateList->GetCount();
 	while (i < j)
 	{
 		cate = cateList->GetItemNoCheck(i);
@@ -184,8 +184,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NN<Net::WebServer:
 		json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
 		json.ObjectAddStr(CSTR("chiName"), cate->chiName);
 		json.ObjectBeginArray(CSTR("groups"));
-		UOSInt i = 0;
-		UOSInt j = cate->groups.GetCount();
+		UIntOS i = 0;
+		UIntOS j = cate->groups.GetCount();
 		while (i < j)
 		{
 			group = cate->groups.GetItemNoCheck(i);
@@ -217,9 +217,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NN<Net::WebSer
 	if (env.user.SetTo(user))
 	{
 		Data::DateTime dt;
-		OSInt endIndex = (OSInt)user->userFileIndex.GetCount();
-		OSInt startIndex;
-		Int64 currTime = user->userFileIndex.GetItem((UOSInt)endIndex - 1);
+		IntOS endIndex = (IntOS)user->userFileIndex.GetCount();
+		IntOS startIndex;
+		Int64 currTime = user->userFileIndex.GetItem((UIntOS)endIndex - 1);
 		Int64 thisTicks;
 		if (endIndex > 0)
 		{
@@ -236,7 +236,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NN<Net::WebSer
 				}
 				else
 				{
-					while (startIndex > 0 && user->userFileIndex.GetItem((UOSInt)startIndex - 1) == thisTicks)
+					while (startIndex > 0 && user->userFileIndex.GetItem((UIntOS)startIndex - 1) == thisTicks)
 					{
 						startIndex--;
 					}
@@ -245,7 +245,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NN<Net::WebSer
 				if (startIndex <= 0)
 					break;
 				endIndex = startIndex;
-				currTime = user->userFileIndex.GetItem((UOSInt)endIndex - 1);
+				currTime = user->userFileIndex.GetItem((UIntOS)endIndex - 1);
 			}
 		}
 	}
@@ -271,8 +271,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 		Sync::RWMutexUsage mutUsage;
 		Int64 startTime;
 		Int64 endTime;
-		OSInt startIndex;
-		OSInt endIndex;
+		IntOS startIndex;
+		IntOS endIndex;
 		dt.SetTimeZoneQHR((Int8)tzQhr);
 		dt.SetValue((UInt16)(year + 1), 1, 1, 0, 0, 0, 0);
 		endTime = dt.ToTicks();
@@ -286,7 +286,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 		}
 		else
 		{
-			while (startIndex > 0 && user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+			while (startIndex > 0 && user->userFileIndex.GetItem((UIntOS)startIndex - 1) == startTime)
 			{
 				startIndex--;
 			}
@@ -298,29 +298,29 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 		}
 		else
 		{
-			while (endIndex > 0 && user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+			while (endIndex > 0 && user->userFileIndex.GetItem((UIntOS)endIndex - 1) == endTime)
 			{
 				endIndex--;
 			}
 		}
 		UInt8 month = 0;
 		UInt8 day = 0;
-		OSInt dayStartIndex = 0;
+		IntOS dayStartIndex = 0;
 		NN<UserFileInfo> userFile;
 		NN<SpeciesInfo> sp;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListStringNN locList;
 		NN<Text::String> unkLoc = Text::String::New(UTF8STRC("?"));
-		OSInt si;
+		IntOS si;
 
 		while (startIndex < endIndex)
 		{
-			dt.SetTicks(user->userFileIndex.GetItem((UOSInt)startIndex));
+			dt.SetTicks(user->userFileIndex.GetItem((UIntOS)startIndex));
 			if (dt.GetMonth() != month || dt.GetDay() != day)
 			{
 				if (month != 0 && day != 0)
 				{
-					userFile = user->userFileObj.GetItemNoCheck((UOSInt)(dayStartIndex + startIndex) >> 1);
+					userFile = user->userFileObj.GetItemNoCheck((UIntOS)(dayStartIndex + startIndex) >> 1);
 					if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 					{
 						json.ArrayBeginObject();
@@ -347,7 +347,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 			}
 
 			NN<Text::String> locName = unkLoc;
-			userFile = user->userFileObj.GetItemNoCheck((UOSInt)startIndex);
+			userFile = user->userFileObj.GetItemNoCheck((UIntOS)startIndex);
 			userFile->location.SetTo(locName);
 			si = locList.SortedIndexOf(locName);
 			if (si < 0)
@@ -359,7 +359,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 		}
 		if (month != 0 && day != 0)
 		{
-			userFile = user->userFileObj.GetItemNoCheck((UOSInt)(dayStartIndex + startIndex) >> 1);
+			userFile = user->userFileObj.GetItemNoCheck((UIntOS)(dayStartIndex + startIndex) >> 1);
 			if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
 				json.ArrayBeginObject();
@@ -408,8 +408,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 		Sync::RWMutexUsage mutUsage;
 		Int64 startTime;
 		Int64 endTime;
-		OSInt startIndex;
-		OSInt endIndex;
+		IntOS startIndex;
+		IntOS endIndex;
 		Text::StringBuilderUTF8 sb;
 		startTime = dt.ToTicks();
 		endTime = startTime + 86400000LL;
@@ -421,7 +421,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 		}
 		else
 		{
-			while (startIndex > 0 && user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+			while (startIndex > 0 && user->userFileIndex.GetItem((UIntOS)startIndex - 1) == startTime)
 			{
 				startIndex--;
 			}
@@ -433,7 +433,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 		}
 		else
 		{
-			while (endIndex > 0 && user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+			while (endIndex > 0 && user->userFileIndex.GetItem((UIntOS)endIndex - 1) == endTime)
 			{
 				endIndex--;
 			}
@@ -441,18 +441,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 		NN<UserFileInfo> userFile;
 		NN<SpeciesInfo> sp;
 		Data::ArrayListInt32 spList;
-		OSInt si;
+		IntOS si;
 		json.ObjectBeginArray(CSTR("userFiles"));
 			
 		while (startIndex < endIndex)
 		{
-			userFile = user->userFileObj.GetItemNoCheck((UOSInt)startIndex);
+			userFile = user->userFileObj.GetItemNoCheck((UIntOS)startIndex);
 			if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
 				si = spList.SortedIndexOf(userFile->speciesId);
 				if (si < 0)
 				{
-					spList.Insert((UOSInt)~si, userFile->speciesId);
+					spList.Insert((UIntOS)~si, userFile->speciesId);
 				}
 
 				json.ArrayBeginObject();
@@ -487,8 +487,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 		if (user->userType == UserType::Admin)
 		{
 			json.ObjectBeginArray(CSTR("spList"));
-			UOSInt i = 0;
-			UOSInt j = spList.GetCount();
+			UIntOS i = 0;
+			UIntOS j = spList.GetCount();
 			while (i < j)
 			{
 				if (me->env->SpeciesGet(mutUsage, spList.GetItem(i)).SetTo(sp))
@@ -521,8 +521,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NN<Net::WebSer
 	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
 	me->env->BookGetList(mutUsage, bookList);
 
-	UOSInt i = 0;
-	UOSInt j = bookList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = bookList.GetCount();
 	while (i < j)
 	{
 		book = bookList.GetItemNoCheck(i);
@@ -692,8 +692,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NN<Net::WebS
 		}
 
 		json.ObjectBeginArray(CSTR("species"));
-		UOSInt i = 0;
-		UOSInt j = book->species.GetCount();
+		UIntOS i = 0;
+		UIntOS j = book->species.GetCount();
 		while (i < j)
 		{
 			NN<BookSpInfo> bookSp = book->species.GetItemNoCheck(i);
@@ -723,8 +723,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NN<Net::WebServ
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
@@ -831,7 +831,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NN<Net::WebServ
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
-					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
+					i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -883,8 +883,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::Web
 		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 		Sync::RWMutexUsage mutUsage;
 		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species) || species->cateId != cateId)
@@ -1030,8 +1030,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 		return true;
 	}
 	Sync::RWMutexUsage mutUsage;
-	UOSInt i = 0;
-	UOSInt fileSize;
+	UIntOS i = 0;
+	UIntOS fileSize;
 	UTF8Char fileName[512];
 	UnsafeArray<UTF8Char> fileNameEnd;
 	UnsafeArray<const UInt8> fileCont;
@@ -1350,8 +1350,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServe
 		Sync::RWMutexUsage mutUsage;
 		Int64 startTime;
 		Int64 endTime;
-		OSInt startIndex;
-		OSInt endIndex;
+		IntOS startIndex;
+		IntOS endIndex;
 		startTime = dayId * 86400000LL;
 		endTime = startTime + 86400000LL;
 
@@ -1363,7 +1363,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServe
 		}
 		else
 		{
-			while (startIndex > 0 && user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+			while (startIndex > 0 && user->userFileIndex.GetItem((UIntOS)startIndex - 1) == startTime)
 			{
 				startIndex--;
 			}
@@ -1375,7 +1375,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServe
 		}
 		else
 		{
-			while (endIndex > 0 && user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+			while (endIndex > 0 && user->userFileIndex.GetItem((UIntOS)endIndex - 1) == endTime)
 			{
 				endIndex--;
 			}
@@ -1385,7 +1385,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServe
 
 		while (startIndex < endIndex)
 		{
-			if (user->userFileObj.GetItem((UOSInt)startIndex).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
+			if (user->userFileObj.GetItem((UIntOS)startIndex).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
 				me->AddUserfilePOI(json, sp, userFile);
 			}
@@ -1422,8 +1422,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 		{
 			Int64 startTime;
 			Int64 endTime;
-			OSInt startIndex;
-			OSInt endIndex;
+			IntOS startIndex;
+			IntOS endIndex;
 			startTime = file->startTime.ToTicks() - 300000;
 			endTime = file->endTime.ToTicks() + 300000;
 
@@ -1435,7 +1435,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 			}
 			else
 			{
-				while (startIndex > 0 && user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+				while (startIndex > 0 && user->userFileIndex.GetItem((UIntOS)startIndex - 1) == startTime)
 				{
 					startIndex--;
 				}
@@ -1447,7 +1447,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 			}
 			else
 			{
-				while (endIndex > 0 && user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+				while (endIndex > 0 && user->userFileIndex.GetItem((UIntOS)endIndex - 1) == endTime)
 				{
 					endIndex--;
 				}
@@ -1457,7 +1457,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 
 			while (startIndex < endIndex)
 			{
-				if (user->userFileObj.GetItem((UOSInt)startIndex).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
+				if (user->userFileObj.GetItem((UIntOS)startIndex).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					me->AddUserfilePOI(json, sp, userFile);
 				}
@@ -1479,8 +1479,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NN<Sync::RWMutexUsage> m
 {
 	NN<SpeciesInfo> species;
 	NN<GroupInfo> subgroup;
-	UOSInt i = 0;
-	UOSInt j = group->groups.GetCount();
+	UIntOS i = 0;
+	UIntOS j = group->groups.GetCount();
 	while (i < j)
 	{
 		subgroup = group->groups.GetItemNoCheck(i);
@@ -1502,8 +1502,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NN<Sync::RWMutexUsage> m
 void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, Int32 userId, Bool publicGroup)
 {
 	NN<UserFileInfo> file;
-	UOSInt k;
-	UOSInt l;
+	UIntOS k;
+	UIntOS l;
 	NN<WebUserInfo> user;
 	Bool adminUser = false;
 	if (userId != 0)
@@ -1616,8 +1616,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NN<Text::JSONBuilder> jso
 
 void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
@@ -1642,7 +1642,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NN<Text::JSONBuilder> 
 		if (species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
 		{
 			this->env->SpeciesSetFlags(mutUsage, species->speciesId, (SSWR::OrganWeb::SpeciesFlags)(species->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
-			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
+			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UIntOS)-1, (UIntOS)-1);
 		}
 	}
 	if (species->photoId != 0)
@@ -1681,13 +1681,13 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NN<Text::JSONBuilder> 
 
 void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont)
 {
-	OSInt startIndex;
-	OSInt endIndex;
+	IntOS startIndex;
+	IntOS endIndex;
 	Text::StringBuilderUTF8 sb;
 	startIndex = dataFiles->GetIndex(Data::Timestamp(startTime, 0));
 	if (startIndex < 0)
 		startIndex = ~startIndex;
-	if (startIndex > 0 && dataFiles->GetItemNoCheck((UOSInt)startIndex - 1)->endTime.ToTicks() > startTime)
+	if (startIndex > 0 && dataFiles->GetItemNoCheck((UIntOS)startIndex - 1)->endTime.ToTicks() > startTime)
 		startIndex--;
 	endIndex = dataFiles->GetIndex(Data::Timestamp(endTime, 0));
 	if (endIndex < 0)
@@ -1695,7 +1695,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NN<Text::JSONBuilder
 	while (startIndex < endIndex)
 	{
 		NN<DataFileInfo> dataFile;
-		if (dataFiles->GetItem((UOSInt)startIndex).SetTo(dataFile))
+		if (dataFiles->GetItem((UIntOS)startIndex).SetTo(dataFile))
 		{
 			json->ArrayBeginObject();
 			json->ObjectAddInt32(CSTR("id"), dataFile->id);
@@ -1743,7 +1743,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendLocator(NN<Text::JSONBuilder> 
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, OSInt cacheAge, Text::CStringNN json)
+Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
 {
 	resp->EnableWriteBuffer();
 	resp->AddDefHeaders(req);

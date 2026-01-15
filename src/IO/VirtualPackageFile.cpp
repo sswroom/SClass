@@ -69,7 +69,7 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 			MemFreeNN(item);
 		}
 	}
-	UOSInt i = this->infoMap.GetCount();
+	UIntOS i = this->infoMap.GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->infoMap.GetItem(i));
@@ -182,7 +182,7 @@ Bool IO::VirtualPackageFile::AddPack(NN<IO::PackageFile> pkg, Text::CStringNN na
 Bool IO::VirtualPackageFile::AddOrReplaceData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NN<PackFileItem> item;
-	UOSInt i = GetItemIndex(name);
+	UIntOS i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
 		if (this->items.GetItem(i).SetTo(item) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
@@ -209,7 +209,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceData(NN<StreamData> fd, UInt64 ofst, UI
 Bool IO::VirtualPackageFile::AddOrReplaceObject(NN<IO::ParsedObject> pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NN<PackFileItem> item;
-	UOSInt i = GetItemIndex(name);
+	UIntOS i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
 		if (this->items.GetItem(i).SetTo(item) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
@@ -237,7 +237,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceObject(NN<IO::ParsedObject> pobj, Text:
 Bool IO::VirtualPackageFile::AddOrReplaceCompData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NN<PackFileItem> item;
-	UOSInt i = GetItemIndex(name);
+	UIntOS i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
 		if (this->items.GetItem(i).SetTo(item) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
@@ -271,7 +271,7 @@ Bool IO::VirtualPackageFile::AddOrReplacePack(NN<IO::PackageFile> pkg, Text::CSt
 {
 	NN<PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
-	UOSInt i = GetItemIndex(name);
+	UIntOS i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
 		if (this->items.GetItem(i).SetTo(item) && item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
@@ -350,8 +350,8 @@ Bool IO::VirtualPackageFile::MergePackage(NN<IO::PackageFile> pkg)
 		NN<IO::PackageFile> ipkg;
 		Bool needRelease;
 		NN<IO::StreamData> fd;
-		UOSInt i = 0;
-		UOSInt j = pkg->GetCount();
+		UIntOS i = 0;
+		UIntOS j = pkg->GetCount();
 		while (i < j)
 		{
 			if (!pkg->GetItemName(sbuff, i).SetTo(sptr))
@@ -388,7 +388,7 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeA
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<const UTF8Char> sptr;
-	UOSInt nameLen;
+	UIntOS nameLen;
 	NN<IO::ParsedObject> pobj;
 	UTF8Char c;
 	sptr = name;
@@ -397,14 +397,14 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeA
 		c = *sptr++;
 		if (c == 0)
 		{
-			nameLen = (UOSInt)(sptr - name - 1);
+			nameLen = (UIntOS)(sptr - name - 1);
 			if (nameLen <= 0)
 				return nullptr;
 			return this->GetItemByName({name, nameLen});
 		}
 		else if (c == '/' || c == '\\')
 		{
-			nameLen = (UOSInt)(sptr - name - 1);
+			nameLen = (UIntOS)(sptr - name - 1);
 			Text::StrConcatC(sbuff, name, nameLen);
 			NN<const IO::PackFileItem> item;
 			if (!this->GetItemByName({sbuff, nameLen}).SetTo(item))
@@ -432,7 +432,7 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeA
 	return nullptr;
 }
 
-Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UOSInt index) const
+Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UIntOS index) const
 {
 	return this->items.GetItem(index);
 }
@@ -522,8 +522,8 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		UInt8 chkResult[32];
-		UOSInt resSize;
-		UOSInt i;
+		UIntOS resSize;
+		UIntOS i;
 		Bool diff = false;
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
@@ -601,12 +601,12 @@ Data::ArrayIterator<NN<IO::PackFileItem>> IO::VirtualPackageFile::PackFileIterat
 	return this->items.Iterator();
 }
 
-UOSInt IO::VirtualPackageFile::GetCount() const
+UIntOS IO::VirtualPackageFile::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetItemType(UOSInt index) const
+IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetItemType(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -614,7 +614,7 @@ IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetItemType(UOSInt index
 	return PackObjectType::Unknown;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::VirtualPackageFile::GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> IO::VirtualPackageFile::GetItemName(UnsafeArray<UTF8Char> sbuff, UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -625,7 +625,7 @@ UnsafeArrayOpt<UTF8Char> IO::VirtualPackageFile::GetItemName(UnsafeArray<UTF8Cha
 	return item->name->ConcatTo(sbuff);
 }
 
-Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index) const
+Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -635,7 +635,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index)
 
 Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(Text::CStringNN name) const
 {
-	UOSInt index = GetItemIndex(name);
+	UIntOS index = GetItemIndex(name);
 	if (index == INVALID_INDEX)
 	{
 		return nullptr;
@@ -643,7 +643,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(Text::CString
 	return this->GetItemStmDataNew(index);
 }
 
-Optional<IO::PackageFile> IO::VirtualPackageFile::GetItemPack(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::PackageFile> IO::VirtualPackageFile::GetItemPack(UIntOS index, OutParam<Bool> needRelease) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -651,7 +651,7 @@ Optional<IO::PackageFile> IO::VirtualPackageFile::GetItemPack(UOSInt index, OutP
 	return nullptr;
 }
 
-Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UIntOS index, OutParam<Bool> needRelease) const
 {
 	NN<IO::PackFileItem> item;
 	needRelease.Set(false);
@@ -672,7 +672,7 @@ Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UOSInt index, Out
 	}
 }
 
-Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UOSInt index) const
+Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -682,7 +682,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UOSInt index) const
 	return Data::Timestamp(0);
 }
 
-Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UOSInt index) const
+Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -692,7 +692,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UOSInt index) const
 	return Data::Timestamp(0);
 }
 
-Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UOSInt index) const
+Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -702,7 +702,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UOSInt index) const
 	return Data::Timestamp(0);
 }
 
-UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UOSInt index) const
+UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -712,7 +712,7 @@ UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UOSInt index) const
 	return 0;
 }
 
-UInt64 IO::VirtualPackageFile::GetItemStoreSize(UOSInt index) const
+UInt64 IO::VirtualPackageFile::GetItemStoreSize(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -722,7 +722,7 @@ UInt64 IO::VirtualPackageFile::GetItemStoreSize(UOSInt index) const
 	return 0;
 }
 
-UInt64 IO::VirtualPackageFile::GetItemSize(UOSInt index) const
+UInt64 IO::VirtualPackageFile::GetItemSize(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -743,12 +743,12 @@ UInt64 IO::VirtualPackageFile::GetItemSize(UOSInt index) const
 	return 0;
 }
 
-UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
+UIntOS IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 {
 #if defined(VERBOSE)
 	printf("VirtualPackageFile: Searching for itemIndex: %s\r\n", name.v.Ptr());
 #endif
-	UOSInt i;
+	UIntOS i;
 	NN<IO::PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
 	Data::ArrayIterator<NN<PackFileItem>> it = this->items.Iterator();
@@ -777,7 +777,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 	return INVALID_INDEX;
 }
 
-Bool IO::VirtualPackageFile::IsCompressed(UOSInt index) const
+Bool IO::VirtualPackageFile::IsCompressed(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item) && item->itemType == IO::PackFileItem::PackItemType::Compressed)
@@ -787,7 +787,7 @@ Bool IO::VirtualPackageFile::IsCompressed(UOSInt index) const
 	return false;
 }
 
-Data::Compress::Decompressor::CompressMethod IO::VirtualPackageFile::GetItemComp(UOSInt index) const
+Data::Compress::Decompressor::CompressMethod IO::VirtualPackageFile::GetItemComp(UIntOS index) const
 {
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
@@ -818,7 +818,7 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::Pro
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
 	{
-		UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Text::CStringNN fName = fileName.Substring(i + 1);
 		IO::StmData::FileData fd(fileName, false);
 		if (fd.IsError())
@@ -834,7 +834,7 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::Pro
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
-		UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Text::CStringNN fName = fileName.Substring(i + 1);
 		NN<IO::DirectoryPackage> dpkg;
 		NEW_CLASSNN(dpkg, IO::DirectoryPackage(fileName));
@@ -863,7 +863,7 @@ Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, Optional<IO
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName)
+Bool IO::VirtualPackageFile::CopyTo(UIntOS index, Text::CStringNN destPath, Bool fullFileName)
 {
 	NN<IO::PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
@@ -903,8 +903,8 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool
 			fd = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
 
 			UInt8 chkResult[32];
-			UOSInt resSize;
-			UOSInt i;
+			UIntOS resSize;
+			UIntOS i;
 			Bool diff = false;
 			{
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
@@ -941,19 +941,19 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool
 		else if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
 			UInt64 fileSize = item->dataLength;
-			UOSInt readSize;
+			UIntOS readSize;
 			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Unknown)
 				return false;
 
 			UInt64 currOfst = GetPItemDataOfst(item);
 			if (fileSize < 1048576)
 			{
-				Data::ByteBuffer tmpBuff((UOSInt)fileSize);
-				succ = (item->fullFd->GetRealData(currOfst, (UOSInt)fileSize, tmpBuff) == fileSize);
+				Data::ByteBuffer tmpBuff((UIntOS)fileSize);
+				succ = (item->fullFd->GetRealData(currOfst, (UIntOS)fileSize, tmpBuff) == fileSize);
 				if (succ)
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					succ = (fs.Write(tmpBuff.WithSize((UOSInt)fileSize)) == fileSize);
+					succ = (fs.Write(tmpBuff.WithSize((UIntOS)fileSize)) == fileSize);
 				}
 			}
 			else
@@ -970,7 +970,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool
 						}
 						else
 						{
-							readSize = (UOSInt)(endOfst - currOfst);
+							readSize = (UIntOS)(endOfst - currOfst);
 						}
 						if (item->fullFd->GetRealData(currOfst, readSize, tmpBuff) != readSize)
 						{
@@ -998,8 +998,8 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool
 		{
 			NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
 			IO::Path::CreateDirectory(sb.ToCString());
-			UOSInt i = 0;
-			UOSInt j = pf->GetCount();
+			UIntOS i = 0;
+			UIntOS j = pf->GetCount();
 			while (i < j)
 			{
 				succ = pf->CopyTo(i, sb.ToCString(), false);
@@ -1027,8 +1027,8 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 	Optional<IO::StreamData> retFD = nullptr;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(fileName);
 	sb.Replace('\\', '/');
@@ -1050,7 +1050,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbuff[0] = 0;
-				if (pf->GetItemName(sbuff, i).SetTo(sptr) && Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
+				if (pf->GetItemName(sbuff, i).SetTo(sptr) && Text::StrEqualsC(sb.ToString(), j, sbuff, (UIntOS)(sptr - sbuff)))
 				{
 					if (pf->GetItemPack(i, needRel2).SetTo(pf2))
 					{
@@ -1059,7 +1059,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 						{
 							DEL_CLASS(pf);
 						}
-						sb.SetSubstr((UOSInt)j + 1);
+						sb.SetSubstr((UIntOS)j + 1);
 						pf = pf2.Ptr();
 						needRel = needRel2;
 						break;
@@ -1084,7 +1084,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 		if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sbuff[0] = 0;
-			if (pf->GetItemName(sbuff, i).SetTo(sptr) && sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (pf->GetItemName(sbuff, i).SetTo(sptr) && sb.Equals(sbuff, (UIntOS)(sptr - sbuff)))
 			{
 				retFD = pf->GetItemStmDataNew(i);
 				break;
@@ -1110,7 +1110,7 @@ Optional<IO::PackageFile> IO::VirtualPackageFile::GetParent(OutParam<Bool> needR
 	return this->parent;
 }
 
-Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
+Bool IO::VirtualPackageFile::DeleteItem(UIntOS index)
 {
 	NN<IO::PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
@@ -1155,8 +1155,8 @@ void IO::VirtualPackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 
 void IO::VirtualPackageFile::GetInfoText(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->infoMap.GetCount();
 	while (i < j)

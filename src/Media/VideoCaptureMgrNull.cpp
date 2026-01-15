@@ -11,7 +11,7 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
 }
 
-UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UIntOS Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
 	return 0;
 }
@@ -20,7 +20,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 {
 }
 
-Media::VideoCapturer *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
+Media::VideoCapturer *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS devId)
 {
 	return 0;
 }

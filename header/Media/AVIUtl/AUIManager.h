@@ -18,7 +18,7 @@ namespace Media
 		public:
 			AUIManager();
 			~AUIManager();
-			UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
+			UIntOS LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
 			void PrepareSelector(NN<IO::FileSelector> selector);
 		};
 	}

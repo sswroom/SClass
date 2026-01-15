@@ -6,17 +6,17 @@
 
 extern "C"
 {
-	void CSRGB8_LRGBC_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, UOSInt nColor);
-	void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
-	void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, UIntOS nColor);
+	void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
 }
 
 void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
@@ -26,7 +26,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	{
 		this->rgbTable = rgbTable = MemAllocAArr(UInt8, 6144);
 	}
-	OSInt i;
+	IntOS i;
 	Double thisV;
 	Double dV;
 	UInt16 v[4];
@@ -65,7 +65,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	i = 256;
 	while (i--)
 	{
-		dV = OSInt2Double(i) / 255.0;
+		dV = IntOS2Double(i) / 255.0;
 		thisV = rtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
@@ -95,16 +95,16 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	{
 		if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UOSInt)1 << (this->srcNBits - 1)));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UIntOS)1 << (this->srcNBits - 1)));
 		}
 		else
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UOSInt)1 << this->srcNBits));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UIntOS)1 << this->srcNBits));
 		}
 	}
 }
 
-Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UIntOS srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
@@ -123,13 +123,13 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	}
 	if (this->srcPF == Media::PF_PAL_1 || this->srcPF == Media::PF_PAL_2 || this->srcPF == Media::PF_PAL_4 || this->srcPF == Media::PF_PAL_8 || this->srcPF == Media::PF_PAL_W1 || this->srcPF == Media::PF_PAL_W2 || this->srcPF == Media::PF_PAL_W4 || this->srcPF == Media::PF_PAL_W8)
 	{
-		UOSInt colorCnt = ((UOSInt)1 << this->srcNBits);
+		UIntOS colorCnt = ((UIntOS)1 << this->srcNBits);
 		this->srcPal = MemAlloc(UInt8, colorCnt * 4);
 		this->destPal = MemAlloc(UInt8, colorCnt * 8);
 	}
 	else if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 	{
-		UOSInt colorCnt = ((UOSInt)1 << (this->srcNBits - 1));
+		UIntOS colorCnt = ((UIntOS)1 << (this->srcNBits - 1));
 		this->srcPal = MemAlloc(UInt8, colorCnt * 4);
 		this->destPal = MemAlloc(UInt8, colorCnt * 8);
 	}
@@ -159,7 +159,7 @@ Media::CS::CSRGB8_LRGBC::~CSRGB8_LRGBC()
 	}
 }
 
-void Media::CS::CSRGB8_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB8_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -168,61 +168,61 @@ void Media::CS::CSRGB8_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 	}
 	if (invert)
 	{
-		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (IntOS)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
 	if (this->srcPF == Media::PF_W8A8)
 	{
-		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G5B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_R8G8B8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_R8G8B8A8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_1_A1)
 	{
-		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_2_A1)
 	{
-		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_4_A1)
 	{
-		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_8_A1)
 	{
-		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else
 	{
-		CSRGB8_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+		CSRGB8_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 }
 
-UOSInt Media::CS::CSRGB8_LRGBC::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB8_LRGBC::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * (this->srcNBits >> 3);
 }
 
-UOSInt Media::CS::CSRGB8_LRGBC::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB8_LRGBC::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * 8;
 }
@@ -234,12 +234,12 @@ void Media::CS::CSRGB8_LRGBC::SetPalette(UnsafeArray<UInt8> pal)
 	{
 		if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 		{
-			UOSInt nColor = (UOSInt)(4 << (this->srcNBits - 1));
+			UIntOS nColor = (UIntOS)(4 << (this->srcNBits - 1));
 			MemCopyNO(srcPal.Ptr(), pal.Ptr(), nColor);
 		}
 		else
 		{
-			UOSInt nColor = (UOSInt)(4 << this->srcNBits);
+			UIntOS nColor = (UIntOS)(4 << this->srcNBits);
 			MemCopyNO(srcPal.Ptr(), pal.Ptr(), nColor);
 		}
 		this->rgbUpdated = true;

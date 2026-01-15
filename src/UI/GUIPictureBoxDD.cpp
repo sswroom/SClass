@@ -15,7 +15,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
 	if (this->imgBuff && !this->currImage.IsNull() && this->IsSurfaceReady())
 	{
-		OSInt bpl;
+		IntOS bpl;
 		if (this->drawHdlrs.GetCount() > 0)
 		{
 			if (this->bgBuff == 0 || this->bkBuffSize != this->bgBuffSize)
@@ -29,7 +29,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 			}
 
 			Math::RectAreaDbl srcRect;
-			Math::RectArea<OSInt> destRect;
+			Math::RectArea<IntOS> destRect;
 			ImageUtil_ImageColorFill32(this->bgBuff, this->bgBuffSize.x, this->bgBuffSize.y, this->bgBuffSize.x << 2, 0);
 
 			if (this->mouseDowned)
@@ -95,10 +95,10 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 			UInt8 *dptr = this->bgBuff;
 			Int32 iLeft = (Int32)srcRect.min.x;
 			Int32 iTop = (Int32)srcRect.min.y;
-			dptr = dptr + destRect.min.y * (OSInt)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
+			dptr = dptr + destRect.min.y * (IntOS)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
 			Math::Size2DDbl srcSize = srcRect.GetSize();
-			Math::Size2D<OSInt> destSize = destRect.GetSize();
-			resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (OSInt)this->bgBuffSize.x << 2, (UOSInt)destSize.x, (UOSInt)destSize.y);
+			Math::Size2D<IntOS> destSize = destRect.GetSize();
+			resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)this->bgBuffSize.x << 2, (UIntOS)destSize.x, (UIntOS)destSize.y);
 
 			this->DrawFromBG();
 		}
@@ -108,8 +108,8 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 			if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
 			{
 				Math::RectAreaDbl srcRect;
-				Math::RectArea<OSInt> destRect;
-				ImageUtil_ImageColorFill32(dptr.Ptr(), this->bkBuffSize.x, this->bkBuffSize.y, (UOSInt)bpl, 0);
+				Math::RectArea<IntOS> destRect;
+				ImageUtil_ImageColorFill32(dptr.Ptr(), this->bkBuffSize.x, this->bkBuffSize.y, (UIntOS)bpl, 0);
 
 				if (this->mouseDowned)
 				{
@@ -173,11 +173,11 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 				}
 				Int32 iLeft = (Int32)srcRect.min.x;
 				Int32 iTop = (Int32)srcRect.min.y;
-				dptr = dptr + destRect.min.y * (OSInt)bpl + destRect.min.x * 4;
+				dptr = dptr + destRect.min.y * (IntOS)bpl + destRect.min.x * 4;
 				Math::Size2DDbl srcSize = srcRect.GetSize();
 				if (srcSize.x > 0 && srcSize.y > 0)
 				{
-					resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (OSInt)bpl, (UOSInt)destRect.GetWidth(), (UOSInt)destRect.GetHeight());
+					resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)bpl, (UIntOS)destRect.GetWidth(), (UIntOS)destRect.GetHeight());
 				}
 
 				this->LockSurfaceEnd();
@@ -186,66 +186,66 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 	}
 }
 
-void UI::GUIPictureBoxDD::CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<OSInt>> destRect)
+void UI::GUIPictureBoxDD::CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<IntOS>> destRect)
 {
 	NN<Media::RasterImage> img;
 	if (!this->currImage.SetTo(img))
 	{
 		srcRect->min = Math::Coord2DDbl(0, 0);
 		srcRect->max = Math::Coord2DDbl(0, 0);
-		destRect->min = Math::Coord2D<OSInt>(0, 0);
-		destRect->max = Math::Coord2D<OSInt>(0, 0);
+		destRect->min = Math::Coord2D<IntOS>(0, 0);
+		destRect->max = Math::Coord2D<IntOS>(0, 0);
 		return;
 	}
 
 	srcRect->min = this->zoomCenter - this->bkBuffSize.ToDouble() * 0.5 / this->zoomScale;
 	srcRect->max = srcRect->min + this->bkBuffSize.ToDouble() / this->zoomScale;
-	destRect->min = Math::Coord2D<OSInt>(0, 0);
-	destRect->max = Math::Coord2D<OSInt>((OSInt)this->bkBuffSize.x, (OSInt)this->bkBuffSize.y);
+	destRect->min = Math::Coord2D<IntOS>(0, 0);
+	destRect->max = Math::Coord2D<IntOS>((IntOS)this->bkBuffSize.x, (IntOS)this->bkBuffSize.y);
 
 	if (srcRect->min.x < 0)
 	{
-		destRect->min.x += Double2OSInt(-srcRect->min.x * this->zoomScale);
+		destRect->min.x += Double2IntOS(-srcRect->min.x * this->zoomScale);
 		srcRect->min.x = 0;
 	}
-	if (srcRect->max.x > UOSInt2Double(this->currImageSize.x))
+	if (srcRect->max.x > UIntOS2Double(this->currImageSize.x))
 	{
-		srcRect->max.x = UOSInt2Double(this->currImageSize.x);
-		destRect->max.x = Double2OSInt(srcRect->GetWidth() * this->zoomScale) + destRect->min.x;
+		srcRect->max.x = UIntOS2Double(this->currImageSize.x);
+		destRect->max.x = Double2IntOS(srcRect->GetWidth() * this->zoomScale) + destRect->min.x;
 	}
 	if (srcRect->min.y < 0)
 	{
-		destRect->min.y = Double2OSInt(-srcRect->min.y * this->zoomScale);
+		destRect->min.y = Double2IntOS(-srcRect->min.y * this->zoomScale);
 		srcRect->min.y = 0;
 	}
-	if (srcRect->max.y > UOSInt2Double(this->currImageSize.y))
+	if (srcRect->max.y > UIntOS2Double(this->currImageSize.y))
 	{
-		srcRect->max.y = UOSInt2Double(this->currImageSize.y);
-		destRect->max.y = Double2OSInt(srcRect->GetHeight() * this->zoomScale) + destRect->min.y;
+		srcRect->max.y = UIntOS2Double(this->currImageSize.y);
+		destRect->max.y = Double2IntOS(srcRect->GetHeight() * this->zoomScale) + destRect->min.y;
 	}
 }
 
 void UI::GUIPictureBoxDD::UpdateZoomRange()
 {
-	if (UOSInt2Double(this->bkBuffSize.x) > UOSInt2Double(this->currImageSize.x) * zoomScale)
+	if (UIntOS2Double(this->bkBuffSize.x) > UIntOS2Double(this->currImageSize.x) * zoomScale)
 	{
-		this->zoomMaxX = UOSInt2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
-		this->zoomMinX = UOSInt2Double(this->currImageSize.x) - UOSInt2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
+		this->zoomMaxX = UIntOS2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
+		this->zoomMinX = UIntOS2Double(this->currImageSize.x) - UIntOS2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
 	}
 	else
 	{
-		this->zoomMinX = (UOSInt2Double(this->bkBuffSize.x) * 0.5) / zoomScale;
-		this->zoomMaxX = UOSInt2Double(this->currImageSize.x) - UOSInt2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
+		this->zoomMinX = (UIntOS2Double(this->bkBuffSize.x) * 0.5) / zoomScale;
+		this->zoomMaxX = UIntOS2Double(this->currImageSize.x) - UIntOS2Double(this->bkBuffSize.x) * 0.5 / zoomScale;
 	}
-	if (UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->currImageSize.y) * zoomScale)
+	if (UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->currImageSize.y) * zoomScale)
 	{
-		this->zoomMaxY = UOSInt2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
-		this->zoomMinY = UOSInt2Double(this->currImageSize.y) - UOSInt2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
+		this->zoomMaxY = UIntOS2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
+		this->zoomMinY = UIntOS2Double(this->currImageSize.y) - UIntOS2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
 	}
 	else
 	{
-		this->zoomMinY = (UOSInt2Double(this->bkBuffSize.y) * 0.5) / zoomScale;
-		this->zoomMaxY = UOSInt2Double(this->currImageSize.y) - UOSInt2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
+		this->zoomMinY = (UIntOS2Double(this->bkBuffSize.y) * 0.5) / zoomScale;
+		this->zoomMaxY = UIntOS2Double(this->currImageSize.y) - UIntOS2Double(this->bkBuffSize.y) * 0.5 / zoomScale;
 	}
 }
 
@@ -257,17 +257,17 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 		Double outZoomScale;
 		Double outW;
 	//	Double outH;
-		Double srcW = UOSInt2Double(this->currImageSize.x);
-		Double srcH = UOSInt2Double(this->currImageSize.y);
-		if (srcW * img->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcH)
+		Double srcW = UIntOS2Double(this->currImageSize.x);
+		Double srcH = UIntOS2Double(this->currImageSize.y);
+		if (srcW * img->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 		{
-			outW = UOSInt2Double(this->bkBuffSize.x);
+			outW = UIntOS2Double(this->bkBuffSize.x);
 	//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
 		}
 		else
 		{
-			outW = UOSInt2Double(this->bkBuffSize.y) * img->info.par2 * srcW / srcH;
-	//		outH = OSInt2Double(this->surfaceSize.y);
+			outW = UIntOS2Double(this->bkBuffSize.y) * img->info.par2 * srcW / srcH;
+	//		outH = IntOS2Double(this->surfaceSize.y);
 		}
 		outZoomScale = outW / srcW;
 		if (outZoomScale > 1.0)
@@ -325,19 +325,19 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 
 void UI::GUIPictureBoxDD::DrawFromBG()
 {
-	OSInt bpl;
+	IntOS bpl;
 	UnsafeArray<UInt8> dptr;
 	if (this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl).SetTo(dptr))
 	{
-		UOSInt i;
-		UOSInt j;
-		ImageCopy_ImgCopy(this->bgBuff, dptr.Ptr(), this->bgBuffSize.x << 2, this->bgBuffSize.y, (OSInt)this->bgBuffSize.x << 2, (OSInt)bpl);
+		UIntOS i;
+		UIntOS j;
+		ImageCopy_ImgCopy(this->bgBuff, dptr.Ptr(), this->bgBuffSize.x << 2, this->bgBuffSize.y, (IntOS)this->bgBuffSize.x << 2, (IntOS)bpl);
 		i = 0;
 		j = this->drawHdlrs.GetCount();
 		while (i < j)
 		{
 			Data::CallbackStorage<DrawHandler32> cb = this->drawHdlrs.GetItem(i);
-			cb.func(cb.userObj, dptr, this->bgBuffSize.x, this->bgBuffSize.x, (UOSInt)bpl);
+			cb.func(cb.userObj, dptr, this->bgBuffSize.x, this->bgBuffSize.x, (UIntOS)bpl);
 			i++;
 		}
 		this->LockSurfaceEnd();
@@ -370,16 +370,16 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl
 	this->enableLRGBLimit = false;
 
 	this->bgBuff = 0;
-	this->bgBuffSize = Math::Size2D<UOSInt>(0, 0);
+	this->bgBuffSize = Math::Size2D<UIntOS>(0, 0);
 	this->allowEnlarge = allowEnlarge;
 	this->currImage = nullptr;
-	this->currImageSize = Math::Size2D<UOSInt>(0, 0);
+	this->currImageSize = Math::Size2D<UIntOS>(0, 0);
 	this->csconv = nullptr;
 	this->imgBuff = nullptr;
 	this->zoomScale = 1.0;
 	this->zoomMinScale = 1.0;
 	this->mouseDowned = false;
-	this->mouseDownPos = Math::Coord2D<OSInt>(0, 0);
+	this->mouseDownPos = Math::Coord2D<IntOS>(0, 0);
 	this->curr10Bit = false;
 	this->resizer = 0;
 	this->zoomCenter = Math::Coord2DDbl(0, 0);
@@ -411,7 +411,7 @@ Text::CStringNN UI::GUIPictureBoxDD::GetObjectClass() const
 	return CSTR("PictureBoxDD");
 }
 
-OSInt UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -468,7 +468,7 @@ void UI::GUIPictureBoxDD::EnableLRGBLimit(Bool enable)
 
 void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool sameImg)
 {
-	Math::Size2D<UOSInt> oriSize = this->currImageSize;
+	Math::Size2D<UIntOS> oriSize = this->currImageSize;
 	this->currImage = currImage;
 	if (this->imgBuff)
 	{
@@ -517,13 +517,13 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 			if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 			{
-				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			}
 			else
 			{
 				UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 				img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-				csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 				MemFreeAArr(imgData);
 			}
 			if (this->enableLRGBLimit)
@@ -558,7 +558,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 	}
 	else
 	{
-		this->currImageSize = Math::Size2D<UOSInt>(0, 0);
+		this->currImageSize = Math::Size2D<UIntOS>(0, 0);
 	}
 }
 
@@ -585,13 +585,13 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
 			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
@@ -641,13 +641,13 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
 			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.dispSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
@@ -690,11 +690,11 @@ void UI::GUIPictureBoxDD::OnSurfaceCreated()
 	this->DrawToScreen();
 }
 
-void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
+void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<IntOS> pos, Int32 amount)
 {
 	Math::Coord2DDbl mousePoint;
 	Math::RectAreaDbl srcRect;
-	Math::RectArea<OSInt> destRect;
+	Math::RectArea<IntOS> destRect;
 
 	if (this->currImage.IsNull())
 		return;
@@ -755,11 +755,11 @@ void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 	}
 }
 
-void UI::GUIPictureBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
+void UI::GUIPictureBoxDD::OnMouseMove(Math::Coord2D<IntOS> pos)
 {
 	this->mouseCurrPos = pos;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->mouseMoveHdlrs.GetCount();
 	while (i < j)
@@ -779,11 +779,11 @@ void UI::GUIPictureBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
 	}
 }
 
-void UI::GUIPictureBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button)
+void UI::GUIPictureBoxDD::OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button)
 {
 	this->Focus();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->mouseDownHdlrs.GetCount();
 	while (i < j)
@@ -802,10 +802,10 @@ void UI::GUIPictureBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton butt
 	}
 }
 
-void UI::GUIPictureBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button)
+void UI::GUIPictureBoxDD::OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->mouseUpHdlrs.GetCount();
 	while (i < j)
@@ -858,7 +858,7 @@ void UI::GUIPictureBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button
 	}
 }
 
-void UI::GUIPictureBoxDD::OnGZoomBegin(Math::Coord2D<OSInt> pos, UInt64 dist)
+void UI::GUIPictureBoxDD::OnGZoomBegin(Math::Coord2D<IntOS> pos, UInt64 dist)
 {
 	this->gzoomDown = true;
 	this->gzoomDownPos = pos;
@@ -867,7 +867,7 @@ void UI::GUIPictureBoxDD::OnGZoomBegin(Math::Coord2D<OSInt> pos, UInt64 dist)
 	this->gzoomCurrDist = dist;
 }
 
-void UI::GUIPictureBoxDD::OnGZoomStep(Math::Coord2D<OSInt> pos, UInt64 dist)
+void UI::GUIPictureBoxDD::OnGZoomStep(Math::Coord2D<IntOS> pos, UInt64 dist)
 {
 	if (this->gzoomDown)
 	{
@@ -879,7 +879,7 @@ void UI::GUIPictureBoxDD::OnGZoomStep(Math::Coord2D<OSInt> pos, UInt64 dist)
 	}
 }
 
-void UI::GUIPictureBoxDD::OnGZoomEnd(Math::Coord2D<OSInt> pos, UInt64 dist)
+void UI::GUIPictureBoxDD::OnGZoomEnd(Math::Coord2D<IntOS> pos, UInt64 dist)
 {
 	if (this->gzoomDown)
 	{
@@ -914,7 +914,7 @@ void UI::GUIPictureBoxDD::OnGZoomEnd(Math::Coord2D<OSInt> pos, UInt64 dist)
 	}
 }
 
-void UI::GUIPictureBoxDD::OnJSButtonDown(OSInt buttonId)
+void UI::GUIPictureBoxDD::OnJSButtonDown(IntOS buttonId)
 {
 	if (buttonId == 4)
 	{
@@ -952,11 +952,11 @@ void UI::GUIPictureBoxDD::OnJSButtonDown(OSInt buttonId)
 	}
 }
 
-void UI::GUIPictureBoxDD::OnJSButtonUp(OSInt buttonId)
+void UI::GUIPictureBoxDD::OnJSButtonUp(IntOS buttonId)
 {
 }
 
-void UI::GUIPictureBoxDD::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4)
+void UI::GUIPictureBoxDD::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4)
 {
 	axis1 >>= 10;
 	axis2 >>= 10;
@@ -966,8 +966,8 @@ void UI::GUIPictureBoxDD::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt 
 		axis2++;
 	if (axis1 != 0 || axis2 != 0)
 	{
-		this->zoomCenter.x += OSInt2Double(axis1) / this->zoomScale;
-		this->zoomCenter.y += OSInt2Double(axis2) / this->zoomScale;
+		this->zoomCenter.x += IntOS2Double(axis1) / this->zoomScale;
+		this->zoomCenter.y += IntOS2Double(axis2) / this->zoomScale;
 		if (this->zoomCenter.x < this->zoomMinX)
 		{
 			this->zoomCenter.x = this->zoomMinX;
@@ -990,8 +990,8 @@ void UI::GUIPictureBoxDD::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt 
 
 void UI::GUIPictureBoxDD::EventMoveToNext()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->moveToNextHdlrs.GetCount();
 	while (i < j)
@@ -1004,8 +1004,8 @@ void UI::GUIPictureBoxDD::EventMoveToNext()
 
 void UI::GUIPictureBoxDD::EventMoveToPrev()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->moveToPrevHdlrs.GetCount();
 	while (i < j)
@@ -1016,7 +1016,7 @@ void UI::GUIPictureBoxDD::EventMoveToPrev()
 	}
 }
 
-Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize)
+Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UIntOS> *viewSize, Math::Size2D<UIntOS> imageSize)
 {
 	Double par = 1;
 	if (this->bkBuffSize.x >= imageSize.x && this->bkBuffSize.y >= imageSize.y)
@@ -1024,11 +1024,11 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 		if (par > 1)
 		{
 			viewSize->x = imageSize.x;
-			viewSize->y = (UOSInt)Double2OSInt(UOSInt2Double(imageSize.y) / par);
+			viewSize->y = (UIntOS)Double2IntOS(UIntOS2Double(imageSize.y) / par);
 		}
 		else if (par < 1)
 		{
-			viewSize->x = (UOSInt)Double2OSInt(UOSInt2Double(imageSize.x) * par);
+			viewSize->x = (UIntOS)Double2IntOS(UIntOS2Double(imageSize.x) * par);
 			viewSize->y = imageSize.y;
 		}
 		else
@@ -1038,16 +1038,16 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 	}
 	else
 	{
-		UOSInt srcW = imageSize.x;
-		UOSInt srcH = imageSize.y;
-		if (UOSInt2Double(srcW) * par * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * UOSInt2Double(srcH))
+		UIntOS srcW = imageSize.x;
+		UIntOS srcH = imageSize.y;
+		if (UIntOS2Double(srcW) * par * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * UIntOS2Double(srcH))
 		{
 			viewSize->x = this->bkBuffSize.x;
-			viewSize->y = (UOSInt)Double2OSInt(UOSInt2Double(this->bkBuffSize.x) / par * UOSInt2Double(srcH) / UOSInt2Double(srcW));
+			viewSize->y = (UIntOS)Double2IntOS(UIntOS2Double(this->bkBuffSize.x) / par * UIntOS2Double(srcH) / UIntOS2Double(srcW));
 		}
 		else
 		{
-			viewSize->x = (UOSInt)Double2OSInt(UOSInt2Double(this->bkBuffSize.y) * par * UOSInt2Double(srcW) / UOSInt2Double(srcH));
+			viewSize->x = (UIntOS)Double2IntOS(UIntOS2Double(this->bkBuffSize.y) * par * UIntOS2Double(srcW) / UIntOS2Double(srcH));
 			viewSize->y = this->bkBuffSize.y;
 		}
 	}
@@ -1057,7 +1057,7 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::StaticImage> image)
 {
 	NN<Media::StaticImage> outImage;
-	Math::Size2D<UOSInt> prevSize;
+	Math::Size2D<UIntOS> prevSize;
 	this->GetImageViewSize(&prevSize, image->info.dispSize);
 
 	UInt8 *prevImgData = MemAllocA(UInt8, image->info.dispSize.CalcArea() * 8);
@@ -1074,10 +1074,10 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
 	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
-	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (OSInt)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
+	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (IntOS)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASSNN(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
-	resizer->Resize(prevImgData, (OSInt)image->info.dispSize.x * 8, UOSInt2Double(image->info.dispSize.x), UOSInt2Double(image->info.dispSize.y), 0, 0, outImage->data.Ptr(), (OSInt)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
+	resizer->Resize(prevImgData, (IntOS)image->info.dispSize.x * 8, UIntOS2Double(image->info.dispSize.x), UIntOS2Double(image->info.dispSize.y), 0, 0, outImage->data.Ptr(), (IntOS)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
 
 	DEL_CLASS(resizer);
 	csConv.Delete();
@@ -1115,12 +1115,12 @@ void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, AnyType userObj)
 	this->moveToPrevHdlrs.Add({hdlr, userObj});
 }
 
-Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
+Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<IntOS> scnPos)
 {
 	if (this->currImage.IsNull())
 		return Math::Coord2DDbl(0, 0);
 	Math::RectAreaDbl srcRect;
-	Math::RectArea<OSInt> destRect;
+	Math::RectArea<IntOS> destRect;
 	CalDispRect(srcRect, destRect);
 /*	if (x < destRect[0])
 	{
@@ -1145,7 +1145,7 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
 Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
 {
 	Math::RectAreaDbl srcRect;
-	Math::RectArea<OSInt> destRect;
+	Math::RectArea<IntOS> destRect;
 	CalDispRect(srcRect, destRect);
 
 	if (this->mouseDowned)
@@ -1183,15 +1183,15 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 		Double outW;
 	//	Double outH;
 		Math::Size2DDbl srcSize = this->currImageSize.ToDouble();
-		if (srcSize.x * img->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcSize.y)
+		if (srcSize.x * img->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
 		{
-			outW = UOSInt2Double(this->bkBuffSize.x);
+			outW = UIntOS2Double(this->bkBuffSize.x);
 	//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
 		}
 		else
 		{
-			outW = UOSInt2Double(this->bkBuffSize.y) * img->info.par2 * srcSize.x / srcSize.y;
-	//		outH = OSInt2Double(this->surfaceH);
+			outW = UIntOS2Double(this->bkBuffSize.y) * img->info.par2 * srcSize.x / srcSize.y;
+	//		outH = IntOS2Double(this->surfaceH);
 		}
 		outZoomScale = outW / srcSize.x;
 		this->zoomScale = outZoomScale;

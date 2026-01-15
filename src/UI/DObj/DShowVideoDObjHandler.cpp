@@ -15,8 +15,8 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UI
 	if (!me->frameImg.SetTo(dimg))
 		return;
 	Int32 dbpl = (Int32)me->videoSize.x << 2;
-	UOSInt outW;
-	UOSInt outH;
+	UIntOS outW;
+	UIntOS outH;
 	if (frameW * me->videoSize.y > frameH * me->videoSize.x)
 	{
 		outW = me->videoSize.x;
@@ -77,7 +77,7 @@ void UI::DObj::DShowVideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 	}
 }
 
-UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName, colorSess)
+UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess, Text::CStringNN imageFileName, Math::Coord2D<IntOS> videoPos, Math::Size2D<UIntOS> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName, colorSess)
 {
 	this->videoTL = videoPos;
 	this->videoSize = videoSize;

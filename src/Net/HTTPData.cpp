@@ -11,7 +11,7 @@
 UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 {
 	UInt8 buff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 
 	NN<Net::HTTPClient> cli;
 	NN<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
@@ -190,7 +190,7 @@ Net::HTTPData::HTTPData(NN<const Net::HTTPData> fd, UInt64 offset, UInt64 length
 
 Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Net::HTTPQueue> queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool needReload = forceReload;
 	NN<HTTPDATAHANDLE> fdh;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
@@ -245,7 +245,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 	else
 	{
 		dataOffset = 0;
-		dataLength = (UOSInt)-1;
+		dataLength = (UIntOS)-1;
 		NEW_CLASSNN(fdh, Net::HTTPData::HTTPDATAHANDLE());
 		this->fdh = fdh;
 		fdh->file = 0;
@@ -286,7 +286,7 @@ Net::HTTPData::~HTTPData()
 	Close();
 }
 
-UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS Net::HTTPData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	NN<HTTPDATAHANDLE> fdh;
 	if (!this->fdh.SetTo(fdh))
@@ -307,11 +307,11 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray 
 		}
 		fdh->seekCnt++;
 	}
-	UOSInt byteRead;
+	UIntOS byteRead;
 	if (length < this->GetDataSize() - offset)
 		byteRead = fdh->file->Read(buffer.WithSize(length));
 	else
-		byteRead = fdh->file->Read(buffer.WithSize((UOSInt) (dataLength - offset)));
+		byteRead = fdh->file->Read(buffer.WithSize((UIntOS) (dataLength - offset)));
 	if (byteRead == 0)
 	{
 		mutUsage.EndUse();
@@ -325,7 +325,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray 
 UInt64 Net::HTTPData::GetDataSize() const
 {
 	NN<HTTPDATAHANDLE> fdh;
-	if (dataLength == (UOSInt)-1 && this->fdh.SetTo(fdh))
+	if (dataLength == (UIntOS)-1 && this->fdh.SetTo(fdh))
 	{
 		while (true)
 		{
@@ -361,7 +361,7 @@ void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 	NN<HTTPDATAHANDLE> fdh;
 	if (!this->fdh.SetTo(fdh) || fullName.leng == 0)
 		return;
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	fdh->url->Release();
 	fdh->url = Text::String::New(fullName);
@@ -403,7 +403,7 @@ Bool Net::HTTPData::IsLoading() const
 	return fdh->isLoading;
 }
 
-UOSInt Net::HTTPData::GetSeekCount() const
+UIntOS Net::HTTPData::GetSeekCount() const
 {
 	NN<HTTPDATAHANDLE> fdh;
 	if (!this->fdh.SetTo(fdh))

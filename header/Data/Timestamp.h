@@ -51,7 +51,7 @@ namespace Data
 		
 		~Timestamp() = default;
 
-		Timestamp AddMonth(OSInt val) const
+		Timestamp AddMonth(IntOS val) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			this->ToTimeValue(tval);
@@ -70,7 +70,7 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
-		Timestamp AddYear(OSInt val) const
+		Timestamp AddYear(IntOS val) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			this->ToTimeValue(tval);
@@ -78,22 +78,22 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
-		Timestamp AddDay(OSInt val) const
+		Timestamp AddDay(IntOS val) const
 		{
 			return Timestamp(this->inst.AddDay(val), this->tzQhr);
 		}
 
-		Timestamp AddHour(OSInt val) const
+		Timestamp AddHour(IntOS val) const
 		{
 			return Timestamp(this->inst.AddHour(val), this->tzQhr);
 		}
 
-		Timestamp AddMinute(OSInt val) const
+		Timestamp AddMinute(IntOS val) const
 		{
 			return Timestamp(this->inst.AddMinute(val), this->tzQhr);
 		}
 
-		Timestamp AddSecond(OSInt val) const
+		Timestamp AddSecond(IntOS val) const
 		{
 			return Timestamp(this->inst.AddSecond(val), this->tzQhr);
 		}
@@ -105,7 +105,7 @@ namespace Data
 			return Timestamp(this->inst.AddSecond(sec).AddNS(ns), this->tzQhr);
 		}
 
-		Timestamp AddMS(OSInt val) const
+		Timestamp AddMS(IntOS val) const
 		{
 			return Timestamp(this->inst.AddMS(val), this->tzQhr);
 		}
@@ -127,7 +127,7 @@ namespace Data
 
 		Timestamp ClearTimeLocal() const
 		{
-			return Timestamp(this->inst.AddMinute((OSInt)this->tzQhr * 15).ClearTime().AddMinute((OSInt)this->tzQhr * -15), this->tzQhr);
+			return Timestamp(this->inst.AddMinute((IntOS)this->tzQhr * 15).ClearTime().AddMinute((IntOS)this->tzQhr * -15), this->tzQhr);
 		}
 
 		Timestamp ClearMonthAndDay() const
@@ -165,7 +165,7 @@ namespace Data
 
 		Int64 GetMSPassedLocalDate() const
 		{
-			return this->inst.AddSecond((OSInt)this->tzQhr * 900).GetMSPassedDate();
+			return this->inst.AddSecond((IntOS)this->tzQhr * 900).GetMSPassedDate();
 		};
 
 		Int64 DiffSec(const Timestamp &ts) const
@@ -312,7 +312,7 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				if (((this->inst.sec + (OSInt)this->tzQhr * 900) % 86400) == 0)
+				if (((this->inst.sec + (IntOS)this->tzQhr * 900) % 86400) == 0)
 				{
 					return ToString(buff, CHSTR("yyyy-MM-dd"));
 				}
@@ -387,18 +387,18 @@ namespace Data
 			return Timestamp(this->inst + dur, this->tzQhr);
 		}
 
-		OSInt CompareTo(const Timestamp& ts) const
+		IntOS CompareTo(const Timestamp& ts) const
 		{
 			return this->inst.CompareTo(ts.inst);
 		}
 		
 		Bool IsDate() const
 		{
-			return (this->inst.nanosec == 0 && ((this->inst.sec + (OSInt)this->tzQhr * 900) % 86400) == 0);
+			return (this->inst.nanosec == 0 && ((this->inst.sec + (IntOS)this->tzQhr * 900) % 86400) == 0);
 		}
 		
 		/*UnsafeArray<UTF8Char> ToLocalStr(UnsafeArray<UTF8Char> buff);
-		OSInt CompareTo(Data::DateTime *obj);
+		IntOS CompareTo(Data::DateTime *obj);
 		Int32 DateCompare(Data::DateTime *dt);
 		Bool IsSameDay(Data::DateTime *dt);*/
 
@@ -421,7 +421,7 @@ namespace Data
 		{
 			if (this->tzQhr != tzQhr)
 			{
-				return Timestamp(this->inst.AddSecond(((OSInt)this->tzQhr - tzQhr) * (OSInt)(15 * 60)), tzQhr);
+				return Timestamp(this->inst.AddSecond(((IntOS)this->tzQhr - tzQhr) * (IntOS)(15 * 60)), tzQhr);
 			}
 			else
 			{

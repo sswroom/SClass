@@ -29,7 +29,7 @@ Bool IO::DeviceStream::IsDown() const
 	return this->hand == 0;
 }
 
-UOSInt IO::DeviceStream::Read(const Data::ByteArray &buff)
+UIntOS IO::DeviceStream::Read(const Data::ByteArray &buff)
 {
 	if (this->hand)
 	{
@@ -48,7 +48,7 @@ UOSInt IO::DeviceStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::DeviceStream::Write(Data::ByteArrayR buff)
+UIntOS IO::DeviceStream::Write(Data::ByteArrayR buff)
 {
 	if (this->hand)
 	{

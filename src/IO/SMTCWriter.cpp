@@ -40,7 +40,7 @@ void IO::SMTCWriter::TCPDisconnect(NN<Net::TCPClient> cli)
 	this->fs.Write(Data::ByteArrayR(buff, 21));
 }
 
-void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UOSInt size)
+void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UIntOS size)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];
@@ -54,7 +54,7 @@ void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> da
 	this->fs.Write(Data::ByteArrayR(data, size));
 }
 
-void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UOSInt size)
+void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UIntOS size)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];

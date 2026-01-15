@@ -15,16 +15,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	refPtr = Text::StrWChar_UTF8(refbuff, L"そのスピードで");
 
 	sptr = Text::TextBinEnc::Punycode::Decode(sbuff, UTF8STRC("xn--d9juau41awczczp"));
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), refbuff, (UOSInt)(refPtr - refbuff)))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), refbuff, (UIntOS)(refPtr - refbuff)))
 		return 1;
 
 	Text::TextBinEnc::Punycode::Decode(wbuff, L"xn--d9juau41awczczp");
 	sptr = Text::StrWChar_UTF8(sbuff, wbuff);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), refbuff, (UOSInt)(refPtr - refbuff)))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), refbuff, (UIntOS)(refPtr - refbuff)))
 		return 1;
 
 	sptr = Text::TextBinEnc::Punycode::Decode(sbuff, (const UTF8Char*)"xn--d9juau41awczczpabcdef", 19);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), refbuff, (UOSInt)(refPtr - refbuff)))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), refbuff, (UIntOS)(refPtr - refbuff)))
 		return 1;
 	return 0;
 }

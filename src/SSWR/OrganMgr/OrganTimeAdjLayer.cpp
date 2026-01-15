@@ -19,10 +19,10 @@ Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr)
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr)
 {
-	UOSInt i = 0;
-	UOSInt j = this->userFileList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->userFileList->GetCount();
 	while (i < j)
 	{
 		outArr->Add((Int64)i);
@@ -31,16 +31,16 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt6
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	UOSInt cnt = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS cnt = 0;
+	UIntOS i;
+	UIntOS j;
 	NN<UserFileInfo> ufile;
 	i = 0;
 	j = this->userFileList->GetCount();
@@ -62,7 +62,7 @@ Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax() const
 	return (Int64)this->userFileList->GetCount() - 1;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetRecordCnt() const
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetRecordCnt() const
 {
 	return this->userFileList->GetCount();
 }
@@ -71,27 +71,27 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Optional<Map::NameArray> 
 {
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	return false;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 {
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	return nullptr;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }
@@ -119,7 +119,7 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(NN<Map::GetObjectSess> sess
 Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	NN<UserFileInfo> ufile;
-	if (!this->userFileList->GetItem((UOSInt)id).SetTo(ufile))
+	if (!this->userFileList->GetItem((UIntOS)id).SetTo(ufile))
 		return nullptr;
 	Math::Geometry::Point *pt;
 	NN<Text::String> s;
@@ -143,7 +143,7 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVect
 	}
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetGeomCol() const
+UIntOS SSWR::OrganMgr::OrganTimeAdjLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }

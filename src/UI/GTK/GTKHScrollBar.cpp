@@ -24,24 +24,24 @@ UI::GTK::GTKHScrollBar::~GTKHScrollBar()
 {
 }
 
-void UI::GTK::GTKHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
+void UI::GTK::GTKHScrollBar::InitScrollBar(UIntOS minVal, UIntOS maxVal, UIntOS currVal, UIntOS largeChg)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
-	gtk_adjustment_configure(adj, UOSInt2Double(currVal), UOSInt2Double(minVal), UOSInt2Double(maxVal), 1, UOSInt2Double(largeChg), UOSInt2Double(largeChg));
+	gtk_adjustment_configure(adj, UIntOS2Double(currVal), UIntOS2Double(minVal), UIntOS2Double(maxVal), 1, UIntOS2Double(largeChg), UIntOS2Double(largeChg));
 	this->EventPosChanged(this->GetPos());
 }
 
-void UI::GTK::GTKHScrollBar::SetPos(UOSInt pos)
+void UI::GTK::GTKHScrollBar::SetPos(UIntOS pos)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
-	gtk_adjustment_set_value(adj, UOSInt2Double(pos));
+	gtk_adjustment_set_value(adj, UIntOS2Double(pos));
 	this->EventPosChanged(this->GetPos());
 }
 
-UOSInt UI::GTK::GTKHScrollBar::GetPos()
+UIntOS UI::GTK::GTKHScrollBar::GetPos()
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
-	return (UOSInt)Double2OSInt(gtk_adjustment_get_value(adj));
+	return (UIntOS)Double2IntOS(gtk_adjustment_get_value(adj));
 }
 
 void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -96,9 +96,9 @@ void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	this->OnSizeChanged(updateScn);
 }
 
-void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::GTK::GTKHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn)
 {
-	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
+	if (IntOS2Double(left) == this->lxPos && IntOS2Double(top) == this->lyPos && IntOS2Double(right) == this->lxPos2 && IntOS2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	NN<UI::GUIClientControl> nnparent;
@@ -106,14 +106,14 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	{
 		ofst = nnparent->GetClientOfst();
 	}
-	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = IntOS2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = IntOS2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
 	if (this->parent.SetTo(nnparent))
 	{
 		AnyType container = nnparent->GetContainer();
-		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
+		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32(IntOS2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(IntOS2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -130,25 +130,25 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW == -1)
 	{
-		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;
+		this->lxPos2 = IntOS2Double(right) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lxPos2 = OSInt2Double(left + outW) * this->ddpi / this->hdpi;
+		this->lxPos2 = IntOS2Double(left + outW) * this->ddpi / this->hdpi;
 	}
 	if (outH == -1)
 	{
-		this->lyPos2 = OSInt2Double(bottom) * this->ddpi / this->hdpi;
+		this->lyPos2 = IntOS2Double(bottom) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lyPos2 = OSInt2Double(top + outH) * this->ddpi / this->hdpi;
+		this->lyPos2 = IntOS2Double(top + outH) * this->ddpi / this->hdpi;
 	}
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
 }
 
-OSInt UI::GTK::GTKHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

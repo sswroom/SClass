@@ -33,7 +33,7 @@ void Crypto::Hash::XOR8::Clear()
 	this->val = 0;
 }
 
-void Crypto::Hash::XOR8::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::XOR8::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UInt8 val = this->val;
 
@@ -49,12 +49,12 @@ void Crypto::Hash::XOR8::GetValue(UnsafeArray<UInt8> buff) const
 	*buff = this->val;
 }
 
-UOSInt Crypto::Hash::XOR8::GetBlockSize() const
+UIntOS Crypto::Hash::XOR8::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::XOR8::GetResultSize() const
+UIntOS Crypto::Hash::XOR8::GetResultSize() const
 {
 	return 1;
 }

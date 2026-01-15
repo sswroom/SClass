@@ -15,7 +15,7 @@ void Media::JPEGExif::FreeExif(NN<ExifValue> exif)
 	{
 		if (exif->s)
 		{
-			OSInt i;
+			IntOS i;
 			Data::ArrayListNN<ExifValue> *exifArr = (Data::ArrayListNN<ExifValue> *)exif->s;
 			exifArr->FreeAll(FreeExif);
 			DEL_CLASS(exifArr);
@@ -87,7 +87,7 @@ NN<Media::JPEGExif::ExifValue> Media::JPEGExif::GetExif(Optional<ExifValue> grp,
 		exifArr = &this->exifs;
 	}
 
-	UOSInt i = exifArr->GetCount();
+	UIntOS i = exifArr->GetCount();
 	while (i-- > 0)
 	{
 		exif = exifArr->GetItemNoCheck(i);
@@ -103,13 +103,13 @@ NN<Media::JPEGExif::ExifValue> Media::JPEGExif::GetExif(Optional<ExifValue> grp,
 	return exif;
 }
 
-void Media::JPEGExif::CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UOSInt> size, OutParam<UOSInt> endOfst)
+void Media::JPEGExif::CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UIntOS> size, OutParam<UIntOS> endOfst)
 {
-	UOSInt i = 6;
-	UOSInt j = 6;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
+	UIntOS i = 6;
+	UIntOS j = 6;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
 	NN<Media::JPEGExif::ExifValue> exif;
 
 	k = exifArr->GetCount();
@@ -182,12 +182,12 @@ void Media::JPEGExif::CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutP
 	endOfst.Set(i);
 }
 
-void Media::JPEGExif::GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UOSInt> startOfst, InOutParam<UOSInt> otherOfst)
+void Media::JPEGExif::GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UIntOS> startOfst, InOutParam<UIntOS> otherOfst)
 {
-	UOSInt objCnt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS objCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Media::JPEGExif::ExifValue> exif;
 
 	objCnt = 0;
@@ -462,11 +462,11 @@ Bool Media::JPEGExif::WriteExif(NN<IO::Stream> input, NN<IO::Stream> output)
 	UInt8 *oexcont;
 	Int32 oexsize;
 
-	OSInt hdrSize;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	IntOS hdrSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Bool found;
 
 	input->Read(Data::ByteArray(hdr, 2));

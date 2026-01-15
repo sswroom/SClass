@@ -3,10 +3,10 @@
 #include "Text/MyString.h"
 #include <stdlib.h>
 
-extern "C" OSInt MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2)
+extern "C" IntOS MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	IntOS i = 0;
+	IntOS j = 0;
 	while (1)
 	{
 		if (*str1 == 0 && *str2 == 0)
@@ -51,10 +51,10 @@ extern "C" OSInt MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2)
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *str2)
+extern "C" IntOS MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	IntOS i = 0;
+	IntOS j = 0;
 	UTF8Char c1;
 	UTF8Char c2;
 	while (1)
@@ -111,10 +111,10 @@ extern "C" OSInt MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
+extern "C" IntOS MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
 {
-	UOSInt i = 0;
-	UOSInt j = 0;
+	UIntOS i = 0;
+	UIntOS j = 0;
 	while (1)
 	{
 		if (*str1 == 0 && *str2 == 0)
@@ -159,10 +159,10 @@ extern "C" OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
+extern "C" IntOS MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF16Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	IntOS i = 0;
+	IntOS j = 0;
 	UTF16Char c1;
 	UTF16Char c2;
 	while (1)
@@ -219,10 +219,10 @@ extern "C" OSInt MyString_StrCompareICaseUTF16(const UTF16Char *str1, const UTF1
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
+extern "C" IntOS MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	IntOS i = 0;
+	IntOS j = 0;
 	while (1)
 	{
 		if (*str1 == 0 && *str2 == 0)
@@ -267,10 +267,10 @@ extern "C" OSInt MyString_StrCompareUTF32(const UTF32Char *str1, const UTF32Char
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
+extern "C" IntOS MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF32Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	IntOS i = 0;
+	IntOS j = 0;
 	UTF32Char c1;
 	UTF32Char c2;
 	while (1)
@@ -327,35 +327,35 @@ extern "C" OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF3
 	return 0;
 }
 
-extern "C" UOSInt MyString_StrCharCnt(const UTF8Char *s)
+extern "C" UIntOS MyString_StrCharCnt(const UTF8Char *s)
 {
 	const UTF8Char*src = s;
 	while (true)
 	{
 		if (src[0] == 0)
-			return (UOSInt)(src - s);
+			return (UIntOS)(src - s);
 		if (src[1] == 0)
-			return (UOSInt)(src - s + 1);
+			return (UIntOS)(src - s + 1);
 		if (src[2] == 0)
-			return (UOSInt)(src - s + 2);
+			return (UIntOS)(src - s + 2);
 		if (src[3] == 0)
-			return (UOSInt)(src - s + 3);
+			return (UIntOS)(src - s + 3);
 		src += 4;
 	}
 }
 
-extern "C" UOSInt MyString_StrCharCntUTF16(const UTF16Char *s)
+extern "C" UIntOS MyString_StrCharCntUTF16(const UTF16Char *s)
 {
 	const UTF16Char *src = s;
 	while (*src++) ;
-	return (UOSInt)(src - s - 1);
+	return (UIntOS)(src - s - 1);
 }
 
-extern "C" UOSInt MyString_StrCharCntUTF32(const UTF32Char *s)
+extern "C" UIntOS MyString_StrCharCntUTF32(const UTF32Char *s)
 {
 	const UTF32Char *src = s;
 	while (*src++) ;
-	return (UOSInt)(src - s - 1);
+	return (UIntOS)(src - s - 1);
 }
 
 #ifdef HAS_INT64
@@ -363,7 +363,7 @@ extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val)
 {
 	UTF16Char *tmp = &oriStr[16];
 	*tmp = 0;
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
@@ -380,7 +380,7 @@ extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val)
 extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val)
 {
 	UTF16Char *tmp = &oriStr[16];
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
@@ -394,7 +394,7 @@ extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val)
 extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[8];
-	UOSInt i = 8;
+	UIntOS i = 8;
 	*tmp = 0;
 	while (i-- > 0)
 	{
@@ -412,7 +412,7 @@ extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, UInt32 val)
 extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[8];
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
@@ -425,7 +425,7 @@ extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, UInt32 val)
 extern "C" UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, UInt32 val)
 {
 	UTF16Char *tmp = &oriStr[6];
-	UOSInt i = 6;
+	UIntOS i = 6;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
@@ -440,7 +440,7 @@ extern "C" UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, UInt64 val)
 {
 	UTF32Char *tmp = &oriStr[16];
 	*tmp = 0;
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -457,7 +457,7 @@ extern "C" UTF32Char *MyString_StrHexVal64VUTF32(UTF32Char *oriStr, UInt64 val)
 extern "C" UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, UInt64 val)
 {
 	UTF32Char *tmp = &oriStr[16];
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -471,7 +471,7 @@ extern "C" UTF32Char *MyString_StrHexVal64UTF32(UTF32Char *oriStr, UInt64 val)
 extern "C" UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[8];
-	UOSInt i = 8;
+	UIntOS i = 8;
 	*tmp = 0;
 	while (i-- > 0)
 	{
@@ -489,7 +489,7 @@ extern "C" UTF32Char *MyString_StrHexVal32VUTF32(UTF32Char *oriStr, UInt32 val)
 extern "C" UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[8];
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];
@@ -502,7 +502,7 @@ extern "C" UTF32Char *MyString_StrHexVal32UTF32(UTF32Char *oriStr, UInt32 val)
 extern "C" UTF32Char *MyString_StrHexVal24UTF32(UTF32Char *oriStr, UInt32 val)
 {
 	UTF32Char *tmp = &oriStr[6];
-	UOSInt i = 6;
+	UIntOS i = 6;
 	while (i-- > 0)
 	{
 		*--tmp = MyString_STRHEXARR[val & 0xf];

@@ -7,7 +7,7 @@
 
 struct Media::DDrawManager::ClassData
 {
-	Data::FastMap<OSInt, LPDIRECTDRAW7> monMap;
+	Data::FastMap<IntOS, LPDIRECTDRAW7> monMap;
 	LPDIRECTDRAW7 defDD;
 	Optional<Media::MonitorMgr> monMgr;
 	Optional<Media::ColorManager> colorMgr;
@@ -22,7 +22,7 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 	{
 		return 1;
 	}
-	if (me->clsData->monMap.Get((OSInt)hMonitor) != 0)
+	if (me->clsData->monMap.Get((IntOS)hMonitor) != 0)
 	{
 		return 1;
 	}
@@ -38,7 +38,7 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 		}
 		else
 		{
-			me->clsData->monMap.Put((OSInt)hMonitor, lpDD);
+			me->clsData->monMap.Put((IntOS)hMonitor, lpDD);
 		}
 	}
 
@@ -52,7 +52,7 @@ void Media::DDrawManager::ReleaseAll()
 		this->clsData->defDD->Release();
 		this->clsData->defDD = 0;
 	}
-	UOSInt i;
+	UIntOS i;
 	i = this->clsData->monMap.GetCount();
 	while (i-- > 0)
 	{
@@ -95,7 +95,7 @@ Bool Media::DDrawManager::IsError()
 void *Media::DDrawManager::GetDD7(Optional<MonitorHandle> hMonitor)
 {
 	this->RecheckMonitor();
-	LPDIRECTDRAW7 ret = this->clsData->monMap.Get((OSInt)hMonitor.OrNull());
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Get((IntOS)hMonitor.OrNull());
 	if (ret)
 		return ret;
 	return this->clsData->defDD;
@@ -103,7 +103,7 @@ void *Media::DDrawManager::GetDD7(Optional<MonitorHandle> hMonitor)
 
 void Media::DDrawManager::ReleaseDD7(Optional<MonitorHandle> hMonitor)
 {
-	LPDIRECTDRAW7 ret = this->clsData->monMap.Remove((OSInt)hMonitor.OrNull());
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Remove((IntOS)hMonitor.OrNull());
 	if (ret)
 	{
 		ret->Release();
@@ -208,18 +208,18 @@ UInt32 Media::DDrawManager::GetRefreshRate(Optional<MonitorHandle> hMon)
 
 BOOL CALLBACK DDrawManager_MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
-	UOSInt *data = (UOSInt*)dwData;
+	UIntOS *data = (UIntOS*)dwData;
 	if (data[0] == data[1])
 	{
-		data[2] = (UOSInt)hMonitor;
+		data[2] = (UIntOS)hMonitor;
 	}
 	data[0]++;
     return TRUE;
 }
 
-Optional<MonitorHandle> Media::DDrawManager::GetMonitorHandle(UOSInt monIndex)
+Optional<MonitorHandle> Media::DDrawManager::GetMonitorHandle(UIntOS monIndex)
 {
-	UOSInt arrs[3];
+	UIntOS arrs[3];
 	arrs[0] = 0;
 	arrs[1] = monIndex;
 	arrs[2] = 0;
@@ -228,9 +228,9 @@ Optional<MonitorHandle> Media::DDrawManager::GetMonitorHandle(UOSInt monIndex)
 	return 0;
 }
 
-UOSInt Media::DDrawManager::GetMonitorCount()
+UIntOS Media::DDrawManager::GetMonitorCount()
 {
-	UOSInt arrs[3];
+	UIntOS arrs[3];
 	arrs[0] = 0;
 	arrs[1] = 0;
 	arrs[2] = 0;
@@ -240,7 +240,7 @@ UOSInt Media::DDrawManager::GetMonitorCount()
 
 }
 
-Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
 	if (this->IsError())
 	{

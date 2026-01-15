@@ -11,18 +11,18 @@ namespace Media
 		class NearestNeighbourResizer32_32 : public Media::ImageResizer
 		{
 		private:
-			OSInt lastsbpl;
+			IntOS lastsbpl;
 			Double lastswidth;
 			Double lastsheight;
-			UOSInt lastdwidth;
-			UOSInt lastdheight;
-			UnsafeArrayOpt<OSInt> xindex;
-			UnsafeArrayOpt<OSInt> yindex;
+			UIntOS lastdwidth;
+			UIntOS lastdheight;
+			UnsafeArrayOpt<IntOS> xindex;
+			UnsafeArrayOpt<IntOS> yindex;
 		public:
 			NearestNeighbourResizer32_32();
 			virtual ~NearestNeighbourResizer32_32();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight);
 			virtual Bool Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg);
 			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
 			virtual Optional<Media::StaticImage> ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);

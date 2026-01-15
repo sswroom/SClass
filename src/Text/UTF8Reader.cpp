@@ -11,7 +11,7 @@
 
 void Text::UTF8Reader::FillBuffer()
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	if (this->stm->CanSeek())
 	{
 		UInt64 currPos = ((IO::SeekableStream*)this->stm.Ptr())->GetPosition();
@@ -49,7 +49,7 @@ void Text::UTF8Reader::CheckHeader()
 {
 	if (this->buffSize != 0)
 		return;
-	UOSInt readSize;
+	UIntOS readSize;
 	readSize = this->stm->Read(Data::ByteArray(&this->buff[this->buffSize], 4 - this->buffSize));
 #ifdef VERBOSE
 	printf("UTF8Reader.CH read %d bytes\r\n", (UInt32)readSize);
@@ -317,7 +317,7 @@ UTF32Char Text::UTF8Reader::Read()
 	return 0;
 }
 
-Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
+Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UIntOS maxCharCnt)
 {
 #if defined(VERBOSE)
 	printf("UTF8Reader.RLS: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
@@ -330,12 +330,12 @@ Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCn
 	}
 
 	this->lineBreak = Text::LineBreakType::None;
-	UOSInt currSize = 0;
-	UOSInt writeSize = 0;
-	UOSInt charSize;
-	UOSInt currOfst = this->currOfst;
-	UOSInt buffSize = this->buffSize;
-	UOSInt nextCheckSize = buffSize - currOfst;
+	UIntOS currSize = 0;
+	UIntOS writeSize = 0;
+	UIntOS charSize;
+	UIntOS currOfst = this->currOfst;
+	UIntOS buffSize = this->buffSize;
+	UIntOS nextCheckSize = buffSize - currOfst;
 	if (maxCharCnt < nextCheckSize)
 	{
 		nextCheckSize = maxCharCnt;
@@ -467,7 +467,7 @@ Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCn
 	return true;
 }
 
-UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff, UOSInt maxCharCnt)
+UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff, UIntOS maxCharCnt)
 {
 #if defined(VERBOSE)
 	printf("UTF8Reader.RL: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
@@ -480,12 +480,12 @@ UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff,
 	}
 
 	this->lineBreak = Text::LineBreakType::None;
-	UOSInt currSize = 0;
-	UOSInt writeSize = 0;
-	UOSInt charSize;
-	UOSInt currOfst = this->currOfst;
-	UOSInt buffSize = this->buffSize;
-	UOSInt nextCheckSize = buffSize - currOfst;
+	UIntOS currSize = 0;
+	UIntOS writeSize = 0;
+	UIntOS charSize;
+	UIntOS currOfst = this->currOfst;
+	UIntOS buffSize = this->buffSize;
+	UIntOS nextCheckSize = buffSize - currOfst;
 	if (maxCharCnt < nextCheckSize)
 	{
 		nextCheckSize = maxCharCnt;

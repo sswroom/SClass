@@ -73,14 +73,14 @@ Bool Net::SNMPClient::IsError()
 Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UInt8 pduBuff[64];
-	UOSInt oidLen;
+	UIntOS oidLen;
 	oidLen = Net::ASN1Util::OIDText2PDU(oidText, pduBuff);
 	return V1GetRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UIntOS oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -116,14 +116,14 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::Socket
 Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UInt8 pduBuff[64];
-	UOSInt oidLen;
+	UIntOS oidLen;
 	oidLen = Net::ASN1Util::OIDText2PDU(oidText, pduBuff);
 	return V1GetNextRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UIntOS oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -199,13 +199,13 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::Add
 	return Net::SNMPUtil::ES_NOERROR;
 }
 
-UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP)
+UIntOS Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP)
 {
 	UInt8 pduBuff[64];
-	UOSInt oidLen;
-	UOSInt buffSize;
+	UIntOS oidLen;
+	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
-	UOSInt initCnt = addrList->GetCount();
+	UIntOS initCnt = addrList->GetCount();
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
 	pdu.BeginSequence();

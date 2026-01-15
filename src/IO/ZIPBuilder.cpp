@@ -25,10 +25,10 @@ IO::ZIPBuilder::~ZIPBuilder()
 	IO::ZIPBuilder::FileInfo *file;
 	UInt8 hdrBuff[512];
 	Data::DateTime dt;
-	UOSInt hdrLen;
-	UOSInt cdLen = 0;
-	UOSInt i = 0;
-	UOSInt j = this->files.GetCount();
+	UIntOS hdrLen;
+	UIntOS cdLen = 0;
+	UIntOS i = 0;
+	UIntOS j = this->files.GetCount();
 	UInt8 minVer;
 	while (i < j)
 	{
@@ -58,7 +58,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		#if _OSINT_SIZE > 32
 		if (file->compSize >= 0xFFFFFFFFLL || file->fileOfst >= 0xFFFFFFFFLL || file->uncompSize >= 0xFFFFFFFFLL)
 		{
-			UOSInt len = 0;
+			UIntOS len = 0;
 			WriteUInt16(&hdrBuff[hdrLen], 1);
 			if (file->uncompSize >= 0xFFFFFFFFLL)
 			{
@@ -159,19 +159,19 @@ IO::ZIPBuilder::~ZIPBuilder()
 	}
 }
 
-Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	UInt8 hdrBuff[512];
-	UOSInt hdrLen;
+	UIntOS hdrLen;
 	UInt8 *outBuff = MemAlloc(UInt8, fileSize + 32);
-	UOSInt compSize;
+	UIntOS compSize;
 	if (compLevel == Data::Compress::Inflate::CompressionLevel::NoCompression)
 	{
 		compSize = fileSize;
 	}
 	else
 	{
-		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent.Ptr(), fileSize, outBuff, false, compLevel);
+		compSize = (UIntOS)Data::Compress::Inflate::Compress(fileContent.Ptr(), fileSize, outBuff, false, compLevel);
 		if (compSize == 0)
 		{
 			compLevel = Data::Compress::Inflate::CompressionLevel::NoCompression;
@@ -196,7 +196,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	hdrLen = 30 + fileName.leng;
 	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
-		UOSInt len = 4;
+		UIntOS len = 4;
 		WriteUInt16(&hdrBuff[hdrLen], 1);
 		if (fileSize >= 0xffffffffLL)
 		{
@@ -257,7 +257,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	this->files.Add(file);
 	if (compSize >= fileSize)
 	{
-		UOSInt writeSize;
+		UIntOS writeSize;
 		WriteInt16(&hdrBuff[8], 0x0);
 		WriteInt32(&hdrBuff[18], (Int32)fileSize);
 		file->compMeth = 0;
@@ -275,7 +275,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	}
 	else
 	{
-		UOSInt writeSize;
+		UIntOS writeSize;
 		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
 		writeSize += this->stm.WriteCont(outBuff, compSize);
 		this->currOfst += writeSize;
@@ -297,7 +297,7 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 		return false;
 
 	UInt8 hdrBuff[512];
-	UOSInt hdrLen;
+	UIntOS hdrLen;
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
 	WriteUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 45;
@@ -346,7 +346,7 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	Sync::MutexUsage mutUsage(this->mut);
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
-	UOSInt writeSize;
+	UIntOS writeSize;
 	writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
 	this->currOfst += writeSize;
 #if defined(VERBOSE)
@@ -361,7 +361,7 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr)
 {
 	UInt8 hdrBuff[512];
-	UOSInt hdrLen;
+	UIntOS hdrLen;
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
 	WriteUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 20; //Verison (2.0)
@@ -379,7 +379,7 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	hdrLen = 30 + fileName.leng;
 	if (buff.GetSize() >= 0xFFFFFFFFLL || decSize >= 0xFFFFFFFFLL)
 	{
-		UOSInt len = 4;
+		UIntOS len = 4;
 		WriteUInt16(&hdrBuff[hdrLen], 1);
 		if (decSize >= 0xffffffffLL)
 		{
@@ -430,7 +430,7 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	Sync::MutexUsage mutUsage(this->mut);
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
-	UOSInt writeSize;
+	UIntOS writeSize;
 	writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
 	writeSize += this->stm.WriteCont(buff.Arr(), buff.GetSize());
 	this->currOfst += writeSize;

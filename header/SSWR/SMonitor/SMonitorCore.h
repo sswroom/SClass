@@ -41,9 +41,9 @@ namespace SSWR
 			{
 				Int64 recTime;
 				Int64 recvTime;
-				UOSInt ndigital;
-				UOSInt nreading;
-				UOSInt nOutput;
+				UIntOS ndigital;
+				UIntOS nreading;
+				UIntOS nOutput;
 				Int32 profileId;
 				UInt32 digitalVals;
 				ReadingInfo readings[SMONITORCORE_DEVREADINGCNT];
@@ -65,19 +65,19 @@ namespace SSWR
 				Int64 version;
 
 				Int64 photoTime;
-				UOSInt photoSize;
+				UIntOS photoSize;
 				UInt8 *photoBuff;
 				UInt8 *photoBuffRecv;
-				UOSInt photoPacketSize;
+				UIntOS photoPacketSize;
 				Int32 photoSeq;
-				UOSInt photoOfst;
+				UIntOS photoOfst;
 				Int32 photoFmt;
 
 				Int64 readingTime;
-				UOSInt ndigital;
+				UIntOS ndigital;
 				UInt32 digitalVals;
-				UOSInt nReading;
-				UOSInt nOutput;
+				UIntOS nReading;
+				UIntOS nOutput;
 				ReadingInfo readings[SMONITORCORE_DEVREADINGCNT];
 				UnsafeArrayOpt<const UTF8Char> readingNames[SMONITORCORE_DEVREADINGCNT];
 				UnsafeArrayOpt<const UTF8Char> digitalNames[SMONITORCORE_DIGITALCNT];
@@ -106,7 +106,7 @@ namespace SSWR
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags) = 0;
 			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> readings) = 0;
 			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> digitals) = 0;
-			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList) = 0;
+			virtual UIntOS DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList) = 0;
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh) = 0;
 
 			virtual Bool UserExist() = 0;
@@ -114,9 +114,9 @@ namespace SSWR
 			virtual Bool UserSetPassword(Int32 userId, UnsafeArray<const UTF8Char> password) = 0;
 			virtual Optional<LoginInfo> UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password) = 0;
 			virtual void UserFreeLogin(NN<LoginInfo> login) = 0;
-			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList) = 0;
+			virtual UIntOS UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList) = 0;
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId) = 0;
-			virtual UOSInt UserGetList(NN<Data::ArrayListNN<WebUser>> userList) = 0;
+			virtual UIntOS UserGetList(NN<Data::ArrayListNN<WebUser>> userList) = 0;
 			virtual Optional<WebUser> UserGet(Int32 userId) = 0;
 			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayListNative<Int64>> devIdList) = 0;
 

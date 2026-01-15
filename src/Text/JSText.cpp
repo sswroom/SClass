@@ -145,13 +145,13 @@ void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, UnsafeArray<co
 		}
 		if (sptr - buff >= 250)
 		{
-			sb->AppendC(buff, (UOSInt)(sptr - buff));
+			sb->AppendC(buff, (UIntOS)(sptr - buff));
 			sptr = buff;
 		}
 	}
 	if (sptr > buff)
 	{
-		sb->AppendC(buff, (UOSInt)(sptr - buff));
+		sb->AppendC(buff, (UIntOS)(sptr - buff));
 	}
 	sb->AppendUTF8Char('\"');
 }
@@ -239,7 +239,7 @@ NN<Text::String> Text::JSText::ToNewJSText(UnsafeArray<const UTF8Char> srcPtr)
 {
 	UnsafeArray<const UTF8Char> nns = srcPtr;
 	UTF8Char c;
-	UOSInt chCnt;
+	UIntOS chCnt;
 	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -283,7 +283,7 @@ NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char> s)
 {
 	UnsafeArray<const UTF8Char> srcPtr;
 	UTF8Char c;
-	UOSInt chCnt;
+	UIntOS chCnt;
 	srcPtr = s;
 	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
@@ -327,7 +327,7 @@ UnsafeArray<const WChar> Text::JSText::ToNewJSTextW(UnsafeArrayOpt<const WChar> 
 	}
 	nns = srcPtr;
 	WChar c;
-	UOSInt chCnt;
+	UIntOS chCnt;
 	chCnt = 3;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -360,7 +360,7 @@ UnsafeArray<const WChar> Text::JSText::ToNewJSTextDQuoteW(UnsafeArrayOpt<const W
 	}
 	UnsafeArray<const WChar> srcPtr;
 	WChar c;
-	UOSInt chCnt;
+	UIntOS chCnt;
 
 	srcPtr = nns;
 	chCnt = 3;
@@ -389,7 +389,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 	UnsafeArray<const UTF8Char> srcPtr;
 	UnsafeArray<UTF8Char> destPtr;
 	NN<Text::String> outS;
-	UOSInt chCnt;
+	UIntOS chCnt;
 	UTF8Char c;
 	UTF8Char startC;
 	UInt32 v;
@@ -648,7 +648,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 	UnsafeArray<const WChar> srcPtr;
 	UnsafeArray<WChar> destPtr;
 	UnsafeArray<WChar> outStr;
-	UOSInt chCnt;
+	UIntOS chCnt;
 	WChar c;
 	WChar startC;
 	Int32 v;
@@ -874,12 +874,12 @@ UnsafeArray<UTF8Char> Text::JSText::JSDouble(UnsafeArray<UTF8Char> buff, Double 
 		return Text::StrDouble(buff, val);
 }
 
-Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UIntOS buffSize, UIntOS initLev, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt lev = initLev;
-	UOSInt i = 0;
-	UOSInt startOfst = 0;
-	OSInt endOfst = -1;
+	UIntOS lev = initLev;
+	UIntOS i = 0;
+	UIntOS startOfst = 0;
+	IntOS endOfst = -1;
 	UTF8Char c;
 	while (i < buffSize)
 	{
@@ -902,7 +902,7 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 					sb->AppendChar('\t', lev);
 				if (endOfst != -1)
 				{
-					sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
+					sb->AppendC(&buff[startOfst], (UIntOS)endOfst + 1 - startOfst);
 				}
 				else
 				{
@@ -912,7 +912,7 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 			}
 			lev--;
 			startOfst = i;
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 		}
 		else if (c == ',')
 		{
@@ -939,7 +939,7 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 					break;
 				i++;
 			}
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 		}
 		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
 		{
@@ -950,7 +950,7 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 		}
 		else
 		{
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 		}
 		
 		i++;
@@ -965,16 +965,16 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 	return lev == initLev;
 }
 
-Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UIntOS buffSize, UIntOS initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayListNative<Int32> lastType;
-	UOSInt lev = initLev;
-	UOSInt i = 0;
-	UOSInt startOfst = 0;
-	OSInt endOfst = -1;
+	UIntOS lev = initLev;
+	UIntOS i = 0;
+	UIntOS startOfst = 0;
+	IntOS endOfst = -1;
 	UTF8Char c;
 	UTF8Char lastC = 0;
-	OSInt jsonLev = -1;
+	IntOS jsonLev = -1;
 	lastType.Add(0);
 	while (i < buffSize)
 	{
@@ -983,7 +983,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 		{
 			if ((lastC == '=' || lastC == '(') && jsonLev == -1)
 			{
-				jsonLev = (OSInt)lev;
+				jsonLev = (IntOS)lev;
 			}
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
@@ -1002,7 +1002,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 					sb->AppendChar('\t', lev);
 				if (endOfst != -1)
 				{
-					sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
+					sb->AppendC(&buff[startOfst], (UIntOS)endOfst + 1 - startOfst);
 				}
 				else
 				{
@@ -1012,8 +1012,8 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 			}
 			lev--;
 			startOfst = i;
-			endOfst = (OSInt)i;
-			if ((OSInt)lev <= jsonLev)
+			endOfst = (IntOS)i;
+			if ((IntOS)lev <= jsonLev)
 			{
 				jsonLev = -1;
 			}
@@ -1033,7 +1033,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 			}
 			else
 			{
-				endOfst = (OSInt)i;
+				endOfst = (IntOS)i;
 			}
 			lastC = c;
 		}
@@ -1047,7 +1047,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 						sb->AppendChar('\t', lev);
 					if (endOfst != -1)
 					{
-						sb->AppendC(&buff[startOfst], (UOSInt)endOfst + 1 - startOfst);
+						sb->AppendC(&buff[startOfst], (UIntOS)endOfst + 1 - startOfst);
 					}
 					else
 					{
@@ -1057,11 +1057,11 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 				}
 				lev--;
 				startOfst = i;
-				endOfst = (OSInt)i;
+				endOfst = (IntOS)i;
 			}
 			else
 			{
-				endOfst = (OSInt)i;
+				endOfst = (IntOS)i;
 			}
 			lastC = c;
 		}
@@ -1078,7 +1078,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 			}
 			else
 			{
-				endOfst = (OSInt)i;
+				endOfst = (IntOS)i;
 			}
 			lastC = c;
 		}
@@ -1108,7 +1108,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 				}
 				i++;
 			}
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 			lastC = c;
 		}
 		else if (c == '\'')
@@ -1127,7 +1127,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 				}
 				i++;
 			}
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 			lastC = c;
 		}
 		else if (c == '\r' || c == '\n')
@@ -1156,7 +1156,7 @@ Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSiz
 		}
 		else
 		{
-			endOfst = (OSInt)i;
+			endOfst = (IntOS)i;
 			if (c == '=' || c == '(' || c == ')')
 			{
 				lastC = c;

@@ -17,7 +17,7 @@ Bool running;
 static UInt32 __stdcall SerialViewer(AnyType userObj)
 {
 	UInt8 readBuff[1024];
-	UOSInt readSize;
+	UIntOS readSize;
 	{
 		running = true;
 		Text::StringBuilderUTF8 sb;
@@ -44,7 +44,7 @@ static UInt32 __stdcall SerialViewer(AnyType userObj)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt32 baudRate = 115200;
 	NEW_CLASS(console, IO::ConsoleWriter());

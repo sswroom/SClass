@@ -31,8 +31,8 @@ namespace Data
 		void SetCondition(Optional<Data::QueryConditions> cond);
 		NN<TableData> Clone() const;
 		NN<TableData> CreateSubTable(NN<Data::QueryConditions> cond) const;
-		UOSInt GetRowCount();
-		UOSInt GetRowCount(NN<Data::QueryConditions> cond);
+		UIntOS GetRowCount();
+		UIntOS GetRowCount(NN<Data::QueryConditions> cond);
 		Bool GetFirstData(Text::CStringNN columnName, Optional<Data::QueryConditions> cond, NN<VariItem> outItem);
 	};
 }

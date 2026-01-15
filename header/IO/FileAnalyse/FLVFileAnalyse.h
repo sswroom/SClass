@@ -18,29 +18,29 @@ namespace IO
 			{
 				UInt8 tagType;
 				UInt64 ofst;
-				UOSInt size;
+				UIntOS size;
 			} FLVTag;
 		private:
 			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<FLVTag> tags;
-			UOSInt hdrSize;
+			UIntOS hdrSize;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			UOSInt ParseScriptDataVal(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb);
-			void ParseScriptData(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
+			UIntOS ParseScriptDataVal(UnsafeArray<UInt8> data, UIntOS ofst, UIntOS endOfst, NN<Text::StringBuilderUTF8> sb);
+			void ParseScriptData(UnsafeArray<UInt8> data, UIntOS ofst, UIntOS endOfst, UIntOS frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
 			FLVFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~FLVFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

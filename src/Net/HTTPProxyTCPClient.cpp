@@ -71,7 +71,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	UTF8Char userPwd[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(reqBuff, UTF8STRC("CONNECT "));
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt respSize;
+	UIntOS respSize;
 	sptr = destHost.ConcatTo(sptr);
 	*sptr++ = ':';
 	sptr = Text::StrUInt16(sptr, destPort);
@@ -91,14 +91,14 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Proxy-Authorization: Basic "));
 		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), sptr);
+		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UIntOS)(sptr2 - userPwd), sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 #if defined(VERBOSE)
 	printf("HTTPProxyTCP: Sending:\r\n%s", reqBuff);
 #endif
-	this->Write(Data::ByteArrayR((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff)));
+	this->Write(Data::ByteArrayR((UInt8*)reqBuff, (UIntOS)(sptr - reqBuff)));
 	this->SetTimeout(4000);
 	respSize = this->Read(BYTEARR(reqBuff));
 	this->SetTimeout(60000);

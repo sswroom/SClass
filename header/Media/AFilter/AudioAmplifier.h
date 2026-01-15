@@ -18,7 +18,7 @@ namespace Media
 
 			virtual void GetFormat(NN<AudioFormat> format);
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void SetLevel(Double level);
 		};

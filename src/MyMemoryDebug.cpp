@@ -25,7 +25,7 @@ Int32 MemTotal;
 Int32 MemAllocated;
 Int32 MemAllocCnt;
 Int32 MemFreeCnt;
-OSInt mcBreakPt = 0;
+IntOS mcBreakPt = 0;
 Int32 mcInitCnt = 0;
 Sync::Mutex *mcMut = 0;
 
@@ -39,7 +39,7 @@ typedef struct
 
 void MemPtrChk(void *ptr)
 {
-	if ((OSInt)ptr == mcBreakPt)
+	if ((IntOS)ptr == mcBreakPt)
 	{
 		DebugBreak();
 	}
@@ -64,7 +64,7 @@ void MemInit()
 	}
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
+void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
 {
 }
 
@@ -111,7 +111,7 @@ Int32 MemCheckError()
 	return 0;
 }
 
-void *MAlloc(OSInt size)
+void *MAlloc(IntOS size)
 {
 //	void *ptr = emalloc(size);
 //	return ptr;
@@ -190,11 +190,11 @@ void *MAlloc(OSInt size)
 	return 0;
 }
 
-void *MAllocA64(OSInt size)
+void *MAllocA64(IntOS size)
 {
 	UInt8 *mptr = (UInt8*)MAlloc(size + 80);
 	UInt8 *sptr = mptr;
-	if ((OSInt)mptr == mcBreakPt)
+	if ((IntOS)mptr == mcBreakPt)
 	{
 		DebugBreak();
 	}
@@ -216,13 +216,13 @@ void *MAllocA64(OSInt size)
 	}
 #endif
 #elif defined(HAS_INTRIN)
-	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+	*(IntOS*)mptr = (IntOS)_ReturnAddress();
 #else
-	*(OSInt*)mptr = 0;
+	*(IntOS*)mptr = 0;
 #endif
 
 	mptr += 16;
-	mptr += 64 - (63 & (OSInt)mptr);
+	mptr += 64 - (63 & (IntOS)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
 	return mptr;
 }

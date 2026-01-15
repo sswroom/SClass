@@ -5,8 +5,8 @@
 
 extern "C"
 {
-	void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
-//	void CSYVU9_RGB8_do_yvu9rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2);
+	void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, UIntOS isFirst, UIntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+//	void CSYVU9_RGB8_do_yvu9rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, UIntOS width, UIntOS height, IntOS dbpl, UIntOS isFirst, UIntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2);
 }
 
 /*void CSYVU9_RGB8_do_yvu9rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr)
@@ -664,7 +664,7 @@ yv2rflopexit:
 UInt32 Media::CS::CSYVU9_RGB8::WorkerThread(AnyType obj)
 {
 	NN<CSYVU9_RGB8> converter = obj.GetNN<CSYVU9_RGB8>();
-	UOSInt threadId = converter->currId;
+	UIntOS threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -697,7 +697,7 @@ UInt32 Media::CS::CSYVU9_RGB8::WorkerThread(AnyType obj)
 
 Media::CS::CSYVU9_RGB8::CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
 {
-	UOSInt i;
+	UIntOS i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	stats = MemAllocArr(THREADSTAT, nThread);
@@ -723,7 +723,7 @@ Media::CS::CSYVU9_RGB8::CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<c
 
 Media::CS::CSYVU9_RGB8::~CSYVU9_RGB8()
 {
-	UOSInt i = nThread;
+	UIntOS i = nThread;
 	Bool exited;
 	while (i-- > 0)
 	{
@@ -788,15 +788,15 @@ Media::CS::CSYVU9_RGB8::~CSYVU9_RGB8()
 }
 
 ////////////////////////////////////////////////////////////////
-void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UInt32 isLast = 1;
 	UInt32 isFirst = 0;
-	UOSInt i = this->nThread;
-	UOSInt lastHeight = dispHeight;
-	UOSInt currHeight;
-	UOSInt cSize = dispWidth << 4;
+	UIntOS i = this->nThread;
+	UIntOS lastHeight = dispHeight;
+	UIntOS currHeight;
+	UIntOS cSize = dispWidth << 4;
 	if (srcStoreWidth & 3)
 	{
 		srcStoreWidth = srcStoreWidth + 4 - (srcStoreWidth & 3);
@@ -811,12 +811,12 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	{
 		if (i == 0)
 			isFirst = 1;
-		currHeight = MulDivUOS(i, dispHeight, nThread) & (UOSInt)~3;
+		currHeight = MulDivUOS(i, dispHeight, nThread) & (UIntOS)~3;
 
 		stats[i].yPtr = srcPtr[0] + srcStoreWidth * currHeight;
 		stats[i].vPtr = srcPtr[0] + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 4);
 		stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 4);
-		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (IntOS)currHeight;
 		stats[i].isFirst = isFirst;
 		stats[i].isLast = isLast;
 		isLast = 0;
@@ -833,17 +833,17 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 			stats[i].csLineSize = dispWidth;
 			stats[i].csNALineBuff = MemAlloc(UInt8, (cSize << 1) + 15);
 			stats[i].csNALineBuff2 = MemAlloc(UInt8, (cSize << 1) + 15);
-			if (((OSInt)stats[i].csNALineBuff) & 15)
+			if (((IntOS)stats[i].csNALineBuff) & 15)
 			{
-				stats[i].csLineBuff = stats[i].csNALineBuff + 16 - (((OSInt)stats[i].csNALineBuff) & 15);
+				stats[i].csLineBuff = stats[i].csNALineBuff + 16 - (((IntOS)stats[i].csNALineBuff) & 15);
 			}
 			else
 			{
 				stats[i].csLineBuff = stats[i].csNALineBuff;
 			}
-			if (((OSInt)stats[i].csNALineBuff2) & 15)
+			if (((IntOS)stats[i].csNALineBuff2) & 15)
 			{
-				stats[i].csLineBuff2 = stats[i].csNALineBuff2 + 16 - (((OSInt)stats[i].csNALineBuff2) & 15);
+				stats[i].csLineBuff2 = stats[i].csNALineBuff2 + 16 - (((IntOS)stats[i].csNALineBuff2) & 15);
 			}
 			else
 			{
@@ -874,7 +874,7 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	}
 }
 
-UOSInt Media::CS::CSYVU9_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSYVU9_RGB8::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return (width * height * 9) >> 3;
 }

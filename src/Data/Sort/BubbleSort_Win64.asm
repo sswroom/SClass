@@ -2,7 +2,7 @@ section .text
 
 global BubbleSort_SortInt32
 
-;void BubbleSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+;void BubbleSort_SortInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 ;0 retAddr
 ;rcx arr
 ;rdx firstIndex

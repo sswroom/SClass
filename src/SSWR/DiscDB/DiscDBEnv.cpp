@@ -178,7 +178,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	this->db.Delete();
 	DEL_CLASS(this->monMgr);
 
-	UOSInt i;
+	UIntOS i;
 	NN<BurntDiscInfo> disc;
 	i = this->discMap.GetCount();
 	while (i-- > 0)
@@ -289,7 +289,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::
 	}
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList)
 {
 	discList->AddAll(this->discMap);
 	return this->discMap.GetCount();
@@ -300,12 +300,12 @@ Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::
 	return this->discMap.GetC(discId);
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CStringNN discId)
+IntOS SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CStringNN discId)
 {
 	return this->discMap.IndexOfC(discId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> name, UInt64 fileSize, Text::CString category, Int32 videoId)
+Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(UnsafeArray<const UTF8Char> discId, UIntOS fileId, UnsafeArray<const UTF8Char> name, UInt64 fileSize, Text::CString category, Int32 videoId)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -327,10 +327,10 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(UnsafeArray<const UTF8Char> discId, U
 	return db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList)
 {
 	NN<DiscFileInfo> file;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
 		return 0;
@@ -363,7 +363,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, NN<Data::Arr
 
 void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(NN<Data::ArrayListNN<DiscFileInfo>> fileList)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<DiscFileInfo> file;
 	i = fileList->GetCount();
 	while (i-- > 0)
@@ -375,17 +375,17 @@ void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(NN<Data::ArrayListNN<DiscFileInfo>>
 	fileList->Clear();
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeCount()
+UIntOS SSWR::DiscDB::DiscDBEnv::GetDVDTypeCount()
 {
 	return this->dvdTypeMap.GetCount();
 }
 
-Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::GetDVDType(UOSInt index)
+Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::GetDVDType(UIntOS index)
 {
 	return this->dvdTypeMap.GetItem(index);
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CStringNN discTypeID)
+IntOS SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CStringNN discTypeID)
 {
 	return this->dvdTypeMap.IndexOfC(discTypeID);
 }
@@ -448,7 +448,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::Ne
 	return nullptr;
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList)
 {
 	cateList->AddAll(this->cateMap);
 	return this->cateMap.GetCount();
@@ -459,17 +459,17 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> SSWR::DiscDB::DiscDBEnv::G
 	return this->discTypeMap.GetC(discTypeId);
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList)
 {
 	discTypeList->AddAll(this->discTypeMap);
 	return this->discTypeMap.GetCount();
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, UnsafeArray<const UTF8Char> brand, UOSInt brandLen)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, UnsafeArray<const UTF8Char> brand, UIntOS brandLen)
 {
-	UOSInt ret;
-	UOSInt i;
-	UOSInt j;
+	UIntOS ret;
+	UIntOS i;
+	UIntOS j;
 	NN<DiscTypeInfo> discType;
 	ret = 0;
 	i = 0;
@@ -519,7 +519,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(UnsafeArray<const UTF8Char> anime, Un
 	}
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList)
+UIntOS SSWR::DiscDB::DiscDBEnv::GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList)
 {
 	dvdVideoList->AddAll(this->dvdVideoMap);
 	return this->dvdVideoMap.GetCount();
@@ -530,7 +530,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> SSWR::DiscDB::DiscDBEnv::G
 	return this->dvdVideoMap.Get(videoId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewMovies(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> mainTitle, NN<Text::String> type, UnsafeArrayOpt<const UTF8Char> chapter, UnsafeArrayOpt<const UTF8Char> chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, UnsafeArrayOpt<const UTF8Char> aspectRatio, UnsafeArrayOpt<const UTF8Char> remark)
+Bool SSWR::DiscDB::DiscDBEnv::NewMovies(UnsafeArray<const UTF8Char> discId, UIntOS fileId, UnsafeArray<const UTF8Char> mainTitle, NN<Text::String> type, UnsafeArrayOpt<const UTF8Char> chapter, UnsafeArrayOpt<const UTF8Char> chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, UnsafeArrayOpt<const UTF8Char> aspectRatio, UnsafeArrayOpt<const UTF8Char> remark)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -588,9 +588,9 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 	}
 	Text::StringBuilderUTF8 sbDiscId;
 	NN<Text::String> s = fd->GetFullName();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sbDiscId.AppendC(&s->v[i + 1], s->leng - i - 1);
 	i = sbDiscId.IndexOf('.');

@@ -30,7 +30,7 @@ Int32 Exporter::GUIPNGExporter::GetName()
 	return *(Int32*)"GPPN";
 }
 
-Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GUIPNGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -102,7 +102,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
 	UnsafeArray<UInt8> pngBuff;
-	UOSInt pngSize;
+	UIntOS pngSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		imgList = NN<Media::ImageList>::ConvertFrom(pobj);
@@ -116,7 +116,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		{
 			UInt32 chunkSize;
 			Int32 chunkType;
-			UOSInt i;
+			UIntOS i;
 			stm->Write(Data::ByteArrayR(pngBuff, 8));
 			i = 8;
 			while (true)
@@ -142,7 +142,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 					Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 					chunkBuff[30] = 0;
-					UOSInt compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+					UIntOS compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 					if (compSize > 0)
 					{
 						UInt8 crcBuff[4];

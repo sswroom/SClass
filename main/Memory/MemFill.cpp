@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 buff[1021];
 	UInt8 *buff2;
 	Double t;
-	OSInt i;
+	IntOS i;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;

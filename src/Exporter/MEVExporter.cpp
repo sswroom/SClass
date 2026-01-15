@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::MEVExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -48,11 +48,11 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	NN<Map::MapEnv> env = NN<Map::MapEnv>::ConvertFrom(pobj);
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	OSInt si;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	IntOS si;
 	UInt32 stmPos;
 	UInt8 buff[256];
 	Map::MapEnv::ImageInfo imgInfo;
@@ -71,14 +71,14 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		env->GetImageFileInfo(i, imgInfo);
 		sptr = imgInfo.fileName->ConcatTo(sbuff);
-		j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		j = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
 		{
 			sbuff[j] = 0;
 			si = dirArr.SortedIndexOfPtr(sbuff, j);
 			if (si < 0)
 			{
-				dirArr.Insert((UOSInt)~si, Text::String::New(sbuff, j).Ptr());
+				dirArr.Insert((UIntOS)~si, Text::String::New(sbuff, j).Ptr());
 			}
 		}
 	}
@@ -127,7 +127,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		env->GetImageFileInfo(i, imgInfo);
 		sptr = imgInfo.fileName->ConcatTo(sbuff);
-		k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		k = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
 		WriteUInt32(&buff[4], AddString(strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
@@ -149,7 +149,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		Double fontSize;
 		Bool bold;
 		UInt32 fontColor;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UInt32 buffColor;
 
 		optsptr = env->GetFontStyleName(i, sbuff);
@@ -161,7 +161,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[0] = 0;
 		if (optsptr.SetTo(sptr))
 		{
-			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos));
+			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UIntOS)(sptr - sbuff), stmPos));
 		}
 		else
 		{
@@ -189,7 +189,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[0] = 0;
 		if (optsptr.SetTo(sptr))
 		{
-			*(UInt32*)&buff[4] = AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos);
+			*(UInt32*)&buff[4] = AddString(strArr, sbuff, (UIntOS)(sptr - sbuff), stmPos);
 		}
 		else
 		{
@@ -205,7 +205,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			UInt32 color;
 			Double thick;
-			UOSInt npattern;
+			UIntOS npattern;
 			UnsafeArrayOpt<UInt8> pattern;
 			UnsafeArray<UInt8> nnpattern;
 
@@ -265,10 +265,10 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group)
 {
-	UOSInt i = 0;
-	UOSInt j = env->GetItemCount(group);
-	UOSInt k;
-	OSInt si;
+	UIntOS i = 0;
+	UIntOS j = env->GetItemCount(group);
+	UIntOS k;
+	IntOS si;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Map::MapEnv::MapItem> item;
@@ -286,14 +286,14 @@ void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListStrin
 				NN<Map::MapEnv::LayerItem> lyr = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
 				NN<Map::MapDrawLayer> layer = lyr->layer;
 				sptr = layer->GetSourceName(sbuff);
-				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+				k = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
 					si = dirArr->SortedIndexOfPtr(sbuff, k);
 					if (si < 0)
 					{
-						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
+						dirArr->Insert((UIntOS)~si, Text::String::New(sbuff, k).Ptr());
 					}
 				}
 			}
@@ -318,7 +318,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 	return strRec->byteSize;
 }
 
-UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UOSInt strLen, UInt32 fileOfst)
+UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UIntOS strLen, UInt32 fileOfst)
 {
 	NN<MEVStrRecord> strRec;
 	if (!strArr->GetC({strVal, strLen}).SetTo(strRec))
@@ -339,9 +339,9 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Map::MapEnv::LayerItem setting;
-	UOSInt i = 0;
-	UOSInt j = env->GetItemCount(group);
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = env->GetItemCount(group);
+	UIntOS k;
 	NN<Map::MapEnv::MapItem> item;
 	while (i < j)
 	{
@@ -368,8 +368,8 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 				*(Int32*)&buff[0] = item->itemType;
 				sptr = layer->GetSourceName(sbuff);
 				*(Int32*)&buff[4] = 0;
-				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UOSInt)(sptr - &sbuff[k + 1]), 4 + *stmPos);
+				k = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UIntOS)(sptr - &sbuff[k + 1]), 4 + *stmPos);
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;

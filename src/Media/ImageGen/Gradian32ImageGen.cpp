@@ -17,15 +17,15 @@ Text::CStringNN Media::ImageGen::Gradian32ImageGen::GetName() const
 	return CSTR("Gradian Test 32-bit");
 }
 
-Optional<Media::RasterImage> Media::ImageGen::Gradian32ImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::Gradian32ImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
 	Media::StaticImage *outImage;
 	UnsafeArray<UInt8> imgPtr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt8 hv;
 	UInt8 vv;
-	UOSInt bpl;
+	UIntOS bpl;
 	if (size.x < 16 || size.y < 16)
 		return nullptr;
 //	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());

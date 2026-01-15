@@ -34,7 +34,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> th
 		}
 		else if (data->type == 2 || data->type == 3)
 		{
-			data->size = 23 + (UOSInt)ReadUInt16(&packetHdr[21]);
+			data->size = 23 + (UIntOS)ReadUInt16(&packetHdr[21]);
 		}
 		else
 		{
@@ -79,12 +79,12 @@ Text::CStringNN IO::FileAnalyse::SMTCFileAnalyse::GetFormatName()
 	return CSTR("SMTC");
 }
 
-UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::SMTCFileAnalyse::GetFrameCount()
 {
 	return 1 + this->dataList.GetCount();
 }
 
-Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	if (index == 0)
@@ -127,32 +127,32 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 		break;
 	case 2:
 		sb->AppendC(UTF8STRC("Recv "));
-		sb->AppendUOSInt(data->size - 23);
+		sb->AppendUIntOS(data->size - 23);
 		sb->AppendC(UTF8STRC(" bytes"));
 		break;
 	case 3:
 		sb->AppendC(UTF8STRC("Sent "));
-		sb->AppendUOSInt(data->size - 23);
+		sb->AppendUIntOS(data->size - 23);
 		sb->AppendC(UTF8STRC(" bytes"));
 		break;
 	}
 	return true;
 }
 
-UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst < 4)
 	{
 		return 0;
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)this->dataList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->dataList.GetCount() - 1;
+	IntOS k;
 	NN<DataInfo> data;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		data = this->dataList.GetItemNoCheck((UOSInt)k);
+		data = this->dataList.GetItemNoCheck((UIntOS)k);
 		if (ofst < data->ofst)
 		{
 			j = k - 1;
@@ -163,13 +163,13 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k + 1;
+			return (UIntOS)k + 1;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<IO::FileAnalyse::FrameDetail> frame;
@@ -196,7 +196,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	data = this->dataList.GetItemNoCheck(index - 1);
 	mutUsage.EndUse();
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(data->ofst, data->size));
-	fd->GetRealData(data->ofst, (UOSInt)data->size, this->packetBuff);
+	fd->GetRealData(data->ofst, (UIntOS)data->size, this->packetBuff);
 	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(this->packetBuff.ReadI64(0), this->packetBuff.ReadU32(8)), Data::DateTimeUtil::GetLocalTzQhr());
 	sptr = ts.ToStringNoZone(sbuff);
 	frame->AddField(0, 12, CSTR("Time"), CSTRP(sbuff, sptr));

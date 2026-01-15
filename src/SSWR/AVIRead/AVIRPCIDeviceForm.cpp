@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(NN<IO::PCIInfo> item1, NN<IO::PCIInfo> item2)
+IntOS __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(NN<IO::PCIInfo> item1, NN<IO::PCIInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -108,8 +108,8 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientContro
 	this->OnMonitorChanged();
 
 	NN<IO::PCIInfo> pci;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 

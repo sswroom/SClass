@@ -117,7 +117,7 @@ UInt16 Net::LoRaGateway::NextToken()
 	return this->tokenNext++;
 }
 
-Bool Net::LoRaGateway::SendPushData(UnsafeArray<const UInt8> data, UOSInt dataLeng)
+Bool Net::LoRaGateway::SendPushData(UnsafeArray<const UInt8> data, UIntOS dataLeng)
 {
 	UInt8 *buff = MemAlloc(UInt8, 12 + dataLeng);
 	UInt16 token = this->NextToken();

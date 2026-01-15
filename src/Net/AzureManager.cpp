@@ -16,7 +16,7 @@ Net::AzureManager::~AzureManager()
 {
 	if (this->keyMap)
 	{
-		UOSInt i = this->keyMap->GetCount();
+		UIntOS i = this->keyMap->GetCount();
 		while (i-- > 0)
 		{
 			this->keyMap->GetItemNoCheck(i)->Release();
@@ -39,8 +39,8 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 				NN<Text::JSONArray> keys;
 				if (json->GetValueArray(CSTR("keys")).SetTo(keys))
 				{
-					UOSInt i = 0;
-					UOSInt j = keys->GetArrayLength();
+					UIntOS i = 0;
+					UIntOS j = keys->GetArrayLength();
 					while (i < j)
 					{
 						NN<Text::JSONBase> key;
@@ -64,7 +64,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];
-	UOSInt keySize = b64.DecodeBin(s->ToCString(), keyBuff);
+	UIntOS keySize = b64.DecodeBin(s->ToCString(), keyBuff);
 	Crypto::Cert::X509Cert cert(kid, Data::ByteArrayR(keyBuff, keySize));
 	return cert.GetNewPublicKey();
 }

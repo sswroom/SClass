@@ -51,7 +51,7 @@ Data::Duration Media::NWASource::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->currBlock * blkSample, this->format.frequency);
 }
 
-UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
+UIntOS Media::NWASource::ReadBlock(Data::ByteArray buff)
 {
 	NN<IO::StreamData> data;
 	if (!this->data.SetTo(data))
@@ -237,7 +237,7 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 	return retSize;
 }
 
-UOSInt Media::NWASource::GetMinBlockSize()
+UIntOS Media::NWASource::GetMinBlockSize()
 {
 	return this->blockSize * (this->format.bitpersample / 8);
 }

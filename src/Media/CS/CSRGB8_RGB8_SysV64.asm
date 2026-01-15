@@ -15,7 +15,7 @@ global _CSRGB8_RGB8_UpdateRGBTablePal
 global CSRGB8_RGB8_Convert
 global _CSRGB8_RGB8_Convert
 
-;void CSRGB8_RGB8_UpdateRGBTable(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, OSInt nColor)
+;void CSRGB8_RGB8_UpdateRGBTable(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, IntOS nColor)
 ;0 rbx
 ;8 retAddr
 ;rcx srcPal
@@ -45,7 +45,7 @@ urtlop:
 	pop rbx
 	ret
 
-;void CSRGB8_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, OSInt destNbits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+;void CSRGB8_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, IntOS destNbits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 ;0 rdi
 ;8 rsi
 ;16 rbx

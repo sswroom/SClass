@@ -24,7 +24,7 @@ namespace Net
 		Optional<IO::Stream> stm;
 		Int64 logBeginTime;
 
-		static void __stdcall OnDataPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
+		static void __stdcall OnDataPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize);
 		static void __stdcall DNSResultFree(NN<DNSResult> res);
 		void BandwidthStatTime(NN<Net::EthernetAnalyzer::BandwidthStat> stat, Int64 time);
 	public:

@@ -7,7 +7,7 @@ namespace Data
 	{
 	public:
 		virtual ~Comparable() {};
-		virtual OSInt CompareTo(NN<Data::Comparable> obj) const = 0;
+		virtual IntOS CompareTo(NN<Data::Comparable> obj) const = 0;
 	};
 }
 #endif

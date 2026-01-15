@@ -5,7 +5,7 @@
 #include "Manage/ThreadContextMIPS.h"
 #include <sys/ucontext.h>
 
-Manage::ThreadContextMIPS::ThreadContextMIPS(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextMIPS::ThreadContextMIPS(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -18,13 +18,13 @@ Manage::ThreadContextMIPS::~ThreadContextMIPS()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextMIPS::GetRegisterCnt() const
+UIntOS Manage::ThreadContextMIPS::GetRegisterCnt() const
 {
-	OSInt cnt = 17;
+	IntOS cnt = 17;
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextMIPS::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextMIPS::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 	switch (index)
 	{
@@ -171,9 +171,9 @@ void Manage::ThreadContextMIPS::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -198,42 +198,42 @@ Manage::ThreadContext::ContextType Manage::ThreadContextMIPS::GetType() const
 	return Manage::ThreadContext::ContextType::MIPS;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetThreadId() const
+UIntOS Manage::ThreadContextMIPS::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetProcessId() const
+UIntOS Manage::ThreadContextMIPS::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetInstAddr() const
+UIntOS Manage::ThreadContextMIPS::GetInstAddr() const
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
+	return (IntOS)((ucontext_t*)this->context)->uc_mcontext.pc;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetStackAddr() const
+UIntOS Manage::ThreadContextMIPS::GetStackAddr() const
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[29];
+	return (IntOS)((ucontext_t*)this->context)->uc_mcontext.gregs[29];
 }
 
-UOSInt Manage::ThreadContextMIPS::GetFrameAddr() const
+UIntOS Manage::ThreadContextMIPS::GetFrameAddr() const
 {
-	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[30];
+	return (IntOS)((ucontext_t*)this->context)->uc_mcontext.gregs[30];
 }
 
-void Manage::ThreadContextMIPS::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextMIPS::SetInstAddr(UIntOS instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pc = instAddr;
 }
 
-void Manage::ThreadContextMIPS::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextMIPS::SetStackAddr(UIntOS stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[29] = stackAddr;
 }
 
-void Manage::ThreadContextMIPS::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextMIPS::SetFrameAddr(UIntOS frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[30] = frameAddr;
 }

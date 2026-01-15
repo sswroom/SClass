@@ -14,7 +14,7 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 	Int64 ms = dur.GetTotalMS();
 	UInt32 us = (dur.GetNS() % 1000000) / 1000;
 	if (ms > 0)
-		Sync::SimpleThread::Sleep((UOSInt)ms);
+		Sync::SimpleThread::Sleep((UIntOS)ms);
 	if (us > 0)
 		Sync::SimpleThread::Sleepus(us);
 }
@@ -56,7 +56,7 @@ UInt32 Sync::ThreadUtil::GetThreadId()
 	return GetCurrentThreadId();
 }
 
-UOSInt Sync::ThreadUtil::GetThreadCnt()
+UIntOS Sync::ThreadUtil::GetThreadCnt()
 {
 	SYSTEM_INFO sysInfo;
 

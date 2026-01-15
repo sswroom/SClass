@@ -18,7 +18,7 @@
 void DB::CSVFile::InitReader(NN<CSVReader> r)
 {
 	r->SetIndexCol(this->indexCol);
-	UOSInt i = this->timeCols.GetCount();
+	UIntOS i = this->timeCols.GetCount();
 	while (i-- > 0)
 	{
 		r->AddTimeCol(this->timeCols.GetItem(i));
@@ -75,7 +75,7 @@ DB::CSVFile::~CSVFile()
 	this->fd.Delete();
 }
 
-UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -83,7 +83,7 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 1;
 }
 
-Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<IO::StreamData> fd;
 	NN<IO::SeekableStream> stm;
@@ -150,8 +150,8 @@ Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::
 		DB::TableDef *tab;
 		NN<DB::ColDef> col;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-		UOSInt i = 0;
-		UOSInt j = r->ColCount();
+		UIntOS i = 0;
+		UIntOS j = r->ColCount();
 		while (i < j)
 		{
 			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
@@ -189,15 +189,15 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
-void DB::CSVFile::SetIndexCol(UOSInt indexCol)
+void DB::CSVFile::SetIndexCol(UIntOS indexCol)
 {
 	this->indexCol = indexCol;
 }
 
-void DB::CSVFile::SetTimeCols(Data::DataArray<UOSInt> timeCols)
+void DB::CSVFile::SetTimeCols(Data::DataArray<UIntOS> timeCols)
 {
-	UOSInt i = 0;
-	UOSInt j = timeCols.GetCount();
+	UIntOS i = 0;
+	UIntOS j = timeCols.GetCount();
 	this->timeCols.Clear();
 	while (i < j)
 	{
@@ -206,7 +206,7 @@ void DB::CSVFile::SetTimeCols(Data::DataArray<UOSInt> timeCols)
 	}
 }
 
-Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UOSInt indexCol, Data::DataArray<UOSInt> timeCols)
+Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UIntOS indexCol, Data::DataArray<UIntOS> timeCols)
 {
 	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
 		return nullptr;
@@ -251,9 +251,9 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 				{
 					sptr = this->rdr->GetLastLineBreak(currPtr);
 					currPtr = sptr;
-					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1).SetTo(sptr))
+					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UIntOS)(sptr - this->row) - 1).SetTo(sptr))
 						break;
-					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
+					if (!this->rdr->IsLineBreak() && (UIntOS)(sptr - this->row) > this->rowBuffSize - 6)
 					{
 						UnsafeArray<UTF8Char> newRow = MemAllocArr(UTF8Char, this->rowBuffSize << 1);
 						MemCopyNO(newRow.Ptr(), this->row.Ptr(), this->rowBuffSize);
@@ -302,11 +302,11 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 		}
 	}
 
-	this->hdr = MemAllocArr(UTF8Char, (UOSInt)(currPtr - this->row + 1));
-	MemCopyNO(this->hdr.Ptr(), this->row.Ptr(), sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
+	this->hdr = MemAllocArr(UTF8Char, (UIntOS)(currPtr - this->row + 1));
+	MemCopyNO(this->hdr.Ptr(), this->row.Ptr(), sizeof(UTF8Char) * (UIntOS)(currPtr - this->row + 1));
 	this->nHdr = Text::StrCSVSplitP(this->hdrs, 128, this->hdr);
 	this->nCol = this->nHdr;
-	UOSInt i = this->nCol;
+	UIntOS i = this->nCol;
 	while (i-- > 0)
 	{
 		this->cols[i].colSize = this->hdrs[i].leng;
@@ -336,7 +336,7 @@ Bool DB::CSVReader::ReadNext()
 	Bool colStart;
 	Int32 quote = 0;
 
-	UOSInt nCol;
+	UIntOS nCol;
 	if (this->noHeader)
 	{
 		this->noHeader = false;
@@ -376,16 +376,16 @@ Bool DB::CSVReader::ReadNext()
 				if (quote)
 				{
 					sptr = this->rdr->GetLastLineBreak(currPtr);
-					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1).SetTo(sptr))
+					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UIntOS)(sptr - this->row) - 1).SetTo(sptr))
 						break;
-					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
+					if (!this->rdr->IsLineBreak() && (UIntOS)(sptr - this->row) > this->rowBuffSize - 6)
 					{
 						UnsafeArray<UTF8Char> newRow = MemAllocArr(UTF8Char, this->rowBuffSize << 1);
 						MemCopyNO(newRow.Ptr(), this->row.Ptr(), this->rowBuffSize);
 						this->rowBuffSize <<= 1;
 						sptr = &newRow[(sptr - this->row)];
 						currPtr = &newRow[(currPtr - this->row)];
-						UOSInt i = nCol;
+						UIntOS i = nCol;
 						while (i-- > 0)
 						{
 							cols[i].value = &newRow[(cols[i].value - &this->row[0])];
@@ -396,7 +396,7 @@ Bool DB::CSVReader::ReadNext()
 				}
 				else
 				{
-					this->cols[nCol - 1].colSize = (UOSInt)(currPtr - this->cols[nCol - 1].value);
+					this->cols[nCol - 1].colSize = (UIntOS)(currPtr - this->cols[nCol - 1].value);
 					break;
 				}
 			}
@@ -427,7 +427,7 @@ Bool DB::CSVReader::ReadNext()
 			}
 			else if ((c == ',') && (quote == 0))
 			{
-				this->cols[nCol - 1].colSize = (UOSInt)(currPtr - this->cols[nCol - 1].value);
+				this->cols[nCol - 1].colSize = (UIntOS)(currPtr - this->cols[nCol - 1].value);
 				*currPtr++ = 0;
 				this->cols[nCol++].value = currPtr;
 				colStart = true;
@@ -448,19 +448,19 @@ Bool DB::CSVReader::ReadNext()
 	}
 }
 
-UOSInt DB::CSVReader::ColCount()
+UIntOS DB::CSVReader::ColCount()
 {
 	if (this->nHdr > this->nCol)
 		return this->nHdr;
 	return this->nCol;
 }
 
-OSInt DB::CSVReader::GetRowChanged()
+IntOS DB::CSVReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 DB::CSVReader::GetInt32(UOSInt colIndex)
+Int32 DB::CSVReader::GetInt32(UIntOS colIndex)
 {
 	UTF8Char buff[60];
 	this->GetStr(colIndex, buff, sizeof(buff));
@@ -468,7 +468,7 @@ Int32 DB::CSVReader::GetInt32(UOSInt colIndex)
 	return Text::StrToInt32(buff);
 }
 
-Int64 DB::CSVReader::GetInt64(UOSInt colIndex)
+Int64 DB::CSVReader::GetInt64(UIntOS colIndex)
 {
 	UTF8Char buff[60];
 	this->GetStr(colIndex, buff, sizeof(buff));
@@ -476,7 +476,7 @@ Int64 DB::CSVReader::GetInt64(UOSInt colIndex)
 	return Text::StrToInt64(buff);
 }
 
-UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex >= nCol)
 		return nullptr;
@@ -547,7 +547,7 @@ UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> 
 	}
 }
 
-Bool DB::CSVReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::CSVReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= nCol)
 		return false;
@@ -615,7 +615,7 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::CSVReader::GetNewStr(UIntOS colIndex)
 {
 	if (colIndex >= nCol)
 		return nullptr;
@@ -627,7 +627,7 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 	}
 	NN<Text::String> s;
-	UOSInt len = 0;
+	UIntOS len = 0;
 	UnsafeArray<const UTF8Char> csptr = cols[colIndex].value;
 	UnsafeArray<const UTF8Char> ptr = csptr;
 	UTF8Char c;
@@ -734,7 +734,7 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (colIndex >= nCol)
 		return nullptr;
@@ -812,7 +812,7 @@ UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8
 	}
 }
 
-Data::Timestamp DB::CSVReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::CSVReader::GetTimestamp(UIntOS colIndex)
 {
 	UTF8Char buff[60];
 	UnsafeArray<UTF8Char> sptr;
@@ -821,7 +821,7 @@ Data::Timestamp DB::CSVReader::GetTimestamp(UOSInt colIndex)
 	return 0;
 }
 
-Double DB::CSVReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::CSVReader::GetDblOrNAN(UIntOS colIndex)
 {
 	UTF8Char buff[60];
 	buff[0] = 0;
@@ -830,28 +830,28 @@ Double DB::CSVReader::GetDblOrNAN(UOSInt colIndex)
 	return Text::StrToDoubleOrNAN(buff);
 }
 
-Bool DB::CSVReader::GetBool(UOSInt colIndex)
+Bool DB::CSVReader::GetBool(UIntOS colIndex)
 {
 	UTF8Char buff[20];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->GetStr(colIndex, buff, sizeof(buff)).SetTo(sptr))
 		return false;
-	if (Text::StrEqualsICaseC(buff, (UOSInt)(sptr - buff), UTF8STRC("TRUE")))
+	if (Text::StrEqualsICaseC(buff, (UIntOS)(sptr - buff), UTF8STRC("TRUE")))
 		return true;
 	return Text::StrToInt32(buff) != 0;
 }
 
-UOSInt DB::CSVReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::CSVReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::CSVReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UIntOS colIndex)
 {
 	if (colIndex >= nCol)
 		return nullptr;
@@ -913,12 +913,12 @@ Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 	return nullptr;
 }
 
-Bool DB::CSVReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::CSVReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+Bool DB::CSVReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 {
 	if (colIndex >= nCol)
 	{
@@ -971,7 +971,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 			}
 		}
 		*buff = 0;
-		s->leng = (UOSInt)(buff - s->v);
+		s->leng = (UIntOS)(buff - s->v);
 		if (cols[colIndex].colType == DB::DBUtil::CT_DateTimeTZ)
 		{
 			item->SetDate(Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()));
@@ -997,21 +997,21 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}	
 }
 
-UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->nHdr)
 		return nullptr;
 	return this->hdrs[colIndex].ConcatTo(buff);
 }
 
-Bool DB::CSVReader::IsNull(UOSInt colIndex)
+Bool DB::CSVReader::IsNull(UIntOS colIndex)
 {
 	if (colIndex >= nCol)
 		return true;
 	return false;
 }
 
-DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::CSVReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (colIndex >= nHdr)
 		return DB::DBUtil::CT_Unknown;
@@ -1019,7 +1019,7 @@ DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, OptOut<UOSInt> co
 	return cols[colIndex].colType;
 }
 
-Bool DB::CSVReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::CSVReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex >= nHdr)
 		return false;
@@ -1037,7 +1037,7 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 
 NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 {
-	UOSInt i = this->nHdr;
+	UIntOS i = this->nHdr;
 	while (i-- > 0)
 	{
 		if (this->hdrs[i].Equals(name))
@@ -1055,12 +1055,12 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 	return Data::VariItem::NewUnknown();
 }
 
-void DB::CSVReader::SetIndexCol(UOSInt indexCol)
+void DB::CSVReader::SetIndexCol(UIntOS indexCol)
 {
 	this->indexCol = indexCol;
 }
 
-void DB::CSVReader::AddTimeCol(UOSInt timeCol)
+void DB::CSVReader::AddTimeCol(UIntOS timeCol)
 {
 	if (timeCol < 128)
 	{

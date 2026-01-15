@@ -108,7 +108,7 @@ namespace Media
 		void Remove(UInt32 id);
 		Bool RemoveLargest();
 
-		UOSInt GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const;
+		UIntOS GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const;
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
 		Optional<EXIFItem> GetExifItem(UInt32 id) const;
@@ -127,7 +127,7 @@ namespace Media
 		UInt32 GetPhotoISO() const;
 		Double GetPhotoFocalLength() const;
 		Bool GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lon, OptOut<Double> altitude, OptOut<Int64> gpsTimeTick) const;
-		Bool GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const;
+		Bool GetGeoBounds(Math::Size2D<UIntOS> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const;
 		RotateType GetRotateType() const;
 		void SetRotateType(RotateType rotateType);
 		Double GetHDPI() const;
@@ -136,27 +136,27 @@ namespace Media
 		void SetHeight(UInt32 height);
 
 		Bool ToString(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const;
-		Bool ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const;
+		Bool ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const;
+		Bool ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UIntOS valCnt) const;
 		Bool ToStringCanonLensType(NN<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
 		void ToExifBuff(UnsafeArray<UInt8> buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
 		void GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 
-		Optional<EXIFData> ParseMakerNote(UnsafeArray<const UInt8> buff, UOSInt buffSize) const;
+		Optional<EXIFData> ParseMakerNote(UnsafeArray<const UInt8> buff, UIntOS buffSize) const;
 
 		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id);
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
-		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> basePtr);
+		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> basePtr);
 		static Optional<EXIFData> ParseIFD(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
 		static Optional<EXIFData> ParseIFD64(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
-		static Bool ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst);
-		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
-		static Optional<EXIFData> ParseExifJPG(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		static Optional<EXIFData> ParseExifDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		static Bool ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS frameOfst, NN<IO::StreamData> fd, UInt64 ofst);
+		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UIntOS frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
+		static Optional<EXIFData> ParseExifJPG(UnsafeArray<const UInt8> buff, UIntOS buffSize);
+		static Optional<EXIFData> ParseExifDirect(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	};
 }
 #endif

@@ -26,7 +26,7 @@ namespace Math
 			virtual ~Path();
 			NN<Path> Clone() const;
 			Bool AddNode(NN<PathNode> node, Double distance);
-			virtual OSInt CompareTo(NN<Data::Comparable> obj) const;
+			virtual IntOS CompareTo(NN<Data::Comparable> obj) const;
 		};
 
 	public:

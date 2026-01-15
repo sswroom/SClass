@@ -19,9 +19,9 @@ namespace Crypto
 			Bool LoadPublicKeyFile(Text::CString filePath);
 
 			UnsafeArrayOpt<const UInt8> GetSessKey();
-			UOSInt GetSessKeyLen();
+			UIntOS GetSessKeyLen();
 			UnsafeArrayOpt<const UInt8> GetIV();
-			UOSInt GetIVLen();
+			UIntOS GetIVLen();
 
 
 		};

@@ -9,7 +9,7 @@ namespace Crypto
 		class RNCryptor
 		{
 		private:
-			static UOSInt RemovePadding(UnsafeArray<UInt8> buff, UOSInt buffSize);
+			static UIntOS RemovePadding(UnsafeArray<UInt8> buff, UIntOS buffSize);
 		public:
 			static Bool Decrypt(NN<IO::SeekableStream> srcStream, NN<IO::Stream> destStream, Text::CStringNN password);
 			static Bool Encrypt(NN<IO::SeekableStream> srcStream, NN<IO::Stream> destStream, Text::CStringNN password);

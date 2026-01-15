@@ -21,7 +21,7 @@ void IO::FileExporter::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 }
 
-UOSInt IO::FileExporter::GetParamCnt()
+UIntOS IO::FileExporter::GetParamCnt()
 {
 	return 0;
 }
@@ -35,52 +35,52 @@ void IO::FileExporter::DeleteParam(Optional<ParamData> param)
 {
 }
 
-Bool IO::FileExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool IO::FileExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
+Bool IO::FileExporter::SetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool IO::FileExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
+Bool IO::FileExporter::SetParamSel(Optional<ParamData> param, UIntOS index, UIntOS selCol)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Bool selCol)
+Bool IO::FileExporter::SetParamBool(Optional<ParamData> param, UIntOS index, Bool selCol)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamStr(Optional<ParamData> param, UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	return nullptr;
 }
 
-Int32 IO::FileExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 IO::FileExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	return 0;
 }
 
-Int32 IO::FileExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
+Int32 IO::FileExporter::GetParamSel(Optional<ParamData> param, UIntOS index)
 {
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UIntOS index, UIntOS itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	return nullptr;
 }
 
-Bool IO::FileExporter::GetParamBool(Optional<ParamData> param, UOSInt index)
+Bool IO::FileExporter::GetParamBool(Optional<ParamData> param, UIntOS index)
 {
 	return false;
 }

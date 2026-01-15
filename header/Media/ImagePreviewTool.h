@@ -8,7 +8,7 @@ namespace Media
 	class ImagePreviewTool
 	{
 	public:
-		static Bool CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UOSInt maxSize);
+		static Bool CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UIntOS maxSize);
 	};
 }
 #endif

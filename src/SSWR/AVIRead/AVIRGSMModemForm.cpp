@@ -94,7 +94,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 				if (modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
 				{
 					OPTSTR_DEL(me->operName);
-					me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+					me->operName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 					me->operUpdated = true;
 				}
 				if (modem->GSMGetRegisterNetwork(me->regNetN, me->regNetStat, me->regNetLAC, me->regNetCI, me->regNetACT))
@@ -405,7 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(AnyType userObj
 		return;
 	}
 	NN<IO::GSMModemController::SMSMessage> sms;
-	UOSInt index = me->lvSMS->GetSelectedIndex();
+	UIntOS index = me->lvSMS->GetSelectedIndex();
 	if (index != INVALID_INDEX && me->msgList.GetItem(index).SetTo(sms))
 	{
 		if (modem->SMSDeleteMessage(sms->index))
@@ -429,8 +429,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 		NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			UOSInt i = 0;
-			UOSInt j = me->lvSMS->GetCount();
+			UIntOS i = 0;
+			UIntOS j = me->lvSMS->GetCount();
 			Text::StringBuilderUTF8 sb;
 			Data::DateTime dt;
 			while (i < j)
@@ -483,7 +483,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NN<IO::SerialPort> port;
-	NEW_CLASSNN(port, IO::SerialPort(me->cboDeviceSerial->GetSelectedItem().GetUOSInt(), 115200, IO::SerialPort::PARITY_NONE, false));
+	NEW_CLASSNN(port, IO::SerialPort(me->cboDeviceSerial->GetSelectedItem().GetUIntOS(), 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		port.Delete();
@@ -690,10 +690,10 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicke
 	NN<IO::GSMModemController> modem;
 	if (me->modem.SetTo(modem))
 	{
-		UOSInt i = me->lvPDPContext->GetSelectedIndex();
+		UIntOS i = me->lvPDPContext->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (modem->GPRSSetPDPActive(true, (UInt32)me->lvPDPContext->GetItem(i).GetUOSInt()))
+			if (modem->GPRSSetPDPActive(true, (UInt32)me->lvPDPContext->GetItem(i).GetUIntOS()))
 			{
 				me->txtPDPContextStatus->SetText(CSTR("Context activated"));
 			}
@@ -715,10 +715,10 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClic
 	NN<IO::GSMModemController> modem;
 	if (me->modem.SetTo(modem))
 	{
-		UOSInt i = me->lvPDPContext->GetSelectedIndex();
+		UIntOS i = me->lvPDPContext->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (modem->GPRSSetPDPActive(false, (UInt32)me->lvPDPContext->GetItem(i).GetUOSInt()))
+			if (modem->GPRSSetPDPActive(false, (UInt32)me->lvPDPContext->GetItem(i).GetUIntOS()))
 			{
 				me->txtPDPContextStatus->SetText(CSTR("Context deactivated"));
 			}
@@ -785,13 +785,13 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(AnyType user
 
 void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 {
-	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)this->cboPhoneStorage->GetItem((UOSInt)this->cboPhoneStorage->GetSelectedIndex()).GetOSInt();
+	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)this->cboPhoneStorage->GetItem((UIntOS)this->cboPhoneStorage->GetSelectedIndex()).GetIntOS();
 	NN<IO::GSMModemController> modem;
 	if (!this->modem.SetTo(modem))
 		return;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Data::ArrayListNN<IO::GSMModemController::PBEntry> phoneList;
 	NN<IO::GSMModemController::PBEntry> ent;
 	this->lvPhone->ClearItems();
@@ -831,14 +831,14 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 #if _WCHAR_SIZE == 4
 	WChar wbuff[256];
 #endif
-	UOSInt k;
-	UOSInt i;
-	UOSInt j;
+	UIntOS k;
+	UIntOS i;
+	UIntOS j;
 	modem->SMSFreeMessages(this->msgList);
 	this->lvSMS->ClearItems();
 	this->msgList.Clear();
 
-	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex()).GetOSInt();
+	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)this->cboSMSStorage->GetItem((UIntOS)this->cboSMSStorage->GetSelectedIndex()).GetIntOS();
 
 	modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
 	if (modem->SMSGetSMSC(sbuff).SetTo(sptr))
@@ -905,15 +905,15 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::GSMModemController::PDPContext> ctx;
-	Data::UInt32FastMapNative<UOSInt> dataMap;
-	UOSInt i = 0;
-	UOSInt j = ctxList.GetCount();
-	UOSInt k;
+	Data::UInt32FastMapNative<UIntOS> dataMap;
+	UIntOS i = 0;
+	UIntOS j = ctxList.GetCount();
+	UIntOS k;
 	while (i < j)
 	{
 		ctx = ctxList.GetItemNoCheck(i);
 		sptr = Text::StrUInt32(sbuff, ctx->cid);
-		k = this->lvPDPContext->AddItem(CSTRP(sbuff, sptr), (void*)(UOSInt)ctx->cid);
+		k = this->lvPDPContext->AddItem(CSTRP(sbuff, sptr), (void*)(UIntOS)ctx->cid);
 		dataMap.Put(ctx->cid, k);
 		this->lvPDPContext->SetSubItem(k, 1, ctx->type);
 		this->lvPDPContext->SetSubItem(k, 2, ctx->apn);
@@ -937,7 +937,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 		if (k == 0 && !dataMap.ContainsKey(act.cid))
 		{
 			sptr = Text::StrUInt32(sbuff, act.cid);
-			k = this->lvPDPContext->AddItem(CSTRP(sbuff, sptr), (void*)(UOSInt)act.cid);
+			k = this->lvPDPContext->AddItem(CSTRP(sbuff, sptr), (void*)(UIntOS)act.cid);
 			dataMap.Put(act.cid, k);
 		}
 		if (act.active)
@@ -975,11 +975,11 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NN<IO::Stream> stm, Bool update
 		if (updateSerial && stm->GetStreamType() == IO::StreamType::SerialPort)
 		{
 			NN<IO::SerialPort> port = NN<IO::SerialPort>::ConvertFrom(stm);
-			UOSInt portNum = port->GetPortNum();
-			UOSInt i = this->cboDeviceSerial->GetCount();
+			UIntOS portNum = port->GetPortNum();
+			UIntOS i = this->cboDeviceSerial->GetCount();
 			while (i-- > 0)
 			{
-				if (this->cboDeviceSerial->GetItem(i).GetUOSInt() == portNum)
+				if (this->cboDeviceSerial->GetItem(i).GetUIntOS() == portNum)
 				{
 					this->cboDeviceSerial->SetSelectedIndex(i);
 					break;
@@ -1188,16 +1188,16 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboPhoneStorage = ui->NewComboBox(this->pnlPhone, false);
 	this->cboPhoneStorage->SetRect(0, 4, 100, 23, false);
-	this->cboPhoneStorage->AddItem(CSTR("SIM"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SIM);
-	this->cboPhoneStorage->AddItem(CSTR("Restricted Phones"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SIM_RESTRICTED);
-	this->cboPhoneStorage->AddItem(CSTR("Own numbers"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SIM_OWN_NUMBERS);
-	this->cboPhoneStorage->AddItem(CSTR("Emergency"), (void*)(OSInt)IO::GSMModemController::PBSTORE_EMERGENCY);
-	this->cboPhoneStorage->AddItem(CSTR("Last Dialed"), (void*)(OSInt)IO::GSMModemController::PBSTORE_LASTNUMDIAL);
-	this->cboPhoneStorage->AddItem(CSTR("Unanswered"), (void*)(OSInt)IO::GSMModemController::PBSTORE_UNANSWERED);
-	this->cboPhoneStorage->AddItem(CSTR("ME"), (void*)(OSInt)IO::GSMModemController::PBSTORE_ME);
-	this->cboPhoneStorage->AddItem(CSTR("ME+SIM"), (void*)(OSInt)IO::GSMModemController::PBSTORE_ME_SIM);
-	this->cboPhoneStorage->AddItem(CSTR("Received Calls"), (void*)(OSInt)IO::GSMModemController::PBSTORE_RECEIVED_CALL);
-	this->cboPhoneStorage->AddItem(CSTR("Service Dial Numbers"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS);
+	this->cboPhoneStorage->AddItem(CSTR("SIM"), (void*)(IntOS)IO::GSMModemController::PBSTORE_SIM);
+	this->cboPhoneStorage->AddItem(CSTR("Restricted Phones"), (void*)(IntOS)IO::GSMModemController::PBSTORE_SIM_RESTRICTED);
+	this->cboPhoneStorage->AddItem(CSTR("Own numbers"), (void*)(IntOS)IO::GSMModemController::PBSTORE_SIM_OWN_NUMBERS);
+	this->cboPhoneStorage->AddItem(CSTR("Emergency"), (void*)(IntOS)IO::GSMModemController::PBSTORE_EMERGENCY);
+	this->cboPhoneStorage->AddItem(CSTR("Last Dialed"), (void*)(IntOS)IO::GSMModemController::PBSTORE_LASTNUMDIAL);
+	this->cboPhoneStorage->AddItem(CSTR("Unanswered"), (void*)(IntOS)IO::GSMModemController::PBSTORE_UNANSWERED);
+	this->cboPhoneStorage->AddItem(CSTR("ME"), (void*)(IntOS)IO::GSMModemController::PBSTORE_ME);
+	this->cboPhoneStorage->AddItem(CSTR("ME+SIM"), (void*)(IntOS)IO::GSMModemController::PBSTORE_ME_SIM);
+	this->cboPhoneStorage->AddItem(CSTR("Received Calls"), (void*)(IntOS)IO::GSMModemController::PBSTORE_RECEIVED_CALL);
+	this->cboPhoneStorage->AddItem(CSTR("Service Dial Numbers"), (void*)(IntOS)IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS);
 	this->cboPhoneStorage->SetSelectedIndex(0);
 	this->btnPhoneRead = ui->NewButton(this->pnlPhone, CSTR("&Read"));
 	this->btnPhoneRead->SetRect(108, 4, 75, 23, false);
@@ -1217,10 +1217,10 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSMSStorage = ui->NewComboBox(this->pnlSMS, false);
 	this->cboSMSStorage->SetRect(0, 4, 100, 23, false);
-	this->cboSMSStorage->AddItem(CSTR("SIM"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_SIM);
-	this->cboSMSStorage->AddItem(CSTR("Flash"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_FLASH);
-	this->cboSMSStorage->AddItem(CSTR("Status Report"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_STATUSREPORT);
-	this->cboSMSStorage->AddItem(CSTR("CBM"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_CBMMESSAGE);
+	this->cboSMSStorage->AddItem(CSTR("SIM"), (void*)(IntOS)IO::GSMModemController::SMSSTORE_SIM);
+	this->cboSMSStorage->AddItem(CSTR("Flash"), (void*)(IntOS)IO::GSMModemController::SMSSTORE_FLASH);
+	this->cboSMSStorage->AddItem(CSTR("Status Report"), (void*)(IntOS)IO::GSMModemController::SMSSTORE_STATUSREPORT);
+	this->cboSMSStorage->AddItem(CSTR("CBM"), (void*)(IntOS)IO::GSMModemController::SMSSTORE_CBMMESSAGE);
 	this->cboSMSStorage->SetSelectedIndex(0);
 	this->btnSMSRead = ui->NewButton(this->pnlSMS, CSTR("&Show SMS"));
 	this->btnSMSRead->SetRect(108, 4, 75, 23, false);
@@ -1484,14 +1484,14 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	Data::ArrayListNative<UOSInt> ports;
+	Data::ArrayListNative<UIntOS> ports;
 	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypes;
 	if (IO::SerialPort::GetAvailablePorts(ports, &portTypes))
 	{
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i = 0;
-		UOSInt j = ports.GetCount();
+		UIntOS i = 0;
+		UIntOS j = ports.GetCount();
 		while (i < j)
 		{
 			sbuff[0] = 0;

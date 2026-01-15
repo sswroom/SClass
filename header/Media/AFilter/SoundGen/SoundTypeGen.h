@@ -22,7 +22,7 @@ namespace Media
 				SoundTypeGen(UInt32 freq);
 				virtual ~SoundTypeGen();
 
-				virtual void GenSignals(UnsafeArray<Double> buff, UOSInt sampleCnt) = 0;
+				virtual void GenSignals(UnsafeArray<Double> buff, UIntOS sampleCnt) = 0;
 				virtual SoundType GetSoundType() = 0;
 
 				virtual Bool GenSound(Double sampleVol) = 0;

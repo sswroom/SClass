@@ -451,7 +451,7 @@ UI::GUIMenu::~GUIMenu()
 {
 /*	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
-	OSInt i;
+	IntOS i;
 	i = this->keys->GetCount();
 	while (i-- > 0)
 	{
@@ -474,9 +474,9 @@ UI::GUIMenu::~GUIMenu()
 	DEL_CLASS(this->items);*/
 }
 
-UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UIntOS UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
-/*	UOSInt id = this->itemCnt++;
+/*	UIntOS id = this->itemCnt++;
 	Char buff[128];
 	Char *sptr = buff;
 	Char c;
@@ -575,12 +575,12 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
+UIntOS UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
 {
-	UOSInt keyCnt = this->keys.GetCount();
+	UIntOS keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
-	UOSInt j = this->subMenus.GetCount();
-	UOSInt i = 0;
+	UIntOS j = this->subMenus.GetCount();
+	UIntOS i = 0;
 	while (i < j)
 	{
 		NN<UI::GUIMenu> menu;
@@ -602,7 +602,7 @@ void UI::GUIMenu::ClearItems()
 {
 /*	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
-	OSInt i;
+	IntOS i;
 	i = this->keys->GetCount();
 	while (i-- > 0)
 	{
@@ -635,7 +635,7 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
 	NN<UI::GUIMenu> item;
-	OSInt i;
+	IntOS i;
 	this->mnuForm = mnuForm;
 	i = this->subMenus.GetCount();
 	while (i-- > 0)

@@ -79,12 +79,12 @@ Text::CString Media::AndroidVideoCapture::GetFilterName()
 	return CSTR("AndroidVideoCapture");
 }
 
-Bool Media::AndroidVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::AndroidVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->camWidth == 0 || this->camHeight == 0)
 		return false;
 
-	info->dispSize = Math::Size2D<UOSInt>(this->camWidth, this->camHeight);
+	info->dispSize = Math::Size2D<UIntOS>(this->camWidth, this->camHeight);
 	info->storeSize = info->dispSize;
 	info->fourcc = this->camFourcc;
 	info->storeBPP = 12;
@@ -207,23 +207,23 @@ Bool Media::AndroidVideoCapture::IsRunning()
 	return this->started;
 }
 
-void Media::AndroidVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
+void Media::AndroidVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	this->camWidth = size.x;
 	this->camHeight = size.y;
 	this->camFourcc = fourcc;
 }
 
-UOSInt Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt)
+UIntOS Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UIntOS maxCnt)
 {
 	ACameraMetadata *metadataObj;
 	if (ACAMERA_OK != ACameraManager_getCameraCharacteristics((ACameraManager*)this->cameraMgr, this->cameraId, &metadataObj))
 		return 0;
-	OSInt ret = 0;
+	IntOS ret = 0;
 	ACameraMetadata_const_entry entry = { 0 };
 	if (ACAMERA_OK == ACameraMetadata_getConstEntry(metadataObj, ACAMERA_SCALER_AVAILABLE_STREAM_CONFIGURATIONS, &entry))
 	{
-		OSInt i = 0;
+		IntOS i = 0;
 		while (i < entry.count)
 		{
 			if (entry.data.i32[i + 3] == 0) //Output
@@ -311,12 +311,12 @@ void Media::AndroidVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 	printf("Getting All tags\r\n");
 	if (ACAMERA_OK == ACameraMetadata_getAllTags(metadataObj, &nEntries, &tags))
 	{
-		OSInt i = 0;
+		IntOS i = 0;
 		while (i < nEntries)
 		{
 			if (ACAMERA_OK == ACameraMetadata_getConstEntry(metadataObj, tags[i], &entry))
 			{
-				OSInt j;
+				IntOS j;
 				switch (tags[i])
 				{
 				case ACAMERA_SCALER_AVAILABLE_STREAM_CONFIGURATIONS:
@@ -356,7 +356,7 @@ void Media::AndroidVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 	ACameraMetadata_free(metadataObj);
 }
 
-UOSInt Media::AndroidVideoCapture::GetDataSeekCount()
+UIntOS Media::AndroidVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }
@@ -391,7 +391,7 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 	}
 }
 
-UOSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -407,7 +407,7 @@ UOSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *dev
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
+UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -421,7 +421,7 @@ UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt de
 	return 0;
 }
 
-Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
+Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -448,17 +448,17 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 
 }
 
-UOSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
+UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS devId)
 {
 	return 0;
 }
 
-Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
+Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 {
 	return 0;
 }

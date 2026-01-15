@@ -15,7 +15,7 @@ global _AlphaBlend8_C8_DoBlend
 global AlphaBlend8_C8_DoBlendPA
 global _AlphaBlend8_C8_DoBlendPA
 
-;void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlend(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 rbx
 ;8 rbp
@@ -34,8 +34,8 @@ _AlphaBlend8_C8_DoBlend:
 	push rbp
 	push rbx
 	lea rbx,[r8 * 4] ;width
-	sub rcx,rbx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub rsi,rbx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub rcx,rbx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub rsi,rbx ;dAdd		IntOS dAdd = dbpl - width * 4;
 	xor rax,rax
 	mov ebx,0x10101010
 	
@@ -383,7 +383,7 @@ iabbldlopone:
 	pop rbp
 	ret
 	
-;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 rbx
 ;8 rbp
@@ -402,8 +402,8 @@ _AlphaBlend8_C8_DoBlendPA:
 	push rbp
 	push rbx
 	lea rbx,[r8*4] ;width
-	sub rcx,rbx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub rsi,rbx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub rcx,rbx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub rsi,rbx ;dAdd		IntOS dAdd = dbpl - width * 4;
 
 	mov r10,rcx ;sAdd
 	mov r11,rsi ;dAdd

@@ -32,7 +32,7 @@ namespace Sync
 		static void CloseHandle(ThreadHandle *handle);
 		static UInt32 GetThreadId(ThreadHandle *handle);
 		static UInt32 GetThreadId();
-		static UOSInt GetThreadCnt();
+		static UIntOS GetThreadCnt();
 		static void SetPriority(ThreadPriority priority);
 		//Max length = 15
 		static Bool SetName(Text::CStringNN name);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->ProcessVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, userData, frameType, flags, ycOfst);
@@ -27,7 +27,7 @@ Media::VideoFilter::VideoFilterBase::VideoFilterBase(Optional<Media::VideoSource
 	NN<Media::VideoSource> nnsrcVideo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	this->srcVideo = srcVideo;
 	this->fcCb = 0;
 	this->videoCb = 0;
@@ -47,7 +47,7 @@ void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Optional<Media::VideoSo
 {
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	NN<Media::VideoSource> nnsrcVideo;
 	this->srcVideo = srcVideo;
 	if (this->srcVideo.SetTo(nnsrcVideo))
@@ -69,14 +69,14 @@ UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(Unsa
 	return nullptr;
 }
 
-void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
+void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom)
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
+void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
@@ -90,7 +90,7 @@ void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLef
 	}
 }
 
-Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
@@ -195,7 +195,7 @@ Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt3
 	return false;
 }
 
-UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
+UIntOS Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
@@ -215,7 +215,7 @@ Bool Media::VideoFilter::VideoFilterBase::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
+UIntOS Media::VideoFilter::VideoFilterBase::GetFrameCount()
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
@@ -225,7 +225,7 @@ UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 	return 0;
 }
 
-Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UIntOS frameIndex)
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
@@ -244,7 +244,7 @@ void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, A
 	}
 }
 
-UOSInt Media::VideoFilter::VideoFilterBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::VideoFilter::VideoFilterBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

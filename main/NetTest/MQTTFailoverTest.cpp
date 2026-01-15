@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 30;
+	UIntOS i = 30;
 	while (i-- > 0)
 	{
 		dt.SetCurrTimeUTC();

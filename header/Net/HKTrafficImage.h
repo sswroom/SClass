@@ -27,13 +27,13 @@ namespace Net
 	private:
 		Data::FastStringMapNN<GroupInfo> groupMap;
 
-		void Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		void Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	public:
-		HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 
-		UOSInt GetGroups(NN<Data::ArrayListNN<GroupInfo>> groups);
+		UIntOS GetGroups(NN<Data::ArrayListNN<GroupInfo>> groups);
 	};
 }
 #endif

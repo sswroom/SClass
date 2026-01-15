@@ -112,7 +112,7 @@ public:
 
 	virtual void ProgressStart(Text::CStringNN name, UInt64 count)
 	{
-		UOSInt i;
+		UIntOS i;
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
 		this->name = Text::String::New(name).Ptr();
@@ -140,12 +140,12 @@ public:
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Bool showHelp = true;
-	UOSInt cmdCnt;
+	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	if (cmdCnt == 2)
 	{
-		UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
+		UIntOS cmdLen = Text::StrCharCnt(cmdLines[1]);
 		IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
 		if (pt == IO::Path::PathType::Unknown)
 		{
@@ -167,8 +167,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					else
 					{
 						UInt8 hash[4];
-						UOSInt i;
-						UOSInt j;
+						UIntOS i;
+						UIntOS j;
 						i = 0;
 						j = fileChk->GetCount();
 						while (i < j)

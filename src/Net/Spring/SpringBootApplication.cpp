@@ -26,7 +26,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CStringNN appNam
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	Text::PString sarr[2];
-	UOSInt i;
+	UIntOS i;
 	sb.Append(this->activeProfile);
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application-"));
@@ -54,7 +54,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CStringNN appNam
 		sb.AppendP(sbuff, sptr);
 	}
 	sb.AppendC(UTF8STRC(" with PID "));
-	sb.AppendUOSInt(Manage::Process::GetCurrProcId());
+	sb.AppendUIntOS(Manage::Process::GetCurrProcId());
 	sb.AppendC(UTF8STRC(" ("));
 	IO::Path::GetProcessFileName(sb);
 	sb.AppendC(UTF8STRC(" started by "));

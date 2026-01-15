@@ -81,7 +81,7 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			UnsafeArray<UInt8> tmpData = MemAllocArr(UInt8, sarr2[1].leng);
-			UOSInt dataLen = b64.DecodeBin(sarr2[1].ToCString(), tmpData);
+			UIntOS dataLen = b64.DecodeBin(sarr2[1].ToCString(), tmpData);
 			NEW_CLASS(mstm, IO::MemoryStream(dataLen));
 			mstm->Write(Data::ByteArrayR(tmpData, dataLen));
 			MemFreeArr(tmpData);

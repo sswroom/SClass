@@ -56,7 +56,7 @@ UInt64 Manage::StackTracer::GetCurrentAddr()
 {
 	if (this->addrArr == 0)
 		return 0;
-	return this->addrArr->GetItem((OSInt)this->stackFrame);
+	return this->addrArr->GetItem((IntOS)this->stackFrame);
 	return 0;
 }
 
@@ -165,9 +165,9 @@ Bool Manage::StackTracer::GoToNextLevel()
 		if (this->addrArr->SortedIndexOf(sf->AddrPC.Offset) >= 0)
 			return false;
 		this->addrArr->SortedInsert(sf->AddrPC.Offset);
-		this->winContext->SetInstAddr((UOSInt)sf->AddrPC.Offset);
-		this->winContext->SetStackAddr((UOSInt)sf->AddrStack.Offset);
-		this->winContext->SetFrameAddr((UOSInt)sf->AddrFrame.Offset);
+		this->winContext->SetInstAddr((UIntOS)sf->AddrPC.Offset);
+		this->winContext->SetStackAddr((UIntOS)sf->AddrStack.Offset);
+		this->winContext->SetFrameAddr((UIntOS)sf->AddrFrame.Offset);
 		return true;
 	}
 	else

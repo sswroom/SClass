@@ -27,7 +27,7 @@ namespace Net
 			typedef struct
 			{
 				UInt8 *buff;
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Data::Timestamp t;
 			} CacheInfo;
 

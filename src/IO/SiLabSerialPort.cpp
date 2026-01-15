@@ -12,8 +12,8 @@
 #else
 typedef struct
 {
-	UOSInt Internal;
-	UOSInt InternalHigh;
+	UIntOS Internal;
+	UIntOS InternalHigh;
 	union
 	{
 		struct
@@ -55,7 +55,7 @@ Bool IO::SiLabSerialPort::IsDown() const
 	return this->handle == 0;
 }
 
-UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
+UIntOS IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 {
 	UInt32 readCnt;
 	Bool ret;
@@ -98,7 +98,7 @@ UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 
 }
 
-UOSInt IO::SiLabSerialPort::Write(Data::ByteArrayR buff)
+UIntOS IO::SiLabSerialPort::Write(Data::ByteArrayR buff)
 {
 	UInt32 writeCnt;
 	void *h = this->handle;
@@ -137,7 +137,7 @@ UOSInt IO::SiLabSerialPort::Write(Data::ByteArrayR buff)
 struct ReadEvent
 {
 	UnsafeArray<UInt8> buff;
-	UOSInt size;	
+	UIntOS size;	
 	NN<Sync::Event> evt;
 	UInt32 readSize;
 	OVERLAPPED ol;
@@ -162,7 +162,7 @@ Optional<IO::StreamReadReq> IO::SiLabSerialPort::BeginRead(const Data::ByteArray
 	return NN<IO::StreamReadReq>::ConvertFrom(re);
 }
 
-UOSInt IO::SiLabSerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::SiLabSerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	NN<ReadEvent> re = NN<ReadEvent>::ConvertFrom(reqData);
 #if defined(_WIN32) && !defined(_WIN32_WCE)
@@ -196,9 +196,9 @@ Optional<IO::StreamWriteReq> IO::SiLabSerialPort::BeginWrite(Data::ByteArrayR bu
 	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SiLabSerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::SiLabSerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::SiLabSerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)

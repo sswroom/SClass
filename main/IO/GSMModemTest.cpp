@@ -11,14 +11,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	UOSInt portNum = Test::TestModem::ListPorts(console);
+	UIntOS portNum = Test::TestModem::ListPorts(console);
 	UInt32 baudRate = 115200;
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
-		Text::StrToUOSInt(argv[1], portNum);
+		Text::StrToUIntOS(argv[1], portNum);
 	}
 	if (argc >= 3)
 	{
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	console.WriteLine();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Trying Port "));
-	sb.AppendUOSInt(portNum);
+	sb.AppendUIntOS(portNum);
 	console.WriteLine(sb.ToCString());
 
 	IO::SerialPort port(portNum, baudRate, IO::SerialPort::PARITY_NONE, true);

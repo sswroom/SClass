@@ -18,8 +18,8 @@
 UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 {
 	NN<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
-	UOSInt recvSize = 0;
-	UOSInt readSize;
+	UIntOS recvSize = 0;
+	UIntOS readSize;
 	NN<Net::TCPClient> cli;
 	me->recvRunning = true;
 	{
@@ -77,10 +77,10 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 	Int64 t;
 	Int64 msgTime;
 	NN<Text::String> msg;
-	UOSInt msgLen;
+	UIntOS msgLen;
 	Int64 nextKATime = 0;
 	UInt8 kaBuff[10];
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	me->sendRunning = true;
 	while (!me->sendToStop)
@@ -197,7 +197,7 @@ void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CStringNN logMs
 	this->sendEvt.Set();
 }
 
-void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	switch (cmdType)
 	{
@@ -220,6 +220,6 @@ void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	}
 }
 
-void Net::LogClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::LogClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }

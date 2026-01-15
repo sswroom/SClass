@@ -12,7 +12,7 @@ namespace Net
 		class EGaugeHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
+			typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UIntOS dataSize);
 		private:
 			AnyType dataHdlrObj;
 			DataHandler dataHdlr;

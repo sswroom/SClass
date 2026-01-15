@@ -8,8 +8,8 @@
 void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRGLBViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGLBViewerForm>();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->LoadFile(files[i]))
@@ -86,7 +86,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NN<Text::String> fileName)
 
 Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NN<IO::StreamData> jsonFD, NN<IO::StreamData> binBuffFD)
 {
-	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
+	UIntOS jsonLen = (UIntOS)jsonFD->GetDataSize();
 	Data::ByteBuffer jsonBuff(jsonLen);
 	if (jsonFD->GetRealData(0, jsonLen, jsonBuff) != jsonLen)
 	{

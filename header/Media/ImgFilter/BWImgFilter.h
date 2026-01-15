@@ -15,7 +15,7 @@ namespace Media
 			BWImgFilter(Bool enable);
 			virtual ~BWImgFilter();
 
-			virtual void ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
+			virtual void ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UIntOS nBits, Media::PixelFormat pf, UIntOS imgWidth, UIntOS imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
 
 			Bool IsEnabled();
 			void SetEnabled(Bool enable);

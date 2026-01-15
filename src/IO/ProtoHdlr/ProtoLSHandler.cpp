@@ -21,7 +21,7 @@ void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;
@@ -55,7 +55,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType 
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"MW";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 10);
@@ -69,7 +69,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32
 	return cmdSize + 10;
 }
 
-UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Crypto::Hash::CRC32R crc;
 	UInt32 crcVal;

@@ -4,7 +4,7 @@
 void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(AnyType userObj)
 {
 	NN<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
-	UOSInt i = me->lbCategory->GetSelectedIndex();
+	UIntOS i = me->lbCategory->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		NN<Category> cate = me->lbCategory->GetItem(i).GetNN<Category>();
@@ -44,8 +44,8 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClien
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListNN<Category> cates;
 	env->GetCategories(cates);
 	i = 0;

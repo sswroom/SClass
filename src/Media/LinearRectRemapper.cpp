@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/LinearRectRemapper.h"
 
-NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(UnsafeArray<const UInt8> imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
+NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(UnsafeArray<const UInt8> imgPtr, Math::Size2D<UIntOS> imgSize, IntOS imgBpl, Math::Size2D<UIntOS> outputSize, Math::Quadrilateral quad, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
 {
 	Math::Coord2DDbl pt;
 	Double xPos;
@@ -13,29 +13,29 @@ NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(UnsafeArray<const UInt
 	Double tRate;
 	Double bRate;
 	Double c;
-	OSInt ix;
-	OSInt iy;
-	OSInt ofst;
-	OSInt imgXEnd = (OSInt)imgSize.x - 1;
-	OSInt imgYEnd = (OSInt)imgSize.y - 1;
-	UOSInt i;
-	UOSInt j;
+	IntOS ix;
+	IntOS iy;
+	IntOS ofst;
+	IntOS imgXEnd = (IntOS)imgSize.x - 1;
+	IntOS imgYEnd = (IntOS)imgSize.y - 1;
+	UIntOS i;
+	UIntOS j;
 
 	NN<Media::StaticImage> ret;
 	NEW_CLASSNN(ret, Media::StaticImage(outputSize, 0, 8, Media::PF_PAL_W8, outputSize.CalcArea(), color, yuvType, Media::AT_ALPHA_ALL_FF, ycOfst));
 	ret->InitGrayPal();
-	xPos = UOSInt2Double(outputSize.x - 1);
-	yPos = UOSInt2Double(outputSize.y - 1);
+	xPos = UIntOS2Double(outputSize.x - 1);
+	yPos = UIntOS2Double(outputSize.y - 1);
 	UnsafeArray<UInt8> dptr = ret->data;
 	i = 0;
 	while (i < outputSize.y)
 	{
-		yRate = UOSInt2Double(i) / yPos;
+		yRate = UIntOS2Double(i) / yPos;
 
 		j = 0;
 		while (j < outputSize.x)
 		{
-			xRate = UOSInt2Double(j) / xPos;
+			xRate = UIntOS2Double(j) / xPos;
 			if (xRate + yRate <= 1)
 			{
 				pt = quad.tl + (quad.tr - quad.tl) * xRate + (quad.bl - quad.tl) * yRate;
@@ -52,12 +52,12 @@ NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(UnsafeArray<const UInt
 			{
 				pt.y = 0;
 			}
-			ix = (OSInt)pt.x;
-			iy = (OSInt)pt.y;
+			ix = (IntOS)pt.x;
+			iy = (IntOS)pt.y;
 			ofst = iy * imgBpl + ix;
-			rRate = pt.x - OSInt2Double(ix);
+			rRate = pt.x - IntOS2Double(ix);
 			lRate = 1 - rRate;
-			bRate = pt.y - OSInt2Double(iy);
+			bRate = pt.y - IntOS2Double(iy);
 			tRate = 1 - bRate;
 			if (ix < imgXEnd)
 			{

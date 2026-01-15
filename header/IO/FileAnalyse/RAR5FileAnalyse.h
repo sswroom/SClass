@@ -29,23 +29,23 @@ namespace IO
 
 			static UnsafeArray<const UInt8> ReadVInt(UnsafeArray<const UInt8> buffPtr, OutParam<UInt64> val);
 			static Data::ByteArray ReadVInt(Data::ByteArray buffPtr, OutParam<UInt64> val);
-			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr);
-			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
-			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr);
-			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
-			static UnsafeArray<const UInt8> AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
-			static Data::ByteArray AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
+			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr);
+			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
+			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, Data::ByteArray buffPtr);
+			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
+			static UnsafeArray<const UInt8> AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
+			static Data::ByteArray AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UIntOS ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
 			RAR5FileAnalyse(NN<IO::StreamData> fd);
 			virtual ~RAR5FileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

@@ -5,15 +5,15 @@
 #include "Media/LUT.h"
 #include "Text/MyString.h"
 
-void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt)
+void Media::LUT::Init(UIntOS inputCh, UIntOS inputLev, UIntOS outputCh, DataFormat fmt)
 {
 	this->inputCh = inputCh;
 	this->inputLev = inputLev;
 	this->outputCh = outputCh;
 	this->fmt = fmt;
 	this->remark = nullptr;
-	UOSInt tableSize;
-	UOSInt i;
+	UIntOS tableSize;
+	UIntOS i;
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		tableSize = 1;
@@ -39,12 +39,12 @@ void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataForm
 	this->luTable.ChangeSizeAndClear(tableSize);
 }
 
-Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
+Media::LUT::LUT(UIntOS inputCh, UIntOS inputLev, UIntOS outputCh, DataFormat fmt, NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 	this->Init(inputCh, inputLev, outputCh, fmt);
 }
 
-Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
+Media::LUT::LUT(UIntOS inputCh, UIntOS inputLev, UIntOS outputCh, DataFormat fmt, Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 	this->Init(inputCh, inputLev, outputCh, fmt);
 }
@@ -76,7 +76,7 @@ Optional<Text::String> Media::LUT::GetRemark() const
 	return this->remark;
 }
 
-UOSInt Media::LUT::GetInputCh() const
+UIntOS Media::LUT::GetInputCh() const
 {
 	return this->inputCh;
 }
@@ -86,12 +86,12 @@ Media::LUT::DataFormat Media::LUT::GetFormat() const
 	return this->fmt;
 }
 
-UOSInt Media::LUT::GetInputLevel() const
+UIntOS Media::LUT::GetInputLevel() const
 {
 	return this->inputLev;
 }
 
-UOSInt Media::LUT::GetOutputCh() const
+UIntOS Media::LUT::GetOutputCh() const
 {
 	return this->outputCh;
 }
@@ -113,10 +113,10 @@ Data::ByteArray Media::LUT::GetTableArray() const
 
 void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const
 {
-	UOSInt indexBase = 1;
-	UOSInt index = 0;
-	UOSInt ofst;
-	UOSInt i;
+	UIntOS indexBase = 1;
+	UIntOS index = 0;
+	UIntOS ofst;
+	UIntOS i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -172,10 +172,10 @@ void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const
 
 void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const
 {
-	UOSInt indexBase = 1;
-	UOSInt index = 0;
-	UOSInt ofst;
-	UOSInt i;
+	UIntOS indexBase = 1;
+	UIntOS index = 0;
+	UIntOS ofst;
+	UIntOS i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -232,10 +232,10 @@ void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const
 
 void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals) const
 {
-	UOSInt indexBase = 1;
-	UOSInt index = 0;
-	UOSInt ofst;
-	UOSInt i;
+	UIntOS indexBase = 1;
+	UIntOS index = 0;
+	UIntOS ofst;
+	UIntOS i;
 	i = 0;
 	while (i < this->inputCh)
 	{
@@ -286,8 +286,8 @@ Media::LUT *Media::LUT::Clone() const
 	{
 		newLut->SetRemark(this->remark);
 	}
-/*	UOSInt tableSize;
-	UOSInt i;
+/*	UIntOS tableSize;
+	UIntOS i;
 	if (fmt == Media::LUT::DF_UINT8)
 	{
 		tableSize = 1;
@@ -322,8 +322,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 		return false;
 	if (this->outputCh != lut->outputCh || this->inputCh != lut->inputCh)
 		return false;
-	UOSInt i;
-	UOSInt j = 1;
+	UIntOS i;
+	UIntOS j = 1;
 	i = inputCh;
 	while (i-- > 0)
 	{

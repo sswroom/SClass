@@ -6,7 +6,7 @@
 Net::WebServer::WebServiceHandler::~WebServiceHandler()
 {
 	NN<Net::WebServer::WebServiceHandler::ServiceInfo> service;
-	UOSInt i = this->services.GetCount();
+	UIntOS i = this->services.GetCount();
 	while (i-- > 0)
 	{
 		service = this->services.GetItemNoCheck(i);
@@ -34,8 +34,8 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::WebReq
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_OPTIONS)
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = 0;
-			UOSInt j = nnservice->funcs.GetCount();
+			UIntOS i = 0;
+			UIntOS j = nnservice->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)
@@ -56,8 +56,8 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::WebReq
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = 0;
-			UOSInt j = nnservice->funcs.GetCount();
+			UIntOS i = 0;
+			UIntOS j = nnservice->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)

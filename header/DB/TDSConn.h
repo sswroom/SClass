@@ -31,7 +31,7 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
@@ -42,8 +42,8 @@ namespace DB
 		virtual void Commit(NN<DB::DBTransaction> tran);
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 	};
 }
 #endif

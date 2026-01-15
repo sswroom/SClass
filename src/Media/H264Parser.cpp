@@ -303,7 +303,7 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 	return true;
 }
 
-Bool Media::H264Parser::GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, Optional<H264Flags> flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
+Bool Media::H264Parser::GetFrameInfo(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<Media::FrameInfo> frameInfo, Optional<H264Flags> flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
 {
 	Bool succ = false;
 	UInt8 *tmpBuff;
@@ -318,9 +318,9 @@ Bool Media::H264Parser::GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt fram
 	UInt32 pic_height_in_map_units_minus1;
 	UInt32 frame_mbs_only_flag;
 	UInt32 mb_adaptive_frame_field_flag;
-	UOSInt i;
-	UOSInt j;
-	OSInt k;
+	UIntOS i;
+	UIntOS j;
+	IntOS k;
 	NN<H264Flags> nnflags;
 
 	if (ReadMInt32(&frame[0]) != 1)
@@ -458,12 +458,12 @@ Bool Media::H264Parser::GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt fram
 		reader.ReadBits(temp, 1); //gaps_in_frame_num_value_allowed_flag
 		if (ParseVari(reader, pic_width_in_mbs_minus1))
 		{
-			frameInfo->storeSize.x = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
+			frameInfo->storeSize.x = ((UIntOS)pic_width_in_mbs_minus1 + 1) << 4;
 		}
 		ParseVari(reader, pic_height_in_map_units_minus1);
 		if (reader.ReadBits(frame_mbs_only_flag, 1))
 		{
-			frameInfo->storeSize.y = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
+			frameInfo->storeSize.y = (2 - frame_mbs_only_flag) * ((UIntOS)pic_height_in_map_units_minus1 + 1) << 4;
 		}
 		mb_adaptive_frame_field_flag = 0;
 		if (frame_mbs_only_flag == 0)
@@ -549,17 +549,17 @@ Bool Media::H264Parser::ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> 
 	return ret;
 }
 
-Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> sps, OutParam<UOSInt> spsSize)
+Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UIntOS frameSize, OutParam<UnsafeArray<const UInt8>> sps, OutParam<UIntOS> spsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	UOSInt i;
+	UIntOS i;
 	Data::ArrayListUInt32 nalList;
 	UInt8 t;
 	FindNALs(frame, frameSize, nalList);
 
-	UOSInt startOfst;
-	UOSInt endOfst = frameSize;
+	UIntOS startOfst;
+	UIntOS endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{
@@ -577,16 +577,16 @@ Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize
 }
 
 
-Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> pps, OutParam<UOSInt> ppsSize)
+Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UIntOS frameSize, OutParam<UnsafeArray<const UInt8>> pps, OutParam<UIntOS> ppsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	UOSInt i;
+	UIntOS i;
 	Data::ArrayListUInt32 nalList;
 	FindNALs(frame, frameSize, nalList);
 
-	UOSInt startOfst;
-	UOSInt endOfst = frameSize;
+	UIntOS startOfst;
+	UIntOS endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{
@@ -602,12 +602,12 @@ Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize
 	return false;
 }
 
-Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Data::ArrayListUInt32> nalList)
+Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<Data::ArrayListUInt32> nalList)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
-	UOSInt i;
-	UOSInt j = frameSize - 4;
+	UIntOS i;
+	UIntOS j = frameSize - 4;
 	UInt8 t;
 	i = 0;
 	while (i <= j)
@@ -627,17 +627,17 @@ Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSiz
 	return true;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UOSInt frameSize)
+UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UIntOS frameSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return nullptr;
 
-	UOSInt i;
+	UIntOS i;
 	Data::ArrayListUInt32 nalList;
 	FindNALs(frame, frameSize, nalList);
 
-	UOSInt startOfst;
-	UOSInt endOfst = frameSize;
+	UIntOS startOfst;
+	UIntOS endOfst = frameSize;
 	i = nalList.GetCount();
 	while (i-- > 0)
 	{

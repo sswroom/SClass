@@ -12,7 +12,7 @@ namespace Data
 		IO::MemoryStream mstm;
 	public:
 		BinaryBuilder();
-		BinaryBuilder(UOSInt initSize);
+		BinaryBuilder(UIntOS initSize);
 		~BinaryBuilder();
 
 		void AppendI32(Int32 val);

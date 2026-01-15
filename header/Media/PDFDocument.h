@@ -20,9 +20,9 @@ namespace Media
 		virtual ~PDFDocument();
 
 		virtual IO::ParserType GetParserType() const;
-		virtual UOSInt GetCount() const;
-		virtual NN<PDFObject> GetItemNoCheck(UOSInt index) const;
-		virtual Optional<PDFObject> GetItem(UOSInt index) const;
+		virtual UIntOS GetCount() const;
+		virtual NN<PDFObject> GetItemNoCheck(UIntOS index) const;
+		virtual Optional<PDFObject> GetItem(UIntOS index) const;
 		
 		NN<PDFObject> AddObject(UInt32 id);
 		Optional<Media::ImageList> CreateImage(UInt32 id, NN<Parser::ParserList> parsers);

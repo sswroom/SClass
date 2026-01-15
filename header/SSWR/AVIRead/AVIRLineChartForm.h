@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				UOSInt colIndex;
+				UIntOS colIndex;
 				NN<DB::ColDef> colDef;
 				AnyType datas;
 			} ColInfo;

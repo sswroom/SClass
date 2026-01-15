@@ -19,7 +19,7 @@ void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> 
 	Text::StringBuilderUTF8 sb;
 
 	sb.ClearStr();
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Req "));
 	Text::CStringNN reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
@@ -36,7 +36,7 @@ void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> 
 	{
 		headerName = it.Next();
 		sb.ClearStr();
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC(" Req "));
 		sb.Append(headerName);
 		sb.AppendC(UTF8STRC(": "));
@@ -45,13 +45,13 @@ void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> 
 		logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	sb.ClearStr();
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Resp "));
 	sb.AppendI32(resp->GetStatusCode());
 	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	
 	sb.ClearStr();
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Resp "));
 	sb.Append(resp->GetRespHeaders());
 	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);

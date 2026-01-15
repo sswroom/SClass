@@ -108,10 +108,10 @@ void IO::LogTool::AddLogHandler(NN<LogHandler> hdlr, IO::LogHandler::LogLevel lo
 	Data::Timestamp ts = Data::Timestamp::Now();
 
 	sptr2 = IO::Path::GetProcessFileName(buff).Or(buff);
-	sptr = &buff[Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr2 - buff), IO::Path::PATH_SEPERATOR) + 1];
+	sptr = &buff[Text::StrLastIndexOfCharC(buff, (UIntOS)(sptr2 - buff), IO::Path::PATH_SEPERATOR) + 1];
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Program "));
-	sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
+	sb.AppendC(sptr, (UIntOS)(sptr2 - sptr));
 	sb.AppendC(UTF8STRC(" started"));
 	sb.AppendC(UTF8STRC(", version: "));
 	sb.AppendTSNoZone(IO::BuildTime::GetBuildTime());
@@ -123,7 +123,7 @@ void IO::LogTool::RemoveLogHandler(NN<LogHandler> hdlr)
 	if (closed)
 		return;
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrArr.GetCount();
+	UIntOS i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
 		if (this->hdlrArr.GetItem(i).OrNull() == hdlr.Ptr())
@@ -145,7 +145,7 @@ void IO::LogTool::ClearHandlers()
 	if (!this->closed)
 		this->HandlerClose();
 	this->hdlrArr.Clear();
-	UOSInt i = this->fileLogArr.GetCount();
+	UIntOS i = this->fileLogArr.GetCount();
 	while (i-- > 0)
 	{
 		this->fileLogArr.GetItem(i).Delete();
@@ -158,7 +158,7 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	NN<IO::LogHandler> logHdlr;
-	UOSInt i = this->hdlrArr.GetCount();
+	UIntOS i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
 		if (this->levArr.GetItem(i) >= level && this->hdlrArr.GetItem(i).SetTo(logHdlr))

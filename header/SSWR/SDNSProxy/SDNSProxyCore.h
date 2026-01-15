@@ -50,8 +50,8 @@ namespace SSWR
 			
 			UInt8 lastHour;
 			UInt8 lastMinute;
-			UOSInt lastCnt;
-			UOSInt currCnt;
+			UIntOS lastCnt;
+			UIntOS currCnt;
 
 			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
@@ -62,8 +62,8 @@ namespace SSWR
 			Bool IsError();
 			void Run(NN<Core::ProgControl> progCtrl);
 
-			UOSInt GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList);
-			UOSInt GetRequestPerMin();
+			UIntOS GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList);
+			UIntOS GetRequestPerMin();
 		};
 	}
 }

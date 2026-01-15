@@ -8,7 +8,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, IO::PacketAnalyse::Link
 {
 	UInt8 buff[256];
 	IO::SystemInfo sysInfo;
-	OSInt i;
+	IntOS i;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	WriteUInt32(&buff[0], 0x0a0d0d0a); //block type = SHB
@@ -73,7 +73,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, IO::PacketAnalyse::Link
 	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
-	this->fs.Write(Data::ByteArrayR(buff, (UOSInt)i));
+	this->fs.Write(Data::ByteArrayR(buff, (UIntOS)i));
 
 	WriteInt32(&buff[0], 1); //Block Type = IDB
 	WriteInt32(&buff[4], 0); //Block Size
@@ -108,7 +108,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, IO::PacketAnalyse::Link
 	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
-	this->fs.Write(Data::ByteArrayR(buff, (UOSInt)i));
+	this->fs.Write(Data::ByteArrayR(buff, (UIntOS)i));
 }
 
 IO::PcapngWriter::~PcapngWriter()
@@ -125,7 +125,7 @@ Bool IO::PcapngWriter::WritePacket(Data::ByteArrayR packet)
 	UInt8 buff[28];
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Int64 t = ts.ToEpochNS();
-	UOSInt pSize = packet.GetSize() + 32;
+	UIntOS pSize = packet.GetSize() + 32;
 	if (pSize & 3)
 	{
 		pSize += 4 - (pSize & 3);

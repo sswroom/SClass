@@ -7,10 +7,10 @@ namespace Data
 	{
 	private:
 		UnsafeArray<const T> arr;
-		UOSInt cnt;
+		UIntOS cnt;
 	public:
 		ArrayIterator() = default;
-		ArrayIterator(UnsafeArray<const T> arr, UOSInt cnt)
+		ArrayIterator(UnsafeArray<const T> arr, UIntOS cnt)
 		{
 			this->arr = arr;
 			this->cnt = cnt;

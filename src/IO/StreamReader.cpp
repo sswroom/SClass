@@ -10,7 +10,7 @@
 
 void IO::StreamReader::FillBuffer()
 {
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<UTF8Char> dest;
 
 	if (stm->CanSeek())
@@ -49,13 +49,13 @@ void IO::StreamReader::FillBuffer()
 	{
 		return;
 	}
-	UOSInt convSize = BUFFSIZE - cSize;
+	UIntOS convSize = BUFFSIZE - cSize;
 	if (convSize > buffSize)
 		convSize = buffSize;
 	if (convSize)
 	{
 		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, i);
-		cSize = (UOSInt)(dest - cbuff);
+		cSize = (UIntOS)(dest - cbuff);
 		MemCopyO(&buff[0], &buff[i], buffSize - i);
 		buffSize -= i;
 	}
@@ -149,7 +149,7 @@ void IO::StreamReader::Close()
 	this->stm->Close();
 }
 
-UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, UOSInt maxCharCnt)
+UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, UIntOS maxCharCnt)
 {
 	UnsafeArray<UTF8Char> dest = buff;
 	Bool tmp = false;
@@ -161,8 +161,8 @@ UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, 
 			this->FillBuffer();
 		}
 	}
-	UOSInt currPos = cPos;
-	UOSInt currSize = cSize;
+	UIntOS currPos = cPos;
+	UIntOS currSize = cSize;
 	UTF8Char c;
 	while (true)
 	{
@@ -233,7 +233,7 @@ UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, 
 	return nullptr;
 }
 
-Bool IO::StreamReader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
+Bool IO::StreamReader::ReadLine(NN<Text::StringBuilderUTF8> sb, UIntOS maxCharCnt)
 {
 	sb->AllocLeng(maxCharCnt);
 	UnsafeArray<UTF8Char> endPtr;

@@ -11,9 +11,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Double spd1;
 	Double spd2;
-	OSInt i;
-	OSInt val = 0;
-	OSInt val2 = 0;
+	IntOS i;
+	IntOS val = 0;
+	IntOS val2 = 0;
 	Manage::HiResClock *clk;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
@@ -28,7 +28,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	spd1 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Compare value1 = "));
-	sb.AppendOSInt(val);
+	sb.AppendIntOS(val);
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(spd1);
 	console.WriteLine(sb.ToCString());
@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	spd2 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Compare value2 = "));
-	sb.AppendOSInt(val2);
+	sb.AppendIntOS(val2);
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(spd2);
 	console.WriteLine(sb.ToCString());

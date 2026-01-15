@@ -289,7 +289,7 @@ void IO::ProtocolBuffersMessage::AddSubMessage(Bool required, Text::CStringNN na
 
 void IO::ProtocolBuffersMessage::ClearValues()
 {
-	UOSInt i = this->fieldMap.GetCount();
+	UIntOS i = this->fieldMap.GetCount();
 	while (i-- > 0)
 	{
 		NN<FieldInfo> fieldInfo = this->fieldMap.GetItemNoCheck(i);
@@ -594,8 +594,8 @@ NN<IO::ProtocolBuffersMessage> IO::ProtocolBuffersMessage::Clone() const
 	NN<ProtocolBuffersMessage> newMsg;
 	NN<ProtocolBuffersMessage> subMsg;
 	NEW_CLASSNN(newMsg, ProtocolBuffersMessage(this->name->ToCString()));
-	UOSInt i = 0;
-	UOSInt j = this->fieldMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->fieldMap.GetCount();
 	while (i < j)
 	{
 		NN<FieldInfo> fieldInfo = this->fieldMap.GetItemNoCheck(i);
@@ -664,11 +664,11 @@ NN<Text::String> IO::ProtocolBuffersMessage::GetName() const
 	return this->name;
 }
 
-Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt buffOfst, UOSInt buffSize)
+Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> frame, UnsafeArray<const UInt8> buff, UIntOS buffOfst, UIntOS buffSize)
 {
 	NN<ProtocolBuffersMessage> subMsg;
-	UOSInt buffEnd = buffOfst + buffSize;
-	UOSInt nextBuffOfst;
+	UIntOS buffEnd = buffOfst + buffSize;
+	UIntOS nextBuffOfst;
 	while (buffOfst < buffEnd)
 	{
 		UInt64 tag;
@@ -703,13 +703,13 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 				return false;
 			}
 			frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("Packed Length"), len);
-			UOSInt packedEnd = (UOSInt)(nextBuffOfst + len);
+			UIntOS packedEnd = (UIntOS)(nextBuffOfst + len);
 			if (packedEnd > buffEnd)
 			{
 				return false;
 			}
 			buffOfst = nextBuffOfst;
-			UOSInt i = 0;
+			UIntOS i = 0;
 			Text::StringBuilderUTF8 sb;
 			Int64 lastValue = 0;
 			Double lastValueDbl = 0;
@@ -718,7 +718,7 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 				sb.ClearStr();
 				sb.Append(fieldInfo->name->ToCString());
 				sb.AppendC(UTF8STRC("["));
-				sb.AppendUOSInt(i++);
+				sb.AppendUIntOS(i++);
 				sb.AppendC(UTF8STRC("]"));
 				switch (fieldInfo->fieldType)
 				{
@@ -1077,11 +1077,11 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 					return false;
 				}
 				fieldInfo->valCount++;
-				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("String Length"), (UOSInt)v);
-				frame->AddStrC(nextBuffOfst, (UOSInt)v, fieldInfo->name->ToCString(), &buff[nextBuffOfst]);
+				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("String Length"), (UIntOS)v);
+				frame->AddStrC(nextBuffOfst, (UIntOS)v, fieldInfo->name->ToCString(), &buff[nextBuffOfst]);
 				OPTSTR_DEL(fieldInfo->val.strVal);
-				fieldInfo->val.strVal = Text::String::New(&buff[nextBuffOfst], (UOSInt)v);
-				buffOfst = nextBuffOfst + (UOSInt)v;
+				fieldInfo->val.strVal = Text::String::New(&buff[nextBuffOfst], (UIntOS)v);
+				buffOfst = nextBuffOfst + (UIntOS)v;
 				break;
 			case ProtocolBuffersUtil::FieldType::Bytes:
 				if (wireType != 2)
@@ -1094,11 +1094,11 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 					return false;
 				}
 				fieldInfo->valCount++;
-				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("Bytes Length"), (UOSInt)v);
-				frame->AddHexBuff(nextBuffOfst, fieldInfo->name->ToCString(), Data::ByteArrayR(&buff[nextBuffOfst], (UOSInt)v), true);
+				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("Bytes Length"), (UIntOS)v);
+				frame->AddHexBuff(nextBuffOfst, fieldInfo->name->ToCString(), Data::ByteArrayR(&buff[nextBuffOfst], (UIntOS)v), true);
 				fieldInfo->val.bytesVal.Delete();
-				NEW_CLASSOPT(fieldInfo->val.bytesVal, Data::ByteBuffer(Data::ByteArrayR(&buff[nextBuffOfst], (UOSInt)v)));
-				buffOfst = nextBuffOfst + (UOSInt)v;
+				NEW_CLASSOPT(fieldInfo->val.bytesVal, Data::ByteBuffer(Data::ByteArrayR(&buff[nextBuffOfst], (UIntOS)v)));
+				buffOfst = nextBuffOfst + (UIntOS)v;
 				break;
 			case ProtocolBuffersUtil::FieldType::SubMsg:
 				if (wireType != 2)
@@ -1110,19 +1110,19 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 				{
 					return false;
 				}			fieldInfo->valCount++;
-				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("Sub Message Length"), (UOSInt)v);
+				frame->AddUInt(buffOfst, nextBuffOfst - buffOfst, CSTR("Sub Message Length"), (UIntOS)v);
 				if (!fieldInfo->val.subMsg.SetTo(subMsg))
 				{
 					return false;
 				}
 				else
 				{
-					if (!subMsg->ParseMsssage(frame, buff, nextBuffOfst, (UOSInt)v))
+					if (!subMsg->ParseMsssage(frame, buff, nextBuffOfst, (UIntOS)v))
 					{
 						return false;
 					}
 				}
-				buffOfst = nextBuffOfst + (UOSInt)v;
+				buffOfst = nextBuffOfst + (UIntOS)v;
 				break;
 			default:
 				return false;
@@ -1132,15 +1132,15 @@ Bool IO::ProtocolBuffersMessage::ParseMsssage(NN<IO::FileAnalyse::FrameDetail> f
 	return true;
 }
 
-void IO::ProtocolBuffersMessage::ToString(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+void IO::ProtocolBuffersMessage::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level)
 {
 	NN<ProtocolBuffersMessage> subMsg;
 	sb->AppendChar('\t', level);
 	sb->Append(CSTR("message "));
 	sb->Append(this->name);
 	sb->Append(CSTR(" {\r\n"));
-	UOSInt i = 0;
-	UOSInt j = this->fieldMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->fieldMap.GetCount();
 	while (i < j)
 	{
 		NN<FieldInfo> fieldInfo = this->fieldMap.GetItemNoCheck(i);

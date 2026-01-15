@@ -107,15 +107,15 @@ void Win32::WMIQuery::Close()
 	}
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
+IntOS Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
-	OSInt ret = this->ExecuteNonQueryW(wptr);
+	IntOS ret = this->ExecuteNonQueryW(wptr);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
+IntOS Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
 	this->lastDataError = DE_EXEC_SQL_ERROR;
 	return -2;
@@ -170,7 +170,7 @@ void Win32::WMIQuery::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -178,7 +178,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	{
 		return 0;
 	}
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	IEnumWbemClassObject *pEnum;
 	HRESULT hr = ((IWbemServices *)this->pService)->CreateClassEnum(0, WBEM_FLAG_DEEP | WBEM_FLAG_RETURN_IMMEDIATELY, 0, &pEnum);
 	if (SUCCEEDED(hr))
@@ -213,7 +213,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
@@ -241,9 +241,9 @@ UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 	return this->ns;
 }
 
-UOSInt Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
+UIntOS Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Win32::WMIQuery *query;
 	NN<Win32::WMIReader> reader;
 	WChar wbuff[256];
@@ -270,7 +270,7 @@ UOSInt Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 
 void Win32::WMIQuery::FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
-	UOSInt i = nsList->GetCount();
+	UIntOS i = nsList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(nsList->GetItemNoCheck(i));

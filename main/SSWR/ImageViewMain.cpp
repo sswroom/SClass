@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<UI::GUICore> ui;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	Bool succ;
-	UOSInt argc;
+	UIntOS argc;
 	UInt32 i;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{

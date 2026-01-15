@@ -32,8 +32,8 @@ namespace Media
 
 		struct DrawRect
 		{
-			Math::Coord2D<OSInt> tl;
-			Math::Size2D<UOSInt> size;
+			Math::Coord2D<IntOS> tl;
+			Math::Size2D<UIntOS> size;
 		};
 
 		class RendererStatus2
@@ -53,9 +53,9 @@ namespace Media
 			Int32 avOfst;
 			Media::RotateType rotateType;
 			UInt32 format;
-			Math::Size2D<UOSInt> srcSize;
-			Math::Size2D<UOSInt> dispSize;
-			UOSInt seekCnt;
+			Math::Size2D<UIntOS> srcSize;
+			Math::Size2D<UIntOS> dispSize;
+			UIntOS seekCnt;
 			Double par;
 			UInt32 dispBitDepth;
 			Media::ColorProfile color;
@@ -75,14 +75,14 @@ namespace Media
 			Bool isProcessing;
 			Bool isOutputReady;
 			UnsafeArrayOpt<UInt8> srcBuff;
-			OSInt srcW;
-			OSInt srcH;
+			IntOS srcW;
+			IntOS srcH;
 
 			Data::Duration frameTime;
 			UInt32 frameNum;
 			Bool discontTime;
 			Optional<Media::MonitorSurface> destSurface;
-			Math::Size2D<UOSInt> destSize;
+			Math::Size2D<UIntOS> destSize;
 			UInt32 destBitDepth;
 			Media::FrameType frameType;
 			Media::YCOffset ycOfst;
@@ -99,9 +99,9 @@ namespace Media
 			Bool resizer10Bit;
 			Optional<Media::CS::CSConverter> csconv;
 			UInt8 *lrBuff;
-			UOSInt lrSize;
+			UIntOS lrSize;
 			UInt8 *diBuff;
-			UOSInt diSize;
+			UIntOS diSize;
 			Media::Deinterlacer *deint;
 			VideoRenderer *me;
 			Bool srcChanged;
@@ -126,9 +126,9 @@ namespace Media
 		Data::Duration lastFrameTime;
 		Bool ignoreFrameTime;
 
-		UOSInt threadCnt;
-		UOSInt buffCnt;
-		UOSInt allBuffCnt;
+		UIntOS threadCnt;
+		UIntOS buffCnt;
+		UIntOS allBuffCnt;
 		VideoBuff *buffs;
 		Sync::Mutex buffMut;
 		Sync::Event buffEvt;
@@ -155,10 +155,10 @@ namespace Media
 		Data::Duration *dispJitterBuff;
 		Int32 dispCnt;
 
-		UOSInt cropLeft;
-		UOSInt cropTop;
-		UOSInt cropRight;
-		UOSInt cropBottom;
+		UIntOS cropLeft;
+		UIntOS cropTop;
+		UIntOS cropRight;
+		UIntOS cropBottom;
 		DeinterlaceType deintType;
 //		Bool forseFT;
 //		Media::FrameType forseFTVal;
@@ -183,7 +183,7 @@ namespace Media
 		Bool curr10Bit;
 		Double currSrcRefLuminance;
 
-		Math::Size2D<UOSInt> outputSize;
+		Math::Size2D<UIntOS> outputSize;
 		UInt32 outputBpp;
 		Media::PixelFormat outputPf;
 
@@ -196,14 +196,14 @@ namespace Media
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
 
-		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
+		void CalDisplayRect(UIntOS srcWidth, UIntOS srcHeight, DrawRect *rect);
 
 		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
 		virtual NN<Media::ImageResizer> CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData);
 
 		static UInt32 __stdcall ProcessThread(AnyType userObj);
@@ -220,13 +220,13 @@ namespace Media
 		Int32 CalDispJitter();
 
 		void UpdateRefreshRate(UInt32 refRate);
-		void UpdateOutputSize(Math::Size2D<UOSInt> outputSize);
-		void UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt32 bpp, Media::PixelFormat pf);
+		void UpdateOutputSize(Math::Size2D<UIntOS> outputSize);
+		void UpdateDispInfo(Math::Size2D<UIntOS> outputSize, UInt32 bpp, Media::PixelFormat pf);
 
 		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage) = 0;
-		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
+		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn) = 0;
 	public:
-		VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
+		VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UIntOS buffCnt, UIntOS threadCnt);
 		virtual ~VideoRenderer();
 
 		void SetVideo(Optional<Media::VideoSource> video);

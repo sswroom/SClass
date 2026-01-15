@@ -136,7 +136,7 @@ namespace IO
 			virtual ~HuaweiGSMModemController();
 
 			virtual UnsafeArrayOpt<UTF8Char> GetICCID(UnsafeArray<UTF8Char> sbuff);
-			virtual UOSInt QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
+			virtual UIntOS QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
 
 			//Huawei Proprietary: Mobile Termination Control and Status Interface
 			UnsafeArrayOpt<UTF8Char> HuaweiGetICCID(UnsafeArray<UTF8Char> iccid); //AT^ICCID

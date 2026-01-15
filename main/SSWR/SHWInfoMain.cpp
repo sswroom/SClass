@@ -37,7 +37,7 @@
 class PrintTest : public Media::PrintHandler
 {
 private:
-	OSInt pageId;
+	IntOS pageId;
 	Optional<Media::PrintDocument> doc;
 
 public:
@@ -64,12 +64,12 @@ public:
 
 	virtual Bool PrintPage(NN<Media::DrawImage> printPage) //return has more pages
 	{
-		UOSInt w = printPage->GetWidth();
-		UOSInt h = printPage->GetHeight();
+		UIntOS w = printPage->GetWidth();
+		UIntOS h = printPage->GetHeight();
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
 		NN<Media::DrawPen> p = printPage->NewPenARGB(0xff000000, 1, nullptr, 0);
-		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, nullptr);
+		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UIntOS2Double(w) - hdpi, UIntOS2Double(h) - vdpi), p, nullptr);
 		printPage->DelPen(p);
 
 		NN<Media::PrintDocument> doc;
@@ -122,11 +122,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::CStringNN nns;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));
@@ -254,7 +254,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CPU Thread Count: "));
-			sb.AppendUOSInt(threadCnt);
+			sb.AppendUIntOS(threadCnt);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
 
@@ -268,7 +268,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("CPU Temp "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC(": "));
 				sb.AppendDouble(temp);
 				console->WriteLine(sb.ToCString());
@@ -333,7 +333,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Data::ArrayListNN<Media::DDCReader> readerList;
 		NN<Media::DDCReader> reader;
 		Media::DDCReader::CreateDDCReaders(readerList);
-		UOSInt edidSize;
+		UIntOS edidSize;
 		UnsafeArray<UInt8> edid;
 		i = 0;
 		j = readerList.GetCount();
@@ -347,7 +347,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor "));
-					sb.AppendUOSInt(i);
+					sb.AppendUIntOS(i);
 					sb.AppendC(UTF8STRC(" - "));
 					sb.AppendSlow(edidInfo.monitorName);
 					sb.AppendC(UTF8STRC(" ("));
@@ -542,17 +542,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Printer "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC(" = "));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				console->WriteLine(sb.ToCString());
 				writer->WriteLine(sb.ToCString());
 
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Bullzip PDF Printer")) ||
-					Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Adobe PDF")) ||
-					Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PDF")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Bullzip PDF Printer")) ||
+					Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Adobe PDF")) ||
+					Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("PDF")))
 				{
-					printerList.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					printerList.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 			}
 
@@ -628,7 +628,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				dev = devList.GetItemNoCheck(i);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Device "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC(": "));
 				sb.Append(videoMgr->GetDevTypeName(dev->devType));
 				sb.AppendC(UTF8STRC(", "));
@@ -662,9 +662,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						sb.AppendC(UTF8STRC(", bpp = "));
 						sb.AppendU32(fmts[k].info.storeBPP);
 						sb.AppendC(UTF8STRC(", size = "));
-						sb.AppendUOSInt(fmts[k].info.dispSize.x);
+						sb.AppendUIntOS(fmts[k].info.dispSize.x);
 						sb.AppendC(UTF8STRC(" x "));
-						sb.AppendUOSInt(fmts[k].info.dispSize.y);
+						sb.AppendUIntOS(fmts[k].info.dispSize.y);
 						sb.AppendC(UTF8STRC(", rate = "));
 						sb.AppendDouble(fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
 						console->WriteLine(sb.ToCString());
@@ -702,7 +702,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			connInfo = connInfoList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection "));
-			sb.AppendUOSInt(i);
+			sb.AppendUIntOS(i);
 			sb.AppendC(UTF8STRC(":"));
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
@@ -996,7 +996,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sdcard = sdList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("SD Card "));
-			sb.AppendUOSInt(i);
+			sb.AppendUIntOS(i);
 			sb.AppendC(UTF8STRC(" - "));
 			sb.Append(sdcard->GetName());
 			console->WriteLine(sb.ToCString());
@@ -1088,7 +1088,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		writer->WriteLine(CSTR("Sensors:"));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Count = "));
-		sb.AppendUOSInt(j = sensorMgr.GetSensorCnt());
+		sb.AppendUIntOS(j = sensorMgr.GetSensorCnt());
 		console->WriteLine(sb.ToCString());
 		writer->WriteLine(sb.ToCString());
 		i = 0;
@@ -1098,7 +1098,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sensor "));
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 				sb.AppendC(UTF8STRC(", Name = "));
 				if (sensor->GetName().SetTo(cstr) && cstr.leng)
 				{

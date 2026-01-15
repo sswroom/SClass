@@ -21,13 +21,13 @@ namespace Map
 			UInt8 flags;
 			UInt8 defSize;
 			UnsafeArrayOpt<UInt8> defValue;
-			UOSInt srsSize;
+			UIntOS srsSize;
 			UnsafeArrayOpt<UInt8> srsValue;
 		};
 
 		struct FileGDBTableInfo
 		{
-			UOSInt nullableCnt;
+			UIntOS nullableCnt;
 			UInt8 geometryType;
 			UInt8 tableFlags;
 			UInt8 geometryFlags;
@@ -52,7 +52,7 @@ namespace Map
 			Double zMax;
 			Double mMin;
 			Double mMax;
-			UOSInt spatialGridCnt;
+			UIntOS spatialGridCnt;
 			Double spatialGrid[4];
 		};
 
@@ -64,10 +64,10 @@ namespace Map
 			static void FreeTableInfo(NN<FileGDBTableInfo> tableInfo);
 			static NN<FileGDBFieldInfo> FieldInfoClone(NN<FileGDBFieldInfo> tableInfo);
 			static NN<FileGDBTableInfo> TableInfoClone(NN<FileGDBTableInfo> tableInfo);
-			static UOSInt ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<UInt64> val);
-			static UOSInt ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<Int64> val);
-			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val);
-			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val);
+			static UIntOS ReadVarUInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<UInt64> val);
+			static UIntOS ReadVarInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<Int64> val);
+			static UIntOS ReadVarUInt(Data::ByteArrayR buff, UIntOS ofst, OutParam<UInt64> val);
+			static UIntOS ReadVarInt(Data::ByteArrayR buff, UIntOS ofst, OutParam<Int64> val);
 			static Optional<Math::Geometry::Vector2D> ParseSDERecord(Data::ByteArrayR buff);
 
 			static Text::CStringNN GeometryTypeGetName(UInt8 t);

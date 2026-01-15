@@ -8,10 +8,10 @@ UInt32 __stdcall Media::ImgRemapper::NearestNeighbourRemapper::GetPixel32_B8G8R8
 	Int32 x = Math_Round(srcCoord.x);
 	Int32 y = Math_Round(srcCoord.y);
 	if (x < 0) x = 0;
-	if (x >= (OSInt)me->srcWidth) x = (Int32)me->srcWidth - 1;
+	if (x >= (IntOS)me->srcWidth) x = (Int32)me->srcWidth - 1;
 	if (y < 0) y = 0;
-	if (y >= (OSInt)me->srcHeight) y = (Int32)me->srcHeight - 1;
-	srcImgPtr += x * 4 + y * (OSInt)me->srcBpl;
+	if (y >= (IntOS)me->srcHeight) y = (Int32)me->srcHeight - 1;
+	srcImgPtr += x * 4 + y * (IntOS)me->srcBpl;
 	return ReadNUInt32(&srcImgPtr[0]);
 }
 
@@ -24,10 +24,10 @@ UInt32 __stdcall Media::ImgRemapper::NearestNeighbourRemapper::GetPixel32_PAL8(U
 		Int32 x = Math_Round(srcCoord.x);
 		Int32 y = Math_Round(srcCoord.y);
 		if (x < 0) x = 0;
-		if (x >= (OSInt)me->srcWidth) x = (Int32)me->srcWidth - 1;
+		if (x >= (IntOS)me->srcWidth) x = (Int32)me->srcWidth - 1;
 		if (y < 0) y = 0;
-		if (y >= (OSInt)me->srcHeight) y = (Int32)me->srcHeight - 1;
-		srcImgPtr += x + y * (OSInt)me->srcBpl;
+		if (y >= (IntOS)me->srcHeight) y = (Int32)me->srcHeight - 1;
+		srcImgPtr += x + y * (IntOS)me->srcBpl;
 		return ReadNUInt32(&pal[srcImgPtr[0] * 4]);
 	}
 	return 0;
@@ -42,11 +42,11 @@ UInt32 __stdcall Media::ImgRemapper::NearestNeighbourRemapper::GetPixel32_PAL4(U
 		Int32 x = Math_Round(srcCoord.x);
 		Int32 y = Math_Round(srcCoord.y);
 		if (x < 0) x = 0;
-		if (x >= (OSInt)me->srcWidth) x = (Int32)me->srcWidth - 1;
+		if (x >= (IntOS)me->srcWidth) x = (Int32)me->srcWidth - 1;
 		if (y < 0) y = 0;
-		if (y >= (OSInt)me->srcHeight) y = (Int32)me->srcHeight - 1;
-		srcImgPtr += (x >> 1) + y * (OSInt)me->srcBpl;
-		UOSInt c;
+		if (y >= (IntOS)me->srcHeight) y = (Int32)me->srcHeight - 1;
+		srcImgPtr += (x >> 1) + y * (IntOS)me->srcBpl;
+		UIntOS c;
 		if (x & 1)
 			c = srcImgPtr[0] & 15;
 		else
@@ -65,11 +65,11 @@ UInt32 __stdcall Media::ImgRemapper::NearestNeighbourRemapper::GetPixel32_PAL1(U
 		Int32 x = Math_Round(srcCoord.x);
 		Int32 y = Math_Round(srcCoord.y);
 		if (x < 0) x = 0;
-		if (x >= (OSInt)me->srcWidth) x = (Int32)me->srcWidth - 1;
+		if (x >= (IntOS)me->srcWidth) x = (Int32)me->srcWidth - 1;
 		if (y < 0) y = 0;
-		if (y >= (OSInt)me->srcHeight) y = (Int32)me->srcHeight - 1;
-		srcImgPtr += (x >> 3) + y * (OSInt)me->srcBpl;
-		UOSInt c = (srcImgPtr[0] >> (7 - (x & 7))) & 1;
+		if (y >= (IntOS)me->srcHeight) y = (Int32)me->srcHeight - 1;
+		srcImgPtr += (x >> 3) + y * (IntOS)me->srcBpl;
+		UIntOS c = (srcImgPtr[0] >> (7 - (x & 7))) & 1;
 		return ReadNUInt32(&pal[c * 4]);
 	}
 	return 0;

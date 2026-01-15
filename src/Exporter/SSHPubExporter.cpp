@@ -37,9 +37,9 @@ IO::FileExporter::SupportType Exporter::SSHPubExporter::IsObjectSupported(NN<IO:
 	{
 		NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 		UnsafeArray<const UInt8> modulus;
-		UOSInt modulusSize;
+		UIntOS modulusSize;
 		UnsafeArray<const UInt8> publicExponent;
-		UOSInt publicExponentSize;
+		UIntOS publicExponentSize;
 		if (key->GetRSAModulus(modulusSize).SetTo(modulus) && key->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent))
 		{
 			return IO::FileExporter::SupportType::NormalStream;
@@ -48,7 +48,7 @@ IO::FileExporter::SupportType Exporter::SSHPubExporter::IsObjectSupported(NN<IO:
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::SSHPubExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::SSHPubExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -75,15 +75,15 @@ Bool Exporter::SSHPubExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	{
 		NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 		UnsafeArray<const UInt8> modulus;
-		UOSInt modulusSize;
+		UIntOS modulusSize;
 		UnsafeArray<const UInt8> publicExponent;
-		UOSInt publicExponentSize;
+		UIntOS publicExponentSize;
 		NN<Crypto::Cert::SSHPubKey> skey;
 		if (key->GetRSAModulus(modulusSize).SetTo(modulus) && key->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent))
 		{
 			Bool succ;
 			Text::StringBuilderUTF8 sb;
-			UOSInt i;
+			UIntOS i;
 			Text::CStringNN name;
 			skey = Crypto::Cert::SSHPubKey::CreateRSAPublicKey(fileName, Data::ByteArrayR(modulus, modulusSize), Data::ByteArrayR(publicExponent, publicExponentSize));
 			sb.Append(CSTR("ssh-rsa "));

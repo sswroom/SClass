@@ -6,13 +6,13 @@
 class CertComparator : public Data::Comparator<NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry>>
 {
 public:
-	virtual OSInt Compare(NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> a, NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> b) const
+	virtual IntOS Compare(NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> a, NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> b) const
 	{
 		return a->subjectCN->CompareToFast(b->subjectCN->ToCString());
 	}
 };
 
-void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRTrustStoreForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTrustStoreForm>();
 	NN<Crypto::Cert::X509Cert> cert;
@@ -62,8 +62,8 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	Data::ArrayListNN<CertEntry> certs;
 	NN<Crypto::Cert::X509Cert> cert;
 	NN<CertEntry> entry;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->store.SetTo(trusts))
 	{
 		i = 0;
@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt k;
+	UIntOS k;
 	i = 0;
 	j = certs.GetCount();
 	while (i < j)

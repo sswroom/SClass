@@ -26,15 +26,15 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 	MemFree(data);
 }
 
-UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
+UIntOS Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	NN<DeviceInfo> devInfo;
 	UTF8Char sbuff[512];
 	Data::ArrayList<UInt32> devIdList;
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = data->v4lMgr->GetDeviceList(&devIdList);
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = data->v4lMgr->GetDeviceList(&devIdList);
 	while (i < j)
 	{
 		devInfo = MemAllocNN(DeviceInfo);
@@ -67,7 +67,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> d
 void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
 	NN<DeviceInfo> devInfo;
-	UOSInt i = devList->GetCount();
+	UIntOS i = devList->GetCount();
 	while (i-- > 0)
 	{
 		devInfo = devList->GetItemNoCheck(i);
@@ -76,7 +76,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> de
 	}
 }
 
-Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
+Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS devId)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (devType == 0)

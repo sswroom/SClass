@@ -66,18 +66,18 @@ Optional<IO::ParsedObject> Parser::FileParser::PCXParser::ParseFileHdr(NN<IO::St
 	bplp = bpl * ncp;
 //	return 0;
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	if (outImg)
 	{
 		UInt8 *pBits = outImg->data.Ptr();
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		UInt8 c;
-		UOSInt filePos = 128;
-		UOSInt readSize;
-		UOSInt dataSize = 0;
-		UOSInt lineLeft = imgHeight;
+		UIntOS filePos = 128;
+		UIntOS readSize;
+		UIntOS dataSize = 0;
+		UIntOS lineLeft = imgHeight;
 		Data::ByteBuffer dataBuff(bplp << 1);
 		lineBuff = MemAlloc(UInt8, bplp);
 

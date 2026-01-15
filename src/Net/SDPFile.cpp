@@ -35,7 +35,7 @@ void Net::SDPFile::InitSDP()
 	this->reqUserAgent = nullptr;
 }
 
-Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
+Net::SDPFile::SDPFile(UInt8 *buff, UIntOS buffSize)
 {
 	InitSDP();
 	this->buff = MemAlloc(UInt8, buffSize);
@@ -59,7 +59,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 				this->version = Text::StrToInt32(&sbuff[2]);
 				break;
 			case 'o': //owner/creator and session identifier
-				if (Text::StrSplitP(sarr, 7, {&sbuff[2], (UOSInt)(sptr - &sbuff[2])}, ' ') == 6)
+				if (Text::StrSplitP(sarr, 7, {&sbuff[2], (UIntOS)(sptr - &sbuff[2])}, ' ') == 6)
 				{
 					OPTSTR_DEL(this->userName);
 					OPTSTR_DEL(this->sessId);
@@ -75,22 +75,22 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 				break;
 			case 's': //session name
 				OPTSTR_DEL(this->sessName);
-				this->sessName = Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
+				this->sessName = Text::String::New(&sbuff[2], (UIntOS)(sptr - &sbuff[2]));
 				break;
 			case 'i': //session information
-				this->sessDesc.Add(Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
+				this->sessDesc.Add(Text::String::New(&sbuff[2], (UIntOS)(sptr - &sbuff[2])));
 				this->sessDescType.Add('i');
 				break;
 			case 'u': //URI of description
-				this->sessDesc.Add(Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
+				this->sessDesc.Add(Text::String::New(&sbuff[2], (UIntOS)(sptr - &sbuff[2])));
 				this->sessDescType.Add('u');
 				break;
 			case 'e': //email address
-				this->sessDesc.Add(Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
+				this->sessDesc.Add(Text::String::New(&sbuff[2], (UIntOS)(sptr - &sbuff[2])));
 				this->sessDescType.Add('e');
 				break;
 			case 'p': //phone number
-				this->sessDesc.Add(Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
+				this->sessDesc.Add(Text::String::New(&sbuff[2], (UIntOS)(sptr - &sbuff[2])));
 				this->sessDescType.Add('p');
 				break;
 			case 'c': //connection information - not required if included in all media
@@ -98,7 +98,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'b': //bandwidth information
 				if (optcurrMedia.SetTo(currMedia))
 				{
-					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
+					currMedia->Add(Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)).Ptr());
 				}
 				break;
 			case 'z': //time zone adjustments
@@ -108,41 +108,41 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'a': //zero or more session attribute lines
 				if (optcurrMedia.SetTo(currMedia))
 				{
-					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+					currMedia->Add(Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				else
 				{
-					if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=tool:")))
+					if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=tool:")))
 					{
 						OPTSTR_DEL(this->sessTool);
 						this->sessTool = Text::String::NewP(&sbuff[7], sptr);
 					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=recvonly")))
+					else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=recvonly")))
 					{
 						this->sessSend = false;
 						this->sessRecv = true;
 					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=sendonly")))
+					else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=sendonly")))
 					{
 						this->sessSend = true;
 						this->sessRecv = false;
 					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=sendrecv")))
+					else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=sendrecv")))
 					{
 						this->sessSend = true;
 						this->sessRecv = true;
 					}
-					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=type:")))
+					else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=type:")))
 					{
 						OPTSTR_DEL(this->sessType);
 						this->sessType = Text::String::NewP(UARR(sbuff) + 7, sptr);
 					}
-					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=charset:")))
+					else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=charset:")))
 					{
 						OPTSTR_DEL(this->sessCharset);
 						this->sessCharset = Text::String::NewP(&sbuff[10], sptr);
 					}
-					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=control:")))
+					else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("a=control:")))
 					{
 						OPTSTR_DEL(this->sessControl);
 						this->sessControl = Text::String::NewP(&sbuff[10], sptr);
@@ -150,7 +150,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 				}
 				break;
 			case 't': //time the session is active
-				if (Text::StrSplitP(sarr, 3, {&sbuff[2], (UOSInt)(sptr - &sbuff[2])}, ' ') == 2)
+				if (Text::StrSplitP(sarr, 3, {&sbuff[2], (UIntOS)(sptr - &sbuff[2])}, ' ') == 2)
 				{
 					this->startTime = Text::StrToInt64(sarr[0].v);
 					this->endTime = Text::StrToInt64(sarr[1].v);
@@ -176,7 +176,7 @@ Net::SDPFile::SDPFile()
 
 Net::SDPFile::~SDPFile()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Data::ArrayListStrUTF8> currMedia;
 	MemFree(this->buff);
 	OPTSTR_DEL(this->sessName);
@@ -315,10 +315,10 @@ void Net::SDPFile::AddBuildMedia(Net::SDPMedia *media)
 
 Bool Net::SDPFile::BuildBuff()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UTF8Char sbuff[3];
 	Text::StringBuilderUTF8 sb;
 	IO::MemoryStream mstm;
@@ -478,7 +478,7 @@ Bool Net::SDPFile::BuildBuff()
 
 		i++;
 	}
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UnsafeArray<UInt8> buff;
 	buff = mstm.GetBuff(buffSize);
 	if (this->buff)
@@ -496,17 +496,17 @@ Bool Net::SDPFile::WriteToStream(NN<IO::Stream> stm)
 	return stm->Write(Data::ByteArrayR(this->buff, this->buffSize)) == this->buffSize;
 }
 
-UOSInt Net::SDPFile::GetLength()
+UIntOS Net::SDPFile::GetLength()
 {
 	return this->buffSize;
 }
 
-UOSInt Net::SDPFile::GetMediaCount()
+UIntOS Net::SDPFile::GetMediaCount()
 {
 	return this->mediaList.GetCount();
 }
 
-Optional<Data::ArrayListStrUTF8> Net::SDPFile::GetMediaDesc(UOSInt index)
+Optional<Data::ArrayListStrUTF8> Net::SDPFile::GetMediaDesc(UIntOS index)
 {
 	return this->mediaList.GetItem(index);
 }

@@ -12,7 +12,7 @@ namespace Net
 			UInt64 rangeStart;
 			UInt64 rangeEnd;
 			const UTF8Char *name;
-			UOSInt nameLen;
+			UIntOS nameLen;
 		} MACEntry;
 
 		enum class AddressType
@@ -30,7 +30,7 @@ namespace Net
 		static NN<const MACEntry> GetMAC64Info(UInt64 macAddr);
 		static NN<const MACEntry> GetMACInfoBuff(UnsafeArray<const UInt8> mac);
 		static NN<const MACEntry> GetMACInfoOUI(UnsafeArray<const UInt8> oui);
-		static UnsafeArray<MACEntry> GetMACEntryList(OutParam<UOSInt> cnt);
+		static UnsafeArray<MACEntry> GetMACEntryList(OutParam<UIntOS> cnt);
 		static AddressType GetAddressType(UnsafeArray<const UInt8> mac);
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 	};

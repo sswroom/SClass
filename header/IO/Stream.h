@@ -58,14 +58,14 @@ namespace IO
 		Stream(const Text::CStringNN &sourceName);
 		virtual ~Stream(){};
 		virtual Bool IsDown() const = 0;
-		virtual UOSInt Read(const Data::ByteArray &buff) = 0;
-		virtual UOSInt Write(Data::ByteArrayR buff) = 0;
+		virtual UIntOS Read(const Data::ByteArray &buff) = 0;
+		virtual UIntOS Write(Data::ByteArrayR buff) = 0;
 
 		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
-		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual UIntOS EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(NN<StreamReadReq> reqData);
 		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
-		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual UIntOS EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
 		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 
 		virtual Int32 Flush() = 0;
@@ -75,11 +75,11 @@ namespace IO
 		virtual StreamType GetStreamType() const = 0;
 
 		virtual IO::ParserType GetParserType() const;
-		UInt64 ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize);
-		Optional<Text::String> ReadAsString(UOSInt buffSize);
+		UInt64 ReadToEnd(NN<IO::Stream> stm, UIntOS buffSize);
+		Optional<Text::String> ReadAsString(UIntOS buffSize);
 		Optional<Text::String> ReadAsString();
-		Bool WriteFromData(NN<IO::StreamData> data, UOSInt buffSize);
-		UOSInt WriteCont(UnsafeArray<const UInt8> buff, UOSInt size);
+		Bool WriteFromData(NN<IO::StreamData> data, UIntOS buffSize);
+		UIntOS WriteCont(UnsafeArray<const UInt8> buff, UIntOS size);
 	};
 
 	Text::CStringNN StreamTypeGetName(StreamType st);

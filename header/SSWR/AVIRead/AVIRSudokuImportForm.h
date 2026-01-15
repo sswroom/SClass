@@ -42,15 +42,15 @@ namespace SSWR
 			static void __stdcall OnClipboardClicked(AnyType userObj);
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
-			static void __stdcall OnNumberInput(AnyType userObj, UOSInt x, UOSInt y, UInt8 num);
-			static void __stdcall OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
+			static void __stdcall OnNumberInput(AnyType userObj, UIntOS x, UIntOS y, UInt8 num);
+			static void __stdcall OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<IntOS> boundary);
 			Bool LoadFile(NN<Text::String> fileName);
 			Bool LoadImage(NN<Media::ImageList> imgList);
 			void DoOCR(NN<Media::StaticImage> img);
-			static Bool CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UOSInt> boxRect, OutParam<Math::RectArea<UOSInt>> textRect);
-			static Math::RectArea<UOSInt> CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UOSInt> pos);
-			static Math::RectArea<UOSInt> CalcBoardRect(NN<Media::StaticImage> img);
-			static Bool SizeSimilar(Math::Size2D<UOSInt> size1, Math::Size2D<UOSInt> size2);
+			static Bool CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UIntOS> boxRect, OutParam<Math::RectArea<UIntOS>> textRect);
+			static Math::RectArea<UIntOS> CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UIntOS> pos);
+			static Math::RectArea<UIntOS> CalcBoardRect(NN<Media::StaticImage> img);
+			static Bool SizeSimilar(Math::Size2D<UIntOS> size1, Math::Size2D<UIntOS> size2);
 		public:
 			AVIRSudokuImportForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Game::Sudoku::SudokuBoard> board);
 			virtual ~AVIRSudokuImportForm();

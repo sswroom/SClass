@@ -3,7 +3,7 @@
 #include "DB/PageRequest.h"
 #include "Text/MyString.h"
 
-DB::PageRequest::PageRequest(UOSInt pageNum, UOSInt pageSize)
+DB::PageRequest::PageRequest(UIntOS pageNum, UIntOS pageSize)
 {
 	this->pageNum = pageNum;
 	this->pageSize = pageSize;
@@ -23,12 +23,12 @@ DB::PageRequest::~PageRequest()
 	}
 }
 
-UOSInt DB::PageRequest::GetPageNum()
+UIntOS DB::PageRequest::GetPageNum()
 {
 	return this->pageNum;
 }
 
-UOSInt DB::PageRequest::GetPageSize()
+UIntOS DB::PageRequest::GetPageSize()
 {
 	return this->pageSize;
 }
@@ -48,7 +48,7 @@ void DB::PageRequest::Sort(UnsafeArray<const UTF8Char> colName, Bool descending)
 	sortDescList->Add(descending);
 }
 
-UOSInt DB::PageRequest::GetSortingCount()
+UIntOS DB::PageRequest::GetSortingCount()
 {
 	NN<Data::ArrayListArr<const UTF8Char>> sortList;
 	if (!this->sortList.SetTo(sortList))
@@ -58,7 +58,7 @@ UOSInt DB::PageRequest::GetSortingCount()
 	return sortList->GetCount();
 }
 
-UnsafeArrayOpt<const UTF8Char> DB::PageRequest::GetSortColumn(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> DB::PageRequest::GetSortColumn(UIntOS index)
 {
 	NN<Data::ArrayListArr<const UTF8Char>> sortList;
 	if (!this->sortList.SetTo(sortList))
@@ -68,7 +68,7 @@ UnsafeArrayOpt<const UTF8Char> DB::PageRequest::GetSortColumn(UOSInt index)
 	return sortList->GetItem(index);
 }
 
-Bool DB::PageRequest::IsSortDesc(UOSInt index)
+Bool DB::PageRequest::IsSortDesc(UIntOS index)
 {
 	NN<Data::ArrayListNative<Bool>> sortDescList;
 	if (!this->sortDescList.SetTo(sortDescList))

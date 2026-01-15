@@ -54,7 +54,7 @@ namespace DB
 		Bool SetFieldDouble(NN<Field> field, Double dblValue);
 		Bool SetFieldDate(NN<Field> field, const Data::Timestamp &ts);
 		Bool SetFieldVector(NN<Field> field, Optional<Math::Geometry::Vector2D> vec);
-		Bool SetFieldBinary(NN<Field> field, const UInt8 *buff, UOSInt buffSize);
+		Bool SetFieldBinary(NN<Field> field, const UInt8 *buff, UIntOS buffSize);
 
 		Bool IsFieldNull(NN<Field> field) const;
 		UnsafeArrayOpt<const UTF8Char> GetFieldStr(NN<Field> field) const;
@@ -62,7 +62,7 @@ namespace DB
 		Double GetFieldDouble(NN<Field> field) const;
 		Data::Timestamp GetFieldDate(NN<Field> field) const;
 		Math::Geometry::Vector2D *GetFieldVector(NN<Field> field) const;
-		const UInt8 *GetFieldBinary(NN<Field> field, UOSInt *buffSize) const;
+		const UInt8 *GetFieldBinary(NN<Field> field, UIntOS *buffSize) const;
 
 	public:
 		DBRow(NN<TableDef> table);
@@ -78,7 +78,7 @@ namespace DB
 		Bool SetValueDouble(Text::CStringNN fieldName, Double dblValue);
 		Bool SetValueDate(Text::CStringNN fieldName, const Data::Timestamp &ts);
 		Bool SetValueVector(Text::CStringNN fieldName, Math::Geometry::Vector2D *vec);
-		Bool SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOSInt buffSize);
+		Bool SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UIntOS buffSize);
 
 		Bool IsNull(Text::CStringNN fieldName) const;
 		UnsafeArrayOpt<const UTF8Char> GetValueStr(Text::CStringNN fieldName) const;
@@ -86,7 +86,7 @@ namespace DB
 		Double GetValueDouble(Text::CStringNN fieldName) const;
 		Data::Timestamp GetValueDate(Text::CStringNN fieldName) const;
 		Math::Geometry::Vector2D *GetValueVector(Text::CStringNN fieldName) const;
-		const UInt8 *GetValueBinary(Text::CStringNN fieldName, UOSInt *buffSize) const;
+		const UInt8 *GetValueBinary(Text::CStringNN fieldName, UIntOS *buffSize) const;
 
 		void Commit();
 		void Rollback();

@@ -789,9 +789,9 @@ BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenECDSA(Crypto::Cert::X509File::ECName ec
 
 Bool WinSSLEngine_BCryptImportKey(NN<Crypto::Cert::X509Key> key, OutParam<BCRYPT_ALG_HANDLE> hAlg, OutParam<BCRYPT_KEY_HANDLE> hKey)
 {
-	UOSInt privLen;
+	UIntOS privLen;
 	UnsafeArray<const UInt8> privBuff;
-	UOSInt pubLen;
+	UIntOS pubLen;
 	UnsafeArray<const UInt8> pubBuff;
 	if (!key->GetECPrivate(privLen).SetTo(privBuff) || !key->GetECPublic(pubLen).SetTo(pubBuff))
 	{
@@ -992,7 +992,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
 #if defined(VERBOSE_CLI)
-		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
+		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(IntOS)s.Ptr(), (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
 		err.Set(ErrorType::InitSession);
@@ -1000,12 +1000,12 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	}
 	Net::SocketFactory::ErrorType et;
 #if defined(VERBOSE_CLI)
-	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(OSInt)s.Ptr(), (Int32)outputBuff[0].cbBuffer);
+	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(IntOS)s.Ptr(), (Int32)outputBuff[0].cbBuffer);
 #endif
 	if (this->clif->GetSocketFactory()->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, et) != outputBuff[0].cbBuffer)
 	{
 #if defined(VERBOSE_CLI)
-		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
+		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(IntOS)s.Ptr(), (UInt32)status);
 #endif
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
@@ -1018,16 +1018,16 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	this->clif->GetSocketFactory()->SetRecvTimeout(s, 3000);
 	SecBuffer inputBuff[2];
 	UInt8 recvBuff[8192];
-	UOSInt recvOfst = 0;
-	UOSInt recvSize;
-	UOSInt i;
+	UIntOS recvOfst = 0;
+	UIntOS recvSize;
+	UIntOS i;
 	while (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_INCOMPLETE_MESSAGE)
 	{
 		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
 		{
 			recvSize = this->clif->GetSocketFactory()->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, et);
 #if defined(VERBOSE_CLI)
-			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)recvSize);
+			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(IntOS)s.Ptr(), (UInt32)recvSize);
 #endif
 			if (recvSize <= 0)
 			{
@@ -1109,7 +1109,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 		else
 		{
 #if defined(VERBOSE_CLI)
-			printf("SSL: Cli %x, Error in InitializeSecurityContext 2, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
+			printf("SSL: Cli %x, Error in InitializeSecurityContext 2, ret = %x\r\n", (Int32)(IntOS)s.Ptr(), (UInt32)status);
 #endif
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
@@ -1145,7 +1145,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	Data::DateTime dtDebug;
 	dtDebug.SetCurrTime();
 	dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-	printf("%s SSL: Svr %x, Init begin, Tid = %d\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)GetCurrentThreadId());
+	printf("%s SSL: Svr %x, Init begin, Tid = %d\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), (UInt32)GetCurrentThreadId());
 #endif
 
 	this->clif->GetSocketFactory()->SetRecvTimeout(s, 3000);
@@ -1156,8 +1156,8 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	SecBufferDesc outputDesc;
 	UInt8 recvBuff[2048];
 	unsigned long retFlags = ASC_REQ_ALLOCATE_MEMORY | ASC_REQ_STREAM;
-	UOSInt recvOfst = 0;
-	UOSInt recvSize;
+	UIntOS recvOfst = 0;
+	UIntOS recvSize;
 	TimeStamp ts;
 	Net::SocketFactory::ErrorType et;
 	recvSize = this->clif->GetSocketFactory()->ReceiveData(s, recvBuff, 2048, et);
@@ -1166,7 +1166,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 		dtDebug.SetCurrTime();
 		dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
+		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(IntOS)s.Ptr());
 #endif
 		this->clif->GetSocketFactory()->DestroySocket(s);
 		return 0;
@@ -1189,12 +1189,12 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	Text::StringBuilderW sb;
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received "));
-	sb.AppendUOSInt(recvSize);
+	sb.AppendUIntOS(recvSize);
 	sb.AppendC(UTF8STRC(" bytes"));
 	debug.WriteLineW(sb.ToString());*/
 
 	Bool succ = true;
-	UOSInt i;
+	UIntOS i;
 	SECURITY_STATUS status;
 	status = AcceptSecurityContext(
 		&this->clsData->hCredSvr,
@@ -1212,7 +1212,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 		dtDebug.SetCurrTime();
 		dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)status);
+		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), (UInt32)status);
 #endif
 		this->clif->GetSocketFactory()->DestroySocket(s);
 		return 0;
@@ -1228,7 +1228,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 				dtDebug.SetCurrTime();
 				dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s SSL: Svr %x, Send data error\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
+				printf("%s SSL: Svr %x, Send data error\r\n", debugBuff, (Int32)(IntOS)s.Ptr());
 #endif
 				succ = false;
 			}
@@ -1262,7 +1262,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 				dtDebug.SetCurrTime();
 				dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s SSL: Svr %x, Recv size2 0\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
+				printf("%s SSL: Svr %x, Recv size2 0\r\n", debugBuff, (Int32)(IntOS)s.Ptr());
 #endif
 				DeleteSecurityContext(&ctxt);
 				this->clif->GetSocketFactory()->DestroySocket(s);
@@ -1272,7 +1272,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 
 /*			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Received "));
-			sb.AppendUOSInt(recvSize);
+			sb.AppendUIntOS(recvSize);
 			sb.AppendC(UTF8STRC(" bytes"));
 			debug.WriteLineW(sb.ToString());*/
 		}
@@ -1319,7 +1319,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 						dtDebug.SetCurrTime();
 						dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-						printf("%s SSL: Svr %x, Send data error2\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
+						printf("%s SSL: Svr %x, Send data error2\r\n", debugBuff, (Int32)(IntOS)s.Ptr());
 #endif
 						succ = false;
 					}
@@ -1356,7 +1356,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 			dtDebug.SetCurrTime();
 			dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s SSL: Svr %x, AcceptSecurityContext error2, status %s (%x)\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), IO::WindowsError::GetString(status).v.Ptr(), (UInt32)status);
+			printf("%s SSL: Svr %x, AcceptSecurityContext error2, status %s (%x)\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), IO::WindowsError::GetString(status).v.Ptr(), (UInt32)status);
 #endif
 			DeleteSecurityContext(&ctxt);
 			this->clif->GetSocketFactory()->DestroySocket(s);
@@ -1367,7 +1367,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 	dtDebug.SetCurrTime();
 	dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)recvOfst);
+	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), (UInt32)recvOfst);
 #endif
 
 	Net::SSLClient *cli;
@@ -1554,7 +1554,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 	}
 
 	Net::SocketUtil::AddressInfo addr[1];
-	UOSInt addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<Net::SocketUtil::AddressInfo>(addr, 1));
+	UIntOS addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<Net::SocketUtil::AddressInfo>(addr, 1));
 	NN<Socket> s;
 	if (addrCnt == 0)
 	{
@@ -1594,7 +1594,7 @@ UnsafeArray<UTF8Char> Net::WinSSLEngine::GetErrorDetail(UnsafeArray<UTF8Char> sb
 	return sbuff;
 }
 
-Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UOSInt keyLength)
+Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UIntOS keyLength)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1735,7 +1735,7 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	return true;
 }
 
-Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UOSInt keyLength)
+Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UIntOS keyLength)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1879,7 +1879,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 	return key;
 }
 
-Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)
+Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UIntOS> signLen)
 {
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
@@ -1937,8 +1937,8 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);
-		UOSInt i = 0;
-		UOSInt j = len - 1;
+		UIntOS i = 0;
+		UIntOS j = len - 1;
 		UInt8 t;
 		while (i < j)
 		{
@@ -1970,7 +1970,7 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 
 		UInt8 hashVal[64];
 		UInt8 signBuff[256];
-		UOSInt hashLen;
+		UIntOS hashLen;
 		NN<Crypto::Hash::HashAlgorithm> hash;
 		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 		{
@@ -1991,7 +1991,7 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 		if (status == 0)
 		{
 			succ = true;
-			UOSInt i;
+			UIntOS i;
 			signData[0] = 0x30;
 			if (signBuff[0] & 0x80)
 			{
@@ -2102,8 +2102,8 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 #endif
 			return false;
 		}
-		UOSInt i = 0;
-		UOSInt j = signData.GetSize() - 1;
+		UIntOS i = 0;
+		UIntOS j = signData.GetSize() - 1;
 		while (i < signData.GetSize())
 		{
 			mySignData[i] = signData[j];
@@ -2141,7 +2141,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 		}
 
 		UInt8 hashVal[64];
-		UOSInt hashLen;
+		UIntOS hashLen;
 		UInt8 signBuff[256];
 		NN<Crypto::Hash::HashAlgorithm> hash;
 		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
@@ -2161,8 +2161,8 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 		ULONG signLen = 0;
 		if (signData[0] == 0x30 && signData[1] == signData.GetSize() - 2 && signData[2] == 2)
 		{
-			UOSInt i;
-			UOSInt len = signData[3];
+			UIntOS i;
+			UIntOS len = signData[3];
 			i = 4 + len;
 			if (signData[4] == 0)
 			{
@@ -2210,7 +2210,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 	return false;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UIntOS Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
@@ -2243,8 +2243,8 @@ UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UIn
 	}
 	CryptReleaseContext(hProv, 0);
 	CryptDestroyKey(hKey);
-	UOSInt i = 0;
-	UOSInt j = dataSize - 1;
+	UIntOS i = 0;
+	UIntOS j = dataSize - 1;
 	while (i < dataSize)
 	{
 		encData[i] = myBuff[j];
@@ -2254,7 +2254,7 @@ UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UIn
 	return dataSize;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UIntOS Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (payload.GetSize() > 512)
 	{
@@ -2301,8 +2301,8 @@ UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UIn
 		flags = CRYPT_DECRYPT_RSA_NO_PADDING_CHECK;
 	}
 	UInt8 myBuff[512];
-	UOSInt i = 0;
-	UOSInt j = payload.GetSize() - 1;
+	UIntOS i = 0;
+	UIntOS j = payload.GetSize() - 1;
 	while (i < payload.GetSize())
 	{
 		myBuff[i] = payload[j];

@@ -99,7 +99,7 @@ Bool Math::Geometry::PieArea::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, 
 	}
 }
 
-UOSInt Math::Geometry::PieArea::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UIntOS Math::Geometry::PieArea::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->center);
 	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle1) * r, this->center.y + Math_Sin(this->arcAngle1) * r));
@@ -123,7 +123,7 @@ void Math::Geometry::PieArea::MultiplyCoordinatesXY(Double v)
 	this->r = this->r * v;
 }
 
-UOSInt Math::Geometry::PieArea::GetPointCount() const
+UIntOS Math::Geometry::PieArea::GetPointCount() const
 {
 	return 3;
 }
@@ -133,7 +133,7 @@ Bool Math::Geometry::PieArea::HasArea() const
 	return true;
 }
 
-UOSInt Math::Geometry::PieArea::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UIntOS Math::Geometry::PieArea::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
 {
 	return 0;
 }

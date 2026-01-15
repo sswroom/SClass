@@ -8,17 +8,17 @@ namespace Data
 	{
 	private:
 		UnsafeArray<UInt8> buff;
-		UOSInt buffSize;
-		UOSInt indexBegin;
-		UOSInt indexEnd;
+		UIntOS buffSize;
+		UIntOS indexBegin;
+		UIntOS indexEnd;
 
 	public:
-		CircularByteBuff(UOSInt maxSize);
+		CircularByteBuff(UIntOS maxSize);
 		~CircularByteBuff();
 
 		void Clear();
-		void AppendBytes(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		UOSInt GetBytes(UnsafeArray<UInt8> buff);
+		void AppendBytes(UnsafeArray<const UInt8> buff, UIntOS buffSize);
+		UIntOS GetBytes(UnsafeArray<UInt8> buff);
 		void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 }

@@ -36,7 +36,7 @@ void __stdcall Net::TCPServerController::DataHdlr(NN<Net::TCPClient> cli, AnyTyp
 {
 	NN<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
 	NN<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
-	UOSInt copySize;
+	UIntOS copySize;
 
 	Data::ByteArrayR buff = srcBuff;
 	while (buff.GetSize() > 0)
@@ -67,7 +67,7 @@ void __stdcall Net::TCPServerController::TimeoutHdlr(NN<Net::TCPClient> cli, Any
 {
 }
 
-Net::TCPServerController::TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
+Net::TCPServerController::TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UIntOS maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UIntOS workerCnt, Int32 timeoutSec, Bool autoStart)
 {
 	this->cliMgr = 0;
 	this->sockf = sockf;
@@ -112,12 +112,12 @@ void Net::TCPServerController::UseGetCli(NN<Sync::MutexUsage> mutUsage)
 	this->cliMgr->UseGetClient(mutUsage);
 }
 
-UOSInt Net::TCPServerController::GetCliCount()
+UIntOS Net::TCPServerController::GetCliCount()
 {
 	return this->cliMgr->GetClientCount();
 }
 
-Optional<Net::TCPClient> Net::TCPServerController::GetClient(UOSInt index, OutParam<AnyType> cliObj)
+Optional<Net::TCPClient> Net::TCPServerController::GetClient(UIntOS index, OutParam<AnyType> cliObj)
 {
 	AnyType cliData;
 	NN<Net::TCPServerController::ClientData> data;

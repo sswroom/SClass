@@ -7,10 +7,10 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-UOSInt Media::Decoder::RHVCDecoder::CalcNALSize(const UInt8 *buff, UOSInt buffSize)
+UIntOS Media::Decoder::RHVCDecoder::CalcNALSize(const UInt8 *buff, UIntOS buffSize)
 {
-	UOSInt ret = buffSize + 4;
-	UOSInt i = 0;
+	UIntOS ret = buffSize + 4;
+	UIntOS i = 0;
 	i = 2;
 	while (i < buffSize)
 	{
@@ -24,9 +24,9 @@ UOSInt Media::Decoder::RHVCDecoder::CalcNALSize(const UInt8 *buff, UOSInt buffSi
 	return ret;
 }
 
-UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UOSInt srcBuffSize)
+UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UIntOS srcBuffSize)
 {
-	UOSInt i;
+	UIntOS i;
 	i = 2;
 	outBuff[0] = 0;
 	outBuff[1] = 0;
@@ -57,13 +57,13 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 	return outBuff;
 }
 
-void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 
 	UnsafeArray<UInt8> frameBuff = this->frameBuff;
-	UOSInt imgOfst = 0;
-	UOSInt imgSize;
+	UIntOS imgOfst = 0;
+	UIntOS imgSize;
 	Bool frameFound = false;
 
 	if (flags & Media::VideoSource::FF_DISCONTTIME)
@@ -131,7 +131,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	if (this->finfoMode)
 	{
-		if (!this->finfoCb.func(frameTime, frameNum, (UOSInt)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoCb.userObj, ycOfst))
+		if (!this->finfoCb.func(frameTime, frameNum, (UIntOS)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoCb.userObj, ycOfst))
 		{
 			this->sourceVideo->Stop();
 		}
@@ -152,7 +152,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 				flags = (Media::VideoSource::FrameFlag)(flags & ~Media::VideoSource::FF_DISCONTTIME);
 			}
 			this->discontTime = false;
-			this->frameCb(frameTime, frameNum, &this->frameBuff, (UOSInt)(frameBuff - this->frameBuff), frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
+			this->frameCb(frameTime, frameNum, &this->frameBuff, (UIntOS)(frameBuff - this->frameBuff), frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
 			this->frameSize = 0;
 		}
 	}
@@ -162,7 +162,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
-	UOSInt size;
+	UIntOS size;
 	UInt32 size32;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
@@ -229,13 +229,13 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	this->maxFrameSize += 4 + this->vpsSize;
 
 	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-	UOSInt oriW;
-	UOSInt oriH;
+	UIntOS oriW;
+	UIntOS oriH;
 	oriW = info.dispSize.x;
 	oriH = info.dispSize.y;
 	Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, info);
-	UOSInt cropRight = 0;
-	UOSInt cropBottom = 0;
+	UIntOS cropRight = 0;
+	UIntOS cropBottom = 0;
 	if (info.dispSize.x < oriW)
 	{
 		cropRight = oriW - info.dispSize.x;
@@ -285,7 +285,7 @@ Bool Media::Decoder::RHVCDecoder::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::Decoder::RHVCDecoder::GetFrameCount()
+UIntOS Media::Decoder::RHVCDecoder::GetFrameCount()
 {
 	if (this->sourceVideo)
 	{
@@ -294,7 +294,7 @@ UOSInt Media::Decoder::RHVCDecoder::GetFrameCount()
 	return 0;
 }
 
-Data::Duration Media::Decoder::RHVCDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::RHVCDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	if (this->sourceVideo)
 	{
@@ -319,9 +319,9 @@ void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 	}
 }
 
-UOSInt Media::Decoder::RHVCDecoder::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::Decoder::RHVCDecoder::GetFrameSize(UIntOS frameIndex)
 {
-	UOSInt srcFrameSize = 0;
+	UIntOS srcFrameSize = 0;
 	if (this->sourceVideo == 0)
 		return 0;
 	srcFrameSize = this->sourceVideo->GetFrameSize(frameIndex);
@@ -330,15 +330,15 @@ UOSInt Media::Decoder::RHVCDecoder::GetFrameSize(UOSInt frameIndex)
 	return this->maxFrameSize;
 }
 
-UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::Decoder::RHVCDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo == 0)
 		return 0;
 	Bool frameFound = false;
-	UOSInt frameSize = this->sourceVideo->ReadFrame(frameIndex, this->frameBuff);
-	UOSInt outSize = 0;
-	UOSInt imgOfst = 0;
-	UOSInt imgSize;
+	UIntOS frameSize = this->sourceVideo->ReadFrame(frameIndex, this->frameBuff);
+	UIntOS outSize = 0;
+	UIntOS imgOfst = 0;
+	UIntOS imgSize;
 	UnsafeArray<const UInt8> imgData = this->frameBuff;
 	UnsafeArray<UInt8> frameBuff = buff;
 	while (imgOfst < frameSize)
@@ -395,13 +395,13 @@ UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UIn
 	return outSize;
 }
 
-Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (this->pps == 0 || this->sps == 0)
 		return false;
 
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
-	Math::Size2D<UOSInt> oriSize = info->dispSize;
+	Math::Size2D<UIntOS> oriSize = info->dispSize;
 	if (this->sps)
 	{
 		Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, info);

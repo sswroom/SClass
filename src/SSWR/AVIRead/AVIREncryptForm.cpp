@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Text::TextBinEnc::TextBinEnc> srcEnc;
 	Optional<Text::TextBinEnc::TextBinEnc> destEnc = me->cboDest->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>();
 	NN<Text::TextBinEnc::TextBinEnc> nndestEnc;
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnHexClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Text::TextBinEnc::TextBinEnc> srcEnc;
 	me->txtSrc->GetText(sb);
 	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(srcEnc))
@@ -155,8 +155,8 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> p
 
 	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
 	NN<Text::TextBinEnc::TextBinEnc> enc;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)

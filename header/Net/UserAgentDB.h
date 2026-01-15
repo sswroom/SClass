@@ -12,21 +12,21 @@ namespace Net
 		{
 			Net::BrowserInfo::BrowserType browser;
 			UnsafeArrayOpt<const UTF8Char> browserVer;
-			UOSInt browserVerLen;
+			UIntOS browserVerLen;
 			Manage::OSInfo::OSType os;
 			UnsafeArrayOpt<const UTF8Char> osVer;
-			UOSInt osVerLen;
+			UIntOS osVerLen;
 			UnsafeArrayOpt<const UTF8Char> devName;
-			UOSInt devNameLen;
+			UIntOS devNameLen;
 			UnsafeArray<const UTF8Char> userAgent;
-			UOSInt userAgentLen;
+			UIntOS userAgentLen;
 		} UAEntry;
 		
 	private:
 		static UAEntry uaList[];
 	public:
 		static Optional<const UAEntry> GetUserAgentInfo(UnsafeArray<const UTF8Char> userAgent);
-		static UAEntry *GetUAEntryList(UOSInt *cnt);
+		static UAEntry *GetUAEntryList(UIntOS *cnt);
 		static void ParseUserAgent(NN<UAEntry> ent, Text::CStringNN userAgent);
 		static Text::CStringNN FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
 	};

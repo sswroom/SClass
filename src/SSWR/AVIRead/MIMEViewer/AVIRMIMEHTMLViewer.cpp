@@ -11,7 +11,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRe
 	this->txtHTML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtHTML->SetReadOnly(true);
 
-	UOSInt size;
+	UIntOS size;
 	UnsafeArray<const UInt8> buff = obj->GetRAWData(size);
 	IO::MemoryReadingStream mstm(buff, size);
 	Text::StringBuilderUTF8 sb;

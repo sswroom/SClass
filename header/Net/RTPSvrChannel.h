@@ -17,7 +17,7 @@ namespace Net
 		IO::LogTool log;
 		UInt16 targetPort;
 		Int32 ssrc;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		Int32 lastSSRC;
 		Int32 seqNum;
 		NN<Net::RTPSessionController> sessCtrl;
@@ -33,8 +33,8 @@ namespace Net
 		NN<const Net::SocketUtil::AddressInfo> GetTargetAddr();
 		UInt16 GetPort();
 		Int32 GetSeqNum();
-		Bool SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<const UInt8> buff, UOSInt dataSize, Bool marker);
-		Bool SendControl(UnsafeArray<const UInt8> buff, UOSInt dataSize);
+		Bool SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<const UInt8> buff, UIntOS dataSize, Bool marker);
+		Bool SendControl(UnsafeArray<const UInt8> buff, UIntOS dataSize);
 	};
 }
 #endif

@@ -29,7 +29,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(NN<IO::Pa
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	NN<DB::ReadingDB> conn = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	UOSInt tableCnt;
+	UIntOS tableCnt;
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(nullptr, tableNames);
 	tableCnt = tableNames.GetCount();
@@ -39,7 +39,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::DBFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::DBFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -64,7 +64,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> conn = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	UOSInt tableCnt;
+	UIntOS tableCnt;
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(nullptr, tableNames);
 	tableCnt = tableNames.GetCount();
@@ -82,25 +82,25 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	tableName->Release();
-	UOSInt nCol;
-	UOSInt nOut;
+	UIntOS nCol;
+	UIntOS nOut;
 
 	UnsafeArray<NN<Text::String>> colNames;
-	UOSInt *colSize;
-	UOSInt *colDP;
+	UIntOS *colSize;
+	UIntOS *colDP;
 	DB::DBUtil::ColType *colTypes;
-	UOSInt *colMap;
-	UOSInt i;
-	UOSInt j;
+	UIntOS *colMap;
+	UIntOS i;
+	UIntOS j;
 	DB::DBFFixWriter *writer;
 	Data::DateTime dt;
 
 	nCol = r->ColCount();
 	colNames = MemAllocArr(NN<Text::String>, nCol);
-	colSize = MemAlloc(UOSInt, nCol);
-	colDP = MemAlloc(UOSInt, nCol);
+	colSize = MemAlloc(UIntOS, nCol);
+	colDP = MemAlloc(UIntOS, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
-	colMap = MemAlloc(UOSInt, nCol);
+	colMap = MemAlloc(UIntOS, nCol);
 
 	{
 		DB::ColDef colDef(Text::String::NewEmpty());

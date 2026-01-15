@@ -38,7 +38,7 @@ Bool Net::JMeter::JMeterHTTPSamplerProxy::Step(NN<JMeterIteration> iter, NN<JMet
 		if (timeResp >= 0)
 		{
 			UInt64 totalSize = 0;
-			UOSInt readSize;
+			UIntOS readSize;
 			while ((readSize = cli->Read(BYTEARR(buff))) != 0)
 			{
 				totalSize += readSize;

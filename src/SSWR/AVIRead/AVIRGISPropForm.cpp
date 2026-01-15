@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	if (me->env->GetLayerProp(setting, me->group, me->index))
 	{
-		setting.labelCol = (UOSInt)me->cboColName->GetSelectedIndex();
+		setting.labelCol = (UIntOS)me->cboColName->GetSelectedIndex();
 		setting.flags = Map::MapEnv::SFLG_NONE;
 		if (me->chkShowLabel->IsChecked())
 		{
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 			sptr = sbuff;
 			setting.priority = 0;
 		}
-		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
+		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("0"))))
 		{
 			me->ui->ShowMsgOK(CSTR("Input value invalid"), CSTR("Properties"), me);
 			return;
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -113,7 +113,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType u
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 	SSWR::AVIRead::AVIRGISLineForm frm(nullptr, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		me->lineType = 1;
 		me->lineThick = frm.GetLineThick();
 		me->lineColor = frm.GetLineColor();
@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 	SSWR::AVIRead::AVIRGISLineStyleForm frm(nullptr, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		me->lineType = 0;
 		me->lineStyle = frm.GetLineStyle();
 		me->imgLine.Delete();
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -187,7 +187,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType u
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 	SSWR::AVIRead::AVIRGISFontForm frm(nullptr, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		me->fontType = Map::MapEnv::FontType::LayerStyle;
 		OPTSTR_DEL(me->fontName);
 		me->fontName = fontName = frm.GetFontName()->Clone();
@@ -231,7 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 	SSWR::AVIRead::AVIRGISFontStyleForm frm(nullptr, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
-		Math::Size2D<UOSInt> sz;
+		Math::Size2D<UIntOS> sz;
 		me->fontStyle = frm.GetFontStyle();
 		me->fontType = Map::MapEnv::FontType::GlobalStyle;
 		me->imgFont.Delete();
@@ -249,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
+SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UIntOS index) : UI::GUIForm(parent, 512, 320, ui)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -424,8 +424,8 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 			}
 		}
 
-		UOSInt j = lyr->layer->GetColumnCnt();
-		UOSInt i = 0;
+		UIntOS j = lyr->layer->GetColumnCnt();
+		UIntOS i = 0;
 		while (i < j)
 		{
 			if (lyr->layer->GetColumnName(sbuff, i).SetTo(sptr))
@@ -447,7 +447,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		this->txtPriority->SetText(CSTRP(sbuff, sptr));
 
 		NN<Media::DrawImage> dimg;
-		Math::Size2D<UOSInt> sz = this->pbLineStyle->GetSizeP();
+		Math::Size2D<UIntOS> sz = this->pbLineStyle->GetSizeP();
 		this->lineType = setting.lineType;
 		this->lineStyle = setting.lineStyle;
 		this->lineThick = setting.lineThick;
@@ -602,7 +602,7 @@ void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(NN<const Media::ColorHandle
 
 void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
-	Math::Size2D<UOSInt> sz;
+	Math::Size2D<UIntOS> sz;
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbFillStyle->SetBGColor(this->colorConv->ConvRGB8(this->fillStyle));
 	this->pbFillStyle->Redraw();

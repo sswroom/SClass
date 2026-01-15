@@ -9,15 +9,15 @@ namespace Net
 		typedef struct
 		{
 			UnsafeArray<const UTF8Char> ext;
-			UOSInt extLen;
+			UIntOS extLen;
 			UnsafeArray<const UTF8Char> mime;
-			UOSInt mimeLen;
+			UIntOS mimeLen;
 		} MIMEEntry;
 
 		static MIMEEntry mimeList[];
 	public:
 		static Text::CStringNN GetMIMEFromExt(Text::CStringNN ext);
-		static Text::CStringNN GetMIMEFromFileName(UnsafeArray<const UTF8Char> fileName, UOSInt nameLen);
+		static Text::CStringNN GetMIMEFromFileName(UnsafeArray<const UTF8Char> fileName, UIntOS nameLen);
 	};
 }
 #endif

@@ -62,10 +62,10 @@ struct DB::OLEDBReader::ClassData
 	IAccessor *pIAccessor;
 	DBBINDING *dbBinding;
 	HACCESSOR hAccessor;
-	UOSInt rowSize;
+	UIntOS rowSize;
 	UInt8 *dataBuff;
 	Bool rowValid;
-	OSInt rowChanged;
+	IntOS rowChanged;
 };
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
@@ -214,14 +214,14 @@ DB::SQLType DB::OLEDBConn::GetSQLType() const
 	UnsafeArray<const WChar> nnconnStr;
 	if (data->connStr.SetTo(nnconnStr))
 	{
-		UOSInt i = Text::StrIndexOfICaseW(nnconnStr, L"Provider=");
+		UIntOS i = Text::StrIndexOfICaseW(nnconnStr, L"Provider=");
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt j = Text::StrIndexOfCharW(&nnconnStr[i + 9], ';');
+			UIntOS j = Text::StrIndexOfCharW(&nnconnStr[i + 9], ';');
 			if (j != INVALID_INDEX)
 			{
-				sb.AppendW(&nnconnStr[i + 9], (UOSInt)j);
+				sb.AppendW(&nnconnStr[i + 9], (UIntOS)j);
 			}
 			else
 			{
@@ -282,7 +282,7 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	ClassData *data = this->clsData;
 	if (data->pSession == 0)
@@ -363,7 +363,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 	return ret;
 }
 
-/*OSInt DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
+/*IntOS DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
 {
 	ClassData *data = this->clsData;
 	if (data->pSession == 0)
@@ -468,12 +468,12 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
 	ClassData *data = this->clsData;
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	HRESULT hr;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -484,7 +484,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	if (SUCCEEDED(hr))
 	{
 		VARIANT rgRestrictions[CRESTRICTIONS_DBSCHEMA_TABLES];
-		UOSInt i = CRESTRICTIONS_DBSCHEMA_TABLES;
+		UIntOS i = CRESTRICTIONS_DBSCHEMA_TABLES;
 		while (i-- > 0)
 		{
 			VariantInit(&rgRestrictions[i]);
@@ -495,7 +495,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 		VariantClear(&rgRestrictions[3]);
 		if (SUCCEEDED(hr))
 		{
-			UOSInt tableNameCol = 3;
+			UIntOS tableNameCol = 3;
 			DB::OLEDBReader *rdr;
 			NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1));
 			i = rdr->ColCount();
@@ -524,7 +524,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char tmpBuff[256];
 	UnsafeArray<UTF8Char> sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
@@ -747,7 +747,7 @@ UnsafeArrayOpt<const WChar> DB::OLEDBConn::GetConnStr()
 	return data->connStr;
 }
 
-DB::OLEDBReader::OLEDBReader(void *pIRowset, OSInt rowChanged)
+DB::OLEDBReader::OLEDBReader(void *pIRowset, IntOS rowChanged)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -779,14 +779,14 @@ DB::OLEDBReader::OLEDBReader(void *pIRowset, OSInt rowChanged)
 			data->nCols = (UInt32)cColumns;
 			if (data->nCols > 0)
 			{
-				OSInt i;
+				IntOS i;
 				data->dbBinding = MemAlloc(DBBINDING, data->nCols);
 				MemClear(data->dbBinding, sizeof(DBBINDING) * data->nCols);
 				data->colNameBuff = pStringBuffer;
 
-				UOSInt dwOffset = 0;
+				UIntOS dwOffset = 0;
 				i = 0;
-				while ((UOSInt)i < data->nCols)
+				while ((UIntOS)i < data->nCols)
 				{
 					data->dbBinding[i].iOrdinal   = data->dbColInfo[i].iOrdinal;
 					data->dbBinding[i].dwPart     = DBPART_VALUE | DBPART_LENGTH | DBPART_STATUS;
@@ -902,17 +902,17 @@ Bool DB::OLEDBReader::ReadNext()
 	}
 }
 
-UOSInt DB::OLEDBReader::ColCount()
+UIntOS DB::OLEDBReader::ColCount()
 {
 	return this->clsData->nCols;
 }
 
-OSInt DB::OLEDBReader::GetRowChanged()
+IntOS DB::OLEDBReader::GetRowChanged()
 {
 	return this->clsData->rowChanged;
 }
 
-Int32 DB::OLEDBReader::GetInt32(UOSInt colIndex)
+Int32 DB::OLEDBReader::GetInt32(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -992,7 +992,7 @@ Int32 DB::OLEDBReader::GetInt32(UOSInt colIndex)
 	return 0;
 }
 
-Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
+Int64 DB::OLEDBReader::GetInt64(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1072,7 +1072,7 @@ Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1184,7 +1184,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar
 	}
 }
 
-Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1304,7 +1304,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::OLEDBReader::GetNewStr(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1338,7 +1338,7 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1413,7 +1413,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<UT
 		}
 		return 0;
 	case DBTYPE_WSTR:
-		return Text::StrWChar_UTF8C(buff, (const WChar*)val, (UOSInt)*valLen / sizeof(WChar));
+		return Text::StrWChar_UTF8C(buff, (const WChar*)val, (UIntOS)*valLen / sizeof(WChar));
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
@@ -1442,7 +1442,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<UT
 	}
 }
 
-Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1499,7 +1499,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::OLEDBReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::OLEDBReader::GetDblOrNAN(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1579,12 +1579,12 @@ Double DB::OLEDBReader::GetDblOrNAN(UOSInt colIndex)
 	return NAN;
 }
 
-Bool DB::OLEDBReader::GetBool(UOSInt colIndex)
+Bool DB::OLEDBReader::GetBool(UIntOS colIndex)
 {
 	return GetInt32(colIndex) != 0;
 }
 
-UOSInt DB::OLEDBReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::OLEDBReader::GetBinarySize(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1593,7 +1593,7 @@ UOSInt DB::OLEDBReader::GetBinarySize(UOSInt colIndex)
 	return *valLen;
 }
 
-UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::OLEDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1612,17 +1612,17 @@ UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	return *valLen;
 }
 
-Optional<Math::Geometry::Vector2D> DB::OLEDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::OLEDBReader::GetVector(UIntOS colIndex)
 {
 	return 0;
 }
 
-Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::OLEDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
@@ -1632,7 +1632,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UOSInt colIndex, UnsafeArray<U
 	return Text::StrWChar_UTF8(buff, data->dbColInfo[colIndex].pwszName);
 }
 
-Bool DB::OLEDBReader::IsNull(UOSInt colIndex)
+Bool DB::OLEDBReader::IsNull(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1641,7 +1641,7 @@ Bool DB::OLEDBReader::IsNull(UOSInt colIndex)
 	return *status == DBSTATUS_S_ISNULL;
 }
 
-DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::OLEDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
@@ -1653,7 +1653,7 @@ DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	return DBType2ColType(data->dbColInfo[colIndex].wType);
 }
 
-Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::OLEDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)

@@ -74,8 +74,8 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			if (err.code == heif_error_Ok)
 			{
 				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 32, Media::PF_R8G8B8A8, (UIntOS)width * (UIntOS)height * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UIntOS)width * 4, (UIntOS)height, (UIntOS)stride, simg->GetDataBpl(), false);
 			}
 			else
 			{
@@ -88,8 +88,8 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			if (err.code == heif_error_Ok)
 			{
 				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
-				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 24, Media::PF_R8G8B8, (UIntOS)width * (UIntOS)height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UIntOS)width * 3, (UIntOS)height, (UIntOS)stride, simg->GetDataBpl(), false);
 			}
 			else
 			{
@@ -106,8 +106,8 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			if (err.code == heif_error_Ok)
 			{
 				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 64, Media::PF_LE_R16G16B16A16, (UOSInt)width * (UOSInt)height * 8, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 64, Media::PF_LE_R16G16B16A16, (UIntOS)width * (UIntOS)height * 8, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UIntOS)width * 8, (UIntOS)height, (UIntOS)stride, simg->GetDataBpl(), false);
 			}
 			else
 			{
@@ -120,8 +120,8 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			if (err.code == heif_error_Ok)
 			{
 				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 48, Media::PF_LE_R16G16B16, (UOSInt)width * (UOSInt)height * 6, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
-				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 48, Media::PF_LE_R16G16B16, (UIntOS)width * (UIntOS)height * 6, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data.Ptr(), (UIntOS)width * 6, (UIntOS)height, (UIntOS)stride, simg->GetDataBpl(), false);
 			}
 			else
 			{
@@ -332,7 +332,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		case heif_color_profile_type_prof:
 		case heif_color_profile_type_rICC:
 		{
-			UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
+			UIntOS iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
 			Data::ByteBuffer buff(iccSize);
 			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Arr().Ptr());
 			if (error.code == heif_error_Ok)
@@ -367,12 +367,12 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 #endif
 			if (Text::StrEqualsCh(type, "Exif"))
 			{
-				UInt8* exifData = MemAlloc(UInt8, (UOSInt)exifSize);
+				UInt8* exifData = MemAlloc(UInt8, (UIntOS)exifSize);
 				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 				if (error.code == heif_error_Ok)
 				{
 					NN<Media::EXIFData> exif;
-					if (Media::EXIFData::ParseExifJPG(exifData, (UOSInt)exifSize).SetTo(exif))
+					if (Media::EXIFData::ParseExifJPG(exifData, (UIntOS)exifSize).SetTo(exif))
 					{
 						if (removeRotate)
 						{
@@ -407,8 +407,8 @@ Optional<IO::ParsedObject> Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::S
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 100 || fileLen > 104857600)
 		return nullptr;
-	Data::ByteBuffer fileBuff((UOSInt)fileLen);
-	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
+	Data::ByteBuffer fileBuff((UIntOS)fileLen);
+	if (fd->GetRealData(0, (UIntOS)fileLen, fileBuff) != fileLen)
 	{
 		return nullptr;
 	}
@@ -436,7 +436,7 @@ Optional<IO::ParsedObject> Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::S
 		}
 		else
 		{
-			heif_item_id *idArr = MemAlloc(heif_item_id, (UOSInt)nImages);
+			heif_item_id *idArr = MemAlloc(heif_item_id, (UIntOS)nImages);
 			heif_context_get_list_of_top_level_image_IDs(ctx, idArr, nImages);
 			int i = 0;
 			while (i < nImages)
@@ -470,8 +470,8 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 100 || fileLen > 104857600)
 		return 0;
-	Data::ByteBuffer fileBuff((UOSInt)fileLen);
-	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
+	Data::ByteBuffer fileBuff((UIntOS)fileLen);
+	if (fd->GetRealData(0, (UIntOS)fileLen, fileBuff) != fileLen)
 	{
 		return 0;
 	}
@@ -504,7 +504,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 			case heif_color_profile_type_prof:
 			case heif_color_profile_type_rICC:
 			{
-				UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
+				UIntOS iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
 				Data::ByteBuffer buff(iccSize);
 				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Arr().Ptr());
 				if (error.code == heif_error_Ok)
@@ -532,11 +532,11 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 					const char *type = heif_image_handle_get_metadata_type(imgHdlr, metaIds[i]);
 					if (Text::StrEqualsCh(type, "Exif"))
 					{
-						UInt8* exifData = MemAlloc(UInt8, (UOSInt)exifSize);
+						UInt8* exifData = MemAlloc(UInt8, (UIntOS)exifSize);
 						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 						if (error.code == heif_error_Ok)
 						{
-							exif.Set(Media::EXIFData::ParseExifJPG(exifData, (UOSInt)exifSize));
+							exif.Set(Media::EXIFData::ParseExifJPG(exifData, (UIntOS)exifSize));
 						}
 						MemFree(exifData);
 					}

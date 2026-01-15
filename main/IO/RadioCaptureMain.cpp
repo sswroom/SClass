@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
@@ -34,7 +34,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Bool failed = false;
 		Bool enableWiFi = true;
 		Bool enableBT = true;
-		UOSInt gsmPort = 0;
+		UIntOS gsmPort = 0;
 		NN<IO::ConfigFile> cfg;
 		NN<Text::String> s;
 		if (IO::IniFile::ParseProgConfig(65001).SetTo(cfg))
@@ -49,7 +49,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			if (cfg->GetValue(CSTR("GSMPort")).SetTo(s))
 			{
-				gsmPort = s->ToUOSInt();
+				gsmPort = s->ToUIntOS();
 			}
 			cfg.Delete();
 		}

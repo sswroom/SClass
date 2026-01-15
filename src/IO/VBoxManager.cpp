@@ -4,18 +4,18 @@
 
 #include <stdio.h>
 
-UOSInt IO::VBoxManager::GetVMList(NN<Data::ArrayListNN<VMId>> vms)
+UIntOS IO::VBoxManager::GetVMList(NN<Data::ArrayListNN<VMId>> vms)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(this->progPath);
 	sb.AppendC(UTF8STRC(" list vms"));
 	Text::StringBuilderUTF8 sbResult;
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
-	UOSInt lineCnt;
+	UIntOS lineCnt;
 	Text::PString sarr[2];
 	NN<VMId> vm;
-	UOSInt ret = 0;
-	UOSInt i;
+	UIntOS ret = 0;
+	UIntOS i;
 	sarr[1] = sbResult;
 	while (true)
 	{
@@ -53,7 +53,7 @@ IO::VBoxManager::~VBoxManager()
 {
 	OPTSTR_DEL(this->progPath);
 	OPTSTR_DEL(this->version);
-	UOSInt i = this->vms.GetCount();
+	UIntOS i = this->vms.GetCount();
 	NN<VMId> vm;
 	while (i-- > 0)
 	{
@@ -82,12 +82,12 @@ Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 	Text::StringBuilderUTF8 sbResult;
 	printf("Cmd: %s\r\n", sb.v.Ptr());
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
-	UOSInt lineCnt;
+	UIntOS lineCnt;
 	Text::PString sarr[2];
 	VBoxVMInfo *info = 0;
 	Text::CStringNN name;
 	Text::CStringNN value;
-	UOSInt i;
+	UIntOS i;
 	sarr[1] = sbResult;
 	while (true)
 	{

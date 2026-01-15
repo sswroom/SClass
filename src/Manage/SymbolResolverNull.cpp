@@ -6,9 +6,9 @@
 
 Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 {
-	OSInt i;
-	OSInt j;
-	OSInt baseAddr;
+	IntOS i;
+	IntOS j;
+	IntOS baseAddr;
 	UInt32 size;
 	UTF8Char sbuff[256];
 	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
@@ -42,7 +42,7 @@ Manage::SymbolResolver::~SymbolResolver()
 {
 	DEL_CLASS(this->modSizes);
 	DEL_CLASS(this->modBaseAddrs);
-	OSInt i = this->modNames->GetCount();
+	IntOS i = this->modNames->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(this->modNames->GetItem(i));
@@ -55,22 +55,22 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	return 0;
 }
 
-OSInt Manage::SymbolResolver::GetModuleCount()
+IntOS Manage::SymbolResolver::GetModuleCount()
 {
 	return this->modNames->GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(OSInt index)
+const UTF8Char *Manage::SymbolResolver::GetModuleName(IntOS index)
 {
 	return this->modNames->GetItem(index);
 }
 
-Int64 Manage::SymbolResolver::GetModuleAddr(OSInt index)
+Int64 Manage::SymbolResolver::GetModuleAddr(IntOS index)
 {
 	return this->modBaseAddrs->GetItem(index);
 }
 
-Int32 Manage::SymbolResolver::GetModuleSize(OSInt index)
+Int32 Manage::SymbolResolver::GetModuleSize(IntOS index)
 {
 	return this->modSizes->GetItem(index);
 }

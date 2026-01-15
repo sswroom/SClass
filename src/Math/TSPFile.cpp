@@ -17,7 +17,7 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 
 	if (*(Int64*)hdr == *(Int64*)"SmTS____")
 	{
-		this->rowCnt = (UOSInt)((fd->GetDataSize() - 8) / 64);
+		this->rowCnt = (UIntOS)((fd->GetDataSize() - 8) / 64);
 		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 1;
@@ -25,7 +25,7 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 	}
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___A")
 	{
-		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 64);
+		this->rowCnt = (UIntOS)((fd->GetDataSize() - 72) / 64);
 		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 2;
@@ -35,7 +35,7 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 	}
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___B")
 	{
-		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 128);
+		this->rowCnt = (UIntOS)((fd->GetDataSize() - 72) / 128);
 		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 128);
 		this->rowSize = 128;
 		this->fileType = 3;
@@ -56,7 +56,7 @@ Math::TSPFile::~TSPFile()
 {
 }
 
-UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -79,7 +79,7 @@ UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	}
 }
 
-Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBReader> reader;
 	if (tableName.Equals(UTF8STRC("StationSetup")))
@@ -95,8 +95,8 @@ Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, T
 
 Optional<DB::TableDef> Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	DB::TableDef *tab;
 	NN<DB::ColDef> col;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
@@ -148,7 +148,7 @@ void Math::TSPFile::Reconnect()
 {
 }
 
-UInt8 *Math::TSPFile::GetRowPtr(UOSInt row) const
+UInt8 *Math::TSPFile::GetRowPtr(UIntOS row) const
 {
 	if (row >= this->rowCnt)
 		return 0;
@@ -160,12 +160,12 @@ UnsafeArray<UInt8> Math::TSPFile::GetHdrPtr() const
 	return this->hdrBuff.Arr();
 }
 
-UOSInt Math::TSPFile::GetRowCnt() const
+UIntOS Math::TSPFile::GetRowCnt() const
 {
 	return this->rowCnt;
 }
 
-UOSInt Math::TSPFile::GetRowSize() const
+UIntOS Math::TSPFile::GetRowSize() const
 {
 	return this->rowSize;
 }
@@ -184,20 +184,20 @@ Math::TSPReader::~TSPReader()
 
 Bool Math::TSPReader::ReadNext()
 {
-	if (this->currRow >= (OSInt)this->rowCnt - 1)
+	if (this->currRow >= (IntOS)this->rowCnt - 1)
 	{
-		this->currRow = (OSInt)this->rowCnt;
+		this->currRow = (IntOS)this->rowCnt;
 		this->currRowPtr = 0;
 	}
 	else
 	{
 		this->currRow++;
-		this->currRowPtr = this->file->GetRowPtr((UOSInt)this->currRow);
+		this->currRowPtr = this->file->GetRowPtr((UIntOS)this->currRow);
 	}
 	return this->currRowPtr != 0;
 }
 
-UOSInt Math::TSPReader::ColCount()
+UIntOS Math::TSPReader::ColCount()
 {
 	if (this->rowSize >= 128)
 	{
@@ -209,12 +209,12 @@ UOSInt Math::TSPReader::ColCount()
 	}
 }
 
-OSInt Math::TSPReader::GetRowChanged()
+IntOS Math::TSPReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 Math::TSPReader::GetInt32(UOSInt colIndex)
+Int32 Math::TSPReader::GetInt32(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
 		return 0;
@@ -225,7 +225,7 @@ Int32 Math::TSPReader::GetInt32(UOSInt colIndex)
 	return 0;
 }
 
-Int64 Math::TSPReader::GetInt64(UOSInt colIndex)
+Int64 Math::TSPReader::GetInt64(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
 		return 0;
@@ -236,7 +236,7 @@ Int64 Math::TSPReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRowPtr == 0)
 		return nullptr;
@@ -299,19 +299,19 @@ UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<WChar
 	return nullptr;
 }
 
-Bool Math::TSPReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Math::TSPReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		return true;
 	}
 	return false;
 }
 
-Optional<Text::String> Math::TSPReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Math::TSPReader::GetNewStr(UIntOS colIndex)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -321,7 +321,7 @@ Optional<Text::String> Math::TSPReader::GetNewStr(UOSInt colIndex)
 	}
 	return nullptr;
 }
-UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (this->currRowPtr == 0)
 		return nullptr;
@@ -382,7 +382,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<UT
 	return nullptr;
 }
 
-Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Math::TSPReader::GetTimestamp(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
 		return Data::Timestamp(0);
@@ -393,7 +393,7 @@ Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double Math::TSPReader::GetDblOrNAN(UOSInt colIndex)
+Double Math::TSPReader::GetDblOrNAN(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
 		return NAN;
@@ -451,23 +451,23 @@ Double Math::TSPReader::GetDblOrNAN(UOSInt colIndex)
 	return NAN;
 }
 
-Bool Math::TSPReader::GetBool(UOSInt colIndex)
+Bool Math::TSPReader::GetBool(UIntOS colIndex)
 {
 	Double v = GetDblOrNAN(colIndex);
 	return !Math::IsNAN(v) && v != 0;
 }
 
-UOSInt Math::TSPReader::GetBinarySize(UOSInt colIndex)
+UIntOS Math::TSPReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Math::TSPReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
 		return nullptr;
@@ -478,12 +478,12 @@ Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
-Bool Math::TSPReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Math::TSPReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	Text::CStringNN cstr;
 	if (this->GetName(colIndex, this->rowSize).SetTo(cstr))
@@ -491,12 +491,12 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetName(UOSInt colIndex, UnsafeArray<U
 	return nullptr;
 }
 
-Bool Math::TSPReader::IsNull(UOSInt colIndex)
+Bool Math::TSPReader::IsNull(UIntOS colIndex)
 {
 	return false;
 }
 
-DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Math::TSPReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	switch (colIndex)
 	{
@@ -525,12 +525,12 @@ DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	}
 }
 
-Bool Math::TSPReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Math::TSPReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->rowSize);
 }
 
-Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
+Text::CString Math::TSPReader::GetName(UIntOS colIndex, UIntOS rowSize)
 {
 	switch (colIndex)
 	{
@@ -572,7 +572,7 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
 	}
 }
 
-Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, UOSInt rowSize)
+Bool Math::TSPReader::GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef, UIntOS rowSize)
 {
 	switch (colIndex)
 	{
@@ -635,34 +635,34 @@ Bool Math::TSPHReader::ReadNext()
 	}
 }
 
-UOSInt Math::TSPHReader::ColCount()
+UIntOS Math::TSPHReader::ColCount()
 {
 	return 8;
 }
 
-OSInt Math::TSPHReader::GetRowChanged()
+IntOS Math::TSPHReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 Math::TSPHReader::GetInt32(UOSInt colIndex)
+Int32 Math::TSPHReader::GetInt32(UIntOS colIndex)
 {
 	return Double2Int32(GetDblOrNAN(colIndex));
 }
 
-Int64 Math::TSPHReader::GetInt64(UOSInt colIndex)
+Int64 Math::TSPHReader::GetInt64(UIntOS colIndex)
 {
 	return (Int64)GetDblOrNAN(colIndex);
 }
 
-UnsafeArrayOpt<WChar> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> Math::TSPHReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRow != 0)
 		return nullptr;
 	return Text::StrDoubleW(buff, GetDblOrNAN(colIndex));
 }
 
-Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool Math::TSPHReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->currRow != 0)
 		return false;
@@ -670,7 +670,7 @@ Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Optional<Text::String> Math::TSPHReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Math::TSPHReader::GetNewStr(UIntOS colIndex)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -680,19 +680,19 @@ Optional<Text::String> Math::TSPHReader::GetNewStr(UOSInt colIndex)
 	}
 	return nullptr;
 }
-UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (this->currRow != 0)
 		return nullptr;
 	return Text::StrDouble(buff, GetDblOrNAN(colIndex));
 }
 
-Data::Timestamp Math::TSPHReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp Math::TSPHReader::GetTimestamp(UIntOS colIndex)
 {
 	return Data::Timestamp(0);
 }
 
-Double Math::TSPHReader::GetDblOrNAN(UOSInt colIndex)
+Double Math::TSPHReader::GetDblOrNAN(UIntOS colIndex)
 {
 	if (this->currRow != 0)
 		return NAN;
@@ -706,33 +706,33 @@ Double Math::TSPHReader::GetDblOrNAN(UOSInt colIndex)
 	}
 }
 
-Bool Math::TSPHReader::GetBool(UOSInt colIndex)
+Bool Math::TSPHReader::GetBool(UIntOS colIndex)
 {
 	Double v = GetDblOrNAN(colIndex);
 	return !Math::IsNAN(v) && v != 0;
 }
 
-UOSInt Math::TSPHReader::GetBinarySize(UOSInt colIndex)
+UIntOS Math::TSPHReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS Math::TSPHReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Math::TSPHReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Math::TSPHReader::GetVector(UIntOS colIndex)
 {
 	return nullptr;
 }
 
-Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool Math::TSPHReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	Text::CStringNN cstr;
 	if (GetName(colIndex).SetTo(cstr))
@@ -740,12 +740,12 @@ UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetName(UOSInt colIndex, UnsafeArray<
 	return nullptr;
 }
 
-Bool Math::TSPHReader::IsNull(UOSInt colIndex)
+Bool Math::TSPHReader::IsNull(UIntOS colIndex)
 {
 	return false;
 }
 
-DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Math::TSPHReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	switch (colIndex)
 	{
@@ -764,12 +764,12 @@ DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Math::TSPHReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Math::TSPHReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef);
 }
 
-Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
+Text::CString Math::TSPHReader::GetName(UIntOS colIndex)
 {
 	switch (colIndex)
 	{
@@ -794,7 +794,7 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 	}
 }
 
-Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Math::TSPHReader::GetColDefV(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	switch (colIndex)
 	{

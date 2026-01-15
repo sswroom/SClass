@@ -5,8 +5,8 @@ void IO::ConfigFile::MergeCate(NN<Data::FastStringMapNN<Text::String>> myCate, N
 {
 	Optional<Text::String> name;
 	NN<Text::String> value;
-	UOSInt i = 0;
-	UOSInt j = cateToMerge->GetCount();
+	UIntOS i = 0;
+	UIntOS j = cateToMerge->GetCount();
 	while (i < j)
 	{
 		name = cateToMerge->GetKey(i);
@@ -27,8 +27,8 @@ IO::ConfigFile::~ConfigFile()
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = this->cfgVals.GetCount();
 	while (i-- > 0)
 	{
@@ -135,14 +135,14 @@ Bool IO::ConfigFile::RemoveValue(Text::CString category, Text::CStringNN name)
 	return true;
 }
 
-UOSInt IO::ConfigFile::GetCateCount() const
+UIntOS IO::ConfigFile::GetCateCount() const
 {
 	return this->cfgVals.GetCount();
 }
 
-UOSInt IO::ConfigFile::GetCateList(NN<Data::ArrayListStringNN> cateList, Bool withEmpty)
+UIntOS IO::ConfigFile::GetCateList(NN<Data::ArrayListStringNN> cateList, Bool withEmpty)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	Data::FastStringNNKeyIterator<Data::FastStringMapNN<Text::String>> it = this->cfgVals.KeyIterator();
 	cateList->EnsureCapacity(this->cfgVals.GetCount());
 	while (it.HasNext())
@@ -157,12 +157,12 @@ UOSInt IO::ConfigFile::GetCateList(NN<Data::ArrayListStringNN> cateList, Bool wi
 	return retCnt;
 }
 
-UOSInt IO::ConfigFile::GetKeys(NN<Text::String> category, NN<Data::ArrayListStringNN> keyList)
+UIntOS IO::ConfigFile::GetKeys(NN<Text::String> category, NN<Data::ArrayListStringNN> keyList)
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetNN(category).SetTo(cate))
 		return 0;
-	UOSInt cnt = cate->GetCount();
+	UIntOS cnt = cate->GetCount();
 	Data::FastStringNNKeyIterator<Text::String> it = cate->KeyIterator();
 	keyList->EnsureCapacity(cnt);
 	while (it.HasNext())
@@ -172,12 +172,12 @@ UOSInt IO::ConfigFile::GetKeys(NN<Text::String> category, NN<Data::ArrayListStri
 	return cnt;
 }
 
-UOSInt IO::ConfigFile::GetKeys(Text::CStringNN category, NN<Data::ArrayListStringNN> keyList)
+UIntOS IO::ConfigFile::GetKeys(Text::CStringNN category, NN<Data::ArrayListStringNN> keyList)
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category).SetTo(cate))
 		return 0;
-	UOSInt cnt = cate->GetCount();
+	UIntOS cnt = cate->GetCount();
 	keyList->EnsureCapacity(cnt);
 	Data::FastStringNNKeyIterator<Text::String> it = cate->KeyIterator();
 	while (it.HasNext())
@@ -187,7 +187,7 @@ UOSInt IO::ConfigFile::GetKeys(Text::CStringNN category, NN<Data::ArrayListStrin
 	return cnt;
 }
 
-UOSInt IO::ConfigFile::GetCount(Text::CString category) const
+UIntOS IO::ConfigFile::GetCount(Text::CString category) const
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category.OrEmpty()).SetTo(cate))
@@ -196,7 +196,7 @@ UOSInt IO::ConfigFile::GetCount(Text::CString category) const
 		return cate->GetCount();
 }
 
-Optional<Text::String> IO::ConfigFile::GetKey(Text::CString category, UOSInt index) const
+Optional<Text::String> IO::ConfigFile::GetKey(Text::CString category, UIntOS index) const
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category.OrEmpty()).SetTo(cate))
@@ -231,7 +231,7 @@ Optional<IO::ConfigFile> IO::ConfigFile::CloneCate(Text::CString category)
 
 void IO::ConfigFile::MergeConfig(NN<IO::ConfigFile> cfg)
 {
-	UOSInt i = cfg->cfgVals.GetCount();
+	UIntOS i = cfg->cfgVals.GetCount();
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	while (i-- > 0)
 	{

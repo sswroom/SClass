@@ -33,28 +33,28 @@ namespace Crypto
 			CharEncoding ce;
 			CharLimit charLimit;
 			UTF8Char resultBuff[64];
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			Bool threadToStop;
 			UnsafeArray<const UInt8> keyLimit;
 			UInt8 keyFirst;
 			Sync::Mutex keyMut;
 			UTF8Char keyBuff[64];
-			UOSInt maxLeng;
+			UIntOS maxLeng;
 			UInt64 testCnt;
 
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
-			UOSInt GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff);
+			UIntOS GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff);
 		public:
 			BruteForceAttack(NN<Crypto::Hash::HashValidator> validator, CharEncoding ce);
 			~BruteForceAttack();
 
 			void SetCharLimit(CharLimit charLimit);
 			Bool IsProcessing();
-			UOSInt GetKeyLeng();
+			UIntOS GetKeyLeng();
 			UnsafeArrayOpt<UTF8Char> GetCurrKey(UnsafeArray<UTF8Char> key);
 			UInt64 GetTestCnt();
 			UnsafeArrayOpt<UTF8Char> GetResult(UnsafeArray<UTF8Char> resultBuff);
-			Bool Start(UnsafeArray<const UTF8Char> hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
+			Bool Start(UnsafeArray<const UTF8Char> hashStr, UIntOS hashLen, UIntOS minLeng, UIntOS maxLeng);
 
 			static Text::CStringNN CharLimitGetName(CharLimit charLimit);
 		};

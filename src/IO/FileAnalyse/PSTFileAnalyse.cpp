@@ -12,7 +12,7 @@ void __stdcall IO::FileAnalyse::PSTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 //	UInt64 dataSize;
 //	UInt64 ofst;
 //	UInt32 lastSize;
-//	UOSInt readSize;
+//	UIntOS readSize;
 	UInt8 buff[256];
 	NN<PackItem> item;
 	if (!me->fd.SetTo(fd))
@@ -92,12 +92,12 @@ Text::CStringNN IO::FileAnalyse::PSTFileAnalyse::GetFormatName()
 	return CSTR("PST");
 }
 
-UOSInt IO::FileAnalyse::PSTFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::PSTFileAnalyse::GetFrameCount()
 {
 	return this->items.GetCount();
 }
 
-Bool IO::FileAnalyse::PSTFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PSTFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PSTFileAnalyse::PackItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -106,21 +106,21 @@ Bool IO::FileAnalyse::PSTFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	sb->AppendC(UTF8STRC(": Type="));
 	sb->Append(PackTypeGetName(item->packType));
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(item->size);
+	sb->AppendUIntOS(item->size);
 	return true;
 }
 
 
-UOSInt IO::FileAnalyse::PSTFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::PSTFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->items.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->items.GetCount() - 1;
+	IntOS k;
 	NN<PackItem> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->items.GetItemNoCheck((UOSInt)k);
+		pack = this->items.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -131,21 +131,21 @@ UOSInt IO::FileAnalyse::PSTFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::PSTFileAnalyse::PackItem> item;
 	NN<IO::StreamData> fd;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 v32;
 	if (!this->items.GetItem(index).SetTo(item))
 		return nullptr;
@@ -174,7 +174,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrame
 			j = 32;
 			while (i < j)
 			{
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
 				v32 = ReadUInt32(&packData[44 + i * 4]);
 				frame->AddHex32Name(44 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
 				i++;
@@ -213,7 +213,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrame
 			j = 32;
 			while (i < j)
 			{
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
+				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
 				v32 = ReadUInt32(&packData[36 + i * 4]);
 				frame->AddHex32Name(36 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
 				i++;

@@ -6,12 +6,12 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UOSInt> colSize, UnsafeArray<const UOSInt> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage)
+DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UIntOS nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UIntOS> colSize, UnsafeArray<const UIntOS> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage)
 {
 	UInt8 buff[128];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NEW_CLASSNN(this->enc, Text::Encoding(codePage));
 	this->stm = stm;
 	this->rowCnt = 0;
@@ -139,9 +139,9 @@ DB::DBFFixWriter::~DBFFixWriter()
 
 void DB::DBFFixWriter::AddRecord(UnsafeArray<UnsafeArray<const UTF8Char>> rowValues)
 {
-	UOSInt k;
-	UOSInt j;
-	UOSInt l;
+	UIntOS k;
+	UIntOS j;
+	UIntOS l;
 	UInt8 buff[512];
 
 	buff[0] = 32; 
@@ -178,7 +178,7 @@ void DB::DBFFixWriter::AddRecord(UnsafeArray<UnsafeArray<const UTF8Char>> rowVal
 	rowCnt++;
 }
 
-Bool DB::DBFFixWriter::SetColumnDT(UOSInt index, NN<Data::DateTime> val)
+Bool DB::DBFFixWriter::SetColumnDT(UIntOS index, NN<Data::DateTime> val)
 {
 	UTF8Char sbuff[10];
 	UInt8 outBuff[10];
@@ -192,7 +192,7 @@ Bool DB::DBFFixWriter::SetColumnDT(UOSInt index, NN<Data::DateTime> val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnTS(UOSInt index, const Data::Timestamp &val)
+Bool DB::DBFFixWriter::SetColumnTS(UIntOS index, const Data::Timestamp &val)
 {
 	UTF8Char sbuff[10];
 	UInt8 outBuff[10];
@@ -206,7 +206,7 @@ Bool DB::DBFFixWriter::SetColumnTS(UOSInt index, const Data::Timestamp &val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnF64(UOSInt index, Double val)
+Bool DB::DBFFixWriter::SetColumnF64(UIntOS index, Double val)
 {
 	if (index >= this->colCnt)
 		return false;
@@ -215,8 +215,8 @@ Bool DB::DBFFixWriter::SetColumnF64(UOSInt index, Double val)
 	UTF8Char sbuff[60];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 outBuff[60];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Text::StringBuilderUTF8 sb;
 	i = this->columns[index].decimalPoint;
 	if (i == 0)
@@ -227,7 +227,7 @@ Bool DB::DBFFixWriter::SetColumnF64(UOSInt index, Double val)
 	{
 		sptr = Text::StrDoubleDP(sbuff, val, i, i);
 	}
-	i = this->enc->UTF8ToBytesC(outBuff, sbuff, (UOSInt)(sptr - sbuff));
+	i = this->enc->UTF8ToBytesC(outBuff, sbuff, (UIntOS)(sptr - sbuff));
 	if (i >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], &outBuff[i - this->columns[index].colSize], this->columns[index].colSize);
@@ -245,26 +245,26 @@ Bool DB::DBFFixWriter::SetColumnF64(UOSInt index, Double val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnI16(UOSInt index, Int16 val)
+Bool DB::DBFFixWriter::SetColumnI16(UIntOS index, Int16 val)
 {
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int16)
 		return false;
 	sptr = Text::StrInt32(sbuff, val);
-	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
+	if ((UIntOS)(sptr - sbuff) >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
-		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UIntOS)(sptr - sbuff)], sbuff, (UIntOS)(sptr - sbuff));
+		i = this->columns[index].colSize - (UIntOS)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -273,26 +273,26 @@ Bool DB::DBFFixWriter::SetColumnI16(UOSInt index, Int16 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnI32(UOSInt index, Int32 val)
+Bool DB::DBFFixWriter::SetColumnI32(UIntOS index, Int32 val)
 {
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int32)
 		return false;
 	sptr = Text::StrInt32(sbuff, val);
-	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
+	if ((UIntOS)(sptr - sbuff) >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
-		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UIntOS)(sptr - sbuff)], sbuff, (UIntOS)(sptr - sbuff));
+		i = this->columns[index].colSize - (UIntOS)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -301,26 +301,26 @@ Bool DB::DBFFixWriter::SetColumnI32(UOSInt index, Int32 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnI64(UOSInt index, Int64 val)
+Bool DB::DBFFixWriter::SetColumnI64(UIntOS index, Int64 val)
 {
 	UTF8Char sbuff[24];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_Int64)
 		return false;
 	sptr = Text::StrInt64(sbuff, val);
-	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
+	if ((UIntOS)(sptr - sbuff) >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
-		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UIntOS)(sptr - sbuff)], sbuff, (UIntOS)(sptr - sbuff));
+		i = this->columns[index].colSize - (UIntOS)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -329,26 +329,26 @@ Bool DB::DBFFixWriter::SetColumnI64(UOSInt index, Int64 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnU32(UOSInt index, UInt32 val)
+Bool DB::DBFFixWriter::SetColumnU32(UIntOS index, UInt32 val)
 {
 	UTF8Char sbuff[24];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_UInt32)
 		return false;
 	sptr = Text::StrInt64(sbuff, val);
-	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
+	if ((UIntOS)(sptr - sbuff) >= this->columns[index].colSize)
 	{
 		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
 		j = this->columns[index].colOfst;
-		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UOSInt)(sptr - sbuff)], sbuff, (UOSInt)(sptr - sbuff));
-		i = this->columns[index].colSize - (UOSInt)(sptr - sbuff);
+		MemCopyNO(&this->rec[j + this->columns[index].colSize - (UIntOS)(sptr - sbuff)], sbuff, (UIntOS)(sptr - sbuff));
+		i = this->columns[index].colSize - (UIntOS)(sptr - sbuff);
 		while (i-- > 0)
 		{
 			this->rec[j + i] = ' ';
@@ -357,7 +357,7 @@ Bool DB::DBFFixWriter::SetColumnU32(UOSInt index, UInt32 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnBool(UOSInt index, Bool val)
+Bool DB::DBFFixWriter::SetColumnBool(UIntOS index, Bool val)
 {
 	if (index >= this->colCnt)
 		return false;
@@ -374,14 +374,14 @@ Bool DB::DBFFixWriter::SetColumnBool(UOSInt index, Bool val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnStr(UOSInt index, Text::CStringNN val)
+Bool DB::DBFFixWriter::SetColumnStr(UIntOS index, Text::CStringNN val)
 {
 	UInt8 buff[512];
 	if (index >= this->colCnt)
 		return false;
 	if (this->columns[index].colType != DB::DBUtil::CT_UTF8Char && this->columns[index].colType != DB::DBUtil::CT_VarUTF8Char)
 		return false;
-	UOSInt i;
+	UIntOS i;
 	if (val.leng >= 256)
 	{
 		i = enc->UTF8ToBytesC(buff, val.v, 256);

@@ -195,18 +195,18 @@ UInt16 Net::SSLUtil::csuites[] = {
     0x00ff, //TLS_EMPTY_RENEGOTIATION_INFO_SCSV (0x00ff)
 };
 
-UOSInt Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
+UIntOS Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
 {
 	Data::RandomBytesGenerator randGen;
-	UOSInt len;
+	UIntOS len;
 	buff[0] = 1; //Client Hello
 	WriteMUInt16(&buff[4], (UInt16)ver);
 	randGen.NextBytes(&buff[6], 32); //Random
 	buff[38] = 32; //Session ID Length
 	randGen.NextBytes(&buff[39], 32); //Session ID
 	WriteMUInt16(&buff[71], sizeof(csuites));
-	UOSInt i = 0;
-	UOSInt j = sizeof(csuites) >> 1;
+	UIntOS i = 0;
+	UIntOS j = sizeof(csuites) >> 1;
 	while (i < j)
 	{
 		WriteMUInt16(&buff[73 + i * 2], csuites[i]);
@@ -298,9 +298,9 @@ UOSInt Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSL
 	return len;
 }
 
-UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
+UIntOS Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
 {
-	UOSInt len;
+	UIntOS len;
 	buff[0] = 22; //Handshake
 	WriteMUInt16(&buff[1], (UInt16)ver);
 	len = GenClientHello(&buff[5], serverHost, ver);
@@ -308,7 +308,7 @@ UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, 
 	return len + 5;
 }
 
-void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
+void Net::SSLUtil::ParseResponse(const UInt8 *buff, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
 {
 	cert.Set(nullptr);
 	if (buff[0] == 21 && packetSize == 7)
@@ -329,8 +329,8 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::
 		Data::ArrayListNN<Crypto::Cert::X509Cert> certs;
 		NN<Crypto::Cert::X509Cert> c;
 		Bool hasServerHello = false;
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		UInt32 hsLeng;
 		while (i < packetSize - 8)
 		{
@@ -367,7 +367,7 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::
 				{
 					UInt32 certsLeng = ReadMUInt24(&buff[i + j + 9]);
 					UInt32 certLeng;
-					UOSInt k = 0;
+					UIntOS k = 0;
 					while (k < certsLeng - 3)
 					{
 						certLeng = ReadMUInt24(&buff[i + j + k + 12]);
@@ -404,12 +404,12 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::
 	}
 }
 
-Bool Net::SSLUtil::IncompleteHandshake(const UInt8 *buff, UOSInt packetSize)
+Bool Net::SSLUtil::IncompleteHandshake(const UInt8 *buff, UIntOS packetSize)
 {
 	Bool hasServerHello = false;
-	UOSInt i = 0;
-	UOSInt len;
-	UOSInt j = 0;
+	UIntOS i = 0;
+	UIntOS len;
+	UIntOS j = 0;
 	while (i < packetSize - 8)
 	{
 		if (buff[i] != 22)
@@ -642,9 +642,9 @@ Text::CStringNN Net::SSLUtil::ECPointFormatGetName(UInt8 fmt)
 
 Net::SSLCipherSuite *Net::SSLUtil::CipherSuiteGet(UInt16 cipherSuite)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(csuitesObj) / sizeof(csuitesObj[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(csuitesObj) / sizeof(csuitesObj[0])) - 1;
+	IntOS k;
 	Net::SSLCipherSuite *suite;
 	while (i <= j)
 	{

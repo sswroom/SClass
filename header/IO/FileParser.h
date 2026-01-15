@@ -16,7 +16,7 @@ namespace IO
 
 		Optional<IO::ParsedObject> ParseFilePath(Text::CStringNN filePath);
 
-		static const UOSInt hdrSize;
+		static const UIntOS hdrSize;
 	};
 }
 #endif

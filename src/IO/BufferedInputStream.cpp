@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/BufferedInputStream.h"
 
-IO::BufferedInputStream::BufferedInputStream(NN<IO::SeekableStream> stm, UOSInt buffSize) : IO::SeekableStream(stm->GetSourceNameObj()), buff(buffSize)
+IO::BufferedInputStream::BufferedInputStream(NN<IO::SeekableStream> stm, UIntOS buffSize) : IO::SeekableStream(stm->GetSourceNameObj()), buff(buffSize)
 {
 	this->stm = stm;
 	this->buffOfst = 0;
@@ -19,9 +19,9 @@ Bool IO::BufferedInputStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::BufferedInputStream::Read(const Data::ByteArray &buff)
+UIntOS IO::BufferedInputStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt copySize = 0;
+	UIntOS copySize = 0;
 	Data::ByteArray myBuff = buff;
 	while (myBuff.GetSize() > 0)
 	{
@@ -53,22 +53,22 @@ UOSInt IO::BufferedInputStream::Read(const Data::ByteArray &buff)
 	return copySize;
 }
 
-UOSInt IO::BufferedInputStream::Write(Data::ByteArrayR buff)
+UIntOS IO::BufferedInputStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
 
 Optional<IO::StreamReadReq> IO::BufferedInputStream::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	UOSInt sz = Read(buff);
+	UIntOS sz = Read(buff);
 	evt->Set();
 	return (StreamReadReq*)sz;
 }
 
-UOSInt IO::BufferedInputStream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::BufferedInputStream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::BufferedInputStream::CancelRead(NN<IO::StreamReadReq> reqData)
@@ -81,7 +81,7 @@ Optional<IO::StreamWriteReq> IO::BufferedInputStream::BeginWrite(Data::ByteArray
 	return (IO::StreamWriteReq*)-1;
 }
 
-UOSInt IO::BufferedInputStream::EndWrite(NN<StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::BufferedInputStream::EndWrite(NN<StreamWriteReq> reqData, Bool toWait)
 {
 	return 0;
 }
@@ -114,7 +114,7 @@ UInt64 IO::BufferedInputStream::SeekFromBeginning(UInt64 position)
 {
 	if (position >= this->stmPos && position <= this->stmPos + this->stmBuffSize)
 	{
-		this->buffOfst = (UOSInt)(position - this->stmPos);
+		this->buffOfst = (UIntOS)(position - this->stmPos);
 	}
 	else
 	{

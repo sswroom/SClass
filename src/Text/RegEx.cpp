@@ -3,7 +3,7 @@
 #include "Text/MyStringW.h"
 #include "Text/RegEx.h"
 
-UOSInt Text::RegEx::UnknownExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::UnknownExpression::Match(Text::CStringNN s, UIntOS index) const
 {
 	return INVALID_INDEX;
 }
@@ -12,13 +12,13 @@ void Text::RegEx::UnknownExpression::ToString(NN<Text::StringBuilderUTF8> sb) co
 {
 }
 
-void Text::RegEx::UnknownExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::UnknownExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level);
 	sb->Append(CSTR("Unknown: "));
 }
 
-UOSInt Text::RegEx::WSExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::WSExpression::Match(Text::CStringNN s, UIntOS index) const
 {
 	if (s.leng <= index)
 		return INVALID_INDEX;
@@ -42,21 +42,21 @@ void Text::RegEx::WSExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->Append(CSTR("\\s"));
 }
 
-void Text::RegEx::WSExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::WSExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level);
 	sb->Append(CSTR("WS: \\s"));
 }
 
-UOSInt Text::RegEx::SeqExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::SeqExpression::Match(Text::CStringNN s, UIntOS index) const
 {
 	return this->MatchInner(s, index, 0);
 }
 
 void Text::RegEx::SeqExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		this->expList.GetItemNoCheck(i)->ToString(sb);
@@ -64,12 +64,12 @@ void Text::RegEx::SeqExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void Text::RegEx::SeqExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::SeqExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level);
 	sb->Append(CSTR("Seq:"));
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		sb->Append(CSTR("\r\n"));
@@ -78,14 +78,14 @@ void Text::RegEx::SeqExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt 
 	}
 }
 
-UOSInt Text::RegEx::SeqExpression::MatchInner(Text::CStringNN s, UOSInt sIndex, UOSInt expIndex) const
+UIntOS Text::RegEx::SeqExpression::MatchInner(Text::CStringNN s, UIntOS sIndex, UIntOS expIndex) const
 {
 	NN<Expression> exp;
 	ExpressionType type;
-	UOSInt currIndex = sIndex;
-	UOSInt len;
-	UOSInt i = expIndex;
-	UOSInt j = this->expList.GetCount();
+	UIntOS currIndex = sIndex;
+	UIntOS len;
+	UIntOS i = expIndex;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		exp = this->expList.GetItemNoCheck(i);
@@ -165,12 +165,12 @@ void Text::RegEx::SubExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char(')');
 }
 
-void Text::RegEx::SubExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::SubExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level);
 	sb->Append(CSTR("Sub: ()"));
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		sb->Append(CSTR("\r\n"));
@@ -179,11 +179,11 @@ void Text::RegEx::SubExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt 
 	}
 }
 
-UOSInt Text::RegEx::BracketExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::BracketExpression::Match(Text::CStringNN s, UIntOS index) const
 {
 	UTF32Char c;
 	UnsafeArray<const UTF8Char> sptr = Text::StrReadChar(&s.v[index], c);
-	UOSInt i = this->charList.GetCount();
+	UIntOS i = this->charList.GetCount();
 	while (i-- > 0)
 	{
 		if (this->charList.GetItem(i) == c)
@@ -194,20 +194,20 @@ UOSInt Text::RegEx::BracketExpression::Match(Text::CStringNN s, UOSInt index) co
 			}
 			else
 			{
-				return (UOSInt)(sptr - (&s.v[index]));
+				return (UIntOS)(sptr - (&s.v[index]));
 			}
 		}
 	}
 	if (this->notMatch)
-		return (UOSInt)(sptr - (&s.v[index]));
+		return (UIntOS)(sptr - (&s.v[index]));
 	else
 		return INVALID_INDEX;
 }
 
 void Text::RegEx::BracketExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sb->AppendUTF8Char('[');
 	if (this->notMatch)
 		sb->AppendUTF8Char('^');
@@ -223,17 +223,17 @@ void Text::RegEx::BracketExpression::ToString(NN<Text::StringBuilderUTF8> sb) co
 	sb->AppendUTF8Char(']');
 }
 
-void Text::RegEx::BracketExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::BracketExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level)->Append(CSTR("Bracket: "));
 	this->ToString(sb);
 }
 
-UOSInt Text::RegEx::OrExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::OrExpression::Match(Text::CStringNN s, UIntOS index) const
 {
-	UOSInt ret;
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS ret;
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		ret = this->expList.GetItemNoCheck(i)->Match(s, index);
@@ -246,8 +246,8 @@ UOSInt Text::RegEx::OrExpression::Match(Text::CStringNN s, UOSInt index) const
 
 void Text::RegEx::OrExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		if (i > 0) sb->AppendUTF8Char('|');
@@ -256,11 +256,11 @@ void Text::RegEx::OrExpression::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void Text::RegEx::OrExpression::Summary(NN<Text::StringBuilderUTF8> sb, UOSInt level) const
+void Text::RegEx::OrExpression::Summary(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendChar('\t', level)->Append(CSTR("Or Begin: "));
-	UOSInt i = 0;
-	UOSInt j = this->expList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->expList.GetCount();
 	while (i < j)
 	{
 		if (i > 0)
@@ -288,12 +288,12 @@ void Text::RegEx::OrExpression::AddExpList(NN<Data::ArrayListNN<Expression>> exp
 	}
 }
 
-UOSInt Text::RegEx::CharMatchExpression::Match(Text::CStringNN s, UOSInt index) const
+UIntOS Text::RegEx::CharMatchExpression::Match(Text::CStringNN s, UIntOS index) const
 {
 	UTF32Char c;
 	UnsafeArray<const UTF8Char> sptr = Text::StrReadChar(&s.v[index], c);
 	if (c == this->c)
-		return (UOSInt)(sptr - (&s.v[index]));
+		return (UIntOS)(sptr - (&s.v[index]));
 	return INVALID_INDEX;
 }
 
@@ -533,13 +533,13 @@ Text::RegEx::~RegEx()
 	this->exp.Delete();
 }
 
-UOSInt Text::RegEx::Split(Text::CStringNN s, NN<Data::ArrayListStringNN> result) const
+UIntOS Text::RegEx::Split(Text::CStringNN s, NN<Data::ArrayListStringNN> result) const
 {
-	UOSInt initCnt = result->GetCount();
-	UOSInt lastIndex = 0;
-	UOSInt res;
-	UOSInt i = 0;
-	UOSInt j = s.leng;
+	UIntOS initCnt = result->GetCount();
+	UIntOS lastIndex = 0;
+	UIntOS res;
+	UIntOS i = 0;
+	UIntOS j = s.leng;
 	while (i < j)
 	{
 		res = this->exp->Match(s, i);

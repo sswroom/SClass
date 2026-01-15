@@ -24,12 +24,12 @@ namespace IO
 		Bool SetValue(NN<Text::String> category, NN<Text::String> name, Optional<Text::String> value);
 		Bool SetValue(Text::CStringNN category, Text::CStringNN name, Text::CString value);
 		Bool RemoveValue(Text::CString category, Text::CStringNN name);
-		UOSInt GetCateCount() const;
-		UOSInt GetCateList(NN<Data::ArrayListStringNN> cateList, Bool withEmpty);
-		UOSInt GetKeys(NN<Text::String> category, NN<Data::ArrayListStringNN> keyList);
-		UOSInt GetKeys(Text::CStringNN category, NN<Data::ArrayListStringNN> keyList);
-		UOSInt GetCount(Text::CString category) const;
-		Optional<Text::String> GetKey(Text::CString category, UOSInt index) const;
+		UIntOS GetCateCount() const;
+		UIntOS GetCateList(NN<Data::ArrayListStringNN> cateList, Bool withEmpty);
+		UIntOS GetKeys(NN<Text::String> category, NN<Data::ArrayListStringNN> keyList);
+		UIntOS GetKeys(Text::CStringNN category, NN<Data::ArrayListStringNN> keyList);
+		UIntOS GetCount(Text::CString category) const;
+		Optional<Text::String> GetKey(Text::CString category, UIntOS index) const;
 		Bool HasCategory(Text::CString category) const;
 		Optional<IO::ConfigFile> CloneCate(Text::CString category);
 

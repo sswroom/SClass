@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Data::ArrayList<IO::BTController*> ctrlList;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	manager.CreateControllers(&ctrlList);
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	i = ctrlList.GetCount();
 	while (i-- > 0)

@@ -315,36 +315,36 @@ namespace Data
 			}
 			Double timeMul = 0.001;
 			sptr = s.ConcatTo(sbuff);
-			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ms")))
+			if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ms")))
 			{
 				sptr -= 2;
 				sptr[0] = 0;
 			}
-			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("us")))
+			else if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("us")))
 			{
 				timeMul = 0.000001;
 				sptr -= 2;
 				sptr[0] = 0;
 			}
-			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ns")))
+			else if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ns")))
 			{
 				timeMul = 0.000000001;
 				sptr -= 2;
 				sptr[0] = 0;
 			}
-			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("min")))
+			else if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("min")))
 			{
 				timeMul = 60;
 				sptr -= 3;
 				sptr[0] = 0;
 			}
-			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("h")))
+			else if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("h")))
 			{
 				timeMul = 3600;
 				sptr -= 1;
 				sptr[0] = 0;
 			}
-			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("s")))
+			else if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("s")))
 			{
 				timeMul = 1;
 				sptr -= 1;

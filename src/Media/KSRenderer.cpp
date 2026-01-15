@@ -57,13 +57,13 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 {
 	NN<Media::KSRenderer> me = obj.GetNN<Media::KSRenderer>();
 	Media::AudioFormat af;
-	UOSInt i;
+	UIntOS i;
 	Data::Duration audStartTime;
 //	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
 	Sync::Event *evt;
 //	HRESULT hr;
-	UOSInt buffLeng = 8192;
+	UIntOS buffLeng = 8192;
 	NN<Media::AudioSource> audsrc;
 	NN<Sync::Event> playEvt;
 	NN<Media::RefClock> clk;
@@ -88,8 +88,8 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 		me->playing = true;
 		audsrc->Start(evt, buffLeng);
 
-		UOSInt cPackets = (af.bitRate >> 17) + 1;
-		UOSInt buffEndCnt = 0;
+		UIntOS cPackets = (af.bitRate >> 17) + 1;
+		UIntOS buffEndCnt = 0;
 		DATA_PACKET *Packets = MemAlloc(DATA_PACKET, cPackets);
 		HANDLE *hEventPool = MemAlloc(HANDLE, cPackets + 1);
 		UInt8 *pcmBuffer = MemAlloc(UInt8, buffLeng * cPackets);
@@ -114,7 +114,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 		pPin->SetState(KSSTATE_PAUSE);
 		pPin->SetState(KSSTATE_RUN);
 
-		UOSInt blkReadSize = buffLeng - (buffLeng % af.align);
+		UIntOS blkReadSize = buffLeng - (buffLeng % af.align);
 		UInt64 skipSize = 0;
 		UInt64 initSize = 0;
 		i = 0;
@@ -225,9 +225,9 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 	return 0;
 }
 
-UOSInt Media::KSRenderer::GetDeviceCount()
+UIntOS Media::KSRenderer::GetDeviceCount()
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	HRESULT hr;
     GUID  aguidEnumCats[] = { STATIC_KSCATEGORY_AUDIO, STATIC_KSCATEGORY_RENDER };
 	CKsEnumFilters* pEnumerator = new CKsEnumFilters(&hr);
@@ -249,12 +249,12 @@ UOSInt Media::KSRenderer::GetDeviceCount()
 	return cnt;
 }
 
-UnsafeArray<UTF8Char> Media::KSRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex)
+UnsafeArray<UTF8Char> Media::KSRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devIndex)
 {
-	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("Device ")), devIndex);
+	return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("Device ")), devIndex);
 }
 
-OSInt Media::KSRenderer::GetDeviceId(UnsafeArray<const UTF8Char> devName)
+IntOS Media::KSRenderer::GetDeviceId(UnsafeArray<const UTF8Char> devName)
 {
 	if (Text::StrStartsWith(devName, (const UTF8Char*)"Device "))
 	{
@@ -263,7 +263,7 @@ OSInt Media::KSRenderer::GetDeviceId(UnsafeArray<const UTF8Char> devName)
 	return 0;
 }
 
-Media::KSRenderer::KSRenderer(OSInt devId)
+Media::KSRenderer::KSRenderer(IntOS devId)
 {
 	this->pFilter = 0;
 	this->pEnumerator = 0;

@@ -85,8 +85,8 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(Optional<UI::GUIClientControl> parent, N
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Win32::WMIQuery::GetNSList(nsList);
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = nsList.GetCount();
 	while (i < j)

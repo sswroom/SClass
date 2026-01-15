@@ -18,17 +18,17 @@ Text::CStringNN Media::ImageGen::ColorImageGen::GetName() const
 	return CSTR("Color Test");
 }
 
-Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
 	Media::StaticImage *outImage;
 	UnsafeArray<Int64> imgPtr;
 	UnsafeArray<UInt8> imgPtr2;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	UInt16 c[4];
-	UOSInt bpl = size.x << 3;
+	UIntOS bpl = size.x << 3;
 	if (size.x < 8 || size.y < 4)
 		return nullptr;
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
@@ -334,7 +334,7 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), (UOSInt)bpl);
+		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), (UIntOS)bpl);
 		imgPtr2 += bpl;
 		k++;
 	}

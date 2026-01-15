@@ -16,7 +16,7 @@ IO::StmData::BufferedStreamData::~BufferedStreamData()
 	this->stmData.Delete();
 }
 
-UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	if (offset >= this->dataLength)
 	{
@@ -26,12 +26,12 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	UInt64 buffEndOfst = this->buffOfst + this->buffLength;
 	if (endOfst > this->dataLength)
 	{
-		length = (UOSInt)(this->dataLength - offset);
+		length = (UIntOS)(this->dataLength - offset);
 		endOfst = this->dataLength;
 	}
 	if (this->buffOfst <= offset && buffEndOfst >= endOfst)
 	{
-		buffer.CopyFrom(Data::ByteArrayR(&this->buff[(UOSInt)(offset - this->buffOfst)], length));
+		buffer.CopyFrom(Data::ByteArrayR(&this->buff[(UIntOS)(offset - this->buffOfst)], length));
 		return length;
 	}
 	else if (length >= (BUFFSIZE / 2))
@@ -50,8 +50,8 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 		buffer.CopyFrom(this->buff.WithSize(length));
 		return length;
 	}
-	UOSInt ret = (UOSInt)(buffEndOfst - offset);
-	buffer.CopyFrom(this->buff.SubArray((UOSInt)(offset - this->buffOfst), ret));
+	UIntOS ret = (UIntOS)(buffEndOfst - offset);
+	buffer.CopyFrom(this->buff.SubArray((UIntOS)(offset - this->buffOfst), ret));
 	buffer += ret;
 	length -= ret;
 	this->buffOfst = buffEndOfst;
@@ -109,7 +109,7 @@ Bool IO::StmData::BufferedStreamData::IsLoading() const
 	return this->stmData->IsLoading();
 }
 
-UOSInt IO::StmData::BufferedStreamData::GetSeekCount() const
+UIntOS IO::StmData::BufferedStreamData::GetSeekCount() const
 {
 	return this->stmData->GetSeekCount();
 }

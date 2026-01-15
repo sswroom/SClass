@@ -17,12 +17,12 @@ Int32 UI::Win::WinVSplitter::useCnt = 0;
 #define GetWindowLongPtr(a, b) GetWindowLongW(a, b)
 #endif
 
-OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::Win::WinVSplitter *me = (UI::Win::WinVSplitter*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::Win::WinVSplitter *me = (UI::Win::WinVSplitter*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	POINT pt;
 	HDC hdc;
-	UOSInt i;
+	UIntOS i;
 	NN<UI::GUIControl> ctrl;
 
 	if (me == 0)
@@ -35,13 +35,13 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 		break;
 	case WM_LBUTTONDOWN:
 		GetCursorPos(&pt);
-		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<OSInt>(pt.x, pt.y));
+		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<IntOS>(pt.x, pt.y));
 		return 0;
 	case WM_LBUTTONUP:
 		if (me->dragMode)
 		{
-			OSInt drawY;
-			Math::Size2D<UOSInt> sz;
+			IntOS drawY;
+			Math::Size2D<UIntOS> sz;
 			Bool foundThis;
 			UI::GUIControl::DockType dockType;
 
@@ -56,7 +56,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 				ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 			}
 
-			Math::Coord2D<OSInt> pos = me->GetPositionP();
+			Math::Coord2D<IntOS> pos = me->GetPositionP();
 			drawY = pos.y + me->lastY - me->dragY;
 			if (drawY < me->dragMin)
 			{
@@ -85,7 +85,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 							{
 								pos = ctrl->GetPositionP();
 								sz = ctrl->GetSizeP();
-								ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+								ctrl->SetAreaP(pos.x, drawY, pos.x + (IntOS)sz.x, pos.y + (IntOS)sz.y, false);
 								nnparent->UpdateChildrenSize(true);
 								break;
 							}
@@ -93,7 +93,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 							{
 								pos = ctrl->GetPositionP();
 								sz = ctrl->GetSizeP();
-								ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
+								ctrl->SetAreaP(pos.x, pos.y, pos.x + (IntOS)sz.x, drawY, false);
 								nnparent->UpdateChildrenSize(true);
 								break;
 							}
@@ -151,18 +151,18 @@ void UI::Win::WinVSplitter::Deinit(Optional<InstanceHandle> hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
-void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
+void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, IntOS x, IntOS y)
 {
 	static UInt16 _dotPatternBmp[8] = {0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55};
 
 	HBITMAP hbm;
 	HBRUSH hbr;
 	HBRUSH hbrushOld;
-	OSInt drawY;
+	IntOS drawY;
 
-	OSInt cliOfstX = 0;
-	OSInt cliOfstY = 0;
-	Math::Size2D<UOSInt> sz;
+	IntOS cliOfstX = 0;
+	IntOS cliOfstY = 0;
+	Math::Size2D<UIntOS> sz;
 	Math::Coord2DDbl lcliOfst;
 	NN<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
@@ -175,7 +175,7 @@ void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
 	}
 	cliOfstX = Double2Int32(lcliOfst.x * this->hdpi / 96.0);
 	cliOfstY = Double2Int32(lcliOfst.y * this->hdpi / 96.0);
-	Math::Coord2D<OSInt> pos = this->GetPositionP();
+	Math::Coord2D<IntOS> pos = this->GetPositionP();
 	sz = this->GetSizeP();
 	drawY = pos.y + y - this->dragY;
 	if (drawY < dragMin)
@@ -202,9 +202,9 @@ void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
 
 void UI::Win::WinVSplitter::CalDragRange()
 {
-	UOSInt i;
-	OSInt max;
-	OSInt min;
+	UIntOS i;
+	IntOS max;
+	IntOS min;
 	Bool foundTop = false;
 	Bool foundBottom = false;
 	Bool foundThis = false;
@@ -237,7 +237,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 							{
 								foundBottom = true;
 								max = ctrl->GetPositionP().y;
-								max += (OSInt)ctrl->GetSizeP().y;
+								max += (IntOS)ctrl->GetSizeP().y;
 							}
 						}
 						else if (dockType == UI::GUIControl::DOCK_TOP)
@@ -246,7 +246,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 							{
 								foundTop = true;
 								min = ctrl->GetPositionP().y;
-								min += (OSInt)ctrl->GetSizeP().y;
+								min += (IntOS)ctrl->GetSizeP().y;
 							}
 						}
 					}
@@ -318,12 +318,12 @@ UI::Win::WinVSplitter::~WinVSplitter()
 	}
 }
 
-OSInt UI::Win::WinVSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinVSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 	if (btn == GUIControl::MouseButton::MBTN_LEFT)
 	{
@@ -347,7 +347,7 @@ void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math
 	}
 }
 
-void UI::Win::WinVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::Win::WinVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 
 }

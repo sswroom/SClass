@@ -8,7 +8,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 1;
+	UIntOS i = 1;
 	Math::BigFloat bf(256, CSTR("1.1"));
 	Math::BigFloat bf2(256, 1);
 	bf2.ToString(sb);
@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		sb.ClearStr();
 		sb.Append(CSTR("1.1"));
 		sb.Append(CSTR(" ^ "));
-		sb.AppendUOSInt(i);
+		sb.AppendUIntOS(i);
 		sb.Append(CSTR(" = "));
 		bf2 *= bf;
 		bf2.ToString(sb);

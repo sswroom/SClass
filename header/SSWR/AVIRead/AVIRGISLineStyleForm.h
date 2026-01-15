@@ -23,7 +23,7 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Map::MapEnv> env;
 			NN<Media::DrawEngine> eng;
-			UOSInt lineStyle;
+			UIntOS lineStyle;
 			Bool changed;
 
 			NN<UI::GUIGroupBox> grpStyle;
@@ -48,13 +48,13 @@ namespace SSWR
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 		public:
-			AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS lineStyle);
 			virtual ~AVIRGISLineStyleForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			UOSInt GetLineStyle();
+			UIntOS GetLineStyle();
 			Bool IsChanged();
 		};
 	}

@@ -97,7 +97,7 @@ void Net::HTTPQueue::Clear()
 {
 	NN<const Data::ArrayListNN<DomainStatus>> statusList;
 	NN<DomainStatus> status;
-	UOSInt i;
+	UIntOS i;
 
 	Sync::MutexUsage mutUsage(this->statusMut);
 	statusList = this->statusMap.GetValues();

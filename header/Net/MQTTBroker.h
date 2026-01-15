@@ -44,7 +44,7 @@ namespace Net
 		{
 			NN<Text::String> topic;
 			UInt8 *message;
-			UOSInt msgSize;
+			UIntOS msgSize;
 		};
 		
 		struct SubscribeInfo
@@ -56,9 +56,9 @@ namespace Net
 		
 
 		typedef ConnectStatus (CALLBACKFUNC ConnectHandler)(AnyType userObj, NN<Text::String> clientId, Optional<Text::String> userName, Optional<Text::String> password, NN<const Net::SocketUtil::AddressInfo> addr);
-		typedef void (CALLBACKFUNC PublishHandler)(AnyType userObj, Text::CStringNN topic, UInt16 packetId, UnsafeArray<const UInt8> message, UOSInt msgSize);
+		typedef void (CALLBACKFUNC PublishHandler)(AnyType userObj, Text::CStringNN topic, UInt16 packetId, UnsafeArray<const UInt8> message, UIntOS msgSize);
 		typedef ConnectStatus (CALLBACKFUNC SubscribeHandler)(AnyType userObj, NN<Text::String> clientId, Text::CStringNN topic);
-		typedef void (CALLBACKFUNC TopicUpdateHandler)(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
+		typedef void (CALLBACKFUNC TopicUpdateHandler)(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize);
 	private:
 		NN<Net::TCPClientFactory> clif;
 		NN<IO::LogTool> log;
@@ -100,9 +100,9 @@ namespace Net
 		
 		static UInt32 __stdcall SysInfoThread(AnyType userObj);
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		void UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize, Bool suppressUnchg);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
+		void UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize, Bool suppressUnchg);
 		Bool TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const TopicInfo> topic);
 
 		virtual AnyType StreamCreated(NN<IO::Stream> stm);

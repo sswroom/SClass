@@ -3,7 +3,7 @@
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Sync/Interlocked.h"
 
-IO::StmData::MemoryDataCopy::MemoryDataCopy(NN<MemoryStats> stat, UnsafeArray<const UInt8> data, UOSInt dataLength)
+IO::StmData::MemoryDataCopy::MemoryDataCopy(NN<MemoryStats> stat, UnsafeArray<const UInt8> data, UIntOS dataLength)
 {
 	this->stat = stat;
 	Sync::Interlocked::IncrementI32(stat->useCnt);
@@ -11,7 +11,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(NN<MemoryStats> stat, UnsafeArray<co
 	this->dataLength = dataLength;
 }
 
-IO::StmData::MemoryDataCopy::MemoryDataCopy(UnsafeArray<const UInt8> data, UOSInt dataLength)
+IO::StmData::MemoryDataCopy::MemoryDataCopy(UnsafeArray<const UInt8> data, UIntOS dataLength)
 {
 	this->stat = MemAllocNN(MemoryStats);
 	this->stat->data = MemAllocArr(UInt8, dataLength);
@@ -46,7 +46,7 @@ IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 	}
 }
 
-UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	if (offset >= this->dataLength)
 	{
@@ -54,11 +54,11 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Da
 	}
 	if (offset + length > this->dataLength)
 	{
-		length = (UOSInt)(this->dataLength - offset);
+		length = (UIntOS)(this->dataLength - offset);
 	}
 	if (length > 0)
 	{
-		buffer.CopyFrom(Data::ByteArrayR(&this->data[(UOSInt)offset], length));
+		buffer.CopyFrom(Data::ByteArrayR(&this->data[(UIntOS)offset], length));
 	}
 	return length;
 }
@@ -76,7 +76,7 @@ Text::CString IO::StmData::MemoryDataCopy::GetShortName() const
 	NN<Text::String> fullName;
 	if (this->stat->fullName.SetTo(fullName))
 	{
-		UOSInt i = fullName->LastIndexOf('/');
+		UIntOS i = fullName->LastIndexOf('/');
 		if (i != INVALID_INDEX)
 		{
 			return fullName->ToCString().Substring(i + 1);
@@ -114,7 +114,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UI
 	{
 		length = this->dataLength - offset;
 	}
-	NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[(UOSInt)offset], (UOSInt)length));
+	NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[(UIntOS)offset], (UIntOS)length));
 	return data;
 }
 
@@ -128,7 +128,7 @@ Bool IO::StmData::MemoryDataCopy::IsLoading() const
 	return false;
 }
 
-UOSInt IO::StmData::MemoryDataCopy::GetSeekCount() const
+UIntOS IO::StmData::MemoryDataCopy::GetSeekCount() const
 {
 	return 0;
 }

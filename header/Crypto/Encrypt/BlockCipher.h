@@ -28,21 +28,21 @@ namespace Crypto
 		{
 		protected:
 			UnsafeArray<UInt8> iv;
-			UOSInt blockSize;
+			UIntOS blockSize;
 			ChainMode cm;
 			PaddingMode pad;
 
 		public:
-			BlockCipher(UOSInt blockSize);
+			BlockCipher(UIntOS blockSize);
 			virtual ~BlockCipher();
 
-			virtual UOSInt Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
-			virtual UOSInt Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
-			virtual UOSInt GetEncBlockSize() const;
-			virtual UOSInt GetDecBlockSize() const;
+			virtual UIntOS Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff);
+			virtual UIntOS Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff);
+			virtual UIntOS GetEncBlockSize() const;
+			virtual UIntOS GetDecBlockSize() const;
 
-			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
-			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
+			virtual UIntOS EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
+			virtual UIntOS DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
 
 			void SetChainMode(ChainMode cm);
 			void SetIV(UnsafeArray<const UInt8> iv);

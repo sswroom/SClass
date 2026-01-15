@@ -71,7 +71,7 @@ namespace IO
 		Bool GetBool(UInt8 id, OutParam<Bool> val) const;
 		Bool GetEnum(UInt8 id, OutParam<Int32> val) const;
 
-		Bool ParseMsssage(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Bool ParseMsssage(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	};
 }
 #endif

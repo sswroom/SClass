@@ -28,9 +28,9 @@ namespace IO
 			SubMsg
 		};
 
-		static UOSInt ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<UInt64> val);
-		static UOSInt ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<Int64> val);
-		static UOSInt ReadVarSInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<Int64> val);
+		static UIntOS ReadVarUInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<UInt64> val);
+		static UIntOS ReadVarInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<Int64> val);
+		static UIntOS ReadVarSInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<Int64> val);
 		static Int64 ToSInt64(UInt64 val);
 		static Text::CStringNN WireTypeGetName(UInt8 wireType);
 	};

@@ -14,8 +14,8 @@ namespace IO
 			Optional<Text::String> manufacturer;
 			Optional<Text::String> partNo;
 			Optional<Text::String> sn;
-			UOSInt defSpdMHz;
-			UOSInt confSpdMHz;
+			UIntOS defSpdMHz;
+			UIntOS confSpdMHz;
 			UInt32 dataWidth;
 			UInt32 totalWidth;
 			UInt64 memorySize;
@@ -72,7 +72,7 @@ namespace IO
 		UInt64 GetTotalUsableMemSize();
 		ChassisType GetChassisType();
 
-		UOSInt GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList);
+		UIntOS GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList);
 		void FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList);
 	};
 }

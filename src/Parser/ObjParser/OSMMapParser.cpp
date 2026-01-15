@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 	if (!this->parsers.SetTo(parsers))
 		return nullptr;
 
-	UOSInt buffSize = (UOSInt)fd->GetDataSize();
+	UIntOS buffSize = (UIntOS)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(0, buffSize, Data::ByteArray(fileBuff, buffSize + 1))] = 0;
 	Optional<Text::JSONBase> optfileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));

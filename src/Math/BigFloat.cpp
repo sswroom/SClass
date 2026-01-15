@@ -7,8 +7,8 @@
 
 void Math::BigFloat::RemZero()
 {
-	UnsafeArray<UOSInt> tarr;
-	UOSInt maxCnt = this->valCnt;
+	UnsafeArray<UIntOS> tarr;
+	UIntOS maxCnt = this->valCnt;
 	while (maxCnt-- > 0)
 	{
 		if (this->valArr[maxCnt])
@@ -23,7 +23,7 @@ void Math::BigFloat::RemZero()
 	}
 	while (maxCnt > 0)
 	{
-		MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), maxCnt * sizeof(UOSInt));
+		MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), maxCnt * sizeof(UIntOS));
 		if (BigIntUtil::LSBDivUOS(tmpArr, maxCnt, 10) != 0)
 		{
 			break;
@@ -39,17 +39,17 @@ void Math::BigFloat::RemZero()
 	}
 }
 
-void Math::BigFloat::PrepareTmpBuff(UOSInt tmpCnt)
+void Math::BigFloat::PrepareTmpBuff(UIntOS tmpCnt)
 {
 	if (tmpCnt > this->valCnt)
 	{
 		tmpCnt = this->valCnt;
 	}
-	MemCopyNO(this->tmpArr.Ptr(), this->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+	MemCopyNO(this->tmpArr.Ptr(), this->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
 	this->tmpIndex = this->valIndex;
 
-	UnsafeArray<UOSInt> tarr = this->tmpArr;
-	UOSInt i = this->valCnt;
+	UnsafeArray<UIntOS> tarr = this->tmpArr;
+	UIntOS i = this->valCnt;
 	while (i > tmpCnt)
 	{
 		if (tarr[i - 1])
@@ -68,28 +68,28 @@ void Math::BigFloat::PrepareTmpBuff(NN<const BigFloat> val)
 {
 	if (this->valCnt >= val->valCnt)
 	{
-		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UOSInt));
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UIntOS));
 		if (this->valCnt > val->valCnt)
 		{
-			MemClear(&this->tmpArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UOSInt));
+			MemClear(&this->tmpArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UIntOS));
 		}
 		this->tmpIndex = val->valIndex;
 	}
 	else
 	{
 		NN<BigFloat>::ConvertFrom(val)->PrepareTmpBuff(this->valCnt);
-		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
 		this->tmpIndex = val->tmpIndex;
 	}
 }
 
 void Math::BigFloat::PrepareSum()
 {
-	UOSInt vCnt = this->valCnt;
+	UIntOS vCnt = this->valCnt;
 	Int32 tindex = this->tmpIndex;
-	UnsafeArray<UOSInt> tarr = this->tmpArr;
+	UnsafeArray<UIntOS> tarr = this->tmpArr;
 	Int32 vindex = this->valIndex;
-	UnsafeArray<UOSInt> varr = this->valArr;
+	UnsafeArray<UIntOS> varr = this->valArr;
 	while (tindex > vindex)
 	{
 		if (tarr[vCnt - 1])
@@ -128,14 +128,14 @@ void Math::BigFloat::DoSum()
 
 Bool Math::BigFloat::DoSubtract()
 {
-	UnsafeArray<UOSInt> tarr = this->tmpArr;
-	UnsafeArray<UOSInt> varr = this->valArr;
-	UOSInt vCnt = this->valCnt;
-	UOSInt tActCnt = this->valCnt;
-	UOSInt vActCnt = this->valCnt;
+	UnsafeArray<UIntOS> tarr = this->tmpArr;
+	UnsafeArray<UIntOS> varr = this->valArr;
+	UIntOS vCnt = this->valCnt;
+	UIntOS tActCnt = this->valCnt;
+	UIntOS vActCnt = this->valCnt;
 	Int32 mode;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool ret = false;
 	while (tActCnt > 0)
 	{
@@ -180,7 +180,7 @@ Bool Math::BigFloat::DoSubtract()
 
 	if (mode == 1)
 	{
-		MemClear(&this->valArr[0], vCnt * sizeof(UOSInt));
+		MemClear(&this->valArr[0], vCnt * sizeof(UIntOS));
 		this->valIndex = 0;
 		this->neg = false;
 	}
@@ -201,58 +201,58 @@ Bool Math::BigFloat::DoSubtract()
 Math::BigFloat::BigFloat(NN<const BigFloat> val)
 {
 	this->valCnt = val->valCnt;
-	this->valArr = MemAllocArr(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
+	this->valArr = MemAllocArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocArr(UIntOS, this->valCnt);
 	this->valIndex = val->valIndex;
 	this->tmpIndex = val->tmpIndex;
 	this->neg = val->neg;
-	MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
-	MemCopyNO(this->tmpArr.Ptr(), val->tmpArr.Ptr(), this->valCnt * sizeof(UOSInt));
+	MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
+	MemCopyNO(this->tmpArr.Ptr(), val->tmpArr.Ptr(), this->valCnt * sizeof(UIntOS));
 }
 
-Math::BigFloat::BigFloat(UOSInt valSize, Text::CStringNN val)
+Math::BigFloat::BigFloat(UIntOS valSize, Text::CStringNN val)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & (sizeof(UOSInt) - 1))
+	if (valSize & (sizeof(UIntOS) - 1))
 	{
-		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
+		valSize += sizeof(UIntOS) - (valSize & (sizeof(UIntOS) - 1));
 	}
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocArr(UOSInt, valCnt);
-	this->tmpArr = MemAllocArr(UOSInt, valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocArr(UIntOS, valCnt);
+	this->tmpArr = MemAllocArr(UIntOS, valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
 	*this = val;
 }
 
-Math::BigFloat::BigFloat(UOSInt valSize, OSInt val)
+Math::BigFloat::BigFloat(UIntOS valSize, IntOS val)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & (sizeof(UOSInt) - 1))
+	if (valSize & (sizeof(UIntOS) - 1))
 	{
-		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
+		valSize += sizeof(UIntOS) - (valSize & (sizeof(UIntOS) - 1));
 	}
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocArr(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocArr(UIntOS, this->valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
 	*this = val;
 }
 
-Math::BigFloat::BigFloat(UOSInt valSize)
+Math::BigFloat::BigFloat(UIntOS valSize)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & (sizeof(UOSInt) - 1))
+	if (valSize & (sizeof(UIntOS) - 1))
 	{
-		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
+		valSize += sizeof(UIntOS) - (valSize & (sizeof(UIntOS) - 1));
 	}
-	this->valCnt = valSize / sizeof(UOSInt);
-	this->valArr = MemAllocArr(UOSInt, this->valCnt);
-	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
+	this->valCnt = valSize / sizeof(UIntOS);
+	this->valArr = MemAllocArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocArr(UIntOS, this->valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
 	this->neg = false;
@@ -266,21 +266,21 @@ Math::BigFloat::~BigFloat()
 	MemFreeArr(this->tmpArr);
 }
 
-OSInt Math::BigFloat::operator =(OSInt val)
+IntOS Math::BigFloat::operator =(IntOS val)
 {
-	UnsafeArray<UOSInt> varr = this->valArr;
+	UnsafeArray<UIntOS> varr = this->valArr;
 	this->valIndex = 0;
 	if (val < 0)
 	{
-		varr[0] = (UOSInt)-val;
+		varr[0] = (UIntOS)-val;
 		this->neg = true;
 	}
 	else 
 	{
-		varr[0] = (UOSInt)val;
+		varr[0] = (UIntOS)val;
 		this->neg = false;
 	}
-	MemClear(&varr[1], (this->valCnt - 1) * sizeof(UOSInt));
+	MemClear(&varr[1], (this->valCnt - 1) * sizeof(UIntOS));
 	this->RemZero();
 	return val;
 }
@@ -344,12 +344,12 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 {
 	Int32 refIndex = 0;
 	Int32 refIndex2 = 0;
-	UnsafeArray<UOSInt> varr = valArr;
-	UOSInt vCnt = valCnt;
+	UnsafeArray<UIntOS> varr = valArr;
+	UIntOS vCnt = valCnt;
 	Bool isDot = false;
 	Int32 isExt = 0;
 	UTF8Char c;
-	UOSInt cInd = 0;
+	UIntOS cInd = 0;
 	if (val.v[0] == '-')
 	{
 		this->neg = true;
@@ -359,7 +359,7 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 	{
 		this->neg = false;
 	}
-	MemClear(&varr[0], vCnt * sizeof(UOSInt));
+	MemClear(&varr[0], vCnt * sizeof(UIntOS));
 	
 	while ((c = val.v[cInd++]) != 0)
 	{
@@ -397,7 +397,7 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 			else
 			{
 				BigIntUtil::LSBMulUOS(varr, vCnt, 10);
-				BigIntUtil::LSBAddUOS(varr, vCnt, (UOSInt)c - 0x30);
+				BigIntUtil::LSBAddUOS(varr, vCnt, (UIntOS)c - 0x30);
 				if (isDot)
 					refIndex--;
 			}
@@ -423,17 +423,17 @@ NN<Math::BigFloat> Math::BigFloat::operator =(NN<const BigFloat> val)
 	{
 		this->valCnt = val->valCnt;
 		MemFreeArr(this->valArr);
-		this->valArr = MemAllocArr(UOSInt, this->valCnt);
-		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+		this->valArr = MemAllocArr(UIntOS, this->valCnt);
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
 		this->valIndex = val->valIndex;
 	}
 	else
 	{
 		this->valIndex = val->valIndex;
-		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UOSInt));
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UIntOS));
 		if (val->valCnt < this->valCnt)
 		{
-			MemClear(&this->valArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UOSInt));
+			MemClear(&this->valArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UIntOS));
 		}
 	}
 	this->neg = val->neg;
@@ -474,14 +474,14 @@ NN<Math::BigFloat> Math::BigFloat::operator -=(NN<const BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 {
-	UOSInt tCnt = this->valCnt;
-	UOSInt vCnt = val->valCnt;
-	UOSInt tmpCnt = tCnt + vCnt;
-	UnsafeArray<UOSInt> tarr = MemAlloc(UOSInt, tmpCnt);
+	UIntOS tCnt = this->valCnt;
+	UIntOS vCnt = val->valCnt;
+	UIntOS tmpCnt = tCnt + vCnt;
+	UnsafeArray<UIntOS> tarr = MemAlloc(UIntOS, tmpCnt);
 	Int32 tIndex = this->valIndex + val->valIndex;
-	UnsafeArray<UOSInt> varr = val->valArr;
-	MemCopyNO(tarr.Ptr(), this->valArr.Ptr(), tCnt * sizeof(UOSInt));
-	MemClear(&tarr[tCnt], vCnt * sizeof(UOSInt));
+	UnsafeArray<UIntOS> varr = val->valArr;
+	MemCopyNO(tarr.Ptr(), this->valArr.Ptr(), tCnt * sizeof(UIntOS));
+	MemClear(&tarr[tCnt], vCnt * sizeof(UIntOS));
 	BigIntUtil::LSBMul(tarr, varr, tmpCnt, vCnt);
 	while (tmpCnt > 0)
 	{
@@ -496,7 +496,7 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 		if (tarr[tmpCnt - 1] == 0)
 			tmpCnt--;
 	}
-	MemCopyNO(this->valArr.Ptr(), tarr.Ptr(), this->valCnt * sizeof(UOSInt));
+	MemCopyNO(this->valArr.Ptr(), tarr.Ptr(), this->valCnt * sizeof(UIntOS));
 
 	MemFreeArr(tarr);
 	this->valIndex = tIndex;
@@ -508,11 +508,11 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 	return *this;
 }
 
-NN<Math::BigFloat> Math::BigFloat::operator *=(OSInt val)
+NN<Math::BigFloat> Math::BigFloat::operator *=(IntOS val)
 {
 	if (val == 0)
 	{
-		MemClear(this->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+		MemClear(this->valArr.Ptr(), this->valCnt * sizeof(UIntOS));
 		this->valIndex = 0;
 		this->neg = false;
 		return *this;
@@ -523,15 +523,15 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(OSInt val)
 		val = -val;
 		this->neg = !this->neg;
 	}
-	UnsafeArray<UOSInt> tharr = this->valArr;
-	UOSInt thCnt = this->valCnt;
+	UnsafeArray<UIntOS> tharr = this->valArr;
+	UIntOS thCnt = this->valCnt;
 	Int32 tIndex = this->valIndex;
 	while (tharr[thCnt - 1] != 0)
 	{
 		BigIntUtil::LSBDivUOS(tharr, thCnt, 10);
 		tIndex++;
 	}
-	BigIntUtil::LSBMulUOS(tharr, thCnt, (UOSInt)val);
+	BigIntUtil::LSBMulUOS(tharr, thCnt, (UIntOS)val);
 	this->valIndex = tIndex;
 	this->RemZero();
 	return *this;
@@ -950,14 +950,14 @@ bfdivexit:
 	return *this;
 }
 
-NN<Math::BigFloat> Math::BigFloat::operator /=(UOSInt val)
+NN<Math::BigFloat> Math::BigFloat::operator /=(UIntOS val)
 {
 	return *this;
 }
 
 NN<Math::BigFloat> Math::BigFloat::ToNeg()
 {
-	UOSInt i = this->valCnt;
+	UIntOS i = this->valCnt;
 	this->neg = !this->neg;
 	while (i-- > 0)
 	{
@@ -970,7 +970,7 @@ NN<Math::BigFloat> Math::BigFloat::ToNeg()
 
 Bool Math::BigFloat::IsZero()
 {
-	UOSInt i = this->valCnt;
+	UIntOS i = this->valCnt;
 	while (i > 0)
 	{
 		i--;
@@ -989,7 +989,7 @@ Bool Math::BigFloat::operator >(NN<const BigFloat> val)
 		else
 			return true;
 	}
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.neg)
@@ -1009,7 +1009,7 @@ Bool Math::BigFloat::operator >=(NN<const BigFloat> val)
 		else
 			return true;
 	}
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.neg)
@@ -1029,7 +1029,7 @@ Bool Math::BigFloat::operator <(NN<const BigFloat> val)
 		else
 			return false;
 	}
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.neg)
@@ -1049,7 +1049,7 @@ Bool Math::BigFloat::operator <=(NN<const BigFloat> val)
 		else
 			return false;
 	}
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.neg)
@@ -1066,7 +1066,7 @@ Bool Math::BigFloat::operator ==(NN<const BigFloat> val)
 	{
 		return false;
 	}
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.IsZero())
@@ -1075,18 +1075,18 @@ Bool Math::BigFloat::operator ==(NN<const BigFloat> val)
 		return false;
 }
 
-NN<Math::BigFloat> Math::BigFloat::Factorial(UOSInt val)
+NN<Math::BigFloat> Math::BigFloat::Factorial(UIntOS val)
 {
 	if (val < 1)
 	{
-		*this = (OSInt)1;
+		*this = (IntOS)1;
 		return *this;
 	}
-	*this = (OSInt)1;
-	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+	*this = (IntOS)1;
+	Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
 	while (val > 1)
 	{
-		tmp = (OSInt)val;
+		tmp = (IntOS)val;
 		*this *= tmp;
 		val--;
 	}
@@ -1095,12 +1095,12 @@ NN<Math::BigFloat> Math::BigFloat::Factorial(UOSInt val)
 
 NN<Math::BigFloat> Math::BigFloat::SetPI()
 {
-	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
-	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
-	OSInt v = 1;
-	UOSInt v2 = 3;
-	*this = (OSInt)1;
-	tmpVal = (OSInt)1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UIntOS));
+	IntOS endInd = -(IntOS)(this->valCnt * sizeof(UIntOS) * 5) >> 1;
+	IntOS v = 1;
+	UIntOS v2 = 3;
+	*this = (IntOS)1;
+	tmpVal = (IntOS)1;
 	while (v < 0x10000)
 	{
 		tmpVal *= v;
@@ -1112,20 +1112,20 @@ NN<Math::BigFloat> Math::BigFloat::SetPI()
 		v++;
 		v2 += 2;
 	}
-	tmpVal = (OSInt)2;
+	tmpVal = (IntOS)2;
 	*this *= tmpVal;
 	return *this;
 }
 
 NN<Math::BigFloat> Math::BigFloat::SetE(NN<Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
-	Math::BigFloat tmpVal2(val->valCnt * sizeof(UOSInt));
-	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
-	UOSInt i = 2;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UIntOS));
+	Math::BigFloat tmpVal2(val->valCnt * sizeof(UIntOS));
+	IntOS endInd = -(IntOS)(this->valCnt * sizeof(UIntOS) * 5) >> 1;
+	UIntOS i = 2;
 	tmpVal2 = val;
 	tmpVal = tmpVal2;
-	*this = (OSInt)1;
+	*this = (IntOS)1;
 	*this += tmpVal;
 
 	while (true)
@@ -1171,27 +1171,27 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 	}
 	else
 	{
-		Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
-		Math::BigFloat tmp2(this->valCnt * sizeof(UOSInt));
-		Math::BigFloat tmp3(this->valCnt * sizeof(UOSInt));
-		Math::BigFloat e0(this->valCnt * sizeof(UOSInt));
-		Math::BigFloat e1(this->valCnt * sizeof(UOSInt));
-		Math::BigFloat e2(this->valCnt * sizeof(UOSInt));
-		UOSInt i = 1;
+		Math::BigFloat tmp(this->valCnt * sizeof(UIntOS));
+		Math::BigFloat tmp2(this->valCnt * sizeof(UIntOS));
+		Math::BigFloat tmp3(this->valCnt * sizeof(UIntOS));
+		Math::BigFloat e0(this->valCnt * sizeof(UIntOS));
+		Math::BigFloat e1(this->valCnt * sizeof(UIntOS));
+		Math::BigFloat e2(this->valCnt * sizeof(UIntOS));
+		UIntOS i = 1;
 		Int32 j;
-		tmp = (OSInt)1;
+		tmp = (IntOS)1;
 		e0.SetE(tmp);
 		e2 = tmp;
 		e2 /= e0;
 
-		OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
+		IntOS endInd = -(IntOS)(this->valCnt * sizeof(UIntOS) * 5) >> 1;
 		if (val.Ptr()[0] > e0)
 		{
 			tmp3 = val;
-			tmp2 = (OSInt)0;
+			tmp2 = (IntOS)0;
 			while (tmp3 > e0)
 			{
-				tmp = (OSInt)1;
+				tmp = (IntOS)1;
 				e1.SetE(tmp);
 				e2 = tmp;
 				e2 /= e1;
@@ -1210,7 +1210,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			}
 			*this = tmp2;
 
-			tmp = (OSInt)1;
+			tmp = (IntOS)1;
 			tmp2 = tmp3;
 			tmp2 -= tmp;
 			tmp2 /= tmp3;
@@ -1247,7 +1247,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 		else if (val.Ptr()[0] >= e2)
 		{
 			tmp2 = val;
-			tmp = (OSInt)1;
+			tmp = (IntOS)1;
 			tmp2 -= tmp;
 			*this = tmp2;
 			tmp = tmp2;
@@ -1274,10 +1274,10 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			e0 = e2;
 
 			tmp3 = val;
-			tmp2 = (OSInt)0;
+			tmp2 = (IntOS)0;
 			while (tmp3 < e0)
 			{
-				tmp = (OSInt)1;
+				tmp = (IntOS)1;
 				e1.SetE(tmp);
 				e2 = tmp;
 				e2 /= e1;
@@ -1297,7 +1297,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			*this = tmp2;
 
 			tmp2 = tmp3;
-			tmp = (OSInt)1;
+			tmp = (IntOS)1;
 			tmp2 -= tmp;
 			*this += tmp2;
 			tmp = tmp2;
@@ -1325,9 +1325,9 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetSin(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
-	UOSInt i = 1;
-	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UIntOS));
+	UIntOS i = 1;
+	IntOS endInd = -(IntOS)(this->valCnt * sizeof(UIntOS) * 5) >> 1;
 	tmpVal = val;
 	*this = tmpVal;
 
@@ -1347,10 +1347,10 @@ NN<Math::BigFloat> Math::BigFloat::SetSin(NN<const Math::BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetCos(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
-	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
-	UOSInt i = 0;
-	tmpVal = (OSInt)1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UIntOS));
+	IntOS endInd = -(IntOS)(this->valCnt * sizeof(UIntOS) * 5) >> 1;
+	UIntOS i = 0;
+	tmpVal = (IntOS)1;
 	*this = tmpVal;
 
 	while (true)
@@ -1369,15 +1369,15 @@ NN<Math::BigFloat> Math::BigFloat::SetCos(NN<const Math::BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetTan(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UIntOS));
 	tmpVal.SetCos(val);
 	this->SetSin(val);
 	return *this /= tmpVal;
 }
 
-UOSInt Math::BigFloat::GetSize()
+UIntOS Math::BigFloat::GetSize()
 {
-	return this->valCnt * sizeof(UOSInt);
+	return this->valCnt * sizeof(UIntOS);
 }
 
 UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
@@ -1385,13 +1385,13 @@ UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
 	UnsafeArray<UTF8Char> strBuff;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt vCnt = valCnt;
+	UIntOS vCnt = valCnt;
 	Int32 vindex = valIndex;
-	OSInt ssize;
+	IntOS ssize;
 	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
 
-	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
-	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
+	ssize = (IntOS)(vCnt * sizeof(UIntOS) * 3);
+	strBuff = MemAlloc(UTF8Char, (UIntOS)ssize);
 	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)
@@ -1466,13 +1466,13 @@ void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
 	UnsafeArray<UTF8Char> strBuff;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt vCnt = valCnt;
+	UIntOS vCnt = valCnt;
 	Int32 vindex = valIndex;
-	OSInt ssize;
+	IntOS ssize;
 	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
 
-	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
-	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
+	ssize = (IntOS)(vCnt * sizeof(UIntOS) * 3);
+	strBuff = MemAlloc(UTF8Char, (UIntOS)ssize);
 	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)
@@ -1515,7 +1515,7 @@ void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
 	else if (vindex > -ssize)
 	{
 		ssize = ssize + vindex;
-		sb->AppendC(sptr, (UOSInt)ssize);
+		sb->AppendC(sptr, (UIntOS)ssize);
 		sptr += ssize;
 		sb->AppendUTF8Char('.');
 		sb->AppendP(sptr, sptr2);
@@ -1524,7 +1524,7 @@ void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
 	{
 		sb->Append(CSTR("0."));
 		ssize = -vindex - ssize;
-		sb->AppendChar('0', (UOSInt)ssize);
+		sb->AppendChar('0', (UIntOS)ssize);
 		sb->AppendP(sptr, sptr2);
 	}
 	MemFreeArr(strBuff);

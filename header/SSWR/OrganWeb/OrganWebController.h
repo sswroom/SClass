@@ -22,8 +22,8 @@ namespace SSWR
 			NN<SSWR::OrganWeb::OrganWebEnv> env;
 			UInt32 scnSize;
 
-			static UOSInt GetPreviewSize();
-			static UOSInt GetPerPage(Bool isMobile);
+			static UIntOS GetPreviewSize();
+			static UIntOS GetPerPage(Bool isMobile);
 			Optional<Net::WebServer::WebSession> ParseRequestEnv(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<RequestEnv> env, Bool keepSess);
 
 			static void ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType);

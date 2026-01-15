@@ -10,12 +10,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
+SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UIntOS logCnt)
 {
 	this->logCnt = logCnt;
 	this->entries = MemAllocArr(LogEntry, this->logCnt);
 	this->currEnt = 0;
-	UOSInt i = this->logCnt;
+	UIntOS i = this->logCnt;
 	while (i-- > 0)
 	{
 		this->entries[i].reqTime = 0;
@@ -29,7 +29,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 
 SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 {
-	UOSInt i = this->logCnt;
+	UIntOS i = this->logCnt;
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->entries[i].reqURI);
@@ -45,7 +45,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NN<Net::WebServer::WebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NN<Net::WebServer::WebRequest> req)
 	mutUsage.EndUse();
 }
 
-UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
+UIntOS SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 {
 	return this->currEnt;
 }
@@ -86,9 +86,9 @@ void SSWR::AVIRead::AVIRHTTPLog::Use(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->entMut);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayListNative<UOSInt>> logIndex)
+void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayListNative<UIntOS>> logIndex)
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->entries[this->currEnt].reqTime == 0)
 	{
 		i = 0;
@@ -118,7 +118,7 @@ void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs
 	}
 }
 
-NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSInt index)
+NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> SSWR::AVIRead::AVIRHTTPLog::GetEntry(UIntOS index)
 {
 	return this->entries[index];
 }
@@ -132,13 +132,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 	}
 	UInt16 port = 0;
 	Bool valid = true;
-	UOSInt workerCnt;
+	UIntOS workerCnt;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	sb.ClearStr();
 	me->txtWorkerCnt->GetText(sb);
-	if (!sb.ToUOSInt(workerCnt))
+	if (!sb.ToUIntOS(workerCnt))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), CSTR("HTTP Server"), me);
 		return;
@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 		NN<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
 		NN<Net::WebServer::WebListener> svr;
 		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetIntOS(), false));
 		if (svr->IsError())
 		{
 			valid = false;
@@ -318,8 +318,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::WebListener> svr;
@@ -370,7 +370,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	if (i != me->lastAccessIndex)
 	{
 		Data::ArrayListNN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> logs;
-		Data::ArrayListNative<UOSInt> logIndex;
+		Data::ArrayListNative<UIntOS> logIndex;
 		NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage;
@@ -391,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 
-			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
+			me->lbAccess->AddItem(sb.ToCString(), (void*)(IntOS)logIndex.GetItem(i));
 			i++;
 		}
 	}
@@ -405,8 +405,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	me->reqLog->Use(mutUsage);
-	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
-	UOSInt j;
+	UIntOS i = (UIntOS)me->lbAccess->GetSelectedItem().p;
+	UIntOS j;
 	NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 	log = me->reqLog->GetEntry(i);
 	sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
@@ -460,7 +460,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	this->core = core;
 	this->SetText(CSTR("HTTP Server"));
 	this->SetFont(nullptr, 8.25, false);
@@ -497,7 +497,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->lblDocDir = ui->NewLabel(this->grpParam, CSTR("Doc Path"));
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
@@ -522,7 +522,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->lblSSLCert->SetRect(288, 80, 200, 23, false);
 	this->lblWorkerCnt = ui->NewLabel(this->grpParam, CSTR("Worker Count"));
 	this->lblWorkerCnt->SetRect(8, 104, 100, 23, false);
-	sptr = Text::StrUOSInt(sbuff, Sync::ThreadUtil::GetThreadCnt());
+	sptr = Text::StrUIntOS(sbuff, Sync::ThreadUtil::GetThreadCnt());
 	this->txtWorkerCnt = ui->NewTextBox(this->grpParam, CSTRP(sbuff, sptr));
 	this->txtWorkerCnt->SetRect(108, 104, 100, 23, false);
 	this->lblAllowBrowse = ui->NewLabel(this->grpParam, CSTR("Directory Browsing"));
@@ -553,9 +553,9 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->lblKeepAlive->SetRect(8, 272, 100, 23, false);
 	this->cboKeepAlive = ui->NewComboBox(this->grpParam, false);
 	this->cboKeepAlive->SetRect(108, 272, 100, 23, false);
-	this->cboKeepAlive->AddItem(CSTR("Always"), (void*)(OSInt)Net::WebServer::KeepAlive::Always);
-	this->cboKeepAlive->AddItem(CSTR("Default"), (void*)(OSInt)Net::WebServer::KeepAlive::Default);
-	this->cboKeepAlive->AddItem(CSTR("No"), (void*)(OSInt)Net::WebServer::KeepAlive::No);
+	this->cboKeepAlive->AddItem(CSTR("Always"), (void*)(IntOS)Net::WebServer::KeepAlive::Always);
+	this->cboKeepAlive->AddItem(CSTR("Default"), (void*)(IntOS)Net::WebServer::KeepAlive::Default);
+	this->cboKeepAlive->AddItem(CSTR("No"), (void*)(IntOS)Net::WebServer::KeepAlive::No);
 	this->cboKeepAlive->SetSelectedIndex(1);
 	this->lblCrossOrigin = ui->NewLabel(this->grpParam, CSTR("Cross Origin"));
 	this->lblCrossOrigin->SetRect(8, 296, 100, 23, false);

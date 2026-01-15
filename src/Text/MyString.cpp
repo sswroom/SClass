@@ -125,7 +125,7 @@ UTF32Char MyString_StrHexArrU32[] = {
 	'E','0','E','1','E','2','E','3','E','4','E','5','E','6','E','7','E','8','E','9','E','A','E','B','E','C','E','D','E','E','E','F',
 	'F','0','F','1','F','2','F','3','F','4','F','5','F','6','F','7','F','8','F','9','F','A','F','B','F','C','F','D','F','E','F','F'};
 
-UnsafeArray<UTF8Char> Text::StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize)
+UnsafeArray<UTF8Char> Text::StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS buffSize)
 {
 	if (buffSize <= 1)
 	{
@@ -345,7 +345,7 @@ UnsafeArray<UTF8Char> Text::StrInt32(UnsafeArray<UTF8Char> oriStr, Int32 val)
 			str++;
 		}
 	}
-	UOSInt len = (UOSInt)(&buff[10] - str);
+	UIntOS len = (UIntOS)(&buff[10] - str);
 	while (len >= 4)
 	{
 		WriteNUInt32(oriStr, ReadNUInt32(str));
@@ -494,11 +494,11 @@ UnsafeArray<UTF8Char> Text::StrUInt32(UnsafeArray<UTF8Char> oriStr, UInt32 val)
 #endif
 }
 
-UnsafeArray<UTF8Char> Text::StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[20];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	if (val < 0)
 	{
 		val = -val;
@@ -528,11 +528,11 @@ UnsafeArray<UTF8Char> Text::StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, U
 }
 
 
-UnsafeArray<UTF8Char> Text::StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[20];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	str = UnsafeArray<UTF8Char>::FromPtrNoCheck(&buff[20]);
 	if (val == 0)
 		*--str = 0x30;
@@ -1030,11 +1030,11 @@ UnsafeArray<UTF8Char> Text::StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 #endif
 }
 
-UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[40];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	if (val < 0)
 	{
 		val = -val;
@@ -1063,11 +1063,11 @@ UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, U
 	return oriStr;
 }
 
-UnsafeArray<UTF8Char> Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[40];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	str = UnsafeArray<UTF8Char>::FromPtrNoCheck(&buff[40]);
 	if (val == 0)
 		*--str = 0x30;
@@ -1182,11 +1182,11 @@ UnsafeArray<UTF8Char> Text::StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 	return oriStr.Ptr();
 }
 
-UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[40];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	if (val < 0)
 	{
 		val = -val;
@@ -1215,11 +1215,11 @@ UnsafeArray<UTF8Char> Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, U
 	return oriStr.Ptr();
 }
 
-UnsafeArray<UTF8Char> Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
+UnsafeArray<UTF8Char> Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UIntOS sepCnt)
 {
 	UTF8Char buff[40];
 	UnsafeArray<UTF8Char> str;
-	UOSInt i;
+	UIntOS i;
 	str = &buff[40];
 	if (val == 0)
 		*--str = 0x30;
@@ -1247,7 +1247,7 @@ UnsafeArray<UTF8Char> Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val,
 
 UnsafeArray<UTF8Char> Text::StrToUpper(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin)
 {
-	UOSInt c;
+	UIntOS c;
 	while ((c = *strToJoin++) != 0)
 	{
 /*		if (c >= 'a' && c <= 'z')
@@ -1264,7 +1264,7 @@ UnsafeArray<UTF8Char> Text::StrToUpper(UnsafeArray<UTF8Char> oriStr, UnsafeArray
 	return oriStr;
 }
 
-UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt strLen)
+UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS strLen)
 {
 #if _OSINT_SIZE == 64
 	while (strLen >= 8)
@@ -1327,7 +1327,7 @@ UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 
 UnsafeArray<UTF8Char> Text::StrToLower(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin)
 {
-	UOSInt c;
+	UIntOS c;
 	while ((c = *strToJoin++) != 0)
 	{
 		*oriStr++ = MyString_StrLowerArr[c];
@@ -1336,7 +1336,7 @@ UnsafeArray<UTF8Char> Text::StrToLower(UnsafeArray<UTF8Char> oriStr, UnsafeArray
 	return oriStr;
 }
 
-UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt strLen)
+UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UIntOS strLen)
 {
 #if _OSINT_SIZE == 64
 	while (strLen >= 8)
@@ -1461,7 +1461,7 @@ Bool Text::StrEqualsN(UnsafeArrayOpt<const UTF8Char> str1, UnsafeArrayOpt<const 
 
 Bool Text::StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	UOSInt c1;
+	UIntOS c1;
 	while ((c1 = *str1++) != 0)
 	{
 		if (MyString_StrUpperArr[c1] != MyString_StrUpperArr[*str2])
@@ -1473,7 +1473,7 @@ Bool Text::StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UT
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, UnsafeArray<const UTF8Char> str2, UOSInt str2Len)
+Bool Text::StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, UnsafeArray<const UTF8Char> str2, UIntOS str2Len)
 {
 	if (str1Len != str2Len)
 	{
@@ -1516,9 +1516,9 @@ Bool Text::StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, Uns
 	return true;
 }
 
-OSInt Text::StrCompareFastC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+IntOS Text::StrCompareFastC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
-	OSInt defRet;
+	IntOS defRet;
 	if (len1 > len2)
 	{
 		defRet = 1;
@@ -1567,12 +1567,12 @@ OSInt Text::StrCompareFastC(UnsafeArray<const UTF8Char> str1, UOSInt len1, Unsaf
 	return defRet;
 }
 
-UOSInt Text::StrCharCntS(UnsafeArray<const UTF8Char> str, UOSInt maxLen)
+UIntOS Text::StrCharCntS(UnsafeArray<const UTF8Char> str, UIntOS maxLen)
 {
 	UnsafeArray<const UTF8Char> currPtr = str;
 	UnsafeArray<const UTF8Char> endPtr = str + maxLen;
 	while (currPtr < endPtr && *currPtr++);
-	return (UOSInt)(currPtr - str);
+	return (UIntOS)(currPtr - str);
 }
 
 Bool Text::StrHasUpperCase(UnsafeArray<const UTF8Char> str)
@@ -1669,7 +1669,7 @@ UnsafeArray<UTF8Char> Text::StrHexVal64V(UnsafeArray<UTF8Char> oriStr, UInt64 va
 UnsafeArray<UTF8Char> Text::StrHexVal64(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 {
 	UnsafeArray<UTF8Char> tmp = oriStr + 16;
-	OSInt i = 16;
+	IntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
@@ -1762,7 +1762,7 @@ UnsafeArray<UTF8Char> Text::StrHexVal32V(UnsafeArray<UTF8Char> oriStr, UInt32 va
 UnsafeArray<UTF8Char> Text::StrHexVal32(UnsafeArray<UTF8Char> oriStr, UInt32 val)
 {
 	UnsafeArray<UTF8Char> tmp = oriStr + 8;
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
@@ -1806,9 +1806,9 @@ UnsafeArray<UTF8Char> Text::StrHexByte(UnsafeArray<UTF8Char> oriStr, UInt8 val)
 	return oriStr + 2;
 }
 
-UnsafeArray<UTF8Char> Text::StrHexBytes(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator)
+UnsafeArray<UTF8Char> Text::StrHexBytes(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UIntOS buffSize, UTF8Char seperator)
 {
-	UOSInt val;
+	UIntOS val;
 	if (seperator == 0)
 	{
 		while (buffSize-- > 0)
@@ -1916,7 +1916,7 @@ UnsafeArray<UTF8Char> Text::StrHexVal64VLC(UnsafeArray<UTF8Char> oriStr, UInt64 
 UnsafeArray<UTF8Char> Text::StrHexVal64LC(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 {
 	UnsafeArray<UTF8Char> tmp = oriStr + 16;
-	OSInt i = 16;
+	IntOS i = 16;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
@@ -2009,7 +2009,7 @@ UnsafeArray<UTF8Char> Text::StrHexVal32VLC(UnsafeArray<UTF8Char> oriStr, UInt32 
 UnsafeArray<UTF8Char> Text::StrHexVal32LC(UnsafeArray<UTF8Char> oriStr, UInt32 val)
 {
 	UnsafeArray<UTF8Char> tmp = oriStr + 8;
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
@@ -2053,9 +2053,9 @@ UnsafeArray<UTF8Char> Text::StrHexByteLC(UnsafeArray<UTF8Char> oriStr, UInt8 val
 	return oriStr + 2;
 }
 
-UnsafeArray<UTF8Char> Text::StrHexBytesLC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator)
+UnsafeArray<UTF8Char> Text::StrHexBytesLC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UInt8> buff, UIntOS buffSize, UTF8Char seperator)
 {
-	UOSInt val;
+	UIntOS val;
 	if (seperator == 0)
 	{
 		while (buffSize-- > 0)
@@ -2084,7 +2084,7 @@ UnsafeArray<UTF8Char> Text::StrHexBytesLC(UnsafeArray<UTF8Char> oriStr, UnsafeAr
 
 Int64 Text::StrHex2Int64C(UnsafeArray<const UTF8Char> str)
 {
-	OSInt i = 16;
+	IntOS i = 16;
 	Int64 outVal = 0;
 	UTF8Char c;
 	while (i-- > 0)
@@ -2114,7 +2114,7 @@ Int64 Text::StrHex2Int64C(UnsafeArray<const UTF8Char> str)
 
 Bool Text::StrHex2Int64V(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int64 currVal = 0;
 	UTF8Char c;
 	while (true)
@@ -2151,7 +2151,7 @@ Bool Text::StrHex2Int64V(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal
 
 Bool Text::StrHex2Int64S(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal, Int64 failVal)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int64 currVal = 0;
 	UTF8Char c;
 	while (true)
@@ -2190,7 +2190,7 @@ Bool Text::StrHex2Int64S(UnsafeArray<const UTF8Char> str, OutParam<Int64> outVal
 
 Int32 Text::StrHex2Int32C(UnsafeArray<const UTF8Char> str)
 {
-	OSInt i = 8;
+	IntOS i = 8;
 	Int32 outVal = 0;
 	UTF8Char c;
 	while (i-- > 0)
@@ -2220,7 +2220,7 @@ Int32 Text::StrHex2Int32C(UnsafeArray<const UTF8Char> str)
 
 Bool Text::StrHex2Int32V(UnsafeArray<const UTF8Char> str, OutParam<Int32> outVal)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int32 currVal = 0;
 	UTF8Char c;
 	if (*str == 0)
@@ -2259,7 +2259,7 @@ Bool Text::StrHex2Int32V(UnsafeArray<const UTF8Char> str, OutParam<Int32> outVal
 
 Int16 Text::StrHex2Int16C(UnsafeArray<const UTF8Char> str)
 {
-	UOSInt i = 4;
+	UIntOS i = 4;
 	Int32 outVal = 0;
 	UTF8Char c;
 	while (i-- > 0)
@@ -2289,7 +2289,7 @@ Int16 Text::StrHex2Int16C(UnsafeArray<const UTF8Char> str)
 
 Bool Text::StrHex2Int16V(UnsafeArray<const UTF8Char> str, OutParam<Int16> outVal)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int16 currVal = 0;
 	UTF8Char c;
 	while (true)
@@ -2369,14 +2369,14 @@ UInt8 Text::StrHex2UInt8C(UnsafeArray<const UTF8Char> str)
 	return outVal;
 }
 
-UOSInt Text::StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff)
+UIntOS Text::StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff)
 {
 	return StrHex2BytesS(str, buff, ' ');
 }
 
-UOSInt Text::StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator)
+UIntOS Text::StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator)
 {
-	UOSInt outVal = 0;
+	UIntOS outVal = 0;
 	UInt8 tmpVal;
 	UTF8Char c;
 	while (true)
@@ -2456,9 +2456,9 @@ Int64 Text::StrOct2Int64(UnsafeArray<const UTF8Char> str)
 	return outVal;
 }
 
-UOSInt Text::StrSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit, UTF8Char splitChar)
+UIntOS Text::StrSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 1;
+	UIntOS i = 1;
 	UTF8Char c;
 	strs[0] = strToSplit;
 	while ((c = *strToSplit++) != 0)
@@ -2476,9 +2476,9 @@ UOSInt Text::StrSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, U
 	return i;
 }
 
-UOSInt Text::StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit, UTF8Char splitChar)
+UIntOS Text::StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
 	UnsafeArray<UTF8Char> lastPtr;
 	UnsafeArray<UTF8Char> thisPtr;
@@ -2523,9 +2523,9 @@ UOSInt Text::StrSplitTrim(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStr
 	return i;
 }
 
-UOSInt Text::StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit)
+UIntOS Text::StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
 	strs[i++] = strToSplit;
 	while (i < maxStrs)
@@ -2555,9 +2555,9 @@ UOSInt Text::StrSplitLine(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStr
 	return i;
 }
 
-UOSInt Text::StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit)
+UIntOS Text::StrSplitWS(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char c;
 	while (true)
 	{
@@ -2939,7 +2939,7 @@ Bool Text::StrToUInt64S(UnsafeArray<const UTF8Char> intStr, OutParam<UInt64> out
 	return true;
 }
 
-OSInt Text::StrToOSInt(UnsafeArray<const UTF8Char> str)
+IntOS Text::StrToIntOS(UnsafeArray<const UTF8Char> str)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64(str);
@@ -2950,7 +2950,7 @@ OSInt Text::StrToOSInt(UnsafeArray<const UTF8Char> str)
 #endif
 }
 
-Bool Text::StrToOSInt(UnsafeArray<const UTF8Char> intStr, OutParam<OSInt> outVal)
+Bool Text::StrToIntOS(UnsafeArray<const UTF8Char> intStr, OutParam<IntOS> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64(intStr, outVal);
@@ -2962,7 +2962,7 @@ Bool Text::StrToOSInt(UnsafeArray<const UTF8Char> intStr, OutParam<OSInt> outVal
 }
 
 
-UOSInt Text::StrToUOSInt(UnsafeArray<const UTF8Char> str)
+UIntOS Text::StrToUIntOS(UnsafeArray<const UTF8Char> str)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64(str);
@@ -2973,7 +2973,7 @@ UOSInt Text::StrToUOSInt(UnsafeArray<const UTF8Char> str)
 #endif
 }
 
-Bool Text::StrToUOSInt(UnsafeArray<const UTF8Char> intStr, OutParam<UOSInt> outVal)
+Bool Text::StrToUIntOS(UnsafeArray<const UTF8Char> intStr, OutParam<UIntOS> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64(intStr, outVal);
@@ -3005,7 +3005,7 @@ Bool Text::StrToBool(UnsafeArrayOpt<const UTF8Char> str)
 	}
 }
 
-UOSInt Text::StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
+UIntOS Text::StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	UnsafeArray<const UTF8Char> ptr = str1;
 	UnsafeArray<const UTF8Char> ptr2;
@@ -3019,7 +3019,7 @@ UOSInt Text::StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8
 		{
 			if ((c = *ptr3) == 0)
 			{
-				return (UOSInt)(ptr - str1);
+				return (UIntOS)(ptr - str1);
 			}
 			else if (*ptr2++ != c)
 			{
@@ -3032,19 +3032,19 @@ UOSInt Text::StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
+UIntOS Text::StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 {
 	REGVAR UnsafeArray<const UTF8Char> ptr = str1;
 	REGVAR UTF8Char c2;
 	while ((c2 = *ptr) != 0)
 		if (c2 == c)
-			return (UOSInt)(ptr - str1);
+			return (UIntOS)(ptr - str1);
 		else
 			ptr++;
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c)
+UIntOS Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c)
 {
 	REGVAR UnsafeArray<const UTF8Char> ptr = str1;
 	REGVAR UInt16 c2;
@@ -3052,13 +3052,13 @@ UOSInt Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8
 	while (len1 >= 4)
 	{
 		if (ptr[0] == c)
-			return (UOSInt)(ptr - str1);
+			return (UIntOS)(ptr - str1);
 		if (ptr[1] == c)
-			return (UOSInt)(ptr - str1 + 1);
+			return (UIntOS)(ptr - str1 + 1);
 		if (ptr[2] == c)
-			return (UOSInt)(ptr - str1 + 2);
+			return (UIntOS)(ptr - str1 + 2);
 		if (ptr[3] == c)
-			return (UOSInt)(ptr - str1 + 3);
+			return (UIntOS)(ptr - str1 + 3);
 		ptr += 4;
 		len1 -= 4;
 	}
@@ -3066,20 +3066,20 @@ UOSInt Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8
 	{
 		c2 = ReadUInt16(&ptr[0]);
 		if ((UTF8Char)(c2 & 0xff) == c)
-			return (UOSInt)(ptr - str1);
+			return (UIntOS)(ptr - str1);
 		if ((UTF8Char)(c2 >> 8) == c)
-			return (UOSInt)(ptr - str1 + 1);
+			return (UIntOS)(ptr - str1 + 1);
 		ptr += 2;
 		len1 -= 2;
 	}
 	if (len1 && (*ptr == c))
 	{
-		return (UOSInt)(ptr - str1);
+		return (UIntOS)(ptr - str1);
 	}
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+UIntOS Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 < len2)
 	{
@@ -3105,7 +3105,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 		while (len1-- > 0)
 		{
 			if (*ptr == v1)
-				return (UOSInt)(ptr - str1);
+				return (UIntOS)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
@@ -3114,7 +3114,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 		while (len1-- > 1)
 		{
 			if (ReadNUInt16(&ptr[0]) == v2)
-				return (UOSInt)(ptr - str1);
+				return (UIntOS)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
@@ -3124,7 +3124,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 		while (len1-- > 2)
 		{
 			if (ReadNUInt16(&ptr[0]) == v2 && ptr[2] == v1)
-				return (UOSInt)(ptr - str1);
+				return (UIntOS)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
@@ -3133,7 +3133,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 		while (len1-- > 3)
 		{
 			if (ReadNUInt32(&ptr[0]) == v3)
-				return (UOSInt)(ptr - str1);
+				return (UIntOS)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
@@ -3146,7 +3146,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 			{
 				if ((c = *ptr3) == 0)
 				{
-					return (UOSInt)(ptr - str1);
+					return (UIntOS)(ptr - str1);
 				}
 				else if (*ptr2++ != c)
 				{
@@ -3160,7 +3160,7 @@ UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeAr
 	}
 }
 
-UOSInt Text::StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
+UIntOS Text::StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	UnsafeArray<const UTF8Char> ptr = str1;
 	UnsafeArray<const UTF8Char> ptr2;
@@ -3191,13 +3191,13 @@ UOSInt Text::StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const
 			}
 		}
 		if (i == 0)
-			return (UOSInt)(ptr - str1);
+			return (UIntOS)(ptr - str1);
 		ptr++;
 	}
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
+UIntOS Text::StrLastIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 {
 	UnsafeArray<const UTF8Char> sptr;
 	UnsafeArray<const UTF8Char> cpos = str1 - 1;
@@ -3208,10 +3208,10 @@ UOSInt Text::StrLastIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 		if (ch == c)
 			cpos = sptr - 1;
 	}
-	return (UOSInt)(cpos - str1);
+	return (UIntOS)(cpos - str1);
 }
 
-UOSInt Text::StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c)
+UIntOS Text::StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c)
 {
 	while (len1 >= 4)
 	{
@@ -3243,7 +3243,7 @@ UOSInt Text::StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, 
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c)
+UIntOS Text::StrLastIndexOfC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8Char c)
 {
 	while (len1-- > 0)
 	{
@@ -3253,10 +3253,10 @@ UOSInt Text::StrLastIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
+UIntOS Text::StrLastIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	UOSInt leng1 = Text::StrCharCnt(str1);
-	UOSInt leng2 = Text::StrCharCnt(str2);
+	UIntOS leng1 = Text::StrCharCnt(str1);
+	UIntOS leng2 = Text::StrCharCnt(str2);
 	if (leng2 > leng1)
 		return INVALID_INDEX;
 	UnsafeArray<const UTF8Char> ptr = str1 + (leng1 - leng2);
@@ -3278,7 +3278,7 @@ UOSInt Text::StrLastIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const 
 		}
 		if (!found)
 		{
-			return (UOSInt)(ptr - str1);
+			return (UIntOS)(ptr - str1);
 		}
 		ptr--;
 	}
@@ -3367,9 +3367,9 @@ UnsafeArray<UTF8Char> Text::StrTrim(UnsafeArray<UTF8Char> str1)
 	}
 }
 
-UnsafeArray<UTF8Char> Text::StrTrimC(UnsafeArray<UTF8Char> str1, UOSInt len)
+UnsafeArray<UTF8Char> Text::StrTrimC(UnsafeArray<UTF8Char> str1, UIntOS len)
 {
-	len = (UOSInt)(StrRTrimC(str1, len) - str1);
+	len = (UIntOS)(StrRTrimC(str1, len) - str1);
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	if (str1[0] == ' ' || str1[0] == '\t')
@@ -3377,7 +3377,7 @@ UnsafeArray<UTF8Char> Text::StrTrimC(UnsafeArray<UTF8Char> str1, UOSInt len)
 		sptr = str1 + 1;
 		while ((c = *sptr) == ' ' || c == '\t')
 			sptr++;
-		len -= (UOSInt)(sptr - str1);
+		len -= (UIntOS)(sptr - str1);
 		MemCopyO(str1.Ptr(), sptr.Ptr(), len + 1);
 	}
 	return str1 + len;
@@ -3412,7 +3412,7 @@ UnsafeArray<UTF8Char> Text::StrTrimWSCRLF(UnsafeArray<UTF8Char> str1)
 	}
 }
 
-UnsafeArray<UTF8Char> Text::StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UOSInt len1)
+UnsafeArray<UTF8Char> Text::StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UIntOS len1)
 {
 	while (len1 > 0 && (str1[len1 - 1] == ' ' || str1[len1 - 1] == '\t' || str1[len1 - 1] == '\r' || str1[len1 - 1] == '\n'))
 	{
@@ -3425,7 +3425,7 @@ UnsafeArray<UTF8Char> Text::StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UOSInt le
 		sptr = str1 + 1;
 		while ((c = *sptr) == ' ' || c == '\t' || c == '\r' || c == '\n')
 			sptr++;
-		len1 -= (UOSInt)(sptr - str1);
+		len1 -= (UIntOS)(sptr - str1);
 		MemCopyO(str1.Ptr(), sptr.Ptr(), len1 + 1);
 	}
 	return str1 + len1;
@@ -3444,7 +3444,7 @@ UnsafeArray<UTF8Char> Text::StrRemoveChar(UnsafeArray<UTF8Char> str1, UTF8Char c
 
 UnsafeArray<const UTF8Char> Text::StrCopyNew(UnsafeArray<const UTF8Char> str1)
 {
-	UOSInt len = Text::StrCharCnt(str1);
+	UIntOS len = Text::StrCharCnt(str1);
 	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, len + 1);
 	Text::StrConcatC(s, str1, len);
 	return s;
@@ -3458,7 +3458,7 @@ UnsafeArrayOpt<const UTF8Char> Text::StrSCopyNew(UnsafeArrayOpt<const UTF8Char> 
 	return nullptr;
 }
 
-UnsafeArray<const UTF8Char> Text::StrCopyNewC(UnsafeArray<const UTF8Char> str1, UOSInt strLen)
+UnsafeArray<const UTF8Char> Text::StrCopyNewC(UnsafeArray<const UTF8Char> str1, UIntOS strLen)
 {
 	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);
@@ -3512,7 +3512,7 @@ Bool Text::StrStartsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<cons
 	return true;
 }
 
-Bool Text::StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+Bool Text::StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 < len2)
 	{
@@ -3577,7 +3577,7 @@ Bool Text::StrEndsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8C
 	return true;
 }
 
-Bool Text::StrEndsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+Bool Text::StrEndsWithC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 < len2)
 	{
@@ -3641,7 +3641,7 @@ Bool Text::StrEndsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const 
 	return true;
 }
 
-Bool Text::StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
+Bool Text::StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	if (len1 < len2)
 	{
@@ -3685,10 +3685,10 @@ Bool Text::StrIsInt32(UnsafeArray<const UTF8Char> intStr)
 	return true;
 }
 
-UOSInt Text::StrReplace(UnsafeArray<UTF8Char> str1, UTF8Char oriC, UTF8Char destC)
+UIntOS Text::StrReplace(UnsafeArray<UTF8Char> str1, UTF8Char oriC, UTF8Char destC)
 {
 	UTF8Char c;
-	UOSInt chrCnt = 0;
+	UIntOS chrCnt = 0;
 	while ((c = *str1++) != 0)
 	{
 		if (c == oriC)
@@ -3700,12 +3700,12 @@ UOSInt Text::StrReplace(UnsafeArray<UTF8Char> str1, UTF8Char oriC, UTF8Char dest
 	return chrCnt;
 }
 
-UOSInt Text::StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo)
+UIntOS Text::StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo)
 {
-	UOSInt cnt;
-	UOSInt fromCharCnt;
-	UOSInt toCharCnt;
-	UOSInt charCnt;
+	UIntOS cnt;
+	UIntOS fromCharCnt;
+	UIntOS toCharCnt;
+	UIntOS charCnt;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> strEnd;
 	charCnt = Text::StrCharCnt(UnsafeArray<const UTF8Char>(str1));
@@ -3719,11 +3719,11 @@ UOSInt Text::StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> 
 	sptr -= fromCharCnt;
 	while (sptr >= str1)
 	{
-		if (Text::StrStartsWithC(sptr, (UOSInt)(strEnd - sptr), replaceFrom, fromCharCnt))
+		if (Text::StrStartsWithC(sptr, (UIntOS)(strEnd - sptr), replaceFrom, fromCharCnt))
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF8Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UIntOS)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF8Char));
 				strEnd = strEnd + toCharCnt - fromCharCnt;
 			}
 			MemCopyNO(sptr.Ptr(), replaceTo.Ptr(), toCharCnt * sizeof(UTF8Char));
@@ -3739,10 +3739,10 @@ UOSInt Text::StrReplace(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> 
 	return cnt;
 }
 
-UnsafeArray<UTF8Char> Text::StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<UTF8Char> strEnd, UnsafeArray<const UTF8Char> replaceFrom, UOSInt replaceFromLen, UnsafeArray<const UTF8Char> replaceTo, UOSInt replaceToLen)
+UnsafeArray<UTF8Char> Text::StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<UTF8Char> strEnd, UnsafeArray<const UTF8Char> replaceFrom, UIntOS replaceFromLen, UnsafeArray<const UTF8Char> replaceTo, UIntOS replaceToLen)
 {
-//	UOSInt cnt;
-	UOSInt charLen = (UOSInt)(strEnd - str1);
+//	UIntOS cnt;
+	UIntOS charLen = (UIntOS)(strEnd - str1);
 	UnsafeArray<UTF8Char> sptr;
 	sptr = strEnd;
 	if (replaceFromLen == 0)
@@ -3752,11 +3752,11 @@ UnsafeArray<UTF8Char> Text::StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<
 	sptr -= replaceFromLen;
 	while (sptr >= str1)
 	{
-		if (Text::StrStartsWithC(sptr, (UOSInt)(strEnd - sptr), replaceFrom, replaceFromLen))
+		if (Text::StrStartsWithC(sptr, (UIntOS)(strEnd - sptr), replaceFrom, replaceFromLen))
 		{
 			if (replaceFromLen != replaceToLen)
 			{
-				MemCopyO(&sptr[replaceToLen], &sptr[replaceFromLen], (charLen - (UOSInt)(sptr - str1) - replaceFromLen + 1) * sizeof(UTF8Char));
+				MemCopyO(&sptr[replaceToLen], &sptr[replaceFromLen], (charLen - (UIntOS)(sptr - str1) - replaceFromLen + 1) * sizeof(UTF8Char));
 				strEnd = strEnd + replaceToLen - replaceFromLen;
 			}
 			MemCopyNO(sptr.Ptr(), replaceTo.Ptr(), replaceToLen * sizeof(UTF8Char));
@@ -3772,12 +3772,12 @@ UnsafeArray<UTF8Char> Text::StrReplaceC(UnsafeArray<UTF8Char> str1, UnsafeArray<
 	return strEnd;
 }
 
-UOSInt Text::StrReplaceICase(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo)
+UIntOS Text::StrReplaceICase(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8Char> replaceFrom, UnsafeArray<const UTF8Char> replaceTo)
 {
-	UOSInt cnt;
-	UOSInt fromCharCnt;
-	UOSInt toCharCnt;
-	UOSInt charCnt;
+	UIntOS cnt;
+	UIntOS fromCharCnt;
+	UIntOS toCharCnt;
+	UIntOS charCnt;
 	UnsafeArray<UTF8Char> sptr;
 	charCnt = Text::StrCharCnt(UnsafeArray<const UTF8Char>(str1));
 	sptr = str1 + charCnt;
@@ -3793,7 +3793,7 @@ UOSInt Text::StrReplaceICase(UnsafeArray<UTF8Char> str1, UnsafeArray<const UTF8C
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UIntOS)(sptr - str1) - fromCharCnt + 1) * sizeof(Char));
 			}
 			MemCopyNO(sptr.Ptr(), replaceTo.Ptr(), toCharCnt * sizeof(Char));
 			sptr -= fromCharCnt;
@@ -3831,7 +3831,7 @@ UnsafeArray<UTF8Char> Text::StrToCSVRec(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 
 UnsafeArray<const UTF8Char> Text::StrToNewCSVRec(UnsafeArray<const UTF8Char> str1)
 {
-	UOSInt len = 2;
+	UIntOS len = 2;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> sptr = str1;
 	UnsafeArray<UTF8Char> sptr2;
@@ -3867,11 +3867,11 @@ UnsafeArray<const UTF8Char> Text::StrToNewCSVRec(UnsafeArray<const UTF8Char> str
 	return outPtr;
 }
 
-UOSInt Text::StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit)
+UIntOS Text::StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit)
 {
 	Bool quoted = false;
 	Bool first = true;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UnsafeArray<UTF8Char> strCurr;
 	UTF8Char c;
 	strs[i++] = strCurr = strToSplit;
@@ -3922,9 +3922,9 @@ UOSInt Text::StrCSVSplit(UnsafeArray<UnsafeArray<UTF8Char>> strs, UOSInt maxStrs
 	return i;
 }
 
-UnsafeArray<UTF8Char> Text::StrCSVJoin(UnsafeArray<UTF8Char> oriStr, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs, UOSInt nStrs)
+UnsafeArray<UTF8Char> Text::StrCSVJoin(UnsafeArray<UTF8Char> oriStr, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs, UIntOS nStrs)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UnsafeArray<const UTF8Char> sptr;
 	UTF8Char c;
 	while (i < nStrs)
@@ -3950,9 +3950,9 @@ UnsafeArray<UTF8Char> Text::StrCSVJoin(UnsafeArray<UTF8Char> oriStr, UnsafeArray
 	return oriStr;
 }
 
-UOSInt Text::StrCountChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
+UIntOS Text::StrCountChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UTF8Char c2;
 	while ((c2 = *str1++) != 0)
 		if (c2 == c)
@@ -3960,16 +3960,16 @@ UOSInt Text::StrCountChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 	return cnt;
 }
 
-UOSInt Text::StrCountStr(UnsafeArray<const UTF8Char> str1, UOSInt strLen1, UnsafeArray<const UTF8Char> str2, UOSInt strLen2)
+UIntOS Text::StrCountStr(UnsafeArray<const UTF8Char> str1, UIntOS strLen1, UnsafeArray<const UTF8Char> str2, UIntOS strLen2)
 {
 	if (strLen1 < strLen2)
 	{
 		return 0;
 	}
-	UOSInt i = 0;
+	UIntOS i = 0;
 	if (strLen2 == 1)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		while (i < strLen1)
 		{
 			if (str1[i++] == *str2)
@@ -3979,7 +3979,7 @@ UOSInt Text::StrCountStr(UnsafeArray<const UTF8Char> str1, UOSInt strLen1, Unsaf
 	}
 	else if (strLen2 == 2)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		UInt16 val = ReadNUInt16(&str2[0]);
 		while (i < strLen1 - 1)
 		{
@@ -3993,8 +3993,8 @@ UOSInt Text::StrCountStr(UnsafeArray<const UTF8Char> str1, UOSInt strLen1, Unsaf
 	}
 	else
 	{
-		UOSInt cnt = 0;
-		UOSInt j;
+		UIntOS cnt = 0;
+		UIntOS j;
 		while ((j = Text::StrIndexOfC(str1 + i, strLen1 - i, str2, strLen2)) != INVALID_INDEX)
 		{
 			cnt++;
@@ -4073,13 +4073,13 @@ UnsafeArray<UTF8Char> Text::StrRemoveANSIEscapes(UnsafeArray<UTF8Char> str1)
 
 UnsafeArray<const Char> Text::StrCopyNewCh(UnsafeArray<const Char> str1)
 {
-	UOSInt len = Text::StrCharCntCh(str1);
+	UIntOS len = Text::StrCharCntCh(str1);
 	UnsafeArray<Char> s = MemAllocArr(Char, len + 1);
 	Text::StrConcatC(s, str1, len);
 	return s;
 }
 
-UnsafeArray<const Char> Text::StrCopyNewChC(UnsafeArray<const Char> str1, UOSInt strLen)
+UnsafeArray<const Char> Text::StrCopyNewChC(UnsafeArray<const Char> str1, UIntOS strLen)
 {
 	UnsafeArray<Char> s = MemAllocArr(Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);

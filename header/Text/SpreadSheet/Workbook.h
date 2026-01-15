@@ -24,7 +24,7 @@ namespace Text
 			Int32 windowTopY;
 			Int32 windowWidth;
 			Int32 windowHeight;
-			UOSInt activeSheet;
+			UIntOS activeSheet;
 			UInt32 palette[56];
 
 			Data::ArrayListNN<Worksheet> sheets;
@@ -62,20 +62,20 @@ namespace Text
 			void SetWindowTopY(Int32 windowTopY);
 			void SetWindowWidth(Int32 windowWidth);
 			void SetWindowHeight(Int32 windowHeight);
-			void SetActiveSheet(UOSInt index);
+			void SetActiveSheet(UIntOS index);
 			Int32 GetWindowTopX();
 			Int32 GetWindowTopY();
 			Int32 GetWindowWidth();
 			Int32 GetWindowHeight();
-			UOSInt GetActiveSheet();
+			UIntOS GetActiveSheet();
 			Bool HasWindowInfo();
 
 			Bool HasCellStyle();
 			NN<CellStyle> NewCellStyle();
 			NN<CellStyle> NewCellStyle(Optional<WorkbookFont> font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
-			UOSInt GetStyleCount() const;
-			virtual OSInt GetStyleIndex(NN<CellStyle> style) const;
-			virtual Optional<CellStyle> GetStyle(UOSInt index) const;
+			UIntOS GetStyleCount() const;
+			virtual IntOS GetStyleIndex(NN<CellStyle> style) const;
+			virtual Optional<CellStyle> GetStyle(UIntOS index) const;
 			virtual NN<CellStyle> FindOrCreateStyle(NN<const CellStyle> tmpStyle);
 			Data::ArrayIterator<NN<CellStyle>> StyleIterator() const;
 			Optional<CellStyle> GetDefaultStyle();
@@ -85,21 +85,21 @@ namespace Text
 			NN<Worksheet> AddWorksheet();
 			NN<Worksheet> AddWorksheet(NN<Text::String> name);
 			NN<Worksheet> AddWorksheet(Text::CStringNN name);
-			NN<Worksheet> InsertWorksheet(UOSInt index, Text::CStringNN name);
-			UOSInt GetCount() const;
-			Optional<Worksheet> GetItem(UOSInt index) const;
+			NN<Worksheet> InsertWorksheet(UIntOS index, Text::CStringNN name);
+			UIntOS GetCount() const;
+			Optional<Worksheet> GetItem(UIntOS index) const;
 			Data::ArrayIterator<NN<Worksheet>> Iterator() const;
-			void RemoveAt(UOSInt index);
+			void RemoveAt(UIntOS index);
 			Optional<Worksheet> GetWorksheetByName(Text::CStringNN name);
 
-			UOSInt GetFontCount() const;
-			NN<WorkbookFont> GetFontNoCheckc(UOSInt index) const;
-			Optional<WorkbookFont> GetFont(UOSInt index) const;
-			UOSInt GetFontIndex(NN<WorkbookFont> font);
+			UIntOS GetFontCount() const;
+			NN<WorkbookFont> GetFontNoCheckc(UIntOS index) const;
+			Optional<WorkbookFont> GetFont(UIntOS index) const;
+			UIntOS GetFontIndex(NN<WorkbookFont> font);
 			NN<WorkbookFont> NewFont(Text::CString name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);
-			static UnsafeArray<UTF8Char> ColCode(UnsafeArray<UTF8Char> sbuff, UOSInt col);
+			static UnsafeArray<UTF8Char> ColCode(UnsafeArray<UTF8Char> sbuff, UIntOS col);
 		};
 	}
 }

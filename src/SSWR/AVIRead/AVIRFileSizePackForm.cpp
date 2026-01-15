@@ -33,7 +33,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize() const
 	return this->fileSize;
 }
 
-OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(NN<Data::Comparable> obj) const
+IntOS SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(NN<Data::Comparable> obj) const
 {
 	UInt64 size = NN<MyFile>::ConvertFrom(obj)->fileSize;
 	if (this->fileSize > size)
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 		if (sptr2 != sptr)
 		{
 			NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
-			UOSInt i;
+			UIntOS i;
 			IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 			sptr = sptr2;
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -121,8 +121,8 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UnsafeArray<UTF8Char> sptr2;
 	NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
 	NN<IO::Path::FindFileSession> sess;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	this->cboMaxSize->GetText(sb);
@@ -176,9 +176,9 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		}
 		IO::Path::FindFileClose(sess);
 
-		UOSInt arrSize;
+		UIntOS arrSize;
 		UnsafeArray<NN<Data::Comparable>> arr = (NN<Data::Comparable>*)this->fileList.GetArr(arrSize).Ptr();
-		Data::Sort::ArtificialQuickSort::SortCmpO(arr, 0, (OSInt)arrSize - 1);
+		Data::Sort::ArtificialQuickSort::SortCmpO(arr, 0, (IntOS)arrSize - 1);
 		i = 0;
 		while (i < arrSize)
 		{
@@ -244,10 +244,10 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile>> fileList, NN<Data::ArrayListNN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile>> packList, UInt64 maxSize, UInt64 minSize)
 {
 	UInt64 currMaxSize = 0;
-	UOSInt leng = fileList->GetCount();
+	UIntOS leng = fileList->GetCount();
 	UInt32 *list = MemAlloc(UInt32, leng);
-	UOSInt listCount = 0;
-	UOSInt j;
+	UIntOS listCount = 0;
+	UIntOS j;
 	UInt64 currSize = 0;
 	NN<MyFile> currItem;
     list[0] = 0;

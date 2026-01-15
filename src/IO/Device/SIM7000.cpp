@@ -6,11 +6,11 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	UTF8Char sbuff[256];
 	Text::PString sarr[4];
-	UOSInt i;
+	UIntOS i;
 	NN<IO::Device::SIM7000> me = userObj.GetNN<IO::Device::SIM7000>();
 	if (me->nextReceive)
 	{
@@ -95,7 +95,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, UnsafeArray<
 	}
 	if (cmd[0] >= '0' && cmd[0] <= '7' && cmd[1] == ',' && cmd[2] == ' ')
 	{
-		i = (UOSInt)cmd[0] - 48;
+		i = (UIntOS)cmd[0] - 48;
 		if (Text::StrEqualsC(&cmd[3], cmdLen - 3, UTF8STRC("CONNECT OK")))
 		{
 			if (i == me->connInd)
@@ -156,7 +156,7 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
-	UOSInt i = this->cmdResults.GetCount();
+	UIntOS i = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	if (i > 1 && this->cmdResults.GetItem(i - 1).SetTo(val))
 	{
@@ -182,7 +182,7 @@ Bool IO::Device::SIM7000::SIMCOMReadADC(OutParam<Int32> adc)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CADC: ")))
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CADC: ")))
 	{
 		if (sbuff[7] == '1')
 		{
@@ -216,14 +216,14 @@ UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::SIMCOMGetNetworkAPN(UnsafeArray<UT
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CGNAPN"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CGNAPN: ")))
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CGNAPN"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CGNAPN: ")))
 	{
 		if (sbuff[9] == '1')
 		{
 			if (sbuff[11] == '"')
 			{
 				sptr = &sbuff[12];
-				UOSInt i = Text::StrCharCnt(sptr);
+				UIntOS i = Text::StrCharCnt(sptr);
 				if (sptr[i - 1] == '"')
 				{
 					sptr[i - 1] = 0;					
@@ -251,11 +251,11 @@ Bool IO::Device::SIM7000::NetSetMultiIP(Bool multiIP)
 	}
 }
 
-Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000::NetIPStartTCP(UIntOS index, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
-	sptr = Text::StrUOSInt(sptr, index);
+	sptr = Text::StrUIntOS(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\",\""));
 	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\","));
@@ -263,7 +263,7 @@ Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 	this->connInd = index;
 	this->connResult = 0;
 	this->respEvt.Clear();
-	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
+	if (this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff)))
 	{
 		this->respEvt.Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
@@ -278,11 +278,11 @@ Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 	}	
 }
 
-Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000::NetIPStartUDP(UIntOS index, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
-	sptr = Text::StrUOSInt(sptr, index);
+	sptr = Text::StrUIntOS(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\",\""));
 	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\","));
@@ -290,7 +290,7 @@ Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 	this->connInd = index;
 	this->connResult = 0;
 	this->respEvt.Clear();
-	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
+	if (this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff)))
 	{
 		this->respEvt.Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
@@ -305,7 +305,7 @@ Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 	}	
 }
 
-Bool IO::Device::SIM7000::NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Bool IO::Device::SIM7000::NetIPSend(UIntOS index, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
@@ -313,9 +313,9 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff,
 	if (!this->channel->UseCmd(mutUsage))
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
-	sb.AppendUOSInt(index);
+	sb.AppendUIntOS(index);
 	sb.AppendUTF8Char(',');
-	sb.AppendUOSInt(buffSize);
+	sb.AppendUIntOS(buffSize);
 	sb.AppendUTF8Char('\r');
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Sync::SimpleThread::Sleep(1000);
@@ -337,36 +337,36 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff,
 	return ret;
 }
 
-Bool IO::Device::SIM7000::NetCloseSocket(UOSInt index)
+Bool IO::Device::SIM7000::NetCloseSocket(UIntOS index)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPCLOSE="));
-	sptr = Text::StrUOSInt(sptr, index);
-	if (!this->SendStringCommandDirect(sbuff, sbuff, (UOSInt)(sptr - sbuff), 1000).SetTo(sptr))
+	sptr = Text::StrUIntOS(sptr, index);
+	if (!this->SendStringCommandDirect(sbuff, sbuff, (UIntOS)(sptr - sbuff), 1000).SetTo(sptr))
 	{
 		return false;
 	}
-	return Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OK"));
+	return Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("OK"));
 }
 
-Bool IO::Device::SIM7000::NetSetLocalPortTCP(UOSInt index, UInt16 port)
+Bool IO::Device::SIM7000::NetSetLocalPortTCP(UIntOS index, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
-	sptr = Text::StrUOSInt(sptr, index);
+	sptr = Text::StrUIntOS(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\","));
 	sptr = Text::StrUInt16(sptr, port);
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
-Bool IO::Device::SIM7000::NetSetLocalPortUDP(UOSInt index, UInt16 port)
+Bool IO::Device::SIM7000::NetSetLocalPortUDP(UIntOS index, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
-	sptr = Text::StrUOSInt(sptr, index);
+	sptr = Text::StrUIntOS(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\","));
 	sptr = Text::StrUInt16(sptr, port);
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::Device::SIM7000::NetSetAPN(Text::CStringNN apn)
@@ -376,7 +376,7 @@ Bool IO::Device::SIM7000::NetSetAPN(Text::CStringNN apn)
 	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::Device::SIM7000::NetDataStart()
@@ -394,9 +394,9 @@ Bool IO::Device::SIM7000::NetGetDNSList(NN<Data::ArrayListNative<UInt32>> dnsLis
 	Data::ArrayListStringNN resList;
 	if (this->SendStringCommand(resList, UTF8STRC("AT+CDNSCFG?"), 3000))
 	{
-		UOSInt i = 0;
-		UOSInt j = resList.GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = resList.GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			NN<Text::String> s;
@@ -436,7 +436,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CStringNN domain, NN<Net::Socket
 	this->dnsResp = addr.Ptr();
 	this->respEvt.Clear();
 	mutUsage.EndUse();
-	if (!this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000))
+	if (!this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff), 3000))
 	{
 		return false;
 	}
@@ -505,11 +505,11 @@ Bool IO::Device::SIM7000::NetPing(UnsafeArray<const UTF8Char> addr, OutParam<UIn
 	sptr = Text::StrConcatC(sptr, UTF8STRC("AT+CIPPING=\""));
 	sptr = Text::StrConcat(sptr, addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",1"));
-	if (!this->SendStringCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff), 10000).SetTo(sptr))
+	if (!this->SendStringCommand(sbuff, sbuff, (UIntOS)(sptr - sbuff), 10000).SetTo(sptr))
 	{
 		return false;
 	}
-	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CIPPING: ")))
+	if (!Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CIPPING: ")))
 	{
 		return false;
 	}

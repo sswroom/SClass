@@ -59,8 +59,8 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		{
 			IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
@@ -221,8 +221,8 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
 		line[0] = 0;
@@ -271,9 +271,9 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 		Text::UTF8Reader reader(fs);
 		sptr = reader.ReadLine(sbuff, 512);
 
-		if (sptr.SetTo(nnsptr) && Text::StrStartsWithC(sbuff, (UOSInt)(nnsptr - sbuff), UTF8STRC("mLinux ")))
+		if (sptr.SetTo(nnsptr) && Text::StrStartsWithC(sbuff, (UIntOS)(nnsptr - sbuff), UTF8STRC("mLinux ")))
 		{
-			return Text::StrConcatC(sbuff, &sbuff[7], (UOSInt)(nnsptr - &sbuff[7]));
+			return Text::StrConcatC(sbuff, &sbuff[7], (UIntOS)(nnsptr - &sbuff[7]));
 		}
 	}
 	return nullptr;

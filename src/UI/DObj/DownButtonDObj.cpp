@@ -3,7 +3,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DownButtonDObj.h"
 
-UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
+UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<IntOS> tl, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -63,7 +63,7 @@ Bool UI::DObj::DownButtonDObj::DoEvents()
 
 void UI::DObj::DownButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
-	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	Math::Coord2D<IntOS> tl = this->GetCurrPos();
 	this->dispTL = tl;
 	NN<Media::DrawImage> bmpUnclick;
 	NN<Media::DrawImage> bmpClicked;
@@ -89,7 +89,7 @@ void UI::DObj::DownButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 	this->updated = false;
 }
 
-Bool UI::DObj::DownButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::DownButtonDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	if (scnPos.x < this->dispTL.x || scnPos.y < this->dispTL.y)
 		return false;
@@ -99,7 +99,7 @@ Bool UI::DObj::DownButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 		if (!this->bmpClicked.SetTo(bmpChk))
 			return false;
 	}
-	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= scnPos.y)
+	if (this->dispTL.x + (IntOS)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->GetHeight() <= scnPos.y)
 		return false;
 	return (bmpChk->GetPixel32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
 }

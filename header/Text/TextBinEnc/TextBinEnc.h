@@ -12,13 +12,13 @@ namespace Text
 		{
 		public:
 			virtual ~TextBinEnc(){};
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const = 0;
-			UOSInt EncodeBArr(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR dataBuff) const
+			virtual UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const = 0;
+			UIntOS EncodeBArr(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR dataBuff) const
 			{
 				return this->EncodeBin(sb, dataBuff.Arr(), dataBuff.GetSize());
 			}
-			virtual UOSInt CalcBinSize(Text::CStringNN str) const = 0;
-			virtual UOSInt DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const = 0;
+			virtual UIntOS CalcBinSize(Text::CStringNN str) const = 0;
+			virtual UIntOS DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const = 0;
 			virtual Text::CStringNN GetName() const = 0;
 		};
 	}

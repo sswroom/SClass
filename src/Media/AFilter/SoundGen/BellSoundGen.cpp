@@ -33,7 +33,7 @@ Media::AFilter::SoundGen::BellSoundGen::~BellSoundGen()
 {
 }
 
-void Media::AFilter::SoundGen::BellSoundGen::GenSignals(UnsafeArray<Double> buff, UOSInt sampleCnt)
+void Media::AFilter::SoundGen::BellSoundGen::GenSignals(UnsafeArray<Double> buff, UIntOS sampleCnt)
 {
 	Double params[] = {
 	1406, -1.0, 1.0,
@@ -72,8 +72,8 @@ void Media::AFilter::SoundGen::BellSoundGen::GenSignals(UnsafeArray<Double> buff
 		return;
 	}
 
-	UOSInt i;
-	UOSInt k;
+	UIntOS i;
+	UIntOS k;
 	Double t;
 	i = 0;
 	while (i < sampleCnt)

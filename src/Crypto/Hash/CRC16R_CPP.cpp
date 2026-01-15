@@ -40,7 +40,7 @@ extern "C" void CRC16R_InitTable(UInt16 *tab, UInt16 polynomial)
 	}
 }
 
-extern "C" UInt16 CRC16R_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal)
+extern "C" UInt16 CRC16R_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, UInt16 currVal)
 {
 	while (buffSize >= 16)
 	{

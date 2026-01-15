@@ -104,9 +104,9 @@ void DB::SQLiteFile::Close()
 	}
 }
 
-OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 {
-	OSInt chg = -2;
+	IntOS chg = -2;
 	if (this->db.NotNull())
 	{
 		sqlite3_stmt *stmt;
@@ -227,11 +227,11 @@ void DB::SQLiteFile::Rollback(NN<DB::DBTransaction> tran)
 	ExecuteNonQuery(CSTR("rollback"));
 }
 
-UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng > 0)
 		return 0;
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> r;
 	if (ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'")).SetTo(r))
 	{
@@ -247,7 +247,7 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayL
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
@@ -276,7 +276,7 @@ Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, 
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
-		sb.AppendOSInt((OSInt)maxCnt);
+		sb.AppendIntOS((IntOS)maxCnt);
 	}
 	return ExecuteReader(sb.ToCString());
 }
@@ -298,7 +298,7 @@ NN<Text::String> DB::SQLiteFile::GetFileName()
 
 void DB::SQLiteReader::UpdateColTypes()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->colCnt;
 	while (i-- > 0)
 	{
@@ -333,14 +333,14 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
-Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize < 8 || buff[0] != 'G' || buff[1] != 'P')
 	{
 		return nullptr;
 	}
 
-	UOSInt ofst;
+	UIntOS ofst;
 	switch ((buff[3] & 0xE) >> 1)
 	{
 	case 0:
@@ -409,7 +409,7 @@ Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NN<I
 
 DB::SQLiteReader::SQLiteReader(NN<DB::SQLiteFile> conn, AnyType hStmt)
 {
-	UOSInt i;
+	UIntOS i;
 	this->conn = conn;
 	this->hStmt = hStmt;
 	this->isFirst = true;
@@ -445,27 +445,27 @@ Bool DB::SQLiteReader::ReadNext()
 	return ret;
 }
 
-UOSInt DB::SQLiteReader::ColCount()
+UIntOS DB::SQLiteReader::ColCount()
 {
-	return (UOSInt)sqlite3_column_count((sqlite3_stmt*)this->hStmt.p);
+	return (UIntOS)sqlite3_column_count((sqlite3_stmt*)this->hStmt.p);
 }
 
-OSInt DB::SQLiteReader::GetRowChanged()
+IntOS DB::SQLiteReader::GetRowChanged()
 {
 	return -1;
 }
 
-Int32 DB::SQLiteReader::GetInt32(UOSInt colIndex)
+Int32 DB::SQLiteReader::GetInt32(UIntOS colIndex)
 {
 	return sqlite3_column_int((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 }
 
-Int64 DB::SQLiteReader::GetInt64(UOSInt colIndex)
+Int64 DB::SQLiteReader::GetInt64(UIntOS colIndex)
 {
 	return sqlite3_column_int64((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 }
 
-UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 #if _WCHAR_SIZE == 2
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
@@ -484,7 +484,7 @@ UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WCha
 #endif
 }
 
-Optional<Text::String> DB::SQLiteReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::SQLiteReader::GetNewStr(UIntOS colIndex)
 {
 	if (colIndex >= this->colCnt)
 		return nullptr;
@@ -494,13 +494,13 @@ Optional<Text::String> DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 	return Text::String::New(sb.ToCString());
 }
 
-Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::SQLiteReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;
 	if (this->colTypes[colIndex] == DB::DBUtil::CT_Binary)
 	{
-		UOSInt len = (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
+		UIntOS len = (UIntOS)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 		if (len > 0)
 		{
 			const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
@@ -545,7 +545,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	const UTF8Char *outp = (const UTF8Char*)sqlite3_column_text((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (outp == 0)
@@ -554,7 +554,7 @@ UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<U
 		return Text::StrConcatS(buff, outp, buffSize);
 }
 
-Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::SQLiteReader::GetTimestamp(UIntOS colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, sb))
@@ -562,7 +562,7 @@ Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-Data::Date DB::SQLiteReader::GetDate(UOSInt colIndex)
+Data::Date DB::SQLiteReader::GetDate(UIntOS colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, sb))
@@ -570,24 +570,24 @@ Data::Date DB::SQLiteReader::GetDate(UOSInt colIndex)
 	return Data::Date(sb.ToCString());
 }
 
-Double DB::SQLiteReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::SQLiteReader::GetDblOrNAN(UIntOS colIndex)
 {
 	return sqlite3_column_double((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 }
 
-Bool DB::SQLiteReader::GetBool(UOSInt colIndex)
+Bool DB::SQLiteReader::GetBool(UIntOS colIndex)
 {
 	return GetInt32(colIndex) != 0;
 }
 
-UOSInt DB::SQLiteReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::SQLiteReader::GetBinarySize(UIntOS colIndex)
 {
-	return (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
+	return (UIntOS)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 }
 
-Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UIntOS colIndex)
 {
-	UOSInt leng = GetBinarySize(colIndex);
+	UIntOS leng = GetBinarySize(colIndex);
 	if (leng > 0)
 	{
 		const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
@@ -606,9 +606,9 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UOSInt colIndex)
 	}
 }
 
-UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::SQLiteReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
-	UOSInt leng = GetBinarySize(colIndex);
+	UIntOS leng = GetBinarySize(colIndex);
 	if (leng > 0)
 	{
 		const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
@@ -628,12 +628,12 @@ UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	}
 }
 
-Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::SQLiteReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (name == 0)
@@ -641,12 +641,12 @@ UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetName(UOSInt colIndex, UnsafeArray<
 	return Text::StrConcat(buff, (const UTF8Char*)name);
 }
 
-Bool DB::SQLiteReader::IsNull(UOSInt colIndex)
+Bool DB::SQLiteReader::IsNull(UIntOS colIndex)
 {
 	return sqlite3_column_type((sqlite3_stmt*)this->hStmt.p, (int)colIndex) == SQLITE_NULL;
 }
 
-DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::SQLiteReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (colIndex >= this->colCnt)
 		return DB::DBUtil::CT_Unknown;
@@ -677,10 +677,10 @@ DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::SQLiteReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
-	UOSInt colSize;
+	UIntOS colSize;
 	DB::DBUtil::ColType colType;
 	UnsafeArray<const UTF8Char> colName;
 	if (!colName.Set((const UTF8Char*)name))

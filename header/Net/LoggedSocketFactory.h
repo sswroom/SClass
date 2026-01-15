@@ -25,14 +25,14 @@ namespace Net
 		virtual Bool SocketListen(NN<Socket> socket);
 		virtual Optional<Socket> SocketAccept(NN<Socket> socket);
 
-		virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et);
-		virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et);
-		virtual Optional<SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et);
-		virtual UOSInt EndReceiveData(NN<SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual UIntOS SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et);
+		virtual UIntOS ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et);
+		virtual Optional<SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et);
+		virtual UIntOS EndReceiveData(NN<SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelReceiveData(NN<SocketRecvSess> reqData);
 
-		virtual UOSInt UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et);
-		virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
+		virtual UIntOS UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et);
+		virtual UIntOS SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
 
 		virtual Bool Connect(NN<Socket> socket, UInt32 ip, UInt16 port, Data::Duration timeout);
 		virtual Bool BindSocketIPv4(NN<Socket> socket, const Char *ip, UInt16 port);

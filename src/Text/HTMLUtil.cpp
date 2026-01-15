@@ -6,17 +6,17 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UIntOS lev, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::XMLAttrib> attr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;
-	OSInt elementType = 0;
+	IntOS elementType = 0;
 	UnsafeArray<const UTF8Char> csptr;
 	NN<Text::String> s;
-	UOSInt strLen;
+	UIntOS strLen;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
 	{
@@ -88,7 +88,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 						break;
 					}
 				}
-				strLen = (UOSInt)(UnsafeArray<const UTF8Char>(s->v) + s->leng - csptr);
+				strLen = (UIntOS)(UnsafeArray<const UTF8Char>(s->v) + s->leng - csptr);
 				if (strLen > 0)
 				{
 					while (true)
@@ -149,12 +149,12 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 	return true;
 }
 
-Bool Text::HTMLUtil::CSSWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::CSSWellFormat(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS lev, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 c;
 	Bool lineStart = true;
 	Bool lastIsWS = true;
-	UOSInt currLev = 0;
+	UIntOS currLev = 0;
 	while (buffSize > 0)
 	{
 		c = *buff;
@@ -226,9 +226,9 @@ Bool Text::HTMLUtil::CSSWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSiz
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize, Bool singleLine, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> imgList)
+Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS buffSize, Bool singleLine, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> imgList)
 {
-	UOSInt len;
+	UIntOS len;
 	Text::XMLNode::NodeType nt;
 	Int32 lastType = 0;
 	Bool lastIsSpace = true;
@@ -266,7 +266,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 					}
 					else if (c == '&')
 					{
-						if (Text::StrStartsWithC(csptr, (UOSInt)(csptrEnd - csptr), UTF8STRC("&nbsp;")))
+						if (Text::StrStartsWithC(csptr, (UIntOS)(csptrEnd - csptr), UTF8STRC("&nbsp;")))
 						{
 							if (singleLine)
 							{
@@ -330,8 +330,8 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 				NN<Data::ArrayListStringNN> nnimgList;
 				if (imgList.SetTo(nnimgList))
 				{
-					UOSInt i = 0;
-					UOSInt j = reader.GetAttribCount();
+					UIntOS i = 0;
+					UIntOS j = reader.GetAttribCount();
 					NN<Text::XMLAttrib> attr;
 					NN<Text::String> avalue;
 					while (i < j)
@@ -356,15 +356,15 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 			lastType = 0;
 		}
 	}
-	len = (UOSInt)wmstm.GetLength();
+	len = (UIntOS)wmstm.GetLength();
 	sb->AppendC(wmstm.GetBuff(), len);
 	return true;
 }
 
-Bool Text::HTMLUtil::XMLWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::XMLWellFormat(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS lev, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt startOfst = 0;
-	UOSInt currOfst = 0;
+	UIntOS startOfst = 0;
+	UIntOS currOfst = 0;
 	UTF8Char lastC = 0;
 	UTF8Char c;
 	UInt8 startType = 0;

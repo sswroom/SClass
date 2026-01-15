@@ -48,8 +48,8 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<
 	NN<Text::String> s;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> macList;
 		NN<Net::EthernetAnalyzer::MACStatus> mac;
 		NN<const Net::MACInfo::MACEntry> macInfo;
@@ -174,8 +174,8 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(NN<EthernetWebHandler> me,
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> ipTranList;
 		NN<Net::EthernetAnalyzer::IPTranStatus> ipTran;
 		Text::StringBuilderUTF8 sb;
@@ -237,12 +237,12 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(NN<EthernetWebHandler> me, N
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
 		NN<Text::String> name;
-		UOSInt nameLen;
+		UIntOS nameLen;
 
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -350,12 +350,12 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(NN<EthernetWebHandler> me, N
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
 		NN<Text::String> name;
-		UOSInt nameLen;
+		UIntOS nameLen;
 
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -463,12 +463,12 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(NN<EthernetWebHandler> me, 
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
 		NN<Text::String> name;
-		UOSInt nameLen;
+		UIntOS nameLen;
 
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -576,13 +576,13 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(NN<EthernetWebHandler> me, 
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo> targetList;
 		NN<Net::EthernetAnalyzer::DNSTargetInfo> target;
 		UInt32 targetIP = 0;
-		OSInt targetIndex = -1;
+		IntOS targetIndex = -1;
 
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -613,7 +613,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(NN<EthernetWebHandler> me, 
 			sb.AppendC(UTF8STRC("</a>"));
 			if (target->ip == targetIP)
 			{
-				targetIndex = (OSInt)i;
+				targetIndex = (IntOS)i;
 			}
 
 			i++;
@@ -628,7 +628,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(NN<EthernetWebHandler> me, 
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("</h3>\r\n"));
 
-			target = targetList.GetItemNoCheck((UOSInt)targetIndex);
+			target = targetList.GetItemNoCheck((UIntOS)targetIndex);
 			Sync::MutexUsage mutUsage(target->mut);
 			i = 0;
 			j = target->addrList.GetCount();
@@ -665,9 +665,9 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(NN<EthernetWebHandler> me, 
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
-		OSInt dnsCliInd = -1;
+		UIntOS i;
+		UIntOS j;
+		IntOS dnsCliInd = -1;
 		UInt32 qryVal = 0;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> dnsCliList;
 		NN<Net::EthernetAnalyzer::DNSClientInfo> dnsCli;
@@ -704,7 +704,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(NN<EthernetWebHandler> me, 
 			sb.AppendC(UTF8STRC("</a>"));
 			if ((UInt32)dnsCli->cliId == qryVal)
 			{
-				dnsCliInd = (OSInt)i;
+				dnsCliInd = (IntOS)i;
 			}
 			i++;
 		}
@@ -712,7 +712,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(NN<EthernetWebHandler> me, 
 		if (dnsCliInd != -1)
 		{
 			NN<Net::EthernetAnalyzer::DNSCliHourInfo> hourInfo;
-			dnsCli = dnsCliList->GetItemNoCheck((UOSInt)dnsCliInd);
+			dnsCli = dnsCliList->GetItemNoCheck((UIntOS)dnsCliInd);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("<br/><table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
@@ -762,9 +762,9 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(NN<EthernetWebHandler> me, NN<Ne
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> dhcpList;
 		NN<Net::EthernetAnalyzer::DHCPInfo> dhcp;
 		NN<const Net::MACInfo::MACEntry> macInfo;
@@ -872,9 +872,9 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(NN<EthernetWebHandler> me, NN<N
 	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i;
-		UOSInt j;
-		OSInt ipLogInd = -1;
+		UIntOS i;
+		UIntOS j;
+		IntOS ipLogInd = -1;
 		UInt32 qryVal = 0;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> ipLogList;
 		NN<Net::EthernetAnalyzer::IPLogInfo> ipLog;
@@ -911,14 +911,14 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(NN<EthernetWebHandler> me, NN<N
 			sb.AppendC(UTF8STRC("</a>"));
 			if (ipLog->ip == qryVal)
 			{
-				ipLogInd = (OSInt)i;
+				ipLogInd = (IntOS)i;
 			}
 			i++;
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 		if (ipLogInd != -1)
 		{
-			ipLog = ipLogList->GetItemNoCheck((UOSInt)ipLogInd);
+			ipLog = ipLogList->GetItemNoCheck((UIntOS)ipLogInd);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
 			sb.AppendP(sbuff, sptr);
 			Sync::MutexUsage mutUsage(ipLog->mut);

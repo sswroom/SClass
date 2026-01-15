@@ -22,7 +22,7 @@ namespace IO
 			Sync::Mutex reqMut;
 			Sync::Mutex recvMut;
 			UnsafeArray<UInt8> recvBuff;
-			UOSInt recvSize;
+			UIntOS recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
 			Sync::Event recvEvt;
@@ -35,8 +35,8 @@ namespace IO
 			void ToIdleMode();
 			Bool WaitForReply(UInt32 timeToWait);
 			Bool WaitForReplyVal(UInt32 timeToWait, OutParam<Int32> retVal);
-			Int32 ReadCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen);
-			Bool WriteCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen);
+			Int32 ReadCommand(UnsafeArray<const Char> cmdStr, UIntOS cmdLen);
+			Bool WriteCommand(UnsafeArray<const Char> cmdStr, UIntOS cmdLen);
 		public:
 			DensoWaveQK30U(NN<IO::Stream> stm);
 			virtual ~DensoWaveQK30U();
@@ -46,7 +46,7 @@ namespace IO
 			virtual Bool ResetDefault();
 			virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj);
 
-			virtual UOSInt GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList);
+			virtual UIntOS GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList);
 			virtual Text::CString GetCommandName(DeviceCommand dcmd);
 			virtual CommandType GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal);
 			virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal);

@@ -23,7 +23,7 @@ namespace Text
 
 			typedef struct
 			{
-				OSInt currSection;
+				IntOS currSection;
 			} PrintStatus;
 
 		private:
@@ -57,10 +57,10 @@ namespace Text
 			void SetVisitedLinkColor(UInt32 visitedLinkColor);
 			Bool GetVisitedLinkColor(UInt32 *visitedLinkColor) const;
 
-			virtual UOSInt Add(NN<DocSection> section);
-			virtual UOSInt GetCount() const;
-			virtual NN<DocSection> GetItemNoCheck(UOSInt Index) const;
-			virtual Optional<DocSection> GetItem(UOSInt Index) const;
+			virtual UIntOS Add(NN<DocSection> section);
+			virtual UIntOS GetCount() const;
+			virtual NN<DocSection> GetItemNoCheck(UIntOS Index) const;
+			virtual Optional<DocSection> GetItem(UIntOS Index) const;
 
 			virtual Bool BeginPrint(NN<Media::PrintDocument> doc);
 			virtual Bool PrintPage(NN<Media::DrawImage> printPage); 

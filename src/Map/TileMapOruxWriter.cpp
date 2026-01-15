@@ -5,7 +5,7 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "Sync/MutexUsage.h"
 
-Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds)
+Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UIntOS minLev, UIntOS maxLev, Math::RectAreaDbl bounds)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -14,7 +14,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 	this->bounds = bounds;
 	this->levels = MemAlloc(LevelInfo, maxLev - minLev + 1);
 	sptr = fileName.ConcatTo(sbuff);
-	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("OruxMapsImages.db"));
 	NEW_CLASSNN(this->db, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 	this->sess = nullptr;
@@ -32,7 +32,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 		db->ExecuteNonQuery(sql.ToCString());
 
 		sptr = fileName.Substring(i + 1).ConcatTo(sbuff);
-		i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+		i = Text::StrIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
 		if (i >= 0)
 		{
 			sptr = &sbuff[i];
@@ -48,7 +48,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 		sbXML.AppendC(UTF8STRC("<MapName><![CDATA["));
 		sbXML.AppendP(sbuff, sptr);
 		sbXML.AppendC(UTF8STRC("]]></MapName>\n"));
-		UOSInt level = minLev;
+		UIntOS level = minLev;
 		while (level <= maxLev)
 		{
 			Int32 minX = Map::OSM::OSMTileMap::Lon2TileX(bounds.min.x, level);
@@ -65,7 +65,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 			sbXML.AppendC(UTF8STRC("<OruxTracker  versionCode=\"2.1\">\n"));
 
 			sbXML.AppendC(UTF8STRC("<MapCalibration layers=\"false\" layerLevel=\""));
-			sbXML.AppendUOSInt(level);
+			sbXML.AppendUIntOS(level);
 			sbXML.AppendC(UTF8STRC("\">\n"));
 
 			sbXML.AppendC(UTF8STRC("<MapName><![CDATA["));
@@ -147,7 +147,7 @@ Map::TileMapOruxWriter::~TileMapOruxWriter()
 	MemFree(this->levels);
 }
 
-void Map::TileMapOruxWriter::BeginLevel(UOSInt level)
+void Map::TileMapOruxWriter::BeginLevel(UIntOS level)
 {
 }
 
@@ -155,7 +155,7 @@ void Map::TileMapOruxWriter::AddX(Int32 x)
 {
 }
 
-void Map::TileMapOruxWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapOruxWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	DB::SQLBuilder sql(this->db->GetSQLType(), this->db->IsAxisAware(), this->db->GetTzQhr());
 	sql.AppendCmdC(CSTR("insert into tiles (x, y, z, image) values ("));

@@ -170,8 +170,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 				ip = connInfo->GetIPAddress(0);
 				sbuff[0] = 0;
 				sptr = connInfo->GetName(sbuff).Or(sbuff);
-				adapter->ifName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				adapter->ifName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				adapter->ipAddr = ip;
 				MemCopyNO(adapter->hwAddr, hwAddr, 6);
 				this->adapters.Add(adapter);
@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 {
 	this->arpHdlr.Delete();
-	UOSInt i;
+	UIntOS i;
 	NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
 	i = this->adapters.GetCount();
 	while (i-- > 0)

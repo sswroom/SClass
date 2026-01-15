@@ -97,9 +97,9 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 
 		me->lvTable->ClearItems();
 		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
 		if (tabDef.SetTo(nntabDef))
 		{
 			NN<DB::ColDef> col;
@@ -180,10 +180,10 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRDBForm::UpdateResult(NN<DB::DBReader> r)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt *colSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS *colSize;
 
 	this->lvResult->ClearAll();
 
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NN<DB::DBReader> r)
 		j = r->ColCount();
 		this->lvResult->ChangeColumnCnt(j);
 		i = 0;
-		colSize = MemAlloc(UOSInt, j);
+		colSize = MemAlloc(UIntOS, j);
 		while (i < j)
 		{
 			if (r->GetColDef(i, col))
@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NN<DB::DBReader> r)
 		}
 	}
 
-	OSInt rowCnt = 0;
+	IntOS rowCnt = 0;
 	while (r->ReadNext())
 	{
 		i = 1;
@@ -242,13 +242,13 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NN<DB::DBReader> r)
 	if (k > 0)
 	{
 		Double w = this->lvResult->GetSize().x;
-		w -= UOSInt2Double(20 + j * 6);
+		w -= UIntOS2Double(20 + j * 6);
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			this->lvResult->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
+			this->lvResult->SetColumnWidth(i, (UIntOS2Double(colSize[i]) * w / UIntOS2Double(k) + 6));
 			i++;
 		}
 	}
@@ -649,7 +649,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	{
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		Data::ArrayIterator<NN<Text::String>> it = this->dbNames.Iterator();
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (it.HasNext())
 		{
 			NN<Text::String> dbName = it.Next();
@@ -689,8 +689,8 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 {
 	NN<DB::ReadingDBTool> dbt;
 	Data::ArrayListStringNN schemaNames;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	this->lbSchema->ClearItems();
 	if (this->dbt.SetTo(dbt))
@@ -723,8 +723,8 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	Text::StringBuilderUTF8 sb;
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Data::ArrayListStringNN tableNames;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	this->lbTable->ClearItems();
 	if (this->dbt.SetTo(dbt))
@@ -755,7 +755,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	NN<DB::ReadingDBTool> dbt;
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt.SetTo(dbt) && dbt->ChangeDatabase(Text::String::OrEmpty(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START))->ToCString()))
+		if (this->dbt.SetTo(dbt) && dbt->ChangeDatabase(Text::String::OrEmpty(this->dbNames.GetItem((UIntOS)cmdId - MNU_DATABASE_START))->ToCString()))
 		{
 			this->UpdateTables();
 		}
@@ -796,8 +796,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			if (DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
+				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, sb);
@@ -815,8 +815,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			if (DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
+				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '.');
+				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, sb);
@@ -914,7 +914,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NN<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				UOSInt colIndex = this->lvTable->GetSelectedIndex();
+				UIntOS colIndex = this->lvTable->GetSelectedIndex();
 				if (colIndex != INVALID_INDEX)
 				{
 					SSWR::AVIRead::AVIRDBGenEnumForm dlg(nullptr, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), colIndex);
@@ -937,12 +937,12 @@ void SSWR::AVIRead::AVIRDBForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-UOSInt SSWR::AVIRead::AVIRDBForm::GetDataSourceCount() const
+UIntOS SSWR::AVIRead::AVIRDBForm::GetDataSourceCount() const
 {
 	return 1;
 }
 
-void SSWR::AVIRead::AVIRDBForm::GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+void SSWR::AVIRead::AVIRDBForm::GetDataSourceName(UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (index == 0)
 	{
@@ -957,7 +957,7 @@ void SSWR::AVIRead::AVIRDBForm::GetDataSourceName(UOSInt index, NN<Text::StringB
 	}
 }
 
-Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBForm::OpenDataSource(UOSInt index)
+Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBForm::OpenDataSource(UIntOS index)
 {
 	if (index == 0)
 	{

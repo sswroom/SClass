@@ -44,7 +44,7 @@ namespace DB
 		void AppendNDbl(Double val);
 		void AppendBool(Bool val);
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
-		void AppendBinary(UnsafeArrayOpt<const UInt8> buff, UOSInt buffSize);
+		void AppendBinary(UnsafeArrayOpt<const UInt8> buff, UIntOS buffSize);
 
 		void AppendTableName(NN<DB::TableDef> table);
 		void AppendCol(UnsafeArray<const UTF8Char> val);
@@ -53,7 +53,7 @@ namespace DB
 
 		void Clear();
 		UnsafeArray<const UTF8Char> ToString() const;
-		UOSInt GetLength() const;
+		UIntOS GetLength() const;
 		Text::CStringNN ToCString() const;
 		NN<Text::String> ToNewString() const;
 		Data::ByteArrayR ToByteArray() const;

@@ -25,7 +25,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType() const
 
 void Crypto::Cert::X509PKCS7::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
-/*	UOSInt len = 0;
+/*	UIntOS len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
 	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff.ArrEnd(), "1.1.2", &len, &itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
@@ -34,10 +34,10 @@ void Crypto::Cert::X509PKCS7::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 	}*/
 }
 
-UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
+UIntOS Crypto::Cert::X509PKCS7::GetCertCount()
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> certListPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.4", len, itemType).SetTo(certListPDU) || itemType != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
@@ -46,10 +46,10 @@ UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
 	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, nullptr);
 }
 
-Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509PKCS7::GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> certListPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.4", len, itemType).SetTo(certListPDU) || itemType != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
@@ -57,19 +57,19 @@ Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NN<Text::StringBuilderUT
 	}
 
 	Char sbuff[32];
-	Text::StrConcat(Text::StrUOSInt(sbuff, index + 1), ".1.1");
-	UOSInt itemLen = 0;
+	Text::StrConcat(Text::StrUIntOS(sbuff, index + 1), ".1.1");
+	UIntOS itemLen = 0;
 	itemType = Net::ASN1Util::IT_UNKNOWN;
 	UnsafeArrayOpt<const UInt8> tmpBuff;
 	UnsafeArray<const UInt8> nntmpBuff;
 	if (Net::ASN1Util::PDUGetItemType(certListPDU, certListPDU + len, sbuff) == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		Text::StrConcat(Text::StrUOSInt(sbuff, index + 1), ".1.6");
+		Text::StrConcat(Text::StrUIntOS(sbuff, index + 1), ".1.6");
 		tmpBuff = Net::ASN1Util::PDUGetItem(certListPDU, certListPDU + len, sbuff, itemLen, itemType);
 	}
 	else
 	{
-		Text::StrConcat(Text::StrUOSInt(sbuff, index + 1), ".1.5");
+		Text::StrConcat(Text::StrUIntOS(sbuff, index + 1), ".1.5");
 		tmpBuff = Net::ASN1Util::PDUGetItem(certListPDU, certListPDU + len, sbuff, itemLen, itemType);
 	}
 	if (tmpBuff.SetTo(nntmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
@@ -80,18 +80,18 @@ Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NN<Text::StringBuilderUT
 	return false;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UIntOS index)
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<const UInt8> certListPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.4", len, itemType).SetTo(certListPDU) || itemType != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
 		return nullptr;
 	}
-	UOSInt ofst;
+	UIntOS ofst;
 	Char sbuff[32];
-	Text::StrUOSInt(sbuff, index + 1);
+	Text::StrUIntOS(sbuff, index + 1);
 	UnsafeArray<const UInt8> certPDU;
 	if (Net::ASN1Util::PDUGetItemRAW(certListPDU, certListPDU + len, sbuff, len, ofst).SetTo(certPDU))
 	{
@@ -131,7 +131,7 @@ NN<Net::ASN1Names> Crypto::Cert::X509PKCS7::CreateNames() const
 
 Bool Crypto::Cert::X509PKCS7::IsSignData() const
 {
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> itemPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1", itemLen, itemType).SetTo(itemPDU) || itemType != Net::ASN1Util::IT_OID)
@@ -147,7 +147,7 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 	{
 		return Crypto::Hash::HashType::Unknown;
 	}
-	UOSInt itemLen;
+	UIntOS itemLen;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> itemPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.5.1.3.1", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_OID)
@@ -157,21 +157,21 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 	return Crypto::Hash::HashType::Unknown;
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<UOSInt> digestSize) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<UIntOS> digestSize) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArray<const UInt8> itemPDU;
-	UOSInt subitemLen;
+	UIntOS subitemLen;
 	UnsafeArray<const UInt8> subitemPDU;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.5.1.4", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (true)
 		{
-			sptr = Text::StrUOSInt(sbuff, ++i);
+			sptr = Text::StrUIntOS(sbuff, ++i);
 			Text::StrConcatC(sptr, UTF8STRC(".1"));
 			if (!Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType).SetTo(subitemPDU))
 			{
@@ -192,10 +192,10 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<U
 	return nullptr;
 }
 
-UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetEncryptedDigest(OutParam<UOSInt> signSize) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetEncryptedDigest(OutParam<UIntOS> signSize) const
 {
 	Net::ASN1Util::ItemType itemType;
-	UOSInt itemLen;
+	UIntOS itemLen;
 	UnsafeArray<const UInt8> itemPDU;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.5.1.6", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{

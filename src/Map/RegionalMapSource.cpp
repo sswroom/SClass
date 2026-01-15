@@ -272,7 +272,7 @@ Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 		UTF8STRCPTR("Street posting box locations and collection time")},
 };
 
-UnsafeArray<const Map::RegionalMapSource::MapInfo> Map::RegionalMapSource::GetMapInfos(OutParam<UOSInt> cnt)
+UnsafeArray<const Map::RegionalMapSource::MapInfo> Map::RegionalMapSource::GetMapInfos(OutParam<UIntOS> cnt)
 {
 	cnt.Set(sizeof(maps) / sizeof(maps[0]));
 	return maps;

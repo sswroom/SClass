@@ -92,7 +92,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, U
 	IO::Path::PathType pt;
 	Int32 iVal;
 	Bool succ;
-	UOSInt i;
+	UIntOS i;
 	Data::DateTime dt(startTime);
 	Data::Timestamp modTime;
 	Data::Timestamp accTime;
@@ -126,7 +126,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, U
 					if (startTime->CompareTo(dt) <= 0 && endTime->CompareTo(dt) >= 0)
 					{
 						{
-							IO::FileStream fs({buffStart, (UOSInt)(UnsafeArray<const UTF8Char>(sptr) - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							IO::FileStream fs({buffStart, (UIntOS)(UnsafeArray<const UTF8Char>(sptr) - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							if (fs.IsError())
 							{
 								succ = false;
@@ -141,14 +141,14 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, U
 
 /*								UInt8 *fileBuff;
 								UInt64 fileLeng = fs.GetLength();
-								UOSInt totalRead = 0;
-								UOSInt readSize;
+								UIntOS totalRead = 0;
+								UIntOS readSize;
 								if (fileLeng > 0)
 								{
-									fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
+									fileBuff = MemAlloc(UInt8, (UIntOS)fileLeng);
 									while (totalRead < fileLeng)
 									{
-										readSize = fs.Read(&fileBuff[totalRead], (UOSInt)(fileLeng - totalRead));
+										readSize = fs.Read(&fileBuff[totalRead], (UIntOS)(fileLeng - totalRead));
 										if (readSize <= 0)
 										{
 											break;

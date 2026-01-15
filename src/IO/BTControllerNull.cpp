@@ -64,7 +64,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return false;
 }
 
-UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+UIntOS IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
 {
 	///////////////////////////////
 	return 0;
@@ -100,7 +100,7 @@ IO::BTController::~BTController()
 	this->name->Release();
 }
 
-OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
+IntOS IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
 {
 	return 0;
 }

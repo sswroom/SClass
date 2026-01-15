@@ -11,11 +11,11 @@
 
 extern "C"
 {
-	void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h, UInt32 *fieldStats);
-	void IVTCFilter_CalcFieldP(UInt8 *framePtr, UOSInt w, UOSInt h, UInt32 *fieldStats);
+	void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UIntOS w, UIntOS h, UInt32 *fieldStats);
+	void IVTCFilter_CalcFieldP(UInt8 *framePtr, UIntOS w, UIntOS h, UInt32 *fieldStats);
 }
 
-void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
@@ -44,23 +44,23 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 				{
 					if (frameType == Media::FT_MERGED_BF)
 					{
-//						UOSInt dw = this->videoInfo.dispSize.x;
-						UOSInt dh = this->videoInfo.dispSize.y >> 1;
-						UOSInt sw = this->videoInfo.storeSize.x;
-//						UOSInt sh = this->videoInfo.storeSize.y >> 1;
-						UOSInt sw2 = sw << 1;
-						UOSInt swh = sw >> 1;
-//						UOSInt dwh = dw >> 1;
+//						UIntOS dw = this->videoInfo.dispSize.x;
+						UIntOS dh = this->videoInfo.dispSize.y >> 1;
+						UIntOS sw = this->videoInfo.storeSize.x;
+//						UIntOS sh = this->videoInfo.storeSize.y >> 1;
+						UIntOS sw2 = sw << 1;
+						UIntOS swh = sw >> 1;
+//						UIntOS dwh = dw >> 1;
 						UnsafeArray<UInt8> srcPtr = imgData[0] + sw;
 						UnsafeArray<UInt8> destPtr = this->fieldBuff + sw;
-						UOSInt lastH = dh;
-						UOSInt currH;
-						UOSInt copyThreadCnt = this->threadCnt;
+						UIntOS lastH = dh;
+						UIntOS currH;
+						UIntOS copyThreadCnt = this->threadCnt;
 						if (copyThreadCnt > 2)
 						{
 							copyThreadCnt = 2;
 						}
-						UOSInt i = copyThreadCnt;
+						UIntOS i = copyThreadCnt;
 						Bool found;
 						while (i-- > 0)
 						{
@@ -171,23 +171,23 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 				{
 					if (frameType == Media::FT_MERGED_TF)
 					{
-//						UOSInt dw = this->videoInfo.dispSize.x;
-						UOSInt dh = this->videoInfo.dispSize.y >> 1;
-						UOSInt sw = this->videoInfo.storeSize.x;
-//						UOSInt sh = this->videoInfo.storeSize.y >> 1;
-						UOSInt sw2 = sw << 1;
-						UOSInt swh = sw >> 1;
-//						UOSInt dwh = dw >> 1;
+//						UIntOS dw = this->videoInfo.dispSize.x;
+						UIntOS dh = this->videoInfo.dispSize.y >> 1;
+						UIntOS sw = this->videoInfo.storeSize.x;
+//						UIntOS sh = this->videoInfo.storeSize.y >> 1;
+						UIntOS sw2 = sw << 1;
+						UIntOS swh = sw >> 1;
+//						UIntOS dwh = dw >> 1;
 						UnsafeArray<UInt8> srcPtr = imgData[0];
 						UnsafeArray<UInt8> destPtr = this->fieldBuff;
-						UOSInt lastH = dh;
-						UOSInt currH;
-						UOSInt copyThreadCnt = this->threadCnt;
+						UIntOS lastH = dh;
+						UIntOS currH;
+						UIntOS copyThreadCnt = this->threadCnt;
 						if (copyThreadCnt > 2)
 						{
 							copyThreadCnt = 2;
 						}
-						UOSInt i = copyThreadCnt;
+						UIntOS i = copyThreadCnt;
 						Bool found;
 						while (i-- > 0)
 						{
@@ -281,17 +281,17 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 						this->fieldBuffSize = dataSize * 2;
 						this->fieldBuff = MemAllocA64(UInt8, this->fieldBuffSize);
 					}
-					UOSInt sw = this->videoInfo.storeSize.x;
-//					UOSInt sh = this->videoInfo->storeHeight;
-//					UOSInt dw = this->videoInfo->dispWidth;
-					UOSInt dh = this->videoInfo.dispSize.y;
-					UOSInt sw2 = sw << 1;
-//					UOSInt dw2 = dw << 1;
-					UOSInt swh = sw >> 1;
-//					UOSInt dwh = dw >> 1;
+					UIntOS sw = this->videoInfo.storeSize.x;
+//					UIntOS sh = this->videoInfo->storeHeight;
+//					UIntOS dw = this->videoInfo->dispWidth;
+					UIntOS dh = this->videoInfo.dispSize.y;
+					UIntOS sw2 = sw << 1;
+//					UIntOS dw2 = dw << 1;
+					UIntOS swh = sw >> 1;
+//					UIntOS dwh = dw >> 1;
 					UnsafeArray<UInt8> srcPtr = this->fieldBuff;
 					UnsafeArray<UInt8> destPtr = imgData[0]; 
-					UOSInt i;
+					UIntOS i;
 					i = 0;
 					while (i < dh)
 					{
@@ -384,7 +384,7 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::VideoSource::FrameChan
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
@@ -434,8 +434,8 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 				{
 					UnsafeArray<UInt8> ivtcPtr = imgData[0];
 					UInt8 *ivtcLPtr = this->ivtcLastFrame;
-					UOSInt ivtcW;
-					UOSInt ivtcH = this->videoInfo.dispSize.y;
+					UIntOS ivtcW;
+					UIntOS ivtcH = this->videoInfo.dispSize.y;
 
 					while (ivtcH > 1)
 					{
@@ -468,7 +468,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 					}
 				}
 
-				Double pixelCnt = UOSInt2Double(this->videoInfo.dispSize.x * this->videoInfo.dispSize.y);
+				Double pixelCnt = UIntOS2Double(this->videoInfo.dispSize.x * this->videoInfo.dispSize.y);
 				Double oddDDiff = oddDiff / pixelCnt;
 				Double evenDDiff = evenDiff / pixelCnt;
 				
@@ -491,14 +491,14 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 							UnsafeArray<UInt8> evenPtr;
 							FieldStat iFieldStat;
 							FieldStat pFieldStat;
-							UOSInt sw = this->videoInfo.storeSize.x;
-//							OSInt sh = this->videoInfo->storeHeight;
-//							OSInt dw = this->videoInfo->dispWidth;
-							UOSInt dh = this->videoInfo.dispSize.y;
-//							OSInt sw2 = sw << 1;
-//							OSInt sw4 = sw << 2;
-//							OSInt dw2 = dw << 1;
-//							OSInt dw4 = dw << 2;
+							UIntOS sw = this->videoInfo.storeSize.x;
+//							IntOS sh = this->videoInfo->storeHeight;
+//							IntOS dw = this->videoInfo->dispWidth;
+							UIntOS dh = this->videoInfo.dispSize.y;
+//							IntOS sw2 = sw << 1;
+//							IntOS sw4 = sw << 2;
+//							IntOS dw2 = dw << 1;
+//							IntOS dw4 = dw << 2;
 							if (frameType == Media::FT_INTERLACED_BFF)
 							{
 								oddPtr = this->ivtcLastFrame;
@@ -539,37 +539,37 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 								sptr = Text::StrConcatC(sbuff, UTF8STRC("ScnChg\t"));
 								sptr = Text::StrInt32(sptr, frameNum);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.fieldDiff);
+								sptr = Text::StrIntOS(sptr, iFieldStat.fieldDiff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.fieldCnt);
+								sptr = Text::StrIntOS(sptr, iFieldStat.fieldCnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.fieldMDiff);
+								sptr = Text::StrIntOS(sptr, iFieldStat.fieldMDiff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.field2Diff);
+								sptr = Text::StrIntOS(sptr, iFieldStat.field2Diff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.field2Cnt);
+								sptr = Text::StrIntOS(sptr, iFieldStat.field2Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.field2MDiff);
+								sptr = Text::StrIntOS(sptr, iFieldStat.field2MDiff);
 /*								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.field3Cnt);
+								sptr = Text::StrIntOS(sptr, iFieldStat.field3Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, iFieldStat.field4Cnt);*/
+								sptr = Text::StrIntOS(sptr, iFieldStat.field4Cnt);*/
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.fieldDiff);
+								sptr = Text::StrIntOS(sptr, pFieldStat.fieldDiff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.fieldCnt);
+								sptr = Text::StrIntOS(sptr, pFieldStat.fieldCnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.fieldMDiff);
+								sptr = Text::StrIntOS(sptr, pFieldStat.fieldMDiff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.field2Diff);
+								sptr = Text::StrIntOS(sptr, pFieldStat.field2Diff);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.field2Cnt);
+								sptr = Text::StrIntOS(sptr, pFieldStat.field2Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-								sptr = Text::StrOSInt(sptr, pFieldStat.field2MDiff);
+								sptr = Text::StrIntOS(sptr, pFieldStat.field2MDiff);
 /*								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
-								sptr = Text::StrOSInt(sptr, pFieldStat.field3Cnt);
+								sptr = Text::StrIntOS(sptr, pFieldStat.field3Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
-								sptr = Text::StrOSInt(sptr, pFieldStat.field4Cnt);*/
+								sptr = Text::StrIntOS(sptr, pFieldStat.field4Cnt);*/
 								this->debugLog->WriteLine(CSTRP(sbuff, sptr));
 							}
 #endif
@@ -774,11 +774,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 								oddBuff = this->ivtcLastFrame;
 								evenBuff = imgData[0];
 							}
-							UOSInt ivtcW = this->videoInfo.dispSize.x;
-							UOSInt ivtcH = this->videoInfo.dispSize.y;
-							UOSInt ivtcW2 = ivtcW << 1;
-							UOSInt ivtcWH = ivtcW >> 1;
-							UOSInt ivtcCnt = ivtcH;
+							UIntOS ivtcW = this->videoInfo.dispSize.x;
+							UIntOS ivtcH = this->videoInfo.dispSize.y;
+							UIntOS ivtcW2 = ivtcW << 1;
+							UIntOS ivtcWH = ivtcW >> 1;
+							UIntOS ivtcCnt = ivtcH;
 							while (ivtcCnt > 0)
 							{
 								MemCopyNANC(outBuff, oddBuff.Ptr(), ivtcW);
@@ -1017,7 +1017,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 					}
 					this->CalcFieldStatP(fieldStat, ivtcPtr, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y);
 				}
-				UOSInt fieldRate;
+				UIntOS fieldRate;
 				if (this->ivtcLastSC)
 				{
 					fieldRate = this->videoInfo.storeSize.x * this->videoInfo.dispSize.y * 2;
@@ -1050,7 +1050,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 				{
 					needDI = true;
 				}
-				else if (UOSInt2Double(fieldStat.fieldCnt * 2) > pixelCnt)
+				else if (UIntOS2Double(fieldStat.fieldCnt * 2) > pixelCnt)
 				{
 					needDI = true;	
 				}
@@ -1110,21 +1110,21 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("IVTC\t"));
 					sptr = Text::StrInt32(sptr, frameNum);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.fieldDiff);
+					sptr = Text::StrIntOS(sptr, fieldStat.fieldDiff);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.fieldCnt);
+					sptr = Text::StrIntOS(sptr, fieldStat.fieldCnt);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.fieldMDiff);
+					sptr = Text::StrIntOS(sptr, fieldStat.fieldMDiff);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.field2Diff);
+					sptr = Text::StrIntOS(sptr, fieldStat.field2Diff);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.field2Cnt);
+					sptr = Text::StrIntOS(sptr, fieldStat.field2Cnt);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.field2MDiff);
+					sptr = Text::StrIntOS(sptr, fieldStat.field2MDiff);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-/*					sptr = Text::StrOSInt(sptr, fieldStat.field3Cnt);
+/*					sptr = Text::StrIntOS(sptr, fieldStat.field3Cnt);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrOSInt(sptr, fieldStat.field4Cnt);
+					sptr = Text::StrIntOS(sptr, fieldStat.field4Cnt);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));*/
 					sptr = Text::StrInt32(sptr, oddDiff);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
@@ -1216,7 +1216,7 @@ void Media::VideoFilter::IVTCFilter::ClearIVTC()
 	this->fieldExist = false;
 }
 
-void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UInt8> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UInt8> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->ivtcTFrameTime = frameTime;
 	this->ivtcTFrameNum = frameNum;
@@ -1250,7 +1250,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(AnyType userObj)
 			{
 				Data::Duration frameTime = me->ivtcTFrameTime;
 				UInt32 frameNum = me->ivtcTFrameNum;
-				UOSInt dataSize = me->ivtcTDataSize;
+				UIntOS dataSize = me->ivtcTDataSize;
 				Media::VideoSource::FrameStruct frameStruct = me->ivtcTFrameStruct;
 				Media::FrameType frameType = me->ivtcTFrameType;
 				Media::VideoSource::FrameFlag flags = me->ivtcTFlags;
@@ -1282,7 +1282,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 	NN<ThreadStat> tStat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	tStat->threadStat = 1;
@@ -1314,10 +1314,10 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 			}
 			else if (tStat->currCmd == 4)
 			{
-				UOSInt i;
-				UOSInt h;
-				UOSInt sw;
-				UOSInt sw2;
+				UIntOS i;
+				UIntOS h;
+				UIntOS sw;
+				UIntOS sw2;
 				UnsafeArray<UInt8> srcPtr;
 				UnsafeArray<UInt8> destPtr;
 				tStat->threadStat = 2;
@@ -1354,18 +1354,18 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 	return 0;
 }
 
-void Media::VideoFilter::IVTCFilter::do_CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h)
+void Media::VideoFilter::IVTCFilter::do_CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UIntOS w, UIntOS h)
 {
 	if (w & 15)
 	{
-		UOSInt w2 = w << 1;
-		UOSInt hLeft;
-		UOSInt wLeft;
-		UOSInt v1;
-		UOSInt v2;
-		UOSInt v3;
-		UOSInt v4;
-		UOSInt v5;
+		UIntOS w2 = w << 1;
+		UIntOS hLeft;
+		UIntOS wLeft;
+		UIntOS v1;
+		UIntOS v2;
+		UIntOS v3;
+		UIntOS v4;
+		UIntOS v5;
 		fieldStat->fieldDiff = 0;
 		fieldStat->fieldMDiff = 0;
 		fieldStat->fieldCnt = 0;
@@ -1638,12 +1638,12 @@ void Media::VideoFilter::IVTCFilter::do_CalcFieldStat(FieldStat *fieldStat, UInt
 	else
 	{
 		UInt32 fieldStats[6];
-		fieldStats[0] = 0;		//OSInt fieldDiff = 0;
-		fieldStats[1] = 0;		//OSInt fieldCnt = 0;
-		fieldStats[2] = 0;		//OSInt field2Diff = 0;
-		fieldStats[3] = 0;		//OSInt field2Cnt = 0;
-		fieldStats[4] = 0;		//OSInt fieldMDiff;
-		fieldStats[5] = 0;		//OSInt field2MDiff;
+		fieldStats[0] = 0;		//IntOS fieldDiff = 0;
+		fieldStats[1] = 0;		//IntOS fieldCnt = 0;
+		fieldStats[2] = 0;		//IntOS field2Diff = 0;
+		fieldStats[3] = 0;		//IntOS field2Cnt = 0;
+		fieldStats[4] = 0;		//IntOS fieldMDiff;
+		fieldStats[5] = 0;		//IntOS field2MDiff;
 
 		IVTCFilter_CalcField(oddPtr, evenPtr, w, h, fieldStats);
 		fieldStat->fieldDiff = fieldStats[0];
@@ -1657,17 +1657,17 @@ void Media::VideoFilter::IVTCFilter::do_CalcFieldStat(FieldStat *fieldStat, UInt
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::do_CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, UOSInt w, UOSInt h)
+void Media::VideoFilter::IVTCFilter::do_CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, UIntOS w, UIntOS h)
 {
 	if (w & 15)
 	{
-		UOSInt wLeft;
-		UOSInt v1;
-		UOSInt v2;
-		UOSInt v3;
-		UOSInt v4;
-		UOSInt v5;
-		UOSInt w2 = w << 1;
+		UIntOS wLeft;
+		UIntOS v1;
+		UIntOS v2;
+		UIntOS v3;
+		UIntOS v4;
+		UIntOS v5;
+		UIntOS w2 = w << 1;
 		fieldStat->fieldDiff = 0;
 		fieldStat->fieldMDiff = 0;
 		fieldStat->fieldCnt = 0;
@@ -1809,12 +1809,12 @@ void Media::VideoFilter::IVTCFilter::do_CalcFieldStatP(FieldStat *fieldStat, UIn
 	else
 	{
 		UInt32 fieldStats[6];
-		fieldStats[0] = 0;			//OSInt fieldDiff = 0;
-		fieldStats[1] = 0;			//OSInt fieldCnt = 0;
-		fieldStats[2] = 0;			//OSInt field2Diff = 0;
-		fieldStats[3] = 0;			//OSInt field2Cnt = 0;
-		fieldStats[4] = 0;			//OSInt fieldMDiff;
-		fieldStats[5] = 0;			//OSInt field2MDiff;
+		fieldStats[0] = 0;			//IntOS fieldDiff = 0;
+		fieldStats[1] = 0;			//IntOS fieldCnt = 0;
+		fieldStats[2] = 0;			//IntOS field2Diff = 0;
+		fieldStats[3] = 0;			//IntOS field2Cnt = 0;
+		fieldStats[4] = 0;			//IntOS fieldMDiff;
+		fieldStats[5] = 0;			//IntOS field2MDiff;
 
 		IVTCFilter_CalcFieldP(framePtr, w, h, fieldStats);
 		fieldStat->fieldDiff = fieldStats[0];
@@ -1828,14 +1828,14 @@ void Media::VideoFilter::IVTCFilter::do_CalcFieldStatP(FieldStat *fieldStat, UIn
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::CalcFieldStat(NN<Media::VideoFilter::IVTCFilter::FieldStat> fieldStat, UnsafeArray<UInt8> oddPtr, UnsafeArray<UInt8> evenPtr, UOSInt w, UOSInt h)
+void Media::VideoFilter::IVTCFilter::CalcFieldStat(NN<Media::VideoFilter::IVTCFilter::FieldStat> fieldStat, UnsafeArray<UInt8> oddPtr, UnsafeArray<UInt8> evenPtr, UIntOS w, UIntOS h)
 {
 //	do_CalcFieldStat(fieldStat, oddPtr, evenPtr, w, h);
 //	return;
 	h = (h - 2) >> 1;
-	UOSInt currH;
-	UOSInt lastH = h;
-	UOSInt i;
+	UIntOS currH;
+	UIntOS lastH = h;
+	UIntOS i;
 	Bool found;
 	fieldStat->fieldDiff = 0;
 	fieldStat->fieldMDiff = 0;
@@ -1888,12 +1888,12 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStat(NN<Media::VideoFilter::IVTCFi
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::CalcFieldStatP(NN<FieldStat> fieldStat, UnsafeArray<UInt8> framePtr, UOSInt w, UOSInt h)
+void Media::VideoFilter::IVTCFilter::CalcFieldStatP(NN<FieldStat> fieldStat, UnsafeArray<UInt8> framePtr, UIntOS w, UIntOS h)
 {
 	h = h - 2;
-	UOSInt currH;
-	UOSInt lastH = h;
-	UOSInt i;
+	UIntOS currH;
+	UIntOS lastH = h;
+	UIntOS i;
 	Bool found;
 	fieldStat->fieldDiff = 0;
 	fieldStat->fieldMDiff = 0;
@@ -1947,7 +1947,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStatP(NN<FieldStat> fieldStat, Uns
 
 Media::VideoFilter::IVTCFilter::IVTCFilter(Media::VideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found;
 	this->enabled = true;
 	this->fieldBuff = MemAllocAArr(UInt8, 0);
@@ -2011,7 +2011,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::VideoSource *srcVideo) : Media
 
 Media::VideoFilter::IVTCFilter::~IVTCFilter()
 {
-	UOSInt i;
+	UIntOS i;
 	Bool found = true;
 	this->ivtcTToStop = true;
 	this->ivtcTEvt.Set();

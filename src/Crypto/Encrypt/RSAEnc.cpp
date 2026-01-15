@@ -38,7 +38,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Encrypt::RSAEnc::GetSessKey()
 	return nullptr;
 }
 
-UOSInt Crypto::Encrypt::RSAEnc::GetSessKeyLen()
+UIntOS Crypto::Encrypt::RSAEnc::GetSessKeyLen()
 {
 	return 0;
 }
@@ -48,7 +48,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Encrypt::RSAEnc::GetIV()
 	return nullptr;
 }
 
-UOSInt Crypto::Encrypt::RSAEnc::GetIVLen()
+UIntOS Crypto::Encrypt::RSAEnc::GetIVLen()
 {
 	return 0;
 }

@@ -33,19 +33,19 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 		Bool AddFile(Text::CStringNN fileName);
-		Bool RemoveEntry(UOSInt index);
+		Bool RemoveEntry(UIntOS index);
 		Bool AppendPlaylist(NN<Media::Playlist> playlist);
 		void ClearFiles();
 
-		UOSInt GetCount() const;
-		Optional<Text::String> GetTitle(UOSInt index) const;
-		Optional<Text::String> GetArtist(UOSInt index) const;
-		Optional<Text::String> GetFileName(UOSInt index) const;
-		Data::Duration GetTimeStart(UOSInt index) const;
-		Data::Duration GetTimeEnd(UOSInt index) const;
+		UIntOS GetCount() const;
+		Optional<Text::String> GetTitle(UIntOS index) const;
+		Optional<Text::String> GetArtist(UIntOS index) const;
+		Optional<Text::String> GetFileName(UIntOS index) const;
+		Data::Duration GetTimeStart(UIntOS index) const;
+		Data::Duration GetTimeEnd(UIntOS index) const;
 
 		void SetPlayer(Optional<Media::MediaPlayer> player);
-		Bool OpenItem(UOSInt index);
+		Bool OpenItem(UIntOS index);
 		
 		virtual Bool IsPlaying();
 		virtual Bool StartPlayback();

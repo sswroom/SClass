@@ -15,34 +15,34 @@ namespace Media
 		protected:
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				UnsafeArray<Int64> weight;
-				UnsafeArray<OSInt> index;
-				UOSInt tap;
+				UnsafeArray<IntOS> index;
+				UIntOS tap;
 			} LRHPARAMETER;
 
 		protected:
 			Int32 currId;
-			UOSInt hnTap;
-			UOSInt vnTap;
+			UIntOS hnTap;
+			UIntOS vnTap;
 			Sync::Mutex mut;
 			NN<Media::Resizer::LanczosResizerLR_C32Action> action;
 
 			Double hsSize;
 			Double hsOfst;
-			UOSInt hdSize;
-			UnsafeArrayOpt<OSInt> hIndex;
+			UIntOS hdSize;
+			UnsafeArrayOpt<IntOS> hIndex;
 			UnsafeArrayOpt<Int64> hWeight;
-			UOSInt hTap;
+			UIntOS hTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
 
 			Double vsSize;
 			Double vsOfst;
-			UOSInt vdSize;
-			OSInt vsStep;
-			UnsafeArrayOpt<OSInt> vIndex;
+			UIntOS vdSize;
+			IntOS vsStep;
+			UnsafeArrayOpt<IntOS> vIndex;
 			UnsafeArrayOpt<Int64> vWeight;
-			UOSInt vTap;
+			UIntOS vTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
 
 			Media::ColorProfile destColor;
@@ -52,20 +52,20 @@ namespace Media
 			UnsafeArrayOpt<UInt8> rgbTable;
 			Media::PixelFormat pf;
 
-			static void SetupInterpolationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			static void SetupDecimationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			static void SetupInterpolationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			static void SetupDecimationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterV(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			static void SetupDecimationParameterV(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterH(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			static void SetupDecimationParameterH(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
 
 			virtual UnsafeArray<UInt8> UpdateRGBTable();
 
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
+			LanczosResizerLR_C32(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
 			virtual ~LanczosResizerLR_C32();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight);
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);

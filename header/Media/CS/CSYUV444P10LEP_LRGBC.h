@@ -18,11 +18,11 @@ namespace Media
 				UnsafeArray<UInt8> yPtr;
 				UnsafeArray<UInt8> uPtr;
 				UnsafeArray<UInt8> vPtr;
-				UOSInt yBpl;
+				UIntOS yBpl;
 				UnsafeArray<UInt8> dest;
-				UOSInt width;
-				UOSInt height;
-				OSInt dbpl;
+				UIntOS width;
+				UIntOS height;
+				IntOS dbpl;
 			} THREADSTAT;
 
 			YUVPARAM yuvParam;
@@ -36,8 +36,8 @@ namespace Media
 			UnsafeArray<Int64> yuv2rgb;
 			UnsafeArray<Int64> rgbGammaCorr;
 
-			UOSInt currId;
-			UOSInt nThread;
+			UIntOS currId;
+			UIntOS nThread;
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
@@ -50,14 +50,14 @@ namespace Media
 			CSYUV444P10LEP_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYUV444P10LEP_LRGBC();
 
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
-			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UIntOS GetSrcFrameSize(UIntOS width, UIntOS height);
 
 			virtual void UpdateTable();
 
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuv);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgb);
-			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
+			virtual UIntOS GetDestFrameSize(UIntOS width, UIntOS height);
 		};
 	}
 }

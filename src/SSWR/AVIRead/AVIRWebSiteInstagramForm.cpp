@@ -14,8 +14,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 	if (sb.GetLength() > 0)
 	{
 		Data::DateTime dt;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Net::WebSite::WebSiteInstagramControl::ChannelInfo chInfo;
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;

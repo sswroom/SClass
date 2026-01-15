@@ -16,7 +16,7 @@ namespace Text
 
 		virtual Text::CStringNN GetClassName() const = 0;
 		virtual Text::CStringNN GetContentType() const = 0;
-		virtual UOSInt WriteStream(NN<IO::Stream> stm) const = 0;
+		virtual UIntOS WriteStream(NN<IO::Stream> stm) const = 0;
 		virtual NN<MIMEObject> Clone() const = 0;
 
 		virtual IO::ParserType GetParserType() const;

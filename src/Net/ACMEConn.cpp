@@ -30,8 +30,8 @@ Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutPara
 	case Crypto::Cert::X509Key::KeyType::RSA:
 	case Crypto::Cert::X509Key::KeyType::RSAPublic:
 		{
-			UOSInt mSize;
-			UOSInt eSize;
+			UIntOS mSize;
+			UIntOS eSize;
 			UnsafeArray<const UInt8> m;
 			UnsafeArray<const UInt8> e;
 			if (!key->GetRSAModulus(mSize).SetTo(m) || !key->GetRSAPublicExponent(eSize).SetTo(e))
@@ -152,7 +152,7 @@ Optional<Net::HTTPClient> Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CS
 	NN<Text::String> jws;
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, key, alg);
 	protStr->Release();
-	UOSInt jwsLen = jws->leng;
+	UIntOS jwsLen = jws->leng;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	cli->AddContentType(CSTR("application/jose+json"));
 	cli->AddContentLength(jwsLen);
@@ -169,7 +169,7 @@ Optional<Net::HTTPClient> Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CS
 	return cli;
 }
 
-Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(json))
@@ -196,8 +196,8 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 				NN<Data::ArrayListStringNN> authURLs;
 				NEW_CLASSNN(authURLs, Data::ArrayListStringNN());
 				order->authURLs = authURLs;
-				UOSInt i = 0;
-				UOSInt j = authArr->GetArrayLength();
+				UIntOS i = 0;
+				UIntOS j = authArr->GetArrayLength();
 				while (i < j)
 				{
 					if (authArr->GetArrayValue(i).SetTo(auth) && auth->GetType() == Text::JSONType::String)
@@ -236,7 +236,7 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(NN<Text::JSONBas
 	return nullptr;
 }
 
-Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	Optional<Challenge> chall = nullptr;
 	NN<Text::JSONBase> json;
@@ -251,7 +251,7 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<con
 Net::ACMEConn::ACMEConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	this->clif = clif;
 	this->key = nullptr;
 	this->ssl = Net::SSLEngineFactory::Create(clif, false);
@@ -435,7 +435,7 @@ Bool Net::ACMEConn::AccountNew()
 		IO::MemoryStream mstm;
 		cli->ReadToEnd(mstm, 4096);
 		cli.Delete();
-		UOSInt buffSize;
+		UIntOS buffSize;
 		UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
 		NN<Text::JSONBase> base;
 		if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(base))
@@ -508,7 +508,7 @@ Bool Net::ACMEConn::AccountRetr()
 	return succ;
 }
 
-Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UIntOS namesLen)
 {
 	NN<Text::String> url;
 	if (!this->urlNewOrder.SetTo(url))
@@ -518,7 +518,7 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Cha
 	Text::StringBuilderUTF8 sbNames;
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	Bool found = false;
 	sb.AppendC(UTF8STRC("{\"identifiers\":["));
@@ -590,8 +590,8 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 		{
 			return nullptr;
 		}
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Text::String> s;
 		UnsafeArray<const UInt8> authBuff = mstm.GetBuff(i);
 		NN<Text::JSONBase> json;
@@ -664,7 +664,7 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String
 			IO::MemoryStream mstm;
 			cli->ReadToEnd(mstm, 2048);
 			cli.Delete();
-			UOSInt i;
+			UIntOS i;
 			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
@@ -687,7 +687,7 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::St
 			IO::MemoryStream mstm;
 			cli->ReadToEnd(mstm, 2048);
 			cli.Delete();
-			UOSInt i;
+			UIntOS i;
 			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
@@ -737,7 +737,7 @@ Bool Net::ACMEConn::SetKey(NN<Crypto::Cert::X509Key> key)
 Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 {
 	UInt8 keyPEM[4096];
-	UOSInt keyPEMSize = IO::FileStream::LoadFile(fileName, keyPEM, 4096);
+	UIntOS keyPEMSize = IO::FileStream::LoadFile(fileName, keyPEM, 4096);
 	if (keyPEMSize == 0)
 	{
 		return false;

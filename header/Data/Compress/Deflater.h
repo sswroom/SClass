@@ -108,7 +108,7 @@ namespace Data
 			static Bool CompressNormal(NN<DeflateCompressor> d);
 			static DeflateStatus FlushOutputBuffer(NN<DeflateCompressor> d);
 		    static Int32 FlushBlock(NN<DeflateCompressor> d, DeflateFlush flush);
-			static DeflateStatus Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UOSInt *pIn_buf_size, UInt8 *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush);
+			static DeflateStatus Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UIntOS *pIn_buf_size, UInt8 *pOut_buf, UIntOS *pOut_buf_size, DeflateFlush flush);
 			DeflateResult Deflate(DeflateFlush flush);
 		public:
 			Deflater(NN<IO::Stream> srcStm, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader);
@@ -116,15 +116,15 @@ namespace Data
 			virtual ~Deflater();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();
 			virtual IO::StreamType GetStreamType() const;
 
-			static Bool CompressDirect(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff, CompLevel level, Bool hasHeader);
+			static Bool CompressDirect(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff, CompLevel level, Bool hasHeader);
 		};
 	}
 }

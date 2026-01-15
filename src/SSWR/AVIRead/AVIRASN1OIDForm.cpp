@@ -11,13 +11,13 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(AnyType userObj)
 	me->txtSource->GetText(sb);
 	Text::PString lines[2];
 	Text::PString sarr[10];
-	UOSInt firstRowCnt;
-	UOSInt rowCnt;
-	UOSInt lineCnt = Text::StrSplitLineP(lines, 2, sb);
-	UOSInt oidCol = 10;
-	UOSInt nameCol;
+	UIntOS firstRowCnt;
+	UIntOS rowCnt;
+	UIntOS lineCnt = Text::StrSplitLineP(lines, 2, sb);
+	UIntOS oidCol = 10;
+	UIntOS nameCol;
 	UInt8 oid[32];
-	UOSInt oidLen;
+	UIntOS oidLen;
 	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0], '\t');
 	rowCnt = 0;
 	while (rowCnt < firstRowCnt)

@@ -19,7 +19,7 @@ namespace Media
 			virtual ~SoundGenerator();
 
 			virtual void GetFormat(NN<AudioFormat> format);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool GenSound(Media::AFilter::SoundGen::SoundTypeGen::SoundType sndType, Double sampleVol);
 		};

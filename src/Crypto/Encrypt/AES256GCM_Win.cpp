@@ -16,7 +16,7 @@ Crypto::Encrypt::AES256GCM::~AES256GCM()
 
 }
 
-UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	BCRYPT_ALG_HANDLE       hAlg = NULL;
 	BCRYPT_KEY_HANDLE       hKey = NULL;
@@ -108,7 +108,7 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	return cbData + 16;
 }
 
-UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	BCRYPT_ALG_HANDLE       hAlg = NULL;
 	BCRYPT_KEY_HANDLE       hKey = NULL;
@@ -200,12 +200,12 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	return cbData;
 }
 
-UOSInt Crypto::Encrypt::AES256GCM::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::AES256GCM::GetEncBlockSize() const
 {
 	return 16;
 }
 
-UOSInt Crypto::Encrypt::AES256GCM::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::AES256GCM::GetDecBlockSize() const
 {
 	return 16;
 }

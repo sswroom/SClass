@@ -149,10 +149,10 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 
 	if (item->imgURL.SetTo(s) && s->v[0])
 	{
-		UOSInt i = 0;
-		UOSInt j;
-		UOSInt k;
-		UOSInt retryCnt;
+		UIntOS i = 0;
+		UIntOS j;
+		UIntOS k;
+		UIntOS retryCnt;
 		UInt64 leng;
 		Text::PString sarr[2];
 		NN<Net::HTTPClient> cli;
@@ -186,15 +186,15 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 				{
 					if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".mp4")))
 					{
-						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
+						sptr2 = Text::StrConcatC(Text::StrUIntOS(sptr, i), UTF8STRC(".mp4"));
 					}
 					else if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".png")))
 					{
-						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
+						sptr2 = Text::StrConcatC(Text::StrUIntOS(sptr, i), UTF8STRC(".png"));
 					}
 					else
 					{
-						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".jpg"));
+						sptr2 = Text::StrConcatC(Text::StrUIntOS(sptr, i), UTF8STRC(".jpg"));
 					}
 					leng = 0;
 					{
@@ -252,7 +252,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 				cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, OPTSTR_CSTR(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
 				if (cli->Connect(sarr[0].ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
-					sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
+					sptr2 = Text::StrConcatC(Text::StrUIntOS(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;
 					{
 						IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -324,9 +324,9 @@ void Net::SNS::SNSManager::ChannelUpdate(NN<Net::SNS::SNSManager::ChannelData> c
 	channel->ctrl->GetCurrItems(itemList);
 	Data::ArrayListStringNN oldItems;
 	oldItems.AddAll(channel->currItems);
-	UOSInt i;
-	UOSInt j;
-	OSInt si;
+	UIntOS i;
+	UIntOS j;
+	IntOS si;
 	i = 0;
 	j = itemList.GetCount();
 	while (i < j)
@@ -335,7 +335,7 @@ void Net::SNS::SNSManager::ChannelUpdate(NN<Net::SNS::SNSManager::ChannelData> c
 		si = oldItems.SortedIndexOf(item->id);
 		if (si >= 0)
 		{
-			oldItems.RemoveAt((UOSInt)si);
+			oldItems.RemoveAt((UIntOS)si);
 		}
 		else
 		{
@@ -352,7 +352,7 @@ void Net::SNS::SNSManager::ChannelUpdate(NN<Net::SNS::SNSManager::ChannelData> c
 		si = channel->currItems.SortedIndexOf(Text::String::OrEmpty(oldItems.GetItem(i)));
 		if (si >= 0)
 		{
-			OPTSTR_DEL(channel->currItems.RemoveAt((UOSInt)si));
+			OPTSTR_DEL(channel->currItems.RemoveAt((UIntOS)si));
 			updated = true;
 		}
 	}
@@ -375,7 +375,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 {
 	NN<Net::SNS::SNSManager> me = userObj.GetNN<Net::SNS::SNSManager>();
 	Int64 t;
-	UOSInt i;
+	UIntOS i;
 	Int32 cnt;
 	NN<Net::SNS::SNSManager::ChannelData> channel;
 	me->threadRunning = true;
@@ -433,7 +433,7 @@ Net::SNS::SNSManager::SNSManager(NN<Net::TCPClientFactory> clif, Optional<Net::S
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNS"));
-		this->dataPath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		this->dataPath = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -487,8 +487,8 @@ Net::SNS::SNSManager::SNSManager(NN<Net::TCPClientFactory> clif, Optional<Net::S
 
 Net::SNS::SNSManager::~SNSManager()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::SNS::SNSManager::ChannelData> channel;
 	this->threadToStop = true;
 	this->threadEvt.Set();
@@ -518,8 +518,8 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSCon
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SNS::SNSControl> ctrl;
-	UOSInt i = 0;
-	UOSInt j = this->channelList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->channelList.GetCount();
 	while (i < j)
 	{
 		ctrl = this->channelList.GetItemNoCheck(i)->ctrl;
@@ -563,17 +563,17 @@ void Net::SNS::SNSManager::Use(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->mut);
 }
 
-UOSInt Net::SNS::SNSManager::GetCount() const
+UIntOS Net::SNS::SNSManager::GetCount() const
 {
 	return this->channelList.GetCount();
 }
 
-NN<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItemNoCheck(UOSInt index) const
+NN<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItemNoCheck(UIntOS index) const
 {
 	return this->channelList.GetItemNoCheck(index)->ctrl;
 }
 
-Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItem(UOSInt index) const
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItem(UIntOS index) const
 {
 	NN<ChannelData> data;
 	if (this->channelList.GetItem(index).SetTo(data))

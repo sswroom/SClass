@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(AnyType userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
@@ -59,12 +59,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
-		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
+		UIntOS i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItemNoCheck(i);
 		me->UpdateStatus();
 
-		UOSInt j;
+		UIntOS j;
 		i = 0;
 		j = me->logList.GetCount();
 		while (i < j)
@@ -90,12 +90,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userOb
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < log->ieLen)
 	{
 		Net::WirelessLANIE::ToString(&ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
-		i += (UOSInt)ieBuff[i + 1] + 2;
+		i += (UIntOS)ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToCString());
 }
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	UInt8 buff[16];
 	UTF8Char sbuff[2];
-	UOSInt i;
+	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	me->txtInput->GetText(sb);
 	if (sb.GetLength() < 6 || sb.GetLength() > 28)
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 		entry = me->macList.GetItemNoCheck(i);
 
 		NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
-		UOSInt j;
+		UIntOS j;
 		i = 0;
 		j = me->logList.GetCount();
 		while (i < j)
@@ -190,8 +190,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[3];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 				if (j == 2 || j == 3)
 				{
 					UInt8 buff[8];
-					UOSInt bitCnt;
+					UIntOS bitCnt;
 					Bool succ;
 					UInt64 startAddr;
 					UInt64 endAddr;
@@ -237,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 						endAddr = startAddr | 0xffffff;
 						succ = true;
 					}
-					else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], bitCnt))
+					else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUIntOS(&sarr[0].v[18], bitCnt))
 					{
 						buff[0] = 0;
 						buff[1] = 0;
@@ -291,8 +291,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 		Text::PString sarr[12];
 		Text::PString sarr2[7];
 		UInt8 buff[8];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 		Text::StringBuilderUTF8 sb;
 		{
@@ -461,7 +461,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 {
 	UnsafeArray<UInt8> ieBuff;
-	UOSInt i = this->logList.GetCount();
+	UIntOS i = this->logList.GetCount();
 	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 	while (i-- > 0)
 	{
@@ -483,7 +483,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 void SSWR::AVIRead::AVIRMACManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList.GetCount());
+	sb.AppendUIntOS(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }

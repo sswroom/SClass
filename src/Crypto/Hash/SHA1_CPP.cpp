@@ -13,7 +13,7 @@ extern "C" void SHA1_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message_B
 								0x6ED9EBA1,
 								0x8F1BBCDC,
 								0xCA62C1D6};
-	OSInt           t;
+	IntOS           t;
 	UInt32      temp;
 	UInt32      A, B, C, D, E;
 

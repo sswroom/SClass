@@ -8,8 +8,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(AnyType userObj)
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<Media::StaticImage> img;
@@ -101,7 +101,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj,
 		}
 		else
 		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Select point ")), me->points.GetCount() + 1);
+			sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Select point ")), me->points.GetCount() + 1);
 			me->lblSelStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		return UI::EventState::StopEvent;
@@ -109,20 +109,20 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj,
 	else if (me->selectMode == ActionType::Plate)
 	{
 		Math::Coord2DDbl coord = me->pbImg->Scn2ImagePos(scnPos);
-		me->anpr.ParseImagePlatePoint(img, Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)));
+		me->anpr.ParseImagePlatePoint(img, Math::Coord2D<UIntOS>((UIntOS)Double2IntOS(coord.x), (UIntOS)Double2IntOS(coord.y)));
 		me->selectMode = ActionType::None;
 		me->lblSelStatus->SetText(CSTR(""));
 	}
 	return UI::EventState::ContinueEvent;
 }
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UIntOS> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UIntOS confidence, NN<Media::StaticImage> plateImg)
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<ResultInfo> res;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	res = MemAllocNN(ResultInfo);
 	res->area = area;
 	res->result = result->Clone();
@@ -136,14 +136,14 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Med
 	me->lvPlate->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, pxArea);
 	me->lvPlate->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, confidence);
+	sptr = Text::StrUIntOS(sbuff, confidence);
 	me->lvPlate->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRANPRForm::ClearResults()
 {
 	NN<ResultInfo> res;
-	UOSInt i = this->results.GetCount();
+	UIntOS i = this->results.GetCount();
 	while (i-- > 0)
 	{
 		res = this->results.GetItemNoCheck(i);

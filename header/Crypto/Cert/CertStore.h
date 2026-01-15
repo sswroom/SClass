@@ -27,9 +27,9 @@ namespace Crypto
 			NN<Text::String> GetStoreName() const;
 
 			Optional<Crypto::Cert::X509Cert> GetCertByCN(Text::CStringNN commonName);
-			virtual UOSInt GetCount() const;
-			virtual Optional<Crypto::Cert::X509Cert> GetItem(UOSInt index) const;
-			virtual NN<Crypto::Cert::X509Cert> GetItemNoCheck(UOSInt index) const;
+			virtual UIntOS GetCount() const;
+			virtual Optional<Crypto::Cert::X509Cert> GetItem(UIntOS index) const;
+			virtual NN<Crypto::Cert::X509Cert> GetItemNoCheck(UIntOS index) const;
 		};
 	}
 }

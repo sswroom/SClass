@@ -43,10 +43,10 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	Bool error = false;
 	UTF8Char sbuff[256];
 	UnsafeArray<const UTF8Char> sptr;
-	UOSInt i;
-	UOSInt currPos;
-	UOSInt readSize;
-	UOSInt buffSize;
+	UIntOS i;
+	UIntOS currPos;
+	UIntOS readSize;
+	UIntOS buffSize;
 	UInt64 fileSize;
 	Int32 cmdType;
 	UInt32 cmdSize;
@@ -80,7 +80,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	NN<Text::String> s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
-	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RED")))
+	if (!Text::StrStartsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("RED")))
 	{
 		return nullptr;
 	}
@@ -89,7 +89,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 		return nullptr;
 	if (sbuff[i - 1] != 's' && sbuff[i - 1] != 'S')
 		return nullptr;
-	if (!Text::StrEqualsICaseC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), UTF8STRC("DAT")))
+	if (!Text::StrEqualsICaseC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), UTF8STRC("DAT")))
 		return nullptr;
 
 	fileSize = fd->GetDataSize();

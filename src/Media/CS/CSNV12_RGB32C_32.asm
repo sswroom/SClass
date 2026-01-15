@@ -7,7 +7,7 @@ global CSNV12_RGB32C_do_yv12rgb8
 global _CSNV12_RGB32C_do_yv12rgb2
 global CSNV12_RGB32C_do_yv12rgb2
 
-;void CSNV12_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUVPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt ystep, OSInt dstep, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
+;void CSNV12_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUVPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS ystep, IntOS dstep, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
 ; 0 tmpV
 ; 16 cSub
 ; 20 sWidth
@@ -50,12 +50,12 @@ CSNV12_RGB32C_VerticalFilterLRGB:
 	mov edx,dword [esp+56] ;width
 	mov eax,edx
 	mov ecx,edx
-	sub dword [esp+92],edx			;OSInt yAdd = ystep - width;
+	sub dword [esp+92],edx			;IntOS yAdd = ystep - width;
 	shr eax,1
 	shr ecx,3
 	sub eax,2
-	mov dword [esp+20],ecx ;sWidth	OSInt sWidth = width >> 3;
-	mov dword [esp+16],eax ;cSub	OSInt cSub = (width >> 1) - 2;
+	mov dword [esp+20],ecx ;sWidth	IntOS sWidth = width >> 3;
+	mov dword [esp+16],eax ;cSub	IntOS cSub = (width >> 1) - 2;
 	mov ecx,dword [esp+64] ;tap
 	cmp ecx,4
 	jnz vflexit						; if (tap == 4)
@@ -63,7 +63,7 @@ CSNV12_RGB32C_VerticalFilterLRGB:
 	jz vflstart
 									; if (width & 7)
 	shr edx,2
-	push edx						; OSInt widthLeft = (width & 7) >> 2;
+	push edx						; IntOS widthLeft = (width & 7) >> 2;
 	movdqu xmm7,[esp+4] ;tmpV
 
 	align 16
@@ -552,7 +552,7 @@ vflexit:
 	pop ebp
 	ret
 
-;void CSNV12_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
+;void CSNV12_RGB32C_do_yv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS yBpl, IntOS uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
 ;0 widthLeft
 ;4 cSub
 ;8 cSize
@@ -1311,7 +1311,7 @@ yv2r8flopexit:
 	pop ebp
 	ret
 
-;void CSNV12_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, OSInt yBpl, OSInt uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
+;void CSNV12_RGB32C_do_yv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, IntOS yBpl, IntOS uvBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr)
 ;0 widthLeft
 ;4 cSub
 ;8 cSize

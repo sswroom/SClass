@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PEMExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	switch (index)
 	{
@@ -143,8 +143,8 @@ Bool Exporter::PEMExporter::ExportStream(NN<IO::SeekableStream> stm, NN<Crypto::
 	{
 		NN<Crypto::Cert::X509FileList> fileList = NN<Crypto::Cert::X509FileList>::ConvertFrom(x509);
 		NN<Crypto::Cert::X509File> file;
-		UOSInt i = 0;
-		UOSInt j = fileList->GetFileCount();
+		UIntOS i = 0;
+		UIntOS j = fileList->GetFileCount();
 		while (i < j)
 		{
 			if (fileList->GetFile(i).SetTo(file))

@@ -3,13 +3,13 @@
 
 extern "C"
 {
-void AutoCropFilter_CropCalc(UInt8 *yptr, OSInt w, OSInt h, OSInt ySplit, OSInt *crops)
+void AutoCropFilter_CropCalc(UInt8 *yptr, IntOS w, IntOS h, IntOS ySplit, IntOS *crops)
 {
 	UInt8 *ptr;
 	UInt8 *ptr2;
-	OSInt i;
-	OSInt j;
-	OSInt v;
+	IntOS i;
+	IntOS j;
+	IntOS v;
 	Bool found;
 	if (crops[1] != 0)
 	{

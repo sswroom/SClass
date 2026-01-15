@@ -12,7 +12,7 @@ namespace UI
 		{
 		private:
 			Data::ArrayListNN<UI::GUITabPage> tabPages;
-			UOSInt selIndex;
+			UIntOS selIndex;
 
 		public:
 			JUITabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
@@ -20,15 +20,15 @@ namespace UI
 
 			virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText);
 			virtual NN<GUITabPage> AddTabPage(Text::CStringNN itemText);
-			virtual void SetSelectedIndex(UOSInt index);
+			virtual void SetSelectedIndex(UIntOS index);
 			virtual void SetSelectedPage(NN<GUITabPage> page);
-			virtual UOSInt GetSelectedIndex();
+			virtual UIntOS GetSelectedIndex();
 			virtual Optional<GUITabPage> GetSelectedPage();
-			virtual void SetTabPageName(UOSInt index, Text::CStringNN name);
-			virtual UnsafeArrayOpt<UTF8Char> GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff);
-			virtual Math::RectArea<OSInt> GetTabPageRect();
+			virtual void SetTabPageName(UIntOS index, Text::CStringNN name);
+			virtual UnsafeArrayOpt<UTF8Char> GetTabPageName(UIntOS index, UnsafeArray<UTF8Char> buff);
+			virtual Math::RectArea<IntOS> GetTabPageRect();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual void OnSizeChanged(Bool updateScn);
 			virtual void SetDPI(Double hdpi, Double ddpi);
 		};

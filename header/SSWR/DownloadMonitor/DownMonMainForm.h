@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnPasteTableClicked(AnyType userObj);
 			static void __stdcall OnPasteHTMLClicked(AnyType userObj);
 			static void __stdcall OnCopyTableClicked(AnyType userObj);
-			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnFilesDblClick(AnyType userObj, UIntOS itemIndex);
 			static void __stdcall OnFileEndClicked(AnyType userObj);
 			static void __stdcall OnWebUpdateClicked(AnyType userObj);
 			static void __stdcall On30MinutesClicked(AnyType userObj);

@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	if (outImg == 0)
 	{
 		return nullptr;
@@ -125,9 +125,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 
 		if (hdr[2] == 10)
 		{
-			Data::ByteBuffer tmpBuff((UOSInt)ds - 26 - imgPos);
+			Data::ByteBuffer tmpBuff((UIntOS)ds - 26 - imgPos);
 			UInt8 *tmpBits = 0;
-			fd->GetRealData(imgPos, (UOSInt)ds - 26 - imgPos, tmpBuff);
+			fd->GetRealData(imgPos, (UIntOS)ds - 26 - imgPos, tmpBuff);
 
 			if ((hdr[17] & 30) != 20)
 			{
@@ -178,7 +178,7 @@ rle32exit:
 				{
 					UnsafeArray<UInt8> tmpSPtr;
 					UnsafeArray<UInt8> tmpDPtr;
-					UOSInt cnt = imgHeight * imgWidth;
+					UIntOS cnt = imgHeight * imgWidth;
 					UInt32 tmpVal;
 					tmpSPtr = tmpBuff.Arr();
 					tmpDPtr = pBits.Arr();

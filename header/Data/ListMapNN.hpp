@@ -12,7 +12,7 @@ namespace Data
 	public:
 		virtual ~ListMapNN() {};
 
-		virtual T GetKey(UOSInt index) const = 0;
+		virtual T GetKey(UIntOS index) const = 0;
 		void PutAll(NN<const ListMapNN<T,V>> map);
 		void FreeAll(FreeFunc freeFunc);
 		void DeleteAll();
@@ -20,8 +20,8 @@ namespace Data
 
 	template <class T, class V> void ListMapNN<T, V>::PutAll(NN<const ListMapNN<T,V>> map)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<V> v;
 		i = 0;
 		j = map->GetCount();
@@ -37,7 +37,7 @@ namespace Data
 
 	template <class T, class V> void ListMapNN<T, V>::FreeAll(FreeFunc freeFunc)
 	{
-		UOSInt i = this->GetCount();
+		UIntOS i = this->GetCount();
 		while (i-- > 0)
 		{
 			freeFunc(this->GetItemNoCheck(i));
@@ -47,7 +47,7 @@ namespace Data
 
 	template <class T, class V> void ListMapNN<T, V>::DeleteAll()
 	{
-		UOSInt i = this->GetCount();
+		UIntOS i = this->GetCount();
 		while (i-- > 0)
 		{
 			this->GetItemNoCheck(i).Delete();

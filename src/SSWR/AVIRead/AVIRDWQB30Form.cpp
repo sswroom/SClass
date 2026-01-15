@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NN<IO::Stream> stm = frm.GetStream();
-			UOSInt i = me->cboDevType->GetSelectedIndex();
+			UIntOS i = me->cboDevType->GetSelectedIndex();
 			if (i == 0)
 			{
 				NEW_CLASSNN(scanner, IO::Device::DensoWaveQB30(stm));
@@ -67,15 +67,15 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userO
 		me->tpSetting->SetEnabled(true);
 
 		Data::ArrayListNative<IO::CodeScanner::DeviceCommand> cmdList;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		scanner->GetCommandList(cmdList);
 		me->cboSetCmd->ClearItems();
 		i = 0;
 		j = cmdList.GetCount();
 		while (i < j)
 		{
-			me->cboSetCmd->AddItem(scanner->GetCommandName(cmdList.GetItem(i)).OrEmpty(), (void*)(OSInt)cmdList.GetItem(i));
+			me->cboSetCmd->AddItem(scanner->GetCommandName(cmdList.GetItem(i)).OrEmpty(), (void*)(IntOS)cmdList.GetItem(i));
 			i++;
 		}
 		if (j > 0)
@@ -131,10 +131,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 	NN<IO::CodeScanner> scanner;
 	if (me->scanner.SetTo(scanner))
 	{
-		UOSInt i = me->cboSetCmd->GetSelectedIndex();
+		UIntOS i = me->cboSetCmd->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)me->cboSetCmd->GetItem(i).GetOSInt();
+			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)me->cboSetCmd->GetItem(i).GetIntOS();
 			me->cmdCurr = dcmd;
 			me->cmdType = scanner->GetCommandParamType(dcmd, me->cmdMin, me->cmdMax);
 			if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
@@ -153,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 				i = me->cmdMin;
 				while (i <= me->cmdMax)
 				{
-					me->cboSetParam->AddItem(scanner->GetCommandParamName(dcmd, i).OrEmpty(), (void*)(OSInt)i); 
+					me->cboSetParam->AddItem(scanner->GetCommandParamName(dcmd, i).OrEmpty(), (void*)(IntOS)i); 
 					i++;
 				}
 			}
@@ -211,10 +211,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 		else if (me->cmdType == IO::CodeScanner::CT_SELECT_COMMAND)
 		{
 			Int32 val;
-			UOSInt i = me->cboSetParam->GetSelectedIndex();
+			UIntOS i = me->cboSetParam->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
-				val = (Int32)me->cboSetParam->GetItem(i).GetOSInt();
+				val = (Int32)me->cboSetParam->GetItem(i).GetIntOS();
 				if (scanner->SetCommand(me->cmdCurr, val))
 				{
 					me->txtSetCmd->SetText(CSTR("Success"));

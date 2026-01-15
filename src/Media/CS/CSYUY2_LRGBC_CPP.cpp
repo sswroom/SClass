@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 
-extern "C" void CSYUY2_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgbi64, Int64 *rgbGammaCorri64)
+extern "C" void CSYUY2_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgbi64, Int64 *rgbGammaCorri64)
 {
-	OSInt i;
+	IntOS i;
 	Int16x4 i16Val1;
 	Int16x4 i16Val2;
 	Int16x4 i16Val3;

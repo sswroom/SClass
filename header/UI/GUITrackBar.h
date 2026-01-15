@@ -9,7 +9,7 @@ namespace UI
 	class GUITrackBar : public GUIControl
 	{
 	public:
-		typedef void (CALLBACKFUNC ScrollEvent)(AnyType userObj, UOSInt scrollPos);
+		typedef void (CALLBACKFUNC ScrollEvent)(AnyType userObj, UIntOS scrollPos);
 
 	private:
 		Data::ArrayListObj<Data::CallbackStorage<ScrollEvent>> scrollHandlers;
@@ -19,13 +19,13 @@ namespace UI
 		virtual ~GUITrackBar();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		void EventScrolled(UOSInt scrollPos);
+		void EventScrolled(UIntOS scrollPos);
 		void HandleScrolled(ScrollEvent hdlr, AnyType userObj);
 
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
-		virtual void SetPos(UOSInt pos) = 0;
-		virtual void SetRange(UOSInt minVal, UOSInt maxVal) = 0;
-		virtual UOSInt GetPos() = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void SetPos(UIntOS pos) = 0;
+		virtual void SetRange(UIntOS minVal, UIntOS maxVal) = 0;
+		virtual UIntOS GetPos() = 0;
 
 	};
 }

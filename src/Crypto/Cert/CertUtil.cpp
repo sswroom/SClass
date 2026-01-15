@@ -172,8 +172,8 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NN<Net::ASN1PDUBuilder> builder, N
 		builder->AppendOIDString(CSTR("2.5.29.18"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
-		UOSInt i = 0;
-		UOSInt j = strList->GetCount();
+		UIntOS i = 0;
+		UIntOS j = strList->GetCount();
 		NN<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
 		while (i < j)
@@ -287,8 +287,8 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NN<Net::ASN1PDUBuilder> builder, N
 
 Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType)
 {
-	UOSInt itemLen;
-	UOSInt itemOfst;
+	UIntOS itemLen;
+	UIntOS itemOfst;
 	UnsafeArray<const UInt8> item;
 	if (!builder->GetItemRAW("1", itemLen, itemOfst).SetTo(item))
 	{
@@ -297,7 +297,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net:
 	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA && hashType == Crypto::Hash::HashType::SHA256)
 	{
 		UInt8 signData[1024];
-		UOSInt signLen;
+		UIntOS signLen;
 		if (!ssl->Signature(key, hashType, Data::ByteArrayR(item, itemOfst + itemLen), signData, signLen))
 		{
 			return false;
@@ -349,7 +349,7 @@ Optional<Crypto::Cert::X509CertReq> Crypto::Cert::CertUtil::CertReqCreate(NN<Net
 	return csr;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UOSInt validDays, Optional<const CertExtensions> ext)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UIntOS validDays, Optional<const CertExtensions> ext)
 {
 	NN<const CertExtensions> nnext;
 	Data::RandomBytesGenerator rndBytes;
@@ -381,7 +381,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	dt.SetCurrTimeUTC();
 	builder.BeginSequence();
 	builder.AppendUTCTime(dt);
-	dt.AddDay((OSInt)validDays);
+	dt.AddDay((IntOS)validDays);
 	builder.AppendUTCTime(dt);
 	builder.EndLevel();
 
@@ -405,7 +405,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	return cert;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Cert> caCert, NN<Crypto::Cert::X509Key> caKey, UOSInt validDays, NN<Crypto::Cert::X509CertReq> csr)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Cert> caCert, NN<Crypto::Cert::X509Key> caKey, UIntOS validDays, NN<Crypto::Cert::X509CertReq> csr)
 {
 	UInt8 bSerial[20];
 	Text::StringBuilderUTF8 sbFileName;
@@ -448,7 +448,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	dt.SetCurrTimeUTC();
 	builder.BeginSequence();
 	builder.AppendUTCTime(dt);
-	dt.AddDay((OSInt)validDays);
+	dt.AddDay((IntOS)validDays);
 	builder.AppendUTCTime(dt);
 	builder.EndLevel();
 
@@ -514,7 +514,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 		return nullptr;
 	}
 	sptr = cert->GetSourceNameObj()->ConcatTo(sbuff);
-	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(ext);
@@ -544,8 +544,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 			{
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
-					NN<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
-					if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(dataBuff, (UOSInt)fileSize), s).SetTo(x509))
+					NN<Text::String> s = Text::String::New(sbuff, (UIntOS)(sptr2 - sbuff));
+					if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(dataBuff, (UIntOS)fileSize), s).SetTo(x509))
 					{
 						s->Release();
 						if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)

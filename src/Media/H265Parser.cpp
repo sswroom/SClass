@@ -5,12 +5,12 @@
 #include "Media/H265Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, NN<Media::FrameInfo> frameInfo)
+Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UIntOS spsSize, NN<Media::FrameInfo> frameInfo)
 {
 	UInt8 *tmpBuff;
-	UOSInt tmpSize;
-	UOSInt i;
-	UOSInt j;
+	UIntOS tmpSize;
+	UIntOS i;
+	UIntOS j;
 	UInt32 tmp;
 	UInt32 sps_max_sub_layers_minus1;
 	UInt32 chroma_format_idc;
@@ -150,7 +150,7 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, NN<Med
 			reader.ReadBits(tmp, 1); //sps_scaling_list_data_present_flag
 			if (tmp) //scaling_list_data()
 			{
-				OSInt coefNum;
+				IntOS coefNum;
 				i = 3;
 				while (i-- > 0)
 				{
@@ -160,7 +160,7 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, NN<Med
 						reader.ReadBits(tmp, 1); //scaling_list_pred_mode_flag
 						if (tmp)
 						{
-							coefNum = ((OSInt)1) << (4 + ((2 - (Int32)i) << 1));
+							coefNum = ((IntOS)1) << (4 + ((2 - (Int32)i) << 1));
 							if (coefNum > 64)
 								coefNum = 64;
 							if (i == 0)

@@ -9,20 +9,20 @@ namespace Data
 	{
 	public:
 		ArrayListObj();
-		ArrayListObj(UOSInt capacity);
+		ArrayListObj(UIntOS capacity);
 		ArrayListObj(const ArrayListObj<T> &list);
 		virtual ~ArrayListObj();
 
-		virtual UOSInt Add(T val);
-		UOSInt AddAll(NN<const ReadingList<T>> arr);
-		virtual UOSInt AddRange(UnsafeArray<const T> arr, UOSInt cnt);
-		virtual T RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, T val);
+		virtual UIntOS Add(T val);
+		UIntOS AddAll(NN<const ReadingList<T>> arr);
+		virtual UIntOS AddRange(UnsafeArray<const T> arr, UIntOS cnt);
+		virtual T RemoveAt(UIntOS index);
+		virtual void Insert(UIntOS index, T val);
 		virtual NN<ArrayListObj<T>> Clone() const;
 
-		void EnsureCapacity(UOSInt capacity);
-		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
-		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
+		void EnsureCapacity(UIntOS capacity);
+		UIntOS GetRange(UnsafeArray<T> outArr, UIntOS index, UIntOS cnt) const;
+		UIntOS RemoveRange(UIntOS index, UIntOS cnt);
 		ArrayListObj<T> &operator =(const ArrayListObj<T> &v);
 	};
 
@@ -30,7 +30,7 @@ namespace Data
 	{
 	}
 
-	template <class T> ArrayListObj<T>::ArrayListObj(UOSInt capacity) : ArrayListObjBase<T>(capacity)
+	template <class T> ArrayListObj<T>::ArrayListObj(UIntOS capacity) : ArrayListObjBase<T>(capacity)
 	{
 	}
 
@@ -43,9 +43,9 @@ namespace Data
 	{
 	}
 
-	template <class T> UOSInt ArrayListObj<T>::Add(T val)
+	template <class T> UIntOS ArrayListObj<T>::Add(T val)
 	{
-		UOSInt ret;
+		UIntOS ret;
 		if (this->objCnt == this->capacity)
 		{
 			UnsafeArray<T> newArr = MemAllocArr(T, this->capacity << 1);
@@ -58,9 +58,9 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListObj<T>::AddAll(NN<const ReadingList<T>> arr)
+	template <class T> UIntOS ArrayListObj<T>::AddAll(NN<const ReadingList<T>> arr)
 	{
-		UOSInt cnt = arr->GetCount();
+		UIntOS cnt = arr->GetCount();
 		if (this->objCnt + cnt >= this->capacity)
 		{
 			while (this->objCnt + cnt >= this->capacity)
@@ -75,7 +75,7 @@ namespace Data
 			MemFreeArr(this->arr);
 			this->arr = newArr;
 		}
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < cnt)
 		{
 			this->arr[this->objCnt + i] = arr->GetItem(i);
@@ -85,7 +85,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayListObj<T>::AddRange(UnsafeArray<const T> arr, UOSInt cnt)
+	template <class T> UIntOS ArrayListObj<T>::AddRange(UnsafeArray<const T> arr, UIntOS cnt)
 	{
 		if (this->objCnt + cnt >= this->capacity)
 		{
@@ -106,11 +106,11 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> T ArrayListObj<T>::RemoveAt(UOSInt index)
+	template <class T> T ArrayListObj<T>::RemoveAt(UIntOS index)
 	{
 		if (index >= this->objCnt)
 			return nullptr;
-		UOSInt i = this->objCnt - index - 1;
+		UIntOS i = this->objCnt - index - 1;
 		T o = this->arr[index];
 		if (i > 0)
 		{
@@ -121,7 +121,7 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayListObj<T>::Insert(UOSInt index, T Val)
+	template <class T> void ArrayListObj<T>::Insert(UIntOS index, T Val)
 	{
 		if (this->objCnt == this->capacity)
 		{
@@ -141,7 +141,7 @@ namespace Data
 		}
 		else
 		{
-			UOSInt j = this->objCnt;
+			UIntOS j = this->objCnt;
 			while (j > index)
 			{
 				this->arr[j] = this->arr[j - 1];
@@ -160,7 +160,7 @@ namespace Data
 		return newArr;
 	}
 
-	template <class T> void ArrayListObj<T>::EnsureCapacity(UOSInt capacity)
+	template <class T> void ArrayListObj<T>::EnsureCapacity(UIntOS capacity)
 	{
 		if (capacity > this->capacity)
 		{
@@ -176,10 +176,10 @@ namespace Data
 		}
 	}
 
-	template <class T> UOSInt ArrayListObj<T>::GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const
+	template <class T> UIntOS ArrayListObj<T>::GetRange(UnsafeArray<T> outArr, UIntOS index, UIntOS cnt) const
 	{
-		UOSInt startIndex = index;
-		UOSInt endIndex = index + cnt;
+		UIntOS startIndex = index;
+		UIntOS endIndex = index + cnt;
 		if (endIndex > this->objCnt)
 		{
 			endIndex = this->objCnt;
@@ -194,10 +194,10 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UOSInt ArrayListObj<T>::RemoveRange(UOSInt index, UOSInt cnt)
+	template <class T> UIntOS ArrayListObj<T>::RemoveRange(UIntOS index, UIntOS cnt)
 	{
-		UOSInt startIndex = index;
-		UOSInt endIndex = index + cnt;
+		UIntOS startIndex = index;
+		UIntOS endIndex = index + cnt;
 		if (endIndex > this->objCnt)
 		{
 			endIndex = this->objCnt;
@@ -211,8 +211,8 @@ namespace Data
 #if defined(_MSC_VER)
 		MemCopyO(&this->arr[startIndex], &this->arr[endIndex], sizeof(T) * (this->objCnt - endIndex));
 #else
-		UOSInt i = startIndex;
-		UOSInt j = endIndex;
+		UIntOS i = startIndex;
+		UIntOS j = endIndex;
 		while (j < this->objCnt)
 		{
 			this->arr[i++] = this->arr[j++];

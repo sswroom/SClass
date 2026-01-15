@@ -100,7 +100,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const 
 	this->groupStyle = groupStyle;
 	this->closed = false;
 
-	UOSInt i;
+	UIntOS i;
 
 	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
@@ -127,7 +127,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const 
 	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, tval, ts.tzQhr);
 	sptr = GetNewName(buff, tval, ts.inst.nanosec);
 
-	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fileStm, FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 }
@@ -217,7 +217,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		log.Delete();
 		fileStm.Delete();
 
-		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UIntOS)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
@@ -230,7 +230,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 	{
 		sptr = time.ToString(buff, this->dateFormat.Ptr());
 		Text::StringBuilderUTF8 sb;
-		sb.AppendC(buff, (UOSInt)(sptr - buff));
+		sb.AppendC(buff, (UIntOS)(sptr - buff));
 		sb.Append(logMsg);
 		log->WriteLine(sb.ToCString());
 	}

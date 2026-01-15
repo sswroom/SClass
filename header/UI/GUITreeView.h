@@ -30,8 +30,8 @@ namespace UI
 			void *GetHItem();
 			void SetText(Text::CStringNN txt);
 			NN<Text::String> GetText() const;
-			UOSInt GetChildCount();
-			Optional<TreeItem> GetChild(UOSInt index);
+			UIntOS GetChildCount();
+			Optional<TreeItem> GetChild(UIntOS index);
 		};
 
 		struct ClassData;
@@ -50,7 +50,7 @@ namespace UI
 		TreeItem *dragItem;
 		ClassData *clsData;
 
-		static OSInt __stdcall TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+		static IntOS __stdcall TVWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		void FreeItems();
 	public:
 		GUITreeView(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
@@ -59,16 +59,16 @@ namespace UI
 		void EventSelectionChange();
 		void EventDoubleClick();
 		void EventRightClicked();
-		virtual OSInt EventBeginLabelEdit(NN<TreeItem> item);
-		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
+		virtual IntOS EventBeginLabelEdit(NN<TreeItem> item);
+		virtual IntOS EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
 
 		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj);
 		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj);
 		AnyType RemoveItem(NN<TreeItem> item);
 		void ClearItems();
-		UOSInt GetRootCount();
-		Optional<TreeItem> GetRootItem(UOSInt index);
+		UIntOS GetRootCount();
+		Optional<TreeItem> GetRootItem(UIntOS index);
 		void ExpandItem(NN<TreeItem> item);
 		Bool IsExpanded(NN<TreeItem> item);
 		void SetHasLines(Bool hasLines);
@@ -80,7 +80,7 @@ namespace UI
 		void BeginEdit(NN<TreeItem> item);
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj);
 		virtual void HandleRightClick(UI::UIEvent hdlr, AnyType userObj);

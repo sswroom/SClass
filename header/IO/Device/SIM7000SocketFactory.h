@@ -25,7 +25,7 @@ namespace IO
 			{
 				UInt32 remoteIP;
 				UInt16 remotePort;
-				UOSInt dataSize;
+				UIntOS dataSize;
 				UInt8 data[1];
 			};
 			
@@ -46,7 +46,7 @@ namespace IO
 			Optional<Text::String> apn;
 			SocketStatus status[8];
 
-			static void __stdcall OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			static void __stdcall OnReceiveData(AnyType userObj, UIntOS index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			void CloseAllSockets();
 		public:
 			SIM7000SocketFactory(NN<IO::Device::SIM7000> modem, Bool needRelease);
@@ -72,13 +72,13 @@ namespace IO
 			virtual void DestroySocket(NN<Socket> socket);
 			virtual Bool SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port);
 			virtual Bool SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port); ////////////////////////
-			virtual Bool SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex); ////////////////////////
+			virtual Bool SocketBindRAWIf(NN<Socket> socket, UIntOS ifIndex); ////////////////////////
 			virtual Bool SocketListen(NN<Socket> socket); ////////////////////////
 			virtual Optional<Socket> SocketAccept(NN<Socket> socket); ////////////////////////
 			virtual Int32 SocketGetLastError(); ////////////////////////
 			virtual Bool GetRemoteAddr(NN<Socket> socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port); ////////////////////////
 			virtual Bool GetLocalAddr(NN<Socket> socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port); ////////////////////////
-			virtual OSInt SocketGetFD(NN<Socket> socket);
+			virtual IntOS SocketGetFD(NN<Socket> socket);
 			virtual Bool SocketWait(NN<Socket> socket, Data::Duration dur);
 
 			virtual void SetDontLinger(NN<Socket> socket, Bool val); ////////////////////////
@@ -91,15 +91,15 @@ namespace IO
 			virtual void SetBroadcast(NN<Socket> socket, Bool val);
 			virtual void AddIPMembership(NN<Socket> socket, UInt32 ip); ////////////////////////
 
-			virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et); ////////////////////////
-			virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et); ////////////////////////
-			virtual Optional<Net::SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et); ////////////////////////
-			virtual UOSInt EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete); ////////////////////////
+			virtual UIntOS SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et); ////////////////////////
+			virtual UIntOS ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et); ////////////////////////
+			virtual Optional<Net::SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et); ////////////////////////
+			virtual UIntOS EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete); ////////////////////////
 			virtual void CancelReceiveData(NN<Net::SocketRecvSess> reqData); ////////////////////////
 
-			virtual UOSInt UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et); ////////////////////////
-			virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
-			virtual UOSInt SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName);
+			virtual UIntOS UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et); ////////////////////////
+			virtual UIntOS SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
+			virtual UIntOS SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UTF8Char> ifName);
 
 			virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl);
 
@@ -112,18 +112,18 @@ namespace IO
 
 			virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr);
 			virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);
-			virtual UOSInt GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
+			virtual UIntOS GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
 			virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr);
 
-			virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4);
+			virtual Bool ARPAddRecord(UIntOS ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4);
 
-			virtual UOSInt GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
+			virtual UIntOS GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
 			virtual Bool GetIPInfo(NN<IPInfo> info); //////////////////////////////////
 			virtual Bool GetTCPInfo(NN<TCPInfo> info); //////////////////////////////////
 			virtual Bool GetUDPInfo(NN<UDPInfo> info); //////////////////////////////////
-			virtual UOSInt QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual UIntOS QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId);
 			virtual void FreePortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList);
-			virtual UOSInt QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual UIntOS QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
 			virtual void FreePortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList);
 		};
 	}

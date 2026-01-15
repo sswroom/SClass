@@ -455,9 +455,9 @@ Bool Text::CharUtil::UTF8CharValid(UnsafeArray<const UTF8Char> sptr)
 Optional<const Text::CharUtil::UnicodeBlock> Text::CharUtil::GetUnicodeBlock(UTF32Char c)
 {
 	UnicodeBlock *blk;
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(ublk) / sizeof(ublk[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(ublk) / sizeof(ublk[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

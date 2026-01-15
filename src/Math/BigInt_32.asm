@@ -12,7 +12,7 @@ global _BigInt_MulUI32
 global _BigInt_DivUI32
 global _BigInt_ToStringW16
 
-;void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, OSInt valSize)
+;void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, IntOS valSize)
 ;0 ebx
 ;4 retAddr
 ;8 srcBuff
@@ -39,7 +39,7 @@ bibslop:
 	pop ebx
 	ret
 
-;void BigInt_Neg(UInt8 *valBuff, OSInt valSize);
+;void BigInt_Neg(UInt8 *valBuff, IntOS valSize);
 ;0 retAddr
 ;4 valBuff
 ;8 valSize
@@ -68,7 +68,7 @@ bineglop2:
 bineglop3:
 	ret
 
-;void BigInt_Add(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize)
+;void BigInt_Add(UInt8 *destBuff, UInt8 *srcBuff, IntOS destSize, IntOS srcSize)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -159,7 +159,7 @@ biaddexit:
 	pop ebx
 	ret
 
-;void BigInt_And(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize)
+;void BigInt_And(UInt8 *destBuff, UInt8 *srcBuff, IntOS destSize, IntOS srcSize)
 ;0 edi
 ;4 esi
 ;8 retAddr
@@ -215,7 +215,7 @@ biandexit:
 	pop esi
 	ret
 
-;void BigInt_Or(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize)
+;void BigInt_Or(UInt8 *destBuff, UInt8 *srcBuff, IntOS destSize, IntOS srcSize)
 ;0 edi
 ;4 esi
 ;8 retAddr
@@ -271,7 +271,7 @@ biorexit:
 	pop esi
 	ret
 
-;void BigInt_Xor(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize)
+;void BigInt_Xor(UInt8 *destBuff, UInt8 *srcBuff, IntOS destSize, IntOS srcSize)
 ;0 edi
 ;4 esi
 ;8 retAddr
@@ -327,7 +327,7 @@ bixorexit:
 	pop esi
 	ret
 
-;void BigInt_AssignI32(UInt8 *valBuff, OSInt valSize, Int32 val);
+;void BigInt_AssignI32(UInt8 *valBuff, IntOS valSize, Int32 val);
 ;0 edi
 ;4 retAddr
 ;8 valBuff
@@ -350,7 +350,7 @@ biei32exit:
 	pop edi
 	ret
 
-;void BigInt_AssignStrW16(UInt8 *valBuff, OSInt valSize, const WChar *val);
+;void BigInt_AssignStrW16(UInt8 *valBuff, IntOS valSize, const WChar *val);
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -532,7 +532,7 @@ biesw16exit:
 	pop ebp
 	ret
 	
-;UInt32 BigInt_MulUI32(UInt8 *valBuff, OSInt valSize, UInt32 val);
+;UInt32 BigInt_MulUI32(UInt8 *valBuff, IntOS valSize, UInt32 val);
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -567,7 +567,7 @@ bimui32lop:
 	pop ebx
 	ret
 
-;UInt32 BigInt_DivUI32(UInt8 *valBuff, OSInt valSize, UInt32 val);
+;UInt32 BigInt_DivUI32(UInt8 *valBuff, IntOS valSize, UInt32 val);
 ;0 valBuff
 ;4 valSize
 ;8 ebp
@@ -630,7 +630,7 @@ bidui32lop3:
 	pop ebx
 	ret
 
-;WChar *BigInt_ToStringW16(WChar *buff, UInt8 *valArr, UInt8 *tmpArr, OSInt valSize)
+;WChar *BigInt_ToStringW16(WChar *buff, UInt8 *valArr, UInt8 *tmpArr, IntOS valSize)
 ;0 val2
 ;4 val3
 ;8 ebp

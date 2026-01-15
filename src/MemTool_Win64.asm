@@ -31,7 +31,7 @@ global MemCopyNAC_AMDAVX
 global MemCopyNANC_AMDAVX
 global MemCopyOAC_AMDAVX
 
-;void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val)
+;void MemFillB(UInt8 *buff, IntOS byteCnt, UInt8 val)
 ;0 retAddr
 ;rcx buff
 ;rdx byteCnt
@@ -46,7 +46,7 @@ MemFillB:
 	pop rdi
 	ret
 
-;void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val);
+;void MemFillW(UInt8 *buff, IntOS wordCnt, UInt16 val);
 ;0 retAddr
 ;rcx buff
 ;rdx wordCnt
@@ -61,7 +61,7 @@ MemFillW:
 	pop rdi
 	ret
 
-;void MemClearAC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearAC_SSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -77,7 +77,7 @@ memclearaclop:
 	jnz memclearaclop
 	ret
 	
-;void MemClearANC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearANC_SSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -93,7 +93,7 @@ memclearanclop:
 	jnz memclearanclop
 	ret
 	
-;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -178,7 +178,7 @@ memcopyaclop4a:
 memcopyacexit:
 	ret
 
-;void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -263,7 +263,7 @@ memcopyanclop4a:
 memcopyancexit:
 	ret
 
-;void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -344,7 +344,7 @@ memcopynacexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -425,8 +425,8 @@ memcopynancexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemClearAC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-;void MemClearANC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearAC_AVX(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearANC_AVX(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -445,7 +445,7 @@ MemClearANC_AVX:
 	mov rdi,r8
 	ret
 	
-;void MemCopyAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -531,7 +531,7 @@ memcopyacavxlop4a:
 memcopyacavxexit:
 	ret
 
-;void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -617,7 +617,7 @@ memcopyancavxlop4a:
 memcopyancavxexit:
 	ret
 
-;void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -699,7 +699,7 @@ memcopynacavxexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -781,7 +781,7 @@ memcopynancavxexit:
 	mov rdi,r10
 	ret
 
-;void MemClearAC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearAC_AMDSSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -797,7 +797,7 @@ memclearacamdlop:
 	jnz memclearacamdlop
 	ret
 	
-;void MemClearANC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearANC_AMDSSE(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -813,7 +813,7 @@ memclearancamdlop:
 	jnz memclearancamdlop
 	ret
 	
-;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_SSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -898,7 +898,7 @@ memcopyacamdlop4a:
 memcopyacamdexit:
 	ret
 
-;void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -983,7 +983,7 @@ memcopyancamdlop4a:
 memcopyancamdexit:
 	ret
 
-;void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -1064,7 +1064,7 @@ memcopynacamdexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -1145,7 +1145,7 @@ memcopynancamdexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemClearAC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearAC_AMDAVX(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -1162,7 +1162,7 @@ memclearacamdavxlop:
 	vzeroupper
 	ret
 	
-;void MemClearANC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+;void MemClearANC_AMDAVX(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 ;0 retAddr
 ;rcx buff
 ;rdx buffSize
@@ -1179,7 +1179,7 @@ memclearancamdavxlop:
 	vzeroupper
 	ret
 	
-;void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -1265,7 +1265,7 @@ memcopyacamdavxlop4a:
 memcopyacamdavxexit:
 	ret
 
-;void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -1351,7 +1351,7 @@ memcopyancamdavxlop4a:
 memcopyancamdavxexit:
 	ret
 
-;void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr
@@ -1433,7 +1433,7 @@ memcopynacamdavxexit:
 	mov rdi,qword [rsp+16]
 	ret
 
-;void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng)
+;void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, IntOS leng)
 ;0 retAddr
 ;rcx destPtr
 ;rdx srcPtr

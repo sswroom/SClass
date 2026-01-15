@@ -25,15 +25,15 @@ namespace Manage
 			Int32 launchYear;
 			Int32 launchQuarter;
 			const UTF8Char *brandName;
-			UOSInt brandNameLen;
+			UIntOS brandNameLen;
 			const UTF8Char *partNum;
-			UOSInt partNumLen;
+			UIntOS partNumLen;
 		} CPUSpecX86;
 
 		typedef struct
 		{
 			const UTF8Char *model;
-			UOSInt modelLen;
+			UIntOS modelLen;
 			Manage::ThreadContext::ContextType contextType;
 			Manage::CPUVendor::CPU_BRAND brand;
 			const Char *name;
@@ -65,9 +65,9 @@ namespace Manage
 		typedef struct
 		{
 			const UTF8Char *dispName;
-			UOSInt dispNameLen;
+			UIntOS dispNameLen;
 			const UTF8Char *model;
-			UOSInt modelLen;
+			UIntOS modelLen;
 		} CPUMapping;
 
 	private:

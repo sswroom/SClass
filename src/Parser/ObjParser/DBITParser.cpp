@@ -44,15 +44,15 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	if (db->QueryTableData(nullptr, CSTR("IT_TGVLib"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		valid = true;
-		if (!r->GetName(0, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fUserType")))
+		if (!r->GetName(0, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("fUserType")))
 			valid = false;
-		if (!r->GetName(1, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fDBType")))
+		if (!r->GetName(1, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("fDBType")))
 			valid = false;
-		if (!r->GetName(2, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjNo")))
+		if (!r->GetName(2, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("fObjNo")))
 			valid = false;
-		if (!r->GetName(3, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjFreeNo")))
+		if (!r->GetName(3, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("fObjFreeNo")))
 			valid = false;
-		if (!r->GetName(4, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fTypeName")))
+		if (!r->GetName(4, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("fTypeName")))
 			valid = false;
 		db->CloseReader(r);
 	}
@@ -64,8 +64,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	Data::FastMapObj<Int32, Record*> gpsLogMap;
 	Data::FastMapObj<Int32, Record*> wpMap;
 	Data::DateTime dt;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (db->QueryTableData(nullptr, CSTR("GPSLog"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		Int32 id;
@@ -156,8 +156,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 			{
 				sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);
 				trk->SetTrackName(CSTRP(sbuff, sptr));
-				i = (UOSInt)r->GetInt32(9);
-				j = (UOSInt)r->GetInt32(10);
+				i = (UIntOS)r->GetInt32(9);
+				j = (UIntOS)r->GetInt32(10);
 				while (i <= j)
 				{
 					rec = wpMap.Get((Int32)i);

@@ -4,7 +4,7 @@ global _DeinterlaceLR_VerticalFilter
 global _DeinterlaceLR_VerticalFilterOdd
 global _DeinterlaceLR_VerticalFilterEven
 
-;void DeinterlaceLR_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void DeinterlaceLR_VerticalFilter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -202,7 +202,7 @@ vfexit:
 	pop ebp
 	ret
 
-;void DeinterlaceLR_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void DeinterlaceLR_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -568,7 +568,7 @@ vfoexit:
 	ret
 
 
-;void DeinterlaceLR_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void DeinterlaceLR_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx

@@ -119,7 +119,7 @@ NN<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::Clone() const
 	return plugin;
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
+UIntOS Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
 {
 	INPUT_HANDLE hand;
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
@@ -258,13 +258,13 @@ Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, NN<Media::AudioForm
 	return true;
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::GetVideoFrame(void *hand, UOSInt frameNum, UnsafeArray<UInt8> buff)
+UIntOS Media::AVIUtl::AUIPlugin::GetVideoFrame(void *hand, UIntOS frameNum, UnsafeArray<UInt8> buff)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	return (UInt32)pluginTab->func_read_video((INPUT_HANDLE)hand, (int)frameNum, buff.Ptr());
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff)
+UIntOS Media::AVIUtl::AUIPlugin::GetAudioData(void *hand, UIntOS startSample, UIntOS sampleLength, UInt8 *buff)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	return (UInt32)pluginTab->func_read_audio((INPUT_HANDLE)hand, (int)startSample, (int)sampleLength, buff);
@@ -295,8 +295,8 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 	UnsafeArray<WChar> wptr;
 	UnsafeArray<WChar> sarr[3];
 	Char *filter = pluginTab->filefilter;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = Text::StrCharCntCh(filter);
 	j = enc.CountWChars((UInt8*)filter, i);
 	wptr = MemAllocArr(WChar, j + 1);

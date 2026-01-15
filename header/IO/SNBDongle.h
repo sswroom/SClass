@@ -92,7 +92,7 @@ namespace IO
 		{
 		public:
 			virtual void DeviceAdded(UInt64 devId) = 0;
-			virtual void DeviceSensor(UInt64 devId, SensorType sensorType, UOSInt nReading, UnsafeArray<ReadingType> readingTypes, UnsafeArray<Double> readingVals) = 0;
+			virtual void DeviceSensor(UInt64 devId, SensorType sensorType, UIntOS nReading, UnsafeArray<ReadingType> readingTypes, UnsafeArray<Double> readingVals) = 0;
 			virtual void DeviceUpdated(UInt64 devId, UInt16 shortAddr) = 0;
 			virtual void DongleInfoUpdated() = 0;
 		};
@@ -119,7 +119,7 @@ namespace IO
 		UInt64 dongleId;
 		UInt32 dongleBaudRate;
 
-		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
+		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
 	public:
 		SNBDongle(NN<IO::Stream> stm, NN<SNBHandler> hdlr);

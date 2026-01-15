@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+extern "C" void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 {
-	OSInt i;
+	IntOS i;
 	Int16 rv;
 	Int16 gv;
 	Int16 bv;
@@ -99,17 +99,17 @@ extern "C" void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+extern "C" void RGBColorFilter_ProcessImageHDRPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 {
 }
 
-extern "C" void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp)
+extern "C" void RGBColorFilter_ProcessImageHDRDPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp)
 {
 }
 
-extern "C" void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev)
+extern "C" void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS sbpl, IntOS dbpl, UInt8 *lut, Int32 bpp, Int32 hdrLev)
 {
-	OSInt i;
+	IntOS i;
 	Int32 rv;
 	Int32 gv;
 	Int32 bv;

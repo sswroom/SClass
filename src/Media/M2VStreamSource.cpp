@@ -12,9 +12,9 @@
 
 #define PLAYBUFFSIZE 30
 
-void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart)
+void Media::M2VStreamSource::SubmitFrame(UIntOS frameSize, UIntOS frameStart, UIntOS pictureStart)
 {
-	UOSInt fieldCnt = 2;
+	UIntOS fieldCnt = 2;
 	Data::Duration fieldAdd = 0;
 	UInt32 startCode;
 	Media::MPEGVideoParser::MPEGFrameProp prop;
@@ -151,7 +151,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		Manage::HiResClock clk;
 		while (true)
 		{
-			OSInt nextIndex = this->playBuffEnd + 1;
+			IntOS nextIndex = this->playBuffEnd + 1;
 			if (nextIndex >= PLAYBUFFSIZE)
 			{
 				nextIndex -= PLAYBUFFSIZE;
@@ -195,7 +195,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 				this->playBuff[this->playBuffEnd].frameNum = this->frameNum;
 				this->playBuff[this->playBuffEnd].frameSize = frameSize;
 				this->playBuff[this->playBuffEnd].frameTime = this->thisFrameTime + fieldAdd;
-				this->playBuff[this->playBuffEnd].pictureStart = (OSInt)(pictureStart - frameStart);
+				this->playBuff[this->playBuffEnd].pictureStart = (IntOS)(pictureStart - frameStart);
 				MemCopyNO(this->playBuff[this->playBuffEnd].frame, &this->frameBuff[frameStart], frameSize);
 
 				this->playBuffEnd = nextIndex;
@@ -248,7 +248,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 			Media::MPEGVideoParser::MPEGFrameProp prop;
 			Bool ret;
 			Int32 startCode;
-			UOSInt pictureStart = 0;
+			UIntOS pictureStart = 0;
 			while (true)
 			{
 				startCode = ReadMInt32(&me->playBuff[me->playBuffStart].frame[pictureStart]);
@@ -417,15 +417,15 @@ Media::M2VStreamSource::M2VStreamSource(NN<Media::MediaStreamControl> pbc)
 	this->bitRate = 1000;
 	this->finfoMode = false;
 	this->info.fourcc = (UInt32)-1;
-	this->info.dispSize = Math::Size2D<UOSInt>(0, 0);
-	this->info.storeSize = Math::Size2D<UOSInt>(0, 0);
+	this->info.dispSize = Math::Size2D<UIntOS>(0, 0);
+	this->info.storeSize = Math::Size2D<UIntOS>(0, 0);
 	this->frameRateNorm = 0;
 	this->frameRateDenorm = 0;
 	this->maxFrameSize = 10485760;
 	this->frameBuff = MemAlloc(UInt8, this->maxFrameSize);
 	this->frameBuffSize = 0;
 	this->firstFrame = true;
-	this->frameStart = (UOSInt)-1;
+	this->frameStart = (UIntOS)-1;
 	this->frameNum = 0;
 	this->totalFrameCnt = 0;
 	this->totalFrameSize = 0;
@@ -472,7 +472,7 @@ Text::CStringNN Media::M2VStreamSource::GetFilterName()
 	return CSTR("M2VStreamSource");
 }
 
-Bool Media::M2VStreamSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::M2VStreamSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	info->Set(this->info);
 	frameRateNorm.Set(this->frameRateNorm);
@@ -575,7 +575,7 @@ Bool Media::M2VStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd
 }
 
 
-UOSInt Media::M2VStreamSource::GetDataSeekCount()
+UIntOS Media::M2VStreamSource::GetDataSeekCount()
 {
 	return this->pbc->GetDataSeekCount();
 }
@@ -585,12 +585,12 @@ Bool Media::M2VStreamSource::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::M2VStreamSource::GetFrameCount()
+UIntOS Media::M2VStreamSource::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Media::M2VStreamSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::M2VStreamSource::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -608,22 +608,22 @@ void Media::M2VStreamSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userDa
 	this->finfoMode = false;
 }
 
-UOSInt Media::M2VStreamSource::GetFrameSize(UOSInt frameIndex)
+UIntOS Media::M2VStreamSource::GetFrameSize(UIntOS frameIndex)
 {
 	return 0;
 }
 
-UOSInt Media::M2VStreamSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
+UIntOS Media::M2VStreamSource::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-UOSInt Media::M2VStreamSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::M2VStreamSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }
 
-void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
+void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UIntOS headerSize)
 {
 	UInt64 bitRate;
 	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, this->frameRateNorm, this->frameRateDenorm, bitRate, false);
@@ -657,15 +657,15 @@ void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 	this->syncFieldCnt = 0;
 }
 
-void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
+void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UIntOS buffSize)
 {
 	this->writeCnt++;
-	UOSInt lastFrameSize = this->frameBuffSize;
-	UOSInt i;
+	UIntOS lastFrameSize = this->frameBuffSize;
+	UIntOS i;
 	Int32 hdr;
 	Int32 gopHdr;
 	Int32 pictureHdr;
-	UOSInt j;
+	UIntOS j;
 	WriteMInt32((UInt8*)&hdr, 0x000001b3);
 	WriteMInt32((UInt8*)&gopHdr, 0x000001b8);
 	WriteMInt32((UInt8*)&pictureHdr, 0x00000100);
@@ -676,7 +676,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("WriteFrameStream "));
-		sb.AppendOSInt(buffSize);
+		sb.AppendIntOS(buffSize);
 		Sync::MutexUsage debugMutUsage(debugMut);
 		this->debugLog->WriteLine(sb.ToCString());
 	}
@@ -736,12 +736,12 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			return;
 		}
 		this->firstFrame = false;
-		this->frameStart = (UOSInt)-1;
+		this->frameStart = (UIntOS)-1;
 	}
 
 	j = 0;
 	i = lastFrameSize - 3;
-	if ((OSInt)i < 0)
+	if ((IntOS)i < 0)
 		i = 0;
 	
 	while (i < this->frameBuffSize - 3)
@@ -778,7 +778,7 @@ void Media::M2VStreamSource::EndFrameStream()
 {
 	if (this->frameBuffSize > 0 && this->frameStart >= 0)
 	{
-		this->SubmitFrame(this->frameBuffSize, 0, (UOSInt)this->frameStart);
+		this->SubmitFrame(this->frameBuffSize, 0, (UIntOS)this->frameStart);
 		this->frameBuffSize = 0;
 	}
 	this->playEOF = true;

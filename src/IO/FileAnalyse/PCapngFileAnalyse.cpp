@@ -75,7 +75,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 				linkType = ReadUInt16(&packetBuff[8]);
 			}
 			
-			UOSInt i = 16;
+			UIntOS i = 16;
 			while (i < block->blockLength - 4)
 			{
 				if (me->isBE)
@@ -101,7 +101,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 					timeResol = (Int8)packetBuff[i + 4];
 					break;
 				}
-				i += 4 + (UOSInt)optLeng;
+				i += 4 + (UIntOS)optLeng;
 				if (i & 3)
 				{
 					i += 4 - (i & 3);
@@ -173,12 +173,12 @@ Text::CStringNN IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
 	return CSTR("pcapng");
 }
 
-UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 {
 	return this->blockList.GetCount();
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	NN<IO::StreamData> fd;
@@ -270,7 +270,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -320,7 +320,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		sb->AppendI64(sectionLength);
 		UInt16 optCode;
 		UInt16 optLeng;
-		UOSInt i = 24;
+		UIntOS i = 24;
 		while (i < block->blockLength - 4)
 		{
 			if (this->isBE)
@@ -366,7 +366,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 
-			i += 4 + (UOSInt)optLeng;
+			i += 4 + (UIntOS)optLeng;
 			if (i & 3)
 			{
 				i += 4 - (i & 3);
@@ -406,7 +406,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		sb->AppendU32(snapLen);
 		UInt16 optCode;
 		UInt16 optLeng;
-		UOSInt i = 16;
+		UIntOS i = 16;
 		while (i < block->blockLength - 4)
 		{
 			if (this->isBE)
@@ -450,10 +450,10 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 			{
 				sb->AppendC(UTF8STRC("\r\nIPv4 Address="));
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 4]));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("\r\nNetmask="));
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 8]));
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			else if (optCode == 5)
 			{
@@ -461,7 +461,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				Net::SocketUtil::SetAddrInfoV6(addr, &this->packetBuff[i + 4], 0);
 				sb->AppendC(UTF8STRC("\r\nIPv6 Address="));
 				sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("/"));
 				sb->AppendU16(this->packetBuff[i + 20]);
 			}
@@ -516,14 +516,14 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				if (optLeng > 1)
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendC(&this->packetBuff[i + 5], (UOSInt)optLeng - 1);
+					sb->AppendC(&this->packetBuff[i + 5], (UIntOS)optLeng - 1);
 					sb->AppendC(UTF8STRC(")"));
 				}
 			}
 			else if (optCode == 12)
 			{
 				sb->AppendC(UTF8STRC("\r\nOS="));
-				sb->AppendC(&this->packetBuff[i + 4], (UOSInt)optLeng);
+				sb->AppendC(&this->packetBuff[i + 4], (UIntOS)optLeng);
 			}
 			else if (optCode == 13)
 			{
@@ -551,7 +551,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LineBreakType::None);
 			}
 
-			i += 4 + (UOSInt)optLeng;
+			i += 4 + (UIntOS)optLeng;
 			if (i & 3)
 			{
 				i += 4 - (i & 3);
@@ -586,7 +586,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendC(UTF8STRC("\r\nCaptured Packet Length="));
 		sb->AppendU32(capPSize);
 		sb->AppendC(UTF8STRC("\r\nOriginal Packet Length="));
@@ -597,7 +597,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 
 			UInt16 optCode;
 			UInt16 optLeng;
-			UOSInt i = 28 + capPSize;
+			UIntOS i = 28 + capPSize;
 			if (i & 3)
 			{
 				i += 4 - (i & 3);
@@ -647,7 +647,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 					sb->AppendC(&this->packetBuff[i + 4], optLeng);
 				}
 
-				i += 4 + (UOSInt)optLeng;
+				i += 4 + (UIntOS)optLeng;
 				if (i & 3)
 				{
 					i += 4 - (i & 3);
@@ -683,10 +683,10 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		UInt16 optCode;
 		UInt16 optLeng;
-		UOSInt i = 20;
+		UIntOS i = 20;
 		while (i < block->blockLength - 4)
 		{
 			if (this->isBE)
@@ -730,7 +730,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			else if (optCode == 3)
 			{
@@ -746,7 +746,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			else if (optCode == 4)
 			{
@@ -814,7 +814,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				sb->AppendI64(ts);
 			}
 
-			i += 4 + (UOSInt)optLeng;
+			i += 4 + (UIntOS)optLeng;
 			if (i & 3)
 			{
 				i += 4 - (i & 3);
@@ -824,16 +824,16 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	return true;
 }
 
-UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->blockList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->blockList.GetCount() - 1;
+	IntOS k;
 	NN<BlockInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->blockList.GetItemNoCheck((UOSInt)k);
+		pack = this->blockList.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -844,13 +844,13 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[64];
@@ -1085,7 +1085,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 				if (optLeng > 1)
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendC(&this->packetBuff[i + 5], (UOSInt)optLeng - 1);
+					sb.AppendC(&this->packetBuff[i + 5], (UIntOS)optLeng - 1);
 					sb.AppendC(UTF8STRC(")"));
 				}
 				frame->AddField(i + 4, optLeng, CSTR("Filter"), sb.ToCString());

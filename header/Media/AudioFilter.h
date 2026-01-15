@@ -21,10 +21,10 @@ namespace Media
 
 		virtual void GetFormat(NN<AudioFormat> format);
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		//virtual OSInt ReadBlock(UInt8 *buff, OSInt blkSize); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		//virtual IntOS ReadBlock(UInt8 *buff, IntOS blkSize); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 	};

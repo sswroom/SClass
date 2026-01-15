@@ -700,7 +700,7 @@ void Media::ASIOOutRenderer::InitDevice(UInt32 devId)
 		RegCloseKey(hkEnum);
 }
 
-UOSInt Media::ASIOOutRenderer::GetDeviceCount()
+UIntOS Media::ASIOOutRenderer::GetDeviceCount()
 {
 	HKEY hkEnum;
 	DWORD nameLen = MAXDRVNAMELEN;
@@ -719,7 +719,7 @@ UOSInt Media::ASIOOutRenderer::GetDeviceCount()
 	return index;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::ASIOOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::ASIOOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	WChar wbuff[MAXDRVNAMELEN];
 	HKEY hkEnum;

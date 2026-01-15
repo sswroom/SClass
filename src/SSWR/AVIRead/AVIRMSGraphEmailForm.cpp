@@ -121,8 +121,8 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnSendClicked(AnyType userOb
 	me->txtSendContent->GetText(sb);
 	msg.SetContent(sb.ToCString(), me->chkSendHTML->IsChecked()?CSTR("text/html"):CSTR("text/plain"));
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt j = me->atts.GetCount();
+	UIntOS i = 0;
+	UIntOS j = me->atts.GetCount();
 	while (i < j)
 	{
 		s = me->atts.GetItemNoCheck(i);
@@ -161,8 +161,8 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnSendAttAddClicked(AnyType 
 	dlg->SetAllowMultiSel(true);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UIntOS i = 0;
+		UIntOS j = dlg->GetFileNameCount();
 		while (i < j)
 		{
 			if (dlg->GetFileNames(i).SetTo(s))
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnSendAttAddClicked(AnyType 
 		}
 		Text::StringBuilderUTF8 sb;
 		j = me->atts.GetCount();
-		sb.AppendUOSInt(j);
+		sb.AppendUIntOS(j);
 		if (j == 1)
 		{
 			sb.Append(CSTR(" attachment"));
@@ -212,8 +212,8 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRMSGraphEmailForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSGraphEmailForm>();
-	UOSInt i = 0;
-	UOSInt j = files.GetCount();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
 	while (i < j)
 	{
 		me->atts.Add(files[i]->Clone());
@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnFiles(AnyType userObj, Dat
 	}
 	Text::StringBuilderUTF8 sb;
 	j = me->atts.GetCount();
-	sb.AppendUOSInt(j);
+	sb.AppendUIntOS(j);
 	if (j == 1)
 	{
 		sb.Append(CSTR(" attachment"));
@@ -256,11 +256,11 @@ void SSWR::AVIRead::AVIRMSGraphEmailForm::UpdateMessages()
 	NN<Net::MSGraphEventMessageRequest> msg;
 	NN<const Data::ArrayListNN<Net::MSGraphRecipient>> rcptList;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = this->msgList.GetCount();
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
+	UIntOS i = 0;
+	UIntOS j = this->msgList.GetCount();
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
 	while (i < j)
 	{
 		msg = this->msgList.GetItemNoCheck(i);

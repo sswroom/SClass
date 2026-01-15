@@ -16,7 +16,7 @@ typedef struct
 	vpx_codec_ctx_t codec;
 } ClassData;
 
-void Media::Decoder::VPXDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VPXDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 }
 
@@ -29,7 +29,7 @@ Media::Decoder::VPXDecoder::VPXDecoder(VideoSource *sourceVideo) : Media::Decode
 	Media::FrameInfo frameInfo;
 	Int32 frameRateNorm;
 	Int32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 
 /*	vpx_codec_iface_t *(*codec_interface)();
@@ -73,7 +73,7 @@ Text::CString Media::Decoder::VPXDecoder::GetFilterName()
 	return CSTR("VPXDecoder");
 }
 
-Bool Media::Decoder::VPXDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VPXDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize)
 {
 	return false;
 }
@@ -82,12 +82,12 @@ void Media::Decoder::VPXDecoder::Stop()
 {
 }
 
-OSInt Media::Decoder::VPXDecoder::GetFrameCount()
+IntOS Media::Decoder::VPXDecoder::GetFrameCount()
 {
 	return -1;
 }
 
-UInt32 Media::Decoder::VPXDecoder::GetFrameTime(UOSInt frameIndex)
+UInt32 Media::Decoder::VPXDecoder::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -112,7 +112,7 @@ Media::VideoSource *__stdcall VPXDecoder_DecodeVideo(Media::VideoSource *sourceV
 	Media::FrameInfo frameInfo;
 	Int32 frameRateNorm;
 	Int32 frameRateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == -1)
 		return 0;

@@ -31,20 +31,20 @@ typedef struct
 
 void Net::WLANLinuxInterface::Reopen()
 {
-	close(-1 + (int)(OSInt)this->id);
-	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
+	close(-1 + (int)(IntOS)this->id);
+	this->id = (void*)(IntOS)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 }
 
 Net::WLANLinuxInterface::WLANLinuxInterface(Text::CStringNN name, void *id, Net::WirelessLAN::INTERFACE_STATE state)
 {
 	this->name = Text::String::New(name);
-	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
+	this->id = (void*)(IntOS)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 	this->state = state;
 }
 
 Net::WLANLinuxInterface::~WLANLinuxInterface()
 {
-	close(-1 + (int)(OSInt)this->id);
+	close(-1 + (int)(IntOS)this->id);
 }
 
 Bool Net::WLANLinuxInterface::Scan()
@@ -58,7 +58,7 @@ Bool Net::WLANLinuxInterface::Scan()
 	wrq.u.data.pointer = 0;//&sreq;
 	wrq.u.data.length = 0;//sizeof(sreq);
 	wrq.u.data.flags = IW_SCAN_DEFAULT;
-	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
+	ret = ioctl(-1 + (int)(IntOS)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
 		printf("WLANLinuxInterface Scan failed, name = %s, ret = %d, errno = %d\r\n", this->name->v.Ptr(), ret, errno);
@@ -71,16 +71,16 @@ Bool Net::WLANLinuxInterface::Scan()
 }
 
 
-UOSInt Net::WLANLinuxInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
+UIntOS Net::WLANLinuxInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 	NN<Net::WirelessLAN::BSSInfo> bss;
 	NN<Net::WirelessLAN::Network> network;
 	this->GetBSSList(bssList);
 	if (bssList.GetCount() > 0)
 	{
-		UOSInt i;
+		UIntOS i;
 		retVal = bssList.GetCount();
 		i = 0;
 		while (i < retVal)
@@ -95,16 +95,16 @@ UOSInt Net::WLANLinuxInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLA
 	return retVal;
 }
 
-UOSInt Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
+UIntOS Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	NN<Net::WirelessLAN::BSSInfo> bssInfo;
 	BSSEntry bss;
 	NN<Net::WirelessLANIE> ie;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;
-	UOSInt buffSize = IW_SCAN_MAX_DATA;
+	UIntOS buffSize = IW_SCAN_MAX_DATA;
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 
 
@@ -117,7 +117,7 @@ UOSInt Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN
 		wrq.u.data.flags = 0;
 		wrq.u.data.length = (UInt16)buffSize;
 //		printf("SIOCGIWSCAN before\r\n");
-		ret = ioctl(-1 + (int)(OSInt)this->id, SIOCGIWSCAN, &wrq);
+		ret = ioctl(-1 + (int)(IntOS)this->id, SIOCGIWSCAN, &wrq);
 //		printf("SIOCGIWSCAN return %d, errno = %d\r\n", ret, errno);
 		if (ret >= 0)
 		{
@@ -141,13 +141,13 @@ UOSInt Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN
 		}
 		else if (errno == EFAULT)
 		{
-//			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(OSInt)buff);
+//			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(IntOS)buff);
 			MemFree(buff);
 			return 0;
 		}
 		else
 		{
-			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, (UInt32)buffSize, (int)(OSInt)buff);
+			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, (UInt32)buffSize, (int)(IntOS)buff);
 			MemFree(buff);
 			return 0;
 		}
@@ -247,10 +247,10 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	ret = 1;
 	UTF8Char essid[IW_ESSID_MAX_SIZE + 1];
 	UnsafeArray<UTF8Char> essidEnd;
-	OSInt i;
+	IntOS i;
 	UInt16 cmd;
 	UInt16 len;
-	OSInt firstOfst = 8;
+	IntOS firstOfst = 8;
 	essid[0] = 0;
 	essidEnd = essid;
 	while (buffEnd - buffCurr >= 8)
@@ -368,7 +368,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B01: //SIOCGIWNAME:
 			{
 				Text::StringBuilderUTF8 sbTmp;
-				sbTmp.AppendC(&buffCurr[firstOfst], (UOSInt)(len - firstOfst));
+				sbTmp.AppendC(&buffCurr[firstOfst], (UIntOS)(len - firstOfst));
 				if (sbTmp.Equals(UTF8STRC("IEEE 802.11gn")))
 				{
 					bss.phyType = 7;
@@ -394,7 +394,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B1B: //SIOCGIWESSID:
 			if (len > firstOfst + firstOfst && len < IW_ESSID_MAX_SIZE + firstOfst + firstOfst)
 			{
-				essidEnd = Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], (UOSInt)(len - firstOfst - firstOfst));
+				essidEnd = Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], (UIntOS)(len - firstOfst - firstOfst));
 			}
 			break;
 		case 0x8B2B: //SIOCGIWENCODE:

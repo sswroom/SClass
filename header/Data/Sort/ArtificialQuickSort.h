@@ -21,7 +21,7 @@ namespace Data
 			typedef struct
 			{
 				NN<ArtificialQuickSort> me;
-				UOSInt threadId;
+				UIntOS threadId;
 				Bool toStop;
 				Int32 state; // 0 = not running, 1 = idle, 2 = processing
 				NN<Sync::Event> evt;
@@ -34,40 +34,40 @@ namespace Data
 				AT_STRUTF8
 			} ArrayType;
 		private:
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			UnsafeArray<ThreadStat> threads;
 			Sync::Event mainEvt;
 
 			Sync::Mutex mut;
 			UnsafeArrayOpt<UInt8> arr;
 			ArrayType arrType;
-			UnsafeArray<OSInt> tasks;
-			UOSInt taskCnt;
+			UnsafeArray<IntOS> tasks;
+			UIntOS taskCnt;
 
-			void DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
+			void DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex);
+			void DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			ArtificialQuickSort();
 			~ArtificialQuickSort();
 
-			void SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
-			void SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
-			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
+			void SortUInt32(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex);
+			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex);
 
-			template <class T> static void PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex);
+			template <class T> static void Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex);
 			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<const Data::Comparator<T>> comparator);
-			template <class T, class V> static void PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
-			template <class T, class V> static void SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
-			static void PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			template <class T, class V> static void PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS firstIndex, IntOS lastIndex);
+			template <class T, class V> static void SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS firstIndex, IntOS lastIndex);
+			static void PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex);
+			static void SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS firstIndex, IntOS lastIndex);
 		};
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS left, IntOS right)
 {
 	T temp = arr[left];
 	T temp2;
@@ -85,22 +85,22 @@ template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> 
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
-	UnsafeArray<OSInt> desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	T meja;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	T temp;
 
 	PreSort(arr, comparator, firstIndex, lastIndex);
@@ -171,12 +171,12 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr
 
 template <class T> void Data::Sort::ArtificialQuickSort::Sort(NN<Data::ArrayCollection<T>> list, NN<const Data::Comparator<T>> comparator)
 {
-	UOSInt len;
+	UIntOS len;
 	UnsafeArray<T> arr = list->GetArr(len);
-	Sort(arr, comparator, 0, (OSInt)len - 1);
+	Sort(arr, comparator, 0, (IntOS)len - 1);
 }
 
-template <class T, class V> void Data::Sort::ArtificialQuickSort::PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt left, OSInt right)
+template <class T, class V> void Data::Sort::ArtificialQuickSort::PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS left, IntOS right)
 {
 	T temp = keyArr[left];
 	T temp2;
@@ -198,23 +198,23 @@ template <class T, class V> void Data::Sort::ArtificialQuickSort::PreSortKV(Unsa
 	}
 }
 
-template <class T, class V> void Data::Sort::ArtificialQuickSort::SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex)
+template <class T, class V> void Data::Sort::ArtificialQuickSort::SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, IntOS firstIndex, IntOS lastIndex)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
-	UnsafeArray<OSInt> desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	T meja;
 	V mejaV;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	T temp;
 	V tempV;
 

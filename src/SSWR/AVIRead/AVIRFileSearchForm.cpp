@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userOb
 	Text::StringBuilderUTF8 sbText;
 	Text::StringBuilderUTF8 sbDir;
 	UInt8 dataBuff[256];
-	UOSInt dataSize;
+	UIntOS dataSize;
 	if (!me->cboEncoding->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(enc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select an encoding first"), CSTR("File Search"), me);
@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (IO::Path::GetPathType(files[i]->ToCString()) == IO::Path::PathType::Directory)
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	NN<Text::String> filePath;
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj,
 
 void SSWR::AVIRead::AVIRFileSearchForm::ClearFiles()
 {
-	UOSInt i = this->fileList.GetCount();
+	UIntOS i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->fileList.GetItem(i));
@@ -98,7 +98,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::ClearFiles()
 	this->fileList.Clear();
 }
 
-void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UOSInt searchLen)
+void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UIntOS searchLen)
 {
 	UnsafeArray<UTF8Char> sptr;
 	if (dirEnd[-1] != IO::Path::PATH_SEPERATOR)
@@ -109,11 +109,11 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, Unsaf
 		return;
 
 	UInt8 *fileBuff = 0;
-	UOSInt fileBuffSize;
-	UOSInt readSize;
-	UOSInt i;
-	UOSInt j;
-	UOSInt matchCount;
+	UIntOS fileBuffSize;
+	UIntOS readSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS matchCount;
 
 	IO::Path::PathType pt;
 	while (IO::Path::FindNextFile(dirEnd, sess, 0, pt, 0).SetTo(sptr))
@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, Unsaf
 			{
 				NN<Text::String> s = Text::String::NewP(dir, sptr);
 				i = this->lvFiles->AddItem(s, s.Ptr());
-				sptr = Text::StrUOSInt(dirEnd, matchCount);
+				sptr = Text::StrUIntOS(dirEnd, matchCount);
 				this->lvFiles->SetSubItem(i, 1, CSTRP(dirEnd, sptr));
 				this->fileList.Add(s);
 			}
@@ -197,8 +197,8 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientCont
 	this->cboEncoding->SetRect(104, 28, 200, 23, false);
 	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
 	NN<Text::TextBinEnc::TextBinEnc> enc;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)

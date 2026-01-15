@@ -37,7 +37,7 @@ IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(NN<IO:
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::MapCSVExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -75,12 +75,12 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	{
 		NN<Map::GPSTrack> track = NN<Map::GPSTrack>::ConvertFrom(layer);
 		UnsafeArray<Map::GPSTrack::GPSRecordFull> rec;
-		UOSInt recCnt;
+		UIntOS recCnt;
 		Double v;
 		Int32 currInd = 1;
-		UOSInt k;
-		UOSInt i = 0;
-		UOSInt j = track->GetTrackCnt();
+		UIntOS k;
+		UIntOS i = 0;
+		UIntOS j = track->GetTrackCnt();
 		Data::DateTime d;
 
 		writer.WriteLine(CSTR("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
@@ -155,10 +155,10 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		UnsafeArray<Math::Coord2DDbl> points;
 		Int32 currInd = 1;
 		Optional<Map::NameArray> nameArr;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 
 		writer.WriteLine(CSTR("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 

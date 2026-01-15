@@ -19,8 +19,8 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[4];
-	UOSInt i = 0;
-	UOSInt j = pkg->GetCount();
+	UIntOS i = 0;
+	UIntOS j = pkg->GetCount();
 	while (i < j)
 	{
 		pot = pkg->GetItemType(i);
@@ -74,7 +74,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 					Bool valid = false;
 					if (fd->GetDataSize() <= 1048576)
 					{
-						UOSInt len = (UOSInt)fd->GetDataSize();
+						UIntOS len = (UIntOS)fd->GetDataSize();
 						UInt8 *buff = MemAlloc(UInt8, len + 1);
 						if (fd->GetRealData(0, len, Data::ByteArray(buff, len)) == len)
 						{

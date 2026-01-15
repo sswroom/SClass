@@ -8,14 +8,14 @@ namespace Data
 	{
 	public:
 		ArrayListDbl();
-		ArrayListDbl(UOSInt capacity);
+		ArrayListDbl(UIntOS capacity);
 
 		virtual NN<ArrayListNative<Double>> Clone() const;
 		Double FrobeniusNorm() const;
 		Double Average() const;
 		Double StdDev() const;
-		UOSInt Subset(NN<ArrayListDbl> outList, UOSInt firstIndex, UOSInt endIndex) const;
-		UOSInt Subset(NN<ArrayListDbl> outList, UOSInt firstIndex) const;
+		UIntOS Subset(NN<ArrayListDbl> outList, UIntOS firstIndex, UIntOS endIndex) const;
+		UIntOS Subset(NN<ArrayListDbl> outList, UIntOS firstIndex) const;
 	};
 }
 #endif

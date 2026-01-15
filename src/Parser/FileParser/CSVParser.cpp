@@ -52,28 +52,28 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 	Text::PString tmpArr[2];
 	UnsafeArray<UnsafeArray<const UTF8Char>> tmpcArr2;
 	Text::PString *tmpArr2;
-	UOSInt colCnt;
-	UOSInt currCol;
+	UIntOS colCnt;
+	UIntOS currCol;
 
 	if (!fd->GetFullFileName()->EndsWithICase(UTF8STRC(".CSV")))
 		return nullptr;
 
-	UOSInt i;
+	UIntOS i;
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 
-	UOSInt dateCol = INVALID_INDEX;
-	UOSInt timeCol = INVALID_INDEX;
-	UOSInt dtCol = INVALID_INDEX;
-	UOSInt validCol = INVALID_INDEX;
-	UOSInt latCol = INVALID_INDEX;
-	UOSInt lonCol = INVALID_INDEX;
-	UOSInt latDirCol = INVALID_INDEX;
-	UOSInt lonDirCol = INVALID_INDEX;
-	UOSInt altCol = INVALID_INDEX;
-	UOSInt speedCol = INVALID_INDEX;
-	UOSInt headingCol = INVALID_INDEX;
-	UOSInt nSateCol = INVALID_INDEX;
+	UIntOS dateCol = INVALID_INDEX;
+	UIntOS timeCol = INVALID_INDEX;
+	UIntOS dtCol = INVALID_INDEX;
+	UIntOS validCol = INVALID_INDEX;
+	UIntOS latCol = INVALID_INDEX;
+	UIntOS lonCol = INVALID_INDEX;
+	UIntOS latDirCol = INVALID_INDEX;
+	UIntOS lonDirCol = INVALID_INDEX;
+	UIntOS altCol = INVALID_INDEX;
+	UIntOS speedCol = INVALID_INDEX;
+	UIntOS headingCol = INVALID_INDEX;
+	UIntOS nSateCol = INVALID_INDEX;
 
 	UInt32 gloggerMatches = 0;
 
@@ -254,7 +254,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		tmpArr2 = MemAlloc(Text::PString, currCol + 1);
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
-			if ((UOSInt)currCol == Text::StrCSVSplitP(tmpArr2, currCol + 1, sbuff))
+			if ((UIntOS)currCol == Text::StrCSVSplitP(tmpArr2, currCol + 1, sbuff))
 			{
 				if (dtCol != INVALID_INDEX)
 				{
@@ -370,8 +370,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 	{
 		Map::VectorLayer *lyr;
 		NN<Math::Geometry::Point> pt;
-		UOSInt i;
-		UOSInt nameCol = 0;
+		UIntOS i;
+		UIntOS nameCol = 0;
 
 		tmpcArr2 = MemAllocArr(UnsafeArray<const UTF8Char>, currCol + 1);
 		i = currCol;
@@ -389,7 +389,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
-			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
+			if ((UIntOS)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
 				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDoubleOrNAN(tmpUArr2[lonCol]), Text::StrToDoubleOrNAN(tmpUArr2[latCol])));
 				lyr->AddVector2(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));

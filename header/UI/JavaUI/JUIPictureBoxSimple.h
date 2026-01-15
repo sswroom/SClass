@@ -12,7 +12,7 @@ namespace UI
 			JUIPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~JUIPictureBoxSimple();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual void SetImage(Optional<Media::StaticImage> currImage);
 			virtual void SetImageDImg(Optional<Media::DrawImage> img);
 		};

@@ -51,8 +51,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<const Net::MACInfo::MACEntry> macEntry;
 	Net::ARPInfo::ARPType arpType;
 	NN<Net::ARPInfo> arp;
@@ -69,7 +69,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("IP = "));
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, arp->GetIPAddress());
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendChar(' ', 18 - sb.GetLength());
 			sb.AppendC(UTF8STRC(", HW Addr = "));
 			arp->GetPhysicalAddr(hwAddr);
@@ -88,7 +88,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	Net::IPType ipType;
-	UOSInt k;
+	UIntOS k;
 	UInt32 ip;
 	sockf->GetConnInfoList(connInfoList);
 	i = 0;

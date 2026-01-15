@@ -40,15 +40,15 @@ Bool Exporter::ANIExporter::ImageSupported(NN<Media::RasterImage> img)
 	return false;
 }
 
-OSInt Exporter::ANIExporter::CalcBuffSize(NN<Media::ImageList> imgList)
+IntOS Exporter::ANIExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt32 imgDelay;
-	OSInt imgSize;
-	OSInt maskSize;
+	IntOS imgSize;
+	IntOS maskSize;
 	NN<Media::RasterImage> img;
-	OSInt retSize = 6;
+	IntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
@@ -133,27 +133,27 @@ OSInt Exporter::ANIExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	return retSize;
 }
 
-OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
+IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	OSInt shiftCnt;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
+	IntOS shiftCnt;
 	UInt8 mask;
 	UInt8 *srcPtr;
 	UInt8 *currPtr;
-	OSInt sbpl;
+	IntOS sbpl;
 	UInt8 *maskPtr;
 	UInt32 imgDelay;
-	OSInt imgSize;
-	OSInt maskSize;
-	OSInt imgAdd;
-	OSInt maskAdd;
+	IntOS imgSize;
+	IntOS maskSize;
+	IntOS imgAdd;
+	IntOS maskAdd;
 	NN<Media::StaticImage> img;
-	OSInt retSize = 6;
+	IntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	WriteInt16(&buff[0], 0);
@@ -638,7 +638,7 @@ IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
 	NN<Media::RasterImage> img;
-	UOSInt i = imgList->GetCount();
+	UIntOS i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -654,7 +654,7 @@ IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::ANIExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::ANIExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -674,7 +674,7 @@ Bool Exporter::ANIExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	OSInt buffSize = CalcBuffSize(imgList);
+	IntOS buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
 	UInt8 *buff = MemAlloc(UInt8, buffSize);

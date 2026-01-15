@@ -16,8 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyTyp
 	if (pageNo > 0)
 	{
 		Data::DateTime dt;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> itemList;
 		NN<Net::WebSite::WebSite48IdolControl::ItemData> item;
 		me->ctrl->GetTVPageItems(pageNo, itemList);

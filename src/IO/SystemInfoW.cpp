@@ -74,7 +74,7 @@ UInt64 IO::SystemInfo::GetTotalMemSize()
 {
 	UInt64 totalSize = 0;
 
-	UOSInt i;
+	UIntOS i;
 	Data::ArrayListNN<RAMInfo> ramList;
 	this->GetRAMInfo(ramList);
 	i = ramList.GetCount();
@@ -184,9 +184,9 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_UNKNOWN;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	Win32::WMIQuery *db;
 	NN<RAMInfo> ram;
 	UTF8Char sbuff[128];
@@ -202,8 +202,8 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 		smbios->GetMemoryInfo(memList);
 		if (memList.GetCount() > 0)
 		{
-			UOSInt i = 0;
-			UOSInt j = memList.GetCount();
+			UIntOS i = 0;
+			UIntOS j = memList.GetCount();
 			while (i < j)
 			{
 				mem = memList.GetItemNoCheck(i);
@@ -264,51 +264,51 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 	if (db->ExecuteReaderW(L"select * from CIM_PhysicalMemory").SetTo(r))
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt devLocCol = (UOSInt)-1;
-		UOSInt manuCol = (UOSInt)-1;
-		UOSInt partNoCol = (UOSInt)-1;
-		UOSInt snCol = (UOSInt)-1;
-		UOSInt spdCol = (UOSInt)-1;
-		UOSInt dataWCol = (UOSInt)-1;
-		UOSInt totalWCol = (UOSInt)-1;
-		UOSInt i;
+		UIntOS devLocCol = (UIntOS)-1;
+		UIntOS manuCol = (UIntOS)-1;
+		UIntOS partNoCol = (UIntOS)-1;
+		UIntOS snCol = (UIntOS)-1;
+		UIntOS spdCol = (UIntOS)-1;
+		UIntOS dataWCol = (UIntOS)-1;
+		UIntOS totalWCol = (UIntOS)-1;
+		UIntOS i;
 		i = r->ColCount();
 		while (i-- > 0)
 		{
 			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceLocator")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DeviceLocator")))
 				{
 					devLocCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Manufacturer")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Manufacturer")))
 				{
 					manuCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PartNumber")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("PartNumber")))
 				{
 					partNoCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SerialNumber")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("SerialNumber")))
 				{
 					snCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Speed")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Speed")))
 				{
 					spdCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DataWidth")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DataWidth")))
 				{
 					dataWCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TotalWidth")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TotalWidth")))
 				{
 					totalWCol = i;
 				}
 			}
 		}
 
-		if (devLocCol != (UOSInt)-1 && manuCol != (UOSInt)-1 && partNoCol != (UOSInt)-1 && snCol != (UOSInt)-1 && spdCol != (UOSInt)-1 && dataWCol != (UOSInt)-1 && totalWCol != (UOSInt)-1)
+		if (devLocCol != (UIntOS)-1 && manuCol != (UIntOS)-1 && partNoCol != (UIntOS)-1 && snCol != (UIntOS)-1 && spdCol != (UIntOS)-1 && dataWCol != (UIntOS)-1 && totalWCol != (UIntOS)-1)
 		{
 			while (r->ReadNext())
 			{
@@ -335,7 +335,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 
 void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<RAMInfo> ram;
 	i = ramList->GetCount();
 	while (i-- > 0)

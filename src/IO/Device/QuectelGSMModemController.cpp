@@ -15,13 +15,13 @@ UnsafeArrayOpt<UTF8Char> IO::Device::QuectelGSMModemController::GetICCID(UnsafeA
 	return QuectelGetICCID(sbuff);
 }
 
-UOSInt IO::Device::QuectelGSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
+UIntOS IO::Device::QuectelGSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
 {
 	ServingCell scells[2];
 	NN<CellSignal> cell;
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt ncells;
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS ncells;
 	ncells = QuectelQueryServingCell(scells);
 	while (i < ncells)
 	{
@@ -125,14 +125,14 @@ UnsafeArrayOpt<UTF8Char> IO::Device::QuectelGSMModemController::QuectelGetICCID(
 	{
 		return nullptr;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+QCCID: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+QCCID: ")))
 	{
-		return Text::StrConcatC(iccid, &sbuff[8], (UOSInt)(sptr - &sbuff[8]));
+		return Text::StrConcatC(iccid, &sbuff[8], (UIntOS)(sptr - &sbuff[8]));
 	}
 	return nullptr;
 }
 
-UOSInt IO::Device::QuectelGSMModemController::QuectelQueryServingCell(UnsafeArray<ServingCell> cell)
+UIntOS IO::Device::QuectelGSMModemController::QuectelQueryServingCell(UnsafeArray<ServingCell> cell)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!this->SendStringListCommand(sb, UTF8STRC("AT+QENG=\"servingcell\"")))
@@ -144,9 +144,9 @@ UOSInt IO::Device::QuectelGSMModemController::QuectelQueryServingCell(UnsafeArra
 	Text::PString strs[2];
 	Text::PString cols[25];
 	strs[1] = sb;
-	//UOSInt lineCnt = 
+	//UIntOS lineCnt = 
 	Text::StrSplitLineP(strs, 2, strs[1]);
-	UOSInt colCnt = Text::StrSplitP(cols, 25, strs[0], ',');
+	UIntOS colCnt = Text::StrSplitP(cols, 25, strs[0], ',');
 	State state;
 	if (colCnt < 2)
 		return 0;
@@ -319,8 +319,8 @@ Bool IO::Device::QuectelGSMModemController::QuectelQueryNeighbourCells(NN<Data::
 
 	Text::PString strs[2];
 	Text::PString cols[25];
-	UOSInt lineCnt;
-	UOSInt colCnt;
+	UIntOS lineCnt;
+	UIntOS colCnt;
 	NN<NeighbourCell> cell;
 	strs[1] = sb;
 	while (true)

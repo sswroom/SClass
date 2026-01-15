@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnStoreClicked(AnyType userObj);
-			static void __stdcall OnContentDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnContentDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnContentSelChg(AnyType userObj);
 			static void __stdcall OnUnkOnlyChkChg(AnyType userObj, Bool checked);
 			Bool LogFileStore();

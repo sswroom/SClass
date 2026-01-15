@@ -14,7 +14,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -61,7 +61,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 				else
 				{
-					UOSInt readSize;
+					UIntOS readSize;
 					totalReadSize = 0;
 					while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 					{

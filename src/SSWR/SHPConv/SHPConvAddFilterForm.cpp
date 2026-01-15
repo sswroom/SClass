@@ -7,7 +7,7 @@
 void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
-	UOSInt i = me->cboFilter->GetSelectedIndex();
+	UIntOS i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
 		SSWR::SHPConv::SHPConvValueFilterForm frm(nullptr, me->ui, me->dbf);

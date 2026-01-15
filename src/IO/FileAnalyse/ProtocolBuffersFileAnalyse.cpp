@@ -18,12 +18,12 @@ Text::CStringNN IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFormatName()
 	return CSTR("Protobuf");
 }
 
-UOSInt IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameCount()
 {
 	return 1;
 }
 
-Bool IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index != 0)
 	{
@@ -33,22 +33,22 @@ Bool IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameName(UOSInt index, NN<
 	return true;
 }
 
-UOSInt IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	return 0;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (index != 0)
 	{
 		return nullptr;
 	}
-	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, (UOSInt)this->fd->GetDataSize()));
-	Data::ByteBuffer packetBuff((UOSInt)this->fd->GetDataSize());
-	this->fd->GetRealData(0, (UOSInt)this->fd->GetDataSize(), packetBuff);
-	this->msg->ParseMsssage(frame, packetBuff.Arr(), 0, (UOSInt)this->fd->GetDataSize());
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, (UIntOS)this->fd->GetDataSize()));
+	Data::ByteBuffer packetBuff((UIntOS)this->fd->GetDataSize());
+	this->fd->GetRealData(0, (UIntOS)this->fd->GetDataSize(), packetBuff);
+	this->msg->ParseMsssage(frame, packetBuff.Arr(), 0, (UIntOS)this->fd->GetDataSize());
 	return frame;
 }
 

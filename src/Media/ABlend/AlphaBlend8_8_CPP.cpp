@@ -5,11 +5,11 @@
 #include "Sync/ThreadUtil.h"
 
 
-extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 {
-	OSInt sAdd = sbpl - width * 4;
-	OSInt dAdd = dbpl - width * 4;
-	OSInt i;
+	IntOS sAdd = sbpl - width * 4;
+	IntOS dAdd = dbpl - width * 4;
+	IntOS i;
 
 	UInt16x4 cval;
 	UInt16x4 cAdd = PUInt16x4SetA(16);
@@ -34,11 +34,11 @@ extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src,
 	}
 }
 
-extern "C" void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
+extern "C" void AlphaBlend8_8_DoBlendPA(UInt8 *dest, IntOS dbpl, const UInt8 *src, IntOS sbpl, IntOS width, IntOS height)
 {
-	OSInt sAdd = sbpl - width * 4;
-	OSInt dAdd = dbpl - width * 4;
-	OSInt i;
+	IntOS sAdd = sbpl - width * 4;
+	IntOS dAdd = dbpl - width * 4;
+	IntOS i;
 
 	UInt16x4 cval;
 	UInt16x4 cAdd = PUInt16x4SetA(16);

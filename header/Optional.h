@@ -16,7 +16,7 @@ public:
 		this->p = p;
 	}
 
-	Optional(OSInt p) = delete;
+	Optional(IntOS p) = delete;
 
 	Optional(T &p)
 	{

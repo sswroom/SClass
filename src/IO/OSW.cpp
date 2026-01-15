@@ -70,7 +70,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	return sbuff;
 }
 
-UOSInt IO::OS::GetBuildNumber()
+UIntOS IO::OS::GetBuildNumber()
 {
 	OS_LoadVersion();
 	return OS_BuildNumber;

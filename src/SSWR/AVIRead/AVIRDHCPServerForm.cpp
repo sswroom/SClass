@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 	}
 	else
 	{
-		UInt32 ifIp = (UInt32)me->cboIP->GetSelectedItem().GetUOSInt();
+		UInt32 ifIp = (UInt32)me->cboIP->GetSelectedItem().GetUIntOS();
 		UInt32 subnet = 0;
 		UInt32 firstIP = 0;
 		UInt32 devCount = 0;
@@ -145,8 +145,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		UInt8 mac[8];
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		NN<Net::DHCPServer::DeviceStatus> dhcp;
 		NN<const Net::MACInfo::MACEntry> macInfo;
 		NN<Text::String> s;
@@ -191,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-				dt.AddSecond((OSInt)svr->GetIPLeaseTime());
+				dt.AddSecond((IntOS)svr->GetIPLeaseTime());
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 				if (s.Set(dhcp->hostName))
@@ -263,9 +263,9 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 			if (ipType == Net::IPType::Private)
 			{
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 			}
 			k++;
 		}

@@ -113,9 +113,9 @@ namespace SSWR
 			Bool devContUpd;
 			Sync::Mutex devContMut;
 			Data::ArrayListStringNN devConts;
-			UOSInt devContACnt;
+			UIntOS devContACnt;
 			UnsafeArrayOpt<DevAlert> devContAlerts;
-			UOSInt devContGCnt;
+			UIntOS devContGCnt;
 			UnsafeArrayOpt<DevGuard> devContGuards;
 
 			Bool alertContUpd;
@@ -155,8 +155,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		};
 	}
 }

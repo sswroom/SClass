@@ -42,20 +42,20 @@ void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NN<IO::Stream> stm, Any
 	MemFree(data.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UIntOS IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	NN<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
 	UInt8 packetBuff[1044];
-	UOSInt firstIndex = (UOSInt)-1;
-	UOSInt parseOfst = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS firstIndex = (UIntOS)-1;
+	UIntOS parseOfst = 0;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	while (i < buff.GetSize())
 	{
 		if (buff[i] == 0x7e)
 		{
-			if (firstIndex == (UOSInt)-1)
+			if (firstIndex == (UIntOS)-1)
 			{
 				firstIndex = i;
 			}
@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 					data->devId[5] = packetBuff[10];
 					this->listener->DataParsed(stm, stmObj, ReadMUInt16(&packetBuff[1]), ReadMUInt16(&packetBuff[11]), packetBuff, parseOfst + 1);
 
-					firstIndex = (UOSInt)-1;
+					firstIndex = (UIntOS)-1;
 					parseOfst = i + 1;
 				}
 				else
@@ -136,7 +136,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize() - parseOfst;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	NN<JTT808StreamData> data;
 	UInt8 hdr[12];
@@ -171,8 +171,8 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, I
 	}
 	UInt8 chk = 0;
 	UInt8 c;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 1;
 	buff[0] = 0x7e;
 	j = 0;
@@ -229,7 +229,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, I
 	return i;
 }
 
-UnsafeArray<const UInt8> IO::ProtoHdlr::ProtoJTT808Handler::GetPacketContent(UnsafeArray<const UInt8> packet, OutParam<UOSInt> contSize)
+UnsafeArray<const UInt8> IO::ProtoHdlr::ProtoJTT808Handler::GetPacketContent(UnsafeArray<const UInt8> packet, OutParam<UIntOS> contSize)
 {
 	UInt16 size;
 	if (packet[0] != 0x7e)

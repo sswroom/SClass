@@ -37,9 +37,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -65,7 +65,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.AppendP(sbuff, sptr);
 					sb.AppendC(UTF8STRC(", Index = "));
-					sb.AppendUOSInt(connInfo->GetIndex());
+					sb.AppendUIntOS(connInfo->GetIndex());
 					console->WriteLine(sb.ToCString());
 					connInfo->GetName(sbuff);
 					NEW_CLASS(arp, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));

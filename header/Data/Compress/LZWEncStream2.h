@@ -10,19 +10,19 @@ namespace Data
 		class LZWEncStream2 : public IO::Stream
 		{
 		private:
-			UOSInt minCodeSize;
-			UOSInt maxCodeSize;
-			UOSInt currCodeSize;
+			UIntOS minCodeSize;
+			UIntOS maxCodeSize;
+			UIntOS currCodeSize;
 			UnsafeArray<UInt8> encBuff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			UInt16 currTableSize;
 			UInt16 nextTableSize;
 			UnsafeArray<UInt16> lzwTable;
 			UInt16 resetCode;
 			UInt16 endCode;
 			UInt16 nextTableOfst;
-			UOSInt tableSize;
-			OSInt codeSizeAdj;
+			UIntOS tableSize;
+			IntOS codeSizeAdj;
 			NN<IO::Stream> stm;
 			NN<IO::BitWriter> writer;
 			Bool toRelease;
@@ -30,12 +30,12 @@ namespace Data
 		private:
 			void ResetTable();
 		public:
-			LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UIntOS minCodeSize, UIntOS maxCodeSize, IntOS codeSizeAdj);
 			virtual ~LZWEncStream2();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(Data::ByteArrayR buff);
+			virtual UIntOS Read(const Data::ByteArray &buff);
+			virtual UIntOS Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

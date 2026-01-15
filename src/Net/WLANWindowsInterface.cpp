@@ -22,10 +22,10 @@ Bool Net::WLANWindowsInterface::Scan()
 	return this->core->Scan(this->id, 0, 0, 0) == ERROR_SUCCESS;
 }
 
-UOSInt Net::WLANWindowsInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
+UIntOS Net::WLANWindowsInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
 	WLAN_AVAILABLE_NETWORK_LIST *list;
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	if (ERROR_SUCCESS == this->core->GetAvailableNetworkList(this->id, 0, 0, (void**)&list))
 	{
 		UInt32 i = 0;
@@ -45,10 +45,10 @@ UOSInt Net::WLANWindowsInterface::GetNetworks(NN<Data::ArrayListNN<Net::Wireless
 	return retVal;
 }
 
-UOSInt Net::WLANWindowsInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
+UIntOS Net::WLANWindowsInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
 	WLAN_BSS_LIST *list;
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	if (ERROR_SUCCESS == this->core->GetNetworkBssList(this->id, 0, 0, 0, 0, (void**)&list))
 	{
 		UInt32 i = 0;

@@ -37,7 +37,7 @@ void Text::XLSUtil::Number2Date(NN<Data::DateTime> dt, Double v)
 	Int8 tz;
 	dt->ToLocalTime();
 	tz = dt->GetTimeZoneQHR();
-	dt->SetTicks((days - 25569) * 86400000LL + Double2OSInt((v - days) * 86400000));
+	dt->SetTicks((days - 25569) * 86400000LL + Double2IntOS((v - days) * 86400000));
 	dt->SetTimeZoneQHR(tz);
 }
 
@@ -46,11 +46,11 @@ Data::Timestamp Text::XLSUtil::Number2Timestamp(Double v)
 	Int32 days = (Int32)v;
 	Int8 tz = Data::DateTimeUtil::GetLocalTzQhr();
 	Double ds = (v - days);
-	OSInt s = (OSInt)(ds * 86400);
+	IntOS s = (IntOS)(ds * 86400);
 	return Data::Timestamp(Data::TimeInstant((days - 25569) * 86400LL + s, (UInt32)((ds * 86400 - (Double)s) * 1000000000)), tz);
 }
 
-UnsafeArray<UTF8Char> Text::XLSUtil::GetCellID(UnsafeArray<UTF8Char> sbuff, UOSInt col, UOSInt row)
+UnsafeArray<UTF8Char> Text::XLSUtil::GetCellID(UnsafeArray<UTF8Char> sbuff, UIntOS col, UIntOS row)
 {
 	if (col >= 26)
 	{
@@ -61,6 +61,6 @@ UnsafeArray<UTF8Char> Text::XLSUtil::GetCellID(UnsafeArray<UTF8Char> sbuff, UOSI
 	{
 		*sbuff++ = (UTF8Char)('A' + col);
 	}
-	sbuff = Text::StrUOSInt(sbuff, row + 1);
+	sbuff = Text::StrUIntOS(sbuff, row + 1);
 	return sbuff;
 }

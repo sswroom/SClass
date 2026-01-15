@@ -27,11 +27,11 @@ namespace Media
 		static void FillFormat(void *formatEx, Media::AudioFormat *fmt);
 		static UInt32 __stdcall PlayThread(AnyType obj);
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArray<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex);
-		static OSInt GetDeviceId(UnsafeArray<const UTF8Char> devName);
+		static UIntOS GetDeviceCount();
+		static UnsafeArray<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devIndex);
+		static IntOS GetDeviceId(UnsafeArray<const UTF8Char> devName);
 
-		KSRenderer(OSInt devId);
+		KSRenderer(IntOS devId);
 		virtual ~KSRenderer();
 
 		virtual Bool IsError();

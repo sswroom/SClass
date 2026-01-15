@@ -105,12 +105,12 @@ void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 	this->selfResize = false;
 }
 
-UOSInt UI::GUIClientControl::GetChildCount() const
+UIntOS UI::GUIClientControl::GetChildCount() const
 {
 	return this->children.GetCount();
 }
 
-Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
+Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UIntOS index) const
 {
 	return this->children.GetItem(index);
 }
@@ -247,7 +247,7 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	}
 
 	this->UpdateChildrenSize(false);
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);

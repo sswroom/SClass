@@ -8,7 +8,7 @@ UInt32 __stdcall Sync::ParallelTask::WorkerThread(AnyType userObj)
 	NN<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ParallelTask")), stat->index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("ParallelTask")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
@@ -32,7 +32,7 @@ UInt32 __stdcall Sync::ParallelTask::WorkerThread(AnyType userObj)
 	return 0;
 }
 
-Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
+Sync::ParallelTask::ParallelTask(UIntOS threadCnt, Bool taskQueue)
 {
 	if (threadCnt == 0)
 	{
@@ -45,7 +45,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 	if (this->threadCnt > 1)
 	{
 		this->stats = MemAlloc(Sync::ParallelTask::ThreadStatus, this->threadCnt);
-		UOSInt i = this->threadCnt;
+		UIntOS i = this->threadCnt;
 		while (i-- > 0)
 		{
 			this->stats[i].me = this;
@@ -79,7 +79,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 
 Sync::ParallelTask::~ParallelTask()
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->threadCnt > 1)
 	{
 #if 1 || defined(WIN32)
@@ -123,7 +123,7 @@ Sync::ParallelTask::~ParallelTask()
 	}
 }
 
-UOSInt Sync::ParallelTask::GetThreadCnt()
+UIntOS Sync::ParallelTask::GetThreadCnt()
 {
 	return this->threadCnt;
 }
@@ -132,7 +132,7 @@ void Sync::ParallelTask::AddTask(TaskFunc func, AnyType taskObj)
 {
 	if (this->threadCnt > 1)
 	{
-		UOSInt i;
+		UIntOS i;
 		Bool added = false;
 		while (!added)
 		{
@@ -164,7 +164,7 @@ void Sync::ParallelTask::WaitForIdle()
 {
 	if (this->threadCnt > 1)
 	{
-		UOSInt i;
+		UIntOS i;
 		Bool idle = false;
 		while (!idle)
 		{

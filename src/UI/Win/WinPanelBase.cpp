@@ -20,7 +20,7 @@ Int32 UI::Win::WinPanelBase::useCnt = 0;
 #define GetWindowLongPtr(a, b) GetWindowLongW(a, b)
 #endif
 
-OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
 	UI::GUIPanel *pnl = (UI::GUIPanel*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	if (pnl == 0)
@@ -117,7 +117,7 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 		}
 		return 0;
 	case WM_COMMAND:
-		ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
 		if (ctrl)
 		{
 			ctrl->OnNotify(HIWORD(wParam), 0);
@@ -125,7 +125,7 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 		break;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)(OSInt)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			ctrl->OnNotify(nmhdr->code, (void*)lParam);
@@ -163,14 +163,14 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 						if (b == 0)
 						{
 							SetBkMode(hdcStatic, TRANSPARENT);
-							return (OSInt)GetSysColorBrush(COLOR_BTNFACE);
+							return (IntOS)GetSysColorBrush(COLOR_BTNFACE);
 						}
 					}
 				}
 				if (b)
 				{
 					SetBkMode(hdcStatic, TRANSPARENT);
-					return (OSInt)ctrl->GetBGBrush();//me->GetBGBrush();
+					return (IntOS)ctrl->GetBGBrush();//me->GetBGBrush();
 				}
 			}
 		}

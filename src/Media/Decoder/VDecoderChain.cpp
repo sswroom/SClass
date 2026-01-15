@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderChain.h"
 
-void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->frameCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
@@ -44,12 +44,12 @@ Bool Media::Decoder::VDecoderChain::HasFrameCount()
 	return this->sourceVideo->HasFrameCount();
 }
 
-UOSInt Media::Decoder::VDecoderChain::GetFrameCount()
+UIntOS Media::Decoder::VDecoderChain::GetFrameCount()
 {
 	return this->sourceVideo->GetFrameCount();
 }
 
-Data::Duration Media::Decoder::VDecoderChain::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VDecoderChain::GetFrameTime(UIntOS frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
@@ -59,7 +59,7 @@ void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, AnyType
 	this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-Bool Media::Decoder::VDecoderChain::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VDecoderChain::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

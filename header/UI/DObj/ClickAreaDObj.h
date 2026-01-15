@@ -15,18 +15,18 @@ namespace UI
 			NN<Media::DrawEngine> deng;
 			UI::UIEvent clkHdlr;
 			AnyType clkUserObj;
-			OSInt width;
-			OSInt height;
+			IntOS width;
+			IntOS height;
 
 		public:
-			ClickAreaDObj(NN<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, AnyType clkUserObj);
+			ClickAreaDObj(NN<Media::DrawEngine> deng, Math::Coord2D<IntOS> tl, IntOS width, IntOS height, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ClickAreaDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();

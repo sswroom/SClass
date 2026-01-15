@@ -17,9 +17,9 @@ Bool Crypto::Hash::HashStream::IsDown() const
 	return this->srcStm->IsDown();
 }
 
-UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
+UIntOS Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt retSize = this->srcStm->Read(buff);
+	UIntOS retSize = this->srcStm->Read(buff);
 	if (retSize > 0)
 	{
 		this->hash->Calc(buff.Arr(), retSize);
@@ -27,7 +27,7 @@ UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 	return retSize;
 }
 
-UOSInt Crypto::Hash::HashStream::Write(Data::ByteArrayR buff)
+UIntOS Crypto::Hash::HashStream::Write(Data::ByteArrayR buff)
 {
 	this->hash->Calc(buff.Arr(), buff.GetSize());
 	return this->srcStm->Write(buff);

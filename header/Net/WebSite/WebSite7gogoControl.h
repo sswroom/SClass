@@ -41,7 +41,7 @@ namespace Net
 			WebSite7gogoControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSite7gogoControl();
 
-			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
+			IntOS GetChannelItems(NN<Text::String> channelId, IntOS pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
 			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
 			void FreeChannelInfo(NN<ChannelInfo> chInfo);
 			Optional<Text::String> GetUserAgent();

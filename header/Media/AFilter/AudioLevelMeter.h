@@ -31,9 +31,9 @@ namespace Media
 			virtual ~AudioLevelMeter();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
-			Double GetLevel(UOSInt channel);
+			Double GetLevel(UIntOS channel);
 		};
 	}
 }

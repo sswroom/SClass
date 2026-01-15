@@ -32,8 +32,8 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data
 {
 	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	Bool changed = false;
-	UOSInt i;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i;
+	UIntOS nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->OpenItem(itemIndex);
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFSClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Text::String> s;
 	this->lvPlaylist->ClearItems();
 	i = 0;

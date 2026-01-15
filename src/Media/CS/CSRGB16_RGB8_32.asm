@@ -3,7 +3,7 @@ section .text
 global _CSRGB16_RGB8_Convert
 global CSRGB16_RGB8_Convert
 
-;void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, OSInt destNbits, UInt8 *rgbTable);
+;void CSRGB16_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, IntOS destNbits, UInt8 *rgbTable);
 ;0 edi
 ;4 esi
 ;8 ebx

@@ -7,7 +7,7 @@
 struct IO::DebugWriter::ClassData
 {
 	UTF8Char buff[4096];
-	UOSInt buffSize;
+	UIntOS buffSize;
 };
 
 IO::DebugWriter::DebugWriter()
@@ -24,7 +24,7 @@ IO::DebugWriter::~DebugWriter()
 
 void IO::DebugWriter::Flush()
 {
-	UOSInt i;
+	UIntOS i;
 	UnsafeArray<UTF8Char> sarr[2];
 	i = Text::StrSplitLine(sarr, 2, this->clsData->buff);
 	if (i == 2)

@@ -19,12 +19,12 @@ struct IO::PhysicalMem::ClassData
 {
 	void *map;
 	void *ptr;
-	OSInt size;
+	IntOS size;
 };
 
 static PhysicalMemInfo *PhysicalMem_status = 0;
 
-IO::PhysicalMem::PhysicalMem(OSInt addr, OSInt size)
+IO::PhysicalMem::PhysicalMem(IntOS addr, IntOS size)
 {
 	if (PhysicalMem_status == 0)
 	{
@@ -40,7 +40,7 @@ IO::PhysicalMem::PhysicalMem(OSInt addr, OSInt size)
 	ClassData *clsData = 0;
 	if (PhysicalMem_status->fd >= 0)
 	{
-		OSInt addrRet = addr & (size - 1);
+		IntOS addrRet = addr & (size - 1);
 		void *m = mmap(0, (size_t)size, PROT_READ|PROT_WRITE, MAP_SHARED, PhysicalMem_status->fd, addr - addrRet);
 		if (m != MAP_FAILED)
 		{

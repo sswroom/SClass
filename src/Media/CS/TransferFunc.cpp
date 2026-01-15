@@ -92,7 +92,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double gamma)
 	}
 }
 
-void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UOSInt paramCnt)
+void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UIntOS paramCnt)
 {
 	this->tranType = tranType;
 	this->gamma = 2.2;
@@ -159,7 +159,7 @@ Bool Media::CS::TransferParam::Equals(NN<const TransferParam> tran) const
 	{
 		if (this->paramCnt != tran->paramCnt)
 			return false;
-		UOSInt i = this->paramCnt;
+		UIntOS i = this->paramCnt;
 		while (i-- > 0)
 		{
 			if (this->params[i] != tran->params[i])

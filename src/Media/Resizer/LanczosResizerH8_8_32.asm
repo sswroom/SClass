@@ -6,7 +6,7 @@ global _LanczosResizerH8_8_vertical_filter
 global _LanczosResizerH8_8_expand
 global _LanczosResizerH8_8_collapse
 
-;void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -457,7 +457,7 @@ hfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerH8_8_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void LanczosResizerH8_8_horizontal_filter8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -969,7 +969,7 @@ hf8exit:
 	pop ebp
 	ret
 
-;void LanczosResizerH8_8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+;void LanczosResizerH8_8_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep)
 ;0 currWidth
 ;4 edi
 ;8 esi
@@ -1009,7 +1009,7 @@ _LanczosResizerH8_8_vertical_filter:
 	jmp vfstart2
 	
 	align 16
-vfstart:							;if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+vfstart:							;if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 vflop:
 	mov eax,dword [esp+32] ;width
 	mov ecx,dword [esp+24] ;inPt
@@ -1310,7 +1310,7 @@ vfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerH8_8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep)
+;void LanczosResizerH8_8_expand(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1332,8 +1332,8 @@ _LanczosResizerH8_8_expand:
 	mov ebp,dword [esp+28] ;width
 	lea edx,[ebp*4]
 	lea ecx,[ebp*8]
-	sub dword [esp+36],edx ;sAdd				OSInt sAdd = sstep - width * 4;
-	sub dword [esp+40],ecx ;dADd				OSInt dAdd = dstep - width * 8;
+	sub dword [esp+36],edx ;sAdd				IntOS sAdd = sstep - width * 4;
+	sub dword [esp+40],ecx ;dADd				IntOS dAdd = dstep - width * 8;
 	
 	mov edx,dword [esp+32] ;height
 	mov esi,dword [esp+24] ;outPt
@@ -1423,7 +1423,7 @@ expexit:
 	pop ebp
 	ret
 
-;void LanczosResizerH8_8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep)
+;void LanczosResizerH8_8_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1455,8 +1455,8 @@ _LanczosResizerH8_8_collapse:
 	lea edx,[ecx*4]
 	mov ebx,dword [esp+36] ;sAdd
 	mov edi,dword [esp+40] ;dAdd
-	sub ebx,eax						;OSInt sAdd = width * 8 - sstep;
-	sub edi,edx						;OSInt dAdd = width * 4 - dstep;
+	sub ebx,eax						;IntOS sAdd = width * 8 - sstep;
+	sub edi,edx						;IntOS dAdd = width * 4 - dstep;
 	mov ebp,dword [esp+32] ;height
 	mov edx,ecx ;width
 	pxor xmm1,xmm1

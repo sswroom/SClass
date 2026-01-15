@@ -11,7 +11,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 entOID[64];
-			UOSInt entOIDLen;
+			UIntOS entOIDLen;
 			UInt32 agentIPv4;
 			UInt32 genericTrap;
 			UInt32 specificTrap;
@@ -22,9 +22,9 @@ namespace Net
 		typedef struct
 		{
 			UInt8 oid[64];
-			UOSInt oidLen;
+			UIntOS oidLen;
 			UInt8 valType;
-			UOSInt valLen;
+			UIntOS valLen;
 			UInt8 *valBuff;
 		} BindingItem;
 
@@ -45,7 +45,7 @@ namespace Net
 		static ErrorStatus PDUParseTrapMessage(Data::ByteArrayR pdu, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList);
 
 		static Text::CStringNN TypeGetName(UInt8 type);
-		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, OutParam<Int32> outVal);
+		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UIntOS valLen, OutParam<Int32> outVal);
 		static void __stdcall FreeBindingItem(NN<BindingItem> item);
 		static Text::CStringNN ErrorStatusToString(ErrorStatus err);
 	};

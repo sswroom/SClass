@@ -25,13 +25,13 @@ Bool Win32::TerminalService::IsError()
 	return this->hand == INVALID_HANDLE_VALUE || this->hand == 0;
 }
 
-OSInt Win32::TerminalService::GetSessions(Data::ArrayListInt *sessions)
+IntOS Win32::TerminalService::GetSessions(Data::ArrayListInt *sessions)
 {
 	PWTS_SESSION_INFO sess;
 	UInt32 cnt;
 	if (WTSEnumerateSessions(this->hand, 0, 1, &sess, (DWORD*)&cnt) == 0)
 		return 0;
-	OSInt i = 0;
+	IntOS i = 0;
 	while ((UInt32)i < cnt)
 	{
 		sessions->Add(sess[i].SessionId);

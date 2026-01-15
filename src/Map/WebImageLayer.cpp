@@ -24,7 +24,7 @@ Map::WebImageLayer::ImageStat::~ImageStat()
 
 }
 
-OSInt Map::WebImageLayer::ImageStat::CompareTo(NN<Data::Comparable> obj) const
+IntOS Map::WebImageLayer::ImageStat::CompareTo(NN<Data::Comparable> obj) const
 {
 	NN<Map::WebImageLayer::ImageStat> stat = NN<Map::WebImageLayer::ImageStat>::ConvertFrom(obj);
 	if (this->zIndex > stat->zIndex)
@@ -49,18 +49,18 @@ OSInt Map::WebImageLayer::ImageStat::CompareTo(NN<Data::Comparable> obj) const
 	}
 }
 
-OSInt Map::WebImageLayer::GetImageStatIndex(Int32 id)
+IntOS Map::WebImageLayer::GetImageStatIndex(Int32 id)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	IntOS i;
+	IntOS j;
+	IntOS k;
 	NN<Map::WebImageLayer::ImageStat> stat;
 	i = 0;
-	j = (OSInt)this->loadedList.GetCount() - 1;
+	j = (IntOS)this->loadedList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		stat = this->loadedList.GetItemNoCheck((UOSInt)k);
+		stat = this->loadedList.GetItemNoCheck((UIntOS)k);
 		if (stat->id > id)
 		{
 			j = k - 1;
@@ -79,13 +79,13 @@ OSInt Map::WebImageLayer::GetImageStatIndex(Int32 id)
 
 Optional<Map::WebImageLayer::ImageStat> Map::WebImageLayer::GetImageStat(Int32 id)
 {
-	OSInt ind;
+	IntOS ind;
 	Optional<Map::WebImageLayer::ImageStat> stat = nullptr;
 	Sync::RWMutexUsage mutUsage(this->loadedMut, false);
 	ind = this->GetImageStatIndex(id);
 	if (ind >= 0)
 	{
-		stat = this->loadedList.GetItem((UOSInt)ind);
+		stat = this->loadedList.GetItem((UIntOS)ind);
 	}
 	return stat;
 }
@@ -138,11 +138,11 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 				Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 				NEW_CLASSOPT(stat->simg, Media::SharedImage(imgList, prevList));
 				Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
-				this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
+				this->loadedList.Insert((UIntOS)~this->GetImageStatIndex(stat->id), stat);
 				loadedMutUsage.EndUse();
 
 				Sync::MutexUsage mutUsage(this->updMut);
-				UOSInt i = this->updHdlrs.GetCount();
+				UIntOS i = this->updHdlrs.GetCount();
 				while (i-- > 0)
 				{
 					Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
@@ -158,7 +158,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 {
 	NN<Map::WebImageLayer> me = userObj.GetNN<Map::WebImageLayer>();
 	NN<ImageStat> stat;
-	UOSInt i;
+	UIntOS i;
 	Optional<IO::ParsedObject> pobj;
 	NN<IO::ParsedObject> nnpobj;
 	NN<IO::StreamData> fd;
@@ -198,11 +198,11 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 						Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 						NEW_CLASSOPT(stat->simg, Media::SharedImage(imgList, prevList));
 						Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
-						me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
+						me->loadedList.Insert((UIntOS)~me->GetImageStatIndex(stat->id), stat);
 						loadedMutUsage.EndUse();
 
 						Sync::MutexUsage mutUsage(me->updMut);
-						UOSInt j = me->updHdlrs.GetCount();
+						UIntOS j = me->updHdlrs.GetCount();
 						while (j-- > 0)
 						{
 							Data::CallbackStorage<UpdatedHandler> cb = me->updHdlrs.GetItem(j);
@@ -247,7 +247,7 @@ Map::WebImageLayer::WebImageLayer(NN<Net::WebBrowser> browser, NN<Parser::Parser
 
 Map::WebImageLayer::~WebImageLayer()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<ImageStat> stat;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
@@ -299,7 +299,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	Bool oldValid;
 	Bool currValid;
 	Bool changed = false;
-	UOSInt i;
+	UIntOS i;
 	NN<ImageStat> stat;
 	oldTime = this->currTime;
 	this->currTime = timeStamp;
@@ -361,10 +361,10 @@ Map::DrawLayerType Map::WebImageLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt retCnt = 0;
-	UOSInt i;
+	UIntOS retCnt = 0;
+	UIntOS i;
 	NN<ImageStat> stat;
 	NN<ImageStat> *imgArr;
 	Data::ArrayListNN<ImageStat> imgList;
@@ -373,7 +373,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptO
 	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArr(retCnt).Ptr();
-	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::Comparable>*)imgArr, 0, (OSInt)retCnt - 1);
+	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::Comparable>*)imgArr, 0, (IntOS)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)
@@ -385,18 +385,18 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptO
 	return retCnt;
 }
 
-UOSInt Map::WebImageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::WebImageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	UOSInt retCnt = 0;
+	UIntOS retCnt = 0;
 	NN<ImageStat> stat;
 	NN<ImageStat> *imgArr;
 	Data::ArrayListNN<ImageStat> imgList;
-	UOSInt i;
+	UIntOS i;
 	Bool valid;
 
 	rect = rect.Reorder();
@@ -455,7 +455,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Op
 	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArr(retCnt).Ptr();
-	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::Comparable>*)imgArr, 0, (OSInt)retCnt - 1);
+	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::Comparable>*)imgArr, 0, (IntOS)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)
@@ -480,7 +480,7 @@ Int64 Map::WebImageLayer::GetObjectIdMax() const
 }
 
 
-UOSInt Map::WebImageLayer::GetRecordCnt() const
+UIntOS Map::WebImageLayer::GetRecordCnt() const
 {
 	return this->loadedList.GetCount();
 }
@@ -489,7 +489,7 @@ void Map::WebImageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::WebImageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt colIndex)
+Bool Map::WebImageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS colIndex)
 {
 	if (colIndex != 0)
 		return false;
@@ -505,19 +505,19 @@ Bool Map::WebImageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Name
 	}
 }
 
-UOSInt Map::WebImageLayer::GetColumnCnt() const
+UIntOS Map::WebImageLayer::GetColumnCnt() const
 {
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex > 0)
 		return nullptr;
 	return Text::StrConcatC(buff, UTF8STRC("Name"));
 }
 
-DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -527,7 +527,7 @@ DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UO
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::WebImageLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex == 0)
 	{
@@ -586,7 +586,7 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 	}
 }
 
-UOSInt Map::WebImageLayer::GetGeomCol() const
+UIntOS Map::WebImageLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -604,7 +604,7 @@ void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 
 void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)

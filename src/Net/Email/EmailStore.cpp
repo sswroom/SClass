@@ -10,7 +10,7 @@ Net::Email::EmailStore::EmailStore()
 Net::Email::EmailStore::~EmailStore()
 {
 	NN<EmailInfo> email;
-	UOSInt i;
+	UIntOS i;
 	i = this->mailList.GetCount();
 	while (i-- > 0)
 	{
@@ -20,7 +20,7 @@ Net::Email::EmailStore::~EmailStore()
 	}
 }
 
-UOSInt Net::Email::EmailStore::GetAllEmails(NN<Data::ArrayListNN<EmailInfo>> emailList)
+UIntOS Net::Email::EmailStore::GetAllEmails(NN<Data::ArrayListNN<EmailInfo>> emailList)
 {
 	Sync::MutexUsage mutUsage(this->mailMut);
 	emailList->AddAll(this->mailList);

@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter text to load first"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
-	UOSInt encType = me->cboEncType->GetSelectedIndex();
+	UIntOS encType = me->cboEncType->GetSelectedIndex();
 	UInt8 *buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	if (encType == 0)
 	{
 		Text::TextBinEnc::Base64Enc b64;

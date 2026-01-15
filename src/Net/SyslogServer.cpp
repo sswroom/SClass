@@ -88,7 +88,7 @@ Net::SyslogServer::~SyslogServer()
 {
 	DEL_CLASS(this->svr);
 	this->logPath->Release();
-	UOSInt i;
+	UIntOS i;
 	IPStatus *status;
 	i = this->ipMap.GetCount();
 	while (i-- > 0)

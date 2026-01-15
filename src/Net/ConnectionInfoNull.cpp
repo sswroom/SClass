@@ -41,12 +41,12 @@ UTF8Char *Net::ConnectionInfo::GetDNSSuffix(UTF8Char *buff)
 	return 0;
 }
 
-UInt32 Net::ConnectionInfo::GetIPAddress(UOSInt index)
+UInt32 Net::ConnectionInfo::GetIPAddress(UIntOS index)
 {
 	return 0;
 }
 
-UInt32 Net::ConnectionInfo::GetDNSAddress(UOSInt index)
+UInt32 Net::ConnectionInfo::GetDNSAddress(UIntOS index)
 {
 	return 0;
 }
@@ -56,7 +56,7 @@ UInt32 Net::ConnectionInfo::GetDefaultGW()
 	return this->ent.defGW;
 }
 
-UOSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UOSInt buffSize)
+UIntOS Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UIntOS buffSize)
 {
 	return 0;
 }
@@ -112,9 +112,9 @@ Bool Net::ConnectionInfo::GetUDPInfo(UDPInfo *info)
 	return GetUdpStatisticsEx((MIB_UDPSTATS*)info, AF_INET) == NO_ERROR;
 }
 
-OSInt Net::ConnectionInfo::QueryPortInfos(Data::ArrayList<Net::ConnectionInfo::PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
+IntOS Net::ConnectionInfo::QueryPortInfos(Data::ArrayList<Net::ConnectionInfo::PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	UInt32 ret;
 	if (protoType & Net::ConnectionInfo::PT_TCP)
 	{
@@ -226,7 +226,7 @@ OSInt Net::ConnectionInfo::QueryPortInfos(Data::ArrayList<Net::ConnectionInfo::P
 
 void Net::ConnectionInfo::FreePortInfos(Data::ArrayList<Net::ConnectionInfo::PortInfo*> *portInfoList)
 {
-	OSInt i = portInfoList->GetCount();
+	IntOS i = portInfoList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(portInfoList->RemoveAt(i));

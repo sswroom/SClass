@@ -19,7 +19,7 @@ void IO::IBuddy::InitDevice(const UTF8Char *devName)
 	this->lastEffect = 0;
 }
 
-OSInt IO::IBuddy::GetNumDevice()
+IntOS IO::IBuddy::GetNumDevice()
 {
 	Int32 ret = 0;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
@@ -64,9 +64,9 @@ OSInt IO::IBuddy::GetNumDevice()
 	return ret;
 }
 
-IO::IBuddy::IBuddy(OSInt devNo)
+IO::IBuddy::IBuddy(IntOS devNo)
 {
-	OSInt currId = 0;
+	IntOS currId = 0;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
 	this->hand = 0;
 	HDEVINFO devInfo = SetupDiGetClassDevs((GUID*)hidGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);

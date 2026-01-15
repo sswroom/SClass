@@ -4,7 +4,7 @@
 void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCboSelChg(AnyType userObj)
 {
 	NN<ColumnItem> colItem = userObj.GetNN<ColumnItem>();
-	colItem->txt->SetReadOnly(colItem->cbo->GetSelectedItem().GetOSInt() != -3);
+	colItem->txt->SetReadOnly(colItem->cbo->GetSelectedItem().GetIntOS() != -3);
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userObj)
@@ -17,8 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Database is not valid"), CSTR("DB Assign Column"), me);
 		return;
 	}
-	UOSInt i = 0;
-	UOSInt j = me->dbTable->GetColCnt();
+	UIntOS i = 0;
+	UIntOS j = me->dbTable->GetColCnt();
 	while (i < j)
 	{
 		if (colsItem[i].cbo->GetSelectedItem() == (void*)-2)
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 			}
 			else
 			{
-				sb.AppendUOSInt(i);
+				sb.AppendUIntOS(i);
 			}
 			sb.Append(CSTR(" is unknown"));
 			me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Assign Column"), me);
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 	i = 0;
 	while (i < j)
 	{
-		me->colInd->SetItem(i, colsItem[i].cbo->GetSelectedItem().GetUOSInt());
+		me->colInd->SetItem(i, colsItem[i].cbo->GetSelectedItem().GetUIntOS());
 		sb.ClearStr();
 		colsItem[i].txt->GetText(sb);
 		me->colStr->Add(Text::String::New(sb.ToCString()));
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(AnyType us
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayListNative<UOSInt>> colInd, NN<Data::ArrayListStringNN> colStr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayListNative<UIntOS>> colInd, NN<Data::ArrayListStringNN> colStr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("DB Assign Column"));
@@ -99,10 +99,10 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 	{
 		return;
 	}
-	UOSInt i = 0;
-	UOSInt j = dbTable->GetColCnt();
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = dbTable->GetColCnt();
+	UIntOS k;
+	UIntOS l;
 	NN<DB::ColDef> col;
 	NN<DB::DBReader> r;
 	NN<UI::GUILabel> lbl;
@@ -115,16 +115,16 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 		if (dbTable->GetCol(i).SetTo(col))
 		{
 			lbl = ui->NewLabel(this->pnlColumns, col->GetColName()->ToCString());
-			lbl->SetRect(0, UOSInt2Double(i * 24), 100, 23, false);
+			lbl->SetRect(0, UIntOS2Double(i * 24), 100, 23, false);
 		}
 		colsItem[i].cbo = ui->NewComboBox(this->pnlColumns, false);
-		colsItem[i].cbo->SetRect(100, UOSInt2Double(i * 24), 100, 23, false);
+		colsItem[i].cbo->SetRect(100, UIntOS2Double(i * 24), 100, 23, false);
 		colsItem[i].cbo->AddItem(CSTR("Fix Text"), (void*)-3);
 		colsItem[i].cbo->AddItem(CSTR("Unknown"), (void*)-2);
 		colsItem[i].cbo->AddItem(CSTR("Ignore"), (void*)-1);
 		colsItem[i].cbo->HandleSelectionChange(OnCboSelChg, &colsItem[i]);
 		colsItem[i].txt = ui->NewTextBox(this->pnlColumns, Text::String::OrEmpty(this->colStr->GetItem(i))->ToCString());
-		colsItem[i].txt->SetRect(200, UOSInt2Double(i * 24), 100, 23, false);
+		colsItem[i].txt->SetRect(200, UIntOS2Double(i * 24), 100, 23, false);
 		colsItem[i].txt->SetReadOnly(true);
 		colsItem[i].me = *this;
 

@@ -11,12 +11,12 @@ Media::CameraManager::~CameraManager()
 {
 }
 
-OSInt Media::CameraManager::GetDeviceCount()
+IntOS Media::CameraManager::GetDeviceCount()
 {
 	return 1;
 }
 
-Optional<Media::PhotoCapturer> Media::CameraManager::CreateDevice(OSInt devId)
+Optional<Media::PhotoCapturer> Media::CameraManager::CreateDevice(IntOS devId)
 {
 	Media::PhotoCapturer *capture = 0;
 	if (devId == 0)

@@ -16,8 +16,8 @@ namespace Media
 			Int64 adxSample2[2];
 
 			Data::ByteBuffer readBuff;
-			UOSInt readBuffSize;
-			UOSInt buffSize;
+			UIntOS readBuffSize;
+			UIntOS buffSize;
 			Optional<Sync::Event> readEvt;
 		public:
 			PSSADecoder(NN<AudioSource> sourceAudio);
@@ -26,10 +26,10 @@ namespace Media
 			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 			virtual void Stop();
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-			virtual UOSInt GetMinBlockSize();
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS GetMinBlockSize();
 
 		private:
 			void Convert(Data::ByteArray src, Data::ByteArray dest, Int32 sampleByte, Int32 channel);

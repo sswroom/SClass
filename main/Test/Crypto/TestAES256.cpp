@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	aes.Encrypt(testVector1, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("F3EED1BDB5D2A03C064B5A7E3DB181F8")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("F3EED1BDB5D2A03C064B5A7E3DB181F8")))
 	{
 		return 1;
 	}
@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	aes.SetKey(key);
 	aes.Encrypt(testVector2, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("591CCB10D410ED26DC5BA74A31362870")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("591CCB10D410ED26DC5BA74A31362870")))
 	{
 		return 1;
 	}
@@ -45,7 +45,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	aes.SetKey(key);
 	aes.Encrypt(testVector3, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("B6ED21B99CA6F4F9F153E7B1BEAFED1D")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("B6ED21B99CA6F4F9F153E7B1BEAFED1D")))
 	{
 		return 1;
 	}
@@ -58,7 +58,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	aes.SetKey(key);
 	aes.Encrypt(testVector4, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
-	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("23304B7A39F9F3FF067D8D8F9E24ECC7")))
+	if (!Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("23304B7A39F9F3FF067D8D8F9E24ECC7")))
 	{
 		return 1;
 	}

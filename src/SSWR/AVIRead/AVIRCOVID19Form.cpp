@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	UInt8 buff[2048];
-	UOSInt i;
+	UIntOS i;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->clif, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	IO::MemoryStream mstm(1024);
 	while (true)
@@ -62,13 +62,13 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 	if (!me->lvCountry->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>().SetTo(country))
 		return;
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
-	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
+	Math::Size2D<UIntOS> sz = me->pbNewCases->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	if (deng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
 		NN<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord> record;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Int64 lastCount = 0;
 		Int32 *counts;
 		Int64 *dates;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 				i++;
 			}
 			chart.AddLineChart(CSTR("New Cases"), Data::ChartPlotter::NewData(counts, j), Data::ChartPlotter::NewDataDate(dates, j), 0xffff0000);
-			chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+			chart.Plot(dimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 			MemFree(counts);
 			MemFree(dates);
 		}
@@ -105,8 +105,8 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
 	NN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>> countryList = this->countries.GetValues();
-	UOSInt i = countryList->GetCount();
-	UOSInt j;
+	UIntOS i = countryList->GetCount();
+	UIntOS j;
 	while (i-- > 0)
 	{
 		country = countryList->GetItemNoCheck(i);
@@ -127,15 +127,15 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt colIsoCode = (UOSInt)-1;
-	UOSInt colLocation = (UOSInt)-1;
-	UOSInt colDate = (UOSInt)-1;
-	UOSInt colTotalCases = (UOSInt)-1;
-	UOSInt colTotalDeath = (UOSInt)-1;
-	UOSInt colPopulation = (UOSInt)-1;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS colIsoCode = (UIntOS)-1;
+	UIntOS colLocation = (UIntOS)-1;
+	UIntOS colDate = (UIntOS)-1;
+	UIntOS colTotalCases = (UIntOS)-1;
+	UIntOS colTotalDeath = (UIntOS)-1;
+	UIntOS colPopulation = (UIntOS)-1;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
 	NN<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord> record;
 	this->ClearRecords();
@@ -151,34 +151,34 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 		{
 			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iso_code")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("iso_code")))
 				{
 					colIsoCode = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("location")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("location")))
 				{
 					colLocation = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("date")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("date")))
 				{
 					colDate = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_cases")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("total_cases")))
 				{
 					colTotalCases = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_deaths")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("total_deaths")))
 				{
 					colTotalDeath = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("population")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("population")))
 				{
 					colPopulation = i;
 				}
 			}
 		}
 
-		if (colIsoCode == (UOSInt)-1 || colLocation == (UOSInt)-1 || colDate == (UOSInt)-1 || colTotalCases == (UOSInt)-1 || colTotalDeath == (UOSInt)-1 || colPopulation == (UOSInt)-1)
+		if (colIsoCode == (UIntOS)-1 || colLocation == (UIntOS)-1 || colDate == (UIntOS)-1 || colTotalCases == (UIntOS)-1 || colTotalDeath == (UIntOS)-1 || colPopulation == (UIntOS)-1)
 		{
 			csv.CloseReader(r);
 			return false;
@@ -191,9 +191,9 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 			if (!this->countries.GetC(CSTRP(sbuff, sptr)).SetTo(country))
 			{
 				NEW_CLASSNN(country, SSWR::AVIRead::AVIRCOVID19Form::CountryInfo());
-				country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				country->isoCode = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff)).Or(sbuff);
-				country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				country->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 				country->population = Text::StrToDoubleOrNAN(sbuff);
 				this->countries.PutNN(country->isoCode, country);

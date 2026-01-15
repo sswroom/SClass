@@ -15,26 +15,26 @@ namespace UI
 		NN<UI::GUIListBox> lb;
 		NN<UI::GUITimer> tmr;
 		NN<UI::GUIForm> frm;
-		UOSInt maxLog;
+		UIntOS maxLog;
 		Bool reverse;
 		UnsafeArray<Optional<Text::String>> logArr;
 		UnsafeArray<Optional<Text::String>> tmpLogArr;
 		UnsafeArrayOpt<const Char> timeFormat;
-		UOSInt logIndex;
+		UIntOS logIndex;
 		UInt32 logCnt;
 		Optional<UI::GUITextBox> txt;
 
 		static void __stdcall TimerTick(AnyType userObj);
 		static void __stdcall OnListBoxSelChg(AnyType userObj);
 	public:
-		ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse);
+		ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UIntOS maxLog, Bool reverse);
 		virtual ~ListBoxLogger();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, IO::LogHandler::LogLevel logLev);
 
 		void SetTimeFormat(UnsafeArray<const Char> timeFormat);
 
-		static NN<ListBoxLogger> CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse);
+		static NN<ListBoxLogger> CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UIntOS maxLog, Bool reverse);
 	};
 }
 #endif

@@ -66,7 +66,7 @@ void Media::CS::CSConverter::SetPalette(UnsafeArray<UInt8> pal)
 {
 }
 
-UOSInt Media::CS::CSConverter::GetSupportedCS(NN<Data::ArrayListUInt32> csList)
+UIntOS Media::CS::CSConverter::GetSupportedCS(NN<Data::ArrayListUInt32> csList)
 {
 	/////////////////////////////////
 	// YUV8 4:4:4 AYUV
@@ -75,7 +75,7 @@ UOSInt Media::CS::CSConverter::GetSupportedCS(NN<Data::ArrayListUInt32> csList)
 	// YUV16 Y416, Y216, P216, P016
 	// LRGB
 
-	UOSInt i = csList->GetCount();
+	UIntOS i = csList->GetCount();
 	csList->SortedInsert(0);
 	csList->SortedInsert(FFMT_YUV420P8);
 	csList->SortedInsert(FFMT_AYUV444_10);
@@ -110,7 +110,7 @@ Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 	return csList.SortedIndexOf(fourcc) >= 0;
 }
 
-Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess)
+Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UIntOS srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UIntOS destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess)
 {
 	Media::CS::CSConverter *conv;
 	if (destFormat == *(UInt32*)"LRGB")

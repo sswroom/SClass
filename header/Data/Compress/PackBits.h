@@ -7,7 +7,7 @@ namespace Data
 		class PackBits
 		{
 		public:
-			static Bool Decompress(UnsafeArray<UInt8> destBuff, OutParam<UOSInt> destBuffSize, UnsafeArray<UInt8> srcBuff, UOSInt srcBuffSize);
+			static Bool Decompress(UnsafeArray<UInt8> destBuff, OutParam<UIntOS> destBuffSize, UnsafeArray<UInt8> srcBuff, UIntOS srcBuffSize);
 		};
 	}
 }

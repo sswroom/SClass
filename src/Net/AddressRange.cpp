@@ -3,12 +3,12 @@
 #include "Net/AddressRange.h"
 #include "Text/MyString.h"
 
-Net::AddressRange::AddressRange(UnsafeArray<const UTF8Char> addr, UOSInt addrLen, Bool scanBoardcast)
+Net::AddressRange::AddressRange(UnsafeArray<const UTF8Char> addr, UIntOS addrLen, Bool scanBoardcast)
 {
 	this->skipFirst = false;
 	this->skipLast = false;
 	UTF8Char sbuff[64];
-	UOSInt i = Text::StrIndexOfChar(addr, '/');
+	UIntOS i = Text::StrIndexOfChar(addr, '/');
 	if (i != INVALID_INDEX)
 	{
 		if (!Text::StrToUInt8(&addr[i + 1], this->param))
@@ -125,10 +125,10 @@ Net::AddressRange::~AddressRange()
 
 }
 
-UOSInt Net::AddressRange::GetCount()
+UIntOS Net::AddressRange::GetCount()
 {
 	UInt32 netMask;
-	UOSInt cnt;
+	UIntOS cnt;
 	switch (this->aType)
 	{
 	case AT_ERROR:
@@ -136,7 +136,7 @@ UOSInt Net::AddressRange::GetCount()
 	case AT_SINGLE:
 		return 1;
 	case AT_RANGE:
-		cnt = (UOSInt)this->param - this->addr1.addr[3] + 1;
+		cnt = (UIntOS)this->param - this->addr1.addr[3] + 1;
 		if (this->skipFirst)
 		{
 			cnt--;
@@ -147,7 +147,7 @@ UOSInt Net::AddressRange::GetCount()
 		}
 		return cnt;
 	case AT_MASK:
-		cnt = (UOSInt)1 << (32 - this->param);
+		cnt = (UIntOS)1 << (32 - this->param);
 		if (this->skipFirst)
 		{
 			cnt--;
@@ -189,11 +189,11 @@ UOSInt Net::AddressRange::GetCount()
 	}
 }
 
-Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr)
+Bool Net::AddressRange::GetItem(UIntOS index, Net::SocketUtil::AddressInfo *addr)
 {
 	UInt32 netMask;
 	UInt32 ip;
-	UOSInt cnt;
+	UIntOS cnt;
 	switch (this->aType)
 	{
 	case AT_ERROR:
@@ -206,7 +206,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		*addr = this->addr1;
 		return true;
 	case AT_RANGE:
-		cnt = (UOSInt)this->param - this->addr1.addr[3] + 1;
+		cnt = (UIntOS)this->param - this->addr1.addr[3] + 1;
 		if (this->skipFirst)
 		{
 			cnt--;
@@ -222,7 +222,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		*addr = this->addr1;
 		if (this->skipFirst)
 		{
-			addr->addr[3] = (UInt8)((UOSInt)addr->addr[3] + 1 + index);
+			addr->addr[3] = (UInt8)((UIntOS)addr->addr[3] + 1 + index);
 		}
 		else
 		{
@@ -230,7 +230,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		}
 		return true;
 	case AT_MASK:
-		cnt = (UOSInt)1 << (32 - this->param);
+		cnt = (UIntOS)1 << (32 - this->param);
 		if (this->skipFirst)
 		{
 			cnt--;

@@ -79,12 +79,12 @@ namespace Net
 	public:
 		static const UInt8 *ReadLenencInt(const UInt8 *buff, UInt64 *val);
 		static UnsafeArray<UInt8> AppendLenencInt(UnsafeArray<UInt8> buff, UInt64 val);
-		static UnsafeArray<UInt8> AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UOSInt len);
+		static UnsafeArray<UInt8> AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UIntOS len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
 		static DB::DBUtil::ColType MySQLType2ColType(MySQLType mysqlType);
 		static AuthenType AuthenTypeParse(Text::CStringNN name);
 		static Text::CStringNN AuthenTypeGetName(AuthenType authType);
-		static UOSInt BuildAuthen(UnsafeArray<UInt8> buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password);
+		static UIntOS BuildAuthen(UnsafeArray<UInt8> buff, AuthenType authType, const UInt8 *nonce, UIntOS nonceSize, Text::CStringNN password);
 		static Bool IsAxisAware(Text::CStringNN svrVer);
 	};
 }

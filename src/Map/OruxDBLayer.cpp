@@ -43,7 +43,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 Map::OruxDBLayer::~OruxDBLayer()
 {
 	NN<Map::OruxDBLayer::LayerInfo> lyr;
-	UOSInt i;
+	UIntOS i;
 	i = this->layerMap.GetCount();
 	while (i-- > 0)
 	{
@@ -120,7 +120,7 @@ Map::DrawLayerType Map::OruxDBLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::OruxDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::OruxDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<Map::OruxDBLayer::LayerInfo> lyr;
 	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
@@ -146,12 +146,12 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::OruxDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX;
 	Int32 minY;
@@ -196,7 +196,7 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptO
 			}
 			i++;
 		}
-		return (UOSInt)(maxX - minX) * (UOSInt)(maxY - minY);
+		return (UIntOS)(maxX - minX) * (UIntOS)(maxY - minY);
 	}
 	else
 	{
@@ -217,7 +217,7 @@ Int64 Map::OruxDBLayer::GetObjectIdMax() const
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetRecordCnt() const
+UIntOS Map::OruxDBLayer::GetRecordCnt() const
 {
 	NN<Map::OruxDBLayer::LayerInfo> lyr;
 	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
@@ -234,27 +234,27 @@ void Map::OruxDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::OruxDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::OruxDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	return false;
 }
 
-UOSInt Map::OruxDBLayer::GetColumnCnt() const
+UIntOS Map::OruxDBLayer::GetColumnCnt() const
 {
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::OruxDBLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }
@@ -313,7 +313,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	Optional<Media::ImageList> imgList = nullptr;
 	if (r->ReadNext())
 	{
-		UOSInt size = r->GetBinarySize(0);
+		UIntOS size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryDataRef fd(buff, size);
@@ -350,7 +350,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	}
 }
 
-UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<DB::DBConn> db;
 	if (this->db.SetTo(db))
@@ -360,7 +360,7 @@ UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arra
 	return 0;
 }
 
-Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBConn> db;
 	if (this->db.SetTo(db))
@@ -407,7 +407,7 @@ void Map::OruxDBLayer::Reconnect()
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetGeomCol() const
+UIntOS Map::OruxDBLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -440,7 +440,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, NN<IO::Stream> stm, OptOut<
 	Bool succ = false;
 	if (r->ReadNext())
 	{
-		UOSInt size = r->GetBinarySize(0);
+		UIntOS size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		stm->Write(Data::ByteArrayR(buff, size));

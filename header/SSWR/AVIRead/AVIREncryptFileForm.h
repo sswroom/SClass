@@ -39,9 +39,9 @@ namespace SSWR
 			NN<UI::GUIButton> btnDecrypt;
 
 			Optional<Crypto::Encrypt::Encryption> InitCrypto();
-			UnsafeArrayOpt<UInt8> InitInput(UOSInt blockSize, OutParam<UOSInt> dataSize);
-			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc);
-			void SaveOutput(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			UnsafeArrayOpt<UInt8> InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize);
+			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS blockSize, Bool enc);
+			void SaveOutput(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			void SetInputFile(Text::CStringNN file);
 			static void __stdcall OnEncryptClicked(AnyType userObj);
 			static void __stdcall OnDecryptClicked(AnyType userObj);

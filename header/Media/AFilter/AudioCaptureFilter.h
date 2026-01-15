@@ -19,7 +19,7 @@ namespace Media
 			UInt64 fileSize;
 
 			UInt8 *readBuff;
-			UOSInt readBuffSize;
+			UIntOS readBuffSize;
 			UInt8 *writeBuff;
 			Sync::Mutex readMut;
 			Sync::Mutex writeMut;
@@ -34,7 +34,7 @@ namespace Media
 			virtual ~AudioCaptureFilter();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+			virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool StartCapture(Text::CStringNN fileName);
 			void StopCapture();

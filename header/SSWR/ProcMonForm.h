@@ -23,7 +23,7 @@ namespace SSWR
 		{
 			NN<Text::String> progName;
 			Optional<Text::String> progPath;
-			UOSInt procId;
+			UIntOS procId;
 		} ProgInfo;
 	private:
 		NN<UI::GUITabControl> tcMain;
@@ -53,7 +53,7 @@ namespace SSWR
 
 		void AddProg(Text::CStringNN progName, Text::CString progPath);
 		Bool SearchProcId(NN<ProgInfo> prog);
-		void SetByProcId(ProgInfo *prog, UOSInt procId);
+		void SetByProcId(ProgInfo *prog, UIntOS procId);
 		void LoadProgList();
 		void SaveProgList();
 		static void __stdcall OnProgSelChange(AnyType userObj);

@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UOSInt slen)
+void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UIntOS slen)
 {
 	NN<Text::String> str = Text::String::NewW(s, slen);
 	sb->Append(str);
@@ -40,10 +40,10 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 			}
 			else
 			{
-				sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (OSInt)target);
+				sptr = Text::StrIntOS(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (IntOS)target);
 			}
 //			printf("%s\r\n", sbuff);
-			this->targetMap.Put(CSTRP(sbuff, sptr), (OSInt)target);
+			this->targetMap.Put(CSTRP(sbuff, sptr), (IntOS)target);
 
 			if (readData)
 			{
@@ -58,7 +58,7 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 
 UI::GTK::GTKDropData::~GTKDropData()
 {
-	UOSInt i = this->targetText.GetCount();
+	UIntOS i = this->targetText.GetCount();
 	while (i-- > 0)
 	{
 		this->targetText.GetItemNoCheck(i)->Release();
@@ -67,21 +67,21 @@ UI::GTK::GTKDropData::~GTKDropData()
 
 /*void UI::GUIDragDataGTK::ReadData()
 {
-	Data::ArrayList<OSInt> *targetList = this->targetMap->GetValues();
-	OSInt i = 0;
-	OSInt j = targetList->GetCount();
+	Data::ArrayList<IntOS> *targetList = this->targetMap->GetValues();
+	IntOS i = 0;
+	IntOS j = targetList->GetCount();
 	while (i < j)
 	{
 		i++;
 	}
 }*/
 
-UOSInt UI::GTK::GTKDropData::GetCount()
+UIntOS UI::GTK::GTKDropData::GetCount()
 {
 	return this->targetMap.GetCount();
 }
 
-UnsafeArrayOpt<const UTF8Char> UI::GTK::GTKDropData::GetName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> UI::GTK::GTKDropData::GetName(UIntOS index)
 {
 	NN<Text::String> key;
 	if (this->targetMap.GetKey(index).SetTo(key))
@@ -93,7 +93,7 @@ UnsafeArrayOpt<const UTF8Char> UI::GTK::GTKDropData::GetName(UOSInt index)
 
 Bool UI::GTK::GTKDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb)
 {
-	OSInt fmt = this->targetMap.Get(Text::CStringNN::FromPtr(name));
+	IntOS fmt = this->targetMap.Get(Text::CStringNN::FromPtr(name));
 	if (fmt == 0)
 		return false;
 	NN<Text::String> txt;
@@ -116,8 +116,8 @@ IO::Stream *UI::GTK::GTKDropData::GetDataStream(UnsafeArray<const UTF8Char> name
 void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 {
 	GdkAtom target = gtk_selection_data_get_target((GtkSelectionData*)selData);
-	Int32 itarget = (Int32)(OSInt)target;
-	UOSInt dataSize = (UInt32)gtk_selection_data_get_length((GtkSelectionData*)selData);
+	Int32 itarget = (Int32)(IntOS)target;
+	UIntOS dataSize = (UInt32)gtk_selection_data_get_length((GtkSelectionData*)selData);
 	GdkAtom dataType = gtk_selection_data_get_data_type((GtkSelectionData*)selData);
 	const char *csptr = gdk_atom_name(target);
 	if (csptr == 0)
@@ -131,7 +131,7 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 		csptr2 = "Unknown";
 	}
 	GdkAtom sel = gtk_selection_data_get_selection((GtkSelectionData*)selData);
-//	printf("Selection = %d, Target = %d (%s), Data Type = %d (%s), size = %d\r\n", sel, itarget, csptr, (Int32)(OSInt)dataType, csptr2, (Int32)dataSize);
+//	printf("Selection = %d, Target = %d (%s), Data Type = %d (%s), size = %d\r\n", sel, itarget, csptr, (Int32)(IntOS)dataType, csptr2, (Int32)dataSize);
 	if (this->targetText.ContainsKey(itarget))
 	{
 		return;
@@ -263,7 +263,7 @@ void UI::GTK::GTKDragDrop::SetHandler(NN<UI::GUIDropHandler> hdlr)
 	this->hdlr = hdlr;
 }
 
-Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, OSInt x, OSInt y, UInt32 time)
+Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, IntOS x, IntOS y, UInt32 time)
 {
 	NN<UI::GTK::GTKDropData> dragData;
 	if (dragData.Set(this->dragData))
@@ -290,7 +290,7 @@ void UI::GTK::GTKDragDrop::EventDragLeave()
 	SDEL_CLASS(this->dragData);
 }
 
-Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, OSInt x, OSInt y, UInt32 time)
+Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, IntOS x, IntOS y, UInt32 time)
 {
 	NN<UI::GTK::GTKDropData> dragData;
 	if (dragData.Set(this->dragData))

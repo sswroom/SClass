@@ -4,20 +4,20 @@
 
 extern "C"
 {
-	void AutoCropFilter_CropCalc(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
+	void AutoCropFilter_CropCalc(UInt8 *yptr, UIntOS w, UIntOS h, UIntOS ySplit, UIntOS *crops);
 }
 
-void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::VideoSource> srcVideo;
 	if (this->enabled && this->srcVideo.SetTo(srcVideo) && frameStruct == Media::VideoSource::FS_I)
 	{
 		if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 		{
-			UOSInt oriCropLeft;
-			UOSInt oriCropTop;
-			UOSInt oriCropRight;
-			UOSInt oriCropBottom;
+			UIntOS oriCropLeft;
+			UIntOS oriCropTop;
+			UIntOS oriCropRight;
+			UIntOS oriCropBottom;
 
 			srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 			if (this->hasCrop && oriCropLeft == 0 && oriCropTop == 0 && oriCropRight == 0 && oriCropBottom == 0)
@@ -31,11 +31,11 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameT
 				oriCropBottom = this->videoInfo.dispSize.y >> 1;
 			}
 
-			UOSInt w = this->videoInfo.dispSize.x;
-			UOSInt h = this->videoInfo.dispSize.y;
+			UIntOS w = this->videoInfo.dispSize.x;
+			UIntOS h = this->videoInfo.dispSize.y;
 			UnsafeArray<UInt8> yptr = imgData[0];
-			UOSInt ySplit;
-			UOSInt crops[4];
+			UIntOS ySplit;
+			UIntOS crops[4];
 			crops[0] = oriCropLeft;
 			crops[1] = oriCropTop;
 			crops[2] = oriCropRight;
@@ -108,7 +108,7 @@ void Media::VideoFilter::AutoCropFilter::SetEnabled(Bool enabled)
 	this->enabled = enabled;
 }
 
-void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
+void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
 	NN<Media::VideoSource> srcVideo;
 	Bool cropValid = true;
@@ -121,10 +121,10 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft
 		return;
 	}
 
-	UOSInt oriCropLeft;
-	UOSInt oriCropTop;
-	UOSInt oriCropRight;
-	UOSInt oriCropBottom;
+	UIntOS oriCropLeft;
+	UIntOS oriCropTop;
+	UIntOS oriCropRight;
+	UIntOS oriCropBottom;
 	srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 	if (!this->hasCrop || !this->enabled)
 	{
@@ -132,7 +132,7 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft
 	}
 	else
 	{
-		UOSInt w = this->videoInfo.dispSize.x;
+		UIntOS w = this->videoInfo.dispSize.x;
 		if ((oriCropLeft + oriCropRight + oriCropTop + oriCropBottom) > (w >> 1))
 		{
 			cropValid = false;

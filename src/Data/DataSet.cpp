@@ -12,7 +12,7 @@ Data::DataSet::DataSet()
 
 Data::DataSet::~DataSet()
 {
-	UOSInt i = this->itemCnt << 1;
+	UIntOS i = this->itemCnt << 1;
 	while (i-- > 0)
 	{
 		this->items[i].SetNull();
@@ -23,13 +23,13 @@ Data::DataSet::~DataSet()
 void Data::DataSet::AddItem(const VariItem& key, const VariItem& value)
 {
 	Optional<Text::String> opts;
-	UOSInt i;
+	UIntOS i;
 	if (this->itemCnt >= this->capacity)
 	{
 		this->capacity = this->capacity << 1;
 		UnsafeArray<VariItem> newItems = MemAllocArr(VariItem, this->capacity << 1);
 		i = 0;
-		UOSInt j = this->itemCnt * 2;
+		UIntOS j = this->itemCnt * 2;
 		while (i < j)
 		{
 			newItems[i] = this->items[i];
@@ -70,8 +70,8 @@ void Data::DataSet::ValueCounts(NN<Data::ArrayListNative<UInt32>> result) const
 	NN<ValueItem> vitem;
 	Int64 hash;
 	VariItem item;
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->GetCount();
 	while (i < j)
 	{
 		if (this->GetValue(i, item))
@@ -133,8 +133,8 @@ NN<Data::DataSet> Data::DataSet::ValueCountsAsDS() const
 	Int64 hash;
 	VariItem item;
 	VariItem::ItemValue iv;
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->GetCount();
 	while (i < j)
 	{
 		if (this->GetValue(i, item))
@@ -189,12 +189,12 @@ NN<Data::DataSet> Data::DataSet::ValueCountsAsDS() const
 
 void Data::DataSet::SortByValue(NN<Data::Comparator<NN<VariItem>>> comparator)
 {
-	this->Sort(&this->items[1], this->items, 0, (OSInt)this->itemCnt - 1, comparator);
+	this->Sort(&this->items[1], this->items, 0, (IntOS)this->itemCnt - 1, comparator);
 }
 
 void Data::DataSet::SortByKey(NN<Data::Comparator<NN<VariItem>>> comparator)
 {
-	this->Sort(this->items, &this->items[1], 0, (OSInt)this->itemCnt - 1, comparator);
+	this->Sort(this->items, &this->items[1], 0, (IntOS)this->itemCnt - 1, comparator);
 }
 
 void Data::DataSet::SortByValue()
@@ -221,7 +221,7 @@ void Data::DataSet::SortByKeyInv()
 	this->SortByKey(NN<VariItemComparatorInv>(comparator));
 }
 
-void Data::DataSet::Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt left, OSInt right, NN<Data::Comparator<NN<VariItem>>> comparator)
+void Data::DataSet::Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS left, IntOS right, NN<Data::Comparator<NN<VariItem>>> comparator)
 {
 	VariItem temp = keyArr[left * 2];
 	VariItem temp2;
@@ -243,23 +243,23 @@ void Data::DataSet::Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> 
 	}
 }
 
-void Data::DataSet::Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt firstIndex, OSInt lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator)
+void Data::DataSet::Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS firstIndex, IntOS lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator)
 {
 #if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
+	IntOS levi[256];
+	IntOS desni[256];
 #else
-	UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
-	UnsafeArray<OSInt> desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
 	VariItem meja;
 	VariItem mejaV;
-	OSInt left1;
-	OSInt right1;
+	IntOS left1;
+	IntOS right1;
 	VariItem temp;
 	VariItem tempV;
 
@@ -335,12 +335,12 @@ void Data::DataSet::Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> val
 #endif
 }
 
-void Data::DataSet::ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt left, OSInt right, NN<Data::Comparator<NN<VariItem>>> comparator)
+void Data::DataSet::ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, IntOS left, IntOS right, NN<Data::Comparator<NN<VariItem>>> comparator)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	VariItem temp;
 	VariItem temp1;
 	VariItem temp2;
@@ -389,7 +389,7 @@ void Data::DataSet::ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> v
 NN<Data::SortableArrayListNative<Data::Timestamp>> Data::DataSetMonthGrouper::CreateKeyIndex() const
 {
 	NN<Data::SortableArrayListNative<Data::Timestamp>> tsList;
-	UOSInt i = this->ds->GetCount();
+	UIntOS i = this->ds->GetCount();
 	NEW_CLASSNN(tsList, Data::SortableArrayListNative<Data::Timestamp>());
 	if (i == 0)
 	{
@@ -443,16 +443,16 @@ NN<Data::SortableArrayListNative<Data::Timestamp>> Data::DataSetMonthGrouper::Cr
 	return tsList;
 }
 
-UOSInt Data::DataSetMonthGrouper::GetKeyIndex(NN<Data::SortableArrayListNative<Data::Timestamp>> keyIndex, UOSInt dataIndex) const
+UIntOS Data::DataSetMonthGrouper::GetKeyIndex(NN<Data::SortableArrayListNative<Data::Timestamp>> keyIndex, UIntOS dataIndex) const
 {
 	VariItem item;
 	if (!this->ds->GetKey(dataIndex, item))
 		return 0;
 	Data::Timestamp ts = item.GetAsTimestamp();
-	OSInt i = keyIndex->SortedIndexOf(ts);
+	IntOS i = keyIndex->SortedIndexOf(ts);
 	if (i == -1)
 		return 0;
 	if (i < 0)
-		return (UOSInt)~i - 1;
-	return (UOSInt)i;
+		return (UIntOS)~i - 1;
+	return (UIntOS)i;
 }

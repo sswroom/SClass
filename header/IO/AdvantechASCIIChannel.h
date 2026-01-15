@@ -158,7 +158,7 @@ namespace IO
 
 		NN<IO::Stream> GetStream() const;
 		
-		UnsafeArrayOpt<UTF8Char> SendCommand(UnsafeArray<UTF8Char> replyBuff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		UnsafeArrayOpt<UTF8Char> SendCommand(UnsafeArray<UTF8Char> replyBuff, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 
 		void Close();
 

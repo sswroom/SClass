@@ -21,10 +21,10 @@ Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 	int cnt;
 	NEW_CLASS(this->addrArr, Data::ArrayListUInt64());
 	cnt = backtrace(addrArr, 50);
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < cnt)
 	{
-		this->addrArr->Add((UOSInt)addrArr[i]);
+		this->addrArr->Add((UIntOS)addrArr[i]);
 		i++;
 	}
 }
@@ -43,16 +43,16 @@ UInt64 Manage::StackTracer::GetCurrentAddr()
 {
 	if (this->addrArr == 0)
 		return 0;
-	return this->addrArr->GetItem((UOSInt)this->stackFrame);
+	return this->addrArr->GetItem((UIntOS)this->stackFrame);
 }
 
 Bool Manage::StackTracer::GoToNextLevel()
 {
 	if (this->addrArr == 0)
 		return false;
-	if ((UOSInt)this->stackFrame >= this->addrArr->GetCount() - 1)
+	if ((UIntOS)this->stackFrame >= this->addrArr->GetCount() - 1)
 		return false;
-	this->stackFrame = (void*)(1 + (OSInt)this->stackFrame);
+	this->stackFrame = (void*)(1 + (IntOS)this->stackFrame);
 	return true;
 }
 

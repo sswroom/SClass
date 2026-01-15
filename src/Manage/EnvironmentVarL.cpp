@@ -12,8 +12,8 @@ Manage::EnvironmentVar::EnvironmentVar()
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->envs = 0;
 	i = 0;
 	while (environ[i])

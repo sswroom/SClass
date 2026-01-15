@@ -81,7 +81,7 @@ Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, T
 Bool Data::DateTimeUtil::TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec)
 {
 	Text::PString strs[2];
-	UOSInt valTmp;
+	UIntOS valTmp;
 
 	t->hour = (UInt8)Text::StrToUInt32(timeStrs[0].v);
 	t->minute = (UInt8)Text::StrToUInt32(timeStrs[1].v);
@@ -1426,7 +1426,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 	UTF8Char *longBuff = 0;
 	Text::PString strs2[5];
 	Text::PString strs[3];
-	UOSInt nStrs;
+	UIntOS nStrs;
 	Bool succ = true;
 	outTzQhr.Set(defTzQhr);
 	if (dateStr.v[3] == ',' && Text::StrIndexOfChar(&dateStr.v[4], ',') == INVALID_INDEX)
@@ -1483,7 +1483,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
 			dateSucc = false;
 		}
-		UOSInt i = strs2[1].IndexOf('-');
+		UIntOS i = strs2[1].IndexOf('-');
 		if (i == INVALID_INDEX)
 		{
 			i = strs2[1].IndexOf('+');
@@ -1492,7 +1492,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			UTF8Char c = strs2[1].v[i];
 			strs2[1].v[i] = 0;
-			UOSInt tzlen = strs2[1].leng - i - 1;
+			UIntOS tzlen = strs2[1].leng - i - 1;
 			if (tzlen == 5)
 			{
 				UInt32 min = Text::StrToUInt32(&strs2[1].v[i + 4]);
@@ -1599,12 +1599,12 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 	}
 	else if (nStrs == 4 || (nStrs == 5 && (strs2[4].v[0] == '-' || strs2[4].v[0] == '+' || strs2[4].Equals(UTF8STRC("GMT")))))
 	{
-		UOSInt len1 = strs2[0].leng;
-		UOSInt len2 = strs2[1].leng;
-		UOSInt len3 = strs2[2].leng;
-		UOSInt len4 = strs2[3].leng;
+		UIntOS len1 = strs2[0].leng;
+		UIntOS len2 = strs2[1].leng;
+		UIntOS len3 = strs2[2].leng;
+		UIntOS len4 = strs2[3].leng;
 		UnsafeArray<UTF8Char> timeStr = strs2[3].v;
-		UOSInt timeStrLen = strs2[3].leng;
+		UIntOS timeStrLen = strs2[3].leng;
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
 			tval->year = Data::DateTimeUtil::ParseYearStr(strs2[2].ToCString());
@@ -1677,9 +1677,9 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		tval->second = 0;
 		outTzQhr.Set(0);
 
-		UOSInt j = 0;
-		UOSInt i;
-		UOSInt splitCnt;
+		UIntOS j = 0;
+		UIntOS i;
+		UIntOS splitCnt;
 		while (true)
 		{
 			if ((splitCnt = Text::StrSplitP(strs, 3, strs2[j], ':')) == 3)
@@ -1816,7 +1816,7 @@ Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval)
 	return true;
 }
 
-Bool Data::DateTimeUtil::IsYearLeap(OSInt year)
+Bool Data::DateTimeUtil::IsYearLeap(IntOS year)
 {
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }

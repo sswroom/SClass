@@ -12,7 +12,7 @@ namespace Map
 		NN<Text::String> tileDir;
 		NN<Map::MapConfig2TGen> mcfg;
 		NN<Media::DrawEngine> geng;
-		UOSInt osSize;
+		UIntOS osSize;
 
 		Data::ArrayListInt64 dbGenList;
 		Sync::Mutex dbMut;
@@ -25,7 +25,7 @@ namespace Map
 		void AppendDBFile(NN<IO::Writer> writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst);
 		Bool GenerateDBFile(Int32 x, Int32 y, UInt32 scale, NN<Map::MapScheduler> mapSch);
 	public:
-		TileMapGenerator(NN<Map::MapConfig2TGen> mcfg, NN<Media::DrawEngine> geng, Text::CStringNN tileDir, UOSInt osSize);
+		TileMapGenerator(NN<Map::MapConfig2TGen> mcfg, NN<Media::DrawEngine> geng, Text::CStringNN tileDir, UIntOS osSize);
 		~TileMapGenerator();
 
 		static Math::Coord2D<Int32> GetTileID(Double lat, Double lon, UInt32 scale, UInt32 imgSize);

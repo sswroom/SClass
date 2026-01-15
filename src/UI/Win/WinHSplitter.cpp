@@ -17,9 +17,9 @@ Int32 UI::Win::WinHSplitter::useCnt = 0;
 #define GetWindowLongPtr(a, b) GetWindowLongW(a, b)
 #endif
 
-OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+IntOS __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam)
 {
-	UI::Win::WinHSplitter *me = (UI::Win::WinHSplitter*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::Win::WinHSplitter *me = (UI::Win::WinHSplitter*)(IntOS)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	POINT pt;
 	HDC hdc;
 
@@ -38,7 +38,7 @@ OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 #else
 		GetCursorPos(&pt);
 #endif
-		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<OSInt>(pt.x, pt.y));
+		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<IntOS>(pt.x, pt.y));
 		return 0;
 	case WM_LBUTTONUP:
 #ifdef _WIN32_WCE
@@ -47,7 +47,7 @@ OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 #else
 		GetCursorPos(&pt);
 #endif
-		me->EventMouseUp(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<OSInt>(pt.x, pt.y));
+		me->EventMouseUp(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<IntOS>(pt.x, pt.y));
 		return 0;
 	case WM_MOUSEMOVE:
 		if (me->dragMode)
@@ -102,17 +102,17 @@ void UI::Win::WinHSplitter::Deinit(Optional<InstanceHandle> hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
-void UI::Win::WinHSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
+void UI::Win::WinHSplitter::DrawXorBar(HDC hdc, IntOS x, IntOS y)
 {
 	static UInt16 _dotPatternBmp[8] = {0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55};
 
 	HBITMAP hbm;
 	HBRUSH hbr;
 	HBRUSH hbrushOld;
-	OSInt drawX;
+	IntOS drawX;
 
-	Math::Size2D<UOSInt> sz;
-	Math::Coord2D<OSInt> pos = this->GetPositionP();
+	Math::Size2D<UIntOS> sz;
+	Math::Coord2D<IntOS> pos = this->GetPositionP();
 	sz = this->GetSizeP();
 	drawX = pos.x + x - this->dragX;
 	if (drawX < dragMin)
@@ -139,9 +139,9 @@ void UI::Win::WinHSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
 
 void UI::Win::WinHSplitter::CalDragRange()
 {
-	UOSInt i;
-	OSInt max;
-	OSInt min;
+	UIntOS i;
+	IntOS max;
+	IntOS min;
 	Bool foundLeft = false;
 	Bool foundRight = false;
 	Bool foundThis = false;
@@ -174,7 +174,7 @@ void UI::Win::WinHSplitter::CalDragRange()
 							{
 								foundRight = true;
 								max = ctrl->GetPositionP().x;
-								max += (OSInt)ctrl->GetSizeP().x;
+								max += (IntOS)ctrl->GetSizeP().x;
 							}
 						}
 						else if (dockType == UI::GUIControl::DOCK_LEFT)
@@ -183,7 +183,7 @@ void UI::Win::WinHSplitter::CalDragRange()
 							{
 								foundLeft = true;
 								min = ctrl->GetPositionP().x;
-								min += (OSInt)ctrl->GetSizeP().x;
+								min += (IntOS)ctrl->GetSizeP().x;
 							}
 						}
 					}
@@ -255,12 +255,12 @@ UI::Win::WinHSplitter::~WinHSplitter()
 	}
 }
 
-OSInt UI::Win::WinHSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinHSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::Win::WinHSplitter::EventMouseDown(GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::Win::WinHSplitter::EventMouseDown(GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 	if (btn == GUIControl::MouseButton::MBTN_LEFT)
 	{
@@ -282,13 +282,13 @@ void UI::Win::WinHSplitter::EventMouseDown(GUIControl::MouseButton btn, Math::Co
 	}
 }
 
-void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
 	if (btn == GUIControl::MouseButton::MBTN_LEFT && this->dragMode)
 	{
-		OSInt drawX;
-		Math::Coord2D<OSInt> pos;
-		Math::Size2D<UOSInt> sz;
+		IntOS drawX;
+		Math::Coord2D<IntOS> pos;
+		Math::Size2D<UIntOS> sz;
 		Bool foundThis;
 		UI::GUIControl::DockType dockType;
 
@@ -316,7 +316,7 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 		foundThis = false;
 		if (this->parent.SetTo(nnparent))
 		{
-			UOSInt i = nnparent->GetChildCount();
+			UIntOS i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
 				NN<UI::GUIControl> ctrl;
@@ -333,7 +333,7 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+							ctrl->SetAreaP(drawX, pos.y, pos.x + (IntOS)sz.x, pos.y + (IntOS)sz.y, false);
 							nnparent->UpdateChildrenSize(true);
 							break;
 						}
@@ -341,7 +341,7 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
+							ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (IntOS)sz.y, false);
 							nnparent->UpdateChildrenSize(true);
 							break;
 						}

@@ -14,7 +14,7 @@ namespace Net
 		struct CEKInfo
 		{
 			UnsafeArray<UInt8> key;
-			UOSInt keyLen;
+			UIntOS keyLen;
 			Int64 issueAt;
 			Int64 expiresAt;
 		};

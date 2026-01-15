@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->txtText->Focus();
 		return;
 	}
-	UOSInt i = me->cboHashType->GetSelectedIndex();
+	UIntOS i = me->cboHashType->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
 		me->cboHashType->Focus();
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
 		return;
 	}
-	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToCString());
+	UIntOS buffSize = srcEnc->CalcBinSize(sb.ToCString());
 	if (buffSize > 0)
 	{
 		NN<Crypto::Hash::HashAlgorithm> hash;
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		{
 			me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
 		}
-		else if (!Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboHashType->GetItem(i).GetOSInt()).SetTo(hash))
+		else if (!Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboHashType->GetItem(i).GetIntOS()).SetTo(hash))
 		{
 			me->ui->ShowMsgOK(CSTR("Hash Type not supported"), CSTR("Text Hash"), me);
 		}
@@ -93,8 +93,8 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Hash::HashAlgorithm> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
 		if (Crypto::Hash::HashCreator::CreateHash(currHash).SetTo(hash))
@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 			this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
 			hash.Delete();
 		}
-		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
+		currHash = (Crypto::Hash::HashType)((IntOS)currHash + 1);
 	}
 	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
 	NN<Text::TextBinEnc::TextBinEnc> enc;

@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "Crypto/Encrypt/BlockCipher.h"
 
-Crypto::Encrypt::BlockCipher::BlockCipher(UOSInt blockSize)
+Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize)
 {
 	this->blockSize = blockSize;
 	this->cm = ChainMode::ECB;
@@ -17,11 +17,11 @@ Crypto::Encrypt::BlockCipher::~BlockCipher()
 	MemFreeArr(this->iv);
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	UnsafeArray<UInt8> blk;
-	UOSInt outSize;
-	UOSInt blkCnt = 0;
+	UIntOS outSize;
+	UIntOS blkCnt = 0;
 	switch (this->cm)
 	{
 	case ChainMode::ECB:
@@ -48,8 +48,8 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 		else
 		{
 			blk = MemAlloc(UInt8, this->blockSize);
-			UOSInt i = this->blockSize;
-			UOSInt j = this->blockSize - inSize;
+			UIntOS i = this->blockSize;
+			UIntOS j = this->blockSize - inSize;
 			if (inSize > 0)
 			{
 				MemCopyNO(blk.Ptr(), inBuff.Ptr(), inSize);
@@ -99,8 +99,8 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 			{
 				MemXOR(blk.Ptr(), inBuff.Ptr(), blk.Ptr(), inSize);
 			}
-			UOSInt i = this->blockSize;
-			UOSInt j = this->blockSize - inSize;
+			UIntOS i = this->blockSize;
+			UIntOS j = this->blockSize - inSize;
 			while (i-- > inSize)
 			{
 				blk[i] ^= (UInt8)j;
@@ -138,8 +138,8 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 			{
 				MemXOR(blk.Ptr(), inBuff.Ptr(), blk.Ptr(), inSize);
 			}
-			UOSInt i = this->blockSize;
-			UOSInt j = this->blockSize - inSize;
+			UIntOS i = this->blockSize;
+			UIntOS j = this->blockSize - inSize;
 			while (i-- > inSize)
 			{
 				blk[i] ^= (UInt8)j;
@@ -209,7 +209,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 			blkCnt++;
 			if (inSize >= this->blockSize)
 			{
-				UOSInt i = this->blockSize;
+				UIntOS i = this->blockSize;
 				while (i-- > 0)
 				{
 					if (++(blk[i]) != 0)
@@ -236,7 +236,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
 		while (inSize > 0)
 		{
-			UOSInt i = this->blockSize;
+			UIntOS i = this->blockSize;
 			while (i-- > 0)
 			{
 				if (++(blk[i]) != 0)
@@ -266,13 +266,13 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 	}
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
+UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 *blk;
 	UInt8 *blk2;
 	UInt8 *blkTmp;
-	UOSInt blkCnt = 0;
-	UOSInt outSize;
+	UIntOS blkCnt = 0;
+	UIntOS outSize;
 	switch (this->cm)
 	{
 	case ChainMode::ECB:
@@ -515,7 +515,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 				blkCnt++;
 				if (inSize >= this->blockSize)
 				{
-					UOSInt i = this->blockSize;
+					UIntOS i = this->blockSize;
 					while (i-- > 0)
 					{
 						if (++(blk[i]) != 0)
@@ -549,7 +549,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 				blkCnt++;
 				if (inSize >= this->blockSize)
 				{
-					UOSInt i = this->blockSize;
+					UIntOS i = this->blockSize;
 					while (i-- > 0)
 					{
 						if (++(blk[i]) != 0)
@@ -581,7 +581,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 			MemCopyNO(blk, this->iv.Ptr(), this->blockSize);
 			while (inSize > 0)
 			{
-				UOSInt i = this->blockSize;
+				UIntOS i = this->blockSize;
 				while (i-- > 12)
 				{
 					if (++(blk[i]) != 0)
@@ -615,7 +615,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 			while (inSize > 0)
 			{
 				MemCopyNO(blk2, inBuff.Ptr(), this->blockSize);
-				UOSInt i = this->blockSize;
+				UIntOS i = this->blockSize;
 				while (i-- > 12)
 				{
 					if (++(blk[i]) != 0)
@@ -647,12 +647,12 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 	}
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::BlockCipher::GetEncBlockSize() const
 {
 	return this->blockSize;
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::BlockCipher::GetDecBlockSize() const
 {
 	return this->blockSize;
 }

@@ -14,9 +14,9 @@ Text::CStringNN UI::GUIHScrollBar::GetObjectClass() const
 	return CSTR("HScrollBar");
 }
 
-void UI::GUIHScrollBar::EventPosChanged(UOSInt newPos)
+void UI::GUIHScrollBar::EventPosChanged(UIntOS newPos)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->posChgHdlrs.GetCount();
 	while (i-- > 0)
 	{

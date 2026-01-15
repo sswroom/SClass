@@ -192,7 +192,7 @@ void Media::ColorCorr::SetGammas(Int32 rgamma, Int32 ggamma, Int32 bgamma)
 #define iTransfer(val) ((val) <= -cssRGBC1)?(-pow((-(val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)):(((val) < cssRGBC1)?((val) / cssRGBK2):(pow(((val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)))
 #define fTransfer(val) (((val) < -cssRGBK1)?((-1 - cssRGBK3) * pow(-(val), cssRGBK4) + cssRGBK3):(((val) <= cssRGBK1)?(cssRGBK2 * (val)):((1 + cssRGBK3) * pow((val), cssRGBK4) - cssRGBK3)))
 
-void Media::ColorCorr::CorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height)
+void Media::ColorCorr::CorrImage32(const UInt8 *src, IntOS sbpl, UInt32 sgamma, UInt8 *dest, IntOS dbpl, UInt32 width, UInt32 height)
 {
 	Int32 i;
 	if ((Int32)sgamma != this->corrTab32Gamma || !this->corrTab32Valid)
@@ -345,6 +345,6 @@ ci32lop2:
 #endif
 }
 
-void Media::ColorCorr::UncorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height)
+void Media::ColorCorr::UncorrImage32(const UInt8 *src, IntOS sbpl, UInt32 sgamma, UInt8 *dest, IntOS dbpl, UInt32 width, UInt32 height)
 {
 }

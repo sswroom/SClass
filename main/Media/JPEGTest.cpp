@@ -15,8 +15,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	IO::StmData::FileData fd(fileName, false);
-	UOSInt fileLen;
-	if ((fileLen = (UOSInt)fd.GetDataSize()) > 0)
+	UIntOS fileLen;
+	if ((fileLen = (UIntOS)fd.GetDataSize()) > 0)
 	{
 		UInt8 *fileBuff = MemAlloc(UInt8, fileLen);
 		if (fd.GetRealData(0, fileLen, Data::ByteArray(fileBuff, fileLen)) != fileLen)

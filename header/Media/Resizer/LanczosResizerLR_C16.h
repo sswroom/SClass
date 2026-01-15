@@ -21,48 +21,48 @@ namespace Media
 				NN<Sync::Event> evt;
 				UnsafeArray<const UInt8> inPt;
 				UnsafeArray<UInt8> outPt;
-				UOSInt width;
-				UOSInt height;
-				UOSInt tap;
-				UnsafeArray<OSInt> index;
+				UIntOS width;
+				UIntOS height;
+				UIntOS tap;
+				UnsafeArray<IntOS> index;
 				UnsafeArray<Int64> weight;
-				OSInt sstep;
-				OSInt dstep;
+				IntOS sstep;
+				IntOS dstep;
 			} TaskParam;
 
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				UnsafeArray<Int64> weight;
-				UnsafeArray<OSInt> index;
-				UOSInt tap;
+				UnsafeArray<IntOS> index;
+				UIntOS tap;
 			} LRHPARAMETER;
 
 		private:
-			UOSInt hnTap;
-			UOSInt vnTap;
-			UOSInt nThread;
+			UIntOS hnTap;
+			UIntOS vnTap;
+			UIntOS nThread;
 			Sync::Mutex mut;
 			UnsafeArray<TaskParam> params;
 			NN<Sync::ParallelTask> ptask;
 
 			Double hsSize;
 			Double hsOfst;
-			UOSInt hdSize;
-			UnsafeArrayOpt<OSInt> hIndex;
+			UIntOS hdSize;
+			UnsafeArrayOpt<IntOS> hIndex;
 			UnsafeArrayOpt<Int64> hWeight;
-			UOSInt hTap;
+			UIntOS hTap;
 
 			Double vsSize;
 			Double vsOfst;
-			UOSInt vdSize;
-			OSInt vsStep;
-			UnsafeArrayOpt<OSInt> vIndex;
+			UIntOS vdSize;
+			IntOS vsStep;
+			UnsafeArrayOpt<IntOS> vIndex;
 			UnsafeArrayOpt<Int64> vWeight;
-			UOSInt vTap;
+			UIntOS vTap;
 
-			UOSInt buffW;
-			UOSInt buffH;
+			UIntOS buffW;
+			UIntOS buffH;
 			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Media::ColorProfile destColor;
@@ -71,12 +71,12 @@ namespace Media
 			Bool rgbChanged;
 			UnsafeArrayOpt<UInt8> rgbTable;
 
-			void SetupInterpolationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupDecimationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameter(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
+			void SetupDecimationParameter(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr);
 
-			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
-			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
-			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep);
 
 			void UpdateRGBTable();
 
@@ -84,10 +84,10 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
+			LanczosResizerLR_C16(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
 			virtual ~LanczosResizerLR_C16();
 
-			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight);
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);

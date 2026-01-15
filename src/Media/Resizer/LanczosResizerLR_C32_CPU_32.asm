@@ -7,7 +7,7 @@ global _LanczosResizerLR_C32_CPU_hv_filter
 global _LanczosResizerLR_C32_CPU_collapse
 global _LanczosResizerLR_C32_CPU_collapse_na
 
-;void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 tmpV
 ;16 edi
 ;20 esi
@@ -37,7 +37,7 @@ _LanczosResizerLR_C32_CPU_horizontal_filter:
 	push eax
 	push eax
 	mov edx,dword [esp+44] ;width
-	lea ecx,[edx*8]				; OSInt dAdd = dstep - width * 8;
+	lea ecx,[edx*8]				; IntOS dAdd = dstep - width * 8;
 	sub dword [esp+68],ecx
 	test edx,1
 	jnz hfstart
@@ -101,7 +101,7 @@ hf6nstart:						; else if (tap == 6)
 	jnz hf6start
 	test dword [esp+68],15 ;dstep
 	jnz hf6start
-								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
+								; if ((((IntOS)outPt) & 15) == 0 && (dstep & 15) == 0)
 	shr dword [esp+44],1 ;width
 	mov edx,dword [esp+48] ;height
 	mov ecx,dword [esp+36] ;inPt
@@ -251,7 +251,7 @@ hf8nstart:						; else if (tap == 8)
 	jnz hf8start
 	test dword [esp+68],15 ;dstep
 	jnz hf8start
-								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
+								; if ((((IntOS)outPt) & 15) == 0 && (dstep & 15) == 0)
 	shr dword [esp+44],1 ;width
 	mov edx,dword [esp+48] ;height
 	mov ecx,dword [esp+36] ;inPt
@@ -409,7 +409,7 @@ hf16nstart:						; else if (tap == 16)
 	jnz hf16start
 	test dword [esp+68],15 ;dstep
 	jnz hf16start
-								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
+								; if ((((IntOS)outPt) & 15) == 0 && (dstep & 15) == 0)
 	shr dword [esp+44],1 ;width
 	mov edx,dword [esp+48] ;height
 	mov ecx,dword [esp+36] ;inPt
@@ -708,7 +708,7 @@ hfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerLR_C32_CPU_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C32_CPU_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 tmpV
 ;16 edi
 ;20 esi
@@ -1220,7 +1220,7 @@ vfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 tmpV
 ;16 edi
 ;20 esi
@@ -1252,7 +1252,7 @@ _LanczosResizerLR_C32_CPU_vertical_filter_na:
 	mov edx,dword [esp+44] ;width
 	mov eax,dword [esp+52] ;tap
 	lea ecx,[edx*4]
-	sub dword [esp+68],ecx			;OSInt dAdd = dstep - width * 4;
+	sub dword [esp+68],ecx			;IntOS dAdd = dstep - width * 4;
 	test edx,1						;if (width & 1)
 	jz vfnastart2
 	cmp eax,6
@@ -1716,7 +1716,7 @@ vfnaexit:
 	pop ebp
 	ret
 
-;void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt dheight, OSInt swidth, Int32 htap, Int32 *hindex, Int64 *hweight, Int32 vtap, Int32 *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UInt8 *buffPt)
+;void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS dheight, IntOS swidth, Int32 htap, Int32 *hindex, Int64 *hweight, Int32 vtap, Int32 *vindex, Int64 *vweight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, UInt8 *buffPt)
 ;0 currWidth
 ;4 edi
 ;8 esi
@@ -1914,7 +1914,7 @@ hvfexit:
 	pop ebp
 	ret
 
-;void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -1937,8 +1937,8 @@ _LanczosResizerLR_C32_CPU_collapse:
 	mov eax,dword [esp+28] ;width
 	lea ecx,[eax*8]
 	lea edx,[eax*4]
-	sub dword [esp+36],ecx ;sAdd		OSInt sAdd = sstep - width * 8;
-	sub dword [esp+40],edx ;dAdd		OSInt dAdd = dstep - width * 4;
+	sub dword [esp+36],ecx ;sAdd		IntOS sAdd = sstep - width * 8;
+	sub dword [esp+40],edx ;dAdd		IntOS dAdd = dstep - width * 4;
 	test eax,3
 	jnz colstart
 	test dword [esp+24],15 ;outPt
@@ -1946,7 +1946,7 @@ _LanczosResizerLR_C32_CPU_collapse:
 	test dword [esp+40],15 ;dstep
 	jz col16start
 	align 16
-colstart:						;if ((width & 3) || (((OSInt)outPt) & 15) || (dstep & 15))
+colstart:						;if ((width & 3) || (((IntOS)outPt) & 15) || (dstep & 15))
 	mov ebx,dword [esp+44] ;rgbTable
 	mov edi,dword [esp+32] ;height
 	mov ecx,dword [esp+20] ;inPt
@@ -2056,7 +2056,7 @@ colexit:
 	pop ebp
 	ret
 
-;void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2079,8 +2079,8 @@ _LanczosResizerLR_C32_CPU_collapse_na:
 	mov eax,dword [esp+28] ;width
 	lea ecx,[eax*8]
 	lea edx,[eax*4]
-	sub dword [esp+36],ecx ;sAdd		OSInt sAdd = sstep - width * 8;
-	sub dword [esp+40],edx ;dAdd		OSInt dAdd = dstep - width * 4;
+	sub dword [esp+36],ecx ;sAdd		IntOS sAdd = sstep - width * 8;
+	sub dword [esp+40],edx ;dAdd		IntOS dAdd = dstep - width * 4;
 	test eax,3
 	jnz colnastart
 	test dword [esp+24],15 ;outPt
@@ -2089,7 +2089,7 @@ _LanczosResizerLR_C32_CPU_collapse_na:
 	jz colna16start
 	
 	align 16
-colnastart:					; if ((width & 3) || (((OSInt)outPt) & 15) || (dstep & 15))
+colnastart:					; if ((width & 3) || (((IntOS)outPt) & 15) || (dstep & 15))
 	mov ecx,dword [esp+20] ;inPt
 	mov esi,dword [esp+24] ;outPt
 	mov ebp,dword [esp+32] ;height

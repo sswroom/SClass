@@ -7,13 +7,13 @@
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
-	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetOSInt();
+	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetIntOS();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Data::DateTime dt;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType user
 	}
 
 	Text::StringBuilderUTF8 sb;
-	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetUOSInt();
-	Net::RAWCapture::CaptureType type = (Net::RAWCapture::CaptureType)me->cboType->GetSelectedItem().GetOSInt();
-	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetOSInt();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetUIntOS();
+	Net::RAWCapture::CaptureType type = (Net::RAWCapture::CaptureType)me->cboType->GetSelectedItem().GetIntOS();
+	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetIntOS();
 	me->txtFileName->GetText(sb);
 	if (ip && sb.GetLength() > 0)
 	{
@@ -155,9 +155,9 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClie
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 ip;
 	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClie
 			if (ip == 0)
 				break;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
+			this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)ip);
 			k++;
 		}
 		connInfo.Delete();

@@ -27,8 +27,8 @@ void DB::MySQLMaintance::RepairSchema(UnsafeArray<const UTF8Char> schema, NN<Tex
 	}
 	this->cli->QueryTableNames(nullptr, tableNames);
 	Text::StringBuilderUTF8 sbDbg;
-	UOSInt i = 0;
-	UOSInt j = tableNames.GetCount();
+	UIntOS i = 0;
+	UIntOS j = tableNames.GetCount();
 	while (i < j)
 	{
 		this->RepairTable(Text::String::OrEmpty(tableNames.GetItem(i)), sb);
@@ -44,8 +44,8 @@ void DB::MySQLMaintance::RepairTable(NN<Text::String> tableName, NN<Text::String
 	NN<DB::DBReader> r;
 	if (this->cli->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
-		UOSInt i;
-		UOSInt j = r->ColCount();
+		UIntOS i;
+		UIntOS j = r->ColCount();
 		while (r->ReadNext())
 		{
 			i = 0;

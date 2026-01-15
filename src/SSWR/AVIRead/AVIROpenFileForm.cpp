@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(sb);
 	me->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-	me->parserType = (IO::ParserType)me->cboType->GetSelectedItem().GetUOSInt();
+	me->parserType = (IO::ParserType)me->cboType->GetSelectedItem().GetUIntOS();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -80,8 +80,8 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl>
 	this->SetCancelButton(this->btnCancel);
 
 	this->cboType->AddItem(CSTR("-- Any Type --"), (void*)IO::ParserType::Unknown);
-	UOSInt i = (UOSInt)IO::ParserType::Unknown;
-	while (i < (UOSInt)IO::ParserType::LastType)
+	UIntOS i = (UIntOS)IO::ParserType::Unknown;
+	while (i < (UIntOS)IO::ParserType::LastType)
 	{
 		i++;
 		this->cboType->AddItem(IO::ParserTypeGetName((IO::ParserType)i), (void*)i);

@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
-	DeviceType devType = (DeviceType)me->cboDevType->GetSelectedItem().GetOSInt();
+	DeviceType devType = (DeviceType)me->cboDevType->GetSelectedItem().GetIntOS();
 	NN<Net::MODBUSTCPListener> listener;
 	Text::StringBuilderUTF8 sb;
 	UInt8 addr;
@@ -119,8 +119,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType user
 	if (me->currDev.SetTo(currDev))
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt i = 0;
-		UOSInt j = currDev->GetValueCount();
+		UIntOS i = 0;
+		UIntOS j = currDev->GetValueCount();
 		while (i < j)
 		{
 			me->lvDeviceValues->AddItem(currDev->GetValueName(i).OrEmpty(), 0);
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceValuesDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceValuesDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	NN<IO::MODBUSDevSim> currDev;
@@ -156,8 +156,8 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevList()
 	if (this->listener.SetTo(listener))
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt i = 0;
-		UOSInt j = listener->GetDeviceCount();
+		UIntOS i = 0;
+		UIntOS j = listener->GetDeviceCount();
 		while (i < j)
 		{
 			NN<IO::MODBUSDevSim> dev = listener->GetDeviceNoCheck(i);
@@ -180,8 +180,8 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevValues()
 	if (this->currDev.SetTo(currDev))
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt i = 0;
-		UOSInt j = currDev->GetValueCount();
+		UIntOS i = 0;
+		UIntOS j = currDev->GetValueCount();
 		while (i < j)
 		{
 			sb.ClearStr();
@@ -244,8 +244,8 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClient
 	DeviceType devType = DeviceType::First;
 	while (devType <= DeviceType::Last)
 	{
-		this->cboDevType->AddItem(DeviceTypeGetName(devType), (void*)(OSInt)devType);
-		devType = (DeviceType)((OSInt)devType + 1);
+		this->cboDevType->AddItem(DeviceTypeGetName(devType), (void*)(IntOS)devType);
+		devType = (DeviceType)((IntOS)devType + 1);
 	}
 	this->cboDevType->SetSelectedIndex(0);
 	this->AddTimer(1000, OnTimerTick, this);

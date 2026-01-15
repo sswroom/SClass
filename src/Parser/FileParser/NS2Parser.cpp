@@ -42,8 +42,8 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 	UInt32 fileSize;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	if (hdr[4] != '"')
 		return nullptr;

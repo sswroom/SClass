@@ -30,7 +30,7 @@ namespace Net
 			virtual NN<Text::String> GetChannelId() const;
 			virtual NN<Text::String> GetName() const;
 			virtual UnsafeArray<UTF8Char> GetDirName(UnsafeArray<UTF8Char> dirName);
-			virtual UOSInt GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
+			virtual UIntOS GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
 			virtual UnsafeArray<UTF8Char> GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();

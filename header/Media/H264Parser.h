@@ -28,13 +28,13 @@ namespace Media
 		static Bool ParseHRDParameters(NN<IO::BitReaderMSB> reader, Optional<H264Flags> flags);
 		static Bool ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, Optional<H264Flags> flags);
 	public:
-		static Bool GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> info, Optional<H264Flags> flags); //Only update defined values
+		static Bool GetFrameInfo(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<Media::FrameInfo> info, Optional<H264Flags> flags); //Only update defined values
 		static Bool ParseVari(NN<IO::BitReaderMSB> reader, OutParam<UInt32> val);
 		static Bool ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> val);
-		static Bool FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> sps, OutParam<UOSInt> spsSize);
-		static Bool FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> pps, OutParam<UOSInt> ppsSize);
-		static Bool FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Data::ArrayListUInt32> nalList);
-		static UnsafeArrayOpt<UTF8Char> GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UOSInt frameSize);
+		static Bool FindSPS(UnsafeArray<const UInt8> frame, UIntOS frameSize, OutParam<UnsafeArray<const UInt8>> sps, OutParam<UIntOS> spsSize);
+		static Bool FindPPS(UnsafeArray<const UInt8> frame, UIntOS frameSize, OutParam<UnsafeArray<const UInt8>> pps, OutParam<UIntOS> ppsSize);
+		static Bool FindNALs(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<Data::ArrayListUInt32> nalList);
+		static UnsafeArrayOpt<UTF8Char> GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UIntOS frameSize);
 	};
 }
 #endif

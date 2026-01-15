@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userOb
 	{
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
-		UOSInt i;
+		UIntOS i;
 		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userOb
 			if (destPort == 0)
 			{
 			}
-			sb.TrimToLength((UOSInt)i);
+			sb.TrimToLength((UIntOS)i);
 		}
 		if (cli->GetServerTime(sb.ToCString(), destPort, ts))
 		{
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 	{
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
-		UOSInt i;
+		UIntOS i;
 		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 			if (destPort == 0)
 			{
 			}
-			sb.TrimToLength((UOSInt)i);
+			sb.TrimToLength((UIntOS)i);
 		}
 		if (cli->GetServerTime(sb.ToCString(), destPort, ts))
 		{

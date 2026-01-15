@@ -10,19 +10,19 @@ namespace Text
 		{
 		private:
 			UnsafeArray<UInt8> dataBuff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			NN<Text::String> contType;
 
 		public:
-			UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType);
+			UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UIntOS buffSize, Text::CStringNN contentType);
 			virtual ~UnknownMIMEObj();
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual UIntOS WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<MIMEObject> Clone() const;
 
-			UnsafeArray<const UInt8> GetRAWData(OutParam<UOSInt> dataSize) const;
+			UnsafeArray<const UInt8> GetRAWData(OutParam<UIntOS> dataSize) const;
 		};
 	}
 }

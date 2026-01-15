@@ -10,7 +10,7 @@
 
 #define MAX_PACKET_SIZE 2048
 
-IO::RAWBTMonitor::RAWBTMonitor(UOSInt devNum)
+IO::RAWBTMonitor::RAWBTMonitor(UIntOS devNum)
 {
 	this->fd = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HCI);
 	if (this->fd < 0) return;
@@ -78,12 +78,12 @@ void IO::RAWBTMonitor::Close()
 	}
 }
 
-UOSInt IO::RAWBTMonitor::GetMTU()
+UIntOS IO::RAWBTMonitor::GetMTU()
 {
 	return MAX_PACKET_SIZE;
 }
 
-UOSInt IO::RAWBTMonitor::NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks)
+UIntOS IO::RAWBTMonitor::NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks)
 {
 	UInt8 ctrlBuff[128];
 	struct cmsghdr *cmsg;
@@ -126,10 +126,10 @@ UOSInt IO::RAWBTMonitor::NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeT
 	}
 	WriteMUInt32(&buff[0], (in != 0));
 	timeTicks.Set(packetTime);
-	return (UOSInt)ret + 4;
+	return (UIntOS)ret + 4;
 }
 
-UOSInt IO::RAWBTMonitor::GetDevCount()
+UIntOS IO::RAWBTMonitor::GetDevCount()
 {
 	struct hci_dev_list_req *dev_list;
 	struct hci_dev_req *dev_req;
@@ -157,7 +157,7 @@ UOSInt IO::RAWBTMonitor::GetDevCount()
 		return 0;
 	}
 
-	UOSInt cnt = dev_list->dev_num;
+	UIntOS cnt = dev_list->dev_num;
 	MemFree(dev_list);
 	close(sock);
 	return cnt;

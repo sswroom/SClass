@@ -310,7 +310,7 @@ void Crypto::Encrypt::Blowfish::DecryptInt(NN<EncryptParam> param) const
 	UInt32 Xl;
 	UInt32 Xr;
 	UInt32 temp;
-	UOSInt i;
+	UIntOS i;
 
 	Xl = param->xl;
 	Xr = param->xr;
@@ -336,11 +336,11 @@ void Crypto::Encrypt::Blowfish::DecryptInt(NN<EncryptParam> param) const
 	param->xr = Xl;
 }
 
-void Crypto::Encrypt::Blowfish::InitPassword(UnsafeArray<const UInt8> password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::InitPassword(UnsafeArray<const UInt8> password, UIntOS pwdLen)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 data;
 	if (pwdLen < 4)
 	{
@@ -423,9 +423,9 @@ void Crypto::Encrypt::Blowfish::Init()
 {
 	MemCopyNO(&this->s[0][0], this->origS, 1024 * sizeof(UInt32));
 	MemCopyNO(this->p, this->origP, (N + 2) * sizeof(UInt32));
-/*	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+/*	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 
 	k = 0;
 	i = 0;
@@ -450,10 +450,10 @@ void Crypto::Encrypt::Blowfish::Init()
 	}*/
 }
 
-void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UIntOS pwdLen)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	this->InitPassword(password, pwdLen);
 
@@ -503,10 +503,10 @@ void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UOSInt pw
 	}
 }
 
-void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, UnsafeArray<const UInt8> password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, UnsafeArray<const UInt8> password, UIntOS pwdLen)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->InitPassword(password, pwdLen);
 
 	EncryptParam param;
@@ -639,7 +639,7 @@ Crypto::Encrypt::Blowfish::Blowfish() : Crypto::Encrypt::BlockCipher(8)
 
 }
 
-Crypto::Encrypt::Blowfish::Blowfish(UnsafeArray<const UInt8> key, UOSInt keySize) : Crypto::Encrypt::BlockCipher(8)
+Crypto::Encrypt::Blowfish::Blowfish(UnsafeArray<const UInt8> key, UIntOS keySize) : Crypto::Encrypt::BlockCipher(8)
 {
 	this->SetKey(key, keySize);
 }
@@ -649,7 +649,7 @@ Crypto::Encrypt::Blowfish::~Blowfish()
 
 }
 
-UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
+UIntOS Crypto::Encrypt::Blowfish::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
@@ -660,7 +660,7 @@ UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(UnsafeArray<const UInt8> inBlock,
 	return 8;
 }
 
-UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
+UIntOS Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
@@ -671,7 +671,7 @@ UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock,
 	return 8;
 }
 
-void Crypto::Encrypt::Blowfish::SetKey(UnsafeArray<const UInt8> key, UOSInt keySize)
+void Crypto::Encrypt::Blowfish::SetKey(UnsafeArray<const UInt8> key, UIntOS keySize)
 {
 	this->Init();
 	this->ExpandKey(nullptr, key, keySize);
@@ -679,12 +679,12 @@ void Crypto::Encrypt::Blowfish::SetKey(UnsafeArray<const UInt8> key, UOSInt keyS
 
 void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password)
 {
-	UOSInt i;
+	UIntOS i;
 
 	this->Init();
 
 	this->ExpandKey(salt, password.v, password.leng + 1);
-	i = ((UOSInt)1) << cost;
+	i = ((UIntOS)1) << cost;
 	while (i-- > 0)
 	{
 		this->Key(password.v, password.leng + 1);

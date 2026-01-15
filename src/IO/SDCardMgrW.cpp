@@ -134,7 +134,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	{
 		UInt8 *sptr = 14 + (UInt8*)&commandDescriptor[1];
 		UInt8 *dptr = cid;
-		OSInt i = 15;
+		IntOS i = 15;
 		while (i-- > 0)
 		{
 			*dptr++ = *sptr--;
@@ -161,7 +161,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	{
 		UInt8 *sptr = 14 + (UInt8*)&commandDescriptor[1];
 		UInt8 *dptr = csd;
-		OSInt i = 15;
+		IntOS i = 15;
 		while (i-- > 0)
 		{
 			*dptr++ = *sptr--;
@@ -183,7 +183,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 
 Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 {
-	UOSInt i;
+	UIntOS i;
 	Bool ret = false;
 	UInt8 fileBuff[64];
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -199,12 +199,12 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 	return ret;
 }
 
-UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList)
+UIntOS IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<IO::SDCardInfo> sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
@@ -212,11 +212,11 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 	{
 		Bool valid = true;
 		sbuff[0] = 0;
-		if (!r->GetName(11, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
+		if (!r->GetName(11, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DeviceID")))
 		{
 			valid = false;
 		}
-		if (!r->GetName(31, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PNPDeviceID")))
+		if (!r->GetName(31, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("PNPDeviceID")))
 		{
 			valid = false;
 		}

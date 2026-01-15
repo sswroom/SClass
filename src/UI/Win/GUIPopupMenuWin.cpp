@@ -8,7 +8,7 @@ UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 {
 }
 
-void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
+void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<IntOS> scnPos)
 {
 //	UInt32 err;
 	NN<UI::GUIForm> frm;

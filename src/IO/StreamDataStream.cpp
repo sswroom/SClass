@@ -26,35 +26,35 @@ Bool IO::StreamDataStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::StreamDataStream::Read(const Data::ByteArray &buff)
+UIntOS IO::StreamDataStream::Read(const Data::ByteArray &buff)
 {
-	UOSInt thisSize = buff.GetSize();
+	UIntOS thisSize = buff.GetSize();
 	if (this->currOfst + thisSize > this->stmDataLeng)
 	{
-		thisSize = (UOSInt)(this->stmDataLeng - this->currOfst);
+		thisSize = (UIntOS)(this->stmDataLeng - this->currOfst);
 	}
 	thisSize = this->data->GetRealData(this->currOfst, thisSize, buff);
 	currOfst += thisSize;
 	return thisSize;
 }
 
-UOSInt IO::StreamDataStream::Write(Data::ByteArrayR buff)
+UIntOS IO::StreamDataStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
 
 Optional<IO::StreamReadReq> IO::StreamDataStream::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	UOSInt readSize = this->Read(buff);
+	UIntOS readSize = this->Read(buff);
 	if (readSize)
 		evt->Set();
 	return (IO::StreamReadReq*)readSize;
 }
 
-UOSInt IO::StreamDataStream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::StreamDataStream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::StreamDataStream::CancelRead(NN<IO::StreamReadReq> reqData)
@@ -66,7 +66,7 @@ Optional<IO::StreamWriteReq> IO::StreamDataStream::BeginWrite(Data::ByteArrayR b
 	return nullptr;
 }
 
-UOSInt IO::StreamDataStream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::StreamDataStream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
 	return 0;
 }

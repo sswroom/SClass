@@ -48,7 +48,7 @@ Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
+Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	NN<Sync::Event> readEvt;
 	NN<Media::AudioSource> sourceAudio;
@@ -76,12 +76,12 @@ void Media::Decoder::ACMDecoder::Stop()
 	this->readEvt = nullptr;
 }
 
-UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray blk)
+UIntOS Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray blk)
 {
 	return 0;
 }
 
-UOSInt Media::Decoder::ACMDecoder::GetMinBlockSize()
+UIntOS Media::Decoder::ACMDecoder::GetMinBlockSize()
 {
 	return 1;
 }

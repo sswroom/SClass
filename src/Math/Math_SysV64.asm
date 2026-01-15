@@ -13,7 +13,7 @@ section .text
 global Math_Int32Arr2DblArr
 global _Math_Int32Arr2DblArr
 
-;void Math_Int32Arr2DblArr(Double *dblArr, Int32 *intArr, OSInt arrCnt)
+;void Math_Int32Arr2DblArr(Double *dblArr, Int32 *intArr, IntOS arrCnt)
 ;rdi dblArr
 ;rsi intArr
 ;rcx arrCnt;

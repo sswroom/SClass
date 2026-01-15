@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
+void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UIntOS resultSize)
 {
 	NN<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	UnsafeArray<UInt8> reqBResult;
@@ -246,7 +246,7 @@ Bool IO::MODBUSDevice::WriteHoldingU16(UInt16 addr, UInt16 val)
 Bool IO::MODBUSDevice::WriteHoldingsU16(UInt16 addr, UInt16 cnt, UnsafeArray<UInt16> val)
 {
 	UInt8 buff[256];
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < cnt)
 	{
 		WriteMInt16(&buff[i * 2], val[i]);

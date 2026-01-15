@@ -13,7 +13,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 	UnsafeArray<UInt8> frameBuff;
 	UInt32 lastFrameNum = (UInt32)-2;
 	UInt32 thisFrameNum;
-	UOSInt buffSize;
+	UIntOS buffSize;
 
 	me->threadRunning = true;
 	frameBuff = MemAllocArr(UInt8, me->GetMaxFrameSize());
@@ -46,7 +46,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 	return 0;
 }
 
-UOSInt Media::AVIUtl::AUIVideo::GetMaxFrameSize()
+UIntOS Media::AVIUtl::AUIVideo::GetMaxFrameSize()
 {
 	if (this->frameInfo->byteSize != 0)
 	{
@@ -113,7 +113,7 @@ Text::CStringNN Media::AVIUtl::AUIVideo::GetFilterName()
 	return CSTR("AUIVideo");
 }
 
-Bool Media::AVIUtl::AUIVideo::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::AVIUtl::AUIVideo::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	info->Set(this->frameInfo);
 	frameRateNorm.Set(this->frameRateNorm);
@@ -183,7 +183,7 @@ Bool Media::AVIUtl::AUIVideo::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEn
 	return false;
 }
 
-UOSInt Media::AVIUtl::AUIVideo::GetDataSeekCount()
+UIntOS Media::AVIUtl::AUIVideo::GetDataSeekCount()
 {
 	return 0;
 }
@@ -193,12 +193,12 @@ Bool Media::AVIUtl::AUIVideo::HasFrameCount()
 	return true;
 }
 
-UOSInt Media::AVIUtl::AUIVideo::GetFrameCount()
+UIntOS Media::AVIUtl::AUIVideo::GetFrameCount()
 {
 	return this->frameCnt;
 }
 
-Data::Duration Media::AVIUtl::AUIVideo::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::AVIUtl::AUIVideo::GetFrameTime(UIntOS frameIndex)
 {
 	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 }
@@ -218,7 +218,7 @@ void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, AnyType userD
 	}
 }
 
-UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+UIntOS Media::AVIUtl::AUIVideo::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

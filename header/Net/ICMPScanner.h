@@ -28,7 +28,7 @@ namespace Net
 		Bool threadToStop;
 
 	private:
-		static void __stdcall ICMPChecksum(UInt8 *buff, OSInt buffSize);
+		static void __stdcall ICMPChecksum(UInt8 *buff, IntOS buffSize);
 		static UInt32 __stdcall Ping1Thread(AnyType userObj);
 		static UInt32 __stdcall Ping2Thread(AnyType userObj);
 

@@ -23,13 +23,13 @@ namespace SSWR
 			Math::Coord2DDbl selPt2;
 			Bool selecting;
 			Bool isDown;
-			Math::Coord2D<OSInt> downPt;
+			Math::Coord2D<IntOS> downPt;
 
 			NN<AVIRMapNavigator> navi;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 
 			static void __stdcall OnAreaClicked(AnyType userObj);
 			static void __stdcall OnRandomClicked(AnyType userObj);

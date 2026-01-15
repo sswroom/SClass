@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::WAVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::WAVExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -94,8 +94,8 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		headerSize = 82 + format.extraSize;
 		MemCopyNO(&buff[74], format.extra, format.extraSize);
-		WriteNInt32(&buff[(UOSInt)(headerSize - 8)], *(Int32*)"data");
-		WriteInt32(&buff[(UOSInt)(headerSize - 4)], 0);
+		WriteNInt32(&buff[(UIntOS)(headerSize - 8)], *(Int32*)"data");
+		WriteInt32(&buff[(UIntOS)(headerSize - 4)], 0);
 	}
 	else
 	{
@@ -103,16 +103,16 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteNInt32(&buff[74], *(Int32*)"data");
 		WriteUInt32(&buff[78], 0);
 	}
-	stm->Write(Data::ByteArrayR(buff, (UOSInt)headerSize));
+	stm->Write(Data::ByteArrayR(buff, (UIntOS)headerSize));
 	fileSize = headerSize;
-	UOSInt blockSize;
+	UIntOS blockSize;
 	Sync::Event *evt;
 	NEW_CLASS(evt, Sync::Event(true));
-	if (audio->Start(evt, (UOSInt)(1048576 - headerSize)))
+	if (audio->Start(evt, (UIntOS)(1048576 - headerSize)))
 	{
-		while ((blockSize = audio->ReadBlock(Data::ByteArray(&buff[(UOSInt)headerSize], (UOSInt)(1048576 - headerSize)))) > 0)
+		while ((blockSize = audio->ReadBlock(Data::ByteArray(&buff[(UIntOS)headerSize], (UIntOS)(1048576 - headerSize)))) > 0)
 		{
-			stm->Write(Data::ByteArrayR(&buff[(UOSInt)headerSize], blockSize));
+			stm->Write(Data::ByteArrayR(&buff[(UIntOS)headerSize], blockSize));
 			fileSize += blockSize;
 		}
 		audio->Stop();
@@ -127,17 +127,17 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteUInt32(&buff[44], 0);
 
 		WriteInt32(&buff[4], -1);
-		WriteInt32(&buff[(UOSInt)(headerSize - 4)], -1);
+		WriteInt32(&buff[(UIntOS)(headerSize - 4)], -1);
 
 		WriteNInt32(&buff[0], *(Int32*)"RF64");
 	}
 	else
 	{
 		WriteUInt32(&buff[4], (UInt32)(fileSize - 8));
-		WriteUInt32(&buff[(UOSInt)(headerSize - 4)], (UInt32)(fileSize - headerSize));
+		WriteUInt32(&buff[(UIntOS)(headerSize - 4)], (UInt32)(fileSize - headerSize));
 	}
 	stm->SeekFromBeginning(initPos);
-	stm->Write(Data::ByteArrayR(buff, (UOSInt)headerSize));
+	stm->Write(Data::ByteArrayR(buff, (UIntOS)headerSize));
 	MemFree(buff);
 
 	return true;

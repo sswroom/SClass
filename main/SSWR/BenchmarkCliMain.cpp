@@ -52,8 +52,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Benchmark_"));
 	if (sysInfo.GetPlatformName(sptr).SetTo(sptr2))
 	{
@@ -120,9 +120,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendOpt(ram->sn);
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendUOSInt(ram->defSpdMHz);
+		sb.AppendUIntOS(ram->defSpdMHz);
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendUOSInt(ram->confSpdMHz);
+		sb.AppendUIntOS(ram->confSpdMHz);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU32(ram->dataWidth);
 		sb.AppendC(UTF8STRC("\t"));
@@ -144,13 +144,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::HiResClock clk;
 	UInt8 *buff1;
 	UInt8 *buff2;
-	UOSInt loopCnt;
-	UOSInt currSize;
-	UOSInt startSize = 128;
-	UOSInt buffSize = 64 << 20;
+	UIntOS loopCnt;
+	UIntOS currSize;
+	UIntOS startSize = 128;
+	UIntOS buffSize = 64 << 20;
 	if (buffSize > (memSize >> 1))
 	{
-		buffSize = (UOSInt)(memSize >> 1);
+		buffSize = (UIntOS)(memSize >> 1);
 	}
 
 	buff1 = MemAllocA64(UInt8, buffSize);
@@ -177,7 +177,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Copy\t"));
-				sb.AppendUOSInt(currSize);
+				sb.AppendUIntOS(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
 				writer->WriteLine(sb.ToCString());
@@ -190,7 +190,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(loopCnt);
+				sb.AppendUIntOS(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
 				console->WriteLine(sb.ToCString());
@@ -223,7 +223,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Write\t"));
-				sb.AppendUOSInt(currSize);
+				sb.AppendUIntOS(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
 				writer->WriteLine(sb.ToCString());
@@ -236,7 +236,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(loopCnt);
+				sb.AppendUIntOS(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
 				console->WriteLine(sb.ToCString());
@@ -269,7 +269,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Read\t"));
-				sb.AppendUOSInt(currSize);
+				sb.AppendUIntOS(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
 				writer->WriteLine(sb.ToCString());
@@ -282,7 +282,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendUOSInt(loopCnt);
+				sb.AppendUIntOS(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
 				console->WriteLine(sb.ToCString());

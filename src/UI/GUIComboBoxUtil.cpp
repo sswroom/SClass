@@ -2,19 +2,19 @@
 #include "Text/MyString.h"
 #include "UI/GUIComboBoxUtil.h"
 
-void UI::GUIComboBoxUtil::AddYearItems(NN<UI::GUIComboBox> cbo, UOSInt nYears)
+void UI::GUIComboBoxUtil::AddYearItems(NN<UI::GUIComboBox> cbo, UIntOS nYears)
 {
-	UOSInt k;
+	UIntOS k;
 	UTF8Char sbuff[6];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	OSInt j = dt.GetYear();
-	OSInt i = j - (OSInt)nYears;
+	IntOS j = dt.GetYear();
+	IntOS i = j - (IntOS)nYears;
 	while (i < j)
 	{
 		i++;
-		sptr = Text::StrOSInt(sbuff, i);
+		sptr = Text::StrIntOS(sbuff, i);
 		k = cbo->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		if (i == j)
 			cbo->SetSelectedIndex(k);
@@ -25,9 +25,9 @@ void UI::GUIComboBoxUtil::AddMonthItems(NN<UI::GUIComboBox> cbo)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	UOSInt k;
-	UOSInt i = 0;
-	UOSInt j = dt.GetMonth();
+	UIntOS k;
+	UIntOS i = 0;
+	UIntOS j = dt.GetMonth();
 	while (i < 12)
 	{
 		k = cbo->AddItem(Text::CStringNN((const UTF8Char*)Data::DateTimeUtil::monString[i], 3), (void*)(i + 1));
@@ -45,13 +45,13 @@ void UI::GUIComboBoxUtil::AddDayItems(NN<UI::GUIComboBox> cbo)
 	dt.SetCurrTime();
 	UTF8Char sbuff[6];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt k;
-	UOSInt i = 0;
-	UOSInt j = dt.GetDay();
+	UIntOS k;
+	UIntOS i = 0;
+	UIntOS j = dt.GetDay();
 	while (i < 31)
 	{
 		i++;
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrUIntOS(sbuff, i);
 		k = cbo->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		if (i == j)
 		{

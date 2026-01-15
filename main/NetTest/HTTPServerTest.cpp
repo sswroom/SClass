@@ -66,7 +66,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Bool succ = true;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{

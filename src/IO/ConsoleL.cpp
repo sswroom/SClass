@@ -112,7 +112,7 @@ void IO::Console::PrintStrO(UnsafeArray<const UTF8Char> str1)
 	fflush(stdout);
 }
 
-UOSInt IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	return fwrite(buff.Ptr(), 1, size, stdout);
 }

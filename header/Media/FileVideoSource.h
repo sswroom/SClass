@@ -17,7 +17,7 @@ namespace Media
 			UInt32 frameTime;
 			UInt32 frameNum;
 			UnsafeArray<UInt8> frameBuff;
-			UOSInt frameSize;
+			UIntOS frameSize;
 			Media::VideoSource::FrameStruct frameStruct;
 			Media::FrameType fType;
 			Media::VideoSource::FrameFlag flags;
@@ -28,8 +28,8 @@ namespace Media
 		Media::FrameInfo frameInfo;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
-		UOSInt maxFrameSize;
-		UOSInt currFrameSize;
+		UIntOS maxFrameSize;
+		UIntOS currFrameSize;
 		Bool timeBased;
 
 		Data::ArrayListUInt64 frameOfsts;
@@ -52,8 +52,8 @@ namespace Media
 		Bool outputToStop;
 		Sync::Event outputEvt;
 		Sync::Mutex outputMut;
-		OSInt outputStart;
-		OSInt outputCount;
+		IntOS outputStart;
+		IntOS outputCount;
 		OutputFrameInfo *outputFrames;
 
 		Sync::Event mainEvt;
@@ -71,7 +71,7 @@ namespace Media
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
@@ -83,16 +83,16 @@ namespace Media
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 
 		virtual Bool HasFrameCount();
-		virtual UOSInt GetFrameCount();
-		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+		virtual UIntOS GetFrameCount();
+		virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
-		virtual UOSInt GetFrameSize(UOSInt frameIndex);
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> frameBuff);
+		virtual UIntOS GetFrameSize(UIntOS frameIndex);
+		virtual UIntOS ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> frameBuff);
 
-		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
+		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
 
 	};
 }

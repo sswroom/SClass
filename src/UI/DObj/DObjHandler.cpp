@@ -91,11 +91,11 @@ void UI::DObj::DObjHandler::EndUpdate()
 	this->updMut.Unlock();
 }
 
-void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button)
+void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
-		UOSInt i;
+		UIntOS i;
 		NN<DirectObject> obj;
 		Sync::MutexUsage mutUsage(this->objMut);
 		i = this->objList.GetCount();
@@ -111,7 +111,7 @@ void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUICont
 	}
 }
 
-void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button)
+void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
@@ -128,11 +128,11 @@ void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIContro
 	}
 }
 
-void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<OSInt> scnPos)
+void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 	DirectObject *mouseObj = 0;
 	
-	UOSInt i;
+	UIntOS i;
 	NN<DirectObject> obj;
 	Sync::MutexUsage mutUsage(this->objMut);
 	i = this->objList.GetCount();
@@ -158,7 +158,7 @@ void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 	}
 }
 
-void UI::DObj::DObjHandler::SizeChanged(Math::Size2D<UOSInt> size)
+void UI::DObj::DObjHandler::SizeChanged(Math::Size2D<UIntOS> size)
 {
 
 }

@@ -20,18 +20,18 @@ namespace SSWR
 			Bool allowEnlarge;
 			Int64 imgTimeoutTick;
 			Optional<Media::ImageList> imgList;
-			UOSInt imgIndex;
+			UIntOS imgIndex;
 			Optional<IO::PackageFile> pkgFile;
-			UOSInt fileIndex;
+			UIntOS fileIndex;
 			Bool hideCursor;
-			UOSInt noMoveCount;
+			UIntOS noMoveCount;
 			
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnMoveToNext(AnyType userObj);
 			static void __stdcall OnMoveToPrev(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnAniTimerTick(AnyType userObj);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static Bool IsImageFileName(Text::CStringNN fileName);
 		public:
 			AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

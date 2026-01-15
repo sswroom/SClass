@@ -22,7 +22,7 @@ void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 por
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("UDP: "));
 	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", Size = "));
-	sptr = Text::StrUOSInt(sptr, data.GetSize());
+	sptr = Text::StrUIntOS(sptr, data.GetSize());
 	console->WriteLine(CSTRP(sbuff, sptr));
 }
 
@@ -32,14 +32,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASSNN(console, IO::ConsoleWriter());
-	UOSInt portNum = Test::TestModem::ListPorts(console);
+	UIntOS portNum = Test::TestModem::ListPorts(console);
 	UInt32 baudRate = 115200;
 
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
-		Text::StrToUOSInt(argv[1], portNum);
+		Text::StrToUIntOS(argv[1], portNum);
 	}
 	if (argc >= 3)
 	{
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	console->WriteLine();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Trying Port "));
-	sb.AppendUOSInt(portNum);
+	sb.AppendUIntOS(portNum);
 	console->WriteLine(sb.ToCString());
 
 	NN<IO::SerialPort> port;
@@ -77,7 +77,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		modem->GPRSSetAPN(CSTR(""));
 		console->WriteLine(CSTR("APN Set"));
 		Int32 plmn = 0;
-		OSInt i = 30;
+		IntOS i = 30;
 		plmn = modem->GSMGetSIMPLMN();
 		while (plmn == 0 && i-- > 0)
 		{
@@ -151,8 +151,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				if (valid)
 				{
 					Data::ArrayListNative<UInt32> dnsList;
-					UOSInt i;
-					UOSInt j;
+					UIntOS i;
+					UIntOS j;
 					if (sockf->GetDNSList(dnsList))
 					{
 						sb.ClearStr();
@@ -182,7 +182,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					Net::SocketUtil::SetAddrInfoV4(addr, 0x08080808);
 					console->WriteLine(CSTR("Ping to 8.8.8.8..."));
-					OSInt i = 4;
+					IntOS i = 4;
 					UInt32 respTime;
 					UInt32 ttl;
 					while (i-- > 0)

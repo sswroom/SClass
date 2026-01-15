@@ -16,7 +16,7 @@ namespace Data
 		virtual T Put(UnsafeArrayOpt<const UTF8Char> key, T val);
 		virtual T Get(UnsafeArrayOpt<const UTF8Char> key);
 		virtual T Remove(UnsafeArrayOpt<const UTF8Char> key);
-		virtual UnsafeArrayOpt<const UTF8Char> GetKey(OSInt index);
+		virtual UnsafeArrayOpt<const UTF8Char> GetKey(IntOS index);
 		virtual void Clear();
 	};
 
@@ -29,7 +29,7 @@ namespace Data
 	template <class T> SyncStringMap<T>::~SyncStringMap()
 	{
 		UnsafeArray<const UTF8Char> key;
-		OSInt i = this->keys->GetCount();
+		IntOS i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			if (this->keys->GetItem(i).SetTo(key))
@@ -41,7 +41,7 @@ namespace Data
 	template <class T> T SyncStringMap<T>::Put(UnsafeArrayOpt<const UTF8Char> key, T val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -60,7 +60,7 @@ namespace Data
 	template <class T> T SyncStringMap<T>::Get(UnsafeArrayOpt<const UTF8Char> key)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -75,7 +75,7 @@ namespace Data
 	template <class T> T SyncStringMap<T>::Remove(UnsafeArrayOpt<const UTF8Char> key)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
@@ -88,7 +88,7 @@ namespace Data
 		}
 	}
 
-	template <class T> UnsafeArrayOpt<const UTF8Char> SyncStringMap<T>::GetKey(OSInt index)
+	template <class T> UnsafeArrayOpt<const UTF8Char> SyncStringMap<T>::GetKey(IntOS index)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->keys->GetItem(index);
@@ -98,7 +98,7 @@ namespace Data
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		UnsafeArray<const UTF8Char> key;
-		OSInt i;
+		IntOS i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

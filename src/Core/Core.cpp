@@ -26,7 +26,7 @@ void Core::CoreEnd()
 	}
 	if (Core_onExitFuncs)
 	{
-		UOSInt i = Core_onExitFuncs->GetCount();
+		UIntOS i = Core_onExitFuncs->GetCount();
 		while (i-- > 0)
 		{
 			Core_onExitFuncs->GetItem(i)();
@@ -69,8 +69,8 @@ Optional<Media::VideoSource> Core::DecodeVideo(NN<Media::VideoSource> video)
 	Optional<Media::VideoSource> decoder = nullptr;
 	if (Core_decVFuncs == 0)
 		return nullptr;
-	UOSInt i = 0;
-	UOSInt j = Core_decVFuncs->GetCount();
+	UIntOS i = 0;
+	UIntOS j = Core_decVFuncs->GetCount();
 	while (decoder.IsNull() && i < j)
 	{
 		decoder = Core_decVFuncs->GetItem(i)(video);
@@ -84,8 +84,8 @@ Optional<Media::AudioSource> Core::DecodeAudio(NN<Media::AudioSource> audio)
 	Optional<Media::AudioSource> decoder = nullptr;
 	if (Core_decAFuncs == 0)
 		return nullptr;
-	UOSInt i = 0;
-	UOSInt j = Core_decAFuncs->GetCount();
+	UIntOS i = 0;
+	UIntOS j = Core_decAFuncs->GetCount();
 	while (decoder.IsNull() && i < j)
 	{
 		decoder = Core_decAFuncs->GetItem(i)(audio);

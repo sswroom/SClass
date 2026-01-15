@@ -7,11 +7,11 @@
 //#include "Text/MyString.h"
 //#include <stdio.h>
 
-extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
-	OSInt *currIndex;
+	IntOS i;
+	IntOS j;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32x4 cvals;
 	Int32x4 cvals2;
@@ -66,7 +66,7 @@ extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *o
 				while (i-- > 0)
 				{
 					cvals = cinit;
-					j = *(OSInt*)&currWeight[0];
+					j = *(IntOS*)&currWeight[0];
 					tmpVal1 = PLoadInt16x8(&inPt[j + 0]);
 					tmpVal2 = PLoadInt16x8(&inPt[j + 16]);
 /*					if (height == 0 && i == 100)
@@ -83,7 +83,7 @@ extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *o
 					cvals = PADDD4(cvals, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[32])));
 
 					cvals2 = cinit;
-					j = *(OSInt*)&currWeight[4];
+					j = *(IntOS*)&currWeight[4];
 					tmpVal1 = PLoadInt16x8(&inPt[j + 0]);
 					tmpVal2 = PLoadInt16x8(&inPt[j + 16]);
 					cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[40])));
@@ -123,7 +123,7 @@ extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *o
 				while (i-- > 0)
 				{
 					cvals = cinit;
-					j = *(OSInt*)&currWeight[0];
+					j = *(IntOS*)&currWeight[0];
 					tmpVal1 = PLoadInt16x8(&inPt[j + 0]);
 					tmpVal2 = PLoadInt16x8(&inPt[j + 16]);
 					cvals = PADDD4(cvals, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
@@ -142,7 +142,7 @@ extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *o
 					cvals = PADDD4(cvals, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[64])));
 
 					cvals2 = cinit;
-					j = *(OSInt*)&currWeight[4];
+					j = *(IntOS*)&currWeight[4];
 					tmpVal1 = PLoadInt16x8(&inPt[j + 0]);
 					tmpVal2 = PLoadInt16x8(&inPt[j + 16]);
 					cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[72])));
@@ -198,12 +198,12 @@ extern "C" void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *o
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32x4 cvals;
 	Int32x4 cvals0;
@@ -461,12 +461,12 @@ extern "C" void LanczosResizerLR_C32_CPU_vertical_filter(UInt8 *inPt, UInt8 *out
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	UInt8 *currIn;
-	OSInt *currIndex;
+	IntOS *currIndex;
 	Int16 *currWeight;
 	Int32x4 cvals;
 	Int32x4 cvals0;
@@ -744,16 +744,16 @@ extern "C" void LanczosResizerLR_C32_CPU_vertical_filter_na(UInt8 *inPt, UInt8 *
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, OSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UInt8 *buffPt)
+extern "C" void LanczosResizerLR_C32_CPU_hv_filter(UInt8 *inPt, UInt8 *outPt, UIntOS dwidth, UIntOS dheight, UIntOS swidth, UIntOS htap, IntOS *hindex, Int64 *hweight, IntOS vtap, IntOS *vindex, Int64 *vweight, IntOS sstep, IntOS dstep, UInt8 *rgbTable, UInt8 *buffPt)
 {
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt32 v;
-	sstep = sstep - (OSInt)width * 8;
-	dstep = dstep - (OSInt)width * 4;
+	sstep = sstep - (IntOS)width * 8;
+	dstep = dstep - (IntOS)width * 4;
 	while (height-- > 0)
 	{
 		i = width;
@@ -772,12 +772,12 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, UOS
 	}
 }
 
-extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, UIntOS width, UIntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbTable)
 {
-	UOSInt i;
+	UIntOS i;
 	UInt32 v;
-	sstep = sstep - (OSInt)width * 8;
-	dstep = dstep - (OSInt)width * 4;
+	sstep = sstep - (IntOS)width * 8;
+	dstep = dstep - (IntOS)width * 4;
 	while (height-- > 0)
 	{
 		i = width;

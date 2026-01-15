@@ -13,7 +13,7 @@ class DWGFileAnalyseComparator : public Data::Comparator<NN<IO::FileAnalyse::DWG
 public:
 	virtual ~DWGFileAnalyseComparator(){};
 
-	virtual OSInt Compare(NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> a, NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> b) const
+	virtual IntOS Compare(NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> a, NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> b) const
 	{
 		if (a->fileOfst > b->fileOfst)
 		{
@@ -43,9 +43,9 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
 		fd->GetRealData(0, 256, BYTEARR(buff));
-		UOSInt sectionCnt = ReadUInt32(&buff[21]);
-		UOSInt i;
-		UOSInt ofst;
+		UIntOS sectionCnt = ReadUInt32(&buff[21]);
+		UIntOS i;
+		UIntOS ofst;
 		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 25 + 9 * sectionCnt + 2 + 16;
@@ -165,12 +165,12 @@ Text::CStringNN IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
 	return CSTR("DWG");
 }
 
-UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -183,16 +183,16 @@ Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	return true;
 }
 
-UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -203,13 +203,13 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
@@ -223,9 +223,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	UInt8 buff[128];
 	Data::UUID uuid;
 	NN<IO::FileAnalyse::FrameDetail> frame;
-	UOSInt nSection;
-	UOSInt ofst;
-	UOSInt i;
+	UIntOS nSection;
+	UIntOS ofst;
+	UIntOS i;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	sptr = PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddText(0, CSTRP(sbuff, sptr));
@@ -236,8 +236,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	{
 	case PackType::FileHeaderV1:
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
@@ -252,11 +252,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		i = 0;
 		while (i < nSection)
 		{
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" type"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" type"));
 			frame->AddUInt(ofst, 1, CSTRP(sbuff, sptr), packBuff[ofst]);
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" offset"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" offset"));
 			frame->AddUInt(ofst + 1, 4, CSTRP(sbuff, sptr), ReadUInt32(&packBuff[ofst + 1]));
-			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" size"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" size"));
 			frame->AddUInt(ofst + 5, 4, CSTRP(sbuff, sptr), ReadUInt32(&packBuff[ofst + 5]));
 			i++;
 			ofst += 9;
@@ -269,8 +269,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	}
 	case PackType::R2004FileHeader:
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
@@ -297,8 +297,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	}
 	case PackType::PreviewImage:
 	{
-		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		Data::ByteBuffer packBuff((UIntOS)pack->packSize);
+		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 
 		uuid.SetValue(packBuff.Arr());
 		sptr = uuid.ToString(sbuff);
@@ -311,23 +311,23 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		case 1:
 			frame->AddUInt(22, 4, CSTR("Header data start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Header data size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Header Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Header Data"), &packBuff[30], true);
 			break;
 		case 2:
 			frame->AddUInt(22, 4, CSTR("Bmp start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Bmp size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Bmp Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Bmp Data"), &packBuff[30], true);
 			break;
 		case 3:
 			frame->AddUInt(22, 4, CSTR("Wmf start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Wmf size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Wmf Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Wmf Data"), &packBuff[30], true);
 			break;
 		}
 
-		uuid.SetValue(&packBuff[(UOSInt)pack->packSize - 16]);
+		uuid.SetValue(&packBuff[(UIntOS)pack->packSize - 16]);
 		sptr = uuid.ToString(sbuff);
-		frame->AddField((UOSInt)pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
+		frame->AddField((UIntOS)pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
 		break;
 	}
 	case PackType::HeaderVariables:

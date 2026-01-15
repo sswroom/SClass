@@ -14,7 +14,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(Text::CStringNN fileName)
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	Text::UTF8Reader reader(fs);
 	NEW_CLASS(cfg, IO::ConfigFile());

@@ -69,7 +69,7 @@ void CSRGB8_LRGBC_ConvertPixel(UInt8 *destPtr, UInt8 *rgbTable, UInt8 b, UInt8 g
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, OSInt nColor)
+extern "C" void CSRGB8_LRGBC_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, IntOS nColor)
 {
 	while (nColor-- > 0)
 	{
@@ -80,9 +80,9 @@ extern "C" void CSRGB8_LRGBC_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UI
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	if (srcNBits == 32)
 	{
 		srcRGBBpl -= width * 4;
@@ -223,11 +223,11 @@ extern "C" void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width,
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
 	if (srcNBits == 16)
 	{
-		OSInt i;
+		IntOS i;
 		srcRGBBpl -= width * 2;
 		destRGBBpl -= width * 8;
 		while (height-- > 0)
@@ -246,11 +246,11 @@ extern "C" void CSRGB8_LRGBC_ConvertW8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
 	if (srcNBits == 16)
 	{
-		OSInt i;
+		IntOS i;
 		srcRGBBpl -= width * 2;
 		destRGBBpl -= width * 8;
 		while (height-- > 0)
@@ -270,11 +270,11 @@ extern "C" void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
 	if (srcNBits == 16)
 	{
-		OSInt i;
+		IntOS i;
 		srcRGBBpl -= width * 2;
 		destRGBBpl -= width * 8;
 		while (height-- > 0)
@@ -294,11 +294,11 @@ extern "C" void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
 	if (srcNBits == 24)
 	{
-		OSInt i;
+		IntOS i;
 		srcRGBBpl -= width * 3;
 		destRGBBpl -= width * 8;
 		while (height-- > 0)
@@ -317,11 +317,11 @@ extern "C" void CSRGB8_LRGBC_ConvertR8G8B8(UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
 	if (srcNBits == 32)
 	{
-		OSInt i;
+		IntOS i;
 		srcRGBBpl -= width * 4;
 		destRGBBpl -= width * 8;
 		while (height-- > 0)
@@ -340,9 +340,9 @@ extern "C" void CSRGB8_LRGBC_ConvertR8G8B8A8(UInt8 *srcPtr, UInt8 *destPtr, OSIn
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 *dptr;
 	static UInt16 aVal[2] = {0, 16383};
 	while (height-- > 0)
@@ -409,9 +409,9 @@ extern "C" void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 *dptr;
 	static UInt16 aVal[2] = {0, 16383};
 	while (height-- > 0)
@@ -474,9 +474,9 @@ extern "C" void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 *dptr;
 	static UInt16 aVal[2] = {0, 16383};
 	while (height-- > 0)
@@ -531,9 +531,9 @@ extern "C" void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 	}
 }
 
-extern "C" void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, OSInt srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
+extern "C" void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, IntOS srcNBits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable)
 {
-	OSInt i;
+	IntOS i;
 	UInt8 *dptr;
 	static UInt16 aVal[2] = {0, 16383};
 	while (height-- > 0)

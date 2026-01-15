@@ -10,7 +10,7 @@ namespace IO
 		ClassData *clsData;
 
 	public:
-		PhysicalMem(OSInt addr, OSInt size);
+		PhysicalMem(IntOS addr, IntOS size);
 		~PhysicalMem();
 
 		UInt8 *GetPointer();

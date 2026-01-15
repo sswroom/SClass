@@ -22,7 +22,7 @@ Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CS
 	Data::ArrayListStringNN tableNames;
 	NN<DB::TableDef> table;
 	NN<Text::String> tableName;
-	UOSInt j;
+	UIntOS j;
 	db->QueryTableNames(schemaName, tableNames);
 	Data::ArrayIterator<NN<Text::String>> it = tableNames.Iterator();
 	while (it.HasNext())
@@ -53,11 +53,11 @@ Optional<DB::TableDef> DB::DBModel::GetTable(Text::CStringNN tableName)
 	return this->tableMap.GetC(tableName);
 }
 
-UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayListObj<Text::CString>> tableNames)
+UIntOS DB::DBModel::GetTableNames(NN<Data::ArrayListObj<Text::CString>> tableNames)
 {
 	NN<Data::ArrayListObj<Optional<Text::String>>> keys = this->tableMap.GetKeys();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UIntOS i = 0;
+	UIntOS j = keys->GetCount();
 	while (i < j)
 	{
 		tableNames->Add(OPTSTR_CSTR(keys->GetItem(i)));

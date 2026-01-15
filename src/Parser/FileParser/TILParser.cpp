@@ -57,8 +57,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 			DEL_CLASS(pf);
 			return nullptr;
 		}
-		UOSInt indexSize = (UOSInt)(fileSize - dirOfst);
-		UOSInt i;
+		UIntOS indexSize = (UIntOS)(fileSize - dirOfst);
+		UIntOS i;
 		Data::ByteBuffer indexBuff(indexSize);
 		fd->GetRealData(dirOfst, indexSize, indexBuff);
 		i = 0;

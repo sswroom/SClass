@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
-	UOSInt selIndex = me->plIcons->GetSelectedIndex();
+	UIntOS selIndex = me->plIcons->GetSelectedIndex();
 	if (selIndex != INVALID_INDEX)
 	{
 		me->imgIndex = selIndex;
@@ -27,8 +27,8 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data
 {
 	NN<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	Bool loaded = false;
-	UOSInt i;
-	UOSInt fileCnt = fileNames.GetCount();
+	UIntOS i;
+	UIntOS fileCnt = fileNames.GetCount();
 	i = 0;
 	while (i < fileCnt)
 	{
@@ -48,8 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data
 void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 {
 	NN<Media::StaticImage> simg;
-	UOSInt i = 0;
-	UOSInt j = this->env->GetImageCnt();
+	UIntOS i = 0;
+	UIntOS j = this->env->GetImageCnt();
 	this->plIcons->Clear();
 	while (i < j)
 	{
@@ -59,7 +59,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 	}
 }
 
-SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
+SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UIntOS imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
 	this->SetText(CSTR("Select Image"));
 	this->SetFont(nullptr, 8.25, false);
@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASSNN(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48), this->colorSess));
+	NEW_CLASSNN(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UIntOS>(48, 48), this->colorSess));
 	this->plIcons->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->plIcons->HandleDblClk(OnOKClick, this);
 
@@ -110,7 +110,7 @@ void SSWR::AVIRead::AVIRGISImageForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-UOSInt SSWR::AVIRead::AVIRGISImageForm::GetImgIndex()
+UIntOS SSWR::AVIRead::AVIRGISImageForm::GetImgIndex()
 {
 	return this->imgIndex;
 }

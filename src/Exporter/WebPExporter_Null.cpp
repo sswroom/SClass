@@ -20,7 +20,7 @@ IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::WebPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::WebPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	return false;
 }
@@ -30,7 +30,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	return false;
 }
 
-UOSInt Exporter::WebPExporter::GetParamCnt()
+UIntOS Exporter::WebPExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -51,7 +51,7 @@ void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
+Bool Exporter::WebPExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -63,7 +63,7 @@ Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
+Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
@@ -78,7 +78,7 @@ Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 	return false;
 }
 
-Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
+Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

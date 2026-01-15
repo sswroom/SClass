@@ -2,15 +2,15 @@ section .text
 
 global InsertionSort_SortInt32
 
-;void InsertionSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+;void InsertionSort_SortInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
 ;0 retAddr
 ;rcx arr
 ;rdx firstIndex
 ;r8 lastIndex
 	align 16
 InsertionSort_SortInt32:
-;	OSInt i;
-;	OSInt j;
+;	IntOS i;
+;	IntOS j;
 ;	Int32 temp;
 ;	Int32 temp1;
 ;	Int32 temp2;

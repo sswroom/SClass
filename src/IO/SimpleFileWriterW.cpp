@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-UOSInt IO::SimpleFileWriter::WriteBuff(UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS IO::SimpleFileWriter::WriteBuff(UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	UInt32 writeSize;
 	if (handle == INVALID_HANDLE_VALUE)
@@ -81,13 +81,13 @@ IO::SimpleFileWriter::~SimpleFileWriter()
 
 Bool IO::SimpleFileWriter::Write(Text::CStringNN str)
 {
-	UOSInt writeCnt = WriteBuff(str.v, str.leng);
+	UIntOS writeCnt = WriteBuff(str.v, str.leng);
 	return writeCnt > 0;
 }
 
 Bool IO::SimpleFileWriter::WriteLine(Text::CStringNN str)
 {
-	UOSInt writeCnt = WriteBuff(str.v, str.leng);
+	UIntOS writeCnt = WriteBuff(str.v, str.leng);
 	UInt8 buff[2];
 	buff[0] = 13;
 	buff[1] = 10;
@@ -95,9 +95,9 @@ Bool IO::SimpleFileWriter::WriteLine(Text::CStringNN str)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str, UIntOS nChar)
 {
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	UInt8 buff[512];
 	UInt8 *bptr;
 
@@ -107,17 +107,17 @@ Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str, UOSInt nChar)
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 512)
 		{
-			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
+			writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff));
 			bptr = buff;
 		}
 	}
-	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
+	writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff));
 	return writeCnt > 0;
 }
 
 Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str)
 {
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	UInt8 buff[512];
 	UInt8 *bptr;
 
@@ -125,16 +125,16 @@ Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 512)
 		{
-			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
+			writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff));
 			bptr = buff;
 		}
-	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff - 1));
+	writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff - 1));
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str, UIntOS nChar)
 {
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	UInt8 buff[512];
 	UInt8 *bptr;
 
@@ -144,19 +144,19 @@ Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar
 		*bptr++ = (UInt8)*str++;
 		if ((bptr - buff) >= 510)
 		{
-			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
+			writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff));
 			bptr = buff;
 		}
 	}
 	bptr[0] = 13;
 	bptr[1] = 10;
-	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 2));
+	writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff + 2));
 	return writeCnt > 0;
 }
 
 Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str)
 {
-	UOSInt writeCnt = 0;
+	UIntOS writeCnt = 0;
 	UInt8 buff[512];
 	UInt8 *bptr;
 
@@ -164,12 +164,12 @@ Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str)
 	while ((*bptr++ = (UInt8)*str++) != 0)
 		if ((bptr - buff) >= 510)
 		{
-			writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff));
+			writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff));
 			bptr = buff;
 		}
 	bptr[-1] = 13;
 	bptr[0] = 10;
-	writeCnt += WriteBuff(buff, (UOSInt)(bptr - buff + 1));
+	writeCnt += WriteBuff(buff, (UIntOS)(bptr - buff + 1));
 	return writeCnt > 0;
 }
 

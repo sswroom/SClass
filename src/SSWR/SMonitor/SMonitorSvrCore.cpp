@@ -73,7 +73,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NN<Net::TCPClient> 
 	MemCopyNO(&status->dataBuff[status->dataSize], buff.Arr().Ptr(), buff.GetSize());
 	status->dataSize += buff.GetSize();
 
-	UOSInt retSize = me->protoHdlr.ParseProtocol(cli, status, status->stmData, Data::ByteArrayR(status->dataBuff, status->dataSize));
+	UIntOS retSize = me->protoHdlr.ParseProtocol(cli, status, status->stmData, Data::ByteArrayR(status->dataBuff, status->dataSize));
 	if (retSize == 0)
 	{
 		status->dataSize = 0;
@@ -121,8 +121,8 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thr
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = thread->GetUserObj().GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NN<DeviceInfo> dev;
 	Int64 t;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::DateTime currTime;
 	Data::DateTime lastStoreTime;
 	Data::ArrayListNN<DeviceInfo> devList;
@@ -263,8 +263,8 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
-							UOSInt currOfst = seq * dev->photoPacketSize;
-							UOSInt currSize = dev->photoPacketSize;
+							UIntOS currOfst = seq * dev->photoPacketSize;
+							UIntOS currSize = dev->photoPacketSize;
 							if (currOfst + currSize > dev->photoSize)
 							{
 								currSize = dev->photoSize - currOfst;
@@ -303,7 +303,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
-							UOSInt i = dev->photoSize / dev->photoPacketSize;
+							UIntOS i = dev->photoSize / dev->photoPacketSize;
 							if (i * dev->photoPacketSize < dev->photoSize)
 							{
 								i++;
@@ -388,7 +388,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 					sb.AppendC(UTF8STRC("Received unknown packet func "));
 					sb.AppendU16(ReadUInt16(&data[2]));
 					sb.AppendC(UTF8STRC(", size = "));
-					sb.AppendUOSInt(data.GetSize());
+					sb.AppendUIntOS(data.GetSize());
 					me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 				}
 				break;
@@ -437,7 +437,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	NN<DeviceInfo> dev;
 	NN<DeviceInfo> sdev;
@@ -486,7 +486,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 		}
 		break;
 	case 2:
-		if (cmdSize >= 10 && cmdSize >= (UOSInt)(10 + cmd[8] + cmd[9]))
+		if (cmdSize >= 10 && cmdSize >= (UIntOS)(10 + cmd[8] + cmd[9]))
 		{
 			UTF8Char sbuff[256];
 			UTF8Char sbuff2[256];
@@ -512,7 +512,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 	case 4:
 		if (status->dev.SetTo(dev) && cmdSize >= 16)
 		{
-			if (cmdSize >= (UOSInt)(16 + cmd[12] * 16))
+			if (cmdSize >= (UIntOS)(16 + cmd[12] * 16))
 			{
 				this->DeviceRecvReading(dev, ReadInt64(&cmd[0]), cmd[13], cmd[12], cmd[14], ReadUInt32(&cmd[8]), (ReadingInfo *)&cmd[16], 0, 0, 0);
 			}
@@ -600,7 +600,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }
 
@@ -644,7 +644,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(NN<IO::Stream> stm, Int6
 {
 	UInt8 cmdBuff[17];
 	UInt8 packetBuff[27];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	WriteInt64(&cmdBuff[0], cliTime);
 	WriteInt64(&cmdBuff[8], svrTime);
 	cmdBuff[16] = status;
@@ -656,7 +656,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(NN<IO::Stream> stm, Int64 c
 {
 	UInt8 cmdBuff[16];
 	UInt8 packetBuff[26];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	WriteInt64(&cmdBuff[0], cliTime);
 	WriteInt64(&cmdBuff[8], svrTime);
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 7, 0, cmdBuff, 16, 0);
@@ -666,7 +666,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(NN<IO::Stream> stm, Int64 c
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(NN<IO::Stream> stm)
 {
 	UInt8 packetBuff[10];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 9, 0, packetBuff, 0, 0);
 	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
@@ -675,7 +675,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(NN<IO::Stream> stm, Int64 
 {
 	UInt8 cmdBuff[8];
 	UInt8 packetBuff[18];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	WriteInt64(&cmdBuff[0], photoTime);
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 15, 0, cmdBuff, 8, 0);
 	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
@@ -685,7 +685,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NN<IO::Stream> stm, UInt3
 {
 	UInt8 cmdBuff[2];
 	UInt8 packetBuff[12];
-	UOSInt packetSize;
+	UIntOS packetSize;
 	cmdBuff[0] = (UInt8)outputNum;
 	cmdBuff[1] = toHigh?1:0;
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 21, 0, cmdBuff, 2, 0);
@@ -772,9 +772,9 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	NN<DevRecord2> rec;
 	Data::DateTime dt;
 	IO::FileStream *fs;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 currYear;
 	Int32 currMonth;
 	Int32 currDay;
@@ -869,7 +869,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize)
+void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UIntOS photoSize)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -905,8 +905,8 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	NN<DB::DBReader> r;
 	NN<WebUser> user;
 	UnsafeArray<UTF8Char> sarr[2];
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (db->ExecuteReader(CSTR("select id, userName, pwd, userType from webuser order by id")).SetTo(r))
 	{
 		while (r->ReadNext())
@@ -1425,8 +1425,8 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	this->thread.Stop();
 	this->SaveDatas();
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<WebUser> user;
 	i = this->userMap.GetCount();
 	while (i-- > 0)
@@ -1560,7 +1560,7 @@ Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSv
 	sql.AppendCmdC(CSTR(")"));
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		UOSInt i;
+		UIntOS i;
 		NEW_CLASSNN(dev, DeviceInfo());
 		dev->cliId = cliId;
 		dev->cpuName = Text::String::New(cpuName);
@@ -1600,11 +1600,11 @@ Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSv
 	return nullptr;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NN<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NN<DeviceInfo> dev, Int64 cliTime, UIntOS nDigitals, UIntOS nReading, UIntOS nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
+	UIntOS i;
 	Bool succ = false;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Int64 t;
@@ -1635,7 +1635,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NN<DeviceInfo> dev, Int6
 			{
 				if (ReadInt16(&readings[i].status[6]) != 0)
 				{
-					sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("reading")), i + 1);
+					sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("reading")), i + 1);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendCol(sbuff);
 					sql.AppendCmdC(CSTR(" = "));
@@ -1865,7 +1865,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	{
 		return true;
 	}
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Text::StringBuilderUTF8 sb;
 	while (i < dev->nReading)
 	{
@@ -2000,8 +2000,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(NN<DeviceInfo> dev, Unsa
 		sql.AppendInt64(dev->cliId);
 		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			Sync::RWMutexUsage mutUsage(dev->mut, true);
 			i = SMONITORCORE_DEVREADINGCNT;
 			while (i-- > 0)
@@ -2054,8 +2054,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(NN<DeviceInfo> dev, Unsa
 		sql.AppendInt64(dev->cliId);
 		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			Sync::RWMutexUsage mutUsage(dev->mut, true);
 			i = SMONITORCORE_DIGITALCNT;
 			while (i-- > 0)
@@ -2087,16 +2087,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(NN<DeviceInfo> dev, Unsa
 	return succ;
 }
 
-UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList)
+UIntOS SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Int64 t;
 	Int64 currTime;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 *fileBuff;
-	UOSInt fileBuffSize;
-	UOSInt i;
+	UIntOS fileBuffSize;
+	UIntOS i;
 	Data::DateTime dt;
 	NN<DevRecord2> rec;
 
@@ -2139,7 +2139,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 						}
 						else
 						{
-							if (i + (fileBuff[i + 4] + (UOSInt)fileBuff[i + 5]) * 16 <= fileBuffSize)
+							if (i + (fileBuff[i + 4] + (UIntOS)fileBuff[i + 5]) * 16 <= fileBuffSize)
 							{
 								t = ReadInt64(&fileBuff[i + 8]);
 								if (t >= startTime && t < endTime)
@@ -2154,12 +2154,12 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 									rec->nOutput = 0;
 									if (rec->nreading > 0)
 									{
-										MemCopyNO(rec->readings, &fileBuff[i + 16 * (UOSInt)fileBuff[i + 4]], rec->nreading * 16);
+										MemCopyNO(rec->readings, &fileBuff[i + 16 * (UIntOS)fileBuff[i + 4]], rec->nreading * 16);
 									}
 									recList->Add(rec);
 									ret++;
 								}
-								i += (fileBuff[i + 4] + (UOSInt)fileBuff[i + 5]) * 16;
+								i += (fileBuff[i + 4] + (UIntOS)fileBuff[i + 5]) * 16;
 							}
 							else
 							{
@@ -2306,7 +2306,7 @@ Optional<SSWR::SMonitor::SMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCor
 	if (user)
 	{
 		Bool eq = true;
-		OSInt i;
+		IntOS i;
 		UInt8 pwdBuff[16];
 		this->UserPwdCalc(userName, password, pwdBuff);
 		Sync::RWMutexUsage userMutUsage(user->mut, false);
@@ -2336,12 +2336,12 @@ void SSWR::SMonitor::SMonitorSvrCore::UserFreeLogin(NN<LoginInfo> login)
 	MemFreeNN(login);
 }
 
-UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList)
+UIntOS SSWR::SMonitor::SMonitorSvrCore::UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
-	UOSInt retCnt;
+	UIntOS retCnt;
 	NN<DeviceInfo> dev;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (userType == 0)
 	{
 		retCnt = 0;
@@ -2439,9 +2439,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserHasDevice(Int32 userId, Int32 userType
 	return ret;
 }
 
-UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(NN<Data::ArrayListNN<WebUser>> userList)
+UIntOS SSWR::SMonitor::SMonitorSvrCore::UserGetList(NN<Data::ArrayListNN<WebUser>> userList)
 {
-	UOSInt ret = userList->GetCount();
+	UIntOS ret = userList->GetCount();
 	Sync::RWMutexUsage mutUsage(this->userMut, false);
 	userList->AddAll(this->userMap);
 	return userList->GetCount() - ret;
@@ -2466,8 +2466,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, NN<Data::ArrayLis
 	}
 	mutUsage.EndUse();
 	Int64 cliId;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = devIdList->GetCount();
 	valid = true;
 	mutUsage.ReplaceMutex(this->devMut, false);
@@ -2564,7 +2564,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NN<Net::WebServer::WebRequest> 
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(UnsafeArray<const UTF8Char> userAgent, UOSInt len)
+void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(UnsafeArray<const UTF8Char> userAgent, UIntOS len)
 {
 	this->uaLog.LogStr(userAgent, len);
 }
@@ -2583,7 +2583,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::RefererLog(UnsafeArray<const UTF8Char> referer, UOSInt len)
+void SSWR::SMonitor::SMonitorSvrCore::RefererLog(UnsafeArray<const UTF8Char> referer, UIntOS len)
 {
 	if (Text::StrStartsWithC(referer, len, UTF8STRC("http://sswroom.no-ip.org")))
 	{

@@ -16,7 +16,7 @@ namespace Text
 			Data::ArrayListStringNN headerValue;
 			Optional<Text::MIMEObject> content;
 			UInt8 *transferData;
-			UOSInt transferSize;
+			UIntOS transferSize;
 
 		public:
 			MIMEMessage();
@@ -25,19 +25,19 @@ namespace Text
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual UIntOS WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<MIMEObject> Clone() const;
 
 			void SetContent(Optional<Text::MIMEObject> content);
 			Optional<Text::MIMEObject> GetContent() const;
-			void SetTransferData(const UInt8 *data, UOSInt dataSize);
+			void SetTransferData(const UInt8 *data, UIntOS dataSize);
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
 			void AddHeader(NN<Text::String> name, NN<Text::String> value);
-			Optional<Text::String> GetHeader(UnsafeArray<const UTF8Char> name, UOSInt nameLen) const;
-			UOSInt GetHeaderCount() const;
-			Optional<Text::String> GetHeaderName(UOSInt index) const;
-			Optional<Text::String> GetHeaderValue(UOSInt index) const;
+			Optional<Text::String> GetHeader(UnsafeArray<const UTF8Char> name, UIntOS nameLen) const;
+			UIntOS GetHeaderCount() const;
+			Optional<Text::String> GetHeaderName(UIntOS index) const;
+			Optional<Text::String> GetHeaderValue(UIntOS index) const;
 
 			Bool ParseFromData(NN<IO::StreamData> fd);
 

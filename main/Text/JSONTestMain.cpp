@@ -15,16 +15,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	flen = fs.GetLength();
 	if (flen > 0)
 	{
-		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
-		fs.Read(Data::ByteArray(buff, (UOSInt)flen));
+		buff = MemAlloc(UInt8, (UIntOS)flen + 1);
+		fs.Read(Data::ByteArray(buff, (UIntOS)flen));
 		buff[flen] = 0;
 		NN<Text::JSONBase> obj;
-		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UOSInt)flen)).SetTo(obj))
+		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UIntOS)flen)).SetTo(obj))
 		{
 			IO::ConsoleWriter console;
 			Text::StringBuilderUTF8 sb;
 			console.WriteLine(CSTR("Original:"));
-			console.WriteLine(Text::CStringNN(buff, (UOSInt)flen));
+			console.WriteLine(Text::CStringNN(buff, (UIntOS)flen));
 			console.WriteLine();
 			console.WriteLine(CSTR("Parsed:"));
 			obj->ToJSONString(sb);

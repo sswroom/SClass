@@ -24,7 +24,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	Int32 valid;
 	UInt32 fileLen;
 //	Int32 shpType;
-	UOSInt i;
+	UIntOS i;
 	Map::SHPData::RecHdr *rec;
 
 	this->dbf = nullptr;
@@ -42,7 +42,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	{
 		return;
 	}
-	i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (sptr[-4] == '.')
 	{
 		sptr[-4] = 0;
@@ -338,7 +338,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 		return;
 	}
 
-	IO::StmData::FileData dbfData({sbuff, (UOSInt)(sptr - sbuff)}, false);
+	IO::StmData::FileData dbfData({sbuff, (UIntOS)(sptr - sbuff)}, false);
 	if (dbfData.GetDataSize() > 0)
 	{
 		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));
@@ -349,11 +349,11 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 		}
 		else
 		{
-			UOSInt nameCol = 0;
+			UIntOS nameCol = 0;
 			i = this->dbf->GetColCount();
 			while (i-- > 0)
 			{
-				if (this->dbf->GetColumnName(i, sbuff).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("NAME")))
+				if (this->dbf->GetColumnName(i, sbuff).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("NAME")))
 				{
 					nameCol = i;
 				}
@@ -372,7 +372,7 @@ Map::SHPData::~SHPData()
 	SDEL_CLASS(this->ptZ);
 	if (this->recs)
 	{
-		UOSInt i = this->recs->GetCount();
+		UIntOS i = this->recs->GetCount();
 		while (i-- > 0)
 		{
 			NN<RecHdr> obj;
@@ -404,10 +404,10 @@ Map::DrawLayerType Map::SHPData::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
 		i = 0;
@@ -436,16 +436,16 @@ UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opt
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::SHPData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	UOSInt retCnt = 0;
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS retCnt = 0;
+	UIntOS i = 0;
+	UIntOS j;
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
 		Double x;
@@ -504,7 +504,7 @@ Int64 Map::SHPData::GetObjectIdMax() const
 	}
 }
 
-UOSInt Map::SHPData::GetRecordCnt() const
+UIntOS Map::SHPData::GetRecordCnt() const
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -524,7 +524,7 @@ void Map::SHPData::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt colIndex)
+Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS colIndex)
 {
 	if (id <= 0)
 		return false;
@@ -539,24 +539,24 @@ Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray>
 		}
 		return false;
 	}
-	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id - 1, colIndex - 1);
+	Bool ret = this->dbf->GetRecord(sb, (UIntOS)id - 1, colIndex - 1);
 	sb->TrimSp();
 	return ret;
 }
 
-UOSInt Map::SHPData::GetColumnCnt() const
+UIntOS Map::SHPData::GetColumnCnt() const
 {
 	return this->dbf->GetColCount() + 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex == 0)
 		return Text::StrConcatC(buff, UTF8STRC("Shape"));
 	return this->dbf->GetColumnName(colIndex - 1, buff);
 }
 
-DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::SHPData::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -566,7 +566,7 @@ DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> 
 	return this->dbf->GetColumnType(colIndex - 1, colSize);
 }
 
-Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::SHPData::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex == 0)
 	{
@@ -615,7 +615,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		{
 			return nullptr;
 		}
-		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1)));
+		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UIntOS)id - 1), this->ptY->GetItem((UIntOS)id - 1)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
@@ -625,14 +625,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		{
 			return nullptr;
 		}
-		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1), this->ptZ->GetItem((UOSInt)id - 1)));
+		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UIntOS)id - 1), this->ptY->GetItem((UIntOS)id - 1), this->ptZ->GetItem((UIntOS)id - 1)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON && mut.Set(this->recsMut))
 	{
 		Math::Geometry::Polygon *pg;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
+		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -650,7 +650,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
+		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -668,7 +668,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
+		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -691,12 +691,12 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	}
 }
 
-UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-//Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+//Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 //{
 //	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 //}
@@ -725,7 +725,7 @@ void Map::SHPData::Reconnect()
 	return this->dbf->Reconnect();
 }
 
-UOSInt Map::SHPData::GetGeomCol() const
+UIntOS Map::SHPData::GetGeomCol() const
 {
 	return 0;
 }

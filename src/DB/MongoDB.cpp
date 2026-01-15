@@ -55,12 +55,12 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;
 
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	bson_error_t error;
 	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v.Ptr());
 	char **strv;
@@ -72,7 +72,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	}
 	else
 	{
-		OSInt i = 0;
+		IntOS i = 0;
 		while (strv[i])
 		{
 			names->Add(Text::String::NewNotNullSlow((const UTF8Char*)strv[i]));
@@ -84,7 +84,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	if (this->database && this->client)
 	{
@@ -136,7 +136,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
+UIntOS DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -150,7 +150,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 	}
 	else
 	{
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (strv[i])
 		{
 			names->Add(Text::String::NewNotNullSlow((const UTF8Char*)strv[i]));
@@ -163,7 +163,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 
 void DB::MongoDB::FreeDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
-	UOSInt i = names->GetCount();
+	UIntOS i = names->GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(names->GetItem(i));
@@ -180,12 +180,12 @@ void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userNa
 	if (userName.SetTo(nns))
 	{
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
-		out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		out->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		if (password.SetTo(nns))
 		{
 			out->AppendUTF8Char(':');
 			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
-			out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			out->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		}
 		out->AppendUTF8Char('@');
 	}
@@ -232,17 +232,17 @@ Bool DB::MongoDBReader::ReadNext()
 	return false;
 }
 
-Int32 DB::MongoDBReader::GetInt32(UOSInt colIndex)
+Int32 DB::MongoDBReader::GetInt32(UIntOS colIndex)
 {
 	return 0;
 }
 
-Int64 DB::MongoDBReader::GetInt64(UOSInt colIndex)
+Int64 DB::MongoDBReader::GetInt64(UIntOS colIndex)
 {
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex != 0)
 		return nullptr;
@@ -259,7 +259,7 @@ UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<WCh
 	}
 }
 
-Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::MongoDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex != 0)
 		return false;
@@ -276,7 +276,7 @@ Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::MongoDBReader::GetNewStr(UIntOS colIndex)
 {
 	if (colIndex != 0)
 		return nullptr;
@@ -293,7 +293,7 @@ Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	if (colIndex != 0)
 		return nullptr;
@@ -310,66 +310,66 @@ UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<
 	}
 }
 
-Data::Timestamp DB::MongoDBReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::MongoDBReader::GetTimestamp(UIntOS colIndex)
 {
 	return Data::Timestamp(0);
 }
 
-Double DB::MongoDBReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::MongoDBReader::GetDblOrNAN(UIntOS colIndex)
 {
 	return NAN;
 }
 
-Bool DB::MongoDBReader::GetBool(UOSInt colIndex)
+Bool DB::MongoDBReader::GetBool(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt DB::MongoDBReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::MongoDBReader::GetBinarySize(UIntOS colIndex)
 {
 	return 0;
 }
 
-UOSInt DB::MongoDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::MongoDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> DB::MongoDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::MongoDBReader::GetVector(UIntOS colIndex)
 {
 	return nullptr;
 }
 
-Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::MongoDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-UOSInt DB::MongoDBReader::ColCount()
+UIntOS DB::MongoDBReader::ColCount()
 {
 	return 1;
 }
 
-OSInt DB::MongoDBReader::GetRowChanged()
+IntOS DB::MongoDBReader::GetRowChanged()
 {
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex != 0)
 		return nullptr;
 	return Text::StrConcatC(buff, UTF8STRC("Data"));
 }
 
-Bool DB::MongoDBReader::IsNull(UOSInt colIndex)
+Bool DB::MongoDBReader::IsNull(UIntOS colIndex)
 {
 	if (colIndex != 0)
 		return true;
 	return false;
 }
 
-DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::MongoDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	if (colIndex != 0)
 		return DB::DBUtil::CT_Unknown;
@@ -377,7 +377,7 @@ DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::MongoDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;

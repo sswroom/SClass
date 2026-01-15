@@ -30,14 +30,14 @@ void Media::AFilter::DTMFGenerator::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 
 	if (this->format.bitpersample == 16)
 	{
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		Double v;
 		Int32 iv;
 		Int32 ivCh;
@@ -64,11 +64,11 @@ UOSInt Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 		Sync::MutexUsage mutUsage(this->tonesMut);
 		if (this->tonesVals)
 		{
-			UOSInt sampleCnt = readSize / this->format.align;
-			UOSInt sampleLeft;
+			UIntOS sampleCnt = readSize / this->format.align;
+			UIntOS sampleLeft;
 			UInt32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
 			UInt32 tonesStartOfst;
-			UOSInt tonesCnt = this->tonesVals->leng;
+			UIntOS tonesCnt = this->tonesVals->leng;
 			Int32 freq1;
 			Int32 freq2;
 			i = 0;
@@ -212,8 +212,8 @@ UOSInt Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 	}
 	else if (this->format.bitpersample == 8)
 	{
-		UOSInt i = 0;
-		UOSInt j;
+		UIntOS i = 0;
+		UIntOS j;
 		Double v;
 		Int32 iv;
 		Int32 ivCh;
@@ -354,7 +354,7 @@ Bool Media::AFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 breakTime
 
 	Sync::MutexUsage mutUsage(this->tonesMut);
 	SDEL_STRING(this->tonesVals);
-	this->tonesVals = Text::String::New(tones, (UOSInt)(sptr - tones)).Ptr();
+	this->tonesVals = Text::String::New(tones, (UIntOS)(sptr - tones)).Ptr();
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;
 	this->tonesVol = vol;

@@ -14,14 +14,14 @@ namespace Net
 		virtual ~SSHTCPChannel();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
 		virtual IO::StreamType GetStreamType() const;
-		Bool TryRead(UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size);
+		Bool TryRead(UInt8 *buff, UIntOS maxSize, OutParam<UIntOS> size);
 	};
 }
 #endif

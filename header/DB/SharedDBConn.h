@@ -12,7 +12,7 @@ namespace DB
 		NN<DB::DBConn> conn;
 		Sync::Mutex mutConn;
 		Sync::Mutex mutObj;
-		OSInt useCnt;
+		IntOS useCnt;
 
 	private:
 		~SharedDBConn();

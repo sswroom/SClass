@@ -41,7 +41,7 @@ void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVD
 void Media::Batch::BatchResizer::ClearTargetSizes()
 {
 	NN<TargetParam> param;
-	UOSInt i = this->targetParam.GetCount();
+	UIntOS i = this->targetParam.GetCount();
 	while (i-- > 0)
 	{
 		param = this->targetParam.GetItemNoCheck(i);
@@ -58,9 +58,9 @@ void Media::Batch::BatchResizer::SetHandler(Optional<Media::Batch::BatchHandler>
 
 void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<TargetParam> param;
 	NN<Media::StaticImage> newImg;
 	Optional<Media::StaticImage> rImg;
@@ -77,7 +77,7 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 		Sync::MutexUsage mutUsage(this->resizeMut);
 		if (param->sizeType == 0)
 		{
-			resizer->SetTargetSize(Math::Size2D<UOSInt>(param->width, param->height));
+			resizer->SetTargetSize(Math::Size2D<UIntOS>(param->width, param->height));
 		}
 
 		succ = true;
@@ -91,8 +91,8 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 			{
 				if (param->sizeType == 1)
 				{
-					resizer->SetTargetSize(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.x * param->width) / newImg->info.hdpi),
-						(UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.y * param->height) / newImg->info.vdpi)));
+					resizer->SetTargetSize(Math::Size2D<UIntOS>((UInt32)Double2Int32(UIntOS2Double(newImg->info.dispSize.x * param->width) / newImg->info.hdpi),
+						(UInt32)Double2Int32(UIntOS2Double(newImg->info.dispSize.y * param->height) / newImg->info.vdpi)));
 					rImg = resizer->ProcessToNew(newImg);
 				}
 				else

@@ -2,7 +2,7 @@
 	.global	Benchmark_MemWriteTest
 	.global	Benchmark_MemReadTest
 
-//void Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt);
+//void Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt);
 	.align	2
 Benchmark_MemCopyTest:
 	stmfd	sp!, {x4, x5, lr}
@@ -24,7 +24,7 @@ mctlop3:
 	bgt	mctlop1
 	ldmfd	sp!, {x4, x5, pc}
 
-//void Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt);
+//void Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt);
 	.align	2
 Benchmark_MemWriteTest:
 	stmfd	sp!, {x4, lr}
@@ -45,7 +45,7 @@ mwtlop3:
 	ldmfd	sp!, {x4, pc}
 
 
-//void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt);
+//void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, IntOS buffSize, IntOS loopCnt);
 	.align	2
 Benchmark_MemReadTest:
 	stmfd	sp!, {x4, lr}

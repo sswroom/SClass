@@ -21,7 +21,7 @@ namespace Data
 	{
 		BTreeWNode<T> *tmpNode;
 		T retVal;
-		OSInt i;
+		IntOS i;
 		if (node->nodeHash == hash)
 		{
 			i = Text::StrCompareICase(node->nodeStr, key);
@@ -140,7 +140,7 @@ namespace Data
 	template <class T> UInt32 ICaseBTreeWMap<T>::CalHash(const WChar *key)
 	{
 		WChar wbuff[256];
-		OSInt charCnt = Text::StrToUpper(wbuff, key) - wbuff;
+		IntOS charCnt = Text::StrToUpper(wbuff, key) - wbuff;
 		this->crc->Clear();
 		this->crc->Calc((const UInt8*)wbuff, charCnt * sizeof(WChar));
 		UInt8 hash[4];
@@ -162,7 +162,7 @@ namespace Data
 		BTreeWNode<T> *node = this->rootNode;
 		while (node)
 		{
-			OSInt i;
+			IntOS i;
 			if (node->nodeHash == hash)
 			{
 				i = Text::StrCompareICase(node->nodeStr, key);
@@ -208,7 +208,7 @@ namespace Data
 			BTreeWNode<T> *node = this->rootNode;
 			while (node)
 			{
-				OSInt i;
+				IntOS i;
 				if (node->nodeHash == hash)
 				{
 					i = Text::StrCompare(node->nodeStr, key);

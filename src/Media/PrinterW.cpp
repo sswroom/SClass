@@ -68,7 +68,7 @@ UInt32 __stdcall Media::GDPrintDocument::PrintThread(AnyType userObj)
 		}
 		devMode->dmFields |= DM_PAPERLENGTH | DM_PAPERWIDTH | DM_ORIENTATION;
 		ResetDCW((HDC)me->hdcPrinter, devMode);
-		NEW_CLASSNN(img, Media::GDIImage(me->eng, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((UOSInt)MulDiv32(MulDiv32(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), (UOSInt)MulDiv32(MulDiv32(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254)), 32, 0, 0, me->hdcPrinter, Media::AT_IGNORE_ALPHA));
+		NEW_CLASSNN(img, Media::GDIImage(me->eng, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>((UIntOS)MulDiv32(MulDiv32(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), (UIntOS)MulDiv32(MulDiv32(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254)), 32, 0, 0, me->hdcPrinter, Media::AT_IGNORE_ALPHA));
 		img->SetHDPI(devMode->dmPrintQuality);
 		img->SetVDPI(devMode->dmPrintQuality);
 		StartPage((HDC)me->hdcPrinter);
@@ -207,7 +207,7 @@ void Media::GDPrintDocument::WaitForEnd()
 }
 
 
-UOSInt Media::Printer::GetPrinterCount()
+UIntOS Media::Printer::GetPrinterCount()
 {
 	UInt8 buff[4096];
 	UInt32 cbNeeded;
@@ -216,7 +216,7 @@ UOSInt Media::Printer::GetPrinterCount()
 	return cReturned;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UIntOS index)
 {
 	UInt8 buff[4096];
 	UInt32 cbNeeded;
@@ -289,7 +289,7 @@ Media::Printer *Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 	return printer;
 }
 
-Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize)
+Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UIntOS devModeSize)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
@@ -315,7 +315,7 @@ Media::Printer::Printer(NN<Text::String> printerName)
 	}
 
 	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, 0);
-	UOSInt size = (UOSInt)lReturn;
+	UIntOS size = (UIntOS)lReturn;
 	this->devMode = MemAlloc(UInt8, size);
 	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
 	Text::StrDelNew(wptr);
@@ -340,7 +340,7 @@ Media::Printer::Printer(Text::CStringNN printerName)
 	}
 
 	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, 0);
-	UOSInt size = (UOSInt)lReturn;
+	UIntOS size = (UIntOS)lReturn;
 	this->devMode = MemAlloc(UInt8, size);
 	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
 	Text::StrDelNew(wptr);

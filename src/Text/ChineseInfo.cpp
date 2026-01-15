@@ -128,7 +128,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 			}
 			else
 			{
-				this->fs->Write(Data::ByteArrayR(tmpBuff, (UOSInt)writeSize));
+				this->fs->Write(Data::ByteArrayR(tmpBuff, (UIntOS)writeSize));
 				writeSize = 0;
 			}
 		}
@@ -171,7 +171,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	}
 
 	Bool diff = false;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < 256)
 	{
 		if (buff[i] != this->currCharBuff[i])
@@ -303,7 +303,7 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	if (*s == 0)
 		return 0;
 	UTF8Char sbuff[8];
-	UOSInt len = Text::StrCharCnt(s);
+	UIntOS len = Text::StrCharCnt(s);
 	if (len > 7)
 		return 0;
 	UTF8Char c;
@@ -426,71 +426,71 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 
 	if (sbuff[0] == 'a')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aa")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aa")))
 		{
 			cpt = CPT_AA;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aai")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aai")))
 		{
 			cpt = CPT_AAI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aak")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aak")))
 		{
 			cpt = CPT_AAK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aam")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aam")))
 		{
 			cpt = CPT_AAM;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aan")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aan")))
 		{
 			cpt = CPT_AAN;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aang")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aang")))
 		{
 			cpt = CPT_AANG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aap")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aap")))
 		{
 			cpt = CPT_AAP;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aat")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aat")))
 		{
 			cpt = CPT_AAT;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("aau")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("aau")))
 		{
 			cpt = CPT_AAU;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ai")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ai")))
 		{
 			cpt = CPT_AI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ak")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ak")))
 		{
 			cpt = CPT_AI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("am")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("am")))
 		{
 			cpt = CPT_AM;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("an")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("an")))
 		{
 			cpt = CPT_AN;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ang")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ang")))
 		{
 			cpt = CPT_ANG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ap")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ap")))
 		{
 			cpt = CPT_AP;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("at")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("at")))
 		{
 			cpt = CPT_AT;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("au")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("au")))
 		{
 			cpt = CPT_AU;
 		}
@@ -501,35 +501,35 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	}
 	else if (sbuff[0] == 'e')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("e")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("e")))
 		{
 			cpt = CPT_E;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ei")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ei")))
 		{
 			cpt = CPT_EI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ek")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ek")))
 		{
 			cpt = CPT_EK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("eng")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("eng")))
 		{
 			cpt = CPT_ENG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("eoi")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("eoi")))
 		{
 			cpt = CPT_EOI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("eon")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("eon")))
 		{
 			cpt = CPT_EON;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("eong")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("eong")))
 		{
 			cpt = CPT_EONG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("eot")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("eot")))
 		{
 			cpt = CPT_EOT;
 		}
@@ -540,35 +540,35 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	}
 	else if (sbuff[0] == 'i')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("i")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("i")))
 		{
 			cpt = CPT_I;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ik")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ik")))
 		{
 			cpt = CPT_IK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("im")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("im")))
 		{
 			cpt = CPT_IM;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("in")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("in")))
 		{
 			cpt = CPT_IN;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ing")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ing")))
 		{
 			cpt = CPT_ING;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ip")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ip")))
 		{
 			cpt = CPT_IP;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("it")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("it")))
 		{
 			cpt = CPT_IT;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iu")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("iu")))
 		{
 			cpt = CPT_IU;
 		}
@@ -579,47 +579,47 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	}
 	else if (sbuff[0] == 'o')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("o")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("o")))
 		{
 			cpt = CPT_O;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("oe")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("oe")))
 		{
 			cpt = CPT_OE;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("oei")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("oei")))
 		{
 			cpt = CPT_OEI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("oek")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("oek")))
 		{
 			cpt = CPT_OEK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("oeng")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("oeng")))
 		{
 			cpt = CPT_OENG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("oi")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("oi")))
 		{
 			cpt = CPT_OI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ok")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ok")))
 		{
 			cpt = CPT_OK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("on")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("on")))
 		{
 			cpt = CPT_ON;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ong")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ong")))
 		{
 			cpt = CPT_ONG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ot")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ot")))
 		{
 			cpt = CPT_OT;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ou")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ou")))
 		{
 			cpt = CPT_OU;
 		}
@@ -630,27 +630,27 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	}
 	else if (sbuff[0] == 'u')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("u")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("u")))
 		{
 			cpt = CPT_U;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ui")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ui")))
 		{
 			cpt = CPT_UI;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("uk")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("uk")))
 		{
 			cpt = CPT_UK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("un")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("un")))
 		{
 			cpt = CPT_UN;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ung")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ung")))
 		{
 			cpt = CPT_UNG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ut")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ut")))
 		{
 			cpt = CPT_UT;
 		}
@@ -661,23 +661,23 @@ UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 	}
 	else if (sbuff[0] == 'y')
 	{
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("yu")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("yu")))
 		{
 			cpt = CPT_YU;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("yuk")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("yuk")))
 		{
 			cpt = CPT_YUK;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("yun")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("yun")))
 		{
 			cpt = CPT_YUN;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("yung")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("yung")))
 		{
 			cpt = CPT_YUNG;
 		}
-		else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("yut")))
+		else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("yut")))
 		{
 			cpt = CPT_YUT;
 		}

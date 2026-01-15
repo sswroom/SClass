@@ -40,14 +40,14 @@ Bool Exporter::CURExporter::ImageSupported(NN<Media::RasterImage> img)
 	return false;
 }
 
-UOSInt Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
+UIntOS Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt imgSize;
-	UOSInt maskSize;
+	UIntOS i;
+	UIntOS j;
+	UIntOS imgSize;
+	UIntOS maskSize;
 	NN<Media::RasterImage> img;
-	UOSInt retSize = 6;
+	UIntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
@@ -135,26 +135,26 @@ UOSInt Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	return retSize;
 }
 
-UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
+UIntOS Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt shiftCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS shiftCnt;
 	UInt8 mask;
 	UnsafeArray<UInt8> srcPtr;
 	UnsafeArray<UInt8> currPtr;
-	OSInt sbpl;
+	IntOS sbpl;
 	UInt8 *maskPtr;
-	UOSInt imgSize;
-	UOSInt maskSize;
-	UOSInt imgAdd;
-	UOSInt maskAdd;
+	UIntOS imgSize;
+	UIntOS maskSize;
+	UIntOS imgAdd;
+	UIntOS maskAdd;
 	NN<Media::StaticImage> img;
-	UOSInt retSize = 6;
+	UIntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	WriteInt16(&buff[0], 0);
@@ -474,8 +474,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 8;
 			retSize += 8;
 
-			sbpl = (OSInt)((img->info.dispSize.x + 7) >> 3) * 2;
-			srcPtr = img->data + sbpl * (OSInt)img->info.dispSize.y;
+			sbpl = (IntOS)((img->info.dispSize.x + 7) >> 3) * 2;
+			srcPtr = img->data + sbpl * (IntOS)img->info.dispSize.y;
 			maskPtr = imgPtr + imgSize * img->info.dispSize.y;
 			l = img->info.dispSize.y;
 			while (l-- > 0)
@@ -550,8 +550,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 64;
 			retSize += 64;
 
-			sbpl = (OSInt)(((img->info.dispSize.x + 7) >> 3) + ((img->info.dispSize.x + 1) >> 1));
-			srcPtr = img->data + sbpl * (OSInt)img->info.dispSize.y;
+			sbpl = (IntOS)(((img->info.dispSize.x + 7) >> 3) + ((img->info.dispSize.x + 1) >> 1));
+			srcPtr = img->data + sbpl * (IntOS)img->info.dispSize.y;
 			maskPtr = imgPtr + imgSize * img->info.dispSize.y;
 			l = img->info.dispSize.y;
 			while (l-- > 0)
@@ -626,8 +626,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 1024;
 			retSize += 1024;
 
-			sbpl = (OSInt)(((img->info.dispSize.x + 7) >> 3) + img->info.dispSize.x);
-			srcPtr = img->data + sbpl * (OSInt)img->info.dispSize.y;
+			sbpl = (IntOS)(((img->info.dispSize.x + 7) >> 3) + img->info.dispSize.x);
+			srcPtr = img->data + sbpl * (IntOS)img->info.dispSize.y;
 			maskPtr = imgPtr + imgSize * img->info.dispSize.y;
 			l = img->info.dispSize.y;
 			while (l-- > 0)
@@ -689,7 +689,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 		return IO::FileExporter::SupportType::NotSupported;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	NN<Media::RasterImage> img;
-	UOSInt i = imgList->GetCount();
+	UIntOS i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -708,7 +708,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::CURExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::CURExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -728,7 +728,7 @@ Bool Exporter::CURExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	UOSInt buffSize = CalcBuffSize(imgList);
+	UIntOS buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
 	UInt8 *buff = MemAlloc(UInt8, buffSize);

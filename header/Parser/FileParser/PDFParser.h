@@ -14,14 +14,14 @@ namespace Parser
 			struct PDFXRefItem
 			{
 				UInt64 ofst;
-				UOSInt generation;
+				UIntOS generation;
 				UTF8Char type;
 			};
 
 			struct PDFXRef
 			{
-				UOSInt startId;
-				UOSInt count;
+				UIntOS startId;
+				UIntOS count;
 				PDFXRefItem *items;
 				Optional<PDFXRef> nextRef;
 				Optional<Media::PDFParameter> trailer;
@@ -29,9 +29,9 @@ namespace Parser
 		private:
 			struct PDFParseEnv;
 
-			Bool IsComment(UnsafeArray<const UTF8Char> buff, UOSInt size);
+			Bool IsComment(UnsafeArray<const UTF8Char> buff, UIntOS size);
 			Bool NextLine(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
-			Bool NextLineFixed(NN<PDFParseEnv> env, UOSInt size);
+			Bool NextLineFixed(NN<PDFParseEnv> env, UIntOS size);
 			void ParseStartxref(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);
 			Bool ParseObject(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFDocument> doc, Optional<PDFXRef> xref);
 			Bool ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, Optional<PDFXRef> xref);

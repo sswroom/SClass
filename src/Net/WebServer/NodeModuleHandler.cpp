@@ -17,7 +17,7 @@ Bool Net::WebServer::NodeModuleHandler::FileValid(Text::CStringNN subReq)
 		return false;
 	if (subReq.EndsWith(UTF8STRC(".md")))
 		return false;
-	UOSInt i = subReq.LastIndexOf('/');
+	UIntOS i = subReq.LastIndexOf('/');
 	if (subReq.IndexOf('.', i + 1) == INVALID_INDEX)
 		return false;
 	return true;

@@ -35,7 +35,7 @@ UnsafeArray<const UInt8> Net::ASN1Data::GetASN1Buff() const
 	return this->buff.Arr();
 }
 
-UOSInt Net::ASN1Data::GetASN1BuffSize() const
+UIntOS Net::ASN1Data::GetASN1BuffSize() const
 {
 	return this->buff.GetSize();
 }
@@ -45,7 +45,7 @@ Data::ByteArrayR Net::ASN1Data::GetASN1Array() const
 	return this->buff;
 }
 
-void Net::ASN1Data::AppendInteger(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> pdu, UOSInt len)
+void Net::ASN1Data::AppendInteger(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> pdu, UIntOS len)
 {
 	if (len == 1)
 	{

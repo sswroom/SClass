@@ -108,7 +108,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP2BlockParser::ParseStrea
 	return audio;
 }
 
-Bool Media::BlockParser::MP2BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NN<Media::AudioFormat> fmt)
+Bool Media::BlockParser::MP2BlockParser::ParseStreamFormat(UInt8 *buff, UIntOS buffSize, NN<Media::AudioFormat> fmt)
 {
 	static UInt32 bitrateL2[] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384};
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)

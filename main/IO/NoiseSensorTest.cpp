@@ -14,9 +14,9 @@ Bool threadToStop;
 UInt32 __stdcall ReadThread(AnyType userObj)
 {
 	UInt8 readBuff[1024];
-	UOSInt buffSize = 0;
-	UOSInt readSize;
-	UOSInt i;
+	UIntOS buffSize = 0;
+	UIntOS readSize;
+	UIntOS i;
 	threadRunning = true;
 	while (!threadToStop)
 	{

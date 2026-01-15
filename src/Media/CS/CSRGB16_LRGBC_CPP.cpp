@@ -3,10 +3,10 @@
 #include "SIMD.h"
 #include "Core/ByteTool_C.h"
 
-extern "C" void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width << 3;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -24,10 +24,10 @@ extern "C" void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width << 3;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -45,10 +45,10 @@ extern "C" void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width * 6;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -66,10 +66,10 @@ extern "C" void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width * 6;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -87,11 +87,11 @@ extern "C" void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width * 4;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -110,11 +110,11 @@ extern "C" void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
 	UInt32 v;
-	OSInt i;
+	IntOS i;
 	srcRGBBpl -= width * 2;
 	destRGBBpl -= width << 3;
 	while (height-- > 0)
@@ -133,12 +133,12 @@ extern "C" void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, OSInt wi
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcNBits, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 	Int16x4 cvals;
 	UInt32 v;
 	UInt32 v2;
-	OSInt i;
+	IntOS i;
 	if (srcNBits == 32)
 	{
 		srcRGBBpl -= width * 4;
@@ -163,7 +163,7 @@ extern "C" void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void CSRGB16_LRGBC_ConvertFloat(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable)
+extern "C" void CSRGB16_LRGBC_ConvertFloat(UInt8 *srcPtr, UInt8 *destPtr, IntOS width, IntOS height, IntOS srcNBits, IntOS srcRGBBpl, IntOS destRGBBpl, UInt8 *rgbTable)
 {
 }
 

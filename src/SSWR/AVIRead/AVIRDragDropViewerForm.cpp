@@ -80,14 +80,14 @@ UI::GUIDropHandler::DragEffect SSWR::AVIRead::AVIRDragDropViewerForm::DragEnter(
 	return UI::GUIDropHandler::DE_COPY;
 }
 
-void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y)
+void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, IntOS x, IntOS y)
 {
 	this->ClearDrops();
 	this->lbType->ClearItems();
 
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<const UTF8Char> csptr;
 	i = 0;
 	j = data->GetCount();

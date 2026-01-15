@@ -110,7 +110,7 @@ Text::CStringNN Media::DShow::DShowVideoCapture::GetFilterName()
 	return CSTR("DShowVideoCapture");
 }
 
-Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	if (captureFilter == 0)
 	{
@@ -186,20 +186,20 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, Ou
 	return succ;
 }
 
-void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
+void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
 {
 	Bool found = false;
 	UInt32 minRate = 0;
 	IEnumMediaTypes *mediaTypes;
 	UInt32 fcc = 0;
 
-	UOSInt nearDiff = (size.x + 1) * (size.y + 1);
-	UOSInt nearWidth = 0;
-	UOSInt nearHeight = 0;
+	UIntOS nearDiff = (size.x + 1) * (size.y + 1);
+	UIntOS nearWidth = 0;
+	UIntOS nearHeight = 0;
 	UInt32 nearRate = 0;
-	UOSInt thisDiff;
-	UOSInt absWidth;
-	UOSInt absHeight;
+	UIntOS thisDiff;
+	UIntOS absWidth;
+	UIntOS absHeight;
 	AM_MEDIA_TYPE *foundMediaType = 0;
 
 	if (this->pin1->EnumMediaTypes(&mediaTypes) == S_OK)
@@ -322,7 +322,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, U
 	}
 	else if (nearWidth != 0 && nearHeight != 0)
 	{
-		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(Math::Size2D<UOSInt>(nearWidth, nearHeight), nearRate, fcc, bpp);
+		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(Math::Size2D<UIntOS>(nearWidth, nearHeight), nearRate, fcc, bpp);
 		if (foundMediaType)
 		{
 			AM_MEDIA_TYPE connMT;
@@ -399,7 +399,7 @@ Bool Media::DShow::DShowVideoCapture::IsRunning()
 	return state == State_Running;
 }
 
-UOSInt Media::DShow::DShowVideoCapture::GetDataSeekCount()
+UIntOS Media::DShow::DShowVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }
@@ -409,12 +409,12 @@ Bool Media::DShow::DShowVideoCapture::HasFrameCount()
 	return false;
 }
 
-UOSInt Media::DShow::DShowVideoCapture::GetFrameCount()
+UIntOS Media::DShow::DShowVideoCapture::GetFrameCount()
 {
 	return 0;
 }
 
-Data::Duration Media::DShow::DShowVideoCapture::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::DShow::DShowVideoCapture::GetFrameTime(UIntOS frameIndex)
 {
 	return 0;
 }
@@ -423,13 +423,13 @@ void Media::DShow::DShowVideoCapture::EnumFrameInfos(FrameInfoCallback cb, AnyTy
 {
 }
 
-UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt)
+UIntOS Media::DShow::DShowVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt)
 {
 	if (captureFilter == 0)
 	{
 		return 0;
 	}
-	UOSInt outCnt = 0;
+	UIntOS outCnt = 0;
 	IEnumMediaTypes *mediaTypes;
 	AM_MEDIA_TYPE *mediaType;
 	if (this->pin1->EnumMediaTypes(&mediaTypes) == S_OK)
@@ -589,11 +589,11 @@ Media::DShow::DShowVideoCaptureMgr::~DShowVideoCaptureMgr()
 	CoUninitialize();
 }
 
-UOSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
+UIntOS Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
-	UOSInt cnt;
+	UIntOS cnt;
 	if (pEnum == 0)
 	{
 		return 0;
@@ -608,7 +608,7 @@ UOSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
@@ -656,7 +656,7 @@ UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(Unsaf
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArray<WChar> buff, UOSInt devNo)
+UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArray<WChar> buff, UIntOS devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
@@ -700,12 +700,12 @@ UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArra
 	return 0;
 }
 
-Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(UOSInt devNo)
+Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(UIntOS devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
-	UOSInt cnt;
+	UIntOS cnt;
 	WChar wbuff[256];
 
 	if (pEnum == 0)

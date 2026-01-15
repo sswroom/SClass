@@ -61,7 +61,7 @@
     {                                                  \
         UInt32 c;                                     \
         INFLATER_GET_BYTE(state_index, c);                \
-        bit_buf |= (((UOSInt)c) << num_bits); \
+        bit_buf |= (((UIntOS)c) << num_bits); \
         num_bits += 8;                                 \
     } while (num_bits < (UInt32)(n))
 
@@ -81,7 +81,7 @@
         {                                    \
             INFLATER_NEED_BITS(state_index, n); \
         }                                    \
-        b = (UInt32)(bit_buf & (((UOSInt)1 << (n)) - 1));      \
+        b = (UInt32)(bit_buf & (((UIntOS)1 << (n)) - 1));      \
         bit_buf >>= (n);                     \
         num_bits -= (UInt32)(n);                     \
     }
@@ -109,7 +109,7 @@
                 break;                                               \
         }                                                            \
         INFLATER_GET_BYTE(state_index, c);                              \
-        bit_buf |= (((UOSInt)c) << num_bits);               \
+        bit_buf |= (((UIntOS)c) << num_bits);               \
         num_bits += 8;                                               \
     } while (num_bits < 15);
 
@@ -125,7 +125,7 @@
             }                                                                                                                       \
             else                                                                                                                    \
             {                                                                                                                       \
-                bit_buf |= (((UOSInt)pIn_buf_cur[0]) << num_bits) | (((UOSInt)pIn_buf_cur[1]) << (num_bits + 8)); \
+                bit_buf |= (((UIntOS)pIn_buf_cur[0]) << num_bits) | (((UIntOS)pIn_buf_cur[1]) << (num_bits + 8)); \
                 pIn_buf_cur += 2;                                                                                                   \
                 num_bits += 16;                                                                                                     \
             }                                                                                                                       \
@@ -163,8 +163,8 @@ namespace Data
 			UInt32 m_counter;
 			UInt32 m_num_extra;
 			UInt32 m_table_sizes[INFLATER_MAX_HUFF_TABLES];
-			UOSInt m_bit_buf;
-			UOSInt m_dist_from_out_buf_start;
+			UIntOS m_bit_buf;
+			UIntOS m_dist_from_out_buf_start;
 			Int16 m_look_up[INFLATER_MAX_HUFF_TABLES][INFLATER_FAST_LOOKUP_SIZE];
 			Int16 m_tree_0[INFLATER_MAX_HUFF_SYMBOLS_0 * 2];
 			Int16 m_tree_1[INFLATER_MAX_HUFF_SYMBOLS_1 * 2];
@@ -199,7 +199,7 @@ void Data::Compress::Inflater::ClearTree(NN<InflateDecompressor> r)
 		INFLATER_CLEAR_ARR(r->m_tree_2);
 }
 
-Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDecompressor> r, UnsafeArray<const UInt8> pIn_buf_next, InOutParam<UOSInt> pIn_buf_size, UnsafeArray<UInt8> pOut_buf_start, UnsafeArray<UInt8> pOut_buf_next, InOutParam<UOSInt> pOut_buf_size, const UInt32 decomp_flags)
+Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDecompressor> r, UnsafeArray<const UInt8> pIn_buf_next, InOutParam<UIntOS> pIn_buf_size, UnsafeArray<UInt8> pOut_buf_start, UnsafeArray<UInt8> pOut_buf_next, InOutParam<UIntOS> pOut_buf_size, const UInt32 decomp_flags)
 {
 	static const UInt16 s_length_base[31] = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0 };
 	static const UInt8 s_length_extra[31] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0 };
@@ -213,12 +213,12 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 
 	Data::Compress::InflateStatus status = Data::Compress::InflateStatus::Failed;
 	UInt32 num_bits, dist, counter, num_extra;
-	UOSInt bit_buf;
+	UIntOS bit_buf;
 	UnsafeArray<const UInt8> pIn_buf_cur = pIn_buf_next;
 	UnsafeArray<const UInt8> pIn_buf_end = pIn_buf_next + pIn_buf_size.Get();
 	UnsafeArray<UInt8> pOut_buf_cur = pOut_buf_next;
 	UnsafeArray<const UInt8> pOut_buf_end = pOut_buf_next + pOut_buf_size.Get();
-	UOSInt out_buf_size_mask = (decomp_flags & INFLATER_FLAG_USING_NON_WRAPPING_OUTPUT_BUF) ? (UOSInt)-1 : ((UOSInt)(pOut_buf_next - pOut_buf_start) + pOut_buf_size.Get()) - 1, dist_from_out_buf_start;
+	UIntOS out_buf_size_mask = (decomp_flags & INFLATER_FLAG_USING_NON_WRAPPING_OUTPUT_BUF) ? (UIntOS)-1 : ((UIntOS)(pOut_buf_next - pOut_buf_start) + pOut_buf_size.Get()) - 1, dist_from_out_buf_start;
 
 	/* Ensure the output buffer's size is a power of 2, unless the output buffer is large enough to hold the entire output file (in which case it doesn't matter). */
 	if (((out_buf_size_mask + 1) & out_buf_size_mask) || (pOut_buf_next < pOut_buf_start))
@@ -251,7 +251,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 		INFLATER_GET_BYTE(2, r->m_zhdr1);
 		counter = (((r->m_zhdr0 * 256 + r->m_zhdr1) % 31 != 0) || (r->m_zhdr1 & 32) || ((r->m_zhdr0 & 15) != 8));
 		if (!(decomp_flags & INFLATER_FLAG_USING_NON_WRAPPING_OUTPUT_BUF))
-			counter |= (((1U << (8U + (r->m_zhdr0 >> 4))) > 32768U) || ((out_buf_size_mask + 1) < (UOSInt)((UOSInt)1 << (8U + (r->m_zhdr0 >> 4)))));
+			counter |= (((1U << (8U + (r->m_zhdr0 >> 4))) > 32768U) || ((out_buf_size_mask + 1) < (UIntOS)((UIntOS)1 << (8U + (r->m_zhdr0 >> 4)))));
 		if (counter)
 		{
 			INFLATER_CR_RETURN_FOREVER(36, Data::Compress::InflateStatus::Failed);
@@ -288,7 +288,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 			}
 			while (counter)
 			{
-				UOSInt n;
+				UIntOS n;
 				while (UnsafeArray<const UInt8>(pOut_buf_cur) >= pOut_buf_end)
 				{
 					INFLATER_CR_RETURN(9, Data::Compress::InflateStatus::HasMoreOutput);
@@ -297,7 +297,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 				{
 					INFLATER_CR_RETURN(38, (decomp_flags & INFLATER_FLAG_HAS_MORE_INPUT) ? Data::Compress::InflateStatus::NeedsMoreInput : Data::Compress::InflateStatus::FailedCannotMakeProgress);
 				}
-				n = Math_Min(Math_Min((UOSInt)(pOut_buf_end - UnsafeArray<const UInt8>(pOut_buf_cur)), (UOSInt)(pIn_buf_end - pIn_buf_cur)), counter);
+				n = Math_Min(Math_Min((UIntOS)(pOut_buf_end - UnsafeArray<const UInt8>(pOut_buf_cur)), (UIntOS)(pIn_buf_end - pIn_buf_cur)), counter);
 				INFLATER_MEMCPY(pOut_buf_cur.Ptr(), pIn_buf_cur.Ptr(), n);
 				pIn_buf_cur += n;
 				pOut_buf_cur += n;
@@ -459,14 +459,14 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 #if _OSINT_SIZE == 64
 						if (num_bits < 30)
 						{
-							bit_buf |= (((UOSInt)ReadUInt32(&pIn_buf_cur[0])) << num_bits);
+							bit_buf |= (((UIntOS)ReadUInt32(&pIn_buf_cur[0])) << num_bits);
 							pIn_buf_cur += 4;
 							num_bits += 32;
 						}
 #else
 					if (num_bits < 15)
 					{
-						bit_buf |= (((UOSInt)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
+						bit_buf |= (((UIntOS)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
 						pIn_buf_cur += 2;
 						num_bits += 16;
 					}
@@ -478,7 +478,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 							code_len = INFLATER_FAST_LOOKUP_BITS;
 							do
 							{
-								sym2 = r->m_tree_0[~sym2 + (OSInt)((bit_buf >> code_len++) & 1)];
+								sym2 = r->m_tree_0[~sym2 + (IntOS)((bit_buf >> code_len++) & 1)];
 							} while (sym2 < 0);
 						}
 						counter = (UInt32)sym2;
@@ -490,7 +490,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 #if _OSINT_SIZE != 64
 						if (num_bits < 15)
 						{
-							bit_buf |= (((UOSInt)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
+							bit_buf |= (((UIntOS)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
 							pIn_buf_cur += 2;
 							num_bits += 16;
 						}
@@ -502,7 +502,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 							code_len = INFLATER_FAST_LOOKUP_BITS;
 							do
 							{
-								sym2 = r->m_tree_0[~sym2 + (OSInt)((bit_buf >> code_len++) & 1)];
+								sym2 = r->m_tree_0[~sym2 + (IntOS)((bit_buf >> code_len++) & 1)];
 							} while (sym2 < 0);
 						}
 						bit_buf >>= code_len;
@@ -541,7 +541,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 					dist += extra_bits;
 				}
 
-				dist_from_out_buf_start = (UOSInt)(pOut_buf_cur - pOut_buf_start);
+				dist_from_out_buf_start = (UIntOS)(pOut_buf_cur - pOut_buf_start);
 				if ((dist == 0 || dist > dist_from_out_buf_start || dist_from_out_buf_start == 0) && (decomp_flags & INFLATER_FLAG_USING_NON_WRAPPING_OUTPUT_BUF))
 				{
 					INFLATER_CR_RETURN_FOREVER(37, Data::Compress::InflateStatus::Failed);
@@ -594,7 +594,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 		--pIn_buf_cur;
 		num_bits -= 8;
 	}
-	bit_buf &= ~(~(UOSInt)0 << num_bits);
+	bit_buf &= ~(~(UIntOS)0 << num_bits);
 	INFLATER_ASSERT(!num_bits); /* if this assert fires then we've read beyond the end of non-deflate/zlib streams with following data (such as gzip streams). */
 
 	if (decomp_flags & INFLATER_FLAG_PARSE_ZLIB_HEADER)
@@ -626,21 +626,21 @@ common_exit:
 		}
 	}
 	r->m_num_bits = num_bits;
-	r->m_bit_buf = bit_buf & ~(~(UOSInt)0 << num_bits);
+	r->m_bit_buf = bit_buf & ~(~(UIntOS)0 << num_bits);
 	r->m_dist = dist;
 	r->m_counter = counter;
 	r->m_num_extra = num_extra;
 	r->m_dist_from_out_buf_start = dist_from_out_buf_start;
-	pIn_buf_size.Set((UOSInt)(pIn_buf_cur - pIn_buf_next));
-	pOut_buf_size.Set((UOSInt)(pOut_buf_cur - pOut_buf_next));
-	if ((decomp_flags & (INFLATER_FLAG_PARSE_ZLIB_HEADER | INFLATER_FLAG_COMPUTE_ADLER32)) && ((OSInt)status >= 0))
+	pIn_buf_size.Set((UIntOS)(pIn_buf_cur - pIn_buf_next));
+	pOut_buf_size.Set((UIntOS)(pOut_buf_cur - pOut_buf_next));
+	if ((decomp_flags & (INFLATER_FLAG_PARSE_ZLIB_HEADER | INFLATER_FLAG_COMPUTE_ADLER32)) && ((IntOS)status >= 0))
 	{
 		UnsafeArray<const UInt8> ptr = pOut_buf_next;
-		UOSInt buf_len = (UOSInt)(pOut_buf_cur - pOut_buf_next);
+		UIntOS buf_len = (UIntOS)(pOut_buf_cur - pOut_buf_next);
 		UInt32 i, s1 = r->m_check_adler32 & 0xffff, s2 = r->m_check_adler32 >> 16;
 		if (buf_len)
 		{
-			UOSInt block_len = buf_len % 5552;
+			UIntOS block_len = buf_len % 5552;
 			for (i = 0; i + 7 < block_len; i += 8, ptr += 8)
 			{
 				s1 += ptr[0], s2 += s1;
@@ -686,16 +686,16 @@ Data::Compress::InflateResult Data::Compress::Inflater::Inflate(Bool isEnd)
 	NN<InflateState> pState;
 	UInt32 n;
 	UInt32 decomp_flags = INFLATER_FLAG_COMPUTE_ADLER32;
-	UOSInt in_bytes;
-	UOSInt out_bytes;
-	UOSInt orig_avail_in;
+	UIntOS in_bytes;
+	UIntOS out_bytes;
+	UIntOS orig_avail_in;
 
 	pState = this->state;
 	if (pState->hasHeader)
 		decomp_flags |= INFLATER_FLAG_PARSE_ZLIB_HEADER;
 	orig_avail_in = this->avail_in;
 
-	if (((OSInt)pState->m_last_status) < 0)
+	if (((IntOS)pState->m_last_status) < 0)
 		return InflateResult::DataError;
 
 	if (pState->hasFlushed && (!isEnd))
@@ -720,7 +720,7 @@ Data::Compress::InflateResult Data::Compress::Inflater::Inflate(Bool isEnd)
 		this->decStm->Write(Data::ByteArrayR(pState->m_dict + pState->m_dict_ofs, n));
 		pState->m_dict_ofs = (pState->m_dict_ofs + n) & (INFLATER_LZ_DICT_SIZE - 1);
 
-		if ((OSInt)status < 0)
+		if ((IntOS)status < 0)
 			return InflateResult::DataError;
 		else if ((status == InflateStatus::NeedsMoreInput) && (!orig_avail_in))
 			return InflateResult::BufError;
@@ -759,19 +759,19 @@ Bool Data::Compress::Inflater::IsDown() const
 	return this->decStm->IsDown();
 }
 
-UOSInt Data::Compress::Inflater::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::Inflater::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::Inflater::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::Inflater::Write(Data::ByteArrayR buff)
 {
 	this->next_in = buff.Ptr();
 	this->avail_in = buff.GetSize();
 	while (true || this->avail_in > 0)
 	{
 		InflateResult res = this->lastRes = this->Inflate(false);
-		if (res == InflateResult::StreamEnd || this->avail_in == 0 || (OSInt)res < 0)
+		if (res == InflateResult::StreamEnd || this->avail_in == 0 || (IntOS)res < 0)
 		{
 //			error = true;
 			break;
@@ -805,11 +805,11 @@ Bool Data::Compress::Inflater::IsEnd() const
 	return this->lastRes == InflateResult::StreamEnd;
 }
 
-Bool Data::Compress::Inflater::DecompressDirect(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff, Bool hasHeader)
+Bool Data::Compress::Inflater::DecompressDirect(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff, Bool hasHeader)
 {
 	UInt32 decomp_flags = INFLATER_FLAG_COMPUTE_ADLER32;
-	UOSInt in_bytes;
-	UOSInt out_bytes;
+	UIntOS in_bytes;
+	UIntOS out_bytes;
 
 	if (hasHeader)
 		decomp_flags |= INFLATER_FLAG_PARSE_ZLIB_HEADER;
@@ -819,7 +819,7 @@ Bool Data::Compress::Inflater::DecompressDirect(Data::ByteArray destBuff, OutPar
 	decomp.m_state = 0;
 	decomp_flags |= INFLATER_FLAG_USING_NON_WRAPPING_OUTPUT_BUF;
 	InflateStatus status = Decompress(decomp, srcBuff.Arr(), in_bytes, destBuff.Arr(), destBuff.Arr(), out_bytes, decomp_flags);
-	if ((OSInt)status < 0)
+	if ((IntOS)status < 0)
 		return false;
 	else if (status != InflateStatus::Done)
 	{

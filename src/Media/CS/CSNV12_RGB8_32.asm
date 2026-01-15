@@ -5,7 +5,7 @@ global CSNV12_RGB8_do_nv12rgb8
 global _CSNV12_RGB8_do_nv12rgb2
 global CSNV12_RGB8_do_nv12rgb2
 
-;void CSNV12_RGB8_do_nv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSNV12_RGB8_do_nv12rgb8(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;-16 cofst
 ;-12 cWidth4
 ;-8 cSub
@@ -38,13 +38,13 @@ CSNV12_RGB8_do_nv12rgb8:
 	
 	mov eax,dword [esp+32] ;width
 	lea edx,[eax * 8]
-	mov dword [esp-4],edx ;OSInt cSize = width << 3;
+	mov dword [esp-4],edx ;IntOS cSize = width << 3;
 	mov ecx,eax
 	lea edx,[eax-4]
 	shr ecx,2
 	shr edx,1
-	mov dword [esp-8],edx ;OSInt cSub = (width >> 1) - 2;
-	mov dword [esp-12],ecx ;OSInt cWidth4 = width >> 2;
+	mov dword [esp-8],edx ;IntOS cSub = (width >> 1) - 2;
+	mov dword [esp-12],ecx ;IntOS cWidth4 = width >> 2;
 	mov dword [esp-16],0 ;Int32 cofst = 0;//this->cofst;
 
 	mov ecx,dword [esp+36] ;height
@@ -670,7 +670,7 @@ n2r8lopexit:
 	pop ebp
 	ret
 
-;void CSNV12_RGB8_do_nv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt isFirst, OSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSNV12_RGB8_do_nv12rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, IntOS isFirst, IntOS isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 edi
 ;4 esi
 ;8 ebx

@@ -12,7 +12,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd)
+void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::StringBuilderUTF8 sb;
@@ -72,10 +72,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Text::StringBuilderUTF8 sb;
 
 	if (me->devChg)
@@ -269,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	NN<Text::String> s;
@@ -340,8 +340,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut.LockRead();
 	NN<DeviceInfo> dev;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (me->devMap.GetCount() == 0)
 	{
 		me->devMut.UnlockRead();
@@ -367,7 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 		sb.AppendC(UTF8STRC(","));
 		sb.AppendI32((Int32)dev->handType);
 		sb.AppendC(UTF8STRC(","));
-		sb.AppendUOSInt(dev->nReading);
+		sb.AppendUIntOS(dev->nReading);
 		sb.AppendC(UTF8STRC(","));
 		sb.AppendU16(dev->shortAddr);
 		i++;
@@ -422,9 +422,9 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 		UInt64 flen = fs.GetLength();
 		if (flen > 0 && (flen % 12) == 0)
 		{
-			UInt8 *dataBuff = MemAlloc(UInt8, (UOSInt)flen);
-			UOSInt i;
-			fs.Read(Data::ByteArray(dataBuff, (UOSInt)flen));
+			UInt8 *dataBuff = MemAlloc(UInt8, (UIntOS)flen);
+			UIntOS i;
+			fs.Read(Data::ByteArray(dataBuff, (UIntOS)flen));
 			this->devMut.LockWrite();
 			i = 0;
 			while (i < flen)
@@ -440,9 +440,9 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 
 void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt8 *dataBuff;
 	this->devMut.LockRead();
 	i = 0;
@@ -610,7 +610,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 	this->devMut.UnlockWrite();
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, UnsafeArray<IO::SNBDongle::ReadingType> readingTypes, UnsafeArray<Double> readingVals)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UIntOS nReading, UnsafeArray<IO::SNBDongle::ReadingType> readingTypes, UnsafeArray<Double> readingVals)
 {
 	NN<DeviceInfo> dev;
 	this->devMut.LockRead();
@@ -618,7 +618,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle:
 	{
 		this->devMut.UnlockRead();
 		Data::DateTime dt;
-		UOSInt i;
+		UIntOS i;
 		dt.SetCurrTimeUTC();
 
 		dev->mut.LockWrite();

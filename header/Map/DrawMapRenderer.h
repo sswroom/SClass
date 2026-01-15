@@ -27,14 +27,14 @@ namespace Map
 			Double scaleW;
 			Double scaleH;
 			Int32 priority;
-			UOSInt nPoints;
+			UIntOS nPoints;
 			Map::DrawLayerType layerType;
 			UnsafeArrayOpt<Math::Coord2DDbl> points;
-			OSInt xOfst;
-			OSInt yOfst;
+			IntOS xOfst;
+			IntOS yOfst;
 			Int32 flags;
 			Map::MapEnv::FontType fontType;
-			UOSInt fontStyle;
+			UIntOS fontStyle;
 			Double totalSize;
 			Double currSize;
 		};
@@ -43,7 +43,7 @@ namespace Map
 		{
 			Optional<Media::DrawFont> font;
 			Optional<Media::DrawBrush> fontBrush;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			Optional<Media::DrawBrush> buffBrush;
 		} DrawFontStyle;
 
@@ -55,11 +55,11 @@ namespace Map
 			NN<Map::MapView> view;
 			Bool isLayerEmpty;
 			UnsafeArray<Math::RectAreaDbl> objBounds;
-			UOSInt objCnt;
+			UIntOS objCnt;
 			UnsafeArray<MapLabels> labels;
-			UOSInt labelCnt;
-			UOSInt maxLabels;
-			UOSInt fontStyleCnt;
+			UIntOS labelCnt;
+			UIntOS maxLabels;
+			UIntOS fontStyleCnt;
 			UnsafeArray<DrawFontStyle> fontStyles;
 			UInt32 imgDurMS;
 			Math::Size2DDbl dispSize;
@@ -81,25 +81,25 @@ namespace Map
 		DrawType drawType;
 
 	private:
-		static UOSInt NewLabel(UnsafeArray<MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Int32 priority);
-		static void SwapLabel(UnsafeArray<MapLabels> mapLabels, UOSInt index, UOSInt index2);
-		static Bool LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOSInt nPoints, Math::RectAreaDbl rect);
-		static Bool AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
+		static UIntOS NewLabel(UnsafeArray<MapLabels> labels, UIntOS maxLabel, InOutParam<UIntOS> labelCnt, Int32 priority);
+		static void SwapLabel(UnsafeArray<MapLabels> mapLabels, UIntOS index, UIntOS index2);
+		static Bool LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UIntOS nPoints, Math::RectAreaDbl rect);
+		static Bool AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLabel, InOutParam<UIntOS> labelCnt, Text::CStringNN label, UIntOS nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UIntOS fntStyle, Int32 flag, NN<Map::MapView> view, IntOS xOfst, IntOS yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(NN<DrawEnv> denv);
-		static OSInt __stdcall VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2);
+		static IntOS __stdcall VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2);
 	private:
 		void DrawLayers(NN<DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group);
-		void DrawShapes(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);
-		void DrawShapesPoint(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt imgIndex);
-		void DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType);
+		void DrawShapes(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);
+		void DrawShapesPoint(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS imgIndex);
+		void DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS fontSytle, UIntOS labelCol, Int32 priority, Int32 flags, UIntOS imgWidth, UIntOS imgHeight, Map::MapEnv::FontType fontType);
 		void DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer);
 		void DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha);
 		void DrawImageObjectQuad(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Quadrilateral scnCoords, Double srcAlpha);
 
-		static void GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
-		static void DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign);
-		static void DrawCharsL(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds);
-		static void DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds);
+		static void GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Map::MapEnv::FontType fontType, UIntOS fontStyle, Double scaleW, Double scaleH);
+		static void DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UIntOS fontStyle, Bool isAlign);
+		static void DrawCharsL(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UIntOS thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UIntOS fontStyle, OutParam<Math::RectAreaDbl> realBounds);
+		static void DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UIntOS thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UIntOS fontStyle, OutParam<Math::RectAreaDbl> realBounds);
 	public:
 		DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Optional<Media::ColorManagerSess> colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();

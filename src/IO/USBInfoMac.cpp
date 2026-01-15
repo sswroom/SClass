@@ -59,12 +59,12 @@ Text::CString IO::USBInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Char *clsName)
+UIntOS USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Char *clsName)
 {
 	IO::USBInfo::ClassData clsData;
 	IO::USBInfo *usb;
 //	Text::StringBuilderUTF8 sb;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 
 	CFMutableDictionaryRef matchingDict;
 	io_iterator_t iter;
@@ -122,9 +122,9 @@ UOSInt USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Ch
 	return ret;
 }
 
-UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
+UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	ret += USBInfo_AppendDevices(usbList, kIOUSBDeviceClassName);
 	return ret;
 }

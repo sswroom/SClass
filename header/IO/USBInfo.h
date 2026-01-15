@@ -21,7 +21,7 @@ namespace IO
 		UInt16 GetRevision();
 		Text::CStringNN GetDispName();
 
-		static UOSInt GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList);
+		static UIntOS GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList);
 	};
 }
 

@@ -9,10 +9,10 @@ namespace Manage
 	private:
 		NN<Text::String> moduleName;
 		NN<Text::String> funcName;
-		OSInt ofst;
+		IntOS ofst;
 		UInt64 funcAddr;
 	public:
-		CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, OSInt ofst, UInt64 funcAddr);
+		CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, IntOS ofst, UInt64 funcAddr);
 		~CodeSymbol();
 
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;

@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(AnyTy
 
 void SSWR::AVIRead::AVIRHTTPClientCertTestForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
+	UIntOS i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{
 		this->caCerts.GetItem(i).Delete();

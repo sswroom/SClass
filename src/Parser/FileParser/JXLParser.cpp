@@ -68,7 +68,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	JxlBasicInfo info;
 	JxlPixelFormat format = {4, JXL_TYPE_FLOAT, JXL_NATIVE_ENDIAN, 0};
 	UInt64 dataSize = fd->GetDataSize();
-	Data::ByteBuffer buff((UOSInt)dataSize);
+	Data::ByteBuffer buff((UIntOS)dataSize);
 	if (fd->GetRealData(0, buff.GetSize(), buff) != buff.GetSize())
 	{
 		return nullptr;
@@ -80,7 +80,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	Data::ByteBuffer boxBuffer(65536);
 	BoxData boxData;
 	NN<Media::EXIFData> exif;
-	UOSInt boxSize = 0;
+	UIntOS boxSize = 0;
 	UInt32 tps_numerator = 0;
 	UInt32 tps_denominator = 0;
 	UInt32 imgDur = 0;
@@ -121,7 +121,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				tps_denominator = info.animation.tps_denominator;
 			}
 //			printf("Basic Info: %d x %d, bpp = %d, ebps = %d\r\n", info.xsize, info.ysize, info.bits_per_sample, info.exponent_bits_per_sample);
-			finfo.dispSize = Math::Size2D<UOSInt>(info.xsize, info.ysize);
+			finfo.dispSize = Math::Size2D<UIntOS>(info.xsize, info.ysize);
 			if (info.exponent_bits_per_sample == 0)
 			{
 				if (info.bits_per_sample == 16)
@@ -394,7 +394,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			boxSize = boxBuffer.GetSize();
 		} else if (status == JXL_DEC_BOX_NEED_MORE_OUTPUT) {
 			size_t remaining = JxlDecoderReleaseBoxBuffer(dec.get());
-			UOSInt pos = boxBuffer.GetSize() - remaining;
+			UIntOS pos = boxBuffer.GetSize() - remaining;
 			boxBuffer.ChangeSizeAndKeep(boxBuffer.GetSize() + 65536);
 			JxlDecoderSetBoxBuffer(dec.get(), boxBuffer.Ptr() + pos, boxBuffer.GetSize() - pos);
 		} else {

@@ -196,7 +196,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 	return ch;
 }
 
-Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle>channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle>channel, UnsafeArray<UInt8> buff, UIntOS maxSize, OutParam<UIntOS> size)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel.Ptr(), 0, (Char*)buff.Ptr(), (size_t)maxSize);
@@ -214,11 +214,11 @@ Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle>channel, UnsafeArray<UInt8
 #if defined(VERBOSE)
 	printf("SSHConn: Channel read %d bytes\r\n", (int)sz);
 #endif
-	size.Set((UOSInt)sz);
+	size.Set((UIntOS)sz);
 	return true;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UOSInt size)
+UIntOS Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel.Ptr(), 0, (const Char*)buff.Ptr(), size);
@@ -227,7 +227,7 @@ UOSInt Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<cons
 #if defined(VERBOSE)
 		printf("SSHConn: Channel write %d bytes\r\n", (int)sz);
 #endif
-		return (UOSInt)sz;
+		return (UIntOS)sz;
 	}
 #if defined(VERBOSE)
 	printf("SSHConn: Channel write error: %d (%s)\r\n", (int)sz, Net::SSHManager::ErrorGetName((Int32)sz).v);

@@ -174,7 +174,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnVolBoostChg(AnyType userObj, Bool newState);
-			static void __stdcall OnVolBoostBGChg(AnyType userObj, UOSInt scrollPos);
+			static void __stdcall OnVolBoostBGChg(AnyType userObj, UIntOS scrollPos);
 			static void __stdcall OnDTMFClearClicked(AnyType userObj);
 			static void __stdcall OnDTMF1UpDown(AnyType userObj, Bool isDown);
 			static void __stdcall OnDTMF2UpDown(AnyType userObj, Bool isDown);
@@ -192,7 +192,7 @@ namespace SSWR
 			static void __stdcall OnDTMFBUpDown(AnyType userObj, Bool isDown);
 			static void __stdcall OnDTMFCUpDown(AnyType userObj, Bool isDown);
 			static void __stdcall OnDTMFDUpDown(AnyType userObj, Bool isDown);
-			static void __stdcall OnDTMFVolChg(AnyType userObj, UOSInt scrollPos);
+			static void __stdcall OnDTMFVolChg(AnyType userObj, UIntOS scrollPos);
 			static void __stdcall OnDTMFTonesClicked(AnyType userObj);
 			static void __stdcall OnLevelTimerTick(AnyType userObj);
 			static void __stdcall OnDTMFToneChange(AnyType userObj, WChar tone);
@@ -202,9 +202,9 @@ namespace SSWR
 			static void __stdcall OnCaptureStartClicked(AnyType userObj);
 			static void __stdcall OnCaptureStopClicked(AnyType userObj);
 			static void __stdcall OnSoundGenBellClicked(AnyType userObj);
-			static void __stdcall OnSweepVolChg(AnyType userObj, UOSInt scrollPos);
+			static void __stdcall OnSweepVolChg(AnyType userObj, UIntOS scrollPos);
 			static void __stdcall OnSweepStartClicked(AnyType userObj);
-			static void __stdcall OnAmplifierVolChg(AnyType userObj, UOSInt scrollPos);
+			static void __stdcall OnAmplifierVolChg(AnyType userObj, UIntOS scrollPos);
 			void StopAudio();
 		public:
 			AVIRAudioFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool showMenu);

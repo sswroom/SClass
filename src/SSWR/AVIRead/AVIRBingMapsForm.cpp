@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRBingMapsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBingMapsForm>();
 	Text::StringBuilderUTF8 sbKey;
 	Text::StringBuilderUTF8 sb;
-	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)me->cboImagerySet->GetSelectedItem().GetOSInt();
+	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)me->cboImagerySet->GetSelectedItem().GetIntOS();
 	Map::BingMapsTile::GetDefaultCacheDir(is, sb);
 	me->txtKey->GetText(sbKey);
 	if (sbKey.GetLength() == 0)
@@ -49,8 +49,8 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(Optional<UI::GUIClientControl>
 	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)0;
 	while (is <= Map::BingMapsTile::ImagerySet::Last)
 	{
-		this->cboImagerySet->AddItem(Map::BingMapsTile::ImagerySetGetName(is), (void*)(OSInt)is);
-		is = (Map::BingMapsTile::ImagerySet)((OSInt)is + 1);
+		this->cboImagerySet->AddItem(Map::BingMapsTile::ImagerySetGetName(is), (void*)(IntOS)is);
+		is = (Map::BingMapsTile::ImagerySet)((IntOS)is + 1);
 	}
 	this->cboImagerySet->SetSelectedIndex(0);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

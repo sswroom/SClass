@@ -52,7 +52,7 @@ Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
 		{
 			if (valueEnd - buff < 128)
 			{
-				cateEnd = Text::StrConcatC(cate, &buff[1], (UOSInt)(valueEnd - buff - 2));
+				cateEnd = Text::StrConcatC(cate, &buff[1], (UIntOS)(valueEnd - buff - 2));
 			}
 		}
 		else
@@ -68,16 +68,16 @@ Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
 			if (*src == '=')
 			{
 				*src = 0;
-				nameEnd = Text::StrTrimC(name, (UOSInt)(src - name));
+				nameEnd = Text::StrTrimC(name, (UIntOS)(src - name));
 				src++;
 				value = src;
 				if (reader->GetLastLineBreak(lbrk) == lbrk)
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.AppendC(value, (UOSInt)(valueEnd - value));
-					while (reader->ReadLine(src, 1023 - (UOSInt)(src - buff)).SetTo(valueEnd))
+					sb.AppendC(value, (UIntOS)(valueEnd - value));
+					while (reader->ReadLine(src, 1023 - (UIntOS)(src - buff)).SetTo(valueEnd))
 					{
-						sb.AppendC(src, (UOSInt)(valueEnd - src));
+						sb.AppendC(src, (UIntOS)(valueEnd - src));
 						if (reader->GetLastLineBreak(lbrk) != lbrk)
 							break;
 					}

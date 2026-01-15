@@ -21,7 +21,7 @@ namespace SSWR
 			NN<Map::MapEnv> env;
 			NN<Parser::ParserList> parsers;
 			NN<Media::ColorManagerSess> colorSess;
-			UOSInt imgIndex;
+			UIntOS imgIndex;
 
 			NN<UI::GUILabel> lbl;
 			NN<UI::GUIPanel> pnlButtons;
@@ -34,12 +34,12 @@ namespace SSWR
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
 			void UpdateImages();
 		public:
-			AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt imgIndex);
+			AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UIntOS imgIndex);
 			virtual ~AVIRGISImageForm();
 
 			virtual void OnMonitorChanged();
 
-			UOSInt GetImgIndex();
+			UIntOS GetImgIndex();
 		};
 	}
 }

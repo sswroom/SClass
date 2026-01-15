@@ -40,14 +40,14 @@ IO::ParserType Parser::FileParser::OZF2Parser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 tmpBuff[1036];
-	UOSInt i;
-	UOSInt j;
-	UOSInt currX;
-	UOSInt currY;
-	OSInt imgX1;
-	OSInt imgY1;
-	OSInt imgX2;
-	OSInt imgY2;
+	UIntOS i;
+	UIntOS j;
+	UIntOS currX;
+	UIntOS currY;
+	IntOS imgX1;
+	IntOS imgY1;
+	IntOS imgX2;
+	IntOS imgY2;
 
 	UInt32 imgWidth;
 	UInt32 imgHeight;
@@ -97,9 +97,9 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 		UInt32 thisImgHeight;
 		UInt32 thisOfst;
 		UInt32 nextOfst;
-		UOSInt xCnt;
-		UOSInt yCnt;
-		UOSInt decSize;
+		UIntOS xCnt;
+		UIntOS yCnt;
+		UIntOS decSize;
 		fd->GetRealData(ReadUInt32(&scaleTable[i * 4]), 1036, BYTEARR(tmpBuff));
 		thisImgWidth = ReadUInt32(&tmpBuff[0]);
 		thisImgHeight = ReadUInt32(&tmpBuff[4]);
@@ -107,7 +107,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 		yCnt = ReadUInt16(&tmpBuff[10]);
 		if (thisImgWidth == imgWidth && thisImgHeight == imgHeight)
 		{
-			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UIntOS>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			UnsafeArray<UInt8> pal;
 			if (outImg->pal.SetTo(pal))
 			{
@@ -133,24 +133,24 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 							Data::Compress::Inflater::DecompressDirect(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst), false);
 							if (decSize == 4096)
 							{
-								imgX1 = (OSInt)currX << 6;
-								imgY1 = (OSInt)currY << 6;
+								imgX1 = (IntOS)currX << 6;
+								imgY1 = (IntOS)currY << 6;
 								imgX2 = imgX1 + 64;
 								imgY2 = imgY1 + 64;
-								if (imgX1 >= (OSInt)thisImgWidth || imgY1 >= (OSInt)thisImgHeight)
+								if (imgX1 >= (IntOS)thisImgWidth || imgY1 >= (IntOS)thisImgHeight)
 								{
 								}
 								else
 								{
-									if (imgY2 > (OSInt)thisImgHeight)
+									if (imgY2 > (IntOS)thisImgHeight)
 									{
-										imgY2 = (OSInt)thisImgHeight;
+										imgY2 = (IntOS)thisImgHeight;
 									}
-									if (imgX2 > (OSInt)thisImgWidth)
+									if (imgX2 > (IntOS)thisImgWidth)
 									{
 										Data::ByteArray srcPtr = imgBuff + 4096;
-										Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
-										UOSInt w = thisImgWidth - (UOSInt)imgX1;
+										Data::ByteArray destPtr = outImg->GetDataArray() + (IntOS)thisImgWidth * imgY1 + imgX1;
+										UIntOS w = thisImgWidth - (UIntOS)imgX1;
 										while (imgY1 < imgY2)
 										{
 											srcPtr -= 64;
@@ -162,7 +162,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 									else
 									{
 										Data::ByteArray srcPtr = imgBuff + 4096;
-										Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
+										Data::ByteArray destPtr = outImg->GetDataArray() + (IntOS)thisImgWidth * imgY1 + imgX1;
 										while (imgY1 < imgY2)
 										{
 											srcPtr -= 64;

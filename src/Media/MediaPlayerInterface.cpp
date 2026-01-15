@@ -56,9 +56,9 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 	}
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 
 	this->CloseFile();
 	Bool hasAudio = false;
@@ -84,10 +84,10 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 	if (hasVideo && !hasAudio)
 	{
 		sptr = mf->GetSourceNameObj()->ConcatTo(sbuff);
-		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
-			j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
+			j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), '.');
 			if (j != INVALID_INDEX)
 			{
 				sptr = Text::StrConcatC(&sbuff[i + j + 1], IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -95,23 +95,23 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 				{
 					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, pt, fileSize).SetTo(sptr))
 					{
-						j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
+						j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]), '.');
 						if (j != INVALID_INDEX)
 						{
 							Bool audFile = false;
-							if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("m4a")))
+							if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UIntOS)(sptr - &sbuff[i + j + 2]), UTF8STRC("m4a")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("aac")))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UIntOS)(sptr - &sbuff[i + j + 2]), UTF8STRC("aac")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("ac3")))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UIntOS)(sptr - &sbuff[i + j + 2]), UTF8STRC("ac3")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("wav")))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UIntOS)(sptr - &sbuff[i + j + 2]), UTF8STRC("wav")))
 							{
 								audFile = true;
 							}

@@ -14,7 +14,7 @@ Int32 Exporter::GUIJPGExporter::GetName()
 	return *(Int32*)"GPJP";
 }
 
-Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::GUIJPGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -30,7 +30,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	return false;
 }
 
-UOSInt Exporter::GUIJPGExporter::GetParamCnt()
+UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 {
 	return 1;
 }
@@ -47,7 +47,7 @@ void Exporter::GUIJPGExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, ParamInfo *info)
 {
 	if (index == 0)
 	{
@@ -59,7 +59,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UIntOS index, Int32 val)
 {
 	if (index == 0)
 	{
@@ -73,7 +73,7 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UOSInt index, Int32 va
 	return false;
 }
 
-Int32 Exporter::GUIJPGExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::GUIJPGExporter::GetParamInt32(void *param, UIntOS index)
 {
 	if (index == 0)
 	{

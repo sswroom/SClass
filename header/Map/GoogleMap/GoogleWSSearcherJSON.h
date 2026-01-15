@@ -25,7 +25,7 @@ namespace Map
 			UInt32 srchCnt;
 			Optional<Text::String> gooCliId;
 			UnsafeArrayOpt<UInt8> gooPrivKey;
-			UOSInt gooPrivKeyLeng;
+			UIntOS gooPrivKeyLeng;
 			Optional<Text::String> gooAPIKey;
 
 		public:
@@ -37,9 +37,9 @@ namespace Map
 			void SetGoogleAPIKey(Optional<Text::String> gooAPIKey);
 			void SetGoogleAPIKey(Text::CString gooAPIKey);
 
-			UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UnsafeArrayOpt<const UTF8Char> lang); //lang = en-us, zh-cn, zh-tw
-			virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-			virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+			UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UnsafeArrayOpt<const UTF8Char> lang); //lang = en-us, zh-cn, zh-tw
+			virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+			virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 			virtual UInt32 GetSrchCnt();
 		};
 	}

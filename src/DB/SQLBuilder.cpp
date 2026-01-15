@@ -157,7 +157,7 @@ void DB::SQLBuilder::AppendVector(Optional<Math::Geometry::Vector2D> vec)
 	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->sqlType, this->axisAware));
 }
 
-void DB::SQLBuilder::AppendBinary(UnsafeArrayOpt<const UInt8> buff, UOSInt buffSize)
+void DB::SQLBuilder::AppendBinary(UnsafeArrayOpt<const UInt8> buff, UIntOS buffSize)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->sqlType));
@@ -172,7 +172,7 @@ void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 		this->sb.AppendUTF8Char('.');
 	}
 	name = table->GetTableName();
-	UOSInt i = name->IndexOf('.');
+	UIntOS i = name->IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
 		UnsafeArray<const UTF8Char> catalog = Text::StrCopyNewC(UnsafeArray<const UTF8Char>(name->v), i);
@@ -217,7 +217,7 @@ UnsafeArray<const UTF8Char> DB::SQLBuilder::ToString() const
 	return this->sb.ToString();
 }
 
-UOSInt DB::SQLBuilder::GetLength() const
+UIntOS DB::SQLBuilder::GetLength() const
 {
 	return this->sb.GetLength();
 }

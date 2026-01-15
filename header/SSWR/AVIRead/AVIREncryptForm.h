@@ -30,7 +30,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDest;
 			NN<UI::GUIButton> btnConvert;
 			NN<UI::GUIButton> btnHex;
-			UOSInt fileIndex;
+			UIntOS fileIndex;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;

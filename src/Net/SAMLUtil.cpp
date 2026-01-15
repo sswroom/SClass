@@ -7,19 +7,19 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Data/Compress/Inflater.h"
 
-UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
+UIntOS Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
 {
 	NN<Text::String> nodeName;
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
 	Bool algFound = false;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> avalue;
-	UOSInt keySize = 0;
+	UIntOS keySize = 0;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("e:EncryptionMethod")))
 		{
-			UOSInt i = reader->GetAttribCount();
+			UIntOS i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
@@ -49,8 +49,8 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 			Text::StringBuilderUTF8 sb;
 			reader->ReadNodeText(sb);
 			Text::TextBinEnc::Base64Enc b64;
-			UOSInt dataSize = b64.CalcBinSize(sb.ToCString());
-			UOSInt blockSize = key->GetDataBlockSize();
+			UIntOS dataSize = b64.CalcBinSize(sb.ToCString());
+			UIntOS blockSize = key->GetDataBlockSize();
 			if (blockSize != 0 && dataSize != blockSize)
 			{
 				sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
@@ -84,10 +84,10 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 	return keySize;
 }
 
-UOSInt Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
+UIntOS Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
 {
 	NN<Text::String> nodeName;
-	UOSInt keySize = 0;
+	UIntOS keySize = 0;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("e:EncryptedKey")))
@@ -119,8 +119,8 @@ UOSInt Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509
 Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult)
 {
 	UInt8 keyBuff[128];
-	UOSInt keySize = 0;
-	UOSInt algKeySize = 0;
+	UIntOS keySize = 0;
+	UIntOS algKeySize = 0;
 	Bool headingIV = false;
 	MemClear(keyBuff, sizeof(keyBuff));
 	Crypto::Encrypt::BlockCipher *cipher = 0;
@@ -137,7 +137,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 				sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod already exists"));
 				return false;
 			}
-			UOSInt i = reader->GetAttribCount();
+			UIntOS i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
@@ -196,7 +196,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					Text::StringBuilderUTF8 sb;
 					reader->ReadNodeText(sb);
 					Text::TextBinEnc::Base64Enc b64;
-					UOSInt dataSize = b64.CalcBinSize(sb.ToCString());
+					UIntOS dataSize = b64.CalcBinSize(sb.ToCString());
 					if (headingIV)
 					{
 						if (dataSize < cipher->GetDecBlockSize())
@@ -205,10 +205,10 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 							return false;
 						}
 					}
-					UOSInt blkSize = cipher->GetDecBlockSize();
+					UIntOS blkSize = cipher->GetDecBlockSize();
 					UInt8 *data = MemAlloc(UInt8, dataSize);
 					UInt8 *decData = MemAlloc(UInt8, dataSize + blkSize);
-					UOSInt decSize;
+					UIntOS decSize;
 					b64.DecodeBin(sb.ToCString(), data);
 					if (headingIV)
 					{
@@ -294,7 +294,7 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X50
 			{
 				if (nodeName.Equals(CSTR("StatusCode")))
 				{
-					UOSInt i = reader->GetAttribCount();
+					UIntOS i = reader->GetAttribCount();
 					NN<Text::XMLAttrib> attr;
 					NN<Text::String> s;
 					while (i-- > 0)
@@ -352,7 +352,7 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::Encod
 Bool Net::SAMLUtil::DecodeRequest(Text::CStringNN requestB64, NN<Text::StringBuilderUTF8> sbResult)
 {
 	Text::TextBinEnc::Base64Enc b64;
-	UOSInt decSize = b64.CalcBinSize(requestB64);
+	UIntOS decSize = b64.CalcBinSize(requestB64);
 	if (decSize == 0)
 		return false;
 	UInt8 *decBuff = MemAlloc(UInt8, decSize);
@@ -363,7 +363,7 @@ Bool Net::SAMLUtil::DecodeRequest(Text::CStringNN requestB64, NN<Text::StringBui
 	MemFree(decBuff);
 	if (succ)
 	{
-		sbResult->AppendC(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+		sbResult->AppendC(mstm.GetBuff(), (UIntOS)mstm.GetLength());
 	}
 	return succ;
 }

@@ -7,7 +7,7 @@
 #include "DB/SortableDBReader.h"
 #include "Text/MyStringW.h"
 
-Optional<Data::VariItem> DB::SortableDBReader::GetItem(UOSInt colIndex)
+Optional<Data::VariItem> DB::SortableDBReader::GetItem(UIntOS colIndex)
 {
 	NN<Data::VariObject> obj;
 	if (!this->objList.GetItem(this->currIndex).SetTo(obj))
@@ -18,11 +18,11 @@ Optional<Data::VariItem> DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(col->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	this->currIndex = INVALID_INDEX;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	DB::ColDef colDef(CSTR(""));
 	NN<Data::VariObject> obj;
 	NN<Data::ArrayListStringNN> nncolNames;
@@ -182,7 +182,7 @@ DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schem
 
 DB::SortableDBReader::~SortableDBReader()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
@@ -209,17 +209,17 @@ Bool DB::SortableDBReader::ReadNext()
 	return true;
 }
 
-UOSInt DB::SortableDBReader::ColCount()
+UIntOS DB::SortableDBReader::ColCount()
 {
 	return this->cols.GetCount();
 }
 
-OSInt DB::SortableDBReader::GetRowChanged()
+IntOS DB::SortableDBReader::GetRowChanged()
 {
 	return 0;
 }
 
-Int32 DB::SortableDBReader::GetInt32(UOSInt colIndex)
+Int32 DB::SortableDBReader::GetInt32(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (!this->GetItem(colIndex).SetTo(item))
@@ -266,7 +266,7 @@ Int32 DB::SortableDBReader::GetInt32(UOSInt colIndex)
 	}
 }
 
-Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
+Int64 DB::SortableDBReader::GetInt64(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (!this->GetItem(colIndex).SetTo(item))
@@ -313,7 +313,7 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 	}
 }
 
-UnsafeArrayOpt<WChar> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+UnsafeArrayOpt<WChar> DB::SortableDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -322,7 +322,7 @@ UnsafeArrayOpt<WChar> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<
 	}
 	return nullptr;
 }
-Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+Bool DB::SortableDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Data::VariItem> item;
 	if (!this->GetItem(colIndex).SetTo(item))
@@ -333,7 +333,7 @@ Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> s
 	return true;
 }
 
-Optional<Text::String> DB::SortableDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::SortableDBReader::GetNewStr(UIntOS colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -343,7 +343,7 @@ Optional<Text::String> DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -353,7 +353,7 @@ UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArr
 	return nullptr;
 }
 
-Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
+Data::Timestamp DB::SortableDBReader::GetTimestamp(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::Timestamp)
@@ -366,7 +366,7 @@ Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::SortableDBReader::GetDblOrNAN(UOSInt colIndex)
+Double DB::SortableDBReader::GetDblOrNAN(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (!this->GetItem(colIndex).SetTo(item))
@@ -413,12 +413,12 @@ Double DB::SortableDBReader::GetDblOrNAN(UOSInt colIndex)
 	}
 }
 
-Bool DB::SortableDBReader::GetBool(UOSInt colIndex)
+Bool DB::SortableDBReader::GetBool(UIntOS colIndex)
 {
 	return this->GetInt32(colIndex) != 0;
 }
 
-UOSInt DB::SortableDBReader::GetBinarySize(UOSInt colIndex)
+UIntOS DB::SortableDBReader::GetBinarySize(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::ByteArr)
@@ -428,7 +428,7 @@ UOSInt DB::SortableDBReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt DB::SortableDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+UIntOS DB::SortableDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::ByteArr)
@@ -440,7 +440,7 @@ UOSInt DB::SortableDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> DB::SortableDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::SortableDBReader::GetVector(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::Vector)
@@ -450,7 +450,7 @@ Optional<Math::Geometry::Vector2D> DB::SortableDBReader::GetVector(UOSInt colInd
 	return nullptr;
 }
 
-Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+Bool DB::SortableDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 {
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::UUID)
@@ -461,7 +461,7 @@ Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+Bool DB::SortableDBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 {
 	NN<Data::VariItem> dataItem;
 	if (this->GetItem(colIndex).SetTo(dataItem))
@@ -472,7 +472,7 @@ Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	return false;
 }
 
-Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
+Bool DB::SortableDBReader::IsNull(UIntOS colIndex)
 {
 	NN<Data::VariItem> item;
 	if (!this->GetItem(colIndex).SetTo(item))
@@ -482,7 +482,7 @@ Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 	return item->GetItemType() == Data::VariItem::ItemType::Null;
 }
 
-UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<DB::ColDef> col;
 	if (this->cols.GetItem(colIndex).SetTo(col))
@@ -493,7 +493,7 @@ UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetName(UOSInt colIndex, UnsafeAr
 	return nullptr;
 }
 
-DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType DB::SortableDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
 	NN<DB::ColDef> col;
 	if (this->cols.GetItem(colIndex).SetTo(col))
@@ -504,7 +504,7 @@ DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool DB::SortableDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
 	NN<DB::ColDef> c;
 	if (!this->cols.GetItem(colIndex).SetTo(c))

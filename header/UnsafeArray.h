@@ -120,38 +120,38 @@ public:
 		return *this;
 	}
 
-	T &operator[] (UOSInt index) const
+	T &operator[] (UIntOS index) const
 	{
 		return this->p[index];
 	}
 
-	T &operator[] (OSInt index) const
+	T &operator[] (IntOS index) const
 	{
 		return this->p[index];
 	}
 
-	UnsafeArray<T> operator+(OSInt val) const
+	UnsafeArray<T> operator+(IntOS val) const
 	{
 		UnsafeArray<T> ret = *this;
 		ret += val;
 		return ret;
 	}
 
-	UnsafeArray<T> operator+(UOSInt val) const
+	UnsafeArray<T> operator+(UIntOS val) const
 	{
 		UnsafeArray<T> ret = *this;
 		ret += val;
 		return ret;
 	}
 
-	UnsafeArray<T> operator-(OSInt val) const
+	UnsafeArray<T> operator-(IntOS val) const
 	{
 		UnsafeArray<T> ret = *this;
 		ret -= val;
 		return ret;
 	}
 
-	UnsafeArray<T> operator-(UOSInt val) const
+	UnsafeArray<T> operator-(UIntOS val) const
 	{
 		UnsafeArray<T> ret = *this;
 		ret -= val;
@@ -159,25 +159,25 @@ public:
 	}
 
 
-	UnsafeArray<T> &operator+=(OSInt val)
+	UnsafeArray<T> &operator+=(IntOS val)
 	{
 		this->p += val;
 		return *this;
 	}
 
-	UnsafeArray<T> &operator+=(UOSInt val)
+	UnsafeArray<T> &operator+=(UIntOS val)
 	{
 		this->p += val;
 		return *this;
 	}
 
-	UnsafeArray<T> &operator-=(OSInt val)
+	UnsafeArray<T> &operator-=(IntOS val)
 	{
 		this->p -= val;
 		return *this;
 	}
 
-	UnsafeArray<T> &operator-=(UOSInt val)
+	UnsafeArray<T> &operator-=(UIntOS val)
 	{
 		this->p -= val;
 		return *this;
@@ -247,12 +247,12 @@ public:
 	}
 #endif
 
-	OSInt operator-(UnsafeArray<T> p)
+	IntOS operator-(UnsafeArray<T> p)
 	{
 		return this->p - p.p;
 	}
 
-	OSInt operator-(T *p)
+	IntOS operator-(T *p)
 	{
 		return this->p - p;
 	}
@@ -267,12 +267,12 @@ public:
 		return this->p;
 	}
 
-	void CopyFromNO(UnsafeArray<const T> srcArr, UOSInt arrSize)
+	void CopyFromNO(UnsafeArray<const T> srcArr, UIntOS arrSize)
 	{
 		MemCopyNO(this->p, srcArr.Ptr(), arrSize * sizeof(T));
 	}
 
-	void CopyFromO(UnsafeArray<const T> srcArr, UOSInt arrSize)
+	void CopyFromO(UnsafeArray<const T> srcArr, UIntOS arrSize)
 	{
 		MemCopyO(this->p, srcArr.Ptr(), arrSize * sizeof(T));
 	}
@@ -297,7 +297,7 @@ public:
 	}
 };
 
-template<typename V> OSInt operator-(V *p1, UnsafeArray<V> p2)
+template<typename V> IntOS operator-(V *p1, UnsafeArray<V> p2)
 {
 	return p1 - p2.Ptr();
 }

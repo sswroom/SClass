@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
 	NN<Data::Class> cls;
-	UOSInt i = me->cboType->GetSelectedIndex();
+	UIntOS i = me->cboType->GetSelectedIndex();
 	if (me->cls.SetTo(cls))
 	{
 		Text::StringBuilderUTF8 sbClassName;
@@ -72,10 +72,10 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnColumnsDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnColumnsDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
-	UOSInt fieldIndex = me->lvColumns->GetItem(index).GetUOSInt();
+	UIntOS fieldIndex = me->lvColumns->GetItem(index).GetUIntOS();
 	NN<Data::Class> cls;
 	NN<Data::Class::FieldInfo> field;
 	if (me->cls.SetTo(cls) && cls->GetFieldInfo(fieldIndex).SetTo(field))
@@ -115,9 +115,9 @@ void SSWR::AVIRead::AVIRDataModelForm::UpdateClassDisp()
 	NN<Data::Class> cls;
 	if (this->cls.SetTo(cls))
 	{
-		UOSInt i = 0;
-		UOSInt j = cls->GetFieldCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = cls->GetFieldCount();
+		UIntOS k;
 		NN<Data::Class::FieldInfo> field;
 		NN<Text::String> typeName;
 		while (i < j)

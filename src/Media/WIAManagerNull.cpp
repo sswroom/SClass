@@ -13,17 +13,17 @@ Media::WIAManager::~WIAManager()
 }
 
 
-UOSInt Media::WIAManager::GetDeviceCount()
+UIntOS Media::WIAManager::GetDeviceCount()
 {
 	return 0;
 }
 
-UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UIntOS index)
 {
 	return nullptr;
 }
 
-Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
+Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UIntOS index)
 {
 	return nullptr;
 }

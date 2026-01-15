@@ -10,7 +10,7 @@ namespace UI
 	private:
 		struct ClassData;
 
-		static OSInt useCnt;
+		static IntOS useCnt;
 		NN<Media::DrawEngine> deng;
 		ClassData *clsData;
 		void *drawFont;
@@ -28,7 +28,7 @@ namespace UI
 		UInt32 selTextColor;
 
 	private:
-		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+		static IntOS __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam);
 		static void __stdcall OnResize(AnyType userObj);
 		void Init(Optional<InstanceHandle> hInst);
 		void Deinit(Optional<InstanceHandle> hInst);
@@ -37,23 +37,23 @@ namespace UI
 
 	protected:
 		Bool IsShiftPressed();
-		void SetScrollHPos(UOSInt pos, Bool redraw);
-		void SetScrollVPos(UOSInt pos, Bool redraw);
-		void SetScrollHRange(UOSInt min, UOSInt max);
-		void SetScrollVRange(UOSInt min, UOSInt max);
+		void SetScrollHPos(UIntOS pos, Bool redraw);
+		void SetScrollVPos(UIntOS pos, Bool redraw);
+		void SetScrollHRange(UIntOS min, UIntOS max);
+		void SetScrollVRange(UIntOS min, UIntOS max);
 
-		UInt32 GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth);
-		void GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height);
-		void SetCaretPos(OSInt scnX, OSInt scnY);
+		UInt32 GetCharCntAtWidth(UnsafeArray<const WChar> str, UIntOS strLen, UIntOS pxWidth);
+		void GetDrawSize(UnsafeArray<const WChar> str, UIntOS strLen, OutParam<UIntOS> width, OutParam<UIntOS> height);
+		void SetCaretPos(IntOS scnX, IntOS scnY);
 	public:
 		GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess);
 		virtual ~GUITextView();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual void UpdateFont();
-		virtual OSInt GetScrollHPos();
-		virtual OSInt GetScrollVPos();
+		virtual IntOS GetScrollHPos();
+		virtual IntOS GetScrollVPos();
 
 		virtual void EventLineUp() = 0;
 		virtual void EventLineDown() = 0;
@@ -66,16 +66,16 @@ namespace UI
 		virtual void EventLineBegin() = 0;
 		virtual void EventLineEnd() = 0;
 		virtual void EventCopy() = 0;
-		virtual void EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn) = 0;
-		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn) = 0;
-		virtual void EventMouseMove(OSInt scnX, OSInt scnY) = 0;
+		virtual void EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn) = 0;
+		virtual void EventMouseUp(IntOS scnX, IntOS scnY, MouseButton btn) = 0;
+		virtual void EventMouseMove(IntOS scnX, IntOS scnY) = 0;
 		virtual void EventTimerTick() = 0;
 		virtual void DrawImage(NN<Media::DrawImage> dimg) = 0;
 		virtual void UpdateCaretPos() = 0;
 
-		void OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
-		void OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
-		void OnMouseMove(OSInt scnX, OSInt scnY);
+		void OnMouseDown(IntOS scnX, IntOS scnY, MouseButton btn);
+		void OnMouseUp(IntOS scnX, IntOS scnY, MouseButton btn);
+		void OnMouseMove(IntOS scnX, IntOS scnY);
 		void OnMouseWheel(Bool isDown);
 		void OnDraw(void *cr);
 		void SetShiftState(Bool isDown);

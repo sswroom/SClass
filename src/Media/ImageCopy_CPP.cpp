@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 
-extern "C" void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
+extern "C" void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, UIntOS copySize, UIntOS height, IntOS sstep, IntOS dstep)
 {
-	if ((OSInt)copySize == sstep && (OSInt)copySize == dstep)
+	if ((IntOS)copySize == sstep && (IntOS)copySize == dstep)
 	{
 		MemCopyNANC(outPt, inPt, copySize * height);
 	}
@@ -18,17 +18,17 @@ extern "C" void ImageCopy_ImgCopy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UO
 	}
 }
 
-extern "C" void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+extern "C" void ImageCopy_ImgCopyR(UInt8 *inPt, UInt8 *outPt, UIntOS copySize, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown)
 {
-	OSInt dstep;
+	IntOS dstep;
 	if (upsideDown)
 	{
-		dstep = -(OSInt)dbpl;
+		dstep = -(IntOS)dbpl;
 		outPt += dbpl * (height - 1);
 	}
 	else
 	{
-		dstep = (OSInt)dbpl;
+		dstep = (IntOS)dbpl;
 	}
-	ImageCopy_ImgCopy(inPt, outPt, copySize, height, (OSInt)sbpl, dstep);
+	ImageCopy_ImgCopy(inPt, outPt, copySize, height, (IntOS)sbpl, dstep);
 }

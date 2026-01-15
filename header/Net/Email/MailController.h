@@ -20,14 +20,14 @@ namespace Net
 
 			typedef struct
 			{
-				UOSInt size;
+				UIntOS size;
 				UnsafeArrayOpt<const UTF8Char> uid;
 			} MessageInfo;
 		public:
 			virtual ~MailController() {};
 
 			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId) = 0;
-			virtual UOSInt GetMessageStat(Int32 userId, OutParam<UOSInt> size) = 0;
+			virtual UIntOS GetMessageStat(Int32 userId, OutParam<UIntOS> size) = 0;
 			virtual Bool GetUnreadList(Int32 userId, NN<Data::ArrayListNative<UInt32>> unreadList) = 0;
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, NN<MessageInfo> info) = 0;
 			virtual Bool GetMessageContent(Int32 userId, UInt32 msgId, NN<IO::Stream> stm) = 0;

@@ -67,19 +67,19 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->svr);
 }
 
-UOSInt Net::DNSClient::GetByEmailDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
+UIntOS Net::DNSClient::GetByEmailDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 15);
 }
 
-UOSInt Net::DNSClient::GetByDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
+UIntOS Net::DNSClient::GetByDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 1);
 }
 
-UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain, UInt16 reqType)
+UIntOS Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain, UInt16 reqType)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UInt8 buff[512];
 	UTF8Char sbuff[256];
 	Char *ptr1;
@@ -117,7 +117,7 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 			else if (addr.addrType == Net::AddrType::IPv6)
 			{
 				UnsafeArray<UTF8Char> sptr = sbuff;
-				OSInt i = 16;
+				IntOS i = 16;
 				while (i-- > 0)
 				{
 					*sptr++ = (UTF8Char)MyString_STRhexarr[addr.addr[i] & 15];
@@ -172,7 +172,7 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 	ptr2 = (Char*)buff;
 	
 	NN<RequestStatus> req = this->NewReq(currId);
-	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UIntOS)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -182,9 +182,9 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answers, UInt32 ip)
+UIntOS Net::DNSClient::GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answers, UInt32 ip)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UInt8 buff[512];
 	UInt8 localIP[4];
 	UnsafeArray<Char> ptr1;
@@ -221,7 +221,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answer
 	ptr2 = (Char*)buff;
 	
 	NN<RequestStatus> req = this->NewReq(currId);
-	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UIntOS)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -231,9 +231,9 @@ UOSInt Net::DNSClient::GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answer
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answers, NN<const Net::SocketUtil::AddressInfo> addr)
+UIntOS Net::DNSClient::GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answers, NN<const Net::SocketUtil::AddressInfo> addr)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UInt8 buff[512];
 	UnsafeArray<Char> ptr1;
 	UnsafeArray<Char> ptr2;
@@ -357,7 +357,7 @@ UOSInt Net::DNSClient::GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answer
 	}
 	
 	NN<RequestStatus> req = this->NewReq(currId);
-	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UIntOS)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -367,12 +367,12 @@ UOSInt Net::DNSClient::GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answer
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetServerName(NN<Data::ArrayListNN<RequestAnswer>> answers)
+UIntOS Net::DNSClient::GetServerName(NN<Data::ArrayListNN<RequestAnswer>> answers)
 {
 	return GetByAddrName(answers, this->serverAddr);
 }
 
-UOSInt Net::DNSClient::GetCAARecord(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
+UIntOS Net::DNSClient::GetCAARecord(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 257);
 }
@@ -382,12 +382,12 @@ void Net::DNSClient::UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> server
 	this->serverAddr = serverAddr.Ptr()[0];
 }
 
-UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut)
+UIntOS Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UIntOS stringOfst, UIntOS endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut)
 {
 	Bool found = false;
-	UOSInt i = stringOfst;
-	UOSInt j;
-	UOSInt l;
+	UIntOS i = stringOfst;
+	UIntOS j;
+	UIntOS l;
 	while (i < endOfst)
 	{
 		j = buff[i];
@@ -442,16 +442,16 @@ UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<cons
 	return i;
 }
 
-UOSInt Net::DNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers)
+UIntOS Net::DNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UIntOS dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers)
 {
 	UTF8Char sbuff[512];
 	NN<RequestAnswer> ans;
-	UOSInt ansCount = ReadMUInt16(&buff[6]);
-	UOSInt cnt2 = ReadMUInt16(&buff[8]);
-	UOSInt cnt3 = ReadMUInt16(&buff[10]);
+	UIntOS ansCount = ReadMUInt16(&buff[6]);
+	UIntOS cnt2 = ReadMUInt16(&buff[8]);
+	UIntOS cnt3 = ReadMUInt16(&buff[10]);
 	ansCount += cnt2 + cnt3;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = ParseString(sbuff, buff, 12, dataSize, 0);
 	i += 4;
 
@@ -466,16 +466,16 @@ UOSInt Net::DNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSi
 	return ansCount;
 }
 
-NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index)
+NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const UInt8> buff, UIntOS dataSize, InOutParam<UIntOS> index)
 {
 	UTF8Char sbuff[2048];
 	UnsafeArray<UTF8Char> sptr;
 	NN<RequestAnswer> ans;
-	UOSInt i = index.Get();
-	UOSInt k;
+	UIntOS i = index.Get();
+	UIntOS k;
 	i = ParseString(sbuff, buff, i, dataSize, sptr);
 	ans = MemAllocNN(RequestAnswer);
-	ans->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	ans->name = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	ans->recType = ReadMUInt16(&buff[i]);
 	ans->recClass = ReadMUInt16(&buff[i + 2]);
 	ans->ttl = ReadMUInt32(&buff[i + 4]);
@@ -486,24 +486,24 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 	case 1: // A - a host address
 		Net::SocketUtil::SetAddrInfoV4(ans->addr, ReadNUInt32(&buff[i + 10]));
 		sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr).Or(sbuff);
-		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		break;
 	case 2: // NS - an authoritative name server
 	case 5: // CNAME - the canonical name for an alias
 	case 12: // PTR - a domain name pointer
 	case 47: // NSEC - Next Secure
 		ParseString(sbuff, buff, i + 10, i + 10 + k, sptr);
-		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		break;
 	case 6: // SOA - Start of [a zone of] authority
 		{
-			UOSInt l;
+			UIntOS l;
 			Text::StringBuilderUTF8 sb;
 			l = ParseString(sbuff, buff, i + 10, i + 10 + k, sptr);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(", MailAddr="));
 			l = ParseString(sbuff, buff, l, i + 10 + k, sptr);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			if (l + 20 <= i + 10 + k)
 			{
 				sb.AppendC(UTF8STRC(", SN="));
@@ -523,14 +523,14 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 	case 15: // MX - mail exchange
 		ans->priority = ReadMUInt16(&buff[i + 10]);
 		ParseString(sbuff, buff, i + 12, i + 10 + k, sptr);
-		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		break;
 	case 16: // TXT - Text strings
 		{
 			sptr = sbuff;
 			*sptr = 0;
-			UOSInt currInd = i + 10;
-			UOSInt endInd = i + 10 + k;
+			UIntOS currInd = i + 10;
+			UIntOS endInd = i + 10 + k;
 			while (currInd < endInd && currInd + buff[currInd] < currInd)
 			{
 				if (sptr != sbuff)
@@ -538,16 +538,16 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 					sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 				}
 				sptr = Text::StrConcatC(sptr, &buff[currInd + 1], buff[currInd]);
-				currInd += 1 + (UOSInt)buff[currInd];
+				currInd += 1 + (UIntOS)buff[currInd];
 			}
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 28: // AAAA
 		{
 			Net::SocketUtil::SetAddrInfoV6(ans->addr, &buff[i + 10], 0);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr).Or(sbuff);
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 33: // SRV - Server Selection
@@ -556,7 +556,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			ans->weight = ReadMUInt16(&buff[i + 12]);
 			ans->port = ReadMUInt16(&buff[i + 14]);
 			ParseString(sbuff, buff, i + 16, i + 10 + k, sptr);
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 48: // DNSKEY - DNS Key record
@@ -569,7 +569,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Public Key = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 46: // RRSIG - DNSSEC signature
@@ -593,8 +593,8 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			while ((*sptr++ = *tmpPtr++) != 0);
 			sptr--;
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signature = "));
-			sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UIntOS)(tmpPtr - &buff[i + 10]), ' ');
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 43: // DS - Delegation signer
@@ -607,7 +607,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Digest = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			ans->rd = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
 		}
 		break;
 	case 257: // CAA - Certification Authority Authorization
@@ -618,7 +618,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			sb.AppendUTF8Char(' ');
 			sb.AppendC(&buff[i + 12], buff[i + 11]);
 			sb.AppendUTF8Char(' ');
-			UOSInt l = i + 12 + buff[i + 11];
+			UIntOS l = i + 12 + buff[i + 11];
 			sb.AppendC(&buff[l], i + 10 + k - l);
 			ans->rd = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
@@ -643,12 +643,12 @@ void __stdcall Net::DNSClient::FreeAnswer(NN<RequestAnswer> ans)
 	MemFreeNN(ans);
 }
 
-UInt32 Net::DNSClient::GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+UInt32 Net::DNSClient::GetResponseTTL(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
-	UOSInt ansCount = ReadMUInt16(&buff[6]);
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS ansCount = ReadMUInt16(&buff[6]);
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	UInt32 minTTL = 0x7fffffff;
 	UInt32 ttl;
 	i = SkipString(buff, 12, buffSize);
@@ -671,10 +671,10 @@ UInt32 Net::DNSClient::GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buff
 	return minTTL;
 }
 
-UOSInt Net::DNSClient::SkipString(UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst)
+UIntOS Net::DNSClient::SkipString(UnsafeArray<const UInt8> buff, UIntOS stringOfst, UIntOS endOfst)
 {
-	UOSInt i = stringOfst;
-	UOSInt j;
+	UIntOS i = stringOfst;
+	UIntOS j;
 	while (i < endOfst)
 	{
 		j = buff[i];

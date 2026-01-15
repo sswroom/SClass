@@ -15,7 +15,7 @@ Data::Compress::Inflate::~Inflate()
 {
 }
 
-Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
+Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UIntOS> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
 	mz_ulong buffSize = (mz_ulong)destBuff.GetSize();
 	Int32 ret = mz_uncompress(destBuff.Arr().Ptr(), &buffSize, srcBuff.Arr().Ptr(), (mz_ulong)srcBuff.GetSize());
@@ -31,7 +31,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 {
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();
-	UOSInt srcSize;
+	UIntOS srcSize;
 	UInt8 *writeBuff;
 	Bool error = false;
 	mz_stream stm;
@@ -64,7 +64,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			}
 			else
 			{
-				if ((UOSInt)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - stm.avail_out)) != (1048576 - stm.avail_out))
+				if ((UIntOS)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - stm.avail_out)) != (1048576 - stm.avail_out))
 				{
 					error = true;
 					break;
@@ -89,7 +89,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			}
 			else
 			{
-				if ((UOSInt)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - stm.avail_out)) != (1048576 - stm.avail_out))
+				if ((UIntOS)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - stm.avail_out)) != (1048576 - stm.avail_out))
 				{
 					error = true;
 					break;
@@ -104,15 +104,15 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 	return !error;
 }
 
-UOSInt Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, Bool hasHeader)
+UIntOS Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, Bool hasHeader)
 {
 	UInt8 *tmpBuff = MemAlloc(UInt8, srcBuffSize + 11);
-	UOSInt outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, CompressionLevel::BestCompression);
+	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, CompressionLevel::BestCompression);
 	MemFree(tmpBuff);
 	return outSize;
 }
 
-UOSInt Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
+UIntOS Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
 {
 	int status;
 	mz_stream stream;

@@ -29,7 +29,7 @@ Cond table
 1110	-
 */
 
-Bool DasmARM_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UOSInt nameLen)
+Bool DasmARM_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UIntOS nameLen)
 {
 	if (Text::StrIndexOfC(funcName, nameLen, UTF8STRC("(exit+0)")) != INVALID_INDEX)
 	{
@@ -2080,7 +2080,7 @@ Bool DasmARM_E1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 				{
 					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 					sess->sbuff = addrResol->ResolveName(sptr = sess->sbuff, *regPtrs).Or(sess->sbuff);
-					if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
+					if (DasmARM_IsEndFunc(sptr, (UIntOS)(sess->sbuff - sptr)))
 					{
 						sess->endType = Manage::DasmARM::ET_EXIT;
 						sess->retAddr = *regPtrs;
@@ -2961,7 +2961,7 @@ Bool DasmARM_EB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 		sess->sbuff = addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
-		if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
+		if (DasmARM_IsEndFunc(sptr, (UIntOS)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM::ET_EXIT;
 			sess->retAddr = sess->regs.PC + (UInt32)addr + 4;
@@ -4897,7 +4897,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressRe
 	UInt32 oriPC;
 	DasmARM_Sess sess;
 	Text::StringBuilderUTF8 outStr;
-	UOSInt initJmpCnt = jmpAddrs->GetCount();
+	UIntOS initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmARM::DasmARM_Regs));
@@ -4983,7 +4983,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressRe
 		}
 		if (!ret)
 		{
-			UOSInt buffSize;
+			UIntOS buffSize;
 			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
@@ -4998,7 +4998,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressRe
 		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmARM::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
-			UOSInt i;
+			UIntOS i;
 			UInt32 minAddr = 0xffffffff;
 			UInt32 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -5066,7 +5066,7 @@ void Manage::DasmARM::DeleteSess(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	MemFreeNN(sess);
 }
 
-Bool Manage::DasmARM::DasmNext(NN<Manage::DasmARM::DasmARM_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize)
+Bool Manage::DasmARM::DasmNext(NN<Manage::DasmARM::DasmARM_Sess> sess, UTF8Char *buff, UIntOS *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

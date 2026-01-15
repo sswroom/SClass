@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
+IntOS IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
 {
 	return a->name->CompareTo(b->name);
 }
@@ -84,11 +84,11 @@ Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 	Text::CString svcFile = nullptr;
 	Text::CStringNN nnsvcFile;
 	Text::PString lines[2];
-	UOSInt lineCnt;
-	UOSInt valIndex;
+	UIntOS lineCnt;
+	UIntOS valIndex;
 	Text::PString name;
 	Text::PString val;
-	UOSInt i;
+	UIntOS i;
 	lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	if (lineCnt == 2)
 	{
@@ -232,11 +232,11 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 		return false;
 	}
 	Text::PString lines[2];
-	UOSInt lineCnt;
-	UOSInt valIndex;
+	UIntOS lineCnt;
+	UIntOS valIndex;
 	Text::PString name;
 	Text::PString val;
-	UOSInt i;
+	UIntOS i;
 	lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	if (lineCnt == 2)
 	{
@@ -402,16 +402,16 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 	return true;
 }
 
-UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
+UIntOS IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	Text::StringBuilderUTF8 sb;
 	Manage::Process::ExecuteProcess(CSTR("systemctl list-unit-files --no-pager"), sb);
 	Text::PString lines[2];
 	Text::PString svcName;
 	Text::PString states[2];
-	UOSInt lineCnt;
-	UOSInt stateIndex;
-	UOSInt ret = 0;
+	UIntOS lineCnt;
+	UIntOS stateIndex;
+	UIntOS ret = 0;
 	NN<ServiceItem> svc;
 	lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	if (!lines[0].StartsWith(UTF8STRC("UNIT FILE")))
@@ -491,7 +491,7 @@ UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> s
 
 void IO::ServiceManager::FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
-	UOSInt i = svcList->GetCount();
+	UIntOS i = svcList->GetCount();
 	NN<ServiceItem> svc;
 	while (i-- > 0)
 	{

@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 		if (cli.RecvFile(sb.ToString(), mstm))
 		{
 			UnsafeArray<UInt8> buff;
-			UOSInt buffSize;
+			UIntOS buffSize;
 			buff = mstm.GetBuff(buffSize);
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (fs.IsError())
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		NN<Text::String> fileName = dlg->GetFileName();
-		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UIntOS i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 		if (cli.IsError())
 		{

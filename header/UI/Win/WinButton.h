@@ -9,11 +9,11 @@ namespace UI
 		class WinButton : public UI::GUIButton
 		{
 		private:
-			OSInt btnId;
+			IntOS btnId;
 			void *oriWndProc;
-			static OSInt nextId;
+			static IntOS nextId;
 
-			static OSInt __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+			static IntOS __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, IntOS lParam);
 		public:
 			WinButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 			virtual ~WinButton();
@@ -21,8 +21,8 @@ namespace UI
 			virtual void SetText(Text::CStringNN text);
 			virtual void SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold);
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			OSInt GetBtnId();
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			IntOS GetBtnId();
 			void SetDefaultBtnLook();
 		};
 	}

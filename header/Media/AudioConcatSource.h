@@ -14,9 +14,9 @@ namespace Media
 		Data::Duration stmTime;
 		Bool canSeek;
 
-		UOSInt currStm;
+		UIntOS currStm;
 		Int64 readOfst;
-		UOSInt readBlkSize;
+		UIntOS readBlkSize;
 		Optional<Sync::Event> readEvt;
 
 	public:
@@ -33,11 +33,11 @@ namespace Media
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
 		virtual Data::Duration SeekToTime(Data::Duration time);
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
+		virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual Data::Duration GetCurrTime();
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS GetMinBlockSize();
 		virtual Bool IsEnd();
 	};
 }

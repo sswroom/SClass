@@ -13,7 +13,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	NN<IO::FileAnalyse::MDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MDBFileAnalyse>();
 	UInt8 readBuff[4096];
 	UInt64 readOfst;
-	UOSInt readSize;
+	UIntOS readSize;
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	NN<IO::StreamData> fd;
 	if (!me->fd.SetTo(fd))
@@ -83,19 +83,19 @@ Text::CStringNN IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
 	return CSTR("MDB");
 }
 
-UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Num="));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	sb->AppendC(UTF8STRC(", Type=0x"));
 	sb->AppendHex16(pack->packType);
 	switch (pack->packType)
@@ -122,9 +122,9 @@ Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	return true;
 }
 
-UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	UOSInt index = (UOSInt)(ofst >> 12);
+	UIntOS index = (UIntOS)(ofst >> 12);
 	if (index >= this->packs.GetCount())
 	{
 		return INVALID_INDEX;
@@ -132,7 +132,7 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return index;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
@@ -218,14 +218,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 		frame->AddUInt(8, 4, CSTR("Unknown"), ReadUInt32(&packBuff[8]));
 		frame->AddUInt(12, 2, CSTR("Record Count"), ReadUInt16(&packBuff[12]));
 		{
-			UOSInt i = 0;
-			UOSInt j = ReadUInt16(&packBuff[12]);
-			UOSInt thisOfst;
-			UOSInt lastOfst = 4096;
+			UIntOS i = 0;
+			UIntOS j = ReadUInt16(&packBuff[12]);
+			UIntOS thisOfst;
+			UIntOS lastOfst = 4096;
 			while (i < j)
 			{
 				thisOfst = ReadUInt16(&packBuff[14 + i * 2]);
-				sptr = Text::StrUOSInt(sbuff, thisOfst & 0xFFF);
+				sptr = Text::StrUIntOS(sbuff, thisOfst & 0xFFF);
 				if (thisOfst & 0x4000)
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (overflow)"));
@@ -235,7 +235,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
 				frame->AddField(14 + i * 2, 2, CSTR("Record Offset"), CSTRP(sbuff, sptr));
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
 				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, CSTRP(sbuff, sptr), &packBuff[thisOfst], true);
 				lastOfst = thisOfst;
@@ -252,7 +252,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			frame->AddUInt(12, 4, CSTR("Number of records"), ReadUInt32(&packBuff[12]));
 			frame->AddUInt(16, 4, CSTR("Next Autonunber"), ReadUInt32(&packBuff[16]));
 
-			UOSInt freeSpace = ReadUInt16(&packBuff[2]);
+			UIntOS freeSpace = ReadUInt16(&packBuff[2]);
 			frame->AddHexBuff(4096 - freeSpace, freeSpace, CSTR("Free Space"), &packBuff[4096 - freeSpace], true);
 		}
 		else //1
@@ -276,9 +276,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			frame->AddHex8(59, CSTR("Free Flags"), packBuff[59]);
 			frame->AddUInt(60, 3, CSTR("Free Page"), ReadUInt24(&packBuff[60]));
 
-			UOSInt ofst = 63;
-			UOSInt i = 0;
-			UOSInt j = ReadUInt32(&packBuff[51]);
+			UIntOS ofst = 63;
+			UIntOS i = 0;
+			UIntOS j = ReadUInt32(&packBuff[51]);
 			while (i < j)
 			{
 				frame->AddUInt(ofst, 4, CSTR("Index Unknown"), ReadUInt32(&packBuff[ofst]));
@@ -308,10 +308,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			i = 0;
 			while (i < j)
 			{
-				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
+				UIntOS colSize = ReadUInt16(&packBuff[ofst]);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
 				frame->AddUInt(ofst, 2, CSTRP(sbuff, sptr), colSize);
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
 				frame->AddField(ofst + 2, colSize, CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
@@ -370,18 +370,18 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			i = 0;
 			while (i < j)
 			{
-				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
+				UIntOS colSize = ReadUInt16(&packBuff[ofst]);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
 				frame->AddUInt(ofst, 2, CSTRP(sbuff, sptr), colSize);
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
+				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
 				frame->AddField(ofst + 2, colSize, CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 				ofst += 2 + colSize;
 				i++;
 			}
-			UOSInt freeSpace = ReadUInt16(&packBuff[2]);
-			UOSInt endOfst = 4096 - freeSpace;
+			UIntOS freeSpace = ReadUInt16(&packBuff[2]);
+			UIntOS endOfst = 4096 - freeSpace;
 			while (ofst < endOfst)
 			{
 				Int16 colNum = ReadInt16(&packBuff[ofst]);

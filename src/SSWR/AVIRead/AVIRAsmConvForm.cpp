@@ -35,22 +35,22 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	Text::StringBuilderUTF8 destSb;
 	Text::PString sarr2[4];
 	Text::PString sarr[5];
-	UOSInt sarrCnt;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt i2;
-	UOSInt j2;
-	UOSInt thisTabCnt = 0;
-	UOSInt allTabCnt = 0;
+	UIntOS sarrCnt;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS i2;
+	UIntOS j2;
+	UIntOS thisTabCnt = 0;
+	UIntOS allTabCnt = 0;
 	UnsafeArray<UTF8Char> lineStart;
 	UnsafeArray<UTF8Char> lineEnd;
 	UTF8Char c;
 	UTF8Char c2;
 	UTF8Char endC;
 	Data::ArrayListICaseStrUTF8 regKey;
-	Data::ArrayListNative<OSInt> regSize;
+	Data::ArrayListNative<IntOS> regSize;
 	Bool found;
 
 	regSize.Insert(regKey.SortedInsert((const UTF8Char*)"eax"), 4);
@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 			lineStart[j] = 0;
 			destSb.AppendChar('\t', allTabCnt);
 			destSb.AppendC(UTF8STRC("\""));
-			destSb.AppendC(lineStart, (UOSInt)(lineEnd - lineStart));
+			destSb.AppendC(lineStart, (UIntOS)(lineEnd - lineStart));
 			destSb.AppendC(UTF8STRC("\\n\"\r\n"));
 		}
 		else
@@ -187,7 +187,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				destSb.AppendChar('\t', allTabCnt);
 				destSb.AppendC(UTF8STRC("\"\t"));
 				destSb.AppendC(UTF8STRC(".balign "));
-				destSb.AppendC(&lineStart[j + 1], (UOSInt)(lineEnd - &lineStart[j + 1]));
+				destSb.AppendC(&lineStart[j + 1], (UIntOS)(lineEnd - &lineStart[j + 1]));
 			}
 			else if (c == 0)
 			{
@@ -225,7 +225,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				destSb.AppendChar('\t', allTabCnt);
 				destSb.AppendC(UTF8STRC("\"\t"));
 				destSb.AppendC(lineStart, j);
-				sarrCnt = Text::StrSplitTrimP(sarr, 5, {&lineStart[j + 1], (UOSInt)(lineEnd - &lineStart[j + 1])}, ',');
+				sarrCnt = Text::StrSplitTrimP(sarr, 5, {&lineStart[j + 1], (UIntOS)(lineEnd - &lineStart[j + 1])}, ',');
 				if (sarrCnt == 1 && sarr[0].v[0] == 0)
 				{
 				}

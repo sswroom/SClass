@@ -247,7 +247,7 @@ UnsafeArray<const UTF16Char> Text::SMSUserData::GetMessage()
 	return this->msg;
 }
 
-UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, UnsafeArray<const UTF8Char> osmsMessage)
+UIntOS Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, UnsafeArray<const UTF8Char> osmsMessage)
 {
 	UInt8 udh[6];
 	UTF16Char sbuff[161];
@@ -255,12 +255,12 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 	UInt32 msgLeng;
 	UTF16Char *u16MsgPtr;
 	UTF16Char *u16Msg;
-	UOSInt u16Len = Text::StrUTF8_UTF16Cnt(osmsMessage);
+	UIntOS u16Len = Text::StrUTF8_UTF16Cnt(osmsMessage);
 	u16MsgPtr = MemAlloc(UTF16Char, u16Len + 1);
 	u16Msg = u16MsgPtr;
 	Text::StrUTF8_UTF16(u16MsgPtr, osmsMessage, 0);
 	Text::SMSUtil::GetTextInfo(u16Msg, dcs, msgLeng);
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	UInt8 refId = (UInt8)(u16Msg[0] & 0xff);
 	UInt8 totalCnt;
 	NN<Text::SMSUserData> ud;
@@ -270,7 +270,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 	{
 		if (msgLeng > 140)
 		{
-			UOSInt charCnt;
+			UIntOS charCnt;
 			charCnt = Text::StrCharCnt(u16Msg);
 			if (charCnt % 67)
 			{
@@ -316,7 +316,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 	{
 		if (msgLeng > 160)
 		{
-			UOSInt charCnt;
+			UIntOS charCnt;
 			charCnt = Text::StrCharCnt(u16Msg);
 			/////////////////////////////////
 			if (charCnt % 153)

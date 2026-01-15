@@ -88,8 +88,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 	NN<Media::ImageList> nnimgList;
 	UInt64 dataSize = fd->GetDataSize();
 	{
-		Data::ByteBuffer data((UOSInt)dataSize);
-		fd->GetRealData(0, (UOSInt)dataSize, data);
+		Data::ByteBuffer data((UIntOS)dataSize);
+		fd->GetRealData(0, (UIntOS)dataSize, data);
 		GInputStream *inpStream = g_memory_input_stream_new_from_data(data.Arr().Ptr(), (gssize)dataSize, 0);
 		GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
 		if (pixBuf)
@@ -116,9 +116,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 
 			if (nChannels == 3 && bps == 8 && !hasAlpha)
 			{
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 24, Media::PF_R8G8B8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UIntOS)width * 3, (UIntOS)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 				nnimgList->AddImage(img, 0);
 				imgList = nnimgList;
@@ -126,9 +126,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			}
 			else if (nChannels == 3 && bps == 8 && hasAlpha)
 			{
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UIntOS)width * 4, (UIntOS)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 				nnimgList->AddImage(img, 0);
 				imgList = nnimgList;
@@ -136,9 +136,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			}
 			else if (nChannels == 4 && bps == 8 && hasAlpha)
 			{
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)width, (UIntOS)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UnsafeArray<UInt8> imgDest = img->data;
-				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UIntOS)width * 4, (UIntOS)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
 				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 				nnimgList->AddImage(img, 0);
 				imgList = nnimgList;
@@ -286,8 +286,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(fd->GetFullFileName());
-			UOSInt i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
-			UOSInt j = sb.LastIndexOf('.');
+			UIntOS i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+			UIntOS j = sb.LastIndexOf('.');
 			if (j != INVALID_INDEX && (i == INVALID_INDEX || j > i))
 			{
 				sb.RemoveChars(sb.GetCharCnt() - j);
@@ -337,13 +337,13 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			Map::VectorLayer *lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
-			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
+			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));
-			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UIntOS2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UIntOS2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector2(vimg, (Text::String**)0);
 			simg.Delete();
 			

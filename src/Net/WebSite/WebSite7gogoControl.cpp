@@ -16,8 +16,8 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 	NN<Text::JSONObject> obj1;
 	NN<Text::String> s;
 	Int32 bodyType;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item = MemAllocNN(Net::WebSite::WebSite7gogoControl::ItemData);
 	item.ZeroContent();
 	item->id = postObj->GetObjectInt64(CSTR("postId"));
@@ -113,10 +113,10 @@ Net::WebSite::WebSite7gogoControl::~WebSite7gogoControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData>> itemList, Optional<Net::WebSite::WebSite7gogoControl::ChannelInfo> chInfo)
+IntOS Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channelId, IntOS pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData>> itemList, Optional<Net::WebSite::WebSite7gogoControl::ChannelInfo> chInfo)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	sb.AppendC(UTF8STRC("https://7gogo.jp/"));
 	sb.Append(channelId);
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
@@ -143,10 +143,10 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 						NN<Text::JSONObject> obj1;
 						NN<Text::JSONArray> arr1;
 						NN<Text::JSONString> str1;
-						UOSInt i;
-						UOSInt j;
-						UOSInt k;
-						OSInt si;
+						UIntOS i;
+						UIntOS j;
+						UIntOS k;
+						IntOS si;
 						NN<ChannelInfo> nnchInfo;
 						if (chInfo.SetTo(nnchInfo))
 						{
@@ -280,7 +280,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 void Net::WebSite::WebSite7gogoControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData>> itemList)
 {
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
-	UOSInt i = itemList->GetCount();
+	UIntOS i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItemNoCheck(i);

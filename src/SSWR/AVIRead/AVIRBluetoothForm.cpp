@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSrchClicked(AnyType use
 	NN<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
 	NN<BTStatus> btStatus;
 	NN<IO::BTController::BTDevice> dev;
-	UOSInt i;
+	UIntOS i;
 	if (me->lbCtrl->GetSelectedItem().GetOpt<BTStatus>().SetTo(btStatus))
 	{
 		i = btStatus->devList->GetCount();
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceUpdateClicked(AnyType u
 	NN<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
 	NN<BTStatus> btStatus;
 	NN<IO::BTController::BTDevice> dev;
-	UOSInt i;
+	UIntOS i;
 	if (me->lbCtrl->GetSelectedItem().GetOpt<BTStatus>().SetTo(btStatus))
 	{
 		i = btStatus->devList->GetCount();
@@ -89,8 +89,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(AnyType userObj)
 	me->ClearGUIDs();
 	if (me->currDev.SetTo(dev))
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		Text::StringBuilderUTF8 sb;
 		NN<Data::UUID> guid;
 		dev->QueryServices(me->guidList);
@@ -149,9 +149,9 @@ void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(NN<BTStatus> btStatus)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<IO::BTController::BTDevice> dev;
 	this->ClearGUIDs();
 	this->currDev = nullptr;
@@ -251,8 +251,8 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	this->lvDevice->AddColumn(CSTR("Authen"), 60);
 	this->lvDevice->AddColumn(CSTR("Remember"), 80);
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListNN<IO::BTController> btList;
 	NN<BTStatus> btStatus;
 	Text::CStringNN cstr;
@@ -284,8 +284,8 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRBluetoothForm::~AVIRBluetoothForm()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<BTStatus> btStatus;
 	NN<IO::BTController::BTDevice> dev;
 	this->ClearGUIDs();

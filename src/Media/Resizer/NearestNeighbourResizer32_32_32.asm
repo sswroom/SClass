@@ -2,7 +2,7 @@ section .text
 
 global _NearestNeighbourResizer32_32_Resize
 
-;void NearestNeighbourResizer32_32_Resize(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
+;void NearestNeighbourResizer32_32_Resize(UInt8 *inPt, UInt8 *outPt, IntOS dwidth, IntOS dheight, IntOS dbpl, IntOS *xindex, IntOS *yindex);
 ;0 edi
 ;4 esi
 ;8 ebx

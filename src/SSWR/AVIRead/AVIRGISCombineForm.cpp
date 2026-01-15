@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
-	UOSInt i = me->layers->GetCount();
+	UIntOS i = me->layers->GetCount();
 	while (i-- > 0)
 	{
 		me->lbLayers->SetItemChecked(i, true);
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
-	UOSInt i = me->layers->GetCount();
+	UIntOS i = me->layers->GetCount();
 	while (i-- > 0)
 	{
 		me->lbLayers->SetItemChecked(i, false);
@@ -28,8 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(AnyType user
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Map::MapDrawLayer> lyr;
 	me->selLayers.Clear();
 	i = 0;
@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(Optional<UI::GUIClientCont
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 
 
-	UOSInt j;
+	UIntOS j;
 	NN<Map::MapDrawLayer> lyr;
 	NN<Text::String> name;
 	this->lbLayers->ClearItems();

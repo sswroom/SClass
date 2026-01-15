@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 	NN<Data::ByteOrder> bo;
 
 	UInt64 nextOfst;
-	UOSInt i;
+	UIntOS i;
 
 	if (*(Int16*)&hdr[0] == *(Int16*)"MM")
 	{
@@ -133,13 +133,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 
 		Bool valid = true;
 		Bool processed = false;
-		UOSInt j;
-		UOSInt k;
+		UIntOS j;
+		UIntOS k;
 		UInt32 compression = 0;
 		UInt32 imgWidth = 0;
 		UInt32 imgHeight = 0;
 		UInt32 bpp = 0;
-		UOSInt nChannels = 0;
+		UIntOS nChannels = 0;
 		UInt32 photometricInterpretation = 0;
 		UInt32 planarConfiguration = 1;
 		UInt32 sampleFormat = 1;
@@ -469,15 +469,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 
 //					printf("Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 				Data::ByteArray imgData = img->GetDataArray();
-				UOSInt jpgOfst;
-				UOSInt jpgLeng;
-				UOSInt x;
-				UOSInt y;
-				UOSInt bpl = img->GetDataBpl();
-				UOSInt copyWidth;
-				UOSInt copyHeight = tileHeight;
+				UIntOS jpgOfst;
+				UIntOS jpgLeng;
+				UIntOS x;
+				UIntOS y;
+				UIntOS bpl = img->GetDataBpl();
+				UIntOS copyWidth;
+				UIntOS copyHeight = tileHeight;
 				UnsafeArray<UInt8> imgPal;
 				Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
 				Media::JPEGDecoder jpgDecoder;
@@ -545,10 +545,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 				if (bpp <= 8 && img->pal.SetTo(imgPal))
 				{
-					UOSInt j;
+					UIntOS j;
 					if (photometricInterpretation == 3)
 					{
-						j = (UOSInt)1 << bpp;
+						j = (UIntOS)1 << bpp;
 						i = 0;
 						UnsafeArray<UInt16> pal;
 						if (nnexif->GetExifUInt16(0x140).SetTo(pal))
@@ -577,7 +577,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					else if (photometricInterpretation == 0) //whiteIsZero
 					{
 						UInt8 v;
-						i = (UOSInt)1 << bpp;
+						i = (UIntOS)1 << bpp;
 						j = i - 1;
 						while (i-- > 0)
 						{
@@ -599,7 +599,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					else if (photometricInterpretation == 1) //blackIsZero
 					{
 						UInt8 v;
-						i = (UOSInt)1 << bpp;
+						i = (UIntOS)1 << bpp;
 						j = i - 1;
 						while (i-- > 0)
 						{
@@ -640,7 +640,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 				}
 				Data::ByteBuffer jpgBuff(stripLeng + jpegTables.GetSize());
-				UOSInt jpgLeng = stripLeng;
+				UIntOS jpgLeng = stripLeng;
 				if (fd->GetRealData(stripOfst, jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
 				{
 					if (jpegTables.GetSize() > 0)
@@ -802,7 +802,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 			}
 
-			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			Data::ByteArray imgData;
 			UnsafeArrayOpt<UInt8> planarBuff = nullptr;
 			UnsafeArray<UInt8> nnplanarBuff;
@@ -825,9 +825,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			if (compression == 32773)
 			{
-				UOSInt maxLeng;
-				UOSInt lengLeft;
-				UOSInt destSize;
+				UIntOS maxLeng;
+				UIntOS lengLeft;
+				UIntOS destSize;
 				if (nStrip == 1)
 				{
 					Data::ByteBuffer compImgData(stripLeng);
@@ -844,8 +844,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 					Data::ByteBuffer compImgData(maxLeng);
 
-//					OSInt dbpl = imgWidth * bpp >> 3;
-//					OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
+//					IntOS dbpl = imgWidth * bpp >> 3;
+//					IntOS decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
 					i = 0;
 					while (i < nStrip)
 					{
@@ -862,9 +862,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (compression == 5 || compression == 8)
 			{
-				UOSInt maxLeng;
-				UOSInt lengLeft;
-				UOSInt destSize;
+				UIntOS maxLeng;
+				UIntOS lengLeft;
+				UIntOS destSize;
 				if (compression == 5)
 				{
 					Data::Compress::LZWDecompressor lzw;
@@ -884,9 +884,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						Data::ByteBuffer compImgData(maxLeng);
 
-						UOSInt dbpl = ((imgWidth * bpp) + 7) >> 3;
-//						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
-						UOSInt decSize = dbpl * rowsPerStrip;
+						UIntOS dbpl = ((imgWidth * bpp) + 7) >> 3;
+//						IntOS decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
+						UIntOS decSize = dbpl * rowsPerStrip;
 						i = 0;
 						while (i < nStrip)
 						{
@@ -925,8 +925,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						Data::ByteBuffer compImgData(maxLeng);
 
-//						OSInt dbpl = imgWidth * bpp >> 3;
-//						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
+//						IntOS dbpl = imgWidth * bpp >> 3;
+//						IntOS decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
 						Bool hasHeader = false;
 						i = 0;
 						while (i < nStrip)
@@ -970,12 +970,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 					else
 					{
-						UOSInt x;
-						UOSInt y;
+						UIntOS x;
+						UIntOS y;
 						UnsafeArray<UInt8> tileBuff = MemAllocArr(UInt8, stripLengs[0]);
-						UOSInt bpl = img->GetDataBpl();
-						UOSInt copySize = (tileWidth * storeBPP >> 3);
-						UOSInt copyHeight = tileHeight;
+						UIntOS bpl = img->GetDataBpl();
+						UIntOS copySize = (tileWidth * storeBPP >> 3);
+						UIntOS copyHeight = tileHeight;
 						if (copyHeight > imgHeight)
 						{
 							copyHeight = imgHeight;
@@ -988,11 +988,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							fd->GetRealData(stripOfsts[i], stripLengs[i], Data::ByteArray(tileBuff, stripLengs[i]));
 							if (x + tileWidth > imgWidth)
 							{
-								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (imgWidth - x) * storeBPP >> 3, copyHeight, (OSInt)copySize, (OSInt)bpl);
+								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (imgWidth - x) * storeBPP >> 3, copyHeight, (IntOS)copySize, (IntOS)bpl);
 							}
 							else
 							{
-								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], copySize, copyHeight, (OSInt)copySize, (OSInt)bpl);
+								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], copySize, copyHeight, (IntOS)copySize, (IntOS)bpl);
 							}
 							x += tileWidth;
 							if (x >= imgWidth)
@@ -1032,8 +1032,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				UnsafeArray<UInt8> tmpPtr2;
 				Data::ByteArray tmpArray;
 				UInt8 lastPx[4];
-				UOSInt bytePerChannels = (bpp >> 3) / nChannels;
-				UOSInt l;
+				UIntOS bytePerChannels = (bpp >> 3) / nChannels;
+				UIntOS l;
 				if (planarConfiguration == 2)
 				{
 					tmpBuff = MemAllocArr(UInt8, bytePerChannels * imgWidth);
@@ -1536,10 +1536,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (bpp <= 8 && img->pal.SetTo(imgPal))
 			{
-				UOSInt j;
+				UIntOS j;
 				if (photometricInterpretation == 3)
 				{
-					j = (UOSInt)1 << bpp;
+					j = (UIntOS)1 << bpp;
 					i = 0;
 					UnsafeArray<UInt16> pal;
 					if (nnexif->GetExifUInt16(0x140).SetTo(pal))
@@ -1568,7 +1568,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				else if (photometricInterpretation == 0) //whiteIsZero
 				{
 					UInt8 v;
-					i = (UOSInt)1 << bpp;
+					i = (UIntOS)1 << bpp;
 					j = i - 1;
 					while (i-- > 0)
 					{
@@ -1590,7 +1590,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				else if (photometricInterpretation == 1) //blackIsZero
 				{
 					UInt8 v;
-					i = (UOSInt)1 << bpp;
+					i = (UIntOS)1 << bpp;
 					j = i - 1;
 					while (i-- > 0)
 					{
@@ -2115,13 +2115,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			Map::VectorLayer *lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
-			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
+			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
-			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UIntOS2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UIntOS2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector2(vimg, (Text::String**)0);
 			simg.Delete();
 			
@@ -2165,13 +2165,13 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(NN<Media::EXIFData> exif, UInt32
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NN<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels)
+UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NN<Media::EXIFData> exif, UInt32 id, OptOut<UIntOS> nChannels)
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	UInt32 sum = 0;
-	UOSInt i = item->cnt;
+	UIntOS i = item->cnt;
 	nChannels.Set(i);
 	UnsafeArray<UInt16> u16Val;
 	UnsafeArray<UInt32> u32Val;

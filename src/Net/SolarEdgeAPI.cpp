@@ -77,8 +77,8 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(NN<Data::ArrayListStringNN> version
 	if (json->GetValue(CSTR("supported")).SetTo(supported) && supported->GetType() == Text::JSONType::Array)
 	{
 		NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(supported);
-		UOSInt i = 0;
-		UOSInt j = arr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = arr->GetArrayLength();
 		while (i < j)
 		{
 			NN<Text::String> s;
@@ -103,16 +103,16 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(NN<Data::ArrayListStringNN> version
 	return false;
 }
 
-Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt maxCount, UOSInt startOfst, OptOut<UOSInt> totalCount)
+Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UIntOS maxCount, UIntOS startOfst, OptOut<UIntOS> totalCount)
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/sites/list"));
 	if (maxCount != 0)
 	{
 		sbURL.AppendC(UTF8STRC("&size="));
-		sbURL.AppendUOSInt(maxCount);
+		sbURL.AppendUIntOS(maxCount);
 		sbURL.AppendC(UTF8STRC("&startIndex="));
-		sbURL.AppendUOSInt(startOfst);
+		sbURL.AppendUIntOS(startOfst);
 	}
 	NN<Text::JSONBase> json;
 	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
@@ -126,11 +126,11 @@ Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt
 	{
 		if (totalCount.IsNotNull())
 		{
-			totalCount.SetNoCheck((UOSInt)count->GetAsInt32());
+			totalCount.SetNoCheck((UIntOS)count->GetAsInt32());
 		}
 		NN<Text::JSONArray> siteArr = NN<Text::JSONArray>::ConvertFrom(sites);
-		UOSInt i = 0;
-		UOSInt j = siteArr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = siteArr->GetArrayLength();
 		while (i < j)
 		{
 			NN<Text::JSONObject> siteObj;
@@ -185,7 +185,7 @@ Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt
 void Net::SolarEdgeAPI::FreeSiteList(NN<Data::ArrayListNN<Site>> siteList)
 {
 	NN<Site> site;
-	UOSInt i = siteList->GetCount();
+	UIntOS i = siteList->GetCount();
 	while (i-- > 0)
 	{
 		site = siteList->GetItemNoCheck(i);
@@ -258,8 +258,8 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	if (json->GetValue(CSTR("energy.values")).SetTo(valueObj) && valueObj->GetType() == Text::JSONType::Array)
 	{
 		valueArr = NN<Text::JSONArray>::ConvertFrom(valueObj);
-		UOSInt i = 0;
-		UOSInt j = valueArr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = valueArr->GetArrayLength();
 		while (i < j)
 		{
 			if (valueArr->GetArrayValue(i).SetTo(valueObj))
@@ -303,8 +303,8 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 	if (json->GetValue(CSTR("power.values")).SetTo(valueObj) && valueObj->GetType() == Text::JSONType::Array)
 	{
 		valueArr = NN<Text::JSONArray>::ConvertFrom(valueObj);
-		UOSInt i = 0;
-		UOSInt j = valueArr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = valueArr->GetArrayLength();
 		while (i < j)
 		{
 			if (valueArr->GetArrayValue(i).SetTo(valueObj))

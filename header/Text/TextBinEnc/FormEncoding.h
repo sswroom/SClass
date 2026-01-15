@@ -20,9 +20,9 @@ namespace Text
 			
 			FormEncoding();
 			virtual ~FormEncoding();
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
-			virtual UOSInt CalcBinSize(Text::CStringNN str) const;
-			virtual UOSInt DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const;
+			virtual UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const;
+			virtual UIntOS CalcBinSize(Text::CStringNN str) const;
+			virtual UIntOS DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 

@@ -20,12 +20,12 @@ Text::CStringNN IO::FileAnalyse::ASN1FileAnalyse::GetFormatName()
 	return CSTR("ASN1");
 }
 
-UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::ASN1FileAnalyse::GetFrameCount()
 {
 	return 1;
 }
 
-Bool IO::FileAnalyse::ASN1FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::ASN1FileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index != 0)
 		return false;
@@ -34,7 +34,7 @@ Bool IO::FileAnalyse::ASN1FileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::ASN1FileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst < this->fd->GetDataSize())
 		return 0;
@@ -42,11 +42,11 @@ UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameIndex(UInt64 ofst)
 		return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(UIntOS index)
 {
 	if (index != 0)
 		return nullptr;
-	Data::ByteBuffer buff((UOSInt)this->fd->GetDataSize());
+	Data::ByteBuffer buff((UIntOS)this->fd->GetDataSize());
 	this->fd->GetRealData(0, buff.GetSize(), buff);
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, buff.GetSize()));

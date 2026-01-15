@@ -9,11 +9,11 @@ namespace Data
 	{
 	public:
 		ArrayListStrFastNN();
-		ArrayListStrFastNN(UOSInt capacity);
+		ArrayListStrFastNN(UIntOS capacity);
 
 		virtual NN<Data::ArrayListNN<Text::String>> Clone() const;
-		virtual OSInt Compare(NN<Text::String> obj1, NN<Text::String> obj2) const;
-		OSInt SortedIndexOf(Text::CStringNN str) const;
+		virtual IntOS Compare(NN<Text::String> obj1, NN<Text::String> obj2) const;
+		IntOS SortedIndexOf(Text::CStringNN str) const;
 
 		void FreeAll();
 	};

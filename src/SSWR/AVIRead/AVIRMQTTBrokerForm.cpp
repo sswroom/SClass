@@ -125,8 +125,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus>> topicList;
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topicSt;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt64 thisCount = me->totalCount;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	if (thisCount >= me->dispCount)
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topicSt;
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	this->logger.Delete();
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus>> topicList = this->topicMap.GetValues();
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topic;
-	UOSInt i = topicList->GetCount();
+	UIntOS i = topicList->GetCount();
 	while (i-- > 0)
 	{
 		topic = topicList->GetItemNoCheck(i);

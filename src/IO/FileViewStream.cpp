@@ -20,7 +20,7 @@ Bool IO::FileViewStream::IsDown() const
 	return this->vfb == 0 || this->fptr == 0;
 }
 
-UOSInt IO::FileViewStream::Read(const Data::ByteArray &buff)
+UIntOS IO::FileViewStream::Read(const Data::ByteArray &buff)
 {
 	if (this->fptr == 0)
 		return 0;
@@ -29,8 +29,8 @@ UOSInt IO::FileViewStream::Read(const Data::ByteArray &buff)
 		endPtr = this->length;
 	if (endPtr > this->currPos)
 	{
-		MemCopyNO(buff.Ptr(), &this->fptr[this->currPos], (UOSInt)(endPtr - this->currPos));
-		UOSInt size = (UOSInt)(endPtr - this->currPos);
+		MemCopyNO(buff.Ptr(), &this->fptr[this->currPos], (UIntOS)(endPtr - this->currPos));
+		UIntOS size = (UIntOS)(endPtr - this->currPos);
 		this->currPos = endPtr;
 		return size;
 	}
@@ -40,7 +40,7 @@ UOSInt IO::FileViewStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileViewStream::Write(const UInt8 *buff, UOSInt size)
+UIntOS IO::FileViewStream::Write(const UInt8 *buff, UIntOS size)
 {
 	return 0;
 }

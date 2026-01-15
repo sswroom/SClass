@@ -138,8 +138,8 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 	{
 		if (flirMaxSegm == flirCurrSegm)
 		{
-			UOSInt i;
-			UOSInt k;
+			UIntOS i;
+			UIntOS k;
 			UInt32 blkOfst;
 			UInt32 blkSize;
 //			UInt32 blkType;
@@ -186,7 +186,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 						UInt32 innerH = ReadUInt16(&tagBuff[blkOfst + 4]);
 						if (blkSize == innerW * innerH * 2 + 32)
 						{
-							imgList->SetThermoImage(Math::Size2D<UOSInt>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
+							imgList->SetThermoImage(Math::Size2D<UIntOS>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
 						}
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47 && parsers.SetTo(nnparsers))
 						{
@@ -210,7 +210,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 										if (stImg->info.pf == Media::PF_LE_W16)
 										{
 											UnsafeArray<UInt8> imgPtr = stImg->data;
-											UOSInt pixelCnt = stImg->info.dispSize.CalcArea();
+											UIntOS pixelCnt = stImg->info.dispSize.CalcArea();
 											while (pixelCnt-- > 0)
 											{
 												WriteInt16(&imgPtr[0], ReadMInt16(imgPtr));
@@ -437,13 +437,13 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	return true;
 }
 
-void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Optional<Media::RasterImage> oriImg)
+void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UIntOS buffSize, Optional<Media::RasterImage> oriImg)
 {
 	NN<Media::RasterImage> nnimg;
 	if (oriImg.SetTo(nnimg) && (!nnimg->exif.IsNull() || nnimg->info.color.GetRAWICC().NotNull()) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 2;
 		stm->Write(Data::ByteArrayR(jpgBuff, 2));
 		while (true)
@@ -462,7 +462,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 				UnsafeArray<const UInt8> iccBuff;
 				if (nnimg->info.color.GetRAWICC().SetTo(iccBuff))
 				{
-					UOSInt iccLeng = ReadMUInt32(&iccBuff[0]);
+					UIntOS iccLeng = ReadMUInt32(&iccBuff[0]);
 					UInt8 iccHdr[18];
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;
@@ -529,11 +529,11 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 			}
 			else if (jpgBuff[i + 1] == 0xe1)
 			{
-				i += (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				i += (UIntOS)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 			}
 			else
 			{
-				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				j = (UIntOS)ReadMUInt16(&jpgBuff[i + 2]) + 2;
 				stm->Write(Data::ByteArrayR(&jpgBuff[i], j));
 				i += j;
 			}

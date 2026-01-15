@@ -9,7 +9,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(AnyType userObj)
 {
 	NN<IO::TVCtrl::MDT701STVControl> me = userObj.GetNN<IO::TVCtrl::MDT701STVControl>();
 	UInt8 buff[256];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
@@ -43,7 +43,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(AnyType userObj)
 	return 0;
 }
 
-Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buffSize, const Char *cmdReply, UOSInt replySize, UInt32 cmdTimeout, UInt32 cmdInterval)
+Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UIntOS buffSize, const Char *cmdReply, UIntOS replySize, UInt32 cmdTimeout, UInt32 cmdInterval)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -71,7 +71,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 	if (replySize <= this->recvSize)
 	{
 		Bool eq = true;
-		UOSInt i = 0;
+		UIntOS i = 0;
 		while (i < replySize)
 		{
 			if (cmdReply[i] != this->recvBuff[i])

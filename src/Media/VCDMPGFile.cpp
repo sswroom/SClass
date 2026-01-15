@@ -13,9 +13,9 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 {
 	NN<Media::VCDMPGFile> me = userData.GetNN<Media::VCDMPGFile>();
 	Bool succ;
-	UOSInt currOfst;
-	UOSInt i;
-	UOSInt j;
+	UIntOS currOfst;
+	UIntOS i;
+	UIntOS j;
 	UInt32 thisSize;
 	Int64 scr;
 //	Int32 muxRate;
@@ -244,10 +244,10 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt6
 	this->vstm = nullptr;
 
 	Bool succ;
-	UOSInt currSector = 0;
-	UOSInt currOfst;
-	UOSInt i;
-	UOSInt j;
+	UIntOS currSector = 0;
+	UIntOS currOfst;
+	UIntOS i;
+	UIntOS j;
 //	Int64 scr;
 //	Int32 muxRate;
 	while (true)
@@ -420,7 +420,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 		this->StopPlay();
 	}
 	NN<Media::MediaStream> stm;
-	UOSInt i;
+	UIntOS i;
 	i = this->dataStms.GetCount();
 	while (i-- > 0)
 	{
@@ -431,12 +431,12 @@ Media::VCDMPGFile::~VCDMPGFile()
 	this->data.Delete();
 }
 
-UOSInt Media::VCDMPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
+UIntOS Media::VCDMPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
-	return (UOSInt)-1;
+	return (UIntOS)-1;
 }
 
-Optional<Media::MediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::VCDMPGFile::GetStream(UIntOS index, OptOut<Int32> syncTime)
 {
 	if (index > this->audStms.GetCount())
 		return nullptr;
@@ -447,7 +447,7 @@ Optional<Media::MediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<I
 		return this->audStms.GetItem(index - 1);
 }
 
-void Media::VCDMPGFile::KeepStream(UOSInt index, Bool toKeep)
+void Media::VCDMPGFile::KeepStream(UIntOS index, Bool toKeep)
 {
 }
 
@@ -505,7 +505,7 @@ Bool Media::VCDMPGFile::CanSeek()
 	return true;
 }
 
-UOSInt Media::VCDMPGFile::GetDataSeekCount()
+UIntOS Media::VCDMPGFile::GetDataSeekCount()
 {
 	return this->data->GetSeekCount();
 }

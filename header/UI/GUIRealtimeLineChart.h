@@ -11,15 +11,15 @@ namespace UI
 	protected:
 		NN<Media::DrawEngine> eng;
 		UnsafeArrayOpt<const UTF8Char> unit;
-		UOSInt lineCnt;
-		UOSInt sampleCnt;
+		UIntOS lineCnt;
+		UIntOS sampleCnt;
 		UInt32 *lineColor;
 		UInt32 bgColor;
 		UInt32 fontColor;
 
 		Bool valueChanged;
 		Double *chartVal;
-		UOSInt chartOfst;
+		UIntOS chartOfst;
 		Bool chartMaxChg;
 		Double chartMax;
 		Double chartMin;
@@ -28,14 +28,14 @@ namespace UI
 
 		void OnPaint(NN<Media::DrawImage> dimg);
 	public:
-		GUIRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt);
+		GUIRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UIntOS lineCnt, UIntOS sampleCnt);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 
 		void AddSample(Double *samples);
-		void SetLineColor(UOSInt lineId, UInt32 lineColor);
+		void SetLineColor(UIntOS lineId, UInt32 lineColor);
 		void SetUnit(Text::CStringNN unit);
 		void SetBGColor(UInt32 lineColor);
 		void SetFontColor(UInt32 fontColor);

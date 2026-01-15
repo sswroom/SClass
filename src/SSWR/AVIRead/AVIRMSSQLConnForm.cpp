@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(AnyType user
 		{
 			Text::PString sarr[2];
 			Text::PString sarr2[2];
-			UOSInt i = Text::StrSplitP(sarr, 2, sb.Substring(17), ';');
+			UIntOS i = Text::StrSplitP(sarr, 2, sb.Substring(17), ';');
 			if (Text::StrSplitP(sarr2, 2, sarr[0], ':') == 2)
 			{
 				me->txtServer->SetText(sarr2[0].ToCString());

@@ -81,41 +81,41 @@ namespace DB
 		} ColType;
 
 		static UnsafeArray<UTF8Char> SDBStrUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UTF8Char> str, SQLType sqlType);
-		static UOSInt SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> str, SQLType sqlType);
+		static UIntOS SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> str, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const WChar> str, SQLType sqlType);
-		static UOSInt SDBStrWLeng(UnsafeArrayOpt<const WChar> str, SQLType sqlType);
+		static UIntOS SDBStrWLeng(UnsafeArrayOpt<const WChar> str, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 val, SQLType sqlType);
-		static UOSInt SDBInt32Leng(Int32 val, SQLType sqlType);
+		static UIntOS SDBInt32Leng(Int32 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val, SQLType sqlType);
-		static UOSInt SDBInt64Leng(Int64 val, SQLType sqlType);
+		static UIntOS SDBInt64Leng(Int64 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBUInt32(UnsafeArray<UTF8Char> sqlstr, UInt32 val, SQLType sqlType);
-		static UOSInt SDBUInt32Leng(UInt32 val, SQLType sqlType);
+		static UIntOS SDBUInt32Leng(UInt32 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBUInt64(UnsafeArray<UTF8Char> sqlstr, UInt64 val, SQLType sqlType);
-		static UOSInt SDBUInt64Leng(UInt64 val, SQLType sqlType);
+		static UIntOS SDBUInt64Leng(UInt64 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Optional<Data::DateTime> dat, SQLType sqlType, Int8 tzQhr);
-		static UOSInt SDBDateTimeLeng(Optional<Data::DateTime> dat, SQLType sqlType);
+		static UIntOS SDBDateTimeLeng(Optional<Data::DateTime> dat, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBTS(UnsafeArray<UTF8Char> sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr);
-		static UOSInt SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType);
+		static UIntOS SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBDate(UnsafeArray<UTF8Char> sqlstr, const Data::Date &d, SQLType sqlType);
-		static UOSInt SDBDateLeng(const Data::Date &d, SQLType sqlType);
+		static UIntOS SDBDateLeng(const Data::Date &d, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBDbl(UnsafeArray<UTF8Char> sqlstr, Double val, SQLType sqlType);
-		static UOSInt SDBDblLeng(Double val, SQLType sqlType);
+		static UIntOS SDBDblLeng(Double val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBSng(UnsafeArray<UTF8Char> sqlstr, Single val, SQLType sqlType);
-		static UOSInt SDBSngLeng(Single val, SQLType sqlType);
+		static UIntOS SDBSngLeng(Single val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBBool(UnsafeArray<UTF8Char> sqlstr, Bool val, SQLType sqlType);
-		static UOSInt SDBBoolLeng(Bool val, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, SQLType sqlType);
-		static UOSInt SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UOSInt size, SQLType sqlType);
+		static UIntOS SDBBoolLeng(Bool val, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UInt8> buff, UIntOS size, SQLType sqlType);
+		static UIntOS SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UIntOS size, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBVector(UnsafeArray<UTF8Char> sqlstr, Optional<Math::Geometry::Vector2D> vec, SQLType sqlType, Bool axisAware);
-		static UOSInt SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
+		static UIntOS SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, SQLType sqlType);
-		static UOSInt SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, SQLType sqlType);
+		static UIntOS SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName, SQLType sqlType);
-		static UOSInt SDBColWLeng(UnsafeArray<const WChar> colName, SQLType sqlType);
+		static UIntOS SDBColWLeng(UnsafeArray<const WChar> colName, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val, SQLType sqlType);
-		static UOSInt SDBTrimLeng(Text::CStringNN val, SQLType sqlType);
-		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, InOutParam<UOSInt> colSize, InOutParam<UOSInt> colDP);
-		static UnsafeArray<UTF8Char> ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP);
+		static UIntOS SDBTrimLeng(Text::CStringNN val, SQLType sqlType);
+		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, InOutParam<UIntOS> colSize, InOutParam<UIntOS> colDP);
+		static UnsafeArray<UTF8Char> ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP);
 		static UnsafeArray<UTF8Char> SDBCharset(UnsafeArray<UTF8Char> sqlstr, Charset charset, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, OutParam<Bool> requireAS);
 		static UnsafeArray<UTF8Char> SDBCollation(UnsafeArray<UTF8Char> sqlstr, NN<const Collation> collation, SQLType sqlType);
@@ -140,10 +140,10 @@ template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayLi
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Bool succ = true;
-	UOSInt i = 0;
-	UOSInt j = cls->GetFieldCount();
-	UOSInt k;
-	UOSInt l;
+	UIntOS i = 0;
+	UIntOS j = cls->GetFieldCount();
+	UIntOS k;
+	UIntOS l;
 	while (i < j)
 	{
 		if (i > 0)
@@ -213,8 +213,8 @@ template <typename T> Bool DB::DBUtil::Model2JSON(NN<Text::JSONBuilder> json, NN
 	NN<Data::NamedClass<T>> cls = obj->CreateClass();
 	NN<Text::String> name;
 	Data::VariItem item;
-	UOSInt i = 0;
-	UOSInt j = cls->GetFieldCount();
+	UIntOS i = 0;
+	UIntOS j = cls->GetFieldCount();
 	while (i < j)
 	{
 		if (cls->GetFieldName(i).SetTo(name))

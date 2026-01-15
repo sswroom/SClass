@@ -25,7 +25,7 @@ namespace SSWR
 				UInt32 color;
 				Double thick;
 				UnsafeArrayOpt<UInt8> pattern;
-				UOSInt nPattern;
+				UIntOS nPattern;
 			} LineLayer;
 
 		private:
@@ -33,7 +33,7 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Map::MapEnv> env;
 			NN<Media::DrawEngine> eng;
-			UOSInt lineStyle;
+			UIntOS lineStyle;
 			Optional<LineLayer> currLayer;
 			Data::ArrayListNN<LineLayer> lineLayers;
 			Optional<Media::DrawImage> prevImage;
@@ -74,15 +74,15 @@ namespace SSWR
 			static void __stdcall RemoveLayerClicked(AnyType userObj);
 			static void __stdcall LayerSelChanged(AnyType userObj);
 			static void __stdcall ThickChanged(AnyType userObj);
-			static void __stdcall OnThickScrolled(AnyType userObj, UOSInt newPos);
-			static UI::EventState __stdcall ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static void __stdcall OnThickScrolled(AnyType userObj, UIntOS newPos);
+			static UI::EventState __stdcall ColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall PatternChanged(AnyType userObj);
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 
 			static void __stdcall FreeLayer(NN<LineLayer> lyr);
 		public:
-			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UIntOS lineStyle);
 			virtual ~AVIRGISLineEditForm();
 
 			virtual void OnMonitorChanged();

@@ -61,7 +61,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char *sptr2;
 	Int64 t;
-	UOSInt i;
+	UIntOS i;
 	Double paperWidth;
 	Double paperHeight;
 	Data::DateTime dt;
@@ -69,7 +69,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	dt.SetCurrTimeUTC();
 	t = dt.ToTicks();
 	sptr = IO::Path::GetProcessFileName(fileName).Or(fileName);
-	i = Text::StrLastIndexOfCharC(fileName, (UOSInt)(sptr - fileName), IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(fileName, (UIntOS)(sptr - fileName), IO::Path::PATH_SEPERATOR);
 	sptr = &fileName[i + 1];
 	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sptr, UTF8STRC("CUPS_")), t), UTF8STRC(".tmp"));
 
@@ -103,7 +103,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 		cairo_ps_surface_set_size(surface, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 
 //		wprintf(L"Printing page size: %lf, %lf\r\n", paperWidth, paperHeight);
-		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)), nullptr);
+		img = me->eng->CreateImageScn(cr, Math::Coord2D<IntOS>(0, 0), Math::Coord2D<IntOS>(Double2IntOS(paperWidth * 72.0), Double2IntOS(paperHeight * 72.0)), nullptr);
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);
@@ -206,22 +206,22 @@ void Media::CUPSPrintDocument::WaitForEnd()
 	}
 }
 
-UOSInt Media::Printer::GetPrinterCount()
+UIntOS Media::Printer::GetPrinterCount()
 {
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
 	cupsFreeDests(cnt, dests);
-	return (UOSInt)cnt;
+	return (UIntOS)cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UIntOS index)
 {
 	if (index < 0)
 		return nullptr;
 	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
-	if (index < (UOSInt)cnt)
+	if (index < (UIntOS)cnt)
 	{
 		ret = Text::StrConcat(sbuff, (const UTF8Char*)dests[index].name);
 	}

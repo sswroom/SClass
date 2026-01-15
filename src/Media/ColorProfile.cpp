@@ -849,7 +849,7 @@ void Media::ColorProfile::SetRAWICC(UnsafeArrayOpt<const UInt8> iccData)
 	}
 	if (iccData.SetTo(icc))
 	{
-		UOSInt leng = ReadMUInt32(&icc[0]);
+		UIntOS leng = ReadMUInt32(&icc[0]);
 		UnsafeArray<UInt8> newICC = MemAllocArr(UInt8, leng);
 		MemCopyNO(newICC.Ptr(), icc.Ptr(), leng);
 		this->rawICC = UnsafeArray<const UInt8>(newICC);

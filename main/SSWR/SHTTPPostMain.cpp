@@ -13,7 +13,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -25,16 +25,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		UnsafeArray<const UTF8Char> url = argv[1];
-		UOSInt urlLen = Text::StrCharCnt(url);
+		UIntOS urlLen = Text::StrCharCnt(url);
 		UnsafeArray<const UTF8Char> file = argv[2];
 
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		UInt8 *fileBuff = 0;
-		UOSInt fileSize = 0;
+		UIntOS fileSize = 0;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileSize = (UOSInt)fs->GetLength();
+		fileSize = (UIntOS)fs->GetLength();
 		if (fileSize > 0)
 		{
 			fileBuff = MemAlloc(UInt8, fileSize);
@@ -56,7 +56,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			Text::CString mime = nullptr;
 			Text::CStringNN nnmime;
-			UOSInt fileLen = Text::StrCharCnt(file);
+			UIntOS fileLen = Text::StrCharCnt(file);
 			i = Text::StrLastIndexOfCharC(file, fileLen, '.');
 			if (i != INVALID_INDEX)
 			{
@@ -64,8 +64,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;
-			UOSInt totalSize = 0;
-			UOSInt writeSize;
+			UIntOS totalSize = 0;
+			UIntOS writeSize;
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
@@ -105,7 +105,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 
 				IO::MemoryStream mstm;
-				UOSInt readSize;
+				UIntOS readSize;
 
 				while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 				{
@@ -123,7 +123,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					j = sb.IndexOf('?');
 					if (j != INVALID_INDEX)
 					{
-						sb.TrimToLength((UOSInt)j);
+						sb.TrimToLength((UIntOS)j);
 					}
 					if (sb.EndsWith('/'))
 					{

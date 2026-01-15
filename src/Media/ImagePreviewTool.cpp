@@ -3,14 +3,14 @@
 #include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Media/Resizer/LanczosResizerW8_8.h"
 
-Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UOSInt maxSize)
+Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UIntOS maxSize)
 {
 	NN<Media::StaticImage> img;
 	imgList->ToStaticImage(0);
 	if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) && (img->info.dispSize.x >= maxSize || img->info.dispSize.y >= maxSize))
 	{
-		UOSInt currWidth = img->info.dispSize.x;
-		UOSInt currHeight = img->info.dispSize.y;
+		UIntOS currWidth = img->info.dispSize.x;
+		UIntOS currHeight = img->info.dispSize.y;
 		NN<Media::StaticImage> simg;
 		Media::PixelFormat pf = img->info.pf;
 		if (pf == Media::PF_PAL_W8)
@@ -20,7 +20,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 			{
 				currWidth >>= 1;
 				currHeight >>= 1;
-				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
+				resizer.SetTargetSize(Math::Size2D<UIntOS>(currWidth, currHeight));
 				img->info.pf;
 				if (resizer.ProcessToNew(img).SetTo(simg))
 				{
@@ -58,7 +58,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 			{
 				currWidth >>= 1;
 				currHeight >>= 1;
-				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
+				resizer.SetTargetSize(Math::Size2D<UIntOS>(currWidth, currHeight));
 				img->info.pf;
 				if (resizer.ProcessToNew(img).SetTo(simg))
 				{

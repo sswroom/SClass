@@ -38,8 +38,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	UInt8 riffHdr[24];
 	UInt32 aniSize;
 	Media::ImageList *imgList;
-	UOSInt buffSize;
-	UOSInt buffOfst;
+	UIntOS buffSize;
+	UIntOS buffOfst;
 	UInt32 tmp;
 	UInt32 displayRate = 0;
 	UInt32 nFrames = 0;
@@ -51,7 +51,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 	aniSize = ReadUInt32(&hdr[4]) + 8;
-	UOSInt currOfst = 12;
+	UIntOS currOfst = 12;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 
 	while (currOfst < aniSize)

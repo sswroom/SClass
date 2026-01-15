@@ -15,7 +15,7 @@
 #endif
 #include <windows.h>
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand)
+Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand)
 {
 	Manage::ThreadContext *outContext = 0;
 #ifdef _WIN32_WCE
@@ -137,14 +137,14 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 #endif
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
 	this->hand = hand;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -238,7 +238,7 @@ UInt32 Manage::ThreadInfo::GetExitCode()
 }
 
 
-UOSInt Manage::ThreadInfo::GetThreadId()
+UIntOS Manage::ThreadInfo::GetThreadId()
 {
 	return this->threadId;
 }

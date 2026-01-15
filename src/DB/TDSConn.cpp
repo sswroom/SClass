@@ -33,7 +33,7 @@ private:
 	DBPROCESS* dbproc;
 	Int8 tzQhr;
 	Int32 rowsAffected;
-	UOSInt nCols;
+	UIntOS nCols;
 	ColInfo *cols;
 public:
 	TDSConnReader(DBPROCESS* dbproc, Int8 tzQhr)
@@ -58,7 +58,7 @@ public:
 
 	Bool NextResult()
 	{
-		UOSInt i;
+		UIntOS i;
 		if (this->cols)
 		{
 			i = this->nCols;
@@ -77,7 +77,7 @@ public:
 		}
 		else if (ret != NO_MORE_RESULTS)
 		{
-			this->nCols = (UOSInt)dbnumcols(this->dbproc);
+			this->nCols = (UIntOS)dbnumcols(this->dbproc);
 			this->cols = MemAlloc(ColInfo, this->nCols);
 			Int32 c;
 			i = 0;
@@ -248,17 +248,17 @@ public:
 		}
 	}
 
-	virtual UOSInt ColCount()
+	virtual UIntOS ColCount()
 	{
 		return this->nCols;
 	}
 
-	virtual OSInt GetRowChanged()
+	virtual IntOS GetRowChanged()
 	{
 		return this->rowsAffected;
 	}
 
-	virtual Int32 GetInt32(UOSInt colIndex)
+	virtual Int32 GetInt32(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (this->GetVariItem(colIndex, item))
@@ -266,7 +266,7 @@ public:
 		return 0;
 	}
 
-	virtual Int64 GetInt64(UOSInt colIndex)
+	virtual Int64 GetInt64(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (this->GetVariItem(colIndex, item))
@@ -274,12 +274,12 @@ public:
 		return 0;
 	}
 
-	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 	{
 		return nullptr;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (colIndex > this->nCols)
 			return false;
@@ -290,7 +290,7 @@ public:
 		case SYBTEXT:
 		case SYBCHAR:
 		{
-			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
 			sb->AppendC(data, len);
 			return true;
@@ -356,7 +356,7 @@ public:
 		}
 	}
 
-	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
@@ -369,7 +369,7 @@ public:
 		case SYBTEXT:
 		case SYBCHAR:
 		{
-			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
 			return Text::String::New(data, len);
 		}
@@ -431,7 +431,7 @@ public:
 		}
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
 		if (colIndex > this->nCols)
 			return nullptr;
@@ -442,7 +442,7 @@ public:
 		case SYBTEXT:
 		case SYBCHAR:
 		{
-			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
 			return Text::StrConcatCS(buff, data, len, buffSize);
 		}
@@ -488,7 +488,7 @@ public:
 		}
 	}
 
-	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -524,7 +524,7 @@ public:
 		}
 	}
 
-	virtual Double GetDblOrNAN(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (this->GetVariItem(colIndex, item))
@@ -532,7 +532,7 @@ public:
 		return NAN;
 	}
 
-	virtual Bool GetBool(UOSInt colIndex)
+	virtual Bool GetBool(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (this->GetVariItem(colIndex, item))
@@ -540,7 +540,7 @@ public:
 		return 0;
 	}
 
-	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -553,7 +553,7 @@ public:
 		return (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -563,13 +563,13 @@ public:
 		}
 		if (this->cols[colIndex].type != SYBBINARY)
 			return 0;
-		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+		UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 		MemCopyNO(buff.Ptr(), buffPtr, dataSize);
 		return dataSize;
 	}
 
-	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
 		if (colIndex >= this->nCols)
 			return nullptr;
@@ -579,13 +579,13 @@ public:
 		}
 		if (this->cols[colIndex].type != SYBGEOMETRY)
 			return nullptr;
-		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+		UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 		UInt32 srId;
 		return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -599,7 +599,7 @@ public:
 		return true;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+	virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -663,14 +663,14 @@ public:
 		case SYBTEXT:
 		case SYBCHAR:
 		{
-			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UnsafeArrayOpt<const UInt8> buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			item->SetStr(buffPtr, dataSize);
 			return true;
 		}
 		case SYBGEOMETRY:
 		{
-			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			UInt32 srId;
 			NN<Math::Geometry::Vector2D> vec;
@@ -683,7 +683,7 @@ public:
 		}
 		case SYBBINARY:
 		{
-			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			item->SetByteArr(buffPtr, dataSize);
 			return true;
@@ -701,21 +701,21 @@ public:
 		}
 	}
 
-	virtual Bool IsNull(UOSInt colIndex)
+	virtual Bool IsNull(UIntOS colIndex)
 	{
 		if (colIndex >= this->nCols)
 			return true;
 		return this->cols[colIndex].status == -1;
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		if (colIndex >= this->nCols)
 			return nullptr;
 		return Text::StrConcat(buff, (const UTF8Char*)this->cols[colIndex].name);
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
@@ -762,7 +762,7 @@ public:
 		}
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
@@ -922,12 +922,12 @@ void DB::TDSConn::Close()
 	}
 }
 
-OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	NN<DBReader> r;
 	if (!this->ExecuteReader(sql).SetTo(r))
 		return -2;
-	OSInt rows = r->GetRowChanged();
+	IntOS rows = r->GetRowChanged();
 	this->CloseReader(r);
 	return rows;
 }
@@ -1029,11 +1029,11 @@ void DB::TDSConn::Rollback(NN<DB::DBTransaction> tran)
 	///////////////////////////////////////
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		UOSInt ret = 0;
+		UIntOS ret = 0;
 		DB::SQLBuilder sql(DB::SQLType::MSSQL, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
 		if (schemaName.leng == 0)
@@ -1064,7 +1064,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 0;
 }
 
-Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1076,7 +1076,7 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 		if (maxCnt > 0)
 		{
 			sb.AppendC(UTF8STRC("TOP "));
-			sb.AppendUOSInt(maxCnt);
+			sb.AppendUIntOS(maxCnt);
 			sb.AppendUTF8Char(' ');
 		}
 	}
@@ -1093,7 +1093,7 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 			if (found)
 				sb.AppendC(UTF8STRC(","));
 			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, this->sqlType);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			found = true;
 		}
 	}
@@ -1112,7 +1112,7 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 		if (maxCnt > 0)
 		{
 			sb.AppendC(UTF8STRC(" LIMIT "));
-			sb.AppendUOSInt(maxCnt);
+			sb.AppendUIntOS(maxCnt);
 		}
 	}
 	return this->ExecuteReader(sb.ToCString());

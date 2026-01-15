@@ -38,8 +38,8 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sarr[1] = sb;
 	while (true)
 	{
@@ -50,7 +50,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 			if (sarr[0].v[j - 1] == '\r')
 				sarr[0].v[j - 1] = 0;
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0].v[7]);
-			files.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			files.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 		}
 		if (i <= 1)
 			break;
@@ -88,7 +88,7 @@ void UI::GUIForm::UpdateHAcc()
 	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
-		UOSInt i;
+		UIntOS i;
 		Data::ArrayListNN<UI::GUIMenu::ShortcutKey> keys;
 		NN<UI::GUIMenu::ShortcutKey> key;
 		menu->GetAllKeys(keys);
@@ -192,7 +192,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 
 UI::GUIForm::~GUIForm()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->timers.GetCount();
 	while (i-- > 0)
 	{
@@ -280,7 +280,7 @@ void UI::GUIForm::Close()
 #else
 	gtk_widget_destroy((GtkWidget*)this->hwnd);
 #endif
-	UOSInt i;
+	UIntOS i;
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -295,21 +295,21 @@ void UI::GUIForm::SetText(Text::CStringNN text)
 	gtk_window_set_title((GtkWindow*)this->hwnd.OrNull(), (const Char*)text.v.Ptr());
 }
 
-Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
+Math::Size2D<UIntOS> UI::GUIForm::GetSizeP()
 {
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (wnd)
 	{
 		GdkRectangle rect;
 		gdk_window_get_frame_extents(wnd, &rect);
-		return Math::Size2D<UOSInt>((UInt32)rect.width, (UInt32)rect.height);
+		return Math::Size2D<UIntOS>((UInt32)rect.width, (UInt32)rect.height);
 	}
 	else
 	{
 		int w;
 		int h;
 		gtk_window_get_size((GtkWindow*)this->hwnd.OrNull(), &w, &h);
-		return Math::Size2D<UOSInt>((UInt32)w, (UInt32)h);
+		return Math::Size2D<UIntOS>((UInt32)w, (UInt32)h);
 	}
 }
 
@@ -349,7 +349,7 @@ NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, Any
 
 void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->timers.GetCount();	
 	while (i-- > 0)
 	{
@@ -442,7 +442,7 @@ Text::CStringNN UI::GUIForm::GetObjectClass() const
 	return CSTR("WinForm");
 }
 
-OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -497,7 +497,7 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		}
 		this->UpdateChildrenSize(false);
 		this->selfResize = true;
-		UOSInt i = this->resizeHandlers.GetCount();
+		UIntOS i = this->resizeHandlers.GetCount();
 		while (i-- > 0)
 		{
 			Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
@@ -514,7 +514,7 @@ Bool UI::GUIForm::OnPaint()
 
 void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -593,7 +593,7 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIForm::EventClosed()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
@@ -624,13 +624,13 @@ void UI::GUIForm::OnFocusLost()
 {
 }
 
-void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
+void UI::GUIForm::OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight)
 {
 }
 
 void UI::GUIForm::OnFileDrop(Data::DataArray<NN<Text::String>> files)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->dropFileHandlers.GetCount();
 	while (i-- > 0)
 	{

@@ -69,11 +69,11 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 	str1.ConcatTo(sbuff);
 	Math::Size2DDbl size;
 	UInt16 absH;
-	UOSInt fntCount;
+	UIntOS fntCount;
 	UInt32 i;
 	UInt32 maxSize;
 	UInt32 maxIndex;
-	UOSInt lblSize;
+	UIntOS lblSize;
 	NN<Map::MapFontStyle> font;
 	NN<Map::MapFontStyle> font2;
 	NN<Data::ArrayListNN<MapFontStyle>> nnfontStyle;
@@ -293,7 +293,7 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 					Int32 type;
 					Math::Size2DDbl szThis = img->GetTextSize(font->font, str1);
 
-					if ((szThis.x * absH) < (szThis.y * UOSInt2Double(lblSize) * scaleW))
+					if ((szThis.x * absH) < (szThis.y * UIntOS2Double(lblSize) * scaleW))
 					{
 						scaleW = -scaleW;
 						startX = scnPos.x - (tmp = (szThis.x * 0.5));
@@ -308,19 +308,19 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 						scaleW = -scaleW;
 						if (scaleH > 0)
 						{
-							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startY = scnPos.y - (tmp = ((szThis.y * UIntOS2Double(lblSize)) * 0.5));
 							startX = scnPos.x - (tmp * scaleW / scaleH);
 						}
 						else if (scaleH)
 						{
 							scaleW = -scaleW;
 							scaleH = -scaleH;
-							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startY = scnPos.y - (tmp = ((szThis.y * UIntOS2Double(lblSize)) * 0.5));
 							startX = scnPos.x - (tmp * scaleW / scaleH);
 						}
 						else
 						{
-							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startY = scnPos.y - (tmp = ((szThis.y * UIntOS2Double(lblSize)) * 0.5));
 							startX = scnPos.x;
 						}
 						type = 1;
@@ -335,7 +335,7 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 					currPt.x = 0;
 					currPt.y = 0;
 
-					UOSInt cnt;
+					UIntOS cnt;
 					UnsafeArray<UTF8Char> lbl = sbuff;
 					cnt = lblSize;
 
@@ -409,11 +409,11 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 	}
 }
 
-void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds)
+void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	UOSInt lblSize = str1.leng;
+	UIntOS lblSize = str1.leng;
 	Math::Coord2DDbl centPt = scnPts[thisPt] + (scnPts[thisPt + 1] - scnPts[thisPt]) * scaleN / scaleD;
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nextPt;
@@ -423,13 +423,13 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 	Math::Coord2DDbl min;
 	Math::Coord2DDbl max;
 	NN<Data::ArrayListNN<MapFontStyle>> nnfontStyle;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Double angleOfst;
 	Math::Size2DDbl szThis;
 	Math::Size2DDbl szLast;
 	Int32 mode;
-	UOSInt fntCount;
+	UIntOS fntCount;
 	NN<Map::MapFontStyle> font;
 	Bool found;
 
@@ -636,7 +636,7 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 				}
 
 			}
-			if (j == (UOSInt)-1)
+			if (j == (UIntOS)-1)
 			{
 				j = 0;
 				startPt = scnPts[0];
@@ -712,7 +712,7 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 		}
 	}
 
-	if ((OSInt)j < 0)
+	if ((IntOS)j < 0)
 	{
 		j = 0;
 	}
@@ -721,7 +721,7 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 		j -= 1;
 	}
 	NN<Media::DrawBrush> nnb;
-	UOSInt startInd = j;
+	UIntOS startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
 	i = 0;
@@ -736,7 +736,7 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 			Double angle;
 			Double angleDegree;
 			Double lastAngle;
-			UOSInt lastAInd;
+			UIntOS lastAInd;
 			Math::Coord2DDbl lastPt;
 
 			szLast.x = 0;
@@ -837,7 +837,7 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 						else if (mode == 1)
 						{
 							j--;
-							if ((OSInt)j < 0)
+							if ((IntOS)j < 0)
 							{
 								j = 0;
 
@@ -973,11 +973,11 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 	realBounds.Set(Math::RectAreaDbl(min, max));
 }
 
-void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Double> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle)
+void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Double> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	UOSInt lblSize = str1.leng;
+	UIntOS lblSize = str1.leng;
 	Math::Coord2DDbl centPt = scnPts[thisPt] + (scnPts[thisPt + 1] - scnPts[thisPt]) * scaleN / scaleD;
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nextPt;
@@ -985,11 +985,11 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 	Double startY = 0;
 	Math::Coord2DDbl diff;
 	Math::Coord2DDbl aDiff;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Math::Size2DDbl szThis;
 	Int32 mode;
-	UOSInt fntCount;
+	UIntOS fntCount;
 	NN<Map::MapFontStyle> font;
 	NN<Data::ArrayListNN<MapFontStyle>> nnfontStyle;
 	Bool found;
@@ -1191,7 +1191,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 				}
 
 			}
-			if (j == (UOSInt)-1)
+			if (j == (UIntOS)-1)
 			{
 				j = 0;
 				startX = scnPts[0].x;
@@ -1270,7 +1270,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 	}
 
 	NN<Media::DrawBrush> b;
-	if ((OSInt)j < 0)
+	if ((IntOS)j < 0)
 	{
 		j = 0;
 	}	
@@ -1287,13 +1287,13 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 		{
 			UnsafeArray<UTF8Char> lbl = sbuff;
 			UTF8Char l[2];
-			UOSInt currInd;
-			UOSInt lastInd;
-			UOSInt cnt;
+			UIntOS currInd;
+			UIntOS lastInd;
+			UIntOS cnt;
 			cnt = lblSize;
 			currPt.x = startX;
 			currPt.y = startY;
-			lastInd = (UOSInt)-1;
+			lastInd = (UIntOS)-1;
 			currInd = j;
 
 			while (cnt--)
@@ -1388,7 +1388,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 							}
 							if (!found)
 							{
-								lastInd = (UOSInt)-1;
+								lastInd = (UIntOS)-1;
 								currInd--;
 							}
 						}
@@ -1451,7 +1451,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 							}
 							if (!found)
 							{
-								lastInd = (UOSInt)-1;
+								lastInd = (UIntOS)-1;
 								currInd--;
 							}
 						}
@@ -1516,7 +1516,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 							}
 							if (!found)
 							{
-								lastInd = (UOSInt)-1;
+								lastInd = (UIntOS)-1;
 							}
 						}
 					}
@@ -1577,7 +1577,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 							}
 							if (!found)
 							{
-								lastInd = (UOSInt)-1;
+								lastInd = (UIntOS)-1;
 							}
 						}
 					}
@@ -1589,11 +1589,11 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 	}
 }
 
-void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds)
+void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	UOSInt lblSize = str1.leng;
+	UIntOS lblSize = str1.leng;
 	Math::Coord2DDbl centPt = scnPts[thisPt] + (scnPts[thisPt + 1] - scnPts[thisPt]) * scaleN / scaleD;
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nextPt;
@@ -1604,12 +1604,12 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 	Math::Coord2DDbl min;
 	Math::Coord2DDbl max;
 	Double angleOfst;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Math::Size2DDbl szThis;
 	Math::Size2DDbl szLast;
 	Int32 mode;
-	UOSInt fntCount;
+	UIntOS fntCount;
 	NN<Map::MapFontStyle> font;
 	NN<Data::ArrayListNN<MapFontStyle>> nnfontStyle;
 
@@ -1770,7 +1770,7 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 	}
 
 	NN<Media::DrawBrush> b;
-	UOSInt startInd = j;
+	UIntOS startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 	i = 0;
 	while (i < fntCount)
@@ -1796,7 +1796,7 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 			lastX = currPt.x = startX;
 			lastY = currPt.y = startY;
 			j = startInd;
-			UOSInt lastInd = j;
+			UIntOS lastInd = j;
 
 			angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
 			angleDegree = angle * 180.0 / PI;
@@ -1997,7 +1997,7 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 								break;
 							}
 						}
-						if (j == (UOSInt)-1)
+						if (j == (UIntOS)-1)
 						{
 							j = 0;
 							currPt.x = currPt.x + (dist * cosAngle);
@@ -2143,7 +2143,7 @@ void Map::MapConfig2::GetCharsSize(NN<Media::DrawImage> img, OutParam<Math::Coor
 	Double ySizeAdd = 0;
 
 	NN<Map::MapFontStyle> font;
-	UOSInt fntCount;
+	UIntOS fntCount;
 
 	UInt32 i;
 	Double maxSize;
@@ -2263,7 +2263,7 @@ UInt32 Map::MapConfig2::ToColor(UnsafeArray<const UTF8Char> str)
 Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<IO::Writer> errWriter)
 {
 	NN<Map::CIPLayer2> cip;
-	UOSInt i = layerList->GetCount();
+	UIntOS i = layerList->GetCount();
 	while (i-- > 0)
 	{
 		NN<Map::MapDrawLayer> lyr;
@@ -2285,18 +2285,18 @@ Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, 
 	return cip;
 }
 
-void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyrs, NN<Map::MapView> view, OutParam<Bool> isLayerEmpty, NN<Map::MapScheduler> sch, NN<Media::DrawEngine> eng, Optional<Media::ImageResizer> resizer, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyrs, NN<Map::MapView> view, OutParam<Bool> isLayerEmpty, NN<Map::MapScheduler> sch, NN<Media::DrawEngine> eng, Optional<Media::ImageResizer> resizer, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UIntOS> objCnt, UIntOS maxObjCnt)
 {
 	NN<Media::ImageResizer> nnresizer;
 	NN<Media::DrawImage> lyrImg;
 	if (!lyrs->img.SetTo(lyrImg))
 		return;
 	NN<Math::Geometry::Vector2D> vec;
-	UOSInt imgW;
-	UOSInt imgH;
-	UOSInt i;
+	UIntOS imgW;
+	UIntOS imgH;
+	UIntOS i;
 #ifdef NOSCH
-	OSInt j;
+	IntOS j;
 	Math::Coord2D<Int32> pts;
 	Math::RectAreaDbl *objPtr = &objBounds[objCnt.Get()];
 #endif
@@ -2304,7 +2304,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyr, nullptr, nullptr, lyrs->img, UOSInt2Double(lyrImg->GetWidth()) * 0.5, UOSInt2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, nullptr, nullptr, lyrs->img, UIntOS2Double(lyrImg->GetWidth()) * 0.5, UIntOS2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2322,7 +2322,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 		imgH = lyrImg->GetHeight();
 		NN<Media::DrawImage> gimg2 = lyrImg;
 		NN<Media::DrawImage> gimg;
-		if (eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)Double2OSInt(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UOSInt)Double2OSInt(UOSInt2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType()).SetTo(gimg))
+		if (eng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)Double2IntOS(UIntOS2Double(imgW) * img->GetHDPI() / 96.0), (UIntOS)Double2IntOS(UIntOS2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType()).SetTo(gimg))
 		{
 			Bool revOrder;
 			Bool revOrder2;
@@ -2330,15 +2330,15 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 			UnsafeArray<UInt8> bmpBits2;
 			if (gimg->GetImgBits(revOrder).SetTo(bmpBits) && gimg2->GetImgBits(revOrder2).SetTo(bmpBits2))
 			{
-				nnresizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
+				nnresizer->Resize(bmpBits2, (IntOS)imgW << 2, UIntOS2Double(imgW), UIntOS2Double(imgH), 0, 0, bmpBits, Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UIntOS2Double(imgH) * img->GetHDPI() / 96.0));
 				gimg->GetImgBitsEnd(true);
 				gimg2->GetImgBitsEnd(false);
 			}
 			dimg = gimg;
-			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
-			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
+			imgW = (UInt32)Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
+			imgH = (UInt32)Double2Int32(UIntOS2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 	#ifndef NOSCH
-			sch->SetDrawType(lyr, nullptr, nullptr, dimg, UOSInt2Double(gimg->GetWidth()) * 0.5, UOSInt2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, nullptr, nullptr, dimg, UIntOS2Double(gimg->GetWidth()) * 0.5, UIntOS2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
 	#endif
 		}
 		else
@@ -2389,14 +2389,14 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyrs, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, UnsafeArray<MapLabels2> labels, UInt32 maxLabels, InOutParam<UInt32> labelCnt, OutParam<Bool> isLayerEmpty)
 {
 	Optional<Map::NameArray> arr;
-	UOSInt i;
+	UIntOS i;
 	NN<Math::Geometry::Vector2D> vec;
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
 	NN<Map::GetObjectSess> session;
-	UOSInt imgWidth;
-	UOSInt imgHeight;
+	UIntOS imgWidth;
+	UIntOS imgHeight;
 	NN<Media::DrawImage> lyrImg;
 
 	if (lyrs->img.SetTo(lyrImg))
@@ -2429,16 +2429,16 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 					Math::Coord2DDbl pt = vec->GetCenter();
 					sb.ClearStr();
 					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
-					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), 1, &pt, lyrs->priority, Map::DRAW_LAYER_POINT, lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), 1, &pt, lyrs->priority, Map::DRAW_LAYER_POINT, lyrs->style, lyrs->bkColor, view, (UIntOS2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UIntOS2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
 					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
-					UOSInt k;
-					UOSInt maxSize;
-					UOSInt maxPos;
-					UOSInt nPoint;
+					UIntOS k;
+					UIntOS maxSize;
+					UIntOS maxPos;
+					UIntOS nPoint;
 					UnsafeArray<Math::Coord2DDbl> pointArr;
 					NN<Math::Geometry::LineString> ls;
 					maxSize = (pl->GetItem(0).SetTo(ls))?ls->GetPointCount():0;
@@ -2461,17 +2461,17 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 					if (pl->GetItem(maxPos).SetTo(ls))
 					{
 						pointArr = ls->GetPointList(nPoint);
-						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UIntOS2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UIntOS2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					}
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polygon:	
 				{
 					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
-					UOSInt k;
-					UOSInt maxSize;
-					UOSInt maxPos;
-					UOSInt nPoint;
+					UIntOS k;
+					UIntOS maxSize;
+					UIntOS maxPos;
+					UIntOS nPoint;
 					UnsafeArray<Math::Coord2DDbl> pointArr;
 					NN<Math::Geometry::LinearRing> lr;
 					maxSize = (pg->GetItem(0).SetTo(lr))?lr->GetPointCount():0;
@@ -2494,7 +2494,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 					if (pg->GetItem(maxPos).SetTo(lr))
 					{
 						pointArr = lr->GetPointList(nPoint);
-						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UIntOS2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UIntOS2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					}
 					break;
 				}
@@ -2533,13 +2533,13 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 				{
 					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 					NN<Math::Geometry::LineString> ls;
-					UOSInt nPoint;
+					UIntOS nPoint;
 					if (pl->GetItem(pl->GetCount() >> 1).SetTo(ls))
 					{
 						UnsafeArray<Math::Coord2DDbl> pointArr = ls->GetPointList(nPoint);
 						if (nPoint & 1)
 						{
-							UOSInt l = nPoint >> 1;
+							UIntOS l = nPoint >> 1;
 							pts = pointArr[l];
 
 							scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
@@ -2547,7 +2547,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 						}
 						else
 						{
-							UOSInt l = nPoint >> 1;
+							UIntOS l = nPoint >> 1;
 							pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
 							pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
 
@@ -2670,13 +2670,13 @@ UInt32 Map::MapConfig2::NewLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel
 }
 
 
-Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, InOutParam<UInt32> labelCnt, Text::CStringNN labelt, UOSInt nPoint, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, InOutParam<UInt32> labelCnt, Text::CStringNN labelt, UIntOS nPoint, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
 
 	UInt32 i;
-	UOSInt j;
+	UIntOS j;
 
 	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
@@ -2766,7 +2766,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					scnSqrLen = scnPos.x + scnPos.y;
 
 					labels[i].currSize = scnSqrLen;
-					labels[i].totalSize = UOSInt2Double(nPoint);
+					labels[i].totalSize = UIntOS2Double(nPoint);
 					labels[i].nPoints = 0;
 					labels[i].shapeType = 1;
 					labels[i].points = nullptr;
@@ -2907,7 +2907,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					else if (ptPtr[0] == endPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						UOSInt newSize = labels[i].nPoints + nPoint - 1;
+						UIntOS newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
 						MemCopyNO(newArr, points.Ptr(), nPoint << 4);
@@ -2926,7 +2926,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					else if (ptPtr[labels[i].nPoints - 1] == startPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						UOSInt newSize = labels[i].nPoints + nPoint - 1;
+						UIntOS newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
 						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
@@ -2945,9 +2945,9 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					else if (ptPtr[0] == startPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						UOSInt newSize = labels[i].nPoints + nPoint - 1;
+						UIntOS newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize << 1);
-						UOSInt k;
+						UIntOS k;
 						Int32 l;
 						l = 0;
 						k = labels[i].nPoints;
@@ -2971,11 +2971,11 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					else if (ptPtr[labels[i].nPoints - 1] == endPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
-						UOSInt newSize = labels[i].nPoints + nPoint - 1;
+						UIntOS newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
-						UOSInt k;
-						UOSInt l;
+						UIntOS k;
+						UIntOS l;
 						l = labels[i].nPoints;
 						k = nPoint - 1;
 						while (k-- > 0)
@@ -3075,7 +3075,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 			Math::Coord2DDbl thisPt;
 			Math::Coord2DDbl thisT;
 			Math::Coord2DDbl* outPts;
-			UOSInt outPtCnt;
+			UIntOS outPtCnt;
 			Double sum;
 			Math::Coord2DDbl sumVal;
 
@@ -3184,8 +3184,8 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 				labels[i].scaleH = 0;
 				labels[i].priority = priority;
 
-				labels[i].currSize = UOSInt2Double(outPtCnt);
-				labels[i].totalSize = UOSInt2Double(outPtCnt);
+				labels[i].currSize = UIntOS2Double(outPtCnt);
+				labels[i].totalSize = UIntOS2Double(outPtCnt);
 				labels[i].nPoints = outPtCnt;
 				labels[i].shapeType = 5;
 				if (labels[i].points.SetTo(ptPtr))
@@ -3256,7 +3256,7 @@ void Map::MapConfig2::SwapLabel(UnsafeArray<MapLabels2> mapLabels, UInt32 index,
 	mapLabels[index2].yOfst = l.yOfst;
 }
 
-Bool Map::MapConfig2::LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOSInt nPoints, Math::RectAreaDbl rect)
+Bool Map::MapConfig2::LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UIntOS nPoints, Math::RectAreaDbl rect)
 {
 	while (nPoints--)
 	{
@@ -3266,19 +3266,19 @@ Bool Map::MapConfig2::LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOS
 	return false;
 }
 
-void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels2> labels, UInt32 maxLabel, UInt32 labelCnt, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, NN<Media::DrawEngine> drawEng, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt)
+void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels2> labels, UInt32 maxLabel, UInt32 labelCnt, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, NN<Media::DrawEngine> drawEng, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UIntOS> objCnt)
 {
 	UInt32 i;
-	UOSInt j;
+	UIntOS j;
 	Text::String *lastLbl = 0;
-	UOSInt scnWidth = img->GetWidth();
-	UOSInt scnHeight = img->GetHeight();
+	UIntOS scnWidth = img->GetWidth();
+	UIntOS scnHeight = img->GetHeight();
 	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	if (labelCnt)
 	{
 		Math::Coord2DDbl szThis;
-		UOSInt currPt;
+		UIntOS currPt;
 
 		Math::RectAreaDbl rect;
 		Math::Coord2DDbl scnPt;
@@ -3629,7 +3629,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 					labels[i].scaleH = 0;
 				}
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
-				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
+				if (IntOS2Double(diff.x) < szThis.x && IntOS2Double(diff.y) < szThis.y)
 				{
 					rect.min = scnPt - (szThis * 0.5);
 					rect.max = rect.min + szThis;
@@ -3675,8 +3675,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 								}
 								else
 								{
-									scnPt.x += OSInt2Double(scnDiff + 1);
-									if (scnPt.x >= OSInt2Double(maxX))
+									scnPt.x += IntOS2Double(scnDiff + 1);
+									if (scnPt.x >= IntOS2Double(maxX))
 									{
 										scnDiff = scnDiff * 0.5;
 										if (scnDiff < 30)
@@ -3718,8 +3718,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 								}
 								else
 								{
-									scnPt.y += OSInt2Double(scnDiff + 1);
-									if (scnPt.y >= OSInt2Double(maxY))
+									scnPt.y += IntOS2Double(scnDiff + 1);
+									if (scnPt.y >= IntOS2Double(maxY))
 									{
 										scnDiff = scnDiff * 0.5;
 										if (scnDiff < 30)
@@ -3905,8 +3905,8 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 	UnsafeArray<UTF8Char> baseDir = layerName;
 	Text::PString strs[10];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<MapLineStyle> currLine;
 	NN<MapFontStyle> currFont;
 	NN<MapLayerStyle> currLayer;
@@ -3945,9 +3945,9 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 		}
 		while (rdr.ReadLine(lineBuff, 1023).SetTo(sptr))
 		{
-			UOSInt strCnt;
+			UIntOS strCnt;
 			Int32 lyrType;
-			strCnt = Text::StrSplitTrimP(strs, 10, {lineBuff, (UOSInt)(sptr - lineBuff)}, ',');
+			strCnt = Text::StrSplitTrimP(strs, 10, {lineBuff, (UIntOS)(sptr - lineBuff)}, ',');
 
 			lyrType = Text::StrToInt32(strs[0].v);
 			switch (lyrType)
@@ -4016,8 +4016,8 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 					currLine->lineType = Text::StrToInt32(strs[2].v);
 					currLine->lineWidth = Text::StrToInt32(strs[3].v);
 					currLine->color = ToColor(strs[4].v);
-					currLine->styles = MemAlloc(UTF8Char, (UOSInt)(sptr - strs[5].v));
-					Text::StrConcatC(currLine->styles, strs[5].v, (UOSInt)(sptr - strs[5].v - 1));
+					currLine->styles = MemAlloc(UTF8Char, (UIntOS)(sptr - strs[5].v));
+					Text::StrConcatC(currLine->styles, strs[5].v, (UIntOS)(sptr - strs[5].v - 1));
 					thisLines->Add(currLine);
 				}
 				break;
@@ -4262,8 +4262,8 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 
 Map::MapConfig2::~MapConfig2()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UnsafeArray<Optional<Data::ArrayListNN<Map::MapLineStyle>>> lines;
 	NN<Data::ArrayListNN<Map::MapLineStyle>> thisLines;
 	NN<Map::MapLineStyle> currLine;
@@ -4320,7 +4320,7 @@ Map::MapConfig2::~MapConfig2()
 	if (this->drawList.SetTo(drawList))
 	{
 		NN<Media::DrawImage> img;
-		UOSInt i = drawList->GetCount();
+		UIntOS i = drawList->GetCount();
 		while (i-- > 0)
 		{
 			currLyr = drawList->GetItemNoCheck(i);
@@ -4346,7 +4346,7 @@ Bool Map::MapConfig2::IsError()
 	return this->drawList.IsNull();
 }
 
-Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer)
+Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UInt32 lineStyle, UIntOS lineLayer)
 {
 	UnsafeArray<Optional<Data::ArrayListNN<Map::MapLineStyle>>> lines;
 	NN<Data::ArrayListNN<Map::MapLineStyle>> thisLines;
@@ -4424,7 +4424,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 	Double maxSpd = 0;
 	UInt32 index;
 	UInt32 index2;
-	UOSInt layerCnt = drawList->GetCount();
+	UIntOS layerCnt = drawList->GetCount();
 	UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> myArrs;
 	NN<Data::ArrayListNN<MapFontStyle>> fontArr;
 	NN<Data::ArrayListNN<MapFontStyle>> myArrFont;
@@ -4435,10 +4435,10 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 	NN<Map::MapFontStyle> fnt2;
 	NN<Media::DrawBrush> brush;
 	Optional<Media::DrawPen> pen;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Int64 lastId;
 	Int64 thisId;
 	Double thisScale;
@@ -4448,7 +4448,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 	Manage::HiResClock clk;
 	UnsafeArray<Map::MapLabels2> labels = MemAllocArr(Map::MapLabels2, maxLabel);
 	Math::RectAreaDbl *objBounds = MemAllocA(Math::RectAreaDbl, this->nStr * 2);
-	UOSInt objCnt = 0;
+	UIntOS objCnt = 0;
 	view->SetDestImage(img);
 
 	Data::ArrayListInt64 arr;
@@ -4808,7 +4808,7 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 {
 	if (mcc == 0)
 		return true;
-	UOSInt i = this->areaList.GetCount();
+	UIntOS i = this->areaList.GetCount();
 	while (i-- > 0)
 	{
 		if (this->areaList.GetItemNoCheck(i)->mcc == mcc)
@@ -4819,7 +4819,7 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 
 Int32 Map::MapConfig2::QueryMCC(Math::Coord2DDbl pos)
 {
-	UOSInt i = this->areaList.GetCount();
+	UIntOS i = this->areaList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{

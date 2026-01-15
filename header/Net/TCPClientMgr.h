@@ -40,7 +40,7 @@ namespace Net
 			Data::Timestamp timeStart;
 			Bool recvDataExist;
 			UInt8 buff[TCP_BUFF_SIZE];
-			UOSInt buffSize;
+			UIntOS buffSize;
 			Optional<IO::StreamReadReq> readReq;
 		};
 
@@ -53,7 +53,7 @@ namespace Net
 		};
 		typedef struct
 		{
-			UOSInt index;
+			UIntOS index;
 			WorkerState state;
 			Bool toStop;
 			Bool isPrimary;
@@ -80,7 +80,7 @@ namespace Net
 		Sync::Mutex cliMut;
 
 		WorkerStatus *workers;
-		UOSInt workerCnt;
+		UIntOS workerCnt;
 		Data::SyncCircularBuffNN<TCPClientStatus> workerTasks;
 
 		IO::SMTCWriter *logWriter;
@@ -90,19 +90,19 @@ namespace Net
 		void ProcessClient(NN<TCPClientStatus> cliStat);
 		void ClientBeginRead(NN<TCPClientStatus> cliStat);
 	public:
-		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UOSInt workerCnt, TCPClientTimeout toHdlr);
+		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UIntOS workerCnt, TCPClientTimeout toHdlr);
 		~TCPClientMgr();
 
 		void SetLogFile(Text::CStringNN logFile);
 		void AddClient(NN<TCPClient> cli, AnyType cliData);
-		Bool SendClientData(UInt64 cliId, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Bool SendClientData(UInt64 cliId, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		Bool IsError();
 		void CloseAll();
 
 		void UseGetClient(NN<Sync::MutexUsage> mutUsage);
-		UOSInt GetClientCount() const;
+		UIntOS GetClientCount() const;
 		void ExtendTimeout(NN<Net::TCPClient> cli);
-		Optional<Net::TCPClient> GetClient(UOSInt index, OutParam<AnyType> cliData);
+		Optional<Net::TCPClient> GetClient(UIntOS index, OutParam<AnyType> cliData);
 		IO::SMTCWriter *GetLogWriter() const;
 	};
 }

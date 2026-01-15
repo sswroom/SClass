@@ -35,8 +35,8 @@ namespace Data
 		struct TradeEntry
 		{
 			TradeType type;
-			UOSInt fromIndex;
-			UOSInt toIndex;
+			UIntOS fromIndex;
+			UIntOS toIndex;
 			TradeDetail fromDetail;
 			TradeDetail toDetail;
 			Double refRate;
@@ -54,7 +54,7 @@ namespace Data
 
 		struct Asset
 		{
-			UOSInt index;
+			UIntOS index;
 			NN<Text::String> shortName;
 			NN<Text::String> fullName;
 			UInt32 currency;
@@ -73,7 +73,7 @@ namespace Data
 
 		class TradeDetailComparator : public Data::Comparator<NN<TradeDetail>>
 		{
-			virtual OSInt Compare(NN<TradeDetail> a, NN<TradeDetail> b) const;
+			virtual IntOS Compare(NN<TradeDetail> a, NN<TradeDetail> b) const;
 		};
 
 		class InvestmentManager
@@ -102,32 +102,32 @@ namespace Data
 			Bool SaveCurrency(NN<Currency> curr) const;
 			Bool SaveAsset(NN<Asset> ass) const;
 			Bool SaveTransactions() const;
-			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt, Bool invert) const;
+			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt, Bool invert) const;
 			UInt32 GetLocalCurrency() const { return this->localCurrency; }
 			UInt32 GetRefCurrency() const { return this->refCurrency; }
-			UOSInt GetCurrencyCount() const { return this->currMap.GetCount(); }
-			Optional<Currency> GetCurrencyInfo(UOSInt index) const { return this->currMap.GetItem(index); }
+			UIntOS GetCurrencyCount() const { return this->currMap.GetCount(); }
+			Optional<Currency> GetCurrencyInfo(UIntOS index) const { return this->currMap.GetItem(index); }
 			Optional<Currency> FindCurrency(UInt32 c) const { return this->currMap.Get(c); }
 			Bool UpdateCurrency(NN<Currency> curr, Data::Timestamp ts, Double value);
 			void CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue);
 			Double CurrencyGetRate(NN<Currency> curr, Data::Timestamp ts);
-			UOSInt GetAssetCount() const { return this->assetList.GetCount(); }
-			Optional<Asset> GetAsset(UOSInt index) const { return this->assetList.GetItem(index); }
+			UIntOS GetAssetCount() const { return this->assetList.GetCount(); }
+			Optional<Asset> GetAsset(UIntOS index) const { return this->assetList.GetItem(index); }
 			Optional<Asset> AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency);
-			Bool AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
-			Bool AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
+			Bool AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt) const;
+			Bool AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UIntOS timeCol, UIntOS valueCol, DateFormat fmt) const;
 			Bool UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue);
 			Double AssetGetPrice(NN<Asset> ass, Data::Timestamp ts) const;
 			Double AssetGetAmount(NN<Asset> ass, Data::Timestamp ts) const;
 			void AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue);
 
-			UOSInt GetTransactionCount() const { return this->tradeList.GetCount(); }
-			Optional<TradeEntry> GetTransactionEntry(UOSInt index) const { return this->tradeList.GetItem(index); }
+			UIntOS GetTransactionCount() const { return this->tradeList.GetCount(); }
+			Optional<TradeEntry> GetTransactionEntry(UIntOS index) const { return this->tradeList.GetItem(index); }
 			Bool AddTransactionFX(Data::Timestamp ts, UInt32 curr1, Double value1, UInt32 curr2, Double value2, Double refRate);
 			Bool AddTransactionDeposit(Data::Timestamp startTime, Data::Timestamp endTime, UInt32 curr, Double startValue, Double endValue);
-			Bool AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UOSInt assetIndex, Double assetAmount, Double currencyValue);
+			Bool AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UIntOS assetIndex, Double assetAmount, Double currencyValue);
 			Bool UpdateTransactionAsset(NN<TradeEntry> t, Data::Timestamp endTime, Data::Timestamp priceTime, Double assetAmount, Double currencyValue);
-			Bool AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue);
+			Bool AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UIntOS assetIndex, Double currencyValue);
 			Bool UpdateTransactionAInterest(NN<TradeEntry> t, Data::Timestamp endTime, Double currencyValue);
 			Bool AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue);
 			Data::Timestamp GetFirstTradeTime() const;

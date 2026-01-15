@@ -98,26 +98,26 @@ typedef double Double;
 #endif
 
 #if defined(_WIN64) && (defined(_M_X64) || defined(_M_AMD64)) && !defined(_M_ARM64EC)
-typedef __int64 OSInt;
-typedef unsigned __int64 UOSInt;
+typedef __int64 IntOS;
+typedef unsigned __int64 UIntOS;
 #define _OSINT_SIZE 64
 #define CPU_X86_64
 #define IS_BYTEORDER_LE 1
 #elif defined(__x86_64__)
-typedef long long OSInt;
-typedef unsigned long long UOSInt;
+typedef long long IntOS;
+typedef unsigned long long UIntOS;
 #define _OSINT_SIZE 64
 #define CPU_X86_64
 #define IS_BYTEORDER_LE 1
 #elif defined(_M_ARM64) || defined(_M_ARM64EC)
-typedef __int64 OSInt;
-typedef unsigned __int64 UOSInt;
+typedef __int64 IntOS;
+typedef unsigned __int64 UIntOS;
 #define _OSINT_SIZE 64
 #define CPU_ARM64
 #define IS_BYTEORDER_LE 1
 #elif defined(__aarch64__) 
-typedef long long OSInt;
-typedef unsigned long long UOSInt;
+typedef long long IntOS;
+typedef unsigned long long UIntOS;
 #define _OSINT_SIZE 64
 #define CPU_ARM64
 #define IS_BYTEORDER_LE 1
@@ -126,33 +126,33 @@ typedef unsigned long long UOSInt;
 #define __w64
 #endif
 #if defined(ARM) || defined(_M_ARM)
-typedef Int32 OSInt;
-typedef UInt32 UOSInt;
+typedef Int32 IntOS;
+typedef UInt32 UIntOS;
 #define _OSINT_SIZE 32
 #define CPU_ARM
 #define IS_BYTEORDER_LE 1
 #else
-typedef __w64 int OSInt;
-typedef __w64 unsigned int UOSInt;
+typedef __w64 int IntOS;
+typedef __w64 unsigned int UIntOS;
 #define _OSINT_SIZE 32
 #define CPU_X86_32
 #define IS_BYTEORDER_LE 1
 #endif
 #elif defined(__i386__)
-typedef Int32 OSInt;
-typedef UInt32 UOSInt;
+typedef Int32 IntOS;
+typedef UInt32 UIntOS;
 #define _OSINT_SIZE 32
 #define CPU_X86_32
 #define IS_BYTEORDER_LE 1
 #elif defined(__arm__) || defined(__arm__) || defined(ARM)
-typedef Int32 OSInt;
-typedef UInt32 UOSInt;
+typedef Int32 IntOS;
+typedef UInt32 UIntOS;
 #define _OSINT_SIZE 32
 #define CPU_ARM
 #define IS_BYTEORDER_LE 1
 #elif defined(__mips__)
-typedef Int32 OSInt;
-typedef UInt32 UOSInt;
+typedef Int32 IntOS;
+typedef UInt32 UIntOS;
 #define _OSINT_SIZE 32
 #define CPU_MIPS
 #if defined(__MIPSEL__)
@@ -161,8 +161,8 @@ typedef UInt32 UOSInt;
 #define IS_BYTEORDER_LE 0
 #endif
 #elif defined(AVR)
-typedef Int16 OSInt;
-typedef UInt16 UOSInt;
+typedef Int16 IntOS;
+typedef UInt16 UIntOS;
 #define _OSINT_SIZE 16
 #define CPU_AVR
 #define IS_BYTEORDER_LE 1
@@ -293,7 +293,7 @@ UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
 	}
 }
 
-OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+IntOS __inline MulDivOS(IntOS x, IntOS y, IntOS z)
 {
 	_asm
 	{
@@ -303,7 +303,7 @@ OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
 	}
 }
 
-UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+UIntOS __inline MulDivUOS(UIntOS x, UIntOS y, UIntOS z)
 {
 	_asm
 	{
@@ -344,14 +344,14 @@ Int64 __inline BSWAP64(Int64 v)
 #define MyADC_UOS(v1, v2, c, cout) __builtin_addcl(v1, v2, c, cout)
 #endif
 #else
-Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2;
@@ -367,14 +367,14 @@ UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 #define MySBB_UOS(v1, v2, c, cout) __builtin_subcl(v1, v2, c, cout)
 #endif
 #else
-Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MySUB_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v2 = v1 - v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MySBB_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v2 = v1 - v2 - c;
 	*cout = v1 < v2;
@@ -382,7 +382,7 @@ UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 }
 #endif
 
-__inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+__inline UIntOS MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
     __asm__(
         "mulq %3	\n\t"
@@ -395,11 +395,11 @@ __inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
     return x;
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS *reminder)
 {
 	unsigned __int128 v = (lo | (((unsigned __int128)hi) << 64));
-	*reminder = (UOSInt)(v % divider);
-    return (UOSInt)(v / divider);
+	*reminder = (UIntOS)(v % divider);
+    return (UIntOS)(v / divider);
 }
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
@@ -412,14 +412,14 @@ UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
 	 return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 
-OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+IntOS __inline MulDivOS(IntOS x, IntOS y, IntOS z)
 {
-	 return (OSInt)(((__int128)x * (__int128)y) / z);
+	 return (IntOS)(((__int128)x * (__int128)y) / z);
 }
 
-UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+UIntOS __inline MulDivUOS(UIntOS x, UIntOS y, UIntOS z)
 {
-	 return (UOSInt)(((unsigned __int128)x * (unsigned __int128)y) / z);
+	 return (UIntOS)(((unsigned __int128)x * (unsigned __int128)y) / z);
 }
 #elif defined(HAS_GCCASM32)
 #define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
@@ -429,14 +429,14 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #if __GNUC__ > 4
 #define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 #else
-Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2;
@@ -444,18 +444,18 @@ UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 }
 #endif
 
-UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+UIntOS __inline MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
 	UInt64 v = ((UInt64)x * (UInt64)y);
-	*hi = (UOSInt)(v >> 32);
+	*hi = (UIntOS)(v >> 32);
 	return (UInt32)v;
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS *reminder)
 {
 	UInt64 v = (lo | (((UInt64)hi) << 32));
-	*reminder = (UOSInt)(v % divider);
-    return (UOSInt)(v / divider);
+	*reminder = (UIntOS)(v % divider);
+    return (UIntOS)(v / divider);
 }
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
@@ -468,12 +468,12 @@ UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
 	return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 
-OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+IntOS __inline MulDivOS(IntOS x, IntOS y, IntOS z)
 {
 	return (Int32)(((Int64)x * (Int64)y) / z);
 }
 
-UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+UIntOS __inline MulDivUOS(UIntOS x, UIntOS y, UIntOS z)
 {
 	 return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
@@ -488,45 +488,45 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #if _OSINT_SIZE == 64
 #if defined(_M_ARM64) || defined(_M_ARM64EC)
 #include <intrin.h>
-Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2;
 	return v1;
 }
 
-Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MySUB_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v2 = v1 - v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MySBB_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v2 = v1 - v2 - c;
 	*cout = v1 < v2;
 	return v1;
 }
 
-UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+UIntOS __inline MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
 	*hi = __umulh(x, y);
 	return (x * y);
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS* reminder)
 {
 	hi = hi % divider;
-	UOSInt i = 64;
-	UOSInt ret = 0;
+	UIntOS i = 64;
+	UIntOS ret = 0;
 	while (i--)
 	{
 		ret <<= 1;
@@ -558,18 +558,18 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder
 #define BSWAPU64(x) OSSwapInt64(x)
 #define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 
-UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+UIntOS __inline MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
 	UInt64 v = ((UInt64)x * (UInt64)y);
-	*hi = (UOSInt)(v >> 32);
+	*hi = (UIntOS)(v >> 32);
 	return (UInt32)v;
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS *reminder)
 {
 	UInt64 v = (lo | (((UInt64)hi) << 32));
-	*reminder = (UOSInt)(v % divider);
-    return (UOSInt)(v / divider);
+	*reminder = (UIntOS)(v % divider);
+    return (UIntOS)(v / divider);
 }
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
@@ -582,14 +582,14 @@ UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
 	return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 
-OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+IntOS __inline MulDivOS(IntOS x, IntOS y, IntOS z)
 {
-	 return (OSInt)(((__int128)x * (__int128)y) / z);
+	 return (IntOS)(((__int128)x * (__int128)y) / z);
 }
 
-UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+UIntOS __inline MulDivUOS(UIntOS x, UIntOS y, UIntOS z)
 {
-	 return (UOSInt)(((unsigned __int128)x * (unsigned __int128)y) / z);
+	 return (UIntOS)(((unsigned __int128)x * (unsigned __int128)y) / z);
 }
 #elif defined(__sun) || defined(sun)
 #include <sys/byteorder.h>
@@ -622,14 +622,14 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define MyADC_UOS(v1, v2, c, cout) __builtin_addcl(v1, v2, c, cout)
 #endif
 #else
-Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2
@@ -645,14 +645,14 @@ UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 #define MySBB_UOS(v1, v2, c, cout) __builtin_subcl(v1, v2, c, cout)
 #endif
 #else
-Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MySUB_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 {
 	v2 = v1 - v2;
 	*outPtr = v1;
 	return v1 < v2;
 }
 
-UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UIntOS __inline MySBB_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v2 = v1 - v2 - c;
 	*cout = v1 < v2;
@@ -661,32 +661,32 @@ UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 #endif
 
 #if _OSINT_SIZE == 64
-__inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+__inline UIntOS MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
 	unsigned __int128 v = (x * (unsigned __int128)y);
-    *hi = (UOSInt)(v >> 64);
-    return (UOSInt)v;
+    *hi = (UIntOS)(v >> 64);
+    return (UIntOS)v;
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS *reminder)
 {
 	unsigned __int128 v = (lo | (((unsigned __int128)hi) << 64));
-	*reminder = (UOSInt)(v % divider);
-    return (UOSInt)(v / divider);
+	*reminder = (UIntOS)(v % divider);
+    return (UIntOS)(v / divider);
 }
 #else
-UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+UIntOS __inline MyMUL_UOS(UIntOS x, UIntOS y, UIntOS* hi)
 {
 	UInt64 v = ((UInt64)x * (UInt64)y);
-	*hi = (UOSInt)(v >> 32);
+	*hi = (UIntOS)(v >> 32);
 	return (UInt32)v;
 }
 
-__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+__inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS *reminder)
 {
 	UInt64 v = (lo | (((UInt64)hi) << 32));
-	*reminder = (UOSInt)(v % divider);
-    return (UOSInt)(v / divider);
+	*reminder = (UIntOS)(v % divider);
+    return (UIntOS)(v / divider);
 }
 #endif
 
@@ -711,18 +711,18 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #define Double2Int32(val) (((val) < 0)?(Int32)(val - 0.5):(Int32)(val + 0.5))
 #define Double2Int64(val) (((val) < 0)?(Int64)(val - 0.5):(Int64)(val + 0.5))
 #if _OSINT_SIZE == 64
-#define Double2OSInt(val) (OSInt)Double2Int64(val)
+#define Double2IntOS(val) (IntOS)Double2Int64(val)
 #else
-#define Double2OSInt(val) (OSInt)Double2Int32(val)
+#define Double2IntOS(val) (IntOS)Double2Int32(val)
 #endif
-#define OSInt2Double(val) ((Double)(val))
-#define UOSInt2Double(val) ((Double)(val))
+#define IntOS2Double(val) ((Double)(val))
+#define UIntOS2Double(val) ((Double)(val))
 #define Int64_Double(val) ((Double)(val))
 #define UInt64_Double(val) ((Double)(val))
 
 #define ROR32(x, n) ((x >> n) | (x << (32 - n)))
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
-#define INVALID_INDEX ((UOSInt)-1)
+#define INVALID_INDEX ((UIntOS)-1)
 #define UTF8STRC(s) U8STR(s), U8STRLEN(s)
 #define UTF8STRCPTR(s) U8STRPTR(s), U8STRLEN(s)
 #define UTF8STR_NULL (const UTF8Char*)0, 0

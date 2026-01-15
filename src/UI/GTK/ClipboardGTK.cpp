@@ -20,7 +20,7 @@ UI::Clipboard::~Clipboard()
 }
 
 
-UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes)
+UIntOS UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -29,7 +29,7 @@ UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes
 	{
 		return false;
 	}
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (gtk_clipboard_wait_is_text_available(clipboard))
 	{
 		dataTypes->Add(1);
@@ -42,7 +42,7 @@ UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes
 	}
 	GdkAtom *targets;
 	gint nTargets;
-	OSInt i;
+	IntOS i;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		i = 0;
@@ -84,7 +84,7 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 				{
 					gint leng;
 					const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
-					NEW_CLASSOPT(ret, Data::ByteBuffer(Data::ByteArrayR(rawdata, (UOSInt)leng)));
+					NEW_CLASSOPT(ret, Data::ByteBuffer(Data::ByteArrayR(rawdata, (UIntOS)leng)));
 					gtk_selection_data_free(data);
 				}
 			}
@@ -102,7 +102,7 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 		if (s)
 		{
 			NN<Data::ByteBuffer> ret;
-			UOSInt leng = Text::StrCharCnt((const UTF8Char*)s);
+			UIntOS leng = Text::StrCharCnt((const UTF8Char*)s);
 			NEW_CLASSNN(ret, Data::ByteBuffer(Data::ByteArrayR((const UTF8Char*)s, leng)));
 			g_free(s);
 			return ret;
@@ -118,7 +118,7 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 		if (s)
 		{
 			Text::StringBuilderUTF8 sb;
-			OSInt i = 0;
+			IntOS i = 0;
 			while (true)
 			{
 				if (s[i] == 0)
@@ -158,8 +158,8 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	gint nTargets;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
 	{
 		const Char *typeName;
@@ -174,12 +174,12 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 				{
 					gint leng;
 					const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
-					if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("copy")))
+					if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UIntOS)leng, UTF8STRC("copy")))
 					{
 						ret = UI::Clipboard::FPT_COPY;
 						i = 5;
 					}
-					else if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("cut")))
+					else if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UIntOS)leng, UTF8STRC("cut")))
 					{
 						ret = UI::Clipboard::FPT_MOVE;
 						i = 4;
@@ -193,7 +193,7 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 							if (j != INVALID_INDEX)
 							{
 								sb.ClearStr();
-								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)j);
+								sb.AppendC((const UTF8Char*)&rawdata[i], (UIntOS)j);
 								i += j + 1;
 								if (sb.StartsWith(UTF8STRC("file:///")))
 								{
@@ -235,7 +235,7 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStrin
 
 void UI::Clipboard::FreeDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
-	UOSInt i = fileNames->GetCount();;
+	UIntOS i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(fileNames->GetItem(i));
@@ -275,19 +275,19 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 						const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
 						if (Text::StrEqualsCh(typeName, "TIMESTAMP") && leng == 8)
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
+							sb->AppendHexBuff(rawdata, (UIntOS)leng, ' ', Text::LineBreakType::CRLF);
 /*							Data::DateTime dt;
 							dt.SetUnixTimestamp(ReadInt64(rawdata));
 							sb->Append(&dt);*/
 						}
 						else if (Text::StrEqualsCh(typeName, "x-special/gnome-copied-files"))
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
+							sb->AppendHexBuff(rawdata, (UIntOS)leng, ' ', Text::LineBreakType::CRLF);
 //							sb->Append((const UTF8Char*)rawdata, leng));
 						}
 						else
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
+							sb->AppendHexBuff(rawdata, (UIntOS)leng, ' ', Text::LineBreakType::CRLF);
 						}
 					}
 					gtk_selection_data_free(data);
@@ -323,7 +323,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 		gchar **s = gtk_clipboard_wait_for_uris(clipboard);
 		if (s)
 		{
-			OSInt i = 0;
+			IntOS i = 0;
 			while (true)
 			{
 				if (s[i] == 0)
@@ -374,7 +374,7 @@ Bool UI::Clipboard::GetString(Optional<ControlHandle> hWndOwner, NN<Text::String
 	}
 }
 
-UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UIntOS buffSize)
 {
 	if (fmtId >= 128)
 	{

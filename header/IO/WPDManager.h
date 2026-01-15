@@ -29,7 +29,7 @@ namespace IO
 		WPDManager();
 		~WPDManager();
 
-		OSInt GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList);
+		IntOS GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList);
 		Bool GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
 		Bool GetDevDesc(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
 		Bool GetDevManu(const WChar *devId, NN<Text::StringBuilderUTF8> sb);

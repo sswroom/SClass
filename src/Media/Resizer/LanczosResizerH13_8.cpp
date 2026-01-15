@@ -28,7 +28,7 @@ Double Media::Resizer::LanczosResizerH13_8::Lanczos3Weight(Double phase)
 	return ret;
 }
 
-void Media::Resizer::LanczosResizerH13_8::SetupInterpolationParameter(Int32 source_length, UOSInt result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH13_8::SetupInterpolationParameter(Int32 source_length, UIntOS result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Double offsetCorr)
 {
 	Int32 i,j,n;
 	Double *work;
@@ -77,7 +77,7 @@ void Media::Resizer::LanczosResizerH13_8::SetupInterpolationParameter(Int32 sour
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH13_8::SetupDecimationParameter(Int32 source_length, UOSInt result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Int32 offsetCorr)
+void Media::Resizer::LanczosResizerH13_8::SetupDecimationParameter(Int32 source_length, UIntOS result_length, NN<LRH13PARAMETER> out, Int32 indexSep, Int32 offsetCorr)
 {
 	Int32 i,j,n;
 	Double *work;
@@ -126,7 +126,7 @@ void Media::Resizer::LanczosResizerH13_8::SetupDecimationParameter(Int32 source_
 }
 
 /*-----------------------------------------------------------------*/
-void Media::Resizer::LanczosResizerH13_8::HorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::HorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x8080808080808080;
@@ -250,7 +250,7 @@ hflop7:
 }
 
 /*-----------------------------------------------------------------*/
-void Media::Resizer::LanczosResizerH13_8::VerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::VerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x80808080;
@@ -310,7 +310,7 @@ vflop3:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::Expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::Expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep)
 {
 	Int32 currWidth;
 	Int32 currHeight;
@@ -348,7 +348,7 @@ vflop2:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::Collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::Collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x80808080;
@@ -391,7 +391,7 @@ vflop2:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
 {
 	Int32 currHeight;
 	Int32 lastHeight = height;
@@ -432,11 +432,11 @@ void Media::Resizer::LanczosResizerH13_8::MTHorizontalFilter(UnsafeArray<const U
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep)
 {
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
-	UOSInt i = this->nThread;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
+	UIntOS i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
@@ -473,11 +473,11 @@ void Media::Resizer::LanczosResizerH13_8::MTVerticalFilter(UnsafeArray<const UIn
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep)
 {
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
-	UOSInt i = this->nThread;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
+	UIntOS i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
@@ -511,11 +511,11 @@ void Media::Resizer::LanczosResizerH13_8::MTExpand(UnsafeArray<const UInt8> inPt
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, Int32 sstep, Int32 dstep)
 {
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
-	UOSInt i = this->nThread;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
+	UIntOS i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
@@ -715,7 +715,7 @@ Media::Resizer::LanczosResizerH13_8::~LanczosResizerH13_8()
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::Resize(UnsafeArray<const UInt8> src, Int32 sbpl, Int32 swidth, Int32 sheight, UnsafeArray<UInt8> dest, Int32 dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizerH13_8::Resize(UnsafeArray<const UInt8> src, Int32 sbpl, Int32 swidth, Int32 sheight, UnsafeArray<UInt8> dest, Int32 dbpl, UIntOS dwidth, UIntOS dheight)
 {
 	UnsafeArray<Int32> hIndex;
 	UnsafeArray<Int64> hWeight;

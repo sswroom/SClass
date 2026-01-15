@@ -47,10 +47,10 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	UOSInt i;
-	UOSInt j;
-	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&hdr[30])));
-	UOSInt miniStmSectSize = ((UOSInt)1 << (ReadUInt16(&hdr[32])));
+	UIntOS i;
+	UIntOS j;
+	UIntOS sectorSize = ((UIntOS)1 << (ReadUInt16(&hdr[30])));
+	UIntOS miniStmSectSize = ((UIntOS)1 << (ReadUInt16(&hdr[32])));
 //	UInt16 majorVer = ReadUInt16(&hdr[26]);
 //	Int32 dirCnt = ReadInt32(&hdr[40]);
 	UInt32 fatCnt = ReadUInt32(&hdr[44]);
@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	Data::Timestamp rootModifyTS = 0;
 
 	Data::ByteBuffer fat(sectorSize * fatCnt);
-	UOSInt fatSize = 0;
+	UIntOS fatSize = 0;
 	i = 0;
 	j = fatCnt;
 	if (j > 109)
@@ -316,9 +316,9 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	WorkbookStatus status;
 	Parser::FileParser::CFBParser::FontInfo *font;
 	NN<Text::SpreadSheet::CellStyle> style;
-	UOSInt readBuffSize;
-	UOSInt readSize;
-	UOSInt i;
+	UIntOS readBuffSize;
+	UIntOS readSize;
+	UIntOS i;
 	UInt16 recNo;
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
@@ -481,8 +481,8 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0x92: //PALETTE
 				{
-					UOSInt j = ReadUInt16(&readBuff[i + 4]);
-					UOSInt k;
+					UIntOS j = ReadUInt16(&readBuff[i + 4]);
+					UIntOS k;
 					k = 0;
 					while (k < j)
 					{
@@ -503,7 +503,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 			case 0xe0: //XF
 				{
 					style = wb->NewCellStyle();
-					UOSInt j = ReadUInt16(&readBuff[i + 4]);
+					UIntOS j = ReadUInt16(&readBuff[i + 4]);
 					if (j)
 					{
 						font = status.fontList.GetItem(j);
@@ -653,14 +653,14 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0xfc: //SST
 				{
-					UOSInt j = i + 12;
-					UOSInt k;
+					UIntOS j = i + 12;
+					UIntOS k;
 					UInt32 nStr = ReadUInt32(&readBuff[i + 8]);
 					while (nStr-- > 0)
 					{
 						if (j >= i + 4 + recLeng)
 						{
-							i += (UOSInt)(4 + recLeng);
+							i += (UIntOS)(4 + recLeng);
 							recNo = ReadUInt16(&readBuff[i]);
 							recLeng = ReadUInt16(&readBuff[i + 2]);
 							if (i + 4 + recLeng > readBuffSize)
@@ -695,7 +695,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, charCnt, sb);
 							while (true)
 							{
-								i += (UOSInt)(4 + recLeng);
+								i += (UIntOS)(4 + recLeng);
 								recNo = ReadUInt16(&readBuff[i]);
 								recLeng = ReadUInt16(&readBuff[i + 2]);
 								if (i + 4 + recLeng > readBuffSize)
@@ -861,7 +861,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				readSize = 0;
 				break;
 			}
-			i += (UOSInt)(4 + recLeng);
+			i += (UIntOS)(4 + recLeng);
 			if (eofFound)
 				break;
 		}
@@ -922,9 +922,9 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
-	UOSInt readBuffSize;
-	UOSInt readSize;
-	UOSInt i;
+	UIntOS readBuffSize;
+	UIntOS readSize;
+	UIntOS i;
 	UInt16 recNo;
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
@@ -1047,7 +1047,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 					UInt16 row = ReadUInt16(&readBuff[i + 4]);
 					UInt16 colStart = ReadUInt16(&readBuff[i + 6]);
 					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]);
-					UOSInt currI = i + 8;
+					UIntOS currI = i + 8;
 					while (colStart <= colEnd)
 					{
 						ws->SetCellDouble(row, colStart, ParseRKNumber(ReadInt32(&readBuff[currI + 2])));
@@ -1063,7 +1063,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 					UInt16 row = ReadUInt16(&readBuff[i + 4]);
 					UInt16 colStart = ReadUInt16(&readBuff[i + 6]);
 					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]);
-					UOSInt currI = i + 8;
+					UIntOS currI = i + 8;
 					while (colStart <= colEnd)
 					{
 						ws->SetCellStyle(row, colStart, wb->GetStyle(ReadUInt16(&readBuff[currI])));
@@ -1081,7 +1081,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 				{
 					UInt16 cnt = (UInt16)(ReadUInt16(&readBuff[i + 4]));
 					UInt16 v = 0;
-					UOSInt vofst = i + 6;
+					UIntOS vofst = i + 6;
 					while (v < cnt)
 					{
 						ws->MergeCells(ReadUInt16(&readBuff[vofst]), ReadUInt16(&readBuff[vofst + 4]), (UInt32)ReadUInt16(&readBuff[vofst + 2]) - ReadUInt16(&readBuff[vofst]) + 1, (UInt32)ReadUInt16(&readBuff[vofst + 6]) - ReadUInt16(&readBuff[vofst + 4]) + 1);
@@ -1140,7 +1140,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 				readSize = 0;
 				break;
 			}
-			i += (UOSInt)(4 + recLeng);
+			i += (UIntOS)(4 + recLeng);
 			if (eofFound)
 				break;
 		}
@@ -1157,13 +1157,13 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 	return eofFound;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
+UIntOS Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt currOfst = 0;
-	UOSInt charCnt = ReadUInt16(&buff[0]);
+	UIntOS currOfst = 0;
+	UIntOS charCnt = ReadUInt16(&buff[0]);
 	UInt8 flags = buff[2];
-	UOSInt fmtCnt;
-	UOSInt cchExtRst;
+	UIntOS fmtCnt;
+	UIntOS cchExtRst;
 	if ((flags & 12) == 0)
 	{
 		if (flags & 1)
@@ -1237,13 +1237,13 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, InOutParam<UInt32> charCnt, NN<Text::StringBuilderUTF8> sb)
+UIntOS Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UIntOS buffSize, InOutParam<UInt32> charCnt, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt currOfst = 0;
+	UIntOS currOfst = 0;
 	UInt8 flags = buff[0];
-	UOSInt thisCnt = charCnt.Get();
-	UOSInt fmtCnt;
-	UOSInt cchExtRst;
+	UIntOS thisCnt = charCnt.Get();
+	UIntOS fmtCnt;
+	UIntOS cchExtRst;
 	if ((flags & 12) == 0)
 	{
 		if (flags & 1)
@@ -1334,13 +1334,13 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
+UIntOS Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt currOfst = 0;
-	UOSInt charCnt = buff[0];
+	UIntOS currOfst = 0;
+	UIntOS charCnt = buff[0];
 	UInt8 flags = buff[1];
-	UOSInt fmtCnt;
-	UOSInt cchExtRst;
+	UIntOS fmtCnt;
+	UIntOS cchExtRst;
 	if ((flags & 12) == 0)
 	{
 		if (flags & 1)

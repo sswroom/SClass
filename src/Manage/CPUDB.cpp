@@ -743,9 +743,9 @@ Manage::CPUDB::CPUSpecX86 *Manage::CPUDB::GetCPUSpecX86(Manage::CPUVendor::CPU_B
 {
 	if (brand == Manage::CPUVendor::CB_INTEL)
 	{
-		OSInt i = 0;
-		OSInt j = (sizeof(intelCPU) / sizeof(intelCPU[0])) - 1;
-		OSInt k;
+		IntOS i = 0;
+		IntOS j = (sizeof(intelCPU) / sizeof(intelCPU[0])) - 1;
+		IntOS k;
 		Manage::CPUDB::CPUSpecX86 *cpu;
 
 		while (i <= j)
@@ -785,9 +785,9 @@ Manage::CPUDB::CPUSpecX86 *Manage::CPUDB::GetCPUSpecX86(Manage::CPUVendor::CPU_B
 	}
 	else if (brand == Manage::CPUVendor::CB_AMD)
 	{
-		OSInt i = 0;
-		OSInt j = (sizeof(amdCPU) / sizeof(amdCPU[0])) - 1;
-		OSInt k;
+		IntOS i = 0;
+		IntOS j = (sizeof(amdCPU) / sizeof(amdCPU[0])) - 1;
+		IntOS k;
 		Manage::CPUDB::CPUSpecX86 *cpu;
 
 		while (i <= j)
@@ -833,10 +833,10 @@ Manage::CPUDB::CPUSpecX86 *Manage::CPUDB::GetCPUSpecX86(Manage::CPUVendor::CPU_B
 
 Optional<const Manage::CPUDB::CPUSpec> Manage::CPUDB::GetCPUSpec(Text::CStringNN model)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(cpuList) / sizeof(cpuList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(cpuList) / sizeof(cpuList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	Manage::CPUDB::CPUSpec *cpu;
 
 	while (i <= j)
@@ -862,10 +862,10 @@ Optional<const Manage::CPUDB::CPUSpec> Manage::CPUDB::GetCPUSpec(Text::CStringNN
 
 Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CStringNN x86CPUName)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(cpuX86Map) / sizeof(cpuX86Map[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (sizeof(cpuX86Map) / sizeof(cpuX86Map[0])) - 1;
+	IntOS k;
+	IntOS l;
 	CPUMapping *cpu;
 
 	while (i <= j)
@@ -903,7 +903,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 	Int32 cpuFamily = 0;
 	Int32 cpuModel = 0;
 	Int32 cpuStepping = 0;
-	UOSInt i;
+	UIntOS i;
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)
 	{
@@ -1021,7 +1021,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 	{
 		Optional<const Manage::CPUDB::CPUSpec> cpu = nullptr;
 		NN<const Manage::CPUDB::CPUSpec> nncpu;
-		UOSInt i;
+		UIntOS i;
 		if (sbHW.StartsWith(UTF8STRC("Qualcomm")))
 		{
 			if ((i = sbHW.IndexOf(UTF8STRC("MSM"))) != INVALID_INDEX)

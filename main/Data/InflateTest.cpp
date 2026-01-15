@@ -19,8 +19,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;
 	UInt8 *srcBuff;
-	UOSInt srcSize2 = 0;
-	UOSInt srcSize3 = 0;
+	UIntOS srcSize2 = 0;
+	UIntOS srcSize3 = 0;
 	IO::ConsoleWriter console;
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -36,8 +36,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		dstm.ReadToEnd(srcStm, 65536);
 	}
 	{
-		srcBuff = MemAlloc(UInt8, (UOSInt)oriStm.GetLength());
-		if (Data::Compress::Deflater::CompressDirect(Data::ByteArray(srcBuff, (UOSInt)oriStm.GetLength()), srcSize2, oriStm.GetArray(), Data::Compress::Deflater::CompLevel::BestCompression, true))
+		srcBuff = MemAlloc(UInt8, (UIntOS)oriStm.GetLength());
+		if (Data::Compress::Deflater::CompressDirect(Data::ByteArray(srcBuff, (UIntOS)oriStm.GetLength()), srcSize2, oriStm.GetArray(), Data::Compress::Deflater::CompLevel::BestCompression, true))
 		{
 			console.WriteLine(CSTR("Deflater CompressDirect success"));
 		}
@@ -52,7 +52,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		oriStm.SeekFromBeginning(0);
 		Data::Compress::Deflater dstm(oriStm, oriStm.GetLength(), nullptr, Data::Compress::Deflater::CompLevel::BestCompression, true);
 		dstm.ReadToEnd(tmpStm, 65536);
-		srcSize3 = (UOSInt)tmpStm.GetLength();
+		srcSize3 = (UIntOS)tmpStm.GetLength();
 		if (srcSize3 > 0)
 		{
 			console.WriteLine(CSTR("Deflater Compress success"));
@@ -65,10 +65,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	printf("srcSize = %d\r\n", (UInt32)srcStm.GetLength());
 	printf("srcSize2 = %d\r\n", (UInt32)srcSize2);
 	printf("srcSize3 = %d\r\n", (UInt32)srcSize3);
-	UOSInt buffSize2;
-	IO::MemoryStream mstm1((UOSInt)oriStm.GetLength());
-	IO::MemoryStream mstm2((UOSInt)oriStm.GetLength());
-	IO::MemoryStream mstm3((UOSInt)oriStm.GetLength());
+	UIntOS buffSize2;
+	IO::MemoryStream mstm1((UIntOS)oriStm.GetLength());
+	IO::MemoryStream mstm2((UIntOS)oriStm.GetLength());
+	IO::MemoryStream mstm3((UIntOS)oriStm.GetLength());
 	{
 		Data::Compress::InflateStream istm(mstm1, true);
 		if (istm.Write(srcStm.GetArray()) == srcStm.GetLength())
@@ -76,7 +76,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("InflateStream decompress completed"));
 		}
 	}
-	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm1.GetBuff(), (UOSInt)mstm1.GetLength()))
+	if (Text::StrEqualsC(oriStm.GetBuff(), (UIntOS)oriStm.GetLength(), mstm1.GetBuff(), (UIntOS)mstm1.GetLength()))
 	{
 		console.WriteLine(CSTR("InflateStream decompress correctly"));
 	}
@@ -93,7 +93,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("Inflater decompress completed"));
 		}
 	}
-	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm2.GetBuff(), (UOSInt)mstm2.GetLength()))
+	if (Text::StrEqualsC(oriStm.GetBuff(), (UIntOS)oriStm.GetLength(), mstm2.GetBuff(), (UIntOS)mstm2.GetLength()))
 	{
 		console.WriteLine(CSTR("Inflater decompress correctly"));
 	}
@@ -110,7 +110,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("Inflate decompress completed"));
 		}
 	}
-	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm3.GetBuff(), (UOSInt)mstm3.GetLength()))
+	if (Text::StrEqualsC(oriStm.GetBuff(), (UIntOS)oriStm.GetLength(), mstm3.GetBuff(), (UIntOS)mstm3.GetLength()))
 	{
 		console.WriteLine(CSTR("Inflate decompress correctly"));
 	}
@@ -119,14 +119,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine(CSTR("Inflate decompress failed"));
 	}
 
-	buff2 = MemAlloc(UInt8, (UOSInt)oriStm.GetLength() * 2);
+	buff2 = MemAlloc(UInt8, (UIntOS)oriStm.GetLength() * 2);
 	{
-		if (Data::Compress::Inflater::DecompressDirect(Data::ByteArray(buff2, (UOSInt)oriStm.GetLength() * 2), buffSize2, srcStm.GetArray(), true))
+		if (Data::Compress::Inflater::DecompressDirect(Data::ByteArray(buff2, (UIntOS)oriStm.GetLength() * 2), buffSize2, srcStm.GetArray(), true))
 		{
 			console.WriteLine(CSTR("Inflater decompressDirect completed"));
 		}
 	}
-	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), buff2, buffSize2))
+	if (Text::StrEqualsC(oriStm.GetBuff(), (UIntOS)oriStm.GetLength(), buff2, buffSize2))
 	{
 		console.WriteLine(CSTR("Inflater decompressDirect correctly"));
 	}

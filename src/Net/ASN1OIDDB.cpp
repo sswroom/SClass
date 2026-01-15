@@ -20922,7 +20922,7 @@ void Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR pdu, NN<Text::StringBuilde
 {
 	NN<const Net::ASN1OIDDB::OIDInfo> oid;
 	UInt32 v;
-	UOSInt checkSize = pdu.GetSize();
+	UIntOS checkSize = pdu.GetSize();
 	while (checkSize > 0)
 	{
 		if (OIDGetEntry(pdu.WithSize(checkSize)).SetTo(oid))
@@ -20956,10 +20956,10 @@ Optional<const Net::ASN1OIDDB::OIDInfo> Net::ASN1OIDDB::OIDGetEntry(Data::ByteAr
 	}
 #endif
 	Net::ASN1OIDDB::OIDInfo *oid;
-	OSInt i = 0;
-	OSInt j = (OSInt)(sizeof(oidList) / sizeof(oidList[0])) - 1;
-	OSInt k;
-	OSInt l;
+	IntOS i = 0;
+	IntOS j = (IntOS)(sizeof(oidList) / sizeof(oidList[0])) - 1;
+	IntOS k;
+	IntOS l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

@@ -92,19 +92,19 @@ namespace SSWR
 			Optional<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 
 			Sync::Mutex userMut;
-			Data::FastStringMapNative<UOSInt> userMap;
+			Data::FastStringMapNative<UIntOS> userMap;
 			Data::ArrayListStringNN userList;
 
 			NN<Net::Email::EmailStore> store;
-			UOSInt totalSize;
-			UOSInt recvSize;
+			UIntOS totalSize;
+			UIntOS recvSize;
 			Bool mailChanged;
 
 			static void __stdcall OnSMTPStartClicked(AnyType userObj);
 			static void __stdcall OnPOP3StartClicked(AnyType userObj);
 			static void __stdcall OnGCISStartClicked(AnyType userObj);
 			static void __stdcall OnLogFileClicked(AnyType userObj);
-			static void __stdcall OnEmailDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnEmailDblClicked(AnyType userObj, UIntOS index);
 			static UnsafeArrayOpt<UTF8Char> __stdcall OnMailReceived(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const Net::Email::SMTPServer::MailStatus> mail);
 			static void __stdcall OnGCISMailReceived(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> mail);
 			static Bool __stdcall OnMailLogin(AnyType userObj, Text::CStringNN userName, Text::CStringNN pwd);
@@ -126,7 +126,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId);
-			virtual UOSInt GetMessageStat(Int32 userId, OutParam<UOSInt> size);
+			virtual UIntOS GetMessageStat(Int32 userId, OutParam<UIntOS> size);
 			virtual Bool GetUnreadList(Int32 userId, NN<Data::ArrayListNative<UInt32>> unreadList);
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, NN<MessageInfo> info);
 			virtual Bool GetMessageContent(Int32 userId, UInt32 msgId, NN<IO::Stream> stm);

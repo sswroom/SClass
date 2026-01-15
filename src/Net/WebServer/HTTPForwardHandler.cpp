@@ -8,7 +8,7 @@
 Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NN<Net::WebServer::WebRequest> req)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt i = this->nextURL;
+	UIntOS i = this->nextURL;
 	this->nextURL = (i + 1) % this->forwardAddrs.GetCount();
 	return this->forwardAddrs.GetItem(i);
 }
@@ -54,8 +54,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	}
 	sb.Append(subReq);
 	NN<Text::String> uri = req->GetRequestURI();
-	UOSInt i = uri->IndexOf('?');
-	UOSInt j;
+	UIntOS i = uri->IndexOf('?');
+	UIntOS j;
 	if (i != INVALID_INDEX)
 	{
 		sb.AppendC(&uri->v[i], uri->leng - i);
@@ -112,7 +112,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 			sbHeader.ClearStr();
 			if (req->GetHeaderC(sbHeader, hdr->ToCString()))
 			{
-				UOSInt k = sbHeader.IndexOf(':');
+				UIntOS k = sbHeader.IndexOf(':');
 				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
 				if (k >= 0)
 				{
@@ -173,13 +173,13 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 			sbHeader.AppendUTF8Char(',');
 		}
 		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr()).Or(buff);
-		sbHeader.AppendC(buff, (UOSInt)(sptr - buff));
+		sbHeader.AppendC(buff, (UIntOS)(sptr - buff));
 		cli->AddHeaderC(CSTR("X-Forwarded-For"), sbHeader.ToCString());
 
 		if (fwdPort.IsNull() && svrPort != 0)
 		{
 			sptr = Text::StrUInt16(buff, svrPort);
-			cli->AddHeaderC(CSTR("X-Forwarded-Port"), {buff, (UOSInt)(sptr - buff)});
+			cli->AddHeaderC(CSTR("X-Forwarded-Port"), {buff, (UIntOS)(sptr - buff)});
 		}
 	}
 	else
@@ -244,7 +244,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 							sb.AppendC(UTF8STRC("http://"));
 						}
 						req->GetHeaderC(sb, CSTR("Host"));
-						UOSInt urlLen = fwdBaseUrl->leng;
+						UIntOS urlLen = fwdBaseUrl->leng;
 						if (fwdBaseUrl->v[urlLen - 1] == '/')
 						{
 							sb.AppendC(&sarr[1].v[urlLen - 1], sarr[1].leng - urlLen - 1);

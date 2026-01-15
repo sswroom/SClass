@@ -8,7 +8,7 @@ Data::ArrayListStringNN::ArrayListStringNN() : Data::SortableArrayListNN<Text::S
 {
 }
 
-Data::ArrayListStringNN::ArrayListStringNN(UOSInt capacity) : Data::SortableArrayListNN<Text::String>(capacity)
+Data::ArrayListStringNN::ArrayListStringNN(UIntOS capacity) : Data::SortableArrayListNN<Text::String>(capacity)
 {
 }
 
@@ -20,19 +20,19 @@ NN<Data::ArrayListNN<Text::String>> Data::ArrayListStringNN::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStringNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
+IntOS Data::ArrayListStringNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
 {
 	return obj1->CompareTo(obj2->ToCString());
 }
 
-OSInt Data::ArrayListStringNN::SortedIndexOfC(Text::CStringNN val) const
+IntOS Data::ArrayListStringNN::SortedIndexOfC(Text::CStringNN val) const
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	i = 0;
-	j = (OSInt)this->objCnt - 1;
+	j = (IntOS)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -53,9 +53,9 @@ OSInt Data::ArrayListStringNN::SortedIndexOfC(Text::CStringNN val) const
 	return -i - 1;
 }
 
-UOSInt Data::ArrayListStringNN::IndexOfC(Text::CStringNN val) const
+UIntOS Data::ArrayListStringNN::IndexOfC(Text::CStringNN val) const
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < this->objCnt)
 	{
 		if (this->arr[i]->Equals(val))
@@ -68,9 +68,9 @@ UOSInt Data::ArrayListStringNN::IndexOfC(Text::CStringNN val) const
 NN<Text::String> Data::ArrayListStringNN::JoinString() const
 {
 	NN<Text::String> newStr;
-	UOSInt newStrLeng = 0;
-	UOSInt j;
-	UOSInt i;
+	UIntOS newStrLeng = 0;
+	UIntOS j;
+	UIntOS i;
 	j = this->objCnt;
 	i = 0;
 	while (i < j)
@@ -95,9 +95,9 @@ NN<Text::String> Data::ArrayListStringNN::JoinString() const
 NN<Text::String> Data::ArrayListStringNN::JoinString(Text::CStringNN s) const
 {
 	NN<Text::String> newStr;
-	UOSInt newStrLeng = 0;
-	UOSInt j;
-	UOSInt i;
+	UIntOS newStrLeng = 0;
+	UIntOS j;
+	UIntOS i;
 	j = this->objCnt;
 	if (j == 0)
 	{
@@ -134,7 +134,7 @@ NN<Text::String> Data::ArrayListStringNN::JoinString(Text::CStringNN s) const
 
 void Data::ArrayListStringNN::FreeAll()
 {
-	UOSInt i = this->objCnt;
+	UIntOS i = this->objCnt;
 	while (i-- > 0)
 	{
 		this->arr[i]->Release();
@@ -146,14 +146,14 @@ void Data::ArrayListStringNN::ValueCounts(NN<Data::FastStringMapNative<UInt32>> 
 {
 	UInt32 cnt;
 	NN<Text::String> s;
-	UOSInt i = this->GetCount();
+	UIntOS i = this->GetCount();
 	if (i > 10)
 	{
 		UnsafeArray<NN<Text::String>> sarr = MemAllocArr(NN<Text::String>, i);
 		MemCopyNO(sarr.Ptr(), this->arr.Ptr(), i * sizeof(NN<Text::String>));
-		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(sarr, *this, 0, (OSInt)i - 1);
-		UOSInt j = 0;
-		UOSInt k = 0;
+		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(sarr, *this, 0, (IntOS)i - 1);
+		UIntOS j = 0;
+		UIntOS k = 0;
 		while (j < i)
 		{
 			if (!sarr[j]->Equals(sarr[k]))
@@ -183,9 +183,9 @@ void Data::ArrayListStringNN::RemoveDuplicates()
 	{
 		NN<Text::String> lastS;
 		NN<Text::String> s;
-		UOSInt newCnt = 1;
-		UOSInt objCnt = this->objCnt;
-		UOSInt i;
+		UIntOS newCnt = 1;
+		UIntOS objCnt = this->objCnt;
+		UIntOS i;
 		UnsafeArray<NN<Text::String>> newArr = MemAllocArr(NN<Text::String>, this->capacity);
 		i = 1;
 		lastS = newArr[0] = this->arr[0];

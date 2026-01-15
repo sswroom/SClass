@@ -14,8 +14,8 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(AnyType userObj)
 {
 	NN<Map::ReverseGeocoderClient> me = userObj.GetNN<Map::ReverseGeocoderClient>();
 	UInt8 *recvBuff;
-	OSInt buffSize = 0;
-	OSInt readSize;
+	IntOS buffSize = 0;
+	IntOS readSize;
 	NN<Net::TCPClient> cli;
 
 	me->cliRunning = true;
@@ -155,7 +155,7 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 	this->host->Release();
 }
 
-void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	UInt8 buff[512];
 	UInt8 buff2[512];
@@ -165,7 +165,7 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 	Double lat;
 	Double lon;
 	UInt32 lcid;
-	OSInt strSize;
+	IntOS strSize;
 
 	if (cmdType == 0)
 	{
@@ -177,7 +177,7 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 		WriteInt32(&buff[0], Double2Int32(lat * 200000.0));
 		WriteInt32(&buff[4], Double2Int32(lon * 200000.0));
 		WriteUInt32(&buff[8], lcid);
-		strSize = (UOSInt)(sptr - sbuff);
+		strSize = (UIntOS)(sptr - sbuff);
 		if (strSize >= 128)
 		{
 			buff[12] = (UInt8)(0x80 | (strSize >> 8));
@@ -200,7 +200,7 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 		lcid = ReadUInt32(&cmd[8]);
 		sbuff[0] = 0;
 		sptr = me->revGeo->CacheName(sbuff, sizeof(sbuff), Math::Coord2DDbl(lon, lat), lcid).Or(sbuff);
-		strSize = (UOSInt)(sptr - sbuff);
+		strSize = (UIntOS)(sptr - sbuff);
 		if (strSize >= 128)
 		{
 			buff[12] = (UInt8)(0x80 | (strSize >> 8));
@@ -223,6 +223,6 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 	}
 }
 
-void Map::ReverseGeocoderClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Map::ReverseGeocoderClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 }

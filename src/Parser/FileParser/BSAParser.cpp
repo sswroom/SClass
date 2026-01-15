@@ -36,10 +36,10 @@ IO::ParserType Parser::FileParser::BSAParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 //	UInt16 ver;
-	UOSInt recCnt;
+	UIntOS recCnt;
 	UInt32 recOfst;
 
-	UOSInt recSize;
+	UIntOS recSize;
 	UInt32 i;
 	Int32 j;
 	UInt32 fileSize;
@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::St
 	if (recOfst >= fd->GetDataSize() - recCnt * 12)
 		return nullptr;
 
-	recSize = (UOSInt)(fd->GetDataSize() - recOfst);
+	recSize = (UIntOS)(fd->GetDataSize() - recOfst);
 	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(recOfst, recSize, recBuff) != recSize)
 	{

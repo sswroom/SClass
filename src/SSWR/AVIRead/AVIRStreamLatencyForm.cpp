@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		Int64 currTime = dt.ToTicks();
-		OSInt interval = me->cboReqInterval->GetSelectedItem().GetOSInt();
+		IntOS interval = me->cboReqInterval->GetSelectedItem().GetIntOS();
 		if ((currTime - me->lastSentTime) >= interval)
 		{
 			me->lastSentTime = currTime;
@@ -69,18 +69,18 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 	}
 	UTF8Char sbuff[24];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt cnt = me->recvCnt;
+	IntOS cnt = me->recvCnt;
 	if (me->dispRecv != cnt)
 	{
 		me->dispRecv = cnt;
-		sptr = Text::StrOSInt(sbuff, cnt);
+		sptr = Text::StrIntOS(sbuff, cnt);
 		me->txtRecvCnt->SetText(CSTRP(sbuff, sptr));
 	}
 	cnt = me->sentCnt;
 	if (me->dispSent != cnt)
 	{
 		me->dispSent = cnt;
-		sptr = Text::StrOSInt(sbuff, cnt);
+		sptr = Text::StrIntOS(sbuff, cnt);
 		me->txtSentCnt->SetText(CSTRP(sbuff, sptr));
 	}
 }
@@ -89,9 +89,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	UInt8 buff[2060];
-	UOSInt buffSize = 0;
-	UOSInt recvSize;
-	UOSInt i;
+	UIntOS buffSize = 0;
+	UIntOS recvSize;
+	UIntOS i;
 	UInt8 chk;
 	Double diff;
 	NN<IO::Stream> stm;

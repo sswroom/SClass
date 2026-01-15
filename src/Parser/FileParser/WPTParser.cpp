@@ -53,15 +53,15 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -69,8 +69,8 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	{
 		UnsafeArrayOpt<const UTF8Char> colNames[] = {U8STR("Name"), U8STR("Description")};
 		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
-		UOSInt colSizes[] = {14, 40};
-		UOSInt colDPs[] = {0, 0};
+		UIntOS colSizes[] = {14, 40};
+		UIntOS colDPs[] = {0, 0};
 		reader.ReadLine(sbuff, 1024);
 		UnsafeArray<UTF8Char> cols[2];
 

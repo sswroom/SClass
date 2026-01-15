@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnTargetAddClicked(AnyTyp
 	me->targetList.Add(target);
 	sbuff[0] = 0;
 	sptr = Net::SocketUtil::GetAddrName(sbuff, target->targetAddr).Or(sbuff);
-	UOSInt i = me->lvTarget->AddItem(CSTRP(sbuff, sptr), target);
+	UIntOS i = me->lvTarget->AddItem(CSTRP(sbuff, sptr), target);
 	sptr = Text::StrUInt16(sbuff, target->targetPort);
 	me->lvTarget->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	if (me->nextTarget == i)
@@ -186,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnTargetAddClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnTargetDelClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPLoadBalancerForm>();
-	UOSInt i = me->lvTarget->GetSelectedIndex();
+	UIntOS i = me->lvTarget->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
 	Sync::MutexUsage mutUsage(me->sessMut);
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnTimerTick(AnyType userO
 	NN<SSWR::AVIRead::AVIRTCPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPLoadBalancerForm>();
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt nextTarget = me->nextTarget;
+	UIntOS nextTarget = me->nextTarget;
 	if (nextTarget != me->dispNextTarget)
 	{
 		if (me->dispNextTarget != INVALID_INDEX)
@@ -227,9 +227,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnTimerTick(AnyType userO
 		Sync::MutexUsage mutUsage(me->sessMut);
 		NN<TCPSession> sess;
 		Data::Timestamp currTime = Data::Timestamp::UtcNow();
-		UOSInt i = 0;
-		UOSInt j = me->sessList.GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = me->sessList.GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			sess = me->sessList.GetItemNoCheck(i);

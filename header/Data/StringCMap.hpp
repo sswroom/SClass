@@ -16,7 +16,7 @@ namespace Data
 		virtual T Put(const Char *key, T val);
 		virtual T Get(const Char *key);
 		virtual T Remove(const Char *key);
-		virtual const Char *GetKey(UOSInt index);
+		virtual const Char *GetKey(UIntOS index);
 		virtual void Clear();
 	};
 
@@ -28,7 +28,7 @@ namespace Data
 
 	template <class T> StringCMap<T>::~StringCMap()
 	{
-		UOSInt i = this->keys->GetCount();
+		UIntOS i = this->keys->GetCount();
 		while (i-- > 0)
 		{
 			Text::StrDelNew((UTF8Char*)this->keys->GetItem(i));
@@ -38,29 +38,29 @@ namespace Data
 
 	template <class T> T StringCMap<T>::Put(const Char *key, T val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals->GetItem((UOSInt)i);
-            this->vals->SetItem((UOSInt)i, val);
+			T oldVal = this->vals->GetItem((UIntOS)i);
+            this->vals->SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key));
-			this->vals->Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, Text::StrCopyNew(key));
+			this->vals->Insert((UIntOS)~i, val);
 			return 0;
 		}
 	}
 
 	template <class T> T StringCMap<T>::Get(const Char *key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem((UOSInt)i);
+			return this->vals->GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -70,12 +70,12 @@ namespace Data
 
 	template <class T> T StringCMap<T>::Remove(const Char *key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			Text::StrDelNew(this->keys->RemoveAt((UOSInt)i));
-			return this->vals->RemoveAt((UOSInt)i);
+			Text::StrDelNew(this->keys->RemoveAt((UIntOS)i));
+			return this->vals->RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -83,14 +83,14 @@ namespace Data
 		}
 	}
 
-	template <class T> const Char *StringCMap<T>::GetKey(UOSInt index)
+	template <class T> const Char *StringCMap<T>::GetKey(UIntOS index)
 	{
 		return this->keys->GetItem(index);
 	}
 
 	template <class T> void StringCMap<T>::Clear()
 	{
-		UOSInt i;
+		UIntOS i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{

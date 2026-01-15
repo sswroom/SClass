@@ -39,7 +39,7 @@ NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 
 Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 {
-	OSInt i;
+	IntOS i;
 	NN<WLAN_BSS_ENTRY> bss = bssEntry.GetNN<WLAN_BSS_ENTRY>();
 	this->ssid = Text::String::New(ssid);
 	this->phyId = bss->uPhyId;
@@ -61,7 +61,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 		this->chipsetOUIs[i][2] = 0;
 		i++;
 	}
-	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry.GetOSInt();
+	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry.GetIntOS();
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
 	NN<Net::WirelessLANIE> ie;
 	Text::StringBuilderUTF8 sbTmp;
@@ -175,7 +175,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	UOSInt i = this->ieList.GetCount();
+	UIntOS i = this->ieList.GetCount();
 	NN<Net::WirelessLANIE> ie;
 	while (i-- > 0)
 	{
@@ -251,19 +251,19 @@ UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 		return 0;
 }
 
-UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
+UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(IntOS index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
 		return 0;
 	return this->chipsetOUIs[index];
 }
 
-UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
+UIntOS Net::WirelessLAN::BSSInfo::GetIECount()
 {
 	return this->ieList.GetCount();
 }
 
-Optional<Net::WirelessLANIE> Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
+Optional<Net::WirelessLANIE> Net::WirelessLAN::BSSInfo::GetIE(UIntOS index)
 {
 	return this->ieList.GetItem(index);
 }
@@ -303,11 +303,11 @@ Bool Net::WirelessLAN::IsError()
 	return core->IsError();
 }
 
-UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
+UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
 	NN<Net::WLANWindowsCore> core = this->clsData.GetNN<Net::WLANWindowsCore>();
 	WLAN_INTERFACE_INFO_LIST *list;
-	UOSInt retVal = 0;
+	UIntOS retVal = 0;
 	if (ERROR_SUCCESS == core->EnumInterfaces(0, (void**)&list))
 	{
 		UInt32 i;

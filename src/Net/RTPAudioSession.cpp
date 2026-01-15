@@ -6,7 +6,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UIntOS dataSize, void *userData)
 {
 	Net::RTPAudioSession *me = (Net::RTPAudioSession*)userData;
 	if (dataSize < 12)
@@ -45,7 +45,7 @@ void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo 
 UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 {
 	UInt8 buff[512];
-	OSInt readSize;
+	IntOS readSize;
 	Int32 seqId;
 	Int32 ts;
 
@@ -219,11 +219,11 @@ void Net::RTPAudioSession::Stop()
 	}
 }
 
-UOSInt Net::RTPAudioSession::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UIntOS Net::RTPAudioSession::ReadBlock(UInt8 *buff, UIntOS blkSize)
 {
 	if (!started)
 		return 0;
-	UOSInt retSize;
+	UIntOS retSize;
 	Sync::MutexUsage mutUsage(this->readMut);
 	this->sizeRead = 0;
 	this->readBuffSize = blkSize;
@@ -237,7 +237,7 @@ UOSInt Net::RTPAudioSession::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	return retSize;
 }
 
-UOSInt Net::RTPAudioSession::GetMinBlockSize()
+UIntOS Net::RTPAudioSession::GetMinBlockSize()
 {
 	return 160;
 }

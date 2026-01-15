@@ -5,7 +5,7 @@
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 
-UI::GUITabPage::GUITabPage(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UOSInt index) : UI::GUIPanel(ui, ctrl->GetHandle())
+UI::GUITabPage::GUITabPage(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UIntOS index) : UI::GUIPanel(ui, ctrl->GetHandle())
 {
 	this->ctrl = ctrl;
 	this->index = index;
@@ -43,7 +43,7 @@ Text::CStringNN UI::GUITabPage::GetObjectClass() const
 	return CSTR("TabPage");
 }
 
-OSInt UI::GUITabPage::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITabPage::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

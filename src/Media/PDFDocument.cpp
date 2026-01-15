@@ -27,7 +27,7 @@ Media::PDFDocument::PDFDocument(NN<Text::String> sourceName, Text::CStringNN ver
 Media::PDFDocument::~PDFDocument()
 {
 	this->version->Release();
-	UOSInt i = this->objMap.GetCount();
+	UIntOS i = this->objMap.GetCount();
 	NN<Media::PDFObject> obj;
 	while (i-- > 0)
 	{
@@ -41,17 +41,17 @@ IO::ParserType Media::PDFDocument::GetParserType() const
 	return IO::ParserType::PDFDocument;
 }
 
-UOSInt Media::PDFDocument::GetCount() const
+UIntOS Media::PDFDocument::GetCount() const
 {
 	return this->objMap.GetCount();
 }
 
-NN<Media::PDFObject> Media::PDFDocument::GetItemNoCheck(UOSInt index) const
+NN<Media::PDFObject> Media::PDFDocument::GetItemNoCheck(UIntOS index) const
 {
 	return this->objMap.GetItemNoCheck(index);
 }
 
-Optional<Media::PDFObject> Media::PDFDocument::GetItem(UOSInt index) const
+Optional<Media::PDFObject> Media::PDFDocument::GetItem(UIntOS index) const
 {
 	return this->objMap.GetItem(index);
 }
@@ -83,9 +83,9 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 		}
 		else
 		{
-			UOSInt bpc = obj->GetBitPerComponent();
-			UOSInt width = obj->GetWidth();
-			UOSInt height = obj->GetHeight();
+			UIntOS bpc = obj->GetBitPerComponent();
+			UIntOS width = obj->GetWidth();
+			UIntOS height = obj->GetHeight();
 			NN<Text::String> colorSpace;
 			if (bpc == 0 || width == 0 || height == 0)
 				return nullptr;

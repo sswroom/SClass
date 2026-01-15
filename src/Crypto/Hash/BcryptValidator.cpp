@@ -17,7 +17,7 @@ void Crypto::Hash::BcryptValidator::CalcHash(UInt32 cost, UnsafeArray<const UInt
 	tmpBuff[3] = ReadMUInt32(&initVal[12]);
 	tmpBuff[4] = ReadMUInt32(&initVal[16]);
 	tmpBuff[5] = ReadMUInt32(&initVal[20]);
-	UOSInt i = 64;
+	UIntOS i = 64;
 	while (i-- > 0)
 	{
 		bf.EncryptBlk(&tmpBuff[0]);
@@ -49,7 +49,7 @@ void Crypto::Hash::BcryptValidator::DeleteSess(NN<HashValidatorSess> sess)
 {
 }
 
-Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UOSInt hashLen)
+Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UIntOS hashLen)
 {
 	if (hash[0] != '$' || hashLen > 63)
 	{
@@ -57,7 +57,7 @@ Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UO
 	}
 	UTF8Char hashBuff[64];
 	Text::PString sarr[4];
-	UOSInt sarrCnt; 
+	UIntOS sarrCnt; 
 	Text::StrConcatC(hashBuff, hash + 1, hashLen - 1);
 	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hashLen - 1}, '$');
 	if (sarrCnt != 3)
@@ -66,9 +66,9 @@ Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UO
 	}
 	if (sarr[0].v[0] == '2' && sarr[2].leng == 53)
 	{
-		UOSInt saltSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v, 22), this->salt);
+		UIntOS saltSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v, 22), this->salt);
 		this->hashCTxt[23] = 0;
-		UOSInt hashSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v + 22, 31), this->hashCTxt);
+		UIntOS hashSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v + 22, 31), this->hashCTxt);
 		return saltSize == 16 && (hashSize == 24 || hashSize == 23) && Text::StrToUInt32(sarr[1].v, this->cost);
 	}
 	else
@@ -77,7 +77,7 @@ Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UO
 	}
 }
 
-Bool Crypto::Hash::BcryptValidator::IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UOSInt pwdLen)
+Bool Crypto::Hash::BcryptValidator::IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UIntOS pwdLen)
 {
 	UInt8 myCTxt[24];
 	this->CalcHash(this->cost, this->salt, Text::CStringNN(password, pwdLen), myCTxt);

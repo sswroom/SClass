@@ -13,15 +13,15 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 {
 	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	const UTF8Char *fileName;
-	UOSInt fileNameLen;
+	UIntOS fileNameLen;
 	const UTF8Char *mode;
 	const UTF8Char *endPtr;
 //	const UTF8Char *optName;
 //	const UTF8Char *optVal;
 	UInt16 opcode;
-	UOSInt blkSize;
-	UOSInt i;
-	UOSInt len;
+	UIntOS blkSize;
+	UIntOS i;
+	UIntOS len;
 	UInt8 repBuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::UDPServer> svr;
@@ -45,7 +45,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 0);
-		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Mode not supported")) - repBuff + 1);
+		i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Mode not supported")) - repBuff + 1);
 		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -53,7 +53,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
-		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Access violation")) - repBuff + 1);
+		i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Access violation")) - repBuff + 1);
 		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -65,7 +65,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		mutUsage.EndUse();
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Already started")) - repBuff + 1);
+		i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Already started")) - repBuff + 1);
 		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -87,7 +87,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 				fs.Delete();
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
+				i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
 				svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -131,7 +131,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 1);
-			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File not found")) - repBuff + 1);
+			i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("File not found")) - repBuff + 1);
 			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -142,7 +142,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File already exists")) - repBuff + 1);
+			i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("File already exists")) - repBuff + 1);
 			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -150,7 +150,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Directory already exists")) - repBuff + 1);
+			i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Directory already exists")) - repBuff + 1);
 			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -162,7 +162,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 				fs.Delete();
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
+				i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
 				svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -201,7 +201,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Unknown opcode")) - repBuff + 1);
+		i = (UIntOS)(Text::StrConcatC(&repBuff[4], UTF8STRC("Unknown opcode")) - repBuff + 1);
 		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -256,7 +256,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 					if (me->log->HasHandler())
 					{
 						Text::StringBuilderUTF8 sb;
-						UOSInt i;
+						UIntOS i;
 						sb.AppendC(UTF8STRC("End receiving "));
 						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 						sb.AppendC(&sess->fileName->v[i + 1], sess->fileName->leng - i - 1);
@@ -287,7 +287,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 					if (me->log->HasHandler())
 					{
 						Text::StringBuilderUTF8 sb;
-						UOSInt i;
+						UIntOS i;
 						sb.AppendC(UTF8STRC("End sending "));
 						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 						sb.AppendC(&sess->fileName->v[i + 1], sess->fileName->leng - i - 1);
@@ -301,7 +301,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 				}
 				else
 				{
-					UOSInt len;
+					UIntOS len;
 					UInt8 *packet = MemAlloc(UInt8, sess->blockSize + 4);
 					sess->currBlock++;
 					WriteMInt16(&packet[0], 3);
@@ -326,7 +326,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 {
 	NN<Net::TFTPServer> me = userObj.GetNN<Net::TFTPServer>();
 	NN<SessionInfo> sess;
-	UOSInt i;
+	UIntOS i;
 	Int64 currTime;
 	me->threadRunning = true;
 	while (!me->threadToStop)
@@ -410,7 +410,7 @@ Net::TFTPServer::~TFTPServer()
 			Sync::SimpleThread::Sleep(1);
 		}
 	}
-	UOSInt i;
+	UIntOS i;
 	i = this->sessMap.GetCount();
 	while (i-- > 0)
 	{

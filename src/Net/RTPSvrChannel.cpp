@@ -36,8 +36,8 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 	if (me->packCnt >= me->threadCnt)
 	{
 		Bool lastExist = false;
-		OSInt i;
-		OSInt minIndex = 0;
+		IntOS i;
+		IntOS minIndex = 0;
 		Int32 minSeq = me->packBuff[0].seqNum;
 		if (minSeq == 65535)
 			lastExist = true;
@@ -212,9 +212,9 @@ Int32 Net::RTPSvrChannel::GetSeqNum()
 	return seqNum;
 }
 
-Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<const UInt8> buff, UOSInt dataSize, Bool marker)
+Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<const UInt8> buff, UIntOS dataSize, Bool marker)
 {
-	UOSInt sendSize = dataSize + 12;
+	UIntOS sendSize = dataSize + 12;
 	UInt8 sendBuff[1500];
 	sendBuff[0] = 0x80;
 	if (dataSize & 1)
@@ -235,7 +235,7 @@ Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<con
 	return true;
 }
 
-Bool Net::RTPSvrChannel::SendControl(UnsafeArray<const UInt8> buff, UOSInt dataSize)
+Bool Net::RTPSvrChannel::SendControl(UnsafeArray<const UInt8> buff, UIntOS dataSize)
 {
 	this->rtcpUDP->SendTo(this->targetAddr, this->targetPort + 1, buff, dataSize);
 	return true;

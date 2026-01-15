@@ -41,7 +41,7 @@ namespace Data
 		virtual T Get(const WChar *key);
 		virtual T Remove(const WChar *key);
 		virtual Bool IsEmpty();
-		virtual T *ToArray(UOSInt *objCnt);
+		virtual T *ToArray(UIntOS *objCnt);
 		virtual void Clear();
 	};
 
@@ -90,7 +90,7 @@ namespace Data
 
 	template <class T> BTreeWNode<T> *BTreeWMap<T>::NewNode(const WChar *key, UInt32 hash, T val)
 	{
-		OSInt cnt = Text::StrCharCnt(key);
+		IntOS cnt = Text::StrCharCnt(key);
 		BTreeWNode<T> *node = (BTreeWNode<T> *)MAlloc(sizeof(BTreeWNode<T>) + sizeof(WChar) * cnt);
 		node->nodeCnt = 0;
 		node->parNode = 0;
@@ -107,7 +107,7 @@ namespace Data
 	{
 		BTreeWNode<T> *tmpNode;
 		T retVal;
-		OSInt i;
+		IntOS i;
 		if (node->nodeHash == hash)
 		{
 			i = Text::StrCompare(node->nodeStr, key);
@@ -341,7 +341,7 @@ namespace Data
 
 	template <class T> UInt32 BTreeWMap<T>::CalHash(const WChar *key)
 	{
-		OSInt charCnt = Text::StrCharCnt(key);
+		IntOS charCnt = Text::StrCharCnt(key);
 		this->crc->Clear();
 		this->crc->Calc((const UInt8*)key, charCnt * sizeof(WChar));
 		UInt8 hash[4];
@@ -397,7 +397,7 @@ namespace Data
 		BTreeWNode<T> *node = this->rootNode;
 		while (node)
 		{
-			OSInt i;
+			IntOS i;
 			if (node->nodeHash == hash)
 			{
 				i = Text::StrCompare(node->nodeStr, key);
@@ -443,7 +443,7 @@ namespace Data
 			BTreeWNode<T> *node = this->rootNode;
 			while (node)
 			{
-				OSInt i;
+				IntOS i;
 				if (node->nodeHash == hash)
 				{
 					i = Text::StrCompare(node->nodeStr, key);
@@ -489,9 +489,9 @@ namespace Data
 		return this->rootNode == 0;
 	}
 
-	template <class T> T *BTreeWMap<T>::ToArray(UOSInt *objCnt)
+	template <class T> T *BTreeWMap<T>::ToArray(UIntOS *objCnt)
 	{
-		UOSInt cnt = 0;
+		UIntOS cnt = 0;
 		if (this->rootNode)
 		{
 			cnt = this->rootNode->nodeCnt + 1;

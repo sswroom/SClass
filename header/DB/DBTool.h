@@ -30,7 +30,7 @@ namespace DB
 		void SetSSHTunnel(Optional<Net::SSHManager> ssh, Optional<Net::SSHClient> sshCli);
 		Optional<Net::SSHClient> GetSSHClient() const;
 
-		OSInt ExecuteNonQuery(Text::CStringNN sqlCmd);
+		IntOS ExecuteNonQuery(Text::CStringNN sqlCmd);
 		void BeginTrans();
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();

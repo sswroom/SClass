@@ -50,10 +50,10 @@ Net::WebSite::WebSiteInstagramControl::~WebSiteInstagramControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData>> itemList, Optional<Net::WebSite::WebSiteInstagramControl::ChannelInfo> chInfo)
+IntOS Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> channelId, IntOS pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData>> itemList, Optional<Net::WebSite::WebSiteInstagramControl::ChannelInfo> chInfo)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	sb.AppendC(UTF8STRC("https://www.instagram.com/"));
 	sb.Append(channelId);
 	sb.AppendUTF8Char('/');
@@ -65,8 +65,8 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 		NN<Text::JSONObject> obj1;
 		NN<Text::JSONArray> arr1;
 		NN<Text::JSONString> str1;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
 			obj1 = NN<Text::JSONObject>::ConvertFrom(baseData);
@@ -216,7 +216,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 void Net::WebSite::WebSiteInstagramControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData>> itemList)
 {
 	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
-	UOSInt i = itemList->GetCount();
+	UIntOS i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItemNoCheck(i);
@@ -236,10 +236,10 @@ void Net::WebSite::WebSiteInstagramControl::FreeChannelInfo(NN<Net::WebSite::Web
 	OPTSTR_DEL(chInfo->username);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shortCode, NN<Data::ArrayListStringNN> imageList, NN<Data::ArrayListStringNN> videoList)
+IntOS Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shortCode, NN<Data::ArrayListStringNN> imageList, NN<Data::ArrayListStringNN> videoList)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt retCnt = 0;
+	IntOS retCnt = 0;
 	sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 	sb.Append(shortCode);
 	sb.AppendUTF8Char('/');
@@ -249,8 +249,8 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shor
 		NN<Text::JSONBase> jsBase;
 		NN<Text::JSONObject> obj1;
 		NN<Text::JSONArray> arr1;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
 			obj1 = NN<Text::JSONObject>::ConvertFrom(baseData);

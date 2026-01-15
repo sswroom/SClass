@@ -34,8 +34,8 @@ UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(void *obj)
 	Int32 i;
 	Int32 refStart;
 	Int32 audStartTime;	
-	OSInt buffLeng = BUFFLENG;
-	OSInt minLeng;
+	IntOS buffLeng = BUFFLENG;
+	IntOS minLeng;
 	Int32 thisT;
 	Int32 lastT;
 
@@ -72,12 +72,12 @@ UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(void *obj)
 	lastT = thisT = GetCurrTime(me->hand);
 	refStart = thisT - audStartTime;
 
-	OSInt buffSize[2];
-	OSInt readSize[2];
+	IntOS buffSize[2];
+	IntOS readSize[2];
 	UInt8 *readBuff[2];
 //	Bool dataExist[2];
-	OSInt nextBlock;
-//	OSInt j;
+	IntOS nextBlock;
+//	IntOS j;
 	Bool isFirst = true;
 	nextBlock = 0;
 	i = 2;

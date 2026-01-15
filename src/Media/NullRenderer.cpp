@@ -15,9 +15,9 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(AnyType obj)
 	NN<Media::NullRenderer> me = obj.GetNN<Media::NullRenderer>();
 	Media::AudioFormat af;
 	Data::Duration audStartTime;
-	UOSInt buffLeng = 16384;
-	UOSInt minLeng;
-	UOSInt readSize;
+	UIntOS buffLeng = 16384;
+	UIntOS minLeng;
+	UIntOS readSize;
 	Bool needNotify = false;
 	NN<Media::AudioSource> audsrc;
 	NN<Media::RefClock> clk;

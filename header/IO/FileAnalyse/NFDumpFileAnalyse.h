@@ -17,7 +17,7 @@ namespace IO
 			typedef struct
 			{
 				UInt64 fileOfst;
-				UOSInt packSize;
+				UIntOS packSize;
 				Int32 packType;
 			} PackInfo;
 		private:
@@ -29,17 +29,17 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			UOSInt LZODecompBlock(UnsafeArray<UInt8> srcBlock, UOSInt srcSize, UnsafeArray<UInt8> outBlock, UOSInt maxOutSize);
+			UIntOS LZODecompBlock(UnsafeArray<UInt8> srcBlock, UIntOS srcSize, UnsafeArray<UInt8> outBlock, UIntOS maxOutSize);
 		public:
 			NFDumpFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~NFDumpFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
-			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
+			virtual UIntOS GetFrameCount();
+			virtual Bool GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual UIntOS GetFrameIndex(UInt64 ofst);
+			virtual Optional<FrameDetail> GetFrameDetail(UIntOS index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

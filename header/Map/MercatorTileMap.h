@@ -16,15 +16,15 @@ namespace Map
 		Optional<IO::SPackageFile> spkg;
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
-		UOSInt minLevel;
-		UOSInt maxLevel;
+		UIntOS minLevel;
+		UIntOS maxLevel;
 
-		UOSInt tileWidth;
-		UOSInt tileHeight;
+		UIntOS tileWidth;
+		UIntOS tileHeight;
 		NN<Math::CoordinateSystem> csys;
 
 	public:
-		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
+		MercatorTileMap(Text::CString cacheDir, UIntOS minLevel, UIntOS maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		virtual ~MercatorTileMap();
 
 		void SetSPackageFile(Optional<IO::SPackageFile> spkg);
@@ -33,25 +33,25 @@ namespace Map
 		Bool OptimizeToFile(Text::CStringNN fileName);
 
 		virtual Bool IsError() const;
-		virtual UOSInt GetMinLevel() const;
-		virtual UOSInt GetMaxLevel() const;
-		virtual Double GetLevelScale(UOSInt level) const;
-		virtual UOSInt GetNearestLevel(Double scale) const;
+		virtual UIntOS GetMinLevel() const;
+		virtual UIntOS GetMaxLevel() const;
+		virtual Double GetLevelScale(UIntOS level) const;
+		virtual UIntOS GetNearestLevel(Double scale) const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
-		virtual UOSInt GetTileSize() const;
+		virtual UIntOS GetTileSize() const;
 
-		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids);
-		virtual Optional<Media::ImageList> LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
-		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
+		virtual UIntOS GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids);
+		virtual Optional<Media::ImageList> LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
-		static Int32 Lon2TileX(Double lon, UOSInt level);
-		static Int32 Lat2TileY(Double lat, UOSInt level);
-		static Int32 Lon2TileXR(Double lon, UOSInt level);
-		static Int32 Lat2TileYR(Double lat, UOSInt level);
-		static Double TileX2Lon(Int32 x, UOSInt level);
-		static Double TileY2Lat(Int32 y, UOSInt level);
+		static Int32 Lon2TileX(Double lon, UIntOS level);
+		static Int32 Lat2TileY(Double lat, UIntOS level);
+		static Int32 Lon2TileXR(Double lon, UIntOS level);
+		static Int32 Lat2TileYR(Double lat, UIntOS level);
+		static Double TileX2Lon(Int32 x, UIntOS level);
+		static Double TileY2Lat(Int32 y, UIntOS level);
 	};
 }
 #endif

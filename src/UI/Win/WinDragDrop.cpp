@@ -39,7 +39,7 @@ UI::Win::WinDropData::~WinDropData()
 	{
 		FORMATETC *fmt;
 		NN<const Data::ArrayList<FORMATETC *>> fmtList = this->dataMap->GetValues();
-		UOSInt i = fmtList->GetCount();
+		UIntOS i = fmtList->GetCount();
 		while (i-- > 0)
 		{
 			fmt = fmtList->GetItem(i);
@@ -49,7 +49,7 @@ UI::Win::WinDropData::~WinDropData()
 	}
 }
 
-UOSInt UI::Win::WinDropData::GetCount()
+UIntOS UI::Win::WinDropData::GetCount()
 {
 	if (this->dataMap == 0)
 	{
@@ -58,7 +58,7 @@ UOSInt UI::Win::WinDropData::GetCount()
 	return this->dataMap->GetCount();
 }
 
-UnsafeArrayOpt<const UTF8Char> UI::Win::WinDropData::GetName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> UI::Win::WinDropData::GetName(UIntOS index)
 {
 	if (this->dataMap == 0)
 	{

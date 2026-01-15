@@ -7,7 +7,7 @@ Data::ArrayListICaseString::ArrayListICaseString() : Data::ArrayListString()
 {
 }
 
-Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayListString(capacity)
+Data::ArrayListICaseString::ArrayListICaseString(UIntOS capacity) : Data::ArrayListString(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayListObj<Optional<Text::String>>> Data::ArrayListICaseString::Clone
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseString::Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const
+IntOS Data::ArrayListICaseString::Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const
 {
 	if (obj1 == obj2)
 		return 0;
@@ -32,14 +32,14 @@ OSInt Data::ArrayListICaseString::Compare(Optional<Text::String> obj1, Optional<
 	return s1->CompareToICase(s2);
 }
 
-OSInt Data::ArrayListICaseString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const
+IntOS Data::ArrayListICaseString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UIntOS len) const
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	i = 0;
-	j = (OSInt)this->objCnt - 1;
+	j = (IntOS)this->objCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

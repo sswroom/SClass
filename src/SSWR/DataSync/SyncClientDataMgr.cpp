@@ -12,7 +12,7 @@ SSWR::DataSync::SyncClientDataMgr::~SyncClientDataMgr()
 	LIST_FREE_FUNC(&this->dataList, MemFree);
 }
 
-void SSWR::DataSync::SyncClientDataMgr::AddUserData(const UInt8 *data, UOSInt dataSize)
+void SSWR::DataSync::SyncClientDataMgr::AddUserData(const UInt8 *data, UIntOS dataSize)
 {
 	UInt8 *newData = MemAlloc(UInt8, dataSize + 4);
 	WriteInt32(newData, (Int32)dataSize);
@@ -21,13 +21,13 @@ void SSWR::DataSync::SyncClientDataMgr::AddUserData(const UInt8 *data, UOSInt da
 	this->dataList.Add(newData);
 }
 
-UOSInt SSWR::DataSync::SyncClientDataMgr::GetCount()
+UIntOS SSWR::DataSync::SyncClientDataMgr::GetCount()
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return this->dataList.GetCount();
 }
 
-const UInt8 *SSWR::DataSync::SyncClientDataMgr::GetData(UOSInt index, UOSInt *dataSize)
+const UInt8 *SSWR::DataSync::SyncClientDataMgr::GetData(UIntOS index, UIntOS *dataSize)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UInt8 *buff = this->dataList.GetItem(index);
@@ -39,11 +39,11 @@ const UInt8 *SSWR::DataSync::SyncClientDataMgr::GetData(UOSInt index, UOSInt *da
 	return buff + 4;
 }
 
-void SSWR::DataSync::SyncClientDataMgr::RemoveData(UOSInt cnt)
+void SSWR::DataSync::SyncClientDataMgr::RemoveData(UIntOS cnt)
 {
 	Data::ArrayListObj<UInt8*> tmp;
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt j = this->dataList.GetCount();
+	UIntOS j = this->dataList.GetCount();
 	if (j < cnt)
 	{
 		cnt = j;

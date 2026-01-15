@@ -32,7 +32,7 @@ IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(NN<IO
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::DocHTMLExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -122,8 +122,8 @@ a:hover {color:#FF00FF;}
 	writer->WriteLine(CSTR("</head>"));
 	writer->Write(CSTR("<body>"));
 
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = doc->GetCount();
 	while (i < j)
@@ -152,8 +152,8 @@ void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName)
 {
 	NN<Text::Doc::DocItem> item;
-	UOSInt i = 0;
-	UOSInt j = items->GetCount();
+	UIntOS i = 0;
+	UIntOS j = items->GetCount();
 	NN<Text::String> s;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	NN<Text::Doc::DocHeading> heading;

@@ -10,7 +10,7 @@ namespace Data
 	private:
 		static void FORCEINLINE CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr);
 #if defined(CHECK_RANGE)
-		ByteArray(UnsafeArray<UInt8> buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
+		ByteArray(UnsafeArray<UInt8> buff, UIntOS buffSize, UIntOS prevSize) : ByteArrayBase(buff, buffSize)
 		{
 			this->prevSize = prevSize;
 		}
@@ -18,7 +18,7 @@ namespace Data
 
 	public:
 		ByteArray() = default;
-		ByteArray(UnsafeArray<UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
+		ByteArray(UnsafeArray<UInt8> buff, UIntOS buffSize) : ByteArrayBase(buff, buffSize)
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
@@ -30,7 +30,7 @@ namespace Data
 
 		}
 
-		ByteArray SubArray(UOSInt ofst, UOSInt size) const
+		ByteArray SubArray(UIntOS ofst, UIntOS size) const
 		{
 			CheckError(ofst + size);
 #if defined(CHECK_RANGE)
@@ -40,7 +40,7 @@ namespace Data
 #endif
 		}
 
-		ByteArray WithSize(UOSInt size) const
+		ByteArray WithSize(UIntOS size) const
 		{
 			CheckError(size);
 #if defined(CHECK_RANGE)
@@ -50,7 +50,7 @@ namespace Data
 #endif
 		}
 		
-		ByteArray SubArray(UOSInt ofst) const
+		ByteArray SubArray(UIntOS ofst) const
 		{
 			CheckError(ofst);
 #if defined(CHECK_RANGE)
@@ -60,13 +60,13 @@ namespace Data
 #endif
 		}
 
-		void CopyFrom(UOSInt destIndex, const ByteArray &srcArr) const
+		void CopyFrom(UIntOS destIndex, const ByteArray &srcArr) const
 		{
 			CheckError(destIndex + srcArr.GetSize());
 			MemCopyNO(&buff[destIndex], srcArr.Arr().Ptr(), srcArr.GetSize());
 		}
 
-		void FORCEINLINE CopyFrom(UOSInt destIndex, const ByteArrayR &srcArr) const
+		void FORCEINLINE CopyFrom(UIntOS destIndex, const ByteArrayR &srcArr) const
 		{
 			CopyArray(this->SubArray(destIndex), srcArr);
 		}
@@ -76,7 +76,7 @@ namespace Data
 			CopyArray(NNTHIS, srcArr);
 		}
 
-		void CopyInner(UOSInt destIndex, UOSInt srcIndex, UOSInt cnt)
+		void CopyInner(UIntOS destIndex, UIntOS srcIndex, UIntOS cnt)
 		{
 #if defined(CHECK_RANGE)
 			if (destIndex > srcIndex)
@@ -87,7 +87,7 @@ namespace Data
 			MemCopyO(&buff[destIndex], &buff[srcIndex], cnt);
 		}
 
-		ByteArray &operator+=(UOSInt ofst)
+		ByteArray &operator+=(UIntOS ofst)
 		{
 			CheckError(ofst);
 			this->buff = buff + ofst;
@@ -98,18 +98,18 @@ namespace Data
 			return NNTHIS;
 		}
 
-		ByteArray &operator+=(OSInt ofst)
+		ByteArray &operator+=(IntOS ofst)
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-ofst);
+				CheckErrorPrev((UIntOS)-ofst);
 			else
-				CheckError((UOSInt)ofst);
+				CheckError((UIntOS)ofst);
 #endif
 			this->buff = buff + ofst;
-			this->buffSize -= (UOSInt)ofst;
+			this->buffSize -= (UIntOS)ofst;
 #if defined(CHECK_RANGE)
-			this->prevSize += (UOSInt)ofst;
+			this->prevSize += (UIntOS)ofst;
 #endif
 			return NNTHIS;
 		}
@@ -130,14 +130,14 @@ namespace Data
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-(OSInt)ofst);
+				CheckErrorPrev((UIntOS)-(IntOS)ofst);
 			else
-				CheckError((UOSInt)ofst);
+				CheckError((UIntOS)ofst);
 #endif
 			this->buff = buff + ofst;
-			this->buffSize -= (UOSInt)(OSInt)ofst;
+			this->buffSize -= (UIntOS)(IntOS)ofst;
 #if defined(CHECK_RANGE)
-			this->prevSize += (UOSInt)(OSInt)ofst;
+			this->prevSize += (UIntOS)(IntOS)ofst;
 #endif
 			return NNTHIS;
 		}
@@ -154,10 +154,10 @@ namespace Data
 			return &this->buff[-1];
 		}
 
-		ByteArray &operator-=(UOSInt ofst)
+		ByteArray &operator-=(UIntOS ofst)
 		{
 			CheckErrorPrev(ofst);
-			this->buff = buff -( OSInt)ofst;
+			this->buff = buff -( IntOS)ofst;
 			this->buffSize += ofst;
 #if defined(CHECK_RANGE)
 			this->prevSize -= ofst;
@@ -165,7 +165,7 @@ namespace Data
 			return NNTHIS;
 		}
 
-		ByteArray operator+(UOSInt ofst)
+		ByteArray operator+(UIntOS ofst)
 		{
 			CheckError(ofst);
 #if defined(CHECK_RANGE)
@@ -175,16 +175,16 @@ namespace Data
 #endif
 		}
 
-		ByteArray operator+(OSInt ofst)
+		ByteArray operator+(IntOS ofst)
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-ofst);
+				CheckErrorPrev((UIntOS)-ofst);
 			else
-				CheckError((UOSInt)ofst);
-			return ByteArray(buff + ofst, this->buffSize - (UOSInt)ofst, this->prevSize + (UOSInt)ofst);
+				CheckError((UIntOS)ofst);
+			return ByteArray(buff + ofst, this->buffSize - (UIntOS)ofst, this->prevSize + (UIntOS)ofst);
 #else
-			return ByteArray(buff + ofst, this->buffSize - (UOSInt)ofst);
+			return ByteArray(buff + ofst, this->buffSize - (UIntOS)ofst);
 #endif
 		}
 
@@ -203,12 +203,12 @@ namespace Data
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-(OSInt)ofst);
+				CheckErrorPrev((UIntOS)-(IntOS)ofst);
 			else
-				CheckError((UOSInt)ofst);
-			return ByteArray(buff + ofst, this->buffSize - (UOSInt)(OSInt)ofst, this->prevSize + (UOSInt)(OSInt)ofst);
+				CheckError((UIntOS)ofst);
+			return ByteArray(buff + ofst, this->buffSize - (UIntOS)(IntOS)ofst, this->prevSize + (UIntOS)(IntOS)ofst);
 #else
-			return ByteArray(buff + ofst, this->buffSize - (UOSInt)(OSInt)ofst);
+			return ByteArray(buff + ofst, this->buffSize - (UIntOS)(IntOS)ofst);
 #endif
 		}
 
@@ -216,105 +216,105 @@ namespace Data
 		{
 #if defined(CHECK_RANGE)
 			if (ofst >= 0)
-				CheckErrorPrev((UOSInt)ofst);
+				CheckErrorPrev((UIntOS)ofst);
 			else
-				CheckError((UOSInt)-(OSInt)ofst);
-			return ByteArray(buff - ofst, this->buffSize + (UOSInt)(OSInt)ofst, this->prevSize - (UOSInt)(OSInt)ofst);
+				CheckError((UIntOS)-(IntOS)ofst);
+			return ByteArray(buff - ofst, this->buffSize + (UIntOS)(IntOS)ofst, this->prevSize - (UIntOS)(IntOS)ofst);
 #else
-			return ByteArray(buff - ofst, this->buffSize + (UOSInt)(OSInt)ofst);
+			return ByteArray(buff - ofst, this->buffSize + (UIntOS)(IntOS)ofst);
 #endif
 		}
 #endif
 
-		ByteArray operator-(UOSInt ofst)
+		ByteArray operator-(UIntOS ofst)
 		{
 			CheckErrorPrev(ofst);
 #if defined(CHECK_RANGE)
-			return ByteArray(buff - (OSInt)ofst, this->buffSize + ofst, this->prevSize - ofst);
+			return ByteArray(buff - (IntOS)ofst, this->buffSize + ofst, this->prevSize - ofst);
 #else
-			return ByteArray(buff - (OSInt)ofst, this->buffSize + ofst);
+			return ByteArray(buff - (IntOS)ofst, this->buffSize + ofst);
 #endif
 		}
 
-		OSInt operator-(const ByteArray &buff)
+		IntOS operator-(const ByteArray &buff)
 		{
 			return this->buff - buff.buff;
 		}
 
 
-		void Clear(UOSInt ofst, UOSInt cnt)
+		void Clear(UIntOS ofst, UIntOS cnt)
 		{
 			CheckError(ofst + cnt);
 			MemClear(&buff[ofst], cnt);
 		}
 
-		void WriteI16(UOSInt ofst, Int16 val)
+		void WriteI16(UIntOS ofst, Int16 val)
 		{
 			CheckError(ofst + 2);
 			WriteInt16(&buff[ofst], val);
 		}
 
-		void WriteU16(UOSInt ofst, UInt16 val)
+		void WriteU16(UIntOS ofst, UInt16 val)
 		{
 			CheckError(ofst + 2);
 			WriteUInt16(&buff[ofst], val);
 		}
 
-		void WriteMI16(UOSInt ofst, Int16 val)
+		void WriteMI16(UIntOS ofst, Int16 val)
 		{
 			CheckError(ofst + 2);
 			WriteMInt16(&buff[ofst], val);
 		}
 
-		void WriteMU16(UOSInt ofst, UInt16 val)
+		void WriteMU16(UIntOS ofst, UInt16 val)
 		{
 			CheckError(ofst + 2);
 			WriteMUInt16(&buff[ofst], val);
 		}
 
-		void WriteNI16(UOSInt ofst, Int16 val)
+		void WriteNI16(UIntOS ofst, Int16 val)
 		{
 			CheckError(ofst + 2);
 			WriteNInt16(&buff[ofst], val);
 		}
 
-		void WriteNU16(UOSInt ofst, UInt16 val)
+		void WriteNU16(UIntOS ofst, UInt16 val)
 		{
 			CheckError(ofst + 2);
 			WriteNUInt16(&buff[ofst], val);
 		}
 
-		void WriteI32(UOSInt ofst, Int32 val)
+		void WriteI32(UIntOS ofst, Int32 val)
 		{
 			CheckError(ofst + 4);
 			WriteInt32(&buff[ofst], val);
 		}
 
-		void WriteU32(UOSInt ofst, UInt32 val)
+		void WriteU32(UIntOS ofst, UInt32 val)
 		{
 			CheckError(ofst + 4);
 			WriteUInt32(&buff[ofst], val);
 		}
 
-		void WriteMI32(UOSInt ofst, Int32 val)
+		void WriteMI32(UIntOS ofst, Int32 val)
 		{
 			CheckError(ofst + 4);
 			WriteMInt32(&buff[ofst], val);
 		}
 
-		void WriteMU32(UOSInt ofst, UInt32 val)
+		void WriteMU32(UIntOS ofst, UInt32 val)
 		{
 			CheckError(ofst + 4);
 			WriteMUInt32(&buff[ofst], val);
 		}
 
-		void WriteNI32(UOSInt ofst, Int32 val)
+		void WriteNI32(UIntOS ofst, Int32 val)
 		{
 			CheckError(ofst + 4);
 			WriteNInt32(&buff[ofst], val);
 		}
 
-		void WriteNU32(UOSInt ofst, UInt32 val)
+		void WriteNU32(UIntOS ofst, UInt32 val)
 		{
 			CheckError(ofst + 4);
 			WriteNUInt32(&buff[ofst], val);
@@ -325,7 +325,7 @@ namespace Data
 	{
 #if defined(CHECK_RANGE)
 	private:
-		ByteArrayR(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
+		ByteArrayR(UnsafeArray<const UInt8> buff, UIntOS buffSize, UIntOS prevSize) : ByteArrayBase(buff, buffSize)
 		{
 			this->prevSize = prevSize;
 		}
@@ -339,7 +339,7 @@ namespace Data
 #endif
 		}
 
-		ByteArrayR(UnsafeArray<const UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
+		ByteArrayR(UnsafeArray<const UInt8> buff, UIntOS buffSize) : ByteArrayBase(buff, buffSize)
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
@@ -351,19 +351,19 @@ namespace Data
 
 		}
 
-		ByteArrayR SubArray(UOSInt ofst, UOSInt size) const
+		ByteArrayR SubArray(UIntOS ofst, UIntOS size) const
 		{
 			CheckError(ofst + size);
 			return ByteArrayR(buff + ofst, size);
 		}
 		
-		ByteArrayR SubArray(UOSInt ofst) const
+		ByteArrayR SubArray(UIntOS ofst) const
 		{
 			CheckError(ofst);
 			return ByteArrayR(buff + ofst, this->buffSize - ofst);
 		}
 
-		ByteArrayR WithSize(UOSInt size) const
+		ByteArrayR WithSize(UIntOS size) const
 		{
 			CheckError(size);
 #if defined(CHECK_RANGE)
@@ -373,7 +373,7 @@ namespace Data
 #endif
 		}
 
-		ByteArrayR &operator+=(UOSInt ofst)
+		ByteArrayR &operator+=(UIntOS ofst)
 		{
 			CheckError(ofst);
 			this->buff = buff + ofst;
@@ -384,18 +384,18 @@ namespace Data
 			return NNTHIS;
 		}
 
-		ByteArrayR &operator+=(OSInt ofst)
+		ByteArrayR &operator+=(IntOS ofst)
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-ofst);
+				CheckErrorPrev((UIntOS)-ofst);
 			else
-				CheckError((UOSInt)ofst);
+				CheckError((UIntOS)ofst);
 #endif
 			this->buff = buff + ofst;
-			this->buffSize -= (UOSInt)ofst;
+			this->buffSize -= (UIntOS)ofst;
 #if defined(CHECK_RANGE)
-			this->prevSize += (UOSInt)ofst;
+			this->prevSize += (UIntOS)ofst;
 #endif
 			return NNTHIS;
 		}
@@ -416,14 +416,14 @@ namespace Data
 		{
 #if defined(CHECK_RANGE)
 			if (ofst < 0)
-				CheckErrorPrev((UOSInt)-(OSInt)ofst);
+				CheckErrorPrev((UIntOS)-(IntOS)ofst);
 			else
-				CheckError((UOSInt)ofst);
+				CheckError((UIntOS)ofst);
 #endif
 			this->buff = buff + ofst;
-			this->buffSize -= (UOSInt)(OSInt)ofst;
+			this->buffSize -= (UIntOS)(IntOS)ofst;
 #if defined(CHECK_RANGE)
-			this->prevSize += (UOSInt)(OSInt)ofst;
+			this->prevSize += (UIntOS)(IntOS)ofst;
 #endif
 			return NNTHIS;
 		}

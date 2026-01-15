@@ -17,7 +17,7 @@ namespace IO
 	private:
 		Text::PString *srcStrs;
 		FindRecurPart *srchParts;
-		UOSInt partCnt;
+		UIntOS partCnt;
 		UnsafeArray<UTF8Char> srcBuff;
 		UTF8Char currBuff[2048];
 		Bool isFirst;

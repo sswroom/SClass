@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+Bool DB::DBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 {
 	if (colIndex >= this->ColCount())
 	{
@@ -16,7 +16,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 		item->SetNull();
 		return true;
 	}
-	UOSInt size;
+	UIntOS size;
 	switch (this->GetColType(colIndex, size))
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -110,8 +110,8 @@ NN<DB::TableDef> DB::DBReader::GenTableDef(Text::CString schemaName, Text::CStri
 {
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> colDef;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASSNN(table, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->ColCount();
@@ -128,9 +128,9 @@ NN<DB::TableDef> DB::DBReader::GenTableDef(Text::CString schemaName, Text::CStri
 NN<Data::VariObject> DB::DBReader::CreateVariObject()
 {
 	UTF8Char sbuff[256];
-	UOSInt i;
-	UOSInt j;
-	UOSInt size;
+	UIntOS i;
+	UIntOS j;
+	UIntOS size;
 	Optional<Text::String> ops;
 	DB::DBUtil::ColType ctype;
 	NN<Data::VariObject> obj;
@@ -226,9 +226,9 @@ NN<Data::VariObject> DB::DBReader::CreateVariObject()
 NN<Data::Class> DB::DBReader::CreateClass()
 {
 	UTF8Char sbuff[256];
-	UOSInt i;
-	UOSInt j;
-	UOSInt size;
+	UIntOS i;
+	UIntOS j;
+	UIntOS size;
 	DB::DBClassBuilder builder;
 	i = 0;
 	j = this->ColCount();

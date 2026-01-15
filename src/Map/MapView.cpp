@@ -66,7 +66,7 @@ void Map::MapView::SetHAngle(Double angleRad)
 
 void Map::MapView::SetDestImage(NN<Media::DrawImage> img)
 {
-	if (this->scnSize.GetWidth() != UOSInt2Double(img->GetWidth()) || this->scnSize.GetHeight() != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
+	if (this->scnSize.GetWidth() != UIntOS2Double(img->GetWidth()) || this->scnSize.GetHeight() != UIntOS2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
 		ChangeViewXY(img->GetSize().ToDouble(), this->GetCenter(), this->GetMapScale());
@@ -129,7 +129,7 @@ Math::Vector3 Map::MapView::Convert3D(Math::Vector3 vec3) const
 	return Math::Vector3(this->MapXYToScnXY(vec3.GetXY()) + this->converterOfst, 0);
 }
 
-void Map::MapView::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const
+void Map::MapView::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints) const
 {
 	this->MapXYToScnXYArr(srcArr, destArr, nPoints, this->converterOfst);
 }

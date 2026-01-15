@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	Text::StringBuilderUTF8 sbPrefix;
 	Data::ArrayListStringNN enumList;
 
-	UOSInt type = this->cboType->GetSelectedIndex();
+	UIntOS type = this->cboType->GetSelectedIndex();
 	this->txtPrefix->GetText(sbPrefix);
 	this->txtSource->GetText(srcSb);
 	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToCString(), sbPrefix))

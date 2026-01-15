@@ -20,8 +20,8 @@ namespace Media
 		void SetDestProfile(NN<const Media::ColorProfile> dProfile);
 		void SetOutputProfile(NN<const Media::ColorProfile> oProfile);
 
-//		static void Add(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
-//		static void Subtract(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
+//		static void Add(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height);
+//		static void Subtract(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height);
 
 		/*
 		sa16 = (sa << 8) | sa
@@ -35,8 +35,8 @@ namespace Media
 
 		dest should be AT_ALPHA, output should be AT_ALPHA
 		*/
-		virtual void Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType) = 0;
-		virtual void PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height) = 0;
+		virtual void Blend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height, Media::AlphaType srcAType) = 0;
+		virtual void PremulAlpha(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height) = 0;
 	};
 }
 #endif

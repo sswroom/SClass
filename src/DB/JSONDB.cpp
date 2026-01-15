@@ -10,10 +10,10 @@ private:
 	NN<Text::JSONArray> data;
 	NN<DB::TableDef> tab;
 	Optional<Text::JSONObject> obj;
-	UOSInt nextIndex;
-	UOSInt endOfst;
+	UIntOS nextIndex;
+	UIntOS endOfst;
 public:
-	JSONDBReader(NN<DB::TableDef> tab, NN<Text::JSONArray> data, UOSInt ofst, UOSInt endOfst)
+	JSONDBReader(NN<DB::TableDef> tab, NN<Text::JSONArray> data, UIntOS ofst, UIntOS endOfst)
 	{
 		this->data = data;
 		this->tab = tab;
@@ -41,17 +41,17 @@ public:
 		return true;
 	}
 
-	virtual UOSInt ColCount()
+	virtual UIntOS ColCount()
 	{
 		return this->tab->GetColCnt();
 	}
 
-	virtual OSInt GetRowChanged()
+	virtual IntOS GetRowChanged()
 	{
 		return -1;
 	}
 
-	virtual Int32 GetInt32(UOSInt colIndex)
+	virtual Int32 GetInt32(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -62,7 +62,7 @@ public:
 		return obj->GetValueAsInt32(col->GetColName()->ToCString());
 	}
 
-	virtual Int64 GetInt64(UOSInt colIndex)
+	virtual Int64 GetInt64(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -73,7 +73,7 @@ public:
 		return obj->GetValueAsInt64(col->GetColName()->ToCString());
 	}
 
-	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -95,7 +95,7 @@ public:
 		return nullptr;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -118,7 +118,7 @@ public:
 		return false;
 	}
 
-	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -129,7 +129,7 @@ public:
 		return obj->GetValueNewString(col->GetColName()->ToCString());
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -151,7 +151,7 @@ public:
 		return nullptr;
 	}
 
-	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -167,7 +167,7 @@ public:
 		return 0;
 	}
 
-	virtual Double GetDblOrNAN(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -178,7 +178,7 @@ public:
 		return obj->GetValueAsDoubleOrNAN(col->GetColName()->ToCString());
 	}
 
-	virtual Bool GetBool(UOSInt colIndex)
+	virtual Bool GetBool(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -189,27 +189,27 @@ public:
 		return obj->GetValueAsBool(col->GetColName()->ToCString());
 	}
 
-	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
 		return 0;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
 		return 0;
 	}
 
-	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
 		return nullptr;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
 	
-	virtual Bool IsNull(UOSInt colIndex)
+	virtual Bool IsNull(UIntOS colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
@@ -221,7 +221,7 @@ public:
 		return !obj->GetObjectValue(col->GetColName()->ToCString()).SetTo(o) || o->GetType() == Text::JSONType::Null;
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
@@ -229,7 +229,7 @@ public:
 		return col->GetColName()->ConcatTo(buff);
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
@@ -238,7 +238,7 @@ public:
 		return col->GetColType();
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
@@ -261,19 +261,19 @@ DB::JSONDB::~JSONDB()
 	this->data->EndUse();
 }
 
-UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	names->Add(this->layerName->Clone());
 	return 1;
 }
 
-Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::TableDef> tabDef;
 	if (tableName.Equals(this->layerName->ToCString()) && this->GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
 		NN<JSONDBReader> r;
-		UOSInt endOfst;
+		UIntOS endOfst;
 		if (maxCnt == 0)
 			endOfst = this->data->GetArrayLength();
 		else
@@ -338,7 +338,7 @@ Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::C
 				{
 					NEW_CLASSNN(col, DB::ColDef(name));
 					col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
-					col->SetColSize((UOSInt)-1);
+					col->SetColSize((UIntOS)-1);
 					tab->AddCol(col);
 				}
 			}

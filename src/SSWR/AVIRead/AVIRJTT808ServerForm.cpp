@@ -7,7 +7,7 @@
 typedef struct
 {
 	AnyType cliData;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	UInt16 seqId;
 	UInt8 recvBuff[4096];
 } ClientData;
@@ -91,14 +91,14 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NN<Net::TCPClie
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Received "));
-	sptr = Text::StrUOSInt(sptr, buff.GetSize());
+	sptr = Text::StrUIntOS(sptr, buff.GetSize());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	me->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
 	MemCopyNO(&data->recvBuff[data->buffSize], buff.Arr().Ptr(), buff.GetSize());
 	data->buffSize += buff.GetSize();
 	
-	UOSInt size = me->protoHdlr->ParseProtocol(cli, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));
+	UIntOS size = me->protoHdlr->ParseProtocol(cli, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));
 	if (size >= 2048 || size <= 0)
 	{
 		data->buffSize = 0;
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
@@ -206,14 +206,14 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", type = 0x"));
 	sptr = Text::StrHexVal16(sptr, (UInt16)cmdType);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", size = "));
-	sptr = Text::StrUOSInt(sptr, cmdSize);
+	sptr = Text::StrUIntOS(sptr, cmdSize);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", devId = "));
 	sptr = Text::StrHexBytes(sptr, &cmd[5], 6, 0);
 	this->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
-	UOSInt contSize;
-	UOSInt i;
-	OSInt j;
+	UIntOS contSize;
+	UIntOS i;
+	IntOS j;
 	UInt8 c;
 	UnsafeArray<const UInt8> packetContent = this->protoHdlr->GetPacketContent(cmd, contSize);
 
@@ -391,7 +391,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 				sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 				break;
 			}
-			i += (UOSInt)packetContent[i + 1] + 2;
+			i += (UIntOS)packetContent[i + 1] + 2;
 		}
 		this->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 		break;
@@ -419,12 +419,12 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 	}
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Data skipped "));
-	sptr = Text::StrUOSInt(sptr, buffSize);
+	sptr = Text::StrUIntOS(sptr, buffSize);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	this->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 }

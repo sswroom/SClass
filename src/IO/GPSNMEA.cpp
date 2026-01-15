@@ -10,14 +10,14 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-void IO::GPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
+void IO::GPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, NN<SateRecord> sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, UIntOS lineLen, NN<Map::GPSTrack::GPSRecord3> record, NN<SateRecord> sateRec)
 {
 	UnsafeArray<UTF8Char> sarr[32];
-	UOSInt scnt;
+	UIntOS scnt;
 	if (lineLen <= 3)
 	{
 		return ParseStatus::NotNMEA;
@@ -63,7 +63,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 			UInt8 nSateSBAS = 0;
 			UInt8 nSateGLO = 0;
 			UInt32 prn;
-			UOSInt i = 15;
+			UIntOS i = 15;
 			while (i-- > 3)
 			{
 				if (sarr[i][0] != 0)
@@ -101,8 +101,8 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 			}
 			if (nSateView == record->nSateViewGPS)
 			{
-				UOSInt i = 4;
-				UOSInt j;
+				UIntOS i = 4;
+				UIntOS j;
 				while (i + 4 < scnt)
 				{
 					j = sateRec->sateCnt;
@@ -273,20 +273,20 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 			{
 				if (me->cmdHdlr)
 				{
-					me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
+					me->cmdHdlr(me->cmdHdlrObj, sbuff, (UIntOS)(sptr - sbuff));
 				}
-				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), record, sateRec);
+				ParseStatus ps = ParseNMEALine(sbuff, (UIntOS)(sptr - sbuff), record, sateRec);
 				switch (ps)
 				{
 				case ParseStatus::NotNMEA:
 					break;
 				case ParseStatus::Unsupported:
-					me->ParseUnknownCmd(sbuff, (UOSInt)(sptr - sbuff));
+					me->ParseUnknownCmd(sbuff, (UIntOS)(sptr - sbuff));
 					break;
 				case ParseStatus::NewRecord:
 					{
 						Sync::RWMutexUsage mutUsage(me->hdlrMut, false);
-						UOSInt i = me->hdlrList.GetCount();
+						UIntOS i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
 							Data::CallbackStorage<LocationHandler> cb = me->hdlrList.GetItem(i);
@@ -357,7 +357,7 @@ void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, AnyType userObj)
 void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, AnyType userObj)
 {
 	Sync::RWMutexUsage mutUsage(this->hdlrMut, true);
-	UOSInt i = this->hdlrList.GetCount();
+	UIntOS i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<LocationHandler> cb = this->hdlrList.GetItem(i);
@@ -385,14 +385,14 @@ void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, AnyType userObj)
 	this->cmdHdlr = cmdHdlr;
 }
 
-UOSInt IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UnsafeArray<UInt8> buff)
+UIntOS IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, UnsafeArray<UInt8> buff)
 {
-	UOSInt size;
+	UIntOS size;
 	UInt8 chk;
-	UOSInt i;
+	UIntOS i;
 	if (cmd[0] != '$')
 		return 0;
-	size = (UOSInt)(Text::StrConcatC(buff, cmd, cmdLen) - buff);
+	size = (UIntOS)(Text::StrConcatC(buff, cmd, cmdLen) - buff);
 	i = size;
 	chk = 0;
 	while (i-- > 1)

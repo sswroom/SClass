@@ -9,12 +9,12 @@ namespace IO
 	{
 	private:
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 
-		void InitBuff(const UInt8 *buff, UOSInt buffSize);
+		void InitBuff(const UInt8 *buff, UIntOS buffSize);
 	public:
 		LNKFile(Text::CStringNN fileName);
-		LNKFile(const UInt8 *buff, UOSInt buffSize);
+		LNKFile(const UInt8 *buff, UIntOS buffSize);
 		~LNKFile();
 
 		Bool IsError();

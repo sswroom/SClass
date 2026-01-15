@@ -8,14 +8,14 @@
 
 NN<Text::UnicodeCharacterData::UnicodeData> Text::UnicodeCharacterData::GetOrNewUnicodeData(UInt32 code)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->dataList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->dataList.GetCount() - 1;
+	IntOS k;
 	NN<UnicodeData> data;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		data = this->dataList.GetItemNoCheck((UOSInt)k);
+		data = this->dataList.GetItemNoCheck((UIntOS)k);
 		if (data->code > code)
 		{
 			i = k + 1;
@@ -36,7 +36,7 @@ NN<Text::UnicodeCharacterData::UnicodeData> Text::UnicodeCharacterData::GetOrNew
 	data->uppercaseMapping = 0;
 	data->lowercaseMapping = 0;
 	data->titlecaseMapping = 0;
-	this->dataList.Insert((UOSInt)i, data);
+	this->dataList.Insert((UIntOS)i, data);
 	return data;
 }
 
@@ -46,7 +46,7 @@ Text::UnicodeCharacterData::UnicodeCharacterData()
 
 Text::UnicodeCharacterData::~UnicodeCharacterData()
 {
-	UOSInt i = this->dataList.GetCount();
+	UIntOS i = this->dataList.GetCount();
 	NN<UnicodeData> data;
 	while (i-- > 0)
 	{
@@ -124,14 +124,14 @@ void Text::UnicodeCharacterData::LoadUCDZip(Text::CStringNN ucdZipFile)
 
 Optional<Text::UnicodeCharacterData::UnicodeData> Text::UnicodeCharacterData::GetUnicodeData(UInt32 code) const
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->dataList.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->dataList.GetCount() - 1;
+	IntOS k;
 	NN<UnicodeData> data;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		data = this->dataList.GetItemNoCheck((UOSInt)k);
+		data = this->dataList.GetItemNoCheck((UIntOS)k);
 		if (data->code > code)
 		{
 			i = k + 1;

@@ -17,7 +17,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 	UTF8Char sbuff2[256];
 	UnsafeArray<UTF8Char> tmp;
 	Text::PString strs[5];
-	UOSInt i;
+	UIntOS i;
 	Int32 layerId;
 	Int32 layerType;
 	Double layerDist;
@@ -37,7 +37,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 	IO::StreamReader reader(fs);
 	while (reader.ReadLine(sbuff, 256).SetTo(sptr))
 	{
-		i = Text::StrSplitP(strs, 5, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
+		i = Text::StrSplitP(strs, 5, {sbuff, (UIntOS)(sptr - sbuff)}, ',');
 		/*
 		layerType
 		0: baseDir
@@ -131,8 +131,8 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 
 Map::MapSearch::~MapSearch()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	OPTSTR_DEL(this->baseDir);
 	i = MAPSEARCH_LAYER_TYPES;
 	while (i-- > 0)
@@ -167,8 +167,8 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::
 	UnsafeArray<UTF8Char> nnsptr;
 	UnsafeArray<UTF8Char> outptr;
 	Int32 resType;
-	OSInt i;
-	UOSInt j;
+	IntOS i;
+	UIntOS j;
 	UInt32 k;
 	Int32 l = 0;
 	Double thisDist;
@@ -260,7 +260,7 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::
 		if (sptr.SetTo(nnsptr) && *outptr)
 		{
 			outArrs[i].v = outptr;
-			outArrs[i].leng = (UOSInt)(nnsptr - outptr);
+			outArrs[i].leng = (UIntOS)(nnsptr - outptr);
 			outptr = nnsptr + 1;
 			l++;
 		}
@@ -277,7 +277,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff,
 {
 	UnsafeArrayOpt<UTF8Char> outptr = nullptr;
 	UnsafeArray<UTF8Char> nnoutptr;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	UTF8Char sbufftmp[128];
 	UnsafeArray<UTF8Char> sptrtmp;
 	Text::PString stmp[2];
@@ -362,11 +362,11 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff,
 			{
 				i = strArrs[2].IndexOf(' ');
 				if (i != INVALID_INDEX)
-					sptrtmp = Text::StrConcatC(sbufftmp, strArrs[2].v, (UOSInt)i);
+					sptrtmp = Text::StrConcatC(sbufftmp, strArrs[2].v, (UIntOS)i);
 				else
 					sptrtmp = strArrs[2].ConcatTo(sbufftmp);
 
-				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+				i = strArrs[3].IndexOf(sbufftmp, (UIntOS)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
 					nnoutptr = strArrs[3].ConcatTo(nnoutptr);
@@ -496,14 +496,14 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff,
 			else
 			{
 				sptrtmp = strArrs[2].ConcatTo(sbufftmp);
-				Text::StrSplitP(stmp, 2, {sbufftmp, (UOSInt)(sptrtmp - sbufftmp)}, ' ');
-				i = Text::StrIndexOfCharC(sbufftmp, (UOSInt)(sptrtmp - sbufftmp), '-');
+				Text::StrSplitP(stmp, 2, {sbufftmp, (UIntOS)(sptrtmp - sbufftmp)}, ' ');
+				i = Text::StrIndexOfCharC(sbufftmp, (UIntOS)(sptrtmp - sbufftmp), '-');
 				if (i != INVALID_INDEX)
 				{
-					sptrtmp = Text::StrConcatC(sbufftmp, &sbufftmp[i + 1], (UOSInt)(sptrtmp - &sbufftmp[i + 1]));
+					sptrtmp = Text::StrConcatC(sbufftmp, &sbufftmp[i + 1], (UIntOS)(sptrtmp - &sbufftmp[i + 1]));
 				}
 
-				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+				i = strArrs[3].IndexOf(sbufftmp, (UIntOS)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
 					nnoutptr = strArrs[3].ConcatTo(nnoutptr);

@@ -13,7 +13,7 @@ namespace IO
 		BTManager();
 		~BTManager();
 	public:
-		UOSInt CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList);
+		UIntOS CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList);
 	};
 }
 #endif

@@ -2,11 +2,11 @@
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/CircularString.h"
 
-Math::Geometry::CircularString::CircularString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint | 1, hasZ, hasM)
+Math::Geometry::CircularString::CircularString(UInt32 srid, UIntOS nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint | 1, hasZ, hasM)
 {
 }
 
-Math::Geometry::CircularString::CircularString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
+Math::Geometry::CircularString::CircularString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UIntOS nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
 {
 }
 
@@ -43,8 +43,8 @@ Optional<Math::Geometry::Vector2D> Math::Geometry::CircularString::ToSimpleShape
 	if (this->nPoint > 2 && (this->nPoint & 1) != 0)
 	{
 		Data::ArrayListA<Math::Coord2DDbl> ptList;
-		UOSInt ret = 0;
-		UOSInt i = 2;
+		UIntOS ret = 0;
+		UIntOS i = 2;
 		while (i < this->nPoint)
 		{
 			if (ret > 0)

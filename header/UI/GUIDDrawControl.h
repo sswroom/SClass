@@ -41,15 +41,15 @@ namespace UI
 		Bool directMode;
 		Bool inited;
 	protected:
-		Math::Size2D<UOSInt> bkBuffSize;
-		Math::Size2D<UOSInt> dispSize;
+		Math::Size2D<UIntOS> bkBuffSize;
+		Math::Size2D<UIntOS> dispSize;
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		Sync::Mutex surfaceMut;
 		UInt32 bitDepth;
-		OSInt scnX;
-		OSInt scnY;
-		UOSInt scnW;
-		UOSInt scnH;
+		IntOS scnX;
+		IntOS scnY;
+		UIntOS scnW;
+		UIntOS scnH;
 		Bool switching;
 		Optional<MonitorHandle> currMon;
 		ScreenMode currScnMode;
@@ -59,7 +59,7 @@ namespace UI
 
 	private:
 		static Int32 useCnt;
-		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+		static IntOS __stdcall FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		static void Init(Optional<InstanceHandle> hInst);
 		static void Deinit(Optional<InstanceHandle> hInst);
 		static void JSTimerTick(AnyType userObj);
@@ -74,7 +74,7 @@ namespace UI
 		void CreateSubSurface();
 		void ReleaseSubSurface();
 
-		UnsafeArrayOpt<UInt8> LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl);
+		UnsafeArrayOpt<UInt8> LockSurfaceBegin(UIntOS targetWidth, UIntOS targetHeight, OutParam<IntOS> bpl);
 		void LockSurfaceEnd();
 		Media::PixelFormat GetPixelFormat();
 
@@ -87,7 +87,7 @@ namespace UI
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
+		void DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> drawSize, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(Optional<MonitorHandle> hMon);
@@ -97,17 +97,17 @@ namespace UI
 		Media::RotateType GetRotateType() const;
 	public:
 		virtual void OnSurfaceCreated() = 0;
-		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
-		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
-		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnMouseDblClick(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnGZoomBegin(Math::Coord2D<OSInt> pos, UInt64 dist);
-		virtual void OnGZoomStep(Math::Coord2D<OSInt> pos, UInt64 dist);
-		virtual void OnGZoomEnd(Math::Coord2D<OSInt> pos, UInt64 dist);
-		virtual void OnJSButtonDown(OSInt buttonId);
-		virtual void OnJSButtonUp(OSInt buttonId);
-		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
+		virtual void OnMouseWheel(Math::Coord2D<IntOS> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<IntOS> pos);
+		virtual void OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnMouseDblClick(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnGZoomBegin(Math::Coord2D<IntOS> pos, UInt64 dist);
+		virtual void OnGZoomStep(Math::Coord2D<IntOS> pos, UInt64 dist);
+		virtual void OnGZoomEnd(Math::Coord2D<IntOS> pos, UInt64 dist);
+		virtual void OnJSButtonDown(IntOS buttonId);
+		virtual void OnJSButtonUp(IntOS buttonId);
+		virtual void OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4);
 
 		void *GetPixBuf();
 		void UseDrawSurface(NN<Sync::MutexUsage> mut);

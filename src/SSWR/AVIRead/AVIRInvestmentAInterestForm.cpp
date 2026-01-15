@@ -220,8 +220,8 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 	this->btnOK->SetRect(184, 148, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	NN<Data::Invest::Asset> ass;
-	UOSInt i = 0;
-	UOSInt j = mgr->GetAssetCount();
+	UIntOS i = 0;
+	UIntOS j = mgr->GetAssetCount();
 	while (i < j)
 	{
 		if (mgr->GetAsset(i).SetTo(ass))
@@ -269,8 +269,8 @@ void SSWR::AVIRead::AVIRInvestmentAInterestForm::SetEntry(NN<Data::Invest::Trade
 		}
 		this->cboAsset->SetEnabled(false);
 		NN<Data::Invest::Asset> ass;
-		UOSInt i = 0;
-		UOSInt j = this->cboAsset->GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->cboAsset->GetCount();
 		while (i < j)
 		{
 			ass = this->cboAsset->GetItem(i).GetNN<Data::Invest::Asset>();

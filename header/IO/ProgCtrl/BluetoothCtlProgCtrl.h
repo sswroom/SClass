@@ -31,7 +31,7 @@ namespace IO
 			Bool cmdReady;
 
 			static void __stdcall ReadThread(NN<Sync::Thread> thread);
-			void SendCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+			void SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 
 			Optional<IO::BTScanLog::ScanRecord3> DeviceGetByStr(Text::CStringNN s);
 			static void DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev);

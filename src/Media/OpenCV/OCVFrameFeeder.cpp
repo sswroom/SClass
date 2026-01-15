@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 	NN<Media::OpenCV::OCVFrame> frame;
@@ -65,11 +65,11 @@ Media::OpenCV::OCVFrameFeeder::~OCVFrameFeeder()
 Bool Media::OpenCV::OCVFrameFeeder::Start()
 {
 	NN<Media::VideoSource> decoder;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 rateNorm;
 	UInt32 rateDenorm;
-	UOSInt maxFrameSize;
+	UIntOS maxFrameSize;
 	if (this->src->IsRunning())
 	{
 		return true;
@@ -81,10 +81,10 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 		{
 			Media::VideoCapturer *capture = (Media::VideoCapturer*)realtimeVideo;
 			Media::VideoCapturer::VideoFormat *formats;
-			UOSInt thisSize;
-			UOSInt maxSize = 0;
-			UOSInt maxWidth = 0;
-			UOSInt maxHeight = 0;
+			UIntOS thisSize;
+			UIntOS maxSize = 0;
+			UIntOS maxWidth = 0;
+			UIntOS maxHeight = 0;
 			UInt32 maxFmt = 0xFFFFFFFF;
 			UInt32 maxBpp = 0;
 			UInt32 maxRateNumer = 0;
@@ -193,7 +193,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 				tmp[0] = maxFmt;
 				tmp[1] = 0;
 				printf("OCVFrameFeeder: %s %d %d\r\n", (Char*)tmp, (Int32)maxWidth, (Int32)maxHeight);
-				capture->SetPreferSize(Math::Size2D<UOSInt>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
+				capture->SetPreferSize(Math::Size2D<UIntOS>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 			}
 
 			i = 0;
@@ -229,12 +229,12 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 	}
 }
 
-void Media::OpenCV::OCVFrameFeeder::SetFrameSkip(OSInt frameSkip)
+void Media::OpenCV::OCVFrameFeeder::SetFrameSkip(IntOS frameSkip)
 {
 	this->frameSkip = frameSkip;
 }
 
-void Media::OpenCV::OCVFrameFeeder::SetPreferedFormat(UInt32 preferedFormat, UOSInt preferedWidth, UOSInt preferedHeight)
+void Media::OpenCV::OCVFrameFeeder::SetPreferedFormat(UInt32 preferedFormat, UIntOS preferedWidth, UIntOS preferedHeight)
 {
 	this->preferedFormat = preferedFormat;
 	this->preferedWidth = preferedWidth;

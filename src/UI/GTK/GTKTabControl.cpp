@@ -63,8 +63,8 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 	page->txt = tabName->Clone();
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd.OrNull(), (GtkWidget*)tp->GetHandle().OrNull(), page->lbl);
-	Math::RectArea<OSInt> rect = this->GetTabPageRect();
-	tp->SetRect(0, 0, OSInt2Double(rect.GetWidth()), OSInt2Double(rect.GetHeight()), false);
+	Math::RectArea<IntOS> rect = this->GetTabPageRect();
+	tp->SetRect(0, 0, IntOS2Double(rect.GetWidth()), IntOS2Double(rect.GetHeight()), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
 	this->tabPages.Add(tp);
@@ -81,19 +81,19 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 	page->txt = Text::String::New(tabName);
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd.OrNull(), (GtkWidget*)tp->GetHandle().OrNull(), page->lbl);
-	Math::RectArea<OSInt> rect = this->GetTabPageRect();
-	tp->SetRect(0, 0, OSInt2Double(rect.GetWidth()), OSInt2Double(rect.GetHeight()), false);
+	Math::RectArea<IntOS> rect = this->GetTabPageRect();
+	tp->SetRect(0, 0, IntOS2Double(rect.GetWidth()), IntOS2Double(rect.GetHeight()), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
 	this->tabPages.Add(tp);
 	return tp;
 }
 
-void UI::GTK::GTKTabControl::SetSelectedIndex(UOSInt index)
+void UI::GTK::GTKTabControl::SetSelectedIndex(UIntOS index)
 {
 	if (this->selIndex != index)
 	{
-		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd.OrNull(), (gint)(OSInt)index);
+		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd.OrNull(), (gint)(IntOS)index);
 		this->selIndex = index;
 		this->EventSelChange();
 	}
@@ -101,7 +101,7 @@ void UI::GTK::GTKTabControl::SetSelectedIndex(UOSInt index)
 
 void UI::GTK::GTKTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 {
-	UOSInt i = this->tabPages.GetCount();
+	UIntOS i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
 		if (page.Ptr() == this->tabPages.GetItem(i).OrNull())
@@ -111,7 +111,7 @@ void UI::GTK::GTKTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 	}
 }
 
-UOSInt UI::GTK::GTKTabControl::GetSelectedIndex()
+UIntOS UI::GTK::GTKTabControl::GetSelectedIndex()
 {
 	return this->selIndex;
 }
@@ -121,7 +121,7 @@ Optional<UI::GUITabPage> UI::GTK::GTKTabControl::GetSelectedPage()
 	return this->tabPages.GetItem(this->selIndex);
 }
 
-void UI::GTK::GTKTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
+void UI::GTK::GTKTabControl::SetTabPageName(UIntOS index, Text::CStringNN name)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
@@ -132,7 +132,7 @@ void UI::GTK::GTKTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 	page->txt = Text::String::New(name);
 }
 
-UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UIntOS index, UnsafeArray<UTF8Char> buff)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
@@ -141,10 +141,10 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, Un
 	return page->txt->ConcatTo(buff);
 }
 
-Math::RectArea<OSInt> UI::GTK::GTKTabControl::GetTabPageRect()
+Math::RectArea<IntOS> UI::GTK::GTKTabControl::GetTabPageRect()
 {
-	Math::Size2D<UOSInt> sz;
-	OSInt btnH = 0;
+	Math::Size2D<UIntOS> sz;
+	IntOS btnH = 0;
 	GtkAllocation clip;
 	sz = this->GetSizeP();
 	GtkWidget *page;
@@ -163,32 +163,32 @@ Math::RectArea<OSInt> UI::GTK::GTKTabControl::GetTabPageRect()
 	}
 	else
 	{
-		Math::Coord2D<OSInt> pos = this->GetPositionP();
+		Math::Coord2D<IntOS> pos = this->GetPositionP();
 //		printf("TabPage clip.y = %d, clip.height = %d, height = %d, posY = %d\r\n", clip.y, clip.height, (UInt32)height, (Int32)posY);
 		btnH = clip.y - pos.y;
 	}
-	return Math::RectArea<OSInt>(0, btnH, (OSInt)sz.x - 2, (OSInt)sz.y - btnH - 2);
+	return Math::RectArea<IntOS>(0, btnH, (IntOS)sz.x - 2, (IntOS)sz.y - btnH - 2);
 }
 
-OSInt UI::GTK::GTKTabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTabControl::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
 void UI::GTK::GTKTabControl::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers.GetCount();
+	UIntOS i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
 		cb.func(cb.userObj);
 	}
 
-	Math::Size2D<UOSInt> sz1;
-	Math::Size2D<OSInt> sz2;
+	Math::Size2D<UIntOS> sz1;
+	Math::Size2D<IntOS> sz2;
 	//sz1 = GetSizeP();
 	sz2 = GetTabPageRect().GetSize();
-	sz1 = Math::Size2D<UOSInt>((UOSInt)sz2.x, (UOSInt)sz2.y);
+	sz1 = Math::Size2D<UIntOS>((UIntOS)sz2.x, (UIntOS)sz2.y);
 	NN<GUITabPage> tp;
 	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())

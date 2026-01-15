@@ -12,20 +12,20 @@ void IO::SizeRotateFileLog::SwapFiles()
 	UTF8Char buff1[256];
 	UTF8Char buff2[256];
 	UnsafeArray<UTF8Char> sptr1;
-	UOSInt i;
+	UIntOS i;
 	i = this->nFiles - 1;
 	
-	sptr1 = Text::StrConcatC(Text::StrUOSInt(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
+	sptr1 = Text::StrConcatC(Text::StrUIntOS(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
 	IO::FileUtil::DeleteFile(CSTRP(buff1, sptr1), true);
 	while (i-- > 0)
 	{
-		Text::StrConcatC(Text::StrUOSInt(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
-		Text::StrConcatC(Text::StrUOSInt(this->fileName->ConcatTo(buff2), i + 1), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrUIntOS(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrUIntOS(this->fileName->ConcatTo(buff2), i + 1), UTF8STRC(".log"));
 		IO::FileUtil::RenameFile(buff1, buff2);
 	}
 }
 
-IO::SizeRotateFileLog::SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, UInt64 fileSize)
+IO::SizeRotateFileLog::SizeRotateFileLog(Text::CStringNN fileName, UIntOS nFiles, UInt64 fileSize)
 {
 	this->nFiles = nFiles;
 	this->fileSize = fileSize;
@@ -122,7 +122,7 @@ void IO::SizeRotateFileLog::LogAdded(const Data::Timestamp &logTime, Text::CStri
 	{
 		sptr = logTime.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
 		Text::StringBuilderUTF8 sb;
-		sb.AppendC(buff, (UOSInt)(sptr - buff));
+		sb.AppendC(buff, (UIntOS)(sptr - buff));
 		sb.Append(logMsg);
 		log->WriteLine(sb.ToCString());
 	}

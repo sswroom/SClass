@@ -42,7 +42,7 @@ namespace SSWR
 
 			Optional<Crypto::Cert::X509File> currCerts;
 			UnsafeArrayOpt<UInt8> packetBuff;
-			UOSInt packetSize;
+			UIntOS packetSize;
 
 		private:
 			static void __stdcall OnCheckClicked(AnyType userObj);

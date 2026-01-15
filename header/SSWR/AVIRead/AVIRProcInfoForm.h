@@ -108,22 +108,22 @@ namespace SSWR
 			Data::ArrayListUInt32 procIds;
 			Data::ArrayListNN<ProcessInfo> procList;
 
-			UOSInt currProc;
+			UIntOS currProc;
 			Optional<Manage::Process> currProcObj;
 			Optional<Manage::SymbolResolver> currProcRes;
 			Manage::HiResClock clk;
 			Data::Timestamp lastUserTime;
 			Data::Timestamp lastKernelTime;
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 
-			static void __stdcall OnSumDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnSumDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnProcSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnTimerCPUTick(AnyType userObj);
 			static void __stdcall OnDetailCurrClicked(AnyType userObj);
 			static void __stdcall OnDetModuleRefClicked(AnyType userObj);
 			static void __stdcall OnDetThreadRefClicked(AnyType userObj);
-			static void __stdcall OnDetThreadDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnDetThreadDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnDetHeapRefClicked(AnyType userObj);
 			static void __stdcall OnDetHeapSelChg(AnyType userObj);
 			static void __stdcall OnDetHeapItemSelChg(AnyType userObj);

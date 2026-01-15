@@ -17,7 +17,7 @@
 #include <stdio.h>
 #endif
 
-void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep, UIntOS swidth)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: HFilterPA w = %d, h = %d, tap = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->srcPF).v.Ptr());
@@ -29,15 +29,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<cons
 			this->UpdateRGB16Table();
 		}
 	}
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
 	FuncType funcType = FuncType::HFilterPA;
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	while (i-- > 0)
 	{
 		currHeight = MulDivUOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
-		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+		this->params[i].inPt = inPt + (IntOS)currHeight * sstep;
+		this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 		this->params[i].dwidth = dwidth;
 		this->params[i].swidth = swidth;
 		this->params[i].height = lastHeight - currHeight;
@@ -59,7 +59,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<cons
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep, UIntOS swidth)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: HFilter w = %d, h = %d, tap = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->srcPF).v.Ptr());
@@ -71,15 +71,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const 
 			this->UpdateRGB16Table();
 		}
 	}
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
 	FuncType funcType = FuncType::HFilter;
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	while (i-- > 0)
 	{
 		currHeight = MulDivUOS(i, height, this->nThread);
-		this->params[i].inPt = inPt + (OSInt)currHeight * sstep;
-		this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+		this->params[i].inPt = inPt + (IntOS)currHeight * sstep;
+		this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 		this->params[i].dwidth = dwidth;
 		this->params[i].swidth = swidth;
 		this->params[i].height = lastHeight - currHeight;
@@ -101,15 +101,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const 
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: VFilter w = %d, h = %d, tap = %d, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->destPF).v.Ptr());
 #endif
-	UOSInt currHeight;
-	UOSInt lastHeight = height;
+	UIntOS currHeight;
+	UIntOS lastHeight = height;
 	FuncType funcType = FuncType::VFilter;
-	UOSInt i = this->nThread;
+	UIntOS i = this->nThread;
 	if (height < 16)
 	{
 		if (this->destPF == Media::PF_B8G8R8)
@@ -127,7 +127,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UI
 		{
 			currHeight = MulDivUOS(i, height, this->nThread);
 			this->params[i].inPt = inPt;
-			this->params[i].outPt = outPt + (OSInt)currHeight * dstep;
+			this->params[i].outPt = outPt + (IntOS)currHeight * dstep;
 			this->params[i].dwidth = dwidth;
 			this->params[i].height = lastHeight - currHeight;
 			this->params[i].tap = tap;
@@ -146,7 +146,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UI
 	}
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: ExpandPA w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
@@ -177,7 +177,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> i
 		LanczosResizerFunc_ExpandB8G8R8A8PA(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 262144);
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: Expand w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
@@ -208,7 +208,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inP
 		LanczosResizerFunc_ExpandB8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 262144);
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: Collapse w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
@@ -223,7 +223,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCollapse(UnsafeArray<const UInt8> i
 	}
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: CopyPA w = %d, h = %d, srcPF = %s, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr(), Media::PixelFormatGetName(this->destPF).v.Ptr());
@@ -287,7 +287,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 	}
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, IntOS sstep, IntOS dstep)
 {
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: Copy w = %d, h = %d, srcPF = %s, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr(), Media::PixelFormatGetName(this->destPF).v.Ptr());
@@ -383,7 +383,7 @@ void Media::Resizer::LanczosResizerRGB_C8::UpdatePalTable()
 	UnsafeArray<UInt8> rgbTable;
 	if (this->rgbTable.SetTo(rgbTable) && this->srcPal.SetTo(srcPal))
 	{
-		UOSInt nColor;
+		UIntOS nColor;
 		if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
 		{
 			nColor = 256;
@@ -392,7 +392,7 @@ void Media::Resizer::LanczosResizerRGB_C8::UpdatePalTable()
 		{
 			nColor = 0;
 		}
-		UOSInt i = 0;
+		UIntOS i = 0;
 		UInt8 c;
 		Int32 a;
 		Int32 r;
@@ -677,7 +677,7 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 
 void Media::Resizer::LanczosResizerRGB_C8::DestoryHori()
 {
-	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<IntOS> hIndex;
 	UnsafeArray<Int64> hWeight;
 	if (this->hIndex.SetTo(hIndex))
 	{
@@ -694,7 +694,7 @@ void Media::Resizer::LanczosResizerRGB_C8::DestoryHori()
 
 void Media::Resizer::LanczosResizerRGB_C8::DestoryVert()
 {
-	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<IntOS> vIndex;
 	UnsafeArray<Int64> vWeight;
 	if (this->vIndex.SetTo(vIndex))
 	{
@@ -710,9 +710,9 @@ void Media::Resizer::LanczosResizerRGB_C8::DestoryVert()
 	this->vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UIntOS hnTap, UIntOS vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
-	UOSInt i;
+	UIntOS i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
 	{
@@ -770,7 +770,7 @@ Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UOSInt hnTap, UOSInt 
 
 Media::Resizer::LanczosResizerRGB_C8::~LanczosResizerRGB_C8()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<Media::ColorManagerSess> nncolorSess;
 	UnsafeArray<UInt8> rgbTable;
 	UnsafeArray<UInt8> tmpBuff;
@@ -809,17 +809,17 @@ Media::Resizer::LanczosResizerRGB_C8::~LanczosResizerRGB_C8()
 	}
 }
 
-void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, IntOS sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, IntOS dbpl, UIntOS dwidth, UIntOS dheight)
 {
 	Media::Resizer::LanczosResizerFunc::Parameter prm;
 	Double w;
 	Double h;
-	OSInt siWidth;
-	OSInt siHeight;
+	IntOS siWidth;
+	IntOS siHeight;
 	UnsafeArray<UInt8> buffPtr;
-	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<IntOS> hIndex;
 	UnsafeArray<Int64> hWeight;
-	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<IntOS> vIndex;
 	UnsafeArray<Int64> vWeight;
 	if (dwidth < this->hnTap || dheight < this->vnTap)
 		return;
@@ -829,16 +829,16 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 #endif
 	w = xOfst + swidth;
 	h = yOfst + sheight;
-	siWidth = (OSInt)w;
-	siHeight = (OSInt)h;
-	w -= OSInt2Double(siWidth);
-	h -= OSInt2Double(siHeight);
+	siWidth = (IntOS)w;
+	siHeight = (IntOS)h;
+	w -= IntOS2Double(siWidth);
+	h -= IntOS2Double(siHeight);
 	if (w > 0)
 		siWidth++;
 	if (h > 0)
 		siHeight++;
 
-	if (siWidth < (OSInt)this->hnTap || siHeight < (OSInt)this->vnTap)
+	if (siWidth < (IntOS)this->hnTap || siHeight < (IntOS)this->vnTap)
 		return;
 
 	if (this->rgbChanged)
@@ -848,14 +848,14 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 		UpdateRGBTable();
 	}
 
-	if (siWidth != (OSInt)dwidth && siHeight != (OSInt)dheight)
+	if (siWidth != (IntOS)dwidth && siHeight != (IntOS)dheight)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (!this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight) || this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
 
-			if (swidth > UOSInt2Double(dwidth))
+			if (swidth > UIntOS2Double(dwidth))
 			{
 				Media::Resizer::LanczosResizerFunc::SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
@@ -871,12 +871,12 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			hTap = prm.tap;
 		}
 
-		if (!this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight) || this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)hdSize * 8 || this->vsOfst != yOfst)
+		if (!this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight) || this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (IntOS)hdSize * 8 || this->vsOfst != yOfst)
 		{
 			DestoryVert();
-			vsStep = (OSInt)hdSize * 8;
+			vsStep = (IntOS)hdSize * 8;
 
-			if (sheight > UOSInt2Double(dheight))
+			if (sheight > UIntOS2Double(dheight))
 			{
 				Media::Resizer::LanczosResizerFunc::SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
@@ -901,33 +901,33 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UOSInt)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			this->MTHorizontalFilterPA(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, (UOSInt)siWidth);
+			this->MTHorizontalFilterPA(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
 /*			UInt8 *tmpbuff = MemAllocA(UInt8, siWidth << 3);
 			LanczosResizer8_C8_horizontal_filter_pa(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dwidth << 3, this->rgbTable, siWidth, tmpbuff);
 			MemFreeA(tmpbuff);*/
 		}
 		else
 		{
-			this->MTHorizontalFilter(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, (UOSInt)siWidth);
-/*			UInt8 *tmpbuff = MemAllocA(UInt8, (UOSInt)siWidth << 3);
-			LanczosResizer8_C8_horizontal_filter(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, this->rgbTable, (UOSInt)siWidth, tmpbuff);
+			this->MTHorizontalFilter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
+/*			UInt8 *tmpbuff = MemAllocA(UInt8, (UIntOS)siWidth << 3);
+			LanczosResizer8_C8_horizontal_filter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, this->rgbTable, (UIntOS)siWidth, tmpbuff);
 			MemFreeA(tmpbuff);*/
 		}
-		this->MTVerticalFilter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (OSInt)dwidth << 3, dbpl);
+		this->MTVerticalFilter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (IntOS)dwidth << 3, dbpl);
 //		LanczosResizer8_C8_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, dwidth << 3, dbpl, this->rgbTable);
 	}
-	else if (siWidth != (OSInt)dwidth)
+	else if (siWidth != (IntOS)dwidth)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (!this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight) || hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
 
-			if (swidth > UOSInt2Double(dwidth))
+			if (swidth > UIntOS2Double(dwidth))
 			{
 				Media::Resizer::LanczosResizerFunc::SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
@@ -951,19 +951,19 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UOSInt)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			this->MTHorizontalFilterPA(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, (UOSInt)siWidth);
+			this->MTHorizontalFilterPA(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
 		}
 		else
 		{
-			this->MTHorizontalFilter(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, (UOSInt)siWidth);
+			this->MTHorizontalFilter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
 		}
-		this->MTCollapse(buffPtr, dest, dwidth, dheight, (OSInt)dwidth << 3, dbpl);
+		this->MTCollapse(buffPtr, dest, dwidth, dheight, (IntOS)dwidth << 3, dbpl);
 	}
-	else if (siHeight != (OSInt)dheight)
+	else if (siHeight != (IntOS)dheight)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (!this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight) || vsSize != sheight || vdSize != dheight || vsStep != Double2Int32(swidth) * 8 || vsOfst != yOfst)
@@ -971,7 +971,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			DestoryVert();
 			vsStep = siWidth * 8;
 
-			if (sheight > UOSInt2Double(dheight))
+			if (sheight > UIntOS2Double(dheight))
 			{
 				Media::Resizer::LanczosResizerFunc::SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
@@ -986,37 +986,37 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 		}
-		if (!this->buffPtr.SetTo(buffPtr) || siHeight != buffH || (siWidth != (OSInt)buffW))
+		if (!this->buffPtr.SetTo(buffPtr) || siHeight != buffH || (siWidth != (IntOS)buffW))
 		{
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
 				this->buffPtr = nullptr;
 			}
-			buffW = (UOSInt)siWidth;
+			buffW = (UIntOS)siWidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UOSInt)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			this->MTExpandPA(src, buffPtr, (UOSInt)siWidth, (UOSInt)siHeight, sbpl, siWidth << 3);
+			this->MTExpandPA(src, buffPtr, (UIntOS)siWidth, (UIntOS)siHeight, sbpl, siWidth << 3);
 		}
 		else
 		{
-			this->MTExpand(src, buffPtr, (UOSInt)siWidth, (UOSInt)siHeight, sbpl, siWidth << 3);
+			this->MTExpand(src, buffPtr, (UIntOS)siWidth, (UIntOS)siHeight, sbpl, siWidth << 3);
 		}
-		this->MTVerticalFilter(buffPtr, dest, (UOSInt)siWidth, dheight, vTap, vIndex, vWeight, siWidth << 3, dbpl);
+		this->MTVerticalFilter(buffPtr, dest, (UIntOS)siWidth, dheight, vTap, vIndex, vWeight, siWidth << 3, dbpl);
 	}
 	else
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			this->MTCopyPA(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
+			this->MTCopyPA(src, dest, (UIntOS)siWidth, dheight, sbpl, dbpl);
 		}
 		else
 		{
-			this->MTCopy(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
+			this->MTCopy(src, dest, (UIntOS)siWidth, dheight, sbpl, dbpl);
 		}
 	}
 }
@@ -1038,13 +1038,13 @@ Bool Media::Resizer::LanczosResizerRGB_C8::Resize(NN<const Media::StaticImage> s
 	this->SetDestPixelFormat(destImg->info.pf);
 	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
-		Resize(srcImg->data.Ptr(), (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispSize.x), UOSInt2Double(srcImg->info.dispSize.y), 0, 0, destImg->data.Ptr(), (OSInt)destImg->GetDataBpl(), destImg->info.dispSize.x, destImg->info.dispSize.y);
+		Resize(srcImg->data.Ptr(), (IntOS)srcImg->GetDataBpl(), UIntOS2Double(srcImg->info.dispSize.x), UIntOS2Double(srcImg->info.dispSize.y), 0, 0, destImg->data.Ptr(), (IntOS)destImg->GetDataBpl(), destImg->info.dispSize.x, destImg->info.dispSize.y);
 		return true;
 	}
 	else
 	{
-		OSInt dbpl = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data.Ptr(), (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispSize.x), UOSInt2Double(srcImg->info.dispSize.y), 0, 0, destImg->data.Ptr() + (OSInt)(destImg->info.storeSize.y - 1) * dbpl, -dbpl, destImg->info.dispSize.x, destImg->info.dispSize.y);
+		IntOS dbpl = (IntOS)destImg->GetDataBpl();
+		Resize(srcImg->data.Ptr(), (IntOS)srcImg->GetDataBpl(), UIntOS2Double(srcImg->info.dispSize.x), UIntOS2Double(srcImg->info.dispSize.y), 0, 0, destImg->data.Ptr() + (IntOS)(destImg->info.storeSize.y - 1) * dbpl, -dbpl, destImg->info.dispSize.x, destImg->info.dispSize.y);
 		return true;
 	}
 }
@@ -1143,14 +1143,14 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerRGB_C8::ProcessToNewP
 	{
 		return nullptr;
 	}
-	Math::Size2D<UOSInt> targetSize = this->targetSize;
+	Math::Size2D<UIntOS> targetSize = this->targetSize;
 	if (targetSize.x == 0)
 	{
-		targetSize.x = (UOSInt)Double2Int32(srcBR.x - srcTL.x);
+		targetSize.x = (UIntOS)Double2Int32(srcBR.x - srcTL.x);
 	}
 	if (targetSize.y == 0)
 	{
-		targetSize.y = (UOSInt)Double2Int32(srcBR.y - srcTL.y);
+		targetSize.y = (UIntOS)Double2Int32(srcBR.y - srcTL.y);
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
 	this->SetSrcPixelFormat(srcImage->info.pf, srcImage->pal);
@@ -1177,7 +1177,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerRGB_C8::ProcessToNewP
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	OSInt bpp = srcImage->info.storeBPP >> 3;
-	Resize(NN<Media::StaticImage>::ConvertFrom(srcImage)->data.Ptr() + (tlx * bpp) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data.Ptr(), (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
+	IntOS bpp = srcImage->info.storeBPP >> 3;
+	Resize(NN<Media::StaticImage>::ConvertFrom(srcImage)->data.Ptr() + (tlx * bpp) + tly * (IntOS)srcImage->GetDataBpl(), (IntOS)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data.Ptr(), (IntOS)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
 	return newImage;
 }

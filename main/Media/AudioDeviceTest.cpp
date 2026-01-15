@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					break;
 				}
-				Sync::SimpleThread::Sleep(10000 - (UOSInt)t.GetTotalMS());
+				Sync::SimpleThread::Sleep(10000 - (UIntOS)t.GetTotalMS());
 			}
 			console.WriteLine(CSTR("End Playing"));
 			renderer->Stop();

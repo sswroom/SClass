@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRHKOForecastForm::OnReloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHKOForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOForecastForm>();
-	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)me->cboLang->GetSelectedItem().GetOSInt();
+	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)me->cboLang->GetSelectedItem().GetIntOS();
 	me->Reload(lang);
 }
 
@@ -30,8 +30,8 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 		sptr = weather.seaTempTime.ToStringNoZone(sbuff);
 		this->txtSeaTempTime->SetText(CSTRP(sbuff, sptr));
 
-		UOSInt i = 0;
-		UOSInt j = weather.forecast.GetCount();
+		UIntOS i = 0;
+		UIntOS j = weather.forecast.GetCount();
 		while (i < j)
 		{
 			forecast = weather.forecast.GetItemNoCheck(i);

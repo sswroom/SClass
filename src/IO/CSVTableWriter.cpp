@@ -50,7 +50,7 @@ void IO::CSVTableWriter::NextColI32(Int32 v)
 	UnsafeArray<UTF8Char> sptr;
 	NextColNull();
 	sptr = Text::StrInt32(sbuff, v);
-	this->stm->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
+	this->stm->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 }
 
 void IO::CSVTableWriter::NextColU64(UInt64 v)
@@ -59,7 +59,7 @@ void IO::CSVTableWriter::NextColU64(UInt64 v)
 	UnsafeArray<UTF8Char> sptr;
 	NextColNull();
 	sptr = Text::StrUInt64(sbuff, v);
-	this->stm->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
+	this->stm->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 }
 
 void IO::CSVTableWriter::NextColTS(Data::Timestamp ts)
@@ -68,7 +68,7 @@ void IO::CSVTableWriter::NextColTS(Data::Timestamp ts)
 	UnsafeArray<UTF8Char> sptr;
 	NextColNull();
 	sptr = ts.ToLocalTime().ToStringNoZone(sbuff);
-	this->stm->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
+	this->stm->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 }
 
 void IO::CSVTableWriter::EndWrite()

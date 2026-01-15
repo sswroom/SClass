@@ -79,7 +79,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 /*	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
-	this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
+	this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 
 	this->s = sockf->CreateTCPSocketv4();
 	NN<Socket> s;
@@ -160,7 +160,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 /*	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = sockf->GetRemoteName(sbuff, s);
-	this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
+	this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 	this->cliId = sockf->GenSocketId(s);
 }
 
@@ -181,7 +181,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Optional<Socket> s) : IO
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		sptr = sockf->GetRemoteName(sbuff, s);
-		this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
+		this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 	}
 	else
 	{
@@ -205,20 +205,20 @@ Bool Net::TCPClient::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
+UIntOS Net::TCPClient::Read(const Data::ByteArray &buff)
 {
 	NN<Socket> s;
 	if (this->s.SetTo(s) && (this->flags & 6) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
-		UOSInt recvSize = sockf->ReceiveData(s, buff.Arr().Ptr(), buff.GetSize(), et);
+		UIntOS recvSize = sockf->ReceiveData(s, buff.Arr().Ptr(), buff.GetSize(), et);
 		if (recvSize != 0)
 		{
 #ifdef PRINTDEBUG
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Client received "));
-				sb.AppendUOSInt(recvSize);
+				sb.AppendUIntOS(recvSize);
 				sb.AppendC(UTF8STRC(" bytes\r\n"));
 				IO::Console::PrintStrO(sb.ToString());
 			}
@@ -253,18 +253,18 @@ UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::TCPClient::Write(Data::ByteArrayR buff)
+UIntOS Net::TCPClient::Write(Data::ByteArrayR buff)
 {
 	NN<Socket> s;
 	if (this->s.SetTo(s) && (this->flags & 5) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
-		UOSInt sendSize;
+		UIntOS sendSize;
 #ifdef PRINTDEBUG
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Client sending "));
-			sb.AppendUOSInt(buff.GetSize());
+			sb.AppendUIntOS(buff.GetSize());
 			sb.AppendC(UTF8STRC(" bytes out\r\n"));
 			IO::Console::PrintStrO(sb.ToString());
 		}
@@ -323,7 +323,7 @@ Optional<IO::StreamReadReq> Net::TCPClient::BeginRead(const Data::ByteArray &buf
 	return Optional<IO::StreamReadReq>::ConvertFrom(data);
 }
 
-UOSInt Net::TCPClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS Net::TCPClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	return sockf->EndReceiveData(NN<Net::SocketRecvSess>::ConvertFrom(reqData), toWait, incomplete);
 }
@@ -339,15 +339,15 @@ Optional<IO::StreamWriteReq> Net::TCPClient::BeginWrite(Data::ByteArrayR buff, N
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
 		return nullptr;
-	UOSInt data = Write(buff);
+	UIntOS data = Write(buff);
 	if (data != 0)
 		evt->Set();
 	return (IO::StreamWriteReq*)data;
 }
 
-UOSInt Net::TCPClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS Net::TCPClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void Net::TCPClient::CancelWrite(NN<IO::StreamWriteReq> reqData)
@@ -410,7 +410,7 @@ Bool Net::TCPClient::IsConnectError()
 	return (this->flags & 8) != 0;
 }
 
-UOSInt Net::TCPClient::GetRecvBuffSize()
+UIntOS Net::TCPClient::GetRecvBuffSize()
 {
 	UInt32 argp;
 	NN<Socket> s;

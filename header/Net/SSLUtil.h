@@ -19,7 +19,7 @@ namespace Net
 	{
 		UInt16 id;
 		const UTF8Char *name;
-		UOSInt nameLen;
+		UIntOS nameLen;
 	};
 
 	class SSLUtil
@@ -27,11 +27,11 @@ namespace Net
 	private:
 		static SSLCipherSuite csuitesObj[];
 		static UInt16 csuites[];
-		static UOSInt GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
+		static UIntOS GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
 	public:
-		static UOSInt GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
-		static void ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert);
-		static Bool IncompleteHandshake(const UInt8 *buff, UOSInt packetSize);
+		static UIntOS GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
+		static void ParseResponse(const UInt8 *buff, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert);
+		static Bool IncompleteHandshake(const UInt8 *buff, UIntOS packetSize);
 
 		static Text::CStringNN AlertLevelGetName(UInt8 level);
 		static Text::CStringNN AlertDescGetName(UInt8 desc);

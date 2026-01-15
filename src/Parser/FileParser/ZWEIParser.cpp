@@ -39,8 +39,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	UInt32 extCnt;
 	UInt32 extOfst;
 	UInt32 fileOfst;
-	UOSInt buffOfst;
-	UOSInt recOfst;
+	UIntOS buffOfst;
+	UIntOS recOfst;
 	UInt32 j;
 	UInt32 i;
 	UTF8Char name[14];

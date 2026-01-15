@@ -67,9 +67,9 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
+IntOS IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 {
-	OSInt ret = 0;
+	IntOS ret = 0;
 	NN<ClassData> clsData;
 	NN<IO::HIDInfo> hid;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
@@ -94,7 +94,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						UOSInt j;
+						UIntOS j;
 						clsData = MemAllocNN(ClassData);
 						clsData->busType = IO::HIDInfo::BT_USB;
 						clsData->devPath = Text::String::NewNotNull(&data2[2]);
@@ -182,7 +182,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 						if (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).NotNull())
 						{
 							sptr3 = Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
-							clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));
+							clsData->devPath = Text::String::New(sbuff2, (UIntOS)(sptr3 - sbuff2));
 							NEW_CLASSNN(hid, IO::HIDInfo(clsData));
 							hidList->Add(hid);
 							ret++;

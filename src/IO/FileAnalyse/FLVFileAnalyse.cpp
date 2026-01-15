@@ -6,7 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb)
+UIntOS IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UnsafeArray<UInt8> data, UIntOS ofst, UIntOS endOfst, NN<Text::StringBuilderUTF8> sb)
 {
 	if (ofst >= endOfst)
 	{
@@ -104,12 +104,12 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UnsafeArray<UInt8> da
 	}
 }
 
-void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UnsafeArray<UInt8> data, UIntOS ofst, UIntOS endOfst, UIntOS frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbVal;
-	UOSInt ofstName = ParseScriptDataVal(data, ofst, endOfst, sbName);
-	UOSInt ofstVal = ParseScriptDataVal(data, ofstName, endOfst, sbVal);
+	UIntOS ofstName = ParseScriptDataVal(data, ofst, endOfst, sbName);
+	UIntOS ofstVal = ParseScriptDataVal(data, ofstName, endOfst, sbVal);
 	frame->AddField(frameOfst + ofst, ofstVal - ofst, sbName.ToCString(), sbVal.ToCString());
 }
 
@@ -182,12 +182,12 @@ Text::CStringNN IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
 	return CSTR("FLV");
 }
 
-UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
 {
 	return 1 + this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index == 0)
 	{
@@ -201,11 +201,11 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	sb->AppendC(UTF8STRC(": Type="));
 	sb->AppendU16(tag->tagType);
 	sb->AppendC(UTF8STRC(", size="));
-	sb->AppendUOSInt(tag->size);
+	sb->AppendUIntOS(tag->size);
 	return true;
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
@@ -232,7 +232,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	if (!this->tags.GetItem(index - 1).SetTo(tag))
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
-	sb->AppendUOSInt(index);
+	sb->AppendUIntOS(index);
 	fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	sb->AppendC(UTF8STRC("\r\nReserved = "));
 	sb->AppendU16((UInt16)(buff[0] >> 6));
@@ -298,20 +298,20 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	return true;
 }
 
-UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst < this->hdrSize)
 	{
 		return 0;
 	}
-	OSInt i = 0;
-	OSInt j = (OSInt)this->tags.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->tags.GetCount() - 1;
+	IntOS k;
 	NN<FLVTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItemNoCheck((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -322,13 +322,13 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k + 1;
+			return (UIntOS)k + 1;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::FrameDetail> frame;
@@ -365,7 +365,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	fd->GetRealData(tag->ofst, 11, BYTEARR(buff));

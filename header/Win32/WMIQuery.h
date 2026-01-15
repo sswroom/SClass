@@ -27,8 +27,8 @@ namespace Win32
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-		OSInt ExecuteNonQueryW(UnsafeArray<const WChar> sql);
+		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
+		IntOS ExecuteNonQueryW(UnsafeArray<const WChar> sql);
 		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
 		Optional<DB::DBReader> ExecuteReaderW(UnsafeArray<const WChar> sql);
 		virtual Bool IsLastDataError();
@@ -37,15 +37,15 @@ namespace Win32
 		virtual void Commit(NN<DB::DBTransaction> tran);
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
+		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual void CloseReader(NN<DB::DBReader> reader);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		UnsafeArray<const WChar> GetNS();
 
-		static UOSInt GetNSList(NN<Data::ArrayListArr<const WChar>> nsList);
+		static UIntOS GetNSList(NN<Data::ArrayListArr<const WChar>> nsList);
 		static void FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList);
 	};
 }

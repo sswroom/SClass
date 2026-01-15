@@ -6,8 +6,8 @@
 Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, NN<DB::DBReader> r)
 {
 	NN<Data::Class::FieldInfo> field;
-	UOSInt i;
-	UOSInt j = r->ColCount();
+	UIntOS i;
+	UIntOS j = r->ColCount();
 	if (j != cls->GetFieldCount())
 	{
 		printf("Class count not match with reader count: %d != %d\r\n", (UInt32)cls->GetFieldCount(), (UInt32)j);
@@ -23,7 +23,7 @@ Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, N
 			printf("Field index %d not found\r\n", (UInt32)i);
 			return false;
 		}
-		void *ptr = (void*)(field->ofst + (OSInt)value.p);
+		void *ptr = (void*)(field->ofst + (IntOS)value.p);
 		if (field->typeName.NotNull())
 		{
 			if (field->itemType == Data::VariItem::ItemType::Str && field->byNameFunc)

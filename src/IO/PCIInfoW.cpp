@@ -48,7 +48,7 @@ Text::CStringNN IO::PCIInfo::GetDispName()
 UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 {
 	UInt8 buff[33];
-	UOSInt readSize;
+	UIntOS readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	readSize = fs.Read(Data::ByteArray(buff, 32));
 	buff[readSize] = 0;
@@ -67,7 +67,7 @@ UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
+UIntOS IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListUInt32 existList;
@@ -76,25 +76,25 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 	UInt32 id;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
 	if (qry.QueryTableData(nullptr, CSTR("CIM_LogicalDevice"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
-		UOSInt descCol = INVALID_INDEX;
-		UOSInt devIdCol = INVALID_INDEX;
-		UOSInt i = 0;
-		UOSInt j = r->ColCount();
+		UIntOS descCol = INVALID_INDEX;
+		UIntOS devIdCol = INVALID_INDEX;
+		UIntOS i = 0;
+		UIntOS j = r->ColCount();
 		while (i < j)
 		{
 			sbuff[0] = 0;
 			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
+				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Description")))
 				{
 					descCol = i;
 				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
+				else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DeviceID")))
 				{
 					devIdCol = i;
 				}

@@ -46,7 +46,7 @@ void Crypto::Hash::CRC16::Clear()
 	currVal = 0;
 }
 
-void Crypto::Hash::CRC16::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::CRC16::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = CRC16_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), this->currVal);
 }
@@ -56,12 +56,12 @@ void Crypto::Hash::CRC16::GetValue(UnsafeArray<UInt8> buff) const
 	WriteMInt16(buff, currVal);
 }
 
-UOSInt Crypto::Hash::CRC16::GetBlockSize() const
+UIntOS Crypto::Hash::CRC16::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC16::GetResultSize() const
+UIntOS Crypto::Hash::CRC16::GetResultSize() const
 {
 	return 2;
 }

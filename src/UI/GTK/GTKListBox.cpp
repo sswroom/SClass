@@ -49,7 +49,7 @@ gboolean UI::GTK::GTKListBox::SignalButtonPress(GtkWidget *widget, GdkEvent *eve
 		}
 		GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)me->hwnd.OrNull());
 		event->button.y -= (Int32)gtk_adjustment_get_value(adj);
-		me->EventRightClick(Math::Coord2D<OSInt>(Double2OSInt(event->button.x), Double2OSInt(event->button.y)));
+		me->EventRightClick(Math::Coord2D<IntOS>(Double2IntOS(event->button.x), Double2IntOS(event->button.y)));
 	}
 	return false;
 }
@@ -84,7 +84,7 @@ UI::GTK::GTKListBox::GTKListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 UI::GTK::GTKListBox::~GTKListBox()
 {
 	NN<ItemData> item;
-	UOSInt i;
+	UIntOS i;
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
@@ -94,7 +94,7 @@ UI::GTK::GTKListBox::~GTKListBox()
 	}
 }
 
-UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -115,11 +115,11 @@ UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, -1);
-	UOSInt ret = this->items.Add(item);
+	UIntOS ret = this->items.Add(item);
 	return ret;
 }
 
-UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -140,11 +140,11 @@ UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	gtk_widget_show(item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, -1);
-	UOSInt ret = this->items.Add(item);
+	UIntOS ret = this->items.Add(item);
 	return ret;
 }
 
-UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKListBox::InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj)
 {
 	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -164,20 +164,20 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, NN<Text::String> itemText, 
 	gtk_widget_show(item->lbl);
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
-	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, (gint)(OSInt)index);
-	OSInt i = gtk_list_box_row_get_index(item->row);
+	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, (gint)(IntOS)index);
+	IntOS i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		i = (OSInt)this->items.Add(item);
+		i = (IntOS)this->items.Add(item);
 	}
 	else
 	{
-		this->items.Insert((UOSInt)i, item);
+		this->items.Insert((UIntOS)i, item);
 	}
-	return (UOSInt)i;
+	return (UIntOS)i;
 }
 
-UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
+UIntOS UI::GTK::GTKListBox::InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj)
 {
 	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -197,20 +197,20 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, A
 	gtk_widget_show(item->lbl);
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
-	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, (gint)(OSInt)index);
-	OSInt i = gtk_list_box_row_get_index(item->row);
+	gtk_list_box_insert((GtkListBox*)this->listbox, (GtkWidget*)item->row, (gint)(IntOS)index);
+	IntOS i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		i = (OSInt)this->items.Add(item);
+		i = (IntOS)this->items.Add(item);
 	}
 	else
 	{
-		this->items.Insert((UOSInt)i, item);
+		this->items.Insert((UIntOS)i, item);
 	}
-	return (UOSInt)i;
+	return (UIntOS)i;
 }
 
-AnyType UI::GTK::GTKListBox::RemoveItem(UOSInt index)
+AnyType UI::GTK::GTKListBox::RemoveItem(UIntOS index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -223,7 +223,7 @@ AnyType UI::GTK::GTKListBox::RemoveItem(UOSInt index)
 	return ret;
 }
 
-AnyType UI::GTK::GTKListBox::GetItem(UOSInt index)
+AnyType UI::GTK::GTKListBox::GetItem(UIntOS index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -241,7 +241,7 @@ void UI::GTK::GTKListBox::ClearItems()
 		curr = curr->next;
 	}
 	g_list_free(list);
-	UOSInt i;
+	UIntOS i;
 	NN<ItemData> item;
 	i = this->items.GetCount();
 	while (i-- > 0)
@@ -253,12 +253,12 @@ void UI::GTK::GTKListBox::ClearItems()
 	this->items.Clear();
 }
 
-UOSInt UI::GTK::GTKListBox::GetCount()
+UIntOS UI::GTK::GTKListBox::GetCount()
 {
 	return this->items.GetCount();
 }
 
-void UI::GTK::GTKListBox::SetSelectedIndex(UOSInt index)
+void UI::GTK::GTKListBox::SetSelectedIndex(UIntOS index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -269,7 +269,7 @@ void UI::GTK::GTKListBox::SetSelectedIndex(UOSInt index)
 
 	int h = gtk_widget_get_allocated_height(this->listbox);
 	Double itemH = h / (Double)this->items.GetCount();
-	Double targetTop = itemH * UOSInt2Double(index);
+	Double targetTop = itemH * UIntOS2Double(index);
 	Double targetBottom = targetTop + itemH;
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd.OrNull());
 	Double pageSize = gtk_adjustment_get_page_size(adj);
@@ -288,7 +288,7 @@ void UI::GTK::GTKListBox::SetSelectedIndex(UOSInt index)
 //	this->EventSelectionChange();
 }
 
-UOSInt UI::GTK::GTKListBox::GetSelectedIndex()
+UIntOS UI::GTK::GTKListBox::GetSelectedIndex()
 {
 	GtkListBoxRow *row = gtk_list_box_get_selected_row((GtkListBox*)this->listbox);
 	if (row == 0)
@@ -311,7 +311,7 @@ Bool UI::GTK::GTKListBox::GetSelectedIndices(NN<Data::ArrayListNative<UInt32>> i
 
 AnyType UI::GTK::GTKListBox::GetSelectedItem()
 {
-	UOSInt currSel = GetSelectedIndex();
+	UIntOS currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
 		return 0;
 	return GetItem(currSel);
@@ -319,7 +319,7 @@ AnyType UI::GTK::GTKListBox::GetSelectedItem()
 
 UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
-	UOSInt currSel = GetSelectedIndex();
+	UIntOS currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
 		return nullptr;
 	return GetItemText(buff, currSel);
@@ -327,13 +327,13 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetSelectedItemText(UnsafeArray<UT
 
 Optional<Text::String> UI::GTK::GTKListBox::GetSelectedItemTextNew()
 {
-	UOSInt currSel = GetSelectedIndex();
+	UIntOS currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
 		return nullptr;
 	return GetItemTextNew(currSel);
 }
 
-UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -341,7 +341,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetItemText(UnsafeArray<UTF8Char> 
 	return Text::StrConcatC(buff, item->txt->v, item->txt->leng);
 }
 
-void UI::GTK::GTKListBox::SetItemText(UOSInt index, Text::CStringNN text)
+void UI::GTK::GTKListBox::SetItemText(UIntOS index, Text::CStringNN text)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -351,7 +351,7 @@ void UI::GTK::GTKListBox::SetItemText(UOSInt index, Text::CStringNN text)
 	item->txt = Text::String::New(text.v, text.leng);
 }
 
-Optional<Text::String> UI::GTK::GTKListBox::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::GTK::GTKListBox::GetItemTextNew(UIntOS index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -359,12 +359,12 @@ Optional<Text::String> UI::GTK::GTKListBox::GetItemTextNew(UOSInt index)
 	return item->txt->Clone();
 }
 
-OSInt UI::GTK::GTKListBox::GetItemHeight()
+IntOS UI::GTK::GTKListBox::GetItemHeight()
 {
 	return 24;
 }
 
-OSInt UI::GTK::GTKListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKListBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

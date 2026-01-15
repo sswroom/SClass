@@ -10,14 +10,14 @@ namespace Data
 	public:
 		virtual ~ListMap() {};
 
-		virtual T GetKey(UOSInt index) const = 0;
+		virtual T GetKey(UIntOS index) const = 0;
 		void PutAll(NN<const ListMap<T,V>> map);
 	};
 
 	template <class T, class V> void ListMap<T, V>::PutAll(NN<const ListMap<T,V>> map)
 	{
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = map->GetCount();
 		while (i < j)

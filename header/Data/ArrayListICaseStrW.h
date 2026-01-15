@@ -8,10 +8,10 @@ namespace Data
 	{
 	public:
 		ArrayListICaseStrW();
-		ArrayListICaseStrW(UOSInt Capacity);
+		ArrayListICaseStrW(UIntOS Capacity);
 
 		virtual NN<Data::ArrayList<const WChar*>> Clone() const;
-		virtual OSInt Compare(const WChar* obj1, const WChar* obj2) const;
+		virtual IntOS Compare(const WChar* obj1, const WChar* obj2) const;
 	};
 }
 #endif

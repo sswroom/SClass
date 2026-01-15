@@ -3,7 +3,7 @@
 
 IO::ED588Sim::ED588Sim()
 {
-	UOSInt i = 8;
+	UIntOS i = 8;
 	while (i-- > 0)
 	{
 		this->diCounts[i] = 0;
@@ -21,12 +21,12 @@ Text::CStringNN IO::ED588Sim::GetName()
 	return CSTR("ED588");
 }
 
-UOSInt IO::ED588Sim::GetValueCount()
+UIntOS IO::ED588Sim::GetValueCount()
 {
 	return 24;
 }
 
-Text::CString IO::ED588Sim::GetValueName(UOSInt index)
+Text::CString IO::ED588Sim::GetValueName(UIntOS index)
 {
 	switch (index)
 	{
@@ -83,7 +83,7 @@ Text::CString IO::ED588Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED588Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ED588Sim::GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 8)
 	{
@@ -103,7 +103,7 @@ Bool IO::ED588Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-Bool IO::ED588Sim::ToggleValue(UOSInt index)
+Bool IO::ED588Sim::ToggleValue(UIntOS index)
 {
 	if (index < 8)
 	{

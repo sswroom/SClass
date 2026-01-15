@@ -46,7 +46,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("application/pdf"));
 		resp->AddContentLength(fileLen);
-		UOSInt readSize;
+		UIntOS readSize;
 		UInt64 sizeLeft = fileLen;
 		while (sizeLeft > 0)
 		{
@@ -141,9 +141,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(sp->cateId);
 					sb.AppendC(UTF8STRC("&width="));
-					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendUIntOS(GetPreviewSize());
 					sb.AppendC(UTF8STRC("&height="));
-					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendUIntOS(GetPreviewSize());
 					sb.AppendC(UTF8STRC("&fileId="));
 					sb.AppendI32(userFile->id);
 					s = Text::XML::ToNewAttrText(sb.ToString());
@@ -197,11 +197,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		writer.WriteLine(CSTR("<hr/>"));
 		NN<Data::ArrayListInt32> pickObjs;
 		NN<UserFileInfo> userFile;
-		UOSInt colCount = env.scnWidth / GetPreviewSize();
-		UOSInt colWidth = 100 / colCount;
+		UIntOS colCount = env.scnWidth / GetPreviewSize();
+		UIntOS colWidth = 100 / colCount;
 		UInt32 currColumn;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		if (env.pickObjs.SetTo(pickObjs))
 		{
 			i = 0;
@@ -220,7 +220,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 						}
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("<td width=\""));
-						sb.AppendUOSInt(colWidth);
+						sb.AppendUIntOS(colWidth);
 						sb.AppendC(UTF8STRC("%\">"));
 						writer.WriteLine(sb.ToCString());
 						sb.ClearStr();
@@ -244,9 +244,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 						else
 							sb.AppendI32(cate->cateId);
 						sb.AppendC(UTF8STRC("&width="));
-						sb.AppendUOSInt(GetPreviewSize());
+						sb.AppendUIntOS(GetPreviewSize());
 						sb.AppendC(UTF8STRC("&height="));
-						sb.AppendUOSInt(GetPreviewSize());
+						sb.AppendUIntOS(GetPreviewSize());
 						sb.AppendC(UTF8STRC("&fileId="));
 						sb.AppendI32(userFile->id);
 						s = Text::XML::ToNewAttrText(sb.ToString());
@@ -271,7 +271,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<td width=\""));
-					sb.AppendUOSInt(colWidth);
+					sb.AppendUIntOS(colWidth);
 					sb.AppendC(UTF8STRC("%\"></td>"));
 					while (currColumn < colCount)
 					{

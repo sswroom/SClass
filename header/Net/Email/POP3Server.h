@@ -18,7 +18,7 @@ namespace Net
 			typedef struct
 			{
 				UInt8 buff[2048];
-				UOSInt buffSize;
+				UIntOS buffSize;
 				Int32 userId;
 				const UTF8Char *cliName;
 				Text::String *userName;
@@ -45,10 +45,10 @@ namespace Net
 			static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
-			UOSInt WriteMessage(NN<Net::TCPClient> cli, Bool success, Text::CString msg);
-			UOSInt WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UOSInt msgLen);
-			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+			UIntOS WriteMessage(NN<Net::TCPClient> cli, Bool success, Text::CString msg);
+			UIntOS WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UIntOS msgLen);
+			//static IntOS WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
+			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 		public:
 			POP3Server(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NN<IO::LogTool> log, Text::CStringNN greeting, NN<Net::Email::MailController> mailCtrl, Bool autoStart);
 			~POP3Server();

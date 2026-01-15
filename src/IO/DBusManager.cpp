@@ -87,7 +87,7 @@ struct IO::DBusManager::ArgInfo
 
 struct IO::DBusManager::GenericData
 {
-	UOSInt refcount;
+	UIntOS refcount;
 	IO::DBusManager *me;
 	const Char *path;
 	Data::ArrayList<InterfaceData*> *interfaces;
@@ -141,7 +141,7 @@ struct IO::DBusManager::ClassData
 	DBusConnection *conn;
 	IO::DBusManager::GenericData *root;
 	Data::ArrayList<IO::DBusManager::Listener*> *listeners;
-	UOSInt listenerId;
+	UIntOS listenerId;
 	Data::ArrayList<IO::DBusManager::GenericData*> *pending;
 	IO::DBusManager::PropertyFlags globalFlags;
 	UInt32 nextPending;
@@ -640,8 +640,8 @@ void *IO::DBusManager::GetObjects(IO::DBusManager *dbusManager, Message *message
 					DBUS_DICT_ENTRY_END_CHAR_AS_STRING,
 					&array);
 
-	UOSInt i = 0;
-	UOSInt j = data->objects->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->objects->GetCount();
 	while (i < j)
 	{
 		dbusManager->AppendObject(data->objects->GetItem(i), &array);
@@ -789,8 +789,8 @@ void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *pa
 	sb.Append(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE);
 	sb.Append("<node>");
 
-	UOSInt i = 0;
-	UOSInt j = data->interfaces->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->interfaces->GetCount();
 	while (i < j)
 	{
 		InterfaceData *iface = data->interfaces->GetItem(i);
@@ -841,8 +841,8 @@ void IO::DBusManager::AppendInterfaces(GenericData *data, void *itera)
 				DBUS_DICT_ENTRY_END_CHAR_AS_STRING
 				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &array);
 
-	UOSInt i = 0;
-	UOSInt j = data->interfaces->GetCount();
+	UIntOS i = 0;
+	UIntOS j = data->interfaces->GetCount();
 	while (i < j)
 	{
 		this->AppendInterface(data->interfaces->GetItem(i), &array);
@@ -862,8 +862,8 @@ void IO::DBusManager::AppendObject(GenericData *child, void *itera)
 	this->AppendInterfaces(child, &entry);
 	dbus_message_iter_close_container(array, &entry);
 
-	UOSInt i = 0;
-	UOSInt j = child->objects->GetCount();
+	UIntOS i = 0;
+	UIntOS j = child->objects->GetCount();
 	while (i < j)
 	{
 		this->AppendObject(child->objects->GetItem(i), array);
@@ -875,8 +875,8 @@ void IO::DBusManager::PendingSuccess(UInt32 pending)
 {
 	ClassData *clsData = this->clsData;
 	SecurityData *secdata;
-	UOSInt i = 0;
-	UOSInt j = clsData->pendingSecurity->GetCount();
+	UIntOS i = 0;
+	UIntOS j = clsData->pendingSecurity->GetCount();
 	while (i < j)
 	{
 		secdata = clsData->pendingSecurity->GetItem(i);
@@ -918,8 +918,8 @@ void IO::DBusManager::PendingError(UInt32 pending, const Char *name, const Char 
 {
 	ClassData *clsData = this->clsData;
 	SecurityData *secdata;
-	UOSInt i = 0;
-	UOSInt j = clsData->pendingSecurity->GetCount();
+	UIntOS i = 0;
+	UIntOS j = clsData->pendingSecurity->GetCount();
 	while (i < j)
 	{
 		secdata = clsData->pendingSecurity->GetItem(i);
@@ -1010,7 +1010,7 @@ void IO::DBusManager::GenericUnregister(GenericData *data)
 		this->ProcessChanges(data);
 	}
 
-	UOSInt i = data->objects->GetCount();
+	UIntOS i = data->objects->GetCount();
 	while (i-- > 0)
 	{
 		data->objects->GetItem(i)->parent = parent;
@@ -1092,7 +1092,7 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 	GenericData *child = NULL;
 	GenericData *parent = NULL;
 	Text::StringBuilderC sbParentPath;
-	UOSInt i;
+	UIntOS i;
 
 	sbParentPath.Append(childPath);
 	i = sbParentPath.LastIndexOf('/');
@@ -1104,7 +1104,7 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 	if (i == 0 && sbParentPath.ToString()[1] != 0)
 		sbParentPath.TrimToLength(1);
 	else
-		sbParentPath.TrimToLength((UOSInt)i);
+		sbParentPath.TrimToLength((UIntOS)i);
 
 	if (sbParentPath.GetLength() == 0)
 	{
@@ -1165,7 +1165,7 @@ IO::DBusManager::InterfaceData *IO::DBusManager::FindInterface(GenericData *data
 	if (name == 0)
 		return 0;
 
-	UOSInt i = data->interfaces->GetCount();
+	UIntOS i = data->interfaces->GetCount();
 	while (i-- > 0)
 	{
 		InterfaceData *iface = data->interfaces->GetItem(i);
@@ -1466,7 +1466,7 @@ void IO::DBusManager::ProcessPropertyChanges(GenericData *data)
 	data->pendingProp = FALSE;
 	if (data->interfaces)
 	{
-		UOSInt i = data->interfaces->GetCount();
+		UIntOS i = data->interfaces->GetCount();
 		while (i-- > 0)
 		{
 			iface = data->interfaces->GetItem(i);
@@ -1501,7 +1501,7 @@ void IO::DBusManager::ProcessPropertiesFromInterface(GenericData *data, Interfac
 			DBUS_TYPE_STRING_AS_STRING DBUS_TYPE_VARIANT_AS_STRING
 			DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &dict);
 
-	UOSInt i = iface->pendingProp->GetCount();
+	UIntOS i = iface->pendingProp->GetCount();
 	while (i-- > 0)
 	{
 		PropertyTable *p = iface->pendingProp->GetItem(i);
@@ -1561,7 +1561,7 @@ void IO::DBusManager::EmitInterfacesAdded(GenericData *data)
 				DBUS_DICT_ENTRY_END_CHAR_AS_STRING
 				DBUS_DICT_ENTRY_END_CHAR_AS_STRING, &array);
 
-	UOSInt i = data->added->GetCount();
+	UIntOS i = data->added->GetCount();
 	while (i-- > 0)
 	{
 		this->AppendInterface(data->added->GetItem(i), &array);
@@ -1592,7 +1592,7 @@ void IO::DBusManager::EmitInterfacesRemoved(GenericData *data)
 	dbus_message_iter_append_basic(&iter, DBUS_TYPE_OBJECT_PATH, &data->path);
 	dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &array);
 
-	UOSInt i = data->removed->GetCount();
+	UIntOS i = data->removed->GetCount();
 	while (i-- > 0)
 	{
 		this->AppendName(data->removed->GetItem(i), &array);		
@@ -1610,7 +1610,7 @@ void IO::DBusManager::Flush()
 {
 	ClassData *clsData = this->clsData;
 	GenericData *data;
-	UOSInt i = clsData->pending->GetCount();
+	UIntOS i = clsData->pending->GetCount();
 	while (i-- > 0)
 	{
 		data = clsData->pending->GetItem(i);
@@ -1780,7 +1780,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::ServiceFilter(void *connection, 
 
 	me->ListenerUpdateNameCache(name, newName);
 
-	UOSInt i = listener->callbacks->GetCount();
+	UIntOS i = listener->callbacks->GetCount();
 	while (i-- > 0)
 	{
 		cb = listener->callbacks->GetItem(i);
@@ -1819,7 +1819,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::SignalFilter(void *connection, v
 	IO::DBusManager *me = listener->me;
 	ListenerCallbacks *cb;
 
-	UOSInt i = listener->callbacks->GetCount();
+	UIntOS i = listener->callbacks->GetCount();
 	while (i-- > 0)
 	{
 		cb = listener->callbacks->GetItem(i);
@@ -1945,7 +1945,7 @@ IO::DBusManager::Listener *IO::DBusManager::ListenerFindMatch(const Char *name, 
 {
 	ClassData *data = (ClassData *)this->clsData;
 	Listener *listener;
-	UOSInt i = data->listeners->GetCount();
+	UIntOS i = data->listeners->GetCount();
 	while (i-- > 0)
 	{
 		listener = data->listeners->GetItem(i);
@@ -2045,10 +2045,10 @@ IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerAddCallback(Listene
 	return cb;
 }
 
-IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerFindCallback(Listener *listener, UOSInt id)
+IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerFindCallback(Listener *listener, UIntOS id)
 {
 	ListenerCallbacks *cb;
-	UOSInt i;
+	UIntOS i;
 	if (listener->callbacks)
 	{
 		i = listener->callbacks->GetCount();
@@ -2115,7 +2115,7 @@ void IO::DBusManager::ListenerFree(Listener *listener)
 	if (data->listeners->GetCount() == 0)
 		dbus_connection_remove_filter(data->conn, DBusManager_WatchMessageFilter, this);
 
-	UOSInt i = listener->callbacks->GetCount();
+	UIntOS i = listener->callbacks->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(listener->callbacks->GetItem(i));
@@ -2189,7 +2189,7 @@ const Char *IO::DBusManager::ListenerCheckNameCache(const Char *name)
 {
 	ClassData *clsData = this->clsData;
 	Listener *listener;
-	UOSInt i = clsData->listeners->GetCount();
+	UIntOS i = clsData->listeners->GetCount();
 	while (i-- > 0)
 	{
 		listener = clsData->listeners->GetItem(i);
@@ -2205,7 +2205,7 @@ void IO::DBusManager::ListenerUpdateNameCache(const Char *name, const Char *owne
 {
 	ClassData *clsData = this->clsData;
 	Listener *listener;
-	UOSInt i = clsData->listeners->GetCount();
+	UIntOS i = clsData->listeners->GetCount();
 	while (i-- > 0)
 	{
 		listener = clsData->listeners->GetItem(i);
@@ -2237,7 +2237,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::WatchMessageFilter(Message *mess
 	member = message->GetMember();
 	arg = message->GetArguments();
 
-	UOSInt i = clsData->listeners->GetCount();
+	UIntOS i = clsData->listeners->GetCount();
 	while (i-- > 0)
 	{
 		listener = clsData->listeners->GetItem(i);	
@@ -2295,7 +2295,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::WatchMessageFilter(Message *mess
 	return HR_NOT_YET_HANDLED;
 }
 
-UOSInt IO::DBusManager::AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy)
+UIntOS IO::DBusManager::AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy)
 {
 	Listener *listener;
 	ListenerCallbacks *cb;
@@ -2317,7 +2317,7 @@ UOSInt IO::DBusManager::AddServiceWatch(const Char *name, WatchFunction connect,
 	return cb->id;
 }
 
-UOSInt IO::DBusManager::AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy)
+UIntOS IO::DBusManager::AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy)
 {
 	Listener *listener;
 	ListenerCallbacks *cb;
@@ -2336,7 +2336,7 @@ UOSInt IO::DBusManager::AddSignalWatch(const Char *sender, const Char *path, con
 	return cb->id;
 }
 
-UOSInt IO::DBusManager::AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy)
+UIntOS IO::DBusManager::AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy)
 {
 	Listener *listener;
 	ListenerCallbacks *cb;
@@ -2355,7 +2355,7 @@ UOSInt IO::DBusManager::AddPropertiesWatch(const Char *sender, const Char *path,
 	return cb->id;
 }
 
-Bool IO::DBusManager::RemoveWatch(UOSInt id)
+Bool IO::DBusManager::RemoveWatch(UIntOS id)
 {
 	ClassData *data = this->clsData;
 	if (id == 0)
@@ -2366,7 +2366,7 @@ Bool IO::DBusManager::RemoveWatch(UOSInt id)
 		return false;
 	}
 
-	UOSInt i = data->listeners->GetCount();
+	UIntOS i = data->listeners->GetCount();
 	while (i-- > 0)
 	{
 		Listener *listener = data->listeners->GetItem(i);
@@ -2388,8 +2388,8 @@ void IO::DBusManager::RemoveAllWatches()
 	ListenerCallbacks *cb;
 	if (data->listeners)
 	{
-		UOSInt i = data->listeners->GetCount();
-		UOSInt j;
+		UIntOS i = data->listeners->GetCount();
+		UIntOS j;
 		while (i-- > 0)
 		{
 			listener = data->listeners->RemoveAt(i);

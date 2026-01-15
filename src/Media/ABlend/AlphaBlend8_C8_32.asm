@@ -3,7 +3,7 @@ section .text
 global _AlphaBlend8_C8_DoBlend
 global _AlphaBlend8_C8_DoBlendPA
 
-;void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlend(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 edi
 ;4 esi
@@ -25,8 +25,8 @@ _AlphaBlend8_C8_DoBlend:
 	push edi
 	mov edx,dword [esp+36] ;width
 	shl edx,2
-	sub dword [esp+32],edx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub dword [esp+24],edx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub dword [esp+32],edx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub dword [esp+24],edx ;dAdd		IntOS dAdd = dbpl - width * 4;
 	xor eax,eax
 	mov ebx,0x10101010
 	
@@ -138,7 +138,7 @@ iadbldlop2:
 	pop ebp
 	ret
 	
-;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
+;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, IntOS dbpl, UInt8 *src, IntOS sbpl, IntOS width, IntOS height, UInt8 *rgbTable);
 
 ;0 edi
 ;4 esi
@@ -160,8 +160,8 @@ _AlphaBlend8_C8_DoBlendPA:
 	push edi
 	mov edx,dword [esp+36] ;width
 	shl edx,2
-	sub dword [esp+32],edx ;sAdd		OSInt sAdd = sbpl - width * 4;
-	sub dword [esp+24],edx ;dAdd		OSInt dAdd = dbpl - width * 4;
+	sub dword [esp+32],edx ;sAdd		IntOS sAdd = sbpl - width * 4;
+	sub dword [esp+24],edx ;dAdd		IntOS dAdd = dbpl - width * 4;
 
 	xor eax,eax
 	mov ebx,0x10101010

@@ -25,7 +25,7 @@ Text::MIMEObj::MIMEMessage::MIMEMessage(Optional<Text::MIMEObject> content) : Te
 
 Text::MIMEObj::MIMEMessage::~MIMEMessage()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->headerName.GetCount();
 	while (i-- > 0)
 	{
@@ -53,10 +53,10 @@ Text::CStringNN Text::MIMEObj::MIMEMessage::GetContentType() const
 		return contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
+UIntOS Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	NN<MIMEObject> content;
 	Text::StringBuilderUTF8 sbc;
@@ -91,8 +91,8 @@ NN<Text::MIMEObject> Text::MIMEObj::MIMEMessage::Clone() const
 {
 	NN<Text::MIMEObj::MIMEMessage> msg;
 	NN<MIMEObject> content;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NEW_CLASSNN(msg, Text::MIMEObj::MIMEMessage());
 	i = 0;
 	j = this->headerName.GetCount();
@@ -122,7 +122,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MIMEMessage::GetContent() const
 	return this->content;
 }
 
-void Text::MIMEObj::MIMEMessage::SetTransferData(const UInt8 *data, UOSInt dataSize)
+void Text::MIMEObj::MIMEMessage::SetTransferData(const UInt8 *data, UIntOS dataSize)
 {
 	if (this->transferData)
 	{
@@ -145,10 +145,10 @@ void Text::MIMEObj::MIMEMessage::AddHeader(NN<Text::String> name, NN<Text::Strin
 	this->headerValue.Add(value->Clone());
 }
 
-Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(UnsafeArray<const UTF8Char> name, UOSInt nameLen) const
+Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(UnsafeArray<const UTF8Char> name, UIntOS nameLen) const
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> s;
 	i = 0;
 	j = this->headerName.GetCount();
@@ -161,32 +161,32 @@ Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(UnsafeArray<const U
 	return nullptr;
 }
 
-UOSInt Text::MIMEObj::MIMEMessage::GetHeaderCount() const
+UIntOS Text::MIMEObj::MIMEMessage::GetHeaderCount() const
 {
 	return this->headerName.GetCount();
 }
 
-Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeaderName(UOSInt index) const
+Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeaderName(UIntOS index) const
 {
 	return this->headerName.GetItem(index);
 }
 
-Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index) const
+Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeaderValue(UIntOS index) const
 {
 	return this->headerValue.GetItem(index);
 }
 
 Bool Text::MIMEObj::MIMEMessage::ParseFromData(NN<IO::StreamData> fd)
 {
-	UOSInt buffSize;
-	UOSInt readSize;
+	UIntOS buffSize;
+	UIntOS readSize;
 	UInt64 fileOfst;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];
 	Bool isFirst = true;
 	Bool found = false;
-	UOSInt i = 0;
-	UOSInt lineStart;
+	UIntOS i = 0;
+	UIntOS lineStart;
 
 	Data::ByteBuffer buff(BUFFSIZE + 1);
 	fileOfst = 0;
@@ -450,8 +450,8 @@ UnsafeArray<UTF8Char> Text::MIMEObj::MIMEMessage::ParseHeaderStr(UnsafeArray<UTF
 					{
 						Text::Encoding enc(cp);
 						Crypto::Encrypt::Base64 b64;
-						UOSInt buffSize = (sbc.GetLength() >> 2) * 3;
-						UOSInt outSize;
+						UIntOS buffSize = (sbc.GetLength() >> 2) * 3;
+						UIntOS outSize;
 						UInt8 *tmpBuff = MemAlloc(UInt8, buffSize);
 						outSize = b64.Decrypt((const UInt8*)sbc.ToPtr(), sbc.GetLength(), tmpBuff);
 						sbuff = enc.UTF8FromBytes(sbuff, tmpBuff, outSize, 0);

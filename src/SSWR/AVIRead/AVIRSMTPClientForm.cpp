@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 	Net::Email::SMTPClient *cli;
 	Text::StringBuilderUTF8 sbLog;
 	Text::StringBuilderWriter writer(sbLog);
-	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetTCPClientFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)me->cboSSLType->GetSelectedItem().GetOSInt(), &writer, 60000));
+	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetTCPClientFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)me->cboSSLType->GetSelectedItem().GetIntOS(), &writer, 60000));
 	sb1.ClearStr();
 	sb2.ClearStr();
 	me->txtUsername->GetText(sb1);
@@ -122,9 +122,9 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientCont
 	this->lblSSLType->SetRect(4, 52, 100, 23, false);
 	this->cboSSLType = ui->NewComboBox(this->pnlControl, false);
 	this->cboSSLType->SetRect(104, 52, 200, 23, false);
-	this->cboSSLType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::Plain);
-	this->cboSSLType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::STARTTLS);
-	this->cboSSLType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::SSL);
+	this->cboSSLType->AddItem(CSTR("Plain"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::Plain);
+	this->cboSSLType->AddItem(CSTR("STARTTLS"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::STARTTLS);
+	this->cboSSLType->AddItem(CSTR("SSL"), (void*)(IntOS)Net::Email::SMTPConn::ConnType::SSL);
 	this->cboSSLType->SetSelectedIndex(0);
 	this->lblUsername = ui->NewLabel(this->pnlControl, CSTR("Username"));
 	this->lblUsername->SetRect(4, 76, 100, 23, false);

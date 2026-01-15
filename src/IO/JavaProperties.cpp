@@ -39,7 +39,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> re
 	UnsafeArray<UTF8Char> value;
 	UnsafeArray<UTF8Char> valueEnd;
 	IO::ConfigFile *cfg;
-	UOSInt i;
+	UIntOS i;
 	NEW_CLASS(cfg, IO::ConfigFile());
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
@@ -49,10 +49,10 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> re
 			i++;
 		}
 		name = &buff[i];
-		i = Text::StrIndexOfCharC(name, (UOSInt)(valueEnd - name), '=');
+		i = Text::StrIndexOfCharC(name, (UIntOS)(valueEnd - name), '=');
 		if (i == INVALID_INDEX)
 		{
-			i = Text::StrIndexOfCharC(name, (UOSInt)(valueEnd - name), ':');
+			i = Text::StrIndexOfCharC(name, (UIntOS)(valueEnd - name), ':');
 		}
 		if (i != INVALID_INDEX)
 		{

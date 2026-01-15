@@ -36,8 +36,8 @@ namespace Media
 		void InitDevice(UInt32 devId);
 
 	public:
-		static UOSInt GetDeviceCount();
-		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
+		static UIntOS GetDeviceCount();
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
 
 		Int64 SwitchBuffer(Int32 index);
 

@@ -6,11 +6,11 @@ Int64 IO::ProtocolBuffersUtil::ToSInt64(UInt64 val)
 	return (Int64)((val >> 1) ^ (~(val & 1) + 1));
 }
 
-UOSInt IO::ProtocolBuffersUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<UInt64> val)
+UIntOS IO::ProtocolBuffersUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<UInt64> val)
 {
 	UInt64 outVal;
 	UInt64 v;
-	UOSInt shift = 0;
+	UIntOS shift = 0;
 	outVal = 0;
 	while (true)
 	{
@@ -27,11 +27,11 @@ UOSInt IO::ProtocolBuffersUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UOSIn
 	return buffOfst;
 }
 
-UOSInt IO::ProtocolBuffersUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<Int64> val)
+UIntOS IO::ProtocolBuffersUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<Int64> val)
 {
 	UInt64 outVal;
 	UInt64 v;
-	UOSInt shift = 0;
+	UIntOS shift = 0;
 	outVal = 0;
 	while (true)
 	{
@@ -52,11 +52,11 @@ UOSInt IO::ProtocolBuffersUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt
 	return buffOfst;
 }
 
-UOSInt IO::ProtocolBuffersUtil::ReadVarSInt(UnsafeArray<const UInt8> buff, UOSInt buffOfst, OutParam<Int64> val)
+UIntOS IO::ProtocolBuffersUtil::ReadVarSInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<Int64> val)
 {
 	UInt64 outVal;
 	UInt64 v;
-	UOSInt shift = 0;
+	UIntOS shift = 0;
 	outVal = 0;
 	while (true)
 	{

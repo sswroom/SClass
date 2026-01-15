@@ -4,10 +4,10 @@
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, UIntOS itemIndex)
 {
 	NN<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
-	UOSInt currVal = me->lvTables->GetItem(itemIndex).GetUOSInt();
+	UIntOS currVal = me->lvTables->GetItem(itemIndex).GetUIntOS();
 	if (currVal == 0)
 	{
 		me->lvTables->SetSubItem(itemIndex, 1, CSTR("yes"));
@@ -44,10 +44,10 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 	dlg->SetFileName(CSTRP(sbuff, sptr));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		DB::SQLBuilder sql((DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt(), me->chkAxisAware->IsChecked(), 0);
+		DB::SQLBuilder sql((DB::SQLType)me->cboDBType->GetSelectedItem().GetIntOS(), me->chkAxisAware->IsChecked(), 0);
 		Data::ArrayListStringNN cols;
-		UOSInt i = 0;
-		UOSInt j = me->lvTables->GetCount();
+		UIntOS i = 0;
+		UIntOS j = me->lvTables->GetCount();
 		while (i < j)
 		{
 			if (me->lvTables->GetItem(i).IsNull())
@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 		UnsafeArray<UTF8Char> sptr;
 		NN<DB::ColDef> col;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tab->ColIterator();
-		UOSInt i;
+		UIntOS i;
 		while (it.HasNext())
 		{
 			col = it.Next();

@@ -35,7 +35,7 @@ namespace IO
 		Bool hasNewFile;
 
 		UnsafeArray<UTF8Char> GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, OptOut<Int32> lastVal);
-		void WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UOSInt arrCnt);
+		void WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UIntOS arrCnt);
 		static UInt32 __stdcall FileThread(AnyType userObj);
 		void Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
 	public:

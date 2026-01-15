@@ -48,12 +48,12 @@ Bool DB::SQLFileReader::NextSQL(NN<Text::StringBuilderUTF8> sb)
 		{
 			return true;
 		}
-		UOSInt i = sb->IndexOfICase(UTF8STRC(") VALUES ("));
+		UIntOS i = sb->IndexOfICase(UTF8STRC(") VALUES ("));
 		if (i == INVALID_INDEX)
 		{
 			return true;
 		}
-		UOSInt insertCnt = 1;
+		UIntOS insertCnt = 1;
 		while (true)
 		{
 			if (!this->reader.ReadLine(this->sbLastLine, 4096))

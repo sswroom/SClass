@@ -19,7 +19,7 @@ namespace Net
 		Net::SocketUtil::AddressInfo lastAddr;
 		UInt16 lastPort;
 		UInt8 *buff;
-		UOSInt buffSize;
+		UIntOS buffSize;
 		Bool isClient;
 
 		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
@@ -28,8 +28,8 @@ namespace Net
 		~UDPServerStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

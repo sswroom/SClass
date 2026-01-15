@@ -27,18 +27,18 @@ void Media::AFilter::FileMixFilter::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	NN<Media::AudioSource> fileSrc;
 	if (this->mixing && this->fileSrc.SetTo(fileSrc))
 	{
-		UOSInt sampleCnt = readSize / this->format.align;
-		UOSInt readCnt;
-		OSInt i;
-		OSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS sampleCnt = readSize / this->format.align;
+		UIntOS readCnt;
+		IntOS i;
+		IntOS j;
+		UIntOS k;
+		UIntOS l;
 		Int32 v;
 		if (this->chMix)
 		{
@@ -128,7 +128,7 @@ Bool Media::AFilter::FileMixFilter::LoadFile(NN<Text::String> fileName)
 	NN<Media::MediaSource> mediaSrc;
 	NN<Media::AudioSource> audSrc;
 	Int32 syncTime;
-	UOSInt i;
+	UIntOS i;
 	Bool found = false;
 	i = 0;
 	while (true)

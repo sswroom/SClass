@@ -29,7 +29,7 @@ namespace Net
 		AnyType userData;
 
 		ThreadStat *threadStats;
-		UOSInt threadCnt;
+		UIntOS threadCnt;
 		Sync::Event *ctrlEvt;
 
 
@@ -37,7 +37,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(AnyType obj);
 
 	public:
-		ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8Char> ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt workerCnt);
+		ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8Char> ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UIntOS workerCnt);
 		~ARPHandler();
 
 		Bool IsError();

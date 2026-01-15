@@ -30,7 +30,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 packetType;
-			UOSInt size;
+			UIntOS size;
 			UInt8 content[1];
 		} PacketInfo;
 
@@ -53,13 +53,13 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 
-		void OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
+		void OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UIntOS msgSize);
 		Optional<PacketInfo> GetNextPacket(UInt8 packetType, Data::Duration timeout);
-		Bool SendPacket(UnsafeArray<const UInt8> packet, UOSInt packetSize);
+		Bool SendPacket(UnsafeArray<const UInt8> packet, UIntOS packetSize);
 
 		void InitStream(NN<IO::Stream> stm);
 	public:

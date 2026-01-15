@@ -56,12 +56,12 @@
 class ProtoListener : public IO::ProtocolHandler::DataListener
 {
 public:
-	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
+	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize)
 	{
 		printf("Received cmdType 0x%x, size=%d\r\n", cmdType, (UInt32)cmdSize);
 	}
 
-	virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+	virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
 
 	}
@@ -70,8 +70,8 @@ public:
 Int32 Test0()
 {
 	UInt8 data[4096];
-	UOSInt dataSize = 0;
-	UOSInt dataLeft;
+	UIntOS dataSize = 0;
+	UIntOS dataLeft;
 	ProtoListener listener;
 	IO::ProtoHdlr::ProtoJMVL01Handler protoHdlr(listener, 0);
 	IO::FileStream fs(CSTR("/home/sswroom/Progs/Temp/20220519 JM-VL01/1652961383648_B6EF576F_4418r.dat"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -116,7 +116,7 @@ Int32 Test1()
 		IO::FileStream destFS(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(destFS);
 		Text::XMLReader reader(&encFact, srcFS, Text::XMLReader::PM_HTML);
-		UOSInt rowType = 0;
+		UIntOS rowType = 0;
 		while (reader.ReadNext())
 		{
 			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("TABLE")))
@@ -182,8 +182,8 @@ Bool InZone(Data::ArrayListNative<Double> *lats, Data::ArrayListNative<Double> *
 	Double thisPtY;
 	Double lastPtX;
 	Double lastPtY;
-	UOSInt j;
-	UOSInt l;
+	UIntOS j;
+	UIntOS l;
 	Int32 leftCnt = 0;
 	Double tmpX;
 
@@ -262,9 +262,9 @@ Int32 RenameFileTest()
 					sptr2 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess2))
 					{
-						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
+						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UIntOS)(sptrEnd - sbuff));
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
-						sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
+						sptr2 = Text::StrConcatC(sptr2, sptr, (UIntOS)(sptrEnd - sptr));
 						IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
 						*sptrEnd++ = IO::Path::PATH_SEPERATOR;
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -272,7 +272,7 @@ Int32 RenameFileTest()
 						{
 							if (sptrEnd[0] != '.' && pt == IO::Path::PathType::Directory)
 							{
-								sptr2End = Text::StrConcatC(sptr2, sptrEnd, (UOSInt)(sptrEnd2 - sptrEnd));
+								sptr2End = Text::StrConcatC(sptr2, sptrEnd, (UIntOS)(sptrEnd2 - sptrEnd));
 								IO::FileUtil::MoveDir(CSTRP(sbuff, sptrEnd2), CSTRP(sbuff2, sptr2End), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 							}
 						}
@@ -548,7 +548,7 @@ Int32 WKBTest()
 			printf("Write WKB\r\n");
 			Math::WKBReader wkbr(2326);
 			NN<Math::Geometry::Vector2D> vec2;
-			if (wkbr.ParseWKB(mstm.GetBuff(), (UOSInt)mstm.GetLength(), 0).SetTo(vec2))
+			if (wkbr.ParseWKB(mstm.GetBuff(), (UIntOS)mstm.GetLength(), 0).SetTo(vec2))
 			{
 				printf("Parsed WKB\r\n");
 				if (vec->Equals(vec2, true, false, false))
@@ -613,8 +613,8 @@ Int32 CurveToLine()
 	835775.4391894041 818849.2016842215,
 	835782.288535565 818840.0512437521,
 	835789.3486200012 818831.062400002*/
-	UOSInt i = 0;
-	UOSInt j = pts.GetCount();
+	UIntOS i = 0;
+	UIntOS j = pts.GetCount();
 	while (i < j)
 	{
 		Math::Coord2DDbl pt = pts.GetItem(i);
@@ -641,7 +641,7 @@ Int32 SQLConvFunc()
 			Text::UTF8Writer writer(destFS);
 			while (reader.ReadLine(sbSrc, 65536))
 			{
-				UOSInt i = sbSrc.IndexOf(CSTR(") VALUES ("));
+				UIntOS i = sbSrc.IndexOf(CSTR(") VALUES ("));
 				if (i != INVALID_INDEX && Text::StrSplitTrimP(sarr, 7, sbSrc.Substring(i + 10), ',') == 6)
 				{
 					if (!sarr[1].Equals(CSTR("NULL")))
@@ -733,7 +733,7 @@ Int32 JasyptTest()
 	Text::CStringNN password = CSTR("");
 	Crypto::Encrypt::JasyptEncryptor encryptor(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, password.ToByteArray());
 	UInt8 buff[256];
-	UOSInt buffLeng = encryptor.DecryptB64(text, buff);
+	UIntOS buffLeng = encryptor.DecryptB64(text, buff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(buff, buffLeng, ' ', Text::LineBreakType::CRLF);
 	printf("%s\r\n", sb.ToPtr());
@@ -839,8 +839,8 @@ Int32 FGDBTest()
 	NN<Map::ESRI::FileGDBDir> fgdb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (Map::ESRI::FileGDBDir::OpenDir(dpkg).SetTo(fgdb))
 	{
 		NN<Map::ESRI::FileGDBTable> table;
@@ -893,8 +893,8 @@ Int32 BezierCurveTest()
 	Data::ArrayListA<Math::Coord2DDbl> linePts;
 	Math::GeometryTool::BezierCurveToLine(p0, p1, p2, p3, 10, linePts);
 	Math::Coord2DDbl pt;
-	UOSInt i = 0;
-	UOSInt j = linePts.GetCount();
+	UIntOS i = 0;
+	UIntOS j = linePts.GetCount();
 	while (i < j)
 	{
 		pt = linePts.GetItem(i);
@@ -924,7 +924,7 @@ Int32 ClamAVTest()
 	UnsafeArray<UInt8> fileBuff;
 	UInt64 fileLength;
 	UTF8Char sbuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	fileLength = fs.GetLength();
 	if (fileLength == 0 || fileLength > 10485760 || fs.IsError())
@@ -933,8 +933,8 @@ Int32 ClamAVTest()
 	}
 	else
 	{
-		fileBuff = MemAllocArr(UInt8, (UOSInt)fileLength + 5);
-		if (fs.Read(Data::ByteArray(fileBuff + 4, (UOSInt)fileLength)) == fileLength)
+		fileBuff = MemAllocArr(UInt8, (UIntOS)fileLength + 5);
+		if (fs.Read(Data::ByteArray(fileBuff + 4, (UIntOS)fileLength)) == fileLength)
 		{
 			Net::OSSocketFactory sockf(false);
 			Net::TCPClient cli(sockf, CSTR("localhost"), 3310, 8000);
@@ -945,10 +945,10 @@ Int32 ClamAVTest()
 			else
 			{
 				WriteMUInt32(&fileBuff[0], (UInt32)fileLength);
-				WriteMUInt32(&fileBuff[(UOSInt)fileLength + 4], 0);
+				WriteMUInt32(&fileBuff[(UIntOS)fileLength + 4], 0);
 				cli.SetTimeout(50000);
 				cli.Write(CSTR("zINSTREAM\0").ToByteArray());
-				cli.WriteCont(fileBuff, (UOSInt)fileLength + 8);
+				cli.WriteCont(fileBuff, (UIntOS)fileLength + 8);
 				readSize = cli.Read(Data::ByteArray(sbuff, 2047));
 				sbuff[readSize] = 0;
 				printf("Reply: %s\r\n", sbuff);
@@ -998,23 +998,23 @@ void __stdcall MTDrawThread(NN<Sync::Thread> thread)
 	NN<Media::DrawImage> dimg;
 	NN<Media::DrawImage> dimg2;
 	NN<Media::RasterImage> sImg;
-	UOSInt cnt = 10000;
+	UIntOS cnt = 10000;
 	while (cnt-- > 0)
 	{
-		if (status->drawEng->CreateImage32(Math::Size2D<UOSInt>(60, 60), Media::AT_ALPHA).SetTo(dimg))
+		if (status->drawEng->CreateImage32(Math::Size2D<UIntOS>(60, 60), Media::AT_ALPHA).SetTo(dimg))
 		{
 			if (status->img1->GetImage(0, 0).SetTo(sImg))
 			{
 				sImg->info.atype = Media::AT_IGNORE_ALPHA;
 				if (status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 				{
-					dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
+					dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UIntOS2Double((60 - dimg2->GetWidth()) >> 1), UIntOS2Double((60 - dimg2->GetHeight()) >> 1)));
 					status->drawEng->DeleteImage(dimg2);
 				}
 			}
 			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 			{
-				dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
+				dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UIntOS2Double((60 - dimg2->GetWidth()) >> 1), UIntOS2Double((60 - dimg2->GetHeight()) >> 1)));
 				status->drawEng->DeleteImage(dimg2);
 			}
 		}
@@ -1069,8 +1069,8 @@ Int32 QuadrilateralTest()
 Int32 CoordRotateTest()
 {
 	Double angle = 10 * Math::PI / 180;
-	UOSInt i = 0;
-	UOSInt j = 36;
+	UIntOS i = 0;
+	UIntOS j = 36;
 	Math::Coord2DDbl pt = Math::Coord2DDbl(1, 0);
 	Math::Coord2DDbl c = Math::Coord2DDbl(1, 1);
 	while (i < j)
@@ -1304,8 +1304,8 @@ Int32 OUICSVConv()
 	IO::FileStream fs(CSTR("MACList.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	IO::BufferedOutputStream bos(fs, 65536);
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = ouiMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = ouiMap.GetCount();
 	while (i < j)
 	{
 		ent = ouiMap.GetItemNoCheck(i);
@@ -1335,7 +1335,7 @@ Int32 NANTest()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 35;
+	UIntOS testType = 35;
 	switch (testType)
 	{
 	case 0:

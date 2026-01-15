@@ -16,9 +16,9 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 	Data::DateTime *dt;
 	UInt8 cmdBuff[10];
 	UInt8 buff[2048];
-	UOSInt buffSize = 0;
-	UOSInt recvSize;
-	UOSInt i;
+	UIntOS buffSize = 0;
+	UIntOS recvSize;
+	UIntOS i;
 	UnsafeArray<UInt8> imgBuff;
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());

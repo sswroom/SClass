@@ -10,21 +10,21 @@ namespace IO
 	{
 	private:
 		Data::ByteBuffer buff;
-		UOSInt currPtr;
-		UOSInt currSize;
+		UIntOS currPtr;
+		UIntOS currSize;
 	public:
 		MemoryStream();
-		MemoryStream(UOSInt capacity);
+		MemoryStream(UIntOS capacity);
 		virtual ~MemoryStream();
 
 		UnsafeArray<UInt8> GetBuff();
-		UnsafeArray<UInt8> GetBuff(OutParam<UOSInt> buffSize);
+		UnsafeArray<UInt8> GetBuff(OutParam<UIntOS> buffSize);
 		Data::ByteArray GetArray() const;
 		Text::CStringNN ToCString();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

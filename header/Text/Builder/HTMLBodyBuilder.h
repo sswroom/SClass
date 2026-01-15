@@ -26,11 +26,11 @@ namespace Text
 			void BeginTableHeader();
 			void BeginTableData();
 			void BeginTableRow();
-			void BeginTableRowPixelHeight(UOSInt pxHeight);
+			void BeginTableRowPixelHeight(UIntOS pxHeight);
 			void EndElement();
 			void AddTableHeader(Text::CStringNN content);
 			void AddTableData(Text::CStringNN content);
-			void AddTableData(Text::CStringNN content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign);
+			void AddTableData(Text::CStringNN content, UIntOS colSpan, UIntOS rowSpan, HAlignment halign, VAlignment valign);
 			void AddInputText(Text::CString id, Text::CString name, Text::CString value);
 			void AddInputButton(Text::CString id, Text::CString label, Text::CString onClick);
 

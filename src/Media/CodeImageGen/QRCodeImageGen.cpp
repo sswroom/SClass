@@ -18,23 +18,23 @@ Media::CodeImageGen::CodeImageGen::CodeType Media::CodeImageGen::QRCodeImageGen:
 	return Media::CodeImageGen::CodeImageGen::CT_QRCODE;
 }
 
-UOSInt Media::CodeImageGen::QRCodeImageGen::GetMinLength()
+UIntOS Media::CodeImageGen::QRCodeImageGen::GetMinLength()
 {
 	return 1;
 }
 
-UOSInt Media::CodeImageGen::QRCodeImageGen::GetMaxLength()
+UIntOS Media::CodeImageGen::QRCodeImageGen::GetMaxLength()
 {
 	return 7089;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CStringNN code, UIntOS codeWidth, NN<Media::DrawEngine> eng)
 {
 	if (code.leng == 0)
 		return nullptr;
 
 	NN<Media::StaticImage> simg;
-	if (!Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256)).SetTo(simg))
+	if (!Media::ZXingWriter::GenQRCode(code, Math::Size2D<UIntOS>(256, 256)).SetTo(simg))
 		return nullptr;
 	Optional<Media::DrawImage> dimg = eng->ConvImage(simg, nullptr);
 	simg.Delete();

@@ -14,9 +14,9 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnRelationSelChg(AnyType userO
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
 	if (rel->tags.SetTo(tags))
 	{
@@ -95,8 +95,8 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnQueryResultSelChg(AnyType us
 		me->txtQueryType->SetText(CSTR(""));
 		return;
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
 	if (elem->tags.SetTo(tags))
 	{
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnQueryResultSelChg(AnyType us
 		while (i < j)
 		{
 			tag = tags->GetItemNoCheck(i);
-			UOSInt k = me->lvQueryTags->AddItem(tag->k, tag);
+			UIntOS k = me->lvQueryTags->AddItem(tag->k, tag);
 			me->lvQueryTags->SetSubItem(k, 1, tag->v);
 			i++;
 		}
@@ -115,14 +115,14 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnQueryResultSelChg(AnyType us
 	me->nav->SetSelectedVector(me->osmData->CreateVector(elem));
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISOSMDataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISOSMDataForm>();
 	me->mouseDown = true;
 	me->mouseDownPos = scnPos;
 	return UI::EventState::ContinueEvent;
 }
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISOSMDataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISOSMDataForm>();
 	if (!me->mouseDown)
@@ -133,7 +133,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType u
 	if (me->mouseDownPos == scnPos)
 	{
 		Math::Coord2DDbl mapPos = me->nav->ScnXY2MapXY(scnPos);
-		Math::Coord2DDbl mapPos2 = me->nav->ScnXY2MapXY(Math::Coord2D<OSInt>(scnPos.x + 10, scnPos.y));
+		Math::Coord2DDbl mapPos2 = me->nav->ScnXY2MapXY(Math::Coord2D<IntOS>(scnPos.x + 10, scnPos.y));
 		Double maxDist = mapPos.CalcLengTo(mapPos2);
 		NN<Math::CoordinateSystem> csys = me->nav->GetCoordinateSystem();
 		if (csys != me->osmData->GetCoordinateSystem())
@@ -153,10 +153,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType u
 		NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
 		NN<Map::OSM::TagInfo> tag;
 		Int64 mapId;
-		UOSInt i = 0;
-		UOSInt j = objs.GetCount();
-		UOSInt k;
-		UOSInt l;
+		UIntOS i = 0;
+		UIntOS j = objs.GetCount();
+		UIntOS k;
+		UIntOS l;
 		if (j > 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -230,8 +230,8 @@ void SSWR::AVIRead::AVIRGISOSMDataForm::UpdateRelationList()
 	Optional<Text::String> type;
 	NN<Text::String> nntype;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
-	UOSInt j = relList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = relList.GetCount();
 	while (i < j)
 	{
 		rel = relList.GetItemNoCheck(i);
@@ -240,8 +240,8 @@ void SSWR::AVIRead::AVIRGISOSMDataForm::UpdateRelationList()
 		type = nullptr;
 		if (rel->tags.SetTo(tags))
 		{
-			UOSInt k = 0;
-			UOSInt l = tags->GetCount();
+			UIntOS k = 0;
+			UIntOS l = tags->GetCount();
 			while (k < l)
 			{
 				NN<Map::OSM::TagInfo> tag = tags->GetItemNoCheck(k);
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->osmData = osmData;
 	this->nav = nav;
 	this->mouseDown = false;
-	this->mouseDownPos = Math::Coord2D<OSInt>(0, 0);
+	this->mouseDownPos = Math::Coord2D<IntOS>(0, 0);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	Text::StringBuilderUTF8 sb;
@@ -352,16 +352,16 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	NN<Map::OSM::RelationInfo> rel;
 	Optional<Text::String> type;
 	NN<Text::String> nntype;
-	UOSInt i = 0;
-	UOSInt j = relList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = relList.GetCount();
 	while (i < j)
 	{
 		rel = relList.GetItemNoCheck(i);
 		type = nullptr;
 		if (rel->tags.SetTo(tags))
 		{
-			UOSInt k = 0;
-			UOSInt l = tags->GetCount();
+			UIntOS k = 0;
+			UIntOS l = tags->GetCount();
 			while (k < l)
 			{
 				NN<Map::OSM::TagInfo> tag = tags->GetItemNoCheck(k);

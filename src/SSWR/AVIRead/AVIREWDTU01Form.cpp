@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 	UInt8 macBuff[8];
 	Int32 irssi;
 	UInt64 macInt;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (!Text::JSONBase::ParseJSONBytes(buff.Arr(), buff.GetSize()).SetTo(jsonObj))
 	{
 		return;
@@ -131,8 +131,8 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->lvDevices->ClearItems();
-		UOSInt i = 0;
-		UOSInt j = me->dataMap.GetCount();
+		UIntOS i = 0;
+		UIntOS j = me->dataMap.GetCount();
 		while (i < j)
 		{
 			entry = me->dataMap.GetItemNoCheck(i);
@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
 	NN<DeviceEntry> entry;
-	UOSInt i = this->dataMap.GetCount();
+	UIntOS i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
 		entry = this->dataMap.GetItemNoCheck(i);

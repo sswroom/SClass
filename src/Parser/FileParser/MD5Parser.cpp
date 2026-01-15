@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::St
 	IO::FileCheck *fchk;
 	UInt8 chk[20];
 	Crypto::Hash::HashType ctype;
-	UOSInt chkSize;
+	UIntOS chkSize;
 	NN<Text::String> fullName = fd->GetFullName();
 
 	if (fullName->EndsWithICase(UTF8STRC(".MD5")))
@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::St
 	NEW_CLASS(fchk, IO::FileCheck(fullName, ctype));
 	while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 	{
-		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)
+		if (sptr - sbuff > (IntOS)(chkSize << 1) + 2)
 		{
 			if (sbuff[(chkSize << 1)] == ' ' && sbuff[(chkSize << 1) + 1] == '*') //binary mode
 			{

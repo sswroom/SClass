@@ -10,13 +10,13 @@ namespace Text
 	{
 	public:
 		static void WriteString(NN<Text::StyledTextWriter> writer, NN<Text::String> s);
-		static void WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr, UOSInt startIndex, UOSInt endIndex);
-		static void WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr, UOSInt startIndex, UOSInt endIndex);
+		static void WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr, UIntOS startIndex, UIntOS endIndex);
+		static void WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UIntOS>> arr, UIntOS startIndex, UIntOS endIndex);
 		static void WriteArray(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr);
-		static void WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr);
+		static void WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UIntOS>> arr);
 		static void WriteTableData(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data);
-		static void WriteTableDataPart(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data, UOSInt nTop, UOSInt nBottom);
-		static Bool WriteColumnLine(NN<Text::StyledTextWriter> writer, NN<Text::PString> column, UOSInt colSize); //return true if more lines exist
+		static void WriteTableDataPart(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data, UIntOS nTop, UIntOS nBottom);
+		static Bool WriteColumnLine(NN<Text::StyledTextWriter> writer, NN<Text::PString> column, UIntOS colSize); //return true if more lines exist
 	};
 }
 #endif

@@ -11,7 +11,7 @@ namespace IO
 		private:
 			NN<IO::OneWireGPIO> oneWire;
 
-			UInt8 CalcCRC(UnsafeArray<const UInt8> buff, OSInt size);
+			UInt8 CalcCRC(UnsafeArray<const UInt8> buff, IntOS size);
 		public:
 			DS18B20(NN<IO::OneWireGPIO> oneWire);
 			~DS18B20();

@@ -8,12 +8,12 @@ Optional<Media::ImageList> UI::ClipboardUtil::LoadImage(NN<UI::Clipboard> clipbo
 	clipboard->GetDataFormats(dataTypes);
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = dataTypes.GetCount();
+	UIntOS i = 0;
+	UIntOS j = dataTypes.GetCount();
 	while (i < j)
 	{
 		sptr = UI::Clipboard::GetFormatName(dataTypes.GetItem(i), sbuff, sizeof(sbuff));
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("image/png")) || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("image/jpeg")) || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("image/bmp")) || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("image/tiff")))
+		if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("image/png")) || Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("image/jpeg")) || Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("image/bmp")) || Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("image/tiff")))
 		{
 			NN<Media::ImageList> imgList;
 			NN<Data::ByteBuffer> buff;

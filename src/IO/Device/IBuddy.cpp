@@ -6,14 +6,14 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UOSInt IO::Device::IBuddy::GetNumDevice()
+UIntOS IO::Device::IBuddy::GetNumDevice()
 {
 	Data::ArrayListNN<IO::HIDInfo> hidList;
 	IO::HIDInfo::GetHIDList(hidList);
 	NN<IO::HIDInfo> hid;
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = hidList.GetCount();
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = hidList.GetCount();
 	while (i < j)
 	{
 		hid = hidList.GetItemNoCheck(i);
@@ -27,15 +27,15 @@ UOSInt IO::Device::IBuddy::GetNumDevice()
 	return ret;
 }
 
-IO::Device::IBuddy::IBuddy(UOSInt devNo)
+IO::Device::IBuddy::IBuddy(UIntOS devNo)
 {
 	this->stm = 0;
 	Data::ArrayListNN<IO::HIDInfo> hidList;
 	IO::HIDInfo::GetHIDList(hidList);
 	NN<IO::HIDInfo> hid;
-	UOSInt ret = 0;
-	UOSInt i = 0;
-	UOSInt j = hidList.GetCount();
+	UIntOS ret = 0;
+	UIntOS i = 0;
+	UIntOS j = hidList.GetCount();
 	while (i < j)
 	{
 		hid = hidList.GetItemNoCheck(i);
@@ -85,11 +85,11 @@ void IO::Device::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, I
 	buff[8] = (UInt8)(255 - effects);
 	if (this->stm)
 	{
-		UOSInt retryCnt;
+		UIntOS retryCnt;
 		retryCnt = 1;
 		while (retryCnt-- > 0)
 		{
-			UOSInt writeSize = this->stm->Write(Data::ByteArrayR(buff, 9));
+			UIntOS writeSize = this->stm->Write(Data::ByteArrayR(buff, 9));
 			if (writeSize == 9)
 				break;
 		}

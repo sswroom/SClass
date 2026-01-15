@@ -10,7 +10,7 @@ namespace IO
 	public:
 		virtual AnyType CreateStreamData(NN<IO::Stream> stm) = 0;
 		virtual void DeleteStreamData(NN<IO::Stream> stm, AnyType stmData) = 0;
-		virtual UOSInt ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff) = 0; // return unprocessed size
+		virtual UIntOS ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff) = 0; // return unprocessed size
 	};
 }
 #endif

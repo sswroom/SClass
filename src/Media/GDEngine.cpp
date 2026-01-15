@@ -131,7 +131,7 @@ Media::GDEngine::~GDEngine()
 {
 }
 
-Optional<Media::DrawImage> Media::GDEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::GDEngine::CreateImage32(Math::Size2D<UIntOS> size, Media::AlphaType atype)
 {
 	GDImage *img;
 	gdImagePtr imgPtr = gdImageCreateTrueColor((int)size.GetWidth(), (int)size.GetHeight());
@@ -153,7 +153,7 @@ Optional<Media::DrawImage> Media::GDEngine::LoadImage(Text::CStringNN fileName)
 		{
 			return 0;
 		}
-		UOSInt fileSize = (UOSInt)fs.GetLength();
+		UIntOS fileSize = (UIntOS)fs.GetLength();
 		UnsafeArray<UInt8> dataPtr;
 		dataPtr = MemAllocArr(UInt8, fileSize);
 		if (fs.Read(Data::ByteArray(dataPtr, fileSize)) != fileSize)
@@ -195,7 +195,7 @@ Optional<Media::DrawImage> Media::GDEngine::LoadImage(Text::CStringNN fileName)
 
 	if (imgPtr)
 	{
-		NEW_CLASS(img, GDImage(*this, Math::Size2D<UOSInt>(gdImageSX(imgPtr), gdImageSY(imgPtr)), 32, imgPtr));
+		NEW_CLASS(img, GDImage(*this, Math::Size2D<UIntOS>(gdImageSX(imgPtr), gdImageSY(imgPtr)), 32, imgPtr));
 		return img;
 	}
 	return 0;
@@ -220,7 +220,7 @@ int GDE_GetC(struct gdIOCtx *ctx)
 int GDE_GetBuf(struct gdIOCtx *ctx, void *buf, int size)
 {
 	NN<IO::Stream> stm = *(NN<IO::Stream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
-	return stm->Read(Data::ByteArray((UInt8*)buf, (UOSInt)size));
+	return stm->Read(Data::ByteArray((UInt8*)buf, (UIntOS)size));
 }
 
 void GDE_PutC(struct gdIOCtx *ctx, int ch)
@@ -292,7 +292,7 @@ Int32 Media::GDBrush::InitImage(NN<Media::DrawImage> img)
 	return (Int32)this->color;
 }
 
-Media::GDPen::GDPen(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern, NN<DrawImage> img)
+Media::GDPen::GDPen(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern, NN<DrawImage> img)
 {
 	gdImagePtr im = NN<Media::GDImage>::ConvertFrom(img)->imgPtr.GetOpt<gdImage>().OrNull();
 	this->color = gdImageColorAllocateAlpha(im, (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), ((color >> 25) & 0x7f) ^ 0x7f);
@@ -413,7 +413,7 @@ Media::DrawEngine::DrawFontStyle Media::GDFont::GetFontStyle() const
 	return this->style;
 }
 
-Media::GDImage::GDImage(NN<GDEngine> eng, Math::Size2D<UOSInt> size, UInt32 bitCount, AnyType imgPtr)
+Media::GDImage::GDImage(NN<GDEngine> eng, Math::Size2D<UIntOS> size, UInt32 bitCount, AnyType imgPtr)
 {
 	this->eng = eng;
 	this->width = size.GetWidth();
@@ -426,19 +426,19 @@ Media::GDImage::~GDImage()
 {
 }
 
-UOSInt Media::GDImage::GetWidth() const
+UIntOS Media::GDImage::GetWidth() const
 {
 	return this->width;
 }
 
-UOSInt Media::GDImage::GetHeight() const
+UIntOS Media::GDImage::GetHeight() const
 {
 	return this->height;
 }
 
-Math::Size2D<UOSInt> Media::GDImage::GetSize() const
+Math::Size2D<UIntOS> Media::GDImage::GetSize() const
 {
-	return Math::Size2D<UOSInt>(this->width, this->height);
+	return Math::Size2D<UIntOS>(this->width, this->height);
 }
 
 UInt32 Media::GDImage::GetBitCount() const
@@ -455,7 +455,7 @@ Bool Media::GDImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<Dra
 	return true;
 }
 
-Bool Media::GDImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GDImage::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPoints, NN<DrawPen> p)
 {
 	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
 	NN<GDPen> pen = NN<GDPen>::ConvertFrom(p);
@@ -464,7 +464,7 @@ Bool Media::GDImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoin
 	return true;
 }
 
-Bool Media::GDImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDImage::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
 	NN<GDPen> pen;
@@ -483,14 +483,14 @@ Bool Media::GDImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoint
 	return true;
 }
 
-Bool Media::GDImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UIntOS nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
 	NN<GDPen> pen;
 	NN<GDBrush> brush;
 	Int32 c;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (Optional<GDBrush>::ConvertFrom(b).SetTo(brush))
 	{
 		c = brush->InitImage(*this);
@@ -577,7 +577,7 @@ Bool Media::GDImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	return true;
 }
 
-NN<Media::DrawPen> Media::GDImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GDImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
 {
 	NN<GDPen> p;
 	NEW_CLASSNN(p, GDPen(color, thick, pattern, nPattern, *this));
@@ -636,7 +636,7 @@ Math::Size2DDbl Media::GDImage::GetTextSize(NN<DrawFont> fnt, Text::CStringNN tx
 	return Math::Size2DDbl(brect[2] - brect[6], brect[3] - brect[7]);
 }
 
-UOSInt Media::GDImage::SavePng(NN<IO::SeekableStream> stm)
+UIntOS Media::GDImage::SavePng(NN<IO::SeekableStream> stm)
 {
 	gdIOCtxPtr ptr = (gdIOCtxPtr)eng->CreateIOCtx(stm);
 	gdImagePngCtx(this->imgPtr.GetOpt<gdImage>().OrNull(), ptr);

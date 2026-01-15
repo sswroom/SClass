@@ -9,7 +9,7 @@
 #define CONTEXT_TYPE CONTEXT
 
 
-Manage::ThreadContextARM::ThreadContextARM(UOSInt procId, UOSInt threadId, void *context)
+Manage::ThreadContextARM::ThreadContextARM(UIntOS procId, UIntOS threadId, void *context)
 {
 	this->procId = procId;
 	this->threadId = threadId;
@@ -22,13 +22,13 @@ Manage::ThreadContextARM::~ThreadContextARM()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextARM::GetRegisterCnt()
+UIntOS Manage::ThreadContextARM::GetRegisterCnt()
 {
-	UOSInt cnt = 17;
+	UIntOS cnt = 17;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextARM::GetRegister(UIntOS index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	switch (index)
 	{
@@ -111,9 +111,9 @@ void Manage::ThreadContextARM::ToString(NN<Text::StringBuilderUTF8> sb)
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	UOSInt i = 0;
-	UOSInt j = this->GetRegisterCnt();
-	UOSInt k;
+	UIntOS i = 0;
+	UIntOS j = this->GetRegisterCnt();
+	UIntOS k;
 
 	while (i < j)
 	{
@@ -148,32 +148,32 @@ UInt32 Manage::ThreadContextARM::GetProcessId()
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextARM::GetInstAddr()
+UIntOS Manage::ThreadContextARM::GetInstAddr()
 {
-	return (UOSInt)((CONTEXT_TYPE*)this->context)->Pc;
+	return (UIntOS)((CONTEXT_TYPE*)this->context)->Pc;
 }
 
-UOSInt Manage::ThreadContextARM::GetStackAddr()
+UIntOS Manage::ThreadContextARM::GetStackAddr()
 {
-	return (UOSInt)((CONTEXT_TYPE*)this->context)->Sp;
+	return (UIntOS)((CONTEXT_TYPE*)this->context)->Sp;
 }
 
-UOSInt Manage::ThreadContextARM::GetFrameAddr()
+UIntOS Manage::ThreadContextARM::GetFrameAddr()
 {
-	return (UOSInt)((CONTEXT_TYPE*)this->context)->Lr;
+	return (UIntOS)((CONTEXT_TYPE*)this->context)->Lr;
 }
 
-void Manage::ThreadContextARM::SetInstAddr(UOSInt instAddr)
+void Manage::ThreadContextARM::SetInstAddr(UIntOS instAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Pc = instAddr;
 }
 
-void Manage::ThreadContextARM::SetStackAddr(UOSInt stackAddr)
+void Manage::ThreadContextARM::SetStackAddr(UIntOS stackAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Sp = stackAddr;
 }
 
-void Manage::ThreadContextARM::SetFrameAddr(UOSInt frameAddr)
+void Manage::ThreadContextARM::SetFrameAddr(UIntOS frameAddr)
 {
 	((CONTEXT_TYPE*)this->context)->Lr = frameAddr;
 }

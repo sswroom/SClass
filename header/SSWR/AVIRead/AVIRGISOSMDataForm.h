@@ -34,7 +34,7 @@ namespace SSWR
 			NN<Map::OSM::OSMData> osmData;
 			NN<SSWR::AVIRead::AVIRMapNavigator> nav;
 			Bool mouseDown;
-			Math::Coord2D<OSInt> mouseDownPos;
+			Math::Coord2D<IntOS> mouseDownPos;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUICheckBox> chkShowUnknown;
@@ -60,8 +60,8 @@ namespace SSWR
 			static void __stdcall OnRelationSelChg(AnyType userObj);
 			static void __stdcall OnRelationTypeSelChg(AnyType userObj);
 			static void __stdcall OnQueryResultSelChg(AnyType userObj);
-			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static void __stdcall OnShowUnknownChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDefaultStyleClicked(AnyType userObj);
 			static void __stdcall OnCenterlineClicked(AnyType userObj);

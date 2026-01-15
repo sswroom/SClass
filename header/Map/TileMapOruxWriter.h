@@ -17,19 +17,19 @@ namespace Map
 	private:
 		NN<DB::SQLiteFile> db;
 		Optional<DB::DBTransaction> sess;
-		UOSInt imgCount;
+		UIntOS imgCount;
 		Sync::Mutex mut;
 		LevelInfo *levels;
-		UOSInt minLev;
-		UOSInt maxLev;
+		UIntOS minLev;
+		UIntOS maxLev;
 		Math::RectAreaDbl bounds;
 	public:
-		TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds);
+		TileMapOruxWriter(Text::CStringNN fileName, UIntOS minLev, UIntOS maxLev, Math::RectAreaDbl bounds);
 		virtual ~TileMapOruxWriter();
 
-		virtual void BeginLevel(UOSInt level);
+		virtual void BeginLevel(UIntOS level);
 		virtual void AddX(Int32 x);
-		virtual void AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
+		virtual void AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
 	};
 }
 #endif

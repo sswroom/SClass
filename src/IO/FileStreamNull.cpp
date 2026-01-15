@@ -31,12 +31,12 @@ Bool IO::FileStream::IsError() const
 	return true;
 }
 
-UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
+UIntOS IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
+UIntOS IO::FileStream::Write(const UInt8 *buff, UIntOS size)
 {
 	return 0;
 }
@@ -96,7 +96,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 {
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
+UIntOS IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UIntOS maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())
@@ -108,7 +108,7 @@ UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt ma
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
+	UIntOS readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

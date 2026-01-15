@@ -42,9 +42,9 @@ Data::Duration Media::AFilter::AudioAmplifier::SeekToTime(Data::Duration time)
 	return this->sourceAudio->SeekToTime(time);
 }
 
-UOSInt Media::AFilter::AudioAmplifier::ReadBlock(Data::ByteArray blk)
+UIntOS Media::AFilter::AudioAmplifier::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	Double thisVol = this->level;
 	if (thisVol != 1.0)
 	{

@@ -5,21 +5,21 @@ namespace Text
 {
 	struct PString : public StringBase<UTF8Char>
 	{
-		void Trim() { this->leng = (UOSInt)(Text::StrTrimC(this->v, this->leng) - this->v); }
-		void TrimSp() { this->leng = (UOSInt)(Text::StrTrimSpC(this->v, this->leng) - this->v); }
-		void Trim(UOSInt index);
+		void Trim() { this->leng = (UIntOS)(Text::StrTrimC(this->v, this->leng) - this->v); }
+		void TrimSp() { this->leng = (UIntOS)(Text::StrTrimSpC(this->v, this->leng) - this->v); }
+		void Trim(UIntOS index);
 		void RTrim();
 		void TrimWSCRLF();
 		void ToUpper();
 		void ToLower();
 		void ToCapital();
-		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
+		UIntOS Replace(UTF8Char fromChar, UTF8Char toChar);
 		void RemoveWS();
 		void RemoveChar(UTF8Char c);
 
 		PString() = default;
 
-		PString(UnsafeArray<UTF8Char> v, UOSInt leng)
+		PString(UnsafeArray<UTF8Char> v, UIntOS leng)
 		{
 			this->v = v;
 			this->leng = leng;
@@ -33,7 +33,7 @@ namespace Text
 				return CSTR("");
 		}
 
-		Text::PString Substring(UOSInt index) const
+		Text::PString Substring(UIntOS index) const
 		{
 			return {this->v + index, this->leng - index};
 		}
@@ -51,10 +51,10 @@ namespace Text
 				endPtr--;
 			}
 			*endPtr = 0;
-			return {sptr, (UOSInt)(endPtr - sptr)};
+			return {sptr, (UIntOS)(endPtr - sptr)};
 		}
 
-		Text::PString SubstrTrim(UOSInt index)
+		Text::PString SubstrTrim(UIntOS index)
 		{
 			if (index >= this->leng)
 			{
@@ -71,10 +71,10 @@ namespace Text
 				endPtr--;
 			}
 			*endPtr = 0;
-			return {sptr, (UOSInt)(endPtr - sptr)};
+			return {sptr, (UIntOS)(endPtr - sptr)};
 		}
 
-		Text::PString SubstrTrim(UOSInt index, UOSInt leng)
+		Text::PString SubstrTrim(UIntOS index, UIntOS leng)
 		{
 			if (index >= this->leng)
 			{
@@ -99,10 +99,10 @@ namespace Text
 				endPtr--;
 			}
 			*endPtr = 0;
-			return {sptr, (UOSInt)(endPtr - sptr)};
+			return {sptr, (UIntOS)(endPtr - sptr)};
 		}
 
-		void TrimToLength(UOSInt newLen)
+		void TrimToLength(UIntOS newLen)
 		{
 			if (newLen < this->leng)
 			{
@@ -111,7 +111,7 @@ namespace Text
 			}
 		}
 
-		void RemoveChars(UOSInt cnt)
+		void RemoveChars(UIntOS cnt)
 		{
 			if (cnt >= this->leng)
 			{
@@ -125,24 +125,24 @@ namespace Text
 			}
 		}
 
-		void RemoveChars(UOSInt index, UOSInt cnt)
+		void RemoveChars(UIntOS index, UIntOS cnt)
 		{
-			UOSInt endOfst = index + cnt;
+			UIntOS endOfst = index + cnt;
 			if (endOfst >= this->leng)
 			{
 				this->TrimToLength(index); 
 			}
 			else
 			{
-				this->leng = (UOSInt)(Text::StrConcatC(this->v + index, this->v + endOfst, this->leng - endOfst) - this->v);
+				this->leng = (UIntOS)(Text::StrConcatC(this->v + index, this->v + endOfst, this->leng - endOfst) - this->v);
 			}
 		}
 	};
 
-	UOSInt StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit); //Optimized
-	UOSInt StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit); //Optimized
-	UOSInt StrCSVSplitP(UnsafeArray<Text::PString> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit);
+	UIntOS StrSplitP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UIntOS StrSplitTrimP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UIntOS StrSplitLineP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit); //Optimized
+	UIntOS StrSplitWSP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit); //Optimized
+	UIntOS StrCSVSplitP(UnsafeArray<Text::PString> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit);
 }
 #endif

@@ -41,7 +41,7 @@ namespace Net
 			Sync::Event evt;
 			Optional<IO::Writer> logWriter;
 			ResultStatus welcomeMsg;
-			UOSInt maxSize;
+			UIntOS maxSize;
 			Bool authPlain;
 			Bool authLogin;
 
@@ -56,9 +56,9 @@ namespace Net
 			ResultStatus SendUser(Text::CStringNN username);
 			ResultStatus SendPass(Text::CStringNN password);
 			ResultStatus SendNoop();
-			ResultStatus SendStat(OutParam<UOSInt> msgCount, OutParam<UOSInt> msgSize);
-			ResultStatus SendRetr(UOSInt msgIndex, NN<Text::StringBuilderUTF8> msgBuff);
-			ResultStatus SendDele(UOSInt msgIndex);
+			ResultStatus SendStat(OutParam<UIntOS> msgCount, OutParam<UIntOS> msgSize);
+			ResultStatus SendRetr(UIntOS msgIndex, NN<Text::StringBuilderUTF8> msgBuff);
+			ResultStatus SendDele(UIntOS msgIndex);
 			ResultStatus SendQuit();
 
 			static UInt16 GetDefaultPort(ConnType connType);

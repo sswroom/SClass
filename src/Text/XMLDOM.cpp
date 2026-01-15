@@ -65,7 +65,7 @@ Text::XMLNode::XMLNode(NodeType nt)
 
 Text::XMLNode::~XMLNode()
 {
-	UOSInt i;
+	UIntOS i;
 	NN<XMLAttrib> attr;
 	NN<XMLNode> node;
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
@@ -125,7 +125,7 @@ void Text::XMLNode::AddChild(NN<XMLNode> node)
 	childArr->Add(node);
 }
 
-UOSInt Text::XMLNode::GetAttribCnt()
+UIntOS Text::XMLNode::GetAttribCnt()
 {
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
 	if (!this->attribArr.SetTo(attribArr))
@@ -133,7 +133,7 @@ UOSInt Text::XMLNode::GetAttribCnt()
 	return attribArr->GetCount();
 }
 
-Optional<Text::XMLAttrib> Text::XMLNode::GetAttrib(UOSInt index)
+Optional<Text::XMLAttrib> Text::XMLNode::GetAttrib(UIntOS index)
 {
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
 	if (!this->attribArr.SetTo(attribArr))
@@ -148,8 +148,8 @@ Optional<Text::XMLAttrib> Text::XMLNode::GetFirstAttrib(Text::CStringNN attrName
 		return nullptr;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> nns;
-	UOSInt i = 0;
-	UOSInt cnt = attribArr->GetCount();
+	UIntOS i = 0;
+	UIntOS cnt = attribArr->GetCount();
 	while (i < cnt)
 	{
 		attr = attribArr->GetItemNoCheck(i++);
@@ -159,7 +159,7 @@ Optional<Text::XMLAttrib> Text::XMLNode::GetFirstAttrib(Text::CStringNN attrName
 	return nullptr;
 }
 
-UOSInt Text::XMLNode::GetChildCnt() const
+UIntOS Text::XMLNode::GetChildCnt() const
 {
 	NN<Data::ArrayListNN<XMLNode>> childArr;
 	if (!this->childArr.SetTo(childArr))
@@ -167,12 +167,12 @@ UOSInt Text::XMLNode::GetChildCnt() const
 	return childArr->GetCount();
 }
 
-NN<Text::XMLNode> Text::XMLNode::GetChildNoCheck(UOSInt index) const
+NN<Text::XMLNode> Text::XMLNode::GetChildNoCheck(UIntOS index) const
 {
 	return this->childArr.OrNull()->GetItemNoCheck(index);
 }
 
-Optional<Text::XMLNode> Text::XMLNode::GetChild(UOSInt index) const
+Optional<Text::XMLNode> Text::XMLNode::GetChild(UIntOS index) const
 {
 	NN<Data::ArrayListNN<XMLNode>> childArr;
 	if (!this->childArr.SetTo(childArr))
@@ -187,10 +187,10 @@ void Text::XMLNode::GetInnerXML(NN<Text::StringBuilderUTF8> sb)
 	NN<Text::XMLNode> n;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> nns;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	if (!this->childArr.SetTo(childArr))
 		return;
 	if (this->nt == Text::XMLNode::NodeType::Document)
@@ -261,8 +261,8 @@ void Text::XMLNode::GetInnerText(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Data::ArrayListNN<XMLNode>> childArr;
 	NN<Text::XMLNode> n;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->nt == Text::XMLNode::NodeType::Text)
 	{
 		sb->AppendOpt(this->value);
@@ -290,11 +290,11 @@ void Text::XMLNode::GetInnerText(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-UnsafeArray<NN<Text::XMLNode>> Text::XMLNode::SearchNode(Text::CStringNN path, OutParam<UOSInt> cnt)
+UnsafeArray<NN<Text::XMLNode>> Text::XMLNode::SearchNode(Text::CStringNN path, OutParam<UIntOS> cnt)
 {
 	Data::ArrayListNN<XMLNode> outArr;
 	UnsafeArray<NN<Text::XMLNode>> outs;
-	UOSInt i;
+	UIntOS i;
 	SearchNodeBegin(path, outArr, false);
 
 	outs = MemAllocArr(NN<XMLNode>, outArr.GetCount());
@@ -321,7 +321,7 @@ void Text::XMLNode::ReleaseSearch(UnsafeArray<NN<XMLNode>> searchResult)
 void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult)
 {
 	UTF8Char myPath[256];
-	UOSInt i;
+	UIntOS i;
 	int searchType;
 	Data::ArrayListObj<UTF8Char*> reqArr;
 	Data::ArrayListNN<XMLNode> currPathArr;
@@ -415,9 +415,9 @@ Bool Text::XMLNode::SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Ch
 	UTF8Char *reqStr;
 	NN<Data::ArrayListNN<XMLNode>> childArr;
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 
 	if (reqArr->GetCount() <= currPathArr->GetCount())
 	{
@@ -493,7 +493,7 @@ Bool Text::XMLNode::SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj
 {
 	if (SearchNodeSub(node, reqArr, currPathArr, outArr, searchType, singleResult) && singleResult)
 		return true;
-	UOSInt i;
+	UIntOS i;
 	NN<Text::XMLNode> n;
 	i = node->GetChildCnt();
 	while (i-- > 0)
@@ -510,7 +510,7 @@ Bool Text::XMLNode::SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj
 	return false;
 }
 
-Bool Text::XMLNode::SearchEqual(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr)
+Bool Text::XMLNode::SearchEqual(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr)
 {
 	UTF8Char nameBuff[128];
 	UTF8Char condBuff[128];
@@ -612,13 +612,13 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> 
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB)
+Bool Text::XMLNode::SearchEval(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB)
 {
 	UnsafeArray<const UTF8Char> src;
 	UnsafeArray<const UTF8Char> dest;
 	NN<XMLAttrib> attr;
 	NN<XMLNode> child;
-	UOSInt i;
+	UIntOS i;
 	Bool eq;
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
 	NN<Data::ArrayListNN<XMLNode>> childArr;
@@ -653,7 +653,7 @@ Bool Text::XMLNode::SearchEval(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> r
 	}
 	else if (*nameStart == '\'' && nameEnd[-1] == '\'')
 	{
-		outSB->AppendC(&nameStart[1], (UOSInt)(nameEnd - nameStart - 2));
+		outSB->AppendC(&nameStart[1], (UIntOS)(nameEnd - nameStart - 2));
 		return true;
 	}
 	else
@@ -756,16 +756,16 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (c == quoted)
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
 						{
 							OPTSTR_DEL(this->encoding);
-							this->encoding = nns = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
 						{
 							OPTSTR_DEL(this->version);
-							this->version = nns = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->version = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
 						}
 
@@ -816,16 +816,16 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (xmlValSt)
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
 						{
 							OPTSTR_DEL(this->encoding);
-							this->encoding = nns = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
 						{
 							OPTSTR_DEL(this->version);
-							this->version = nns = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->version = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
 						}
 
@@ -885,7 +885,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (currPtr[1] == '-' && currPtr[2] == '>')
 					{
 						NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Comment));
-						node->value = Text::String::New(xmlStart + 4, (UOSInt)(currPtr - xmlStart - 4)).Ptr();
+						node->value = Text::String::New(xmlStart + 4, (UIntOS)(currPtr - xmlStart - 4)).Ptr();
 						parentNode->AddChild(node);
 						
 						return xmlEnd + 3;
@@ -896,7 +896,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Text));
-			node->name = nns = Text::String::New((UOSInt)(currPtr - xmlStart));
+			node->name = nns = Text::String::New((UIntOS)(currPtr - xmlStart));
 			Text::XML::ParseStr(nns, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -913,7 +913,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (currPtr[1] == ']' && currPtr[2] == '>')
 					{
 						NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::CData));
-						node->value = Text::String::New(xmlStart + 9, (UOSInt)(currPtr - xmlStart - 9)).Ptr();
+						node->value = Text::String::New(xmlStart + 9, (UIntOS)(currPtr - xmlStart - 9)).Ptr();
 						parentNode->AddChild(node);
 						return xmlEnd + 3;
 					}
@@ -923,7 +923,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Text));
-			node->name = nns = Text::String::New((UOSInt)(currPtr - xmlStart));
+			node->name = nns = Text::String::New((UIntOS)(currPtr - xmlStart));
 			Text::XML::ParseStr(nns, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -952,7 +952,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (!optnode.SetTo(node))
 					{
 						NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
-						node->name = nns = Text::String::New((UOSInt)(currPtr - xmlNameSt));
+						node->name = nns = Text::String::New((UIntOS)(currPtr - xmlNameSt));
 						Text::XML::ParseStr(nns, xmlNameSt, currPtr);
 					}
 					else if (xmlNameSt != 0)
@@ -1046,7 +1046,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 						if (!optnode.SetTo(node))
 						{
 							NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
-							node->name = nns = Text::String::New((UOSInt)(xmlNameEn - xmlNameSt));
+							node->name = nns = Text::String::New((UIntOS)(xmlNameEn - xmlNameSt));
 							Text::XML::ParseStr(nns, xmlNameSt, xmlNameEn);
 							optnode = node;
 							xmlNameSt = 0;
@@ -1173,7 +1173,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 			currPtr++;
 		}
 		NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Text));
-		node->value = nns = Text::String::New((UOSInt)(currPtr - xmlStart));
+		node->value = nns = Text::String::New((UIntOS)(currPtr - xmlStart));
 		Text::XML::ParseStr(nns, xmlStart, currPtr);
 		parentNode->AddChild(node);
 		return currPtr;
@@ -1199,7 +1199,7 @@ Text::XMLDocument::~XMLDocument()
 	OPTSTR_DEL(this->version);
 }
 
-Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size)
+Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *newDoc = 0;
@@ -1246,7 +1246,7 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 		currPos = &buff[5];
 		while (true)
 		{
-			if ((UOSInt)(currPos - buff) > size)
+			if ((UIntOS)(currPos - buff) > size)
 				return false;
 			if (*currPos == '>')
 			{
@@ -1257,7 +1257,7 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 				if (quoted)
 				{
 					attValEnd = currPos.Ptr();
-					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
+					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UIntOS)(attNameEnd - attName)))
 					{
 						src = attVal;
 						dest = sbuff;
@@ -1302,7 +1302,7 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 				if (attVal)
 				{
 					attValEnd = currPos.Ptr();
-					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
+					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UIntOS)(attNameEnd - attName)))
 					{
 						src = attVal;
 						dest = sbuff;
@@ -1404,7 +1404,7 @@ Bool Text::XMLDocument::ParseStream(NN<Text::EncodingFactory> encFact, IO::Strea
 	Bool parseRes;
 	UInt8 buff[2048];
 	UnsafeArray<UInt8> mbuff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	IO::MemoryStream mstm;
 	while ((buffSize = stm->Read(BYTEARR(buff))) > 0)
 	{

@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	if (devList->GetCount() != me->lbDevice->GetCount())
 	{
-		UOSInt i = 0;
-		UOSInt j = devList->GetCount();
+		UIntOS i = 0;
+		UIntOS j = devList->GetCount();
 		NN<Net::SSDPClient::SSDPDevice> dev;
 		me->lbDevice->ClearItems();
 		while (i < j)
@@ -39,8 +39,8 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(AnyType userObj
 		return;
 	}
 	NN<Net::SSDPClient::SSDPService> svc;
-	UOSInt i = 0;
-	UOSInt j = dev->services.GetCount();
+	UIntOS i = 0;
+	UIntOS j = dev->services.GetCount();
 	while (i < j)
 	{
 		svc = dev->services.GetItemNoCheck(i);

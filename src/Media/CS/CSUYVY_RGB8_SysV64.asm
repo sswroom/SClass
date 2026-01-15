@@ -13,7 +13,7 @@ section .text
 global CSUYVY_RGB8_do_uyvy2rgb
 global _CSUYVY_RGB8_do_uyvy2rgb
 
-;void CSUYVY_RGB8_do_uyvy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSUYVY_RGB8_do_uyvy2rgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 ebx
 ;8 retAddr
 ;rdi rcx src
@@ -31,7 +31,7 @@ _CSUYVY_RGB8_do_uyvy2rgb:
 	
 	lea rax,[rdx*4]
 	shr rdx,1
-	sub rdx,2 ;width				OSInt wsize = (width >> 1) - 2;
+	sub rdx,2 ;width				IntOS wsize = (width >> 1) - 2;
 	sub r8,rax ;dbpl
 
 	mov r11,rcx ;hleft

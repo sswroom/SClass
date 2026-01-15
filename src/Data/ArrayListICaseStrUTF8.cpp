@@ -7,7 +7,7 @@ Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8() : Data::ArrayListStrUTF8()
 {
 }
 
-Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8(UOSInt capacity) : Data::ArrayListStrUTF8(capacity)
+Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8(UIntOS capacity) : Data::ArrayListStrUTF8(capacity)
 {
 }
 
@@ -19,7 +19,7 @@ NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListICaseStrUT
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStrUTF8::CompareItem(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
+IntOS Data::ArrayListICaseStrUTF8::CompareItem(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
 {
 	return Text::StrCompareICase(obj1.Ptr(), obj2.Ptr());
 }

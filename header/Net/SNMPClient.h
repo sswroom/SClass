@@ -27,11 +27,11 @@ namespace Net
 		Bool IsError();
 
 		Net::SNMPUtil::ErrorStatus V1GetRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
-		Net::SNMPUtil::ErrorStatus V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
+		Net::SNMPUtil::ErrorStatus V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UIntOS oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
 		Net::SNMPUtil::ErrorStatus V1GetNextRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
-		Net::SNMPUtil::ErrorStatus V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
+		Net::SNMPUtil::ErrorStatus V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UIntOS oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
 		Net::SNMPUtil::ErrorStatus V1Walk(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
-		UOSInt V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP);
+		UIntOS V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP);
 	};
 }
 #endif

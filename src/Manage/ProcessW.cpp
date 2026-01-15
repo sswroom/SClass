@@ -98,7 +98,7 @@ static Int32 Process_ExecFileId = 0;
 static Bool Process_Inited = false;
 static IsWow64Process2Func Process_IsWow64Process2;
 
-Manage::Process::Process(UOSInt procId, Bool controlRight)
+Manage::Process::Process(UIntOS procId, Bool controlRight)
 {
 	this->procId = procId;
 	DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ | PROCESS_DUP_HANDLE;
@@ -215,12 +215,12 @@ Manage::Process::~Process()
 	}
 }
 
-UOSInt Manage::Process::GetCurrProcId()
+UIntOS Manage::Process::GetCurrProcId()
 {
 	return GetCurrentProcessId();
 }
 
-UOSInt Manage::Process::GetProcId()
+UIntOS Manage::Process::GetProcId()
 {
 	return this->procId;
 }
@@ -355,7 +355,7 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->handle)
 	{
-		UOSInt retSize;
+		UIntOS retSize;
 		WChar* buff = MemAlloc(WChar, 1024);
 #ifdef _WIN32_WCE
 		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
@@ -389,7 +389,7 @@ Bool Manage::Process::GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb)
 	return this->GetFilename(sb);
 }
 
-UOSInt Manage::Process::GetMemorySize()
+UIntOS Manage::Process::GetMemorySize()
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -407,7 +407,7 @@ UOSInt Manage::Process::GetMemorySize()
 #endif
 }
 
-Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
+Bool Manage::Process::SetMemorySize(UIntOS minSize, UIntOS maxSize)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -422,10 +422,10 @@ Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 #endif
 }
 
-UOSInt Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
+UIntOS Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
 {
 	THREADENTRY32 threadEntry;
-	UOSInt threadCnt = 0;
+	UIntOS threadCnt = 0;
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	threadEntry.dwSize = sizeof(threadEntry);
 	if (Thread32First(hSnapShot, &threadEntry))
@@ -453,13 +453,13 @@ void *Manage::Process::GetHandle()
 	return this->handle;
 }
 
-UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList)
+UIntOS Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList)
 {
 #ifdef _WIN32_WCE
 	MODULEENTRY32 moduleInfo;
 	Manage::ModuleInfo *mod;
 	HANDLE hSnapShot;
-	UOSInt i;
+	UIntOS i;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
 	moduleInfo.dwSize = sizeof(moduleInfo);
 	i = 0;
@@ -483,7 +483,7 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 	CloseToolhelp32Snapshot(hSnapShot);
 	return i;
 #else
-	UOSInt i;
+	UIntOS i;
 	NN<Manage::ModuleInfo> mod;
 	HMODULE mods[512];
 	UInt32 modCnt;
@@ -503,10 +503,10 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 #endif
 }
 
-UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList)
+UIntOS Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList)
 {
 	NN<Manage::ThreadInfo> tInfo;
-	UOSInt threadCnt = 0;
+	UIntOS threadCnt = 0;
 	THREADENTRY32 threadEntry;
 	HANDLE hSnapShot;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
@@ -539,11 +539,11 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> thr
 	return threadCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
+UIntOS Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
 {
 	HEAPLIST32 heapListInfo;
 	HANDLE hSnapShot;
-	UOSInt i;
+	UIntOS i;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPHEAPLIST, (DWORD)this->procId);
 	heapListInfo.dwSize = sizeof(heapListInfo);
 	i = 0;
@@ -567,14 +567,14 @@ UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
 	return i;
 }
 
-UOSInt Manage::Process::GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UOSInt maxCount)
+UIntOS Manage::Process::GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UIntOS maxCount)
 {
 	HEAPENTRY32 ent;
 	NN<HeapInfo> heap;
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	if (maxCount <= 0)
 	{
-		maxCount = (UOSInt)-1;
+		maxCount = (UIntOS)-1;
 		maxCount = (maxCount >> 1);
 	}
 	ent.dwSize = sizeof(ent);
@@ -665,7 +665,7 @@ Data::Timestamp Manage::Process::GetStartTime()
 	}
 }
 
-UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
+UIntOS Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 {
 	IO::Library lib((const UTF8Char*)"Ntdll.dll");
 	NtQuerySystemInformationFunc qsi = (NtQuerySystemInformationFunc)lib.GetFunc("NtQuerySystemInformation");
@@ -688,8 +688,8 @@ UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 		MemFree(handleInfo);
 		return 0;
 	}
-	UOSInt ret = 0;
-	UOSInt i = 0;
+	UIntOS ret = 0;
+	UIntOS i = 0;
 	while (i < handleInfo->Count)
 	{
 		if (handleInfo->Handle[i].OwnerPid == this->procId)
@@ -719,12 +719,12 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	Bool needClose = true;
 	if (this->procId == GetCurrentProcessId())
 	{
-		dupHandle = (HANDLE)(OSInt)id;
+		dupHandle = (HANDLE)(IntOS)id;
 		needClose = false;
 	}
 	else
 	{
-		if ((status = dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle, 0, 0, 0)) < 0)
+		if ((status = dhand((HANDLE)this->handle, (HANDLE)(IntOS)id, GetCurrentProcess(), &dupHandle, 0, 0, 0)) < 0)
 		{
 			handleType.Set(HandleType::Unknown);
 			sbDetail->AppendC(UTF8STRC("Error in duplicate handle: 0x"));
@@ -753,109 +753,109 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	sptr = Text::StrUTF16_UTF8C(sbuff, objectTypeInfo->TypeName.Buffer, objectTypeInfo->TypeName.Length >> 1);
 	*sptr = 0;
 	ProcessNameType nameType = ProcessNameType::Default;
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Event")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Event")))
 	{
 		handleType.Set(HandleType::Event);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Key")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Key")))
 	{
 		handleType.Set(HandleType::Key);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WaitCompletionPacket")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("WaitCompletionPacket")))
 	{
 		handleType.Set(HandleType::WaitCompletionPacket);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletion")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("IoCompletion")))
 	{
 		handleType.Set(HandleType::IoCompletion);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Mutant")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Mutant")))
 	{
 		handleType.Set(HandleType::Mutant);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TpWorkerFactory")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TpWorkerFactory")))
 	{
 		handleType.Set(HandleType::TpWorkerFactory);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Section")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Section")))
 	{
 		handleType.Set(HandleType::Section);
 		nameType = ProcessNameType::NoName;
  	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IRTimer")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("IRTimer")))
 	{
 		handleType.Set(HandleType::IRTimer);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Directory")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Directory")))
 	{
 		handleType.Set(HandleType::Directory);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("File")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("File")))
 	{
 		handleType.Set(HandleType::File);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ALPC Port")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ALPC Port")))
 	{
 		handleType.Set(HandleType::ALPC_Port);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Semaphore")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Semaphore")))
 	{
 		handleType.Set(HandleType::Semaphore);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Thread")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Thread")))
 	{
 		handleType.Set(HandleType::Thread);
-		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, THREAD_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
+		if (dhand((HANDLE)this->handle, (HANDLE)(IntOS)id, GetCurrentProcess(), &dupHandle2, THREAD_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
 		{
 			sbDetail->AppendU32(GetThreadId((HANDLE)dupHandle2));
 			CloseHandle(dupHandle2);
 		}
 		nameType = ProcessNameType::NameDone;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletionReserve")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("IoCompletionReserve")))
 	{
 		handleType.Set(HandleType::IoCompletionReserve);
 		nameType = ProcessNameType::NoName;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WindowStation")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("WindowStation")))
 	{
 		handleType.Set(HandleType::WindowStation);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Desktop")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Desktop")))
 	{
 		handleType.Set(HandleType::Desktop);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Timer")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Timer")))
 	{
 		handleType.Set(HandleType::Timer);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Token")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Token")))
 	{
 		handleType.Set(HandleType::Token);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Process")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Process")))
 	{
 		handleType.Set(HandleType::Process);
-		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, PROCESS_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
+		if (dhand((HANDLE)this->handle, (HANDLE)(IntOS)id, GetCurrentProcess(), &dupHandle2, PROCESS_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
 		{
 			sbDetail->AppendU32(GetProcessId((HANDLE)dupHandle2));
 			CloseHandle(dupHandle2);
 		}
 		nameType = ProcessNameType::NameDone;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DxgkCompositionObject")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DxgkCompositionObject")))
 	{
 		handleType.Set(HandleType::DxgkCompositionObject);
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EtwRegistration")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("EtwRegistration")))
 	{
 		handleType.Set(HandleType::EtwRegistration);
 		nameType = ProcessNameType::NoName;
@@ -907,7 +907,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	return true;
 }
 
-Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
+Bool Manage::Process::GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -917,7 +917,7 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 
 }
 
-Bool Manage::Process::GetMemoryInfo(OptOut<UOSInt> pageFault, OptOut<UOSInt> workingSetSize, OptOut<UOSInt> pagedPoolUsage, OptOut<UOSInt> nonPagedPoolUsage, OptOut<UOSInt> pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(OptOut<UIntOS> pageFault, OptOut<UIntOS> workingSetSize, OptOut<UIntOS> pagedPoolUsage, OptOut<UIntOS> nonPagedPoolUsage, OptOut<UIntOS> pageFileUsage)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -1207,7 +1207,7 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-UOSInt Manage::Process::ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize)
+UIntOS Manage::Process::ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UIntOS reqSize)
 {
 	SIZE_T size;
 	if (ReadProcessMemory(this->handle, (void*)addr, buff.Ptr(), reqSize, &size))
@@ -1452,7 +1452,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
 	UTF8Char tmpFile[MAX_PATH];
-	UOSInt cmdLen = Text::StrCharCnt(cmd);
+	UIntOS cmdLen = Text::StrCharCnt(cmd);
 	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
 	UnsafeArray<UTF8Char> sptr;
 	Text::StrConcat(cmdLine, cmd);
@@ -1521,7 +1521,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 		NN<IO::FileStream> fs;
 		UTF8Char lineBuff[128];
 		UnsafeArray<UTF8Char> linePtr;
-		UOSInt retryCnt = 20;
+		UIntOS retryCnt = 20;
 		while (true)
 		{
 			NEW_CLASSNN(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
@@ -1562,8 +1562,8 @@ Bool Manage::Process::IsAlreadyStarted()
 	Optional<Manage::Process::FindProcSess> sess;
 	NN<Manage::Process::FindProcSess> nnsess;
 	Bool found = false;
-	UOSInt procId = GetCurrProcId();
-	UOSInt i;
+	UIntOS procId = GetCurrProcId();
+	UIntOS i;
 	IO::Path::GetProcessFileNameW(wbuff);
 	Manage::Process::ProcessInfo info;
 
@@ -1596,10 +1596,10 @@ Bool Manage::Process::OpenPath(Text::CStringNN path)
 #ifdef _WIN32_WCE
 	return false;
 #else
-	UOSInt strLen = Text::StrUTF8_WCharCnt(path.v);
+	UIntOS strLen = Text::StrUTF8_WCharCnt(path.v);
 	WChar *s = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(s, path.v, 0);
-	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
+	Bool succ = 32 < (IntOS)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
 	MemFree(s);
 	return succ;
 #endif
@@ -1610,7 +1610,7 @@ Bool Manage::Process::OpenPathW(UnsafeArray<const WChar> path)
 #ifdef _WIN32_WCE
 	return false;
 #else
-	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", path.Ptr(), 0, 0, SW_SHOW);
+	Bool succ = 32 < (IntOS)ShellExecuteW(0, L"open", path.Ptr(), 0, 0, SW_SHOW);
 	return succ;
 #endif
 }

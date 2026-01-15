@@ -16,7 +16,7 @@ Text::CStringNN UI::GUIDateTimePicker::GetObjectClass() const
 
 void UI::GUIDateTimePicker::EventDateChange(NN<Data::DateTime> newDate)
 {
-	UOSInt i = this->dateChangedHdlrs.GetCount();
+	UIntOS i = this->dateChangedHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<DateChangedHandler> cb = this->dateChangedHdlrs.GetItem(i);

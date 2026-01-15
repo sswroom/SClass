@@ -24,7 +24,7 @@ namespace SSWR
 			AnyType recReplyObj;
 
 			static void __stdcall OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
-			void CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> crcVal);
+			void CalcCRC(UnsafeArray<const UInt8> buff, UIntOS size, UnsafeArray<UInt8> crcVal);
 		public:
 			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<Text::String> hostName, UInt16 port, NN<IO::LogTool> log);
@@ -33,10 +33,10 @@ namespace SSWR
 			Bool IsError();
 
 			Bool SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::SMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval);
-			Bool SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UOSInt nameLen);
-			Bool SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UOSInt nameLen);
-			Bool SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UOSInt nameLen);
-			Bool SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UOSInt nameLen);
+			Bool SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UIntOS nameLen);
+			Bool SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UIntOS nameLen);
+			Bool SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UIntOS nameLen);
+			Bool SendDevReadingName(Int64 cliId, UIntOS index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UIntOS nameLen);
 			Bool SendDevVersion(Int64 cliId, Int64 progVersion);
 
 			void HandleRecReply(RecordReplyHandler hdlr, AnyType userObj);

@@ -41,7 +41,7 @@ Bool Net::WebServer::WebSocketHandler::ProcessRequest(NN<Net::WebServer::WebRequ
 	sb.Append(secWebSocketProtocol);
 	Text::CStringNN protocol = CSTR("");
 	Text::PString parr[2];
-	UOSInt nStrs;
+	UIntOS nStrs;
 	parr[1] = sb;
 	while (true)
 	{

@@ -4,16 +4,16 @@
 
 Bool Text::Cpp::CppReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt initSize = sb->GetLength();
+	UIntOS initSize = sb->GetLength();
 	if (!this->reader.ReadLine(sb, 512))
 	{
 		return false;
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
 		i = sb->IndexOf(UTF8STRC("*/"), initSize);
@@ -22,7 +22,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 			sb->TrimToLength(initSize);
 			return true;
 		}
-		sb->RemoveChars(initSize, (UOSInt)i + 2 - initSize);
+		sb->RemoveChars(initSize, (UIntOS)i + 2 - initSize);
 		this->escapeType = ET_NONE;
 	}
 	else if (this->escapeType == ET_STRING)
@@ -152,7 +152,7 @@ Bool Text::Cpp::CppReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == '_' || Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst]))
 	{
-		UOSInt i = this->currOfst;
+		UIntOS i = this->currOfst;
 		while (Text::CharUtil::IsAlphaNumeric(sptr[i]) || sptr[i] == '-' || sptr[i] == '_')
 		{
 			i++;
@@ -166,7 +166,7 @@ Bool Text::Cpp::CppReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == '"')
 	{
-		UOSInt j = this->currOfst + 1;
+		UIntOS j = this->currOfst + 1;
 		while (true)
 		{
 			if (sptr[j] == 0 || (sptr[j] == '\\' && sptr[j + 1] == 0))

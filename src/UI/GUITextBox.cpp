@@ -16,7 +16,7 @@ Text::CStringNN UI::GUITextBox::GetObjectClass() const
 
 void UI::GUITextBox::EventTextChange()
 {
-	UOSInt i = this->txtChgHdlrs.GetCount();
+	UIntOS i = this->txtChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::UIEvent> cb = this->txtChgHdlrs.GetItem(i);
@@ -28,7 +28,7 @@ void UI::GUITextBox::EventTextChange()
 UI::EventState UI::GUITextBox::EventKeyDown(UInt32 osKey)
 {
 	UI::EventState ret = UI::EventState::ContinueEvent;
-	UOSInt i = this->keyDownHdlrs.GetCount();
+	UIntOS i = this->keyDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::KeyEvent> cb = this->keyDownHdlrs.GetItem(i);

@@ -169,13 +169,13 @@ namespace Net
 		virtual void DestroySocket(NN<Socket> socket) = 0;
 		virtual Bool SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port) = 0;
 		virtual Bool SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
-		virtual Bool SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex) = 0;
+		virtual Bool SocketBindRAWIf(NN<Socket> socket, UIntOS ifIndex) = 0;
 		virtual Bool SocketListen(NN<Socket> socket) = 0;
 		virtual Optional<Socket> SocketAccept(NN<Socket> socket) = 0;
 		virtual Int32 SocketGetLastError() = 0;
 		virtual Bool GetRemoteAddr(NN<Socket> socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port) = 0;
 		virtual Bool GetLocalAddr(NN<Socket> socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port) = 0;
-		virtual OSInt SocketGetFD(NN<Socket> socket) = 0;
+		virtual IntOS SocketGetFD(NN<Socket> socket) = 0;
 		virtual Bool SocketWait(NN<Socket> socket, Data::Duration dur) = 0;
 
 		virtual void SetDontLinger(NN<Socket> socket, Bool val) = 0;
@@ -188,15 +188,15 @@ namespace Net
 		virtual void SetBroadcast(NN<Socket> socket, Bool val) = 0;
 		virtual void AddIPMembership(NN<Socket> socket, UInt32 ip) = 0;
 
-		virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
-		virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
-		virtual Optional<SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et) = 0;
-		virtual UOSInt EndReceiveData(NN<SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete) = 0;
+		virtual UIntOS SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et) = 0;
+		virtual UIntOS ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, OptOut<ErrorType> et) = 0;
+		virtual Optional<SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et) = 0;
+		virtual UIntOS EndReceiveData(NN<SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete) = 0;
 		virtual void CancelReceiveData(NN<SocketRecvSess> reqData) = 0;
 
-		virtual UOSInt UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et) = 0;
-		virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
-		virtual UOSInt SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName) = 0;
+		virtual UIntOS UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et) = 0;
+		virtual UIntOS SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
+		virtual UIntOS SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UTF8Char> ifName) = 0;
 
 		virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl) = 0;
 
@@ -209,18 +209,18 @@ namespace Net
 
 		virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr) = 0;
 		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr) = 0;
-		virtual UOSInt GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList) = 0;
+		virtual UIntOS GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList) = 0;
 		virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr) = 0;
 
-		virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4) = 0;
+		virtual Bool ARPAddRecord(UIntOS ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4) = 0;
 
-		virtual UOSInt GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList) = 0;
+		virtual UIntOS GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList) = 0;
 		virtual Bool GetIPInfo(NN<IPInfo> info) = 0; //////////////////////////////////
 		virtual Bool GetTCPInfo(NN<TCPInfo> info) = 0; //////////////////////////////////
 		virtual Bool GetUDPInfo(NN<UDPInfo> info) = 0; //////////////////////////////////
-		virtual UOSInt QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual UIntOS QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList) = 0;
-		virtual UOSInt QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual UIntOS QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList) = 0;
 
 		virtual Bool AdapterSetHWAddr(Text::CStringNN adapterName, UnsafeArray<const UInt8> hwAddr);
@@ -229,7 +229,7 @@ namespace Net
 		Bool ReloadDNS();
 		Bool ForceDNSServer(Text::CStringNN ip);
 		Bool DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::AddressInfo> addr);
-		UOSInt DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
+		UIntOS DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
 		UInt32 DNSResolveIPv4(Text::CStringNN host);
 
 		UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff, NN<Socket> socket);

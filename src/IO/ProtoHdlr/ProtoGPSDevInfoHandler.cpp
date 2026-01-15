@@ -22,7 +22,7 @@ void IO::ProtoHdlr::ProtoGPSDevInfoHandler::DeleteStreamData(NN<IO::Stream> stm,
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UIntOS IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
@@ -61,7 +61,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, 
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
+UIntOS IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	WriteNInt16(&buff[0], ReadNInt16((const UInt8*)"GD"));
 	WriteUInt16(&buff[2], (UInt16)(cmdSize + 8));

@@ -20,7 +20,7 @@ namespace UI
 		Data::ArrayListStringNN patterns;
 		Data::ArrayListStringNN names;
 		Data::ArrayListStringNN fileNames;
-		UOSInt filterIndex;
+		UIntOS filterIndex;
 
 		void ClearFileNames();
 	public:
@@ -28,11 +28,11 @@ namespace UI
 		virtual ~GUIFileDialog();
 
 		void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
-		UOSInt GetFilterIndex();
+		UIntOS GetFilterIndex();
 		void SetFileName(Text::CString fileName);
 		NN<Text::String> GetFileName() const;
-		UOSInt GetFileNameCount();
-		Optional<Text::String> GetFileNames(UOSInt index);
+		UIntOS GetFileNameCount();
+		Optional<Text::String> GetFileNames(UIntOS index);
 		void SetAllowMultiSel(Bool allowMulti);
 
 		virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle) = 0;

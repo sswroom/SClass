@@ -22,8 +22,8 @@ void Media::Batch::BatchLimiter::SetHandler(Optional<Media::Batch::BatchHandler>
 void Media::Batch::BatchLimiter::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	NN<Media::Batch::BatchHandler> hdlr;
-	UOSInt j;
-	UOSInt k;
+	UIntOS j;
+	UIntOS k;
 	NN<Media::StaticImage> newImg;
 	j = 0;
 	k = imgList->GetCount();

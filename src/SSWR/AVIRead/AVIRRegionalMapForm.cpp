@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
 	NN<const Map::RegionalMapSource::MapInfo> map;
@@ -54,8 +54,8 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientCo
 	this->lvMaps->AddColumn(CSTR("Type"), 100);
 	this->lvMaps->AddColumn(CSTR("Organization"), 200);
 
-	UOSInt i = 0;
-	UOSInt j;
+	UIntOS i = 0;
+	UIntOS j;
 	UnsafeArray<const Map::RegionalMapSource::MapInfo> maps = Map::RegionalMapSource::GetMapInfos(j);
 	while (i < j)
 	{

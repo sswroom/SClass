@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math_C.h"
 
-extern "C" Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, OSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, OSInt scnWidth, OSInt scnHeight)
+extern "C" Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, IntOS nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, IntOS scnWidth, IntOS scnHeight)
 {
 	Int32 iminX = 0;
 	Int32 iminY = 0;
@@ -34,7 +34,7 @@ extern "C" Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr,
 	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);
 }
 
-/*Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, OSInt nPoints, Int32 ofstX, Int32 ofstY)
+/*Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, IntOS nPoints, Int32 ofstX, Int32 ofstY)
 {
 	if (nPoints == 0)
 	{

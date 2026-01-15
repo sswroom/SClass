@@ -53,8 +53,8 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientCont
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	this->SetText(CSTR("Select Printer"));
 	this->SetFont(nullptr, 8.25, false);

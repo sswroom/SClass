@@ -19,18 +19,18 @@ namespace Data
 		virtual Optional<V> Put(T key, NN<V> val);
 		virtual Optional<V> Get(T key) const;
 		virtual Optional<V> Remove(T key);
-		virtual T GetKey(UOSInt index) const;
-		OSInt GetIndex(T key) const;
+		virtual T GetKey(UIntOS index) const;
+		IntOS GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
-		void AllocSize(UOSInt cnt);
+		void AllocSize(UIntOS cnt);
 		NN<const Data::ArrayListNN<V>> GetValues() const;
 		NN<Data::SortableArrayListObj<T>> GetKeys() const;
-		virtual UOSInt GetCount() const;
-		virtual Optional<V> GetItem(UOSInt index) const;
-		virtual NN<V> GetItemNoCheck(UOSInt index) const;
+		virtual UIntOS GetCount() const;
+		virtual Optional<V> GetItem(UIntOS index) const;
+		virtual NN<V> GetItemNoCheck(UIntOS index) const;
 		virtual Bool IsEmpty() const;
-		virtual UnsafeArray<NN<V>> ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<NN<V>> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -46,29 +46,29 @@ namespace Data
 
 	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::Put(T key, NN<V> val)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			Optional<V> oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
+			Optional<V> oldVal = this->vals.GetItem((UIntOS)i);
+            this->vals.SetItem((UIntOS)i, val);
 			return oldVal;
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key);
-			this->vals.Insert((UOSInt)~i, val);
+			this->keys->Insert((UIntOS)~i, key);
+			this->vals.Insert((UIntOS)~i, val);
 			return nullptr;
 		}
 	}
 
 	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::Get(T key) const
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals.GetItem((UOSInt)i);
+			return this->vals.GetItem((UIntOS)i);
 		}
 		else
 		{
@@ -78,12 +78,12 @@ namespace Data
 
 	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::Remove(T key)
 	{
-		OSInt i;
+		IntOS i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			this->keys->RemoveAt((UOSInt)i);
-			return this->vals.RemoveAt((UOSInt)i);
+			this->keys->RemoveAt((UIntOS)i);
+			return this->vals.RemoveAt((UIntOS)i);
 		}
 		else
 		{
@@ -91,12 +91,12 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> T ArrayCmpMapNN<T, V>::GetKey(UOSInt index) const
+	template <class T, class V> T ArrayCmpMapNN<T, V>::GetKey(UIntOS index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> OSInt ArrayCmpMapNN<T, V>::GetIndex(T key) const
+	template <class T, class V> IntOS ArrayCmpMapNN<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
 	}
@@ -106,9 +106,9 @@ namespace Data
 		return this->keys->SortedIndexOf(key) >= 0;
 	}
 
-	template <class T, class V> void ArrayCmpMapNN<T, V>::AllocSize(UOSInt cnt)
+	template <class T, class V> void ArrayCmpMapNN<T, V>::AllocSize(UIntOS cnt)
 	{
-		UOSInt newSize = this->keys->GetCount() + cnt;
+		UIntOS newSize = this->keys->GetCount() + cnt;
 		this->keys->EnsureCapacity(newSize);
 		this->vals.EnsureCapacity(newSize);
 	}
@@ -123,17 +123,17 @@ namespace Data
 		return this->keys;
 	}
 
-	template <class T, class V> UOSInt ArrayCmpMapNN<T, V>::GetCount() const
+	template <class T, class V> UIntOS ArrayCmpMapNN<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
 	}
 
-	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::GetItem(UOSInt index) const
+	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::GetItem(UIntOS index) const
 	{
 		return this->vals.GetItem(index);
 	}
 
-	template <class T, class V> NN<V> ArrayCmpMapNN<T, V>::GetItemNoCheck(UOSInt index) const
+	template <class T, class V> NN<V> ArrayCmpMapNN<T, V>::GetItemNoCheck(UIntOS index) const
 	{
 		return this->vals.GetItemNoCheck(index);
 	}
@@ -143,9 +143,9 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> UnsafeArray<NN<V>> ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<NN<V>> ArrayCmpMapNN<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
-		UOSInt cnt;
+		UIntOS cnt;
 		UnsafeArray<NN<V>> arr = this->vals.GetArr(cnt);
 		UnsafeArray<NN<V>> outArr = MemAllocArr(NN<V>, cnt);
 		MemCopyNO(outArr.Ptr(), arr.Ptr(), sizeof(NN<V>) * cnt);

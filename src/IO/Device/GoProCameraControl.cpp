@@ -38,10 +38,10 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		Data::DateTime dt;
 		dt.SetCurrTime();
 		timeDiff = dt.GetTimeZoneQHR() * 15 * -60000LL;
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		UOSInt l;
+		UIntOS i;
+		UIntOS j;
+		UIntOS k;
+		UIntOS l;
 		if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jsBase))
 		{
 			if (jsBase->GetType() == Text::JSONType::Object)
@@ -189,7 +189,7 @@ IO::Device::GoProCameraControl::GoProCameraControl(NN<Net::TCPClientFactory> cli
 
 IO::Device::GoProCameraControl::~GoProCameraControl()
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->fileList)
 	{
 		NN<IO::CameraControl::FileInfo> file;
@@ -203,10 +203,10 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	}
 }
 
-UOSInt IO::Device::GoProCameraControl::GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
+UIntOS IO::Device::GoProCameraControl::GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt initCnt = nameList->GetCount();
+	UIntOS initCnt = nameList->GetCount();
 	this->GetInfo(nameList, valueList);
 	return nameList->GetCount() - initCnt;
 }
@@ -217,7 +217,7 @@ void IO::Device::GoProCameraControl::FreeInfoList(NN<Data::ArrayListStringNN> na
 	valueList->FreeAll();
 }
 
-UOSInt IO::Device::GoProCameraControl::GetFileList(NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
+UIntOS IO::Device::GoProCameraControl::GetFileList(NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
 {
 	if (this->fileList == 0)
 	{
@@ -235,7 +235,7 @@ UOSInt IO::Device::GoProCameraControl::GetFileList(NN<Data::ArrayListNN<IO::Came
 Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt64 totalSize = 0;
 	UInt64 totalWriteSize = 0;
 	UnsafeArray<UTF8Char> sptr;
@@ -258,7 +258,7 @@ Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> fil
 Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt64 totalSize = 0;
 	UnsafeArray<UTF8Char> sptr;
 	if (!Text::StrStartsWithC(file->fileName2, file->fileNameLen, UTF8STRC("GOPR")))
@@ -289,7 +289,7 @@ Optional<IO::Device::GoProCameraControl> IO::Device::GoProCameraControl::CreateC
 	if (clif->GetSocketFactory()->GetConnInfoList(connInfoList) == 0)
 		return nullptr;
 	UInt32 ip = Net::SocketUtil::GetIPAddr(CSTR("10.5.5.9"));
-	UOSInt i = connInfoList.GetCount();
+	UIntOS i = connInfoList.GetCount();
 	while (i-- > 0)
 	{
 		connInfo = connInfoList.GetItemNoCheck(i);

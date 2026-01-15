@@ -4,7 +4,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DynamicOverlayDObj.h"
 
-UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<IntOS> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileName1.leng == 0)
@@ -92,9 +92,9 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 				UnsafeArray<UInt8> ptrD;
 				if (bmp1->GetImgBits(revOrder).SetTo(ptrS1) && bmp2->GetImgBits(revOrder).SetTo(ptrS2) && bmpTmp->GetImgBits(revOrder).SetTo(ptrD))
 				{
-					UOSInt lineBytes = bmp1->GetWidth() * 4;
-					UOSInt i;
-					UOSInt j = bmp1->GetHeight();
+					UIntOS lineBytes = bmp1->GetWidth() * 4;
+					UIntOS i;
+					UIntOS j = bmp1->GetHeight();
 					Double a1 = this->alpha;
 					Double a2 = 1 - this->alpha; 
 					while (j-- > 0)
@@ -128,7 +128,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 	}
 }
 
-Bool UI::DObj::DynamicOverlayDObj::IsObject(Math::Coord2D<OSInt> scnPos)
+Bool UI::DObj::DynamicOverlayDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 {
 	return false;
 }

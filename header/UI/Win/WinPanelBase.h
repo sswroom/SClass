@@ -20,7 +20,7 @@ namespace UI
 			Int32 currScrY;
 
 			static Int32 useCnt;
-			static OSInt __stdcall PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+			static IntOS __stdcall PnlWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 			static void Init(Optional<InstanceHandle> hInst);
 			static void Deinit(Optional<InstanceHandle> hInst);
 			void UpdateScrollBars();

@@ -32,14 +32,14 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyTy
 		IO::Path::PathType pt;
 		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
-			UOSInt i;
+			UIntOS i;
 			if (pt == IO::Path::PathType::File)
 			{
-				i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptrEnd - sptr), '.');
+				i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptrEnd - sptr), '.');
 				if (i != INVALID_INDEX)
 				{
 					sptr2End = Text::StrConcatC(sptr2, sptr, i + 1);
-					sptr2End = Text::StrToUpperC(sptr2End, &sptr[i + 1], (UOSInt)(sptrEnd - &sptr[i + 1]));
+					sptr2End = Text::StrToUpperC(sptr2End, &sptr[i + 1], (UIntOS)(sptrEnd - &sptr[i + 1]));
 					IO::FileUtil::RenameFile(sbuff, sbuff2);
 				}
 			}
@@ -77,14 +77,14 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyTy
 		IO::Path::PathType pt;
 		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
-			UOSInt i;
+			UIntOS i;
 			if (pt == IO::Path::PathType::File)
 			{
-				i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptrEnd - sptr), '.');
+				i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptrEnd - sptr), '.');
 				if (i != INVALID_INDEX)
 				{
 					sptr2End = Text::StrConcatC(sptr2, sptr, i + 1);
-					sptr2End = Text::StrToLowerC(sptr2End, &sptr[i + 1], (UOSInt)(sptrEnd - &sptr[i + 1]));
+					sptr2End = Text::StrToLowerC(sptr2End, &sptr[i + 1], (UIntOS)(sptrEnd - &sptr[i + 1]));
 					IO::FileUtil::RenameFile(sbuff, sbuff2);
 				}
 			}

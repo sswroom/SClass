@@ -9,12 +9,12 @@ namespace SSWR
 		class ValueFilter : public MapFilter
 		{
 		private:
-			UOSInt colIndex;
+			UIntOS colIndex;
 			NN<Text::String> value;
 			Int32 compareType;
 
 		public:
-			ValueFilter(UOSInt colIndex, Text::CStringNN val, Int32 compareType);
+			ValueFilter(UIntOS colIndex, Text::CStringNN val, Int32 compareType);
 			virtual ~ValueFilter();
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const;

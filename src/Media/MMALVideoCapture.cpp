@@ -30,8 +30,8 @@ struct Media::MMALVideoCapture::ClassData
 	AnyType userData;
 
 	Int32 currFourcc;
-	OSInt currWidth;
-	OSInt currHeight;
+	IntOS currWidth;
+	IntOS currHeight;
 	Int32 currRateNumer;
 	Int32 currRateDenom;
 };
@@ -187,7 +187,7 @@ Text::CString Media::MMALVideoCapture::GetFilterName()
 	return CSTR("MMALVideoCapture");
 }
 
-Bool Media::MMALVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::MMALVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	NN<ClassData> info = this->classData;
 	finfo->dispSize.x = info->currWidth;
@@ -256,8 +256,8 @@ Bool Media::MMALVideoCapture::Start()
 
 	info->isRunning = true;
 
-	OSInt num = mmal_queue_length(info->buffPool->queue);
-	OSInt i = 0;
+	IntOS num = mmal_queue_length(info->buffPool->queue);
+	IntOS i = 0;
 	while (i < num)
 	{
 		MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(info->buffPool->queue);
@@ -294,7 +294,7 @@ Bool Media::MMALVideoCapture::IsRunning()
 	return info->isRunning;
 }
 
-void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
+void Media::MMALVideoCapture::SetPreferSize(UIntOS width, UIntOS height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	MMAL_ES_FORMAT_T *format;
 	MMAL_STATUS_T status;
@@ -329,10 +329,10 @@ void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 
 	}
 }
 
-UOSInt Media::MMALVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt)
+UIntOS Media::MMALVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt)
 {
 	NN<ClassData> info = this->classData;
-	OSInt ret = 0;
+	IntOS ret = 0;
 	if (info->photoMode)
 	{
 		if (maxCnt > 0)
@@ -409,7 +409,7 @@ UOSInt Media::MMALVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmt
 			ret++;
 		}
 	}
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < ret)
 	{
 		fmtArr[i].info.fourcc = *(UInt32*)"I420";
@@ -435,14 +435,14 @@ void Media::MMALVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendC(UTF8STRC("MMAL VideoCapture"));
 }
 
-UOSInt Media::MMALVideoCapture::GetDataSeekCount()
+UIntOS Media::MMALVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }
 
 Bool Media::MMALVideoCapture::IsAvailable()
 {
-	OSInt outputNum;
+	IntOS outputNum;
 	MMAL_COMPONENT_T *camera = 0;
 	MMAL_STATUS_T status;
 	status = mmal_component_create(MMAL_COMPONENT_DEFAULT_CAMERA, &camera);

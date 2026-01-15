@@ -36,7 +36,7 @@ Text::CStringNN UI::GUIPanel::GetObjectClass() const
 	return CSTR("Panel");
 }
 
-OSInt UI::GUIPanel::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIPanel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }

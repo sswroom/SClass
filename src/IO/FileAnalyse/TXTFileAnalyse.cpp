@@ -8,10 +8,10 @@ void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	NN<IO::FileAnalyse::TXTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TXTFileAnalyse>();
 	NN<IO::StreamData> fd;
 	UInt64 buffOfst = 0;
-	UOSInt buffSize = 0;
-	UOSInt readSize;
-	UOSInt i;
-	UOSInt lineStart;
+	UIntOS buffSize = 0;
+	UIntOS readSize;
+	UIntOS i;
+	UIntOS lineStart;
 	Data::ByteBuffer buff(65536);
 	if (!me->fd.SetTo(fd))
 		return;
@@ -111,63 +111,63 @@ Text::CStringNN IO::FileAnalyse::TXTFileAnalyse::GetFormatName()
 	return CSTR("Text");
 }
 
-UOSInt IO::FileAnalyse::TXTFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::TXTFileAnalyse::GetFrameCount()
 {
 	return this->lineOfsts.GetCount();
 }
 
-Bool IO::FileAnalyse::TXTFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TXTFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt cnt = this->lineOfsts.GetCount();
+	UIntOS cnt = this->lineOfsts.GetCount();
 	if (index >= cnt)
 		return false;
 	UInt64 lineOfst = this->lineOfsts.GetItem(index);
-	UOSInt size;
+	UIntOS size;
 	if (index == cnt - 1)
 	{
-		size = (UOSInt)(this->fileSize - lineOfst);
+		size = (UIntOS)(this->fileSize - lineOfst);
 	}
 	else
 	{
-		size = (UOSInt)(this->lineOfsts.GetItem(index + 1) - lineOfst);
+		size = (UIntOS)(this->lineOfsts.GetItem(index + 1) - lineOfst);
 	}
 	sb->AppendU64(lineOfst);
 	sb->AppendC(UTF8STRC(": length="));
-	sb->AppendUOSInt(size);
+	sb->AppendUIntOS(size);
 	return true;
 }
 
-UOSInt IO::FileAnalyse::TXTFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::TXTFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	if (ofst >= this->fileSize)
 		return INVALID_INDEX;
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->lineOfsts.SortedIndexOf(ofst);
+	IntOS i = this->lineOfsts.SortedIndexOf(ofst);
 	if (i < 0)
-		return (UOSInt)~i - 1;
+		return (UIntOS)~i - 1;
 	else
-		return (UOSInt)i;
+		return (UIntOS)i;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::StreamData> fd;
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt cnt = this->lineOfsts.GetCount();
+	UIntOS cnt = this->lineOfsts.GetCount();
 	if (index >= cnt)
 		return nullptr;
 	if (!this->fd.SetTo(fd))
 		return nullptr;
 	UInt64 lineOfst = this->lineOfsts.GetItem(index);
-	UOSInt size;
+	UIntOS size;
 	if (index == cnt - 1)
 	{
-		size = (UOSInt)(this->fileSize - lineOfst);
+		size = (UIntOS)(this->fileSize - lineOfst);
 	}
 	else
 	{
-		size = (UOSInt)(this->lineOfsts.GetItem(index + 1) - lineOfst);
+		size = (UIntOS)(this->lineOfsts.GetItem(index + 1) - lineOfst);
 	}
 	mutUsage.EndUse();
 	NN<IO::FileAnalyse::FrameDetail> frame;
@@ -177,7 +177,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 	{
 		if (fd->GetRealData(lineOfst, size, BYTEARR(buff)) == size)
 		{
-			UOSInt txtSize;
+			UIntOS txtSize;
 			if (size == 3 && buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
 			{
 				frame->AddField(0, size, CSTR("UTF-8 BOM"), CSTR("EF BB BF"));
@@ -218,7 +218,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 		Data::ByteBuffer buff2(size);
 		if (fd->GetRealData(lineOfst, size, buff2) == size)
 		{
-			UOSInt txtSize;
+			UIntOS txtSize;
 			if (size == 3 && buff2[0] == 0xef && buff2[1] == 0xbb && buff2[2] == 0xbf)
 			{
 				frame->AddField(0, size, CSTR("UTF-8 BOM"), CSTR("EF BB BF"));

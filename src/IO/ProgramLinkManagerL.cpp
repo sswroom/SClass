@@ -6,9 +6,9 @@
 
 #include <stdio.h>
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
+UIntOS IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::Path::FindFileSession> sess;
@@ -21,9 +21,9 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameL
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (Text::StrEndsWithC(linkPathEnd, (UOSInt)(sptr - linkPathEnd), UTF8STRC(".desktop")))
+				if (Text::StrEndsWithC(linkPathEnd, (UIntOS)(sptr - linkPathEnd), UTF8STRC(".desktop")))
 				{
-					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
+					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UIntOS)(sptr - linkPathEnd));
 					nameList->Add(Text::String::NewP(filePath, sptr2));
 					ret++;
 				}
@@ -32,7 +32,7 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameL
 			{
 				if (linkPathEnd[0] != '.')
 				{
-					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
+					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UIntOS)(sptr - linkPathEnd));
 					*sptr2++ = '/';
 					ret += GetLinkNamesDir(nameList, linkPath, sptr, filePath, sptr2);
 				}
@@ -66,12 +66,12 @@ UnsafeArray<UTF8Char> IO::ProgramLinkManager::GetLinkPath(UnsafeArray<UTF8Char> 
 	return sptr;
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser)
+UIntOS IO::ProgramLinkManager::GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
 	UnsafeArray<UTF8Char> linkPathEnd;
 	UTF8Char filePath[512];
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	if (allUser)
 	{
 		linkPathEnd = GetLinkPath(linkPath, false);
@@ -127,7 +127,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, NN<IO::Prog
 			}
 			else
 			{
-				UOSInt i = sb.IndexOf('=');
+				UIntOS i = sb.IndexOf('=');
 				if (i == INVALID_INDEX)
 				{
 					printf("ProgramLinkManager: Unknown line: %s\r\n", sb.ToPtr());

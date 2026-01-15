@@ -14,9 +14,9 @@ namespace Map
 		TileMapSPKWriter(Text::CStringNN fileName);
 		virtual ~TileMapSPKWriter();
 
-		virtual void BeginLevel(UOSInt level);
+		virtual void BeginLevel(UIntOS level);
 		virtual void AddX(Int32 x);
-		virtual void AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
+		virtual void AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
 	};
 }
 #endif

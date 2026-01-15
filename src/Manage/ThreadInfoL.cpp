@@ -9,20 +9,20 @@
 #include <sys/thr.h>
 #endif
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand)
+Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand)
 {
 //	Manage::ThreadContext *outContext = 0;
 	return 0;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
 	this->hand = hand;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -61,13 +61,13 @@ UInt32 Manage::ThreadInfo::GetExitCode()
 	void *code;
 	if (this->hand && pthread_join((pthread_t)this->hand, &code) == 0)
 	{
-		return (UInt32)(OSInt)code;
+		return (UInt32)(IntOS)code;
 	}
 	return 0;
 }
 
 
-UOSInt Manage::ThreadInfo::GetThreadId()
+UIntOS Manage::ThreadInfo::GetThreadId()
 {
 	return this->threadId;
 }
@@ -87,12 +87,12 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[3];
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
-	sptr = Text::StrUOSInt(sptr, this->procId);
+	sptr = Text::StrUIntOS(sptr, this->procId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/task/"));
-	sptr = Text::StrUOSInt(sptr, this->threadId);
+	sptr = Text::StrUIntOS(sptr, this->threadId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/stat"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	UOSInt readSize;
+	UIntOS readSize;
 	if ((readSize = fs.Read(BYTEARR(sbuff))) > 0)
 	{
 		readSize = Text::StrSplitP(sarr, 3, Text::PString(sbuff, readSize), ' ');
@@ -121,7 +121,7 @@ Bool Manage::ThreadInfo::IsCurrThread()
 	long tid;
 	return thr_self(&tid) == 0 && this->threadId == tid;
 #else
-	return this->threadId == (UOSInt)pthread_self();
+	return this->threadId == (UIntOS)pthread_self();
 #endif
 }
 
@@ -131,9 +131,9 @@ Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
 #if defined(__FreeBSD__)
 	long tid;
 	if (thr_self(&tid) != 0) tid = 0;
-	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), tid, (Sync::ThreadHandle*)tid));
+	NEW_CLASS(info, Manage::ThreadInfo((UIntOS)getpid(), tid, (Sync::ThreadHandle*)tid));
 #else
-	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), (UOSInt)pthread_self(), (Sync::ThreadHandle*)pthread_self()));
+	NEW_CLASS(info, Manage::ThreadInfo((UIntOS)getpid(), (UIntOS)pthread_self(), (Sync::ThreadHandle*)pthread_self()));
 #endif
 	return info;
 }

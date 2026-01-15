@@ -65,7 +65,7 @@ namespace SSWR
 
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnStoreClicked(AnyType userObj);
-			static void __stdcall OnContentDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnContentDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnContentSelChg(AnyType userObj);
 			static void __stdcall OnInputClicked(AnyType userObj);
 			static void __stdcall OnWiresharkClicked(AnyType userObj);

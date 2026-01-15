@@ -30,12 +30,12 @@ Bool IO::GSMModemController::GetSMSFormat(OutParam<SMSFormat> smsFormat)
 	UnsafeArray<UTF8Char> sptr;
 	if (!SendStringCommand(sbuff, UTF8STRC("AT+CMGF?"), 3000).SetTo(sptr))
 		return false;
-	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CMGF: 1")))
+	if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CMGF: 1")))
 	{
 		smsFormat.Set(IO::GSMModemController::SMSF_TEXT);
 		return true;
 	}
-	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CMGF: 0")))
+	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CMGF: 0")))
 	{
 		smsFormat.Set(IO::GSMModemController::SMSF_PDU);
 		return true;
@@ -86,15 +86,15 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::GSMGetTECharset(UnsafeArray<UTF
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CSCS: ")))
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CSCS: ")))
 	{
 		if (sbuff[7] == '"' && sptr[-1] == '"')
 		{
-			return Text::StrConcatC(cs, &sbuff[8], (UOSInt)(sptr - &sbuff[9]));
+			return Text::StrConcatC(cs, &sbuff[8], (UIntOS)(sptr - &sbuff[9]));
 		}
 		else
 		{
-			return Text::StrConcatC(cs, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
+			return Text::StrConcatC(cs, &sbuff[7], (UIntOS)(sptr - &sbuff[7]));
 		}
 	}
 	return nullptr;
@@ -105,7 +105,7 @@ Bool IO::GSMModemController::GSMSetTECharset(const UnsafeArray<UTF8Char> cs)
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSCS="));
 	sptr = Text::StrConcat(sptr, cs);
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::GSMGetTECharsetsSupported(NN<Data::ArrayListStringNN> csList)
@@ -113,7 +113,7 @@ Bool IO::GSMModemController::GSMGetTECharsetsSupported(NN<Data::ArrayListStringN
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS=?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CSCS: ")))
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS=?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CSCS: ")))
 	{
 		sptr2 = &sbuff[7];
 		if (sptr2[0] == '(' && sptr[-1] == ')')
@@ -123,8 +123,8 @@ Bool IO::GSMModemController::GSMGetTECharsetsSupported(NN<Data::ArrayListStringN
 			*sptr = 0;
 		}
 		Text::PString sarr[2];
-		UOSInt sarrCnt;
-		sarr[1] = Text::PString(sptr2, (UOSInt)(sptr - sptr2));
+		UIntOS sarrCnt;
+		sarr[1] = Text::PString(sptr2, (UIntOS)(sptr - sptr2));
 		while (true)
 		{
 			sarrCnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
@@ -155,7 +155,7 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::GSMGetCurrOperator(UnsafeArray<
 	this->SendStringCommand(sbuff, UTF8STRC("AT+COPS=3,0"), 3000);
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+COPS?"), 3000).SetTo(sptr))
 		return nullptr;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+COPS: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+COPS: ")))
 	{
 		if (Text::StrCSVSplit(sbuffs, 5, &sbuff[7]) == 4)
 		{
@@ -177,7 +177,7 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::GSMGetCurrPLMN(UnsafeArray<UTF8
 	this->SendStringCommand(sbuff, UTF8STRC("AT+COPS=3,2"), 3000);
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+COPS?"), 3000).SetTo(sptr))
 		return nullptr;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+COPS: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+COPS: ")))
 	{
 		if (Text::StrCSVSplit(sbuffs, 5, &sbuff[7]) == 4)
 		{
@@ -198,7 +198,7 @@ Bool IO::GSMModemController::GSMConnectPLMN(Int32 plmn)
 	sptr = Text::StrInt32(sptr, plmn);
 	*sptr++ = '"';
 	*sptr = 0;
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 300000);
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff), 300000);
 }
 
 Bool IO::GSMModemController::GSMGetAllowedOperators(NN<Data::ArrayListNN<Operator>> operList)
@@ -206,16 +206,16 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(NN<Data::ArrayListNN<Operato
 	UTF8Char sbuff[256];
 	UTF8Char lbuff[256];
 	UTF8Char tmpBuff[256];
-	UOSInt sbuffLen = 0;
-	UOSInt lbuffLen = 0;
+	UIntOS sbuffLen = 0;
+	UIntOS lbuffLen = 0;
 	UnsafeArray<const UTF8Char> sptr;
 	UTF8Char c;
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+COPS=?"), 60000);
-	UOSInt i;
-	UOSInt j = this->cmdResults.GetCount();
-	UOSInt k = 0;
-	UOSInt l = 0;
+	UIntOS i;
+	UIntOS j = this->cmdResults.GetCount();
+	UIntOS k = 0;
+	UIntOS l = 0;
 	Bool operStarted;
 	Bool quoteStarted;
 	Bool operExist;
@@ -422,8 +422,8 @@ Int32 IO::GSMModemController::GSMSearchOperatorPLMN(Int32 netact)
 	Data::ArrayListNN<IO::GSMModemController::Operator> operList;
 	NN<IO::GSMModemController::Operator> oper;
 	Int32 plmn = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->GSMGetAllowedOperators(operList);
 	i = 0;
 	j = operList.GetCount();
@@ -447,7 +447,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPIN?"), 3000);
-	UOSInt i = this->cmdResults.GetCount();
+	UIntOS i = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	while (i-- > 0)
 	{
@@ -481,7 +481,7 @@ Bool IO::GSMModemController::GSMGetSignalQuality(OutParam<RSSI> rssi, OutParam<B
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CSQ"), 3000).SetTo(sptr))
 		return false;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CSQ: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CSQ: ")))
 	{
 		if (Text::StrSplitTrim(sbuffs, 3, &sbuff[6], ',') == 2)
 		{
@@ -518,9 +518,9 @@ Bool IO::GSMModemController::GSMGetModemTime(NN<Data::DateTime> date)
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CCLK?"), 3000).SetTo(sptr))
 		return false;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CCLK: \"")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CCLK: \"")))
 	{
-		UOSInt i = Text::StrIndexOfChar(&sbuff[8], '\"');
+		UIntOS i = Text::StrIndexOfChar(&sbuff[8], '\"');
 		if (i != INVALID_INDEX)
 		{
 			sbuff[8 + i] = 0;
@@ -581,7 +581,7 @@ Bool IO::GSMModemController::GSMSetModemTime(NN<Data::DateTime> date)
 	sptr = Text::StrInt32(sptr, tz);
 	*sptr++ = '"';
 	*sptr = 0;	
-	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::GSMGetRegisterNetwork(OutParam<NetworkResult> n, OutParam<RegisterStatus> stat, OutParam<UInt16> lac, OutParam<UInt32> ci, OutParam<AccessTech> act)
@@ -590,10 +590,10 @@ Bool IO::GSMModemController::GSMGetRegisterNetwork(OutParam<NetworkResult> n, Ou
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CREG?"), 3000).SetTo(sptr))
 		return false;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CREG: ")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CREG: ")))
 	{
 		Text::PString sarr[5];
-		UOSInt sarrCnt = Text::StrSplitP(sarr, 5, Text::PString(&sbuff[7], (UOSInt)(sptr - &sbuff[7])), ',');
+		UIntOS sarrCnt = Text::StrSplitP(sarr, 5, Text::PString(&sbuff[7], (UIntOS)(sptr - &sbuff[7])), ',');
 		if (sarrCnt < 2)
 			return false;
 		NetworkResult nres = (NetworkResult)sarr[0].ToInt32();
@@ -654,25 +654,25 @@ Int32 IO::GSMModemController::GSMGetSIMPLMN()
 		return 0;
 	}
 	Int32 digitCnt = 5;
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("405")))
+	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("405")))
 	{
 		/////////////////////////
 		digitCnt = 6;
 	}
-	else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("50215")))
+	else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("50215")))
 	{
 		digitCnt = 6;
 	}
-	else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3")))
+	else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("3")))
 	{
 		/////////////////////////
 		digitCnt = 6;
 	}
-	else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("722")))
+	else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("722")))
 	{
 		digitCnt = 6;
 	}
-	else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("732")))
+	else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("732")))
 	{
 		digitCnt = 6;
 	}
@@ -694,7 +694,7 @@ Bool IO::GSMModemController::GPRSServiceIsAttached(OutParam<Bool> attached)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CGATT?"), 3000).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CGATT: ")))
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CGATT?"), 3000).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CGATT: ")))
 	{
 		return false;
 	}
@@ -730,7 +730,7 @@ Bool IO::GSMModemController::GPRSSetPDPContext(UInt32 cid, Text::CStringNN type,
 	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
-	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList)
@@ -740,8 +740,8 @@ Bool IO::GSMModemController::GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>>
 	Text::PString sarr[5];
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
-	UOSInt i;
-	UOSInt j = this->cmdResults.GetCount();
+	UIntOS i;
+	UIntOS j = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	NN<PDPContext> ctx;
 
@@ -756,7 +756,7 @@ Bool IO::GSMModemController::GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>>
 				if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CGDCONT: ")))
 				{
 					sptr = Text::StrConcatC(sbuff, &val->v[10], val->leng - 10);
-					if (Text::StrSplitP(sarr, 4, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 3)
+					if (Text::StrSplitP(sarr, 4, Text::PString(sbuff, (UIntOS)(sptr - sbuff)), ',') >= 3)
 					{
 						ctx = MemAllocNN(PDPContext);
 						ctx->cid = sarr[0].ToUInt32();
@@ -802,7 +802,7 @@ Bool IO::GSMModemController::GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>>
 void IO::GSMModemController::GPRSFreePDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList)
 {
 	NN<PDPContext> ctx;
-	UOSInt i = ctxList->GetCount();
+	UIntOS i = ctxList->GetCount();
 	while (i-- > 0)
 	{
 		ctx = ctxList->GetItemNoCheck(i);
@@ -838,7 +838,7 @@ Bool IO::GSMModemController::GPRSSetPDPActive(Bool active, UInt32 cid)
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGACT=1,"));
 	}
 	sptr = Text::StrUInt32(sptr, cid);
-	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000);
+	return SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff), 3000);
 }
 
 Bool IO::GSMModemController::GPRSGetPDPActive(NN<Data::ArrayListT<ActiveState>> actList)
@@ -848,8 +848,8 @@ Bool IO::GSMModemController::GPRSGetPDPActive(NN<Data::ArrayListT<ActiveState>> 
 	Text::PString sarr[5];
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
-	UOSInt i;
-	UOSInt j = this->cmdResults.GetCount();
+	UIntOS i;
+	UIntOS j = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	ActiveState act;
 
@@ -864,7 +864,7 @@ Bool IO::GSMModemController::GPRSGetPDPActive(NN<Data::ArrayListT<ActiveState>> 
 				if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CGACT: ")))
 				{
 					sptr = Text::StrConcatC(sbuff, &val->v[8], val->leng - 8);
-					if (Text::StrSplitP(sarr, 3, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 2)
+					if (Text::StrSplitP(sarr, 3, Text::PString(sbuff, (UIntOS)(sptr - sbuff)), ',') >= 2)
 					{
 						act.cid = sarr[0].ToUInt32();
 						act.active = sarr[1].ToUInt32() != 0;
@@ -894,16 +894,16 @@ Bool IO::GSMModemController::SMSListMessages(NN<Data::ArrayListNN<IO::GSMModemCo
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sbuffs[5];
-	UOSInt strLen;
+	UIntOS strLen;
 	if (this->smsFormat != 0)
 	{
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
 	}
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CMGL=")), (Int32)status);
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
-	UOSInt i;
-	UOSInt j = this->cmdResults.GetCount();
+	this->channel->SendATCommand(this->cmdResults, sbuff, (UIntOS)(sptr - sbuff), 10000);
+	UIntOS i;
+	UIntOS j = this->cmdResults.GetCount();
 	Int32 lastIndex = 0;
 	NN<Text::String> val;
 	NN<Text::String> val2;
@@ -995,7 +995,7 @@ Bool IO::GSMModemController::SMSDeleteMessage(Int32 index)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CMGD=")), index);
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::SMSSendMessage(NN<Text::SMSMessage> msg)
@@ -1005,7 +1005,7 @@ Bool IO::GSMModemController::SMSSendMessage(NN<Text::SMSMessage> msg)
 	UTF8Char sbuff2[512];
 	UInt8 dataBuff[256];
 	Bool isSucc;
-	UOSInt buffSize = msg->ToSubmitPDU(dataBuff);
+	UIntOS buffSize = msg->ToSubmitPDU(dataBuff);
 	Text::StrHexBytes(sbuff2, dataBuff, buffSize, 0);
 	sptr1 = Text::StrInt32(Text::StrConcatC(sbuff1, UTF8STRC("AT+CMGS=")), (Int32)(buffSize - 1));
 
@@ -1014,7 +1014,7 @@ Bool IO::GSMModemController::SMSSendMessage(NN<Text::SMSMessage> msg)
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
 	}
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommands(this->cmdResults, sbuff1, (UOSInt)(sptr1 - sbuff1), sbuff2, 10000);
+	this->channel->SendATCommands(this->cmdResults, sbuff1, (UIntOS)(sptr1 - sbuff1), sbuff2, 10000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
 	mutUsage.EndUse();
@@ -1084,7 +1084,7 @@ Bool IO::GSMModemController::SMSSetStorage(SMSStorage reading, SMSStorage writin
 			}
 		}
 	}
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::SMSGetStorageInfo(Optional<SMSStorageInfo> reading, Optional<SMSStorageInfo> writing, Optional<SMSStorageInfo> store)
@@ -1094,9 +1094,9 @@ Bool IO::GSMModemController::SMSGetStorageInfo(Optional<SMSStorageInfo> reading,
 	Text::PString buffs[10];
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CPMS?"), 3000).SetTo(sptr))
 		return false;
-	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPMS: ")))
+	if (!Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CPMS: ")))
 		return false;
-	if (Text::StrSplitP(buffs, 10, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 9)
+	if (Text::StrSplitP(buffs, 10, {&sbuff[7], (UIntOS)(sptr - &sbuff[7])}, ',') != 9)
 		return false;
 	NN<SMSStorageInfo> info;
 	if (reading.SetTo(info))
@@ -1154,7 +1154,7 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::SMSGetSMSC(UnsafeArray<UTF8Char
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CSCA?"), 3000);
-	UOSInt i = this->cmdResults.GetCount();
+	UIntOS i = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	while (i-- > 0)
 	{
@@ -1175,20 +1175,20 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::PBGetCharset(UnsafeArray<UTF8Ch
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+WPCS?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+WPCS: ")))
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+WPCS?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+WPCS: ")))
 	{
-		return Text::StrConcatC(cs, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
+		return Text::StrConcatC(cs, &sbuff[7], (UIntOS)(sptr - &sbuff[7]));
 	}
 	return nullptr;
 }
 
 
-Bool IO::GSMModemController::PBSetCharset(UnsafeArray<const UTF8Char> cs, UOSInt csLen)
+Bool IO::GSMModemController::PBSetCharset(UnsafeArray<const UTF8Char> cs, UIntOS csLen)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+WPCS="));
 	sptr = Text::StrConcatC(sptr, cs, csLen);
-	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+	return this->SendBoolCommandC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 Bool IO::GSMModemController::PBSetStorage(PBStorage storage)
@@ -1240,9 +1240,9 @@ Bool IO::GSMModemController::PBGetStorage(OptOut<PBStorage> storage, OptOut<Int3
 	Text::PString buffs[4];
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CPBS?"), 3000).SetTo(sptr))
 		return false;
-	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBS: ")))
+	if (!Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CPBS: ")))
 		return false;
-	if (Text::StrSplitP(buffs, 4, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 3)
+	if (Text::StrSplitP(buffs, 4, {&sbuff[7], (UIntOS)(sptr - &sbuff[7])}, ',') != 3)
 		return false;
 
 	if (storage.IsNotNull())
@@ -1287,7 +1287,7 @@ Bool IO::GSMModemController::PBGetStorageStatus(OptOut<Int32> startEntry, OptOut
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[4];
 	Text::PString sarr2[3];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CPBR=?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBR: ")) && Text::StrSplitP(sarr, 4, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') == 3)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CPBR=?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CPBR: ")) && Text::StrSplitP(sarr, 4, {&sbuff[7], (UIntOS)(sptr - &sbuff[7])}, ',') == 3)
 	{
 		if (sarr[0].v[0] == '(' && sarr[0].EndsWith(')') && Text::StrSplitP(sarr2, 3, sarr[0].Substring(1), '-') == 2)
 		{
@@ -1332,9 +1332,9 @@ Bool IO::GSMModemController::PBReadEntries(NN<Data::ArrayListNN<PBEntry>> phoneL
 		sptr = Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CPBR=")), startEntry), UTF8STRC(",")), endEntry);
 	}
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
-	UOSInt i;
-	UOSInt j = this->cmdResults.GetCount();
+	this->channel->SendATCommand(this->cmdResults, sbuff, (UIntOS)(sptr - sbuff), 10000);
+	UIntOS i;
+	UIntOS j = this->cmdResults.GetCount();
 	NN<Text::String> val;
 	NN<IO::GSMModemController::PBEntry> ent;
 	if (j > 1)
@@ -1407,7 +1407,7 @@ UnsafeArrayOpt<UTF8Char> IO::GSMModemController::GetICCID(UnsafeArray<UTF8Char> 
 	return nullptr;
 }
 
-UOSInt IO::GSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
+UIntOS IO::GSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
 {
 	return 0;
 }

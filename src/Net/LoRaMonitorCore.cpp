@@ -5,29 +5,29 @@
 #include "Net/PacketExtractorEthernet.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall Net::LoRaMonitorCore::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
+void __stdcall Net::LoRaMonitorCore::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UIntOS packetSize)
 {
 	NN<Net::LoRaMonitorCore> me = userData.GetNN<Net::LoRaMonitorCore>();
 	Net::PacketExtractorEthernet::IPv4Header ipv4Hdr;
 	Net::PacketExtractorEthernet::UDPHeader udpHdr;
 	Net::PacketExtractorEthernet::EthernetHeader etherHdr;
-	UOSInt udpSize;
+	UIntOS udpSize;
 	UnsafeArray<const UInt8> udpData;
 	if (Net::PacketExtractorEthernet::EthernetExtractUDP(packetData, packetSize, udpSize, etherHdr, ipv4Hdr, udpHdr).SetTo(udpData) &&
-		udpSize >= ((UOSInt)udpHdr.leng - 8) && udpHdr.leng >= 12)
+		udpSize >= ((UIntOS)udpHdr.leng - 8) && udpHdr.leng >= 12)
 	{
 		if (udpHdr.srcPort == me->loraPort)
 		{
-			me->OnLoRaPacket(false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
+			me->OnLoRaPacket(false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UIntOS)udpHdr.leng - 4 - 8);
 		}
 		else if (udpHdr.destPort == me->loraPort)
 		{
-			me->OnLoRaPacket(true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
+			me->OnLoRaPacket(true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UIntOS)udpHdr.leng - 4 - 8);
 		}
 	}
 }
 
-void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize)
+void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UIntOS msgSize)
 {
 	UInt64 gweui;
 	NN<GWInfo> gw;
@@ -98,7 +98,7 @@ NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGWOrCreate(UInt64 gweu
 	return gw;
 }
 
-void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize)
+void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UIntOS msgSize)
 {
 	NN<DataPacket> data;
 	if (gw->lastDataBegin == gw->lastDataEnd)
@@ -114,7 +114,7 @@ void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<c
 	}
 	else
 	{
-		UOSInt nextIndex = (gw->lastDataEnd + 1) & 15;
+		UIntOS nextIndex = (gw->lastDataEnd + 1) & 15;
 		if (nextIndex == gw->lastDataBegin)
 		{
 			if (gw->lastData[gw->lastDataBegin].SetTo(data))
@@ -167,8 +167,8 @@ void Net::LoRaMonitorCore::SaveGWList()
 	NN<DB::DBTransaction> nntran;
 	Sync::MutexUsage mutUsage(this->gwMut);
 	NN<Net::LoRaMonitorCore::GWInfo> gw;
-	UOSInt i = 0;
-	UOSInt j = this->gwMap.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->gwMap.GetCount();
 	while (i < j)
 	{
 		gw = this->gwMap.GetItemNoCheck(i);

@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	NN<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
-	UOSInt i = files.GetCount();
+	UIntOS i = files.GetCount();
 	while (i-- > 0)
 	{
 		me->LoadFile(files[i]->ToCString());
@@ -142,8 +142,8 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 		Bool found = false;
 		NN<Crypto::Cert::X509FileList> fileList = NN<Crypto::Cert::X509FileList>::ConvertFrom(x509);
 		NN<Crypto::Cert::X509File> file;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = fileList->GetFileCount();
 		while (i < j)
@@ -299,7 +299,7 @@ Optional<Crypto::Cert::X509File> SSWR::AVIRead::AVIRSSLCertKeyForm::GetKey()
 	return this->key;
 }
 
-UOSInt SSWR::AVIRead::AVIRSSLCertKeyForm::GetCACerts(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
+UIntOS SSWR::AVIRead::AVIRSSLCertKeyForm::GetCACerts(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
 {
 	Data::ArrayIterator<NN<Crypto::Cert::X509Cert>> it = this->caCerts.Iterator();
 	while (it.HasNext())

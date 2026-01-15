@@ -5,7 +5,7 @@
 #include "Text/String.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, Text::CStringNN dataStr)
+Net::GoogleQRCode::GoogleQRCode(UIntOS width, UIntOS height, Text::CStringNN dataStr)
 {
 	this->width = width;
 	this->height = height;
@@ -20,9 +20,9 @@ Net::GoogleQRCode::~GoogleQRCode()
 void Net::GoogleQRCode::GetImageURL(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://chart.googleapis.com/chart?cht=qr&chs="));
-	sb->AppendUOSInt(this->width);
+	sb->AppendUIntOS(this->width);
 	sb->AppendUTF8Char('x');
-	sb->AppendUOSInt(this->height);
+	sb->AppendUIntOS(this->height);
 	sb->AppendC(UTF8STRC("&chl="));
 	Text::TextBinEnc::FormEncoding::FormEncode(sb, dataStr->ToCString());
 }

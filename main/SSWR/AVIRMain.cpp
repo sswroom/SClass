@@ -38,8 +38,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<SSWR::AVIRead::AVIRCore> core;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt argc;
-	UOSInt i;
+	UIntOS argc;
+	UIntOS i;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 
 //	MemSetBreakPoint(0x014746E8);

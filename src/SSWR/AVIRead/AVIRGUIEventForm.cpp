@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(AnyType user
 	me->ui->DisplayOff();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey)
+void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(AnyType userObj, UIntOS keyCode, Bool extendedKey)
 {
 	NN<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	Text::StringBuilderUTF8 sb;
@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIRGUIEventForm::OnFocusLost()
 	this->log->LogMessage(CSTR("FocusLost"), IO::LogHandler::LogLevel::Action);
 }
 
-void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
+void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(UIntOS dispWidth, UIntOS dispHeight)
 {
 	this->log->LogMessage(CSTR("DisplaySizeChange"), IO::LogHandler::LogLevel::Action);
 }

@@ -74,7 +74,7 @@ Bool IO::Device::AXCAN::SendCloseCANPort(UInt8 port)
 Bool IO::Device::AXCAN::SendSetReportMode(Bool autoMode, Bool formattedData, Bool overwriteOnFull)
 {
 	UTF8Char sbuff[3];
-	UOSInt v = 0;
+	UIntOS v = 0;
 	if (autoMode) v |= 1;
 	if (formattedData) v |= 2;
 	if (overwriteOnFull) v |= 4;
@@ -89,7 +89,7 @@ Bool IO::Device::AXCAN::SendCommandMode()
 	return SendCommand(CSTR("+++"), CMDTIMEOUT);
 }
 
-Bool IO::Device::AXCAN::SendCommand(Text::CStringNN cmd, UOSInt timeout)
+Bool IO::Device::AXCAN::SendCommand(Text::CStringNN cmd, UIntOS timeout)
 {
 	UInt8 buff[64];
 	if (cmd.leng > 63)
@@ -136,7 +136,7 @@ IO::Device::AXCAN::~AXCAN()
 	this->CloseSerialPort(false);
 }
 
-Bool IO::Device::AXCAN::OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate)
+Bool IO::Device::AXCAN::OpenSerialPort(UIntOS portNum, UInt32 serialBaudRate, CANBitRate bitRate)
 {
 	this->CloseSerialPort(false);
 	NN<IO::SerialPort> port;
@@ -222,7 +222,7 @@ void IO::Device::AXCAN::ParseReader(NN<IO::Reader> reader)
 			}
 			else if (sb.StartsWith(UTF8STRC("#ERROR")))
 			{
-				if (Text::StrToUOSInt(&sb.v[6], this->cmdResultCode))
+				if (Text::StrToUIntOS(&sb.v[6], this->cmdResultCode))
 				{
 					this->cmdEvent.Set();
 				}
@@ -238,7 +238,7 @@ void IO::Device::AXCAN::ParseReader(NN<IO::Reader> reader)
 				id = Text::StrHex2UInt32C(&sb.v[7]);
 				rtr = sb.v[15] != '0';
 				len = (UInt8)(Text::StrHex2UInt8C(&sb.v[15]) & 15);
-				if (sb.leng == (UOSInt)len * 2 + 17 && Text::StrHex2Bytes(&sb.v[17], buff) == len)
+				if (sb.leng == (UIntOS)len * 2 + 17 && Text::StrHex2Bytes(&sb.v[17], buff) == len)
 				{
 					this->hdlr->CANMessage(id, rtr, Data::ByteArrayR(buff, len));
 				}
@@ -248,7 +248,7 @@ void IO::Device::AXCAN::ParseReader(NN<IO::Reader> reader)
 				id = Text::StrHex2UInt16C(&sb.v[6]);
 				rtr = sb.v[10] != '0';
 				len = (UInt8)(Text::StrHex2UInt8C(&sb.v[10]) & 15);
-				if (sb.leng == (UOSInt)len * 2 + 12 && Text::StrHex2Bytes(&sb.v[12], buff) == len)
+				if (sb.leng == (UIntOS)len * 2 + 12 && Text::StrHex2Bytes(&sb.v[12], buff) == len)
 				{
 					this->hdlr->CANMessage(id, rtr, Data::ByteArrayR(buff, len));
 				}

@@ -19,7 +19,7 @@ Map::MapBar::MapBarAdjuster::~MapBarAdjuster()
 {
 }
 
-Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, OSInt nPoints)
+Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, IntOS nPoints)
 {
 	UInt8 *buff;
 	UInt8 *xmlBuff;
@@ -29,12 +29,12 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	Text::EncodingFactory encFact;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	OSInt currPoint;
-	OSInt nextPoint;
-	OSInt i;
-	OSInt cnt;
-	UOSInt readSize;
-	UOSInt objCnt;
+	IntOS currPoint;
+	IntOS nextPoint;
+	IntOS i;
+	IntOS cnt;
+	UIntOS readSize;
+	UIntOS objCnt;
 	Int32 j;
 	Text::XMLNode **xmlNodes;
 	Text::XMLNode *node;

@@ -416,13 +416,13 @@ void TestBinaryRead(NN<DB::DBTool> db)
 		cls.Delete();
 		dataList.DeleteAll();
 /*
-		UOSInt rowCnt = 0;
+		UIntOS rowCnt = 0;
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		while (r->ReadNext())
 		{
 			rowCnt++;
-			sptr = Text::StrConcatC(Text::StrUOSInt(sbuff, rowCnt), UTF8STRC(" rows read"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(sbuff, rowCnt), UTF8STRC(" rows read"));
 			console->WriteLine(CSTRP(sbuff, sptr));
 		}
 		conn->CloseReader(r);*/

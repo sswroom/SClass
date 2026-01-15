@@ -22,12 +22,12 @@ Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData>> itemList, Optional<Net::WebSite::WebSiteTwitterControl::ChannelInfo> chInfo)
+UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> channelId, UIntOS pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData>> itemList, Optional<Net::WebSite::WebSiteTwitterControl::ChannelInfo> chInfo)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt retCnt = 0;
-	UOSInt i;
-	UOSInt j;
+	UIntOS retCnt = 0;
+	UIntOS i;
+	UIntOS j;
 	sb.AppendC(UTF8STRC("https://twitter.com/"));
 	sb.Append(channelId);
 	NN<ItemData> item;
@@ -68,12 +68,12 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #endif
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")))
 		{
-			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("stream-item-header")))
+			if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("stream-item-header")))
 			{
 #if defined(VERBOSE)
 				printf("stream-item-header found\r\n");
 #endif
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				conversationId = 0;
 				recTime = 0;
 				SDEL_STRING(imgURL);
@@ -82,9 +82,9 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("small")) && reader.GetAttribCount() > 0)
 					{
-						if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("time")))
+						if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("time")))
 						{
-							UOSInt smallPathLev = reader.GetPathLev();
+							UIntOS smallPathLev = reader.GetPathLev();
 							while (reader.ReadNext() && reader.GetPathLev() > smallPathLev)
 							{
 								if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("a")) && reader.GetAttribCount() > 0)
@@ -126,17 +126,17 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("js-tweet-text-container")))
+			else if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("js-tweet-text-container")))
 			{
 #if defined(VERBOSE)
 				printf("js-tweet-text-container found\r\n");
 #endif				
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("p")))
 					{
-						UOSInt smallPathLev = reader.GetPathLev();
+						UIntOS smallPathLev = reader.GetPathLev();
 						sb.ClearStr();
 						while (reader.ReadNext() && reader.GetPathLev() > smallPathLev)
 						{
@@ -162,7 +162,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 								}
 								else if (reader.GetNodeTextNN()->Equals(UTF8STRC("a")) && reader.GetAttribCount() > 0)
 								{
-									if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("https://")))
+									if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("https://")))
 									{
 										reader.SkipElement();
 									}
@@ -174,12 +174,12 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("AdaptiveMediaOuterContainer")))
+			else if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("AdaptiveMediaOuterContainer")))
 			{
 #if defined(VERBOSE)
 				printf("AdaptiveMediaOuterContainer found\r\n");
 #endif				
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")))
@@ -210,7 +210,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("stream-item-footer")))
+			else if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("stream-item-footer")))
 			{
 #if defined(VERBOSE)
 				printf("stream-item-footer found\r\n");
@@ -228,10 +228,10 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					retCnt++;
 				}
 			}
-			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("ProfileHeaderCard")))
+			else if (reader.GetAttrib((UIntOS)0).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("class")) && Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("ProfileHeaderCard")))
 			{
 				NN<ChannelInfo> nnchInfo;
-				UOSInt pathLev = reader.GetPathLev();
+				UIntOS pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -290,7 +290,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 void Net::WebSite::WebSiteTwitterControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData>> itemList)
 {
 	NN<ItemData> item;
-	UOSInt i = itemList->GetCount();
+	UIntOS i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		item = itemList->GetItemNoCheck(i);

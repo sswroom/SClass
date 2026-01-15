@@ -9,17 +9,17 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	if (me->radGeo->IsSelected())
 	{
-		UOSInt i = me->cboGeo->GetSelectedIndex();
+		UIntOS i = me->cboGeo->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboGeo->GetItem(i).GetOSInt();
+			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboGeo->GetItem(i).GetIntOS();
 			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 	}
 	else if (me->radProj->IsSelected())
 	{
-		UOSInt i = me->cboProj->GetSelectedIndex();
+		UIntOS i = me->cboProj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
 			const UTF8Char *projName = me->cboProj->GetItem(i).GetOpt<const UTF8Char>().OrNull();
@@ -115,8 +115,8 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::ArrayListNative<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
 	Data::ArrayListArr<const UTF8Char> pcsysList;
 	Math::CoordinateSystemManager::GetGeogCoordinateSystems(gcsysList);
@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	j = gcsysList.GetCount();
 	while (i < j)
 	{
-		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(OSInt)gcsysList.GetItem(i));
+		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(IntOS)gcsysList.GetItem(i));
 		i++;
 	}
 	if (j > 0)

@@ -5,11 +5,11 @@
 #endif
 
 /*
-void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val);
-void MemFillW(UInt8 *buff, OSInt wordCnt, UInt16 val);
-void MemClear(void *buff, OSInt buffSize);
-void MemClearANC(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-void MemClearAC(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+void MemFillB(UInt8 *buff, IntOS byteCnt, UInt8 val);
+void MemFillW(UInt8 *buff, IntOS wordCnt, UInt16 val);
+void MemClear(void *buff, IntOS buffSize);
+void MemClearANC(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
+void MemClearAC(void *buff, IntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 
 void MemCopyNO(destPtr, srcPtr, len);
 vpid MemCopyO(destPtr, srcPtr, len);
@@ -19,7 +19,7 @@ void MemCopyNAC(destPtr, srcPtr, len);
 void MemCopyNANC(destPtr, srcPtr, len);
 //void MemCopyOAC(destPtr, srcPtr, len);
 
-void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt count);
+void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, IntOS count);
 */
 
 #if !defined(_WIN32) && !defined(__APPLE__)
@@ -28,13 +28,13 @@ void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt
 #define CPUBrand _CPUBrand
 #endif
 
-typedef void (__cdecl *MemClearFunc)(void *buff, UOSInt buffSize);
-typedef void (__cdecl *MemCopyFunc)(void *destPtr, const void *srcPtr, UOSInt leng);
+typedef void (__cdecl *MemClearFunc)(void *buff, UIntOS buffSize);
+typedef void (__cdecl *MemCopyFunc)(void *destPtr, const void *srcPtr, UIntOS leng);
 
 extern "C"
 {
-	void MemFillB(UInt8 *buff, UOSInt byteCnt, UInt8 val);
-	void MemFillW(UInt8 *buff, UOSInt wordCnt, UInt16 val);
+	void MemFillB(UInt8 *buff, UIntOS byteCnt, UInt8 val);
+	void MemFillW(UInt8 *buff, UIntOS wordCnt, UInt16 val);
 };
 
 #if defined(HAS_ASM32)
@@ -49,7 +49,7 @@ extern "C"
 #include <memory.h>
 #ifdef CPU_X86_64
 #include <intrin.h>
-#define MemClear(buff, count) {UOSInt tmp = (count) & 7; UInt8 *buffPtr = (UInt8*)buff; while (tmp-- > 0) {*buffPtr++ = 0;} __stosq((UInt64*)buffPtr, 0, (count) >> 3);}
+#define MemClear(buff, count) {UIntOS tmp = (count) & 7; UInt8 *buffPtr = (UInt8*)buff; while (tmp-- > 0) {*buffPtr++ = 0;} __stosq((UInt64*)buffPtr, 0, (count) >> 3);}
 #else
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
@@ -57,9 +57,9 @@ extern "C"
 #define MemCopyO(destPtr, srcPtr, len) memmove(destPtr, srcPtr, ((len) < 0)?0:(len))
 #define MemCopyNO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, ((len) < 0)?0:(len))
 #elif defined(CPU_AVR)
-extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, UOSInt len);
+extern "C" void MemCopyNO(void *destPtr, const void *srcPtr, UIntOS len);
 #define MemCopyO(destPtr, srcPtr, len) MemCopyNO(destPtr, srcPtr, len)
-extern "C" void MemClear(void *buff, UOSInt count);
+extern "C" void MemClear(void *buff, UIntOS count);
 
 #define MemClearANC(buff, count) MemClear(buff, count);
 #define MemClearAC(buff, count) MemClear(buff, count);
@@ -75,24 +75,24 @@ extern "C" void MemClear(void *buff, UOSInt count);
 #define MemClear(buff, count) memset(buff, 0, count);
 #else
 #include <memory.h>
-//FORCEINLINE void MemCopyO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memmove(destPtr.Ptr(), srcPtr.Ptr(), len); }
-//FORCEINLINE void MemCopyNO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
-//FORCEINLINE void MemClear(UnsafeArray<void> buff, UOSInt count) { memset(buff.Ptr(), 0, count); }
+//FORCEINLINE void MemCopyO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UIntOS len) { memmove(destPtr.Ptr(), srcPtr.Ptr(), len); }
+//FORCEINLINE void MemCopyNO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UIntOS len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
+//FORCEINLINE void MemClear(UnsafeArray<void> buff, UIntOS count) { memset(buff.Ptr(), 0, count); }
 #define MemCopyO(destPtr, srcPtr, len) memmove(destPtr, srcPtr, len)
 #define MemCopyNO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
-//FORCEINLINE void MemCopyNOShort(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
+//FORCEINLINE void MemCopyNOShort(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UIntOS len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
 #define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 
 #if defined(HAS_ASM32)
 extern "C"
 {
-	void MemClearANC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearANC(void *buff, UIntOS buffSize); //buff 16-byte align, buffSize 16 bytes
+	void MemClearAC(void *buff, UIntOS buffSize); //buff 16-byte align, buffSize 16 bytes
 }
 
-FORCEINLINE void MemCopyOAC(void *destPtr, const void *srcPtr, UOSInt leng)
+FORCEINLINE void MemCopyOAC(void *destPtr, const void *srcPtr, UIntOS leng)
 {
 	_asm
 	{
@@ -238,7 +238,7 @@ mcaexit:
 	}
 }
 
-FORCEINLINE void MemCopyAC(void *destPtr, const void *srcPtr, UOSInt leng)
+FORCEINLINE void MemCopyAC(void *destPtr, const void *srcPtr, UIntOS leng)
 {
 	_asm
 	{
@@ -312,7 +312,7 @@ mcaexit:
 	}
 }
 
-FORCEINLINE void MemCopyANC(void *destPtr, const void *srcPtr, UOSInt leng)
+FORCEINLINE void MemCopyANC(void *destPtr, const void *srcPtr, UIntOS leng)
 {
 	_asm
 	{
@@ -386,7 +386,7 @@ mcaexit:
 	}
 }
 
-FORCEINLINE void MemCopyNAC(void *destPtr, const void *srcPtr, UOSInt leng)
+FORCEINLINE void MemCopyNAC(void *destPtr, const void *srcPtr, UIntOS leng)
 {
 	_asm
 	{
@@ -470,7 +470,7 @@ mcpexit:
 	}
 }
 
-FORCEINLINE void MemCopyNANC(void *destPtr, const void *srcPtr, UOSInt leng)
+FORCEINLINE void MemCopyNANC(void *destPtr, const void *srcPtr, UIntOS leng)
 {
 	_asm
 	{
@@ -565,7 +565,7 @@ extern MemCopyFunc MemCopyNANC;
 #if !defined(_MSC_VER) && !defined(__MINGW32__)
 extern "C"
 {
-	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UIntOS leng);
 }
 #undef MemCopyNOShort
 #define MemCopyNOShort(destPtr, srcPtr, len) MemCopyNAC_SSE(destPtr, srcPtr, len)
@@ -581,15 +581,15 @@ extern "C"
 #endif
 
 
-FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, UOSInt count)
+FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, UIntOS count)
 {
-	while (count >= (UOSInt)sizeof(UOSInt))
+	while (count >= (UIntOS)sizeof(UIntOS))
 	{
-		*(UOSInt*)destBuff = (*(UOSInt*)srcBuff1) ^ (*(UOSInt*)srcBuff2);
-		srcBuff1 += sizeof(UOSInt);
-		srcBuff2 += sizeof(UOSInt);
-		destBuff += sizeof(UOSInt);
-		count -= sizeof(UOSInt);
+		*(UIntOS*)destBuff = (*(UIntOS*)srcBuff1) ^ (*(UIntOS*)srcBuff2);
+		srcBuff1 += sizeof(UIntOS);
+		srcBuff2 += sizeof(UIntOS);
+		destBuff += sizeof(UIntOS);
+		count -= sizeof(UIntOS);
 	}
 	while (count > 0)
 	{
@@ -603,40 +603,40 @@ FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *des
 
 void MemTool_Init();
 
-typedef void (CALLBACKFUNC MemCopyBFunc)(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+typedef void (CALLBACKFUNC MemCopyBFunc)(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
 
-void __stdcall MyMemCopy0(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy1(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy2(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy3(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy4(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy5(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy6(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy7(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy8(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy9(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy10(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy11(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy12(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy13(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy14(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy15(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy16(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy17(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy18(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy19(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy20(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy21(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy22(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy23(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy24(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy25(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy26(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy27(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy28(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy29(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy30(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
-void __stdcall MyMemCopy31(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy0(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy1(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy2(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy3(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy4(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy5(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy6(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy7(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy8(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy9(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy10(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy11(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy12(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy13(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy14(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy15(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy16(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy17(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy18(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy19(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy20(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy21(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy22(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy23(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy24(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy25(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy26(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy27(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy28(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy29(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy30(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
+void __stdcall MyMemCopy31(UInt8 *destPtr, const UInt8 *srcPtr, UIntOS size);
 
 static MemCopyBFunc MemCopyArr[32] = {
 	MyMemCopy0,
@@ -673,7 +673,7 @@ static MemCopyBFunc MemCopyArr[32] = {
 	MyMemCopy31
 };
 
-FORCEINLINE void MyMemCopy(void *destPtr, const void *srcPtr, UOSInt size)
+FORCEINLINE void MyMemCopy(void *destPtr, const void *srcPtr, UIntOS size)
 {
 	if (size < 32)
 	{

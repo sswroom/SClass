@@ -23,7 +23,7 @@ Map::MapBar::MapBarRevGeo::~MapBarRevGeo()
 {
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	Double srcPt[2];
 	Double destPt[2];
@@ -33,20 +33,20 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UOSInt buffSize,
 	return SearchNameAdjusted(buff, buffSize, destPt[0], destPt[1], lcid);
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	return SearchName(buff, buffSize, lat, lon, lcid);
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt buffSize, Double adjLat, Double adjLon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UIntOS buffSize, Double adjLat, Double adjLon, Int32 lcid)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<Net::HTTPClient> cli;
 	IO::MemoryStream mstm(UTF8STRC("Map.MapBar.MapBarRevGeo"));
-	OSInt readSize;
+	IntOS readSize;
 	UInt8 *dataBbuff;
 	UInt8 *xmlBuff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	IO::FileStream *fs;
 	Text::XMLDocument *xmlDoc;
 	Text::XMLNode *resultNode;

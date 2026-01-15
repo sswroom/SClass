@@ -125,7 +125,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 	this->devModel = Text::String::CopyOrNull(bss->devModel);
 	this->devSN = Text::String::CopyOrNull(bss->devSN);
 	Text::StrConcat(this->devCountry, bss->country);
-	OSInt i = 0;
+	IntOS i = 0;
 	while (i < WLAN_OUI_CNT)
 	{
 		this->chipsetOUIs[i][0] = bss->ouis[i][0];
@@ -209,7 +209,7 @@ UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 		return nullptr;
 }
 
-UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
+UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(IntOS index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
 	{
@@ -218,12 +218,12 @@ UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index
 	return this->chipsetOUIs[index];
 }
 
-UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
+UIntOS Net::WirelessLAN::BSSInfo::GetIECount()
 {
 	return this->ieList.GetCount();
 }
 
-Optional<Net::WirelessLANIE> Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
+Optional<Net::WirelessLANIE> Net::WirelessLAN::BSSInfo::GetIE(UIntOS index)
 {
 	return this->ieList.GetItem(index);
 }
@@ -268,17 +268,17 @@ Bool Net::WirelessLAN::IsError()
 	return thisData->fd == 0;
 }
 
-UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
+UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
 	NN<WirelessLANData> thisData = this->clsData.GetNN<WirelessLANData>();
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<Net::WirelessLAN::Interface> interf;
 /*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader *reader;
-		UOSInt i;
+		UIntOS i;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		reader->ReadLine(sb, 1024);
@@ -292,7 +292,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 			if (i != INVALID_INDEX)
 			{
 				sb.TrimToLength(i);
-				NEW_CLASS(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
+				NEW_CLASS(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(IntOS)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
 				outArr->Add(interf);
 				ret++;
 			}
@@ -306,10 +306,10 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt i;
+		UIntOS i;
 		struct iwreq wrq;
 		UInt8 *buff;
-		UOSInt buffSize = 16;
+		UIntOS buffSize = 16;
 		int ioret;
 		buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
 
@@ -325,7 +325,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 			i = sb.IndexOf(':');
 			if (i != INVALID_INDEX)
 			{
-				sb.TrimToLength((UOSInt)i);
+				sb.TrimToLength((UIntOS)i);
 				Text::StrConcatC((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString(), sb.GetLength());
 //				printf("Trying interface = %s\r\n", sb.ToString());
 				wrq.u.data.pointer = buff;
@@ -336,7 +336,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 //				printf("SIOCGIWSCAN return %d, errno = %d\r\n", ioret, errno);
 				if (ioret >= 0 || errno == E2BIG)
 				{
-					NEW_CLASSNN(interf, Net::WLANLinuxInterface(sb.ToCString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED));
+					NEW_CLASSNN(interf, Net::WLANLinuxInterface(sb.ToCString(), (void*)(IntOS)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED));
 					outArr->Add(interf);
 					ret++;
 				}
@@ -355,7 +355,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 							UInt32 setCmd = 0;
 //							printf("SIOCGIWPRIV if = %s:\r\n", wrq.ifr_ifrn.ifrn_name);
 							iw_priv_args *args = (iw_priv_args*)buff;
-							OSInt j;
+							IntOS j;
 							j = 0;
 							while (j < wrq.u.data.length)
 							{
@@ -370,7 +370,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 								printf("Priv: %s %04x %d %d:\r\n", args[j].name, args[j].cmd, args[j].get_args, args[j].set_args);
 								if (siteSurveyCmd != 0 && setCmd != 0)
 								{
-									NEW_CLASSNN(interf, Net::WLANLinuxMTKInterface(sb.ToCString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_NOT_READY, setCmd, siteSurveyCmd));
+									NEW_CLASSNN(interf, Net::WLANLinuxMTKInterface(sb.ToCString(), (void*)(IntOS)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_NOT_READY, setCmd, siteSurveyCmd));
 									outArr->Add(interf);
 									ret++;
 									break;

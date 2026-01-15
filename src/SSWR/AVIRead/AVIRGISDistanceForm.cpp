@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnDistanceUnitChg(AnyType use
 	me->UpdateDistDisp();
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if (me->radActionMeasure->IsSelected())
@@ -69,7 +69,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyT
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if ((me->lastMapPos.x != 0 || me->lastMapPos.y != 0) && me->radActionMeasure->IsSelected())
@@ -84,8 +84,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyT
 		{
 			Math::Geometry::LineString *pl;
 			UnsafeArray<Math::Coord2DDbl> pts;
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList.GetCount() >> 1) + 1, false, false));
 			pts = pl->GetPointList(j);
 			i = 0;
@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrDouble(sbuff, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, (Math::Unit::Distance::DistanceUnit)this->cboDistanceUnit->GetSelectedItem().GetOSInt(), this->dispDist));
+	sptr = Text::StrDouble(sbuff, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, (Math::Unit::Distance::DistanceUnit)this->cboDistanceUnit->GetSelectedItem().GetIntOS(), this->dispDist));
 	this->txtDistance->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -161,11 +161,11 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientCo
 	this->cboDistanceUnit->SetRect(244, 52, 60, 23, false);
 	this->cboDistanceUnit->HandleSelectionChange(OnDistanceUnitChg, this);
 	
-	UOSInt i;
+	UIntOS i;
 	Math::Unit::Distance::DistanceUnit du = Math::Unit::Distance::DU_FIRST;
 	while (du <= Math::Unit::Distance::DU_LAST)
 	{
-		i = this->cboDistanceUnit->AddItem(Math::Unit::Distance::GetUnitShortName(du), (void*)(OSInt)du);
+		i = this->cboDistanceUnit->AddItem(Math::Unit::Distance::GetUnitShortName(du), (void*)(IntOS)du);
 		if (du == Math::Unit::Distance::DU_METER)
 		{
 			this->cboDistanceUnit->SetSelectedIndex(i);

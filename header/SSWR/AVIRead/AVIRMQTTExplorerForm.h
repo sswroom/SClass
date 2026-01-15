@@ -30,9 +30,9 @@ namespace SSWR
 			{
 				NN<Text::String> topic;
 				UnsafeArray<UTF8Char> currValue;
-				UOSInt currValueLen;
+				UIntOS currValueLen;
 				Bool updated;
-				UOSInt recvCnt;
+				UIntOS recvCnt;
 				Data::TimeInstant lastRecvTime;
 				Data::Timestamp dateList[256];
 				Double valueList[256];

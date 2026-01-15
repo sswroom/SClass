@@ -18,19 +18,19 @@ namespace Media
 
 		virtual void GetFormat(NN<AudioFormat> format) = 0;
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize) = 0;
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize) = 0;
 		virtual void Stop() = 0;
-		virtual UOSInt ReadBlock(Data::ByteArray blk) = 0; //ret actual block size
-		virtual UOSInt GetMinBlockSize() = 0;
+		virtual UIntOS ReadBlock(Data::ByteArray blk) = 0; //ret actual block size
+		virtual UIntOS GetMinBlockSize() = 0;
 		virtual Data::Duration GetCurrTime() = 0;
 		virtual Bool IsEnd() = 0;
 		virtual MediaType GetMediaType();
 
 		virtual Bool SupportSampleRead();
-		virtual UOSInt ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff);
+		virtual UIntOS ReadSample(UInt64 sampleOfst, UIntOS sampleCount, Data::ByteArray buff);
 		virtual Int64 GetSampleCount(); // -1 = infinity
 
-		UOSInt ReadBlockLPCM(Data::ByteArray blk, NN<const AudioFormat> format);
+		UIntOS ReadBlockLPCM(Data::ByteArray blk, NN<const AudioFormat> format);
 	};
 }
 #endif

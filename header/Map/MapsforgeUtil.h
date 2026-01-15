@@ -5,8 +5,8 @@ namespace Map
 	class MapsforgeUtil
 	{
 	public:
-		static UOSInt ReadVBEU(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<UInt64> v);
-		static UOSInt ReadVBES(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<Int64> v);
+		static UIntOS ReadVBEU(UnsafeArray<UInt8> buff, UIntOS ofst, OutParam<UInt64> v);
+		static UIntOS ReadVBES(UnsafeArray<UInt8> buff, UIntOS ofst, OutParam<Int64> v);
 	};
 }
 #endif

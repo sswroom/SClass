@@ -9,7 +9,7 @@ IO::FileFindRecur::FileFindRecur(Text::CStringNN path)
 	this->partCnt = Text::StrCountChar(this->srcBuff, IO::Path::PATH_SEPERATOR) + 1;
 	this->srcStrs = MemAlloc(Text::PString, this->partCnt);
 	this->srchParts = MemAlloc(FindRecurPart, this->partCnt);
-	UOSInt i;
+	UIntOS i;
 	i = 0;
 	while (i < this->partCnt)
 	{
@@ -24,7 +24,7 @@ IO::FileFindRecur::FileFindRecur(Text::CStringNN path)
 IO::FileFindRecur::~FileFindRecur()
 {
 	NN<IO::Path::FindFileSession> sess;
-	UOSInt i = this->partCnt;
+	UIntOS i = this->partCnt;
 	while (i-- > 0)
 	{
 		if (this->srchParts[i].sess.SetTo(sess))
@@ -40,7 +40,7 @@ IO::FileFindRecur::~FileFindRecur()
 
 Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 {
-	UOSInt i;
+	UIntOS i;
 	IO::Path::PathType thisPt;
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::Path::FindFileSession> sess;
@@ -148,7 +148,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			}
 			i++;
 		}
-		UOSInt buffLen = Text::StrCharCnt(this->currBuff);
+		UIntOS buffLen = Text::StrCharCnt(this->currBuff);
 		thisPt = IO::Path::GetPathType({this->currBuff, buffLen});
 		if (thisPt != IO::Path::PathType::Unknown)
 		{

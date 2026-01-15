@@ -29,8 +29,8 @@ namespace Net
 			WebSite48IdolControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent);
 			~WebSite48IdolControl();
 
-			OSInt GetTVPageItems(OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList);
-			OSInt GetArcPageItems(OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList);
+			IntOS GetTVPageItems(IntOS pageNo, NN<Data::ArrayListNN<ItemData>> itemList);
+			IntOS GetArcPageItems(IntOS pageNo, NN<Data::ArrayListNN<ItemData>> itemList);
 			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
 
 			Bool GetDownloadLink(Int32 videoId, Int32 linkId, NN<Text::StringBuilderUTF8> link);

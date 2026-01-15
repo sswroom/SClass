@@ -54,8 +54,8 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 			if (resourceBase->GetValue(CSTR("imageUrlSubdomains")).SetTo(subdObj) && subdObj->GetType() == Text::JSONType::Array)
 			{
 				NN<Text::JSONArray> subd = NN<Text::JSONArray>::ConvertFrom(subdObj);
-				UOSInt i = 0;
-				UOSInt j = subd->GetArrayLength();
+				UIntOS i = 0;
+				UIntOS j = subd->GetArrayLength();
 				while (i < j)
 				{
 					if (subd->GetArrayString(i).SetTo(s))
@@ -75,7 +75,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		if (Net::HTTPClient::LoadContent(clif, ssl, s->ToCString(), mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;
-			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UIntOS)mstm.GetLength());
 			NN<IO::ParsedObject> pobj;
 			if (parser.ParseFile(fd, nullptr, IO::ParserType::ImageList).SetTo(pobj))
 			{
@@ -114,7 +114,7 @@ Map::TileMap::ImageType Map::BingMapsTile::GetImageType() const
 	return IT_PNG;
 }
 
-UOSInt Map::BingMapsTile::GetConcurrentCount() const
+UIntOS Map::BingMapsTile::GetConcurrentCount() const
 {
 	return 2 * this->subdomains.GetCount();
 }
@@ -125,7 +125,7 @@ void Map::BingMapsTile::SetDispSize(Math::Size2DDbl size, Double dpi)
 	this->dispDPI = dpi;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	NN<Text::String> subdomain;
 	UnsafeArray<UTF8Char> sptr = Text::String::OrEmpty(this->url)->ConcatTo(sbuff);
@@ -136,11 +136,11 @@ UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetTileImageURL(UnsafeArray<UTF8Char
 		sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
 	}
 	sptr2 = GenQuadkey(sbuff2, level, tileId.x, tileId.y);
-	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
+	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{quadkey}"), sbuff2, (UIntOS)(sptr2 - sbuff2));
 	return sptr;
 }
 
-Bool Map::BingMapsTile::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId)
+Bool Map::BingMapsTile::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> imgId)
 {
 	NN<Text::String> subdomain;
 	sb->AppendOpt(this->url);
@@ -149,18 +149,18 @@ Bool Map::BingMapsTile::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt l
 	if (this->GetNextSubdomain().SetTo(subdomain))
 		sb->ReplaceStr(UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
 	sptr2 = GenQuadkey(sbuff2, level, imgId.x, imgId.y);
-	sb->ReplaceStr(UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
+	sb->ReplaceStr(UTF8STRC("{quadkey}"), sbuff2, (UIntOS)(sptr2 - sbuff2));
 	return true;
 }
 
-UOSInt Map::BingMapsTile::GetScreenObjCnt()
+UIntOS Map::BingMapsTile::GetScreenObjCnt()
 {
 	if (this->brandLogoImg.NotNull() && !this->hideLogo)
 		return 1;
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
+Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UIntOS index)
 {
 	NN<Media::SharedImage> brandLogoImg;
 	if (index == 0 && this->brandLogoImg.SetTo(brandLogoImg) && !this->hideLogo)
@@ -177,7 +177,7 @@ Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSI
 	return nullptr;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UIntOS index)
 {
 	if (index == 0 && this->brandLogoImg.NotNull() && !this->hideLogo)
 	{
@@ -186,7 +186,7 @@ UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char
 	return nullptr;
 }
 
-Bool Map::BingMapsTile::GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index)
+Bool Map::BingMapsTile::GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UIntOS index)
 {
 	if (index == 0 && this->brandLogoImg.NotNull() && !this->hideLogo)
 	{
@@ -242,7 +242,7 @@ Text::CStringNN Map::BingMapsTile::ImagerySetGetName(ImagerySet is)
 	}
 }
 
-UnsafeArray<UTF8Char> Map::BingMapsTile::GenQuadkey(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 imgX, Int32 imgY)
+UnsafeArray<UTF8Char> Map::BingMapsTile::GenQuadkey(UnsafeArray<UTF8Char> sbuff, UIntOS level, Int32 imgX, Int32 imgY)
 {
 	while (level-- > 0)
 	{

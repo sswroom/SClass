@@ -68,12 +68,12 @@ public:
 		return true;
 	}
 
-	virtual UOSInt ColCount()
+	virtual UIntOS ColCount()
 	{
-		return (UOSInt)this->ncol;
+		return (UIntOS)this->ncol;
 	}
 
-	virtual OSInt GetRowChanged()
+	virtual IntOS GetRowChanged()
 	{
 		char *rowChg = PQcmdTuples(this->res);
 #if defined(VERBOSE)
@@ -81,27 +81,27 @@ public:
 #endif
 		if (rowChg && rowChg[0] != 0)
 		{
-			return Text::StrToOSIntCh(rowChg);
+			return Text::StrToIntOSCh(rowChg);
 		}
 		////////////////////////////
 		return 0;
 	}
 
-	virtual Int32 GetInt32(UOSInt colIndex)
+	virtual Int32 GetInt32(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsI32();
 	}
 
-	virtual Int64 GetInt64(UOSInt colIndex)
+	virtual Int64 GetInt64(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsI64();
 	}
 
-	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -123,7 +123,7 @@ public:
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -138,21 +138,21 @@ public:
 		}
 	}
 
-	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsNewString();
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsStringS(buff, buffSize);
 	}
 
-	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
+	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, item))
@@ -166,7 +166,7 @@ public:
 		return item.GetAsTimestamp();
 	}
 
-	virtual Data::Date GetDate(UOSInt colIndex)
+	virtual Data::Date GetDate(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, item))
@@ -180,42 +180,42 @@ public:
 		return item.GetAsDate();
 	}
 
-	virtual Double GetDblOrNAN(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsF64();
 	}
 
-	virtual Bool GetBool(UOSInt colIndex)
+	virtual Bool GetBool(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAsBool();
 	}
 
-	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
 		if (arr)
 		{
-			UOSInt ret = arr->GetCount();
+			UIntOS ret = arr->GetCount();
 			DEL_CLASS(arr);
 			return ret;
 		}
 		return 0;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
+	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
 		if (arr)
 		{
-			UOSInt ret = arr->GetCount();
+			UIntOS ret = arr->GetCount();
 			MemCopyNO(buff.Ptr(), arr->GetArray(), ret);
 			DEL_CLASS(arr);
 			return ret;
@@ -223,27 +223,27 @@ public:
 		return 0;
 	}
 
-	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAndRemoveVector();
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
+	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
 		return item.GetAndRemoveUUID();
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
+	virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	{
 		if (this->currrow < 0 || this->currrow >= this->nrow)
 		{
 			return false;
 		}
-		if (colIndex >= (UOSInt)this->ncol)
+		if (colIndex >= (UIntOS)this->ncol)
 		{
 			return false;
 		}
@@ -262,7 +262,7 @@ public:
 				return false;
 			}*/
 			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
-			UOSInt wkbLen = sb.Hex2Bytes(wkb);
+			UIntOS wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
 			NN<Math::Geometry::Vector2D> vec;
 			if (reader.ParseWKB(wkb, wkbLen, 0).SetTo(vec))
@@ -282,7 +282,7 @@ public:
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
-			UOSInt wkbLen = sb.Hex2Bytes(wkb);
+			UIntOS wkbLen = sb.Hex2Bytes(wkb);
 			NN<Math::Geometry::Vector2D> vec;
 			if (Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(wkb, wkbLen)).SetTo(vec))
 			{
@@ -373,7 +373,7 @@ public:
 				return false;
 			}
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sb.RemoveChars(1);
 			sarr[1] = sb.Substring(1);
 			while (true)
@@ -402,7 +402,7 @@ public:
 				return false;
 			}
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sb.RemoveChars(1);
 			sarr[1] = sb.Substring(1);
 			while (true)
@@ -432,7 +432,7 @@ public:
 				return false;
 			}
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sb.RemoveChars(1);
 			sarr[1] = sb.Substring(1);
 			while (true)
@@ -462,7 +462,7 @@ public:
 				return false;
 			}
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sb.RemoveChars(1);
 			sarr[1] = sb.Substring(1);
 			while (true)
@@ -492,7 +492,7 @@ public:
 				return false;
 			}
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sb.RemoveChars(1);
 			sarr[1] = sb.Substring(1);
 			while (true)
@@ -537,7 +537,7 @@ public:
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sarr[1] = sb;
 			while (true)
 			{
@@ -562,7 +562,7 @@ public:
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			Text::PString sarr[2];
-			UOSInt scnt;
+			UIntOS scnt;
 			sarr[1] = sb;
 			while (true)
 			{
@@ -585,7 +585,7 @@ public:
 			const UTF8Char *val = (const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex);
 			if (val[0] == '\\' && val[1] == 'x')
 			{
-				UOSInt len = Text::StrCharCnt(val);
+				UIntOS len = Text::StrCharCnt(val);
 				UInt8 *buff = MemAlloc(UInt8, (len >> 1) - 1);
 				len = Text::StrHex2Bytes(val + 2, buff);
 				item->SetByteArr(buff, len);
@@ -594,7 +594,7 @@ public:
 			}
 			else
 			{
-				item->SetByteArr(val, (UOSInt)PQgetlength(this->res, this->currrow, (int)colIndex));
+				item->SetByteArr(val, (UIntOS)PQgetlength(this->res, this->currrow, (int)colIndex));
 			}
 			return true;
 		}
@@ -607,7 +607,7 @@ public:
 		}
 	}
 
-	virtual Bool IsNull(UOSInt colIndex)
+	virtual Bool IsNull(UIntOS colIndex)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, item))
@@ -617,7 +617,7 @@ public:
 		return item.GetItemType() == Data::VariItem::ItemType::Null;
 	}
 
-	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		char *name = PQfname(this->res, (int)colIndex);
 		if (name)
@@ -627,7 +627,7 @@ public:
 		return nullptr;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
+	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
 		Oid oid = this->colTypes[colIndex];;
 		if (colSize.IsNotNull())
@@ -639,15 +639,15 @@ public:
 			}
 			else
 			{
-				colSize.SetNoCheck((UOSInt)len);
+				colSize.SetNoCheck((UIntOS)len);
 			}
 		}
 		return this->conn->DBType2ColType(oid);
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
-		if (colIndex >= (UOSInt)this->ncol)
+		if (colIndex >= (UIntOS)this->ncol)
 		{
 			return false;
 		}
@@ -666,7 +666,7 @@ public:
 		}
 		else
 		{
-			colDef->SetColSize((UOSInt)len);
+			colDef->SetColSize((UIntOS)len);
 		}
 		//////////////////////////////////
 		return true;
@@ -702,7 +702,7 @@ Bool DB::PostgreSQLConn::Connect()
 			if (this->log->HasHandler())
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
-				UOSInt msgLen = Text::StrCharCntCh(msg);
+				UIntOS msgLen = Text::StrCharCntCh(msg);
 				while (msgLen > 0)
 				{
 					if (msg[msgLen - 1] != 13 && msg[msgLen - 1] != 10)
@@ -868,7 +868,7 @@ void DB::PostgreSQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = false;
 	if (this->clsData->conn == 0)
@@ -892,14 +892,14 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 		PQclear(res);
 		return -2;
 	}
-	OSInt ret = -1;
+	IntOS ret = -1;
 	char *val = PQcmdTuples(res);
 #if defined(VERBOSE)
 	printf("PostgreSQL: ExecuteNonQuery row changed = %s\r\n", val);
 #endif
 	if (val)
 	{
-		Text::StrToOSIntCh(val, ret);
+		Text::StrToIntOSCh(val, ret);
 	}
 	PQclear(res);
 	return ret;
@@ -990,9 +990,9 @@ void DB::PostgreSQLConn::Rollback(NN<DB::DBTransaction> tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
+UIntOS DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 {
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> r;
 	if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
 	{
@@ -1005,14 +1005,14 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 	return names->GetCount() - initCnt;
 }
 		
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
 	DB::SQLBuilder sql(DB::SQLType::PostgreSQL, false, this->tzQhr);
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
-	UOSInt initCnt = names->GetCount();
+	UIntOS initCnt = names->GetCount();
 	NN<DB::DBReader> r;
 	if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
@@ -1027,7 +1027,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1047,7 +1047,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 			if (found)
 				sb.AppendUTF8Char(',');
 			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::PostgreSQL);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			found = true;
 		}
 	}
@@ -1077,12 +1077,12 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
-		sb.AppendUOSInt(maxCnt);
+		sb.AppendUIntOS(maxCnt);
 	}
 	if (ofst > 0)
 	{
 		sb.AppendC(UTF8STRC(" OFFSET "));
-		sb.AppendUOSInt(ofst);
+		sb.AppendUIntOS(ofst);
 	}
 	return this->ExecuteReader(sb.ToCString());
 }
@@ -1252,7 +1252,7 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	}
 }
 
-Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
+Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(IntOS status)
 {
 	switch (status)
 	{

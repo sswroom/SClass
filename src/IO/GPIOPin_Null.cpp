@@ -43,7 +43,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 
 UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
 {
-	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
+	return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)

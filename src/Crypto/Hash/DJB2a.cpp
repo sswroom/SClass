@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	UInt32 DJB2a_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal);
+	UInt32 DJB2a_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal);
 }
 
 Crypto::Hash::DJB2a::DJB2a()
@@ -35,7 +35,7 @@ void Crypto::Hash::DJB2a::Clear()
 	this->currVal = 5381;
 }
 
-void Crypto::Hash::DJB2a::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::DJB2a::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = DJB2a_Calc(buff.Ptr(), buffSize, this->currVal);
 }
@@ -45,12 +45,12 @@ void Crypto::Hash::DJB2a::GetValue(UnsafeArray<UInt8> buff) const
 	*(UInt32*)buff.Ptr() = this->currVal;
 }
 
-UOSInt Crypto::Hash::DJB2a::GetBlockSize() const
+UIntOS Crypto::Hash::DJB2a::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::DJB2a::GetResultSize() const
+UIntOS Crypto::Hash::DJB2a::GetResultSize() const
 {
 	return 4;
 }

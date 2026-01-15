@@ -25,7 +25,7 @@ NN<Math::ShortestPath::Path> Math::ShortestPath::Path::Clone() const
 
 Bool Math::ShortestPath::Path::AddNode(NN<Math::ShortestPath::PathNode> node, Double distance)
 {
-	UOSInt i = this->nodes.GetCount();
+	UIntOS i = this->nodes.GetCount();
 	while (i-- > 0)
 	{
 		if (this->nodes.GetItem(i) == node)
@@ -37,7 +37,7 @@ Bool Math::ShortestPath::Path::AddNode(NN<Math::ShortestPath::PathNode> node, Do
 	return true;
 }
 
-OSInt Math::ShortestPath::Path::CompareTo(NN<Data::Comparable> obj) const
+IntOS Math::ShortestPath::Path::CompareTo(NN<Data::Comparable> obj) const
 {
 	NN<Math::ShortestPath::Path> path2 = NN<Math::ShortestPath::Path>::ConvertFrom(obj);
 	if (this->totalDistance > path2->totalDistance)
@@ -63,8 +63,8 @@ Optional<Math::ShortestPath::Path> Math::ShortestPath::GetShortestPath(NN<Math::
 	NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> neighbourNodes;
 	Data::ArrayListNN<Path> paths;
 	Double distance;
-	OSInt cnt;
-	OSInt i;
+	IntOS cnt;
+	IntOS i;
 
 	NEW_CLASSNN(path, Math::ShortestPath::Path());
 	path->AddNode(fromNode, 0);

@@ -4,11 +4,11 @@
 extern "C"
 {
 
-void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h, UInt32 *fieldStats)
+void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UIntOS w, UIntOS h, UInt32 *fieldStats)
 {
-	UOSInt w2 = w << 1;
-	UOSInt hLeft;
-	UOSInt wLeft;
+	UIntOS w2 = w << 1;
+	UIntOS hLeft;
+	UIntOS wLeft;
 	UInt32 v1;
 	UInt32 v2;
 	UInt32 v3;
@@ -290,15 +290,15 @@ void IVTCFilter_CalcField(UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h, UIn
 	fieldStats[5] = field2MDiff;
 }
 
-void IVTCFilter_CalcFieldP(UInt8 *framePtr, UOSInt w, UOSInt h, UInt32 *fieldStats)
+void IVTCFilter_CalcFieldP(UInt8 *framePtr, UIntOS w, UIntOS h, UInt32 *fieldStats)
 {
-	UOSInt wLeft;
+	UIntOS wLeft;
 	UInt32 v1;
 	UInt32 v2;
 	UInt32 v3;
 	UInt32 v4;
 	UInt32 v5;
-	UOSInt w2 = w << 1;
+	UIntOS w2 = w << 1;
 	UInt32 fieldDiff = 0;
 	UInt32 fieldMDiff = 0;
 	UInt32 fieldCnt = 0;

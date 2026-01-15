@@ -17,10 +17,10 @@ namespace Crypto
 
 			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
-			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
-			virtual UOSInt GetBlockSize() const;
-			virtual UOSInt GetResultSize() const;
+			virtual UIntOS GetBlockSize() const;
+			virtual UIntOS GetResultSize() const;
 		};
 	}
 }

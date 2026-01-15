@@ -81,7 +81,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::TCPClie
 	UnsafeArray<UInt8> mbuff;
 	NN<Net::HTTPClient> cli;
 	Net::HKOWeather::WeatherSignal signal;
-	UOSInt i;
+	UIntOS i;
 
 	cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
@@ -138,7 +138,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<
 		{
 			temperature.Set(INVALID_READING);
 			rh.Set(INVALID_READING);
-			UOSInt i;
+			UIntOS i;
 			NN<Net::RSSItem> item = rss->GetItemNoCheck(0);
 			s = Text::String::OrEmpty(item->description);
 			IO::MemoryReadingStream mstm(s->v, s->leng);
@@ -215,8 +215,8 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::TCPClientFactory> clif, Optiona
 		weatherForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		weatherForecast->seaTempTime = Data::Timestamp::FromStr(sSeaTempTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		NN<Text::JSONArray> weatherForecastArr = NN<Text::JSONArray>::ConvertFrom(weatherForecastBase);
-		UOSInt i = 0;
-		UOSInt j = weatherForecastArr->GetArrayLength();
+		UIntOS i = 0;
+		UIntOS j = weatherForecastArr->GetArrayLength();
 		while (i < j)
 		{
 			NN<Text::JSONBase> weatherForecastItem;
@@ -267,7 +267,7 @@ void Net::HKOWeather::FreeWeatherForecast(NN<WeatherForecast> weatherForecast)
 	OPTSTR_DEL(weatherForecast->generalSituation);
 	OPTSTR_DEL(weatherForecast->seaTempPlace);
 	NN<DayForecast> forecast;
-	UOSInt i = weatherForecast->forecast.GetCount();
+	UIntOS i = weatherForecast->forecast.GetCount();
 	while (i-- > 0)
 	{
 		forecast = weatherForecast->forecast.GetItemNoCheck(i);

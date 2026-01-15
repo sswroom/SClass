@@ -13,10 +13,10 @@ namespace Media
 		protected:
 			typedef struct
 			{
-				UOSInt length;
+				UIntOS length;
 				Int64 *weight;
-				OSInt *index;
-				UOSInt tap;
+				IntOS *index;
+				UIntOS tap;
 			} YVPARAMETER;
 
 			typedef struct
@@ -24,39 +24,39 @@ namespace Media
 				NN<Sync::Event> evt;
 				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
 				UnsafeArray<UInt8> yPtr;
-				UOSInt yBpl;
+				UIntOS yBpl;
 				UnsafeArray<UInt8> uvPtr;
-				UOSInt uvBpl;
+				UIntOS uvBpl;
 				UnsafeArray<UInt8> dest;
-				UOSInt width;
-				UOSInt height;
-				UOSInt isFirst;
-				UOSInt isLast;
+				UIntOS width;
+				UIntOS height;
+				UIntOS isFirst;
+				UIntOS isLast;
 				NN<YVPARAMETER> yvParam;
 				Media::YCOffset ycOfst;
-				OSInt dbpl;
-				UOSInt csLineSize;
+				IntOS dbpl;
+				UIntOS csLineSize;
 				UInt8 *csLineBuff;
 				UInt8 *csLineBuff2;
 			} THREADSTAT;
 
 			YVPARAMETER yvParamO;
-			UOSInt yvStepO;
+			UIntOS yvStepO;
 			YVPARAMETER yvParamE;
-			UOSInt yvStepE;
+			UIntOS yvStepE;
 			UInt8 *uBuff;
 			UInt8 *vBuff;
-			UOSInt yvBuffSize;
+			UIntOS yvBuffSize;
 			UInt8 *uvBuff;
-			UOSInt uvBuffSize;
+			UIntOS uvBuffSize;
 
-			UOSInt currId;
-			UOSInt nThread;
+			UIntOS currId;
+			UIntOS nThread;
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
 			static Double lanczos3_weight(Double phase);
-			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<YVPARAMETER> out, UOSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameter(UIntOS source_length, UIntOS result_length, NN<YVPARAMETER> out, UIntOS indexSep, Double offsetCorr);
 
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
@@ -64,8 +64,8 @@ namespace Media
 			CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSNV12_LRGBC();
 
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
-			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual UIntOS GetSrcFrameSize(UIntOS width, UIntOS height);
 		};
 	}
 }

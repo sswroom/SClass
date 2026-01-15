@@ -28,7 +28,7 @@ namespace Media
 		UInt32 blockCnt;
 		UInt32 maxBlockCnt;
 		UInt32 samplePerBlock;
-		UOSInt maxBlockSize;
+		UIntOS maxBlockSize;
 	public:
 		AudioBlockSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, NN<Text::String> name, UInt32 samplePerBlock);
 		virtual ~AudioBlockSource();
@@ -41,10 +41,10 @@ namespace Media
 
 		virtual void GetFormat(NN<AudioFormat> format);
 
-		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
+		virtual Bool Start(Optional<Sync::Event> evt, UIntOS blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-		virtual UOSInt GetMinBlockSize();
+		virtual UIntOS ReadBlock(Data::ByteArray blk); //ret actual block size
+		virtual UIntOS GetMinBlockSize();
 		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 

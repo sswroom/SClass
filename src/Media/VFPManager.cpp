@@ -15,9 +15,9 @@
 
 Media::VFPManager::VFPManager()
 {
-	UOSInt j;
+	UIntOS j;
 	this->useCnt = 1;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	WChar wbuff[256];
 	WChar wbuff2[256];
 	UnsafeArray<WChar> wptr;
@@ -72,7 +72,7 @@ Media::VFPManager::VFPManager()
 
 }
 
-UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
+UIntOS Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
 {
 	Char *cFile;
 	Text::Encoding enc;
@@ -82,10 +82,10 @@ UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data
 	VF_FileHandle fhand;
 	VF_FileInfo finfo;
 	WChar wbuff[512];
-	UOSInt charCnt = enc.UTF8CountBytes(fileName);
+	UIntOS charCnt = enc.UTF8CountBytes(fileName);
 	cFile = MemAlloc(Char, charCnt + 1);
 	enc.UTF8ToBytes((UInt8*)cFile, fileName);
-	UOSInt i = this->plugins.GetCount();
+	UIntOS i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
 		plugin = this->plugins.GetItemNoCheck(i);
@@ -97,7 +97,7 @@ UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data
 				finfo.dwSize = sizeof(finfo);
 				if (funcs->GetFileInfo(fhand, &finfo) == VF_OK)
 				{
-					UOSInt outCnt = 0;
+					UIntOS outCnt = 0;
 					NN<VFMediaFile> mfile;
 					NEW_CLASSNN(mfile, VFMediaFile());
 					mfile->vfpmgr = *this;
@@ -148,7 +148,7 @@ Media::VFPManager::~VFPManager()
 {
 	NN<VFPluginFile> plugin;
 	UnsafeArray<const WChar> searchPattern;
-	UOSInt i = this->plugins.GetCount();
+	UIntOS i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
 		plugin = plugins.GetItemNoCheck(i);
@@ -178,9 +178,9 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 	Text::Encoding enc(932);
 	UnsafeArray<WChar> sarr[3];
 	UnsafeArray<WChar> wptr;
-	UOSInt k;
-	UOSInt j;
-	UOSInt i = this->plugins.GetCount();
+	UIntOS k;
+	UIntOS j;
+	UIntOS i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
 		plugin = plugins.GetItemNoCheck(i);

@@ -21,7 +21,7 @@ IO::SystemInfo::SystemInfo()
 {
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
-	OSInt i;
+	IntOS i;
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
@@ -93,7 +93,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_RAID;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	return 0;
 }

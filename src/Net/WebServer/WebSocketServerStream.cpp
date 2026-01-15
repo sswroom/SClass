@@ -37,7 +37,7 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, Data::ByteA
 	}
 }
 
-void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	switch (opcode & 15)
 	{
@@ -79,12 +79,12 @@ Bool Net::WebServer::WebSocketServerStream::IsDown() const
 	return false;
 }
 
-UOSInt Net::WebServer::WebSocketServerStream::Read(const Data::ByteArray &buff)
+UIntOS Net::WebServer::WebSocketServerStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Net::WebServer::WebSocketServerStream::Write(Data::ByteArrayR buff)
+UIntOS Net::WebServer::WebSocketServerStream::Write(Data::ByteArrayR buff)
 {
 	if (this->SendPacket(2, buff))
 		return buff.GetSize();
@@ -111,7 +111,7 @@ IO::StreamType Net::WebServer::WebSocketServerStream::GetStreamType() const
 	return IO::StreamType::Unknown;
 }
 
-void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8> data, UOSInt dataSize)
+void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
 	if (this->recvSize + dataSize > this->recvCapacity)
 	{
@@ -132,8 +132,8 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8
 
 	UInt8 pkSize;
 	UInt64 usedSize;
-	UOSInt ofst;
-	UOSInt parseOfst = 0;
+	UIntOS ofst;
+	UIntOS parseOfst = 0;
 	while (this->recvSize - parseOfst >= 2)
 	{
 		pkSize = this->recvBuff[parseOfst + 1] & 127;
@@ -163,7 +163,7 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8
 		}
 		else
 		{
-			usedSize = (UOSInt)pkSize + 2;
+			usedSize = (UIntOS)pkSize + 2;
 			ofst = parseOfst + 2;
 		}
 		if (this->recvBuff[parseOfst + 1] & 0x80)
@@ -171,11 +171,11 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8
 			usedSize += 4;
 			if (usedSize <= this->recvSize - parseOfst)
 			{
-				UOSInt pSize = parseOfst + usedSize - ofst - 4;
+				UIntOS pSize = parseOfst + usedSize - ofst - 4;
 				UInt8 *buff = &this->recvBuff[ofst];
 				UInt32 mask = ReadNUInt32(buff);
 				buff += 4;
-				UOSInt i = pSize;
+				UIntOS i = pSize;
 				while (i >= 4)
 				{
 					WriteNUInt32(buff, mask ^ ReadNUInt32(buff));

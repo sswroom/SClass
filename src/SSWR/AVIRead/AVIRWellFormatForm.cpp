@@ -31,7 +31,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 	Bool succ = false;
 	UInt64 fileLen;
 	Bool reqSSL = false;
-	UOSInt type = this->cboType->GetSelectedIndex();
+	UIntOS type = this->cboType->GetSelectedIndex();
 	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
 		Optional<Net::SSLEngine> ssl = nullptr;
@@ -50,16 +50,16 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			else if (type == 1)
 			{
 				fileLen = cli->GetContentLength();
-				Data::ByteBuffer buff((UOSInt)fileLen);
-				UOSInt readSize;
-				UOSInt totalSize = 0;
+				Data::ByteBuffer buff((UIntOS)fileLen);
+				UIntOS readSize;
+				UIntOS totalSize = 0;
 				while ((readSize = cli->Read(buff.SubArray(totalSize))) != 0)
 				{
 					totalSize += readSize;
 				}
 				if (totalSize == fileLen)
 				{
-					succ = Text::JSText::JSONWellFormat(buff.Arr(), (UOSInt)fileLen, 0, output);
+					succ = Text::JSText::JSONWellFormat(buff.Arr(), (UIntOS)fileLen, 0, output);
 				}
 			}
 			else if (type == 2)
@@ -89,10 +89,10 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 10485760)
 		{
-			Data::ByteBuffer buff((UOSInt)fileLen);
+			Data::ByteBuffer buff((UIntOS)fileLen);
 			if (fs.Read(buff) == fileLen)
 			{
-				succ = Text::JSText::JSONWellFormat(buff.Arr(), (UOSInt)fileLen, 0, output);
+				succ = Text::JSText::JSONWellFormat(buff.Arr(), (UIntOS)fileLen, 0, output);
 			}
 		}
 	}

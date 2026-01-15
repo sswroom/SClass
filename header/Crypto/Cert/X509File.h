@@ -32,7 +32,7 @@ namespace Crypto
 		{
 			Crypto::Hash::HashType hashType;
 			UnsafeArray<const UInt8> hashVal;
-			UOSInt hashLen;
+			UIntOS hashLen;
 		};
 
 		struct CertExtensions
@@ -125,9 +125,9 @@ namespace Crypto
 			struct SignedInfo
 			{
 				UnsafeArray<const UInt8> signature;
-				UOSInt signSize;
+				UIntOS signSize;
 				UnsafeArray<const UInt8> payload;
-				UOSInt payloadSize;
+				UIntOS payloadSize;
 				AlgType algType;
 			};
 
@@ -193,11 +193,11 @@ namespace Crypto
 			static UnsafeArrayOpt<UTF8Char> NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<UTF8Char> sbuff);
 			static Bool NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertNames> names);
 			static Bool ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext);
-			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
-			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
+			static UIntOS ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
+			static UIntOS DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
 			static Optional<Crypto::Cert::X509Key> PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 
-			static UOSInt KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);
+			static UIntOS KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(Data::ByteArrayR oid, Bool pubKey);
 			static ECName ECNameFromOID(Data::ByteArrayR oid);
 			static Bool AlgorithmIdentifierGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<AlgType> algType);
@@ -211,9 +211,9 @@ namespace Crypto
 			virtual FileType GetFileType() const = 0;
 			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const = 0;
 
-			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual UIntOS GetCertCount();
+			virtual Bool GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb);
+			virtual Optional<X509Cert> GetNewCert(UIntOS index);
 			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const = 0;
 
 			void ToShortString(NN<Text::StringBuilderUTF8> sb) const;
@@ -232,7 +232,7 @@ namespace Crypto
 			static Crypto::Hash::HashType HashTypeFromOID(Data::ByteArrayR oid);
 			static Optional<X509File> CreateFromCerts(NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs);
 			static Optional<X509File> CreateFromCertsAndClear(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> certs);
-			static UOSInt ECSignData2RAW(UnsafeArray<UInt8> outBuff, Data::ByteArrayR signData);
+			static UIntOS ECSignData2RAW(UnsafeArray<UInt8> outBuff, Data::ByteArrayR signData);
 		};
 	}
 }

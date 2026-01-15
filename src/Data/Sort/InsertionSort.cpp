@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "Data/Sort/InsertionSort.h"
 
-void Data::Sort::InsertionSort::SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt left, OSInt right)
+void Data::Sort::InsertionSort::SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, IntOS left, IntOS right)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	NN<Data::Comparable> temp;
 	NN<Data::Comparable> temp1;
 	NN<Data::Comparable> temp2;
@@ -32,7 +32,7 @@ void Data::Sort::InsertionSort::SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr,
 					j = l + 1;
 				}
 			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
 			arr[j] = temp2;
 		}
 		else

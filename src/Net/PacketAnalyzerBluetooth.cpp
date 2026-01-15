@@ -1287,7 +1287,7 @@ void Net::PacketAnalyzerBluetooth::AddRSSI(NN<IO::FileAnalyse::FrameDetailHandle
 	frame->AddField(frameOfst, 1, CSTR("RSSI"), CSTRP(sbuff, sptr));
 }
 
-void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	Text::CString vName;
 	Text::StringBuilderUTF8 sb;
@@ -1419,14 +1419,14 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		else if (packet[i + 1] == 8)
 		{
 			sb.ClearStr();
-			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
-			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, CSTR("Device Name (shortened)"), sb.ToCString());
+			sb.AppendC(&packet[i + 2], (UIntOS)len - 1);
+			frame->AddField(frameOfst + i + 2, (UIntOS)len - 1, CSTR("Device Name (shortened)"), sb.ToCString());
 		}
 		else if (packet[i + 1] == 9)
 		{
 			sb.ClearStr();
-			sb.AppendC(&packet[i + 2], (UOSInt)len - 1);
-			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, CSTR("Device Name"), sb.ToCString());
+			sb.AppendC(&packet[i + 2], (UIntOS)len - 1);
+			frame->AddField(frameOfst + i + 2, (UIntOS)len - 1, CSTR("Device Name"), sb.ToCString());
 		}
 		else if (packet[i + 1] == 0x0A && len == 2)
 		{
@@ -1579,7 +1579,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 							frame->AddHex8(frameOfst + i + j + 10, CSTR("Unknown"), packet[i + j + 10]);
 							if (appLen > 9)
 							{
-								frame->AddHexBuff(frameOfst + i + j + 11, (UOSInt)appLen - 9, CSTR("Encrypted Data"), &packet[i + j + 11], false);
+								frame->AddHexBuff(frameOfst + i + j + 11, (UIntOS)appLen - 9, CSTR("Encrypted Data"), &packet[i + j + 11], false);
 							}
 						}
 						else if (packet[i + j] == 9 && appLen == 6)
@@ -1742,7 +1742,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 								}
 								else if (appLen > 2)
 								{
-									frame->AddHexBuff(frameOfst + i + j + 4, (UOSInt)appLen - 2, CSTR("Authentication Tag"), &packet[i + j + 4], false);
+									frame->AddHexBuff(frameOfst + i + j + 4, (UIntOS)appLen - 2, CSTR("Authentication Tag"), &packet[i + j + 4], false);
 								}
 								if (appLen >= 7)
 								{
@@ -1757,7 +1757,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 								}
 								else if (appLen > 2)
 								{
-									frame->AddHexBuff(frameOfst + i + j + 4, (UOSInt)appLen - 2, CSTR("Authentication Tag"), &packet[i + j + 4], false);
+									frame->AddHexBuff(frameOfst + i + j + 4, (UIntOS)appLen - 2, CSTR("Authentication Tag"), &packet[i + j + 4], false);
 								}
 								if (appLen >= 6)
 								{
@@ -1783,15 +1783,15 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 			else
 			{
 				sb.AppendC(UTF8STRC(", Value="));
-				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LineBreakType::None);
-				frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, CSTR("Manufacturer Specific"), sb.ToCString());
+				sb.AppendHexBuff(&packet[i + 4], (UIntOS)len - 3, ' ', Text::LineBreakType::None);
+				frame->AddField(frameOfst + i + 2, (UIntOS)len - 1, CSTR("Manufacturer Specific"), sb.ToCString());
 			}
 		}
 		else
 		{
 			sb.ClearStr();
-			sb.AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LineBreakType::None);
-			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, CSTR("Adv Item Value"), sb.ToCString());
+			sb.AppendHexBuff(packet + i + 2, (UIntOS)len - 1, ' ', Text::LineBreakType::None);
+			frame->AddField(frameOfst + i + 2, (UIntOS)len - 1, CSTR("Adv Item Value"), sb.ToCString());
 		}
 		i += (UInt32)len + 1;
 	}
@@ -1916,8 +1916,8 @@ void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(NN<IO::FileAnalyse::FrameDeta
 		sb.AppendC(UTF8STRC(", Legacy"));
 	}
 	sb.AppendC(UTF8STRC(", Data Status="));
-	sb.AppendUOSInt((((UOSInt)evtType) >> 5) & 3);
-	switch ((((UOSInt)evtType) >> 5) & 3)
+	sb.AppendUIntOS((((UIntOS)evtType) >> 5) & 3);
+	switch ((((UIntOS)evtType) >> 5) & 3)
 	{
 	case 0:
 		sb.AppendC(UTF8STRC(" (Complete)"));
@@ -1976,12 +1976,12 @@ void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(NN<IO::FileAnalyse::FrameDetai
 	frame->AddHex16Name(frameOfst, CSTR("Periodic Advertising Interval"), interval, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UIntOS packetSize)
 {
 	frame->AddHexBuff(frameOfst, (UInt32)packetSize, CSTR("Unknown"), packet, true);
 }
 
-Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 mac[6];
 	Text::CStringNN name;
@@ -2089,13 +2089,13 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UInt32 i;
@@ -2110,7 +2110,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 			UInt8 cmdLen = packet[7];
 			AddCmdOpcode(frame, frameOfst + 5, cmd);
 			AddParamLen(frame, frameOfst + 7, cmdLen);
-			if (8 + (UOSInt)cmdLen <= packetSize)
+			if (8 + (UIntOS)cmdLen <= packetSize)
 			{
 				switch (cmd)
 				{
@@ -2180,7 +2180,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 					AddUnknown(frame, frameOfst + 8, packet + 8, cmdLen);
 					break;
 				}
-				if (8 + (UOSInt)cmdLen < packetSize)
+				if (8 + (UIntOS)cmdLen < packetSize)
 				{
 					AddUnknown(frame, frameOfst + 8 + cmdLen, packet + 8 + cmdLen, packetSize - 8 - cmdLen);
 				}
@@ -2264,7 +2264,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 				AddAddrType(frame, frameOfst + 10, CSTR("Peer Address Type"), packet[10]);
 				AddBDAddr(frame, frameOfst + 11, CSTR("BD_ADDR"), packet + 11, packet[10] == 1);
 				frame->AddUInt(frameOfst + 17, 1, CSTR("Adv Data Length"), packet[17]);
-				if (18 + (UOSInt)packet[17] < packetSize)
+				if (18 + (UIntOS)packet[17] < packetSize)
 				{
 					AddAdvData(frame, frameOfst + 18, packet + 18, packet[17]);
 				}
@@ -2302,12 +2302,12 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 				AddAddrType(frame, frameOfst + 25, CSTR("Direct Address Type"), packet[25]);
 				AddBDAddr(frame, frameOfst + 26, CSTR("Direct BD_ADDR"), packet + 26, packet[25] == 1);
 				frame->AddUInt(frameOfst + 32, 1, CSTR("Adv Data Length"), packet[32]);
-				if (33 + (UOSInt)packet[32] <= packetSize)
+				if (33 + (UIntOS)packet[32] <= packetSize)
 				{
 					AddAdvData(frame, frameOfst + 33, packet + 33, packet[32]);
-					if (33 + (UOSInt)packet[32] < packetSize)
+					if (33 + (UIntOS)packet[32] < packetSize)
 					{
-						AddUnknown(frame, frameOfst + 33 + (UInt32)packet[32], packet + 33 + (UOSInt)packet[32], packetSize - 33 - (UOSInt)packet[32]);
+						AddUnknown(frame, frameOfst + 33 + (UInt32)packet[32], packet + 33 + (UIntOS)packet[32], packetSize - 33 - (UIntOS)packet[32]);
 					}
 				}
 				else if (packetSize > 33)
@@ -2333,9 +2333,9 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 
 Text::CString Net::PacketAnalyzerBluetooth::CompanyGetName(UInt16 company)
 {
-	OSInt i = 0;
-	OSInt j = (sizeof(vendorList) / sizeof(vendorList[0])) - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (sizeof(vendorList) / sizeof(vendorList[0])) - 1;
+	IntOS k;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

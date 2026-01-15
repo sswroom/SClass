@@ -20,12 +20,12 @@ void __stdcall UtilUI::TextViewerForm::OnFileDrop(AnyType userObj, Data::DataArr
 	me->LoadFile(files[0]);
 }
 
-void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(AnyType userObj, UInt32 textPosX, UOSInt textPosY)
+void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(AnyType userObj, UInt32 textPosX, UIntOS textPosY)
 {
 	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
+	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUIntOS(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
 	me->txtStatus->SetText(CSTRP(sbuff, sptr));
 }
 

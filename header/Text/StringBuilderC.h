@@ -11,13 +11,13 @@ namespace Text
 		virtual ~StringBuilderC();
 
 		NN<StringBuilderC> Append(UnsafeArray<const Char> s);
-		NN<StringBuilderC> AppendC(UnsafeArray<const Char> s, UOSInt charCnt);
-		NN<StringBuilderC> AppendChar(Char c, UOSInt repeatCnt);
-		NN<StringBuilderC> AppendCSV(UnsafeArray<UnsafeArray<const Char>> sarr, UOSInt nStr);
+		NN<StringBuilderC> AppendC(UnsafeArray<const Char> s, UIntOS charCnt);
+		NN<StringBuilderC> AppendChar(Char c, UIntOS repeatCnt);
+		NN<StringBuilderC> AppendCSV(UnsafeArray<UnsafeArray<const Char>> sarr, UIntOS nStr);
 		NN<StringBuilderC> AppendToUpper(UnsafeArray<const Char> s);
 		NN<StringBuilderC> AppendToLower(UnsafeArray<const Char> s);
 		NN<StringBuilderC> AppendASCII(UnsafeArray<const Char> s);
-		NN<StringBuilderC> AppendASCII(UnsafeArray<const Char> s, UOSInt charCnt);
+		NN<StringBuilderC> AppendASCII(UnsafeArray<const Char> s, UIntOS charCnt);
 	};
 }
 #endif

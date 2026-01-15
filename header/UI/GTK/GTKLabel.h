@@ -16,7 +16,7 @@ namespace UI
 			virtual ~GTKLabel();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual Bool HasTextColor();
 			virtual UInt32 GetTextColor();
 			virtual void SetTextColor(UInt32 textColor);

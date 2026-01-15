@@ -309,7 +309,7 @@ Bool IO::FileStream::IsError() const
 	return this->handle == INVALID_HANDLE_VALUE;
 }
 
-UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
+UIntOS IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
@@ -326,7 +326,7 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileStream::Write(Data::ByteArrayR buff)
+UIntOS IO::FileStream::Write(Data::ByteArrayR buff)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
@@ -621,7 +621,7 @@ Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(UnsafeArrayOpt<const UTF8
 #endif
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UOSInt maxBuffSize)
+UIntOS IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UIntOS maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())
@@ -633,7 +633,7 @@ UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buf
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
+	UIntOS readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

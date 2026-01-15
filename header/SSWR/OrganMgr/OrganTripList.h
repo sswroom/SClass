@@ -65,16 +65,16 @@ namespace SSWR
 			OrganTripList(DB::DBTool *db, Int32 cateId);
 			~OrganTripList();
 			void ReloadTrips(Int32 cateId);
-			OSInt GetTripIndex(Data::DateTime *d);
+			IntOS GetTripIndex(Data::DateTime *d);
 			Trip *GetTrip(Int32 userId, Data::DateTime *d);
 			Data::ArrayListNN<Trip> *GetTripList();
 			Bool AddTrip(Data::DateTime *fromDate, Data::DateTime *toDate, Int32 locId);
-			OSInt GetLocIndex(Int32 locId);
+			IntOS GetLocIndex(Int32 locId);
 			Location *GetLocation(Int32 locId);
 			Data::ArrayListNN<Location> *GetLocSub(Int32 locId);
 			Bool UpdateLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
 			Bool AddLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
-			OSInt GetLocTypeIndex(Int32 lType);
+			IntOS GetLocTypeIndex(Int32 lType);
 		};*/
 	}
 }

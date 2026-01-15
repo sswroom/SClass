@@ -109,8 +109,8 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(Optional<UI::GUIClientControl> p
 	this->SetCancelButton(this->btnCancel);
 
 	Data::ArrayListStringNN driverList;
-	UOSInt i = 0;
-	UOSInt j = DB::ODBCConn::GetDriverList(driverList);
+	UIntOS i = 0;
+	UIntOS j = DB::ODBCConn::GetDriverList(driverList);
 	while (i < j)
 	{
 		this->cboDriver->AddItem(Text::String::OrEmpty(driverList.GetItem(i)), 0);

@@ -41,11 +41,11 @@ namespace SSWR
 			NN<UI::GUIButton> btnNew;
 			NN<UI::GUIListView> lvEntry;
 
-			void RandBytes(UOSInt len);
+			void RandBytes(UIntOS len);
 			static void __stdcall OnKeyRand80Clicked(AnyType userObj);
 			static void __stdcall OnKeyRand160Clicked(AnyType userObj);
 			static void __stdcall OnNewClicked(AnyType userObj);
-			static void __stdcall OnEntryDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnEntryDblClicked(AnyType userObj, UIntOS index);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIROTPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

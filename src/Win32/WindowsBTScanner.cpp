@@ -192,7 +192,7 @@ UInt32 __stdcall Win32::WindowsBTScanner::ScanThread(AnyType userObj)
 	req.scanInterval = 29;
 	req.scanWindow = 29;
 	DWORD outSize;
-	printf("Begin Scan request, size = %d, Handle = %x\r\n", (UInt32)sizeof(req), (UInt32)(UOSInt)handle);
+	printf("Begin Scan request, size = %d, Handle = %x\r\n", (UInt32)sizeof(req), (UInt32)(UIntOS)handle);
 	if (DeviceIoControl(handle, 0x41118c, &req, sizeof(req), 0, 0, &outSize, 0) == 0)
 	{
 		printf("Error: %x\r\n", GetLastError());
@@ -222,7 +222,7 @@ Bool Win32::WindowsBTScanner::BeginScan()
 	req.scanInterval = 29;
 	req.scanWindow = 29;
 	BluetoothFindRadioClose(hFind);
-	printf("Begin Scan request, size = %d, Handle = %x\r\n", (UInt32)sizeof(req), (UInt32)(UOSInt)handle);
+	printf("Begin Scan request, size = %d, Handle = %x\r\n", (UInt32)sizeof(req), (UInt32)(UIntOS)handle);
 	MemClear(&this->overlapped, sizeof(OVERLAPPED));
 	this->overlapped.hEvent = CreateEvent(0, FALSE, FALSE, 0);
 	if (DeviceIoControl(handle, 0x41118c, &req, sizeof(req), 0, 0, 0, &this->overlapped) == 0)

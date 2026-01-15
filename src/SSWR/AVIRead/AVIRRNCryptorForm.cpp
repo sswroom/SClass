@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 			if (succ)
 			{
 				Text::TextBinEnc::Base64Enc enc;
-				UOSInt outLen = (UOSInt)(mstm.GetLength() >> 2) * 3;
+				UIntOS outLen = (UIntOS)(mstm.GetLength() >> 2) * 3;
 				UInt8 *destBuff = MemAlloc(UInt8, outLen);
-				UOSInt retSize = enc.DecodeBin(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()), destBuff);
+				UIntOS retSize = enc.DecodeBin(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength()), destBuff);
 				IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				succ = destFS.WriteCont(destBuff, retSize);
 				MemFree(destBuff);
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 			}
 			else
 			{
-				Data::ByteBuffer fileBuff((UOSInt)fileLen);
+				Data::ByteBuffer fileBuff((UIntOS)fileLen);
 				Text::TextBinEnc::Base64Enc enc;
 				if (srcFS.Read(fileBuff) == fileLen)
 				{

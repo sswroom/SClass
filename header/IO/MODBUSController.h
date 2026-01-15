@@ -27,14 +27,14 @@ namespace IO
 		Sync::Mutex reqMut;
 		UnsafeArrayOpt<UInt8> reqResult;
 		UInt8 reqFuncCode;
-		UOSInt reqResultSize;
+		UIntOS reqResultSize;
 		Bool reqHasResult;
 		Data::FastMapNative<UInt8, UInt8> devMap;
 
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
 
-		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize);
+		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UIntOS resultSize);
 		static void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 		Bool ReadRegister(UInt8 devAddr, UInt32 regAddr, UnsafeArray<UInt8> resBuff, UInt16 resSize);

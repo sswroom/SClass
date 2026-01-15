@@ -31,8 +31,8 @@ namespace UI
 		virtual void AddChild(NN<GUIControl> child);
 		virtual Bool IsChildVisible() = 0;
 		
-		UOSInt GetChildCount() const;
-		Optional<UI::GUIControl> GetChild(UOSInt index) const;
+		UIntOS GetChildCount() const;
+		Optional<UI::GUIControl> GetChild(UIntOS index) const;
 		Data::ArrayIterator<NN<UI::GUIControl>> ChildIterator() const;
 		void FocusChild(GUIControl *child);
 

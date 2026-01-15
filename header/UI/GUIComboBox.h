@@ -14,7 +14,7 @@ namespace UI
 		Data::ArrayListObj<AnyType> selChgObjs;
 		Data::ArrayListStringNN itemTexts;
 		Bool autoComplete;
-		UOSInt lastTextLeng;
+		UIntOS lastTextLeng;
 		Bool nonUIEvent;
 
 	public:
@@ -30,27 +30,27 @@ namespace UI
 
 		virtual void BeginUpdate() = 0;
 		virtual void EndUpdate() = 0;
-		virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj) = 0;
-		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj) = 0;
-		virtual AnyType RemoveItem(UOSInt index) = 0;
+		virtual UIntOS AddItem(NN<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UIntOS AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
+		virtual UIntOS InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UIntOS InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj) = 0;
+		virtual AnyType RemoveItem(UIntOS index) = 0;
 		virtual void ClearItems() = 0;
-		virtual UOSInt GetCount() = 0;
-		virtual void SetSelectedIndex(UOSInt index) = 0;
-		virtual UOSInt GetSelectedIndex() = 0;
+		virtual UIntOS GetCount() = 0;
+		virtual void SetSelectedIndex(UIntOS index) = 0;
+		virtual UIntOS GetSelectedIndex() = 0;
 		virtual AnyType GetSelectedItem() = 0;
-		virtual AnyType GetItem(UOSInt index) = 0;
+		virtual AnyType GetItem(UIntOS index) = 0;
 
 		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
-		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index);
+		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index);
 		virtual Text::CStringNN GetObjectClass() const;
 
 		virtual Math::Size2DDbl GetSize() = 0;
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn) = 0;
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void UpdatePos(Bool redraw) = 0;
-		virtual void SetTextSelection(UOSInt startPos, UOSInt endPos) = 0;
+		virtual void SetTextSelection(UIntOS startPos, UIntOS endPos) = 0;
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj);
 		void SetAutoComplete(Bool autoComplete);

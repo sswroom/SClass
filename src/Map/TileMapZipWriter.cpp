@@ -3,14 +3,14 @@
 #include "Map/TileMapZipWriter.h"
 #include "Text/JSONBuilder.h"
 
-Map::TileMapZipWriter::TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::ImageType imgType, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal), zip(fs, IO::ZIPOS::UNIX)
+Map::TileMapZipWriter::TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::ImageType imgType, UIntOS minLev, UIntOS maxLev, Math::RectAreaDbl bounds) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal), zip(fs, IO::ZIPOS::UNIX)
 {
 	this->imgType = imgType;
 	this->minLev = minLev;
 	this->maxLev = maxLev;
 	this->bounds = bounds;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	j = fileName.LastIndexOf('.', i + 1);
 	if (j == INVALID_INDEX)
@@ -46,9 +46,9 @@ Map::TileMapZipWriter::~TileMapZipWriter()
 		json.ObjectAddStr(CSTR("format"), CSTR("png"));
 		break;
 	}
-	sptr = Text::StrUOSInt(sbuff, this->minLev);
+	sptr = Text::StrUIntOS(sbuff, this->minLev);
 	json.ObjectAddStr(CSTR("minzoom"), CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, this->maxLev);
+	sptr = Text::StrUIntOS(sbuff, this->maxLev);
 	json.ObjectAddStr(CSTR("maxzoom"), CSTRP(sbuff, sptr));
 	json.ObjectAddStr(CSTR("scale"), CSTR("1.000000"));
 	json.ObjectBeginArray(CSTR("bounds"));
@@ -65,12 +65,12 @@ Map::TileMapZipWriter::~TileMapZipWriter()
 	this->name->Release();
 }
 
-void Map::TileMapZipWriter::BeginLevel(UOSInt level)
+void Map::TileMapZipWriter::BeginLevel(UIntOS level)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	this->currLev = level;
-	sptr = Text::StrUOSInt(sbuff, level);
+	sptr = Text::StrUIntOS(sbuff, level);
 	*sptr++ = '/';
 	*sptr = 0;
 	Data::Timestamp t = Data::Timestamp::UtcNow();
@@ -82,11 +82,11 @@ void Map::TileMapZipWriter::AddX(Int32 x)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt k = this->xList.SortedIndexOf(x);
+	IntOS k = this->xList.SortedIndexOf(x);
 	if (k < 0)
 	{
-		this->xList.Insert((UOSInt)~k, x);
-		sptr = Text::StrUOSInt(sbuff, this->currLev);
+		this->xList.Insert((UIntOS)~k, x);
+		sptr = Text::StrUIntOS(sbuff, this->currLev);
 		*sptr++ = '/';
 		sptr = Text::StrInt32(sptr, x);
 		*sptr++ = '/';
@@ -96,11 +96,11 @@ void Map::TileMapZipWriter::AddX(Int32 x)
 	}
 }
 
-void Map::TileMapZipWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapZipWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrUOSInt(sbuff, level);
+	sptr = Text::StrUIntOS(sbuff, level);
 	*sptr++ = '/';
 	sptr = Text::StrInt32(sptr, x);
 	*sptr++ = '/';

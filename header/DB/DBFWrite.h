@@ -13,7 +13,7 @@ namespace DB
 	private:
 		Data::ArrayList<Char**> values;
 		Int32 colCnt;
-		OSInt *strSize;
+		IntOS *strSize;
 		const UTF8Char **cols;
 		Text::Encoding enc;
 		DB::DBUtil::ColType *colTypes;

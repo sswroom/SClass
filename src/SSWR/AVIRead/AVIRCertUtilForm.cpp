@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
@@ -157,11 +157,11 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType use
 	NN<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
 	{
-		UOSInt i = me->cboKeyType->GetSelectedIndex();
+		UIntOS i = me->cboKeyType->GetSelectedIndex();
 		NN<Crypto::Cert::X509Key> key;
 		if (i < 3)
 		{
-			UOSInt keyLength;
+			UIntOS keyLength;
 			if (i == 0)
 				keyLength = 2048;
 			else if (i == 1)
@@ -280,10 +280,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
 	}
-	UOSInt validDays;
+	UIntOS validDays;
 	Text::StringBuilderUTF8 sb;
 	me->txtValidDays->GetText(sb);
-	if (!sb.ToUOSInt(validDays))
+	if (!sb.ToUIntOS(validDays))
 	{
 		me->ui->ShowMsgOK(CSTR("Valid days not valid"), CSTR("Cert Util"), me);
 		return;
@@ -395,7 +395,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 		Text::StringBuilderUTF8 sb;
 		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(key->GetKeyType()));
 		sb.AppendC(UTF8STRC(", "));
-		sb.AppendUOSInt(key->GetKeySizeBits());
+		sb.AppendUIntOS(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
 		if (key->GetKeyId(BYTEARR(keyId)))
 		{

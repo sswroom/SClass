@@ -55,7 +55,7 @@ global _MD5_CalcBlock
 	add %2, %3
 %endmacro
 
-;void MD5_CalcBlock(UInt32 *hVals, const UInt8 *block, UOSInt blockCnt);
+;void MD5_CalcBlock(UInt32 *hVals, const UInt8 *block, UIntOS blockCnt);
 ;0 rbx
 ;8 retAddr
 ;rdi hVals

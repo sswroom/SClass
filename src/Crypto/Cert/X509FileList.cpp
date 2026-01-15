@@ -14,7 +14,7 @@ Crypto::Cert::X509FileList::X509FileList(Text::CStringNN sourceName, NN<Crypto::
 
 Crypto::Cert::X509FileList::~X509FileList()
 {
-	UOSInt i = this->fileList.GetCount();
+	UIntOS i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
 		this->fileList.GetItem(i).Delete();
@@ -31,9 +31,9 @@ void Crypto::Cert::X509FileList::ToShortName(NN<Text::StringBuilderUTF8> sb) con
 	return this->fileList.GetItem(0).OrNull()->ToShortName(sb);
 }
 
-UOSInt Crypto::Cert::X509FileList::GetCertCount()
+UIntOS Crypto::Cert::X509FileList::GetCertCount()
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Data::ArrayIterator<NN<X509File>> it = this->fileList.Iterator();
 	while (it.HasNext())
 	{
@@ -42,10 +42,10 @@ UOSInt Crypto::Cert::X509FileList::GetCertCount()
 	return ret;
 }
 
-Bool Crypto::Cert::X509FileList::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509FileList::GetCertName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayIterator<NN<X509File>> it = this->fileList.Iterator();
-	UOSInt cnt;
+	UIntOS cnt;
 	NN<Crypto::Cert::X509File> file;
 	while (it.HasNext())
 	{
@@ -60,10 +60,10 @@ Bool Crypto::Cert::X509FileList::GetCertName(UOSInt index, NN<Text::StringBuilde
 	return false;
 }
 
-Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::GetNewCert(UIntOS index)
 {
 	Data::ArrayIterator<NN<X509File>> it = this->fileList.Iterator();
-	UOSInt cnt;
+	UIntOS cnt;
 	NN<Crypto::Cert::X509File> file;
 	while (it.HasNext())
 	{
@@ -81,7 +81,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::GetNewCert(UOSInt i
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	Crypto::Cert::X509File::ValidStatus status;
-	UOSInt i = this->fileList.GetCount();
+	UIntOS i = this->fileList.GetCount();
 	if (i > 1)
 	{
 		NN<Crypto::Cert::X509File> file;
@@ -161,12 +161,12 @@ void Crypto::Cert::X509FileList::AddFile(NN<Crypto::Cert::X509File> file)
 	this->fileList.Add(file);
 }
 
-UOSInt Crypto::Cert::X509FileList::GetFileCount() const
+UIntOS Crypto::Cert::X509FileList::GetFileCount() const
 {
 	return this->fileList.GetCount();
 }
 
-Optional<Crypto::Cert::X509File> Crypto::Cert::X509FileList::GetFile(UOSInt index) const
+Optional<Crypto::Cert::X509File> Crypto::Cert::X509FileList::GetFile(UIntOS index) const
 {
 	return this->fileList.GetItem(index);
 }
@@ -174,8 +174,8 @@ Optional<Crypto::Cert::X509File> Crypto::Cert::X509FileList::GetFile(UOSInt inde
 void Crypto::Cert::X509FileList::SetDefaultSourceName()
 {
 	NN<Crypto::Cert::X509File> file;
-	UOSInt j = INVALID_INDEX;
-	UOSInt i = this->fileList.GetCount();
+	UIntOS j = INVALID_INDEX;
+	UIntOS i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
 		if (this->fileList.GetItem(i).SetTo(file) && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)

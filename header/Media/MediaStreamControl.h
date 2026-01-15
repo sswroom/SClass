@@ -19,7 +19,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration mediaTime) = 0;
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool CanSeek() = 0;
-		virtual UOSInt GetDataSeekCount() = 0;
+		virtual UIntOS GetDataSeekCount() = 0;
 	};
 }
 #endif

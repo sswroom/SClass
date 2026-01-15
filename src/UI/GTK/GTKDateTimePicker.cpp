@@ -20,7 +20,7 @@ UI::GTK::GTKDateTimePicker::~GTKDateTimePicker()
 	SDEL_TEXTC(this->format);
 }
 
-OSInt UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
@@ -31,7 +31,7 @@ void UI::GTK::GTKDateTimePicker::SetValue(NN<Data::DateTime> dt)
 	if (this->format.SetTo(nnformat))
 	{
 		UTF8Char sbuff[64];
-		OSInt leng;
+		IntOS leng;
 		leng = dt->ToString(sbuff, nnformat.Ptr()) - sbuff;
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
 		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);
@@ -44,7 +44,7 @@ void UI::GTK::GTKDateTimePicker::SetValue(const Data::Timestamp &ts)
 	if (this->format.SetTo(nnformat))
 	{
 		UTF8Char sbuff[64];
-		OSInt leng;
+		IntOS leng;
 		leng = ts.ToString(sbuff, nnformat.Ptr()) - sbuff;
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
 		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);

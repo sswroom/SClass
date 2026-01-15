@@ -23,12 +23,12 @@ namespace UI
 
 		Bool focusing;
 		UInt32 jsLastButtons;
-		OSInt joystickId;
+		IntOS joystickId;
 
 
 	private:
 		static Int32 useCnt;
-		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+		static IntOS __stdcall FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		static void Init(Optional<InstanceHandle> hInst);
 		static void Deinit(Optional<InstanceHandle> hInst);
 		void InitJS();
@@ -38,18 +38,18 @@ namespace UI
 		virtual ~GUICustomDraw();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 
-		virtual UI::EventState OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
-		virtual UI::EventState OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
-		virtual void OnMouseMove(Math::Coord2D<OSInt> scnPos);
-		virtual UI::EventState OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
-		virtual void OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist);
-		virtual void OnJSButtonDown(OSInt buttonId);
-		virtual void OnJSButtonUp(OSInt buttonId);
-		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
+		virtual UI::EventState OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn);
+		virtual UI::EventState OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn);
+		virtual void OnMouseMove(Math::Coord2D<IntOS> scnPos);
+		virtual UI::EventState OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta);
+		virtual void OnGestureBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnGestureStep(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnGestureEnd(Math::Coord2D<IntOS> scnPos, UInt64 dist);
+		virtual void OnJSButtonDown(IntOS buttonId);
+		virtual void OnJSButtonUp(IntOS buttonId);
+		virtual void OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS axis4);
 		virtual UI::EventState OnKeyDown(UI::GUIControl::GUIKey key); //true = handled
 
 		virtual void OnTimerTick();

@@ -34,7 +34,7 @@ namespace Media
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
-		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userObj);
 		virtual Bool Start();
 		virtual void Stop();
@@ -47,14 +47,14 @@ namespace Media
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 
-		virtual UOSInt GetDataSeekCount();
+		virtual UIntOS GetDataSeekCount();
 
 		virtual Bool HasFrameCount();
-		virtual UOSInt GetFrameCount();
-		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+		virtual UIntOS GetFrameCount();
+		virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
+		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
 	};
 }
 #endif

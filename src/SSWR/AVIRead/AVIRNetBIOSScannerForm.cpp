@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(AnyType u
 		return;
 	}
 
-	UOSInt i = 0;
-	UOSInt j = range.GetCount();
+	UIntOS i = 0;
+	UIntOS j = range.GetCount();
 	while (i < j)
 	{
 		if (range.GetItem(i, &addr))
@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType use
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt i = 0;
-		UOSInt j = ans->namesCnt;
+		UIntOS i = 0;
+		UIntOS j = ans->namesCnt;
 		while (i < j)
 		{
 			me->lvEntries->AddItem({ans->names[i].nameBuff, Text::StrCharCnt(ans->names[i].nameBuff)}, 0);
@@ -74,9 +74,9 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 		Sync::MutexUsage mutUsage;
 		NN<const Data::ReadingListNN<Net::NetBIOSScanner::NameAnswer>> ansList = me->netbios->GetAnswers(mutUsage);
 		NN<Net::NetBIOSScanner::NameAnswer> ans;
-		UOSInt i = 0;
-		UOSInt j = ansList->GetCount();
-		UOSInt k;
+		UIntOS i = 0;
+		UIntOS j = ansList->GetCount();
+		UIntOS k;
 		while (i < j)
 		{
 			ans = ansList->GetItemNoCheck(i);
@@ -167,8 +167,8 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UInt32 ip;
 	UInt32 netmask;
 	sockf->GetConnInfoList(connInfoList);

@@ -20,7 +20,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(NN<Text::String> fileName)
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;
-	this->dataLength = (UOSInt)-1;
+	this->dataLength = (UIntOS)-1;
 }
 
 IO::StmData::ConcatStreamData::ConcatStreamData(Text::CStringNN fileName)
@@ -30,7 +30,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(Text::CStringNN fileName)
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;
-	this->dataLength = (UOSInt)-1;
+	this->dataLength = (UIntOS)-1;
 }
 
 IO::StmData::ConcatStreamData::~ConcatStreamData()
@@ -41,7 +41,7 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 	mutUsage.EndUse();
 	if (cnt == 1)
 	{
-		UOSInt i;
+		UIntOS i;
 		i = this->cdb->dataList.GetCount();
 		while (i-- > 0)
 		{
@@ -52,15 +52,15 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 	}
 }
 
-UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
+UIntOS IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
-	OSInt si;
-	UOSInt i;
-	UOSInt j;
+	IntOS si;
+	UIntOS i;
+	UIntOS j;
 	UInt64 startOfst;
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
-	UOSInt readTotal = 0;
+	UIntOS readTotal = 0;
 	NN<IO::StreamData> data;
 	if ((Int64)thisSize == -1)
 	{
@@ -70,16 +70,16 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	{
 		endOfst = thisSize;
 	}
-	length = (UOSInt)(endOfst - offset);
+	length = (UIntOS)(endOfst - offset);
 
 	si = this->cdb->ofstList.SortedIndexOf(offset);
 	if (si < 0)
 	{
-		i = (UOSInt)(~si - 1);
+		i = (UIntOS)(~si - 1);
 	}
 	else
 	{
-		i = (UOSInt)si;
+		i = (UIntOS)si;
 	}
 	startOfst = this->cdb->ofstList.GetItem(i);
 	offset -= startOfst;
@@ -91,10 +91,10 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 			thisSize = data->GetDataSize() - offset;
 			if (thisSize > length)
 				thisSize = length;
-			thisSize = data->GetRealData(offset, (UOSInt)thisSize, buffer);
-			length -= (UOSInt)thisSize;
-			buffer += (UOSInt)thisSize;
-			readTotal += (UOSInt)thisSize;
+			thisSize = data->GetRealData(offset, (UIntOS)thisSize, buffer);
+			length -= (UIntOS)thisSize;
+			buffer += (UIntOS)thisSize;
+			readTotal += (UIntOS)thisSize;
 			if (length <= 0)
 				break;
 			offset = 0;
@@ -116,7 +116,7 @@ Text::CString IO::StmData::ConcatStreamData::GetShortName() const
 
 UInt64 IO::StmData::ConcatStreamData::GetDataSize() const
 {
-	if (this->dataLength == (UOSInt)-1)
+	if (this->dataLength == (UIntOS)-1)
 	{
 		return this->cdb->totalSize;
 	}
@@ -137,7 +137,7 @@ NN<IO::StreamData> IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, 
 
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
-	if (thisSize == (UOSInt)-1)
+	if (thisSize == (UIntOS)-1)
 	{
 		thisSize = this->cdb->totalSize;
 	}
@@ -167,11 +167,11 @@ Bool IO::StmData::ConcatStreamData::IsLoading() const
 	return false;
 }
 
-UOSInt IO::StmData::ConcatStreamData::GetSeekCount() const
+UIntOS IO::StmData::ConcatStreamData::GetSeekCount() const
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	NN<IO::StreamData> data;
-	UOSInt i;
+	UIntOS i;
 	i = this->cdb->dataList.GetCount();
 	while (i-- > 0)
 	{

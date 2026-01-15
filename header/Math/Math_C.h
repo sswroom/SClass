@@ -232,6 +232,6 @@ namespace Math
 }
 extern "C"
 {
-	void Math_Int32Arr2DblArr(Double *dblArr, const Int32 *intArr, UOSInt arrCnt);
+	void Math_Int32Arr2DblArr(Double *dblArr, const Int32 *intArr, UIntOS arrCnt);
 }
 #endif

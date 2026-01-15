@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, UIntOS headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -58,12 +58,12 @@ Bool Data::Compress::InflateStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt Data::Compress::InflateStream::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::InflateStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::InflateStream::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::InflateStream::Write(Data::ByteArrayR buff)
 {
 	z_stream *mzstm = (z_stream *)this->cmpInfo;
 //	UInt32 lastSize;

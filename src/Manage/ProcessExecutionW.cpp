@@ -15,7 +15,7 @@ struct Manage::ProcessExecution::ClassData
 	HANDLE in[2];
 };
 
-UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
+UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->in[0] = INVALID_HANDLE_VALUE;
@@ -24,7 +24,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 	clsData->out[1] = INVALID_HANDLE_VALUE;
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
-	UOSInt cmdLen = Text::StrUTF8_WCharCnt(cmd.v);
+	UIntOS cmdLen = Text::StrUTF8_WCharCnt(cmd.v);
 	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
 	Text::StrUTF8_WChar(cmdLine, cmd.v, 0);
 
@@ -89,7 +89,7 @@ Manage::ProcessExecution::~ProcessExecution()
 	MemFree(this->clsData);
 }
 
-UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
+UIntOS Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
@@ -104,7 +104,7 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Manage::ProcessExecution::Write(Data::ByteArrayR buff)
+UIntOS Manage::ProcessExecution::Write(Data::ByteArrayR buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;

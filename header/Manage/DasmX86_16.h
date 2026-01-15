@@ -41,7 +41,7 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		Bool DasmNext(NN<DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UOSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UIntOS *outBuffSize); //True = succ
 	};
 }
 

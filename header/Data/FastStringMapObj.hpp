@@ -20,9 +20,9 @@ namespace Data
 	{
 	private:
 		UnsafeArray<const FastStringObjItem<T>> arr;
-		UOSInt cnt;
+		UIntOS cnt;
 	public:
-		FastStringObjKeyIterator(UnsafeArray<const FastStringObjItem<T>> arr, UOSInt cnt)
+		FastStringObjKeyIterator(UnsafeArray<const FastStringObjItem<T>> arr, UIntOS cnt)
 		{
 			this->arr = arr;
 			this->cnt = cnt;
@@ -45,23 +45,23 @@ namespace Data
 	template <class T> class FastStringMapObj : public ListMap<Optional<Text::String>, T>
 	{
 	private:
-		UOSInt capacity;
-		UOSInt cnt;
+		UIntOS capacity;
+		UIntOS cnt;
 		UnsafeArray<FastStringObjItem<T>> items;
 		Crypto::Hash::CRC32RC crc;
 
-		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val);
+		void Insert(UIntOS index, UInt32 hash, NN<Text::String> s, T val);
 	public:
 		FastStringMapObj();
 		FastStringMapObj(NN<const FastStringMapObj<T>> map);
 		virtual ~FastStringMapObj();
 
-		virtual UOSInt GetCount() const;
-		virtual T GetItem(UOSInt index) const;
-		virtual Optional<Text::String> GetKey(UOSInt index) const;
-		virtual OSInt IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const;
-		OSInt IndexOf(NN<Text::String> s) const;
-		OSInt IndexOfC(Text::CStringNN s) const;
+		virtual UIntOS GetCount() const;
+		virtual T GetItem(UIntOS index) const;
+		virtual Optional<Text::String> GetKey(UIntOS index) const;
+		virtual IntOS IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UIntOS len) const;
+		IntOS IndexOf(NN<Text::String> s) const;
+		IntOS IndexOfC(Text::CStringNN s) const;
 
 		virtual T Put(Optional<Text::String> key, T val);
 		T PutNN(NN<Text::String> key, T val);
@@ -72,15 +72,15 @@ namespace Data
 		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T RemoveC(Text::CStringNN key);
-		T RemoveAt(UOSInt index);
+		T RemoveAt(UIntOS index);
 		virtual Bool IsEmpty() const;
 		virtual void Clear();
 		FastStringObjKeyIterator<T> KeyIterator() const;
 		
-		UInt32 CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const;
+		UInt32 CalcHash(UnsafeArray<const UTF8Char> s, UIntOS len) const;
 	};
 
-	template <class T> void FastStringMapObj<T>::Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val)
+	template <class T> void FastStringMapObj<T>::Insert(UIntOS index, UInt32 hash, NN<Text::String> s, T val)
 	{
 		if (index > this->cnt)
 		{
@@ -130,8 +130,8 @@ namespace Data
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
 		this->items = MemAllocArr(FastStringObjItem<T>, this->capacity);
-		UOSInt i = 0;
-		UOSInt j = this->cnt;
+		UIntOS i = 0;
+		UIntOS j = this->cnt;
 		while (i < j)
 		{
 			this->items[i].hash = map->items[i].hash;
@@ -143,7 +143,7 @@ namespace Data
 
 	template <class T> FastStringMapObj<T>::~FastStringMapObj()
 	{
-		UOSInt i = this->cnt;
+		UIntOS i = this->cnt;
 		while (i-- > 0)
 		{
 			this->items[i].s->Release();
@@ -151,12 +151,12 @@ namespace Data
 		MemFreeArr(this->items);
 	}
 
-	template <class T> UOSInt FastStringMapObj<T>::GetCount() const
+	template <class T> UIntOS FastStringMapObj<T>::GetCount() const
 	{
 		return this->cnt;
 	}
 
-	template <class T> T FastStringMapObj<T>::GetItem(UOSInt index) const
+	template <class T> T FastStringMapObj<T>::GetItem(UIntOS index) const
 	{
 		if (index >= this->cnt)
 		{
@@ -165,7 +165,7 @@ namespace Data
 		return this->items[index].val;
 	}
 
-	template <class T> Optional<Text::String> FastStringMapObj<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> FastStringMapObj<T>::GetKey(UIntOS index) const
 	{
 		if (index >= this->cnt)
 		{
@@ -174,14 +174,14 @@ namespace Data
 		return this->items[index].s;
 	}
 
-	template <class T> OSInt FastStringMapObj<T>::IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const
+	template <class T> IntOS FastStringMapObj<T>::IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UIntOS len) const
 	{
-		OSInt i;
-		OSInt j;
-		OSInt k;
-//		OSInt l;
+		IntOS i;
+		IntOS j;
+		IntOS k;
+//		IntOS l;
 		i = 0;
-		j = (OSInt)this->cnt - 1;
+		j = (IntOS)this->cnt - 1;
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
@@ -249,13 +249,13 @@ namespace Data
 		return -i - 1;
 	}
 
-	template <class T> OSInt FastStringMapObj<T>::IndexOf(NN<Text::String> s) const
+	template <class T> IntOS FastStringMapObj<T>::IndexOf(NN<Text::String> s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
 	}
 
-	template <class T> OSInt FastStringMapObj<T>::IndexOfC(Text::CStringNN s) const
+	template <class T> IntOS FastStringMapObj<T>::IndexOfC(Text::CStringNN s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s.v, s.leng);
 		return IndexOf(hash, s.v, s.leng);
@@ -269,10 +269,10 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::PutNN(NN<Text::String> key, T val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v, key->leng);
+		IntOS index = this->IndexOf(hash, key->v, key->leng);
 		if (index < 0)
 		{
-			this->Insert((UOSInt)~index, hash, key->Clone(), val);
+			this->Insert((UIntOS)~index, hash, key->Clone(), val);
 			return 0;
 		}
 		else
@@ -286,10 +286,10 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::PutC(Text::CStringNN key, T val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
-		OSInt index = this->IndexOf(hash, key.v, key.leng);
+		IntOS index = this->IndexOf(hash, key.v, key.leng);
 		if (index < 0)
 		{
-			this->Insert((UOSInt)~index, hash, Text::String::New(key.v, key.leng), val);
+			this->Insert((UIntOS)~index, hash, Text::String::New(key.v, key.leng), val);
 			return 0;
 		}
 		else
@@ -308,7 +308,7 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::GetNN(NN<Text::String> key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v, key->leng);
+		IntOS index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -319,7 +319,7 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::GetC(Text::CStringNN key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
-		OSInt index = this->IndexOf(hash, key.v, key.leng);
+		IntOS index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -335,15 +335,15 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::RemoveNN(NN<Text::String> key)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v, key->leng);
+		IntOS index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
-			if ((UOSInt)index < this->cnt)
+			if ((UIntOS)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UIntOS)index));
 			}
 			return oldVal;
 		}
@@ -353,31 +353,31 @@ namespace Data
 	template <class T> T FastStringMapObj<T>::RemoveC(Text::CStringNN key)
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
-		OSInt index = this->IndexOf(hash, key.v, key.leng);
+		IntOS index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
-			if ((UOSInt)index < this->cnt)
+			if ((UIntOS)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UIntOS)index));
 			}
 			return oldVal;
 		}
 		return 0;
 	}
 
-	template <class T> T FastStringMapObj<T>::RemoveAt(UOSInt index)
+	template <class T> T FastStringMapObj<T>::RemoveAt(UIntOS index)
 	{
 		if (index < this->cnt)
 		{
 			T oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
-			if ((UOSInt)index < this->cnt)
+			if ((UIntOS)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringObjItem<T>) * (this->cnt - (UIntOS)index));
 			}
 			return oldVal;
 		}
@@ -391,7 +391,7 @@ namespace Data
 
 	template <class T> void FastStringMapObj<T>::Clear()
 	{
-		UOSInt i = this->cnt;
+		UIntOS i = this->cnt;
 		while (i-- > 0)
 		{
 			this->items[i].s->Release();
@@ -404,7 +404,7 @@ namespace Data
 		return FastStringObjKeyIterator<T>(this->items, this->cnt);
 	}
 
-	template <class T> UInt32 FastStringMapObj<T>::CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const
+	template <class T> UInt32 FastStringMapObj<T>::CalcHash(UnsafeArray<const UTF8Char> s, UIntOS len) const
 	{
 		return this->crc.CalcDirect(s, len);
 	}

@@ -6,8 +6,8 @@
 
 extern "C"
 {
-	void CSRGB8_RGB8_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, UOSInt nColor);
-	void CSRGB8_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UOSInt srcNBits, UOSInt destNbits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
+	void CSRGB8_RGB8_UpdateRGBTablePal(UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable, UIntOS nColor);
+	void CSRGB8_RGB8_Convert(UInt8 *srcPtr, UInt8 *destPtr, UIntOS width, UIntOS height, IntOS srcRGBBpl, IntOS destRGBBpl, UIntOS srcNBits, UIntOS destNbits, UInt8 *srcPal, UInt8 *destPal, UInt8 *rgbTable);
 }
 
 void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
@@ -114,13 +114,13 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	NN<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
 	NN<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
 	NN<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
-	OSInt i;
+	IntOS i;
 
 
 	i = 256;
 	while (i-- > 0)
 	{
-		Double dV = OSInt2Double(i) / 255.0;
+		Double dV = IntOS2Double(i) / 255.0;
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dV) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dV) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dV) * bMul);
@@ -137,11 +137,11 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 
 	if (this->srcPal.NotNull())
 	{
-		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UOSInt)1 << this->srcNBits));
+		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UIntOS)1 << this->srcNBits));
 	}
 }
 
-Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
+Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UIntOS srcNBits, Media::PixelFormat srcPF, UIntOS destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
 {
 	this->srcNBits = srcNBits;
 	this->destNBits = destNBits;
@@ -161,7 +161,7 @@ Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, U
 
 	if (this->srcNBits <= 8)
 	{
-		UOSInt palSize = (UOSInt)(4 << this->srcNBits);
+		UIntOS palSize = (UIntOS)(4 << this->srcNBits);
 		this->srcPal = MemAlloc(UInt8, palSize);
 		this->destPal = MemAlloc(UInt8, palSize);
 	}
@@ -191,7 +191,7 @@ Media::CS::CSRGB8_RGB8::~CSRGB8_RGB8()
 	}
 }
 
-void Media::CS::CSRGB8_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB8_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS dispWidth, UIntOS dispHeight, UIntOS srcStoreWidth, UIntOS srcStoreHeight, IntOS destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -200,18 +200,18 @@ void Media::CS::CSRGB8_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	}
 	if (invert)
 	{
-		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (IntOS)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB8_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
+	CSRGB8_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 }
 
-UOSInt Media::CS::CSRGB8_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB8_RGB8::GetSrcFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * (this->srcNBits >> 3);
 }
 
-UOSInt Media::CS::CSRGB8_RGB8::GetDestFrameSize(UOSInt width, UOSInt height)
+UIntOS Media::CS::CSRGB8_RGB8::GetDestFrameSize(UIntOS width, UIntOS height)
 {
 	return width * height * (this->destNBits >> 3);
 }
@@ -221,7 +221,7 @@ void Media::CS::CSRGB8_RGB8::SetPalette(UnsafeArray<UInt8> pal)
 	UnsafeArray<UInt8> srcPal;
 	if (this->srcPal.SetTo(srcPal))
 	{
-		UOSInt nColor = (UOSInt)(4 << this->srcNBits);
+		UIntOS nColor = (UIntOS)(4 << this->srcNBits);
 		MemCopyNO(&srcPal[0], &pal[0], nColor);
 		this->rgbUpdated = true;
 	}

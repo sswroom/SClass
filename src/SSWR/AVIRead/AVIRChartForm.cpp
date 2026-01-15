@@ -10,7 +10,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRChartForm::SizeChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChartForm>();
-	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
+	Math::Size2D<UIntOS> sz = me->pbMain->GetSizeP();
 	if (sz.x == 0 || sz.y == 0)
 		return;
 	NN<Media::DrawImage> gimg;
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::SizeChanged(AnyType userObj)
 		Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
 		gimg->SetHDPI(dpi);
 		gimg->SetVDPI(dpi);
-		me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+		me->chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 		me->pbMain->SetImageDImg(gimg.Ptr());
 		me->core->GetDrawEngine()->DeleteImage(gimg);
 	}

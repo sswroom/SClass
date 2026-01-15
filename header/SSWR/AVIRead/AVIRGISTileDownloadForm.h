@@ -22,7 +22,7 @@ namespace SSWR
 				NN<AVIRGISTileDownloadForm> me;
 				NN<Sync::Event> threadEvt;
 				Int32 threadStat; //0 = not running, 1 = idle, 2 = has task, 3 = toStop
-				UOSInt lyrId;
+				UIntOS lyrId;
 				Math::Coord2D<Int32> imageId;
 				Optional<Map::TileMapWriter> writer;
 				NN<Map::TileMap> tileMap;
@@ -50,30 +50,30 @@ namespace SSWR
 			Math::Coord2DDbl sel2;
 			Bool selecting;
 			Bool isDown;
-			Math::Coord2D<OSInt> downPos;
+			Math::Coord2D<IntOS> downPos;
 
 			Int32 errCnt;
 			Sync::Event mainEvt;
 			Bool stopDownload;
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			UnsafeArray<ThreadStat> threadStat;
 
 			NN<Map::TileMapLayer> lyr;
 			NN<AVIRMapNavigator> navi;
 
-			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 
 			static void __stdcall OnAreaClicked(AnyType userObj);
 			static void __stdcall OnSaveDirClicked(AnyType userObj);
 			static void __stdcall OnSaveFileClicked(AnyType userObj);
 			static void __stdcall OnStopClicked(AnyType userObj);
 
-			void SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel);
-			void SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel);
-			void WriteTiles(NN<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel);
-			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
+			void SaveTilesDir(Text::CStringNN folderName, UIntOS userMinLevel, UIntOS userMaxLevel);
+			void SaveTilesFile(Text::CStringNN fileName, UIntOS fileType, UIntOS userMinLevel, UIntOS userMaxLevel);
+			void WriteTiles(NN<Map::TileMapWriter> writer, UIntOS userMinLevel, UIntOS userMaxLevel);
+			Bool GetLevels(OutParam<UIntOS> minLevel, OutParam<UIntOS> maxLevel);
 			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
 			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<AVIRMapNavigator> navi);

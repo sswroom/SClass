@@ -24,7 +24,7 @@ void Data::Compress::LZWEncStream::ResetTable()
 	this->maxCodeLeng = 1;
 }
 
-Data::Compress::LZWEncStream::LZWEncStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWEncStream::LZWEncStream(NN<IO::Stream> stm, Bool lsb, UIntOS minCodeSize, UIntOS maxCodeSize, UIntOS codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->tableSize = (Int32)(1 << maxCodeSize);
 	this->lzwTable = MemAllocArr(TableItem, this->tableSize);
@@ -51,8 +51,8 @@ Data::Compress::LZWEncStream::LZWEncStream(NN<IO::Stream> stm, Bool lsb, UOSInt 
 Data::Compress::LZWEncStream::~LZWEncStream()
 {
 	UnsafeArray<UInt8> buff = this->encBuff;
-	OSInt i;
-	OSInt j;
+	IntOS i;
+	IntOS j;
 	Int32 bestCode;
 	UInt8 bestCodeLen;
 	UInt8 codeLen;
@@ -134,22 +134,22 @@ Data::Compress::LZWEncStream::~LZWEncStream()
 	MemFreeArr(this->encBuff);
 }
 
-UOSInt Data::Compress::LZWEncStream::Read(const Data::ByteArray &buff)
+UIntOS Data::Compress::LZWEncStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::LZWEncStream::Write(Data::ByteArrayR buff)
+UIntOS Data::Compress::LZWEncStream::Write(Data::ByteArrayR buff)
 {
 	UnsafeArrayOpt<UInt8> relBuff = 0;
 	UnsafeArray<UInt8> nnrelBuff;
-	UOSInt sizeLeft;
-	UOSInt size = buff.GetSize();
+	UIntOS sizeLeft;
+	UIntOS size = buff.GetSize();
 	Int32 bestCode;
 	Int32 bestCodeLen;
 	Int32 codeLen;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (this->buffSize == 0)
 	{
 		sizeLeft = size;

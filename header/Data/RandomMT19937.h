@@ -7,7 +7,7 @@ namespace Data
 	{
 	private:
 		UnsafeArray<UInt32> mt;
-		OSInt mt_index;
+		IntOS mt_index;
 
 	public:
 		RandomMT19937(UInt32 seed);

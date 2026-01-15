@@ -4,7 +4,7 @@ global Deinterlace8_VerticalFilter
 global Deinterlace8_VerticalFilterOdd
 global Deinterlace8_VerticalFilterEven
 
-;void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+;void Deinterlace8_VerticalFilter(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep);
 ;0 xmm6
 ;16 xmm7
 ;32 rdi
@@ -100,7 +100,7 @@ vflop3:
 	pop rbp
 	ret
 
-;void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+;void Deinterlace8_VerticalFilterOdd(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep);
 ;0 xmm6
 ;16 xmm7
 ;32 rdi
@@ -139,7 +139,7 @@ Deinterlace8_VerticalFilterOdd:
 	jmp vfostart
 	
 	align 16
-vfosstart:							;if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+vfosstart:							;if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 	mov rax,qword [rsp+104] ;height
 	shr r9,1 ;width
 	shr rax,1
@@ -341,7 +341,7 @@ vfoexit:
 	pop rbp
 	ret
 
-;void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+;void Deinterlace8_VerticalFilterEven(UInt8 *inPt, UInt8 *inPtCurr, UInt8 *outPt, IntOS width, IntOS height, IntOS tap, IntOS *index, Int64 *weight, IntOS sstep, IntOS dstep);
 ;0 xmm6
 ;16 xmm7
 ;32 rdi
@@ -380,7 +380,7 @@ Deinterlace8_VerticalFilterEven:
 	jmp vfestart
 
 	align 16
-vfesstart:								;if ((width & 3) != 0 || (((OSInt)outPt) & 15) != 0 || (dstep & 15) != 0)
+vfesstart:								;if ((width & 3) != 0 || (((IntOS)outPt) & 15) != 0 || (dstep & 15) != 0)
 	mov rax,qword [rsp+104] ;height
 	shr r9,1 ;width
 	shr rax,1

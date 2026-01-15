@@ -13,7 +13,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 	UInt32 fullClk = 1000000 / me->baudRate;
 	UInt32 halfClk = fullClk >> 1;
 	Bool started;
-	UOSInt readPos;
+	UIntOS readPos;
 	UInt8 v;
 	Int64 nextTime;
 	Int32 t;
@@ -103,7 +103,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 	return 0;
 }
 
-IO::RS232GPIO::RS232GPIO(NN<IO::GPIOControl> gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(CSTR("RS-232"))
+IO::RS232GPIO::RS232GPIO(NN<IO::GPIOControl> gpio, UIntOS rxdPin, UIntOS txdPin, UInt32 baudRate) : IO::Stream(CSTR("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;
@@ -134,7 +134,7 @@ Bool IO::RS232GPIO::IsDown() const
 	return !this->running;
 }
 
-UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
+UIntOS IO::RS232GPIO::Read(const Data::ByteArray &buff)
 {
 	Manage::HiResClock clk;
 	clk.Start();
@@ -160,18 +160,18 @@ UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
 	{
 		return 0;
 	}
-	UOSInt bStart = this->readBuffStart;
-	UOSInt bEnd = this->readBuffEnd;
-	UOSInt buffSize = bEnd - bStart;
+	UIntOS bStart = this->readBuffStart;
+	UIntOS bEnd = this->readBuffEnd;
+	UIntOS buffSize = bEnd - bStart;
 	Data::ByteArray myBuff = buff;
-	if ((OSInt)buffSize < 0)
+	if ((IntOS)buffSize < 0)
 	{
 		buffSize += RS232GPIO_BUFFSIZE;
 	}
 	if (buffSize > myBuff.GetSize())
 	{
 		bEnd -= buffSize - myBuff.GetSize();
-		if ((OSInt)bEnd < 0)
+		if ((IntOS)bEnd < 0)
 		{
 			bEnd += RS232GPIO_BUFFSIZE;
 		}
@@ -189,10 +189,10 @@ UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
 	return buffSize;
 }
 
-UOSInt IO::RS232GPIO::Write(Data::ByteArrayR buff)
+UIntOS IO::RS232GPIO::Write(Data::ByteArrayR buff)
 {
 	UInt32 fullClk = 1000000 / this->baudRate;
-	UOSInt ret = buff.GetSize();
+	UIntOS ret = buff.GetSize();
 	UInt8 v;
 	while (buff.GetSize() > 0)
 	{
@@ -236,7 +236,7 @@ Bool IO::RS232GPIO::HasData()
 
 Optional<IO::StreamReadReq> IO::RS232GPIO::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	UOSInt ret = Read(buff);
+	UIntOS ret = Read(buff);
 	if (ret)
 	{
 		evt->Set();
@@ -244,10 +244,10 @@ Optional<IO::StreamReadReq> IO::RS232GPIO::BeginRead(const Data::ByteArray &buff
 	return (IO::StreamReadReq*)ret;
 }
 
-UOSInt IO::RS232GPIO::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
+UIntOS IO::RS232GPIO::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::RS232GPIO::CancelRead(NN<IO::StreamReadReq> reqData)
@@ -256,7 +256,7 @@ void IO::RS232GPIO::CancelRead(NN<IO::StreamReadReq> reqData)
 
 Optional<IO::StreamWriteReq> IO::RS232GPIO::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	UOSInt ret = Write(buff);
+	UIntOS ret = Write(buff);
 	if (ret)
 	{
 		evt->Set();
@@ -264,9 +264,9 @@ Optional<IO::StreamWriteReq> IO::RS232GPIO::BeginWrite(Data::ByteArrayR buff, NN
 	return (IO::StreamWriteReq*)ret;
 }
 
-UOSInt IO::RS232GPIO::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
+UIntOS IO::RS232GPIO::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData.Ptr();
+	return (UIntOS)reqData.Ptr();
 }
 
 void IO::RS232GPIO::CancelWrite(NN<IO::StreamWriteReq> reqData)

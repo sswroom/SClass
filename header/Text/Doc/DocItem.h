@@ -31,10 +31,10 @@ namespace Text
 
 			virtual DocItemType GetItemType() = 0;
 
-			virtual UOSInt Add(NN<DocItem> item);
-			virtual UOSInt GetCount() const;
-			virtual NN<DocItem> GetItemNoCheck(UOSInt index) const;
-			virtual Optional<DocItem> GetItem(UOSInt index) const;
+			virtual UIntOS Add(NN<DocItem> item);
+			virtual UIntOS GetCount() const;
+			virtual NN<DocItem> GetItemNoCheck(UIntOS index) const;
+			virtual Optional<DocItem> GetItem(UIntOS index) const;
 		};
 	}
 }

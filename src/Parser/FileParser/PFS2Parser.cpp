@@ -50,8 +50,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 	UInt32 hdrSize;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	OSInt fileCnt = 0;
-	UOSInt i;
+	IntOS fileCnt = 0;
+	UIntOS i;
 	Text::Encoding enc(932);
 
 	if (hdr[0] != 'p' || hdr[1] != 'f' || hdr[2] != '2')

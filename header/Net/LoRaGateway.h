@@ -41,7 +41,7 @@ namespace Net
 		void UpdatePos(Double lat, Double lon, Int32 altitude);
 		Bool IsError();
 		UInt16 NextToken();
-		Bool SendPushData(UnsafeArray<const UInt8> data, UOSInt dataLeng);
+		Bool SendPushData(UnsafeArray<const UInt8> data, UIntOS dataLeng);
 	};
 }
 #endif

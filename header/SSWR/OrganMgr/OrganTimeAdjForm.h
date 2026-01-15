@@ -59,7 +59,7 @@ namespace SSWR
 			static void __stdcall OnSpeciesChg(AnyType userObj);
 			static void __stdcall OnTileUpdated(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnMapScaleScroll(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnMapScaleScroll(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTrackChg(AnyType userObj);
 			static void __stdcall OnPictureChg(AnyType userObj);
 			static void __stdcall OnCameraChg(AnyType userObj);
@@ -67,7 +67,7 @@ namespace SSWR
 			static void __stdcall OnTimeAddClicked(AnyType userObj);
 			static void __stdcall OnTimeSubClicked(AnyType userObj);
 			static void __stdcall OnTimeApplyClicked(AnyType userObj);
-			void UpdateSelTime(UnsafeArray<const UTF8Char> camera, UOSInt cameraLen, Int32 timeAdj);
+			void UpdateSelTime(UnsafeArray<const UTF8Char> camera, UIntOS cameraLen, Int32 timeAdj);
 		public:
 			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<DataFileInfo> dataFile);
 			virtual ~OrganTimeAdjForm();

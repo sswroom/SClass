@@ -11,15 +11,15 @@
 #endif
 
 typedef BOOL (WINAPI *BoolFunc)();
-typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
-typedef BOOL (WINAPI *AwareFunc2)(OSInt val);
+typedef HRESULT (WINAPI *AwareFunc)(IntOS val);
+typedef BOOL (WINAPI *AwareFunc2)(IntOS val);
 
 Int32 MyMain(NN<Core::ProgControl> ctrl);
 
 struct WinProgControl : public Core::ProgControl
 {
 	UI::InstanceHandle *hInst;
-	UOSInt argc;
+	UIntOS argc;
 	UnsafeArrayOpt<UnsafeArray<UTF8Char>> argv;
 };
 
@@ -37,7 +37,7 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 	Bool isQuote = false;
 	const WChar *s = cmdLine;
 	WChar *outPtr;
-	OSInt chCnt = 0;
+	IntOS chCnt = 0;
 	while (true)
 	{
 		c = *s++;
@@ -65,8 +65,8 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 	}
 	if (chCnt <= 0)
 		return 0;
-	WChar **ret = (WChar **)LocalAlloc(LMEM_FIXED, sizeof(OSInt) * cnt + (chCnt + cnt) * sizeof(WChar));
-	outPtr = (WChar*)&((UInt8*)ret)[sizeof(OSInt) * cnt];
+	WChar **ret = (WChar **)LocalAlloc(LMEM_FIXED, sizeof(IntOS) * cnt + (chCnt + cnt) * sizeof(WChar));
+	outPtr = (WChar*)&((UInt8*)ret)[sizeof(IntOS) * cnt];
 	s = cmdLine;
 	i = 0;
 	while (true)
@@ -108,17 +108,17 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UnsafeArray<UnsafeArray<UTF8Char>> __stdcall WinProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall WinProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	NN<WinProgControl> ctrl = NN<WinProgControl>::ConvertFrom(progCtrl);
 	UnsafeArray<UnsafeArray<UTF8Char>> nnargv;
 	if (!ctrl->argv.SetTo(nnargv))
 	{
 		Int32 argc;
-		UOSInt i;
+		UIntOS i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 		ctrl->argv = nnargv = MemAllocArr(UnsafeArray<UTF8Char>, (UInt32)argc);
-		ctrl->argc = (UOSInt)argc;
+		ctrl->argc = (UIntOS)argc;
 		i = ctrl->argc;
 		while (i-- > 0)
 		{
@@ -157,7 +157,7 @@ void WinProgControl_Destroy(NN<WinProgControl> ctrl)
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	if (ctrl->argv.SetTo(argv))
 	{
-		UOSInt i = ctrl->argc;
+		UIntOS i = ctrl->argc;
 		while (i-- > 0)
 		{
 			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));

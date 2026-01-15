@@ -20,7 +20,7 @@ namespace Text
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMapObj<Text::String*> *map);
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, NN<Data::NamedClass<T>> cls);
-		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UIntOS nameLen);
 		static void Int32Join(NN<Text::StringBuilderUTF8> sb, NN<const Data::List<Int32>> list, Text::CStringNN seperator);
 		static Bool IsNonASCII(UnsafeArray<const UTF8Char> s);
 		static Bool IsTextASCII(const Data::ByteArrayR &buff);
@@ -31,11 +31,11 @@ namespace Text
 		static Bool IsHKID(Text::CStringNN hkid);
 		static UnsafeArray<const UTF8Char> Null2Empty(UnsafeArrayOpt<const UTF8Char> s);
 		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListNative<Double>> outArr);
-		static UOSInt SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr);
+		static UIntOS SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr);
 		static Bool Equals(Optional<Text::String> s1, Optional<Text::String> s2);
-		static OSInt Compare(Optional<Text::String> s1, Optional<Text::String> s2);
-		static OSInt CompareICase(Optional<Text::String> s1, Optional<Text::String> s2);
-		static Math::Size2D<UOSInt> GetMonospaceSize(UnsafeArray<const UTF8Char> s);
+		static IntOS Compare(Optional<Text::String> s1, Optional<Text::String> s2);
+		static IntOS CompareICase(Optional<Text::String> s1, Optional<Text::String> s2);
+		static Math::Size2D<UIntOS> GetMonospaceSize(UnsafeArray<const UTF8Char> s);
 		static void RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList);
 	};
 }
@@ -46,8 +46,8 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 	UnsafeArray<UTF8Char> sptr;
 	sb->AppendUTF8Char('{');
 	Bool found = false;
-	UOSInt i = 0;
-	UOSInt j = cls->GetFieldCount();
+	UIntOS i = 0;
+	UIntOS j = cls->GetFieldCount();
 	while (i < j)
 	{
 		if (found)
@@ -56,7 +56,7 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 		}
 		found = true;
 		sptr = Text::JSText::ToJSTextDQuote(sbuff, cls->GetFieldName(i));
-		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb->AppendUTF8Char(':');
 		NN<Data::VariItem> item;
 		if (cls->GetNewValue(i, obj).SetTo(item))
@@ -73,15 +73,15 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 	sb->AppendUTF8Char('}');
 }
 
-template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UIntOS nameLen)
 {
 	if (list == 0)
 	{
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	sb->AppendUTF8Char('[');
 	i = 0;
 	j = list->GetCount();

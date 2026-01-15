@@ -64,15 +64,15 @@ void IO::FileStream::InitStream(UnsafeArrayOpt<const WChar> fileName, FileMode m
 	}
 
 #if defined(__USE_LARGEFILE64)
-	this->handle = (void*)(OSInt)open64((const Char*)this->sourceName->v.Ptr(), flags, opmode);
+	this->handle = (void*)(IntOS)open64((const Char*)this->sourceName->v.Ptr(), flags, opmode);
 #else
-	this->handle = (void*)(OSInt)open((const Char*)this->sourceName->v.Ptr(), flags, opmode);
+	this->handle = (void*)(IntOS)open((const Char*)this->sourceName->v.Ptr(), flags, opmode);
 #endif
-	if ((OSInt)this->handle == -1)
+	if ((IntOS)this->handle == -1)
 	{
 		this->handle = 0;
 	}
-	if (mode == FileMode::Append && (OSInt)this->handle > 0)
+	if (mode == FileMode::Append && (IntOS)this->handle > 0)
 	{
 		this->SeekFromEnd(0);
 	}
@@ -107,23 +107,23 @@ IO::FileStream::~FileStream()
 
 Bool IO::FileStream::IsDown() const
 {
-	return (OSInt)this->handle == 0;
+	return (IntOS)this->handle == 0;
 }
 
 Bool IO::FileStream::IsError() const
 {
-	return (OSInt)this->handle == 0;
+	return (IntOS)this->handle == 0;
 }
 
-UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
+UIntOS IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (this->handle == 0)
 		return 0;
-	OSInt readSize = read((int)(OSInt)this->handle, buff.Arr().Ptr(), buff.GetSize());
+	IntOS readSize = read((int)(IntOS)this->handle, buff.Arr().Ptr(), buff.GetSize());
 	if (readSize >= 0)
 	{
-		this->currPos += (UOSInt)readSize;
-		return (UOSInt)readSize;
+		this->currPos += (UIntOS)readSize;
+		return (UIntOS)readSize;
 	}
 	else
 	{
@@ -131,15 +131,15 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileStream::Write(Data::ByteArrayR buff)
+UIntOS IO::FileStream::Write(Data::ByteArrayR buff)
 {
 	if (this->handle == 0)
 		return 0;
-	OSInt readSize = write((int)(OSInt)this->handle, buff.Arr().Ptr(), buff.GetSize());
+	IntOS readSize = write((int)(IntOS)this->handle, buff.Arr().Ptr(), buff.GetSize());
 	if (readSize >= 0)
 	{
-		this->currPos += (UOSInt)readSize;
-		return (UOSInt)readSize;
+		this->currPos += (UIntOS)readSize;
+		return (UIntOS)readSize;
 	}
 	else
 	{
@@ -151,14 +151,14 @@ Int32 IO::FileStream::Flush()
 {
 	if (this->handle == 0)
 		return 0;
-	return fsync((int)(OSInt)this->handle);
+	return fsync((int)(IntOS)this->handle);
 }
 
 void IO::FileStream::Close()
 {
 	if (this->handle)
 	{
-		close((int)(OSInt)this->handle);
+		close((int)(IntOS)this->handle);
 		this->handle = 0;
 	}
 }
@@ -173,9 +173,9 @@ UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
 	if (this->handle == 0)
 		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, (Int64)position, SEEK_SET);
+	this->currPos = (UInt64)lseek((int)(IntOS)this->handle, (Int64)position, SEEK_SET);
 #else
-	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, (Int64)position, SEEK_SET);
+	this->currPos = (UInt64)lseek64((int)(IntOS)this->handle, (Int64)position, SEEK_SET);
 #endif
 	return this->currPos;
 }
@@ -186,9 +186,9 @@ UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
 	if (this->handle == 0)
 		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek((int)(IntOS)this->handle, position, SEEK_CUR);
 #else
-	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek64((int)(IntOS)this->handle, position, SEEK_CUR);
 #endif
 	return this->currPos;
 }
@@ -199,9 +199,9 @@ UInt64 IO::FileStream::SeekFromEnd(Int64 position)
 	if (this->handle == 0)
 		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, position, SEEK_END);
+	this->currPos = (UInt64)lseek((int)(IntOS)this->handle, position, SEEK_END);
 #else
-	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, position, SEEK_END);
+	this->currPos = (UInt64)lseek64((int)(IntOS)this->handle, position, SEEK_END);
 #endif
 	return this->currPos;
 }
@@ -225,14 +225,14 @@ void IO::FileStream::SetLength(UInt64 newLength)
 		return;
 #if defined(__APPLE__)
 	fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, (off_t)newLength};
-	int ret = fcntl((int)(OSInt)this->handle, F_PREALLOCATE, &store);
+	int ret = fcntl((int)(IntOS)this->handle, F_PREALLOCATE, &store);
 	if (ret == -1)
 	{
 		store.fst_flags = F_ALLOCATEALL;
-		fcntl((int)(OSInt)this->handle, F_PREALLOCATE, &store);
+		fcntl((int)(IntOS)this->handle, F_PREALLOCATE, &store);
 	}
 #elif !defined(__ANDROID__)
-	posix_fallocate((int)(OSInt)this->handle, (off_t)this->currPos, (off_t)(newLength - this->currPos));
+	posix_fallocate((int)(IntOS)this->handle, (off_t)this->currPos, (off_t)(newLength - this->currPos));
 #endif
 }
 
@@ -264,7 +264,7 @@ void IO::FileStream::GetFileTimes(Optional<Data::DateTime> creationTime, Optiona
 	}
 	else
 	{
-		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+		if (fstat64((int)(IntOS)this->handle, &s) != 0)
 			return;
 	}
 #else
@@ -276,7 +276,7 @@ void IO::FileStream::GetFileTimes(Optional<Data::DateTime> creationTime, Optiona
 	}
 	else
 	{
-		if (fstat((int)(OSInt)this->handle, &s) != 0)
+		if (fstat((int)(IntOS)this->handle, &s) != 0)
 			return;
 	}
 #endif
@@ -321,7 +321,7 @@ void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<D
 	}
 	else
 	{
-		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+		if (fstat64((int)(IntOS)this->handle, &s) != 0)
 			return;
 	}
 #else
@@ -333,7 +333,7 @@ void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<D
 	}
 	else
 	{
-		if (fstat((int)(OSInt)this->handle, &s) != 0)
+		if (fstat((int)(IntOS)this->handle, &s) != 0)
 			return;
 	}
 #endif
@@ -377,7 +377,7 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	}
 	else
 	{
-		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+		if (fstat64((int)(IntOS)this->handle, &s) != 0)
 			return Data::Timestamp(0);
 	}
 #else
@@ -389,7 +389,7 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	}
 	else
 	{
-		if (fstat((int)(OSInt)this->handle, &s) != 0)
+		if (fstat((int)(IntOS)this->handle, &s) != 0)
 			return Data::Timestamp(0);
 	}
 #endif
@@ -412,7 +412,7 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	}
 	else
 	{
-		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+		if (fstat64((int)(IntOS)this->handle, &s) != 0)
 			return Data::Timestamp(0);
 	}
 #else
@@ -424,7 +424,7 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	}
 	else
 	{
-		if (fstat((int)(OSInt)this->handle, &s) != 0)
+		if (fstat((int)(IntOS)this->handle, &s) != 0)
 			return Data::Timestamp(0);
 	}
 #endif
@@ -502,7 +502,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	utime((const Char*)this->sourceName->v.Ptr(), &t);
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UOSInt maxBuffSize)
+UIntOS IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UIntOS maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())
@@ -514,7 +514,7 @@ UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buf
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
+	UIntOS readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

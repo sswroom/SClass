@@ -8,10 +8,10 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(AnyType userObj)
 {
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	NN<UserFileInfo> userFile;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int32 spId;
-	spId = (Int32)me->cboSpecies->GetSelectedItem().GetOSInt();
+	spId = (Int32)me->cboSpecies->GetSelectedItem().GetIntOS();
 	me->currFileList.Clear();
 	me->lbPictures->ClearItems();
 	
@@ -48,7 +48,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(AnyType userObj, UOSInt newVal)
+void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(AnyType userObj, UIntOS newVal)
 {
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	me->mapMain->SetMapScale(Double2Int32(me->mapTile->GetLevelScale(newVal)));
@@ -174,8 +174,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 timeAdj;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<UserFileInfo> userFile;
 	Int32 succCnt = 0;
 	Int32 failCnt = 0;
@@ -213,7 +213,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	me->ui->ShowMsgOK(sb.ToCString(), CSTR("Time Adjust"), me);
 }
 
-void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(UnsafeArray<const UTF8Char> camera, UOSInt cameraLen, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(UnsafeArray<const UTF8Char> camera, UIntOS cameraLen, Int32 timeAdj)
 {
 	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
@@ -249,9 +249,9 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	NN<Map::OSM::OSMTileMap> tileMap;
 	NN<Media::StaticImage> stimg;
 	NN<Media::ImageList> imgList;
-	UOSInt i;
-	UOSInt j;
-	OSInt k;
+	UIntOS i;
+	UIntOS j;
+	IntOS k;
 	NN<Text::String> s;
 
 	this->mapUpdated = false;
@@ -263,7 +263,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
 	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UIntOS>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	stimg->FillColor(0xff40ffff);
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
@@ -396,7 +396,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		sbu8.AppendC(UTF8STRC(" "));
 		sbu8.AppendOpt(sp->GetSName());
 
-		this->cboSpecies->AddItem(sbu8.ToCString(), (void*)(OSInt)sp->GetSpeciesId());
+		this->cboSpecies->AddItem(sbu8.ToCString(), (void*)(IntOS)sp->GetSpeciesId());
 		sp.Delete();
 		i++;
 	}

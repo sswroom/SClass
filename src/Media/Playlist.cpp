@@ -10,7 +10,7 @@ void __stdcall Media::Playlist::OnPBEnd(AnyType userObj)
 {
 	NN<Media::Playlist> me = userObj.GetNN<Media::Playlist>();
 	Data::RandomOS random;
-	UOSInt i = (UInt32)random.NextInt15() % me->entries.GetCount();
+	UIntOS i = (UInt32)random.NextInt15() % me->entries.GetCount();
 	me->OpenItem(i);
 }
 
@@ -62,8 +62,8 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 
 	NN<Media::ChapterInfo> chap;
 	NN<Text::String> artist;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Data::Duration nextTime;
 	NN<PlaylistEntry> ent;
 	if (file->GetChapterInfo().SetTo(chap))
@@ -114,7 +114,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 	return true;
 }
 
-Bool Media::Playlist::RemoveEntry(UOSInt index)
+Bool Media::Playlist::RemoveEntry(UIntOS index)
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.RemoveAt(index).SetTo(ent))
@@ -125,8 +125,8 @@ Bool Media::Playlist::RemoveEntry(UOSInt index)
 
 Bool Media::Playlist::AppendPlaylist(NN<Media::Playlist> playlist)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<PlaylistEntry> ent;
 	NN<PlaylistEntry> plent;
 	NN<Text::String> s;
@@ -159,12 +159,12 @@ void Media::Playlist::ClearFiles()
 	this->entries.FreeAll(FreeEntry);
 }
 
-UOSInt Media::Playlist::GetCount() const
+UIntOS Media::Playlist::GetCount() const
 {
 	return this->entries.GetCount();
 }
 
-Optional<Text::String> Media::Playlist::GetTitle(UOSInt index) const
+Optional<Text::String> Media::Playlist::GetTitle(UIntOS index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
@@ -172,7 +172,7 @@ Optional<Text::String> Media::Playlist::GetTitle(UOSInt index) const
 	return ent->title;
 }
 
-Optional<Text::String> Media::Playlist::GetArtist(UOSInt index) const
+Optional<Text::String> Media::Playlist::GetArtist(UIntOS index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
@@ -180,7 +180,7 @@ Optional<Text::String> Media::Playlist::GetArtist(UOSInt index) const
 	return ent->artist;
 }
 
-Optional<Text::String> Media::Playlist::GetFileName(UOSInt index) const
+Optional<Text::String> Media::Playlist::GetFileName(UIntOS index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
@@ -188,7 +188,7 @@ Optional<Text::String> Media::Playlist::GetFileName(UOSInt index) const
 	return ent->fileName;
 }
 
-Data::Duration Media::Playlist::GetTimeStart(UOSInt index) const
+Data::Duration Media::Playlist::GetTimeStart(UIntOS index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
@@ -196,7 +196,7 @@ Data::Duration Media::Playlist::GetTimeStart(UOSInt index) const
 	return ent->timeStart;
 }
 
-Data::Duration Media::Playlist::GetTimeEnd(UOSInt index) const
+Data::Duration Media::Playlist::GetTimeEnd(UIntOS index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
@@ -219,7 +219,7 @@ void Media::Playlist::SetPlayer(Optional<Media::MediaPlayer> player)
 	}
 }
 
-Bool Media::Playlist::OpenItem(UOSInt index)
+Bool Media::Playlist::OpenItem(UIntOS index)
 {
 	NN<PlaylistEntry> ent;
 	NN<Media::MediaPlayer> player;

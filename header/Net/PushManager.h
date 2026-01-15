@@ -60,7 +60,7 @@ namespace Net
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CStringNN token);
 		Bool Send(NN<Data::ArrayListStringNN> userNames, NN<Text::String> message);
-		UOSInt GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage);
+		UIntOS GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<DeviceInfo2>> GetDevices(NN<Sync::MutexUsage> mutUsage);
 		void LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 

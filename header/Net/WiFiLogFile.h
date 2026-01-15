@@ -30,7 +30,7 @@ namespace Net
 	private:
 		Data::ArrayListNN<LogFileEntry> logList;
 
-		UOSInt DirectInsert(NN<LogFileEntry> log);
+		UIntOS DirectInsert(NN<LogFileEntry> log);
 	public:
 		WiFiLogFile();
 		~WiFiLogFile();
@@ -39,11 +39,11 @@ namespace Net
 		Bool StoreFile(Text::CStringNN fileName);
 		void Clear();
 		Optional<LogFileEntry> Get(UInt64 iMAC);
-		OSInt GetIndex(UInt64 iMAC);
+		IntOS GetIndex(UInt64 iMAC);
 		NN<Data::ArrayListNN<LogFileEntry>> GetLogList();
-		Optional<const LogFileEntry> GetItem(UOSInt index);
+		Optional<const LogFileEntry> GetItem(UIntOS index);
 
-		NN<LogFileEntry> AddBSSInfo(NN<Net::WirelessLAN::BSSInfo> bss, OutParam<OSInt> lastIndex);
+		NN<LogFileEntry> AddBSSInfo(NN<Net::WirelessLAN::BSSInfo> bss, OutParam<IntOS> lastIndex);
 	};
 }
 #endif

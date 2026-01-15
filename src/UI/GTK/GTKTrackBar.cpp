@@ -10,15 +10,15 @@ gboolean UI::GTK::GTKTrackBar::SignalValueChanged(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GTK::GTKTrackBar::GTKTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::GTK::GTKTrackBar::GTKTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal) : UI::GUITrackBar(ui, parent)
 {
 	if (minVal >= maxVal)
 	{
 		maxVal = minVal + 1;
 	}
-	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, UOSInt2Double(minVal), UOSInt2Double(maxVal), 1);
+	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, UIntOS2Double(minVal), UIntOS2Double(maxVal), 1);
 	gtk_scale_set_draw_value((GtkScale*)this->hwnd.OrNull(), false);
-	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(currVal));
+	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UIntOS2Double(currVal));
 	g_signal_connect((GtkRange*)this->hwnd.OrNull(), "value-changed", G_CALLBACK(SignalValueChanged), this);
 	parent->AddChild(*this);
 	this->Show();
@@ -28,22 +28,22 @@ UI::GTK::GTKTrackBar::~GTKTrackBar()
 {
 }
 
-OSInt UI::GTK::GTKTrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTrackBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GTK::GTKTrackBar::SetPos(UOSInt pos)
+void UI::GTK::GTKTrackBar::SetPos(UIntOS pos)
 {
-	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(pos));
+	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UIntOS2Double(pos));
 }
 
-void UI::GTK::GTKTrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
+void UI::GTK::GTKTrackBar::SetRange(UIntOS minVal, UIntOS maxVal)
 {
-	gtk_range_set_range((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(minVal), UOSInt2Double(maxVal));
+	gtk_range_set_range((GtkRange*)this->hwnd.OrNull(), UIntOS2Double(minVal), UIntOS2Double(maxVal));
 }
 
-UOSInt UI::GTK::GTKTrackBar::GetPos()
+UIntOS UI::GTK::GTKTrackBar::GetPos()
 {
-	return (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd.OrNull()));
+	return (UIntOS)Double2IntOS(gtk_range_get_value((GtkRange*)this->hwnd.OrNull()));
 }

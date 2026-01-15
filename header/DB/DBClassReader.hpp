@@ -11,7 +11,7 @@ namespace DB
 	private:
 		NN<DB::DBReader> reader;
 		NN<Data::NamedClass<T>> cls;
-		UOSInt *colIndex;
+		UIntOS *colIndex;
 
 	public:
 		DBClassReader(NN<DB::DBReader> reader, NN<Data::NamedClass<T>> cls);
@@ -33,10 +33,10 @@ namespace DB
 		UTF8Char sbuff[256];
 		UTF8Char sbuff2[256];
 		UnsafeArray<UTF8Char> sptr;
-		Data::StringMapNative<UOSInt> colMap2;
+		Data::StringMapNative<UIntOS> colMap2;
 		Bool clsValid = true;
-		UOSInt i = 0;
-		UOSInt j = this->reader->ColCount();
+		UIntOS i = 0;
+		UIntOS j = this->reader->ColCount();
 		while (i < j)
 		{
 			this->reader->GetName(i, sbuff);
@@ -62,7 +62,7 @@ namespace DB
 			return;
 		}
 
-		this->colIndex = MemAlloc(UOSInt, j);
+		this->colIndex = MemAlloc(UIntOS, j);
 		i = 0;
 		while (i < j)
 		{
@@ -91,8 +91,8 @@ namespace DB
 		{
 			NN<T> o = this->cls->CreateObject();
 			Data::VariItem item;
-			UOSInt i = 0;
-			UOSInt j = this->cls->GetFieldCount();
+			UIntOS i = 0;
+			UIntOS j = this->cls->GetFieldCount();
 			while (i < j)
 			{
 				this->reader->GetVariItem(this->colIndex[i], item);
@@ -109,8 +109,8 @@ namespace DB
 		if (this->reader->ReadNext())
 		{
 			Data::VariItem item;
-			UOSInt i = 0;
-			UOSInt j = this->cls->GetFieldCount();
+			UIntOS i = 0;
+			UIntOS j = this->cls->GetFieldCount();
 			while (i < j)
 			{
 				this->reader->GetVariItem(this->colIndex[i], item);

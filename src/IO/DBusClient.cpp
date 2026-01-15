@@ -26,7 +26,7 @@ struct IO::DBusClient::ProxyData
 	const Char *objPath;
 	const Char *interface;
 	Data::StringCMap<PropInfo*> *propList;
-	UOSInt watch;
+	UIntOS watch;
 	PropertyFunction propFunc;
 	void *propData;
 	ProxyFunction removedFunc;
@@ -44,9 +44,9 @@ struct IO::DBusClient::ClassData
 	const Char *basePath;
 	const Char *rootPath;
 	Data::ArrayList<const Char *> *matchRules;
-	UOSInt watch;
-	UOSInt addedWatch;
-	UOSInt removedWatch;
+	UIntOS watch;
+	UIntOS addedWatch;
+	UIntOS removedWatch;
 	DBusPendingCall *pendingCall;
 	DBusPendingCall *getObjectsCall;
 	Bool connected;
@@ -401,7 +401,7 @@ void IO::DBusClient::UpdateProperties(ProxyData *proxy, void *itera, Bool sendCh
 void IO::DBusClient::RefreshProperties()
 {
 	ClassData *client = this->clsData;
-	UOSInt i = client->proxyList->GetCount();
+	UIntOS i = client->proxyList->GetCount();
 	ProxyData *proxy;
 	while (i-- > 0)
 	{
@@ -608,7 +608,7 @@ void IO::DBusClient::ProxyRemove(const Char *path, const Char *interface)
 {
 	ClassData *client = this->clsData;
 	ProxyData *proxy;
-	UOSInt i = client->proxyList->GetCount();
+	UIntOS i = client->proxyList->GetCount();
 	while (i-- > 0)
 	{
 		proxy = client->proxyList->GetItem(i);
@@ -621,10 +621,10 @@ void IO::DBusClient::ProxyRemove(const Char *path, const Char *interface)
 	}
 }
 
-IO::DBusClient::ProxyData *IO::DBusClient::ProxyLookup(UOSInt *index, const Char *path, const Char *interface)
+IO::DBusClient::ProxyData *IO::DBusClient::ProxyLookup(UIntOS *index, const Char *path, const Char *interface)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (index)
 	{
 		i = *index;
@@ -702,8 +702,8 @@ IO::DBusClient::DBusClient(IO::DBusManager *dbusMgr, const Char *service, const 
 		MemFree(client);
 		return;
 	}
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->clsData = client;
 	client->refCount = 0;
 	client->dbusMgr = dbusMgr->Ref();
@@ -763,8 +763,8 @@ IO::DBusClient::~DBusClient()
 			dbus_pending_call_unref(data->getObjectsCall);
 		}
 
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		j = data->matchRules->GetCount();
 		while (i < j)

@@ -9,9 +9,9 @@
 #include "Text/StringBuilderUTF8.h"
 #define DEBUGOBJ "id-dsa"
 
-UOSInt Net::ASN1MIB::CalcLineSpace(UnsafeArray<const UTF8Char> txt)
+UIntOS Net::ASN1MIB::CalcLineSpace(UnsafeArray<const UTF8Char> txt)
 {
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char c;
 	while ((c = *txt++))
 	{
@@ -33,19 +33,19 @@ UOSInt Net::ASN1MIB::CalcLineSpace(UnsafeArray<const UTF8Char> txt)
 
 void Net::ASN1MIB::ModuleAppendOID(NN<Net::ASN1MIB::ModuleInfo> module, NN<ObjectInfo> obj)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
 	NN<ObjectInfo> obj2;
 	if (obj->oidLen <= 0)
 		return;
 	i = 0;
-	j = (OSInt)module->oidList.GetCount() - 1;
+	j = (IntOS)module->oidList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		obj2 = module->oidList.GetItemNoCheck((UOSInt)k);
+		obj2 = module->oidList.GetItemNoCheck((UIntOS)k);
 		l = Net::ASN1Util::OIDCompare(Data::ByteArrayR(obj2->oid, obj2->oidLen), Data::ByteArrayR(obj->oid, obj->oidLen));
 		if (l > 0)
 		{
@@ -60,7 +60,7 @@ void Net::ASN1MIB::ModuleAppendOID(NN<Net::ASN1MIB::ModuleInfo> module, NN<Objec
 			return;
 		}
 	}
-	module->oidList.Insert((UOSInt)i, obj);
+	module->oidList.Insert((UIntOS)i, obj);
 }
 
 Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *oriS, NN<Text::StringBuilderUTF8> errMessage)
@@ -69,11 +69,11 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 	UnsafeArray<const UTF8Char> csptrEnd = oriS->GetEndPtr();
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> oidName;
-	UOSInt oidNameLen;
+	UIntOS oidNameLen;
 	UnsafeArray<const UTF8Char> oidNextLev;
-	UOSInt oidNextLen;
+	UIntOS oidNextLen;
 	Bool isFirst = false;
-	OSInt i;
+	IntOS i;
 	Text::StringBuilderUTF8 sb;
 	while (true)
 	{
@@ -86,9 +86,9 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 		{
 			break;
 		}
-		else if ((i = module->objKeys.SortedIndexOfC(Text::CStringNN(csptr - 1, (UOSInt)(csptrEnd - csptr - 1)))) >= 0)
+		else if ((i = module->objKeys.SortedIndexOfC(Text::CStringNN(csptr - 1, (UIntOS)(csptrEnd - csptr - 1)))) >= 0)
 		{
-			NN<ObjectInfo> refObj = module->objValues.GetItemNoCheck((UOSInt)i);
+			NN<ObjectInfo> refObj = module->objValues.GetItemNoCheck((UIntOS)i);
 			if (!refObj->parsed)
 			{
 				if (!ApplyModuleOID(module, refObj, errMessage))
@@ -133,7 +133,7 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 		c = *csptr++;
 		if (c == ' ')
 		{
-			oidNameLen = (UOSInt)(csptr - oidName - 1);
+			oidNameLen = (UIntOS)(csptr - oidName - 1);
 			break;
 		}
 		else if (c == '}' || c == 0)
@@ -173,7 +173,7 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 	}
 	else
 	{
-		OSInt i = module->objKeys.SortedIndexOfC(sb.ToCString());
+		IntOS i = module->objKeys.SortedIndexOfC(sb.ToCString());
 		NN<ObjectInfo> obj2;
 		if (i < 0)
 		{
@@ -193,7 +193,7 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 		}
 		else
 		{
-			obj2 = module->objValues.GetItemNoCheck((UOSInt)i);
+			obj2 = module->objValues.GetItemNoCheck((UIntOS)i);
 		}
 		if (!obj2->parsed)
 		{
@@ -273,7 +273,7 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 				}
 				if (csptr[i] != '(')
 				{
-					oidNextLen = (UOSInt)(csptr - oidNextLev - 1);
+					oidNextLen = (UIntOS)(csptr - oidNextLev - 1);
 					if (c == '}')
 					{
 						csptr--;
@@ -284,8 +284,8 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 		}
 
 		UInt32 v;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		sb.ClearStr();
 		sb.AppendC(oidNextLev, oidNextLen);
 		i = sb.IndexOf('(');
@@ -397,14 +397,14 @@ Bool Net::ASN1MIB::ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectIn
 Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
-	UOSInt lineSpace;
+	UIntOS i;
+	UIntOS j;
+	UIntOS lineSpace;
 	NN<ObjectInfo> obj;
 	Optional<ObjectInfo> currObj = nullptr;
 	Text::StringBuilderUTF8 sbObjValName;
 	Text::StringBuilderUTF8 sbObjValCont;
-	UOSInt objLineSpace = 0;
+	UIntOS objLineSpace = 0;
 	Bool objIsEqual = false;
 	UTF8Char objBrkType = 0;
 	Bool succ;
@@ -497,7 +497,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							NN<Text::String> typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							obj->typeVal = typeVal.Ptr();
 
-							OSInt brkEndIndex = BranketEnd(typeVal->v, brkEndChar);
+							IntOS brkEndIndex = BranketEnd(typeVal->v, brkEndChar);
 							if (brkEndIndex >= 0)
 							{
 								objBrkType = 0;
@@ -519,7 +519,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									UnsafeArray<const UTF8Char> sptr = SkipWS(&typeVal->v[brkEndIndex]);
 									if (sptr[0] == '(')
 									{
-										OSInt nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
+										IntOS nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 										while (nextEndIndex < 0)
 										{
 											sb.ClearStr();
@@ -542,7 +542,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									{
 										if (Text::StrIndexOfChar(sptr, '{') != INVALID_INDEX)
 										{
-											OSInt nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
+											IntOS nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 											while (nextEndIndex < 0)
 											{
 												sb.ClearStr();
@@ -755,8 +755,8 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							i++;
 						}
 						obj->typeVal = Text::String::New(sb.ToString() + i, sb.GetLength() - i).Ptr();
-						UOSInt startCnt = obj->typeVal->CountChar('{');
-						UOSInt endCnt = obj->typeVal->CountChar('}');
+						UIntOS startCnt = obj->typeVal->CountChar('{');
+						UIntOS endCnt = obj->typeVal->CountChar('}');
 						if (endCnt >= startCnt)
 						{
 							currObj = nullptr;
@@ -889,7 +889,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						}
 						else if ((i = sb.IndexOf(UTF8STRC("("))) != INVALID_INDEX)
 						{
-							j = sb.IndexOf(UTF8STRC(")"), (UOSInt)i);
+							j = sb.IndexOf(UTF8STRC(")"), (UIntOS)i);
 							if (j != INVALID_INDEX && j > i)
 							{
 								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
@@ -915,7 +915,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 					Optional<Net::ASN1MIB::ModuleInfo> impModule;
 					NN<Net::ASN1MIB::ObjectInfo> impObj;
 					Text::PString impSarr[2];
-					UOSInt impCnt;
+					UIntOS impCnt;
 					sb.SetSubstr(7);
 					sb.Trim();
 
@@ -929,10 +929,10 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						i = sb.IndexOf(UTF8STRC("FROM "));
 						if (i != INVALID_INDEX)
 						{
-							impObjNames.AppendC(sb.ToString(), (UOSInt)i);
+							impObjNames.AppendC(sb.ToString(), (UIntOS)i);
 							impObjNames.RTrim();
 
-							sb.SetSubstr((UOSInt)i + 5);
+							sb.SetSubstr((UIntOS)i + 5);
 							sb.Trim();
 							if ((i = sb.IndexOf('{')) != INVALID_INDEX)
 							{
@@ -955,7 +955,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									isEnd = true;
 									sb.RemoveChars(1);
 								}
-								sb.TrimToLength((UOSInt)i);
+								sb.TrimToLength((UIntOS)i);
 								sb.Trim();
 							}
 							else if ((i = sb.IndexOf(' ')) != INVALID_INDEX)
@@ -965,7 +965,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									isEnd = true;
 									sb.RemoveChars(1);
 								}
-								sb.TrimToLength((UOSInt)i);
+								sb.TrimToLength((UIntOS)i);
 							}
 
 							impModule = this->moduleMap.GetC(sb.ToCString());
@@ -978,7 +978,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 								UTF8Char sbuff[512];
 								UnsafeArray<UTF8Char> sptr;
 								sptr = module->moduleFileName->ConcatTo(sbuff);
-								j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+								j = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 								sptr = Text::StrConcatC(&sbuff[j + 1], sb.ToString(), sb.GetLength());
 								succ = LoadFileInner(CSTRP(sbuff, sptr), errMessage, false);
 								if (!succ)
@@ -998,7 +998,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							impSarr[1] = impObjNames;
 							while (true)
 							{
-								UOSInt ui;
+								UIntOS ui;
 								impCnt = Text::StrSplitTrimP(impSarr, 2, impSarr[1], ',');
 
 								i = impSarr[0].IndexOf('{');
@@ -1021,11 +1021,11 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 								ui = module->objKeys.SortedInsert(s);
 								module->objValues.Insert(ui, impObj);
 
-//								OSInt impInd;
+//								IntOS impInd;
 //								impInd = impModule->objKeys->SortedIndexOf(impSarr[0]);
 /*								if (impInd >= 0)
 								{
-									impObj = impModule->objValues->GetItem((UOSInt)impInd);
+									impObj = impModule->objValues->GetItem((UIntOS)impInd);
 									impObj2 = MemAlloc(ObjectInfo, 1);
 									impObj2->objectName = Text::StrCopyNew(impSarr[0]);
 									if (impObj->typeName)
@@ -1046,8 +1046,8 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									NEW_CLASS(impObj2->valCont, Data::ArrayList<const UTF8Char*>());
 									impObj2->impModule = impModule;
 									impObj2->parsed = false;
-									UOSInt ui = 0;
-									UOSInt uj = impObj->valName->GetCount();
+									UIntOS ui = 0;
+									UIntOS uj = impObj->valName->GetCount();
 									while (ui < uj)
 									{
 										impObj2->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(ui)));
@@ -1168,13 +1168,13 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 					if (i != INVALID_INDEX)
 					{
 						j = i;
-						UOSInt k;
+						UIntOS k;
 						while (sb.ToString()[j - 1] == ' ' || sb.ToString()[j - 1] == '\t')
 						{
 							j--;
 						}
 						k = sb.IndexOf(' ');
-						UOSInt l = sb.IndexOf('\t');
+						UIntOS l = sb.IndexOf('\t');
 						if (k == INVALID_INDEX)
 						{
 							k = l;
@@ -1197,7 +1197,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							{
 								k++;
 							}
-							obj->typeName = Text::String::New(sb.ToString() + k, (UOSInt)(j - k)).Ptr();
+							obj->typeName = Text::String::New(sb.ToString() + k, (UIntOS)(j - k)).Ptr();
 						}
 						else
 						{
@@ -1207,7 +1207,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						obj->oidLen = 0;
 						obj->impModule = nullptr;
 						obj->parsed = false;
-						UOSInt ui = module->objKeys.SortedInsert(s);
+						UIntOS ui = module->objKeys.SortedInsert(s);
 						module->objValues.Insert(ui, obj);
 						ui = this->globalModule.objKeys.SortedInsert(s);
 						this->globalModule.objValues.Insert(ui, obj);
@@ -1241,8 +1241,8 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 
 							if (obj->typeVal->IndexOf('{') != INVALID_INDEX)
 							{
-								UOSInt startCnt = obj->typeVal->CountChar('{');
-								UOSInt endCnt = obj->typeVal->CountChar('}');
+								UIntOS startCnt = obj->typeVal->CountChar('{');
+								UIntOS endCnt = obj->typeVal->CountChar('}');
 								if (endCnt >= startCnt)
 								{
 								}
@@ -1254,8 +1254,8 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							}
 							else if ((i = obj->typeVal->CountChar('(')) != INVALID_INDEX)
 							{
-								UOSInt startCnt = obj->typeVal->CountChar('(');
-								UOSInt endCnt = obj->typeVal->CountChar(')');
+								UIntOS startCnt = obj->typeVal->CountChar('(');
+								UIntOS endCnt = obj->typeVal->CountChar(')');
 								if (endCnt >= startCnt)
 								{
 								}
@@ -1412,7 +1412,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						}
 
 						NEW_CLASSNN(obj, ObjectInfo());
-						NN<Text::String> s = Text::String::New(sb.ToString(), (UOSInt)i);
+						NN<Text::String> s = Text::String::New(sb.ToString(), (UIntOS)i);
 						obj->objectName = s.Ptr();
 						while (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 						{
@@ -1423,7 +1423,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						obj->oidLen = 0;
 						obj->impModule = nullptr;
 						obj->parsed = false;
-						UOSInt ui = module->objKeys.SortedInsert(s);
+						UIntOS ui = module->objKeys.SortedInsert(s);
 						module->objValues.Insert(ui, obj);
 						ui = this->globalModule.objKeys.SortedInsert(s);
 						this->globalModule.objValues.Insert(ui, obj);
@@ -1489,7 +1489,7 @@ Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<
 	NN<ModuleInfo> impModule;
 	if (obj->impModule.SetTo(impModule))
 	{
-		OSInt i = impModule->objKeys.SortedIndexOfC(obj->objectName->ToCString());
+		IntOS i = impModule->objKeys.SortedIndexOfC(obj->objectName->ToCString());
 		if (i < 0)
 		{
 			errMessage->AppendC(UTF8STRC("IMPORTS object "));
@@ -1499,7 +1499,7 @@ Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<
 			errMessage->AppendC(UTF8STRC(" not found"));
 			return false;
 		}
-		NN<ObjectInfo> impObj = impModule->objValues.GetItemNoCheck((UOSInt)i);
+		NN<ObjectInfo> impObj = impModule->objValues.GetItemNoCheck((UIntOS)i);
 		if (!impObj->parsed)
 		{
 			if (!ApplyModuleOID(impModule, impObj, errMessage))
@@ -1521,8 +1521,8 @@ Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<
 			MemCopyNO(obj->oid, impObj->oid, impObj->oidLen);
 		}
 
-		UOSInt uk = 0;
-		UOSInt ul = impObj->valName.GetCount();
+		UIntOS uk = 0;
+		UIntOS ul = impObj->valName.GetCount();
 		while (uk < ul)
 		{
 			obj->valName.Add(Text::String::OrEmpty(impObj->valName.GetItem(uk))->Clone());
@@ -1577,8 +1577,8 @@ Bool Net::ASN1MIB::ApplyModuleOIDs(NN<ModuleInfo> module, NN<Text::StringBuilder
 {
 	NN<Data::ArrayListNN<ObjectInfo>> objList = module->objValues;
 	NN<ObjectInfo> obj;
-	UOSInt ui = 0;
-	UOSInt uj = objList->GetCount();
+	UIntOS ui = 0;
+	UIntOS uj = objList->GetCount();
 	while (ui < uj)
 	{
 		obj = objList->GetItemNoCheck(ui);
@@ -1593,7 +1593,7 @@ Bool Net::ASN1MIB::ApplyModuleOIDs(NN<ModuleInfo> module, NN<Text::StringBuilder
 
 Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 {
-	UOSInt i = this->moduleMap.GetCount();
+	UIntOS i = this->moduleMap.GetCount();
 	while (i-- > 0)
 	{
 		if (!ApplyModuleOIDs(this->moduleMap.GetItemNoCheck(i), errMessage))
@@ -1608,8 +1608,8 @@ Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 {
 	Data::ArrayList<ObjectInfo*> *objList = module->objValues;
 	ObjectInfo *obj;
-	UOSInt ui = 0;
-	UOSInt uj = objList->GetCount();
+	UIntOS ui = 0;
+	UIntOS uj = objList->GetCount();
 	while (ui < uj)
 	{
 		obj = objList->GetItem(ui);
@@ -1617,11 +1617,11 @@ Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 		{
 			ModuleInfo *impModule = this->moduleMap->Get(obj->typeName);
 			ObjectInfo *impObj;
-			OSInt impInd;
+			IntOS impInd;
 			impInd = impModule->objKeys->SortedIndexOf(obj->objectName);
 			if (impInd >= 0)
 			{
-				impObj = impModule->objValues->GetItem((UOSInt)impInd);
+				impObj = impModule->objValues->GetItem((UIntOS)impInd);
 				if (!impObj->parsed)
 				{
 					if (!ApplyModuleOID(impModule, impObj, errMessage))
@@ -1642,8 +1642,8 @@ Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 					MemCopyNO(obj->oid, impObj->oid, impObj->oidLen);
 				}
 
-				UOSInt uk = 0;
-				UOSInt ul = impObj->valName->GetCount();
+				UIntOS uk = 0;
+				UIntOS ul = impObj->valName->GetCount();
 				while (uk < ul)
 				{
 					obj->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(uk)));
@@ -1669,7 +1669,7 @@ Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 Bool Net::ASN1MIB::ApplyImports(NN<Text::StringBuilderUTF8> errMessage)
 {
 /*	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
-	UOSInt i = moduleList->GetCount();
+	UIntOS i = moduleList->GetCount();
 	while (i-- > 0)
 	{
 		if (!ApplyModuleImports(moduleList->GetItem(i), errMessage))
@@ -1821,7 +1821,7 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilde
 
 /*	
 	Bool moduleFound = false;
-	OSInt i;
+	IntOS i;
 	while (true)
 	{
 		sb.ClearStr();
@@ -1878,8 +1878,8 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilde
 void Net::ASN1MIB::RemoveSpace(NN<Text::PString> s)
 {
 	UnsafeArray<UTF8Char> str = s->v;
-	UOSInt strLen = s->leng;
-	UOSInt wsCnt = 0;
+	UIntOS strLen = s->leng;
+	UIntOS wsCnt = 0;
 	while (strLen-- > 0)
 	{
 		if (str[strLen] == '\r' || str[strLen] == '\n' || str[strLen] == '\t' || str[strLen] == ' ')
@@ -1891,7 +1891,7 @@ void Net::ASN1MIB::RemoveSpace(NN<Text::PString> s)
 		{
 			if (wsCnt > 1)
 			{
-				s->leng = (UOSInt)(Text::StrLTrim(&str[strLen + 2]) - str);
+				s->leng = (UIntOS)(Text::StrLTrim(&str[strLen + 2]) - str);
 			}
 			wsCnt = 0;
 		}
@@ -1932,13 +1932,13 @@ Bool Net::ASN1MIB::IsUnknownType(Text::CStringNN s)
 	return IsType(s.v) && !IsKnownType(s);
 }
 
-OSInt Net::ASN1MIB::BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType)
+IntOS Net::ASN1MIB::BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType)
 {
-	OSInt i = 0;
+	IntOS i = 0;
 	UTF8Char c;
 	UTF8Char brkStart;
 	UTF8Char brkEnd;
-	UOSInt level;
+	UIntOS level;
 	while (true)
 	{
 		c = s[i++];
@@ -2019,7 +2019,7 @@ NN<Net::ASN1MIB::ModuleInfo> Net::ASN1MIB::GetGlobalModule()
 Optional<Net::ASN1MIB::ModuleInfo> Net::ASN1MIB::GetModuleByFileName(Text::CStringNN fileName)
 {
 	NN<ModuleInfo> module;
-	UOSInt i = this->moduleMap.GetCount();
+	UIntOS i = this->moduleMap.GetCount();
 	while (i-- > 0)
 	{
 		module = this->moduleMap.GetItemNoCheck(i);
@@ -2034,9 +2034,9 @@ void Net::ASN1MIB::UnloadAll()
 	NN<Data::ArrayListNN<ObjectInfo>> objList;
 	NN<ObjectInfo> obj;
 	NN<ModuleInfo> module;
-	UOSInt i = this->moduleMap.GetCount();
-	UOSInt j;
-	UOSInt k;
+	UIntOS i = this->moduleMap.GetCount();
+	UIntOS j;
+	UIntOS k;
 	while (i-- > 0)
 	{
 		module = this->moduleMap.GetItemNoCheck(i);

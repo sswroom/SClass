@@ -20,13 +20,13 @@ void Math::WKTWriter::SetLastError(Text::CStringNN lastError)
 void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
-	UOSInt nPoint;
+	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> pointList = pl->GetPointList(nPoint);
 	UnsafeArrayOpt<Double> zArr = pl->GetZList(nPoint);
 	UnsafeArrayOpt<Double> mArr = pl->GetMList(nPoint);
 	UnsafeArray<Double> nnzArr;
 	UnsafeArray<Double> nnmArr;
-	UOSInt i;
+	UIntOS i;
 	if (!no3D && zArr.SetTo(nnzArr))
 	{
 		if (mArr.SetTo(nnmArr))

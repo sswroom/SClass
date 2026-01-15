@@ -19,8 +19,8 @@ namespace DB
 		UInt8 *recordBuff;
 		Data::VariItem::ItemType *colTypes;
 
-		static UOSInt ReadInt(const UInt8 *buff, UOSInt ofst, UOSInt *outVal);
-		static UOSInt WriteInt(UInt8 *buff, UOSInt ofst, UOSInt val);
+		static UIntOS ReadInt(const UInt8 *buff, UIntOS ofst, UIntOS *outVal);
+		static UIntOS WriteInt(UInt8 *buff, UIntOS ofst, UIntOS val);
 
 		DBDataFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, Bool append);
 		~DBDataFile();
@@ -34,9 +34,9 @@ namespace DB
 	};
 }
 
-template <class T> UOSInt DB::DBDataFile<T>::ReadInt(const UInt8 *buff, UOSInt ofst, UOSInt *outVal)
+template <class T> UIntOS DB::DBDataFile<T>::ReadInt(const UInt8 *buff, UIntOS ofst, UIntOS *outVal)
 {
-	UOSInt val = 0;
+	UIntOS val = 0;
 	UInt8 v;
 	while (true)
 	{
@@ -54,7 +54,7 @@ template <class T> UOSInt DB::DBDataFile<T>::ReadInt(const UInt8 *buff, UOSInt o
 	}
 }
 
-template <class T> UOSInt DB::DBDataFile<T>::WriteInt(UInt8 *buff, UOSInt ofst, UOSInt val)
+template <class T> UIntOS DB::DBDataFile<T>::WriteInt(UInt8 *buff, UIntOS ofst, UIntOS val)
 {
 	if (val < 0x80) // 00 - 7f
 	{
@@ -127,8 +127,8 @@ template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, NN<Da
 	{
 		return;
 	}
-	UOSInt k = 0;
-	UOSInt l = cls->GetFieldCount();
+	UIntOS k = 0;
+	UIntOS l = cls->GetFieldCount();
 	this->recordBuff = MemAlloc(UInt8, 65536);
 	this->colTypes = MemAlloc(Data::VariItem::ItemType, l);
 	if (this->fs->GetPosition() == 0)
@@ -178,9 +178,9 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		return;
 	}
 	Data::VariItem item;
-	UOSInt k;
-	UOSInt l;
-	UOSInt m;
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
 	m = 6;
 	k = 0;
 	l = this->cls->GetFieldCount();
@@ -357,7 +357,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 
 template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, NN<Data::ArrayListNN<T>> dataListOut)
 {
-	UOSInt maxBuffSize = 65536;
+	UIntOS maxBuffSize = 65536;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
@@ -366,13 +366,13 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 	Data::VariItem item;
 	Bool succ = false;
 	UInt8 *buff = MemAlloc(UInt8, maxBuffSize);
-	UOSInt buffSize;
-	UOSInt k;
-	UOSInt l = cls->GetFieldCount();
-	UOSInt m;
-	UOSInt m2;
-	UOSInt m3;
-	UOSInt rowSize;
+	UIntOS buffSize;
+	UIntOS k;
+	UIntOS l = cls->GetFieldCount();
+	UIntOS m;
+	UIntOS m2;
+	UIntOS m3;
+	UIntOS rowSize;
 	Data::VariItem::ItemType *colTypes = MemAlloc(Data::VariItem::ItemType, l);
 	buffSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (buff[0] == 'S' && buff[1] == 'M' && buff[2] == 'D' && buff[3] == 'f')
@@ -612,8 +612,8 @@ template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CStringNN fileName, NN
 		return false;
 	}
 
-	UOSInt i = 0;
-	UOSInt j = dataList->GetCount();
+	UIntOS i = 0;
+	UIntOS j = dataList->GetCount();
 	while (i < j)
 	{
 		file.AddRecord(dataList->GetItemNoCheck(i));

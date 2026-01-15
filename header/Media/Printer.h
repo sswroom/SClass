@@ -14,12 +14,12 @@ namespace Media
 		NN<Text::String> printerName;
 		
 	public:
-		static UOSInt GetPrinterCount();
-		static UnsafeArrayOpt<UTF8Char> GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index);
+		static UIntOS GetPrinterCount();
+		static UnsafeArrayOpt<UTF8Char> GetPrinterName(UnsafeArray<UTF8Char> sbuff, UIntOS index);
 		static Printer *SelectPrinter(Optional<ControlHandle> hWnd);
 
 	private:
-		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
+		Printer(const WChar *printerName, UInt8 *devMode, UIntOS devModeSize);
 	public:
 		Printer(NN<Text::String> printerName);
 		Printer(Text::CStringNN printerName);

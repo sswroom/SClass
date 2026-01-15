@@ -74,14 +74,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 	NN<Net::HTTPClient> cli;
 	Optional<Net::SSLEngine> ssl;
 	UInt8 buff[4096];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt64 totalSize;
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	Optional<Text::String> userName;
 	Optional<Text::String> password;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->threadRunning = true;
 	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!me->threadToStop)
@@ -110,7 +110,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 			while (i < j)
 			{
 				sptr = cli->GetRespHeader(i, sbuff).Or(sbuff);
-				me->respHeaders.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				me->respHeaders.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				i++;
 			}
 			me->respSvrAddr = cli->GetSvrAddr().Ptr()[0];
@@ -139,8 +139,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userO
 	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	if (me->respChanged)
 	{
 		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr).Or(sbuff);
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userO
 
 void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->respHeaders.GetCount();
 	while (i-- > 0)
 	{

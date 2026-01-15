@@ -21,7 +21,7 @@ namespace SSWR
 			typedef struct
 			{
 				NN<AVIRUDPTestForm> me;
-				UOSInt reqCnt;
+				UIntOS reqCnt;
 				Net::SocketUtil::AddressInfo destAddr;
 				UInt16 destPort;
 				Int32 status; //0 = not running, 1 = idle, 2 = procesisng
@@ -44,7 +44,7 @@ namespace SSWR
 			UInt64 lastSentFailCnt;
 			Data::DateTime lastTime;
 
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			UnsafeArray<ThreadStatus> threads;
 			Sync::Event mainEvt;
 

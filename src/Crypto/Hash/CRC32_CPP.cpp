@@ -46,7 +46,7 @@ extern "C" void CRC32_InitTable(UInt32 *tab, UInt32 polynomial)
 	}
 }
 
-extern "C" UInt32 CRC32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
+extern "C" UInt32 CRC32_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, UInt32 currVal)
 {
 	UInt32 v = currVal;
 

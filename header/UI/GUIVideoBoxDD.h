@@ -17,7 +17,7 @@ namespace UI
 			MA_START,
 			MA_PAUSE
 		} MouseAction;
-		typedef void (CALLBACKFUNC MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
+		typedef void (CALLBACKFUNC MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<IntOS> pos);
 	protected:
 		IO::Writer *debugLog;
 		IO::Stream *debugFS;
@@ -27,22 +27,22 @@ namespace UI
 		MouseActionHandler maHdlr;
 		AnyType maHdlrObj;
 		Bool maDown;
-		Math::Coord2D<OSInt> maDownPos;
+		Math::Coord2D<IntOS> maDownPos;
 		Int64 maDownTime;
 
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
 		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
-		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
+		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn);
 
 		virtual void BeginUpdateSize();
 		virtual void EndUpdateSize();
 	public:
-		GUIVideoBoxDD(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt);
+		GUIVideoBoxDD(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UIntOS buffCnt, UIntOS threadCnt);
 		virtual ~GUIVideoBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
 		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
@@ -51,10 +51,10 @@ namespace UI
 		virtual void OnMonitorChanged();
 
 		virtual void OnSurfaceCreated();
-		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
-		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
-		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
-		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseWheel(Math::Coord2D<IntOS> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<IntOS> pos);
+		virtual void OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button);
 
 		void HandleMouseActon(MouseActionHandler hdlr, AnyType userObj);
 

@@ -94,7 +94,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::CString gooAPIK
 	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UnsafeArrayOpt<const UTF8Char> lang)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UnsafeArrayOpt<const UTF8Char> lang)
 {
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> urlStart;
@@ -103,7 +103,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 	Data::DateTime currDt;
 	Int32 i;
 	UInt8 databuff[2048];
-	UOSInt readSize;
+	UIntOS readSize;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	this->srchCnt++;
@@ -113,7 +113,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 	{
 		if (i >= 0)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(200 - i));
+			Sync::SimpleThread::Sleep((UIntOS)(200 - i));
 		}
 	}
 
@@ -140,7 +140,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
-		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
+		hmac.Calc(urlStart, (UIntOS)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
@@ -178,9 +178,9 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 					NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
 					if (jobj->GetObjectValue(CSTR("status")).SetTo(base) && base->Equals(CSTR("OK")))
 					{
-						UOSInt i;
-						UOSInt j;
-						UOSInt bestResult = 0;
+						UIntOS i;
+						UIntOS j;
+						UIntOS bestResult = 0;
 						NN<Text::JSONObject> result;
 						NN<Text::JSONArray> resultType;
 						NN<Text::JSONArray> arr;
@@ -274,7 +274,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 		*buff = 0;
 		this->lastIsError = 2;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
-		sb.AppendC(url, (UOSInt)(sptr - url));
+		sb.AppendC(url, (UIntOS)(sptr - url));
 		errWriter->WriteLine(sb.ToCString());
 	}
 
@@ -283,7 +283,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 	return buff;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -298,7 +298,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{

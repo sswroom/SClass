@@ -14,7 +14,7 @@ struct Media::DRMSurface::ClassData
 	Int32 drmFd;
 	MonitorHandle *hMon;
 	UInt8 *dataPtr;
-	UOSInt dataBpl;
+	UIntOS dataBpl;
 	Media::MonitorSurface *buffSurface;
 	drmModeModeInfo modeInfo;
 	UInt32 fbId;
@@ -41,12 +41,12 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 	{
 		return;
 	}
-	OSInt monIndex = -1 + (OSInt)hMon;
+	IntOS monIndex = -1 + (IntOS)hMon;
 	drmModeConnectorPtr connector;
 	drmModeEncoderPtr enc;
-	OSInt cnt = 0;
-	UOSInt i = 0;
-	UOSInt j = (UInt32)resources->count_connectors;
+	IntOS cnt = 0;
+	UIntOS i = 0;
+	UIntOS j = (UInt32)resources->count_connectors;
 	while (i < j)
 	{
 		connector = drmModeGetConnector(this->clsData->drmFd, resources->connectors[i]);
@@ -66,7 +66,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 					this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
 					this->info->dispSize.x = connector->modes[0].hdisplay;
 					this->info->dispHeight = connector->modes[0].vdisplay;
-					this->info->storeSize = this->info->dispSize; //(UOSInt)this->clsData->dataBpl / (this->info->storeBPP >> 3);
+					this->info->storeSize = this->info->dispSize; //(UIntOS)this->clsData->dataBpl / (this->info->storeBPP >> 3);
 					this->info->byteSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
 					this->info->par2 = 1.0;
 					this->info->hdpi = dpi;
@@ -106,7 +106,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 		return;
 	}
 
-	this->info->storeWidth = (UOSInt)creq.pitch / (this->info->storeBPP >> 3);
+	this->info->storeWidth = (UIntOS)creq.pitch / (this->info->storeBPP >> 3);
 	this->info->byteSize = creq.size;
 	this->clsData->handle = creq.handle;
 
@@ -186,18 +186,18 @@ Media::Image::ImageType Media::DRMSurface::GetImageType()
 	return Media::Image::IT_MONITORSURFACE;
 }
 
-void Media::DRMSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::DRMSurface::GetImageData(UInt8 *destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown)
 {
 	if (this->clsData->dataPtr)
 	{
-		UOSInt buffBpl = this->info->storeWidth * (this->info->storeBPP >> 3);
+		UIntOS buffBpl = this->info->storeWidth * (this->info->storeBPP >> 3);
 		if (left == 0 && top == 0 && width == this->info->dispSize.x && height == this->info->dispHeight && buffBpl == destBpl && !upsideDown)
 		{
 			MemCopyANC(destBuff, this->clsData->dataPtr, destBpl * height);
 		}
 		else
 		{
-			ImageCopy_ImgCopyR((UInt8*)this->clsData->dataPtr + top * (OSInt)buffBpl + left * (Int32)(this->info->storeBPP >> 3), destBuff, width * (this->info->storeBPP >> 3), height, buffBpl, destBpl, upsideDown);
+			ImageCopy_ImgCopyR((UInt8*)this->clsData->dataPtr + top * (IntOS)buffBpl + left * (Int32)(this->info->storeBPP >> 3), destBuff, width * (this->info->storeBPP >> 3), height, buffBpl, destBpl, upsideDown);
 		}
 	}
 }
@@ -222,72 +222,72 @@ Bool Media::DRMSurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, IntOS destX, IntOS destY, UIntOS buffW, UIntOS buffH, Bool clearScn, Bool waitForVBlank)
 {
 	if (surface && surface->info->storeBPP == this->info->storeBPP)
 	{
-		OSInt destWidth = (OSInt)this->info->dispSize.x;
-		OSInt destHeight = (OSInt)this->info->dispHeight;
+		IntOS destWidth = (IntOS)this->info->dispSize.x;
+		IntOS destHeight = (IntOS)this->info->dispHeight;
 		if (waitForVBlank) this->WaitForVBlank();
-		OSInt drawX = 0;
-		OSInt drawY = 0;
+		IntOS drawX = 0;
+		IntOS drawY = 0;
 		if (destX < 0)
 		{
 			drawX = -destX;
-			buffW += (UOSInt)destX;
+			buffW += (UIntOS)destX;
 			destX = 0;
 		}
 		if (destY < 0)
 		{
 			drawY = -destY;
-			buffH += (UOSInt)destY;
+			buffH += (UIntOS)destY;
 			destY = 0;
 		}
-		if (destX + (OSInt)buffW > (OSInt)destWidth)
+		if (destX + (IntOS)buffW > (IntOS)destWidth)
 		{
-			buffW = (UOSInt)(destWidth - destX);
+			buffW = (UIntOS)(destWidth - destX);
 		}
-		if (destY + (OSInt)buffH > (OSInt)destHeight)
+		if (destY + (IntOS)buffH > (IntOS)destHeight)
 		{
-			buffH = (UOSInt)(destHeight - destY);
+			buffH = (UIntOS)(destHeight - destY);
 		}
-		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+		if ((IntOS)buffW > 0 && (IntOS)buffH > 0)
 		{
-			surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info.storeBPP >> 3),
+			surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((IntOS)this->info.storeBPP >> 3),
 				drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false);
 
 			if (clearScn)
 			{
 				if (destY > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destY, (UInt32)this->clsData->dataBpl, 0);
+					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UIntOS)destWidth, (UIntOS)destY, (UInt32)this->clsData->dataBpl, 0);
 				}
-				if (destY + (OSInt)buffH < (OSInt)destHeight)
+				if (destY + (IntOS)buffH < (IntOS)destHeight)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + (destY + (OSInt)buffH) * (OSInt)this->clsData->dataBpl, (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)buffH - destY), (UInt32)this->clsData->dataBpl, 0);
+					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + (destY + (IntOS)buffH) * (IntOS)this->clsData->dataBpl, (UIntOS)destWidth, (UIntOS)(destHeight - (IntOS)buffH - destY), (UInt32)this->clsData->dataBpl, 0);
 				}
 				if (destX > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (OSInt)this->clsData->dataBpl, (UOSInt)destX, buffH, (UInt32)this->clsData->dataBpl, 0);
+					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (IntOS)this->clsData->dataBpl, (UIntOS)destX, buffH, (UInt32)this->clsData->dataBpl, 0);
 				}
-				if (destX + (OSInt)buffW < (OSInt)destWidth)
+				if (destX + (IntOS)buffW < (IntOS)destWidth)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (OSInt)this->clsData->dataBpl + (destX + (OSInt)buffW) * (OSInt)(this->info->storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, (UInt32)this->clsData->dataBpl, 0);
+					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (IntOS)this->clsData->dataBpl + (destX + (IntOS)buffW) * (IntOS)(this->info->storeBPP >> 3), (UIntOS)destWidth - (UIntOS)destX - buffW, buffH, (UInt32)this->clsData->dataBpl, 0);
 				}
 			}
 		}
 		else if (clearScn)
 		{
-			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->dataBpl, 0);
+			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UIntOS)destWidth, (UIntOS)destHeight, (UInt32)this->clsData->dataBpl, 0);
 		}
 		return true;
 	}
 	return false;
 }
 
-UInt8 *Media::DRMSurface::LockSurface(OSInt *lineAdd)
+UInt8 *Media::DRMSurface::LockSurface(IntOS *lineAdd)
 {
-	*lineAdd = (OSInt)this->clsData->dataBpl;
+	*lineAdd = (IntOS)this->clsData->dataBpl;
 	return this->clsData->dataPtr;
 }
 

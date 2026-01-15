@@ -60,7 +60,7 @@ IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::BMPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::BMPExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -85,17 +85,17 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 
 	UInt8 buff[138];
-	UOSInt hdrSize = 54;
-	UOSInt lineSize = img->info.storeSize.x * img->info.storeBPP;
+	UIntOS hdrSize = 54;
+	UIntOS lineSize = img->info.storeSize.x * img->info.storeBPP;
 	if (lineSize & 7)
 		lineSize = lineSize + 8 - (lineSize & 7);
 	lineSize = lineSize >> 3;
 	if (lineSize & 3)
 		lineSize = lineSize + 4 - (lineSize & 3);
-	UOSInt palSize = 0;
+	UIntOS palSize = 0;
 	if (img->info.storeBPP <= 8)
-		palSize = (UOSInt)4 << img->info.storeBPP;
-	UOSInt iccSize = 0;
+		palSize = (UIntOS)4 << img->info.storeBPP;
+	UIntOS iccSize = 0;
 	UnsafeArray<const UInt8> rawICC;
 	if (img->info.color.GetRAWICC().SetTo(rawICC))
 	{

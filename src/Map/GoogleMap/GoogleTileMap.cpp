@@ -28,12 +28,12 @@ Map::TileMap::ImageType Map::GoogleMap::GoogleTileMap::GetImageType() const
 	return IT_PNG;
 }
 
-UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount() const
+UIntOS Map::GoogleMap::GoogleTileMap::GetConcurrentCount() const
 {
 	return 2;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC(GMAPURL));
@@ -44,11 +44,11 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleTileMap::GetTileImageURL(UnsafeAr
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&y="));
 	sptr = Text::StrInt32(sptr, tileId.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&z="));
-	sptr = Text::StrUOSInt(sptr, level);
+	sptr = Text::StrUIntOS(sptr, level);
 	return sptr;
 }
 
-Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId)
 {
 	sb->AppendC(UTF8STRC(GMAPURL));
 	sb->AppendC(UTF8STRC("lyrs="));
@@ -58,6 +58,6 @@ Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> 
 	sb->AppendC(UTF8STRC("&y="));
 	sb->AppendI32(tileId.y);
 	sb->AppendC(UTF8STRC("&z="));
-	sb->AppendUOSInt(level);
+	sb->AppendUIntOS(level);
 	return true;
 }

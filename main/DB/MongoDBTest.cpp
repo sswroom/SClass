@@ -26,7 +26,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Data::ArrayListStringNN tableList;
 	Data::ArrayListStringNN dbList;
 	Data::ArrayIterator<NN<Text::String>> it;
-	UOSInt j;
+	UIntOS j;
 	j = mongoDB->GetDatabaseNames(dbList);
 	if (j <= 0)
 	{

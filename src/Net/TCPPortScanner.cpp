@@ -9,7 +9,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 {
 	NN<Net::TCPPortScanner> me = userObj.GetNN<Net::TCPPortScanner>();
 	Net::SocketUtil::AddressInfo addr;
-	OSInt i;
+	IntOS i;
 	Optional<Socket> s;
 	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	while (!me->threadToStop)
@@ -74,7 +74,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 	return 0;
 }
 
-Net::TCPPortScanner::TCPPortScanner(NN<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj)
+Net::TCPPortScanner::TCPPortScanner(NN<Net::SocketFactory> sockf, UIntOS threadCnt, PortUpdatedHandler hdlr, AnyType userObj)
 {
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);
@@ -83,7 +83,7 @@ Net::TCPPortScanner::TCPPortScanner(NN<Net::SocketFactory> sockf, UOSInt threadC
 	this->hdlr = {hdlr, userObj};
 	this->threadCnt = 0;
 	this->threadToStop = false;
-	UOSInt i = threadCnt;
+	UIntOS i = threadCnt;
 	if (threadCnt <= 0)
 	{
 		i = Sync::ThreadUtil::GetThreadCnt();
@@ -107,8 +107,8 @@ Net::TCPPortScanner::~TCPPortScanner()
 
 void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPort)
 {
-	OSInt i;
-	OSInt j = maxPort + 1;
+	IntOS i;
+	IntOS j = maxPort + 1;
 	Sync::MutexUsage mutUsage(this->portMut);
 	this->addr = *addr;
 	i = 0;
@@ -143,9 +143,9 @@ Bool Net::TCPPortScanner::IsFinished()
 	return ret;
 }
 
-UOSInt Net::TCPPortScanner::GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList)
+UIntOS Net::TCPPortScanner::GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList)
 {
-	UOSInt initCnt = portList->GetCount();
+	UIntOS initCnt = portList->GetCount();
 	UInt16 i = 0;
 	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)

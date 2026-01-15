@@ -17,16 +17,16 @@ namespace Media
 			typedef struct
 			{
 				NN<AlphaBlend8_C8> me;
-				UOSInt index;
+				UIntOS index;
 				NN<Sync::Event> evt;
 				Int32 status; //0 = not running, 1 = running/idle, 2 = toStop, 3 = stopped, 4 = Blend, 5 = BlendPA
 
 				UnsafeArray<UInt8> dest;
-				OSInt dbpl;
+				IntOS dbpl;
 				UnsafeArray<const UInt8> src;
-				OSInt sbpl;
-				UOSInt width;
-				UOSInt height;
+				IntOS sbpl;
+				UIntOS width;
+				UIntOS height;
 			} ThreadStat;
 
 			class LUTInfo
@@ -42,11 +42,11 @@ namespace Media
 			UnsafeArray<UInt8> rgbTable;
 			Optional<Media::ColorSess> colorSess;
 			UnsafeArray<ThreadStat> stats;
-			UOSInt threadCnt;
+			UIntOS threadCnt;
 			Sync::Event mainEvt;
 			
-			void MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
-			void MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
+			void MTBlendPA(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
 
 			void UpdateLUT();
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
@@ -54,8 +54,8 @@ namespace Media
 			AlphaBlend8_C8(Optional<Media::ColorSess> colorSess, Bool multiProfile);
 			virtual ~AlphaBlend8_C8();
 
-			virtual void Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
-			virtual void PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
+			virtual void Blend(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height, Media::AlphaType srcAType);
+			virtual void PremulAlpha(UnsafeArray<UInt8> dest, IntOS dbpl, UnsafeArray<const UInt8> src, IntOS sbpl, UIntOS width, UIntOS height);
 
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);

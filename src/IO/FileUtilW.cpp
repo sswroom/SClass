@@ -252,7 +252,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			Data::Timestamp ts2;
 			Data::Timestamp ts3;
 			{
-				Data::ByteBuffer buff((UOSInt)1048576);
+				Data::ByteBuffer buff((UIntOS)1048576);
 				writeSize = fs1.Read(buff);
 				writeSize = fs2->Write(buff.WithSize(writeSize));
 			}
@@ -268,16 +268,16 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			Data::Timestamp ts1;
 			Data::Timestamp ts2;
 			Data::Timestamp ts3;
-			UOSInt readSize;
-			UOSInt thisSize;
+			UIntOS readSize;
+			UIntOS thisSize;
 			UInt8 *buff;
 			if (fileSize < ramSize)
 			{
-				buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
+				buff = MemAllocA(UInt8, readSize = (UIntOS)fileSize);
 			}
 			else
 			{
-				buff = MemAllocA(UInt8, readSize = (UOSInt)ramSize);
+				buff = MemAllocA(UInt8, readSize = (UIntOS)ramSize);
 			}
 			while (writeSize < fileSize)
 			{
@@ -366,7 +366,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+				dptr2 = Text::StrConcatC(dptr, sptr, (UIntOS)(sptr2 - sptr));
 				if (!CopyFile(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt))
 				{
 					succ = false;
@@ -383,7 +383,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 				}
 				else
 				{
-					dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+					dptr2 = Text::StrConcatC(dptr, sptr, (UIntOS)(sptr2 - sptr));
 					if (!CopyDir(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt))
 					{
 						succ = false;
@@ -490,7 +490,7 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+					dptr2 = Text::StrConcatC(dptr, sptr, (UIntOS)(sptr2 - sptr));
 					succ = IO::FileUtil::MoveFile(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt);
 					if (!succ)
 					{
@@ -499,7 +499,7 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 				}
 				else if (pt == IO::Path::PathType::Directory)
 				{
-					dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+					dptr2 = Text::StrConcatC(dptr, sptr, (UIntOS)(sptr2 - sptr));
 					succ = IO::FileUtil::MoveDir(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt);
 					if (!succ)
 					{
@@ -524,7 +524,7 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 void __stdcall IO::FileUtil::CopyHdlr(Data::ByteArrayR buff, AnyType userData)
 {
 	NN<CopySess> csess = userData.GetNN<CopySess>();
-	UOSInt writenSize;
+	UIntOS writenSize;
 	writenSize = csess->destStm->Write(buff);
 	csess->writeSize += writenSize;
 	NN<IO::ProgressHandler> nnprogHdlr;

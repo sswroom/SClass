@@ -47,10 +47,10 @@ Optional<IO::ParsedObject> Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO:
 		return nullptr;
 	}
 
-	UOSInt i;
+	UIntOS i;
 	NN<Map::GPSTrack> trk;
-	Data::ByteBuffer fileBuff((UOSInt)fileLen);
-	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
+	Data::ByteBuffer fileBuff((UIntOS)fileLen);
+	if (fd->GetRealData(0, (UIntOS)fileLen, fileBuff) != fileLen)
 	{
 		return nullptr;
 	}

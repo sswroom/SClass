@@ -17,7 +17,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength()).Ptr();
 }
 
-Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/html"))
+Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UnsafeArray<const UInt8> textBuff, UIntOS buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/html"))
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -43,7 +43,7 @@ Text::CStringNN Text::MIMEObj::HTMLMIMEObj::GetContentType() const
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(NN<IO::Stream> stm) const
+UIntOS Text::MIMEObj::HTMLMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
 	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
@@ -58,13 +58,13 @@ NN<Text::MIMEObject> Text::MIMEObj::HTMLMIMEObj::Clone() const
 void Text::MIMEObj::HTMLMIMEObj::GetText(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::Encoding enc(this->codePage);
-	UOSInt strLen;
+	UIntOS strLen;
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
 	sbuff = MemAllocArr(UTF8Char, strLen + 1);
 	sptr = enc.UTF8FromBytes(sbuff, this->textBuff, this->buffSize, 0);
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	MemFreeArr(sbuff);
 }
 

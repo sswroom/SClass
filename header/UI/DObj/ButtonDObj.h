@@ -21,7 +21,7 @@ namespace UI
 			Bool isMouseDown;
 			Bool isMouseUp;
 			Bool isMouseClick;
-			Math::Coord2D<OSInt> dispTL;
+			Math::Coord2D<IntOS> dispTL;
 			Double downAlpha;
 			Data::DateTime downTime;
 			UI::UIEvent clkHdlr;
@@ -31,7 +31,7 @@ namespace UI
 
 			static UInt32 __stdcall ClickThread(AnyType userObj);
 		public:
-			ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
+			ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<IntOS> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);
@@ -41,7 +41,7 @@ namespace UI
 			virtual Bool DoEvents();
 			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
-			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
+			virtual Bool IsObject(Math::Coord2D<IntOS> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;
 			virtual void OnMouseDown();
 			virtual void OnMouseUp();

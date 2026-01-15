@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 	me->txtWMSURL->GetText(sb);
 	me->wms.Delete();
 	NN<Map::WebMapService> wms;
-	NEW_CLASSNN(wms, Map::WebMapService(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetOSInt(), me->envCsys));
+	NEW_CLASSNN(wms, Map::WebMapService(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetIntOS(), me->envCsys));
 	me->wms = wms;
 	if (wms->IsError())
 	{
@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 	{
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListStringNN nameList;
-		UOSInt selIndex;
-		UOSInt i = 0;
-		UOSInt j = wms->GetLayerNames(nameList);
+		UIntOS selIndex;
+		UIntOS i = 0;
+		UIntOS j = wms->GetLayerNames(nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
@@ -85,8 +85,8 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 		wms->SetLayer(me->cboLayer->GetSelectedIndex());
 		me->cboLayerCRS->ClearItems();
 		Data::ArrayListNN<Text::String> nameList;
-		UOSInt i = 0;
-		UOSInt j = wms->GetLayerCRSNames(nameList);
+		UIntOS i = 0;
+		UIntOS j = wms->GetLayerCRSNames(nameList);
 		while (i < j)
 		{
 			me->cboLayerCRS->AddItem(nameList.GetItemNoCheck(i), 0);

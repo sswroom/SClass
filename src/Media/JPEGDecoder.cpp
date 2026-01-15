@@ -30,7 +30,7 @@ void JPEGDecoder_ErrorHdlr(j_common_ptr cinfo)
 }
 
 
-Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt maxWidth, UOSInt maxHeight, Media::PixelFormat pf) const
+Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS maxWidth, UIntOS maxHeight, Media::PixelFormat pf) const
 {
 	const UInt8 *ptr = dataBuff.Ptr();
 	JPEGDecoder_ErrorMgr jerr;
@@ -274,10 +274,10 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		if (cinfo.out_color_space == JCS_GRAYSCALE)
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 8, Media::PixelFormat::PF_PAL_W8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UIntOS>(cinfo.image_width, cinfo.image_height), 0, 8, Media::PixelFormat::PF_PAL_W8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			img = nnimg;
 			nnimg->InitGrayPal();
-			UOSInt bpl = nnimg->GetDataBpl();
+			UIntOS bpl = nnimg->GetDataBpl();
 			UInt8 *r = nnimg->data.Ptr();
 			while (cinfo.output_scanline < cinfo.image_height) {
 				jpeg_read_scanlines(&cinfo, &r, 1);
@@ -287,9 +287,9 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		else
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 24, Media::PixelFormat::PF_R8G8B8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UIntOS>(cinfo.image_width, cinfo.image_height), 0, 24, Media::PixelFormat::PF_R8G8B8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			img = nnimg;
-			UOSInt bpl = nnimg->GetDataBpl();
+			UIntOS bpl = nnimg->GetDataBpl();
 			UInt8 *r = nnimg->data.Ptr();
 			while (cinfo.output_scanline < cinfo.image_height) {
 				jpeg_read_scanlines(&cinfo, &r, 1);

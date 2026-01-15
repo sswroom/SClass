@@ -24,7 +24,7 @@ UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff
 		UnsafeArray<UTF8Char> oriBuff = buff;
 		Bool skipFound = false;
 		Bool lastIsSkip = false;
-		OSInt i = 0;
+		IntOS i = 0;
 		UInt16 v;
 		while (i < 16)
 		{
@@ -68,7 +68,7 @@ UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff
 			buff = Text::StrUInt32(buff, zid);
 		}
 		*buff = 0;
-		Text::StrToLowerC(oriBuff, oriBuff, (UOSInt)(buff - oriBuff));
+		Text::StrToLowerC(oriBuff, oriBuff, (UIntOS)(buff - oriBuff));
 		return buff;
 	}
 	else
@@ -97,7 +97,7 @@ UnsafeArrayOpt<WChar> Net::SocketUtil::GetAddrName(UnsafeArray<WChar> buff, NN<c
 		UnsafeArray<WChar> oriBuff = buff;
 		Bool skipFound = false;
 		Bool lastIsSkip = false;
-		OSInt i = 0;
+		IntOS i = 0;
 		UInt16 v;
 		while (i < 16)
 		{
@@ -336,9 +336,9 @@ Bool Net::SocketUtil::SetAddrInfo(NN<AddressInfo> addr, Text::CStringNN ipName)
 {
 	UTF8Char sbuff[51];
 	UnsafeArray<UTF8Char> sarr[9];
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Int32 v;
 	if (ipName.leng >= 50)
 	{
@@ -425,7 +425,7 @@ Bool Net::SocketUtil::SetAddrInfo(NN<AddressInfo> addr, Text::CStringNN ipName)
 			WriteMInt16(&addr->addr[j], v);
 			j -= 2;
 		}
-		while ((OSInt)j >= 0)
+		while ((IntOS)j >= 0)
 		{
 			WriteMInt16(&addr->addr[j], 0);
 			j-= 2;
@@ -666,7 +666,7 @@ Bool Net::SocketUtil::AddrEquals(NN<const Net::SocketUtil::AddressInfo> addr1, N
 	}
 	else if (addr1->addrType == Net::AddrType::IPv6)
 	{
-		OSInt i = 20;
+		IntOS i = 20;
 		while (i-- > 0)
 		{
 			if (addr1->addr[i] != addr2->addr[i])
@@ -684,7 +684,7 @@ Bool Net::SocketUtil::AddrEquals(NN<const Net::SocketUtil::AddressInfo> addr1, N
 
 Text::PString Net::SocketUtil::GetHostPort(Text::PString str, OutParam<UInt16> port)
 {
-	UOSInt i;
+	UIntOS i;
 	port.Set(0);
 	if (str.StartsWith('['))
 	{

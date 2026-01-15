@@ -9,8 +9,8 @@ struct Media::SOXRFilter::ClassData
 	Media::AudioFormat afmt;
 	soxr_error_t error;
 	UInt32 targetFreq;
-	UOSInt inBuffSamples;
-	UOSInt outBuffSamples;
+	UIntOS inBuffSamples;
+	UIntOS outBuffSamples;
 	UInt8 *inReadBuff;
 	UInt8 *inFloatBuff;
 	UInt8 *outFloatBuff;
@@ -48,13 +48,13 @@ Media::SOXRFilter::~SOXRFilter()
 	MemFreeNN(this->clsData);
 }
 
-UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
+UIntOS Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt nOutSample = blk.GetSize() / this->clsData->afmt.align;
-	UOSInt nInSample = nOutSample * this->clsData->afmt.frequency / this->clsData->targetFreq;
+	UIntOS nOutSample = blk.GetSize() / this->clsData->afmt.align;
+	UIntOS nInSample = nOutSample * this->clsData->afmt.frequency / this->clsData->targetFreq;
 	if (this->clsData->afmt.formatId == 3)
 	{
-		UOSInt readBlkSize = nInSample * 4 * this->clsData->afmt.nChannels;
+		UIntOS readBlkSize = nInSample * 4 * this->clsData->afmt.nChannels;
 		if (this->clsData->inBuffSamples < nInSample)
 		{
 			this->clsData->inBuffSamples = nInSample;
@@ -64,15 +64,15 @@ UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 			}
 			this->clsData->inReadBuff = MemAlloc(UInt8, readBlkSize);
 		}
-		UOSInt actSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
+		UIntOS actSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
 		size_t outSize;
 		this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inReadBuff, (actSize >> 2) / this->clsData->afmt.nChannels, 0, blk.Arr().Ptr(), (blk.GetSize() >> 2) / this->clsData->afmt.nChannels, &outSize);
-		return (UOSInt)outSize * 4 * this->clsData->afmt.nChannels;
+		return (UIntOS)outSize * 4 * this->clsData->afmt.nChannels;
 	}
 	else
 	{
-		UOSInt readBlkSize = nInSample * this->clsData->afmt.align;
-		UOSInt readFloatSize = nInSample * 4 * this->clsData->afmt.nChannels;
+		UIntOS readBlkSize = nInSample * this->clsData->afmt.align;
+		UIntOS readFloatSize = nInSample * 4 * this->clsData->afmt.nChannels;
 		if (this->clsData->inBuffSamples < nInSample)
 		{
 			this->clsData->inBuffSamples = nInSample;
@@ -87,7 +87,7 @@ UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 			this->clsData->inReadBuff = MemAlloc(UInt8, readBlkSize);
 			this->clsData->inFloatBuff = MemAlloc(UInt8, readFloatSize);
 		}
-		UOSInt outFloatSize = nOutSample * 4 * this->clsData->afmt.nChannels;
+		UIntOS outFloatSize = nOutSample * 4 * this->clsData->afmt.nChannels;
 		if (this->clsData->outBuffSamples < nOutSample)
 		{
 			this->clsData->outBuffSamples = nOutSample;
@@ -97,15 +97,15 @@ UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 			}
 			this->clsData->outFloatBuff = MemAlloc(UInt8, outFloatSize);
 		}
-		UOSInt actReadSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
+		UIntOS actReadSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
 		size_t outSize;
 		switch (this->clsData->afmt.bitpersample)
 		{
 		case 16:
 			AudioUtil_ConvI16_F32(this->clsData->inReadBuff, this->clsData->inFloatBuff, actReadSize >> 1);
 			this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inFloatBuff, (actReadSize >> 1) / this->clsData->afmt.nChannels, 0, this->clsData->outFloatBuff, (outFloatSize >> 2) / this->clsData->afmt.nChannels, &outSize);
-			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, blk.Arr().Ptr(), (UOSInt)outSize);
-			return (UOSInt)outSize * 2 * this->clsData->afmt.nChannels;
+			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, blk.Arr().Ptr(), (UIntOS)outSize);
+			return (UIntOS)outSize * 2 * this->clsData->afmt.nChannels;
 		}
 		return 0;
 	}

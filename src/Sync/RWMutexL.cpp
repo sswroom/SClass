@@ -16,7 +16,7 @@ struct Sync::RWMutex::ClassData
 	Bool isSet;
 };
 
-void RWMutex_Wait(Sync::RWMutex::ClassData *clsData, UOSInt timeout)
+void RWMutex_Wait(Sync::RWMutex::ClassData *clsData, UIntOS timeout)
 {
 	struct timespec outtime;
 	pthread_mutex_lock(&clsData->evtMutex);

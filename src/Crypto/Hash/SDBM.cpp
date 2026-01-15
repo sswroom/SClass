@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	UInt32 SDBM_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 currVal);
+	UInt32 SDBM_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 currVal);
 }
 
 Crypto::Hash::SDBM::SDBM()
@@ -35,7 +35,7 @@ void Crypto::Hash::SDBM::Clear()
 	this->currVal = 0;
 }
 
-void Crypto::Hash::SDBM::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+void Crypto::Hash::SDBM::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->currVal = SDBM_Calc(buff.Ptr(), buffSize, this->currVal);
 }
@@ -45,12 +45,12 @@ void Crypto::Hash::SDBM::GetValue(UnsafeArray<UInt8> buff) const
 	*(UInt32*)buff.Ptr() = this->currVal;
 }
 
-UOSInt Crypto::Hash::SDBM::GetBlockSize() const
+UIntOS Crypto::Hash::SDBM::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::SDBM::GetResultSize() const
+UIntOS Crypto::Hash::SDBM::GetResultSize() const
 {
 	return 4;
 }

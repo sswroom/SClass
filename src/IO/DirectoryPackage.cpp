@@ -64,7 +64,7 @@ void IO::DirectoryPackage::Init()
 				}
 				else
 				{
-					item.fileName = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
+					item.fileName = Text::String::New(sbuff, (UIntOS)(sptr2 - sbuff));
 					item.fileSize = fileSize;
 					item.modTime = ts;
 					item.accTime = 0;
@@ -86,7 +86,7 @@ IO::DirectoryPackage::DirectoryPackage(NN<Text::String> dirName) : IO::PackageFi
 	if (dirName->StartsWith(UTF8STRC("~/")))
 	{
 		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff).Or(sbuff), dirName->v + 1, dirName->leng - 1);
-		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		this->dirName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	else
 	{
@@ -102,7 +102,7 @@ IO::DirectoryPackage::DirectoryPackage(Text::CStringNN dirName) : IO::PackageFil
 	if (dirName.StartsWith(UTF8STRC("~/")))
 	{
 		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff).Or(sbuff), dirName.v + 1, dirName.leng - 1);
-		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		this->dirName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	else
 	{
@@ -113,7 +113,7 @@ IO::DirectoryPackage::DirectoryPackage(Text::CStringNN dirName) : IO::PackageFil
 
 IO::DirectoryPackage::~DirectoryPackage()
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->files.GetCount();
 	while (i-- > 0)
 	{
@@ -122,12 +122,12 @@ IO::DirectoryPackage::~DirectoryPackage()
 	this->dirName->Release();
 }
 
-UOSInt IO::DirectoryPackage::GetCount() const
+UIntOS IO::DirectoryPackage::GetCount() const
 {
 	return this->files.GetCount();
 }
 
-IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) const
+IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UIntOS index) const
 {
 	if (this->files.GetCount() <= index)
 		return IO::PackageFile::PackObjectType::Unknown;
@@ -147,9 +147,9 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) 
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char> sbuff, UIntOS index) const
 {
-	UOSInt i;
+	UIntOS i;
 	if (this->files.GetCount() <= index)
 		return nullptr;
 	NN<Text::String> fileName = this->files.GetItem(index).fileName;
@@ -157,7 +157,7 @@ UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char>
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
-Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
+Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UIntOS index) const
 {
 	if (this->files.GetCount() <= index)
 		return nullptr;
@@ -175,7 +175,7 @@ Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) c
 	}
 }
 
-Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> needDelete) const
+Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UIntOS index, OutParam<Bool> needDelete) const
 {
 	if (this->files.GetCount() <= index)
 		return nullptr;
@@ -195,45 +195,45 @@ Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutPar
 	}
 }
 
-Optional<IO::ParsedObject> IO::DirectoryPackage::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::ParsedObject> IO::DirectoryPackage::GetItemPObj(UIntOS index, OutParam<Bool> needRelease) const
 {
 	return GetItemPack(index, needRelease);
 }
 
-Data::Timestamp IO::DirectoryPackage::GetItemModTime(UOSInt index) const
+Data::Timestamp IO::DirectoryPackage::GetItemModTime(UIntOS index) const
 {
 	return this->files.GetItem(index).modTime;
 }
 
-Data::Timestamp IO::DirectoryPackage::GetItemAccTime(UOSInt index) const
+Data::Timestamp IO::DirectoryPackage::GetItemAccTime(UIntOS index) const
 {
 	return this->files.GetItem(index).accTime;
 }
 
-Data::Timestamp IO::DirectoryPackage::GetItemCreateTime(UOSInt index) const
+Data::Timestamp IO::DirectoryPackage::GetItemCreateTime(UIntOS index) const
 {
 	return this->files.GetItem(index).createTime;
 }
 
-UInt32 IO::DirectoryPackage::GetItemUnixAttr(UOSInt index) const
+UInt32 IO::DirectoryPackage::GetItemUnixAttr(UIntOS index) const
 {
 	return this->files.GetItem(index).unixAttr;
 }
 
-UInt64 IO::DirectoryPackage::GetItemStoreSize(UOSInt index) const
+UInt64 IO::DirectoryPackage::GetItemStoreSize(UIntOS index) const
 {
 	return this->files.GetItem(index).fileSize;
 }
 
-UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index) const
+UInt64 IO::DirectoryPackage::GetItemSize(UIntOS index) const
 {
 	return this->files.GetItem(index).fileSize;
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(Text::CStringNN name) const
+UIntOS IO::DirectoryPackage::GetItemIndex(Text::CStringNN name) const
 {
-	UOSInt j = this->files.GetCount();
-	UOSInt i;
+	UIntOS j = this->files.GetCount();
+	UIntOS i;
 	while (j-- > 0)
 	{
 		NN<Text::String> fileName = this->files.GetItem(j).fileName;
@@ -246,12 +246,12 @@ UOSInt IO::DirectoryPackage::GetItemIndex(Text::CStringNN name) const
 	return INVALID_INDEX;
 }
 
-Bool IO::DirectoryPackage::IsCompressed(UOSInt index) const
+Bool IO::DirectoryPackage::IsCompressed(UIntOS index) const
 {
 	return false;
 }
 
-Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(UOSInt index) const
+Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(UIntOS index) const
 {
 	return Data::Compress::Decompressor::CM_UNCOMPRESSED;
 }
@@ -276,7 +276,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, Optional<IO::Progr
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -294,7 +294,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, Optional<IO::Progr
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -320,7 +320,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CStringNN fileName, Optional<IO::Progr
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -338,7 +338,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CStringNN fileName, Optional<IO::Progr
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -364,7 +364,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CStringNN fileName, Optional<IO::
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -382,7 +382,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CStringNN fileName, Optional<IO::
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -408,7 +408,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -426,7 +426,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UOSInt i;
+		UIntOS i;
 		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -444,7 +444,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	return false;
 }
 
-Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName)
+Bool IO::DirectoryPackage::CopyTo(UIntOS index, Text::CStringNN destPath, Bool fullFileName)
 {
 	return false;
 }
@@ -476,12 +476,12 @@ Optional<IO::PackageFile> IO::DirectoryPackage::GetParent(OutParam<Bool> needRel
 	return this->parent;
 }
 
-OSInt __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)
+IntOS __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)
 {
 	return obj1.fileName->CompareTo(obj2.fileName);
 }
 
-Bool IO::DirectoryPackage::DeleteItem(UOSInt index)
+Bool IO::DirectoryPackage::DeleteItem(UIntOS index)
 {
 	if (index >= this->files.GetCount())
 		return false;
@@ -506,8 +506,8 @@ void IO::DirectoryPackage::SetParent(Optional<IO::PackageFile> pkg)
 
 Bool IO::DirectoryPackage::Sort()
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	FileItem df;
 	FileItem *arr;
 	i = 0;
@@ -520,7 +520,7 @@ Bool IO::DirectoryPackage::Sort()
 		arr[i] = this->files.GetItem(i);
 		i++;
 	}
-	Data::Sort::ArtificialQuickSortFunc<FileItem>::Sort(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<FileItem>::Sort(arr, DirectoryPackage_Compare, 0, (IntOS)j - 1);
 	i = 0;
 	while (i < j)
 	{

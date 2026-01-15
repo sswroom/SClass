@@ -3,7 +3,7 @@
 
 IO::ED516Sim::ED516Sim()
 {
-	UOSInt i = 16;
+	UIntOS i = 16;
 	while (i-- > 0)
 	{
 		this->diCounts[i] = 0;
@@ -20,12 +20,12 @@ Text::CStringNN IO::ED516Sim::GetName()
 	return CSTR("ED516");
 }
 
-UOSInt IO::ED516Sim::GetValueCount()
+UIntOS IO::ED516Sim::GetValueCount()
 {
 	return 32;
 }
 
-Text::CString IO::ED516Sim::GetValueName(UOSInt index)
+Text::CString IO::ED516Sim::GetValueName(UIntOS index)
 {
 	switch (index)
 	{
@@ -98,7 +98,7 @@ Text::CString IO::ED516Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED516Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ED516Sim::GetValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 16)
 	{
@@ -113,7 +113,7 @@ Bool IO::ED516Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-Bool IO::ED516Sim::ToggleValue(UOSInt index)
+Bool IO::ED516Sim::ToggleValue(UIntOS index)
 {
 	if (index < 16)
 	{

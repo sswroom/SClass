@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(AnyType user
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UIntOS i = 0;
+		UIntOS j = dlg->GetFileNameCount();
 		while (i < j)
 		{
 			NN<Text::String> fileName;
@@ -53,20 +53,20 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(AnyType use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRWiFiLogManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWiFiLogManagerForm>();
 	NN<const Net::WiFiLogFile::LogFileEntry> log;
 	if (!me->lvContent->GetItem(index).GetOpt<const Net::WiFiLogFile::LogFileEntry>().SetTo(log))
 		return;
 	
-	UOSInt dblType = me->cboDblClk->GetSelectedIndex();
+	UIntOS dblType = me->cboDblClk->GetSelectedIndex();
 	if (dblType == 1)
 	{
 		Text::StringBuilderUTF8 sb;
 		if (UI::Clipboard::GetString(me->GetHandle(), sb))
 		{
-			UOSInt i = me->macList->SetEntry(log->mac64Int, sb.ToCString());
+			UIntOS i = me->macList->SetEntry(log->mac64Int, sb.ToCString());
 			me->UpdateStatus();
 			me->EntryUpdated(me->macList->GetItemNoCheck(i));
 		}
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NN<Text::String> name = frm.GetNameNew();
-			UOSInt i = me->macList->SetEntry(log->mac64Int, name->ToCString());
+			UIntOS i = me->macList->SetEntry(log->mac64Int, name->ToCString());
 			name->Release();
 			entry = me->macList->GetItemNoCheck(i);
 			me->UpdateStatus();
@@ -107,12 +107,12 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(AnyType us
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < log->ieLen)
 	{
 		Net::WirelessLANIE::ToString(&ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
-		i += (UOSInt)ieBuff[i + 1] + 2;
+		i += (UIntOS)ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToCString());
 }
@@ -155,12 +155,12 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	Bool local = this->chkLocal->IsChecked();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	UOSInt cnt;
-	UOSInt recCnt = 0;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
+	UIntOS cnt;
+	UIntOS recCnt = 0;
 	Bool valid;
 	UnsafeArray<UInt8> ieBuff;
 	NN<Text::String> s;
@@ -294,7 +294,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 					cnt++;
 				k++;
 			}
-			sptr = Text::StrUOSInt(sbuff, cnt);
+			sptr = Text::StrUIntOS(sbuff, cnt);
 			this->lvContent->SetSubItem(l, 12, CSTRP(sbuff, sptr));
 
 			recCnt++;
@@ -311,8 +311,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(NN<const Net::MACInfo::MACEntry> entry)
 {
 	NN<const Net::WiFiLogFile::LogFileEntry> log;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	i = 0;
 	j = this->lvContent->GetCount();
 	while (i < j)
@@ -329,7 +329,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(NN<const Net::MACInfo::
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList->GetCount());
+	sb.AppendUIntOS(this->macList->GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }

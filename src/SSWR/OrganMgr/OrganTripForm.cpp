@@ -11,8 +11,8 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	NN<Data::ArrayListNN<Trip>> tripList = this->env->TripGetList();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	this->updating = true;
 	i = 0;
 	j = tripList->GetCount();
@@ -80,14 +80,14 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(AnyType userObj)
 		return;
 	}
 
-	OSInt i = 0;
-	OSInt j = (OSInt)me->lbTrips->GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)me->lbTrips->GetCount() - 1;
+	IntOS k;
 	Trip *t;
 	while (j >= i)
 	{
 		k = (i + j) >> 1;
-		t = (Trip*)me->lbTrips->GetItem((UOSInt)k).p;
+		t = (Trip*)me->lbTrips->GetItem((UIntOS)k).p;
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
 			sptr = Text::StrConcatC(me->env->GetLang(CSTR("TripFormErrorExist")).ConcatTo(sbuff), UTF8STRC(": "));

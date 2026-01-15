@@ -37,7 +37,7 @@ namespace IO
 			NN<CANHandler> hdlr;
 			Sync::Mutex cmdMut;
 			Sync::Event cmdEvent;
-			UOSInt cmdResultCode;
+			UIntOS cmdResultCode;
 			Optional<IO::Stream> stm;
 			Sync::Thread serialThread;
 
@@ -46,14 +46,14 @@ namespace IO
 			Bool SendCloseCANPort(UInt8 port);
 			Bool SendSetReportMode(Bool autoMode, Bool formattedData, Bool overwriteOnFull);
 			Bool SendCommandMode();
-			Bool SendCommand(Text::CStringNN cmd, UOSInt timeout);
+			Bool SendCommand(Text::CStringNN cmd, UIntOS timeout);
 			
 			static void __stdcall SerialThread(NN<Sync::Thread> userObj);
 		public:
 			AXCAN(NN<CANHandler> hdlr);
 			virtual ~AXCAN();
 
-			Bool OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate);
+			Bool OpenSerialPort(UIntOS portNum, UInt32 serialBaudRate, CANBitRate bitRate);
 			Bool OpenStream(NN<IO::Stream> stm, CANBitRate bitRate);
 			void CloseSerialPort(Bool force);
 

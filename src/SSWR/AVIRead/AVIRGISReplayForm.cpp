@@ -21,8 +21,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	Math::Coord2DDbl *latLon;
-	UOSInt recCnt;
-	UOSInt i;
+	UIntOS recCnt;
+	UIntOS i;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -43,7 +43,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 		{
 			if (me->navi->ResolveAddress(sbuff, latLon[i]).SetTo(sptr))
 			{
-				names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				names[i] = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 			}
 			i++;
 		}
@@ -57,15 +57,15 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	me->StopThread();
-	me->currTrackId = (UOSInt)me->cboName->GetSelectedIndex();
+	me->currTrackId = (UIntOS)me->cboName->GetSelectedIndex();
 	me->UpdateRecList();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
-	UOSInt i = me->lbRecord->GetSelectedIndex();
-	UOSInt recCnt = 0;
+	UIntOS i = me->lbRecord->GetSelectedIndex();
+	UIntOS recCnt = 0;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	UnsafeArray<Optional<Text::String>> names;
 	NN<Text::String> s;
@@ -106,19 +106,19 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 				me->txtAddress->SetText(s->ToCString());
 			}
 		}
-		UOSInt j;
-		UOSInt k = me->track->GetExtraCount(me->currTrackId, (UOSInt)i);
-		UOSInt l;
+		UIntOS j;
+		UIntOS k = me->track->GetExtraCount(me->currTrackId, (UIntOS)i);
+		UIntOS l;
 		Text::StringBuilderUTF8 sb;
 		me->lvExtra->ClearItems();
 		j = 0;
 		while (j < k)
 		{
 			sb.ClearStr();
-			me->track->GetExtraName(me->currTrackId, (UOSInt)i, j, sb);
+			me->track->GetExtraName(me->currTrackId, (UIntOS)i, j, sb);
 			l = me->lvExtra->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
-			me->track->GetExtraValueStr(me->currTrackId, (UOSInt)i, j, sb);
+			me->track->GetExtraValueStr(me->currTrackId, (UIntOS)i, j, sb);
 			me->lvExtra->SetSubItem(l, 1, sb.ToCString());
 			j++;
 		}
@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	me->mnuRecord->ShowMenu(me, scnPos);
@@ -161,7 +161,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 	NN<Text::String> s;
 	if (this->names.SetTo(names))
 	{
-		UOSInt i = namesCnt;
+		UIntOS i = namesCnt;
 		while (i-- > 0)
 		{
 			if (names[i].SetTo(s))
@@ -302,8 +302,8 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	Data::ArrayListString nameArr;
 	this->track->GetTrackNames(nameArr);
 	NN<Text::String> s;
-	UOSInt i = 0;
-	UOSInt j = nameArr.GetCount();
+	UIntOS i = 0;
+	UIntOS j = nameArr.GetCount();
 	while (i < j)
 	{
 		if (!nameArr.GetItem(i).SetTo(s))
@@ -338,7 +338,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_MARK_START:
 		{
-			this->startMark = (UOSInt)this->lbRecord->GetSelectedIndex();
+			this->startMark = (UIntOS)this->lbRecord->GetSelectedIndex();
 			sbuff[0] = 0;
 			sptr = this->lbRecord->GetItemText(sbuff, this->startMark).Or(sbuff);
 			this->txtStartMark->SetText(CSTRP(sbuff, sptr));
@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MARK_END:
 		{
-			this->endMark = (UOSInt)this->lbRecord->GetSelectedIndex();
+			this->endMark = (UIntOS)this->lbRecord->GetSelectedIndex();
 			sbuff[0] = 0;
 			sptr = this->lbRecord->GetItemText(sbuff, this->endMark).Or(sbuff);
 			this->txtEndMark->SetText(CSTRP(sbuff, sptr));
@@ -354,13 +354,13 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MARK_COPY:
 		{
-			UOSInt recCnt;
+			UIntOS recCnt;
 			UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 			if (this->startMark > this->endMark || !track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 			{
 				return;
 			}
-			UOSInt i;
+			UIntOS i;
 			NN<Map::GPSTrack> newTrack;
 			NEW_CLASSNN(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
 			NN<Text::String> trackName;
@@ -400,13 +400,13 @@ void SSWR::AVIRead::AVIRGISReplayForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 {
 	this->StopThread();
-	UOSInt i;
+	UIntOS i;
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	UnsafeArray<Optional<Text::String>> names;
-	UOSInt recCnt = 0;
+	UIntOS recCnt = 0;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	if (this->track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 	{

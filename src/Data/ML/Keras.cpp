@@ -15,13 +15,13 @@ public:
 	{
 	}
 
-	virtual void PredictMulti(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, UOSInt historyStep, NN<Data::ArrayListArr<Double>> predictData)
+	virtual void PredictMulti(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, UIntOS historyStep, NN<Data::ArrayListArr<Double>> predictData)
 	{
 		std::vector<fdeep::float_type> d;
 		UnsafeArray<UnsafeArray<Double>> currD;
-		UOSInt k;
-		UOSInt i = 0;
-		UOSInt j = historyData->GetCount();
+		UIntOS k;
+		UIntOS i = 0;
+		UIntOS j = historyData->GetCount();
 		while (i < j)
 		{
 			d.clear();
@@ -35,8 +35,8 @@ public:
 			fdeep::tensors result = this->model.predict({fdeep::tensor(fdeep::tensor_shape((std::size_t)historyStep, (std::size_t)1), d)});
 			fdeep::tensor resultT = result.at(0);
 			fdeep::internal::float_vec_unaligned vec = resultT.to_vector();
-			UnsafeArray<Double> r = MemAllocArr(Double, (UOSInt)vec.size());
-			k = (UOSInt)vec.size();
+			UnsafeArray<Double> r = MemAllocArr(Double, (UIntOS)vec.size());
+			k = (UIntOS)vec.size();
 			while (k-- > 0)
 			{
 				r[k] = vec.at((std::size_t)k);
@@ -46,11 +46,11 @@ public:
 		}
 	}
 
-	virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UOSInt historyStep, NN<Data::ArrayListNative<Double>> predictData)
+	virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UIntOS historyStep, NN<Data::ArrayListNative<Double>> predictData)
 	{
 		std::vector<fdeep::float_type> d;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		i = 0;
 		while (i < historyStep)
 		{
@@ -60,7 +60,7 @@ public:
 		fdeep::tensors result = this->model.predict({fdeep::tensor(fdeep::tensor_shape((std::size_t)historyStep, (std::size_t)1), d)});
 		fdeep::tensor resultT = result.at(0);
 		fdeep::internal::float_vec_unaligned vec = resultT.to_vector();
-		j = (UOSInt)vec.size();
+		j = (UIntOS)vec.size();
 		i = 0;
 		while (i < j)
 		{

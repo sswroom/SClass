@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(AnyType userObj)
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	NN<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->currFont, 12, false, false);
@@ -126,8 +126,8 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UTF32Char v;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	me->txtRelatedAdd->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Are you sure that \""));
 				sptr = Text::StrWriteChar(sbuff, (UTF32Char)me->currChar);
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb.AppendC(UTF8STRC("\" is related to \""));
 				i = 0;
 				j = relatedList.GetCount();
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 					i++;
 				}
 				*sptr = 0;
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sb.AppendC(UTF8STRC("\"?"));
 				if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Add Relation"), me))
 				{
@@ -275,7 +275,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 			return false;
 		}
 	}
-	chInfo.charType = (Text::ChineseInfo::CharType)this->cboCharType->GetSelectedItem().GetOSInt();
+	chInfo.charType = (Text::ChineseInfo::CharType)this->cboCharType->GetSelectedItem().GetIntOS();
 	chInfo.mainChar = this->chkMainChar->IsChecked();
 	return this->chinese->SetCharInfo(this->currChar, &chInfo);
 }
@@ -286,8 +286,8 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char u8buff[7];
 	UTF16Char u16buff[3];
-	UOSInt charCnt;
-	UOSInt i;
+	UIntOS charCnt;
+	UIntOS i;
 	if (this->SaveChar())
 	{
 		sptr = Text::StrHexVal32(sbuff, charCode);
@@ -296,12 +296,12 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		this->UpdateImg();
 
 		this->txtUTF32Code->SetText(CSTRP(sbuff, sptr));
-		charCnt = (UOSInt)(Text::StrWriteChar(u8buff, (UTF32Char)charCode) - u8buff);
+		charCnt = (UIntOS)(Text::StrWriteChar(u8buff, (UTF32Char)charCode) - u8buff);
 		sptr = Text::StrHexBytes(sbuff, u8buff, charCnt, ' ');
 		this->txtUTF8Code->SetText(CSTRP(sbuff, sptr));
 		u8buff[charCnt] = 0;
 		this->txtCurrChar->SetText(Text::CStringNN(u8buff, charCnt));
-		charCnt = (UOSInt)(Text::StrWriteChar(u16buff, (UTF32Char)charCode) - u16buff);
+		charCnt = (UIntOS)(Text::StrWriteChar(u16buff, (UTF32Char)charCode) - u16buff);
 		sptr = sbuff;
 		i = 0;
 		while (i < charCnt)
@@ -433,7 +433,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 
 void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 {
-	Math::Size2D<UOSInt> newSize = this->pbChar->GetSizeP();
+	Math::Size2D<UIntOS> newSize = this->pbChar->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	if (!this->charImg.SetTo(dimg))
 	{
@@ -455,11 +455,11 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		dimg->DelBrush(b);
 		if (this->currChar != 0)
 		{
-			UOSInt len;
+			UIntOS len;
 			Math::Size2DDbl sz;
 			b = dimg->NewBrushARGB(0xff000000);
-			f = dimg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
-			len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
+			f = dimg->NewFontPx(this->currFont->ToCString(), UIntOS2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
+			len = (UIntOS)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 			sbuff[len] = 0;
 			
 			sz = dimg->GetTextSize(f, {sbuff, len});
@@ -483,8 +483,8 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 	else
 	{
 		Data::ArrayListNative<UInt32> relatedChars;
-		UOSInt i;
-		UOSInt j;
+		UIntOS i;
+		UIntOS j;
 		this->chinese->GetRelatedChars(this->currChar, &relatedChars);
 		i = 0;
 		j = relatedChars.GetCount();

@@ -19,7 +19,7 @@ typedef struct
 	Sync::Event *evt;
 } PingStatus;
 
-void Net::ICMPScanner::ICMPChecksum(UInt8 *buff, OSInt buffSize)
+void Net::ICMPScanner::ICMPChecksum(UInt8 *buff, IntOS buffSize)
 {
 	UInt8 *oriBuff = buff;
     UInt32 sum = 0xffff;
@@ -90,11 +90,11 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
-	UOSInt readSize;
+	UIntOS readSize;
 	NN<ScanResult> result;
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
-	UOSInt ipDataSize;
+	UIntOS ipDataSize;
 	NN<Socket> soc;
 	if (me->soc.SetTo(soc))
 	{
@@ -149,8 +149,8 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 	NN<Net::ARPInfo> arp;
 	UInt8 mac[6];
 	UInt32 ipAddr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<ScanResult> result;
 	Net::ARPInfo::GetARPInfoList(arpList);
 	i = 0;
@@ -279,8 +279,8 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 	{
 		PingStatus *status = MemAlloc(PingStatus, (1 << THREADLEV));
 		NEW_CLASS(status[0].evt, Sync::Event(true));
-		UOSInt i = 0;
-		while (i < (UOSInt)(1 << THREADLEV))
+		UIntOS i = 0;
+		while (i < (UIntOS)(1 << THREADLEV))
 		{
 			status[i].me = this;
 			status[i].evt = status[0].evt;
@@ -331,7 +331,7 @@ NN<const Data::ReadingListNN<Net::ICMPScanner::ScanResult>> Net::ICMPScanner::Ge
 void Net::ICMPScanner::ClearResults()
 {
 	NN<ScanResult> result;
-	UOSInt i = this->results.GetCount();
+	UIntOS i = this->results.GetCount();
 	while (i-- > 0)
 	{
 		result = this->results.GetItemNoCheck(i);

@@ -28,14 +28,14 @@ Media::AVIUtl::AUIManager::~AUIManager()
 	this->plugins.DeleteAll();
 }
 
-UOSInt Media::AVIUtl::AUIManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
+UIntOS Media::AVIUtl::AUIManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
 {
 	Char sbuff[512];
 	Text::Encoding enc;
 	enc.UTF8ToBytes((UInt8*)sbuff, fileName);
 
-	UOSInt retSize = 0;
-	UOSInt i;
+	UIntOS retSize = 0;
+	UIntOS i;
 	i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
@@ -48,7 +48,7 @@ UOSInt Media::AVIUtl::AUIManager::LoadFile(UnsafeArray<const UTF8Char> fileName,
 
 void Media::AVIUtl::AUIManager::PrepareSelector(NN<IO::FileSelector> selector)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->plugins.GetCount();
 	while (i-- > 0)
 	{

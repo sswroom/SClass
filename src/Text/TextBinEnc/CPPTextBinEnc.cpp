@@ -14,12 +14,12 @@ Text::TextBinEnc::CPPTextBinEnc::~CPPTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
+UIntOS Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	Bool lineStart = true;
 	UInt32 code;
 	UInt8 b;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	while (buffSize-- > 0)
 	{
 		b = *dataBuff++;
@@ -133,10 +133,10 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
+UIntOS Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	Bool isQuote = false;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> str = s.v;
 	while (true)
@@ -224,10 +224,10 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
+UIntOS Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	Bool isQuote = false;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	UTF8Char c;
 	UnsafeArray<const UTF8Char> str = s.v;
 	while (true)

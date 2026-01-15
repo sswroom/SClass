@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 
-extern "C" UInt32 Adler32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 abVal)
+extern "C" UInt32 Adler32_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 abVal)
 {
 	UInt32 a = abVal & 0xffff;
 	UInt32 b = abVal >> 16;
-	UOSInt l = buffSize % 5552;
-	UOSInt i = l >> 3;
+	UIntOS l = buffSize % 5552;
+	UIntOS i = l >> 3;
 	while (i-- > 0)
 	{
 		a += buff[0];

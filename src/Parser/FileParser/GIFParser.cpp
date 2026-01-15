@@ -61,9 +61,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	UOSInt i;
-	UOSInt j;
-	UOSInt currOfst = 13;
+	UIntOS i;
+	UIntOS j;
+	UIntOS currOfst = 13;
 	UInt32 scnWidth = ReadUInt16(&hdr[6]);
 	UInt32 scnHeight = ReadUInt16(&hdr[8]);
 //	Int32 bpp = ((hdr[10] >> 4) & 7) + 1;
@@ -74,7 +74,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	Bool isFirst = true;
 	UInt8 blockType;
 	UInt8 readBlock[256];
-	UOSInt readSize;
+	UIntOS readSize;
 	UInt8 disposalMethod = 0;
 	Media::ImageList *imgList;
 	;
@@ -85,10 +85,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 	if (hdr[10] & 0x80)
 	{
-		globalColorTable.ChangeSizeAndClear((UOSInt)3 << colorSize);
+		globalColorTable.ChangeSizeAndClear((UIntOS)3 << colorSize);
 //		colorIndex = hdr[11];
-		fd->GetRealData(currOfst, (UOSInt)3 << colorSize, globalColorTable);
-		currOfst += (UOSInt)3 << colorSize;
+		fd->GetRealData(currOfst, (UIntOS)3 << colorSize, globalColorTable);
+		currOfst += (UIntOS)3 << colorSize;
 	}
 	Data::ByteBufferA scnImg(scnWidth * scnHeight);
 	
@@ -116,9 +116,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 			if (imgDesc[8] & 0x80)
 			{
 				Int32 colorSize = (imgDesc[8] & 7) + 1;
-				localColorTable.ChangeSizeAndClear((UOSInt)3 << colorSize);
-				fd->GetRealData(currOfst, (UOSInt)3 << colorSize, localColorTable);
-				currOfst += (UOSInt)3 << colorSize;
+				localColorTable.ChangeSizeAndClear((UIntOS)3 << colorSize);
+				fd->GetRealData(currOfst, (UIntOS)3 << colorSize, localColorTable);
+				currOfst += (UIntOS)3 << colorSize;
 			}
 
 			while (true)
@@ -155,7 +155,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							break;
 						}
 						mstm.Write(Data::ByteArrayR(&readBlock[1], readBlock[0]));
-						currOfst += 1 + (UOSInt)readBlock[0];
+						currOfst += 1 + (UIntOS)readBlock[0];
 					}
 					mstm.SeekFromBeginning(0);
 					Data::Compress::LZWDecStream *lzw;
@@ -165,7 +165,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					Data::ByteArray tmpPtr;
 					Data::ByteArray tmpPtr2;
 					Data::ByteArray currColorTable;
-					OSInt currColorSize;
+					IntOS currColorSize;
 					if (isFirst)
 					{
 						if (localColorTable.GetSize() > 0)
@@ -186,7 +186,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							{
 								while (i-- > 0)
 								{
-									j = (UOSInt)tmpPtr[0] * 3;
+									j = (UIntOS)tmpPtr[0] * 3;
 									tmpPtr2[0] = screenColorTable[j + 2];
 									tmpPtr2[1] = screenColorTable[j + 1];
 									tmpPtr2[2] = screenColorTable[j + 0];
@@ -206,7 +206,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							{
 								while (i-- > 0)
 								{
-									j = (UOSInt)tmpPtr[0] * 3;
+									j = (UIntOS)tmpPtr[0] * 3;
 									tmpPtr2[0] = globalColorTable[j + 2];
 									tmpPtr2[1] = globalColorTable[j + 1];
 									tmpPtr2[2] = globalColorTable[j + 0];
@@ -248,7 +248,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 					if (scnImg32.GetSize() > 0)
 					{
-						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						imgData.ChangeSizeAndClear(imgW * imgH);
 						readSize = lzw->Read(imgData);
 						if (localColorTable.GetSize() > 0)
@@ -509,7 +509,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					}
 					else
 					{
-						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_ALPHA_ALL_FF:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_ALPHA_ALL_FF:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						if (imgDesc[8] & 0x40)
 						{
 							imgData.ChangeSizeAndClear(imgW * imgH);

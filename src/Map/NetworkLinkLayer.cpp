@@ -17,7 +17,7 @@
 void __stdcall Map::NetworkLinkLayer::InnerUpdated(AnyType userObj)
 {
 	NN<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(me->linkMut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
@@ -42,7 +42,7 @@ UInt32 __stdcall Map::NetworkLinkLayer::ControlThread(AnyType userObj)
 
 void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 {
-	UOSInt i;
+	UIntOS i;
 	Data::Timestamp currTime = Data::Timestamp::UtcNow();
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	NN<LinkInfo> link;
@@ -112,17 +112,17 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 		sb.AppendOpt(link->viewFormat);
 		Sync::MutexUsage dispMutUsage(this->dispMut);
 		sptr = Text::StrDouble(sbuff, this->dispRect.min.x);
-		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UIntOS)(sptr - sbuff));
 		sptr = Text::StrDouble(sbuff, this->dispRect.min.y);
-		sb.ReplaceStr(UTF8STRC("[bboxSouth]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[bboxSouth]"), sbuff, (UIntOS)(sptr - sbuff));
 		sptr = Text::StrDouble(sbuff, this->dispRect.max.x);
-		sb.ReplaceStr(UTF8STRC("[bboxEast]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[bboxEast]"), sbuff, (UIntOS)(sptr - sbuff));
 		sptr = Text::StrDouble(sbuff, this->dispRect.max.y);
-		sb.ReplaceStr(UTF8STRC("[bboxNorth]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[bboxNorth]"), sbuff, (UIntOS)(sptr - sbuff));
 		sptr = Text::StrInt32(sbuff, Double2Int32(width));
-		sb.ReplaceStr(UTF8STRC("[horizPixels]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[horizPixels]"), sbuff, (UIntOS)(sptr - sbuff));
 		sptr = Text::StrInt32(sbuff, Double2Int32(height));
-		sb.ReplaceStr(UTF8STRC("[vertPixels]"), sbuff, (UOSInt)(sptr - sbuff));
+		sb.ReplaceStr(UTF8STRC("[vertPixels]"), sbuff, (UIntOS)(sptr - sbuff));
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Loading URL: %s\r\n", sb.ToString());
 #endif
@@ -143,7 +143,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 		if (this->parsers->ParseFileType(fd, IO::ParserType::MapLayer).SetTo(pobj))
 		{
 			NN<Map::MapDrawLayer> innerLayer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
-			UOSInt j;
+			UIntOS j;
 			Sync::RWMutexUsage mutUsage(this->linkMut, true);
 			link->innerLayer.Delete();
 			link->innerLayer = innerLayer;
@@ -218,7 +218,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	UOSInt i;
+	UIntOS i;
 	NN<LinkInfo> link;
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -234,7 +234,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 
 void Map::NetworkLinkLayer::SetCurrScale(Double scale)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	this->currScale = scale;
 	i = this->links.GetCount();
@@ -251,7 +251,7 @@ void Map::NetworkLinkLayer::SetCurrScale(Double scale)
 
 void Map::NetworkLinkLayer::SetCurrTimeTS(Int64 timeStamp)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	this->currTime = timeStamp;
 	i = this->links.GetCount();
@@ -271,7 +271,7 @@ Int64 Map::NetworkLinkLayer::GetTimeStartTS() const
 	Bool first = true;
 	Int64 timeStart = 0;
 	Int64 v;
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -303,7 +303,7 @@ Int64 Map::NetworkLinkLayer::GetTimeEndTS() const
 	Bool first = true;
 	Int64 timeEnd = 0;
 	Int64 v;
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -337,15 +337,15 @@ Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType() const
 	return this->innerLayerType;
 }
 
-UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Int64 currId = 0;
 	Int64 maxId;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Data::ArrayListInt64 tmpArr;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
@@ -373,7 +373,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, O
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -387,13 +387,13 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptO
 #endif
 		}
 	}
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Int64 currId = 0;
 	Int64 maxId;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Data::ArrayListInt64 tmpArr;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
@@ -421,7 +421,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptO
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -434,13 +434,13 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr,
 #endif
 		}
 	}
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	Int64 currId = 0;
 	Int64 maxId;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	Data::ArrayListInt64 tmpArr;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
@@ -470,7 +470,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr,
 
 Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 {
-	UOSInt i;
+	UIntOS i;
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
@@ -488,10 +488,10 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 	return currId - 1;
 }
 
-UOSInt Map::NetworkLinkLayer::GetRecordCnt() const
+UIntOS Map::NetworkLinkLayer::GetRecordCnt() const
 {
-	UOSInt i;
-	UOSInt cnt = 0;
+	UIntOS i;
+	UIntOS cnt = 0;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -513,10 +513,10 @@ void Map::NetworkLinkLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
 
-Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
@@ -540,22 +540,22 @@ Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<N
 	return false;
 }
 
-UOSInt Map::NetworkLinkLayer::GetColumnCnt() const
+UIntOS Map::NetworkLinkLayer::GetColumnCnt() const
 {
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::NetworkLinkLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }
@@ -573,7 +573,7 @@ Bool Map::NetworkLinkLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 		return true;
 	}
 	Bool isFirst = true;
-	UOSInt i;
+	UIntOS i;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
 	Sync::RWMutexUsage mutUsage(NN<Sync::RWMutex>::ConvertFrom(NN<const Sync::RWMutex>(this->linkMut)), false);
@@ -624,7 +624,7 @@ void Map::NetworkLinkLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 
 NN<Map::GetObjectSess> Map::NetworkLinkLayer::BeginGetObject()
 {
-	UOSInt i;
+	UIntOS i;
 	this->linkMut.LockRead();
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -640,7 +640,7 @@ NN<Map::GetObjectSess> Map::NetworkLinkLayer::BeginGetObject()
 }
 void Map::NetworkLinkLayer::EndGetObject(NN<GetObjectSess> session)
 {
-	UOSInt i;
+	UIntOS i;
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -656,8 +656,8 @@ void Map::NetworkLinkLayer::EndGetObject(NN<GetObjectSess> session)
 
 Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	Int64 currId = 0;
 	Int64 maxId;
 	Optional<Math::Geometry::Vector2D> vec = nullptr;
@@ -686,15 +686,15 @@ Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<Ge
 	return vec;
 }
 
-UOSInt Map::NetworkLinkLayer::GetNameCol() const
+UIntOS Map::NetworkLinkLayer::GetNameCol() const
 {
 	return 0;
 }
-void Map::NetworkLinkLayer::SetNameCol(UOSInt nameCol)
+void Map::NetworkLinkLayer::SetNameCol(UIntOS nameCol)
 {
 }
 
-UOSInt Map::NetworkLinkLayer::GetGeomCol() const
+UIntOS Map::NetworkLinkLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -706,7 +706,7 @@ Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 
 NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	NN<LinkInfo> link;
 	i = this->links.GetCount();
@@ -724,7 +724,7 @@ NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
 
 void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -742,7 +742,7 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 
 void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<LinkInfo> link;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	this->updHdlrs.Add({hdlr, obj});
@@ -760,7 +760,7 @@ void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 
 void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
-	UOSInt i;
+	UIntOS i;
 	NN<LinkInfo> link;
 	Bool chg = false;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
@@ -789,7 +789,7 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType ob
 	}
 }
 
-UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
+UIntOS Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->GetSourceNameObj());
@@ -810,7 +810,7 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, T
 		link->lastUpdated = Data::Timestamp::UtcNow();
 	}
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
-	UOSInt ret = this->links.Add(link);
+	UIntOS ret = this->links.Add(link);
 	mutUsage.EndUse();
 	this->ctrlEvt.Set();
 	return ret;

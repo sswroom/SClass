@@ -24,7 +24,7 @@
 #include <windows.h>
 #endif
 
-UOSInt Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, UOSInt dataSize, UInt16 cmdType, UInt16 cmdSeq)
+UIntOS Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq)
 {
 	WriteNUInt16(&outbuff[0], ReadNUInt16((const UInt8*)"sM"));
 	WriteUInt16(&outbuff[2], (UInt16)(dataSize + 10));
@@ -71,9 +71,9 @@ mmccclop:
 #endif
 }
 
-UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UOSInt buffSize)
+UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UIntOS buffSize)
 {
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (i < buffSize - 4)
 	{
 		if (ReadNUInt16(&buff[i]) == ReadNUInt16((const UInt8*)"sM"))
@@ -95,7 +95,7 @@ UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UOSInt buffSize)
 	return 0;
 }
 
-Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UOSInt buffSize)
+Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UIntOS buffSize)
 {
 	UInt32 packSize;
 	if (buffSize < 10)
@@ -123,7 +123,7 @@ void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType,
 UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 {
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
-	UOSInt buffSize;
+	UIntOS buffSize;
 	NN<Net::TCPClient> cli;
 	me->ConnRRunning = true;
 	{
@@ -152,9 +152,9 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 				if (buffSize)
 				{
 					UInt8 *packet = dataBuff.Arr().Ptr();
-					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff.Arr()))) != 0)
+					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UIntOS)(packet - dataBuff.Arr()))) != 0)
 					{
-						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff.Arr())))
+						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UIntOS)(packet - dataBuff.Arr())))
 						{
 							UInt16 cmdSize;
 							UInt16 cmdType;
@@ -244,7 +244,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 			{
 				if (currTime.DiffMS(me->lastKATime) > 60000)
 				{
-					UOSInt procId = Manage::Process::GetCurrProcId();
+					UIntOS procId = Manage::Process::GetCurrProcId();
 					me->AddCommand((UInt8*)&procId, 4, 5);
 					me->lastKATime.SetCurrTimeUTC();
 				}
@@ -271,7 +271,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 	return 0;
 }
 
-void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
+void Manage::MonConn::AddCommand(UInt8 *data, UIntOS dataSize, UInt16 cmdType)
 {
 	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
 	Sync::MutexUsage mutUsage(this->cmdSeqMut);
@@ -354,7 +354,7 @@ Manage::MonConn::~MonConn()
 		DEL_CLASS(this->connTEvt);
 		this->connTEvt = 0;
 	}
-	UOSInt i = this->cmdList.GetCount();
+	UIntOS i = this->cmdList.GetCount();
 	while (i-- > 0)
 	{
 		MemFree(this->cmdList.RemoveAt(i));
@@ -368,7 +368,7 @@ Bool Manage::MonConn::IsError()
 
 void Manage::MonConn::StartProcess(Int32 name)
 {
-	UOSInt procId = Manage::Process::GetCurrProcId();
+	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[8];
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteInt32(&buff[4], name);
@@ -377,7 +377,7 @@ void Manage::MonConn::StartProcess(Int32 name)
 
 void Manage::MonConn::EndProcess()
 {
-	UOSInt procId = Manage::Process::GetCurrProcId();
+	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[4];
 	WriteUInt32(&buff[0], (UInt32)procId);
 	AddCommand(buff, 4, 1);
@@ -385,7 +385,7 @@ void Manage::MonConn::EndProcess()
 
 void Manage::MonConn::StartTCPPort(UInt16 portNum)
 {
-	UOSInt procId = Manage::Process::GetCurrProcId();
+	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[6];
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteUInt16(&buff[4], portNum);
@@ -394,7 +394,7 @@ void Manage::MonConn::StartTCPPort(UInt16 portNum)
 
 void Manage::MonConn::StartUDPPort(UInt16 portNum)
 {
-	UOSInt procId = Manage::Process::GetCurrProcId();
+	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[6];
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteUInt16(&buff[4], portNum);
@@ -403,7 +403,7 @@ void Manage::MonConn::StartUDPPort(UInt16 portNum)
 
 void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CStringNN msg)
 {
-	UOSInt procId = Manage::Process::GetCurrProcId();
+	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 *buff = MemAlloc(UInt8, 14 + msg.leng + 1);
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteInt32(&buff[4], name);

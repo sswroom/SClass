@@ -9,7 +9,7 @@ namespace UI
 	class GUIHScrollBar : public GUIControl
 	{
 	public:
-		typedef void (CALLBACKFUNC PosChgEvent)(AnyType userObj, UOSInt newPos);
+		typedef void (CALLBACKFUNC PosChgEvent)(AnyType userObj, UIntOS newPos);
 
 	private:
 		Data::ArrayListObj<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;
@@ -18,16 +18,16 @@ namespace UI
 		GUIHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIHScrollBar();
 
-		virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg) = 0;
-		virtual void SetPos(UOSInt pos) = 0;
-		virtual UOSInt GetPos() = 0;
+		virtual void InitScrollBar(UIntOS minVal, UIntOS maxVal, UIntOS currVal, UIntOS largeChg) = 0;
+		virtual void SetPos(UIntOS pos) = 0;
+		virtual UIntOS GetPos() = 0;
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn) = 0;
-		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn) = 0;
-		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn) = 0;
+		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void UpdatePos(Bool redraw) = 0;
 		
 		virtual Text::CStringNN GetObjectClass() const;
-		void EventPosChanged(UOSInt newPos);
+		void EventPosChanged(UIntOS newPos);
 		void HandlePosChanged(PosChgEvent hdlr, AnyType userObj);
 	};
 }

@@ -14,23 +14,23 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->downPos = scnPos;
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
 	{
 		NN<Map::GetObjectSess> sess;
-		UOSInt i;
-		UOSInt i2;
-		UOSInt j;
-		UOSInt k;
+		UIntOS i;
+		UIntOS i2;
+		UIntOS j;
+		UIntOS k;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
@@ -156,7 +156,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->rdownPos = scnPos;
@@ -164,14 +164,14 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType u
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NN<Map::GetObjectSess> sess;
-	UOSInt i;
-	UOSInt i2;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS i2;
+	UIntOS j;
+	UIntOS k;
 	Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(me->rdownPos);
 	Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos);
 	NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
@@ -256,7 +256,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType use
 	return UI::EventState::ContinueEvent;
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NN<Math::Geometry::Vector2D> currVec;
@@ -286,7 +286,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType us
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos);
 		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
-		UOSInt nPoint;
+		UIntOS nPoint;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoint);
 		ptList[0] = pt1;
 		ptList[1] = Math::Coord2DDbl(pt1.x, pt2.y);
@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt index = me->cboObj->GetSelectedIndex();
+	UIntOS index = me->cboObj->GetSelectedIndex();
 	if (index != INVALID_INDEX)
 	{
 		me->SetQueryItem(index);
@@ -325,21 +325,21 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjNameSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt index = me->cboObjName->GetSelectedIndex();
+	UIntOS index = me->cboObjName->GetSelectedIndex();
 	if (index != INVALID_INDEX)
 	{
 		me->nameCol = index;
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UIntOS index)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt selIndex = me->cboObj->GetSelectedIndex();
+	UIntOS selIndex = me->cboObj->GetSelectedIndex();
 	if (selIndex != INVALID_INDEX)
 	{
-		UOSInt j;
-		UOSInt k;
+		UIntOS j;
+		UIntOS k;
 		Optional<Text::String> value = nullptr;
 		if (me->layerNames)
 		{
@@ -372,8 +372,8 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UO
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	NN<Text::String> value;
 	if (me->layerNames)
 	{
@@ -406,10 +406,10 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjDownloadClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnColDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
+	UIntOS l;
 	NN<Text::String> value;
 	if (me->layerNames)
 	{
@@ -468,13 +468,13 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnOpenTimer(AnyType userObj)
 
 	{
 		Sync::MutexUsage mutUsage(me->downMut);
-		UOSInt cnt = me->downList.GetCount();
+		UIntOS cnt = me->downList.GetCount();
 		mutUsage.EndUse();
 		if (cnt != me->dispCnt)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("Pending download: "));
-			sb.AppendUOSInt(cnt);
+			sb.AppendUIntOS(cnt);
 			me->lblObjMsg->SetText(sb.ToCString());
 			me->dispCnt = cnt;
 		}
@@ -558,8 +558,8 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 	this->cboObjName->ClearItems();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i = 0;
-	UOSInt j = this->lyr->GetColumnCnt();
+	UIntOS i = 0;
+	UIntOS j = this->lyr->GetColumnCnt();
 	while (i < j)
 	{
 		sbuff[0] = 0;
@@ -578,7 +578,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 {
 	NN<Text::String> value;
 	this->queryNameList.FreeAll();
-	UOSInt i = this->queryValueList.GetCount();
+	UIntOS i = this->queryValueList.GetCount();
 	while (i-- > 0)
 	{
 		value = this->queryValueList.GetItemNoCheck(i);
@@ -591,7 +591,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 	this->queryVecOriList.DeleteAll();
 }
 
-void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
+void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UIntOS index)
 {
 	NN<Math::VectorTextWriter> writer;
 	NN<Math::Geometry::Vector2D> vec;
@@ -603,9 +603,9 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->queryVecOriList.GetItem(index).SetTo(vec);
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Optional<Text::String> name;
 	Optional<Text::String> value;
 	if (this->layerNames)
@@ -687,9 +687,9 @@ void SSWR::AVIRead::AVIRGISQueryForm::DownloadURL(NN<Text::String> url)
 			if (this->downList.GetCount() > 0)
 			{
 				Sync::MutexUsage mutUsage(this->downMut);
-				UOSInt cnt = this->downList.Add(url->Clone()) + 1;
+				UIntOS cnt = this->downList.Add(url->Clone()) + 1;
 				sb.Append(CSTR("Pending download: "));
-				sb.AppendUOSInt(cnt);
+				sb.AppendUIntOS(cnt);
 				this->lblObjMsg->SetText(sb.ToCString());
 				this->dispCnt = cnt;
 			}
@@ -700,10 +700,10 @@ void SSWR::AVIRead::AVIRGISQueryForm::DownloadURL(NN<Text::String> url)
 					Sync::MutexUsage mutUsage(this->downMut);
 					OPTSTR_DEL(this->downPath);
 					this->downPath = Text::String::New(sb.ToCString());
-					UOSInt cnt = this->downList.Add(url->Clone()) + 1;
+					UIntOS cnt = this->downList.Add(url->Clone()) + 1;
 					sb.ClearStr();
 					sb.Append(CSTR("Pending download: "));
-					sb.AppendUOSInt(cnt);
+					sb.AppendUIntOS(cnt);
 					this->lblObjMsg->SetText(sb.ToCString());
 					this->dispCnt = cnt;
 					this->downThread.Start();
@@ -873,8 +873,8 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->btnObjDownload->HandleButtonClick(OnObjDownloadClicked, this);
 	this->ShowLayerNames();
 
-	UOSInt i = 0;
-	UOSInt j = this->writerList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->writerList.GetCount();
 	while (i < j)
 	{
 		Math::VectorTextWriter *writer = this->writerList.GetItem(i);
@@ -894,7 +894,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	{
 		if (reg->GetValueStr(L"GISQueryDownPath", wbuff).SetTo(wptr))
 		{
-			NN<Text::String> s = Text::String::NewW(wbuff, (UOSInt)(wptr - wbuff));
+			NN<Text::String> s = Text::String::NewW(wbuff, (UIntOS)(wptr - wbuff));
 			this->txtAutoSavePath->SetText(s->ToCString());
 			s->Release();
 		}

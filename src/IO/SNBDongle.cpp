@@ -3,13 +3,13 @@
 #include "Core/ByteTool_C.h"
 #include "IO/SNBDongle.h"
 
-void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd)
+void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd)
 {
 	NN<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
 	DeviceInfo *dev;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	UIntOS i;
+	UIntOS j;
+	UIntOS k;
 	Double readingVals[16];
 	ReadingType readingTypes[16];
 	SensorType sensorType;
@@ -440,7 +440,7 @@ IO::SNBDongle::~SNBDongle()
 {
 	DEL_CLASS(this->proto);
 	DeviceInfo *dev;
-	UOSInt i;
+	UIntOS i;
 	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{

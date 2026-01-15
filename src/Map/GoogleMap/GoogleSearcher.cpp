@@ -85,27 +85,27 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 	OPTSTR_DEL(this->gooKey);
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, Text::CString lang)
 {
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> urlStart;
 	UInt8 databuff[2048];
-	UOSInt databuffSize;
+	UIntOS databuffSize;
 	Data::DateTime currDt;
-	OSInt si;
-	UOSInt i;
+	IntOS si;
+	UIntOS i;
 	UnsafeArray<UTF8Char> ptrs[3];
 
 	Sync::MutexUsage mutUsage(this->mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
-	if ((si = (OSInt)currDt.DiffMS(this->lastSrchDate)) < 200)
+	if ((si = (IntOS)currDt.DiffMS(this->lastSrchDate)) < 200)
 	{
 		if (si >= 0)
 		{
-			Sync::SimpleThread::Sleep((UOSInt)(200 - si));
+			Sync::SimpleThread::Sleep((UIntOS)(200 - si));
 		}
 	}
 
@@ -127,7 +127,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
-		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
+		hmac.Calc(urlStart, (UIntOS)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
@@ -150,7 +150,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 		Int32 status = cli->GetRespStatus();
-		UOSInt readSize;
+		UIntOS readSize;
 		databuffSize = 0;
 		while ((readSize = cli->Read(Data::ByteArray(&databuff[databuffSize], 2047 - databuffSize))) > 0)
 		{
@@ -212,7 +212,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 		this->lastIsError = 2;
 		*buff = 0;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
-		sb.AppendC(url, (UOSInt)(sptr - url));
+		sb.AppendC(url, (UIntOS)(sptr - url));
 		errWriter->WriteLine(sb.ToCString());
 	}
 	this->lastSrchDate.SetCurrTimeUTC();
@@ -221,7 +221,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 	return buff;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -236,7 +236,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{

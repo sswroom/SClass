@@ -26,7 +26,7 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NN<Sync::Thread> th
 	UInt16 fmt = bo->GetUInt16(&buff[2]);
 	if (fmt == 42)
 	{
-		UOSInt nextOfst = bo->GetUInt32(&buff[4]);
+		UIntOS nextOfst = bo->GetUInt32(&buff[4]);
 		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 8;
@@ -153,12 +153,12 @@ Text::CStringNN IO::FileAnalyse::TIFFFileAnalyse::GetFormatName()
 	return CSTR("TIFF");
 }
 
-UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameCount()
+UIntOS IO::FileAnalyse::TIFFFileAnalyse::GetFrameCount()
 {
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -185,16 +185,16 @@ Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
+UIntOS IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
-	OSInt i = 0;
-	OSInt j = (OSInt)this->packs.GetCount() - 1;
-	OSInt k;
+	IntOS i = 0;
+	IntOS j = (IntOS)this->packs.GetCount() - 1;
+	IntOS k;
 	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItemNoCheck((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UIntOS)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -205,13 +205,13 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 		}
 		else
 		{
-			return (UOSInt)k;
+			return (UIntOS)k;
 		}
 	}
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(UIntOS index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
@@ -239,7 +239,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 		frame->AddText(0, CSTR("Type=IFD8"));
 		break;
 	}
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, CSTRP(sbuff, sptr));
 
 	if (pack->packType == PT_HEADER)
@@ -247,7 +247,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 		Data::ByteBuffer packBuff(pack->packSize);
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		UOSInt verNum = bo->GetUInt16(&packBuff[2]);
+		UIntOS verNum = bo->GetUInt16(&packBuff[2]);
 		frame->AddStrC(0, 2, CSTR("Byte Order"), &packBuff[0]);
 		frame->AddUInt(2, 2, CSTR("Version Number"), verNum);
 		if (verNum == 42)
@@ -273,8 +273,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		UInt64 tagCnt = bo->GetUInt64(packBuff.Arr());
 		frame->AddUInt64(0, CSTR("Number of tags in IFD"), tagCnt);
-		UOSInt i = 0;
-		UOSInt ofst = 8;
+		UIntOS i = 0;
+		UIntOS ofst = 8;
 		while (i < tagCnt)
 		{
 			UInt16 dataType = bo->GetUInt16(&packBuff[ofst + 2]);
@@ -294,8 +294,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		UInt32 tagCnt = bo->GetUInt16(packBuff.Arr());
 		frame->AddUInt(0, 2, CSTR("Number of tags in IFD"), tagCnt);
-		UOSInt i = 0;
-		UOSInt ofst = 2;
+		UIntOS i = 0;
+		UIntOS ofst = 2;
 		while (i < tagCnt)
 		{
 			UInt16 dataType = bo->GetUInt16(&packBuff[ofst + 2]);

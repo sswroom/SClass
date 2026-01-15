@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoChecker.h"
 
-void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frameType != Media::FT_DISCARD)
@@ -51,7 +51,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 	NN<Media::VideoSource> vdecoder;
 	Data::ArrayListObj<DecodeStatus*> statusList;
 	Bool isEnd;
-	UOSInt i = 0;
+	UIntOS i = 0;
 	Int32 syncTime;
 	Bool valid = true;
 	Data::Duration videoTime = 0;
@@ -167,7 +167,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 				if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
 					Media::VideoSource *video = (Media::VideoSource *)msrc.Ptr();
-					OSInt frameDiff = (OSInt)(video->GetFrameCount() - status->sampleCnt);
+					IntOS frameDiff = (IntOS)(video->GetFrameCount() - status->sampleCnt);
 					if (frameDiff < -10 || frameDiff > 10)
 					{
 						valid = false;

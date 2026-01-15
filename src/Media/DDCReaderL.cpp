@@ -6,10 +6,10 @@
 #include "Media/DDCReader.h"
 #include "Text/MyString.h"
 
-UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
+UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 {
 	UTF8Char sbuff[512];
-	UOSInt edidSize;
+	UIntOS edidSize;
 	UInt8 edid[1025];
 	UInt8 *ret = 0;
 
@@ -192,7 +192,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
 }
 
-Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize)
+Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UIntOS edidSize)
 {
 	UnsafeArray<UInt8> edidTmp;
 	this->edid = edidTmp = MemAllocArr(UInt8, edidSize);
@@ -211,19 +211,19 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UnsafeArrayOpt<UInt8> Media::DDCReader::GetEDID(OutParam<UOSInt> size)
+UnsafeArrayOpt<UInt8> Media::DDCReader::GetEDID(OutParam<UIntOS> size)
 {
 	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
+UIntOS Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
 	UTF8Char sbuff[512];
-	UOSInt edidSize;
+	UIntOS edidSize;
 	UInt8 edid[1025];
 	NN<Media::DDCReader> reader;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 
 	// Intel GPU
 	UnsafeArray<UTF8Char> sptr;

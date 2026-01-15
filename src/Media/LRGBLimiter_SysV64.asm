@@ -13,7 +13,7 @@ section .text
 global LRGBLimiter_LimitImageLRGB
 global _LRGBLimiter_LimitImageLRGB
 
-;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
+;void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, IntOS w, IntOS h);
 ;16 rbx
 ;24 rbp
 ;32 retAddr 

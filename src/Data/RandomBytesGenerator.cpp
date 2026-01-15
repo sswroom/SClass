@@ -14,7 +14,7 @@ Data::RandomBytesGenerator::~RandomBytesGenerator()
 	this->random.Delete();
 }
 
-void Data::RandomBytesGenerator::NextBytes(UnsafeArray<UInt8> buff, UOSInt len)
+void Data::RandomBytesGenerator::NextBytes(UnsafeArray<UInt8> buff, UIntOS len)
 {
 	NN<Data::RandomMT19937> random;
 	if (!this->random.SetTo(random))

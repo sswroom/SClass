@@ -52,7 +52,7 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 
 	Bool succ = false;
 	UInt32 threadId;
-	OSInt i;
+	IntOS i;
 	IShellDispatch *pISD;
 	HRESULT hResult;
 	Folder *pToFolder = 0;
@@ -116,15 +116,15 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 	return succ;
 }
 
-OSInt IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
+IntOS IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 {
 	if (this->error)
 		return false;
 
-	OSInt retCnt = 0;
-	OSInt i;
+	IntOS retCnt = 0;
+	IntOS i;
 	long j;
-	UOSInt k;
+	UIntOS k;
 	IShellDispatch *pISD;
 	HRESULT hResult;
 	Folder *pToFolder = 0;
@@ -182,7 +182,7 @@ OSInt IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 
 void IO::WindowZIP::FreeFileList(Data::ArrayList<const WChar *> *fileList)
 {
-	OSInt i = fileList->GetCount();
+	IntOS i = fileList->GetCount();
 	while (i-- > 0)
 	{
 		Text::StrDelNew(fileList->RemoveAt(i));
@@ -196,7 +196,7 @@ Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
 
 	Bool succ = false;
 	UInt32 threadId;
-	OSInt i;
+	IntOS i;
 	IShellDispatch *pISD;
 	HRESULT hResult;
 	Folder *pToFolder = 0;

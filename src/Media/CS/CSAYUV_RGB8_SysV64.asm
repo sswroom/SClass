@@ -13,7 +13,7 @@ section .text
 global CSAYUV_RGB8_do_ayuvrgb
 global _CSAYUV_RGB8_do_ayuvrgb
 
-;void CSAYUV_RGB8_do_ayuvrgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
+;void CSAYUV_RGB8_do_ayuvrgb(UInt8 *src, UInt8 *dest, IntOS width, IntOS height, IntOS dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 ;0 rdi
 ;8 rsi
 ;16 rbx

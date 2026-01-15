@@ -8,11 +8,11 @@ namespace Data
 	{
 	public:
 		ArrayListICaseString();
-		ArrayListICaseString(UOSInt capacity);
+		ArrayListICaseString(UIntOS capacity);
 
 		virtual NN<Data::ArrayListObj<Optional<Text::String>>> Clone() const;
-		virtual OSInt Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const;
-		virtual OSInt SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const;
+		virtual IntOS Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const;
+		virtual IntOS SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UIntOS len) const;
 	};
 }
 #endif

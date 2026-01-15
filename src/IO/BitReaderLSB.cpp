@@ -13,7 +13,7 @@ IO::BitReaderLSB::BitReaderLSB(NN<IO::Stream> stm)
 	this->stm = stm;
 }
 
-IO::BitReaderLSB::BitReaderLSB(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+IO::BitReaderLSB::BitReaderLSB(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	this->buff = UnsafeArray<UInt8>::ConvertFrom(buff);
 	this->buffSize = buffSize;
@@ -30,7 +30,7 @@ IO::BitReaderLSB::~BitReaderLSB()
 	}
 }
 
-Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
+Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UIntOS bitCount)
 {
 	NN<IO::Stream> stm;
 #ifdef _DEBUG
@@ -52,7 +52,7 @@ Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
 				this->buffSize = 0;
 				this->currBytePos = 0;
 			}
-			UOSInt readSize = stm->Read(Data::ByteArray(&this->buff[this->buffSize], 1024 - this->buffSize));
+			UIntOS readSize = stm->Read(Data::ByteArray(&this->buff[this->buffSize], 1024 - this->buffSize));
 			if (readSize <= 0)
 				return false;
 			this->buffSize += readSize;
@@ -64,8 +64,8 @@ Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
 			return false;
 		}
 	}
-	UOSInt bits = bitCount + this->currBitPos;
-	UOSInt bits2 = bits;
+	UIntOS bits = bitCount + this->currBitPos;
+	UIntOS bits2 = bits;
 	if (bits2 & 7)
 		bits2 += 8;
 	UInt32 retCode = 0;
@@ -103,7 +103,7 @@ Bool IO::BitReaderLSB::ByteAlign()
 	return true;
 }
 
-UOSInt IO::BitReaderLSB::ReadBytes(UnsafeArray<UInt8> buff, UOSInt cnt)
+UIntOS IO::BitReaderLSB::ReadBytes(UnsafeArray<UInt8> buff, UIntOS cnt)
 {
 	this->ByteAlign();
 	if (this->buffSize - this->currBytePos >= cnt)
@@ -112,7 +112,7 @@ UOSInt IO::BitReaderLSB::ReadBytes(UnsafeArray<UInt8> buff, UOSInt cnt)
 		this->currBytePos += cnt;
 		return cnt;
 	}
-	UOSInt ret = this->buffSize - this->currBytePos;
+	UIntOS ret = this->buffSize - this->currBytePos;
 	if (ret > 0)
 	{
 		MemCopyNO(buff.Ptr(), &this->buff[this->currBytePos], ret);
@@ -122,7 +122,7 @@ UOSInt IO::BitReaderLSB::ReadBytes(UnsafeArray<UInt8> buff, UOSInt cnt)
 	NN<IO::Stream> stm;
 	if (cnt > 0 && this->stm.SetTo(stm))
 	{
-		UOSInt readSize = stm->Read(Data::ByteArray(&buff[ret], cnt));
+		UIntOS readSize = stm->Read(Data::ByteArray(&buff[ret], cnt));
 		if (readSize > 0)
 		{
 			ret += cnt;

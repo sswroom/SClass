@@ -26,8 +26,8 @@ namespace Text
 		static void FreeNewText(UnsafeArray<const WChar> s);
 		static UnsafeArray<UTF8Char> JSDouble(UnsafeArray<UTF8Char> buff, Double val);
 
-		static Bool JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
-		static Bool JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
+		static Bool JSONWellFormat(UnsafeArray<const UTF8Char> buff, UIntOS buffSize, UIntOS lev, NN<Text::StringBuilderUTF8> sb);
+		static Bool JSWellFormat(UnsafeArray<const UTF8Char> buff, UIntOS buffSize, UIntOS lev, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

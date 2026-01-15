@@ -46,15 +46,15 @@ void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(NN<const Math::BigF
 /*
 Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Distance::DistanceUnit unit)
 {
-	OSInt nPoints;
-	OSInt nParts;
+	IntOS nPoints;
+	IntOS nParts;
 	Int32 *parts;
 	Double *points;
 	parts = pl->GetPartList(&nParts);
 	points = pl->GetPointList(&nPoints);
-	OSInt i = nParts;
-	OSInt j = nPoints;
-	OSInt k;
+	IntOS i = nParts;
+	IntOS j = nPoints;
+	IntOS k;
 	Double totalDist = 0;
 	Bool hasLast;
 	Double lastX;
@@ -80,18 +80,18 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 
 Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Distance::DistanceUnit unit)
 {
-	OSInt nPoints;
-	OSInt nParts;
-	OSInt nAlts;
+	IntOS nPoints;
+	IntOS nParts;
+	IntOS nAlts;
 	Int32 *parts;
 	Double *points;
 	Double *alts;
 	parts = pl->GetPartList(&nParts);
 	points = pl->GetPointList(&nPoints);
 	alts = pl->GetAltitudeList(&nAlts);
-	OSInt i = nParts;
-	OSInt j = nPoints;
-	OSInt k;
+	IntOS i = nParts;
+	IntOS j = nPoints;
+	IntOS k;
 	Double dist;
 	Double totalDist = 0;
 	Bool hasLast;

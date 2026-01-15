@@ -28,13 +28,13 @@ namespace IO
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 	public:
-		CortexControl(UOSInt portNum, Optional<IO::Writer> errWriter);
+		CortexControl(UIntOS portNum, Optional<IO::Writer> errWriter);
 		virtual ~CortexControl();
 
 		Bool IsError();
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		
 		Bool GetFWVersion(OutParam<Int32> majorVer, OutParam<Int32> minorVer);
 		Bool ReadDIO(OutParam<Int32> dioValues); //bit 0-9 = IN1-10, bit10-11 = OUT1-2

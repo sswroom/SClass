@@ -16,13 +16,13 @@ namespace Media
 
 			UInt32 bgFormat;
 			UnsafeArrayOpt<UInt8> bgData;
-			UOSInt bgWidth;
-			UOSInt bgHeight;
+			UIntOS bgWidth;
+			UIntOS bgHeight;
 		public:
 			BGImgFilter();
 			virtual ~BGImgFilter();
 
-			virtual void ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
+			virtual void ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UIntOS nBits, Media::PixelFormat pf, UIntOS imgWidth, UIntOS imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst);
 
 			Bool IsEnabled();
 			Bool IsAbsolute();

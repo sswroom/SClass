@@ -8,8 +8,8 @@
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SolarEdgeAPI> seAPI;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 			{
 				me->txtSuppVer->SetText(CSTR(""));
 			}
-			UOSInt totalCount;
+			UIntOS totalCount;
 			NN<Net::SolarEdgeAPI::Site> site;
 			me->lvSiteList->ClearItems();
 			me->cboSiteEnergySite->ClearItems();
@@ -190,11 +190,11 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType use
 	NN<Net::SolarEdgeAPI::Site> site;
 	if (me->cboSiteEnergySite->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site) && me->seAPI.SetTo(seAPI))
 	{
-		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)me->cboSiteEnergyInterval->GetSelectedItem().GetUOSInt();
+		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)me->cboSiteEnergyInterval->GetSelectedItem().GetUIntOS();
 		Data::DateTimeUtil::TimeValue timeVal;
-		timeVal.year = (UInt16)me->cboSiteEnergyYear->GetSelectedItem().GetUOSInt();
-		timeVal.month = (UInt8)me->cboSiteEnergyMonth->GetSelectedItem().GetUOSInt();
-		timeVal.day = (UInt8)me->cboSiteEnergyDay->GetSelectedItem().GetUOSInt();
+		timeVal.year = (UInt16)me->cboSiteEnergyYear->GetSelectedItem().GetUIntOS();
+		timeVal.month = (UInt8)me->cboSiteEnergyMonth->GetSelectedItem().GetUIntOS();
+		timeVal.day = (UInt8)me->cboSiteEnergyDay->GetSelectedItem().GetUIntOS();
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;
@@ -225,9 +225,9 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType user
 	{
 		Net::SolarEdgeAPI::TimeUnit timeUnit = Net::SolarEdgeAPI::TimeUnit::QUARTER_OF_AN_HOUR;
 		Data::DateTimeUtil::TimeValue timeVal;
-		timeVal.year = (UInt16)me->cboSitePowerYear->GetSelectedItem().GetUOSInt();
-		timeVal.month = (UInt8)me->cboSitePowerMonth->GetSelectedItem().GetUOSInt();
-		timeVal.day = (UInt8)me->cboSitePowerDay->GetSelectedItem().GetUOSInt();
+		timeVal.year = (UInt16)me->cboSitePowerYear->GetSelectedItem().GetUIntOS();
+		timeVal.month = (UInt8)me->cboSitePowerMonth->GetSelectedItem().GetUIntOS();
+		timeVal.day = (UInt8)me->cboSitePowerDay->GetSelectedItem().GetUIntOS();
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;
@@ -294,7 +294,7 @@ Data::Timestamp SSWR::AVIRead::AVIRSolarEdgeForm::GetDefaultEndTime(const Data::
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 {
 	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
+	Math::Size2D<UIntOS> size = this->pbSiteEnergy->GetSizeP();
 	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
 		NN<Media::DrawImage> dimg;
@@ -304,8 +304,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			Data::ChartPlotter chart(CSTR("Site Energy"));
 			chart.SetFontHeightPt(9.0);
-			UOSInt i = 0;
-			UOSInt j = this->siteEnergyList.GetCount();
+			UIntOS i = 0;
+			UIntOS j = this->siteEnergyList.GetCount();
 			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
 			Double *valList = MemAlloc(Double, j);
 			while (i < j)
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 				i++;
 			}
 			chart.AddLineChart(CSTR("Wh"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
-			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
+			chart.Plot(dimg, 0, 0, UIntOS2Double(size.x), UIntOS2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
 			Optional<Media::StaticImage> simg = dimg->ToStaticImage();
@@ -330,7 +330,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 {
 	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Math::Size2D<UOSInt> size = this->pbSitePower->GetSizeP();
+	Math::Size2D<UIntOS> size = this->pbSitePower->GetSizeP();
 	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
 		NN<Media::DrawImage> dimg;
@@ -340,8 +340,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			Data::ChartPlotter chart(CSTR("Site Power"));
 			chart.SetFontHeightPt(9.0);
-			UOSInt i = 0;
-			UOSInt j = this->sitePowerList.GetCount();
+			UIntOS i = 0;
+			UIntOS j = this->sitePowerList.GetCount();
 			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
 			Double *valList = MemAlloc(Double, j);
 			while (i < j)
@@ -351,7 +351,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 				i++;
 			}
 			chart.AddLineChart(CSTR("W"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
-			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
+			chart.Plot(dimg, 0, 0, UIntOS2Double(size.x), UIntOS2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
 			Optional<Media::StaticImage> simg = dimg->ToStaticImage();

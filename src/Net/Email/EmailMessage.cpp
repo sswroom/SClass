@@ -18,11 +18,11 @@
 
 #define LINECHARCNT 77
 
-UOSInt Net::Email::EmailMessage::GetHeaderIndex(Text::CStringNN name)
+UIntOS Net::Email::EmailMessage::GetHeaderIndex(Text::CStringNN name)
 {
 	NN<Text::String> header;
 	Data::ArrayIterator<NN<Text::String>> it = this->headerList.Iterator();
-	UOSInt i = 0;
+	UIntOS i = 0;
 	while (it.HasNext())
 	{
 		header = it.Next();
@@ -42,7 +42,7 @@ Bool Net::Email::EmailMessage::SetHeader(Text::CStringNN name, Text::CStringNN v
 	sb.AppendUTF8Char(':');
 	sb.AppendUTF8Char(' ');
 	sb.Append(val);
-	UOSInt i = this->GetHeaderIndex(name);
+	UIntOS i = this->GetHeaderIndex(name);
 	if (i == INVALID_INDEX)
 	{
 		this->headerList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -84,7 +84,7 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> att;
 	Text::CStringNN mime;
-	UOSInt k;
+	UIntOS k;
 	Data::ArrayIterator<NN<Attachment>> it = this->attachments.Iterator();
 	while (it.HasNext())
 	{
@@ -123,18 +123,18 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 			stm->Write(CSTR("\"").ToByteArray());
 			k += 13 + att->fileName->leng;
 		}
-		sptr = Text::StrUOSInt(sbuff, att->contentLen);
-		if (k + 8 + (UOSInt)(sptr - sbuff) > LINECHARCNT)
+		sptr = Text::StrUIntOS(sbuff, att->contentLen);
+		if (k + 8 + (UIntOS)(sptr - sbuff) > LINECHARCNT)
 		{
 			stm->Write(CSTR(";\r\n\tsize=").ToByteArray());
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			k = 9 + (UOSInt)(sptr - sbuff);
+			k = 9 + (UIntOS)(sptr - sbuff);
 		}
 		else
 		{
 			stm->Write(CSTR("; size=").ToByteArray());
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			k += 7 + (UOSInt)(sptr - sbuff);
+			k += 7 + (UIntOS)(sptr - sbuff);
 		}
 		if (att->createTime.NotNull())
 		{
@@ -144,7 +144,7 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 				sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
 				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 				stm->Write(CSTR("\"").ToByteArray());
-				k = 20 + (UOSInt)(sptr - sbuff);
+				k = 20 + (UIntOS)(sptr - sbuff);
 			}
 			else
 			{
@@ -152,7 +152,7 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 				sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
 				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 				stm->Write(CSTR("\"").ToByteArray());
-				k += 18 + (UOSInt)(sptr - sbuff);
+				k += 18 + (UIntOS)(sptr - sbuff);
 			}
 		}
 		if (att->modifyTime.NotNull())
@@ -170,7 +170,7 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 				sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
 				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 				stm->Write(CSTR("\"").ToByteArray());
-				k = 21 + (UOSInt)(sptr - sbuff);
+				k = 21 + (UIntOS)(sptr - sbuff);
 			}
 		}
 		stm->Write(CSTR("\r\nContent-Id: <").ToByteArray());
@@ -227,7 +227,7 @@ Bool Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 			stm->Write(CSTR("\r\n").ToByteArray());
 		}
 		stm->Write(CSTR("Content-Length: ").ToByteArray());
-		sptr = Text::StrUOSInt(sbuff, this->contentLen);
+		sptr = Text::StrUIntOS(sbuff, this->contentLen);
 		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 		stm->Write(CSTR("\r\n").ToByteArray());
 		stm->Write(CSTR("\r\n").ToByteArray());
@@ -236,7 +236,7 @@ Bool Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 	return true;
 }
 
-UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen)
+UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UIntOS dataLen)
 {
 	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
 	Crypto::Hash::SHA1 sha1;
@@ -248,7 +248,7 @@ UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char
 	return b64.EncodeBin(sbuff, sha1Val, 20);
 }
 
-void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, UnsafeArray<const UInt8> data, UOSInt dataSize)
+void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 	UTF8Char sbuff[80];
@@ -419,7 +419,7 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CStringNN addr)
 
 Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 {
-	UOSInt i = this->GetHeaderIndex(CSTR("To"));
+	UIntOS i = this->GetHeaderIndex(CSTR("To"));
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
@@ -453,7 +453,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 Bool Net::Email::EmailMessage::AddToList(Text::CStringNN addrs)
 {
 	Bool succ;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	Text::StringBuilderUTF8 sb;
 	sb.Append(addrs);
@@ -478,7 +478,7 @@ Bool Net::Email::EmailMessage::AddToList(Text::CStringNN addrs)
 
 Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 {
-	UOSInt i = this->GetHeaderIndex(CSTR("Cc"));
+	UIntOS i = this->GetHeaderIndex(CSTR("Cc"));
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
@@ -512,7 +512,7 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 Bool Net::Email::EmailMessage::AddCcList(Text::CStringNN addrs)
 {
 	Bool succ;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	Text::StringBuilderUTF8 sb;
 	sb.Append(addrs);
@@ -544,7 +544,7 @@ Bool Net::Email::EmailMessage::AddBcc(Text::CStringNN addr)
 Bool Net::Email::EmailMessage::AddBccList(Text::CStringNN addrs)
 {
 	Bool succ;
-	UOSInt i;
+	UIntOS i;
 	Text::PString sarr[2];
 	Text::StringBuilderUTF8 sb;
 	sb.Append(addrs);
@@ -582,7 +582,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> attachment = MemAllocNN(Attachment);
-	attachment->contentLen = (UOSInt)len;
+	attachment->contentLen = (UIntOS)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
 	{
@@ -594,14 +594,14 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	attachment->modifyTime = 0;
 	fs.GetFileTimes(attachment->createTime, 0, attachment->modifyTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
 	attachment->contentId = Text::String::NewP(sbuff, sptr);
 	attachment->isInline = false;
 	this->attachments.Add(attachment);
 	return attachment;
 }
 
-NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(UnsafeArray<const UInt8> content, UOSInt contentLen, Text::CStringNN fileName)
+NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(UnsafeArray<const UInt8> content, UIntOS contentLen, Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -612,7 +612,7 @@ NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment
 	attachment->createTime = Data::Timestamp::UtcNow();
 	attachment->modifyTime = attachment->createTime;
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
+	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
 	attachment->contentId = Text::String::NewP(sbuff, sptr);
 	attachment->isInline = false;
 	this->attachments.Add(attachment);
@@ -629,12 +629,12 @@ Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Option
 	return cert.NotNull() && key.NotNull();
 }
 
-UOSInt Net::Email::EmailMessage::AttachmentGetCount() const
+UIntOS Net::Email::EmailMessage::AttachmentGetCount() const
 {
 	return this->attachments.GetCount();
 }
 
-Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AttachmentGetItem(UOSInt index) const
+Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AttachmentGetItem(UIntOS index) const
 {
 	return this->attachments.GetItem(index);
 }
@@ -661,8 +661,8 @@ NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> Net::Email::
 Text::CString Net::Email::EmailMessage::GetSubject()
 {
 	NN<Text::String> header;
-	UOSInt i = 0;
-	UOSInt j = this->headerList.GetCount();
+	UIntOS i = 0;
+	UIntOS j = this->headerList.GetCount();
 	while (i < j)
 	{
 		header = this->headerList.GetItemNoCheck(i);
@@ -680,7 +680,7 @@ Optional<Text::String> Net::Email::EmailMessage::GetContentType()
 	return this->contentType;
 }
 
-UnsafeArrayOpt<UInt8> Net::Email::EmailMessage::GetContent(OutParam<UOSInt> contentLeng)
+UnsafeArrayOpt<UInt8> Net::Email::EmailMessage::GetContent(OutParam<UIntOS> contentLeng)
 {
 	contentLeng.Set(this->contentLen);
 	return this->content;
@@ -703,10 +703,10 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 		mstm.Write(CSTR("\r\n").ToByteArray());
 
 		UInt8 signData[512];
-		UOSInt signLen;
+		UIntOS signLen;
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		sptr = GenBoundary(sbuff, mstm.GetBuff(), (UOSInt)mstm.GetLength());
+		sptr = GenBoundary(sbuff, mstm.GetBuff(), (UIntOS)mstm.GetLength());
 		stm->Write(CSTR("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\"").ToByteArray());
 		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 		stm->Write(CSTR("\"\r\n\r\n").ToByteArray());
@@ -724,7 +724,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 		stm->Write(CSTR("Content-Description: S/MIME Cryptographic Signature\r\n\r\n").ToByteArray());
 
 		UnsafeArrayOpt<const UInt8> data;
-		UOSInt dataSize;
+		UIntOS dataSize;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		Net::ASN1PDUBuilder builder;
@@ -771,7 +771,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 								builder.EndLevel();
 								{
 									Crypto::Hash::SHA256 sha;
-									sha.Calc(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+									sha.Calc(mstm.GetBuff(), (UIntOS)mstm.GetLength());
 									sha.GetValue(signData);
 
 									builder.BeginSequence();
@@ -866,7 +866,7 @@ Bool Net::Email::EmailMessage::GenerateMessageID(NN<Text::StringBuilderUTF8> sb,
 	sb->AppendUTF8Char('.');
 	UInt8 crcVal[4];
 	Crypto::Hash::CRC32R crc;
-	UOSInt i;
+	UIntOS i;
 	i = Text::StrIndexOfCharC(mailFrom.v, mailFrom.leng, '@');
 	crc.Calc((UInt8*)mailFrom.v.Ptr(), i);
 	crc.GetValue((UInt8*)&crcVal);

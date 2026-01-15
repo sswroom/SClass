@@ -7,8 +7,8 @@ namespace Sync
 	private:
 		static UInt32 usScale;
 	public:
-		static void Sleep(UOSInt ms);
-		static void Sleepus(UOSInt us);
+		static void Sleep(UIntOS ms);
+		static void Sleepus(UIntOS us);
 	};
 }
 #endif

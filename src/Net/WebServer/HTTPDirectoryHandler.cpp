@@ -32,7 +32,7 @@ typedef struct
 	UInt32 cnt;
 } DirectoryEntry;
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(DirectoryEntry *obj1, DirectoryEntry *obj2)
+IntOS __stdcall HTTPDirectoryHandler_CompareFuncName(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
 	if (obj1->pt != obj2->pt)
 	{
@@ -45,7 +45,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(DirectoryEntry *obj1, Direc
 			return 1;
 		}
 	}
-	OSInt ret = Text::StrCompareICase(obj1->fileName->v, obj2->fileName->v);
+	IntOS ret = Text::StrCompareICase(obj1->fileName->v, obj2->fileName->v);
 	if (ret != 0)
 		return ret;
 	if (obj1->fileSize > obj2->fileSize)
@@ -62,7 +62,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(DirectoryEntry *obj1, Direc
 	}
 }
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncSize(DirectoryEntry *obj1, DirectoryEntry *obj2)
+IntOS __stdcall HTTPDirectoryHandler_CompareFuncSize(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
 	if (obj1->fileSize > obj2->fileSize)
 	{
@@ -78,7 +78,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncSize(DirectoryEntry *obj1, Direc
 	}
 }
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(DirectoryEntry *obj1, DirectoryEntry *obj2)
+IntOS __stdcall HTTPDirectoryHandler_CompareFuncCount(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
 	if (obj1->cnt > obj2->cnt)
 	{
@@ -132,8 +132,8 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sbOut;
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt i;
-	UOSInt j;
+	UIntOS i;
+	UIntOS j;
 
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
@@ -154,7 +154,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 /*	if (this->allowUpload && req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		const UInt8 *uplfile;
-		OSInt uplSize;
+		IntOS uplSize;
 		req->ParseHTTPForm();
 		uplfile = req->GetHTTPFormFile(L"uploadfile", sbuff, &uplSize);
 		if (uplfile)
@@ -216,14 +216,14 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 			if (!packageFile->GetItemName(sbuff, i).SetTo(sptr))
 				sbuff[0] = 0;
 			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
-			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
+			sbOut.AppendNE(sbuff2, (UIntOS)(sptr2 - sbuff2));
 			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbOut.AppendNE(UTF8STRC("/"));
 			}
 			sbOut.AppendNE(UTF8STRC("\">"));
 			sptr2 = Text::XML::ToXMLText(sbuff2, sbuff);
-			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
+			sbOut.AppendNE(sbuff2, (UIntOS)(sptr2 - sbuff2));
 			sbOut.AppendNE(UTF8STRC("</a></td><td>"));
 			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 			{
@@ -233,7 +233,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 			}
 			else
 			{
-				sptr2 = IO::Path::GetFileExt(sbuff2, sbuff, (UOSInt)(sptr - sbuff));
+				sptr2 = IO::Path::GetFileExt(sbuff2, sbuff, (UIntOS)(sptr - sbuff));
 				Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
 				sbOut.AppendNE(mime.v, mime.leng);
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
@@ -288,11 +288,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 
 			UInt64 dataSize = pitem->dataLength;
 			UInt64 ofst;
-			UOSInt readSize;
+			UIntOS readSize;
 			if (dataSize < 1048576)
 			{
-				Data::ByteBuffer buff((UOSInt)dataSize);
-				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
+				Data::ByteBuffer buff((UIntOS)dataSize);
+				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UIntOS)dataSize, buff);
 				resp->Write(buff);
 			}
 			else
@@ -307,7 +307,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 					}
 					else
 					{
-						readSize = (UOSInt)dataSize;
+						readSize = (UIntOS)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
 					resp->Write(buff.WithSize(readSize));
@@ -332,11 +332,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 
 			UInt64 dataSize = pitem->dataLength;
 			UInt64 ofst;
-			UOSInt readSize;
+			UIntOS readSize;
 			if (dataSize < 1048576)
 			{
-				Data::ByteBuffer buff((UOSInt)dataSize);
-				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
+				Data::ByteBuffer buff((UIntOS)dataSize);
+				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UIntOS)dataSize, buff);
 				resp->Write(buff);
 			}
 			else
@@ -351,7 +351,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 					}
 					else
 					{
-						readSize = (UOSInt)dataSize;
+						readSize = (UIntOS)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
 					resp->Write(buff.WithSize(readSize));
@@ -365,7 +365,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 	NN<IO::StreamData> stmData;
 	if (packageFile->GetPItemStmDataNew(pitem).SetTo(stmData))
 	{
-		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+		UIntOS dataLen = (UIntOS)stmData->GetDataSize();
 		Data::ByteBuffer dataBuff(dataLen);
 		stmData->GetRealData(0, dataLen, dataBuff);
 		stmData.Delete();
@@ -410,8 +410,8 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(NN<Net::WebServer::HTTPDirec
 		if (!fs.IsError())
 		{
 			Text::UTF8Writer writer(fs);
-			UOSInt i;
-			UOSInt j;
+			UIntOS i;
+			UIntOS j;
 			i = 0;
 			j = stat->cntMap->GetCount();
 			while (i < j)
@@ -461,7 +461,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 {
 	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	this->rootDir->Release();
-	UOSInt cacheCnt;
+	UIntOS cacheCnt;
 	UnsafeArray<CacheInfo*> cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
@@ -472,7 +472,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	if (this->packageMap.SetTo(packageMap))
 	{
 		NN<PackageInfo> package;
-		UOSInt i;
+		UIntOS i;
 		i = packageMap->GetCount();
 		while (i-- > 0)
 		{
@@ -487,7 +487,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	if (this->statMap)
 	{
 		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
-		UOSInt i = this->statMap->GetCount();
+		UIntOS i = this->statMap->GetCount();
 		while (i-- > 0)
 		{
 			stat = this->statMap->GetItemNoCheck(i);
@@ -524,12 +524,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[1024];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt sptrLen;
+	UIntOS sptrLen;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sptr4;
 	//Data::DateTime t;
 	Text::CStringNN mime;
-	UOSInt i;
+	UIntOS i;
 	Bool dirPath;
 	if (req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_1)
 	{
@@ -603,7 +603,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sbc;
-			sbc.AppendC(subReq.v, (UOSInt)i);
+			sbc.AppendC(subReq.v, (UIntOS)i);
 			if (sbc.EndsWith('/'))
 			{
 				mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
@@ -712,7 +712,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			{
 				Data::DateTime t2;
 				t2.SetValue(hdrVal->ToCString());
-				t2.AddMS((OSInt)t.GetMS());
+				t2.AddMS((IntOS)t.GetMS());
 				if (t2.ToTicks() == t.ToTicks())
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
@@ -733,12 +733,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			sizeLeft = fs.GetLength();
 			if (sizeLeft < this->fileCacheSize)
 			{
-				UOSInt readSize;
+				UIntOS readSize;
 				cache = MemAlloc(CacheInfo, 1);
-				cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
-				cache->buffSize = (UOSInt)sizeLeft;
+				cache->buff = MemAlloc(UInt8, (UIntOS)sizeLeft);
+				cache->buffSize = (UIntOS)sizeLeft;
 				cache->t = t;
-				readSize = fs.Read(Data::ByteArray(cache->buff, (UOSInt)sizeLeft));
+				readSize = fs.Read(Data::ByteArray(cache->buff, (UIntOS)sizeLeft));
 				if (readSize == sizeLeft)
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -784,8 +784,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				if (this->allowUpload && req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
 					UnsafeArray<const UInt8> uplfile;
-					UOSInt uplSize;
-					UOSInt fileId;
+					UIntOS uplSize;
+					UIntOS fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
 					while (req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), sptr2, uplSize).SetTo(uplfile))
@@ -911,8 +911,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 					if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
 					{
 						NN<PackageInfo> package;
-						UOSInt i;
-						UOSInt j;
+						UIntOS i;
+						UIntOS j;
 						Sync::RWMutexUsage packageMutUsage(packageMut, false);
 						i = 0;
 						j = packageMap->GetCount();
@@ -921,11 +921,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 							package = packageMap->GetItemNoCheck(i);
 							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
-							sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UIntOS)(sptr2 - sbuff2));
 							sbOut.AppendUTF8Char('/');
 							sbOut.AppendNE(UTF8STRC("\">"));
 							sptr2 = Text::XML::ToXMLText(sbuff2, package->fileName->v);
-							sbOut.AppendNE2(sbuff2, (UOSInt)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
+							sbOut.AppendNE2(sbuff2, (UIntOS)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
 							sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 							sbOut.AppendUTF8Char('-');
 							if (this->statMap)
@@ -978,14 +978,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 					{
 						while (IO::Path::FindNextFile(sptr2, sess, modTime, pt, fileSize).SetTo(sptr3))
 						{
-							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
+							if (Text::StrEqualsC(sptr2, (UIntOS)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UIntOS)(sptr3 - sptr2), UTF8STRC("..")))
 							{
 							}
 							else
 							{
 								if (stat.SetTo(nnstat))
 								{
-									cnt = nnstat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
+									cnt = nnstat->cntMap->GetC({sptr2, (UIntOS)(sptr3 - sptr2)});
 								}
 								else
 								{
@@ -993,7 +993,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 								}
 								sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 								sptr4 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sptr2);
-								sbOut.AppendNE(sbuff2, (UOSInt)(sptr4 - sbuff2));
+								sbOut.AppendNE(sbuff2, (UIntOS)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendUTF8Char('/');
@@ -1004,7 +1004,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 									sbOut.AppendNE(UTF8STRC("<font color=\"#ff0000\">"));
 								}
 								sptr4 = Text::XML::ToXMLText(sbuff2, sptr2);
-								sbOut.AppendNE(sbuff2, (UOSInt)(sptr4 - sbuff2));
+								sbOut.AppendNE(sbuff2, (UIntOS)(sptr4 - sbuff2));
 								if (cnt > 0)
 								{
 									sbOut.AppendNE(UTF8STRC("</font>"));
@@ -1017,7 +1017,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 								}
 								else
 								{
-									sptr4 = IO::Path::GetFileExt(sbuff2, sptr2, (UOSInt)(sptr3 - sptr2));
+									sptr4 = IO::Path::GetFileExt(sbuff2, sptr2, (UIntOS)(sptr3 - sptr2));
 									mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr4));
 									sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 									sbOut.AppendU64(fileSize);
@@ -1044,7 +1044,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 						DirectoryEntry *ent;
 						while (IO::Path::FindNextFile(sptr2, sess, modTime, pt, fileSize).SetTo(sptr3))
 						{
-							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
+							if (Text::StrEqualsC(sptr2, (UIntOS)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UIntOS)(sptr3 - sptr2), UTF8STRC("..")))
 							{
 							}
 							else
@@ -1052,13 +1052,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 								ent = MemAlloc(DirectoryEntry, 1);
 								if (stat.SetTo(nnstat))
 								{
-									ent->cnt = nnstat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
+									ent->cnt = nnstat->cntMap->GetC({sptr2, (UIntOS)(sptr3 - sptr2)});
 								}
 								else
 								{
 									ent->cnt = 0;
 								}
-								ent->fileName = Text::String::New(sptr2, (UOSInt)(sptr3 - sptr2));
+								ent->fileName = Text::String::New(sptr2, (UIntOS)(sptr3 - sptr2));
 								ent->fileSize = fileSize;
 								ent->pt = pt;
 								ent->modTime = modTime;
@@ -1071,20 +1071,20 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 							mutUsage.EndUse();
 						}
 
-						UOSInt i;
-						UOSInt j;
+						UIntOS i;
+						UIntOS j;
 						UnsafeArray<DirectoryEntry*> entArr = entList.GetArr(j);
 						if (sort == 1)
 						{
-							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncName, 0, (IntOS)j - 1);
 						}
 						else if (sort == 2)
 						{
-							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncSize, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncSize, 0, (IntOS)j - 1);
 						}
 						else if (sort == 3)
 						{
-							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncCount, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncCount, 0, (IntOS)j - 1);
 						}
 
 						i = 0;
@@ -1093,7 +1093,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 							ent = entList.GetItem(i);
 							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr3 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, ent->fileName->v);
-							sbOut.AppendNE(sbuff2, (UOSInt)(sptr3 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UIntOS)(sptr3 - sbuff2));
 							if (ent->pt == IO::Path::PathType::Directory)
 							{
 								sbOut.AppendNE(UTF8STRC("/"));
@@ -1104,7 +1104,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 								sbOut.AppendNE(UTF8STRC("<font color=\"#ff0000\">"));
 							}
 							sptr3 = Text::XML::ToXMLText(sbuff2, ent->fileName->v);
-							sbOut.AppendNE(sbuff2, (UOSInt)(sptr3 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UIntOS)(sptr3 - sbuff2));
 							if (ent->cnt > 0)
 							{
 								sbOut.AppendNE(UTF8STRC("</font>"));
@@ -1162,7 +1162,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		{
 			Data::DateTime t2;
 			t2.SetValue(hdrVal->ToCString());
-			t2.AddMS((OSInt)ts.GetMS());
+			t2.AddMS((IntOS)ts.GetMS());
 			if (t2.ToTicks() == ts.ToTicks())
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
@@ -1211,9 +1211,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				NEW_CLASS(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
 				nnstat->updated = true;
 				sptr3 = Text::StrConcatC(sbuff, sptr, sptrLen);
-				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
+				i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
-				nnstat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
+				nnstat->statFileName = Text::String::New(sbuff, (UIntOS)(sptr3 - sbuff));
 				this->statMap->PutNN(nnstat->reqPath, nnstat);
 				this->StatLoad(nnstat);
 			}
@@ -1319,7 +1319,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		resp->AddHeader(CSTR("Accept-Ranges"), CSTR("bytes"));
 		if (sizeLeft <= 0)
 		{
-			UOSInt readSize;
+			UIntOS readSize;
 			readSize = fs.Read(BYTEARR(buff));
 			if (readSize == 0)
 			{
@@ -1339,12 +1339,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		}
 		else if (!partial && sizeLeft < this->fileCacheSize)
 		{
-			UOSInt readSize;
+			UIntOS readSize;
 			cache = MemAlloc(CacheInfo, 1);
-			cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
-			cache->buffSize = (UOSInt)sizeLeft;
+			cache->buff = MemAlloc(UInt8, (UIntOS)sizeLeft);
+			cache->buffSize = (UIntOS)sizeLeft;
 			cache->t = ts;
-			readSize = fs.Read(Data::ByteArray(cache->buff, (UOSInt)sizeLeft));
+			readSize = fs.Read(Data::ByteArray(cache->buff, (UIntOS)sizeLeft));
 			if (readSize == sizeLeft)
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -1382,7 +1382,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoPackageRequest(NN<Net::WebServer::W
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	Text::CStringNN mime;
-	UOSInt i;
+	UIntOS i;
 	if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
 	{
 		Bool dirPath;
@@ -1391,7 +1391,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoPackageRequest(NN<Net::WebServer::W
 		if (i != INVALID_INDEX)
 		{
 			sb.ClearStr();
-			sb.AppendC(subReq.v, (UOSInt)i);
+			sb.AppendC(subReq.v, (UIntOS)i);
 		}
 		else
 		{
@@ -1416,7 +1416,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoPackageRequest(NN<Net::WebServer::W
 			Bool needRelease = false;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
-				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && dirName.Substring(1).Equals(sbuff, (UIntOS)(sptr - sbuff)))
 				{
 					packageFile->GetItemPack(0, needRelease).SetTo(packageFile);
 				}
@@ -1493,13 +1493,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoPackageRequest(NN<Net::WebServer::W
 						{
 							if (dirPath)
 							{
-								UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
+								UIntOS index2 = innerPF->GetItemIndex(CSTR("index.html"));
 								if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
 								{
 									NN<IO::StreamData> stmData;
 									if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
 									{
-										UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+										UIntOS dataLen = (UIntOS)stmData->GetDataSize();
 										Data::ByteBuffer dataBuff(dataLen);
 										stmData->GetRealData(0, dataLen, dataBuff);
 										stmData.Delete();
@@ -1580,7 +1580,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 	if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
 	{
 		Text::CStringNN subPath;
-		UOSInt i = path.IndexOf('/');
+		UIntOS i = path.IndexOf('/');
 		Optional<PackageInfo> optpkgInfo;
 		NN<PackageInfo> pkgInfo;
 		Text::CStringNN pkgName;
@@ -1607,7 +1607,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 			NN<IO::PackageFile> packageFile = pkgInfo->packageFile;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
-				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && pkgName.Equals(sbuff, (UIntOS)(sptr - sbuff)))
 				{
 					if (!packageFile->GetItemPack(0, thisNeedRelease).SetTo(packageFile))
 						return nullptr;
@@ -1686,7 +1686,7 @@ void Net::WebServer::HTTPDirectoryHandler::SetExpirePeriod(Int32 period)
 
 void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 {
-	UOSInt cacheCnt;
+	UIntOS cacheCnt;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	while (this->fileCacheUsing > 0)
 	{
@@ -1738,7 +1738,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 		IO::Path::PathType pt;
 		Optional<IO::PackageFile> pf;
 		NN<IO::PackageFile> nnpf;
-		UOSInt i;
+		UIntOS i;
 		NN<PackageInfo> package;
 
 		while (IO::Path::FindNextFile(sptr, sess, ts, pt, 0).SetTo(sptr2))
@@ -1754,7 +1754,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 					package = MemAllocNN(PackageInfo);
 					package->packageFile = nnpf;
 					package->modTime = ts;
-					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
+					i = Text::StrLastIndexOfCharC(sptr, (UIntOS)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -1789,7 +1789,7 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 	if (this->statMap && mut.Set(this->statMut))
 	{
 		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
-		UOSInt i;
+		UIntOS i;
 		Sync::MutexUsage mutUsage(mut);
 		i = this->statMap->GetCount();
 		while (i-- > 0)

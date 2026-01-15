@@ -38,7 +38,7 @@ Optional<Map::NameArray> Map::DBMapLayer::InitNameArr()
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
 	{
-		UOSInt i;
+		UIntOS i;
 		NN<DBMapLayer_NameArr> nameArr = MemAllocNN(DBMapLayer_NameArr);
 		nameArr->currId = 0;
 		i = tabDef->GetColCnt();
@@ -120,12 +120,12 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 	}
 }
 
-UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<Data::QueryConditions> cond;
 	NN<DB::ReadingDB> db;
 	NN<DB::DBReader> r;
-	UOSInt initCnt = outArr->GetCount();
+	UIntOS initCnt = outArr->GetCount();
 	if (this->mixedData != MixedData::AllData)
 	{
 		NN<Math::Geometry::Vector2D> vec;
@@ -146,8 +146,8 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<
 		}
 		else
 		{
-			UOSInt i = 0;
-			UOSInt j = this->vecMap.GetCount();
+			UIntOS i = 0;
+			UIntOS j = this->vecMap.GetCount();
 			while (i < j)
 			{
 				vec = this->vecMap.GetItemNoCheck(i);
@@ -182,17 +182,17 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<
 	return outArr->GetCount() - initCnt;
 }
 
-UOSInt Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	NN<Data::QueryConditions> cond;
 	NN<DB::ReadingDB> db;
 	NN<DB::DBReader> r;
-	UOSInt initCnt = outArr->GetCount();
+	UIntOS initCnt = outArr->GetCount();
 	NN<Math::Geometry::Vector2D> vec;
 	Math::RectAreaDbl bounds;
 	if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
@@ -239,8 +239,8 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOu
 	}
 	else
 	{
-		UOSInt i = 0;
-		UOSInt j = this->vecMap.GetCount();
+		UIntOS i = 0;
+		UIntOS j = this->vecMap.GetCount();
 		if (this->mixedData != MixedData::AllData)
 		{
 			while (i < j)
@@ -281,7 +281,7 @@ Int64 Map::DBMapLayer::GetObjectIdMax() const
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
 
-UOSInt Map::DBMapLayer::GetRecordCnt() const
+UIntOS Map::DBMapLayer::GetRecordCnt() const
 {
 	return this->vecMap.GetCount();
 }
@@ -292,7 +292,7 @@ void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<DBMapLayer_NameArr> narr;
 	if (Optional<DBMapLayer_NameArr>::ConvertFrom(nameArr).SetTo(narr) && this->tabDef.SetTo(tabDef))
 	{
-		UOSInt i = tabDef->GetColCnt();
+		UIntOS i = tabDef->GetColCnt();
 		while (i-- > 0)
 		{
 			SDEL_STRING(narr->names[i]);
@@ -302,14 +302,14 @@ void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	}
 }
 
-Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	NN<DB::TableDef> tabDef;
 	NN<DB::ReadingDB> db;
 	NN<DBMapLayer_NameArr> narr;
 	if (Optional<DBMapLayer_NameArr>::ConvertFrom(nameArr).SetTo(narr) && this->tabDef.SetTo(tabDef) && this->db.SetTo(db))
 	{
-		UOSInt colCnt = tabDef->GetColCnt();
+		UIntOS colCnt = tabDef->GetColCnt();
 		if (strIndex >= colCnt)
 		{
 			return false;
@@ -334,13 +334,13 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArr
 			}
 			else
 			{
-				r = db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), nullptr, (UOSInt)(id - 1), 1, nullptr, nullptr);
+				r = db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), nullptr, (UIntOS)(id - 1), 1, nullptr, nullptr);
 			}
 			if (r.SetTo(nnr))
 			{
 				if (nnr->ReadNext())
 				{
-					UOSInt i = 0;
+					UIntOS i = 0;
 					while (i < colCnt)
 					{
 						SDEL_STRING(narr->names[i]);
@@ -364,7 +364,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArr
 	return false;
 }
 
-UOSInt Map::DBMapLayer::GetColumnCnt() const
+UIntOS Map::DBMapLayer::GetColumnCnt() const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -374,7 +374,7 @@ UOSInt Map::DBMapLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -388,7 +388,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> bu
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -403,7 +403,7 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::DBMapLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -448,7 +448,7 @@ Optional<Math::Geometry::Vector2D> Map::DBMapLayer::GetNewVectorById(NN<GetObjec
 	return nullptr;
 }
 
-UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<DB::ReadingDB> db;
 	if (!this->db.SetTo(db))
@@ -458,7 +458,7 @@ UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return db->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::ReadingDB> db;
 	if (this->db.SetTo(db))
@@ -501,13 +501,13 @@ void Map::DBMapLayer::Reconnect()
 
 }
 
-UOSInt Map::DBMapLayer::GetGeomCol() const
+UIntOS Map::DBMapLayer::GetGeomCol() const
 {
 	NN<DB::TableDef> tabDef;
 	NN<DB::ColDef> colDef;
 	if (this->tabDef.SetTo(tabDef))
 	{
-		UOSInt i = tabDef->GetColCnt();
+		UIntOS i = tabDef->GetColCnt();
 		while (i-- > 0)
 		{
 			if (tabDef->GetCol(i).SetTo(colDef))
@@ -536,16 +536,16 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 	this->table = Text::String::New(tableName);
 
 	this->tabDef = db->GetTableDef(schemaName, tableName);
-	UOSInt xCol = INVALID_INDEX;
-	UOSInt yCol = INVALID_INDEX;
-	UOSInt zCol = INVALID_INDEX;
+	UIntOS xCol = INVALID_INDEX;
+	UIntOS yCol = INVALID_INDEX;
+	UIntOS zCol = INVALID_INDEX;
 	UInt32 layerSrid = 0;
 	NN<DB::ColDef> col;
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
 	{
-		UOSInt i = 0;
-		UOSInt j = tabDef->GetColCnt();
+		UIntOS i = 0;
+		UIntOS j = tabDef->GetColCnt();
 		while (i < j)
 		{
 			if (tabDef->GetCol(i).SetTo(col))

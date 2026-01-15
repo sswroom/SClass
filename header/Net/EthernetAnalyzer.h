@@ -20,7 +20,7 @@ namespace Net
 	class EthernetAnalyzer : public IO::ParsedObject
 	{
 	public:
-		typedef void (CALLBACKFUNC Pingv4Handler)(AnyType userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UOSInt packetSize);
+		typedef void (CALLBACKFUNC Pingv4Handler)(AnyType userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UIntOS packetSize);
 
 		typedef enum
 		{
@@ -66,7 +66,7 @@ namespace Net
 			Data::TimeInstant packetTime[16];
 			UInt64 packetDestMAC[16];
 			UInt16 packetEtherType[16];
-			UOSInt packetSize[16];
+			UIntOS packetSize[16];
 			UnsafeArrayOpt<UInt8> packetData[16];
 		} MACStatus;
 
@@ -90,7 +90,7 @@ namespace Net
 		struct DNSRequestResult
 		{
 			UInt8 recBuff[512];
-			UOSInt recSize;
+			UIntOS recSize;
 			Data::Timestamp reqTime;
 			UInt32 ttl;
 			Int32 status; //0 = normal, 1 = blocked
@@ -162,9 +162,9 @@ namespace Net
 		struct TimeBandwidth
 		{
 			Int64 time;
-			UOSInt recvCnt;
+			UIntOS recvCnt;
 			UInt64 recvBytes;
-			UOSInt sendCnt;
+			UIntOS sendCnt;
 			UInt64 sendBytes;
 		};
 
@@ -211,7 +211,7 @@ namespace Net
 		Bool isFirst;
 		Optional<IO::Writer> errWriter;
 
-		static void NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize);
+		static void NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UIntOS nameSize);
 
 		NN<MACStatus> MAC64Get(UInt64 mac64Addr);
 		void MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans);
@@ -226,43 +226,43 @@ namespace Net
 		UInt64 GetPacketTotalSize() const;
 		void UseIPTran(NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<IPTranStatus>> IPTranGetList() const;
-		UOSInt IPTranGetCount() const;
+		UIntOS IPTranGetCount() const;
 		void UseMAC(NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<MACStatus>> MACGetList() const;
 		void UseDNSCli(NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<DNSClientInfo>> DNSCliGetList() const;
-		UOSInt DNSCliGetCount();
-		UOSInt DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt DNSReqv4GetCount();
+		UIntOS DNSCliGetCount();
+		UIntOS DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS DNSReqv4GetCount();
 		Bool DNSReqv4GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt DNSReqv6GetCount();
+		UIntOS DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS DNSReqv6GetCount();
 		Bool DNSReqv6GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt DNSReqOthGetCount();
+		UIntOS DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UIntOS DNSReqOthGetCount();
 		Bool DNSReqOthGetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSTargetGetList(NN<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
-		UOSInt DNSTargetGetCount();
+		UIntOS DNSTargetGetList(NN<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
+		UIntOS DNSTargetGetCount();
 		Optional<Text::String> DNSTargetGetName(UInt32 ip) const;
-		UOSInt MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
-		UOSInt MDNSGetCount();
+		UIntOS MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
+		UIntOS MDNSGetCount();
 		void UseDHCP(NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<DHCPInfo>> DHCPGetList() const;
 		void UseIPLog(NN<Sync::MutexUsage> mutUsage);
 		NN<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
-		UOSInt IPLogGetCount() const;
-		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
-		UOSInt TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
+		UIntOS IPLogGetCount() const;
+		Bool TCP4SYNIsDiff(UIntOS lastIndex) const;
+		UIntOS TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UIntOS> thisIndex) const;
 		NN<Data::FastMapNN<UInt32, BandwidthStat>> BandwidthGetAll(NN<Sync::MutexUsage> mutUsage);
 
-		Bool PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketEthernetData2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
-		Bool PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
-		Bool PacketIPv6_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
-		Bool PacketARP_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UIntOS packetSize); //Return valid
+		Bool PacketNull(UnsafeArray<const UInt8> packet, UIntOS packetSize); //Return valid
+		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UIntOS packetSize); //Return valid
+		Bool PacketLinux(UnsafeArray<const UInt8> packet, UIntOS packetSize); //Return valid
+		Bool PacketEthernetData2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketIPv4_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketIPv6_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketARP_2(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj);

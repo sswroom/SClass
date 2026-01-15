@@ -8,15 +8,15 @@ namespace IO
 	{
 	private:
 		Data::ByteArrayR buff;
-		UOSInt currPtr;
+		UIntOS currPtr;
 	public:
-		MemoryReadingStream(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		MemoryReadingStream(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		MemoryReadingStream(Data::ByteArrayR buff);
 		virtual ~MemoryReadingStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(Data::ByteArrayR buff);
+		virtual UIntOS Read(const Data::ByteArray &buff);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

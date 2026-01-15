@@ -107,7 +107,7 @@ Bool Net::Email::SMTPClient::Send(NN<Net::Email::EmailMessage> message)
 		}
 	}
 	UnsafeArray<const UInt8> content = mstm.GetBuff();
-	Bool succ = conn.SendData(content, (UOSInt)mstm.GetLength());
+	Bool succ = conn.SendData(content, (UIntOS)mstm.GetLength());
 	conn.SendQuit();
 	return succ;
 }

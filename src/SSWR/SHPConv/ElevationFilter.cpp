@@ -2,7 +2,7 @@
 #include "Math/Math_C.h"
 #include "SSWR/SHPConv/ElevationFilter.h"
 
-SSWR::SHPConv::ElevationFilter::ElevationFilter(UOSInt colIndex, Int32 value)
+SSWR::SHPConv::ElevationFilter::ElevationFilter(UIntOS colIndex, Int32 value)
 {
 	this->colIndex = colIndex;
 	this->value = value;
@@ -21,7 +21,7 @@ Bool SSWR::SHPConv::ElevationFilter::IsValid(Double left, Double top, Double rig
 UnsafeArray<UTF8Char> SSWR::SHPConv::ElevationFilter::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
-	buff = Text::StrUOSInt(buff, this->colIndex);
+	buff = Text::StrUIntOS(buff, this->colIndex);
 	buff = Text::StrConcatC(buff, UTF8STRC(" every "));
 	buff = Text::StrInt32(buff, this->value);
 	return buff;

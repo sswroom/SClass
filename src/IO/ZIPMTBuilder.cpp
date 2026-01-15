@@ -46,7 +46,7 @@ void IO::ZIPMTBuilder::AddTask(NN<FileTask> task)
 		this->mainEvt.Wait(1000);
 	}
 	this->taskList.Put(task);
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
 		if (this->threads[i]->IsWaiting())
@@ -64,10 +64,10 @@ IO::ZIPMTBuilder::ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os) : zip(s
 	this->toStop = false;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ZIPMTBuilder")), i);
+		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("ZIPMTBuilder")), i);
 		NEW_CLASS(this->threads[i], Sync::Thread(ThreadProc, this, CSTRP(sbuff, sptr)));
 		this->threads[i]->Start();
 	}
@@ -76,7 +76,7 @@ IO::ZIPMTBuilder::ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os) : zip(s
 IO::ZIPMTBuilder::~ZIPMTBuilder()
 {
 	this->toStop = true;
-	UOSInt i = this->threadCnt;
+	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->threads[i]->BeginStop();
@@ -93,11 +93,11 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	NN<FileTask> task = MemAllocNN(FileTask);
-	task->fileSize = (UOSInt)stm->GetLength();
-	task->fileBuff = MemAlloc(UInt8, (UOSInt)task->fileSize);
+	task->fileSize = (UIntOS)stm->GetLength();
+	task->fileBuff = MemAlloc(UInt8, (UIntOS)task->fileSize);
 	stm->SeekFromBeginning(0);
-	UOSInt readSize;
-	UOSInt totalSize = 0;
+	UIntOS readSize;
+	UIntOS totalSize = 0;
 	while (totalSize < task->fileSize)
 	{
 		readSize = stm->Read(Data::ByteArray(&task->fileBuff[totalSize], task->fileSize - totalSize));
@@ -124,11 +124,11 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> 
 
 Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
-	UOSInt readSize;
+	UIntOS readSize;
 	NN<FileTask> task = MemAllocNN(FileTask);
-	task->fileSize = (UOSInt)fd->GetDataSize();
-	task->fileBuff = MemAlloc(UInt8, (UOSInt)task->fileSize);
-	if ((readSize = fd->GetRealData(0, (UOSInt)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize))) != task->fileSize)
+	task->fileSize = (UIntOS)fd->GetDataSize();
+	task->fileBuff = MemAlloc(UInt8, (UIntOS)task->fileSize);
+	if ((readSize = fd->GetRealData(0, (UIntOS)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize))) != task->fileSize)
 	{
 #if defined(VERBOSE)
 		printf("Error in reading file from file data: file size = %lld, total read = %lld, fileName = %s\r\n", (UInt64)task->fileSize, (UInt64)readSize, fileName.v.Ptr());

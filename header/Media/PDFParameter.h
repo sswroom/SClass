@@ -21,14 +21,14 @@ namespace Media
 
 		NN<ParamEntry> AddEntry(Text::CStringNN type, Text::CString value);
 		Optional<Text::String> GetEntryValue(Text::CStringNN type) const;
-		Optional<Text::String> GetEntryType(UOSInt index) const;
-		Optional<Text::String> GetEntryValue(UOSInt index) const;
+		Optional<Text::String> GetEntryType(UIntOS index) const;
+		Optional<Text::String> GetEntryValue(UIntOS index) const;
 		Bool ContainsEntry(Text::CStringNN type) const;
 		Optional<ParamEntry> GetEntry(Text::CStringNN type) const;
-		UOSInt GetEntryIndex(Text::CStringNN type) const;
-		UOSInt GetCount() const;
-		NN<ParamEntry> GetItemNoCheck(UOSInt index) const;
-		Optional<ParamEntry> GetItem(UOSInt index) const;
+		UIntOS GetEntryIndex(Text::CStringNN type) const;
+		UIntOS GetCount() const;
+		NN<ParamEntry> GetItemNoCheck(UIntOS index) const;
+		Optional<ParamEntry> GetItem(UIntOS index) const;
 
 		static Optional<PDFParameter> Parse(Text::CStringNN parameter);
 	};

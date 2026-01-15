@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
 	NN<Text::String> s;
-	UOSInt i = me->lbResults->GetSelectedIndex();
+	UIntOS i = me->lbResults->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->lbResults->GetItemTextNew(i).SetTo(s))
 	{
 		Math::Coord2DDbl center;
@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 
 void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 {
-	UOSInt i;
-	UOSInt j = this->dispList.GetCount();
+	UIntOS i;
+	UIntOS j = this->dispList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	if (j > 100)
 	{
@@ -74,7 +74,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	}
 }
 
-SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UIntOS strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;

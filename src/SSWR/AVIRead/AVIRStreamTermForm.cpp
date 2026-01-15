@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 	if (me->stm.SetTo(stm))
 	{
 		Text::StringBuilderUTF8 sb;
-		UOSInt size;
+		UIntOS size;
 		me->txtSendValue->GetText(sb);
 		if (me->radSendText->IsSelected())
 		{
@@ -132,7 +132,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	UInt8 buff[2048];
-	UOSInt recvSize;
+	UIntOS recvSize;
 	NN<IO::Stream> stm;
 	me->threadRunning = true;
 	if (me->stm.SetTo(stm))
@@ -183,11 +183,11 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 {
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
-	UOSInt j;
+	UIntOS buffSize;
+	UIntOS j;
 	Sync::MutexUsage mutUsage(this->recvMut);
 	buff = this->recvBuff.GetBuff(buffSize);
-	UOSInt i = this->cboRecvType->GetSelectedIndex();
+	UIntOS i = this->cboRecvType->GetSelectedIndex();
 	if (buffSize > 0)
 	{
 		if (i == 0)
@@ -225,10 +225,10 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 {
 	UnsafeArray<UInt8> buff;
-	UOSInt buffSize;
+	UIntOS buffSize;
 	buff = this->sendBuff.GetBuff(buffSize);
-	UOSInt i = this->cboSendType->GetSelectedIndex();
-	UOSInt j;
+	UIntOS i = this->cboSendType->GetSelectedIndex();
+	UIntOS j;
 	if (buffSize > 0)
 	{
 		if (i == 0)

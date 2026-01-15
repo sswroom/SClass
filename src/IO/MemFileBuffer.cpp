@@ -13,12 +13,12 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 	this->fileSize = file.GetLength();
 	if (this->fileSize > 0)
 	{
-		this->filePtr = filePtr = MemAllocArr(UInt8, (UOSInt)this->fileSize);
+		this->filePtr = filePtr = MemAllocArr(UInt8, (UIntOS)this->fileSize);
 
 #if defined(WIN32) || defined(__CYGWIN__)
 		HANDLE hProc;
-		UOSInt minSize;
-		UOSInt maxSize;
+		UIntOS minSize;
+		UIntOS maxSize;
 		BOOL res;
 		UInt32 err;
 		hProc = GetCurrentProcess();
@@ -54,7 +54,7 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 		}
 #endif
 		file.SeekFromBeginning(0);
-		file.Read(Data::ByteArray(filePtr, (UOSInt)fileSize));
+		file.Read(Data::ByteArray(filePtr, (UIntOS)fileSize));
 	}
 	else
 	{

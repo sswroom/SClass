@@ -8,7 +8,7 @@
 
 #define MAXFILENAMESIZE 512
 
-Int32 __stdcall UI::Win::WinFolderDialog::BrowseCB(void *hwnd, UInt32 uMsg, OSInt lParam, OSInt lpData)
+Int32 __stdcall UI::Win::WinFolderDialog::BrowseCB(void *hwnd, UInt32 uMsg, IntOS lParam, IntOS lpData)
 {
 	UI::Win::WinFolderDialog *me = (UI::Win::WinFolderDialog*)lpData;
 	NN<Text::String> s;

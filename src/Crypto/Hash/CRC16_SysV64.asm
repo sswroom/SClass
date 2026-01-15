@@ -112,7 +112,7 @@ crc16itlop4:
 	ret
 
 
-;UInt16 CRC16_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal)
+;UInt16 CRC16_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, UInt16 currVal)
 ;0 retAddr
 ;rdi buff
 ;rsi buffSize

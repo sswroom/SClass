@@ -5,7 +5,7 @@
 extern "C"
 {
 
-void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, UOSInt pxCnt)
+void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, UIntOS pxCnt)
 {
 	Int32 v;
 	while (pxCnt-- > 0)
@@ -28,7 +28,7 @@ void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, UOSInt pxCnt)
 	}
 }
 
-void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, UOSInt byteCnt)
+void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, UIntOS byteCnt)
 {
 	Int32 v;
 	while (byteCnt-- > 0)

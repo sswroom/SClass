@@ -14,10 +14,10 @@ namespace Text
 		public:
 			Base32Enc();
 			virtual ~Base32Enc();
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
-			virtual UOSInt CalcBinSize(Text::CStringNN str) const;
-			virtual UOSInt CalcBinSize(const WChar *sbuff) const;
-			virtual UOSInt DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const;
+			virtual UIntOS EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const;
+			virtual UIntOS CalcBinSize(Text::CStringNN str) const;
+			virtual UIntOS CalcBinSize(const WChar *sbuff) const;
+			virtual UIntOS DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 
 			static Bool IsValid(UnsafeArray<const UTF8Char> b32Str);

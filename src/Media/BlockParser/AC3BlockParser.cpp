@@ -146,7 +146,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::AC3BlockParser::ParseStrea
 	return audio;
 }
 
-Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Media::AudioFormat> fmt)
+Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Media::AudioFormat> fmt)
 {
 	static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 	while (buffSize > 6)

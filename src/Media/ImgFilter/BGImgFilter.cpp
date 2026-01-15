@@ -24,9 +24,9 @@ Media::ImgFilter::BGImgFilter::~BGImgFilter()
 	}
 }
 
-void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
+void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UIntOS nBits, Media::PixelFormat pf, UIntOS imgWidth, UIntOS imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
 {
-	UOSInt imgSize;
+	UIntOS imgSize;
 	UnsafeArray<UInt8> bgData;
 	if (this->toCreateBG)
 	{

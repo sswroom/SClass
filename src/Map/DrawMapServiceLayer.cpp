@@ -42,7 +42,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, nullptr));
 						me->dispImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
-						UOSInt i = me->updHdlrs.GetCount();
+						UIntOS i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
 							Data::CallbackStorage<Map::MapRenderer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
@@ -60,7 +60,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 						NEW_CLASSOPT(me->lastImage, Media::SharedImage(imgList, nullptr));
 						me->lastImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
-						UOSInt i = me->updHdlrs.GetCount();
+						UIntOS i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
 							Data::CallbackStorage<Map::MapRenderer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
@@ -152,17 +152,17 @@ Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
+UIntOS Map::DrawMapServiceLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UIntOS Map::DrawMapServiceLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UIntOS Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
@@ -201,7 +201,7 @@ Int64 Map::DrawMapServiceLayer::GetObjectIdMax() const
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetRecordCnt() const
+UIntOS Map::DrawMapServiceLayer::GetRecordCnt() const
 {
 	return 0;
 }
@@ -210,7 +210,7 @@ void Map::DrawMapServiceLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
 	switch (strIndex)
 	{
@@ -221,12 +221,12 @@ Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optiona
 	return false;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetColumnCnt() const
+UIntOS Map::DrawMapServiceLayer::GetColumnCnt() const
 {
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
+UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	switch (colIndex)
 	{
@@ -236,7 +236,7 @@ UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF
 	return nullptr;
 }
 
-DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
+DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
 	switch (colIndex)
 	{
@@ -247,11 +247,11 @@ DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, Opt
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
+Bool Map::DrawMapServiceLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UOSInt colSize;
+	UIntOS colSize;
 	switch (colIndex)
 	{
 	case 0:
@@ -319,7 +319,7 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 	return nullptr;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetGeomCol() const
+UIntOS Map::DrawMapServiceLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;
 }
@@ -334,7 +334,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
@@ -347,7 +347,7 @@ void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandle
 
 void Map::DrawMapServiceLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, AnyType obj)
 {
-	UOSInt i;
+	UIntOS i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)

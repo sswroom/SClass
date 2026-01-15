@@ -10,11 +10,11 @@ namespace IO
 		{
 		private:
 			IO::GPIOControl *gpio;
-			OSInt trigPin;
-			OSInt echoPin;
+			IntOS trigPin;
+			IntOS echoPin;
 
 		public:
-			HCSR04(IO::GPIOControl *gpio, OSInt trigPin, OSInt echoPin);
+			HCSR04(IO::GPIOControl *gpio, IntOS trigPin, IntOS echoPin);
 			~HCSR04();
 
 			Bool ReadTime(Int32 *t);

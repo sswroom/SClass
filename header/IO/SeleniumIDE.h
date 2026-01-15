@@ -31,7 +31,7 @@ namespace IO
 		Optional<Text::String> GetCommand() const { return this->command; }
 		Optional<Text::String> GetTarget() const { return this->target; }
 		Optional<Text::String> GetValue() const { return this->value; }
-		Optional<SeleniumTarget> GetTargetItem(UOSInt index) const { return this->targets.GetItem(index); }
+		Optional<SeleniumTarget> GetTargetItem(UIntOS index) const { return this->targets.GetItem(index); }
 		static void __stdcall SeleniumTargetFree(NN<SeleniumTarget> target);
 	};
 
@@ -48,7 +48,7 @@ namespace IO
 
 		Optional<Text::String> GetId() const { return this->id; }
 		Optional<Text::String> GetName() const { return this->name; }
-		Optional<SeleniumCommand> GetCommand(UOSInt index) const { return this->commands.GetItem(index); }
+		Optional<SeleniumCommand> GetCommand(UIntOS index) const { return this->commands.GetItem(index); }
 	};
 
 	class SeleniumIDE : public IO::ParsedObject
@@ -72,7 +72,7 @@ namespace IO
 		Optional<Text::String> GetVersion() const { return this->version; }
 		Optional<Text::String> GetName() const { return this->name; }
 		Optional<Text::String> GetURL() const { return this->url; }
-		Optional<SeleniumTest> GetTest(UOSInt index) const { return this->tests.GetItem(index); }
+		Optional<SeleniumTest> GetTest(UIntOS index) const { return this->tests.GetItem(index); }
 	};
 }
 #endif

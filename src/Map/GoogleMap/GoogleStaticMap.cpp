@@ -153,14 +153,14 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 	}
 }
 
-UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UnsafeArray<UInt8> buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
+UIntOS Map::GoogleMap::GoogleStaticMap::GetMap(UnsafeArray<UInt8> buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UIntOS> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
 	NN<Net::HTTPClient> cli;
 	UTF8Char url[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> urlStart;
-	UOSInt retSize = 0;
-	UOSInt thisSize;
+	UIntOS retSize = 0;
+	UIntOS thisSize;
 	NN<Text::String> s;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/staticmap?format="));
@@ -183,9 +183,9 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UnsafeArray<UInt8> buff, Double l
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&zoom="));
 	sptr = Text::StrUInt32(sptr, Map::GoogleMap::GoogleStaticMap::Scale2Level(scale));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&size="));
-	sptr = Text::StrUOSInt(sptr, imgSize.x);
+	sptr = Text::StrUIntOS(sptr, imgSize.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("x"));
-	sptr = Text::StrUOSInt(sptr, imgSize.y);
+	sptr = Text::StrUIntOS(sptr, imgSize.y);
 	if (marker_lat != 0 || marker_lon != 0)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&markers="));
@@ -203,7 +203,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UnsafeArray<UInt8> buff, Double l
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
-		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
+		hmac.Calc(urlStart, (UIntOS)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));

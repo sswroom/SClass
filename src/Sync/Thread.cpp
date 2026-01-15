@@ -44,11 +44,11 @@ Bool Sync::Thread::Start()
 	return true;
 }
 
-UOSInt Sync::Thread::StartMulti(UOSInt cnt)
+UIntOS Sync::Thread::StartMulti(UIntOS cnt)
 {
 	if (this->running)
 		return 0;
-	UOSInt ret = 0;
+	UIntOS ret = 0;
 	this->stopping = 0;
 	while (cnt-- > 0)
 	{

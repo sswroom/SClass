@@ -15,7 +15,7 @@ namespace UI
 			Optional<Media::StaticImage> currImage;
 			Optional<Media::DrawImage> prevImageD;
 
-			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
+			static IntOS __stdcall PBWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 			void OnPaint();
 			void Init(Optional<InstanceHandle> hInst);
 			void Deinit(Optional<InstanceHandle> hInst);
@@ -24,7 +24,7 @@ namespace UI
 			WinPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~WinPictureBoxSimple();
 
-			virtual OSInt OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, void *lParam);
 			virtual void SetImage(Optional<Media::StaticImage> currImage);
 			virtual void SetImageDImg(Optional<Media::DrawImage> img);
 		};

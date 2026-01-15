@@ -19,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
-	UOSInt i = 0;
-	UOSInt nFiles = files.GetCount();
+	UIntOS i = 0;
+	UIntOS nFiles = files.GetCount();
 	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
@@ -258,14 +258,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		{
 			samlHdlr->SetIdp(samlCfg);
 		}
-		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
+		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetIntOS());
 		if (me->cboAuthMethod->GetSelectedIndex() == 0)
 		{
 
 		}
 		else
 		{
-			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetIntOS());
 		}
 		NEW_CLASSNN(samlSvc, Net::WebServer::SAMLService(samlHdlr));
 		samlSvc->HandleSAMLResponse(OnSSOResponse, me);
@@ -423,7 +423,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnHashTypeChanged(AnyType userOb
 	NN<Net::SAMLHandler> samlHdlr;
 	if (me->samlHdlr.SetTo(samlHdlr))
 	{
-		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
+		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetIntOS());
 	}
 }
 
@@ -440,7 +440,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnAuthMethodChanged(AnyType user
 		}
 		else
 		{
-			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetIntOS());
 		}
 	}
 }
@@ -528,7 +528,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->lblAuthMethod->SetRect(4, 148, 100, 23, false);
 	this->cboAuthMethod = ui->NewComboBox(this->tpControl, false);
 	this->cboAuthMethod->SetRect(104, 148, 100, 23, false);
-	this->cboAuthMethod->AddItem(CSTR("Default"), (void*)(UOSInt)Net::SAMLAuthMethod::Unknown);
+	this->cboAuthMethod->AddItem(CSTR("Default"), (void*)(UIntOS)Net::SAMLAuthMethod::Unknown);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, Unknown);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, Password);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, PasswordProtectedTransport);

@@ -90,9 +90,9 @@ AnyType Data::SyncLinkedList::GetLastNoRemove()
 	return obj;
 }
 
-UOSInt Data::SyncLinkedList::GetCount()
+UIntOS Data::SyncLinkedList::GetCount()
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	Optional<Data::LinkedListItem> item = this->firstItem;
 	NN<LinkedListItem> nnitem;
@@ -104,9 +104,9 @@ UOSInt Data::SyncLinkedList::GetCount()
 	return cnt;
 }
 
-UOSInt Data::SyncLinkedList::IndexOf(AnyType item)
+UIntOS Data::SyncLinkedList::IndexOf(AnyType item)
 {
-	UOSInt cnt = 0;
+	UIntOS cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	Optional<Data::LinkedListItem> llItem = this->firstItem;
 	NN<LinkedListItem> nnitem;

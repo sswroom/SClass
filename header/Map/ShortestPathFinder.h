@@ -35,15 +35,15 @@ namespace Map
 		Map::MapDrawLayer *layer;
 		void *nameArr;
 		Bool toRelease;
-		OSInt nameCol;
-		OSInt dirCol;
+		IntOS nameCol;
+		IntOS dirCol;
 		CoordinateUnit cu;
 		Data::Int64Map<NodeInfo*> *nodeMap;
 
 		Int64 CoordToId(Double x, Double y);
 		Bool SearchShortestPath(Data::ArrayList<Double> *points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
 	public:
-		ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol);
+		ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol);
 		~ShortestPathFinder();
 
 		Math::Polyline *GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);

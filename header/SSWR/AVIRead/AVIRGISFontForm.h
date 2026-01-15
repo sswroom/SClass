@@ -40,7 +40,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnFontClicked(AnyType userObj);
-			static UI::EventState __stdcall OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 

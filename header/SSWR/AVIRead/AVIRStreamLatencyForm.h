@@ -55,10 +55,10 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool remoteClosed;
-			OSInt sentCnt;
-			OSInt recvCnt;
-			OSInt dispSent;
-			OSInt dispRecv;
+			IntOS sentCnt;
+			IntOS recvCnt;
+			IntOS dispSent;
+			IntOS dispRecv;
 			Int64 lastSentTime;
 
 		private:
