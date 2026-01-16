@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLOGEXTRACTFORM
 #define _SM_SSWR_AVIREAD_AVIRLOGEXTRACTFORM
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -20,6 +21,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnSFile;
 			NN<UI::GUIComboBox> cboCompare;
 			NN<UI::GUITextBox> txtCompare;
+			NN<UI::GUICheckBox> chkInvert;
 			NN<UI::GUILabel> lblOFile;
 			NN<UI::GUITextBox> txtOFile;
 			NN<UI::GUIButton> btnOFile;

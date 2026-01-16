@@ -74,6 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	{
 		UIntOS outTyp = me->cboOutType->GetSelectedIndex();
 		UIntOS i;
+		Bool invert = me->chkInvert->IsChecked();
 		Bool hasData;
 		IO::FileStream fs1(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs1);
@@ -115,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 					{
 						match = sb1.EndsWith(sb2.ToCString());
 					}
-					if (match)
+					if (match != invert)
 					{
 						if (outTyp == 0)
 						{
@@ -160,6 +161,8 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientCont
 	this->cboCompare->SetSelectedIndex(0);
 	this->txtCompare = ui->NewTextBox(*this, CSTR(""));
 	this->txtCompare->SetRect(104, 28, 560, 23, false);
+	this->chkInvert = ui->NewCheckBox(*this, CSTR("Not"), false);
+	this->chkInvert->SetRect(664, 28, 75, 23, false);
 	this->lblOFile = ui->NewLabel(*this, CSTR("Output"));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	this->txtOFile = ui->NewTextBox(*this, CSTR(""));
