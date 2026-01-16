@@ -206,5 +206,11 @@ void Data::ArrayListStringNN::RemoveDuplicates()
 		this->arr = newArr;
 		this->objCnt = newCnt;
 	}
+}
 
+void Data::ArrayListStringNN::RemoveAndReleaseLast()
+{
+	NN<Text::String> s;
+	if (this->Pop().SetTo(s))
+		s->Release();
 }

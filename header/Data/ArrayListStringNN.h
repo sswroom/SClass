@@ -22,6 +22,7 @@ namespace Data
 		void FreeAll();
 		void ValueCounts(NN<Data::FastStringMapNative<UInt32>> counts) const;
 		void RemoveDuplicates(); //Assume sorted
+		void RemoveAndReleaseLast();
 	};
 }
 #endif
