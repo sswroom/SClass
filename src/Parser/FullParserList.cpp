@@ -73,6 +73,7 @@
 #include "Parser/FileParser/NOAParser.h"
 #include "Parser/FileParser/NS2Parser.h"
 #include "Parser/FileParser/NWAParser.h"
+#include "Parser/FileParser/OSMPBFParser.h"
 #include "Parser/FileParser/OZF2Parser.h"
 #include "Parser/FileParser/OziMapParser.h"
 #include "Parser/FileParser/PACParser.h"
@@ -268,6 +269,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::EVTXParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::MapsforgeParser());	
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::OSMPBFParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

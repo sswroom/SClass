@@ -10,6 +10,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
+//https://download.geofabrik.de/asia/china/hong-kong.html
 void __stdcall IO::FileAnalyse::OSMPBFFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::OSMPBFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::OSMPBFFileAnalyse>();
@@ -264,7 +265,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 						msgInfo->AddBool(false, CSTR("visible"), 6, false);
 						NEW_CLASSNN(subMsg, ProtocolBuffersMessage(CSTR("PrimitiveGroup")));
 						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Node")));
-						subMsg2->AddSInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt64(true, CSTR("id"), 1, false);
 						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
 						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
 						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo);
@@ -272,7 +273,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 						subMsg2->AddSInt64(true, CSTR("lon"), 9, false);
 						subMsg->AddSubMessage(true, CSTR("nodes"), 1, subMsg2);
 						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Way")));
-						subMsg2->AddInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt64(true, CSTR("id"), 1, false);
 						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
 						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
 						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo->Clone());
@@ -281,7 +282,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 						subMsg2->AddSInt64(false, CSTR("lon"), 10, true, true);
 						subMsg->AddSubMessage(true, CSTR("ways"), 3, subMsg2);
 						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Relation")));
-						subMsg2->AddInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt64(true, CSTR("id"), 1, false);
 						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
 						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
 						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo->Clone());

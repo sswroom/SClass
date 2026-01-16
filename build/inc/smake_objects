@@ -1845,6 +1845,7 @@ NMEAParser.o: ../../src/Parser/FileParser/NMEAParser.cpp
 NOAParser.o: ../../src/Parser/FileParser/NOAParser.cpp
 NWAParser.o: ../../src/Parser/FileParser/NWAParser.cpp
 NS2Parser.o: ../../src/Parser/FileParser/NS2Parser.cpp
+OSMPBFParser.o: ../../src/Parser/FileParser/OSMPBFParser.cpp
 OZF2Parser.o: ../../src/Parser/FileParser/OZF2Parser.cpp
 OziMapParser.o: ../../src/Parser/FileParser/OziMapParser.cpp
 PAC2Parser.o: ../../src/Parser/FileParser/PAC2Parser.cpp

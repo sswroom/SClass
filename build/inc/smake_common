@@ -3949,6 +3949,8 @@ Parser/FileParser/NWAParser.h:
 @NWAParser.o
 Parser/FileParser/NS2Parser.h:
 @NS2Parser.o
+Parser/FileParser/OSMPBFParser.h:
+@OSMPBFParser.o
 Parser/FileParser/OZF2Parser.h:
 @OZF2Parser.o
 Parser/FileParser/OziMapParser.h:

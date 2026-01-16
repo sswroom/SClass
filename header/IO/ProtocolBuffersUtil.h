@@ -1,5 +1,7 @@
 #ifndef _SM_IO_PROTOCOLBUFFERSUTIL
 #define _SM_IO_PROTOCOLBUFFERSUTIL
+#include "IO/MemoryStream.h"
+#include "Map/OSM/OSMData.h"
 #include "Text/CString.h" 
 
 namespace IO
@@ -33,6 +35,9 @@ namespace IO
 		static UIntOS ReadVarSInt(UnsafeArray<const UInt8> buff, UIntOS buffOfst, OutParam<Int64> val);
 		static Int64 ToSInt64(UInt64 val);
 		static Text::CStringNN WireTypeGetName(UInt8 wireType);
+		static Optional<IO::MemoryStream> DecompressBlob(Data::ByteArrayR blobData);
+		static Bool ParseOSMHeader(NN<IO::MemoryStream> blobStm, NN<Map::OSM::OSMData> osmData);
+		static Bool ParseOSMData(NN<IO::MemoryStream> blobStm, NN<Map::OSM::OSMData> osmData);
 	};
 }
 #endif
