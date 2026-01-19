@@ -12,7 +12,7 @@ namespace IO
 		void *mapHandle;
 
 	public:
-		ViewFileBuffer(const UTF8Char *fileName);
+		ViewFileBuffer(UnsafeArray<const UTF8Char> fileName);
 		virtual ~ViewFileBuffer();
 
 		virtual UnsafeArrayOpt<UInt8> GetPointer();

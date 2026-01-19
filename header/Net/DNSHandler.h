@@ -21,9 +21,9 @@ namespace Net
 	private:
 		Net::DNSClient dnsCli;
 		Sync::Mutex reqv4Mut;
-		Data::ICaseBTreeStringMapObj<DomainStatus*> reqv4Map;
+		Data::ICaseBTreeStringMapObj<Optional<DomainStatus>> reqv4Map;
 		Sync::Mutex reqv6Mut;
-		Data::ICaseBTreeStringMapObj<DomainStatus*> reqv6Map;
+		Data::ICaseBTreeStringMapObj<Optional<DomainStatus>> reqv6Map;
 
 	public:
 		DNSHandler(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> serverAddr, NN<IO::LogTool> log);

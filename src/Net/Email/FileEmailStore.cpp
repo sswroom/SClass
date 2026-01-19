@@ -217,10 +217,10 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	j = mail->rcptTo.GetCount();
 	while (i < j)
 	{
-		file->rcptList.Add(mail->rcptTo.GetItem(i)->Clone());
+		file->rcptList.Add(mail->rcptTo.GetItemNoCheck(i)->Clone());
 
 		sb.AppendC(UTF8STRC("X-Apparently-To: "));
-		Text::CStringNN rcptTo = mail->rcptTo.GetItem(i)->ToCString();
+		Text::CStringNN rcptTo = mail->rcptTo.GetItemNoCheck(i)->ToCString();
 		if (rcptTo.StartsWith(UTF8STRC("RCPT TO:")))
 		{
 			rcptTo = rcptTo.Substring(8).LTrim();

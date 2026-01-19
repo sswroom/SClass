@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_WFSHANDLER
 #define _SM_MAP_WFSHANDLER
+#include "Data/FastStringMapObj.hpp"
 #include "DB/ColDef.h"
 #include "Map/GISWebService.h"
 #include "Map/MapDrawLayer.h"

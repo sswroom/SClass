@@ -183,7 +183,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(AnyType userObj)
 		{
 			sb.ClearStr();
 			me->txtLabel->GetText(sb);
-			SSWR::SHPConv::SHPConvDBFViewForm frm(nullptr, me->ui, &dbf, me.Ptr(), sb.ToCString());
+			SSWR::SHPConv::SHPConvDBFViewForm frm(nullptr, me->ui, dbf, me, sb.ToCString());
 			frm.ShowDialog(me);
 		}
 	}
@@ -208,25 +208,25 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(AnyType userObj)
 	me->btnPreview->SetEnabled(false);
 	me->btnSBrowse->SetEnabled(false);
 
-	Data::ArrayListObj<const UTF8Char*> dbCols;
+	Data::ArrayListArr<const UTF8Char> dbCols;
 	Data::ArrayListNative<UInt32> dbCols2;
 	sb.ClearStr();
 	me->txtLabel->GetText(sb);
-	me->ParseLabelStr(sb.ToCString(), &dbCols, &dbCols2);
+	me->ParseLabelStr(sb.ToCString(), dbCols, dbCols2);
 	sb.ClearStr();
 	me->txtSource->GetText(sb);
 	NN<Text::String> srcFile = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.RemoveChars(4);
 	if (me->currGroup == (UIntOS)-1)
 	{
-		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me.Ptr(), dbCols2);
+		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), dbCols, blkScale, me->globalFilters, me, dbCols2);
 	}
 	else
 	{
-		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me.Ptr(), me->currGroup, 0, dbCols2);
+		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), dbCols, blkScale, me->globalFilters, me, me->currGroup, nullptr, dbCols2);
 	}
 	srcFile->Release();
-	me->FreeLabelStr(&dbCols, &dbCols2);
+	me->FreeLabelStr(dbCols, dbCols2);
 
 	me->btnConvert->SetEnabled(true);
 	me->btnDirectory->SetEnabled(true);
@@ -245,7 +245,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(AnyType userObj, Data::Dat
 	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayListObj<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, UIntOS groupCol, Data::ArrayListObj<const UTF8Char*> *outNames, NN<Data::ArrayListNative<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, NN<Data::ArrayListArr<const UTF8Char>> dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, NN<IO::ProgressHandler> progress, UIntOS groupCol, Optional<Data::ArrayListArr<const UTF8Char>> outNames, NN<Data::ArrayListNative<UInt32>> dbCols2)
 {
 	UIntOS i;
 	IntOS si;
@@ -304,16 +304,17 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 			shpType = this->ConvertShp(sourceFile, sb2.ToCString(), dbCols, blkScale, newFilters, progress, dbCols2);
 			newFilters.RemoveAt(newFilters.GetCount() - 1);
 		}
-		if (outNames)
+		NN<Data::ArrayListArr<const UTF8Char>> nnoutNames;
+		if (outNames.SetTo(nnoutNames))
 		{
-			outNames->Add(Text::StrCopyNew(sb2.ToString()).Ptr());
+			nnoutNames->Add(Text::StrCopyNew(sb2.ToString()));
 		}
 		s->Release();
 	}
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayListObj<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, NN<Data::ArrayListNative<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, NN<Data::ArrayListArr<const UTF8Char>> dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, NN<IO::ProgressHandler> progress, NN<Data::ArrayListNative<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -407,7 +408,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			DB::DBFFile dbf(fd, (UInt32)(UIntOS)this->lstLang->GetSelectedItem().p);
 			dbfr = dbf.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr);
-			StrRecord *strRec;
+			NN<StrRecord> strRec;
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
 
@@ -634,11 +635,11 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 								}
 								else
 								{
-									strRec = MemAlloc(StrRecord, 1);
+									strRec = MemAllocNN(StrRecord);
 									strRec->recId = currRec;
 									if (!dbfr.IsNull())
 									{
-										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+										strRec->str = this->GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 									}
 									else
 									{
@@ -654,13 +655,13 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 								theBlk = MemAlloc(Block, 1);
 								theBlk->blockX = (Int32)sj;
 								theBlk->blockY = (Int32)si;
-								NEW_CLASS(theBlk->records, Data::ArrayListObj<StrRecord*>());
+								NEW_CLASSNN(theBlk->records, Data::ArrayListNN<StrRecord>());
 
-								strRec = MemAlloc(StrRecord, 1);
+								strRec = MemAllocNN(StrRecord);
 								strRec->recId = currRec;
 								if (!dbfr.IsNull())
 								{
-									strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
+									strRec->str = this->GetNewDBFName(dbf, dbCols, tRec, dbCols2).Ptr();
 								}
 								else
 								{
@@ -703,7 +704,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					WriteInt32(&buff[0], theBlk->records->GetItem(k)->recId);
+					WriteInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
 					blk.Write(Data::ByteArrayR(buff, 4));
 					k++;
 				}
@@ -732,7 +733,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					strRec = theBlk->records->GetItem(k);
+					strRec = theBlk->records->GetItemNoCheck(k);
 					WriteInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
 					if (strRec->str.SetTo(str))
@@ -765,12 +766,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					strRec = theBlk->records->GetItem(k);
+					strRec = theBlk->records->GetItemNoCheck(k);
 					OPTSTR_DEL(strRec->str);
-					MemFree(strRec);
+					MemFreeNN(strRec);
 					k++;
 				}
-				DEL_CLASS(theBlk->records);
+				theBlk->records.Delete();
 				MemFree(theBlk);
 				i++;
 			}
@@ -816,7 +817,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			DB::DBFFile dbf(fd, (UInt32)(UIntOS)this->lstLang->GetSelectedItem().p);
 			dbfr = dbf.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr);
 
-			StrRecord *strRec;
+			NN<StrRecord> strRec;
 
 			cipPos = 0;
 			WriteUInt32(&buff[0], nRecords);
@@ -957,11 +958,11 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 								else
 								{
 									found = true;
-									strRec = MemAlloc(StrRecord, 1);
+									strRec = MemAllocNN(StrRecord);
 									strRec->recId = currRec;
 									if (!dbfr.IsNull())
 									{
-										strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+										strRec->str = GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 									}
 									else
 									{
@@ -976,13 +977,13 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 								theBlk = MemAlloc(Block, 1);
 								theBlk->blockX = (Int32)sj;
 								theBlk->blockY = (Int32)si;
-								NEW_CLASS(theBlk->records, Data::ArrayListObj<StrRecord*>());
+								NEW_CLASSNN(theBlk->records, Data::ArrayListNN<StrRecord>());
 
-								strRec = MemAlloc(StrRecord, 1);
+								strRec = MemAllocNN(StrRecord);
 								strRec->recId = currRec;
 								if (!dbfr.IsNull())
 								{
-									strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
+									strRec->str = GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 								}
 								else
 								{
@@ -1026,7 +1027,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					WriteInt32(&buff[0], theBlk->records->GetItem(k)->recId);
+					WriteInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
 					blk.Write(Data::ByteArrayR(buff, 4));
 					k++;
 				}
@@ -1055,7 +1056,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					strRec = theBlk->records->GetItem(k);
+					strRec = theBlk->records->GetItemNoCheck(k);
 					WriteInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
 					if (strRec->str.SetTo(str))
@@ -1088,12 +1089,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					strRec = theBlk->records->GetItem(k);
+					strRec = theBlk->records->GetItemNoCheck(k);
 					OPTSTR_DEL(strRec->str);
-					MemFree(strRec);
+					MemFreeNN(strRec);
 					k++;
 				}
-				DEL_CLASS(theBlk->records);
+				theBlk->records.Delete();
 				MemFree(theBlk);
 				i++;
 			}
@@ -1228,7 +1229,7 @@ void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 	this->globalFilters.DeleteAll();
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CStringNN labelStr, Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2)
+void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CStringNN labelStr, NN<Data::ArrayListArr<const UTF8Char>> dbCols, NN<Data::ArrayListNative<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(labelStr);
@@ -1300,19 +1301,19 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CStringNN labelStr, Dat
 	}
 }
 
-void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2)
+void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(NN<Data::ArrayListArr<const UTF8Char>> dbCols, NN<Data::ArrayListNative<UInt32>> dbCols2)
 {
 	UIntOS i;
 	i = dbCols->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(dbCols->GetItem(i));
+		Text::StrDelNew(dbCols->GetItemNoCheck(i));
 	}
 	dbCols->Clear();
 	dbCols2->Clear();
 }
 
-NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayListObj<const UTF8Char*> *dbCols, UIntOS currRec, NN<Data::ArrayListNative<UInt32>> dbCols2)
+NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(NN<DB::DBFFile> dbf, NN<Data::ArrayListArr<const UTF8Char>> dbCols, UIntOS currRec, NN<Data::ArrayListNative<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UIntOS i;
@@ -1324,7 +1325,7 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 	j = dbCols2->GetCount();
 	if (dbCols->GetCount() > 0)
 	{
-		output.Append(dbCols->GetItem(0));
+		output.Append(dbCols->GetItemNoCheck(0));
 		while (i < j)
 		{
 			col = dbCols2->GetItem(i);
@@ -1336,21 +1337,21 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
 				output.Append(sbuff);
-				output.Append(dbCols->GetItem(i));
+				output.Append(dbCols->GetItemNoCheck(i));
 			}
 			else if (shpType == 2)
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
 				output.AppendI32(Double2Int32(Text::StrToDoubleOrNAN(sbuff)));
-				output.Append(dbCols->GetItem(i));
+				output.Append(dbCols->GetItemNoCheck(i));
 			}
 			else if (shpType == 3)
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
 				output.AppendI32(Double2Int32(Text::StrToDoubleOrNAN(sbuff)));
-				output.Append(dbCols->GetItem(i));
+				output.Append(dbCols->GetItemNoCheck(i));
 			}
 			else
 			{
@@ -1358,7 +1359,7 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 				Text::StrTrim(sbuff);
 				Text::StrToCapital(sbuff, sbuff);
 				output.Append(sbuff);
-				output.Append(dbCols->GetItem(i));
+				output.Append(dbCols->GetItemNoCheck(i));
 			}
 		}
 	}

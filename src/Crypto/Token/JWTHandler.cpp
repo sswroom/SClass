@@ -27,7 +27,7 @@ Crypto::Token::JWTHandler::~JWTHandler()
 	MemFreeArr(this->key);
 }
 
-Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMapObj<const UTF8Char*>> payload, Optional<JWTParam> param)
+Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMapObj<UnsafeArrayOpt<const UTF8Char>>> payload, Optional<JWTParam> param)
 {
 	NN<Data::ArrayListObj<Optional<Text::String>>> keys = payload->GetKeys();
 	NN<Text::String> key;

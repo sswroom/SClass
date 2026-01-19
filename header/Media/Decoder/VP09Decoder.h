@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_VP09DECODER
 #define _SM_MEDIA_DECODER_VP09DECODER
+#include "Data/ArrayListNN.hpp"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media
@@ -17,7 +18,7 @@ namespace Media
 				UIntOS fullFrameSize;
 			} VP9FrameInfo;
 
-			Data::ArrayListObj<VP9FrameInfo*> frameList;
+			Data::ArrayListNN<VP9FrameInfo> frameList;
 			Bool finfoMode;
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);

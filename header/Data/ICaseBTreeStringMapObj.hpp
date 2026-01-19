@@ -69,7 +69,7 @@ namespace Data
 						break;
 					}
 				}
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -119,7 +119,7 @@ namespace Data
 						break;
 					}
 				}
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -192,14 +192,14 @@ namespace Data
 				return nnnode->nodeVal;
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> T ICaseBTreeStringMapObj<T>::Remove(Text::CStringNN key)
 	{
 		NN<BTreeStringObjNode<T>> rootNode;
 		if (!this->rootNode.SetTo(rootNode))
-			return 0;
+			return nullptr;
 		if (Text::StrEqualsICaseC(rootNode->nodeKey, rootNode->keyLen, key.v, key.leng))
 		{
 			T nodeVal = rootNode->nodeVal;
@@ -251,7 +251,7 @@ namespace Data
 					return nodeVal;
 				}
 			}
-			return 0;
+			return nullptr;
 		}
 	}
 };

@@ -11,7 +11,7 @@ namespace IO
 		IO::ViewFileBuffer *vfb;
 		UInt64 length;
 		UInt64 currPos;
-		UInt8 *fptr;
+		UnsafeArrayOpt<UInt8> fptr;
 
 	public:
 		FileViewStream(Text::CStringNN fileName);
@@ -19,7 +19,7 @@ namespace IO
 
 		virtual Bool IsDown() const;
 		virtual UIntOS Read(const Data::ByteArray &buff);
-		virtual UIntOS Write(const UInt8 *buff, UIntOS size);
+		virtual UIntOS Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

@@ -27,26 +27,27 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 		return nullptr;
 	if (!Text::String::OrEmpty(reader->GetNodeText())->Equals(UTF8STRC("kml")))
 		return nullptr;
-	Data::ICaseStringMapObj<KMLStyle*> styles;
-	Optional<Map::MapDrawLayer> lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
+	Data::ICaseStringMapNN<KMLStyle> styles;
+	Optional<Map::MapDrawLayer> lyr = ParseKMLContainer(reader, styles, fileName, parsers, browser, pkgFile, true);
 
-	NN<const Data::ArrayListObj<KMLStyle*>> styleList = styles.GetValues();
-	KMLStyle *style;
+	NN<const Data::ArrayListNN<KMLStyle>> styleList = styles.GetValues();
+	NN<KMLStyle> style;
 	UIntOS ui = styleList->GetCount();
 	while (ui-- > 0)
 	{
-		style = styleList->GetItem(ui);
+		style = styleList->GetItemNoCheck(ui);
 		SDEL_STRING(style->iconURL);
 		SDEL_CLASS(style->img);
-		MemFree(style);
+		MemFreeNN(style);
 	}
 	return lyr;
 }
 
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, NN<Data::ICaseStringMapNN<KMLStyle>> styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
 {
-	KMLStyle *style;
+	NN<KMLStyle> style;
+	Optional<KMLStyle> optStyle;
 	UIntOS i;
 	NN<Text::XMLAttrib> attr;
 	Text::StringBuilderUTF8 sb;
@@ -245,7 +246,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		else if (nodeName->EqualsICase(UTF8STRC("STYLE")))
 		{
 			Text::String *styleId = 0;
-			style = MemAlloc(KMLStyle, 1);
+			style = MemAllocNN(KMLStyle);
 			style->iconSpotX = -1;
 			style->iconSpotY = -1;
 			style->iconURL = 0;
@@ -376,23 +377,24 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				}
 			}
 
+			optStyle = style;
 			if (styleId)
 			{
-				style = styles->Put(styleId, style);
+				optStyle = styles->Put(styleId, style);
 				styleId->Release();
 			}				
-			if (style)
+			if (optStyle.SetTo(style))
 			{
 				SDEL_STRING(style->iconURL);
 				SDEL_CLASS(style->img);
-				MemFree(style);
-				style = 0;
+				MemFreeNN(style);
+				optStyle = nullptr;
 			}
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("STYLEMAP")))
 		{
 			Text::String *styleId = 0;
-			style = MemAlloc(KMLStyle, 1);
+			style = MemAllocNN(KMLStyle);
 			style->iconSpotX = -1;
 			style->iconSpotY = -1;
 			style->iconURL = 0;
@@ -435,8 +437,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							reader->ReadNodeText(sb);
 							if (isNormal && sb.StartsWith(UTF8STRC("#")))
 							{
-								KMLStyle *style2 = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
-								if (style2)
+								NN<KMLStyle> style2;
+								if (styles->GetC(sb.ToCString().Substring(1)).SetTo(style2))
 								{
 									style->iconSpotX = style2->iconSpotX;
 									style->iconSpotY = style2->iconSpotY;
@@ -470,17 +472,18 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				}
 			}
 
+			optStyle = style;
 			if (styleId)
 			{
-				style = styles->Put(styleId, style);
+				optStyle = styles->Put(styleId, style);
 				styleId->Release();
 			}
-			if (style)
+			if (optStyle.SetTo(style))
 			{
 				SDEL_STRING(style->iconURL);
 				SDEL_CLASS(style->img);
-				MemFree(style);
-				style = 0;
+				MemFreeNN(style);
+				optStyle = nullptr;
 			}
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("PLACEMARK")))
@@ -876,7 +879,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	}
 }
 
-void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMapObj<KMLStyle*> *styles)
+void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, NN<Data::StringMapNN<KMLStyle>> styles)
 {
 	Data::ArrayListStringNN timeList;
 	Data::ArrayListStringNN coordList;
@@ -1263,8 +1266,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 				reader->ReadNodeText(sb);
 				if (sb.StartsWith(UTF8STRC("#")))
 				{
-					KMLStyle *style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
-					if (style && style->lineWidth != 0 && style->flags & 1)
+					NN<KMLStyle> style;
+					if (styles->GetC(sb.ToCString().Substring(1)).SetTo(style) && style->lineWidth != 0 && style->flags & 1)
 					{
 						lyr->SetLineStyle(style->lineColor, style->lineWidth);
 					}
@@ -1278,13 +1281,14 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 	}
 }
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, NN<Data::StringMapNN<KMLStyle>> styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN colNames;
 	Data::ArrayListStringNN colValues;
 	Data::ArrayListT<Map::VectorLayer::ColInfo> colInfos;
-	KMLStyle *style = 0;
+	Optional<KMLStyle> style = nullptr;
+	NN<KMLStyle> nnstyle;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	NN<Math::Geometry::Vector2D> vec;
 	colNames.Add(Text::String::New(UTF8STRC("Name")));
@@ -1309,7 +1313,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 			reader->ReadNodeText(sb);
 			if (sb.ToString()[0] == '#')
 			{
-				style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
+				style = styles->GetC(sb.ToCString().Substring(1));
 			}
 		}
 		else if (nodeText->EqualsICase(UTF8STRC("GX:MULTITRACK")))
@@ -1319,11 +1323,11 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 			{
 				NEW_CLASSNN(lyr, Map::GPSTrack(sourceName, true, 65001, s->ToCString()));
 				ParseKMLPlacemarkTrack(reader, lyr, styles);
-				if (style)
+				if (style.SetTo(nnstyle))
 				{
-					if (style->lineColor != 0 && style->flags & 1)
+					if (nnstyle->lineColor != 0 && nnstyle->flags & 1)
 					{
-						lyr->SetLineStyle(style->lineColor, style->lineWidth);
+						lyr->SetLineStyle(nnstyle->lineColor, nnstyle->lineWidth);
 					}
 				}
 				layers.Add(lyr);
@@ -1339,17 +1343,17 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(vec->HasZ()?Map::DRAW_LAYER_POLYLINE3D:Map::DRAW_LAYER_POLYLINE, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->AddVector2(vec, colValues);
-					if (style)
+					if (style.SetTo(nnstyle))
 					{
-						if (style->flags & 1)
+						if (nnstyle->flags & 1)
 						{
-							if (style->lineWidth == 0)
+							if (nnstyle->lineWidth == 0)
 							{
-								lyr->SetLineStyle(style->lineColor, 1);
+								lyr->SetLineStyle(nnstyle->lineColor, 1);
 							}
 							else
 							{
-								lyr->SetLineStyle(style->lineColor, style->lineWidth);
+								lyr->SetLineStyle(nnstyle->lineColor, nnstyle->lineWidth);
 							}
 						}
 					}
@@ -1367,19 +1371,19 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 					lyr->SetLabelVisible(true);
 					lyr->AddVector2(vec, colValues);
 
-					if (style && style->iconURL && parsers.SetTo(nnparsers))
+					if (style.SetTo(nnstyle) && nnstyle->iconURL && parsers.SetTo(nnparsers))
 					{
-						if (style->img == 0)
+						if (nnstyle->img == 0)
 						{
 							Optional<IO::StreamData> fd = nullptr;
 							NN<IO::PackageFile> nnbasePF;
 							if (basePF.SetTo(nnbasePF))
 							{
-								fd = nnbasePF->OpenStreamData(style->iconURL->ToCString());
+								fd = nnbasePF->OpenStreamData(nnstyle->iconURL->ToCString());
 							}
 							if (fd.IsNull() && browser.SetTo(nnbrowser))
 							{
-								fd = nnbrowser->GetData(style->iconURL->ToCString(), false, nullptr);
+								fd = nnbrowser->GetData(nnstyle->iconURL->ToCString(), false, nullptr);
 							}
 							NN<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
@@ -1387,7 +1391,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 								NN<Media::ImageList> imgList;
 								if (Optional<Media::ImageList>::ConvertFrom(nnparsers->ParseFileType(nnfd, IO::ParserType::ImageList)).SetTo(imgList))
 								{
-									if (style->iconColor != 0)
+									if (nnstyle->iconColor != 0)
 									{
 										UIntOS j = imgList->GetCount();
 										while (j-- > 0)
@@ -1395,25 +1399,25 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 											imgList->ToStaticImage(j);
 											NN<Media::StaticImage> img;
 											if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(img))
-												img->MultiplyColor(style->iconColor);
+												img->MultiplyColor(nnstyle->iconColor);
 										}
 									}
-									NEW_CLASS(style->img, Media::SharedImage(imgList, nullptr));
+									NEW_CLASS(nnstyle->img, Media::SharedImage(imgList, nullptr));
 								}
 								nnfd.Delete();
 							}
 						}
 						NN<Media::SharedImage> shimg;
 						NN<Media::StaticImage> img;
-						if (shimg.Set(style->img) && shimg->GetImage(0).SetTo(img))
+						if (shimg.Set(nnstyle->img) && shimg->GetImage(0).SetTo(img))
 						{
-							if (style->iconSpotX == -1 || style->iconSpotY == -1)
+							if (nnstyle->iconSpotX == -1 || nnstyle->iconSpotY == -1)
 							{
 								lyr->SetIconStyle(shimg, (IntOS)(img->info.dispSize.x >> 1), (IntOS)(img->info.dispSize.y >> 1));
 							}
 							else
 							{
-								lyr->SetIconStyle(shimg, style->iconSpotX, (IntOS)img->info.dispSize.y - style->iconSpotY);
+								lyr->SetIconStyle(shimg, nnstyle->iconSpotX, (IntOS)img->info.dispSize.y - nnstyle->iconSpotY);
 							}
 						}
 					}
@@ -1428,22 +1432,22 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->AddVector2(vec, colValues);
 
-					if (style)
+					if (style.SetTo(nnstyle))
 					{
-						if (style->flags & 1)
+						if (nnstyle->flags & 1)
 						{
-							if (style->lineWidth == 0)
+							if (nnstyle->lineWidth == 0)
 							{
-								lyr->SetLineStyle(style->lineColor, 1);
+								lyr->SetLineStyle(nnstyle->lineColor, 1);
 							}
 							else
 							{
-								lyr->SetLineStyle(style->lineColor, style->lineWidth);
+								lyr->SetLineStyle(nnstyle->lineColor, nnstyle->lineWidth);
 							}
 						}
-						if (style->flags & 4)
+						if (nnstyle->flags & 4)
 						{
-							lyr->SetPGStyle(style->fillColor);
+							lyr->SetPGStyle(nnstyle->fillColor);
 						}
 					}
 					layers.Add(lyr);

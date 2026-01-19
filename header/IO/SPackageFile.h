@@ -20,7 +20,7 @@ namespace IO
 			UInt64 size;
 		} FileInfo;
 	private:
-		Data::BTreeStringMapObj<FileInfo*> fileMap;
+		Data::BTreeStringMapObj<Optional<FileInfo>> fileMap;
 		NN<IO::SeekableStream> stm;
 		Bool writeMode;
 		Sync::Mutex mut;
@@ -35,7 +35,7 @@ namespace IO
 
 		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
 		void AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UnsafeArray<UTF8Char> pathStart, UnsafeArray<UTF8Char> pathEnd);
-		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
+		Bool OptimizeFileInner(NN<IO::SPackageFile> newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
 		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease);
 		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UIntOS customSize, Data::ByteArrayR customBuff);

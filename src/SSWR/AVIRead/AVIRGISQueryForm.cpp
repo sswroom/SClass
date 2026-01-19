@@ -877,8 +877,11 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	UIntOS j = this->writerList.GetCount();
 	while (i < j)
 	{
-		Math::VectorTextWriter *writer = this->writerList.GetItem(i);
-		this->cboShapeFmt->AddItem(writer->GetWriterName(), writer);
+		NN<Math::VectorTextWriter> writer;
+		if (this->writerList.GetItem(i).SetTo(writer))
+		{
+			this->cboShapeFmt->AddItem(writer->GetWriterName(), writer);
+		}
 		i++;
 	}
 	this->cboShapeFmt->SetSelectedIndex(0);

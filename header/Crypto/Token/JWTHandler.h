@@ -25,7 +25,7 @@ namespace Crypto
 			JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			~JWTHandler();
 
-			Bool Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMapObj<const UTF8Char*>> payload, Optional<JWTParam> param);
+			Bool Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMapObj<UnsafeArrayOpt<const UTF8Char>>> payload, Optional<JWTParam> param);
 		};
 	}
 }

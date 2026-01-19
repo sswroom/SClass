@@ -98,61 +98,63 @@ void __stdcall ADL_Main_Memory_Free(void** lpBuffer)
 IO::AMDGPUManager::AMDGPUManager()
 {
 	this->adapterInfos = 0;
-	this->adapterList = 0;
+	this->adapterList = nullptr;
+	NN<IO::Library> lib;
 #if defined (LINUX)
-	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"libatiadlxx.so"));
+	NEW_CLASSNN(lib, IO::Library((const UTF8Char*)"libatiadlxx.so"));
 #else
-	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"atiadlxx.dll"));
-	if (this->lib->IsError())
+	NEW_CLASSNN(lib, IO::Library((const UTF8Char*)"atiadlxx.dll"));
+	if (lib->IsError())
 	{
-		DEL_CLASS(this->lib);
-		NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"atiadlxy.dll"));
+		lib.Delete();
+		NEW_CLASSNN(lib, IO::Library((const UTF8Char*)"atiadlxy.dll"));
 	}
 #endif
-	if (this->lib->IsError())
+	if (lib->IsError())
 	{
-		DEL_CLASS(this->lib);
-		this->lib = 0;
+		lib.Delete();
+		this->lib = nullptr;
 		this->funcs = 0;
 	}
 	else
 	{
+		this->lib = lib;
 		ADLFuncs *adlFuncs = MemAlloc(ADLFuncs, 1);
 		MemClear(adlFuncs, sizeof(ADLFuncs));
 
-		adlFuncs->ADL_Main_Control_Create = (ADL_MAIN_CONTROL_CREATE) this->lib->GetFunc("ADL_Main_Control_Create");
-		adlFuncs->ADL_Main_Control_Destroy = (ADL_MAIN_CONTROL_DESTROY) this->lib->GetFunc("ADL_Main_Control_Destroy");
-		adlFuncs->ADL_Adapter_NumberOfAdapters_Get = (ADL_ADAPTER_NUMBEROFADAPTERS_GET) this->lib->GetFunc("ADL_Adapter_NumberOfAdapters_Get");
-		adlFuncs->ADL_Adapter_AdapterInfo_Get = (ADL_ADAPTER_ADAPTERINFO_GET) this->lib->GetFunc("ADL_Adapter_AdapterInfo_Get");
-		adlFuncs->ADL_Adapter_Active_Get = (ADL_ADAPTER_ACTIVE_GET) this->lib->GetFunc("ADL_Adapter_Active_Get");
-		adlFuncs->ADL_Overdrive_Caps = (ADL_OVERDRIVE_CAPS) this->lib->GetFunc("ADL_Overdrive_Caps");
+		adlFuncs->ADL_Main_Control_Create = (ADL_MAIN_CONTROL_CREATE) lib->GetFunc("ADL_Main_Control_Create");
+		adlFuncs->ADL_Main_Control_Destroy = (ADL_MAIN_CONTROL_DESTROY) lib->GetFunc("ADL_Main_Control_Destroy");
+		adlFuncs->ADL_Adapter_NumberOfAdapters_Get = (ADL_ADAPTER_NUMBEROFADAPTERS_GET) lib->GetFunc("ADL_Adapter_NumberOfAdapters_Get");
+		adlFuncs->ADL_Adapter_AdapterInfo_Get = (ADL_ADAPTER_ADAPTERINFO_GET) lib->GetFunc("ADL_Adapter_AdapterInfo_Get");
+		adlFuncs->ADL_Adapter_Active_Get = (ADL_ADAPTER_ACTIVE_GET) lib->GetFunc("ADL_Adapter_Active_Get");
+		adlFuncs->ADL_Overdrive_Caps = (ADL_OVERDRIVE_CAPS) lib->GetFunc("ADL_Overdrive_Caps");
 		
-		adlFuncs->ADL_Overdrive5_ThermalDevices_Enum = (ADL_OVERDRIVE5_THERMALDEVICES_ENUM) this->lib->GetFunc("ADL_Overdrive5_ThermalDevices_Enum");
-		adlFuncs->ADL_Overdrive5_ODParameters_Get = (ADL_OVERDRIVE5_ODPARAMETERS_GET) this->lib->GetFunc("ADL_Overdrive5_ODParameters_Get");
-		adlFuncs->ADL_Overdrive5_Temperature_Get = (ADL_OVERDRIVE5_TEMPERATURE_GET) this->lib->GetFunc("ADL_Overdrive5_Temperature_Get");
-		adlFuncs->ADL_Overdrive5_FanSpeed_Get = (ADL_OVERDRIVE5_FANSPEED_GET) this->lib->GetFunc("ADL_Overdrive5_FanSpeed_Get");
-		adlFuncs->ADL_Overdrive5_FanSpeedInfo_Get = (ADL_OVERDRIVE5_FANSPEEDINFO_GET ) this->lib->GetFunc("ADL_Overdrive5_FanSpeedInfo_Get");
-		adlFuncs->ADL_Overdrive5_ODPerformanceLevels_Get = (ADL_OVERDRIVE5_ODPERFORMANCELEVELS_GET) this->lib->GetFunc("ADL_Overdrive5_ODPerformanceLevels_Get");		
-		adlFuncs->ADL_Overdrive5_CurrentActivity_Get = (ADL_OVERDRIVE5_CURRENTACTIVITY_GET) this->lib->GetFunc("ADL_Overdrive5_CurrentActivity_Get");
-		adlFuncs->ADL_Overdrive5_FanSpeed_Set = (ADL_OVERDRIVE5_FANSPEED_SET)this->lib->GetFunc("ADL_Overdrive5_FanSpeed_Set");
-		adlFuncs->ADL_Overdrive5_ODPerformanceLevels_Set = (ADL_OVERDRIVE5_ODPERFORMANCELEVELS_SET ) this->lib->GetFunc("ADL_Overdrive5_ODPerformanceLevels_Set");
-		adlFuncs->ADL_Overdrive5_PowerControl_Caps = (ADL_OVERDRIVE5_POWERCONTROL_CAPS) this->lib->GetFunc("ADL_Overdrive5_PowerControl_Caps");
-		adlFuncs->ADL_Overdrive5_PowerControlInfo_Get = (ADL_OVERDRIVE5_POWERCONTROLINFO_GET) this->lib->GetFunc("ADL_Overdrive5_PowerControlInfo_Get");
-		adlFuncs->ADL_Overdrive5_PowerControl_Get = (ADL_OVERDRIVE5_POWERCONTROL_GET ) this->lib->GetFunc("ADL_Overdrive5_PowerControl_Get");
-		adlFuncs->ADL_Overdrive5_PowerControl_Set = (ADL_OVERDRIVE5_POWERCONTROL_SET) this->lib->GetFunc("ADL_Overdrive5_PowerControl_Set");
+		adlFuncs->ADL_Overdrive5_ThermalDevices_Enum = (ADL_OVERDRIVE5_THERMALDEVICES_ENUM) lib->GetFunc("ADL_Overdrive5_ThermalDevices_Enum");
+		adlFuncs->ADL_Overdrive5_ODParameters_Get = (ADL_OVERDRIVE5_ODPARAMETERS_GET) lib->GetFunc("ADL_Overdrive5_ODParameters_Get");
+		adlFuncs->ADL_Overdrive5_Temperature_Get = (ADL_OVERDRIVE5_TEMPERATURE_GET) lib->GetFunc("ADL_Overdrive5_Temperature_Get");
+		adlFuncs->ADL_Overdrive5_FanSpeed_Get = (ADL_OVERDRIVE5_FANSPEED_GET) lib->GetFunc("ADL_Overdrive5_FanSpeed_Get");
+		adlFuncs->ADL_Overdrive5_FanSpeedInfo_Get = (ADL_OVERDRIVE5_FANSPEEDINFO_GET ) lib->GetFunc("ADL_Overdrive5_FanSpeedInfo_Get");
+		adlFuncs->ADL_Overdrive5_ODPerformanceLevels_Get = (ADL_OVERDRIVE5_ODPERFORMANCELEVELS_GET) lib->GetFunc("ADL_Overdrive5_ODPerformanceLevels_Get");		
+		adlFuncs->ADL_Overdrive5_CurrentActivity_Get = (ADL_OVERDRIVE5_CURRENTACTIVITY_GET) lib->GetFunc("ADL_Overdrive5_CurrentActivity_Get");
+		adlFuncs->ADL_Overdrive5_FanSpeed_Set = (ADL_OVERDRIVE5_FANSPEED_SET) lib->GetFunc("ADL_Overdrive5_FanSpeed_Set");
+		adlFuncs->ADL_Overdrive5_ODPerformanceLevels_Set = (ADL_OVERDRIVE5_ODPERFORMANCELEVELS_SET ) lib->GetFunc("ADL_Overdrive5_ODPerformanceLevels_Set");
+		adlFuncs->ADL_Overdrive5_PowerControl_Caps = (ADL_OVERDRIVE5_POWERCONTROL_CAPS) lib->GetFunc("ADL_Overdrive5_PowerControl_Caps");
+		adlFuncs->ADL_Overdrive5_PowerControlInfo_Get = (ADL_OVERDRIVE5_POWERCONTROLINFO_GET) lib->GetFunc("ADL_Overdrive5_PowerControlInfo_Get");
+		adlFuncs->ADL_Overdrive5_PowerControl_Get = (ADL_OVERDRIVE5_POWERCONTROL_GET ) lib->GetFunc("ADL_Overdrive5_PowerControl_Get");
+		adlFuncs->ADL_Overdrive5_PowerControl_Set = (ADL_OVERDRIVE5_POWERCONTROL_SET) lib->GetFunc("ADL_Overdrive5_PowerControl_Set");
 
-		adlFuncs->ADL_Overdrive6_FanSpeed_Get = (ADL_OVERDRIVE6_FANSPEED_GET) this->lib->GetFunc("ADL_Overdrive6_FanSpeed_Get");
-		adlFuncs->ADL_Overdrive6_ThermalController_Caps = (ADL_OVERDRIVE6_THERMALCONTROLLER_CAPS) this->lib->GetFunc("ADL_Overdrive6_ThermalController_Caps");
-		adlFuncs->ADL_Overdrive6_Temperature_Get = (ADL_OVERDRIVE6_TEMPERATURE_GET) this->lib->GetFunc("ADL_Overdrive6_Temperature_Get");
-		adlFuncs->ADL_Overdrive6_Capabilities_Get = (ADL_OVERDRIVE6_CAPABILITIES_GET) this->lib->GetFunc("ADL_Overdrive6_Capabilities_Get");
-		adlFuncs->ADL_Overdrive6_StateInfo_Get = (ADL_OVERDRIVE6_STATEINFO_GET) this->lib->GetFunc("ADL_Overdrive6_StateInfo_Get");
-		adlFuncs->ADL_Overdrive6_CurrentStatus_Get = (ADL_OVERDRIVE6_CURRENTSTATUS_GET) this->lib->GetFunc("ADL_Overdrive6_CurrentStatus_Get");
-		adlFuncs->ADL_Overdrive6_PowerControl_Caps = (ADL_OVERDRIVE6_POWERCONTROL_CAPS) this->lib->GetFunc("ADL_Overdrive6_PowerControl_Caps");
-		adlFuncs->ADL_Overdrive6_PowerControlInfo_Get = (ADL_OVERDRIVE6_POWERCONTROLINFO_GET) this->lib->GetFunc("ADL_Overdrive6_PowerControlInfo_Get");
-		adlFuncs->ADL_Overdrive6_PowerControl_Get = (ADL_OVERDRIVE6_POWERCONTROL_GET) this->lib->GetFunc("ADL_Overdrive6_PowerControl_Get");
-		adlFuncs->ADL_Overdrive6_FanSpeed_Set  = (ADL_OVERDRIVE6_FANSPEED_SET) this->lib->GetFunc("ADL_Overdrive6_FanSpeed_Set");
-		adlFuncs->ADL_Overdrive6_State_Set = (ADL_OVERDRIVE6_STATE_SET) this->lib->GetFunc("ADL_Overdrive6_State_Set");
-		adlFuncs->ADL_Overdrive6_PowerControl_Set = (ADL_OVERDRIVE6_POWERCONTROL_SET) this->lib->GetFunc("ADL_Overdrive6_PowerControl_Set");
+		adlFuncs->ADL_Overdrive6_FanSpeed_Get = (ADL_OVERDRIVE6_FANSPEED_GET) lib->GetFunc("ADL_Overdrive6_FanSpeed_Get");
+		adlFuncs->ADL_Overdrive6_ThermalController_Caps = (ADL_OVERDRIVE6_THERMALCONTROLLER_CAPS) lib->GetFunc("ADL_Overdrive6_ThermalController_Caps");
+		adlFuncs->ADL_Overdrive6_Temperature_Get = (ADL_OVERDRIVE6_TEMPERATURE_GET) lib->GetFunc("ADL_Overdrive6_Temperature_Get");
+		adlFuncs->ADL_Overdrive6_Capabilities_Get = (ADL_OVERDRIVE6_CAPABILITIES_GET) lib->GetFunc("ADL_Overdrive6_Capabilities_Get");
+		adlFuncs->ADL_Overdrive6_StateInfo_Get = (ADL_OVERDRIVE6_STATEINFO_GET) lib->GetFunc("ADL_Overdrive6_StateInfo_Get");
+		adlFuncs->ADL_Overdrive6_CurrentStatus_Get = (ADL_OVERDRIVE6_CURRENTSTATUS_GET) lib->GetFunc("ADL_Overdrive6_CurrentStatus_Get");
+		adlFuncs->ADL_Overdrive6_PowerControl_Caps = (ADL_OVERDRIVE6_POWERCONTROL_CAPS) lib->GetFunc("ADL_Overdrive6_PowerControl_Caps");
+		adlFuncs->ADL_Overdrive6_PowerControlInfo_Get = (ADL_OVERDRIVE6_POWERCONTROLINFO_GET) lib->GetFunc("ADL_Overdrive6_PowerControlInfo_Get");
+		adlFuncs->ADL_Overdrive6_PowerControl_Get = (ADL_OVERDRIVE6_POWERCONTROL_GET) lib->GetFunc("ADL_Overdrive6_PowerControl_Get");
+		adlFuncs->ADL_Overdrive6_FanSpeed_Set  = (ADL_OVERDRIVE6_FANSPEED_SET) lib->GetFunc("ADL_Overdrive6_FanSpeed_Set");
+		adlFuncs->ADL_Overdrive6_State_Set = (ADL_OVERDRIVE6_STATE_SET) lib->GetFunc("ADL_Overdrive6_State_Set");
+		adlFuncs->ADL_Overdrive6_PowerControl_Set = (ADL_OVERDRIVE6_POWERCONTROL_SET) lib->GetFunc("ADL_Overdrive6_PowerControl_Set");
 
 		if (adlFuncs->ADL_Main_Control_Create && adlFuncs->ADL_Main_Control_Create)
 		{
@@ -170,7 +172,9 @@ IO::AMDGPUManager::AMDGPUManager()
 					cnt = 0;
 				}
 				this->adapterInfos = MemAlloc(UInt8, sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
-				NEW_CLASS(this->adapterList, Data::ArrayListObj<UInt8*>());
+				NN<Data::ArrayListArr<UInt8>> adapterList;
+				NEW_CLASSNN(adapterList, Data::ArrayListArr<UInt8>());
+				this->adapterList = adapterList;
 				AdapterInfo *adapter;
 				if (cnt > 0)
 				{
@@ -189,7 +193,7 @@ IO::AMDGPUManager::AMDGPUManager()
 						{
 							if (active)
 							{
-								this->adapterList->Add((UInt8*)adapter);
+								adapterList->Add((UInt8*)adapter);
 							}
 						}
 					}
@@ -200,16 +204,16 @@ IO::AMDGPUManager::AMDGPUManager()
 			{
 				MemFree(adlFuncs);
 				this->funcs = 0;
-				DEL_CLASS(this->lib);
-				this->lib = 0;
+				lib.Delete();
+				this->lib = nullptr;
 			}
 		}
 		else
 		{
 			MemFree(adlFuncs);
 			this->funcs = 0;
-			DEL_CLASS(this->lib);
-			this->lib = 0;
+			lib.Delete();
+			this->lib = nullptr;
 		}
 	}
 }
@@ -226,26 +230,25 @@ IO::AMDGPUManager::~AMDGPUManager()
 	{
 		MemFree(this->adapterInfos);
 	}
-	if (this->adapterList)
-	{
-		DEL_CLASS(this->adapterList);
-	}
-	SDEL_CLASS(this->lib);
+	this->adapterList.Delete();
+	this->lib.Delete();
 }
 
 UIntOS IO::AMDGPUManager::GetGPUCount()
 {
-	if (this->adapterList == 0)
+	NN<Data::ArrayListArr<UInt8>> adapterList;
+	if (!this->adapterList.SetTo(adapterList))
 		return 0;
-	return this->adapterList->GetCount();
+	return adapterList->GetCount();
 }
 
 Optional<IO::GPUControl> IO::AMDGPUManager::CreateGPUControl(UIntOS index)
 {
 	IO::AMDGPUControl *gpuCtrl;
-	if (this->adapterList == 0)
+	NN<Data::ArrayListArr<UInt8>> adapterList;
+	if (!this->adapterList.SetTo(adapterList))
 		return nullptr;
-	AdapterInfo *adapter = (AdapterInfo*)this->adapterList->GetItem(index);
+	AdapterInfo *adapter = (AdapterInfo*)adapterList->GetItem(index).Ptr();
 	if (adapter == 0)
 		return nullptr;
 	NEW_CLASS(gpuCtrl, IO::AMDGPUControl(*this, adapter));

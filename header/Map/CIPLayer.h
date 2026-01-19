@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_CIPLAYER
 #define _SM_MAP_CIPLAYER
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 
@@ -22,9 +22,9 @@ namespace Map
 		{
 			Int32 id;
 			Int32 nParts;
-			Int32 *parts;
+			UnsafeArrayOpt<UInt32> parts;
 			Int32 nPoints;
-			Int32 *points;
+			UnsafeArray<Int32> points;
 		} CIPFileObject;
 
 		//IO::FileStream *cip;
@@ -36,27 +36,27 @@ namespace Map
 		CIPBlock *blks;
 		Int32 maxTextSize;
 		Map::DrawLayerType lyrType;
-		Text::String *layerName;
+		NN<Text::String> layerName;
 		Int64 maxId;
 
-		Data::Int32FastMap<CIPFileObject*> *lastObjs;
-		Data::Int32FastMap<CIPFileObject*> *currObjs;
+		NN<Data::Int32FastMapObj<Optional<CIPFileObject>>> lastObjs;
+		NN<Data::Int32FastMapObj<Optional<CIPFileObject>>> currObjs;
 
 		Sync::Mutex mut;
 	public:
-		CIPLayer(Text::CString layerName);
+		CIPLayer(Text::CStringNN layerName);
 		virtual ~CIPLayer();
 
 		Bool IsError();
-		virtual Text::String *GetName();
+		virtual NN<Text::String> GetName();
 
 		virtual DrawLayerType GetLayerType();
-		virtual UIntOS GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
-		virtual UIntOS GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty);
-		virtual UIntOS GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty);
+		virtual UIntOS GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
+		virtual UIntOS GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty);
+		virtual UIntOS GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax();
-		virtual void ReleaseNameArr(void *nameArr);
-		virtual WChar *GetString(WChar *buff, void *nameArr, Int64 id, UIntOS strIndex);
+		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex);
 		virtual UIntOS GetColumnCnt();
 		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize);
@@ -66,8 +66,8 @@ namespace Map
 		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 	private:
-		CIPFileObject *GetFileObject(void *session, Int32 id);
-		void ReleaseFileObjs(Data::Int32FastMap<CIPFileObject*> *objs);
+		Optional<CIPFileObject> GetFileObject(NN<GetObjectSess> session, Int32 id);
+		void ReleaseFileObjs(NN<Data::Int32FastMapObj<Optional<CIPFileObject>>> objs);
 
 	public:
 		virtual NN<GetObjectSess> BeginGetObject();

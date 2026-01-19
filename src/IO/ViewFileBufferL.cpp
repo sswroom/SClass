@@ -9,11 +9,11 @@
 #include <sys/mman.h>
 
 
-IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
+IO::ViewFileBuffer::ViewFileBuffer(UnsafeArray<const UTF8Char> fileName)
 {
 	this->filePtr = nullptr;
 
-	this->fileHandle = (void*)(IntOS)open((const Char*)fileName, O_RDWR);
+	this->fileHandle = (void*)(IntOS)open((const Char*)fileName.Ptr(), O_RDWR);
 	if ((IntOS)this->fileHandle < 0)
 	{
 		return;

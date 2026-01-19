@@ -23,13 +23,13 @@ namespace Net
 				UIntOS buffSize;
 				Text::String *cliName;
 				Text::String *mailFrom;
-				Data::ArrayListObj<Text::String *> rcptTo;
+				Data::ArrayListNN<Text::String> rcptTo;
 				Bool dataMode;
 				Int32 loginMode;
 				IO::MemoryStream *dataStm;
 				Text::LineBreakType lastLBT;
 				Bool login;
-				Text::String *userName;
+				Optional<Text::String> userName;
 			} MailStatus;
 
 			typedef UnsafeArrayOpt<UTF8Char> (CALLBACKFUNC MailHandler)(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const MailStatus> mail);
@@ -38,7 +38,7 @@ namespace Net
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Net::Email::SMTPConn::ConnType connType;
-			Net::TCPServer *svr;
+			NN<Net::TCPServer> svr;
 			Net::TCPClientMgr cliMgr;
 			NN<IO::LogTool> log;
 			NN<Text::String> domain;
@@ -48,7 +48,7 @@ namespace Net
 			LoginHandler loginHdlr;
 			AnyType mailObj;
 			UInt32 maxMailSize;
-			IO::FileStream *rawLog;
+			Optional<IO::FileStream> rawLog;
 
 			static void __stdcall ClientReady(NN<Net::TCPClient> cli, AnyType userObj);
 			static void __stdcall ConnHdlr(NN<Socket> s, AnyType userObj);
@@ -56,7 +56,7 @@ namespace Net
 			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			UIntOS WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg);
-			//static IntOS WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
+			//static IntOS WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, UnsafeArray<const Char> msg);
 			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Text::LineBreakType lbt);
 		public:
 			SMTPServer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NN<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart);

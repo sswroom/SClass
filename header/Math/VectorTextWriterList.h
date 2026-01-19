@@ -5,16 +5,16 @@
 
 namespace Math
 {
-	class VectorTextWriterList : public Data::ReadingList<Math::VectorTextWriter*>
+	class VectorTextWriterList : public Data::ReadingList<Optional<Math::VectorTextWriter>>
 	{
 	private:
-		Data::ArrayListObj<Math::VectorTextWriter*> list;
+		Data::ArrayListNN<Math::VectorTextWriter> list;
 	public:
 		VectorTextWriterList();
 		virtual ~VectorTextWriterList();
 
 		virtual UIntOS GetCount() const;
-		virtual Math::VectorTextWriter* GetItem(UIntOS index) const;
+		virtual Optional<Math::VectorTextWriter> GetItem(UIntOS index) const;
 	};
 }
 #endif

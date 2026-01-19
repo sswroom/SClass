@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBFWRITE
 #define _SM_DB_DBFWRITE
 
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "DB/DBUtil.h"
 #include "IO/Stream.h"
 #include "Text/Encoding.h"
@@ -11,7 +11,7 @@ namespace DB
 	class DBFWrite
 	{
 	private:
-		Data::ArrayList<Char**> values;
+		Data::ArrayListObj<Char**> values;
 		Int32 colCnt;
 		IntOS *strSize;
 		const UTF8Char **cols;

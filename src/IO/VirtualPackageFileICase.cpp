@@ -31,12 +31,12 @@ IO::VirtualPackageFileICase::~VirtualPackageFileICase()
 
 Optional<const IO::PackFileItem> IO::VirtualPackageFileICase::GetItemByName(Text::CStringNN name) const
 {
-	return this->namedItems.Get(name);
+	return this->namedItems.GetC(name);
 }
 
 void IO::VirtualPackageFileICase::PutItem(NN<Text::String> name, NN<PackFileItem> item)
 {
-	this->namedItems.PutNN(name, item.Ptr());
+	this->namedItems.PutNN(name, item);
 }
 
 void IO::VirtualPackageFileICase::RemoveItem(NN<Text::String> name)

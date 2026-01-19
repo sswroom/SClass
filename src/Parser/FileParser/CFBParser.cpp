@@ -111,7 +111,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	Text::StringBuilderUTF8 sb;
 	NN<IO::VirtualPackageFile> pkg;
 	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
-	Text::String *workbookName = 0;
+	Optional<Text::String> workbookName = nullptr;
 	IO::StmData::BlockStreamData miniStmFd(fd);
 	while (true)
 	{
@@ -171,8 +171,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 				}
 				if (sb.EqualsICase(UTF8STRC("WORKBOOK")))
 				{
-					SDEL_STRING(workbookName);
-					workbookName = Text::String::New(sb.ToCString()).Ptr();
+					OPTSTR_DEL(workbookName);
+					workbookName = Text::String::New(sb.ToCString());
 				}
 				currSect = ReadUInt32(&buff[i + 116]);
 				sizeLeft = ReadUInt64(&buff[i + 120]);
@@ -246,10 +246,11 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 		}
 	}
 	NN<IO::StreamData> stmData;
-	if (workbookName && targetType != IO::ParserType::PackageFile && pkg->OpenStreamData(workbookName->ToCString()).SetTo(stmData))
+	NN<Text::String> nnworkbookName;
+	if (workbookName.SetTo(nnworkbookName) && targetType != IO::ParserType::PackageFile && pkg->OpenStreamData(nnworkbookName->ToCString()).SetTo(stmData))
 	{
 		NN<Text::SpreadSheet::Workbook> wb;
-		workbookName->Release();
+		nnworkbookName->Release();
 		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
 		wb->SetSourceName(fd->GetFullName());
 		if (!createTS.IsNull())
@@ -295,7 +296,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			DEL_CLASS(layer);
 			if (targetType == IO::ParserType::Unknown)
 			{
-				return db.Ptr();
+				return db;
 			}
 			else
 			{
@@ -304,7 +305,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			}
 		}
 	}
-	SDEL_STRING(workbookName);
+	OPTSTR_DEL(workbookName);
 	return pkg;
 }
 
@@ -314,7 +315,8 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	Bool eofFound = false;
 	Bool bofFound = false;
 	WorkbookStatus status;
-	Parser::FileParser::CFBParser::FontInfo *font;
+	Optional<Parser::FileParser::CFBParser::FontInfo> font;
+	NN<Parser::FileParser::CFBParser::FontInfo> nnfont;
 	NN<Text::SpreadSheet::CellStyle> style;
 	UIntOS readBuffSize;
 	UIntOS readSize;
@@ -322,49 +324,49 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	UInt16 recNo;
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
-	Text::String *fmt;
+	NN<Text::String> fmt;
 	Data::ByteBuffer readBuff(1048576);
 	readBuffSize = 0;
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
-	status.formatMap.Put(0x1, Text::String::New(UTF8STRC("0")).Ptr());
-	status.formatMap.Put(0x2, Text::String::New(UTF8STRC("0.00")).Ptr());
-	status.formatMap.Put(0x3, Text::String::New(UTF8STRC("#,##0")).Ptr());
-	status.formatMap.Put(0x4, Text::String::New(UTF8STRC("#,##0.00")).Ptr());
-	status.formatMap.Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")).Ptr());
-	status.formatMap.Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")).Ptr());
-	status.formatMap.Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")).Ptr());
-	status.formatMap.Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")).Ptr());
-	status.formatMap.Put(0x9, Text::String::New(UTF8STRC("0%")).Ptr());
-	status.formatMap.Put(0xa, Text::String::New(UTF8STRC("0.00%")).Ptr());
-	status.formatMap.Put(0xb, Text::String::New(UTF8STRC("0.00E+00")).Ptr());
-	status.formatMap.Put(0xc, Text::String::New(UTF8STRC("# ?/?")).Ptr());
-	status.formatMap.Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")).Ptr());
-	status.formatMap.Put(0xe, Text::String::New(UTF8STRC("m/d/yy")).Ptr());
-	status.formatMap.Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")).Ptr());
+	status.formatMap.Put(0x1, Text::String::New(UTF8STRC("0")));
+	status.formatMap.Put(0x2, Text::String::New(UTF8STRC("0.00")));
+	status.formatMap.Put(0x3, Text::String::New(UTF8STRC("#,##0")));
+	status.formatMap.Put(0x4, Text::String::New(UTF8STRC("#,##0.00")));
+	status.formatMap.Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")));
+	status.formatMap.Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")));
+	status.formatMap.Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")));
+	status.formatMap.Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")));
+	status.formatMap.Put(0x9, Text::String::New(UTF8STRC("0%")));
+	status.formatMap.Put(0xa, Text::String::New(UTF8STRC("0.00%")));
+	status.formatMap.Put(0xb, Text::String::New(UTF8STRC("0.00E+00")));
+	status.formatMap.Put(0xc, Text::String::New(UTF8STRC("# ?/?")));
+	status.formatMap.Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")));
+	status.formatMap.Put(0xe, Text::String::New(UTF8STRC("m/d/yy")));
+	status.formatMap.Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")));
 
-	status.formatMap.Put(0x10, Text::String::New(UTF8STRC("d-mmm")).Ptr());
-	status.formatMap.Put(0x11, Text::String::New(UTF8STRC("mmm-yy")).Ptr());
-	status.formatMap.Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")).Ptr());
-	status.formatMap.Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")).Ptr());
-	status.formatMap.Put(0x14, Text::String::New(UTF8STRC("h:mm")).Ptr());
-	status.formatMap.Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")).Ptr());
-	status.formatMap.Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")).Ptr());
+	status.formatMap.Put(0x10, Text::String::New(UTF8STRC("d-mmm")));
+	status.formatMap.Put(0x11, Text::String::New(UTF8STRC("mmm-yy")));
+	status.formatMap.Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")));
+	status.formatMap.Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")));
+	status.formatMap.Put(0x14, Text::String::New(UTF8STRC("h:mm")));
+	status.formatMap.Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")));
+	status.formatMap.Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")));
 
-	status.formatMap.Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")).Ptr());
-	status.formatMap.Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")).Ptr());
-	status.formatMap.Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")).Ptr());
-	status.formatMap.Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")).Ptr());
-	status.formatMap.Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2d, Text::String::New(UTF8STRC("mm:ss")).Ptr());
-	status.formatMap.Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")).Ptr());
-	status.formatMap.Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")).Ptr());
+	status.formatMap.Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")));
+	status.formatMap.Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")));
+	status.formatMap.Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")));
+	status.formatMap.Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")));
+	status.formatMap.Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2d, Text::String::New(UTF8STRC("mm:ss")));
+	status.formatMap.Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")));
+	status.formatMap.Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")));
 
-	status.formatMap.Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")).Ptr());
-	status.formatMap.Put(0x31, Text::String::New(UTF8STRC("@")).Ptr());
+	status.formatMap.Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")));
+	status.formatMap.Put(0x31, Text::String::New(UTF8STRC("@")));
 
 	Text::StringBuilderUTF8 sb;
 	while (!eofFound)
@@ -409,34 +411,34 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0x31: //Undefined: Font Style
 				{
-					font = MemAlloc(Parser::FileParser::CFBParser::FontInfo, 1);
-					font->height = ReadInt16(&readBuff[i + 4]);
-					font->grbit = ReadInt16(&readBuff[i + 6]);
-					font->icv = ReadInt16(&readBuff[i + 8]);
-					font->bls = ReadInt16(&readBuff[i + 10]);
-					font->sss = ReadInt16(&readBuff[i + 12]);
-					font->uls = readBuff[i + 14];
-					font->bFamily = readBuff[i + 15];
-					font->bCharSet = readBuff[i + 16];
+					font = nnfont = MemAllocNN(Parser::FileParser::CFBParser::FontInfo);
+					nnfont->height = ReadInt16(&readBuff[i + 4]);
+					nnfont->grbit = ReadInt16(&readBuff[i + 6]);
+					nnfont->icv = ReadInt16(&readBuff[i + 8]);
+					nnfont->bls = ReadInt16(&readBuff[i + 10]);
+					nnfont->sss = ReadInt16(&readBuff[i + 12]);
+					nnfont->uls = readBuff[i + 14];
+					nnfont->bFamily = readBuff[i + 15];
+					nnfont->bCharSet = readBuff[i + 16];
 					sb.ClearStr();
 					ReadUStringB(&readBuff[i + 18], sb);
-					font->fontName = Text::String::New(sb.ToCString());
+					nnfont->fontName = Text::String::New(sb.ToCString());
 					if (status.fontList.GetCount() == 4)
 					{
-						status.fontList.Add(0);
+						status.fontList.Add(nullptr);
 					}
-					status.fontList.Add(font);
+					status.fontList.Add(nnfont);
 
 					Bool isBold = false;
-					if (font->bls == 0x2bc)
+					if (nnfont->bls == 0x2bc)
 						isBold = true;
-					NN<Text::SpreadSheet::WorkbookFont> f = wb->NewFont(font->fontName->ToCString(), font->height * 0.05, isBold);
-					if (font->icv >= 64)
+					NN<Text::SpreadSheet::WorkbookFont> f = wb->NewFont(nnfont->fontName->ToCString(), nnfont->height * 0.05, isBold);
+					if (nnfont->icv >= 64)
 					{
 					}
 					else
 					{
-						f->SetColor(status.palette[font->icv - 8]);
+						f->SetColor(status.palette[nnfont->icv - 8]);
 					}
 				}
 				break;
@@ -469,7 +471,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					{
 						sb.AppendC((UTF8Char*)&readBuff[i + 12], readBuff[i + 10]);
 					}
-					WorksheetStatus *wsStatus = MemAlloc(WorksheetStatus, 1);
+					NN<WorksheetStatus> wsStatus = MemAllocNN(WorksheetStatus);
 					wsStatus->ws = wb->AddWorksheet(sb.ToCString());
 					wsStatus->ofst = ofstRef + ReadUInt32(&readBuff[i + 4]);
 					status.wsList.Add(wsStatus);
@@ -508,7 +510,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					{
 						font = status.fontList.GetItem(j);
 						NN<Text::SpreadSheet::WorkbookFont> wbfont;
-						if (font && wb->GetFont(j).SetTo(wbfont))
+						if (font.NotNull() && wb->GetFont(j).SetTo(wbfont))
 						{
 							style->SetFont(wbfont);
 						}
@@ -760,8 +762,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
 					sb.ClearStr();
 					ReadUString(&readBuff[i + 6], sb);
-					fmt = status.formatMap.Put(ifmt, Text::String::New(sb.ToCString()).Ptr());
-					if (fmt)
+					if (status.formatMap.Put(ifmt, Text::String::New(sb.ToCString())).SetTo(fmt))
 					{
 						fmt->Release();
 					}
@@ -878,7 +879,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	if (wb->GetDefaultStyle().SetTo(style))
 	{
 		font = status.fontList.GetItem(0);
-		if (font)
+		if (font.NotNull())
 		{
 			style->SetFont(wb->GetFont(0));
 		}
@@ -887,9 +888,9 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	i = status.wsList.GetCount();
 	while (i-- > 0)
 	{
-		WorksheetStatus *wsStatus = status.wsList.GetItem(i);
+		NN<WorksheetStatus> wsStatus = status.wsList.GetItemNoCheck(i);
 		ParseWorksheet(fd, wsStatus->ofst, wb, wsStatus->ws, &status);
-		MemFree(wsStatus);
+		MemFreeNN(wsStatus);
 	}
 	i = status.sst.GetCount();
 	while (i-- > 0)
@@ -900,17 +901,17 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 	while (i-- > 0)
 	{
 		font = status.fontList.GetItem(i);
-		if (font)
+		if (font.SetTo(nnfont))
 		{
-			font->fontName->Release();
-			MemFree(font);
+			nnfont->fontName->Release();
+			MemFreeNN(nnfont);
 		}
 	}
 	i = status.formatMap.GetCount();
 	while (i-- > 0)
 	{
-		Text::String *fmt = status.formatMap.GetItem(i);
-		if (fmt)
+		NN<Text::String> fmt;
+		if (status.formatMap.GetItem(i).SetTo(fmt))
 		{
 			fmt->Release();
 		}

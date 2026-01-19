@@ -22,10 +22,10 @@ void __stdcall Net::Email::POP3Server::ConnReady(NN<Net::TCPClient> cli, AnyType
 	MailStatus *cliStatus;
 	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
-	cliStatus->cliName = 0;
-	cliStatus->userName = 0;
+	cliStatus->cliName = nullptr;
+	cliStatus->userName = nullptr;
 	cliStatus->userId = 0;
-	cliStatus->dataStm = 0;
+	cliStatus->dataStm = nullptr;
 	cliStatus->dataMode = false;
 	me->cliMgr.AddClient(cli, cliStatus);
 
@@ -54,20 +54,18 @@ void __stdcall Net::Email::POP3Server::ClientEvent(NN<Net::TCPClient> cli, AnyTy
 	{
 		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UIntOS i;
-		if (cliStatus->cliName)
+		UnsafeArray<const UTF8Char> cliName;
+		if (cliStatus->cliName.SetTo(cliName))
 		{
-			Text::StrDelNew(cliStatus->cliName);
+			Text::StrDelNew(cliName);
 		}
-		SDEL_STRING(cliStatus->userName);
+		OPTSTR_DEL(cliStatus->userName);
 		i = cliStatus->rcptTo.GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(cliStatus->rcptTo.GetItem(i));
+			Text::StrDelNew(cliStatus->rcptTo.GetItemNoCheck(i));
 		}
-		if (cliStatus->dataStm)
-		{
-			DEL_CLASS(cliStatus->dataStm);
-		}
+		cliStatus->dataStm.Delete();
 		cliStatus.Delete();
 		cli.Delete();
 	}
@@ -80,9 +78,10 @@ void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyTyp
 {
 	NN<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
 	NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
-	if (me->rawLog)
+	NN<IO::FileStream> rawLog;
+	if (me->rawLog.SetTo(rawLog))
 	{
-		me->rawLog->Write(buff);
+		rawLog->Write(buff);
 	}
 	if (buff.GetSize() > 2048)
 	{
@@ -158,9 +157,10 @@ UIntOS Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 
 	UIntOS buffSize;
 	buffSize = cli->Write(sb.ToByteArray());
-	if (this->rawLog)
+	NN<IO::FileStream> rawLog;
+	if (this->rawLog.SetTo(rawLog))
 	{
-		this->rawLog->Write(sb.ToByteArray().WithSize(buffSize));
+		rawLog->Write(sb.ToByteArray().WithSize(buffSize));
 	}
 	return buffSize;
 }
@@ -169,15 +169,17 @@ UIntOS Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<cons
 {
 	UIntOS buffSize;
 	buffSize = cli->Write(Data::ByteArrayR(msg, msgLen));
-	if (this->rawLog)
+	NN<IO::FileStream> rawLog;
+	if (this->rawLog.SetTo(rawLog))
 	{
-		this->rawLog->Write(Data::ByteArrayR(msg, buffSize));
+		rawLog->Write(Data::ByteArrayR(msg, buffSize));
 	}
 	return buffSize;
 }
 
 void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
+	NN<IO::FileStream> rawLog;
 #if defined(VERBOSE)
 	printf("%s\r\n", cmd.Ptr());
 #endif
@@ -343,9 +345,9 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					UnsafeArray<UInt8> buff;
 					buff = mstm.GetBuff(buffSize);
 					cli->Write(Data::ByteArrayR(buff, buffSize));
-					if (this->rawLog)
+					if (this->rawLog.SetTo(rawLog))
 					{
-						this->rawLog->Write(Data::ByteArrayR(buff, buffSize));
+						rawLog->Write(Data::ByteArrayR(buff, buffSize));
 					}
 					WriteRAW(cli, UTF8STRC("\r\n.\r\n"));
 				}
@@ -393,24 +395,24 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					{
 						sb.AppendC(UTF8STRC("\r\n"));
 						cli->Write(sb.ToByteArray());
-						if (this->rawLog)
+						if (this->rawLog.SetTo(rawLog))
 						{
-							this->rawLog->Write(sb.ToByteArray());
+							rawLog->Write(sb.ToByteArray());
 						}
 						sb.ClearStr();
 					}
 					cli->Write(CSTR("\r\n").ToByteArray());
-					if (this->rawLog)
+					if (this->rawLog.SetTo(rawLog))
 					{
-						this->rawLog->Write(CSTR("\r\n").ToByteArray());
+						rawLog->Write(CSTR("\r\n").ToByteArray());
 					}
 					while (lineNum > 0 && reader.ReadLine(sb, 1024))
 					{
 						sb.AppendC(UTF8STRC("\r\n"));
 						cli->Write(sb.ToByteArray());
-						if (this->rawLog)
+						if (this->rawLog.SetTo(rawLog))
 						{
-							this->rawLog->Write(sb.ToByteArray());
+							rawLog->Write(sb.ToByteArray());
 						}
 						sb.ClearStr();
 						lineNum--;
@@ -531,17 +533,18 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("USER ")))
 	{
-		SDEL_STRING(cliStatus->userName);
+		OPTSTR_DEL(cliStatus->userName);
 		cliStatus->userName = Text::String::New(&cmd[5], cmdLen - 5).Ptr();
 		WriteMessage(cli, true, nullptr);
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("PASS ")))
 	{
+		NN<Text::String> userName;
 		Bool succ = false;
-		if (cliStatus->userName)
+		if (cliStatus->userName.SetTo(userName))
 		{
 			Int32 userId;
-			if (this->mailCtrl->Login(cliStatus->userName->ToCString(), Text::CStringNN(&cmd[5], cmdLen - 5), userId))
+			if (this->mailCtrl->Login(userName->ToCString(), Text::CStringNN(&cmd[5], cmdLen - 5), userId))
 			{
 				succ = true;
 				cliStatus->userId = userId;
@@ -574,15 +577,15 @@ Net::Email::POP3Server::POP3Server(NN<Net::SocketFactory> sockf, Optional<Net::S
 	this->log = log;
 	this->greeting = Text::String::New(greeting);
 	this->mailCtrl = mailCtrl;
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
-	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
+	NEW_CLASSOPT(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 
 Net::Email::POP3Server::~POP3Server()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->cliMgr.CloseAll();
-	DEL_CLASS(this->rawLog);
+	this->rawLog.Delete();
 	this->greeting->Release();
 }
 

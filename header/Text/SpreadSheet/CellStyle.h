@@ -100,7 +100,7 @@ namespace Text
 			NN<CellStyle> SetBorderRight(const BorderStyle &border);
 			NN<CellStyle> SetBorderTop(const BorderStyle &border);
 			NN<CellStyle> SetBorderBottom(const BorderStyle &border);
-			NN<CellStyle> SetDataFormat(Text::String *dataFormat);
+			NN<CellStyle> SetDataFormat(Optional<Text::String> dataFormat);
 			NN<CellStyle> SetDataFormat(Text::CString dataFormat);
 
 			UIntOS GetIndex() const;

@@ -207,10 +207,10 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetBorderBottom(c
 	return *this;
 }
 
-NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetDataFormat(Text::String *dataFormat)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetDataFormat(Optional<Text::String> dataFormat)
 {
 	OPTSTR_DEL(this->dataFormat);
-	this->dataFormat = SCOPY_STRING(dataFormat);
+	this->dataFormat = Text::String::CopyOrNull(dataFormat);
 	return *this;
 }
 

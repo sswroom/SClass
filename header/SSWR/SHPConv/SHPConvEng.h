@@ -11,9 +11,9 @@ namespace SSWR
 		class SHPConvEng
 		{
 		public:
-			virtual void ParseLabelStr(Text::CStringNN labelStr, Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2) = 0;
-			virtual void FreeLabelStr(Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2) = 0;
-			virtual NN<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayListObj<const UTF8Char*> *dbCols, UIntOS currRec, NN<Data::ArrayListNative<UInt32>> dbcols2) = 0;
+			virtual void ParseLabelStr(Text::CStringNN labelStr, NN<Data::ArrayListArr<const UTF8Char>> dbCols, NN<Data::ArrayListNative<UInt32>> dbCols2) = 0;
+			virtual void FreeLabelStr(NN<Data::ArrayListArr<const UTF8Char>> dbCols, NN<Data::ArrayListNative<UInt32>> dbCols2) = 0;
+			virtual NN<Text::String> GetNewDBFName(NN<DB::DBFFile> dbf, NN<Data::ArrayListArr<const UTF8Char>> dbCols, UIntOS currRec, NN<Data::ArrayListNative<UInt32>> dbcols2) = 0;
 		};
 	}
 }

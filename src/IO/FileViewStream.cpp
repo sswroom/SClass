@@ -17,19 +17,20 @@ IO::FileViewStream::~FileViewStream()
 
 Bool IO::FileViewStream::IsDown() const
 {
-	return this->vfb == 0 || this->fptr == 0;
+	return this->vfb == 0 || this->fptr.IsNull();
 }
 
 UIntOS IO::FileViewStream::Read(const Data::ByteArray &buff)
 {
-	if (this->fptr == 0)
+	UnsafeArray<UInt8> fptr;
+	if (!this->fptr.SetTo(fptr))
 		return 0;
 	UInt64 endPtr = this->currPos + buff.GetSize();
 	if (endPtr > this->length)
 		endPtr = this->length;
 	if (endPtr > this->currPos)
 	{
-		MemCopyNO(buff.Ptr(), &this->fptr[this->currPos], (UIntOS)(endPtr - this->currPos));
+		MemCopyNO(buff.Ptr(), &fptr[this->currPos], (UIntOS)(endPtr - this->currPos));
 		UIntOS size = (UIntOS)(endPtr - this->currPos);
 		this->currPos = endPtr;
 		return size;
@@ -40,7 +41,7 @@ UIntOS IO::FileViewStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UIntOS IO::FileViewStream::Write(const UInt8 *buff, UIntOS size)
+UIntOS IO::FileViewStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -52,7 +53,7 @@ Int32 IO::FileViewStream::Flush()
 
 void IO::FileViewStream::Close()
 {
-	this->fptr = 0;
+	this->fptr = nullptr;
 	if (this->vfb)
 	{
 		DEL_CLASS(this->vfb);
@@ -113,7 +114,7 @@ UInt64 IO::FileViewStream::GetLength()
 
 Bool IO::FileViewStream::IsError()
 {
-	if (this->vfb == 0 || this->fptr == 0)
+	if (this->vfb == 0 || this->fptr.IsNull())
 		return true;
 	return false;
 }

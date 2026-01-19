@@ -29,24 +29,24 @@ namespace Map
 		{
 			Double x;
 			Double y;
-			Data::ArrayList<NeighbourInfo*> *neighbours;
+			Optional<Data::ArrayListNN<NeighbourInfo>> neighbours;
 		} NodeInfo;
 	private:
-		Map::MapDrawLayer *layer;
+		NN<Map::MapDrawLayer> layer;
 		void *nameArr;
 		Bool toRelease;
 		IntOS nameCol;
 		IntOS dirCol;
 		CoordinateUnit cu;
-		Data::Int64Map<NodeInfo*> *nodeMap;
+		NN<Data::Int64MapNN<NodeInfo>> nodeMap;
 
 		Int64 CoordToId(Double x, Double y);
-		Bool SearchShortestPath(Data::ArrayList<Double> *points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
+		Bool SearchShortestPath(NN<Data::ArrayList<Double>> points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
 	public:
-		ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol);
+		ShortestPathFinder(NN<Map::MapDrawLayer> layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol);
 		~ShortestPathFinder();
 
-		Math::Polyline *GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);
+		Optional<Math::Polyline> GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);
 	};
-};
+}
 #endif

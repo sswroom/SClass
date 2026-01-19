@@ -169,11 +169,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	{
 		Data::StringMapNative<UIntOS> numFmtMap;
 		Data::ArrayListObj<Text::CString> numFmts;
-		Data::ArrayListObj<BorderInfo*> borders;
+		Data::ArrayListNN<BorderInfo> borders;
 		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
 		borderNone.borderType = BorderType::None;
 		borderNone.borderColor = 0;
-		BorderInfo *border = MemAlloc(BorderInfo, 1);
+		NN<BorderInfo> border = MemAllocNN(BorderInfo);
 		border->left = borderNone;
 		border->top = borderNone;
 		border->right = borderNone;
@@ -207,7 +207,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			k = borders.GetCount();
 			while (k-- > 0)
 			{
-				border = borders.GetItem(k);
+				border = borders.GetItemNoCheck(k);
 				if (border->left == style->GetBorderLeft() &&
 					border->top == style->GetBorderTop() &&
 					border->right == style->GetBorderRight() &&
@@ -219,7 +219,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			}
 			if (!borderFound)
 			{
-				border = MemAlloc(BorderInfo, 1);
+				border = MemAllocNN(BorderInfo);
 				border->left = style->GetBorderLeft();
 				border->top = style->GetBorderTop();
 				border->right = style->GetBorderRight();
@@ -319,7 +319,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.AppendC(UTF8STRC("\">"));
 		while (i < k)
 		{
-			border = borders.GetItem(i);
+			border = borders.GetItemNoCheck(i);
 			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
 			AppendBorder(sb, border->left, CSTR("left"));
 			AppendBorder(sb, border->right, CSTR("right"));
@@ -408,7 +408,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		k = borders.GetCount();
 		while (i < k)
 		{
-			MemFree(borders.GetItem(i));
+			MemFreeNN(borders.GetItemNoCheck(i));
 			i++;
 		}
 	}
@@ -1654,11 +1654,11 @@ void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::
 	}
 }
 
-void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UIntOS>> numFmtMap)
+void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListNN<BorderInfo>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UIntOS>> numFmtMap)
 {
 	UIntOS k;
 	Text::CStringNN csptr;
-	BorderInfo *border;
+	NN<BorderInfo> border;
 	Optional<Text::SpreadSheet::WorkbookFont> font = style->GetFont();
 	NN<Text::SpreadSheet::WorkbookFont> nnfont;
 	NN<Text::String> optS;
@@ -1685,7 +1685,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	k = borders->GetCount();
 	while (k-- > 0)
 	{
-		border = borders->GetItem(k);
+		border = borders->GetItemNoCheck(k);
 		if (border->left == style->GetBorderLeft() &&
 			border->top == style->GetBorderTop() &&
 			border->right == style->GetBorderRight() &&

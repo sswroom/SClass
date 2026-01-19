@@ -64,7 +64,7 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	UnsafeArray<UTF8Char> sbuff;
 	UIntOS i;
 	UIntOS nameSize;
-	FileInfo *file;
+	NN<FileInfo> file;
 	sbuff = MemAllocArr(UTF8Char, 512);
 	i = 16;
 	while (i < size)
@@ -73,10 +73,9 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], nameSize);
 		sbuff[nameSize] = 0;
 		
-		file = this->fileMap.Get({sbuff, nameSize});
-		if (file == 0)
+		if (!this->fileMap.Get({sbuff, nameSize}).SetTo(file))
 		{
-			file = MemAlloc(FileInfo, 1);
+			file = MemAllocNN(FileInfo);
 			file->ofst = ReadUInt64(&dirBuff[i]);
 			file->size = ReadUInt64(&dirBuff[i + 8]);
 			this->fileMap.Put({sbuff, nameSize}, file);
@@ -127,7 +126,7 @@ void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSep
 	}
 }
 
-Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize)
+Bool IO::SPackageFile::OptimizeFileInner(NN<IO::SPackageFile> newFile, UInt64 dirOfst, UInt64 dirSize)
 {
 	UInt64 lastOfst;
 	UInt64 lastSize;
@@ -319,7 +318,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 
 					UIntOS i;
 					UIntOS nameSize;
-					FileInfo *file;
+					NN<FileInfo> file;
 					i = 0;
 					while (i < dirSize)
 					{
@@ -327,10 +326,9 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 						MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 						sbuff[nameSize] = 0;
 						
-						file = this->fileMap.Get({sbuff, nameSize});
-						if (file == 0)
+						if (!this->fileMap.Get({sbuff, nameSize}).SetTo(file))
 						{
-							file = MemAlloc(FileInfo, 1);
+							file = MemAllocNN(FileInfo);
 							file->ofst = ReadUInt64(&dirBuff[i]);
 							file->size = ReadUInt64(&dirBuff[i + 8]);
 							this->fileMap.Put({sbuff, nameSize}, file);
@@ -422,10 +420,12 @@ IO::SPackageFile::~SPackageFile()
 	if (!this->fileMap.IsEmpty())
 	{
 		UIntOS i;
-		UnsafeArray<IO::SPackageFile::FileInfo*> fileArr = this->fileMap.ToArray(i);
+		NN<FileInfo> file;
+		UnsafeArray<Optional<IO::SPackageFile::FileInfo>> fileArr = this->fileMap.ToArray(i);
 		while (i-- > 0)
 		{
-			MemFree(fileArr[i]);
+			if (fileArr[i].SetTo(file))
+				MemFreeNN(file);
 		}
 		MemFreeArr(fileArr);
 	}
@@ -439,7 +439,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	Bool needCommit = false;
 
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap.Get(fileName) == 0)
+	if (this->fileMap.Get(fileName).IsNull())
 	{
 	}
 	else
@@ -521,7 +521,7 @@ Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UIntOS fileSiz
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap.Get(fileName) == 0)
+	if (this->fileMap.Get(fileName).IsNull())
 	{
 	}
 	else
@@ -632,7 +632,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 	}
 	this->Commit();
 	NN<IO::FileStream> fs;
-	IO::SPackageFile *spkg;
+	NN<IO::SPackageFile> spkg;
 	NEW_CLASSNN(fs, IO::FileStream(newFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
@@ -641,11 +641,11 @@ Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 	}
 	if (this->flags & 1)
 	{
-		NEW_CLASS(spkg, IO::SPackageFile(fs, true, this->customType, this->customSize, this->customBuff));
+		NEW_CLASSNN(spkg, IO::SPackageFile(fs, true, this->customType, this->customSize, this->customBuff));
 	}
 	else
 	{
-		NEW_CLASS(spkg, IO::SPackageFile(fs, true));
+		NEW_CLASSNN(spkg, IO::SPackageFile(fs, true));
 	}
 	spkg->PauseCommit(true);
 	Sync::MutexUsage mutUsage(this->mut);
@@ -659,7 +659,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 		this->OptimizeFileInner(spkg, lastOfst, lastSize);
 	}
 	mutUsage.EndUse();
-	DEL_CLASS(spkg);
+	spkg.Delete();
 	return true;
 }
 
@@ -672,8 +672,8 @@ Optional<IO::StreamData> IO::SPackageFile::CreateStreamData(Text::CStringNN file
 {
 	IO::StreamData *fd = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	FileInfo *file = this->fileMap.Get(fileName);
-	if (file)
+	NN<FileInfo> file;
+	if (this->fileMap.Get(fileName).SetTo(file))
 	{
 		Data::ByteBuffer fileBuff((UIntOS)file->size);
 		this->writeMode = false;

@@ -323,7 +323,7 @@ void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<X
 	UTF8Char myPath[256];
 	UIntOS i;
 	int searchType;
-	Data::ArrayListObj<UTF8Char*> reqArr;
+	Data::ArrayListArr<UTF8Char> reqArr;
 	Data::ArrayListNN<XMLNode> currPathArr;
 	UTF8Char *src;
 	path.ConcatTo(myPath);
@@ -368,7 +368,7 @@ void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<X
 				i = reqArr.GetCount();
 				while (i-- > 0)
 				{
-					((WChar*)reqArr.GetItem(i))[-1] = '/';
+					UnsafeArray<WChar>::ConvertFrom(reqArr.GetItemNoCheck(i))[-1] = '/';
 				}
 				src++;
 				if (*src != '/')
@@ -397,7 +397,7 @@ void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<X
 				i = reqArr.GetCount();
 				while (i-- > 0)
 				{
-					((WChar*)reqArr.GetItem(i))[-1] = '/';
+					UnsafeArray<WChar>::ConvertFrom(reqArr.GetItemNoCheck(i))[-1] = '/';
 				}
 				break;
 			}
@@ -409,10 +409,10 @@ void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<X
 	}
 }
 
-Bool Text::XMLNode::SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult)
+Bool Text::XMLNode::SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListArr<UTF8Char>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult)
 {
 	NN<XMLNode> n;
-	UTF8Char *reqStr;
+	UnsafeArray<UTF8Char> reqStr;
 	NN<Data::ArrayListNN<XMLNode>> childArr;
 	NN<Data::ArrayListNN<XMLAttrib>> attribArr;
 	UIntOS i;
@@ -423,7 +423,7 @@ Bool Text::XMLNode::SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Ch
 	{
 		return false;
 	}
-	reqStr = reqArr->GetItem(currPathArr->GetCount());
+	reqStr = reqArr->GetItemNoCheck(currPathArr->GetCount());
 	j = currPathArr->GetCount();
 	if (reqStr[0] != '@' && node->childArr.SetTo(childArr))
 	{
@@ -489,7 +489,7 @@ Bool Text::XMLNode::SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Ch
 	return false;
 }
 
-Bool Text::XMLNode::SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult)
+Bool Text::XMLNode::SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListArr<UTF8Char>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult)
 {
 	if (SearchNodeSub(node, reqArr, currPathArr, outArr, searchType, singleResult) && singleResult)
 		return true;
@@ -510,12 +510,12 @@ Bool Text::XMLNode::SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj
 	return false;
 }
 
-Bool Text::XMLNode::SearchEqual(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr)
+Bool Text::XMLNode::SearchEqual(UIntOS level, NN<Data::ArrayListArr<UTF8Char>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr)
 {
 	UTF8Char nameBuff[128];
 	UTF8Char condBuff[128];
 	Bool hasCond = false;
-	UnsafeArray<UTF8Char> req = reqArr->GetItem(level);
+	UnsafeArray<UTF8Char> req = reqArr->GetItemNoCheck(level);
 	UnsafeArray<UTF8Char> src;
 	UnsafeArray<UTF8Char> dest;
 	NN<XMLNode> n;
@@ -612,7 +612,7 @@ Bool Text::XMLNode::SearchEqual(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> 
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UIntOS level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB)
+Bool Text::XMLNode::SearchEval(UIntOS level, NN<Data::ArrayListArr<UTF8Char>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB)
 {
 	UnsafeArray<const UTF8Char> src;
 	UnsafeArray<const UTF8Char> dest;

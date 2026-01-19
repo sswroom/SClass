@@ -74,7 +74,7 @@ namespace DB
 			AnyType userData;
 			AnyType userData2;
 
-			SQLGroup(Data::ArrayListObj<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+			SQLGroup(NN<Data::ArrayListNN<Text::String>> strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLGroup();
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -110,11 +110,11 @@ namespace DB
 
 	private:
 		Optional<DBTool> db1;
-		Data::ArrayListObj<DB::DBHandler *> dbList;
+		Data::ArrayListNN<DB::DBHandler> dbList;
 
 	public:
-		Data::ArrayListObj<IDBCmd*> **sqlList;
-		Data::ArrayListObj<IDBCmd**> **sqlList2;
+		UnsafeArray<NN<Data::ArrayListNN<IDBCmd>>> sqlList;
+		UnsafeArray<NN<Data::ArrayListArr<NN<IDBCmd>>>> sqlList2;
 
 	public:
 		UInt64 sqlCnt;
@@ -122,7 +122,7 @@ namespace DB
 		NN<Text::String> name;
 
 	public:
-		IO::LogTool *log;
+		NN<IO::LogTool> log;
 		Bool stopping;
 
 	private:
@@ -131,9 +131,9 @@ namespace DB
 		UIntOS nextDB;
 
 	public:
-		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize);
-		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UIntOS dbSize);
-		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize);
+		DBQueue(NN<DBTool> db, NN<IO::LogTool> log, Text::CStringNN name, UIntOS dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, NN<IO::LogTool> log, NN<Text::String> name, UIntOS dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, NN<IO::LogTool> log, Text::CStringNN name, UIntOS dbSize);
 		~DBQueue();
 
 		void AddDB(NN<DB::DBTool> db);
@@ -151,11 +151,11 @@ namespace DB
 		Bool IsAxisAware() const;
 		Int8 GetTzQhr() const;
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
-		UIntOS GetNextCmds(IDBCmd **cmds); //max 200 cmds
-		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> buff, Data::DateTime *dat);
+		UIntOS GetNextCmds(UnsafeArray<NN<IDBCmd>> cmds); //max 200 cmds
+		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> buff, Optional<Data::DateTime> dat);
 		UnsafeArray<UTF8Char> DBInt32(UnsafeArray<UTF8Char> buff, Int32 val);
 		UnsafeArray<UTF8Char> DBInt64(UnsafeArray<UTF8Char> buff, Int64 val);
-		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> buff, const WChar *val);
+		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> buff, UnsafeArrayOpt<const WChar> val);
 		UnsafeArray<UTF8Char> DBDbl(UnsafeArray<UTF8Char> buff, Double val);
 		UnsafeArray<UTF8Char> DBBool(UnsafeArray<UTF8Char> buff, Bool val);
 		Bool IsExecTimeout();

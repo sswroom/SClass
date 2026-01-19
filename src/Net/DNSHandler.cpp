@@ -10,22 +10,26 @@ Net::DNSHandler::~DNSHandler()
 {
 	UIntOS i;
 	UIntOS j;
-	UnsafeArray<DomainStatus*> arr = this->reqv4Map.ToArray(j);
+	UnsafeArray<Optional<DomainStatus>> arr = this->reqv4Map.ToArray(j);
+	NN<DomainStatus> status;
 	i = 0;
 	while (i < j)
 	{
-		arr[i]->domain->Release();
-		if (arr[i]->timeout.IsNull())
+		if (arr[i].SetTo(status))
 		{
-//			Net::DNSClient::RequestAnswer *ans;
-//			ans = arr[i]->answers->GetItem(0);
-//			MemFree(ans);
+			status->domain->Release();
+			if (status->timeout.IsNull())
+			{
+	//			Net::DNSClient::RequestAnswer *ans;
+	//			ans = status->answers->GetItem(0);
+	//			MemFree(ans);
+			}
+			else
+			{
+				this->dnsCli.FreeAnswers(status->answers);
+			}
+			status.Delete();
 		}
-		else
-		{
-			this->dnsCli.FreeAnswers(arr[i]->answers);
-		}
-		DEL_CLASS(arr[i]);
 		i++;
 	}
 	MemFreeArr(arr);
@@ -34,15 +38,18 @@ Net::DNSHandler::~DNSHandler()
 	i = 0;
 	while (i < j)
 	{
-		arr[i]->domain->Release();
-		if (arr[i]->timeout.IsNull())
+		if (arr[i].SetTo(status))
 		{
+			status->domain->Release();
+			if (status->timeout.IsNull())
+			{
+			}
+			else
+			{
+				this->dnsCli.FreeAnswers(status->answers);
+			}
+			status.Delete();
 		}
-		else
-		{
-			this->dnsCli.FreeAnswers(arr[i]->answers);
-		}
-		DEL_CLASS(arr[i]);
 		i++;
 	}
 	MemFreeArr(arr);
@@ -50,15 +57,14 @@ Net::DNSHandler::~DNSHandler()
 
 Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
-	DomainStatus *dnsStat;
-	DomainStatus *newDnsStat;
+	NN<DomainStatus> dnsStat;
+	NN<DomainStatus> newDnsStat;
 	UIntOS i;
 	UIntOS j;
 	Data::Timestamp currTime;
 	NN<Net::DNSClient::RequestAnswer> ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	dnsStat = this->reqv4Map.Get(domain);
-	if (dnsStat)
+	if (this->reqv4Map.Get(domain).SetTo(dnsStat))
 	{
 		if (dnsStat->timeout.IsNull())
 		{
@@ -101,7 +107,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, T
 		}
 	}
 	mutUsage.EndUse();
-	NEW_CLASS(dnsStat, DomainStatus());
+	NEW_CLASSNN(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = Data::Timestamp::UtcNow();
 	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
@@ -122,12 +128,11 @@ Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, T
 		i++;
 	}
 	mutUsage.BeginUse();
-	newDnsStat = this->reqv4Map.Get(domain);
-	if (newDnsStat)
+	if (this->reqv4Map.Get(domain).SetTo(newDnsStat))
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(dnsStat->answers);
-		DEL_CLASS(dnsStat);
+		dnsStat.Delete();
 	}
 	else
 	{
@@ -138,15 +143,14 @@ Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, T
 
 Bool Net::DNSHandler::GetByDomainNamev6(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
-	DomainStatus *newDnsStat;
-	DomainStatus *dnsStat;
+	NN<DomainStatus> newDnsStat;
+	NN<DomainStatus> dnsStat;
 	UIntOS i;
 	UIntOS j;
 	NN<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
-	dnsStat = this->reqv6Map.Get(domain);
-	if (dnsStat)
+	if (this->reqv6Map.Get(domain).SetTo(dnsStat))
 	{
 		if (dnsStat->timeout.IsNull())
 		{
@@ -190,7 +194,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NN<Net::SocketUtil::AddressInfo> addr, T
 	}
 	mutUsage.EndUse();
 	currTime = Data::Timestamp::UtcNow();
-	NEW_CLASS(dnsStat, DomainStatus());
+	NEW_CLASSNN(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = currTime;
 	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
@@ -210,12 +214,11 @@ Bool Net::DNSHandler::GetByDomainNamev6(NN<Net::SocketUtil::AddressInfo> addr, T
 		i++;
 	}
 	mutUsage.BeginUse();
-	newDnsStat = this->reqv6Map.Get(domain);
-	if (newDnsStat)
+	if (this->reqv6Map.Get(domain).SetTo(newDnsStat))
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(dnsStat->answers);
-		DEL_CLASS(dnsStat);
+		dnsStat.Delete();
 	}
 	else
 	{
@@ -230,16 +233,15 @@ UIntOS Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	if (addrs.GetCount() == 0)
 		return 0;
 
-	DomainStatus *newDnsStat;
-	DomainStatus *dnsStat;
+	NN<DomainStatus> newDnsStat;
+	NN<DomainStatus> dnsStat;
 	UIntOS i;
 	UIntOS j;
 	Data::Timestamp currTime;
 	NN<Net::DNSClient::RequestAnswer> ans;
 	UIntOS ret = 0;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	dnsStat = this->reqv4Map.Get(domain);
-	if (dnsStat)
+	if (this->reqv4Map.Get(domain).SetTo(dnsStat))
 	{
 		if (dnsStat->timeout.IsNull())
 		{
@@ -286,7 +288,7 @@ UIntOS Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 		}
 	}
 	mutUsage.EndUse();
-	NEW_CLASS(dnsStat, DomainStatus());
+	NEW_CLASSNN(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = Data::Timestamp::UtcNow();
 	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
@@ -309,12 +311,11 @@ UIntOS Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 		i++;
 	}
 	mutUsage.BeginUse();
-	newDnsStat = this->reqv4Map.Get(domain);
-	if (newDnsStat)
+	if (this->reqv4Map.Get(domain).SetTo(newDnsStat))
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(dnsStat->answers);
-		DEL_CLASS(dnsStat);
+		dnsStat.Delete();
 	}
 	else
 	{
@@ -328,16 +329,15 @@ UIntOS Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 {
 	if (addrs.GetCount() == 0)
 		return 0;
-	DomainStatus *newDnsStat;
-	DomainStatus *dnsStat;
+	NN<DomainStatus> newDnsStat;
+	NN<DomainStatus> dnsStat;
 	UIntOS i;
 	UIntOS j;
 	NN<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	UIntOS ret = 0;
-	dnsStat = this->reqv6Map.Get(domain);
-	if (dnsStat)
+	if (this->reqv6Map.Get(domain).SetTo(dnsStat))
 	{
 		if (dnsStat->timeout.IsNull())
 		{
@@ -383,7 +383,7 @@ UIntOS Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	}
 	mutUsage.EndUse();
 	currTime = Data::Timestamp::UtcNow();
-	NEW_CLASS(dnsStat, DomainStatus());
+	NEW_CLASSNN(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = currTime;
 	j = this->dnsCli.GetByType(dnsStat->answers, domain, 28);
@@ -404,16 +404,15 @@ UIntOS Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 		i++;
 	}
 	mutUsage.BeginUse();
-	newDnsStat = this->reqv6Map.Get(domain);
-	if (newDnsStat)
+	if (this->reqv6Map.Get(domain).SetTo(newDnsStat))
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(dnsStat->answers);
-		DEL_CLASS(dnsStat);
+		dnsStat.Delete();
 	}
 	else
 	{
-		dnsStat = this->reqv6Map.Put(domain, dnsStat);
+		this->reqv6Map.Put(domain, dnsStat);
 	}
 	mutUsage.EndUse();
 	return ret;
@@ -421,19 +420,18 @@ UIntOS Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 
 Bool Net::DNSHandler::AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
-	DomainStatus *dnsStat;
+	NN<DomainStatus> dnsStat;
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		Sync::MutexUsage mutUsage(this->reqv4Mut);
-		dnsStat = this->reqv4Map.Get(domain);
-		if (dnsStat)
+		if (this->reqv4Map.Get(domain).SetTo(dnsStat))
 		{
 			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 		}
 		else
 		{
-			NEW_CLASS(dnsStat, DomainStatus());
+			NEW_CLASSNN(dnsStat, DomainStatus());
 			dnsStat->domain = Text::String::New(domain);
 			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
@@ -444,15 +442,14 @@ Bool Net::DNSHandler::AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text:
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		Sync::MutexUsage mutUsage(this->reqv6Mut);
-		dnsStat = this->reqv6Map.Get(domain);
-		if (dnsStat)
+		if (this->reqv6Map.Get(domain).SetTo(dnsStat))
 		{
 			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 		}
 		else
 		{
-			NEW_CLASS(dnsStat, DomainStatus());
+			NEW_CLASSNN(dnsStat, DomainStatus());
 			dnsStat->domain = Text::String::New(domain);
 			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];

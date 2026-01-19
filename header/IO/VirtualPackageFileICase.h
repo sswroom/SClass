@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILEICASE
 #define _SM_IO_VIRTUALPACKAGEFILEICASE
-#include "Data/ICaseStringMapObj.hpp"
+#include "Data/ICaseStringMapNN.hpp"
 #include "IO/VirtualPackageFile.h"
 
 namespace IO
@@ -8,7 +8,7 @@ namespace IO
 	class VirtualPackageFileICase : public VirtualPackageFile
 	{
 	private:
-		Data::ICaseStringMapObj<PackFileItem *> namedItems;
+		Data::ICaseStringMapNN<PackFileItem> namedItems;
 
 		VirtualPackageFileICase(NN<const VirtualPackageFileICase> pkg);
 	public:

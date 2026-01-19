@@ -6,7 +6,7 @@
 void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd)
 {
 	NN<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -397,15 +397,14 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 	}
 }
 
-IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(UInt64 devId)
+NN<IO::SNBDongle::DeviceInfo> IO::SNBDongle::GetDevice(UInt64 devId)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	Bool upd = false;
 	this->devMut.LockWrite();
-	dev = this->devMap.Get(devId);
-	if (dev == 0)
+	if (!this->devMap.Get(devId).SetTo(dev))
 	{
-		dev = MemAlloc(DeviceInfo, 1);
+		dev = MemAllocNN(DeviceInfo);
 		upd = true;
 		dev->devId = devId;
 		dev->devType = DT_UNKNOWN;
@@ -433,32 +432,32 @@ IO::SNBDongle::SNBDongle(NN<IO::Stream> stm, NN<SNBHandler> hdlr)
 	this->hdlr = hdlr;
 	this->dongleBaudRate = 0;
 	this->dongleId = 0;
-	NEW_CLASS(this->proto, IO::SNBProtocol(stm, OnProtocolRecv, this));
+	NEW_CLASSNN(this->proto, IO::SNBProtocol(stm, OnProtocolRecv, this));
 }
 
 IO::SNBDongle::~SNBDongle()
 {
-	DEL_CLASS(this->proto);
-	DeviceInfo *dev;
+	this->proto.Delete();
+	NN<DeviceInfo> dev;
 	UIntOS i;
 	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		dev = this->devMap.GetItem(i);
-		MemFree(dev);
+		dev = this->devMap.GetItemNoCheck(i);
+		MemFreeNN(dev);
 	}
 }
 
 void IO::SNBDongle::SetDevHandleType(UInt64 devId, HandleType handType)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	dev->handType = handType;
 }
 
 void IO::SNBDongle::SetDevShortAddr(UInt64 devId, UInt16 shortAddr)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	dev->shortAddr = shortAddr;
 }
@@ -507,7 +506,7 @@ void IO::SNBDongle::SendAddDevice(UInt8 timeout)
 void IO::SNBDongle::SendSetReportTime(UInt64 devId, Int32 interval)
 {
 	UInt8 buff[20];
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 	{
@@ -548,7 +547,7 @@ void IO::SNBDongle::SendGetReportTime(UInt64 devId)
 Bool IO::SNBDongle::SendDevTurnOn(UInt64 devId)
 {
 	UInt8 buff[16];
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 	{
@@ -570,7 +569,7 @@ Bool IO::SNBDongle::SendDevTurnOn(UInt64 devId)
 Bool IO::SNBDongle::SendDevTurnOff(UInt64 devId)
 {
 	UInt8 buff[16];
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 	{
@@ -592,7 +591,7 @@ Bool IO::SNBDongle::SendDevTurnOff(UInt64 devId)
 Bool IO::SNBDongle::SendDevGetStatus(UInt64 devId)
 {
 	UInt8 buff[16];
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	dev = this->GetDevice(devId);
 	if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 	{

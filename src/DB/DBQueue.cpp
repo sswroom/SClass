@@ -38,13 +38,13 @@ NN<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
 	return this->str;
 }
 
-DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayListObj<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
+DB::DBQueue::SQLGroup::SQLGroup(NN<Data::ArrayListNN<Text::String>> strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	UIntOS i = 0;
 	UIntOS j = strs->GetCount();
 	while (i < j)
 	{
-		this->strs.Add(strs->GetItem(i)->Clone());
+		this->strs.Add(strs->GetItemNoCheck(i)->Clone());
 		i++;
 	}
 	this->hdlr = hdlr;
@@ -112,17 +112,17 @@ Int32 DB::DBQueue::SQLGetDB::GetProgId() const
 	return this->progId;
 };
 
-DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize)
+DB::DBQueue::DBQueue(NN<DBTool> db, NN<IO::LogTool> log, Text::CStringNN name, UIntOS dbSize)
 {
 	this->db1 = db.Ptr();
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAllocArr(NN<Data::ArrayListNN<IDBCmd>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAllocArr(NN<Data::ArrayListArr<NN<IDBCmd>>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
 	UIntOS i = (UIntOS)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
+		NEW_CLASSNN(sqlList[i], Data::ArrayListNN<IDBCmd>());
+		NEW_CLASSNN(sqlList2[i], Data::ArrayListArr<NN<IDBCmd>>());
 	}
 	this->sqlCnt = 0;
 	this->lostCnt = 0;
@@ -130,22 +130,22 @@ DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UInt
 	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	this->stopping = false;
-	DB::DBHandler *dbHdlr;
-	NEW_CLASS(dbHdlr, DB::DBHandler(*this, db));
+	NN<DB::DBHandler> dbHdlr;
+	NEW_CLASSNN(dbHdlr, DB::DBHandler(*this, db));
 	this->dbList.Add(dbHdlr);
 }
 
-DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UIntOS dbSize)
+DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, NN<IO::LogTool> log, NN<Text::String> name, UIntOS dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAllocArr(NN<Data::ArrayListNN<IDBCmd>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAllocArr(NN<Data::ArrayListArr<NN<IDBCmd>>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
 	UIntOS i = (UIntOS)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
+		NEW_CLASSNN(sqlList[i], Data::ArrayListNN<IDBCmd>());
+		NEW_CLASSNN(sqlList2[i], Data::ArrayListArr<NN<IDBCmd>>());
 	}
 	sqlCnt = 0;
 	lostCnt = 0;
@@ -156,23 +156,23 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Tex
 	Data::ArrayIterator<NN<DB::DBTool>> it = dbs->Iterator();
 	while (it.HasNext())
 	{
-		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(*this, it.Next()));
+		NN<DB::DBHandler> dbHdlr;
+		NEW_CLASSNN(dbHdlr, DB::DBHandler(*this, it.Next()));
 		this->dbList.Add(dbHdlr);
 	}
 }
 
-DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UIntOS dbSize)
+DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, NN<IO::LogTool> log, Text::CStringNN name, UIntOS dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAllocArr(NN<Data::ArrayListNN<IDBCmd>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAllocArr(NN<Data::ArrayListArr<NN<IDBCmd>>>, (UIntOS)DB::DBQueue::Priority::Highest + 1);
 	UIntOS i = (UIntOS)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
+		NEW_CLASSNN(sqlList[i], Data::ArrayListNN<IDBCmd>());
+		NEW_CLASSNN(sqlList2[i], Data::ArrayListArr<NN<IDBCmd>>());
 	}
 	sqlCnt = 0;
 	lostCnt = 0;
@@ -183,8 +183,8 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::
 	Data::ArrayIterator<NN<DB::DBTool>> it = dbs->Iterator();
 	while (it.HasNext())
 	{
-		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(*this, it.Next()));
+		NN<DB::DBHandler> dbHdlr;
+		NEW_CLASSNN(dbHdlr, DB::DBHandler(*this, it.Next()));
 		this->dbList.Add(dbHdlr);
 	}
 }
@@ -195,17 +195,11 @@ DB::DBQueue::~DBQueue()
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
-	DB::DBQueue::IDBCmd *c;
-	DB::DBQueue::IDBCmd **carr;
+	NN<DB::DBQueue::IDBCmd> c;
+	UnsafeArray<NN<DB::DBQueue::IDBCmd>> carr;
 	IO::FileStream *fs = 0;
 	Text::UTF8Writer *writer = 0;
-	DB::DBHandler *dbHdlr;
-	i = this->dbList.GetCount();
-	while (i-- > 0)
-	{
-		dbHdlr = this->dbList.GetItem(i);
-		DEL_CLASS(dbHdlr);
-	}
+	this->dbList.DeleteAll();
 
 	Sync::MutexUsage mutUsage(this->mut);
 	i = (UIntOS)DB::DBQueue::Priority::Highest + 1;
@@ -214,7 +208,7 @@ DB::DBQueue::~DBQueue()
 		j = sqlList[i]->GetCount();
 		while (j-- > 0)
 		{
-			c = sqlList[i]->GetItem(j);
+			c = sqlList[i]->GetItemNoCheck(j);
 			if (c->GetCmdType() == CmdType::SQLCmd)
 			{
 				NN<IO::FileStream> nnfs;
@@ -224,17 +218,17 @@ DB::DBQueue::~DBQueue()
 					fs = nnfs.Ptr();
 					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 				}
-				NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+				NN<Text::String> sql = NN<DB::DBQueue::SQLCmd>::ConvertFrom(c)->GetSQL();
 				writer->Write(sql->ToCString());
 				writer->WriteLine(CSTR(";"));
 			}
-			DEL_CLASS(c);
+			c.Delete();
 		}
-		DEL_CLASS(sqlList[i]);
+		sqlList[i].Delete();
 		j = sqlList2[i]->GetCount();
 		while (j-- > 0)
 		{
-			carr = sqlList2[i]->GetItem(j);
+			carr = sqlList2[i]->GetItemNoCheck(j);
 			k = 200;
 			while (k-- > 0)
 			{
@@ -248,15 +242,15 @@ DB::DBQueue::~DBQueue()
 						fs = nnfs.Ptr();
 						NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					}
-					NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+					NN<Text::String> sql = NN<DB::DBQueue::SQLCmd>::ConvertFrom(c)->GetSQL();
 					writer->Write(sql->ToCString());
 					writer->WriteLine(CSTR(";"));
 				}
-				DEL_CLASS(c);
+				c.Delete();
 			}
-			MemFree(carr);
+			MemFreeArr(carr);
 		}
-		DEL_CLASS(sqlList2[i]);
+		sqlList2[i].Delete();
 	}
 	if (fs)
 	{
@@ -264,15 +258,15 @@ DB::DBQueue::~DBQueue()
 		DEL_CLASS(fs);
 	}
 	mutUsage.EndUse();
-	MemFree(sqlList);
-	MemFree(sqlList2);
+	MemFreeArr(sqlList);
+	MemFreeArr(sqlList2);
 	this->name->Release();
 }
 
 void DB::DBQueue::AddDB(NN<DB::DBTool> db)
 {
-	DB::DBHandler *dbHdlr;
-	NEW_CLASS(dbHdlr, DB::DBHandler(*this, db));
+	NN<DB::DBHandler> dbHdlr;
+	NEW_CLASSNN(dbHdlr, DB::DBHandler(*this, db));
 	this->dbList.Add(dbHdlr);
 }
 
@@ -285,7 +279,7 @@ void DB::DBQueue::ToStop()
 		i = this->dbList.GetCount();
 		while (i-- > 0)
 		{
-			this->dbList.GetItem(i)->Wake();
+			this->dbList.GetItemNoCheck(i)->Wake();
 		}
 	}
 }
@@ -303,12 +297,12 @@ void DB::DBQueue::AddSQL(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen, Priorit
 		priority = DB::DBQueue::Priority::Lowest;
 	UIntOS ipriority = (UIntOS)priority;
 	Sync::MutexUsage mutUsage(this->mut);
-	SQLCmd *cmd;
-	NEW_CLASS(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
+	NN<SQLCmd> cmd;
+	NEW_CLASSNN(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
 	sqlList[ipriority]->Add(cmd);
 	if (sqlList[ipriority]->GetCount() > 4000)
 	{
-		IDBCmd *arr[200];
+		NN<IDBCmd> arr[200];
 		sqlList[ipriority]->GetRange(arr, 0, 200);
 		sqlList[ipriority]->RemoveRange(0, 200);
 		if (sqlList2[ipriority]->GetCount() > this->dbSize)
@@ -323,8 +317,8 @@ void DB::DBQueue::AddSQL(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen, Priorit
 				}
 				else
 				{
-					IDBCmd **sqlArr = MemAlloc(IDBCmd*, 200);
-					MemCopyNO(sqlArr, arr, 200 * sizeof(IDBCmd*));
+					UnsafeArray<NN<IDBCmd>> sqlArr = MemAllocArr(NN<IDBCmd>, 200);
+					MemCopyNO(&sqlArr[0], arr, 200 * sizeof(NN<IDBCmd>));
 					sqlList2[ipriority]->Add(sqlArr);
 					lost = false;
 					break;
@@ -335,12 +329,12 @@ void DB::DBQueue::AddSQL(UnsafeArray<const UTF8Char> sql, UIntOS sqlLen, Priorit
 		}
 		else
 		{
-			IDBCmd **sqlArr = MemAlloc(IDBCmd*, 200);
-			MemCopyNO(sqlArr, arr, 200 * sizeof(IDBCmd*));
+			UnsafeArray<NN<IDBCmd>> sqlArr = MemAllocArr(NN<IDBCmd>, 200);
+			MemCopyNO(&sqlArr[0], arr, 200 * sizeof(NN<IDBCmd>));
 			sqlList2[ipriority]->Add(sqlArr);
 		}
 	}
-	this->dbList.GetItem(this->nextDB)->Wake();
+	this->dbList.GetItemNoCheck(this->nextDB)->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
@@ -352,11 +346,11 @@ void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, Any
 	if (priority < DB::DBQueue::Priority::Lowest)
 		priority = DB::DBQueue::Priority::Lowest;
 	UIntOS ipriority = (UIntOS)priority;
-	DB::DBQueue::SQLTrans *trans;
-	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
+	NN<DB::DBQueue::SQLTrans> trans;
+	NEW_CLASSNN(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
 	Sync::MutexUsage mutUsage(this->mut);
 	sqlList[ipriority]->Add(trans);
-	this->dbList.GetItem(this->nextDB)->Wake();
+	this->dbList.GetItemNoCheck(this->nextDB)->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
@@ -368,11 +362,11 @@ void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyTyp
 	if (priority < DB::DBQueue::Priority::Lowest)
 		priority = DB::DBQueue::Priority::Lowest;
 	UIntOS ipriority = (UIntOS)priority;
-	DB::DBQueue::SQLGetDB *trans;
-	NEW_CLASS(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
+	NN<DB::DBQueue::SQLGetDB> trans;
+	NEW_CLASSNN(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
 	Sync::MutexUsage mutUsage(this->mut);
 	sqlList[ipriority]->Add(trans);
-	this->dbList.GetItem(this->nextDB)->Wake();
+	this->dbList.GetItemNoCheck(this->nextDB)->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
@@ -381,18 +375,18 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 {
 	UIntOS i = (UIntOS)DB::DBQueue::Priority::Highest + 1;
 	UIntOS j;
-	DB::DBQueue::IDBCmd *cmd;
+	NN<DB::DBQueue::IDBCmd> cmd;
 	Sync::MutexUsage mutUsage(this->mut);
 	while (i-- > 0)
 	{
 		j = sqlList[i]->GetCount();
 		while (j-- > 0)
 		{
-			cmd = (DB::DBQueue::IDBCmd*)sqlList[i]->GetItem(j);
+			cmd = sqlList[i]->GetItemNoCheck(j);
 			if (cmd->GetProgId() == progId)
 			{
 				sqlList[i]->RemoveAt(j);
-				DEL_CLASS(cmd);
+				cmd.Delete();
 			}
 		}
 	}
@@ -405,7 +399,7 @@ UIntOS DB::DBQueue::GetDataCnt() const
 	UIntOS cnt = 0;
 	while (i-- > 0)
 	{
-		cnt += this->dbList.GetItem(i)->GetDataCnt();
+		cnt += this->dbList.GetItemNoCheck(i)->GetDataCnt();
 	}
 	return cnt;
 }
@@ -458,10 +452,10 @@ Int8 DB::DBQueue::GetTzQhr() const
 	return 0;
 }
 
-UIntOS DB::DBQueue::GetNextCmds(IDBCmd **cmds)
+UIntOS DB::DBQueue::GetNextCmds(UnsafeArray<NN<IDBCmd>> cmds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	void **c;
+	UnsafeArray<NN<IDBCmd>> c;
 	UIntOS i;
 	UIntOS j;
 	UIntOS cnt = 0;
@@ -471,11 +465,11 @@ UIntOS DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 	{
 		if (sqlList2[i]->GetCount() > 0)
 		{
-			c = (void**)sqlList2[i]->GetItem(0);
+			c = sqlList2[i]->GetItemNoCheck(0);
 			sqlList2[i]->RemoveAt(0);
 			cnt = 200;
-			MemCopyNO(cmds, c, 200 * sizeof(void*));
-			MemFree(c);
+			MemCopyNO(&cmds[0], &c[0], 200 * sizeof(NN<IDBCmd>));
+			MemFreeArr(c);
 			break;
 		}
 		else if (sqlList[i]->GetCount() > 0)
@@ -496,7 +490,7 @@ UIntOS DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 	return cnt;
 }
 
-UnsafeArray<UTF8Char> DB::DBQueue::DBDateTime(UnsafeArray<UTF8Char> buff, Data::DateTime *dat)
+UnsafeArray<UTF8Char> DB::DBQueue::DBDateTime(UnsafeArray<UTF8Char> buff, Optional<Data::DateTime> dat)
 {
 	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
@@ -514,7 +508,7 @@ UnsafeArray<UTF8Char> DB::DBQueue::DBInt64(UnsafeArray<UTF8Char> buff, Int64 val
 	return DB::DBUtil::SDBInt64(buff, val, this->GetSQLType());
 }
 
-UnsafeArray<UTF8Char> DB::DBQueue::DBStrW(UnsafeArray<UTF8Char> buff, const WChar *val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBStrW(UnsafeArray<UTF8Char> buff, UnsafeArrayOpt<const WChar> val)
 {
 	return DB::DBUtil::SDBStrW(buff, val, this->GetSQLType());
 }
@@ -531,14 +525,14 @@ UnsafeArray<UTF8Char> DB::DBQueue::DBBool(UnsafeArray<UTF8Char> buff, Bool val)
 
 Bool DB::DBQueue::IsExecTimeout()
 {
-	DB::DBHandler *db;
+	NN<DB::DBHandler> db;
 	UIntOS i;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		db = this->dbList.GetItem(i);
+		db = this->dbList.GetItemNoCheck(i);
 		if (db->IsTimeout(dt))
 		{
 			return true;
@@ -591,12 +585,12 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 
 	NN<Text::String> s;
 	UIntOS i = 0;
-	DB::DBQueue::SQLCmd *cmd;
-	DB::DBQueue::SQLGroup *grp;
-	DB::DBQueue::IDBCmd *cmds[200];
+	NN<DB::DBQueue::SQLCmd> cmd;
+	NN<DB::DBQueue::SQLGroup> grp;
+	NN<DB::DBQueue::IDBCmd> cmds[200];
 	UIntOS cmdSize;
 	UIntOS l;
-	DB::DBQueue::IDBCmd *c;
+	NN<DB::DBQueue::IDBCmd> c;
 	IntOS sqlRet;
 	Bool found;
 	while (!me->dbQ->stopping)
@@ -616,12 +610,12 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 				l = 0;
 				while (l < cmdSize)
 				{
-					c = (DB::DBQueue::IDBCmd *)cmds[l];
+					c = cmds[l];
 					switch (c->GetCmdType())
 					{
 					case DB::DBQueue::CmdType::SQLCmd:
 						me->procTime.SetCurrTimeUTC();
-						cmd = (DB::DBQueue::SQLCmd*)c;
+						cmd = NN<DB::DBQueue::SQLCmd>::ConvertFrom(c);
 						s = cmd->str;
 						if (cmd->hdlr == 0)
 						{
@@ -675,7 +669,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 							Bool res = false;
 							me->procTime.SetCurrTimeUTC();
 							me->db->BeginTrans();
-							DB::DBQueue::SQLTrans *obj = (DB::DBQueue::SQLTrans*)c;
+							NN<DB::DBQueue::SQLTrans> obj = NN<DB::DBQueue::SQLTrans>::ConvertFrom(c);
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
 							if (res == false)
 							{
@@ -688,7 +682,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 						{
 							Bool res = false;
 							me->procTime.SetCurrTimeUTC();
-							DB::DBQueue::SQLGetDB *obj = (DB::DBQueue::SQLGetDB*)c;
+							NN<DB::DBQueue::SQLGetDB> obj = NN<DB::DBQueue::SQLGetDB>::ConvertFrom(c);
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
 							if (res == false)
 							{
@@ -699,7 +693,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 					case DB::DBQueue::CmdType::SQLGroup:
 						{
 							Bool hasError = false;
-							grp = (DB::DBQueue::SQLGroup *)c;
+							grp = NN<DB::DBQueue::SQLGroup>::ConvertFrom(c);
 							me->procTime.SetCurrTimeUTC();
 							me->db->BeginTrans();
 							UIntOS k;
@@ -772,7 +766,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 						}
 						break;
 					}
-					DEL_CLASS(c);
+					c.Delete();
 
 					found = true;
 					l += 1;

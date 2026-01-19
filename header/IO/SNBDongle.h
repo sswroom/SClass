@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SNBDONGLE
 #define _SM_IO_SNBDONGLE
 #include "AnyType.h"
-#include "Data/FastMapObj.hpp"
+#include "Data/FastMapNN.hpp"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
 #include "Text/CString.h"
@@ -110,17 +110,17 @@ namespace IO
 			UInt8 sensorType;
 		} DeviceInfo;
 	public:
-		IO::SNBProtocol *proto;
+		NN<IO::SNBProtocol> proto;
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
 		AnyType protoObj;
 		NN<SNBHandler> hdlr;
-		Data::FastMapObj<UInt64, DeviceInfo*> devMap;
+		Data::FastMapNN<UInt64, DeviceInfo> devMap;
 		Sync::RWMutex devMut;
 		UInt64 dongleId;
 		UInt32 dongleBaudRate;
 
 		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIntOS cmdSize, UnsafeArray<UInt8> cmd);
-		DeviceInfo *GetDevice(UInt64 devId);
+		NN<DeviceInfo> GetDevice(UInt64 devId);
 	public:
 		SNBDongle(NN<IO::Stream> stm, NN<SNBHandler> hdlr);
 		~SNBDongle();

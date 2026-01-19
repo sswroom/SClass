@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HashAlgorithm.h"
 #include "Data/ArrayListNN.hpp"
 #include "Data/FastMapObj.hpp"
-#include "Data/FastStringMapObj.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Data/StringMapObj.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Decompressor.h"
@@ -75,8 +75,8 @@ namespace IO
 
 	protected:
 		Data::ArrayListNN<PackFileItem> items;
-		Data::FastStringMapObj<PackFileItem *> pkgFiles;
-		Data::FastMapObj<Int32, const UTF8Char *> infoMap;
+		Data::FastStringMapNN<PackFileItem> pkgFiles;
+		Data::FastMapObj<Int32, UnsafeArrayOpt<const UTF8Char>> infoMap;
 		Optional<PackageFile> parent;
 
 		void ReusePackFileItem(NN<IO::PackFileItem> item);

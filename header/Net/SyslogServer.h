@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SYSLOGSERVER
 #define _SM_NET_SYSLOGSERVER
-#include "Data/FastMapObj.hpp"
+#include "Data/FastMapNN.hpp"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"
@@ -16,24 +16,24 @@ namespace Net
 		typedef struct
 		{
 			UInt32 ip;
-			IO::LogTool *log;
+			NN<IO::LogTool> log;
 		} IPStatus;
 		
 		typedef void (CALLBACKFUNC ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		NN<Text::String> logPath;
 		NN<IO::LogTool> log;
 		Bool redirLog;
 		Sync::Mutex ipMut;
-		Data::FastMapObj<UInt32, IPStatus*> ipMap;
+		Data::FastMapNN<UInt32, IPStatus> ipMap;
 		ClientLogHandler logHdlr;
 		AnyType logHdlrObj;
 
 		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 
-		IPStatus *GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
+		Optional<IPStatus> GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
 	public:
 		SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStringNN logPath, NN<IO::LogTool> svrLog, Bool redirLog);
 		~SyslogServer();

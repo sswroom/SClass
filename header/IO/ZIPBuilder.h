@@ -1,7 +1,7 @@
 #ifndef _SM_IO_ZIPBUILDER
 #define _SM_IO_ZIPBUILDER
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "Data/ArrayListObj.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/BufferedOutputStream.h"
@@ -49,22 +49,20 @@ namespace IO
 			UInt64 compSize;
 			UInt16 compMeth;
 			UInt32 fileAttr;
-/*
-DOS:
-0 - ReadOnly
-1 - Unknown
-2 - Unknown
-3 - Unknown
-4 - Directory
-
-Unix:
-TTTTsstrwxrwxrwx0000000000ADVSHR
-^^^^____________________________ file type as explained above
-    ^^^_________________________ setuid, setgid, sticky
-       ^^^^^^^^^________________ permissions
-                ^^^^^^^^________ This is the "lower-middle byte" your post mentions
-                        ^^^^^^^^ DOS attribute bits
-*/
+// DOS:
+// 0 - ReadOnly
+// 1 - Unknown
+// 2 - Unknown
+// 3 - Unknown
+// 4 - Directory
+// 
+// Unix:
+// TTTTsstrwxrwxrwx0000000000ADVSHR
+// ^^^^____________________________ file type as explained above
+//     ^^^_________________________ setuid, setgid, sticky
+//        ^^^^^^^^^________________ permissions
+//                 ^^^^^^^^________ This is the "lower-middle byte" your post mentions
+//                         ^^^^^^^^ DOS attribute bits
 		} FileInfo;
 		
 	private:
@@ -73,7 +71,7 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
-		Data::ArrayListObj<FileInfo*> files;
+		Data::ArrayListNN<FileInfo> files;
 		Sync::Mutex mut;
 		ZIPOS osType;
 

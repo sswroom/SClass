@@ -438,8 +438,8 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NN<Text::String> root
 	this->fileCacheUsing = 0;
 	this->packageMap = nullptr;
 	this->packageMut = nullptr;
-	this->statMap = 0;
-	this->statMut = 0;
+	this->statMap = nullptr;
+	this->statMut = nullptr;
 }
 
 Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
@@ -453,8 +453,8 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootD
 	this->fileCacheUsing = 0;
 	this->packageMap = nullptr;
 	this->packageMut = nullptr;
-	this->statMap = 0;
-	this->statMut = 0;
+	this->statMap = nullptr;
+	this->statMut = nullptr;
 }
 
 Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
@@ -462,11 +462,15 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	this->rootDir->Release();
 	UIntOS cacheCnt;
-	UnsafeArray<CacheInfo*> cacheList = this->fileCache.ToArray(cacheCnt);
+	NN<CacheInfo> cache;
+	UnsafeArray<Optional<CacheInfo>> cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
-		MemFree(cacheList[cacheCnt]->buff);
-		MemFree(cacheList[cacheCnt]);
+		if (cacheList[cacheCnt].SetTo(cache))
+		{
+			MemFreeArr(cache->buff);
+			MemFreeNN(cache);
+		}
 	}
 	MemFreeArr(cacheList);
 	if (this->packageMap.SetTo(packageMap))
@@ -484,22 +488,23 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 		this->packageMap.Delete();
 		this->packageMut.Delete();
 	}
-	if (this->statMap)
+	NN<Data::FastStringMapNN<StatInfo>> statMap;
+	if (this->statMap.SetTo(statMap))
 	{
 		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
-		UIntOS i = this->statMap->GetCount();
+		UIntOS i = statMap->GetCount();
 		while (i-- > 0)
 		{
-			stat = this->statMap->GetItemNoCheck(i);
+			stat = statMap->GetItemNoCheck(i);
 			this->StatSave(stat);
 
 			stat->reqPath->Release();
 			stat->statFileName->Release();
-			DEL_CLASS(stat->cntMap);
+			stat->cntMap.Delete();
 			MemFreeNN(stat);
 		}
-		DEL_CLASS(this->statMap);
-		DEL_CLASS(this->statMut);
+		this->statMap.Delete();
+		this->statMut.Delete();
 	}
 }
 
@@ -531,6 +536,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	Text::CStringNN mime;
 	UIntOS i;
 	Bool dirPath;
+	NN<Sync::Mutex> statMut;
+	NN<Data::FastStringMapNN<Net::WebServer::HTTPDirectoryHandler::StatInfo>> statMap;
 	if (req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_1)
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
@@ -560,15 +567,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	{
 		return true;
 	}
-	CacheInfo *cache;
+	NN<CacheInfo> cache;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
-	cache = this->fileCache.Get(subReq);
-	if (cache != 0)
+	if (this->fileCache.Get(subReq).SetTo(cache))
 	{
 		Sync::Interlocked::IncrementI32(this->fileCacheUsing);
 		mutUsage.EndUse();
-		NN<Sync::Mutex> statMut;
-		if (this->statMap && statMut.Set(this->statMut))
+		if (this->statMap.SetTo(statMap) && this->statMut.SetTo(statMut))
 		{
 			NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
 			sb.ClearStr();
@@ -576,7 +581,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(statMut);
-			if (this->statMap->GetC(sb.ToCString()).SetTo(stat))
+			if (statMap->GetC(sb.ToCString()).SetTo(stat))
 			{
 				sb.Append(subReq.Substring(i + 1));
 				i = sb.IndexOf('?');
@@ -734,7 +739,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			if (sizeLeft < this->fileCacheSize)
 			{
 				UIntOS readSize;
-				cache = MemAlloc(CacheInfo, 1);
+				cache = MemAllocNN(CacheInfo);
 				cache->buff = MemAlloc(UInt8, (UIntOS)sizeLeft);
 				cache->buffSize = (UIntOS)sizeLeft;
 				cache->t = t;
@@ -750,8 +755,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				{
 					resp->AddContentLength(sizeLeft);
 					resp->Write(Data::ByteArrayR(cache->buff, readSize));
-					MemFree(cache->buff);
-					MemFree(cache);
+					MemFreeArr(cache->buff);
+					MemFreeNN(cache);
 				}
 			}
 			else
@@ -892,7 +897,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendNE(UTF8STRC(">File Size</a></th>"));
-				if (this->statMap)
+				if (this->statMap.SetTo(statMap))
 				{
 					sbOut.AppendNE(UTF8STRC("<th><a href="));
 					sb3.ClearStr();
@@ -928,7 +933,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 							sbOut.AppendNE2(sbuff2, (UIntOS)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
 							sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 							sbOut.AppendUTF8Char('-');
-							if (this->statMap)
+							if (this->statMap.NotNull())
 							{
 								sbOut.AppendNE(UTF8STRC("</td><td>0"));
 							}
@@ -946,25 +951,24 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				NN<IO::Path::FindFileSession> sess;
 				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess))
 				{
-					NN<Sync::Mutex> statMut;
 					Sync::MutexUsage mutUsage;
-					if (this->statMap && statMut.Set(this->statMut))
+					if (this->statMap.SetTo(statMap) && this->statMut.SetTo(statMut))
 					{
 						mutUsage.ReplaceMutex(statMut);
 						if (sb2.GetLength() > 1 && sb2.EndsWith('/'))
 						{
 							sb2.RemoveChars(1);
 						}
-						if (!this->statMap->GetC(sb2.ToCString()).SetTo(nnstat))
+						if (!statMap->GetC(sb2.ToCString()).SetTo(nnstat))
 						{
 							nnstat = MemAllocNN(Net::WebServer::HTTPDirectoryHandler::StatInfo);
 							nnstat->reqPath = Text::String::New(sb2.ToString(), sb2.GetLength());
-							NEW_CLASS(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
+							NEW_CLASSNN(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
 							nnstat->updated = true;
 							sb2.ClearStr();
 							sb2.AppendC2(sb.ToString(), sb.GetLength(), UTF8STRC(".counts"));
 							nnstat->statFileName = Text::String::New(sb2.ToString(), sb2.GetLength());
-							this->statMap->PutNN(nnstat->reqPath, nnstat);
+							statMap->PutNN(nnstat->reqPath, nnstat);
 							this->StatLoad(nnstat);
 						}
 						stat = nnstat;
@@ -1022,7 +1026,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 									sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 									sbOut.AppendU64(fileSize);
 								}
-								if (this->statMap)
+								if (this->statMap.NotNull())
 								{
 									sbOut.AppendNE(UTF8STRC("</td><td>"));
 									sbOut.AppendU32(cnt);
@@ -1122,7 +1126,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 								sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 								sbOut.AppendU64(ent->fileSize);
 							}
-							if (this->statMap)
+							if (this->statMap.NotNull())
 							{
 								sbOut.AppendNE(UTF8STRC("</td><td>"));
 								sbOut.AppendU32(ent->cnt);
@@ -1174,7 +1178,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			}
 		}
 
-		if (this->statMap && statMut.Set(this->statMut))
+		if (this->statMap.SetTo(statMap) && this->statMut.SetTo(statMut))
 		{
 			sb2.ClearStr();
 			sb2.Append(subReq);
@@ -1191,11 +1195,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> nnstat;
 			if (sb2.ToString()[0] == 0)
 			{
-				stat = this->statMap->GetC(CSTR("/"));
+				stat = statMap->GetC(CSTR("/"));
 			}
 			else
 			{
-				stat = this->statMap->GetC({sb2.ToString(), i});
+				stat = statMap->GetC({sb2.ToString(), i});
 			}
 			if (!stat.SetTo(nnstat))
 			{
@@ -1208,13 +1212,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				{
 					nnstat->reqPath = Text::String::New(sb2.ToString(), i);
 				}
-				NEW_CLASS(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
+				NEW_CLASSNN(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
 				nnstat->updated = true;
 				sptr3 = Text::StrConcatC(sbuff, sptr, sptrLen);
 				i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				nnstat->statFileName = Text::String::New(sbuff, (UIntOS)(sptr3 - sbuff));
-				this->statMap->PutNN(nnstat->reqPath, nnstat);
+				statMap->PutNN(nnstat->reqPath, nnstat);
 				this->StatLoad(nnstat);
 			}
 			nnstat->cntMap->PutC({sptr2, sb2.GetLength() - i - 1}, nnstat->cntMap->GetC({sptr2, sb2.GetLength() - i - 1}) + 1);
@@ -1340,7 +1344,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		else if (!partial && sizeLeft < this->fileCacheSize)
 		{
 			UIntOS readSize;
-			cache = MemAlloc(CacheInfo, 1);
+			cache = MemAllocNN(CacheInfo);
 			cache->buff = MemAlloc(UInt8, (UIntOS)sizeLeft);
 			cache->buffSize = (UIntOS)sizeLeft;
 			cache->t = ts;
@@ -1349,21 +1353,20 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
-				cache = this->fileCache.Put(subReq, cache);
-				mutUsage.EndUse();
-				if (cache)
+				if (this->fileCache.Put(subReq, cache).SetTo(cache))
 				{
-					MemFree(cache->buff);
-					MemFree(cache);
+					MemFreeArr(cache->buff);
+					MemFreeNN(cache);
 				}
+				mutUsage.EndUse();
 			}
 			else
 			{
 				//this->SendContent(req, resp, mime.v, mime.len, readSize, cache->buff);
 				resp->AddContentLength(sizeLeft);
 				resp->Write(Data::ByteArrayR(cache->buff, readSize));
-				MemFree(cache->buff);
-				MemFree(cache);
+				MemFreeArr(cache->buff);
+				MemFreeNN(cache);
 			}
 		}
 		else
@@ -1692,11 +1695,15 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	UnsafeArray<CacheInfo*> cacheList = this->fileCache.ToArray(cacheCnt);
+	NN<CacheInfo> cache;
+	UnsafeArray<Optional<CacheInfo>> cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
-		MemFree(cacheList[cacheCnt]->buff);
-		MemFree(cacheList[cacheCnt]);
+		if (cacheList[cacheCnt].SetTo(cache))
+		{
+			MemFreeArr(cache->buff);
+			MemFreeNN(cache);
+		}
 	}
 	MemFreeArr(cacheList);
 	this->fileCache.Clear();
@@ -1776,25 +1783,26 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 
 void Net::WebServer::HTTPDirectoryHandler::EnableStats()
 {
-	if (this->statMap == 0)
+	if (this->statMap.IsNull())
 	{
-		NEW_CLASS(this->statMut, Sync::Mutex());
-		NEW_CLASS(this->statMap, Data::FastStringMapNN<Net::WebServer::HTTPDirectoryHandler::StatInfo>());
+		NEW_CLASSOPT(this->statMut, Sync::Mutex());
+		NEW_CLASSOPT(this->statMap, Data::FastStringMapNN<Net::WebServer::HTTPDirectoryHandler::StatInfo>());
 	}
 }
 
 void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 {
+	NN<Data::FastStringMapNN<Net::WebServer::HTTPDirectoryHandler::StatInfo>> statMap;
 	NN<Sync::Mutex> mut;
-	if (this->statMap && mut.Set(this->statMut))
+	if (this->statMap.SetTo(statMap) && this->statMut.SetTo(mut))
 	{
 		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
 		UIntOS i;
 		Sync::MutexUsage mutUsage(mut);
-		i = this->statMap->GetCount();
+		i = statMap->GetCount();
 		while (i-- > 0)
 		{
-			stat = this->statMap->GetItemNoCheck(i);
+			stat = statMap->GetItemNoCheck(i);
 			if (stat->updated)
 			{
 				this->StatSave(stat);

@@ -6,24 +6,18 @@
 
 Math::VectorTextWriterList::VectorTextWriterList()
 {
-	Math::VectorTextWriter *writer;
-	NEW_CLASS(writer, Math::WKTWriter());
+	NN<Math::VectorTextWriter> writer;
+	NEW_CLASSNN(writer, Math::WKTWriter());
 	this->list.Add(writer);
-	NEW_CLASS(writer, Math::GeoJSONWriter());
+	NEW_CLASSNN(writer, Math::GeoJSONWriter());
 	this->list.Add(writer);
-	NEW_CLASS(writer, Math::CesiumEntityWriter());
+	NEW_CLASSNN(writer, Math::CesiumEntityWriter());
 	this->list.Add(writer);
 }
 
 Math::VectorTextWriterList::~VectorTextWriterList()
 {
-	Math::VectorTextWriter *writer;
-	UIntOS i = this->list.GetCount();
-	while (i-- > 0)
-	{
-		writer = this->list.GetItem(i);
-		DEL_CLASS(writer);
-	}
+	this->list.DeleteAll();
 }
 
 UIntOS Math::VectorTextWriterList::GetCount() const
@@ -31,7 +25,7 @@ UIntOS Math::VectorTextWriterList::GetCount() const
 	return this->list.GetCount();
 }
 
-Math::VectorTextWriter* Math::VectorTextWriterList::GetItem(UIntOS index) const
+Optional<Math::VectorTextWriter> Math::VectorTextWriterList::GetItem(UIntOS index) const
 {
 	return this->list.GetItem(index);
 }

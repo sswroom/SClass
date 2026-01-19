@@ -2,7 +2,7 @@
 #include "SSWR/SHPConv/SHPConvDBFViewForm.h"
 #include "Text/HKSCSFix.h"
 
-SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::SHPConvEng *eng, Text::CStringNN lbl) : UI::GUIForm(parent, 424, 300, ui)
+SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<SSWR::SHPConv::SHPConvEng> eng, Text::CStringNN lbl) : UI::GUIForm(parent, 424, 300, ui)
 {
 	this->SetText(CSTR("DBFView"));
 	this->SetFont(nullptr, 8.25, false);
@@ -20,10 +20,10 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	UIntOS k;
 	UIntOS l;
 	UIntOS m;
-	Data::ArrayListObj<const UTF8Char*> dbCols;
+	Data::ArrayListArr<const UTF8Char> dbCols;
 	Data::ArrayListNative<UInt32> dbCols2;
 
-	eng->ParseLabelStr(lbl, &dbCols, &dbCols2);
+	eng->ParseLabelStr(lbl, dbCols, dbCols2);
 	this->lvDBF->AddColumn(CSTR("Output"), 120);
 	i = 0;
 	j = dbf->GetColCount();
@@ -45,7 +45,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	NN<Text::String> s;
 	while (i < j)
 	{
-		s = eng->GetNewDBFName(dbf, &dbCols, i, dbCols2);
+		s = eng->GetNewDBFName(dbf, dbCols, i, dbCols2);
 		m = this->lvDBF->AddItem(s, 0);
 		s->Release();
 		k = 0;

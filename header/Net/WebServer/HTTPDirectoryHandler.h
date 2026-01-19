@@ -26,7 +26,7 @@ namespace Net
 
 			typedef struct
 			{
-				UInt8 *buff;
+				UnsafeArray<UInt8> buff;
 				UIntOS buffSize;
 				Data::Timestamp t;
 			} CacheInfo;
@@ -42,7 +42,7 @@ namespace Net
 			{
 				NN<Text::String> reqPath;
 				NN<Text::String> statFileName;
-				Data::FastStringMapNative<UInt32> *cntMap;
+				NN<Data::FastStringMapNative<UInt32>> cntMap;
 				Bool updated;
 			} StatInfo;
 			
@@ -54,10 +54,10 @@ namespace Net
 			CacheType ctype;
 			Int32 expirePeriod;
 			UInt64 fileCacheSize;
-			Data::BTreeStringMapObj<CacheInfo*> fileCache;
+			Data::BTreeStringMapObj<Optional<CacheInfo>> fileCache;
 			Sync::Mutex fileCacheMut;
-			Data::FastStringMapNN<StatInfo> *statMap;
-			Sync::Mutex *statMut;
+			Optional<Data::FastStringMapNN<StatInfo>> statMap;
+			Optional<Sync::Mutex> statMut;
 			Int32 fileCacheUsing;
 			Optional<Sync::RWMutex> packageMut;
 			Optional<Data::FastStringMapNN<PackageInfo>> packageMap;

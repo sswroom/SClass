@@ -7,8 +7,8 @@
 void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	UIntOS nextFrameNum = 0;
-	VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
-	if (frInfo)
+	NN<VP9FrameInfo> frInfo;
+	if (this->frameList.GetItem(this->frameList.GetCount() - 1).SetTo(frInfo))
 	{
 		nextFrameNum = frInfo->srcFrameIndex + 1;
 	}
@@ -59,13 +59,13 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	{
 		if (dblFrame)
 		{
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = frameNum;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = fr1;
 			frInfo->fullFrameSize = dataSize;
 			this->frameList.Add(frInfo);
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = frameNum;
 			frInfo->frameOfst = fr1;
 			frInfo->frameSize = fr2;
@@ -74,7 +74,7 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 		else
 		{
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = frameNum;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = dataSize;
@@ -103,11 +103,7 @@ Media::Decoder::VP09Decoder::VP09Decoder(NN<VideoSource> sourceVideo, Bool toRel
 
 Media::Decoder::VP09Decoder::~VP09Decoder()
 {
-	UIntOS i = this->frameList.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->frameList.GetItem(i));
-	}
+	this->frameList.MemFreeAll();
 }
 
 Text::CStringNN Media::Decoder::VP09Decoder::GetFilterName()
@@ -129,8 +125,8 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameCount()
 	if (this->sourceVideo && this->sourceVideo->HasFrameCount())
 	{
 		UIntOS srcFrameCount = this->sourceVideo->GetFrameCount();
-		VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
-		if (frInfo && frInfo->srcFrameIndex == srcFrameCount - 1)
+		NN<VP9FrameInfo> frInfo;
+		if (this->frameList.GetItem(this->frameList.GetCount() - 1).SetTo(frInfo) && frInfo->srcFrameIndex == srcFrameCount - 1)
 		{
 			return this->frameList.GetCount();
 		}
@@ -141,8 +137,8 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameCount()
 
 Data::Duration Media::Decoder::VP09Decoder::GetFrameTime(UIntOS frameIndex)
 {
-	VP9FrameInfo *frInfo = this->frameList.GetItem(frameIndex);
-	if (frInfo && this->sourceVideo)
+	NN<VP9FrameInfo> frInfo;
+	if (this->frameList.GetItem(frameIndex).SetTo(frInfo) && this->sourceVideo)
 	{
 		return this->sourceVideo->GetFrameTime(frInfo->srcFrameIndex);
 	}
@@ -161,12 +157,11 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 {
 	if (this->sourceVideo == 0)
 		return 0;
-	VP9FrameInfo *frInfo;
+	NN<VP9FrameInfo> frInfo;
 	if (frameIndex == this->frameList.GetCount())
 	{
 		UIntOS nextFrameIndex = 0;
-		frInfo = this->frameList.GetItem(frameIndex - 1);
-		if (frInfo)
+		if (this->frameList.GetItem(frameIndex - 1).SetTo(frInfo))
 		{
 			nextFrameIndex = frInfo->srcFrameIndex + 1;
 		}
@@ -213,15 +208,15 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 		}
 		if (dblFrame)
 		{
-			VP9FrameInfo *frInfo2;
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			NN<VP9FrameInfo> frInfo2;
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = fr1;
 			frInfo->fullFrameSize = frameSize;
 			this->frameList.Add(frInfo);
 			frInfo2 = frInfo;
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = fr1;
 			frInfo->frameSize = fr2;
@@ -231,7 +226,7 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 		}
 		else
 		{
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = frameSize;
@@ -243,8 +238,7 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 	}
 	else
 	{
-		frInfo = this->frameList.GetItem(frameIndex);
-		if (frInfo == 0)
+		if (!this->frameList.GetItem(frameIndex).SetTo(frInfo))
 			return 0;
 		return frInfo->frameSize;
 	}
@@ -254,12 +248,11 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 {
 	if (this->sourceVideo == 0)
 		return 0;
-	VP9FrameInfo *frInfo;
+	NN<VP9FrameInfo> frInfo;
 	if (frameIndex == this->frameList.GetCount())
 	{
 		UIntOS nextFrameIndex = 0;
-		frInfo = this->frameList.GetItem(frameIndex - 1);
-		if (frInfo)
+		if (this->frameList.GetItem(frameIndex - 1).SetTo(frInfo))
 		{
 			nextFrameIndex = frInfo->srcFrameIndex + 1;
 		}
@@ -306,15 +299,15 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		}
 		if (dblFrame)
 		{
-			VP9FrameInfo *frInfo2;
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			NN<VP9FrameInfo> frInfo2;
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = fr1;
 			frInfo->fullFrameSize = frameSize;
 			this->frameList.Add(frInfo);
 			frInfo2 = frInfo;
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = fr1;
 			frInfo->frameSize = fr2;
@@ -324,7 +317,7 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		}
 		else
 		{
-			frInfo = MemAlloc(VP9FrameInfo, 1);
+			frInfo = MemAllocNN(VP9FrameInfo);
 			frInfo->srcFrameIndex = nextFrameIndex;
 			frInfo->frameOfst = 0;
 			frInfo->frameSize = frameSize;
@@ -337,8 +330,7 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 	}
 	else
 	{
-		frInfo = this->frameList.GetItem(frameIndex);
-		if (frInfo == 0)
+		if (!this->frameList.GetItem(frameIndex).SetTo(frInfo))
 			return 0;
 		if (frInfo->fullFrameSize == frInfo->frameSize)
 		{

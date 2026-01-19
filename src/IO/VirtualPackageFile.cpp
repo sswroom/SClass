@@ -70,9 +70,13 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 		}
 	}
 	UIntOS i = this->infoMap.GetCount();
+	UnsafeArray<const UTF8Char> str;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->infoMap.GetItem(i));
+		if (this->infoMap.GetItem(i).SetTo(str))
+		{
+			Text::StrDelNew(str);
+		}
 	}
 }
 
@@ -174,7 +178,7 @@ Bool IO::VirtualPackageFile::AddPack(NN<IO::PackageFile> pkg, Text::CStringNN na
 	item->useCnt = 1;
 	pkg->SetParent(this);
 	this->items.Add(item);
-	this->pkgFiles.PutNN(item->name, item.Ptr());
+	this->pkgFiles.PutNN(item->name, item);
 	this->PutItem(item->name, item);
 	return true;
 }
@@ -296,8 +300,8 @@ Bool IO::VirtualPackageFile::AddOrReplacePack(NN<IO::PackageFile> pkg, Text::CSt
 
 Optional<IO::PackageFile> IO::VirtualPackageFile::GetPackFile(Text::CStringNN name) const
 {
-	IO::PackFileItem *item = this->pkgFiles.GetC(name);
-	if (item)
+	NN<IO::PackFileItem> item;
+	if (this->pkgFiles.GetC(name).SetTo(item))
 		return Optional<IO::PackageFile>::ConvertFrom(item->pobj);
 	return nullptr;
 }
@@ -1146,8 +1150,8 @@ void IO::VirtualPackageFile::SetParent(Optional<IO::PackageFile> pkg)
 
 void IO::VirtualPackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 {
-	const UTF8Char *csptr = this->infoMap.Put(infoType, Text::StrCopyNew(val).Ptr());
-	if (csptr)
+	UnsafeArray<const UTF8Char> csptr;
+	if (this->infoMap.Put(infoType, Text::StrCopyNew(val)).SetTo(csptr))
 	{
 		Text::StrDelNew(csptr);
 	}

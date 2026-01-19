@@ -22,7 +22,7 @@ IO::ZIPBuilder::ZIPBuilder(NN<IO::SeekableStream> stm, ZIPOS os) : stm(stm, 1048
 
 IO::ZIPBuilder::~ZIPBuilder()
 {
-	IO::ZIPBuilder::FileInfo *file;
+	NN<IO::ZIPBuilder::FileInfo> file;
 	UInt8 hdrBuff[512];
 	Data::DateTime dt;
 	UIntOS hdrLen;
@@ -32,7 +32,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 	UInt8 minVer;
 	while (i < j)
 	{
-		file = this->files.GetItem(i);
+		file = this->files.GetItemNoCheck(i);
 		minVer = 20;
 		dt.SetValue(file->fileModTime.inst, file->fileModTime.tzQhr);
 		WriteUInt32(&hdrBuff[0], 0x02014b50);
@@ -103,7 +103,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		cdLen += hdrLen;
 
 		file->fileName->Release();
-		MemFree(file);
+		MemFreeNN(file);
 		i++;
 	}
 	if (this->currOfst >= 0xffffffff || j >= 0xffff)
@@ -222,9 +222,9 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 		hdrLen += len;
 	}
 
-	IO::ZIPBuilder::FileInfo *file;
+	NN<IO::ZIPBuilder::FileInfo> file;
 	Bool succ = false;
-	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
+	file = MemAllocNN(IO::ZIPBuilder::FileInfo);
 	file->fileName = Text::String::New(fileName);
 	file->fileModTime = lastModTime;
 	file->fileCreateTime = createTime;
@@ -314,8 +314,8 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	MemCopyNO(&hdrBuff[30], dirName.v.Ptr(), dirName.leng);
 	hdrLen = 30 + dirName.leng;
 
-	IO::ZIPBuilder::FileInfo *file;
-	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
+	NN<IO::ZIPBuilder::FileInfo> file;
+	file = MemAllocNN(IO::ZIPBuilder::FileInfo);
 	file->fileName = Text::String::New(dirName);
 	file->fileModTime = lastModTime;
 	file->fileCreateTime = createTime;
@@ -398,8 +398,8 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 		hdrLen += len;
 	}
 
-	IO::ZIPBuilder::FileInfo *file;
-	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
+	NN<IO::ZIPBuilder::FileInfo> file;
+	file = MemAllocNN(IO::ZIPBuilder::FileInfo);
 	file->fileName = Text::String::New(fileName);
 	file->fileModTime = lastModTime;
 	file->fileCreateTime = createTime;

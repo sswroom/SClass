@@ -47,7 +47,7 @@ namespace Exporter
 		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UIntOS index);
 		static void AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UIntOS index);
 		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CStringNN name);
-		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UIntOS>> numFmtMap);
+		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListNN<BorderInfo>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UIntOS>> numFmtMap);
 
 		static Text::CStringNN PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UnsafeArray<UTF8Char> ToFormatCode(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFormat);
