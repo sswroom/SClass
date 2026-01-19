@@ -27,7 +27,7 @@ Int32 IO::FileVersion::GetFirstLang()
 {
 	LANGANDCODEPAGE *langs;
 	UInt32 valCnt = 0;
-	VerQueryValueW(this->buff, L"\\VarFileInfo\\Translation", (LPVOID*)&langs, &valCnt);
+	VerQueryValueW(this->buff.Ptr(), L"\\VarFileInfo\\Translation", (LPVOID*)&langs, &valCnt);
 	if (valCnt > 0)
 		return (langs[0].wLanguage << 16) | langs[0].wCodePage;
 	return 0;
@@ -42,11 +42,11 @@ UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetInternalName(Int32 lang, UnsafeArra
 	wptr = Text::StrConcat(wptr, L"\\InternalName");
 
 	UInt32 size;
-	if (VerQueryValueW(this->buff, wbuff2, (LPVOID*)&wptr, &size) != 0)
+	if (VerQueryValueW(this->buff.Ptr(), wbuff2, (LPVOID*)&wptr, &size) != 0)
 	{
 		return Text::StrWChar_UTF8(sbuff, wptr);
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetFileDescription(Int32 lang, UnsafeArray<UTF8Char> sbuff)
@@ -58,11 +58,11 @@ UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetFileDescription(Int32 lang, UnsafeA
 	wptr = Text::StrConcat(wptr, L"\\FileDescription");
 
 	UInt32 size;
-	if (VerQueryValueW(this->buff, wbuff2, (LPVOID*)&wptr, &size) != 0)
+	if (VerQueryValueW(this->buff.Ptr(), wbuff2, (LPVOID*)&wptr, &size) != 0)
 	{
 		return Text::StrWChar_UTF8(sbuff, wptr);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> file)
@@ -85,7 +85,7 @@ Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> f
 	if (dwSize > 0)
 	{
 		buff = MemAlloc(UInt8, dwSize);
-		if (GetFileVersionInfoW(fileName.Ptr(), 0, dwSize, buff) != 0)
+		if (GetFileVersionInfoW(fileName.Ptr(), 0, dwSize, buff.Ptr()) != 0)
 		{
 			IO::FileVersion *ver;
 			NEW_CLASS(ver, IO::FileVersion(buff, dwSize));
@@ -96,9 +96,9 @@ Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> f
 		{
 			MemFreeArr(buff);
 			Text::StrDelNew(fileName);
-			return 0;
+			return nullptr;
 		}
 	}
 	Text::StrDelNew(fileName);
-	return 0;
+	return nullptr;
 }

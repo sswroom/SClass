@@ -27,7 +27,7 @@ public:
 	{
 		this->hdlr = hdlr;
 		this->userObj = userObj;
-		this->csConv = 0;
+		this->csConv = nullptr;
 		this->frameBuff = 0;
 		this->frameW = 0;
 		this->frameH = 0;
@@ -63,7 +63,7 @@ public:
 					if (format->bmiHeader.biCompression == csList.GetItem(i))
 					{
 						this->csConv.Delete();
-						this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
+						this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, nullptr);
 						if (this->csConv.NotNull())
 						{
 							this->frameW = format->bmiHeader.biWidth;
@@ -99,7 +99,7 @@ public:
 						else
 						{
 							this->csConv.Delete();
-							this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
+							this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, nullptr);
 						}
 						if (this->csConv.NotNull())
 						{

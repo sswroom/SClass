@@ -9,7 +9,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 	fdh = 0;
 	IO::ViewFileBuffer *file;
 	NEW_CLASS(file, IO::ViewFileBuffer(fname));
-	if (file->GetPointer() == 0)
+	if (file->GetPointer().IsNull())
 	{
 		DEL_CLASS(file);
 		this->dataLength = 0;
@@ -108,7 +108,7 @@ NN<Text::String> IO::StmData::FileViewData::GetFullName() const
 UnsafeArrayOpt<const UInt8> IO::StmData::FileViewData::GetPointer() const
 {
 	if (fdh == 0)
-		return 0;
+		return nullptr;
 	return &fdh->fptr[this->dataOffset];
 }
 

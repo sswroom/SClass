@@ -10,7 +10,7 @@ namespace Data
 		ArrayListICaseStrW();
 		ArrayListICaseStrW(UIntOS Capacity);
 
-		virtual NN<Data::ArrayList<const WChar*>> Clone() const;
+		virtual NN<Data::ArrayListObj<const WChar*>> Clone() const;
 		virtual IntOS Compare(const WChar* obj1, const WChar* obj2) const;
 	};
 }

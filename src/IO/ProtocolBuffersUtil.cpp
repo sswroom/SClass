@@ -46,7 +46,7 @@ UIntOS IO::ProtocolBuffersUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UIntOS
 			break;
 		}
 	}
-	if (outVal & (1 << (shift - 1)))
+	if (outVal & (1ULL << (shift - 1)))
 	{
 		outVal |= (~0ULL) << shift;
 	}
@@ -177,6 +177,8 @@ Bool IO::ProtocolBuffersUtil::ParseOSMHeader(NN<IO::MemoryStream> blobStm, NN<Ma
 			ofst = ReadVarUInt(buff, ofst, v);
 			endOfst = ofst + (UIntOS)v;
 			Math::RectAreaDbl bbox;
+			bbox.min = Math::Coord2DDbl(0, 0);
+			bbox.max = Math::Coord2DDbl(0, 0);
 			while (ofst < endOfst)
 			{
 				ofst = ReadVarUInt(buff, ofst, v);

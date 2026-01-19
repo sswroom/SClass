@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DSHOW_DSHOWFILESOURCE
 #define _SM_MEDIA_DSHOW_DSHOWFILESOURCE
 #include "Media/FrameInfo.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 
 __interface IPin;
 __interface IGraphBuilder;
@@ -38,12 +38,12 @@ namespace Media
 		{
 		private:
 			CCritSec lock;
-			Data::ArrayList<DShowVideoPin*> *vPins;
+			NN<Data::ArrayListNN<DShowVideoPin>> vPins;
 		public:
 			DShowSourceCapture();
 			virtual ~DShowSourceCapture();
 
-			virtual CBasePin* GetPin(int n);
+			virtual CBasePin *GetPin(int n);
 			virtual int GetPinCount();
 			
 			CCritSec *GetLock();
@@ -53,11 +53,9 @@ namespace Media
 		{
 		private:
 			DShowSourceCapture *capFilter;
-			IGraphBuilder *graph;
-			const WChar *fileName;
-
+			
 		public:
-			DShowFileSource(const WChar *fileName);
+			DShowFileSource(UnsafeArray<const WChar> fileName);
 			~DShowFileSource();
 		};
 

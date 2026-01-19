@@ -36,11 +36,11 @@ Optional<IO::ParsedObject> Parser::FileParser::APEParser::ParseFileHdr(NN<IO::St
 #ifdef ENABLE_APE
 	if (*(Int32*)&hdr[0] != *(Int32*)"MAC ")
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	return Media::APE::APEFile::ParseData(fd);
 #else
-	return 0;
+	return nullptr;
 #endif
 }

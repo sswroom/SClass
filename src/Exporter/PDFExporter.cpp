@@ -57,9 +57,9 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	IntOS infoId;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	Data::ArrayList<Int64> objPos;
-	Data::ArrayList<Int32> pageContent;
-	Data::ArrayList<Int32> pageList;
+	Data::ArrayListNative<Int64> objPos;
+	Data::ArrayListNative<Int32> pageContent;
+	Data::ArrayListNative<Int32> pageList;
 	Int64 refPos;
 	Int64 currPos;
 	Data::DateTime dt;

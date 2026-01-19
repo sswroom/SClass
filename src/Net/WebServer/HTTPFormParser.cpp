@@ -141,5 +141,5 @@ UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrValue(Unsaf
 	{
 		return this->strValues.GetItem(i);
 	}
-	return 0;
+	return nullptr;
 }

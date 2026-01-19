@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUICALENDAR
 #define _SM_UI_GUICALENDAR
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/DateTime.h"
 #include "UI/GUIClientControl.h"
 
@@ -13,8 +13,8 @@ namespace UI
 	private:
 		static Int32 useCnt;
 
-		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
-		Data::ArrayList<AnyType> dateChangedObjs;
+		Data::ArrayListObj<DateChangedHandler> dateChangedHdlrs;
+		Data::ArrayListObj<AnyType> dateChangedObjs;
 	public:
 		GUICalendar(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual ~GUICalendar();

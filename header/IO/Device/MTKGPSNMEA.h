@@ -2,6 +2,7 @@
 #define _SM_IO_DEVICE_MTKGPSNMEA
 #include "Data/SyncArrayListNN.hpp"
 #include "IO/GPSNMEA.h"
+#include "Text/String.h"
 
 namespace IO
 {

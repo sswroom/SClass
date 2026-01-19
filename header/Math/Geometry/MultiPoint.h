@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_MULTIPOINT
 #define _SM_MATH_GEOMETRY_MULTIPOINT
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 #include "Math/Geometry/Point.h"
 
 namespace Math

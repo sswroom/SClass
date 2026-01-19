@@ -4,15 +4,15 @@
 #include "Text/MyStringW.h"
 #include "Data/ArrayListStrW.h"
 
-Data::ArrayListStrW::ArrayListStrW() : Data::SortableArrayList<const WChar*>()
+Data::ArrayListStrW::ArrayListStrW() : Data::SortableArrayListObj<const WChar*>()
 {
 }
 
-Data::ArrayListStrW::ArrayListStrW(UIntOS Capacity) : Data::SortableArrayList<const WChar*>(Capacity)
+Data::ArrayListStrW::ArrayListStrW(UIntOS Capacity) : Data::SortableArrayListObj<const WChar*>(Capacity)
 {
 }
 
-NN<Data::ArrayList<const WChar*>> Data::ArrayListStrW::Clone() const
+NN<Data::ArrayListObj<const WChar*>> Data::ArrayListStrW::Clone() const
 {
 	NN<Data::ArrayListStrW> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrW(this->capacity));

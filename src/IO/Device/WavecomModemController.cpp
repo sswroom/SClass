@@ -16,7 +16,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::WavecomModemController::GetSIMCardID(Unsafe
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CCID"), 3000).SetTo(sptr))
-		return 0;
+		return nullptr;
 	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+CCID: \"")))
 	{
 		UIntOS i = Text::StrIndexOfChar(&sbuff[8], '\"');
@@ -29,7 +29,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::WavecomModemController::GetSIMCardID(Unsafe
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -38,14 +38,14 @@ UnsafeArrayOpt<UTF8Char> IO::Device::WavecomModemController::GetCapabilityList(U
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+GCAP"), 3000).SetTo(sptr))
-		return 0;
+		return nullptr;
 	if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("+GCAP: ")))
 	{
 		return Text::StrConcatC(capList, &sbuff[7], (UIntOS)(sptr - &sbuff[7]));
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

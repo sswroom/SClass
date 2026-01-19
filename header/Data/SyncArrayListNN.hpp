@@ -34,7 +34,7 @@ namespace Data
 
 		virtual Optional<T> GetItem(UIntOS index) const;
 		virtual NN<T> GetItemNoCheck(UIntOS index) const;
-		virtual void SetItem(UIntOS index, T val);
+		virtual void SetItem(UIntOS index, NN<T> val);
 		NN<Data::ArrayListNN<T>> GetArrayList(NN<Sync::MutexUsage> mutUsage);
 
 		void DeleteAll();
@@ -139,7 +139,7 @@ namespace Data
 		return this->arr.GetItemNoCheck(index);
 	}
 
-	template <class T> void Data::SyncArrayListNN<T>::SetItem(UIntOS index, T val)
+	template <class T> void Data::SyncArrayListNN<T>::SetItem(UIntOS index, NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.SetItem(index, val);

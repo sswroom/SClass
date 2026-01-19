@@ -569,8 +569,10 @@ __inline UIntOS MyDIV_UOS(UIntOS lo, UIntOS hi, UIntOS divider, UIntOS* reminder
 	return ret;
 }
 #else
-#define MyADD_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
-#define MyADC_UOS(v1, v2, c, out) _addcarry_u64(c, v1, v2, out);
+#define MyADD_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out)
+#define MyADC_UOS(v1, v2, c, out) _addcarry_u64(c, v1, v2, out)
+#define MySUB_UOS(v1, v2, out) _subborrow_u64(0, v1, v2, out)
+#define MySBB_UOS(v1, v2, c, out) _subborrow_u64(c, v1, v2, out)
 #define MyMUL_UOS(x, y, hi) _umul128(x, y, hi)
 #define MyDIV_UOS(lo, hi, divider, reminder) _udiv128(hi, lo, divider, reminder)
 #endif

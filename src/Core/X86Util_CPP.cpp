@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Core/X86Util.h"
+#include "Core/X86Util_C.h"
 #include <intrin.h>
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)

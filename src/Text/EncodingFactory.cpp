@@ -341,10 +341,10 @@ UInt32 Text::EncodingFactory::GetSystemLCID()
 	return GetUserDefaultLCID();
 }
 
-Data::ArrayList<UInt32> *EncodingFactory_codePageResult;
+Data::ArrayListNative<UInt32> *EncodingFactory_codePageResult;
 Int32 __stdcall EncodingFactory_CodePageResult(WChar *codePageName);
 
-void Text::EncodingFactory::GetCodePages(NN<Data::ArrayList<UInt32>> codePages)
+void Text::EncodingFactory::GetCodePages(NN<Data::ArrayListNative<UInt32>> codePages)
 {
 	EncodingFactory_codePageResult = codePages.Ptr();
 	EnumSystemCodePagesW(EncodingFactory_CodePageResult, CP_INSTALLED);

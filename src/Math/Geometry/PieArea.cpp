@@ -133,7 +133,7 @@ Bool Math::Geometry::PieArea::HasArea() const
 	return true;
 }
 
-UIntOS Math::Geometry::PieArea::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UIntOS Math::Geometry::PieArea::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	return 0;
 }

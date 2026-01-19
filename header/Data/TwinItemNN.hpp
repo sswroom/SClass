@@ -18,6 +18,7 @@ namespace Data
 		TwinItemNN(T key)
 		{
 			this->key = key;
+			this->value = NN<V>();
 		}
 
 		Bool operator==(TwinItemNN<T,V> item)

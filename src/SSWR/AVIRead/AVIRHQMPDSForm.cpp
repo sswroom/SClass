@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
 	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
-	me->dbgFrm = 0;
+	me->dbgFrm = nullptr;
 }
 
 Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
@@ -286,7 +286,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 	IntOS i;
 	IntOS j;
 
-	this->player->LoadMedia(0);
+	this->player->LoadMedia(nullptr);
 	this->currFile.Delete();
 	this->playlist.Delete();
 	this->currFile = mf;
@@ -341,7 +341,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 {
 	this->player->StopPlayback();
-	this->player->LoadMedia(0);
+	this->player->LoadMedia(nullptr);
 	this->storeTime = -1;
 	this->currFile.Delete();
 	this->playlist.Delete();
@@ -384,7 +384,7 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	{
 		this->SetText(CSTR("HQMP3"));
 	}
-	this->playlist = 0;
+	this->playlist = nullptr;
 	this->storeTime = -1;
 
 	NN<UI::GUIMenu> mnu;
@@ -543,10 +543,10 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	this->vOfst = 0;
 
 	NEW_CLASSNN(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
-	this->currFile = 0;
+	this->currFile = nullptr;
 	CloseFile();
 
-	this->dbgFrm = 0;
+	this->dbgFrm = nullptr;
 	this->AddTimer(30, OnTimerTick, this);
 }
 
@@ -581,7 +581,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_FILE_OPEN:
 		{
-			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
+			SSWR::AVIRead::AVIROpenFileForm dlg(nullptr, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
@@ -614,7 +614,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(nullptr, this->ui, this->core);
 			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
@@ -630,7 +630,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILE_PLAYLIST:
 		{
-			SSWR::AVIRead::AVIRHQMPPlaylistForm dlg(0, this->ui, this->core, this->playlist);
+			SSWR::AVIRead::AVIRHQMPPlaylistForm dlg(nullptr, this->ui, this->core, this->playlist);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->currPBC->StopPlayback();
@@ -643,13 +643,13 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILE_MON_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			SSWR::AVIRead::AVIRColorSettingForm dlg(nullptr, this->ui, this->core, this->GetHMonitor());
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_AUDIO_DEV:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetAudioForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 			this->player->SwitchAudio(0);
 		}
@@ -658,12 +658,12 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		if (this->dbgFrm.IsNull())
 		{
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 360, ui));
+			NEW_CLASSNN(frm, UI::GUIForm(nullptr, 320, 360, ui));
 			this->dbgFrm = frm;
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
-			frm->SetFont(0, 0, 8.25, false);
+			frm->SetFont(nullptr, 8.25, false);
 			frm->SetText(CSTR("Info"));
 			frm->Show();
 			frm->HandleFormClosed(OnDebugClosed, this);

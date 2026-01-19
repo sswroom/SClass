@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 //	WChar wbuff[512];
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
-		return 0;
+		return nullptr;
 	///////////////////////////
 /*	Map::MapLayerCollection *layerColl;
 	Data::ArrayList<Text::String *> tableNames;
@@ -93,5 +93,5 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 		return layerColl;
 	}
 	DEL_CLASS(layerColl);*/
-	return 0;
+	return nullptr;
 }

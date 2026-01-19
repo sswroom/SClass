@@ -81,10 +81,10 @@ Data::Timestamp IO::LNKFile::GetWriteTime()
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 2) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -98,17 +98,17 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbu
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetNameString(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 4) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -127,10 +127,10 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetNameString(UnsafeArray<UTF8Char> sbuff)
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetRelativePath(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 8) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -153,10 +153,10 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetRelativePath(UnsafeArray<UTF8Char> sbuf
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetWorkingDirectory(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 16) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -183,10 +183,10 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetWorkingDirectory(UnsafeArray<UTF8Char> 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetCommandLineArguments(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 32) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -217,10 +217,10 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetCommandLineArguments(UnsafeArray<UTF8Ch
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetIconLocation(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	if ((flags & 64) == 0)
-		return 0;
+		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
@@ -255,7 +255,7 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetIconLocation(UnsafeArray<UTF8Char> sbuf
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
-		return 0;
+		return nullptr;
 	UInt32 flags = ReadUInt32(&this->buff[20]);
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
@@ -291,7 +291,7 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 		UInt32 size = ReadUInt32(&this->buff[ofst]);
 		if (size < 4)
 		{
-			return 0;
+			return nullptr;
 		}
 		if (ReadUInt32(&this->buff[ofst + 4]) == 0xA0000001)
 		{
@@ -302,5 +302,5 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 			ofst += size;
 		}
 	}
-	return 0;
+	return nullptr;
 }

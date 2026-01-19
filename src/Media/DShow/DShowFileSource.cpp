@@ -39,28 +39,28 @@ HRESULT Media::DShow::DShowVideoPin::GetMediaType(int iPosition, CMediaType *pMe
 
 Media::DShow::DShowSourceCapture::DShowSourceCapture() : CBaseFilter(L"Source Capture", 0, &lock, DShowSourceCaptureGUID)
 {
-	DShowVideoPin *pin;
+	NN<DShowVideoPin> pin;
 	HRESULT res;
-	NEW_CLASS(this->vPins, Data::ArrayList<DShowVideoPin*>());
-	NEW_CLASS(pin, DShowVideoPin(this, L"Pin1", &res));
+	NEW_CLASSNN(this->vPins, Data::ArrayListNN<DShowVideoPin>());
+	NEW_CLASSNN(pin, DShowVideoPin(this, L"Pin1", &res));
 	this->vPins->Add(pin);
 }
 
 Media::DShow::DShowSourceCapture::~DShowSourceCapture()
 {
 	IntOS i = this->vPins->GetCount();;
-	DShowVideoPin *pin;
+	NN<DShowVideoPin> pin;
 	while (i-- > 0)
 	{
-		pin = this->vPins->GetItem(i);
-		DEL_CLASS(pin);
+		pin = this->vPins->GetItemNoCheck(i);
+		pin.Delete();
 	}
-	DEL_CLASS(this->vPins);
+	this->vPins.Delete();
 }
 
 CBasePin* Media::DShow::DShowSourceCapture::GetPin(int n)
 {
-	return this->vPins->GetItem(n);
+	return this->vPins->GetItem(n).OrNull();
 }
 
 int Media::DShow::DShowSourceCapture::GetPinCount()
@@ -73,16 +73,17 @@ CCritSec *Media::DShow::DShowSourceCapture::GetLock()
 	return &this->lock;
 }
 
-Media::DShow::DShowFileSource::DShowFileSource(const WChar *fileName)
+Media::DShow::DShowFileSource::DShowFileSource(UnsafeArray<const WChar> fileName)
 {
 	IGraphBuilder *pGraph = NULL;
+	this->capFilter = 0;
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 	HRESULT hr =  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
 	if (SUCCEEDED(hr))
 	{
 		NEW_CLASS(this->capFilter, Media::DShow::DShowSourceCapture());
 		pGraph->AddFilter(this->capFilter, L"Source Capture");
-		if (pGraph->RenderFile(fileName, 0) == S_OK)
+		if (pGraph->RenderFile(fileName.Ptr(), 0) == S_OK)
 		{
 			hr = 0;
 		}

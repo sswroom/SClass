@@ -12,7 +12,7 @@ Data::ArrayListICaseStrW::ArrayListICaseStrW(UIntOS Capacity) : Data::ArrayListS
 {
 }
 
-NN<Data::ArrayList<const WChar*>> Data::ArrayListICaseStrW::Clone() const
+NN<Data::ArrayListObj<const WChar*>> Data::ArrayListICaseStrW::Clone() const
 {
 	NN<Data::ArrayListICaseStrW> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseStrW(this->capacity));
