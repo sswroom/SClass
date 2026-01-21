@@ -298,6 +298,84 @@ void DB::ColDef::SetGeometrySRID(UInt32 srid)
 	this->colDP = srid;
 }
 
+NN<DB::ColDef> DB::ColDef::ColType(DB::DBUtil::ColType colType)
+{
+	this->SetColType(colType);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::NativeType(Text::CString nativeType)
+{
+	this->SetNativeType(nativeType);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::NativeType(Optional<Text::String> nativeType)
+{
+	this->SetNativeType(nativeType);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::ColSize(UIntOS colSize)
+{
+	this->SetColSize(colSize);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::ColDP(UIntOS colDP)
+{
+	this->SetColDP(colDP);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::NotNull(Bool notNull)
+{
+	this->SetNotNull(notNull);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::PK(Bool pk)
+{
+	this->SetPK(pk);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::AutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep)
+{
+	this->SetAutoInc(autoInc, startIndex, incStep);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::DefVal(Text::CString defVal)
+{
+	this->SetDefVal(defVal);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::DefVal(Optional<Text::String> defVal)
+{
+	this->SetDefVal(defVal);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::Attr(Text::CString attr)
+{
+	this->SetAttr(attr);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::Attr(Optional<Text::String> attr)
+{
+	this->SetAttr(attr);
+	return *this;
+}
+
+NN<DB::ColDef> DB::ColDef::GeometrySRID(UInt32 srid)
+{
+	this->SetGeometrySRID(srid);
+	return *this;
+}
+
 void DB::ColDef::Set(NN<const ColDef> colDef)
 {
 	this->SetColName(colDef->colName);
@@ -322,6 +400,13 @@ NN<DB::ColDef> DB::ColDef::Clone() const
 	NN<DB::ColDef> newObj;
 	NEW_CLASSNN(newObj, DB::ColDef(this->colName));
 	newObj->Set(*this);
+	return newObj;
+}
+
+NN<DB::ColDef> DB::ColDef::Create(Text::CStringNN colName)
+{
+	NN<DB::ColDef> newObj;
+	NEW_CLASSNN(newObj, DB::ColDef(colName));
 	return newObj;
 }
 

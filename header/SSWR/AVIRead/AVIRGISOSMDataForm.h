@@ -56,6 +56,9 @@ namespace SSWR
 			NN<UI::GUILabel> lblQueryType;
 			NN<UI::GUITextBox> txtQueryType;
 			NN<UI::GUIListView> lvQueryTags;
+
+			NN<UI::GUITabPage> tpRestriction;
+			NN<UI::GUIListView> lvRestriction;
 		private:
 			static void __stdcall OnRelationSelChg(AnyType userObj);
 			static void __stdcall OnRelationTypeSelChg(AnyType userObj);

@@ -3,10 +3,12 @@
 #include "Media/DrawEngine.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListNative.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "Data/RandomOS.h"
 #include "Data/TwinItemNative.hpp"
+#include "Data/TwinItemObj.hpp"
 #include "Text/String.h"
 
 namespace Data

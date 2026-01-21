@@ -312,7 +312,7 @@ UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UIntOS colIndex, UnsafeArray<
 
 Data::Timestamp DB::MongoDBReader::GetTimestamp(UIntOS colIndex)
 {
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Double DB::MongoDBReader::GetDblOrNAN(UIntOS colIndex)

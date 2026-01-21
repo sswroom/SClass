@@ -135,12 +135,14 @@ namespace Map
 			Optional<Data::ArrayListNN<TagInfo>> tags;
 		};
 
+		struct RelationInfo;
 		struct NodeInfo : public ElementInfo
 		{
 			virtual ~NodeInfo() {}
 
 			Double lat;
 			Double lon;
+			Optional<Data::ArrayListNN<RelationInfo>> restrictions;
 		};
 
 		struct WayInfo : public ElementInfo
@@ -232,6 +234,7 @@ namespace Map
 			void SetStyleCenterline();
 			NN<Math::Geometry::Vector2D> CreateVector(NN<ElementInfo> elem);
 			UIntOS GetRelations(NN<Data::ArrayListNN<RelationInfo>> outArr) const;
+			UIntOS GetRoadNetworkIds(NN<Data::ArrayListInt64> outArr);
 
 			virtual DrawLayerType GetLayerType() const;
 			virtual void SetMixedData(MixedData MixedData);

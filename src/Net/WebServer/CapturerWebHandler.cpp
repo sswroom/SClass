@@ -269,7 +269,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebSer
 	sb.AppendC(UTF8STRC("All WiFi Count = "));
 	sb.AppendUIntOS(entryList->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendWiFiTable(sb, req, entryList, 0);
+	AppendWiFiTable(sb, req, entryList, nullptr);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 

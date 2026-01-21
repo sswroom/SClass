@@ -3,6 +3,7 @@
 #include "Data/ArrayListT.hpp"
 #include "Data/DataArray.hpp"
 #include "Map/MapDrawLayer.h"
+#include "Map/OSM/OSMData.h"
 #include "Math/Geometry/LineString.h"
 #include "Sync/Mutex.h"
 
@@ -23,7 +24,26 @@ namespace Map
 			Double length;
 			UInt32 networkId;
 			Bool allowReverse;
+			Int64 id;
 			Data::DataArray<Optional<Text::String>> properties;
+		};
+
+		enum class RestrictionType
+		{
+			NoLeftTurn,
+			NoRightTurn,
+			NoUTurn,
+			OnlyStraightOn,
+			OnlyLeftTurn,
+			OnlyRightTurn
+		};
+
+		struct RestrictionInfo
+		{
+			NN<LineInfo> fromLine;
+			NN<LineInfo> toLine;
+			Int64 id;
+			RestrictionType type;
 		};
 
 		struct NodeInfo
@@ -32,6 +52,8 @@ namespace Map
 			Double z;
 			Data::ArrayListNN<LineInfo> lines;
 			UInt32 networkId;
+			Int64 id;
+			Optional<Data::ArrayListNN<RestrictionInfo>> restrictions;
 		};
 
 		struct AreaInfo
@@ -108,6 +130,7 @@ namespace Map
 		Double searchDist;
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
+		Data::Int64FastMapNN<NodeInfo> nodeMap;
 		UInt32 networkCnt;
 		Optional<DB::TableDef> propDef;
 		NN<NodeInfo> unknownNode;
@@ -115,7 +138,7 @@ namespace Map
 
 		static void __stdcall FreeLineInfo(NN<LineInfo> lineInfo);
 		static void __stdcall FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
-		static void __stdcall FreeNodeInfo(NN<NodeInfo> nodeInfo) { nodeInfo.Delete(); }
+		static void __stdcall FreeNodeInfo(NN<NodeInfo> nodeInfo) { NN<Data::ArrayListNN<RestrictionInfo>> restrictions; if (nodeInfo->restrictions.SetTo(restrictions)) { restrictions->DeleteAll(); } nodeInfo.Delete(); }
 		static void __stdcall FreeNodeSess(NN<NodeSession> nodeSess) { nodeSess.Delete(); }
 		static void __stdcall FreeAreaSess(NN<AreaSession> areaSess) { areaSess->nodes.FreeAll(FreeNodeSess); areaSess.Delete(); }
 		static void AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo);
@@ -133,6 +156,7 @@ namespace Map
 		~ShortestPath3D();
 
 		void AddSimpleLayer(NN<Map::MapDrawLayer> layer);
+		void AddOSMData(NN<Map::OSM::OSMData> osmData);
 		Optional<LineInfo> AddPath(NN<Math::Geometry::Vector2D> path, Data::DataArray<Optional<Text::String>> properties, Bool allowReverse, Bool addToNode);
 		NN<NodeInfo> AddNode(Math::Coord2DDbl pos, Double z, NN<LineInfo> lineInfo);
 		void BuildNetwork();

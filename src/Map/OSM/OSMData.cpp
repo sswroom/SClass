@@ -58,6 +58,7 @@ void __stdcall Map::OSM::OSMData::FreeElement(NN<ElementInfo> elem)
 	}
 	if (elem->type == ElementType::Node)
 	{
+		NN<NodeInfo>::ConvertFrom(elem)->restrictions.Delete();
 	}
 	else if (elem->type == ElementType::Way)
 	{
@@ -473,6 +474,7 @@ NN<Map::OSM::NodeInfo> Map::OSM::OSMData::NewNode(Int64 id, Double lat, Double l
 	node->hasParent = false;
 	node->lat = lat;
 	node->lon = lon;
+	node->restrictions = nullptr;
 	this->elements.Add(node);
 	this->nodeSorted = false;
 
@@ -816,6 +818,54 @@ void Map::OSM::OSMData::BuildIndex()
 	{
 		elem = this->elements.GetItemNoCheck(i);
 		elem->layerType = this->CalcElementLayerType(elem);
+		if (elem->type == ElementType::Relation)
+		{
+			Bool isRestriction = false;
+			NN<Data::ArrayListNN<TagInfo>> tags;
+			NN<RelationInfo> rel = NN<RelationInfo>::ConvertFrom(elem);
+			if (rel->tags.SetTo(tags))
+			{
+				NN<TagInfo> tag;
+				UIntOS k = 0;
+				UIntOS l = tags->GetCount();
+				while (k < l)
+				{
+					tag = tags->GetItemNoCheck(k);
+					if (tag->k->Equals(UTF8STRC("type")) && tag->v->Equals(UTF8STRC("restriction")))
+					{
+						isRestriction = true;
+						break;
+					}
+					k++;
+				}
+			}
+			if (isRestriction)
+			{
+				UIntOS k = 0;
+				UIntOS l = rel->members.GetCount();
+				while (k < l)
+				{
+					NN<Data::ArrayListNN<RelationInfo>> restrictions;
+					NN<Text::String> role;
+					NN<RelationMember> member = rel->members.GetItemNoCheck(k);
+					if (member->type == ElementType::Node && member->role.SetTo(role) && role->Equals(UTF8STRC("via")))
+					{
+						NN<NodeInfo> node;
+						if (this->GetNodeById(member->refId).SetTo(node))
+						{
+							if (!node->restrictions.SetTo(restrictions))
+							{
+								NEW_CLASSNN(restrictions, Data::ArrayListNN<RelationInfo>(4));
+								node->restrictions = restrictions;
+							}
+							restrictions->Add(rel);
+							break;
+						}
+					}
+					k++;
+				}
+			}
+		}
 		i++;
 	}
 }
@@ -927,6 +977,61 @@ UIntOS Map::OSM::OSMData::GetRelations(NN<Data::ArrayListNN<RelationInfo>> outAr
 	return ret;
 }
 
+UIntOS Map::OSM::OSMData::GetRoadNetworkIds(NN<Data::ArrayListInt64> outArr)
+{
+	NN<ElementInfo> elem;
+	if (this->waySorted == false)
+	{
+		this->SortElements();
+	}
+	IntOS si = 0;
+	IntOS sj = (IntOS)this->elements.GetCount() - 1;
+	IntOS sk;
+	while (si <= sj)
+	{
+		sk = (si + sj) >> 1;
+		elem = this->elements.GetItemNoCheck((UIntOS)sk);
+		if (elem->type < ElementType::Way)
+		{
+			si = sk + 1;
+		}
+		else
+		{
+			sj = sk - 1;
+		}
+	}
+	UIntOS initCnt = outArr->GetCount();
+	UIntOS i = (UIntOS)si;;
+	UIntOS j = this->elements.GetCount();
+	while (i < j)
+	{
+		elem = this->elements.GetItemNoCheck(i);
+		if (elem->type != ElementType::Way)
+		{
+			break;
+		}
+		LayerType layerType = elem->layerType;
+		if (layerType == LayerType::HighwayMotorway ||
+			layerType == LayerType::HighwayMotorwayLink ||
+			layerType == LayerType::HighwayPrimary ||
+			layerType == LayerType::HighwayPrimaryLink ||
+			layerType == LayerType::HighwayResidential ||
+			layerType == LayerType::HighwaySecondary ||
+			layerType == LayerType::HighwaySecondaryLink ||
+			layerType == LayerType::HighwayService ||
+			layerType == LayerType::HighwayTertiary ||
+			layerType == LayerType::HighwayTrunk ||
+			layerType == LayerType::HighwayTrunkLink ||
+			layerType == LayerType::HighwayUnclassified)
+		{
+			outArr->Add(elem->id);
+		}
+		i++;
+	}
+
+	return outArr->GetCount() - initCnt;
+}
+
 Map::DrawLayerType Map::OSM::OSMData::GetLayerType() const
 {
 	return Map::DrawLayerType::DRAW_LAYER_MIXED;
@@ -940,6 +1045,7 @@ void Map::OSM::OSMData::SetMixedData(MixedData mixedData)
 UIntOS Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<ElementInfo> elem;
+	UIntOS initCnt = outArr->GetCount();
 	UIntOS i = 0;
 	UIntOS j = this->elements.GetCount();
 	while (i < j)
@@ -968,7 +1074,7 @@ UIntOS Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 		}		
 		i++;
 	}
-	return j;
+	return outArr->GetCount() - initCnt;
 }
 
 UIntOS Map::OSM::OSMData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)

@@ -173,7 +173,7 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 		return sess;
 	Int64 sessId = this->GenSessId(req);
 	sptr = Text::StrInt64(sbuff, sessId);
-	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, this->forceSecure || req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
+	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, this->forceSecure || req->IsSecure(), Net::WebServer::SameSiteType::Strict, nullptr);
 	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	if (this->checkReferer)

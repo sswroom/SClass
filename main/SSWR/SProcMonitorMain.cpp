@@ -106,7 +106,7 @@ private:
 		prog = MemAlloc(ProgInfo, 1);
 		prog->progName = Text::String::New(progName, progNameLen);
 		prog->procId = 0;
-		prog->lastSent = 0;
+		prog->lastSent = nullptr;
 		UnsafeArray<const UTF8Char> nns;
 		if (progPath.SetTo(nns))
 		{

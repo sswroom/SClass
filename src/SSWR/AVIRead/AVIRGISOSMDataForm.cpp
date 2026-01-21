@@ -122,6 +122,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLDown(AnyType
 	me->mouseDownPos = scnPos;
 	return UI::EventState::ContinueEvent;
 }
+
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISOSMDataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISOSMDataForm>();
@@ -143,52 +144,157 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType u
 		NN<Map::GetObjectSess> sess = me->osmData->BeginGetObject();
 		Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objs;
 		NN<Map::MapDrawLayer::ObjectInfo> obj;
-		me->osmData->GetNearObjects(sess, objs, mapPos, maxDist);
-		me->lbQueryResult->ClearItems();
-		if (me->tcMain->GetSelectedPage() != me->tpQuery)
-		{
-			me->tcMain->SetSelectedPage(me->tpQuery);
-		}
 		NN<Map::OSM::ElementInfo> elem;
-		NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
-		NN<Map::OSM::TagInfo> tag;
 		Int64 mapId;
-		UIntOS i = 0;
-		UIntOS j = objs.GetCount();
-		UIntOS k;
-		UIntOS l;
-		if (j > 0)
+		me->osmData->GetNearObjects(sess, objs, mapPos, maxDist);
+		if (me->tcMain->GetSelectedPage() == me->tpRestriction)
 		{
-			Text::StringBuilderUTF8 sb;
+			Optional<Map::OSM::NodeInfo> nearNode = nullptr;
+			Double nearDist = -1;
+			UTF8Char sbuff[32];
+			UnsafeArray<UTF8Char> sptr;
+			NN<Text::String> s;
+			NN<Map::OSM::NodeInfo> node;
+			NN<Data::ArrayListNN<Map::OSM::RelationInfo>> restrictions;
+			NN<Map::OSM::RelationInfo> restriction;
+			NN<Map::OSM::RelationMember> member;
+			NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
+			NN<Map::OSM::TagInfo> tag;
+			me->lvRestriction->ClearItems();
+			UIntOS i = 0;
+			UIntOS j = objs.GetCount();
 			while (i < j)
 			{
 				obj = objs.GetItemNoCheck(i);
 				mapId = obj->objId;
-				if (me->osmData->GetElementById(mapId >> 2, (Map::OSM::ElementType)(mapId & 3)).SetTo(elem))
+				if ((Map::OSM::ElementType)(mapId & 3) == Map::OSM::ElementType::Way && me->osmData->GetElementById(mapId >> 2, (Map::OSM::ElementType)(mapId & 3)).SetTo(elem))
 				{
-					sb.ClearStr();
-					sb.AppendI64(elem->id);
-					if (elem->tags.SetTo(tags))
+					NN<Map::OSM::WayInfo> way = NN<Map::OSM::WayInfo>::ConvertFrom(elem);
+					UIntOS k = 0;
+					UIntOS l = way->nodes.GetCount();
+					while (k < l)
 					{
-						k = 0;
-						l = tags->GetCount();
-						while (k < l)
+						NN<Map::OSM::NodeInfo> n = way->nodes.GetItemNoCheck(k);
+						Double dist = Math_Sqrt(Math_Sqr(n->lon - mapPos.x) + Math_Sqr(n->lat - mapPos.y));
+						if (nearDist < 0 || nearDist > dist)
 						{
-							tag = tags->GetItemNoCheck(k);
-							if (tag->k->Equals(UTF8STRC("name")))
-							{
-								sb.AppendC(UTF8STRC(" "));
-								sb.Append(tag->v);
-								break;
-							}
-							k++;
+							nearDist = dist;
+							nearNode = n;
 						}
+						k++;
 					}
-					me->lbQueryResult->AddItem(sb.ToCString(), elem);
+				}
+				else if ((Map::OSM::ElementType)(mapId & 3) == Map::OSM::ElementType::Node && me->osmData->GetElementById(mapId >> 2, (Map::OSM::ElementType)(mapId & 3)).SetTo(elem))
+				{
+					if (nearDist < 0 || nearDist > obj->objDist)
+					{
+						nearDist = obj->objDist;
+						nearNode = NN<Map::OSM::NodeInfo>::ConvertFrom(elem);
+					}
 				}
 				i++;
 			}
-			me->lbQueryResult->SetSelectedIndex(0);
+
+			if (nearNode.SetTo(node))
+			{
+				if (node->restrictions.SetTo(restrictions))
+				{
+					i = 0;
+					j = restrictions->GetCount();
+					while (i < j)
+					{
+						restriction = restrictions->GetItemNoCheck(i);
+						me->lvRestriction->AddItem(CSTR(""), restriction);
+						UIntOS k = 0;
+						UIntOS l = restriction->members.GetCount();
+						while (k < l)
+						{
+							member = restriction->members.GetItemNoCheck(k);
+							if (member->role.SetTo(s) && s->Equals(CSTR("from")))
+							{
+								sptr = Text::StrInt64(sbuff, member->refId);
+								me->lvRestriction->SetSubItem(i, 0, CSTRP(sbuff, sptr));
+							}
+							else if (member->role.SetTo(s) && s->Equals(CSTR("to")))
+							{
+								sptr = Text::StrInt64(sbuff, member->refId);
+								me->lvRestriction->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+							}
+							k++;
+						}
+						if (restriction->tags.SetTo(tags))
+						{
+							k = 0;
+							l = tags->GetCount();
+							while (k < l)
+							{
+								tag = tags->GetItemNoCheck(k);
+								if (tag->k->Equals(UTF8STRC("restriction")))
+								{
+									me->lvRestriction->SetSubItem(i, 2, tag->v);
+									break;
+								}
+								k++;
+							}
+						}
+						i++;
+					}
+				}
+				NN<Math::Geometry::Point> pt;
+				NEW_CLASSNN(pt, Math::Geometry::Point(me->osmData->GetCoordinateSystem()->GetSRID(), node->lon, node->lat));
+				me->nav->SetSelectedVector(pt);
+			}
+			else
+			{
+				me->nav->SetSelectedVector(nullptr);
+			}
+		}
+		else
+		{
+			me->lbQueryResult->ClearItems();
+			if (me->tcMain->GetSelectedPage() != me->tpQuery)
+			{
+				me->tcMain->SetSelectedPage(me->tpQuery);
+			}
+			NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
+			NN<Map::OSM::TagInfo> tag;
+			UIntOS i = 0;
+			UIntOS j = objs.GetCount();
+			UIntOS k;
+			UIntOS l;
+			if (j > 0)
+			{
+				Text::StringBuilderUTF8 sb;
+				while (i < j)
+				{
+					obj = objs.GetItemNoCheck(i);
+					mapId = obj->objId;
+					if (me->osmData->GetElementById(mapId >> 2, (Map::OSM::ElementType)(mapId & 3)).SetTo(elem))
+					{
+						sb.ClearStr();
+						sb.AppendI64(elem->id);
+						if (elem->tags.SetTo(tags))
+						{
+							k = 0;
+							l = tags->GetCount();
+							while (k < l)
+							{
+								tag = tags->GetItemNoCheck(k);
+								if (tag->k->Equals(UTF8STRC("name")))
+								{
+									sb.AppendC(UTF8STRC(" "));
+									sb.Append(tag->v);
+									break;
+								}
+								k++;
+							}
+						}
+						me->lbQueryResult->AddItem(sb.ToCString(), elem);
+					}
+					i++;
+				}
+				me->lbQueryResult->SetSelectedIndex(0);
+			}
 		}
 		me->osmData->FreeObjects(objs);
 		me->osmData->EndGetObject(sess);
@@ -343,6 +449,15 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->lvQueryTags->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvQueryTags->AddColumn(CSTR("k"), 100);
 	this->lvQueryTags->AddColumn(CSTR("v"), 200);
+
+	this->tpRestriction = this->tcMain->AddTabPage(CSTR("Restriction"));
+	this->lvRestriction = this->ui->NewListView(this->tpRestriction, UI::ListViewStyle::Table, 3);
+	this->lvRestriction->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRestriction->SetFullRowSelect(true);
+	this->lvRestriction->SetShowGrid(true);
+	this->lvRestriction->AddColumn(CSTR("From"), 100);
+	this->lvRestriction->AddColumn(CSTR("To"), 100);
+	this->lvRestriction->AddColumn(CSTR("Restriction"), 200);
 
 	Optional<Text::String> unkType = nullptr;
 	Data::ArrayListNN<Map::OSM::RelationInfo> relList;

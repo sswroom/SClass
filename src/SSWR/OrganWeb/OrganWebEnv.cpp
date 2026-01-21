@@ -803,8 +803,8 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optiona
 	this->selectedBook = nullptr;
 	this->gpsTrk = nullptr;
 	this->gpsUserId = 0;
-	this->gpsStartTime = 0;
-	this->gpsEndTime = 0;
+	this->gpsStartTime = nullptr;
+	this->gpsEndTime = nullptr;
 
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -2500,7 +2500,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 		Crypto::Hash::CRC32R crc;
 		UInt32 crcVal;
 		NN<IO::ParsedObject> pobj;
-		Data::Timestamp fileTime = 0;
+		Data::Timestamp fileTime = nullptr;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
 		Optional<Media::DrawImage> graphImg = nullptr;

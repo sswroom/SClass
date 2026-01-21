@@ -290,6 +290,8 @@ NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNode(Math::Coord2DDbl 
 	nodeInfo->pos = pos;
 	nodeInfo->z = z;
 	nodeInfo->networkId = 0;
+	nodeInfo->id = 0;
+	nodeInfo->restrictions = nullptr;
 	areaInfo->nodes.Insert((UIntOS)i, nodeInfo);
 	return nodeInfo;
 }
@@ -438,6 +440,8 @@ Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double sear
 	this->unknownNode->pos = Math::Coord2DDbl(0, 0);
 	this->unknownNode->z = 0;
 	this->unknownNode->networkId = 0;
+	this->unknownNode->id = 0;
+	this->unknownNode->restrictions = nullptr;
 }
 
 Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist)
@@ -450,7 +454,16 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 	this->unknownNode->pos = Math::Coord2DDbl(0, 0);
 	this->unknownNode->z = 0;
 	this->unknownNode->networkId = 0;
-	this->AddSimpleLayer(layer);
+	this->unknownNode->id = 0;
+	this->unknownNode->restrictions = nullptr;
+	if (layer->GetObjectClass() == Map::MapDrawLayer::ObjectClass::OC_OSMDATA)
+	{
+		this->AddOSMData(NN<Map::OSM::OSMData>::ConvertFrom(layer));
+	}
+	else
+	{
+		this->AddSimpleLayer(layer);
+	}
 	this->BuildNetwork();
 }
 
@@ -520,6 +533,174 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 	layer->EndGetObject(sess);
 	layer->ReleaseNameArr(nameArr);
 	MemFreeArr(properties);
+}
+
+void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
+{
+	NN<Math::CoordinateSystem> csys = osmData->GetCoordinateSystem();
+	if (this->propDef.IsNull())
+	{
+		NN<DB::TableDef> tabDef;
+		NEW_CLASSNN(tabDef, DB::TableDef(nullptr, CSTR("OSM_RoadNetwork")));
+		tabDef->AddCol(DB::ColDef::Create(CSTR("id"))->ColType(DB::DBUtil::ColType::CT_Int64)->NotNull(true));
+		tabDef->AddCol(DB::ColDef::Create(CSTR("name"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->NotNull(true));
+		tabDef->AddCol(DB::ColDef::Create(CSTR("nameEn"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->NotNull(false));
+		tabDef->AddCol(DB::ColDef::Create(CSTR("nameZhT"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->NotNull(false));
+		tabDef->AddCol(DB::ColDef::Create(CSTR("oneway"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->NotNull(false));
+		this->propDef = tabDef;
+	}
+	Data::ArrayListInt64 wayIdArr;
+	osmData->GetRoadNetworkIds(wayIdArr);
+	Data::ArrayListInt64 nodeIdArr;
+	NN<Map::OSM::WayInfo> way;
+	NN<Map::OSM::NodeInfo> node;
+	NN<NodeInfo> pNode;
+	NN<NodeInfo> lastNode;
+	NN<LineInfo> lineInfo;
+	NN<Math::Geometry::LineString> ls;
+	NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
+	Data::DataArray<Optional<Text::String>> properties;
+	NN<Map::OSM::TagInfo> tag;
+	UIntOS nPoint;
+	UIntOS i = 0;
+	UIntOS j = wayIdArr.GetCount();
+	UIntOS k;
+	UIntOS l;
+	UIntOS m;
+	UIntOS n;
+	while (i < j)
+	{
+		if (osmData->GetWayById(wayIdArr.GetItem(i)).SetTo(way))
+		{
+			k = 0;
+			l = way->nodes.GetCount();
+			while (k < l)
+			{
+				node = way->nodes.GetItemNoCheck(k);
+				nodeIdArr.Add(node->id);
+				k++;
+			}
+		}
+		i++;
+	}
+	ArtificialQuickSort_SortInt64(nodeIdArr.Arr().Ptr(), 0, (IntOS)nodeIdArr.GetCount() - 1);
+	Int64 lastId = -1;
+	i = 0;
+	j = nodeIdArr.GetCount();
+	while (i < j)
+	{
+		if (lastId != nodeIdArr.GetItem(i))
+		{
+			if (osmData->GetNodeById(nodeIdArr.GetItem(i)).SetTo(node))
+			{
+				Math::Coord2DDbl pos = Math::Coord2DDbl(node->lon, node->lat);
+				if (!csys->Equals(this->csys))
+				{
+					pos = Math::CoordinateSystem::Convert(csys, this->csys, pos);
+				}
+				pNode = this->GetNode(pos, 0);
+				pNode->id = node->id;
+				this->nodeMap.Put(node->id, pNode);
+			}
+			lastId = nodeIdArr.GetItem(i);
+		}
+		i++;
+	}
+	i = 0;
+	j = wayIdArr.GetCount();
+	while (i < j)
+	{
+		if (osmData->GetWayById(wayIdArr.GetItem(i)).SetTo(way))
+		{
+			if (way->nodes.GetCount() < 2)
+			{
+				i++;
+				continue;
+			}
+			node = way->nodes.GetItemNoCheck(0);
+			if (!this->nodeMap.Get(node->id).SetTo(lastNode))
+			{
+				i++;
+				continue;
+			}
+			k = 1;
+			l = way->nodes.GetCount();
+			while (k < l)
+			{
+				node = way->nodes.GetItemNoCheck(k);
+				if (!this->nodeMap.Get(node->id).SetTo(pNode))
+				{
+					break;
+				}
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->csys->GetSRID(), 2, false, false));
+				UnsafeArray<Math::Coord2DDbl> ptArr = ls->GetPointList(nPoint);
+				ptArr[0] = lastNode->pos;
+				ptArr[1] = pNode->pos;
+				NEW_CLASSNN(lineInfo, LineInfo());
+				lineInfo->startPos = lastNode->pos;
+				lineInfo->endPos = pNode->pos;
+				lineInfo->startZ = 0;
+				lineInfo->endZ = 0;
+				lineInfo->index = this->lines.GetCount();
+				lineInfo->networkId = 0;
+				lineInfo->id = way->id;
+				lineInfo->vec = ls;
+				lineInfo->rect = ls->GetBounds();
+				lineInfo->allowReverse = true;
+				lineInfo->properties = properties = Data::DataArray<Optional<Text::String>>::Alloc(5);
+				m = 5;
+				while (m-- > 0)
+				{
+					properties[m] = nullptr;
+				}
+				properties[0] = Text::String::FromI64(way->id);
+				if (way->tags.SetTo(tags))
+				{
+					m = 0;
+					n = tags->GetCount();
+					while (m < n)
+					{
+						tag = tags->GetItemNoCheck(m);
+						if (tag->k->Equals(CSTR("oneway")))
+						{
+							if (tag->v->Equals(CSTR("yes"))
+								|| tag->v->Equals(CSTR("1"))
+								|| tag->v->Equals(CSTR("true")))
+							{
+								lineInfo->allowReverse = false;
+							}
+							OPTSTR_DEL(properties[4]);
+							properties[4] = Text::String::CopyOrNull(tag->v);
+						}
+						else if (tag->k->Equals(CSTR("name")))
+						{
+							OPTSTR_DEL(properties[1]);
+							properties[1] = Text::String::CopyOrNull(tag->v);
+						}
+						else if (tag->k->Equals(CSTR("name:en")))
+						{
+							OPTSTR_DEL(properties[2]);
+							properties[2] = Text::String::CopyOrNull(tag->v);
+						}
+						else if (tag->k->Equals(CSTR("name:zh")))
+						{
+							OPTSTR_DEL(properties[3]);
+							properties[3] = Text::String::CopyOrNull(tag->v);
+						}
+						m++;
+					}
+				}
+				lineInfo->length = ls->Calc3DLength();
+				this->lines.Add(lineInfo);
+				lastNode->lines.Add(lineInfo);
+				pNode->lines.Add(lineInfo);
+				lastNode = pNode;
+
+				k++;
+			}
+		}
+		i++;
+	}
 }
 
 Optional<Map::ShortestPath3D::LineInfo> Map::ShortestPath3D::AddPath(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties, Bool allowReverse, Bool addToNode)

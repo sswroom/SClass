@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListTS.h"
 #include "Data/DataSet.h"
 #include "Data/VariItemHashCalc.h"
 #include "Data/VariItemComparator.h"

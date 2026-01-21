@@ -163,7 +163,7 @@ Net::WiFiCapturer::WiFiCapturer() : thread(ScanThread, this, CSTR("WiFiCapturer"
 	this->interf = nullptr;
 	this->hdlr = nullptr;
 	this->hdlrObj = nullptr;
-	this->lastScanTime = 0;
+	this->lastScanTime = nullptr;
 }
 
 Net::WiFiCapturer::~WiFiCapturer()

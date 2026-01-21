@@ -108,11 +108,26 @@ namespace DB
 		void SetAttr(Optional<Text::String> attr);
 		void SetGeometrySRID(UInt32 srid);
 
+		NN<ColDef> ColType(DB::DBUtil::ColType colType);
+		NN<ColDef> NativeType(Text::CString nativeType);
+		NN<ColDef> NativeType(Optional<Text::String> nativeType);
+		NN<ColDef> ColSize(UIntOS colSize);
+		NN<ColDef> ColDP(UIntOS colDP);
+		NN<ColDef> NotNull(Bool notNull);
+		NN<ColDef> PK(Bool pk);
+		NN<ColDef> AutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep);
+		NN<ColDef> DefVal(Text::CString defVal);
+		NN<ColDef> DefVal(Optional<Text::String> defVal);
+		NN<ColDef> Attr(Text::CString attr);
+		NN<ColDef> Attr(Optional<Text::String> attr);
+		NN<ColDef> GeometrySRID(UInt32 srid);
+
 		void Set(NN<const ColDef> colDef);
 
 		UnsafeArray<UTF8Char> ToColTypeStr(UnsafeArray<UTF8Char> sbuff) const;
 		NN<ColDef> Clone() const;
 
+		static NN<ColDef> Create(Text::CStringNN colName);
 		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);
 		static Text::CStringNN GeometryTypeGetName(GeometryType geomType);
 	};
