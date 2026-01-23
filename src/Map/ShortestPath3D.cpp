@@ -83,6 +83,17 @@ void Map::ShortestPath3D::FreeLineInfo(NN<LineInfo> lineInfo)
 	lineInfo.Delete();
 }
 
+void Map::ShortestPath3D::FreeNodeInfo(NN<NodeInfo> nodeInfo)
+{
+	NN<Data::ArrayListNN<RestrictionInfo>> restrictions;
+	if (nodeInfo->restrictions.SetTo(restrictions))
+	{
+		restrictions->DeleteAll();
+		restrictions.Delete();
+	}
+	nodeInfo.Delete();
+}
+
 void Map::ShortestPath3D::AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo)
 {
 	UIntOS i = 0;
@@ -552,6 +563,7 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 	Data::ArrayListInt64 wayIdArr;
 	osmData->GetRoadNetworkIds(wayIdArr);
 	Data::ArrayListInt64 nodeIdArr;
+	Data::ArrayListNN<Map::OSM::NodeInfo> nodeRestrictions;
 	NN<Map::OSM::WayInfo> way;
 	NN<Map::OSM::NodeInfo> node;
 	NN<NodeInfo> pNode;
@@ -601,6 +613,10 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 				pNode = this->GetNode(pos, 0);
 				pNode->id = node->id;
 				this->nodeMap.Put(node->id, pNode);
+				if (node->restrictions.NotNull())
+				{
+					nodeRestrictions.Add(node);
+				}
 			}
 			lastId = nodeIdArr.GetItem(i);
 		}
@@ -696,6 +712,200 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 				pNode->lines.Add(lineInfo);
 				lastNode = pNode;
 
+				k++;
+			}
+		}
+		i++;
+	}
+	NN<Data::ArrayListNN<Map::OSM::RelationInfo>> restrictions;
+	NN<Map::OSM::RelationInfo> relation;
+	NN<Map::OSM::RelationMember> relMember;
+	NN<Text::String> role;
+	UIntOS o;
+	i = 0;
+	j = nodeRestrictions.GetCount();
+	while (i < j)
+	{
+		node = nodeRestrictions.GetItemNoCheck(i);
+		if (node->restrictions.SetTo(restrictions) && this->nodeMap.Get(node->id).SetTo(pNode))
+		{
+			Optional<LineInfo> startLine = nullptr;
+			Optional<LineInfo> endLine = nullptr;
+			NN<LineInfo> nnstartLine;
+			NN<LineInfo> nnendLine;
+			RestrictionType restrictionType = RestrictionType::Unknown;
+			k = 0;
+			l = restrictions->GetCount();
+			while (k < l)
+			{
+				relation = restrictions->GetItemNoCheck(k);
+				if (relation->members.GetCount() >= 3)
+				{
+					m = 0;
+					n = relation->members.GetCount();
+					while (m < n)
+					{
+						relMember = relation->members.GetItemNoCheck(m);
+						if (relMember->role.SetTo(role))
+						{
+							if (role->Equals(CSTR("from")) && relMember->type == Map::OSM::ElementType::Way)
+							{
+								o = pNode->lines.GetCount();
+								while (o-- > 0)
+								{
+									if (pNode->lines.GetItemNoCheck(o)->id == relMember->refId)
+									{
+										startLine = pNode->lines.GetItemNoCheck(o);
+										break;
+									}
+								}
+							}
+							else if (role->Equals(CSTR("to")))
+							{
+								o = pNode->lines.GetCount();
+								while (o-- > 0)
+								{
+									if (pNode->lines.GetItemNoCheck(o)->id == relMember->refId)
+									{
+										endLine = pNode->lines.GetItemNoCheck(o);
+										break;
+									}
+								}
+							}
+							else if (role->Equals(CSTR("via")))
+							{
+							}
+						}
+						m++;
+					}
+					if (relation->tags.SetTo(tags))
+					{
+						m = 0;
+						n = tags->GetCount();
+						while (m < n)
+						{
+							tag = tags->GetItemNoCheck(m);
+							if (tag->k->Equals(CSTR("restriction")))
+							{
+								if (tag->v->Equals(CSTR("no_left_turn")))
+								{
+									restrictionType = RestrictionType::NoLeftTurn;
+								}
+								else if (tag->v->Equals(CSTR("no_right_turn")))
+								{
+									restrictionType = RestrictionType::NoRightTurn;
+								}
+								else if (tag->v->Equals(CSTR("no_u_turn")))
+								{
+									restrictionType = RestrictionType::NoUTurn;
+								}
+								else if (tag->v->Equals(CSTR("no_straight_on")))
+								{
+									restrictionType = RestrictionType::NoStraightOn;
+								}
+								else if (tag->v->Equals(CSTR("no_entry")))
+								{
+									restrictionType = RestrictionType::NoEntry;
+								}
+								else if (tag->v->Equals(CSTR("only_left_turn")))
+								{
+									restrictionType = RestrictionType::OnlyLeftTurn;
+								}
+								else if (tag->v->Equals(CSTR("only_right_turn")))
+								{
+									restrictionType = RestrictionType::OnlyRightTurn;
+								}
+								else if (tag->v->Equals(CSTR("only_straight_on")))
+								{
+									restrictionType = RestrictionType::OnlyStraightOn;
+								}
+								else
+								{
+									printf("ShortestPath3D.AddOSMData: Unknown OSM Restriction type: %s\r\n", tag->v->ToCString().v.Ptr());
+								}
+							}
+							else if (tag->k->Equals(CSTR("restriction:conditional")))
+							{
+								if (tag->v->StartsWith(CSTR("no_left_turn")))
+								{
+									restrictionType = RestrictionType::NoLeftTurn;
+								}
+								else if (tag->v->StartsWith(CSTR("no_right_turn")))
+								{
+									restrictionType = RestrictionType::NoRightTurn;
+								}
+								else if (tag->v->StartsWith(CSTR("no_u_turn")))
+								{
+									restrictionType = RestrictionType::NoUTurn;
+								}
+								else if (tag->v->StartsWith(CSTR("no_straight_on")))
+								{
+									restrictionType = RestrictionType::NoStraightOn;
+								}
+								else if (tag->v->StartsWith(CSTR("no_entry")))
+								{
+									restrictionType = RestrictionType::NoEntry;
+								}
+								else if (tag->v->StartsWith(CSTR("only_left_turn")))
+								{
+									restrictionType = RestrictionType::OnlyLeftTurn;
+								}
+								else if (tag->v->StartsWith(CSTR("only_right_turn")))
+								{
+									restrictionType = RestrictionType::OnlyRightTurn;
+								}
+								else if (tag->v->StartsWith(CSTR("only_straight_on")))
+								{
+									restrictionType = RestrictionType::OnlyStraightOn;
+								}
+								else
+								{
+									printf("ShortestPath3D.AddOSMData: Unknown OSM Restriction type: %s\r\n", tag->v->ToCString().v.Ptr());
+								}
+							}
+							else if (tag->k->Equals(CSTR("not:restriction")))
+							{
+								break;
+							}
+							m++;
+						}
+					}
+					if (startLine.SetTo(nnstartLine) && endLine.SetTo(nnendLine) && restrictionType != RestrictionType::Unknown)
+					{
+						NN<RestrictionInfo> restrInfo;
+						NEW_CLASSNN(restrInfo, RestrictionInfo());
+						restrInfo->fromLine = nnstartLine;
+						restrInfo->toLine = nnendLine;
+						restrInfo->type = restrictionType;
+						NN<Data::ArrayListNN<RestrictionInfo>> prestrictions;
+						if (!pNode->restrictions.SetTo(prestrictions))
+						{
+							NEW_CLASSNN(prestrictions, Data::ArrayListNN<RestrictionInfo>());
+							pNode->restrictions = prestrictions;
+						}
+						prestrictions->Add(restrInfo);
+					}
+					else
+					{
+						printf("ShortestPath3D.AddOSMData: Incomplete OSM Restriction relation: id = %lld\r\n", relation->id);
+						if (!startLine.SetTo(nnstartLine))
+						{
+							printf("  Missing from line\r\n");
+						}
+						if (!endLine.SetTo(nnendLine))
+						{
+							printf("  Missing to line\r\n");
+						}
+						if (restrictionType == RestrictionType::Unknown)
+						{
+							printf("  Unknown restriction type\r\n");
+						}
+					}
+				}
+				else
+				{
+					//printf("ShortestPath3D.AddOSMData: OSM Restriction relation with less than 3 members: id = %lld\r\n", relation->id);
+				}
 				k++;
 			}
 		}

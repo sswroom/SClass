@@ -111,6 +111,45 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnQueryResultSelChg(AnyType us
 			i++;
 		}
 	}
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	me->lbQueryItems->ClearItems();
+	if (elem->type == Map::OSM::ElementType::Node)
+	{
+		NN<Map::OSM::NodeInfo> node = NN<Map::OSM::NodeInfo>::ConvertFrom(elem);
+		sptr = Text::StrDouble(sbuff, node->lat);
+		me->lbQueryItems->AddItem(CSTRP(sbuff, sptr), nullptr);
+		sptr = Text::StrDouble(sbuff, node->lon);
+		me->lbQueryItems->AddItem(CSTRP(sbuff, sptr), nullptr);
+	}
+	else if (elem->type == Map::OSM::ElementType::Way)
+	{
+		NN<Map::OSM::WayInfo> way = NN<Map::OSM::WayInfo>::ConvertFrom(elem);
+		UIntOS i = 0;
+		UIntOS j = way->nodes.GetCount();
+		while (i < j)
+		{
+			NN<Map::OSM::NodeInfo> node = way->nodes.GetItemNoCheck(i);
+			sptr = Text::StrInt64(sbuff, node->id);
+			me->lbQueryItems->AddItem(CSTRP(sbuff, sptr), nullptr);
+			i++;
+		}
+	}
+	else if (elem->type == Map::OSM::ElementType::Relation)
+	{
+		NN<Map::OSM::RelationInfo> rel = NN<Map::OSM::RelationInfo>::ConvertFrom(elem);
+		UIntOS i = 0;
+		UIntOS j = rel->members.GetCount();
+		while (i < j)
+		{
+			NN<Map::OSM::RelationMember> member = rel->members.GetItemNoCheck(i);
+			sptr = Text::StrInt64(sbuff, member->refId);
+			*sptr++ = ' ';
+			sptr = Text::String::OrEmpty(member->role)->ConcatTo(sptr);
+			me->lbQueryItems->AddItem(CSTRP(sbuff, sptr), nullptr);
+			i++;
+		}
+	}
 	me->txtQueryType->SetText(Map::OSM::LayerTypeGetName(elem->layerType));
 	me->nav->SetSelectedVector(me->osmData->CreateVector(elem));
 }
@@ -324,6 +363,50 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnCenterlineClicked(AnyType us
 	me->nav->RedrawMap();
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnRelationMemberDblClk(AnyType userObj, UIntOS index)
+{
+	NN<SSWR::AVIRead::AVIRGISOSMDataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISOSMDataForm>();
+	NN<Map::OSM::RelationMember> member;
+	if (!me->lvRelationMember->GetItem(index).GetOpt<Map::OSM::RelationMember>().SetTo(member))
+	{
+		return;
+	}
+	NN<Map::OSM::ElementInfo> elem;
+	if (!me->osmData->GetElementById(member->refId, member->type).SetTo(elem))
+	{
+		return;
+	}
+	me->lbQueryResult->ClearItems();
+	if (me->tcMain->GetSelectedPage() != me->tpQuery)
+	{
+		me->tcMain->SetSelectedPage(me->tpQuery);
+	}
+	NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
+	NN<Map::OSM::TagInfo> tag;
+	UIntOS k;
+	UIntOS l;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendI64(elem->id);
+	if (elem->tags.SetTo(tags))
+	{
+		k = 0;
+		l = tags->GetCount();
+		while (k < l)
+		{
+			tag = tags->GetItemNoCheck(k);
+			if (tag->k->Equals(UTF8STRC("name")))
+			{
+				sb.AppendC(UTF8STRC(" "));
+				sb.Append(tag->v);
+				break;
+			}
+			k++;
+		}
+	}
+	me->lbQueryResult->AddItem(sb.ToCString(), elem);
+	me->lbQueryResult->SetSelectedIndex(0);
+}
+
 void SSWR::AVIRead::AVIRGISOSMDataForm::UpdateRelationList()
 {
 	Text::StringBuilderUTF8 sbType;
@@ -427,6 +510,7 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->lvRelationMember->AddColumn(CSTR("Type"), 100);
 	this->lvRelationMember->AddColumn(CSTR("RefId"), 100);
 	this->lvRelationMember->AddColumn(CSTR("Role"), 100);
+	this->lvRelationMember->HandleDblClk(OnRelationMemberDblClk, this);
 	this->lvRelationTags = this->ui->NewListView(this->tpRelation, UI::ListViewStyle::Table, 2);
 	this->lvRelationTags->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRelationTags->AddColumn(CSTR("k"), 100);
@@ -445,6 +529,9 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->txtQueryType = this->ui->NewTextBox(this->pnlQuery, CSTR(""));
 	this->txtQueryType->SetRect(104, 4, 150, 23, false);
 	this->txtQueryType->SetReadOnly(true);
+	this->lbQueryItems = this->ui->NewListBox(this->tpQuery, false);
+	this->lbQueryItems->SetRect(0, 0, 100, 100, false);
+	this->lbQueryItems->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvQueryTags = this->ui->NewListView(this->tpQuery, UI::ListViewStyle::Table, 2);
 	this->lvQueryTags->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvQueryTags->AddColumn(CSTR("k"), 100);

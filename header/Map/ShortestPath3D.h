@@ -30,9 +30,12 @@ namespace Map
 
 		enum class RestrictionType
 		{
+			Unknown,
 			NoLeftTurn,
 			NoRightTurn,
 			NoUTurn,
+			NoStraightOn,
+			NoEntry,
 			OnlyStraightOn,
 			OnlyLeftTurn,
 			OnlyRightTurn
@@ -138,7 +141,7 @@ namespace Map
 
 		static void __stdcall FreeLineInfo(NN<LineInfo> lineInfo);
 		static void __stdcall FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
-		static void __stdcall FreeNodeInfo(NN<NodeInfo> nodeInfo) { NN<Data::ArrayListNN<RestrictionInfo>> restrictions; if (nodeInfo->restrictions.SetTo(restrictions)) { restrictions->DeleteAll(); } nodeInfo.Delete(); }
+		static void __stdcall FreeNodeInfo(NN<NodeInfo> nodeInfo);
 		static void __stdcall FreeNodeSess(NN<NodeSession> nodeSess) { nodeSess.Delete(); }
 		static void __stdcall FreeAreaSess(NN<AreaSession> areaSess) { areaSess->nodes.FreeAll(FreeNodeSess); areaSess.Delete(); }
 		static void AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo);

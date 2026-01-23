@@ -55,6 +55,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlQuery;
 			NN<UI::GUILabel> lblQueryType;
 			NN<UI::GUITextBox> txtQueryType;
+			NN<UI::GUIListBox> lbQueryItems;
 			NN<UI::GUIListView> lvQueryTags;
 
 			NN<UI::GUITabPage> tpRestriction;
@@ -68,6 +69,7 @@ namespace SSWR
 			static void __stdcall OnShowUnknownChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDefaultStyleClicked(AnyType userObj);
 			static void __stdcall OnCenterlineClicked(AnyType userObj);
+			static void __stdcall OnRelationMemberDblClk(AnyType userObj, UIntOS index);
 			void UpdateRelationList();
 		public:
 			AVIRGISOSMDataForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::OSM::OSMData> osmData, NN<SSWR::AVIRead::AVIRMapNavigator> nav);
