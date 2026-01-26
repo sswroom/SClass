@@ -3,7 +3,7 @@
 #include "DB/SQL/CreateTableCommand.h"
 #include "Text/MyString.h"
 
-DB::SQL::CreateTableCommand::CreateTableCommand(DB::TableDef *tableDef, Bool toRelease)
+DB::SQL::CreateTableCommand::CreateTableCommand(NN<DB::TableDef> tableDef, Bool toRelease)
 {
 	if (toRelease)
 	{
@@ -11,13 +11,13 @@ DB::SQL::CreateTableCommand::CreateTableCommand(DB::TableDef *tableDef, Bool toR
 	}
 	else
 	{
-		this->tableDef = tableDef->Clone().Ptr();
+		this->tableDef = tableDef->Clone();
 	}
 }
 
 DB::SQL::CreateTableCommand::~CreateTableCommand()
 {
-	DEL_CLASS(this->tableDef);
+	this->tableDef.Delete();
 }
 
 DB::SQL::SQLCommand::CommandType DB::SQL::CreateTableCommand::GetCommandType()
@@ -25,7 +25,7 @@ DB::SQL::SQLCommand::CommandType DB::SQL::CreateTableCommand::GetCommandType()
 	return CT_CREATE_TABLE;
 }
 
-DB::TableDef *DB::SQL::CreateTableCommand::GetTableDef()
+NN<DB::TableDef> DB::SQL::CreateTableCommand::GetTableDef()
 {
 	return this->tableDef;
 }

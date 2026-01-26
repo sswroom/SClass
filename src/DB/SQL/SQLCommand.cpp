@@ -44,15 +44,16 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 			}
 			else
 			{
-				DB::TableDef *tab;
+				NN<DB::TableDef> tab;
+				Bool tabUsed = false;
 				if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
 				{
 					sb.RemoveChars(1);
-					NEW_CLASS(tab, DB::TableDef(nullptr, sb.ToCString().Substring(1)));
+					NEW_CLASSNN(tab, DB::TableDef(nullptr, sb.ToCString().Substring(1)));
 				}
 				else
 				{
-					NEW_CLASS(tab, DB::TableDef(nullptr, sb.ToCString()));
+					NEW_CLASSNN(tab, DB::TableDef(nullptr, sb.ToCString()));
 				}
 				sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))
@@ -133,7 +134,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 							else if (sb.Equals(UTF8STRC(")")))
 							{
 								NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
-								tab = 0;
+								tabUsed = true;
 								break;
 							}
 							else
@@ -161,7 +162,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 									if (brkCnt == 0)
 									{
 										NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
-										tab = 0;
+										tabUsed = true;
 										break;
 									}
 									brkCnt--;
@@ -171,7 +172,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 									break;
 								}
 							}
-							if (tab == 0)
+							if (tabUsed)
 							{
 								break;
 							}
@@ -374,7 +375,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								{
 									tab->AddCol(col);
 									NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
-									tab = 0;
+									tabUsed = true;
 									break;
 								}
 								else
@@ -389,14 +390,17 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								col.Delete();
 								break;
 							}
-							else if (tab == 0)
+							else if (tabUsed)
 							{
 								break;
 							}
 						}
 					}
 				}
-				SDEL_CLASS(tab);
+				if (!tabUsed)
+				{
+					tab.Delete();
+				}
 			}
 			return cmd;
 		}

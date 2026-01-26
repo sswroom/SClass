@@ -2306,6 +2306,8 @@ OrganWebPOIController.o: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
 OrganWebSession.o: ../../src/SSWR/OrganWeb/OrganWebSession.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
+ServerMonitorCore.o: ../../src/SSWR/ServerMonitor/ServerMonitorCore.cpp
+ServerMonitorHandler.o: ../../src/SSWR/ServerMonitor/ServerMonitorHandler.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp
 SHPConvAddFilterForm.o: ../../src/SSWR/SHPConv/SHPConvAddFilterForm.cpp
 SHPConvCurrFilterForm.o: ../../src/SSWR/SHPConv/SHPConvCurrFilterForm.cpp

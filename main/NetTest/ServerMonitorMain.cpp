@@ -7,7 +7,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	SSWR::ServerMonitor::ServerMonitorCore core;
 	if (!core.IsError())
 	{
-		core.Run();
+		if (core.Run())
+		{
+			progCtrl->WaitForExit(progCtrl);
+		}
 	}
 	return 0;
 }

@@ -10,13 +10,13 @@ namespace DB
 		class CreateTableCommand : public SQLCommand
 		{
 		private:
-			DB::TableDef *tableDef;
+			NN<DB::TableDef> tableDef;
 		public:
-			CreateTableCommand(DB::TableDef *tableDef, Bool toRelease);
+			CreateTableCommand(NN<DB::TableDef> tableDef, Bool toRelease);
 			virtual ~CreateTableCommand();
 
 			virtual CommandType GetCommandType();
-			TableDef *GetTableDef();
+			NN<TableDef> GetTableDef();
 		};
 	}
 }

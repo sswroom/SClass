@@ -2760,6 +2760,67 @@ UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, 
 	}
 }
 
+void DB::DBUtil::AppendColDef(NN<Text::StringBuilderUTF8> sb, SQLType sqlType, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP, Optional<Text::String> nativeType)
+{
+	NN<Text::String> s;
+	if (nativeType.SetTo(s))
+	{
+		sb->Append(s);
+	}
+	else if (sqlType == SQLType::SQLite)
+	{
+		switch (colType)
+		{
+		case DB::DBUtil::CT_UInt32:
+		case DB::DBUtil::CT_Int32:
+		case DB::DBUtil::CT_Bool:
+		case DB::DBUtil::CT_Byte:
+		case DB::DBUtil::CT_Int16:
+		case DB::DBUtil::CT_Int64:
+		case DB::DBUtil::CT_UInt16:
+		case DB::DBUtil::CT_UInt64:
+			sb->Append(CSTR("INTEGER"));
+			break;
+		case DB::DBUtil::CT_UTF8Char:
+		case DB::DBUtil::CT_UTF16Char:
+		case DB::DBUtil::CT_UTF32Char:
+		case DB::DBUtil::CT_VarUTF8Char:
+		case DB::DBUtil::CT_VarUTF16Char:
+		case DB::DBUtil::CT_VarUTF32Char:
+			if (colSize < 65536)
+			{
+				sb->AppendC(UTF8STRC("VARCHAR("));
+				sb->AppendUIntOS(colSize);
+				sb->AppendC(UTF8STRC(")"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("TEXT"));
+			}
+			break;
+		case DB::DBUtil::CT_Date:
+		case DB::DBUtil::CT_DateTime:
+		case DB::DBUtil::CT_DateTimeTZ:
+			sb->AppendC(UTF8STRC("TEXT"));
+			break;
+		case DB::DBUtil::CT_Double:
+		case DB::DBUtil::CT_Float:
+		case DB::DBUtil::CT_Decimal:
+			sb->AppendC(UTF8STRC("NUMERIC"));
+			break;
+		case DB::DBUtil::CT_Binary:
+		case DB::DBUtil::CT_Vector:
+		case DB::DBUtil::CT_UUID:
+			sb->AppendC(UTF8STRC("BLOB"));
+			break;
+		case DB::DBUtil::CT_Unknown:
+		default:
+			sb->AppendC(UTF8STRC("TEXT"));
+			break;
+		}
+	}
+}
+
 UnsafeArray<UTF8Char> DB::DBUtil::SDBCharset(UnsafeArray<UTF8Char> sqlstr, Charset charset, SQLType sqlType)
 {
 	switch (charset)

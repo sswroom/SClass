@@ -16,7 +16,7 @@ Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::LogoutFunc(NN<Net::Web
 	return false;
 }
 
-SSWR::ServerMonitor::ServerMonitorHandler::ServerMonitorHandler(NN<ServerMonitorCore> core)
+SSWR::ServerMonitor::ServerMonitorHandler::ServerMonitorHandler(NN<ServerMonitorCore> core, Text::CStringNN rootDir) : Net::WebServer::WebServiceHandler(rootDir)
 {
 	this->core = core;
 

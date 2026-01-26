@@ -1,11 +1,35 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/Bcrypt.h"
 #include "DB/SQLiteFile.h"
+#include "DB/SQL/CreateTableCommand.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/ServerMonitor/ServerMonitorCore.h"
+#include "SSWR/ServerMonitor/ServerMonitorHandler.h"
+
+void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeUserInfo(NN<UserInfo> userInfo)
+{
+	userInfo->username->Release();
+	userInfo->passwordHash->Release();
+	userInfo.Delete();
+}
+
+void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeServerInfo(NN<ServerInfo> serverInfo)
+{
+	serverInfo->name->Release();
+	serverInfo->target->Release();
+	serverInfo.Delete();
+}
+
+void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeAlertInfo(NN<AlertInfo> alertInfo)
+{
+	alertInfo->settings->Release();
+	alertInfo->targets->Release();
+	alertInfo.Delete();
+}
 
 SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 {
@@ -15,6 +39,8 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
 	this->db = nullptr;
+	this->listener = nullptr;
+	this->webHdlr = nullptr;
 
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("cfg"));
@@ -50,9 +76,154 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 			{
 				this->console.WriteLine(CSTR("Error in opening database file"));
 			}
-
-			if (cfg->GetValue(CSTR("Port")).SetTo(s) && s->ToUInt16(port))
+			else
 			{
+				NN<UserInfo> userInfo;
+				NN<DB::DBReader> r;
+				if (db->ExecuteReader(CSTR("select username, password, role from webuser")).SetTo(r))
+				{
+					while (r->ReadNext())
+					{
+						NN<Text::String> username = r->GetNewStrNN(0);
+						NN<Text::String> passwordHash = r->GetNewStrNN(1);
+						UserRole role = (UserRole)r->GetInt32(2);
+						NEW_CLASSNN(userInfo, UserInfo());
+						userInfo->username = username;
+						userInfo->passwordHash = passwordHash;
+						userInfo->role = role;
+						this->userMap.Put(username, userInfo);
+					}
+					db->CloseReader(r);
+				}
+				else
+				{
+					DB::TableDef tabDef(nullptr, CSTR("webuser"));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("username"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(64)->NotNull(true)->PK(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("password"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(512)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("role"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+					sql.AppendSQLCommand(cmd);
+					db->ExecuteNonQuery(sql.ToCString());
+					sql.Clear();
+					sql.AppendCmdC(CSTR("insert into webuser ("));
+					sql.AppendCol(U8STR("username"));
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendCol(U8STR("password"));
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendCol(U8STR("role"));
+					sql.AppendCmdC(CSTR(") values ("));
+					sql.AppendStrC(CSTR("admin"));
+					sql.AppendCmdC(CSTR(", "));
+					Text::StringBuilderUTF8 sb;
+					Crypto::Hash::Bcrypt bcrypt;
+					bcrypt.GenHash(sb, 10, CSTR("admin"));
+					NEW_CLASSNN(userInfo, UserInfo());
+					userInfo->username = Text::String::New(CSTR("admin"));
+					userInfo->passwordHash = Text::String::New(sb.ToCString());
+					userInfo->role = UserRole::Admin;
+					this->userMap.Put(userInfo->username, userInfo);
+					sql.AppendStrC(sb.ToCString());
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendInt32((Int32)UserRole::Admin);
+					sql.AppendCmdC(CSTR(")"));
+					db->ExecuteNonQuery(sql.ToCString());
+				}
+
+				NN<ServerInfo> serverInfo;
+				if (db->ExecuteReader(CSTR("select id, name, serverType, target, port, intervalMS, timeoutMS from servers")).SetTo(r))
+				{
+					while (r->ReadNext())
+					{
+						NEW_CLASSNN(serverInfo, ServerInfo());
+						serverInfo->id = r->GetInt32(0);
+						serverInfo->name = r->GetNewStrNN(1);
+						serverInfo->serverType = (ServerType)r->GetInt32(2);
+						serverInfo->target = r->GetNewStrNN(3);
+						serverInfo->port = r->GetInt32(4);
+						serverInfo->intervalMS = r->GetInt32(5);
+						serverInfo->timeoutMS = r->GetInt32(6);
+						serverInfo->lastSuccess = false;
+						serverInfo->lastCheck = nullptr;
+						this->serverMap.Put(serverInfo->id, serverInfo);
+					}
+					db->CloseReader(r);
+				}
+				else
+				{
+					DB::TableDef tabDef(nullptr, CSTR("servers"));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("id"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true)->PK(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("name"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(512)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("serverType"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("target"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(1024)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("port"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("intervalMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("timeoutMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+					sql.AppendSQLCommand(cmd);
+					db->ExecuteNonQuery(sql.ToCString());
+				}
+
+				NN<AlertInfo> alertInfo;
+				if (db->ExecuteReader(CSTR("select id, type, settings, targets from alerts")).SetTo(r))
+				{
+					while (r->ReadNext())
+					{
+						NEW_CLASSNN(alertInfo, AlertInfo());
+						alertInfo->id = r->GetInt32(0);
+						alertInfo->type = (AlertType)r->GetInt32(1);
+						alertInfo->settings = r->GetNewStrNN(2);
+						alertInfo->targets = r->GetNewStrNN(3);
+						this->alertMap.Put(alertInfo->id, alertInfo);
+					}
+					db->CloseReader(r);
+				}
+				else
+				{
+					DB::TableDef tabDef(nullptr, CSTR("alerts"));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("id"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true)->PK(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("type"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("settings"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(2048)->NotNull(true));
+					tabDef.AddCol(DB::ColDef::Create(CSTR("targets"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(2048)->NotNull(true));
+					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+					sql.AppendSQLCommand(cmd);
+					db->ExecuteNonQuery(sql.ToCString());
+				}
+
+				NN<SSWR::ServerMonitor::ServerMonitorHandler> webHdlr;
+				if (cfg->GetValue(CSTR("WebPath")).SetTo(s))
+				{
+					sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+					sptr = IO::Path::AppendPath(sbuff, sptr, s->ToCString());
+				}
+				else
+				{
+					sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+					sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
+				}
+				NEW_CLASSNN(webHdlr, SSWR::ServerMonitor::ServerMonitorHandler(*this, CSTRP(sbuff, sptr)));
+				this->webHdlr = webHdlr;
+
+				if (cfg->GetValue(CSTR("Port")).SetTo(s) && s->ToUInt16(port))
+				{
+					NN<Net::WebServer::WebListener> listener;
+					NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, nullptr, webHdlr, port, 60, 1, 8, nullptr, false, Net::WebServer::KeepAlive::Default, false));
+					if (listener->IsError())
+					{
+						this->console.WriteLine(CSTR("Error in starting web server"));
+						listener.Delete();
+					}
+					else
+					{
+						this->listener = listener;
+					}
+				}
+				else
+				{
+					this->console.WriteLine(CSTR("Error in reading port number"));
+				}
 			}
 			cfg.Delete();
 		}
@@ -65,10 +236,13 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 
 SSWR::ServerMonitor::ServerMonitorCore::~ServerMonitorCore()
 {
+	this->listener.Delete();
+	this->webHdlr.Delete();
+	this->db.Delete();
 	this->ssl.Delete();
 	this->clif.Delete();
 	this->sockf.Delete();
-	this->db.Delete();
+	this->userMap.FreeAll(FreeUserInfo);
 }
 
 Bool SSWR::ServerMonitor::ServerMonitorCore::IsError() const
@@ -78,5 +252,11 @@ Bool SSWR::ServerMonitor::ServerMonitorCore::IsError() const
 
 Bool SSWR::ServerMonitor::ServerMonitorCore::Run()
 {
-	return true;
+	NN<Net::WebServer::WebListener> listener;
+	if (this->ssl.NotNull() && this->db.NotNull() && this->listener.SetTo(listener) && listener->Start())
+	{
+		this->console.WriteLine(CSTR("ServerMonitor is running"));
+		return true;
+	}
+	return false;
 }

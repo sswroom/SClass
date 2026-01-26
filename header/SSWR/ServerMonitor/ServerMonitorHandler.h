@@ -16,7 +16,7 @@ namespace SSWR
 			static Bool __stdcall GetStatusFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall LogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		public:
-			ServerMonitorHandler(NN<ServerMonitorCore> core);
+			ServerMonitorHandler(NN<ServerMonitorCore> core, Text::CStringNN rootDir);
 			virtual ~ServerMonitorHandler();
 		};
 	}

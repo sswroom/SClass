@@ -2,6 +2,7 @@
 #define _SM_DB_SQLBUILDER
 #include "Data/DateTime.h"
 #include "DB/DBUtil.h"
+#include "DB/SQL/SQLCommand.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -50,6 +51,7 @@ namespace DB
 		void AppendCol(UnsafeArray<const UTF8Char> val);
 		void AppendCol(const WChar *val);
 		void AppendTrim(Text::CStringNN val);
+		void AppendSQLCommand(NN<SQL::SQLCommand> cmd);
 
 		void Clear();
 		UnsafeArray<const UTF8Char> ToString() const;

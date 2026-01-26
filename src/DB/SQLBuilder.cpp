@@ -3,6 +3,7 @@
 #include "DB/ReadingDBTool.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TableDef.h"
+#include "DB/SQL/CreateTableCommand.h"
 #include "Text/MyStringW.h"
 
 DB::SQLBuilder::SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr)
@@ -181,9 +182,15 @@ void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 		Text::StrDelNew(catalog);
 		this->AppendCol(name->v + i + 1);
 	}
-	else
+	else if (table->GetSchemaName().SetTo(name))
 	{
 		this->AppendCol(name->v);
+		this->sb.AppendUTF8Char('.');
+		this->AppendCol(table->GetTableName()->v);
+	}
+	else
+	{
+		this->AppendCol(table->GetTableName()->v);
 	}
 }
 
@@ -205,6 +212,78 @@ void DB::SQLBuilder::AppendTrim(Text::CStringNN val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBTrimLeng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBTrim(this->sb.GetEndPtr(), val, this->sqlType));
+}
+
+void DB::SQLBuilder::AppendSQLCommand(NN<SQL::SQLCommand> cmd)
+{
+	if (cmd->GetCommandType() == SQL::SQLCommand::CT_CREATE_TABLE)
+	{
+		NN<SQL::CreateTableCommand> createCmd = NN<SQL::CreateTableCommand>::ConvertFrom(cmd);
+		NN<DB::TableDef> tableDef = createCmd->GetTableDef();
+		NN<DB::ColDef> col;
+		this->sb.Append(CSTR("create table "));
+		this->AppendTableName(tableDef);
+		this->sb.Append(CSTR(" ("));
+		Bool hasPrimaryKey = false;
+		UIntOS i = 0;
+		UIntOS j = tableDef->GetColCnt();
+		while (i < j)
+		{
+			if (tableDef->GetCol(i).SetTo(col))
+			{
+				if (i > 0)
+				{
+					this->sb.AppendUTF8Char(',');
+				}
+				this->sb.AppendUTF8Char(' ');
+				this->AppendCol(col->GetColName()->v);
+				this->sb.AppendUTF8Char(' ');
+				DB::DBUtil::AppendColDef(this->sb, this->sqlType, col->GetColType(), col->GetColSize(), col->GetColDP(), col->GetNativeType());
+				if (col->IsNotNull())
+				{
+					this->sb.Append(CSTR(" not null"));
+				}
+				else
+				{
+					this->sb.Append(CSTR(" null"));
+				}
+				if (col->IsPK())
+				{
+					hasPrimaryKey = true;
+					if (this->sqlType == DB::SQLType::MySQL)
+					{
+						this->sb.Append(CSTR(" primary key"));
+					}
+				}
+			}
+			i++;
+		}
+		if (this->sqlType != DB::SQLType::MySQL && hasPrimaryKey)
+		{
+			this->sb.Append(CSTR(", primary key ("));
+			Bool firstKey = true;
+			i = 0;
+			j = tableDef->GetColCnt();
+			while (i < j)
+			{
+				if (tableDef->GetCol(i).SetTo(col))
+				{
+					if (col->IsPK())
+					{
+						if (!firstKey)
+						{
+							this->sb.AppendUTF8Char(',');
+						}
+						this->AppendCol(col->GetColName()->v);
+						firstKey = false;
+					}
+				}
+				i++;
+			}
+			this->sb.AppendUTF8Char(')');
+		}
+		this->sb.AppendUTF8Char(')');
+	}
 }
 
 void DB::SQLBuilder::Clear()

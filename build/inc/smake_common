@@ -192,6 +192,7 @@ console:
 @PingTest
 @POP3Test
 @PushServer
+@ServerMonitor
 @SMTPTest
 @TCPClientTest
 @WebSocketTest
@@ -649,6 +650,9 @@ POP3Test:
 @ConsoleStartup.o
 PushServer:
 @PushServerMain.o
+@ConsoleStartup.o
+ServerMonitor:
+@ServerMonitorMain.o
 @ConsoleStartup.o
 SMTPTest:
 @SMTPTest.o
@@ -1163,6 +1167,7 @@ PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
 POP3Test.o: ../../main/NetTest/POP3Test.cpp
 PushServerMain.o: ../../main/NetTest/PushServerMain.cpp
+ServerMonitorMain.o: ../../main/NetTest/ServerMonitorMain.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 TCPClientTest.o: ../../main/NetTest/TCPClientTest.cpp
 WebSocketTest.o: ../../main/NetTest/WebSocketTest.cpp
@@ -4860,6 +4865,10 @@ SSWR/SDNSProxy/SDNSProxyCore.h:
 @SDNSProxyCore.o
 SSWR/SDNSProxy/SDNSProxyWebHandler.h:
 @SDNSProxyWebHandler.o
+SSWR/ServerMonitor/ServerMonitorCore.h:
+@ServerMonitorCore.o
+SSWR/ServerMonitor/ServerMonitorHandler.h:
+@ServerMonitorHandler.o
 SSWR/SHPConv/ElevationFilter.h:
 @ElevationFilter.o
 SSWR/SHPConv/MapFilter.h:

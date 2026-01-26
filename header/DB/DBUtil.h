@@ -116,6 +116,7 @@ namespace DB
 		static UIntOS SDBTrimLeng(Text::CStringNN val, SQLType sqlType);
 		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, InOutParam<UIntOS> colSize, InOutParam<UIntOS> colDP);
 		static UnsafeArray<UTF8Char> ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP);
+		static void AppendColDef(NN<Text::StringBuilderUTF8> sb, SQLType sqlType, DB::DBUtil::ColType colType, UIntOS colSize, UIntOS colDP, Optional<Text::String> nativeType);
 		static UnsafeArray<UTF8Char> SDBCharset(UnsafeArray<UTF8Char> sqlstr, Charset charset, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, OutParam<Bool> requireAS);
 		static UnsafeArray<UTF8Char> SDBCollation(UnsafeArray<UTF8Char> sqlstr, NN<const Collation> collation, SQLType sqlType);
