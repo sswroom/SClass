@@ -78,6 +78,7 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x9C,  0, 105, 2000, 2700,  4,  4,   10,  10, 2021, 1, UTF8STRCPTR("Intel Celeron N5105"), UTF8STRCPTR("Intel N5105")},
 	{0x06, 0x9E,  9,  80, 2700, 3300,  4,  4,   35,  14, 2017, 1, UTF8STRCPTR("Intel Core i5-7500T"), UTF8STRCPTR("Intel i5-7500T")},
 	{0x06, 0x9E, 10, 100, 1600, 3400,  4,  8,   15,  14, 2017, 3, UTF8STRCPTR("Intel Core i5-8250U"), UTF8STRCPTR("Intel i5-8250U")},
+	{0x06, 0xBA,  2, 100, 2200, 4800,  8, 12,   45,   7, 2024, 4, UTF8STRCPTR("Intel Core 5 210H"), UTF8STRCPTR("Intel 5 210H")},
 	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, UTF8STRCPTR("Pentium 4 model 0"), UTF8STR_NULL}
 };
 
@@ -317,6 +318,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{UTF8STRCPTR("Intel 1037U"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Celeron 1037U",                 17,   22,  "x86",          2,  1800, 1800, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  2048,  "HD Graphics"},
 	{UTF8STRCPTR("Intel 230"),        Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom 230",                      4,    45,  "x86",          1,  1600, 1600, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     0},
 	{UTF8STRCPTR("Intel 330"),        Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom 330",                      8,    45,  "x86",          2,  1600, 1600, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     0},
+	{UTF8STRCPTR("Intel C5-210H"),    Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core 5 210H",                   45,   7,   "x86 with HT",  4,  2200, 4800, 32,  24, "x86",          4,  1600, 3600, 32,  24, 0,              0,  0,    0,    0,   0,  1024, 12288, "Intel Graphics"},
 	{UTF8STRCPTR("Intel D2500"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D2500",                    10,   32,  "x86",          2,  1870, 1870, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     "GMA 3600"},
 	{UTF8STRCPTR("Intel D2550"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D2550",                    10,   32,  "x86 with HT",  2,  1870, 1870, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     "GMA 3650"},
 	{UTF8STRCPTR("Intel D2560"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D2560",                    10,   32,  "x86 with HT",  2,  2000, 2000, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     "GMA 3650"},

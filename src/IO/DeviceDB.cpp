@@ -1092,6 +1092,7 @@ IO::DeviceDB::VendorInfo IO::DeviceDB::usbVendors[] = {
 	{0x3038, CSTR("Wentronic Holding GmbH")},
 	{0x303A, CSTR("Espressif Incorporated")},
 	{0x303B, CSTR("Shenzhen SOY Technology Co., Ltd.")},
+	{0x3151, CSTR("YICHIP")},
 	{0x3537, CSTR("*Guangzhou Chicken Run Network Technology Co., Ltd.")},
 	{0x357D, CSTR("*JMicron Technology Corporation")},
 	{0x3923, CSTR("National Instruments")},
@@ -1695,6 +1696,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x2899, 0x0200, 0x0000, "USB Device",                                        "Toptronic USB Camera"},
 	{0x2B7E, 0x0173, 0x0015, "Generic 720p HD Camera",                            "Kingcome 720p HD Camera"},
 	{0x2C7C, 0x0125, 0x0318, "Android Android",                                   "Quectel EC25 LTE modem"},
+	{0x3151, 0x3020, 0x0002, "YICHIP 2.4G Receiver",                              "YICHIP 2.4G Receiver"},
 	{0x3537, 0x1075, 0x0633, "Guangzhou Chicken Run Network Technology Co., Ltd. GameSir-G7 SE Controller for Xbox","Guangzhou Chicken Run GameSir-G7 SE Controller for Xbox"},
 	{0x3538, 0x0009, 0x0000, "GENERIC Flash Reader",                              "Power Quotient USB Card Reader"},
 	{0x357D, 0x7788, 0x0000, "JMicron USB to ATA/ATAPI Bridge",                   "JMicron JMS567"},
@@ -1761,7 +1763,8 @@ IO::DeviceDB::VendorInfo IO::DeviceDB::pciVendors[] = {
 	{0x1D6A, CSTR("Aquantia Corp.")},
 	{0x1DA0, CSTR("3M Company")},
 	{0x8086, CSTR("Intel Corporation")},
-	{0x80EE, CSTR("VirtualBox")}
+	{0x80EE, CSTR("VirtualBox")},
+	{0xC0A9, CSTR("Micron/Crucial Technology")}
 };
 
 IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
@@ -2129,8 +2132,13 @@ IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0x519D,  "PCI Device",                                                                               "Intel Alder Lake LPC Controller"},
 	{0x8086, 0x51A3,  "PCI Device",                                                                               "Intel Alder Lake PCH-P SMBus Host Controller"},
 	{0x8086, 0x51A4,  "PCI Device",                                                                               "Intel Alder Lake-P PCH SPI Controller"},
+	{0x8086, 0x51A8,  "Intel(R) Serial IO UART Host Controller - 51A8",                                           "Intel Alder Lake PCH UART #0"},
+	{0x8086, 0x51AB,  "PCI Device",                                                                               "Intel Alder Lake SPI Controller"},
 	{0x8086, 0x51B0,  "PCI Device",                                                                               "Intel Alder Lake PCI Bridge"},
 	{0x8086, 0x51B1,  "PCI Device",                                                                               "Intel Alder Lake PCI Express x1 Root Port #10"},
+	{0x8086, 0x51BE,  "PCI Device",                                                                               "Intel Alder Lake-U PCI Express Root Port #7"},
+	{0x8086, 0x51C5,  "Intel(R) Serial IO I2C Host Controller - 51C5",                                            "Intel Alder Lake-U PCH Serial IO I2C Controller #0"},
+	{0x8086, 0x51C6,  "Intel(R) Serial IO I2C Host Controller - 51C6",                                            "Intel Alder Lake-U PCH Serial IO I2C Controller #1"},
 	{0x8086, 0x51C8,  "PCI Device",                                                                               "Intel Alder Lake PCH Serial IO I2C Controller #0"},
 	{0x8086, 0x51CA,  "PCI Device",                                                                               "Intel Alder Lake HD Audio"},
 	{0x8086, 0x51D3,  "PCI Device",                                                                               "Intel Alder Lake-P SATA AHCI Controller"},
@@ -2140,6 +2148,7 @@ IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0x51ED,  "PCI Device",                                                                               "Intel Alder Lake PCH USB 3.2 xHCI Host Controller"},
 	{0x8086, 0x51EF,  "PCI Device",                                                                               "Intel Alder Lake PCH Shared SRAM"},
 	{0x8086, 0x51F0,  "PCI Device",                                                                               "Intel Alder Lake-P PCH CNVi WiFi"},
+	{0x8086, 0x51F1,  "PCI Device",                                                                               "Intel Raptor Lake PCH CNVi WiFi"},
 	{0x8086, 0x5912,  "Intel(R) HD Graphics 630",                                                                 "Intel HD Graphics 630"},
 	{0x8086, 0x5914,  "Intel Core Processor Host Bridge",                                                         "Intel 14nm Core Processor Host Bridge/ DRAM Registers"},
 	{0x8086, 0x5917,  "Intel(R) UHD Graphics 620",                                                                "Intel UHD Graphics 620"},
@@ -2267,8 +2276,10 @@ IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0xA77F,  "PCI Device",                                                                               "Intel Raptor Lake Crashlog and Telemetry"},
 	{0x8086, 0xA780,  "PCI Device",                                                                               "Intel Raptor Lake-S GT1 [UHD Graphics 770]"},
 	{0x8086, 0xA7A0,  "PCI Device",                                                                               "Intel Raptor Lake-P [Iris Xe Graphics]"},
+	{0x8086, 0xA7AB,  "PCI Device",                                                                               "Intel Raptor Lake-P [Intel Graphics]"},
 	{0x80EE, 0xBEEF,  "VirtualBox Graphics Adapter",                                                              "VirtualBox Graphics Adapter"},
-	{0x80EE, 0xCAFE,  "VirtualBox Guest Service",                                                                 "VirtualBox Guest Service"}
+	{0x80EE, 0xCAFE,  "VirtualBox Guest Service",                                                                 "VirtualBox Guest Service"},
+	{0xC0A9, 0x5415,  "PCI Device",                                                                               "Micron/Crucial Technology Non-Volatile memory controller"}
 };
 
 IO::DeviceDB::DeviceInfo IO::DeviceDB::btList[] = {
