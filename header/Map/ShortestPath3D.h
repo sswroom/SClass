@@ -80,7 +80,8 @@ namespace Map
 			Double calcNodeDist;
 			Math::Coord2DDbl calcFrom;
 			Double calcFromZ;
-			NN<Math::Geometry::LineString> calcLine;
+			NN<LineInfo> calcLine;
+			NN<Math::Geometry::LineString> calcLineVec;
 			Data::DataArray<Optional<Text::String>> calcLineProp;
 		};
 

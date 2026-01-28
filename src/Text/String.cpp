@@ -187,32 +187,28 @@ NN<Text::String> Text::String::NewSubstr(Text::CStringNN s, UIntOS index, UIntOS
 
 NN<Text::String> Text::String::FromI64(Int64 val)
 {
-	NN<Text::String> s;
-	NEW_CLASSNN(s, Text::String(21));
+	NN<Text::String> s = Text::String::New(21);
 	s->leng = (UIntOS)(Text::StrInt64(s->v, val) - s->v);
 	return s;
 }
 
 NN<Text::String> Text::String::FromU64(UInt64 val)
 {
-	NN<Text::String> s;
-	NEW_CLASSNN(s, Text::String(20));
+	NN<Text::String> s = Text::String::New(20);
 	s->leng = (UIntOS)(Text::StrUInt64(s->v, val) - s->v);
 	return s;
 }
 
 NN<Text::String> Text::String::FromI32(Int32 val)
 {
-	NN<Text::String> s;
-	NEW_CLASSNN(s, Text::String(11));
+	NN<Text::String> s = Text::String::New(11);
 	s->leng = (UIntOS)(Text::StrInt32(s->v, val) - s->v);
 	return s;
 }
 
 NN<Text::String> Text::String::FromU32(UInt32 val)
 {
-	NN<Text::String> s;
-	NEW_CLASSNN(s, Text::String(10));
+	NN<Text::String> s = Text::String::New(10);
 	s->leng = (UIntOS)(Text::StrUInt32(s->v, val) - s->v);
 	return s;
 }

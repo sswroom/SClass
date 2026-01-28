@@ -74,6 +74,7 @@ namespace Map
 			HighwaySteps,
 			HighwayStreetLamp,
 			HighwayTertiary,
+			HighwayTertiaryLink,
 			HighwayTrafficSignals,
 			HighwayTrunk,
 			HighwayTrunkLink,

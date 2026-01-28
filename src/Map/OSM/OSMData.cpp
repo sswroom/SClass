@@ -271,6 +271,10 @@ Map::OSM::LayerType Map::OSM::OSMData::CalcElementLayerType(NN<ElementInfo> elem
 			{
 				return LayerType::HighwayTertiary;
 			}
+			else if (tag->v->Equals(UTF8STRC("tertiary_link")))
+			{
+				return LayerType::HighwayTertiaryLink;
+			}
 			else if (tag->v->Equals(UTF8STRC("traffic_signals")))
 			{
 				return LayerType::HighwayTrafficSignals;
@@ -954,6 +958,7 @@ void Map::OSM::OSMData::SetStyleCenterline()
 	this->layerSpecs[(UIntOS)LayerType::HighwaySecondaryLink].hide = false;
 	this->layerSpecs[(UIntOS)LayerType::HighwayService].hide = false;
 	this->layerSpecs[(UIntOS)LayerType::HighwayTertiary].hide = false;
+	this->layerSpecs[(UIntOS)LayerType::HighwayTertiaryLink].hide = false;
 	this->layerSpecs[(UIntOS)LayerType::HighwayTrunk].hide = false;
 	this->layerSpecs[(UIntOS)LayerType::HighwayTrunkLink].hide = false;
 	this->layerSpecs[(UIntOS)LayerType::HighwayUnclassified].hide = false;
@@ -1020,6 +1025,7 @@ UIntOS Map::OSM::OSMData::GetRoadNetworkIds(NN<Data::ArrayListInt64> outArr)
 			layerType == LayerType::HighwaySecondaryLink ||
 			layerType == LayerType::HighwayService ||
 			layerType == LayerType::HighwayTertiary ||
+			layerType == LayerType::HighwayTertiaryLink ||
 			layerType == LayerType::HighwayTrunk ||
 			layerType == LayerType::HighwayTrunkLink ||
 			layerType == LayerType::HighwayUnclassified)
@@ -1492,6 +1498,8 @@ Text::CStringNN Map::OSM::LayerTypeGetName(LayerType val)
 		return CSTR("HighwayStreetLamp");
 	case LayerType::HighwayTertiary:
 		return CSTR("HighwayTertiary");
+	case LayerType::HighwayTertiaryLink:
+		return CSTR("HighwayTertiaryLink");
 	case LayerType::HighwayTrafficSignals:
 		return CSTR("HighwayTrafficSignals");
 	case LayerType::HighwayTrunk:

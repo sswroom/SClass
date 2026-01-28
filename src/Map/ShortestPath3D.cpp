@@ -7,6 +7,7 @@
 #include "Math/Geometry/MultiCurve.h"
 #include "Sync/MutexUsage.h"
 
+//#define VERBOSE
 #define MAX_DIST 1.0e+30
 
 Map::ShortestPath3D::LineComparator::LineComparator()
@@ -734,11 +735,17 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 			NN<LineInfo> nnstartLine;
 			NN<LineInfo> nnendLine;
 			RestrictionType restrictionType = RestrictionType::Unknown;
+#if defined(VERBOSE)
+			Bool toHide;
+#endif
 			k = 0;
 			l = restrictions->GetCount();
 			while (k < l)
 			{
 				relation = restrictions->GetItemNoCheck(k);
+#if defined(VERBOSE)				
+				toHide = false;
+#endif
 				if (relation->members.GetCount() >= 3)
 				{
 					m = 0;
@@ -750,27 +757,39 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 						{
 							if (role->Equals(CSTR("from")) && relMember->type == Map::OSM::ElementType::Way)
 							{
+//								Bool found = false;
 								o = pNode->lines.GetCount();
 								while (o-- > 0)
 								{
 									if (pNode->lines.GetItemNoCheck(o)->id == relMember->refId)
 									{
 										startLine = pNode->lines.GetItemNoCheck(o);
+//										found = true;
 										break;
 									}
 								}
+//								if (!found)
+//								{
+//									printf("ShortestPath3D.AddOSMData: OSM Restriction relation from line not found: id = %lld\r\n", relMember->refId);
+//								}
 							}
 							else if (role->Equals(CSTR("to")))
 							{
+//								Bool found = false;
 								o = pNode->lines.GetCount();
 								while (o-- > 0)
 								{
 									if (pNode->lines.GetItemNoCheck(o)->id == relMember->refId)
 									{
 										endLine = pNode->lines.GetItemNoCheck(o);
+//										found = true;
 										break;
 									}
 								}
+//								if (!found)
+//								{
+//									printf("ShortestPath3D.AddOSMData: OSM Restriction relation to line not found: id = %lld\r\n", relMember->refId);
+//								}
 							}
 							else if (role->Equals(CSTR("via")))
 							{
@@ -865,6 +884,9 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 							}
 							else if (tag->k->Equals(CSTR("not:restriction")))
 							{
+#if defined(VERBOSE)								
+								toHide = true;
+#endif
 								break;
 							}
 							m++;
@@ -885,7 +907,8 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 						}
 						prestrictions->Add(restrInfo);
 					}
-					else
+#if defined(VERBOSE)					
+					else if (!toHide)
 					{
 						printf("ShortestPath3D.AddOSMData: Incomplete OSM Restriction relation: id = %lld\r\n", relation->id);
 						if (!startLine.SetTo(nnstartLine))
@@ -900,7 +923,15 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 						{
 							printf("  Unknown restriction type\r\n");
 						}
+/*						printf("    Lines:\r\n");
+						o = 0;
+						while (o < pNode->lines.GetCount())
+						{
+							printf("      %lld\r\n", pNode->lines.GetItemNoCheck(o)->id);
+							o++;
+						}*/
 					}
+#endif
 				}
 				else
 				{
@@ -1277,7 +1308,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		nodeSess->calcNodeDist = 0;
 		nodeSess->calcFrom = posStart;
 		nodeSess->calcFromZ = 0;
-		nodeSess->calcLine = startHalfLine1;
+		nodeSess->calcLine = path1->line;
+		nodeSess->calcLineVec = startHalfLine1;
 		nodeSess->calcLineProp = path1->line->properties;
 		calcNodes.Add(nodeSess);
 	}
@@ -1291,14 +1323,16 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			nodeSess->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
-			nodeSess->calcLine = startHalfLine1;
+			nodeSess->calcLine = path1->line;
+			nodeSess->calcLineVec = startHalfLine1;
 			nodeSess->calcLineProp = path1->line->properties;
 			calcNodes.Add(nodeSess);
 			nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
 			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
-			nodeSess->calcLine = startHalfLine2;
+			nodeSess->calcLine = path1->line;
+			nodeSess->calcLineVec = startHalfLine2;
 			nodeSess->calcLineProp = path1->line->properties;
 			if (nodeSess->calcNodeDist < lastDist)
 			{
@@ -1315,24 +1349,89 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
-			nodeSess->calcLine = startHalfLine2;
+			nodeSess->calcLine = path1->line;
+			nodeSess->calcLineVec = startHalfLine2;
 			nodeSess->calcLineProp = path1->line->properties;
 			calcNodes.Add(nodeSess);
 		}
 	}
 	Bool startFound = false;
 	Bool endFound = false;
+	Data::ArrayListNN<LineInfo> lines;
+	NN<Data::ArrayListNN<RestrictionInfo>> restrictions;
 	Optional<Map::ShortestPath3D::NodeSession> optDestNodeSess;
 	NodeDistanceComparator comparator;
 	i1 = 0;
 	while (i1 < calcNodes.GetCount())
 	{
 		nodeSess = calcNodes.GetItemNoCheck(i1);
+		lines.Clear();
+		lines.AddAll(nodeSess->node->lines);
+		if (nodeSess->node->restrictions.SetTo(restrictions))
+		{
+			Bool isOnly = false;
+			UIntOS k = 0;
+			UIntOS l = restrictions->GetCount();
+			while (k < l)
+			{
+				NN<RestrictionInfo> restrInfo = restrictions->GetItemNoCheck(k);
+				if (restrInfo->fromLine == nodeSess->calcLine)
+				{
+					if (restrInfo->type == RestrictionType::OnlyLeftTurn || restrInfo->type == RestrictionType::OnlyRightTurn || restrInfo->type == RestrictionType::OnlyStraightOn)
+					{
+						isOnly = true;
+						break;
+					}
+				}
+				k++;
+			}
+			if (isOnly)
+			{
+				lines.Clear();
+				k = 0;
+				l = restrictions->GetCount();
+				while (k < l)
+				{
+					NN<RestrictionInfo> restrInfo = restrictions->GetItemNoCheck(k);
+					if (restrInfo->fromLine == nodeSess->calcLine)
+					{
+						if (restrInfo->type == RestrictionType::OnlyLeftTurn || restrInfo->type == RestrictionType::OnlyRightTurn || restrInfo->type == RestrictionType::OnlyStraightOn)
+						{
+							lineInfo = restrInfo->toLine;
+							lines.Add(lineInfo);
+						}
+					}
+					k++;
+				}
+			}
+			else
+			{
+				k = 0;
+				l = restrictions->GetCount();
+				while (k < l)
+				{
+					NN<RestrictionInfo> restrInfo = restrictions->GetItemNoCheck(k);
+					if (restrInfo->fromLine == nodeSess->calcLine)
+					{
+						UIntOS t = lines.GetCount();
+						while (t-- > 0)
+						{
+							lineInfo = lines.GetItemNoCheck(t);
+							if (lineInfo == restrInfo->toLine)
+							{
+								lines.RemoveAt(t);
+							}
+						}
+					}
+					k++;
+				}
+			}
+		}
 		i2 = 0;
-		j2 = nodeSess->node->lines.GetCount();
+		j2 = lines.GetCount();
 		while (i2 < j2)
 		{
-			lineInfo = nodeSess->node->lines.GetItemNoCheck(i2);
+			lineInfo = lines.GetItemNoCheck(i2);
 			lastDist = nodeSess->calcNodeDist + lineInfo->length;
 			if (lineInfo->startPos == nodeSess->node->pos && lineInfo->startZ == nodeSess->node->z)
 			{
@@ -1354,7 +1453,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 					destNodeSess->calcNodeDist = lastDist;
 					destNodeSess->calcFrom = nodeSess->node->pos;
 					destNodeSess->calcFromZ = nodeSess->node->z;
-					destNodeSess->calcLine = lineInfo->vec;
+					destNodeSess->calcLine = lineInfo;
+					destNodeSess->calcLineVec = lineInfo->vec;
 					destNodeSess->calcLineProp = lineInfo->properties;
 				}
 				else if (destNodeSess->calcNodeDist > lastDist)
@@ -1362,7 +1462,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 					destNodeSess->calcNodeDist = lastDist;
 					destNodeSess->calcFrom = nodeSess->node->pos;
 					destNodeSess->calcFromZ = nodeSess->node->z;
-					destNodeSess->calcLine = lineInfo->vec;
+					destNodeSess->calcLine = lineInfo;
+					destNodeSess->calcLineVec = lineInfo->vec;
 					destNodeSess->calcLineProp = lineInfo->properties;
 				}
 			}
@@ -1438,12 +1539,12 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		{
 			if (nodeSess->calcNodeDist > 0)
 			{
-				lineList->Add(nodeSess->calcLine);
+				lineList->Add(nodeSess->calcLineVec);
 				propList->Add(nodeSess->calcLineProp);
 			}
 			break;
 		}
-		lineList->Add(nodeSess->calcLine);
+		lineList->Add(nodeSess->calcLineVec);
 		propList->Add(nodeSess->calcLineProp);
 		nodeSess = GetNodeSess(sess, nodeSess->calcFrom, nodeSess->calcFromZ);
 	}
