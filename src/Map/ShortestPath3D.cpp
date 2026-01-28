@@ -707,7 +707,15 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 						m++;
 					}
 				}
-				lineInfo->length = ls->Calc3DLength();
+				if (way->layerType == Map::OSM::LayerType::HighwayService)
+				{
+					lineInfo->distanceRate = 5.0;
+				}
+				else
+				{
+					lineInfo->distanceRate = 1.0;
+				}
+				lineInfo->length = ls->Calc3DLength() * lineInfo->distanceRate;
 				this->lines.Add(lineInfo);
 				lastNode->lines.Add(lineInfo);
 				pNode->lines.Add(lineInfo);
@@ -1003,6 +1011,8 @@ Optional<Map::ShortestPath3D::LineInfo> Map::ShortestPath3D::AddPath(NN<Math::Ge
 			i++;
 		}
 		lineInfo->length = ls->Calc3DLength();
+		lineInfo->id = 0;
+		lineInfo->distanceRate = 1.0;
 		retInfo = lineInfo;
 		this->lines.Add(lineInfo);
 		if (addToNode)
@@ -1320,7 +1330,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		{
 			startHalfLine1->Reverse();
 			nodeSess = GetNodeSess(sess, path1->line->startPos, path1->line->startZ);
-			nodeSess->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
+			nodeSess->calcNodeDist = lastDist = startHalfLine1->Calc3DLength() * path1->line->distanceRate;
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
 			nodeSess->calcLine = path1->line;
@@ -1328,7 +1338,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			nodeSess->calcLineProp = path1->line->properties;
 			calcNodes.Add(nodeSess);
 			nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
-			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
+			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength() * path1->line->distanceRate;
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
 			nodeSess->calcLine = path1->line;
@@ -1346,7 +1356,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		else
 		{
 			nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
-			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
+			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength() * path1->line->distanceRate;
 			nodeSess->calcFrom = posStart;
 			nodeSess->calcFromZ = 0;
 			nodeSess->calcLine = path1->line;
@@ -1508,11 +1518,11 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		if (path2->line->allowReverse)
 		{
 			endHalfLine2->Reverse();
-			lastDist = endHalfLine1->Calc3DLength();
+			lastDist = endHalfLine1->Calc3DLength() * path2->line->distanceRate;
 			nodeSess = GetNodeSess(sess, path2->line->startPos, path2->line->startZ);
 			lastDist += nodeSess->calcNodeDist;
 			nodeSess = GetNodeSess(sess, path2->line->endPos, path2->line->endZ);
-			if (nodeSess->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
+			if (nodeSess->calcNodeDist + endHalfLine2->Calc3DLength() * path2->line->distanceRate < lastDist)
 			{
 				lineList->Add(endHalfLine2);
 				propList->Add(path2->line->properties);

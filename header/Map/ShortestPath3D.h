@@ -25,6 +25,7 @@ namespace Map
 			UInt32 networkId;
 			Bool allowReverse;
 			Int64 id;
+			Double distanceRate;
 			Data::DataArray<Optional<Text::String>> properties;
 		};
 

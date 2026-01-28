@@ -365,6 +365,16 @@ Bool Net::WebServer::WebRequest::GetHTTPFormDouble(Text::CStringNN name, OutPara
 	return s->ToDouble(valOut);
 }
 
+Double Net::WebServer::WebRequest::GetHTTPFormDoubleOrNAN(Text::CStringNN name)
+{
+	NN<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
+	{
+		return NAN;
+	}
+	return s->ToDoubleOrNAN();
+}
+
 UnsafeArray<UTF8Char> Net::WebServer::WebRequest::BuildURLHost(UnsafeArray<UTF8Char> sbuff)
 {
 	NN<Text::String> s;

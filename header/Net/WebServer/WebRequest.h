@@ -76,6 +76,7 @@ namespace Net
 			Bool GetHTTPFormInt64(Text::CStringNN name, OutParam<Int64> valOut);
 			Bool GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut);
 			Bool GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut);
+			Double GetHTTPFormDoubleOrNAN(Text::CStringNN name);
 			virtual void GetRequestURLBase(NN<Text::StringBuilderUTF8> sb) = 0;
 			UnsafeArray<UTF8Char> BuildURLHost(UnsafeArray<UTF8Char> sbuff);
 
