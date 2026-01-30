@@ -65,7 +65,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Data::ArrayListICaseString dirArr;
 	Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord> strArr;
 
-	GetMapDirs(env, &dirArr, nullptr);
+	GetMapDirs(env, dirArr, nullptr);
 	i = env->GetImageFileCnt();
 	while (i-- > 0)
 	{
@@ -228,7 +228,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i++;
 	}
 
-	WriteGroupItems(env, nullptr, &stmPos, stm, strArr, &dirArr);
+	WriteGroupItems(env, nullptr, stmPos, stm, strArr, dirArr);
 
 	tmpArr = strArr.GetValues();
 	j = tmpArr->GetCount();
@@ -257,13 +257,13 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	while (i-- > 0)
 	{
 		strRec = tmpArr->GetItemNoCheck(i);
-		MemFree(strRec->strBytes);
+		MemFreeArr(strRec->strBytes);
 		strRec.Delete();
 	}
 	return true;
 }
 
-void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group)
+void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, NN<Data::ArrayListString> dirArr, Optional<Map::MapEnv::GroupItem> group)
 {
 	UIntOS i = 0;
 	UIntOS j = env->GetItemCount(group);
@@ -311,7 +311,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)nnstrVal->leng;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		MemCopyNO(strRec->strBytes, nnstrVal->v.Ptr(), strRec->byteSize + 1);
+		strRec->strBytes.CopyFromNO(nnstrVal->v, strRec->byteSize + 1);
 		strArr->Put(strVal, strRec);
 	}
 	strRec->ofstList.Add(fileOfst);
@@ -326,14 +326,14 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strLen;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		MemCopyNO(strRec->strBytes, strVal.Ptr(), strRec->byteSize);
+		strRec->strBytes.CopyFromNO(strVal, strRec->byteSize);
 		strArr->PutC({strVal, strLen}, strRec);
 	}
 	strRec->ofstList.Add(fileOfst);
 	return strRec->byteSize;
 }
 
-void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, Data::ArrayListString *dirArr)
+void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, InOutParam<UInt32> stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, NN<Data::ArrayListString> dirArr)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
@@ -353,10 +353,10 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 
 				NN<Text::String> groupName = env->GetGroupName(NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
 				*(Int32*)&buff[4] = 0;
-				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
+				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + stmPos.Get());
 				*(Int32*)&buff[12] = (Int32)env->GetItemCount(NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
 				stm->Write(Data::ByteArrayR(buff, 16));
-				*stmPos = 16 + *stmPos;
+				stmPos.Set(16 + stmPos.Get());
 
 				WriteGroupItems(env, NN<Map::MapEnv::GroupItem>::ConvertFrom(item), stmPos, stm, strArr, dirArr);
 			}
@@ -369,7 +369,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 				sptr = layer->GetSourceName(sbuff);
 				*(Int32*)&buff[4] = 0;
 				k = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UIntOS)(sptr - &sbuff[k + 1]), 4 + *stmPos);
+				*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UIntOS)(sptr - &sbuff[k + 1]), 4 + stmPos.Get());
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
@@ -398,7 +398,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(Int32*)&buff[52] = (Int32)(setting.imgIndex - imgInfo.index);
 
 					stm->Write(Data::ByteArrayR(buff, 56));
-					*stmPos = 56 + *stmPos;
+					stmPos.Set(56 + stmPos.Get());
 				}
 				else if (ltype == Map::DRAW_LAYER_POLYLINE || ltype == Map::DRAW_LAYER_POLYLINE3D)
 				{
@@ -406,7 +406,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(Int32*)&buff[48] = (Int32)setting.lineStyle;
 
 					stm->Write(Data::ByteArrayR(buff, 52));
-					*stmPos = 52 + *stmPos;
+					stmPos.Set(52 + stmPos.Get());
 				}
 				else if (ltype == Map::DRAW_LAYER_POLYGON)
 				{
@@ -415,20 +415,20 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(Int32*)&buff[52] = (Int32)setting.fillStyle;
 
 					stm->Write(Data::ByteArrayR(buff, 56));
-					*stmPos = 56 + *stmPos;
+					stmPos.Set(56 + stmPos.Get());
 				}
 				else
 				{
 					*(Int32*)&buff[20] = 0;
 					stm->Write(Data::ByteArrayR(buff, 48));
-					*stmPos = 48 + *stmPos;
+					stmPos.Set(48 + stmPos.Get());
 				}
 			}
 			else
 			{
 				*(Int32*)&buff[0] = item->itemType;
 				stm->Write(Data::ByteArrayR(buff, 4));
-				*stmPos = 4 + *stmPos;
+				stmPos.Set(4 + stmPos.Get());
 			}
 		}
 		i++;

@@ -133,20 +133,20 @@ IntOS Exporter::ANIExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	return retSize;
 }
 
-IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
+IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
-	UInt8 *indexPtr;
-	UInt8 *imgPtr;
+	UnsafeArray<UInt8> indexPtr;
+	UnsafeArray<UInt8> imgPtr;
 	IntOS i;
 	IntOS j;
 	IntOS k;
 	IntOS l;
 	IntOS shiftCnt;
 	UInt8 mask;
-	UInt8 *srcPtr;
-	UInt8 *currPtr;
+	UnsafeArray<UInt8> srcPtr;
+	UnsafeArray<UInt8> currPtr;
 	IntOS sbpl;
-	UInt8 *maskPtr;
+	UnsafeArray<UInt8> maskPtr;
 	UInt32 imgDelay;
 	IntOS imgSize;
 	IntOS maskSize;
@@ -250,7 +250,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			while (l-- > 0)
 			{
 				srcPtr -= img->info.storeSize.x * 4;
-				MemCopyNO(imgPtr, srcPtr, img->info.dispSize.x * 4);
+				imgPtr.CopyFromNO(srcPtr, img->info.dispSize.x * 4);
 				imgPtr += img->info.dispSize.x * 4;
 			}
 			retSize += imgSize * img->info.dispSize.y;
@@ -421,7 +421,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 8);
+			imgPtr.CopyFromNO(img->pal.Ptr(), 8);
 			imgPtr += 8;
 			retSize += 8;
 
@@ -433,7 +433,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info.dispSize.x + 7) >> 3);
+				imgPtr.CopyFromNO(currPtr, (img->info.dispSize.x + 7) >> 3);
 				currPtr += (img->info.dispSize.x + 7) >> 3;
 				k = (img->info.dispSize.x + 7) >> 3;
 				while (k-- > 0)
@@ -496,7 +496,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 64);
+			imgPtr.CopyFromNO(img->pal.Ptr(), 64);
 			imgPtr += 64;
 			retSize += 64;
 
@@ -508,7 +508,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info.dispSize.x + 1) >> 1);
+				imgPtr.CopyFromNO(currPtr, (img->info.dispSize.x + 1) >> 1);
 				currPtr += (img->info.dispSize.x + 7) >> 3;
 				k = (img->info.dispSize.x + 7) >> 3;
 				while (k-- > 0)
@@ -571,7 +571,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 1024);
+			imgPtr.CopyFromNO(img->pal.Ptr(), 1024);
 			imgPtr += 1024;
 			retSize += 1024;
 
@@ -583,7 +583,7 @@ IntOS Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, img->info.dispSize.x);
+				imgPtr.CopyFromNO(currPtr, img->info.dispSize.x);
 				currPtr += (img->info.dispSize.x + 7) >> 3;
 				k = (img->info.dispSize.x + 7) >> 3;
 				while (k-- > 0)
@@ -683,7 +683,7 @@ Bool Exporter::ANIExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(buff);
 		return false;
 	}
-	stm->Write(buff, buffSize);
+	stm->Write(Data::ByteArrayR(buff, buffSize));
 	MemFree(buff);
 	return true;
 }

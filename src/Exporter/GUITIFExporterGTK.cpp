@@ -30,7 +30,7 @@ Bool Exporter::GUITIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char>
 Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 *tmpBuff;
-	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
+	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, tmpBuff).p;
 	if (image == 0)
 	{
 		return false;

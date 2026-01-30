@@ -18,7 +18,7 @@ namespace Java
 		void HandleMouseExited(UI::GUIControl::MouseEventHandler hdlr);
 		void HandleMousePressed(UI::GUIControl::MouseEventHandler hdlr);
 		void HandleMouseReleased(UI::GUIControl::MouseEventHandler hdlr);
-		NN<const JavaObject> ToObject() const { return *this; }
+		NN<const JavaObject> ToObject() const { return NNTHIS; }
 
 		static jclass GetClass();
 		static jobject NewObject(AnyType userObj);

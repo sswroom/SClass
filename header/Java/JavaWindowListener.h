@@ -11,7 +11,7 @@ namespace Java
 		JavaWindowListener(jobject me);
 		virtual ~JavaWindowListener();
 
-		NN<const JavaObject> ToObject() const { return *this; }
+		NN<const JavaObject> ToObject() const { return NNTHIS; }
 		
 		static jclass GetClass();
 	};

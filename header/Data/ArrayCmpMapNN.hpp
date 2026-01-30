@@ -148,7 +148,7 @@ namespace Data
 		UIntOS cnt;
 		UnsafeArray<NN<V>> arr = this->vals.GetArr(cnt);
 		UnsafeArray<NN<V>> outArr = MemAllocArr(NN<V>, cnt);
-		MemCopyNO(outArr.Ptr(), arr.Ptr(), sizeof(NN<V>) * cnt);
+		outArr.CopyFromNO(arr, cnt);
 		objCnt.Set(cnt);
 		return outArr;
 	}

@@ -14,7 +14,7 @@ namespace Java
 
 		void HandleFocusGain(UI::UIEvent hdlr);
 		void HandleFocusLost(UI::UIEvent hdlr);
-		NN<const JavaObject> ToObject() const { return *this; }
+		NN<const JavaObject> ToObject() const { return NNTHIS; }
 
 		static jclass GetClass();
 		static jobject NewObject(AnyType userObj);

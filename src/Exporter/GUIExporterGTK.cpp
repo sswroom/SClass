@@ -81,10 +81,10 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	}
 }
 
-void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
+AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8*> relBuff)
 {
 	NN<Media::ImageList> imgList;
-	*relBuff = 0;
+	relBuff.Set(nullptr);
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
 		return 0;
@@ -118,7 +118,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		}
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x << 2, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
-		*relBuff = tmpBuff;
+		relBuff.Set(tmpBuff);
 		return pixBuf;
 	case Media::PF_B8G8R8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 3);
@@ -126,21 +126,21 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		ImageUtil_SwapRGB(tmpBuff, img->info.dispSize.y * img->info.storeSize.x, 24);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x * 3, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
-		*relBuff = tmpBuff;
+		relBuff.Set(tmpBuff);
 		return pixBuf;
 	case Media::PF_R8G8B8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 3);
 		MemCopyANC(tmpBuff, img->data.Ptr(), img->info.dispSize.y * img->info.storeSize.x * 3);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x * 3, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
-		*relBuff = tmpBuff;
+		relBuff.Set(tmpBuff);
 		return pixBuf;
 	case Media::PF_R8G8B8A8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 4);
 		MemCopyANC(tmpBuff, img->data.Ptr(), img->info.dispSize.y * img->info.storeSize.x * 4);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x << 2, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
-		*relBuff = tmpBuff;
+		relBuff.Set(tmpBuff);
 		return pixBuf;
 	case Media::PF_PAL_1:
 	case Media::PF_PAL_2:
@@ -177,7 +177,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	}
 }
 
-Int32 Exporter::GUIExporter::GetEncoderClsid(const WChar *format, void *clsid)
+Int32 Exporter::GUIExporter::GetEncoderClsid(UnsafeArray<const WChar> format, void *clsid)
 {
 	return -1;  // Failure
 }

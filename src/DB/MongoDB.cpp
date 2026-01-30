@@ -28,18 +28,18 @@
 
 Int32 DB::MongoDB::initCnt = 0;
 
-DB::MongoDB::MongoDB(Text::CStringNN url, Text::CString database, IO::LogTool *log) : DB::ReadingDB(url)
+DB::MongoDB::MongoDB(Text::CStringNN url, Text::CString database, Optional<IO::LogTool> log) : DB::ReadingDB(url)
 {
 	mongoc_client_t *client;
 	this->log = log;
-	this->errorMsg = 0;
+	this->errorMsg = nullptr;
 	if (Sync::Interlocked::IncrementI32(initCnt) == 1)
 	{
 		mongoc_init();
 	}
 	client = mongoc_client_new((const Char*)url.v.Ptr());
 	this->client = client;
-	this->database = Text::String::NewOrNull(database).OrNull();
+	this->database = Text::String::NewOrNull(database);
 }
 
 DB::MongoDB::~MongoDB()
@@ -48,7 +48,7 @@ DB::MongoDB::~MongoDB()
 	{
 		mongoc_client_destroy((mongoc_client_t*)this->client);
 	}
-	SDEL_STRING(this->database);
+	OPTSTR_DEL(this->database);
 	if (Sync::Interlocked::DecrementI32(initCnt) == 0)
 	{
 		mongoc_cleanup();
@@ -57,18 +57,19 @@ DB::MongoDB::~MongoDB()
 
 UIntOS DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
+	NN<Text::String> database;
+	if (!this->database.SetTo(database) || this->client == 0 || schemaName.leng != 0)
 		return 0;
 
 	UIntOS initCnt = names->GetCount();
 	bson_error_t error;
-	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v.Ptr());
+	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)database->v.Ptr());
 	char **strv;
 	strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
-	SDEL_STRING(this->errorMsg);
+	OPTSTR_DEL(this->errorMsg);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message).Ptr();
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 	}
 	else
 	{
@@ -86,13 +87,14 @@ UIntOS DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	if (this->database && this->client)
+	NN<Text::String> database;
+	if (this->database.SetTo(database) && this->client)
 	{
-		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v.Ptr(), (const Char*)tableName.v.Ptr());
+		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)database->v.Ptr(), (const Char*)tableName.v.Ptr());
 		if (coll)
 		{
 			NN<DB::MongoDBReader> reader;
-			NEW_CLASSNN(reader, DB::MongoDBReader(this, coll));
+			NEW_CLASSNN(reader, DB::MongoDBReader(*this, coll));
 			return reader;
 		}
 	}
@@ -125,10 +127,7 @@ void DB::MongoDB::CloseReader(NN<DBReader> r)
 
 void DB::MongoDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	if (this->errorMsg)
-	{
-		str->Append(this->errorMsg);
-	}
+	str->AppendOpt(this->errorMsg);
 }
 
 void DB::MongoDB::Reconnect()
@@ -139,13 +138,13 @@ void DB::MongoDB::Reconnect()
 UIntOS DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	bson_error_t error;
-	SDEL_STRING(this->errorMsg);
+	OPTSTR_DEL(this->errorMsg);
 	if (this->client == 0)
 		return 0;
 	char **strv = mongoc_client_get_database_names_with_opts((mongoc_client_t*)this->client, 0, &error);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message).Ptr();
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 		return 0;
 	}
 	else
@@ -194,7 +193,7 @@ void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userNa
 	out->AppendU16(port);
 }
 
-DB::MongoDBReader::MongoDBReader(MongoDB *conn, void *coll)
+DB::MongoDBReader::MongoDBReader(NN<MongoDB> conn, void *coll)
 {
 	this->conn = conn;
 	this->coll = coll;

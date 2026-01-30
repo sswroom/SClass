@@ -367,7 +367,7 @@ namespace Data
 		{
 			return 0;
 		}
-		MemCopyNO(outArr.Ptr(), &arr[startIndex], sizeof(T) * (endIndex - startIndex));
+		outArr.CopyFromNO(&arr[startIndex], (endIndex - startIndex));
 		return endIndex - startIndex;
 	}
 

@@ -12,7 +12,7 @@ namespace Java
 		JavaMyActionListener(UI::UIEvent hdlr, AnyType userObj);
 		virtual ~JavaMyActionListener();
 
-		NN<const JavaObject> ToObject() const { return *this; }
+		NN<const JavaObject> ToObject() const { return NNTHIS; }
 
 		static jclass GetClass();
 		static jobject NewObject(UI::UIEvent hdlr, AnyType userObj);

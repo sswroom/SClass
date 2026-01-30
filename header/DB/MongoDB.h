@@ -14,11 +14,11 @@ namespace DB
 		static Int32 initCnt;
 	private:
 		void *client;
-		Text::String *database;
-		IO::LogTool *log;
-		Text::String *errorMsg;
+		Optional<Text::String> database;
+		Optional<IO::LogTool> log;
+		Optional<Text::String> errorMsg;
 	public:
-		MongoDB(Text::CStringNN url, Text::CString database, IO::LogTool *log);
+		MongoDB(Text::CStringNN url, Text::CString database, Optional<IO::LogTool> log);
 		virtual ~MongoDB();
 		
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
@@ -37,14 +37,14 @@ namespace DB
 	class MongoDBReader : public DB::DBReader
 	{
 	private:
-		MongoDB *conn;
+		NN<MongoDB> conn;
 		void *coll;
 		void *query;
 		void *cursor;
 		const void *doc;
 
 	public:
-		MongoDBReader(MongoDB *conn, void *coll);
+		MongoDBReader(NN<MongoDB> conn, void *coll);
 		virtual ~MongoDBReader();
 
 		virtual Bool ReadNext();
@@ -65,7 +65,6 @@ namespace DB
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex);
 		virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid);
 
-//		virtual WChar *GetName(IntOS colIndex);
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff);
 		virtual Bool IsNull(UIntOS colIndex);
 		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);

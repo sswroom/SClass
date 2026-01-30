@@ -13,7 +13,7 @@ namespace Exporter
 	private:
 		struct MEVStrRecord
 		{
-			UInt8 *strBytes;
+			UnsafeArray<UInt8> strBytes;
 			UInt32 byteSize;
 			Data::ArrayListUInt32 ofstList;
 		};
@@ -28,10 +28,10 @@ namespace Exporter
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 	private:
-		static void GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
+		static void GetMapDirs(NN<Map::MapEnv> env, NN<Data::ArrayListString> dirArr, Optional<Map::MapEnv::GroupItem> group);
 		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Optional<Text::String> strVal, UInt32 fileOfst);
 		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UIntOS strLen, UInt32 fileOfst);
-		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, Data::ArrayListString *dirArr);
+		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, InOutParam<UInt32> stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, NN<Data::ArrayListString> dirArr);
 	};
 }
 #endif

@@ -1,5 +1,6 @@
 #ifndef _SM_EXPORTER_GUIEXPORTER
 #define _SM_EXPORTER_GUIEXPORTER
+#include "AnyType.h"
 #include "IO/FileExporter.h"
 
 namespace Exporter
@@ -8,7 +9,7 @@ namespace Exporter
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 	public:
 		GUIExporter();
@@ -16,8 +17,8 @@ namespace Exporter
 
 		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 
-		void *ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff);
-		Int32 GetEncoderClsid(const WChar *format, void *clsid);
+		AnyType ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8 *> relBuff);
+		Int32 GetEncoderClsid(UnsafeArray<const WChar> format, void *clsid);
 	};
 }
 #endif

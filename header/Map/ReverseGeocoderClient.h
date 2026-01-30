@@ -1,6 +1,5 @@
 #ifndef _SM_MAP_REVERSEGEOCODERCLIENT
 #define _SM_MAP_REVERSEGEOCODERCLIENT
-#include "Data/ArrayList.hpp"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
 #include "IO/LogTool.h"
@@ -15,14 +14,14 @@ namespace Map
 	class ReverseGeocoderClient : public IO::ProtocolHandler::DataListener
 	{
 	private:
-		Map::ReverseGeocoder *revGeo;
+		NN<Map::ReverseGeocoder> revGeo;
 		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
 		NN<Net::SocketFactory> sockf;
-		IO::Writer *errWriter;
+		NN<IO::Writer> errWriter;
 		NN<Text::String> host;
 		UInt16 port;
 		Sync::Mutex cliMut;
-		Net::TCPClient *cli;
+		Optional<Net::TCPClient> cli;
 		Bool cliRunning;
 		Bool cliToStop;
 		Sync::Event monEvt;
@@ -35,7 +34,7 @@ namespace Map
 		static UInt32 __stdcall ClientThread(AnyType userObj);
 		static UInt32 __stdcall MonThread(AnyType userObj);
 	public:
-		ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Map::ReverseGeocoder *revGeo, IO::Writer *errWriter);
+		ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, NN<Map::ReverseGeocoder> revGeo, NN<IO::Writer> errWriter);
 		virtual ~ReverseGeocoderClient();
 
 		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
