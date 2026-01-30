@@ -559,6 +559,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		}
 		return resp->RedirectURL(req, sb.ToCString(), 0);
 	}
+	if (subReq.IndexOf(CSTR("..")) != INVALID_INDEX)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	}
 	if (!this->FileValid(subReq))
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
