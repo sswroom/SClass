@@ -8,6 +8,7 @@
 #include "IO/Writer.h"
 #include "IO/StringLogger.h"
 #include "IO/ProtoHdlr/ProtoSMonHandler.h"
+#include "Net/Email/EmailSender.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
 #include "Net/UDPServer.h"
@@ -56,6 +57,9 @@ namespace SSWR
 			NN<Media::DrawEngine> deng;
 			NN<Parser::ParserList> parsers;
 			Bool initErr;
+
+			Optional<Net::Email::EmailSender> emailSender;
+			Optional<Text::String> emailFrom;
 
 			Optional<DB::DBTool> db;
 			Sync::Mutex *dbMut;

@@ -14,7 +14,7 @@
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
-#include "Net/Email/SMTPClient.h"
+#include "Net/Email/EmailSenderConfig.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/NodeModuleHandler.h"
 #include "Parser/FullParserList.h"
@@ -606,38 +606,37 @@ void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType st
 
 void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CStringNN progName)
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr;
-	Net::Email::EmailMessage msg;
-	Text::StringBuilderUTF8 sb;
-	sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
-	sb.AppendC(UTF8STRC("Server IP: "));
-	sb.AppendP(sbuff, sptr);
-	sb.AppendC(UTF8STRC("\r\nSource Port: "));
-	sb.AppendU16(port);
-	sb.AppendC(UTF8STRC("\r\nAction Time: "));
-	sb.AppendTSNoZone(ts.ToLocalTime());
-	sb.AppendC(UTF8STRC("\r\nAction Type: "));
-	sb.Append((type == 1)?CSTR("Update"):CSTR("Start"));
-	sb.AppendC(UTF8STRC("\r\nProcess Id: "));
-	sb.AppendU32(procId);
-	sb.AppendC(UTF8STRC("\r\nProcess Name: "));
-	sb.Append(progName);
+	NN<Text::String> emailFrom;
+	NN<Net::Email::EmailSender> emailSender;
+	if (this->emailSender.SetTo(emailSender) && this->emailFrom.SetTo(emailFrom))
+	{
+		UTF8Char sbuff[128];
+		UnsafeArray<UTF8Char> sptr;
+		Net::Email::EmailMessage msg;
+		Text::StringBuilderUTF8 sb;
+		sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
+		sb.AppendC(UTF8STRC("Server IP: "));
+		sb.AppendP(sbuff, sptr);
+		sb.AppendC(UTF8STRC("\r\nSource Port: "));
+		sb.AppendU16(port);
+		sb.AppendC(UTF8STRC("\r\nAction Time: "));
+		sb.AppendTSNoZone(ts.ToLocalTime());
+		sb.AppendC(UTF8STRC("\r\nAction Type: "));
+		sb.Append((type == 1)?CSTR("Update"):CSTR("Start"));
+		sb.AppendC(UTF8STRC("\r\nProcess Id: "));
+		sb.AppendU32(procId);
+		sb.AppendC(UTF8STRC("\r\nProcess Name: "));
+		sb.Append(progName);
 
-	msg.SetSubject(CSTR("ProgMonitor Notification"));
-	msg.SetContent(sb.ToCString(), CSTR("text/plain"));
-	msg.AddTo(CSTR("Simon Wong"), CSTR("sswroom@yahoo.com"));
-
-	Text::CStringNN smtpFrom = CSTR("alert@caronline.hk");
-	IO::LogWriter logWriter(this->log, IO::LogHandler::LogLevel::Raw);
-	Net::Email::SMTPClient cli(this->clif, this->ssl, CSTR("webmail.caronline.hk"), 465, Net::Email::SMTPConn::ConnType::SSL, &logWriter, 60);
-	cli.SetPlainAuth(CSTR("alert@caronline.hk"), CSTR("caronlineskypower"));
-
-	msg.SetFrom(nullptr, smtpFrom);
-	sb.ClearStr();
-	Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom);
-	msg.SetMessageId(sb.ToCString());
-	cli.Send(msg);
+		msg.SetSubject(CSTR("ProgMonitor Notification"));
+		msg.SetContent(sb.ToCString(), CSTR("text/plain"));
+		msg.AddTo(CSTR("Simon Wong"), CSTR("sswroom@yahoo.com"));
+		msg.SetFrom(nullptr, emailFrom->ToCString());
+		sb.ClearStr();
+		Net::Email::EmailMessage::GenerateMessageID(sb, emailFrom->ToCString());
+		msg.SetMessageId(sb.ToCString());
+		emailSender->Send(msg);
+	}
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status)
@@ -1168,6 +1167,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	this->dbMut = 0;
 	this->listener = 0;
 	this->webHdlr = 0;
+	this->emailSender = nullptr;
+	this->emailFrom = nullptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	dt.ClearTime();
@@ -1204,6 +1205,11 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	}
 	else
 	{
+		if (cfg->GetValue(CSTR("EmailFrom")).SetTo(s))
+		{
+			this->emailFrom = s->Clone();
+		}
+		this->emailSender = Net::Email::EmailSenderConfig::LoadFromConfig(this->clif, this->ssl, cfg, nullptr, this->log);
 		if (cfg->GetValue(CSTR("LogDir")).SetTo(s))
 		{
 			sb.ClearStr();
@@ -1494,6 +1500,8 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	this->UserAgentStore();
 	this->RefererStore();
 
+	this->emailSender.Delete();
+	OPTSTR_DEL(this->emailFrom);
 	SDEL_CLASS(this->dataCRC);
 	this->parsers.Delete();
 	this->ssl.Delete();
