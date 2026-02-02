@@ -260,3 +260,36 @@ Bool SSWR::ServerMonitor::ServerMonitorCore::Run()
 	}
 	return false;
 }
+
+SSWR::ServerMonitor::ServerMonitorCore::UserRole SSWR::ServerMonitor::ServerMonitorCore::Login(Text::CStringNN username, Text::CStringNN password)
+{
+	NN<UserInfo> userInfo;
+	if (this->userMap.GetC(username).SetTo(userInfo))
+	{
+		Crypto::Hash::Bcrypt bcrypt;
+		if (bcrypt.Matches(userInfo->passwordHash->ToCString(), password))
+		{
+			return userInfo->role;
+		}
+	}
+	return UserRole::NotLogged;
+}
+
+void SSWR::ServerMonitor::ServerMonitorCore::GetServerList(NN<Data::ArrayListNN<ServerInfo>> serverList, NN<Sync::MutexUsage> mutUsage)
+{
+	mutUsage->ReplaceMutex(this->mut);
+	serverList->AddAll(this->serverMap);
+}
+
+Text::CStringNN SSWR::ServerMonitor::ServerMonitorCore::ServerTypeGetName(ServerType serverType)
+{
+	switch (serverType)
+	{
+	case ServerType::URL:
+		return CSTR("URL");
+	case ServerType::TCP:
+		return CSTR("TCP");
+	default:
+		return CSTR("Unknown");
+	}
+}

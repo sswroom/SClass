@@ -8,6 +8,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+#define VERBOSE
+
 UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType userObj)
 {
 	NN<Net::WebServer::MemoryWebSessionManager> me = userObj.GetNN<Net::WebServer::MemoryWebSessionManager>();
@@ -145,7 +147,12 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 {
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
+	{
+#if defined(VERBOSE)
+		printf("MemoryWebSessionManager.GetSession: No Session ID\r\n");
+#endif
 		return nullptr;
+	}
 	NN<Net::WebServer::MemoryWebSession> sess;
 	if (Optional<Net::WebServer::MemoryWebSession>::ConvertFrom(this->GetSession(sessId)).SetTo(sess))
 	{
@@ -156,11 +163,27 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 		}
 		if (!sess->RequestValid(req->GetBrowser(), req->GetOS(), sb.ToCString()))
 		{
+#if defined(VERBOSE)
+			printf("MemoryWebSessionManager.GetSession: Referer not match: %s\r\n", sb.ToCString().v.Ptr());
+#endif
 			sess->EndUse();
 			return nullptr;
 		}
 		return NN<Net::WebServer::WebSession>(sess);
 	}
+#if defined(VERBOSE)
+	printf("MemoryWebSessionManager.GetSession: Session ID %lld not found\r\n", sessId);
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		UIntOS i = 0;
+		UIntOS j = this->sessIds.GetCount();
+		while (i < j)
+		{
+			printf("  Stored Session ID %lld\r\n", this->sessIds.GetItem(i));
+			i++;
+		}
+	}
+#endif
 	return nullptr;
 }
 

@@ -22,20 +22,20 @@ namespace Net
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::TCPClient> cli;
-			IO::BufferedOutputStream *cstm;
+			Optional<IO::BufferedOutputStream> cstm;
 			NN<Net::WebServer::WebListener> svr;
 			NN<Net::WebServer::WebHandler> hdlr;
 			Optional<ProtocolHandler> protoHdlr;
-			UInt8 *dataBuff;
+			UnsafeArray<UInt8> dataBuff;
 			UIntOS dataBuffSize;
 			UIntOS buffSize;
-			Net::WebServer::WebServerRequest *currReq;
+			Optional<Net::WebServer::WebServerRequest> currReq;
 			KeepAlive keepAlive;
 			Sync::Mutex procMut;
 
 			Bool allowProxy;
 			Bool proxyMode;
-			Net::TCPClient *proxyCli;
+			Optional<Net::TCPClient> proxyCli;
 
 			Bool respHeaderSent;
 			Bool respDataEnd;
@@ -46,7 +46,7 @@ namespace Net
 
 			SendLogger logger;
 			AnyType loggerObj;
-			IO::SMTCWriter *logWriter;
+			Optional<IO::SMTCWriter> logWriter;
 
 			SSEDisconnectHandler sseHdlr;
 			AnyType sseHdlrObj;
@@ -89,7 +89,7 @@ namespace Net
 			virtual IO::StreamType GetStreamType() const;
 
 			void SetSendLogger(SendLogger logger, AnyType userObj);
-			void SetLogWriter(IO::SMTCWriter *logWriter);
+			void SetLogWriter(Optional<IO::SMTCWriter> logWriter);
 		};
 	}
 }

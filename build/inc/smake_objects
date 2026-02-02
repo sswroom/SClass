@@ -2308,6 +2308,7 @@ SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
 ServerMonitorCore.o: ../../src/SSWR/ServerMonitor/ServerMonitorCore.cpp
 ServerMonitorHandler.o: ../../src/SSWR/ServerMonitor/ServerMonitorHandler.cpp
+ServerMonitorSession.o: ../../src/SSWR/ServerMonitor/ServerMonitorSession.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp
 SHPConvAddFilterForm.o: ../../src/SSWR/SHPConv/SHPConvAddFilterForm.cpp
 SHPConvCurrFilterForm.o: ../../src/SSWR/SHPConv/SHPConvCurrFilterForm.cpp

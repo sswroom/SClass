@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SERVERMONITOR_SERVERMONITORHANDLER
 #define _SM_SSWR_SERVERMONITOR_SERVERMONITORHANDLER
+#include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebServiceHandler.h"
 
 namespace SSWR
@@ -11,10 +12,16 @@ namespace SSWR
 		{
 		private:
 			NN<ServerMonitorCore> core;
+			Net::WebServer::MemoryWebSessionManager sessMgr;
+
 
 			static Bool __stdcall LoginFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
-			static Bool __stdcall GetStatusFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+			static Bool __stdcall GetServersFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall LogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+		
+			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj);
+			void AddHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN contentType);
 		public:
 			ServerMonitorHandler(NN<ServerMonitorCore> core, Text::CStringNN rootDir);
 			virtual ~ServerMonitorHandler();

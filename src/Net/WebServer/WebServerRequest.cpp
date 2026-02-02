@@ -13,7 +13,7 @@
 
 #define MAX_DATA_SIZE 104857600
 
-void Net::WebServer::WebServerRequest::ParseQuery()
+NN<Data::FastStringMapNN<Text::String>> Net::WebServer::WebServerRequest::ParseQuery()
 {
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sbuff2;
@@ -24,9 +24,11 @@ void Net::WebServer::WebServerRequest::ParseQuery()
 	Text::PString strs2[2];
 	NN<Text::String> s;
 	Optional<Text::String> opts;
+	NN<Data::FastStringMapNN<Text::String>> queryMap;
 
 	sbuff = MemAllocArr(UTF8Char, urlLen);
-	NEW_CLASS(this->queryMap, Data::FastStringMapNN<Text::String>());
+	NEW_CLASSNN(queryMap, Data::FastStringMapNN<Text::String>());
+	this->queryMap = queryMap;
 	if (this->GetQueryString(sbuff, urlLen).SetTo(sptr))
 	{
 		sbuff2 = MemAllocArr(UTF8Char, urlLen);
@@ -49,17 +51,17 @@ void Net::WebServer::WebServerRequest::ParseQuery()
 				sbuff2[0] = 0;
 				sptr = sbuff2;
 			}
-			if (this->queryMap->GetC(strs2[0].ToCString()).SetTo(s))
+			if (queryMap->GetC(strs2[0].ToCString()).SetTo(s))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.AppendC(sbuff2, (UIntOS)(sptr - sbuff2));
-				opts = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()));
+				opts = queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				opts = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UIntOS)(sptr - sbuff2)));
+				opts = queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UIntOS)(sptr - sbuff2)));
 			}
 			if (opts.SetTo(s))
 			{
@@ -69,9 +71,10 @@ void Net::WebServer::WebServerRequest::ParseQuery()
 		MemFreeArr(sbuff2);
 	}
 	MemFreeArr(sbuff);
+	return queryMap;
 }
 
-void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UIntOS buffSize)
+void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	UInt8 *tmpBuff;
 	UInt8 b;
@@ -187,9 +190,11 @@ void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Tex
 	MemFree(tmpBuff);
 }
 
-void Net::WebServer::WebServerRequest::ParseFormPart(UInt8 *data, UIntOS dataSize, UIntOS startOfst)
+void Net::WebServer::WebServerRequest::ParseFormPart(UnsafeArray<UInt8> data, UIntOS dataSize, UIntOS startOfst)
 {
-	if (dataSize < 4)
+	NN<Data::FastStringMapNN<Text::String>> formMap;
+	NN<Data::ArrayListNN<FormFileInfo>> formFileList;
+	if (dataSize < 4 || !this->formMap.SetTo(formMap) || !this->formFileList.SetTo(formFileList))
 		return;
 	if (data[dataSize - 1] == '-' && data[dataSize - 2] == '-')
 		dataSize -= 2;
@@ -261,7 +266,7 @@ void Net::WebServer::WebServerRequest::ParseFormPart(UInt8 *data, UIntOS dataSiz
 		NN<Text::String> s;
 		if (formName.SetTo(formNameNN) && dataSize >= i)
 		{
-			if (this->formMap->GetC(formNameNN).SetTo(s))
+			if (formMap->GetC(formNameNN).SetTo(s))
 			{
 				s->Release();
 				formMap->PutC(formNameNN, Text::String::New(&data[i], dataSize - i));
@@ -281,7 +286,7 @@ void Net::WebServer::WebServerRequest::ParseFormPart(UInt8 *data, UIntOS dataSiz
 			info->leng = dataSize - i;
 			info->formName = Text::String::New(formNameNN);
 			info->fileName = Text::String::New(fileNameNN);
-			this->formFileList->Add(info);
+			formFileList->Add(info);
 		}
 	}
 	SDEL_TEXT(formName.v);
@@ -307,21 +312,21 @@ Text::CStringNN Net::WebServer::WebServerRequest::ParseHeaderVal(UnsafeArray<UTF
 	return {outStr, dataLen};
 }
 
-Net::WebServer::WebServerRequest::WebServerRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebServerRequest::WebServerRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, NN<const Net::SocketUtil::AddressInfo> cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::String::New(requestURI);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
 	this->cli = cli;
-	this->cliAddr = *cliAddr;
+	this->cliAddr = *cliAddr.Ptr();
 	this->cliPort = cliPort;
 	this->svrPort = svrPort;
-	this->queryMap = 0;
-	this->formMap = 0;
-	this->formFileList = 0;
-	this->reqData = 0;
+	this->queryMap = nullptr;
+	this->formMap = nullptr;
+	this->formFileList = nullptr;
+	this->reqData = nullptr;
 	this->reqDataSize = 0;
-	this->chunkMStm = 0;
+	this->chunkMStm = nullptr;
 	this->remoteCert = nullptr;
 }
 
@@ -330,35 +335,41 @@ Net::WebServer::WebServerRequest::~WebServerRequest()
 	UIntOS i;
 	this->requestURI->Release();
 	NNLIST_FREE_STRING(&this->headers);
-	if (this->queryMap)
+	NN<Data::FastStringMapNN<Text::String>> stringMap;
+	NN<Data::ArrayListNN<FormFileInfo>> formFileList;
+	UnsafeArray<UInt8> reqData;
+	if (this->queryMap.SetTo(stringMap))
 	{
-		NNLIST_FREE_STRING(this->queryMap);
-		DEL_CLASS(this->queryMap);
+		NNLIST_FREE_STRING(stringMap);
+		stringMap.Delete();
+		this->queryMap = nullptr;
 	}
-	if (this->formMap)
+	if (this->formMap.SetTo(stringMap))
 	{
-		NNLIST_FREE_STRING(this->formMap);
-		DEL_CLASS(this->formMap);
+		NNLIST_FREE_STRING(stringMap);
+		stringMap.Delete();
+		this->formMap = nullptr;
 	}
-	if (this->formFileList)
+	if (this->formFileList.SetTo(formFileList))
 	{
 		NN<FormFileInfo> fileInfo;
-		i = this->formFileList->GetCount();
+		i = formFileList->GetCount();
 		while (i-- > 0)
 		{
-			fileInfo = this->formFileList->GetItemNoCheck(i);
+			fileInfo = formFileList->GetItemNoCheck(i);
 			fileInfo->formName->Release();
 			fileInfo->fileName->Release();
 			MemFreeNN(fileInfo);
 		}
-		DEL_CLASS(this->formFileList);
+		formFileList.Delete();
+		this->formFileList = nullptr;
 	}
-	if (this->reqData)
+	if (this->reqData.SetTo(reqData))
 	{
-		MemFree(this->reqData);
-		this->reqData = 0;
+		MemFreeArr(reqData);
+		this->reqData = nullptr;
 	}
-	SDEL_CLASS(this->chunkMStm);
+	this->chunkMStm.Delete();
 	this->remoteCert.Delete();
 }
 
@@ -437,20 +448,22 @@ Net::WebServer::WebRequest::RequestProtocol Net::WebServer::WebServerRequest::Ge
 
 Optional<Text::String> Net::WebServer::WebServerRequest::GetQueryValue(Text::CStringNN name)
 {
-	if (this->queryMap == 0)
+	NN<Data::FastStringMapNN<Text::String>> queryMap;
+	if (!this->queryMap.SetTo(queryMap))
 	{
-		this->ParseQuery();
+		queryMap = this->ParseQuery();
 	}
-	return this->queryMap->GetC(name);
+	return queryMap->GetC(name);
 }
 
 Bool Net::WebServer::WebServerRequest::HasQuery(Text::CStringNN name)
 {
-	if (this->queryMap == 0)
+	NN<Data::FastStringMapNN<Text::String>> queryMap;
+	if (!this->queryMap.SetTo(queryMap))
 	{
-		this->ParseQuery();
+		queryMap = this->ParseQuery();
 	}
-	return this->queryMap->GetC(name).NotNull();
+	return queryMap->GetC(name).NotNull();
 }
 
 Net::WebUtil::RequestMethod Net::WebServer::WebServerRequest::GetReqMethod() const
@@ -460,11 +473,12 @@ Net::WebUtil::RequestMethod Net::WebServer::WebServerRequest::GetReqMethod() con
 
 void Net::WebServer::WebServerRequest::ParseHTTPForm()
 {
-	if (this->formMap)
+	UnsafeArray<UInt8> reqData;
+	if (this->formMap.NotNull())
 	{
 		return;
 	}
-	if ((this->reqData == 0) || (this->reqDataSize != this->reqCurrSize))
+	if (!this->reqData.SetTo(reqData) || (this->reqDataSize != this->reqCurrSize))
 	{
 		return;
 	}
@@ -477,7 +491,7 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 			NN<Data::FastStringMapNN<Text::String>> formMap;
 			NEW_CLASSNN(formMap, Data::FastStringMapNN<Text::String>());
 			this->formMap = formMap.Ptr();
-			ParseFormStr(formMap, this->reqData, this->reqDataSize);
+			ParseFormStr(formMap, reqData, this->reqDataSize);
 		}
 		else if (sb.StartsWith(UTF8STRC("multipart/form-data")))
 		{
@@ -487,8 +501,8 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 			{
 				UInt8 *boundary = &sptr[i + 9];
 				UIntOS boundSize = sb.GetLength() - i - 9;
-				NEW_CLASS(this->formMap, Data::FastStringMapNN<Text::String>());
-				NEW_CLASS(this->formFileList, Data::ArrayListNN<FormFileInfo>());
+				NEW_CLASSOPT(this->formMap, Data::FastStringMapNN<Text::String>());
+				NEW_CLASSOPT(this->formFileList, Data::ArrayListNN<FormFileInfo>());
 
 				UIntOS formStart;
 				UIntOS formCurr;
@@ -501,7 +515,7 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 					i = boundSize;
 					while (i-- > 0)
 					{
-						if (boundary[i] != this->reqData[formCurr + i])
+						if (boundary[i] != reqData[formCurr + i])
 						{
 							eq = false;
 							break;
@@ -511,10 +525,10 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 					{
 						if (formCurr > formStart)
 						{
-							ParseFormPart(&this->reqData[formStart], formCurr - formStart, formStart);
+							ParseFormPart(&reqData[formStart], formCurr - formStart, formStart);
 						}
 						formCurr += boundSize;
-						if (formCurr + 2 <= this->reqDataSize && this->reqData[formCurr] == 13 && this->reqData[formCurr] == 10)
+						if (formCurr + 2 <= this->reqDataSize && reqData[formCurr] == 13 && reqData[formCurr + 1] == 10)
 						{
 							formCurr += 2;
 						}
@@ -527,7 +541,7 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 				}
 				if (formStart < this->reqDataSize)
 				{
-					ParseFormPart(&this->reqData[formStart], this->reqDataSize - formStart, formStart);
+					ParseFormPart(&reqData[formStart], this->reqDataSize - formStart, formStart);
 				}
 			}
 		}
@@ -536,20 +550,23 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 
 Optional<Text::String> Net::WebServer::WebServerRequest::GetHTTPFormStr(Text::CStringNN name)
 {
-	if (this->formMap == 0)
+	NN<Data::FastStringMapNN<Text::String>> formMap;
+	if (!this->formMap.SetTo(formMap))
 		return nullptr;
-	return this->formMap->GetC(name);
+	return formMap->GetC(name);
 }
 
 UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetHTTPFormFile(Text::CStringNN formName, UIntOS index, UnsafeArrayOpt<UTF8Char> fileName, UIntOS fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UIntOS> fileSize)
 {
-	if (this->formFileList == 0)
+	UnsafeArray<UInt8> reqData;
+	NN<Data::ArrayListNN<FormFileInfo>> formFileList;
+	if (!this->formFileList.SetTo(formFileList) || !this->reqData.SetTo(reqData))
 		return nullptr;
 	UIntOS i = 0;
-	UIntOS j = this->formFileList->GetCount();
+	UIntOS j = formFileList->GetCount();
 	while (i < j)
 	{
-		NN<FormFileInfo> info = this->formFileList->GetItemNoCheck(i);
+		NN<FormFileInfo> info = formFileList->GetItemNoCheck(i);
 		if (info->formName->Equals(formName.v, formName.leng))
 		{
 			if (index == 0)
@@ -560,7 +577,7 @@ UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetHTTPFormFile(Te
 				{
 					fileNameEnd.Set(Text::StrConcatCS(nnfileName, info->fileName->v, info->fileName->leng, fileNameBuffSize));
 				}
-				return &this->reqData[info->ofst];
+				return &reqData[info->ofst];
 			}
 			index--;
 		}
@@ -647,7 +664,7 @@ Optional<Crypto::Cert::X509Cert> Net::WebServer::WebServerRequest::GetClientCert
 
 UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetReqData(OutParam<UIntOS> dataSize)
 {
-	if (this->reqData == 0)
+	if (this->reqData.IsNull())
 	{
 		dataSize.Set(0);
 		return nullptr;
@@ -713,12 +730,12 @@ Bool Net::WebServer::WebServerRequest::HasData()
 
 void Net::WebServer::WebServerRequest::DataStart()
 {
-	if (this->reqData == 0 && this->HasData())
+	if (this->reqData.IsNull() && this->HasData())
 	{
 		if ((IntOS)this->reqDataSize == -1)
 		{
 			this->reqData = MemAlloc(UInt8, 65536);
-			NEW_CLASS(this->chunkMStm, IO::MemoryStream());
+			NEW_CLASSOPT(this->chunkMStm, IO::MemoryStream());
 		}
 		else
 		{
@@ -730,32 +747,38 @@ void Net::WebServer::WebServerRequest::DataStart()
 
 Bool Net::WebServer::WebServerRequest::DataStarted()
 {
-	return this->reqData != 0;
+	return this->reqData.NotNull();
 }
 
 Bool Net::WebServer::WebServerRequest::DataFull()
 {
-	if (this->reqData == 0 || ((IntOS)this->reqDataSize != -1 && this->reqCurrSize >= this->reqDataSize))
+#if defined(VERBOSE)
+	printf("WebServerRequest.DataFull: currSize=%llu, dataSize=%lld\r\n", this->reqCurrSize, (IntOS)this->reqDataSize);
+	printf("WebServerRequest.DataFull: reqData: %d\r\n", this->reqData.NotNull()?1:0);
+#endif
+	if (this->reqData.IsNull() || ((IntOS)this->reqDataSize != -1 && this->reqCurrSize >= this->reqDataSize))
 		return true;
 	return false;
 }
 
-UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataSize)
+UIntOS Net::WebServer::WebServerRequest::DataPut(UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
-	if (this->reqData == 0)
+	NN<IO::MemoryStream> chunkMStm;
+	UnsafeArray<UInt8> reqData;
+	if (!this->reqData.SetTo(reqData))
 		return 0;
-	if ((IntOS)this->reqDataSize == -1)
+	if ((IntOS)this->reqDataSize == -1 && this->chunkMStm.SetTo(chunkMStm))
 	{
 		if (this->reqCurrSize + dataSize > 65536)
 		{
-			MemCopyNO(&this->reqData[this->reqCurrSize], data, 65536 - this->reqCurrSize);
+			MemCopyNO(&reqData[this->reqCurrSize], data.Ptr(), 65536 - this->reqCurrSize);
 			dataSize = 65536 - this->reqCurrSize;
 			this->reqCurrSize = 65536;
 			this->reqDataSize = 65536;
 		}
 		else
 		{
-			MemCopyNO(&this->reqData[this->reqCurrSize], data, dataSize);
+			MemCopyNO(&reqData[this->reqCurrSize], data.Ptr(), dataSize);
 			this->reqCurrSize += dataSize;
 		}
 
@@ -765,12 +788,12 @@ UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataS
 		i = 0;
 		while (i <= this->reqCurrSize - 2)
 		{
-			if (this->reqData[i] == 13 && this->reqData[i + 1] == 10)
+			if (reqData[i] == 13 && reqData[i + 1] == 10)
 			{
-				UnsafeArray<UInt8> buff = this->chunkMStm->GetBuff(this->reqDataSize);
-				MemFree(this->reqData);
-				this->reqData = MemAlloc(UInt8, this->reqDataSize);
-				MemCopyNO(this->reqData, buff.Ptr(), this->reqDataSize);
+				UnsafeArray<UInt8> buff = chunkMStm->GetBuff(this->reqDataSize);
+				MemFreeArr(reqData);
+				this->reqData = reqData = MemAllocArr(UInt8, this->reqDataSize);
+				reqData.CopyFromNO(buff, this->reqDataSize);
 				this->reqCurrSize = this->reqDataSize;
 				i = 0;
 				break;
@@ -778,34 +801,34 @@ UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataS
 			j = i;
 			while (j <= this->reqCurrSize - 2)
 			{
-				if (this->reqData[j] == 13 && this->reqData[j + 1] == 10)
+				if (reqData[j] == 13 && reqData[j + 1] == 10)
 				{
-					this->reqData[j] = 0;
-					leng = Text::StrHex2UInt32C(&this->reqData[i]);
-					this->reqData[j] = 13;
+					reqData[j] = 0;
+					leng = Text::StrHex2UInt32C(&reqData[i]);
+					reqData[j] = 13;
 					if (j + 4 + leng <= this->reqCurrSize)
 					{
-						if (this->reqData[j + 2 + leng] != 13 || this->reqData[j + 3 + leng] != 10)
+						if (reqData[j + 2 + leng] != 13 || reqData[j + 3 + leng] != 10)
 						{
 							i = 0;
 							this->reqDataSize = 0;
-							MemFree(this->reqData);
-							this->reqData = 0;
+							MemFreeArr(reqData);
+							this->reqData = nullptr;
 							this->reqCurrSize = 0;
 							break;
 						}
 
 						if (leng > 0)
 						{
-							this->chunkMStm->Write(Data::ByteArrayR(&this->reqData[j + 2], leng));
+							chunkMStm->Write(Data::ByteArrayR(&reqData[j + 2], leng));
 							i = j + 4 + leng;
 						}
 						else
 						{
-							UnsafeArray<UInt8> buff = this->chunkMStm->GetBuff(this->reqDataSize);
-							MemFree(this->reqData);
-							this->reqData = MemAlloc(UInt8, this->reqDataSize);
-							MemCopyNO(this->reqData, buff.Ptr(), this->reqDataSize);
+							UnsafeArray<UInt8> buff = chunkMStm->GetBuff(this->reqDataSize);
+							MemFreeArr(reqData);
+							this->reqData = reqData = MemAllocArr(UInt8, this->reqDataSize);
+							reqData.CopyFromNO(buff, this->reqDataSize);
 							this->reqCurrSize = this->reqDataSize;
 							i = 0;
 							j = 0;
@@ -824,8 +847,8 @@ UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataS
 				{
 					i = 0;
 					this->reqDataSize = 0;
-					MemFree(this->reqData);
-					this->reqData = 0;
+					MemFreeArr(reqData);
+					this->reqData = nullptr;
 					this->reqCurrSize = 0;
 					break;
 				}
@@ -839,7 +862,7 @@ UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataS
 		}
 		else if (i > 0)
 		{
-			MemCopyO(this->reqData, &this->reqData[i], this->reqCurrSize - i);
+			reqData.CopyFromO(&reqData[i], this->reqCurrSize - i);
 			this->reqCurrSize -= i;
 		}
 		return dataSize;
@@ -849,13 +872,13 @@ UIntOS Net::WebServer::WebServerRequest::DataPut(const UInt8 *data, UIntOS dataS
 		UIntOS sizeLeft = this->reqDataSize - this->reqCurrSize;
 		if (sizeLeft > dataSize)
 		{
-			MemCopyNO(&this->reqData[this->reqCurrSize], data, dataSize);
+			MemCopyNO(&reqData[this->reqCurrSize], data.Ptr(), dataSize);
 			this->reqCurrSize += dataSize;
 			return dataSize;
 		}
 		else if (sizeLeft > 0)
 		{
-			MemCopyNO(&this->reqData[this->reqCurrSize], data, sizeLeft);
+			MemCopyNO(&reqData[this->reqCurrSize], data.Ptr(), sizeLeft);
 			this->reqCurrSize += sizeLeft;
 			return sizeLeft;
 		}

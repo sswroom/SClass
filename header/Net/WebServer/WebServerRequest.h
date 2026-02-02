@@ -26,28 +26,28 @@ namespace Net
 			NN<Text::String> requestURI;
 			Net::WebUtil::RequestMethod reqMeth;
 			Data::FastStringMapNN<Text::String> headers;
-			Data::FastStringMapNN<Text::String> *queryMap;
+			Optional<Data::FastStringMapNN<Text::String>> queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
 			NN<Net::TCPClient> cli;
-			Data::FastStringMapNN<Text::String> *formMap;
-			Data::ArrayListNN<FormFileInfo> *formFileList;
+			Optional<Data::FastStringMapNN<Text::String>> formMap;
+			Optional<Data::ArrayListNN<FormFileInfo>> formFileList;
 
-			UInt8 *reqData;
+			UnsafeArrayOpt<UInt8> reqData;
 			UIntOS reqDataSize;
 			UIntOS reqCurrSize;
-			IO::MemoryStream *chunkMStm;
+			Optional<IO::MemoryStream> chunkMStm;
 			Optional<Crypto::Cert::X509Cert> remoteCert;
 
 		private:
-			void ParseQuery();
-			void ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UIntOS buffSize);
-			void ParseFormPart(UInt8 *data, UIntOS dataSize, UIntOS startOfst);
+			NN<Data::FastStringMapNN<Text::String>> ParseQuery();
+			void ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, UnsafeArray<const UInt8> buff, UIntOS buffSize);
+			void ParseFormPart(UnsafeArray<UInt8> data, UIntOS dataSize, UIntOS startOfst);
 			Text::CStringNN ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UIntOS dataLen);
 		public:
-			WebServerRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebServerRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, NN<const Net::SocketUtil::AddressInfo> cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebServerRequest();
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
@@ -82,7 +82,7 @@ namespace Net
 			void DataStart();
 			Bool DataStarted();
 			Bool DataFull();
-			UIntOS DataPut(const UInt8 *data, UIntOS dataSize);
+			UIntOS DataPut(UnsafeArray<const UInt8> data, UIntOS dataSize);
 
 			static UIntOS GetMaxDataSize();
 		};

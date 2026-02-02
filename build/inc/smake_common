@@ -4869,6 +4869,8 @@ SSWR/ServerMonitor/ServerMonitorCore.h:
 @ServerMonitorCore.o
 SSWR/ServerMonitor/ServerMonitorHandler.h:
 @ServerMonitorHandler.o
+SSWR/ServerMonitor/ServerMonitorSession.h:
+@ServerMonitorSession.o
 SSWR/SHPConv/ElevationFilter.h:
 @ElevationFilter.o
 SSWR/SHPConv/MapFilter.h:

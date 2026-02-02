@@ -20,7 +20,8 @@ namespace SSWR
 			enum class UserRole
 			{
 				Admin,
-				User
+				User,
+				NotLogged
 			};
 
 			struct UserInfo
@@ -71,6 +72,7 @@ namespace SSWR
 			Optional<DB::DBConn> db;
 			Optional<Net::WebServer::WebListener> listener;
 			Optional<Net::WebServer::WebServiceHandler> webHdlr;
+			Sync::Mutex mut;
 			Data::FastStringMapNN<UserInfo> userMap;
 			Data::Int32FastMapNN<ServerInfo> serverMap;
 			Data::Int32FastMapNN<AlertInfo> alertMap;
@@ -84,6 +86,11 @@ namespace SSWR
 
 			Bool IsError() const;
 			Bool Run();
+
+			UserRole Login(Text::CStringNN username, Text::CStringNN password);
+			void GetServerList(NN<Data::ArrayListNN<ServerInfo>> serverList, NN<Sync::MutexUsage> mutUsage);
+
+			static Text::CStringNN ServerTypeGetName(ServerType serverType);
 		};
 	}
 }

@@ -26,10 +26,12 @@
 
 UIntOS Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
-	if (this->logWriter) this->logWriter->TCPSend(this->cli, buff, buffSize);
-	if (this->cstm)
+	NN<IO::SMTCWriter> logWriter;
+	NN<IO::BufferedOutputStream> cstm;
+	if (this->logWriter.SetTo(logWriter)) logWriter->TCPSend(this->cli, buff, buffSize);
+	if (this->cstm.SetTo(cstm))
 	{
-		buffSize = this->cstm->Write(Data::ByteArrayR(buff, buffSize));
+		buffSize = cstm->Write(Data::ByteArrayR(buff, buffSize));
 	}
 	else
 	{
@@ -48,9 +50,9 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 	this->ssl = ssl;
 	this->cli = cli;
 	this->svr = svr;
-	this->cstm = 0;
+	this->cstm = nullptr;
 	this->hdlr = hdlr;
-	this->currReq = 0;
+	this->currReq = nullptr;
 	this->dataBuff = MemAlloc(UInt8, 4096);
 	this->dataBuffSize = 4096;
 	this->buffSize = 0;
@@ -58,10 +60,10 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 	this->allowProxy = allowProxy;
 	this->keepAlive = keepAlive;
 	this->proxyMode = false;
-	this->proxyCli = 0;
+	this->proxyCli = nullptr;
 	this->logger = 0;
 	this->loggerObj = 0;
-	this->logWriter = 0;
+	this->logWriter = nullptr;
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
 	this->protoHdlr = nullptr;
@@ -70,6 +72,7 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 Net::WebServer::WebConnection::~WebConnection()
 {
 	NN<ProtocolHandler> protoHdlr;
+	NN<Net::TCPClient> proxyCli;
 	if (this->protoHdlr.SetTo(protoHdlr))
 	{
 		protoHdlr->ConnectionClosed();
@@ -80,18 +83,18 @@ Net::WebServer::WebConnection::~WebConnection()
 		this->sseHdlr(*this, this->sseHdlrObj);
 		this->sseHdlr = 0;
 	}
-	if (this->proxyMode)
+	if (this->proxyMode && this->proxyCli.SetTo(proxyCli))
 	{
-		this->proxyCli->Close();
+		proxyCli->Close();
 		while (this->proxyMode)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	SDEL_CLASS(this->cstm);
+	this->cstm.Delete();
 	this->cli.Delete();
-	MemFree(this->dataBuff);
-	SDEL_CLASS(this->currReq);
+	MemFreeArr(this->dataBuff);
+	this->currReq.Delete();
 }
 
 void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
@@ -105,16 +108,17 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	UIntOS lineStart;
 	UIntOS strIndex;
 	NN<ProtocolHandler> protoHdlr;
+	NN<Net::TCPClient> proxyCli;
 	if (this->protoHdlr.SetTo(protoHdlr))
 	{
 		protoHdlr->ProtocolData(buff.Arr().Ptr(), buff.GetSize());
 		return;
 	}
-	else if (this->proxyMode)
+	else if (this->proxyMode && this->proxyCli.SetTo(proxyCli))
 	{
-		if (this->proxyCli->Write(buff) != buff.GetSize())
+		if (proxyCli->Write(buff) != buff.GetSize())
 		{
-			this->proxyCli->Close();
+			proxyCli->Close();
 			this->cli->Close();
 		}
 		return;
@@ -127,9 +131,9 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 			{
 				this->dataBuffSize = this->dataBuffSize << 1;
 			}
-			UInt8 *newBuff = MemAlloc(UInt8, this->dataBuffSize);
-			MemCopyNO(newBuff, this->dataBuff, this->buffSize);
-			MemFree(this->dataBuff);
+			UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, this->dataBuffSize);
+			newBuff.CopyFromNO(this->dataBuff, this->buffSize);
+			MemFreeArr(this->dataBuff);
 			this->dataBuff = newBuff;
 		}
 		MemCopyNO(&this->dataBuff[this->buffSize], buff.Arr().Ptr(), buff.GetSize());
@@ -139,12 +143,13 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 		i = 0;
 		lineStart = 0;
 
+		NN<Net::WebServer::WebServerRequest> currReq;
 		{
 			Sync::MutexUsage mutUsage(this->procMut);
-			if (this->currReq && this->currReq->DataStarted())
+			if (this->currReq.SetTo(currReq) && currReq->DataStarted())
 			{
-				i += this->currReq->DataPut(buff.Arr().Ptr(), buff.GetSize());
-				if (!this->currReq->DataFull())
+				i += currReq->DataPut(buff.Arr().Ptr(), buff.GetSize());
+				if (!currReq->DataFull())
 				{
 					this->buffSize = 0;
 					return;
@@ -165,17 +170,20 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 				if (lineStart == i)
 				{
 					Sync::MutexUsage mutUsage(this->procMut);
-					if (this->currReq)
+					if (this->currReq.SetTo(currReq))
 					{
-						if (this->currReq->HasData())
+						if (currReq->HasData())
 						{
-							this->currReq->DataStart();
+							currReq->DataStart();
 #if defined(VERBOSE)
 							printf("WebConn: Post data %d bytes\r\n", (UInt32)(j - i - 1));
 #endif		
-							i += this->currReq->DataPut(&this->dataBuff[i + 2], j - i - 1);
-							if (!this->currReq->DataFull())
+							i += currReq->DataPut(&this->dataBuff[i + 2], j - i - 1);
+							if (!currReq->DataFull())
 							{
+#if defined(VERBOSE)
+								printf("WebConn: Post not data full\r\n");
+#endif		
 								break;
 							}
 						}
@@ -183,7 +191,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 						this->ProcessResponse();
 					}
 				}
-				else if (this->currReq == 0)
+				else if (this->currReq.IsNull())
 				{
 					if (Text::StrSplitP(sarr, 4, {(UTF8Char*)&this->dataBuff[lineStart], i - lineStart}, ' ') == 3)
 					{
@@ -200,13 +208,13 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 
 							{
 								Sync::MutexUsage mutUsage(this->procMut);
-								SDEL_CLASS(this->currReq);
+								this->currReq.Delete();
 							}
 
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
+								NEW_CLASSOPT(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -259,13 +267,13 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 
 							{
 								Sync::MutexUsage mutUsage(this->procMut);
-								SDEL_CLASS(this->currReq);
+								this->currReq.Delete();
 							}
 
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
+								NEW_CLASSOPT(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -305,9 +313,9 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							strIndex++;
 						}
 						this->dataBuff[i] = 0;
-						if (this->currReq)
+						if (this->currReq.SetTo(currReq))
 						{
-							this->currReq->AddHeader(Text::CStringNN(&this->dataBuff[lineStart], nameLen), Text::CStringNN(&this->dataBuff[lineStart + (UIntOS)strIndex], i - lineStart - strIndex));
+							currReq->AddHeader(Text::CStringNN(&this->dataBuff[lineStart], nameLen), Text::CStringNN(&this->dataBuff[lineStart + (UIntOS)strIndex], i - lineStart - strIndex));
 						}
 					}
 				}
@@ -327,7 +335,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 			}
 			else
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[lineStart], this->buffSize - lineStart);
+				this->dataBuff.CopyFromO(&this->dataBuff[lineStart], this->buffSize - lineStart);
 				this->buffSize -= lineStart;
 			}
 		}
@@ -341,11 +349,12 @@ void Net::WebServer::WebConnection::ProxyData(const Data::ByteArrayR &buff)
 
 void Net::WebServer::WebConnection::EndProxyConn()
 {
-	if (this->proxyCli)
+	NN<Net::TCPClient> proxyCli;
+	if (this->proxyCli.SetTo(proxyCli))
 	{
 		this->proxyMode = false;
-		DEL_CLASS(this->proxyCli);
-		this->proxyCli = 0;
+		proxyCli.Delete();
+		this->proxyCli = nullptr;
 		this->svr->LogMessageC(this->currReq, CSTR("End Proxy Conn"));
 	}
 	else
@@ -356,9 +365,10 @@ void Net::WebServer::WebConnection::EndProxyConn()
 
 void Net::WebServer::WebConnection::ProxyShutdown()
 {
-	if (this->proxyCli)
+	NN<Net::TCPClient> proxyCli;
+	if (this->proxyCli.SetTo(proxyCli))
 	{
-		this->proxyCli->ShutdownSend();
+		proxyCli->ShutdownSend();
 	}
 }
 
@@ -366,13 +376,14 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Net::WebServer::WebServerRequest> currReq;
 	Text::StringBuilderUTF8 sb;
 	sptr = this->cli->GetRemoteName(sbuff).Or(sbuff);
 	sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" "));
-	if (this->currReq)
+	if (this->currReq.SetTo(currReq))
 	{
-		NN<Text::String> uri = this->currReq->GetRequestURI();
+		NN<Text::String> uri = currReq->GetRequestURI();
 		sb.Append(uri);
 		sb.AppendUTF8Char(' ');
 	}
@@ -382,9 +393,10 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 
 Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
 {
-	if (this->currReq)
+	NN<Net::WebServer::WebServerRequest> currReq;
+	if (this->currReq.SetTo(currReq))
 	{
-		return this->currReq->GetRequestURI();
+		return currReq->GetRequestURI();
 	}
 	return nullptr;
 }
@@ -435,7 +447,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respDataEnd = false;
 	this->respHeaders.ClearStr();
 	NN<Net::WebServer::WebServerRequest> currReq;
-	if (currReq.Set(this->currReq))
+	NN<IO::BufferedOutputStream> cstm;
+	if (this->currReq.SetTo(currReq))
 	{
 
 		NN<Text::String> reqURI = currReq->GetRequestURI();
@@ -652,8 +665,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			t = clk.GetTimeDiff();
 			this->svr->LogAccess(currReq, *this, t);
 
-			DEL_CLASS(this->currReq);
-			this->currReq = 0;
+			this->currReq.Delete();
 		}
 		else
 		{
@@ -671,9 +683,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	#if defined(VERBOSE)
 				printf("WebConn: chunked %d\r\n", 0);
 	#endif
-				if (this->cstm)
+				if (this->cstm.SetTo(cstm))
 				{
-					this->respLeng += this->cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
+					this->respLeng += cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
 				}
 				else
 				{
@@ -683,7 +695,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			}
 			t = clk.GetTimeDiff();
 			this->svr->LogAccess(currReq, *this, t);
-			SDEL_CLASS(this->cstm);
+			this->cstm.Delete();
 			if (this->protoHdlr.NotNull())
 			{
 			}
@@ -712,8 +724,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						this->cli->ShutdownSend();
 					}
 				}
-				DEL_CLASS(this->currReq);
-				this->currReq = 0;
+				this->currReq.Delete();
 			}
 		}
 	}
@@ -721,9 +732,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 
 void Net::WebServer::WebConnection::EnableWriteBuffer()
 {
-	if (this->cstm == 0)
+	if (this->cstm.IsNull())
 	{
-		NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->cli, WRITE_BUFFER_SIZE));
+		NEW_CLASSOPT(this->cstm, IO::BufferedOutputStream(this->cli, WRITE_BUFFER_SIZE));
 	}
 }
 
@@ -796,10 +807,11 @@ void Net::WebServer::WebConnection::ShutdownSend()
 #if defined(VERBOSE)
 		printf("WebConn: chunked %d\r\n", 0);
 #endif
-		if (this->cstm)
+		NN<IO::BufferedOutputStream> cstm;
+		if (this->cstm.SetTo(cstm))
 		{
-			this->respLeng += this->cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
-			this->cstm->Flush();
+			this->respLeng += cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
+			cstm->Flush();
 		}
 		else
 		{
@@ -812,7 +824,8 @@ void Net::WebServer::WebConnection::ShutdownSend()
 
 Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj)
 {
-	if (this->sseHdlr)
+	NN<Net::WebServer::WebServerRequest> currReq;
+	if (this->sseHdlr || !this->currReq.SetTo(currReq))
 	{
 		return false;
 	}
@@ -822,7 +835,7 @@ Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisco
 	this->AddContentType(CSTR("text/event-stream"));
 	if (!this->respHeaderSent)
 	{
-		this->SendHeaders(this->currReq->GetProtocol());
+		this->SendHeaders(currReq->GetProtocol());
 	}
 	return true;
 }
@@ -854,9 +867,10 @@ Bool Net::WebServer::WebConnection::SwitchProtocol(Optional<ProtocolHandler> pro
 {
 	if (!this->respHeaderSent)
 	{
-		if (this->currReq)
+		NN<Net::WebServer::WebServerRequest> currReq;
+		if (this->currReq.SetTo(currReq))
 		{
-			SendHeaders(this->currReq->GetProtocol());
+			SendHeaders(currReq->GetProtocol());
 		}
 		else
 		{
@@ -886,6 +900,7 @@ UIntOS Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 
 UIntOS Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 {
+	NN<Net::WebServer::WebServerRequest> currReq;
 	if (this->protoHdlr.NotNull())
 	{
 		if (this->logger)
@@ -897,9 +912,9 @@ UIntOS Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 	}
 	if (!this->respHeaderSent)
 	{
-		if (this->currReq)
+		if (this->currReq.SetTo(currReq))
 		{
-			SendHeaders(this->currReq->GetProtocol());
+			SendHeaders(currReq->GetProtocol());
 		}
 		else
 		{
@@ -961,11 +976,12 @@ Int32 Net::WebServer::WebConnection::Flush()
 
 void Net::WebServer::WebConnection::Close()
 {
+	NN<Net::WebServer::WebServerRequest> currReq;
 	if (!this->respHeaderSent)
 	{
-		if (this->currReq)
+		if (this->currReq.SetTo(currReq))
 		{
-			SendHeaders(this->currReq->GetProtocol());
+			SendHeaders(currReq->GetProtocol());
 		}
 		else
 		{
@@ -995,7 +1011,7 @@ void Net::WebServer::WebConnection::SetSendLogger(SendLogger logger, AnyType use
 	this->loggerObj = userObj;
 }
 
-void Net::WebServer::WebConnection::SetLogWriter(IO::SMTCWriter *logWriter)
+void Net::WebServer::WebConnection::SetLogWriter(Optional<IO::SMTCWriter> logWriter)
 {
 	this->logWriter = logWriter;
 }
