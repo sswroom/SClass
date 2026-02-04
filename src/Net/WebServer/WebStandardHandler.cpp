@@ -76,6 +76,11 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::W
 	{
 		resp->AddHeader(CSTR("Content-Security-Policy"), s->ToCString());
 	}
+	this->AddCustomHeaders(req, resp);
+}
+
+void Net::WebServer::WebStandardHandler::AddCustomHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+{
 }
 
 Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
@@ -85,6 +90,13 @@ Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebR
 	resp->AddCacheControl(cacheAge);
 	resp->AddContentType(mime);
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, json);
+}
+
+Bool Net::WebServer::WebStandardHandler::ResponseStatus(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Net::WebStatus::StatusCode sc)
+{
+	this->AddResponseHeaders(req, resp);
+	resp->AddCacheControl(cacheAge);
+	return resp->ResponseError(req, sc);
 }
 
 Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UIntOS maxAge, Text::CStringNN options)

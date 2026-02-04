@@ -9,6 +9,56 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/ServerMonitor/ServerMonitorCore.h"
 #include "SSWR/ServerMonitor/ServerMonitorHandler.h"
+#include "SSWR/ServerMonitor/URLMonitorClient.h"
+
+void __stdcall SSWR::ServerMonitor::ServerMonitorCore::CheckThread(NN<Sync::Thread> thread)
+{
+	NN<ServerMonitorCore> me = thread->GetUserObj().GetNN<ServerMonitorCore>();
+	UIntOS i;
+	Int32 id;
+	NN<ServerInfo> serverInfo;
+	NN<ServerMonitorClient> client;
+	Data::Timestamp currTime;
+	Sync::MutexUsage mutUsage;
+	while (!thread->IsStopping())
+	{
+		i = me->serverMap.GetCount();
+		while (i-- > 0)
+		{
+			mutUsage.ReplaceMutex(me->mut);
+			if (me->serverMap.GetItem(i).SetTo(serverInfo))
+			{
+				id = serverInfo->id;
+				currTime = Data::Timestamp::Now();
+				if (serverInfo->lastCheck.IsNull() || currTime.DiffMS(serverInfo->lastCheck) >= serverInfo->intervalMS)
+				{
+					if (serverInfo->client.SetTo(client))
+					{
+						mutUsage.EndUse();
+						Bool thisSuccess = client->ServerValid();
+						mutUsage.BeginUse();
+						if (me->serverMap.Get(id).SetTo(serverInfo))
+						{
+							serverInfo->lastCheck = currTime;
+							if (serverInfo->lastSuccess && !thisSuccess)
+							{
+								me->SendAlerts(serverInfo->name->ToCString());
+							}
+							serverInfo->lastSuccess = thisSuccess;
+						}
+					}
+					else
+					{
+						serverInfo->lastCheck = currTime;
+						serverInfo->lastSuccess = false;
+					}
+				}
+			}
+		}
+		mutUsage.EndUse();
+		thread->Wait(1000);
+	}
+}
 
 void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeUserInfo(NN<UserInfo> userInfo)
 {
@@ -21,6 +71,7 @@ void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeServerInfo(NN<ServerI
 {
 	serverInfo->name->Release();
 	serverInfo->target->Release();
+	serverInfo->client.Delete();
 	serverInfo.Delete();
 }
 
@@ -31,7 +82,12 @@ void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeAlertInfo(NN<AlertInf
 	alertInfo.Delete();
 }
 
-SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
+void SSWR::ServerMonitor::ServerMonitorCore::SendAlerts(Text::CStringNN serverName)
+{
+
+}
+
+SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckThread, this, CSTR("CheckThread"))
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -131,7 +187,8 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 				}
 
 				NN<ServerInfo> serverInfo;
-				if (db->ExecuteReader(CSTR("select id, name, serverType, target, port, intervalMS, timeoutMS from servers")).SetTo(r))
+				NN<ServerMonitorClient> client;
+				if (db->ExecuteReader(CSTR("select id, name, serverType, target, intervalMS, timeoutMS from servers")).SetTo(r))
 				{
 					while (r->ReadNext())
 					{
@@ -140,11 +197,23 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 						serverInfo->name = r->GetNewStrNN(1);
 						serverInfo->serverType = (ServerType)r->GetInt32(2);
 						serverInfo->target = r->GetNewStrNN(3);
-						serverInfo->port = r->GetInt32(4);
-						serverInfo->intervalMS = r->GetInt32(5);
-						serverInfo->timeoutMS = r->GetInt32(6);
+						serverInfo->intervalMS = r->GetInt32(4);
+						serverInfo->timeoutMS = r->GetInt32(5);
 						serverInfo->lastSuccess = false;
 						serverInfo->lastCheck = nullptr;
+						serverInfo->client = nullptr;
+						if (serverInfo->serverType == ServerType::URL)
+						{
+							NEW_CLASSNN(client, URLMonitorClient(this->clif, this->ssl, serverInfo->target->ToCString(), serverInfo->timeoutMS));
+							if (client->HasError())
+							{
+								client.Delete();
+							}
+							else
+							{
+								serverInfo->client = client;
+							}
+						}
 						this->serverMap.Put(serverInfo->id, serverInfo);
 					}
 					db->CloseReader(r);
@@ -156,7 +225,6 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 					tabDef.AddCol(DB::ColDef::Create(CSTR("name"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(512)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("serverType"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("target"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(1024)->NotNull(true));
-					tabDef.AddCol(DB::ColDef::Create(CSTR("port"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("intervalMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("timeoutMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					DB::SQL::CreateTableCommand cmd(tabDef, false);
@@ -236,8 +304,10 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore()
 
 SSWR::ServerMonitor::ServerMonitorCore::~ServerMonitorCore()
 {
+	this->checkThread.BeginStop();
 	this->listener.Delete();
 	this->webHdlr.Delete();
+	this->checkThread.Stop();
 	this->db.Delete();
 	this->ssl.Delete();
 	this->clif.Delete();
@@ -253,7 +323,7 @@ Bool SSWR::ServerMonitor::ServerMonitorCore::IsError() const
 Bool SSWR::ServerMonitor::ServerMonitorCore::Run()
 {
 	NN<Net::WebServer::WebListener> listener;
-	if (this->ssl.NotNull() && this->db.NotNull() && this->listener.SetTo(listener) && listener->Start())
+	if (this->ssl.NotNull() && this->db.NotNull() && this->listener.SetTo(listener) && listener->Start() && this->checkThread.Start())
 	{
 		this->console.WriteLine(CSTR("ServerMonitor is running"));
 		return true;
@@ -261,7 +331,7 @@ Bool SSWR::ServerMonitor::ServerMonitorCore::Run()
 	return false;
 }
 
-SSWR::ServerMonitor::ServerMonitorCore::UserRole SSWR::ServerMonitor::ServerMonitorCore::Login(Text::CStringNN username, Text::CStringNN password)
+SSWR::ServerMonitor::UserRole SSWR::ServerMonitor::ServerMonitorCore::Login(Text::CStringNN username, Text::CStringNN password)
 {
 	NN<UserInfo> userInfo;
 	if (this->userMap.GetC(username).SetTo(userInfo))
@@ -281,15 +351,81 @@ void SSWR::ServerMonitor::ServerMonitorCore::GetServerList(NN<Data::ArrayListNN<
 	serverList->AddAll(this->serverMap);
 }
 
-Text::CStringNN SSWR::ServerMonitor::ServerMonitorCore::ServerTypeGetName(ServerType serverType)
+Optional<SSWR::ServerMonitor::ServerInfo> SSWR::ServerMonitor::ServerMonitorCore::AddServerURL(Text::CStringNN name, Text::CStringNN url, Text::CString containsText, Int32 timeoutMS)
 {
-	switch (serverType)
+	NN<DB::SQLiteFile> db;
+	if (!Optional<DB::SQLiteFile>::ConvertFrom(this->db).SetTo(db))
 	{
-	case ServerType::URL:
-		return CSTR("URL");
-	case ServerType::TCP:
-		return CSTR("TCP");
-	default:
-		return CSTR("Unknown");
+		return nullptr;
 	}
+
+	if (containsText.leng == 0)
+	{
+		containsText = nullptr;
+	}
+	NN<URLMonitorClient> client;
+	NEW_CLASSNN(client, URLMonitorClient(this->clif, this->ssl, url, containsText, timeoutMS));
+	if (client->HasError())
+	{
+		return nullptr;
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		NN<ServerInfo> serverInfo;
+		NEW_CLASSNN(serverInfo, ServerInfo());
+		{
+			Sync::MutexUsage mutUsage(this->mut);
+			serverInfo->id = this->serverMap.GetKey(this->serverMap.GetCount() - 1) + 1;
+			serverInfo->name = Text::String::New(name);
+			serverInfo->serverType = ServerType::URL;
+			client->BuildTarget(sb);
+			serverInfo->target = Text::String::New(sb.ToCString());
+			serverInfo->intervalMS = 60000;
+			serverInfo->timeoutMS = timeoutMS;
+			serverInfo->lastSuccess = false;
+			serverInfo->lastCheck = nullptr;
+			serverInfo->client = client;
+			this->serverMap.Put(serverInfo->id, serverInfo);
+		}
+		DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+		sql.AppendCmdC(CSTR("insert into servers ("));
+		sql.AppendCol(U8STR("id"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("name"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("serverType"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("target"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("intervalMS"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("timeoutMS"));;
+		sql.AppendCmdC(CSTR(") values ("));
+		sql.AppendInt32(serverInfo->id);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStr(serverInfo->name);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32((Int32)serverInfo->serverType);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStr(serverInfo->target);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(serverInfo->intervalMS);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(serverInfo->timeoutMS);
+		sql.AppendCmdC(CSTR(")"));
+		if (db->ExecuteNonQuery(sql.ToCString()) < 0)
+		{
+			Sync::MutexUsage mutUsage(this->mut);
+			this->serverMap.Remove(serverInfo->id);
+			FreeServerInfo(serverInfo);
+			return nullptr;
+		}
+		return serverInfo;
+	}
+}
+
+Optional<SSWR::ServerMonitor::AlertInfo> SSWR::ServerMonitor::ServerMonitorCore::AddAlertSMTP(Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails)
+{
+	return nullptr;
 }

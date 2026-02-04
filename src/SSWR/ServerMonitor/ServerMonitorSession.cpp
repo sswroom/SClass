@@ -23,22 +23,20 @@ void SSWR::ServerMonitor::ServerMonitorSession::EndUse()
 
 Bool SSWR::ServerMonitor::ServerMonitorSession::IsValid() const
 {
-	return this->GetUserRole() != ServerMonitorCore::UserRole::NotLogged;
+	return this->GetUserRole() != UserRole::NotLogged;
 }
 
-SSWR::ServerMonitor::ServerMonitorCore::UserRole SSWR::ServerMonitor::ServerMonitorSession::GetUserRole() const
+SSWR::ServerMonitor::UserRole SSWR::ServerMonitor::ServerMonitorSession::GetUserRole() const
 {
 	NN<Net::WebServer::WebSession> sess;
 	if (!this->sess.SetTo(sess))
 	{
-		printf("ServerMonitorSession.GetUserRole: No session\r\n");
-		return ServerMonitorCore::UserRole::NotLogged;
+		return UserRole::NotLogged;
 	}
-	printf("ServerMonitorSession.GetUserRole: UserRole=%d\r\n", sess->GetValueInt32(CSTR("UserRole")));
-	return (ServerMonitorCore::UserRole)sess->GetValueInt32(CSTR("UserRole"));
+	return (UserRole)sess->GetValueInt32(CSTR("UserRole"));
 }
 
-void SSWR::ServerMonitor::ServerMonitorSession::SetUserRole(ServerMonitorCore::UserRole userRole)
+void SSWR::ServerMonitor::ServerMonitorSession::SetUserRole(UserRole userRole)
 {
 	NN<Net::WebServer::WebSession> sess;
 	if (this->sess.SetTo(sess))
@@ -47,7 +45,7 @@ void SSWR::ServerMonitor::ServerMonitorSession::SetUserRole(ServerMonitorCore::U
 	}
 }
 
-SSWR::ServerMonitor::ServerMonitorSession SSWR::ServerMonitor::ServerMonitorSession::CreateSession(NN<Net::WebServer::WebSessionManager> sessMgr, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, ServerMonitorCore::UserRole userRole)
+SSWR::ServerMonitor::ServerMonitorSession SSWR::ServerMonitor::ServerMonitorSession::CreateSession(NN<Net::WebServer::WebSessionManager> sessMgr, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UserRole userRole)
 {
 	ServerMonitorSession sess(sessMgr->CreateSession(req, resp));
 	sess.SetUserRole(userRole);

@@ -123,7 +123,7 @@ IntOS DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 				this->lastDataError = DE_EXEC_SQL_ERROR;
 				OPTSTR_DEL(this->lastErrMsg);
 				this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db.p));
-				chg = 0;
+				chg = -2;
 			}
 			sqlite3_finalize(stmt);
 			return chg;

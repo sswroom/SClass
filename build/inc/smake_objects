@@ -2307,8 +2307,10 @@ OrganWebSession.o: ../../src/SSWR/OrganWeb/OrganWebSession.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
 ServerMonitorCore.o: ../../src/SSWR/ServerMonitor/ServerMonitorCore.cpp
+ServerMonitorData.o: ../../src/SSWR/ServerMonitor/ServerMonitorData.cpp
 ServerMonitorHandler.o: ../../src/SSWR/ServerMonitor/ServerMonitorHandler.cpp
 ServerMonitorSession.o: ../../src/SSWR/ServerMonitor/ServerMonitorSession.cpp
+URLMonitorClient.o: ../../src/SSWR/ServerMonitor/URLMonitorClient.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp
 SHPConvAddFilterForm.o: ../../src/SSWR/SHPConv/SHPConvAddFilterForm.cpp
 SHPConvCurrFilterForm.o: ../../src/SSWR/SHPConv/SHPConvCurrFilterForm.cpp
