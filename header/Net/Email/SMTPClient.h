@@ -33,6 +33,11 @@ namespace Net
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);
 			virtual Bool Send(NN<Net::Email::EmailMessage> message);
+			SMTPConn::ConnType GetConnType() const;
+			NN<Text::String> GetHost() const;
+			UInt16 GetPort() const;
+			Optional<Text::String> GetAuthUser() const;
+			Optional<Text::String> GetAuthPassword() const;
 		};
 	}
 }

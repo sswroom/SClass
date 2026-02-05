@@ -19,8 +19,8 @@ namespace SSWR
 			NN<Text::String> toEmails;
 
 		public:
-			ServerMonitorSMTPAlerter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN setting, Text::CStringNN target);
-			ServerMonitorSMTPAlerter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN smtpHost, UInt16 smtpPort, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails);
+			ServerMonitorSMTPAlerter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Text::CStringNN setting, Text::CStringNN target);
+			ServerMonitorSMTPAlerter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Text::CStringNN smtpHost, UInt16 smtpPort, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails);
 			virtual ~ServerMonitorSMTPAlerter();
 
 			virtual Bool HasError() const;

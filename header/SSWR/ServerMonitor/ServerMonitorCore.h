@@ -2,7 +2,7 @@
 #define _SM_SSWR_SERVERMONITOR_SERVERMONITORCORE
 #include "Data/FastMapNN.hpp"
 #include "Data/FastStringMapNN.hpp"
-#include "DB/DBConn.h"
+#include "DB/DBTool.h"
 #include "IO/ConsoleWriter.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -22,10 +22,11 @@ namespace SSWR
 		{
 		private:
 			IO::ConsoleWriter console;
+			IO::LogTool log;
 			NN<Net::SocketFactory> sockf;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Optional<DB::DBConn> db;
+			Optional<DB::DBTool> db;
 			Optional<Net::WebServer::WebListener> listener;
 			Optional<Net::WebServer::WebServiceHandler> webHdlr;
 			Sync::Mutex mut;
@@ -48,6 +49,7 @@ namespace SSWR
 
 			UserRole Login(Text::CStringNN username, Text::CStringNN password);
 			void GetServerList(NN<Data::ArrayListNN<ServerInfo>> serverList, NN<Sync::MutexUsage> mutUsage);
+			void GetAlertList(NN<Data::ArrayListNN<AlertInfo>> alertList, NN<Sync::MutexUsage> mutUsage);
 			Optional<ServerInfo> AddServerURL(Text::CStringNN name, Text::CStringNN url, Text::CString containsText, Int32 timeoutMS);
 			Optional<AlertInfo> AddAlertSMTP(Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails);
 		};

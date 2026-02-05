@@ -72,6 +72,32 @@ Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::GetServersFunc(NN<Net:
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::GetAlertsFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
+	ServerMonitorSession sess(me->sessMgr.GetSession(req, resp));
+	if (!sess.IsValid())
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_FORBIDDEN);
+	}
+	Data::ArrayListNN<AlertInfo> alertList;
+	Sync::MutexUsage mutUsage;
+	NN<AlertInfo> alertInfo;
+	me->core->GetAlertList(alertList, mutUsage);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+	UIntOS i = 0;
+	UIntOS j = alertList.GetCount();
+	while (i < j)
+	{
+		alertInfo = alertList.GetItemNoCheck(i);
+		json.ArrayBeginObject();
+		me->AppendAlertInfo(json, alertInfo);
+		json.ObjectEnd();
+		i++;
+	}
+	return me->ResponseJSONStr(req, resp, 0, json.Build());
+}
+
 Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::AddServerURLFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
 	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
@@ -159,6 +185,14 @@ void SSWR::ServerMonitor::ServerMonitorHandler::AppendServerInfo(NN<Text::JSONBu
 	json->ObjectAddBool(CSTR("lastSuccess"), serverInfo->lastSuccess);
 }
 
+void SSWR::ServerMonitor::ServerMonitorHandler::AppendAlertInfo(NN<Text::JSONBuilder> json, NN<AlertInfo> alertInfo)
+{
+	json->ObjectAddInt32(CSTR("id"), alertInfo->id);
+	json->ObjectAddStr(CSTR("type"), AlertTypeGetName(alertInfo->type));
+	json->ObjectAddStr(CSTR("settings"), alertInfo->settings);
+	json->ObjectAddStr(CSTR("targets"), alertInfo->targets);
+}
+
 SSWR::ServerMonitor::ServerMonitorHandler::ServerMonitorHandler(NN<ServerMonitorCore> core, Text::CStringNN rootDir) : Net::WebServer::WebServiceHandler(rootDir), sessMgr(CSTR("/api"), OnSessionDel, this, 300, OnSessionCheck, this, CSTR("ServerSession"))
 {
 	this->core = core;
@@ -166,6 +200,7 @@ SSWR::ServerMonitor::ServerMonitorHandler::ServerMonitorHandler(NN<ServerMonitor
 	this->AddService(CSTR("/api/login"), Net::WebUtil::RequestMethod::HTTP_POST, LoginFunc);
 	this->AddService(CSTR("/api/session"), Net::WebUtil::RequestMethod::HTTP_GET, GetSessionFunc);
 	this->AddService(CSTR("/api/server"), Net::WebUtil::RequestMethod::HTTP_GET, GetServersFunc);
+	this->AddService(CSTR("/api/alert"), Net::WebUtil::RequestMethod::HTTP_GET, GetAlertsFunc);
 	this->AddService(CSTR("/api/server/url"), Net::WebUtil::RequestMethod::HTTP_PUT, AddServerURLFunc);
 	this->AddService(CSTR("/api/logout"), Net::WebUtil::RequestMethod::HTTP_GET, LogoutFunc);
 }

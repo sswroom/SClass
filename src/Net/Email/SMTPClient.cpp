@@ -111,3 +111,28 @@ Bool Net::Email::SMTPClient::Send(NN<Net::Email::EmailMessage> message)
 	conn.SendQuit();
 	return succ;
 }
+
+Net::Email::SMTPConn::ConnType Net::Email::SMTPClient::GetConnType() const
+{
+	return this->connType;
+}
+
+NN<Text::String> Net::Email::SMTPClient::GetHost() const
+{
+	return this->host;
+}
+
+UInt16 Net::Email::SMTPClient::GetPort() const
+{
+	return this->port;
+}
+
+Optional<Text::String> Net::Email::SMTPClient::GetAuthUser() const
+{
+	return this->authUser;
+}
+
+Optional<Text::String> Net::Email::SMTPClient::GetAuthPassword() const
+{
+	return this->authPassword;
+}

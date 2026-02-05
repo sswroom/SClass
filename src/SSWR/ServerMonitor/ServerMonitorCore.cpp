@@ -7,6 +7,7 @@
 #include "IO/Path.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
+#include "SSWR/ServerMonitor/ServerMonitorAlerter.h"
 #include "SSWR/ServerMonitor/ServerMonitorCore.h"
 #include "SSWR/ServerMonitor/ServerMonitorHandler.h"
 #include "SSWR/ServerMonitor/URLMonitorClient.h"
@@ -99,6 +100,12 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 	this->webHdlr = nullptr;
 
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Log"));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SM"));
+	this->log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, nullptr, false);
+
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("cfg"));
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
@@ -125,10 +132,9 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 			{
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ServerMonitor.sqlite"));
 			}
-			NN<DB::SQLiteFile> db;
-			NEW_CLASSNN(db, DB::SQLiteFile(CSTRP(sbuff, sptr)));
-			this->db = db;
-			if (db->IsError())
+			NN<DB::DBTool> db;
+			this->db = DB::SQLiteFile::CreateDBTool(CSTRP(sbuff, sptr), this->log, CSTR("DB: "));
+			if (!this->db.SetTo(db))
 			{
 				this->console.WriteLine(CSTR("Error in opening database file"));
 			}
@@ -187,7 +193,6 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 				}
 
 				NN<ServerInfo> serverInfo;
-				NN<ServerMonitorClient> client;
 				if (db->ExecuteReader(CSTR("select id, name, serverType, target, intervalMS, timeoutMS from servers")).SetTo(r))
 				{
 					while (r->ReadNext())
@@ -201,19 +206,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 						serverInfo->timeoutMS = r->GetInt32(5);
 						serverInfo->lastSuccess = false;
 						serverInfo->lastCheck = nullptr;
-						serverInfo->client = nullptr;
-						if (serverInfo->serverType == ServerType::URL)
-						{
-							NEW_CLASSNN(client, URLMonitorClient(this->clif, this->ssl, serverInfo->target->ToCString(), serverInfo->timeoutMS));
-							if (client->HasError())
-							{
-								client.Delete();
-							}
-							else
-							{
-								serverInfo->client = client;
-							}
-						}
+						serverInfo->client = ServerMonitorClient::CreateClient(serverInfo->serverType, this->clif, this->ssl, serverInfo->target->ToCString(), serverInfo->timeoutMS);
 						this->serverMap.Put(serverInfo->id, serverInfo);
 					}
 					db->CloseReader(r);
@@ -243,6 +236,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 						alertInfo->type = (AlertType)r->GetInt32(1);
 						alertInfo->settings = r->GetNewStrNN(2);
 						alertInfo->targets = r->GetNewStrNN(3);
+						alertInfo->alerter = ServerMonitorAlerter::CreateAlerter(alertInfo->type, alertInfo->settings->ToCString(), alertInfo->targets->ToCString(), this->clif, this->ssl, this->log);
 						this->alertMap.Put(alertInfo->id, alertInfo);
 					}
 					db->CloseReader(r);
@@ -351,10 +345,16 @@ void SSWR::ServerMonitor::ServerMonitorCore::GetServerList(NN<Data::ArrayListNN<
 	serverList->AddAll(this->serverMap);
 }
 
+void SSWR::ServerMonitor::ServerMonitorCore::GetAlertList(NN<Data::ArrayListNN<AlertInfo>> alertList, NN<Sync::MutexUsage> mutUsage)
+{
+	mutUsage->ReplaceMutex(this->mut);
+	alertList->AddAll(this->alertMap);
+}
+
 Optional<SSWR::ServerMonitor::ServerInfo> SSWR::ServerMonitor::ServerMonitorCore::AddServerURL(Text::CStringNN name, Text::CStringNN url, Text::CString containsText, Int32 timeoutMS)
 {
-	NN<DB::SQLiteFile> db;
-	if (!Optional<DB::SQLiteFile>::ConvertFrom(this->db).SetTo(db))
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
 	{
 		return nullptr;
 	}

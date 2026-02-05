@@ -13,3 +13,16 @@ Text::CStringNN SSWR::ServerMonitor::ServerTypeGetName(ServerType serverType)
 		return CSTR("Unknown");
 	}
 }
+
+Text::CStringNN SSWR::ServerMonitor::AlertTypeGetName(AlertType alertType)
+{
+	switch (alertType)
+	{
+	case AlertType::Email:
+		return CSTR("Email");
+	case AlertType::WebPush:
+		return CSTR("WebPush");
+	default:
+		return CSTR("Unknown");
+	}
+}

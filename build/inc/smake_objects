@@ -2306,10 +2306,13 @@ OrganWebPOIController.o: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
 OrganWebSession.o: ../../src/SSWR/OrganWeb/OrganWebSession.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
+ServerMonitorAlerter.o: ../../src/SSWR/ServerMonitor/ServerMonitorAlerter.cpp
+ServerMonitorClient.o: ../../src/SSWR/ServerMonitor/ServerMonitorClient.cpp
 ServerMonitorCore.o: ../../src/SSWR/ServerMonitor/ServerMonitorCore.cpp
 ServerMonitorData.o: ../../src/SSWR/ServerMonitor/ServerMonitorData.cpp
 ServerMonitorHandler.o: ../../src/SSWR/ServerMonitor/ServerMonitorHandler.cpp
 ServerMonitorSession.o: ../../src/SSWR/ServerMonitor/ServerMonitorSession.cpp
+ServerMonitorSMTPAlerter.o: ../../src/SSWR/ServerMonitor/ServerMonitorSMTPAlerter.cpp
 URLMonitorClient.o: ../../src/SSWR/ServerMonitor/URLMonitorClient.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp
 SHPConvAddFilterForm.o: ../../src/SSWR/SHPConv/SHPConvAddFilterForm.cpp

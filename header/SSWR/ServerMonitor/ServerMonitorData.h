@@ -1,13 +1,14 @@
 #ifndef _SM_SSWR_SERVERMONITOR_SERVERMONITORDATA
 #define _SM_SSWR_SERVERMONITOR_SERVERMONITORDATA
 #include "Data/Timestamp.h"
-#include "SSWR/ServerMonitor/ServerMonitorClient.h"
 #include "Text/String.h"
 
 namespace SSWR
 {
 	namespace ServerMonitor
 	{
+		class ServerMonitorAlerter;
+		class ServerMonitorClient;
 		enum class UserRole
 		{
 			Admin,
@@ -53,9 +54,11 @@ namespace SSWR
 			AlertType type;
 			NN<Text::String> settings;
 			NN<Text::String> targets;
+			Optional<ServerMonitorAlerter> alerter;
 		};
 
 		Text::CStringNN ServerTypeGetName(ServerType serverType);
+		Text::CStringNN AlertTypeGetName(AlertType alertType);
 	}
 }
 #endif

@@ -20,12 +20,14 @@ namespace SSWR
 			static Bool __stdcall LoginFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall GetSessionFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall GetServersFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+			static Bool __stdcall GetAlertsFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall AddServerURLFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall LogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		
 			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
 			static Bool __stdcall OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj);
 			void AppendServerInfo(NN<Text::JSONBuilder> json, NN<ServerInfo> serverInfo);
+			void AppendAlertInfo(NN<Text::JSONBuilder> json, NN<AlertInfo> alertInfo);
 		public:
 			ServerMonitorHandler(NN<ServerMonitorCore> core, Text::CStringNN rootDir);
 			virtual ~ServerMonitorHandler();

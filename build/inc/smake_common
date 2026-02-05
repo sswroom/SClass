@@ -4865,7 +4865,10 @@ SSWR/SDNSProxy/SDNSProxyCore.h:
 @SDNSProxyCore.o
 SSWR/SDNSProxy/SDNSProxyWebHandler.h:
 @SDNSProxyWebHandler.o
+SSWR/ServerMonitor/ServerMonitorAlerter.h:
+@ServerMonitorAlerter.o
 SSWR/ServerMonitor/ServerMonitorClient.h:
+@ServerMonitorClient.o
 SSWR/ServerMonitor/ServerMonitorCore.h:
 @ServerMonitorCore.o
 SSWR/ServerMonitor/ServerMonitorData.h:
@@ -4874,6 +4877,8 @@ SSWR/ServerMonitor/ServerMonitorHandler.h:
 @ServerMonitorHandler.o
 SSWR/ServerMonitor/ServerMonitorSession.h:
 @ServerMonitorSession.o
+SSWR/ServerMonitor/ServerMonitorSMTPAlerter.h:
+@ServerMonitorSMTPAlerter.o
 SSWR/ServerMonitor/URLMonitorClient.h:
 @URLMonitorClient.o
 SSWR/SHPConv/ElevationFilter.h:
