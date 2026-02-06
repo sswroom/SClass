@@ -4,6 +4,7 @@
 #include "SSWR/ServerMonitor/ServerMonitorHandler.h"
 #include "SSWR/ServerMonitor/ServerMonitorSession.h"
 #include "Text/JSONBuilder.h"
+#include "Text/StringTool.h"
 
 Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::LoginFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
@@ -116,19 +117,19 @@ Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::AddServerURLFunc(NN<Ne
 	{
 		if (req->GetHTTPFormStr(CSTR("name")).IsNull())
 		{
-			printf("ServerMonitorHandler.AddServerURLFunc: name missing\r\n");
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddServerURLFunc: name missing"));
 		}
 		if (req->GetHTTPFormStr(CSTR("url")).IsNull())
 		{
-			printf("ServerMonitorHandler.AddServerURLFunc: url missing\r\n");
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddServerURLFunc: url missing"));
 		}
 		if (timeoutMS <= 0)
 		{
-			printf("ServerMonitorHandler.AddServerURLFunc: invalid timeoutMS\r\n");
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddServerURLFunc: invalid timeoutMS"));
 		}
 		if (req->GetHTTPFormStr(CSTR("containsText")).IsNull())
 		{
-			printf("ServerMonitorHandler.AddServerURLFunc: containsText missing\r\n");
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddServerURLFunc: containsText missing"));
 		}
 		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
 	}
@@ -152,6 +153,161 @@ Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::AddServerURLFunc(NN<Ne
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	me->AppendServerInfo(json, serverInfo);
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::DeleteServerFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
+	ServerMonitorSession sess(me->sessMgr.GetSession(req, resp));
+	if (!sess.IsValid())
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_FORBIDDEN);
+	}
+	Int32 id;
+	req->ParseHTTPForm();
+	if (!req->GetHTTPFormInt32(CSTR("id"), id))
+	{
+		me->core->LogMessage(CSTR("ServerMonitorHandler.DeleteServerFunc: id missing"));
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	if (!me->core->DeleteServer(id))
+	{
+		return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"failed\"}"));
+	}
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
+}
+
+Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::AddAlertSMTPFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
+	ServerMonitorSession sess(me->sessMgr.GetSession(req, resp));
+	if (!sess.IsValid())
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_FORBIDDEN);
+	}
+	Int32 connType = 0;
+	NN<Text::String> host;
+	UInt16 port;
+	NN<Text::String> username;
+	NN<Text::String> password;
+	NN<Text::String> fromEmail;
+	NN<Text::String> toEmail;
+	req->ParseHTTPForm();
+	if (!req->GetHTTPFormInt32(CSTR("connType"), connType) ||
+		!req->GetHTTPFormStr(CSTR("host")).SetTo(host) ||
+		!req->GetHTTPFormUInt16(CSTR("port"), port) ||
+		!req->GetHTTPFormStr(CSTR("username")).SetTo(username) ||
+		!req->GetHTTPFormStr(CSTR("password")).SetTo(password) ||
+		!req->GetHTTPFormStr(CSTR("fromEmail")).SetTo(fromEmail) ||
+		!req->GetHTTPFormStr(CSTR("toEmail")).SetTo(toEmail) ||
+		connType < 0 || connType > 2 ||
+		port == 0 ||
+		fromEmail->leng == 0 ||
+		toEmail->leng == 0)
+	{
+		if (req->GetHTTPFormStr(CSTR("host")).IsNull())
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: host missing"));
+		}
+		if (port == 0)
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: invalid port"));
+		}
+		if (req->GetHTTPFormStr(CSTR("username")).IsNull())
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: username missing"));
+		}
+		if (req->GetHTTPFormStr(CSTR("password")).IsNull())
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: password missing"));
+		}
+		if (req->GetHTTPFormStr(CSTR("fromEmail")).IsNull())
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: fromEmail missing"));
+		}
+		if (req->GetHTTPFormStr(CSTR("toEmail")).IsNull())
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: toEmail missing"));
+		}
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+	}
+
+	if (!Text::StringTool::IsEmailAddress(fromEmail->v))
+	{
+		me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: invalid fromEmail"));
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+	}
+
+	Text::StringBuilderUTF8 sb;
+	sb.Append(toEmail);
+	Text::PString sarr[2];
+	UIntOS n;
+	sarr[1] = sb;
+	while (true)
+	{
+		n = Text::StrSplitP(sarr, 2, sarr[1], ',');
+		sarr[0].Trim();
+		if (!Text::StringTool::IsEmailAddress(sarr[0].v))
+		{
+			me->core->LogMessage(CSTR("ServerMonitorHandler.AddAlertSMTPFunc: invalid toEmail"));
+			return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		if (n != 2)
+			break;
+	}
+
+	NN<AlertInfo> alertInfo;
+	if (!me->core->AddAlertSMTP(host->ToCString(), port, (Net::Email::SMTPConn::ConnType)connType, username->ToCString(), password->ToCString(), fromEmail->ToCString(), toEmail->ToCString()).SetTo(alertInfo))
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	me->AppendAlertInfo(json, alertInfo);
+	return me->ResponseJSONStr(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::TestAlertFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
+	ServerMonitorSession sess(me->sessMgr.GetSession(req, resp));
+	if (!sess.IsValid())
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_FORBIDDEN);
+	}
+	Int32 id;
+	req->ParseHTTPForm();
+	if (!req->GetHTTPFormInt32(CSTR("id"), id))
+	{
+		me->core->LogMessage(CSTR("ServerMonitorHandler.TestAlertFunc: id missing"));
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	if (!me->core->TestAlert(id))
+	{
+		return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"failed\"}"));
+	}
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
+}
+
+Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::DeleteAlertFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<ServerMonitorHandler> me = NN<ServerMonitorHandler>::ConvertFrom(svcHdlr);
+	ServerMonitorSession sess(me->sessMgr.GetSession(req, resp));
+	if (!sess.IsValid())
+	{
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_FORBIDDEN);
+	}
+	Int32 id;
+	req->ParseHTTPForm();
+	if (!req->GetHTTPFormInt32(CSTR("id"), id))
+	{
+		me->core->LogMessage(CSTR("ServerMonitorHandler.DeleteAlertFunc: id missing"));
+		return me->ResponseStatus(req, resp, 0, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	if (!me->core->DeleteAlert(id))
+	{
+		return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"failed\"}"));
+	}
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
 Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::LogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
@@ -202,6 +358,10 @@ SSWR::ServerMonitor::ServerMonitorHandler::ServerMonitorHandler(NN<ServerMonitor
 	this->AddService(CSTR("/api/server"), Net::WebUtil::RequestMethod::HTTP_GET, GetServersFunc);
 	this->AddService(CSTR("/api/alert"), Net::WebUtil::RequestMethod::HTTP_GET, GetAlertsFunc);
 	this->AddService(CSTR("/api/server/url"), Net::WebUtil::RequestMethod::HTTP_PUT, AddServerURLFunc);
+	this->AddService(CSTR("/api/server"), Net::WebUtil::RequestMethod::HTTP_DELETE, DeleteServerFunc);
+	this->AddService(CSTR("/api/alert/smtp"), Net::WebUtil::RequestMethod::HTTP_PUT, AddAlertSMTPFunc);
+	this->AddService(CSTR("/api/alert/test"), Net::WebUtil::RequestMethod::HTTP_POST, TestAlertFunc);
+	this->AddService(CSTR("/api/alert"), Net::WebUtil::RequestMethod::HTTP_DELETE, DeleteAlertFunc);
 	this->AddService(CSTR("/api/logout"), Net::WebUtil::RequestMethod::HTTP_GET, LogoutFunc);
 }
 

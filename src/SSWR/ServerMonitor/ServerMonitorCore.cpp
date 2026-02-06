@@ -10,6 +10,7 @@
 #include "SSWR/ServerMonitor/ServerMonitorAlerter.h"
 #include "SSWR/ServerMonitor/ServerMonitorCore.h"
 #include "SSWR/ServerMonitor/ServerMonitorHandler.h"
+#include "SSWR/ServerMonitor/ServerMonitorSMTPAlerter.h"
 #include "SSWR/ServerMonitor/URLMonitorClient.h"
 
 void __stdcall SSWR::ServerMonitor::ServerMonitorCore::CheckThread(NN<Sync::Thread> thread)
@@ -80,12 +81,22 @@ void __stdcall SSWR::ServerMonitor::ServerMonitorCore::FreeAlertInfo(NN<AlertInf
 {
 	alertInfo->settings->Release();
 	alertInfo->targets->Release();
+	alertInfo->alerter.Delete();
 	alertInfo.Delete();
 }
 
 void SSWR::ServerMonitor::ServerMonitorCore::SendAlerts(Text::CStringNN serverName)
 {
-
+	Sync::MutexUsage mutUsage(this->mut);
+	NN<ServerMonitorAlerter> alerter;
+	UIntOS i = this->alertMap.GetCount();
+	while (i-- > 0)
+	{
+		if (this->alertMap.GetItemNoCheck(i)->alerter.SetTo(alerter))
+		{
+			alerter->Send(serverName);
+		}
+	}
 }
 
 SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckThread, this, CSTR("CheckThread"))
@@ -94,7 +105,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 	UnsafeArray<UTF8Char> sptr;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
-	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->db = nullptr;
 	this->listener = nullptr;
 	this->webHdlr = nullptr;
@@ -279,6 +290,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 					}
 					else
 					{
+						listener->SetAccessLog(this->log, IO::LogHandler::LogLevel::Command);
 						this->listener = listener;
 					}
 				}
@@ -307,6 +319,8 @@ SSWR::ServerMonitor::ServerMonitorCore::~ServerMonitorCore()
 	this->clif.Delete();
 	this->sockf.Delete();
 	this->userMap.FreeAll(FreeUserInfo);
+	this->serverMap.FreeAll(FreeServerInfo);
+	this->alertMap.FreeAll(FreeAlertInfo);
 }
 
 Bool SSWR::ServerMonitor::ServerMonitorCore::IsError() const
@@ -367,6 +381,7 @@ Optional<SSWR::ServerMonitor::ServerInfo> SSWR::ServerMonitor::ServerMonitorCore
 	NEW_CLASSNN(client, URLMonitorClient(this->clif, this->ssl, url, containsText, timeoutMS));
 	if (client->HasError())
 	{
+		client.Delete();
 		return nullptr;
 	}
 	else
@@ -425,7 +440,119 @@ Optional<SSWR::ServerMonitor::ServerInfo> SSWR::ServerMonitor::ServerMonitorCore
 	}
 }
 
+Bool SSWR::ServerMonitor::ServerMonitorCore::DeleteServer(Int32 serverId)
+{
+	NN<ServerInfo> serverInfo;
+	NN<DB::DBTool> db;
+	Sync::MutexUsage mutUsage(this->mut);
+	if (this->serverMap.Get(serverId).SetTo(serverInfo) && this->db.SetTo(db))
+	{
+		DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+		sql.AppendCmdC(CSTR("delete from servers where id = "));
+		sql.AppendInt32(serverId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			this->serverMap.Remove(serverId);
+			FreeServerInfo(serverInfo);
+			return true;
+		}
+	}
+	return false;
+}
+
 Optional<SSWR::ServerMonitor::AlertInfo> SSWR::ServerMonitor::ServerMonitorCore::AddAlertSMTP(Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails)
 {
-	return nullptr;
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+	{
+		return nullptr;
+	}
+	NN<ServerMonitorSMTPAlerter> alerter;
+	NEW_CLASSNN(alerter, ServerMonitorSMTPAlerter(this->clif, this->ssl, this->log, host, port, connType, smtpUser, smtpPassword, fromEmail, toEmails));
+	if (alerter->HasError())
+	{
+		alerter.Delete();
+		return nullptr;
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		NN<AlertInfo> alertInfo;
+		NEW_CLASSNN(alertInfo, AlertInfo());
+		{
+			Sync::MutexUsage mutUsage(this->mut);
+			alertInfo->id = this->alertMap.GetKey(this->alertMap.GetCount() - 1) + 1;
+			alertInfo->type = AlertType::Email;
+			alerter->BuildSetting(sb);
+			alertInfo->settings = Text::String::New(sb.ToCString());
+			sb.ClearStr();
+			alerter->BuildTarget(sb);
+			alertInfo->targets = Text::String::New(sb.ToCString());
+			alertInfo->alerter = alerter;
+			this->alertMap.Put(alertInfo->id, alertInfo);
+		}
+		DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+		sql.AppendCmdC(CSTR("insert into alerts ("));
+		sql.AppendCol(U8STR("id"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("type"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("settings"));;
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendCol(U8STR("targets"));;
+		sql.AppendCmdC(CSTR(") values ("));
+		sql.AppendInt32(alertInfo->id);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32((Int32)alertInfo->type);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStr(alertInfo->settings);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStr(alertInfo->targets);
+		sql.AppendCmdC(CSTR(")"));
+		if (db->ExecuteNonQuery(sql.ToCString()) < 0)
+		{
+			Sync::MutexUsage mutUsage(this->mut);
+			this->alertMap.Remove(alertInfo->id);
+			FreeAlertInfo(alertInfo);
+			return nullptr;
+		}
+		return alertInfo;
+	}
+}
+
+Bool SSWR::ServerMonitor::ServerMonitorCore::DeleteAlert(Int32 alertId)
+{
+	NN<AlertInfo> alertInfo;
+	NN<DB::DBTool> db;
+	Sync::MutexUsage mutUsage(this->mut);
+	if (this->alertMap.Get(alertId).SetTo(alertInfo) && this->db.SetTo(db))
+	{
+		DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
+		sql.AppendCmdC(CSTR("delete from alerts where id = "));
+		sql.AppendInt32(alertId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			this->alertMap.Remove(alertId);
+			FreeAlertInfo(alertInfo);
+			return true;
+		}
+	}
+	return false;
+}
+
+Bool SSWR::ServerMonitor::ServerMonitorCore::TestAlert(Int32 alertId)
+{
+	NN<AlertInfo> alertInfo;
+	NN<ServerMonitorAlerter> alerter;
+	Sync::MutexUsage mutUsage(this->mut);
+	if (this->alertMap.Get(alertId).SetTo(alertInfo) && alertInfo->alerter.SetTo(alerter))
+	{
+		return alerter->Send(CSTR("Testing"));
+	}
+	return false;
+}
+
+void SSWR::ServerMonitor::ServerMonitorCore::LogMessage(Text::CStringNN msg)
+{
+	this->log.LogMessage(msg, IO::LogHandler::LogLevel::Action);
 }

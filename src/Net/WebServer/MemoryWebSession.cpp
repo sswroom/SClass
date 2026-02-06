@@ -13,6 +13,7 @@ Net::WebServer::MemoryWebSession::MemoryWebSession(Int64 sessId, Net::BrowserInf
 
 Net::WebServer::MemoryWebSession::~MemoryWebSession()
 {
+	this->origin->Release();
 }
 
 Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin)

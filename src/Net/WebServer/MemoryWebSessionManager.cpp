@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-#define VERBOSE
+//#define VERBOSE
 
 UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType userObj)
 {

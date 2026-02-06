@@ -90,22 +90,21 @@ Bool SSWR::ServerMonitor::ServerMonitorSMTPAlerter::Send(Text::CStringNN serverN
 	if (!this->cli.SetTo(cli))
 		return false;
 
-	NN<Net::Email::EmailMessage> msg;
-	NEW_CLASSNN(msg, Net::Email::EmailMessage());
-	msg->SetFrom(nullptr, this->fromEmail->ToCString());
-	msg->AddToList(this->toEmails->ToCString());
+	Net::Email::EmailMessage msg;
+	msg.SetFrom(nullptr, this->fromEmail->ToCString());
+	msg.AddToList(this->toEmails->ToCString());
 	Text::StringBuilderUTF8 sb;
 	sb.Append(serverName);
 	sb.Append(CSTR(" is down"));
-	msg->SetSubject(sb.ToCString());
+	msg.SetSubject(sb.ToCString());
 	sb.ClearStr();
 	sb.Append(serverName);
 	sb.Append(CSTR(" is detected as down by ServerMonitor."));
-	msg->SetContent(sb.ToCString(), CSTR("text/plain; charset=utf-8"));
-	msg->SetSentDate(Data::Timestamp::Now());
+	msg.SetContent(sb.ToCString(), CSTR("text/plain; charset=utf-8"));
+	msg.SetSentDate(Data::Timestamp::Now());
 	sb.ClearStr();
 	Net::Email::EmailMessage::GenerateMessageID(sb, this->fromEmail->ToCString());
-	msg->SetMessageId(sb.ToCString());
+	msg.SetMessageId(sb.ToCString());
 	return cli->Send(msg);
 }
 

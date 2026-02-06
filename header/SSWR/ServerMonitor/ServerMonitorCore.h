@@ -51,7 +51,12 @@ namespace SSWR
 			void GetServerList(NN<Data::ArrayListNN<ServerInfo>> serverList, NN<Sync::MutexUsage> mutUsage);
 			void GetAlertList(NN<Data::ArrayListNN<AlertInfo>> alertList, NN<Sync::MutexUsage> mutUsage);
 			Optional<ServerInfo> AddServerURL(Text::CStringNN name, Text::CStringNN url, Text::CString containsText, Int32 timeoutMS);
+			Bool DeleteServer(Int32 serverId);
 			Optional<AlertInfo> AddAlertSMTP(Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Text::CStringNN smtpUser, Text::CStringNN smtpPassword, Text::CStringNN fromEmail, Text::CStringNN toEmails);
+			Bool DeleteAlert(Int32 alertId);
+			Bool TestAlert(Int32 alertId);
+
+			void LogMessage(Text::CStringNN msg);
 		};
 	}
 }
