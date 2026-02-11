@@ -47,8 +47,9 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			gw = GetGWOrCreate(gweui);
-			GWAddData(gw, msgType, msg + 8, msgSize - 8);
+			GetGWOrCreate(gweui);
+//			gw = GetGWOrCreate(gweui);
+//			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
 	case 3: //PULL_RESP
@@ -57,8 +58,9 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			gw = GetGWOrCreate(gweui);
-			GWAddData(gw, msgType, msg + 8, msgSize - 8);
+			GetGWOrCreate(gweui);
+//			gw = GetGWOrCreate(gweui);
+//			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
 	case 5: //TX_ACK
