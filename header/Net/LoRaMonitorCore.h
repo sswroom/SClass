@@ -59,6 +59,7 @@ namespace Net
 		Bool IsError();
 		NN<Data::ReadingListNN<GWInfo>> GetGWList(NN<Sync::MutexUsage> mutUsage);
 		Optional<GWInfo> GetGW(UInt64 gweui, NN<Sync::MutexUsage> mutUsage);
+		Bool UpdateGW(NN<GWInfo> gw, NN<Text::String> name, NN<Text::String> model, NN<Text::String> sn, NN<Text::String> imei, NN<Text::String> location);
 	};
 }
 #endif

@@ -22,9 +22,7 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayFunc(NN<Net::WebServer::WebReq
 		i++;
 	}
 	json.ArrayEnd();
-	me->AddResponseHeaders(req, resp);
-	resp->AddContentType(CSTR("application/json"));
-	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json.Build());
+	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
 Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
@@ -54,11 +52,44 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::
 		}
 		i = (i + 1) & 15;
 	}
-	me->AddResponseHeaders(req, resp);
-	resp->AddContentType(CSTR("application/json"));
-	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json.Build());
+	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
+Bool __stdcall Net::LoRaMonitorHandler::UpdateGatewayFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<Net::LoRaMonitorHandler> me = NN<LoRaMonitorHandler>::ConvertFrom(svcHdlr);
+	UInt64 gweui;
+	if (!req->GetQueryValueU64(CSTR("gweui"), gweui))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	req->ParseHTTPForm();
+	NN<Text::String> name;
+	NN<Text::String> model;
+	NN<Text::String> sn;
+	NN<Text::String> imei;
+	NN<Text::String> location;
+	if (!req->GetHTTPFormStr(CSTR("name")).SetTo(name) ||
+		!req->GetHTTPFormStr(CSTR("model")).SetTo(model) ||
+		!req->GetHTTPFormStr(CSTR("sn")).SetTo(sn) ||
+		!req->GetHTTPFormStr(CSTR("imei")).SetTo(imei) ||
+		!req->GetHTTPFormStr(CSTR("location")).SetTo(location))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	Sync::MutexUsage mutUsage;
+	NN<Net::LoRaMonitorCore::GWInfo> gw;
+	if (!me->core->GetGW(gweui, mutUsage).SetTo(gw))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	Bool succ = me->core->UpdateGW(gw, name, model, sn, imei, location);
+	if (!succ)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+	}
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"success\":true}"));
+}
 void Net::LoRaMonitorHandler::AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::JSONBuilder> json)
 {
 	json->ObjectAddUInt64Str(CSTR("gweui"), gw->gweui);
@@ -91,6 +122,7 @@ Net::LoRaMonitorHandler::LoRaMonitorHandler(NN<LoRaMonitorCore> core, Text::CStr
 	this->core = core;
 	this->AddService(CSTR("/api/gateway"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayFunc);
 	this->AddService(CSTR("/api/gateway/packet"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayPacketFunc);
+	this->AddService(CSTR("/api/gateway/update"), Net::WebUtil::RequestMethod::HTTP_POST, UpdateGatewayFunc);
 	this->SetCacheType(Net::WebServer::HTTPDirectoryHandler::CT_NO_CACHE);
 }
 

@@ -267,3 +267,35 @@ Optional<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGW(UInt64 gweui,
 	mutUsage->ReplaceMutex(this->gwMut);
 	return this->gwMap.Get(gweui);
 }
+
+Bool Net::LoRaMonitorCore::UpdateGW(NN<GWInfo> gw, NN<Text::String> name, NN<Text::String> model, NN<Text::String> sn, NN<Text::String> imei, NN<Text::String> location)
+{
+	DB::SQLBuilder sql(this->db->GetSQLType(), false, this->db->GetTzQhr());
+	sql.AppendCmdC(CSTR("update gateway set name = "));
+	sql.AppendStr(name);
+	sql.AppendCmdC(CSTR(", model = "));
+	sql.AppendStr(model);
+	sql.AppendCmdC(CSTR(", sn = "));
+	sql.AppendStr(sn);
+	sql.AppendCmdC(CSTR(", imei = "));
+	sql.AppendStr(imei);
+	sql.AppendCmdC(CSTR(", location = "));
+	sql.AppendStr(location);
+	sql.AppendCmdC(CSTR(" where gweui = "));
+	sql.AppendInt64((Int64)gw->gweui);
+	if (this->db->ExecuteNonQuery(sql.ToCString()) <= 0)
+	{
+		return false;
+	}
+	OPTSTR_DEL(gw->name);
+	gw->name = name->Clone();
+	OPTSTR_DEL(gw->model);
+	gw->model = model->Clone();
+	OPTSTR_DEL(gw->sn);
+	gw->sn = sn->Clone();
+	OPTSTR_DEL(gw->imei);
+	gw->imei = imei->Clone();
+	OPTSTR_DEL(gw->location);
+	gw->location = location->Clone();
+	return true;
+}

@@ -12,6 +12,7 @@ namespace Net
 
 		static Bool __stdcall GetGatewayFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		static Bool __stdcall GetGatewayPacketFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+		static Bool __stdcall UpdateGatewayFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		static void AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::JSONBuilder> json);
 		static void AppendPacket(NN<LoRaMonitorCore::DataPacket> pkt, NN<Text::JSONBuilder> json);
 	public:
