@@ -211,7 +211,7 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 	this->loraPort = loraPort;
 	sbuff[0] = 0;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC(".db"));
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("db"));
 	NEW_CLASSNN(this->db, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 	this->LoadDB();
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
