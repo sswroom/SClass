@@ -196,6 +196,16 @@ void Net::LoRaMonitorCore::SaveGWList()
 
 void __stdcall Net::LoRaMonitorCore::FreeGW(NN<GWInfo> gw)
 {
+	NN<DataPacket> data;
+	while (gw->lastDataBegin != gw->lastDataEnd)
+	{
+		if (gw->lastData[gw->lastDataBegin].SetTo(data))
+		{
+			MemFreeArr(data->msg);
+			MemFreeNN(data);
+		}
+		gw->lastDataBegin = (gw->lastDataBegin + 1) & 15;
+	}
 	OPTSTR_DEL(gw->name);
 	OPTSTR_DEL(gw->model);
 	OPTSTR_DEL(gw->sn);
