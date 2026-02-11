@@ -79,7 +79,7 @@ namespace Text
 		Bool ToUInt16S(OutParam<UInt16> outVal, UInt16 failVal) const;
 		Bool ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal) const;
 		Bool ToBool() const;
-		UIntOS Hex2Bytes(UInt8 *buff) const;
+		UIntOS Hex2Bytes(UnsafeArray<UInt8> buff) const;
 		UIntOS CountChar(UTF8Char c) const;
 		UIntOS CountStr(UnsafeArray<const UTF8Char> s, UIntOS len) const;
 		UIntOS CountStr(NN<StringBase<UTF8Char>> s) const;
@@ -533,7 +533,7 @@ template <typename T> Bool Text::StringBase<T>::ToBool() const
 	return Text::StrToBool(UnsafeArray<const UTF8Char>(this->v));
 }
 
-template<typename T> UIntOS Text::StringBase<T>::Hex2Bytes(UInt8 *buff) const
+template<typename T> UIntOS Text::StringBase<T>::Hex2Bytes(UnsafeArray<UInt8> buff) const
 {
 	return Text::StrHex2Bytes(this->v, buff);
 }

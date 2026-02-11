@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "DB/CSVFile.h"
+#include "Net/LoRaGWUtil.h"
 #include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -31,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 			else if (rxstat->GetAsInt32() == 1)
 			{
 				sb.AppendC(UTF8STRC("CRC valid\r\n"));
-				PHYPayloadDetail(sb, buff, buffSize);
+				me->PHYPayloadDetail(sb, buff, buffSize);
 			}
 			else
 			{
@@ -47,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 			sb.AppendC(UTF8STRC("Transmitted Packet:\r\n"));
 			sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 			sb.AppendC(UTF8STRC("\r\n\r\n"));
-			PHYPayloadDetail(sb, buff, buffSize);
+			me->PHYPayloadDetail(sb, buff, buffSize);
 			me->txtInfo->SetText(sb.ToCString());
 		}
 		else
@@ -62,8 +64,26 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnCSVFile(AnyType userObj, Data::DataArray<NN<Text::String>> files)
+{
+	NN<SSWR::AVIRead::AVIRLoRaJSONForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoRaJSONForm>();
+	UIntOS i = 0;
+	UIntOS j = files.GetCount();
+	while (i < j)
+	{
+		if (me->LoadCSV(files.GetItem(i)))
+		{
+			break;
+		}
+		i++;
+	}
+}
+
 void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
+	UInt32 devAddr = 0;
+	UInt32 fCnt = 0;
+	Bool downLink = false;
 	switch (buff[0] >> 5)
 	{
 	case 0:
@@ -74,19 +94,19 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF
 		break;
 	case 2:
 		sb->AppendC(UTF8STRC("Message Type = Unconfirmed Data Up\r\n"));
-		MACPayloadDetail(sb, false, buff + 1, buffSize - 5);
+		devAddr = MACPayloadDetail(sb, downLink = false, buff + 1, buffSize - 5, fCnt);
 		break;
 	case 3:
 		sb->AppendC(UTF8STRC("Message Type = Unconfirmed Data Down\r\n"));
-		MACPayloadDetail(sb, true, buff + 1, buffSize - 5);
+		devAddr = MACPayloadDetail(sb, downLink = true, buff + 1, buffSize - 5, fCnt);
 		break;
 	case 4:
 		sb->AppendC(UTF8STRC("Message Type = Confirmed Data Up\r\n"));
-		MACPayloadDetail(sb, false, buff + 1, buffSize - 5);
+		devAddr = MACPayloadDetail(sb, downLink = false, buff + 1, buffSize - 5, fCnt);
 		break;
 	case 5:
 		sb->AppendC(UTF8STRC("Message Type = Confirmed Data Down\r\n"));
-		MACPayloadDetail(sb, true, buff + 1, buffSize - 5);
+		devAddr = MACPayloadDetail(sb, downLink = true, buff + 1, buffSize - 5, fCnt);
 		break;
 	case 6:
 		sb->AppendC(UTF8STRC("Message Type = RFU\r\n"));
@@ -98,16 +118,26 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF
 	sb->AppendC(UTF8STRC("MIC = 0x"));
 	sb->AppendHexBuff(&buff[buffSize - 4], 4, 0, Text::LineBreakType::None);
 	sb->AppendC(UTF8STRC("\r\n"));
+	UInt8 calcMIC[4];
+	NN<LoRaDevInfo> dev;
+	if (this->devMap.Get(devAddr).SetTo(dev))
+	{
+		Net::LoRaGWUtil::CalcMIC(calcMIC, devAddr, fCnt, downLink, dev->nwkSKey, buff, buffSize - 4);
+		sb->AppendC(UTF8STRC("Calculated MIC = 0x"));
+		sb->AppendHexBuff(calcMIC, 4, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+	}
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, UnsafeArray<const UInt8> buff, UIntOS buffSize)
+UInt32 SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, UnsafeArray<const UInt8> buff, UIntOS buffSize, OutParam<UInt32> fCnt)
 {
 	if (buffSize < 7)
 	{
-		return;
+		return 0;
 	}
+	UInt32 devAddr = ReadUInt32(&buff[0]);
 	sb->AppendC(UTF8STRC("DevAddr = 0x"));
-	sb->AppendHex32(ReadUInt32(&buff[0]));
+	sb->AppendHex32(devAddr);
 	sb->AppendC(UTF8STRC("\r\nADR = "));
 	sb->AppendUIntOS(((UIntOS)buff[4] & 0x80) >> 7);
 	sb->AppendC(UTF8STRC("\r\nACK = "));
@@ -131,10 +161,11 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF
 	sb->AppendUIntOS(fOptsLen);
 	sb->AppendC(UTF8STRC("\r\nFCnt = "));
 	sb->AppendU16(ReadUInt16(&buff[5]));
+	fCnt.Set(ReadUInt16(&buff[5]));
 	if (fOptsLen + 7 > buffSize)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		return;
+		return devAddr;
 	}
 	if (fOptsLen > 0)
 	{
@@ -146,7 +177,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF
 	buffSize -= fOptsLen + 7;
 	if (buffSize == 0)
 	{
-		return;
+		return devAddr;
 	}
 	sb->AppendC(UTF8STRC("FPort = "));
 	sb->AppendU16(buff[0]);
@@ -156,6 +187,91 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF
 		sb->AppendHexBuff(buff + 1, buffSize - 1, ' ', Text::LineBreakType::None);
 	}
 	sb->AppendC(UTF8STRC("\r\n"));
+	NN<LoRaDevInfo> dev;
+	if (this->devMap.Get(devAddr).SetTo(dev))
+	{
+		sb->AppendC(UTF8STRC("DevEUI = 0x"));
+		sb->AppendHexBuff(dev->devEUI, 8, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("NwkSKey = 0x"));
+		sb->AppendHexBuff(dev->nwkSKey, 16, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("AppSKey = 0x"));
+		sb->AppendHexBuff(dev->appSKey, 16, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+	}
+	return devAddr;
+}
+
+Bool SSWR::AVIRead::AVIRLoRaJSONForm::LoadCSV(NN<Text::String> fileName)
+{
+	UIntOS devEUICol = INVALID_INDEX;
+	UIntOS nwkSKeyCol = INVALID_INDEX;
+	UIntOS appSKeyCol = INVALID_INDEX;
+	DB::CSVFile csv(fileName, 65001);
+	NN<DB::DBReader> r;
+	if (!csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
+	{
+		return false;
+	}
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
+	UIntOS j = r->ColCount();
+	while (j-- > 0)
+	{
+		if (r->GetName(j, sbuff).SetTo(sptr))
+		{
+			Text::CStringNN colName = CSTRP(sbuff, sptr);
+			if (colName.EqualsICase(UTF8STRC("DevEUI")))
+			{
+				devEUICol = j;
+			}
+			else if (colName.EqualsICase(UTF8STRC("NwkSKey")))
+			{
+				nwkSKeyCol = j;
+			}
+			else if (colName.EqualsICase(UTF8STRC("AppSKey")))
+			{
+				appSKeyCol = j;
+			}
+		}
+	}
+
+	if (devEUICol == INVALID_INDEX || nwkSKeyCol == INVALID_INDEX || appSKeyCol == INVALID_INDEX)
+	{
+		csv.CloseReader(r);
+		return false;
+	}
+	this->devMap.MemFreeAll();
+	while (r->ReadNext())
+	{
+		NN<LoRaDevInfo> dev;
+		NN<Text::String> devEUI = r->GetNewStrNN(devEUICol);
+		NN<Text::String> nwkSKey = r->GetNewStrNN(nwkSKeyCol);
+		NN<Text::String> appSKey = r->GetNewStrNN(appSKeyCol);
+		if (devEUI->leng == 16 && nwkSKey->leng == 32 && appSKey->leng == 32)
+		{
+			dev = MemAllocNN(LoRaDevInfo);
+			if (devEUI->Hex2Bytes(dev->devEUI) == 8 && nwkSKey->Hex2Bytes(dev->nwkSKey) == 16 && appSKey->Hex2Bytes(dev->appSKey) == 16)
+			{
+				this->devMap.Put(ReadMUInt32(&dev->devEUI[4]), dev);
+			}
+			else
+			{
+				MemFreeNN(dev);
+			}
+		}
+		devEUI->Release();
+		nwkSKey->Release();
+		appSKey->Release();
+	}
+	csv.CloseReader(r);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendUIntOS(this->devMap.GetCount());
+	sb.AppendC(UTF8STRC(" devices: "));
+	sb.Append(fileName);
+	this->txtDevice->SetText(sb.ToCString());
+	return true;
 }
 
 SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -165,6 +281,15 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
+	this->pnlDevice = ui->NewPanel(*this);
+	this->pnlDevice->SetRect(0, 0, 100, 23, false);
+	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblDevice = ui->NewLabel(this->pnlDevice, CSTR("Devices"));
+	this->lblDevice->SetRect(0, 0, 100, 23, false);
+	this->lblDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtDevice = ui->NewTextBox(this->pnlDevice, CSTR(""));
+	this->txtDevice->SetReadOnly(true);
+	this->txtDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pnlJSON = ui->NewPanel(*this);
 	this->pnlJSON->SetRect(0, 0, 100, 103, false);
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -185,10 +310,13 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl>
 	this->txtInfo = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtInfo->SetReadOnly(true);
+
+	this->HandleDropFiles(OnCSVFile, this);
 }
 
 SSWR::AVIRead::AVIRLoRaJSONForm::~AVIRLoRaJSONForm()
 {
+	this->devMap.MemFreeAll();
 }
 
 void SSWR::AVIRead::AVIRLoRaJSONForm::OnMonitorChanged()

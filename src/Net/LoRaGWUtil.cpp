@@ -156,23 +156,29 @@ UIntOS Net::LoRaGWUtil::GenUpPayload(UnsafeArray<UInt8> buff, Bool needConfirm, 
 		}
 	}
 	
+	CalcMIC(&buff[index], devAddr, fCnt, false, nwkSKey, buff, index);
+	return index + 4;
+}
+
+void Net::LoRaGWUtil::CalcMIC(UnsafeArray<UInt8> micBuff, UInt32 devAddr, UInt32 fCnt, Bool downLink, UnsafeArray<const UInt8> nwkSKey, UnsafeArray<const UInt8> msg, UIntOS msgLen)
+{
+	UInt8 ablock[16];
 	ablock[0] = 0x49;
 	ablock[1] = 0;
 	ablock[2] = 0;
 	ablock[3] = 0;
 	ablock[4] = 0;
-	ablock[5] = 0; //dir
+	ablock[5] = downLink ? 1 : 0;
 	WriteUInt32(&ablock[6], devAddr);
 	WriteUInt32(&ablock[10], fCnt);
 	ablock[14] = 0;
-	ablock[15] = (UInt8)index;
+	ablock[15] = (UInt8)msgLen;
 	UInt8 cmac[16];
 	Crypto::Hash::AESCMAC aescmac(nwkSKey);
 	aescmac.Calc(ablock, 16);
-	aescmac.Calc(buff, index);
+	aescmac.Calc(msg, msgLen);
 	aescmac.GetValue(cmac);
-	WriteNUInt32(&buff[index], ReadNUInt32(cmac));
-	return index + 4;
+	WriteNUInt32(&micBuff[0], ReadNUInt32(cmac));
 }
 
 void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, UnsafeArray<const UInt8> data, UIntOS dataSize)

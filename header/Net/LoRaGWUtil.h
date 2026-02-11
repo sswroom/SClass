@@ -12,6 +12,7 @@ namespace Net
 		static void ParseUDPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, Data::ByteArrayR msg);
 
 		static UIntOS GenUpPayload(UnsafeArray<UInt8> buff, Bool needConfirm, UInt32 devAddr, UInt32 fCnt, UInt8 fPort, UnsafeArray<const UInt8> nwkSKey, UnsafeArray<const UInt8> appSKey, UnsafeArray<const UInt8> payload, UIntOS payloadLen);
+		static void CalcMIC(UnsafeArray<UInt8> micBuff, UInt32 devAddr, UInt32 fCnt, Bool downLink, UnsafeArray<const UInt8> nwkSKey, UnsafeArray<const UInt8> msg, UIntOS msgLen);
 		static void GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, UnsafeArray<const UInt8> data, UIntOS dataSize);
 		static void GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb);
 		static void GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude);
