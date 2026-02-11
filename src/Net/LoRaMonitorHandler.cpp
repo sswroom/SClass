@@ -59,11 +59,11 @@ Bool __stdcall Net::LoRaMonitorHandler::UpdateGatewayFunc(NN<Net::WebServer::Web
 {
 	NN<Net::LoRaMonitorHandler> me = NN<LoRaMonitorHandler>::ConvertFrom(svcHdlr);
 	UInt64 gweui;
-	if (!req->GetQueryValueU64(CSTR("gweui"), gweui))
+	req->ParseHTTPForm();
+	if (!req->GetHTTPFormUInt64(CSTR("gweui"), gweui))
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 	}
-	req->ParseHTTPForm();
 	NN<Text::String> name;
 	NN<Text::String> model;
 	NN<Text::String> sn;
