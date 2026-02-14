@@ -2010,6 +2010,7 @@ AVIRGISDistanceForm.o: ../../src/SSWR/AVIRead/AVIRGISDistanceForm.cpp
 AVIRGISEditImageForm.o: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
 AVIRGISEditPointForm.o: ../../src/SSWR/AVIRead/AVIRGISEditPointForm.cpp
 AVIRGISEditVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
+AVIRGISExportImageForm.o: ../../src/SSWR/AVIRead/AVIRGISExportImageForm.cpp
 AVIRGISFontEditForm.o: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
 AVIRGISFontForm.o: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp
 AVIRGISFontStyleForm.o: ../../src/SSWR/AVIRead/AVIRGISFontStyleForm.cpp

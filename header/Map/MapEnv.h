@@ -17,6 +17,12 @@ namespace Map
 	class MapEnv : public IO::ParsedObject
 	{
 	public:
+		enum class LayerLineType
+		{
+			GlobalStyle,
+			LayerStyle
+		};
+
 		typedef enum
 		{
 			IT_UNKNOWN,
@@ -51,7 +57,7 @@ namespace Map
 		{
 			NN<Map::MapDrawLayer> layer;
 			Bool needRelease;
-			Int32 lineType;
+			LayerLineType lineType;
 			UIntOS lineStyle;
 			Double lineThick;
 			UInt32 lineColor;

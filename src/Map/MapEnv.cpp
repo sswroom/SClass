@@ -574,7 +574,7 @@ UIntOS Map::MapEnv::AddLayer(Optional<Map::MapEnv::GroupItem> group, NN<Map::Map
 		lyr->lineStyle = this->defLineStyle;
 		if (layer->HasLineStyle())
 		{
-			lyr->lineType = 1;
+			lyr->lineType = LayerLineType::LayerStyle;
 			lyr->lineThick = layer->GetLineStyleWidth();
 			lyr->lineColor = layer->GetLineStyleColor();
 		}
@@ -582,11 +582,11 @@ UIntOS Map::MapEnv::AddLayer(Optional<Map::MapEnv::GroupItem> group, NN<Map::Map
 		{
 			if (this->defLineStyle >= this->lineStyles.GetCount())
 			{
-				lyr->lineType = 1;
+				lyr->lineType = LayerLineType::LayerStyle;
 			}
 			else
 			{
-				lyr->lineType = 0;
+				lyr->lineType = LayerLineType::GlobalStyle;
 			}
 			lyr->lineThick = 1;
 			lyr->lineColor = 0xff000000;

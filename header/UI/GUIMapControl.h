@@ -100,6 +100,7 @@ namespace UI
 		void SetMapScale(Double newScale);
 		Double GetMapScale();
 		Double GetViewScale();
+		Math::Coord2DDbl GetMapCenter();
 		void PanToMapXY(Math::Coord2DDbl mapPos);
 		void ZoomToRect(Math::RectAreaDbl mapRect);
 		Bool InMapMapXY(Math::Coord2DDbl mapPos);

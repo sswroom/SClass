@@ -795,6 +795,11 @@ Double UI::GUIMapControl::GetViewScale()
 	return this->view->GetViewScale();
 }
 
+Math::Coord2DDbl UI::GUIMapControl::GetMapCenter()
+{
+	return this->view->GetCenter();
+}
+
 void UI::GUIMapControl::PanToMapXY(Math::Coord2DDbl mapPos)
 {
 	if (this->view->GetCenter() == mapPos)

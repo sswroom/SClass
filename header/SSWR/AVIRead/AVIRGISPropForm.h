@@ -75,7 +75,7 @@ namespace SSWR
 			NN<Media::ColorConv> colorConv;
 			Optional<Map::MapEnv::GroupItem> group;
 			UIntOS index;
-			Int32 lineType;
+			Map::MapEnv::LayerLineType lineType;
 			UIntOS lineStyle;
 			Double lineThick;
 			UInt32 lineColor;

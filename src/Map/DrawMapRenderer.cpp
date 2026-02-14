@@ -1345,7 +1345,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 						{
 							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
 							{
-								if (layer.lineType == 0)
+								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
 									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 								}
@@ -1379,7 +1379,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 						{
 							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
 							{
-								if (layer.lineType == 0)
+								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
 									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 								}
@@ -1481,7 +1481,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 						{
 							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
 							{
-								if (layer.lineType == 0)
+								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
 									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
 									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);

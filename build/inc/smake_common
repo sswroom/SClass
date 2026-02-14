@@ -4272,6 +4272,8 @@ SSWR/AVIRead/AVIRGISEditPointForm.h:
 @AVIRGISEditPointForm.o
 SSWR/AVIRead/AVIRGISEditVectorForm.h:
 @AVIRGISEditVectorForm.o
+SSWR/AVIRead/AVIRGISExportImageForm.h:
+@AVIRGISExportImageForm.o
 SSWR/AVIRead/AVIRGISForm.h:
 @AVIRGISForm.o
 SSWR/AVIRead/AVIRGISFontEditForm.h:

@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UIntOS> sz;
-		me->lineType = 1;
+		me->lineType = Map::MapEnv::LayerLineType::LayerStyle;
 		me->lineThick = frm.GetLineThick();
 		me->lineColor = frm.GetLineColor();
 		me->imgLine.Delete();
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
 		Math::Size2D<UIntOS> sz;
-		me->lineType = 0;
+		me->lineType = Map::MapEnv::LayerLineType::GlobalStyle;
 		me->lineStyle = frm.GetLineStyle();
 		me->imgLine.Delete();
 		sz = me->pbLineStyle->GetSizeP();
@@ -456,7 +456,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		{
 			dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 			dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-			if (this->lineType == 0)
+			if (this->lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 			{
 				this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
 			}
@@ -614,7 +614,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::ColorHandle
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		if (this->lineType == 0)
+		if (this->lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 		{
 			this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
 		}
