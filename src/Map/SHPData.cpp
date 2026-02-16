@@ -691,6 +691,11 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	}
 }
 
+Map::MapDrawLayer::FailReason Map::SHPData::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->dbf->QueryTableNames(schemaName, names);

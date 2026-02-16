@@ -200,6 +200,7 @@ Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::Par
 	this->dispRect = Math::RectAreaDbl(0, 0, 0, 0);
 	this->dispTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	this->hasBounds = false;
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 
 	this->ctrlRunning = false;
 	this->ctrlToStop = false;
@@ -663,6 +664,7 @@ Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<Ge
 	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	i = 0;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 	j = this->links.GetCount();
 	while (i < j)
 	{
@@ -674,6 +676,10 @@ Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<Ge
 			if (id >= currId && id <= currId + maxId)
 			{
 				vec = innerLayer->GetNewVectorById(session, id - currId);
+				if (vec.IsNull())
+				{
+					this->failReason = innerLayer->GetFailReason();
+				}
 				break;
 			}
 			else
@@ -684,6 +690,28 @@ Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<Ge
 		i++;
 	}
 	return vec;
+}
+
+Map::MapDrawLayer::FailReason Map::NetworkLinkLayer::GetFailReason() const
+{
+	return this->failReason;
+}
+
+void Map::NetworkLinkLayer::WaitForLoad(Data::Duration maxWaitTime)
+{
+	UIntOS i;
+	NN<LinkInfo> link;
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	i = this->links.GetCount();
+	while (i-- > 0)
+	{
+		link = this->links.GetItemNoCheck(i);
+		NN<Map::MapDrawLayer> innerLayer;
+		if (link->innerLayer.SetTo(innerLayer))
+		{
+			innerLayer->WaitForLoad(maxWaitTime);
+		}
+	}
 }
 
 UIntOS Map::NetworkLinkLayer::GetNameCol() const

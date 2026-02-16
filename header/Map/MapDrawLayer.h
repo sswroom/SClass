@@ -66,6 +66,12 @@ namespace Map
 			NonPointOnly
 		};
 
+		enum class FailReason
+		{
+			IdNotFound,
+			ItemLoading
+		};
+
 		typedef enum
 		{
 			OC_GPS_TRACK,
@@ -124,6 +130,8 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual FailReason GetFailReason() const = 0;
+		virtual void WaitForLoad(Data::Duration maxWaitTime) = 0;
 
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);

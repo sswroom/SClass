@@ -460,6 +460,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(AnyType userObj)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	me->mapLyrUpdated = true;
+	if (me->mapCtrl->IsPausedUpdate())
+		return;
 	me->mapCtrl->UpdateMap();
 	me->mapCtrl->Redraw();
 }
@@ -1879,8 +1881,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_EXPORT_IMAGE:
 		{
+			this->mapCtrl->PauseUpdate(true);
 			SSWR::AVIRead::AVIRGISExportImageForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
 			frm.ShowDialog(this);
+			this->mapCtrl->PauseUpdate(false);
 			break;
 		}
 	}

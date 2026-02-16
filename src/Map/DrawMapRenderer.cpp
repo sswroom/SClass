@@ -1313,8 +1313,9 @@ IntOS Map::DrawMapRenderer::VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN
 	}
 }
 
-void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group)
+Bool Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group)
 {
+	Bool hasLoading = false;
 	Map::MapEnv::LayerItem layer;
 	NN<Map::MapEnv::MapItem> item;
 
@@ -1329,7 +1330,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 		{
 			if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
-				DrawLayers(denv, NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				hasLoading = DrawLayers(denv, NN<Map::MapEnv::GroupItem>::ConvertFrom(item)) || hasLoading;
 			}
 			else if (item->itemType == Map::MapEnv::IT_LAYER)
 			{
@@ -1347,11 +1348,11 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 							{
 								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
-									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 								else
 								{
-									DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 
 							}
@@ -1361,7 +1362,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								{
 									if (layer.fontStyle < denv->fontStyleCnt)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 									}
 								}
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1371,7 +1372,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 								}
 							}
 						}
@@ -1381,11 +1382,11 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 							{
 								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
-									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 								else
 								{
-									DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 							}
 							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
@@ -1394,7 +1395,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								{
 									if (layer.fontStyle < denv->fontStyleCnt)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 									}
 								}
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1404,14 +1405,14 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 								}
 							}
 						}
 						else if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 						{
 							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
-								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
+								hasLoading = DrawShapesPoint(denv, layer.layer, layer.imgIndex) || hasLoading;
 							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 							{
 								Optional<Media::StaticImage> pimg = nullptr;
@@ -1451,11 +1452,11 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									{
 										if (pimg.SetTo(nnimg))
 										{
-											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType);
+											hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType) || hasLoading;
 										}
 										else
 										{
-											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+											hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 										}
 									}
 								}
@@ -1468,11 +1469,11 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									denv->layerFontColor.Add(b);
 									if (pimg.SetTo(nnimg))
 									{
-										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UIntOS)Double2Int32(UIntOS2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType) || hasLoading;
 									}
 									else
 									{
-										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 									}
 								}
 							}
@@ -1484,15 +1485,15 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								if (layer.lineType == Map::MapEnv::LayerLineType::GlobalStyle)
 								{
 									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 								else
 								{
 									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-									DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+									hasLoading = DrawShapes(denv, layer.layer, (UIntOS)-1, layer.fillStyle, layer.lineThick, layer.lineColor) || hasLoading;
 								}
 								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
+								hasLoading = DrawShapesPoint(denv, layer.layer, layer.imgIndex) || hasLoading;
 								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
 							}
 							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
@@ -1502,9 +1503,9 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									if (layer.fontStyle < denv->fontStyleCnt)
 									{
 										layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 										layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										hasLoading = DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 									}
 								}
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1515,16 +1516,16 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
 									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									hasLoading = DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType) || hasLoading;
 								}
 							}
 							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
 						}
 						else if (layerType == Map::DRAW_LAYER_IMAGE)
 						{
-							DrawImageLayer(denv, layer.layer);
+							hasLoading = DrawImageLayer(denv, layer.layer) || hasLoading;
 						}
 					}
 				}
@@ -1532,11 +1533,12 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 		}
 		i++;
 	}
-	mutUsage.EndUse();
+	return hasLoading;
 }
 
-void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor)
+Bool Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor)
 {
+	Bool hasLoading = false;
 	UIntOS i;
 	NN<Map::GetObjectSess> session;
 	NN<Media::DrawPen> p;
@@ -1590,6 +1592,10 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 					{
 						vec->Convert(converter);
 						this->mapSch.Draw(vec);
+					}
+					else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+					{
+						hasLoading = true;
 					}
 				}
 			}
@@ -1645,6 +1651,10 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 					{
 						this->mapSch.Draw(vec);
 					}
+					else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+					{
+						hasLoading = true;
+					}
 				}
 			}
 			layer->EndGetObject(session);
@@ -1660,10 +1670,12 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 			this->mapSch.WaitForFinish();
 		}
 	}
+	return hasLoading;
 }
 
-void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS imgIndex)
+Bool Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS imgIndex)
 {
+	Bool hasLoading = false;
 	Data::ArrayListInt64 arri;
 	NN<Math::Geometry::Vector2D> vec;
 	UIntOS i;
@@ -1696,7 +1708,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 	{
 		img = denv->env->GetImage(imgIndex, imgTimeMS);
 		if (!img.SetTo(nnimg))
-			return;
+			return false;
 		spotX = UIntOS2Double(nnimg->info.dispSize.x) * 0.5;
 		spotY = UIntOS2Double(nnimg->info.dispSize.y) * 0.5;
 	}
@@ -1720,7 +1732,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		layer->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(tl - ((br - tl) * 0.5), br + ((br - tl) * 0.5)), true);
 		if (arri.GetCount() <= 0)
 		{
-			return;
+			return false;
 		}
 		Optional<Media::DrawImage> dimg;
 		NN<Media::DrawImage> gimg;
@@ -1770,6 +1782,10 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 					vec->Convert(converter);
 					this->mapSch.Draw(vec);
 				}
+				else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+				{
+					hasLoading = true;
+				}
 			}
 
 			layer->EndGetObject(session);
@@ -1782,7 +1798,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		layer->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(tl - ((br - tl) * 0.5), br + ((br - tl) * 0.5)), true);
 		if (arri.GetCount() <= 0)
 		{
-			return;
+			return false;
 		}
 
 		Optional<Media::DrawImage> dimg;
@@ -1832,6 +1848,10 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 				{
 					this->mapSch.Draw(vec);
 				}
+				else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+				{
+					hasLoading = true;
+				}
 			}
 
 			layer->EndGetObject(session);
@@ -1839,10 +1859,12 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 			this->eng->DeleteImage(gimg);
 		}
 	}
+	return hasLoading;
 }
 
-void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS fontStyle, UIntOS labelCol, Int32 priority, Int32 flags, UIntOS imgWidth, UIntOS imgHeight, Map::MapEnv::FontType fontType)
+Bool Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS fontStyle, UIntOS labelCol, Int32 priority, Int32 flags, UIntOS imgWidth, UIntOS imgHeight, Map::MapEnv::FontType fontType)
 {
+	Bool hasLoading = false;
 	Optional<Map::NameArray> arr;
 	Data::ArrayListInt64 arri;
 	UIntOS i;
@@ -2094,13 +2116,19 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 				vec.Delete();
 			}
 		}
+		else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+		{
+			hasLoading = true;
+		}
 	}
 	layer->EndGetObject(session);
 	layer->ReleaseNameArr(arr);
+	return hasLoading;
 }
 
-void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer)
+Bool Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer)
 {
+	Bool hasLoading = false;
 	NN<Math::Geometry::Vector2D> vec;
 	NN<Math::Geometry::VectorImage> vimg;
 	UIntOS i;
@@ -2142,6 +2170,10 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 			{
 				vec.Delete();
 			}
+		}
+		else if (layer->GetFailReason() == MapDrawLayer::FailReason::ItemLoading)
+		{
+			hasLoading = true;
 		}
 		i++;
 	}
@@ -2215,6 +2247,7 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 		vimg.Delete();
 		i++;
 	}
+	return hasLoading;
 }
 
 void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
@@ -3752,7 +3785,7 @@ Map::DrawMapRenderer::~DrawMapRenderer()
 	this->colorConv.Delete();
 }
 
-void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS)
+Bool Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS)
 {
 	Map::DrawMapRenderer::DrawEnv denv;
 	UIntOS i;
@@ -3811,7 +3844,7 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 		}
 	}
 
-	this->DrawLayers(denv, nullptr);
+	Bool hasLoading = this->DrawLayers(denv, nullptr);
 	DrawLabels(denv);
 
 	NN<Media::DrawBrush> b;
@@ -3843,6 +3876,7 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 
 	this->lastLayerEmpty = denv.isLayerEmpty;
 	imgDurMS.Set(denv.imgDurMS);
+	return hasLoading;
 }
 
 void Map::DrawMapRenderer::SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, AnyType userObj)

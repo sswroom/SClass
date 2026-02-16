@@ -28,8 +28,8 @@ namespace Map
 			Bool toStop;
 			Bool running;
 			Bool isIdle;
-			TileMapLayer *me;
-			Sync::Event *evt;
+			NN<TileMapLayer> me;
+			NN<Sync::Event> evt;
 			UIntOS index;
 		} ThreadStat;
 
@@ -39,8 +39,9 @@ namespace Map
 		NN<Parser::ParserList> parsers;
 
 		UIntOS threadCnt;
-		ThreadStat *threads;
+		UnsafeArray<ThreadStat> threads;
 		UIntOS threadNext;
+		FailReason failReason;
 
 		UIntOS lastLevel;
 		Sync::Mutex lastMut;
@@ -85,6 +86,8 @@ namespace Map
 		virtual NN<GetObjectSess> BeginGetObject();
 		virtual void EndGetObject(NN<GetObjectSess> session);
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime);
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;

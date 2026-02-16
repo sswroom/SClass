@@ -1355,6 +1355,11 @@ Optional<Math::Geometry::Vector2D> Map::OSM::OSMData::GetNewVectorById(NN<GetObj
 	return this->CreateVector(elem);
 }
 
+Map::MapDrawLayer::FailReason Map::OSM::OSMData::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::OSM::OSMData::GetGeomCol() const
 {
 	return 3;

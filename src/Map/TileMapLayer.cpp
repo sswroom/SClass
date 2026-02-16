@@ -26,7 +26,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->running = true;
 		stat->isIdle = false;
 		while (!stat->toStop)
@@ -37,14 +37,14 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 				if (!stat->me->taskQueued.Get().GetOpt<CachedImage>().SetTo(cimg))
 					break;
 				mutUsage.EndUse();
-
+				Math::Coord2D<Int32> imgId = IdToCoord(cimg->imgId);
 				if (cimg->isCancel)
 				{
 					cimg->isFinish = true;
 				}
 				else
 				{
-					if (stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false).SetTo(imgList))
+					if (stat->me->tileMap->LoadTileImage(cimg->level, imgId, stat->me->parsers, bounds, false).SetTo(imgList))
 					{
 						NEW_CLASSNN(shimg, Media::SharedImage(imgList, nullptr));
 						cimg->img = shimg;
@@ -160,6 +160,7 @@ Map::TileMapLayer::TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList>
 	this->parsers = parsers;
 	this->tileMap = tileMap;
 	this->scale = 10000;
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 
 	this->lastLevel = (UIntOS)-1;
 	this->threadNext = 0;
@@ -168,13 +169,13 @@ Map::TileMapLayer::TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList>
 	this->threadCnt = this->tileMap->GetConcurrentCount();
 	if (this->threadCnt <= 0)
 		this->threadCnt = 1;
-	this->threads = MemAlloc(ThreadStat, this->threadCnt);
+	this->threads = MemAllocArr(ThreadStat, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->threads[i].running = false;
 		this->threads[i].toStop = false;
-		this->threads[i].me = this;
+		this->threads[i].me = *this;
 		this->threads[i].isIdle = false;
 		this->threads[i].index = i;
 		Sync::ThreadUtil::Create(TaskThread, &this->threads[i]);
@@ -231,7 +232,7 @@ Map::TileMapLayer::~TileMapLayer()
 			break;
 		Sync::SimpleThread::Sleep(1);
 	}
-	MemFree(this->threads);
+	MemFreeArr(this->threads);
 
 	i = this->lastImgs.GetCount();
 	while (i-- > 0)
@@ -517,6 +518,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 	Math::Coord2D<Int32> tileId = IdToCoord(id);
 	if (tileId.x == (Int32)0x80000000)
 	{
+		this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 		return this->tileMap->CreateScreenObjVector((UInt32)tileId.y).OrNull();
 	}
 	i = this->lastIds.SortedIndexOf(id);
@@ -524,7 +526,10 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 	{
 		cimg = this->lastImgs.GetItemNoCheck((UIntOS)i);
 		if (!cimg->img.SetTo(shimg))
+		{
+			this->failReason = cimg->isFinish? Map::MapDrawLayer::FailReason::IdNotFound: Map::MapDrawLayer::FailReason::ItemLoading;
 			return nullptr;
+		}
 		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId).Or(sbuff);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
 		return vimg;
@@ -532,6 +537,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 
 	if (this->IsCaching(level, id))
 	{
+		this->failReason = Map::MapDrawLayer::FailReason::ItemLoading;
 		return nullptr;
 	}
 	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, bounds, true);
@@ -572,8 +578,42 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		k = this->lastIds.SortedInsert(id);
 		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
-
+		this->failReason = Map::MapDrawLayer::FailReason::ItemLoading;
 		return nullptr;
+	}
+}
+
+Map::MapDrawLayer::FailReason Map::TileMapLayer::GetFailReason() const
+{
+	return this->failReason;
+}
+
+void Map::TileMapLayer::WaitForLoad(Data::Duration maxWaitTime)
+{
+	Bool found;
+	UIntOS i;
+	Data::Timestamp startTime = Data::Timestamp::Now();
+	while (true)
+	{
+		found = this->taskQueued.HasItems();
+		i = this->threadCnt;
+		while (i-- > 0)
+		{
+			if (!this->threads[i].isIdle)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			break;
+		}
+		if (Data::Timestamp::Now() - startTime >= maxWaitTime)
+		{
+			break;
+		}
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

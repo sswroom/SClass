@@ -350,6 +350,11 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	}
 }
 
+Map::MapDrawLayer::FailReason Map::OruxDBLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<DB::DBConn> db;

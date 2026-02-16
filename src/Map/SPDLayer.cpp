@@ -649,6 +649,11 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	return nullptr;
 }
 
+Map::MapDrawLayer::FailReason Map::SPDLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::SPDLayer::GetGeomCol() const
 {
 	return INVALID_INDEX;

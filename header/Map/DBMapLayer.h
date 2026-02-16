@@ -51,6 +51,8 @@ namespace Map
 		virtual NN<GetObjectSess> BeginGetObject();
 		virtual void EndGetObject(NN<GetObjectSess> session);
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime) {};
 		
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);

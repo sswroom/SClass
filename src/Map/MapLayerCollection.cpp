@@ -18,10 +18,12 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
 
 Map::MapLayerCollection::MapLayerCollection(NN<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 }
 
 Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 }
 
 Map::MapLayerCollection::~MapLayerCollection()
@@ -390,6 +392,7 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerCollection::GetNewVectorById(NN<
 	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -397,6 +400,7 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerCollection::GetNewVectorById(NN<
 		if (id >= currId && id <= currId + maxId)
 		{
 			vec = lyr->GetNewVectorById(session, id - currId);
+			this->failReason = lyr->GetFailReason();
 			break;
 		}
 		else
@@ -425,6 +429,21 @@ void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType 
 		{
 			this->updHdlrs.RemoveAt(i);
 		}
+	}
+}
+
+Map::MapDrawLayer::FailReason Map::MapLayerCollection::GetFailReason() const
+{
+	return this->failReason;
+}
+
+void Map::MapLayerCollection::WaitForLoad(Data::Duration maxWaitTime)
+{
+	Sync::RWMutexUsage mutUsage(this->mut, false);
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
+	{
+		it.Next()->WaitForLoad(maxWaitTime);
 	}
 }
 

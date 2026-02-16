@@ -116,6 +116,36 @@ void Map::MapEnv::RemoveGroupUpdatedHandler(Optional<Map::MapEnv::GroupItem> gro
 	
 }
 
+void Map::MapEnv::WaitForGroupLoad(Optional<GroupItem> group, Data::Duration maxWaitTime)
+{
+	NN<Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NN<Map::MapEnv::MapItem> item;
+	NN<GroupItem> nngroup;
+	UIntOS i;
+	if (group.SetTo(nngroup))
+	{
+		objs = nngroup->subitems;
+	}
+	else
+	{
+		objs = this->mapLayers;
+	}
+
+	i = objs->GetCount();
+	while (i-- > 0)
+	{
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
+		{
+			NN<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->WaitForLoad(maxWaitTime);
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			this->WaitForGroupLoad(NN<Map::MapEnv::GroupItem>::ConvertFrom(item), maxWaitTime);
+		}
+	}
+}
+
 Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CoordinateSystem> csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
@@ -1555,4 +1585,9 @@ UInt32 Map::MapEnv::GetSRID() const
 void Map::MapEnv::BeginUse(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
+}
+
+void Map::MapEnv::WaitForLoad(Data::Duration maxWaitTime)
+{
+	this->WaitForGroupLoad(nullptr, maxWaitTime);
 }

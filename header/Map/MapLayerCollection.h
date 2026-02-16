@@ -14,6 +14,7 @@ namespace Map
 		Sync::RWMutex mut;
 		Data::ArrayListNN<Map::MapDrawLayer> layerList;
 		Data::ArrayListObj<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
+		FailReason failReason;
 
 		static void __stdcall InnerUpdated(AnyType userObj);
 	public:
@@ -54,6 +55,8 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime);
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;

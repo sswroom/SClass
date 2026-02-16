@@ -369,6 +369,11 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType 
 {
 }
 
+Map::MapDrawLayer::FailReason Map::ESRI::ESRIMDBLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)

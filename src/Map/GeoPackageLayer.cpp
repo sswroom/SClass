@@ -318,6 +318,11 @@ Optional<Math::Geometry::Vector2D> Map::GeoPackageLayer::GetNewVectorById(NN<Get
 	return nullptr;
 }
 
+Map::MapDrawLayer::FailReason Map::GeoPackageLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);

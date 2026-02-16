@@ -143,6 +143,7 @@ namespace Map
 		UIntOS GetLayersInList(NN<Data::ArrayListNN<Map::MapDrawLayer>> layers, NN<const Data::ArrayListNN<MapItem>> list, Map::DrawLayerType lyrType) const;
 		void AddGroupUpdatedHandler(Optional<GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 		void RemoveGroupUpdatedHandler(Optional<GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
+		void WaitForGroupLoad(Optional<GroupItem> group, Data::Duration maxWaitTime);
 	public:
 		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CoordinateSystem> csys);
 		virtual ~MapEnv();
@@ -223,6 +224,7 @@ namespace Map
 		UInt32 GetSRID() const;
 
 		void BeginUse(NN<Sync::MutexUsage> mutUsage) const;
+		void WaitForLoad(Data::Duration maxWaitTime);
 	};
 }
 #endif

@@ -12,7 +12,7 @@ namespace Map
 		typedef void (CALLBACKFUNC UpdatedHandler)(AnyType userObj);
 
 		virtual ~MapRenderer(){};
-		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS) = 0;
+		virtual Bool DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS) = 0; // true if some layers are loading
 		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, AnyType userObj) = 0;
 	};
 }

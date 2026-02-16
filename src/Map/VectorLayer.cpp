@@ -686,6 +686,11 @@ Optional<Math::Geometry::Vector2D> Map::VectorLayer::GetNewVectorById(NN<Map::Ge
 	}
 }
 
+Map::MapDrawLayer::FailReason Map::VectorLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 void Map::VectorLayer::SetTableName(Text::String *tableName)
 {
 	SDEL_STRING(this->tableName);

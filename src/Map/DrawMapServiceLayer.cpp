@@ -21,7 +21,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Sync::Event evt;
-		me->threadEvt = &evt;
+		me->threadEvt = evt;
 		me->threadRunning = true;
 		while (!me->threadToStop)
 		{
@@ -90,6 +90,7 @@ void Map::DrawMapServiceLayer::ClearDisp()
 		this->lastImageURL = this->dispImageURL;
 		this->dispImage = nullptr;
 		this->dispImageURL = nullptr;
+		this->dispLoaded = true;
 	}
 }
 
@@ -102,12 +103,14 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(NN<Map::DrawMapService> mapService
 	this->dispId = 0;
 	this->dispImage = nullptr;
 	this->dispImageURL = nullptr;
+	this->dispLoaded = true;
 	this->lastBounds = this->dispBounds;
 	this->lastSize = this->dispSize;
 	this->lastDPI = this->dispDPI;
 	this->lastId = 0;
 	this->lastImage = nullptr;
 	this->lastImageURL = nullptr;
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -187,6 +190,7 @@ UIntOS Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outA
 		this->ClearDisp();
 		this->dispBounds = rect;
 		this->dispId++;
+		this->dispLoaded = false;
 		if (this->lastImage.NotNull())
 		{
 			outArr->Add(this->lastId);
@@ -288,6 +292,7 @@ void Map::DrawMapServiceLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 		this->dispSize = size;
 		this->dispDPI = dpi;
 		this->dispId++;
+		this->dispLoaded = false;
 	}	
 }
 
@@ -304,11 +309,18 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	NN<Media::SharedImage> shimg;
-	if (this->dispId == id && this->dispImage.SetTo(shimg))
+	if (this->dispId == id)
 	{
-		NN<Math::Geometry::Vector2D> vec;
-		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
-		return vec;
+		if (this->dispImage.SetTo(shimg))
+		{
+			NN<Math::Geometry::Vector2D> vec;
+			NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
+			return vec;
+		}
+		else
+		{
+			this->failReason = this->dispLoaded ? Map::MapDrawLayer::FailReason::IdNotFound : Map::MapDrawLayer::FailReason::ItemLoading;
+		}
 	}
 	else if (this->lastId == id && this->lastImage.SetTo(shimg))
 	{
@@ -316,7 +328,26 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
+	else
+	{
+		this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
+	}
 	return nullptr;
+}
+
+Map::MapDrawLayer::FailReason Map::DrawMapServiceLayer::GetFailReason() const
+{
+	return this->failReason;
+}
+
+void Map::DrawMapServiceLayer::WaitForLoad(Data::Duration maxWaitTime)
+{
+	Data::Duration waitTime = 0;
+	while (!this->dispLoaded && waitTime < maxWaitTime)
+	{
+		Sync::SimpleThread::Sleep(100);
+		waitTime += 100;
+	}
 }
 
 UIntOS Map::DrawMapServiceLayer::GetGeomCol() const

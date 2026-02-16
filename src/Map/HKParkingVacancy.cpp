@@ -573,6 +573,11 @@ Optional<Math::Geometry::Vector2D> Map::HKParkingVacancy::GetNewVectorById(NN<Ge
 	return nullptr;
 }
 
+Map::MapDrawLayer::FailReason Map::HKParkingVacancy::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::HKParkingVacancy::GetGeomCol() const
 {
 	return INVALID_INDEX;

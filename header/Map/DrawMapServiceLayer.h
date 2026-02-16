@@ -17,7 +17,7 @@ namespace Map
 
 		Bool threadToStop;
 		Bool threadRunning;
-		Sync::Event *threadEvt;
+		NN<Sync::Event> threadEvt;
 
 		Sync::Mutex dispMut;
 		Math::RectAreaDbl dispBounds;
@@ -26,12 +26,14 @@ namespace Map
 		Int64 dispId;
 		Optional<Media::SharedImage> dispImage;
 		Optional<Text::String> dispImageURL;
+		Bool dispLoaded;
 		Math::RectAreaDbl lastBounds;
 		Math::Size2DDbl lastSize;
 		Double lastDPI;
 		Int64 lastId;
 		Optional<Media::SharedImage> lastImage;
 		Optional<Text::String> lastImageURL;
+		FailReason failReason;
 
 		Sync::Mutex updMut;
 		Data::ArrayListObj<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
@@ -64,6 +66,8 @@ namespace Map
 		virtual NN<GetObjectSess> BeginGetObject();
 		virtual void EndGetObject(NN<GetObjectSess> session);
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime);
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;

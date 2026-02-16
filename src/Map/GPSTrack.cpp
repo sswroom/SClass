@@ -519,6 +519,11 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 	mutUsage.EndUse();
 }
 
+Map::MapDrawLayer::FailReason Map::GPSTrack::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::GPSTrack::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)

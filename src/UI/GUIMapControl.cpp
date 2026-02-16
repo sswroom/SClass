@@ -565,6 +565,7 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 	this->drawHdlr = 0;
 	this->mapEnv = mapEnv;
 	this->imgTimeoutTick = 0;
+	this->pauseUpdate = false;
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
@@ -942,4 +943,9 @@ NN<Map::MapView> UI::GUIMapControl::CloneMapView()
 void UI::GUIMapControl::PauseUpdate(Bool pauseUpdate)
 {
 	this->pauseUpdate = pauseUpdate;
+}
+
+Bool UI::GUIMapControl::IsPausedUpdate() const
+{
+	return this->pauseUpdate;
 }

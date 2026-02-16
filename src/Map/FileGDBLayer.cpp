@@ -368,6 +368,11 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
+Map::MapDrawLayer::FailReason Map::FileGDBLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)

@@ -88,11 +88,11 @@ namespace Map
 		static void DrawLabels(NN<DrawEnv> denv);
 		static IntOS __stdcall VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2);
 	private:
-		void DrawLayers(NN<DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group);
-		void DrawShapes(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);
-		void DrawShapesPoint(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS imgIndex);
-		void DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS fontSytle, UIntOS labelCol, Int32 priority, Int32 flags, UIntOS imgWidth, UIntOS imgHeight, Map::MapEnv::FontType fontType);
-		void DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer);
+		Bool DrawLayers(NN<DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group);
+		Bool DrawShapes(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);
+		Bool DrawShapesPoint(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS imgIndex);
+		Bool DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UIntOS fontSytle, UIntOS labelCol, Int32 priority, Int32 flags, UIntOS imgWidth, UIntOS imgHeight, Map::MapEnv::FontType fontType);
+		Bool DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer);
 		void DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha);
 		void DrawImageObjectQuad(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Quadrilateral scnCoords, Double srcAlpha);
 
@@ -104,7 +104,7 @@ namespace Map
 		DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Optional<Media::ColorManagerSess> colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
-		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS);
+		virtual Bool DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS);
 		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, AnyType userObj);
 		Bool GetLastsLayerEmpty();
 		void SetEnv(NN<Map::MapEnv> env);

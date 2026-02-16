@@ -47,6 +47,7 @@ namespace Map
 		Double dispDPI;
 		Math::RectAreaDbl dispRect;
 		Int64 dispTime;
+		FailReason failReason;
 
 		Bool hasBounds;
 		Math::RectAreaDbl bounds;
@@ -87,6 +88,8 @@ namespace Map
 		virtual NN<GetObjectSess> BeginGetObject();
 		virtual void EndGetObject(NN<GetObjectSess> session);
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime);
 		virtual UIntOS GetNameCol() const;
 		virtual void SetNameCol(UIntOS nameCol);
 		virtual UIntOS GetGeomCol() const;

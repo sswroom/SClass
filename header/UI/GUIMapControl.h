@@ -41,13 +41,13 @@ namespace UI
 		UInt64 gZoomDist;
 		UInt64 gZoomCurrDist;
 		Math::Coord2D<IntOS> gZoomCurrPos;
-		Bool pauseUpdate;
 
 		Math::Coord2DDbl markerPos;
 		Double markerDir;
 		Bool markerHasDir;
 		Bool showMarker;
 		Data::ArrayListNN<Math::Geometry::Vector2D> selVecList;
+		Bool pauseUpdate;
 
 		Data::ArrayListObj<Data::CallbackStorage<ScaleChangedHandler>> scaleChgHdlrs;
 		Data::ArrayListObj<Data::CallbackStorage<MouseMoveHandler>> mouseMoveHdlrs;
@@ -122,6 +122,7 @@ namespace UI
 		void UpdateMapView(NN<Map::MapView> view);
 		NN<Map::MapView> CloneMapView();
 		void PauseUpdate(Bool pauseUpdate);
+		Bool IsPausedUpdate() const;
 	};
 };
 #endif

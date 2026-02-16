@@ -414,7 +414,10 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 	NN<Text::String> s;
 	NN<IO::StreamData> fd;
 	if (level > this->maxLevel)
+	{
+		printf("MercatorTileMap: level %d is greater than max level %d\r\n", (UInt32)level, (UInt32)this->maxLevel);
 		return nullptr;
+	}
 	Int32 loadTileIdX = tileId.x;
 	Int32 maxX = (1 << level);
 	while (loadTileIdX < 0)
@@ -433,7 +436,10 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 
 	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (y1 < -90)
+	{
+		printf("MercatorTileMap: tile y %d is out of range\r\n", tileId.y);
 		return nullptr;
+	}
 
 	if (this->cacheDir.SetTo(s))
 	{
@@ -507,7 +513,10 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 	}
 
 	if (localOnly)
+	{
+		printf("MercatorTileMap: tile not found in local cache: level = %d, x = %d, y = %d\r\n", (UInt32)level, loadTileIdX, tileId.y);
 		return nullptr;
+	}
 
 	urlPtr = this->GetTileImageURL(url, level, Math::Coord2D<Int32>(loadTileIdX, tileId.y)).Or(url);
 
@@ -519,6 +528,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
+	printf("MercatorTileMap: URL = %s, Status = %d\r\n", url, (Int32)status);
 	if (status == 304)
 	{
 		IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

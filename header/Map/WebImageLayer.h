@@ -61,6 +61,7 @@ namespace Map
 		Int64 currTime;
 		Sync::Mutex updMut;
 		Data::ArrayListObj<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
+		FailReason failReason;
 
 		Bool threadRunning;
 		Bool threadToStop;
@@ -96,6 +97,8 @@ namespace Map
 		virtual NN<GetObjectSess> BeginGetObject();
 		virtual void EndGetObject(NN<GetObjectSess> session);
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
+		virtual FailReason GetFailReason() const;
+		virtual void WaitForLoad(Data::Duration maxWaitTime);
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;

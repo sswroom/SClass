@@ -803,6 +803,11 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	return nullptr;
 }
 
+Map::MapDrawLayer::FailReason Map::CIPLayer2::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::CIPLayer2::GetGeomCol() const
 {
 	return INVALID_INDEX;

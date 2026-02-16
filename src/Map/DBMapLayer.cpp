@@ -448,6 +448,11 @@ Optional<Math::Geometry::Vector2D> Map::DBMapLayer::GetNewVectorById(NN<GetObjec
 	return nullptr;
 }
 
+Map::MapDrawLayer::FailReason Map::DBMapLayer::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
 UIntOS Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<DB::ReadingDB> db;

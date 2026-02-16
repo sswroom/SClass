@@ -240,6 +240,7 @@ Map::WebImageLayer::WebImageLayer(NN<Net::WebBrowser> browser, NN<Parser::Parser
 	this->minTime = 0;
 	this->maxTime = 0;
 	this->currTime = 0;
+	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 	this->threadRunning = false;
 	this->threadToStop = false;
 	Sync::ThreadUtil::Create(LoadThread, this);
@@ -565,24 +566,55 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 {
 	NN<ImageStat> stat;
 	NN<Media::SharedImage> shimg;
-	if (this->GetImageStat((Int32)id).SetTo(stat) && stat->simg.SetTo(shimg))
+	if (this->GetImageStat((Int32)id).SetTo(stat))
 	{
-		Math::Geometry::VectorImage *img;
-		NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));
-		if (stat->hasAltitude)
+		if (stat->simg.SetTo(shimg))
 		{
-			img->SetHeight(stat->altitude);
+			Math::Geometry::VectorImage *img;
+			NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));
+			if (stat->hasAltitude)
+			{
+				img->SetHeight(stat->altitude);
+			}
+			if (stat->alpha > 0)
+			{
+				img->SetSrcAlpha(stat->alpha);
+			}
+			img->SetZIndex(stat->zIndex);
+			return img;
 		}
-		if (stat->alpha > 0)
+		else
 		{
-			img->SetSrcAlpha(stat->alpha);
+			this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
+			return nullptr;
 		}
-		img->SetZIndex(stat->zIndex);
-		return img;
 	}
 	else
 	{
+		this->failReason = (id >= 0 && id < this->nextId) ? Map::MapDrawLayer::FailReason::ItemLoading : Map::MapDrawLayer::FailReason::IdNotFound;
 		return nullptr;
+	}
+}
+
+Map::MapDrawLayer::FailReason Map::WebImageLayer::GetFailReason() const
+{
+	return this->failReason;
+}
+
+void Map::WebImageLayer::WaitForLoad(Data::Duration maxWaitTime)
+{
+	Data::Timestamp startTime = Data::Timestamp::Now();
+	while (true)
+	{
+		if (this->pendingList.GetCount() == 0 && this->loadingList.GetCount() == 0)
+		{
+			return;
+		}
+		if (Data::Timestamp::Now() - startTime > maxWaitTime)
+		{
+			return;
+		}
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
