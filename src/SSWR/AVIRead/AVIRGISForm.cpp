@@ -34,6 +34,7 @@
 #include "SSWR/AVIRead/AVIRGISEditPointForm.h"
 #include "SSWR/AVIRead/AVIRGISEditVectorForm.h"
 #include "SSWR/AVIRead/AVIRGISExportImageForm.h"
+#include "SSWR/AVIRead/AVIRGISExportVectorForm.h"
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
@@ -72,6 +73,7 @@ typedef enum
 	MNU_COPY_LATLON,
 	MNU_PRINT,
 	MNU_EXPORT_IMAGE,
+	MNU_EXPORT_VECTOR,
 	MNU_GROUP_ADD,
 	MNU_GROUP_REMOVE,
 	MNU_GROUP_NEW_IMAGE,
@@ -780,6 +782,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu->AddItem(CSTR("&Copy Lat/Lon"), MNU_COPY_LATLON, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
 	mnu->AddItem(CSTR("&Print..."), MNU_PRINT, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_P);
 	mnu->AddItem(CSTR("Export &Image..."), MNU_EXPORT_IMAGE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_E);
+	mnu->AddItem(CSTR("Export &Vector..."), MNU_EXPORT_VECTOR, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Add Layer"));
 	NN<UI::GUIMenu> mnu2 = mnu->AddSubMenu(CSTR("&MTK GPS Tracker"));
 	mnu2->AddItem(CSTR("From &Device"), MNU_MTK_GPS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1883,6 +1886,14 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			this->mapCtrl->PauseUpdate(true);
 			SSWR::AVIRead::AVIRGISExportImageForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
+			frm.ShowDialog(this);
+			this->mapCtrl->PauseUpdate(false);
+			break;
+		}
+	case MNU_EXPORT_VECTOR:
+		{
+			this->mapCtrl->PauseUpdate(true);
+			SSWR::AVIRead::AVIRGISExportVectorForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
 			frm.ShowDialog(this);
 			this->mapCtrl->PauseUpdate(false);
 			break;

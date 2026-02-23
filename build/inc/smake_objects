@@ -2011,6 +2011,7 @@ AVIRGISEditImageForm.o: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
 AVIRGISEditPointForm.o: ../../src/SSWR/AVIRead/AVIRGISEditPointForm.cpp
 AVIRGISEditVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
 AVIRGISExportImageForm.o: ../../src/SSWR/AVIRead/AVIRGISExportImageForm.cpp
+AVIRGISExportVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISExportVectorForm.cpp
 AVIRGISFontEditForm.o: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
 AVIRGISFontForm.o: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp
 AVIRGISFontStyleForm.o: ../../src/SSWR/AVIRead/AVIRGISFontStyleForm.cpp
@@ -2228,6 +2229,7 @@ AVIRUserAgentParseForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentParseForm.cpp
 AVIRUserAgentSelForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
 AVIRValgrindLogForm.o: ../../src/SSWR/AVIRead/AVIRValgrindLogForm.cpp
 AVIRVBoxManagerForm.o: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
+AVIRVectorDocumentForm.o: ../../src/SSWR/AVIRead/AVIRVectorDocumentForm.cpp
 AVIRVideoCheckerForm.o: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 AVIRVideoInfoForm.o: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
 AVIRVoiceModemForm.o: ../../src/SSWR/AVIRead/AVIRVoiceModemForm.cpp
