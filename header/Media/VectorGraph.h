@@ -157,7 +157,11 @@ namespace Media
 
 		Double GetVisibleWidthMM() const;
 		Double GetVisibleHeightMM() const;
+		UIntOS GetCount() const;
+		Optional<Math::Geometry::Vector2D> GetItem(UIntOS index) const;
+		Optional<VectorStyles> GetStyle(UIntOS index) const;
 		void DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
+		void DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
 	};
 }
 #endif

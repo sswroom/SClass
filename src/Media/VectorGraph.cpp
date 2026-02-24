@@ -715,10 +715,30 @@ Double Media::VectorGraph::GetVisibleHeightMM() const
 	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.y);
 }
 
+UIntOS Media::VectorGraph::GetCount() const
+{
+	return this->items.GetCount();
+}
+
+Optional<Math::Geometry::Vector2D> Media::VectorGraph::GetItem(UIntOS index) const
+{
+	return this->items.GetItem(index);
+}
+
+Optional<Media::VectorGraph::VectorStyles> Media::VectorGraph::GetStyle(UIntOS index) const
+{
+	return this->itemStyle.GetItem(index);
+}
+
 void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS)
 {
-	UInt32 imgTimeMS = 0;
 	Double scale = (UIntOS2Double(dimg->GetWidth()) / this->size.x + UIntOS2Double(dimg->GetHeight()) / this->size.y) * 0.5;
+	DrawTo(Math::Coord2DDbl(0, 0), scale, dimg, imgDurMS);
+}
+
+void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS)
+{
+	UInt32 imgTimeMS = 0;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	Media::DrawEngine::DrawPos align;
@@ -814,7 +834,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 					k = nPoints;
 					while (k-- > 0)
 					{
-						points[k] = dpoints[k] * dScale;
+						points[k] = (dpoints[k] + ofst) * dScale;
 					}
 					dimg->DrawPolyline(points, nPoints, p);
 					MemFreeA(points);
@@ -835,7 +855,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 				k = nPoints;
 				while (k-- > 0)
 				{
-					points[k] = dpoints[k] * dScale;
+					points[k] = (dpoints[k] + ofst) * dScale;
 				}
 				dimg->DrawPolyline(points, nPoints, p);
 				MemFreeA(points);
@@ -844,7 +864,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::String && df.SetTo(f) && ob.SetTo(b))
 		{
 			NN<Math::Geometry::VectorString> vstr = NN<Math::Geometry::VectorString>::ConvertFrom(vec);
-			Math::Coord2DDbl coord = vstr->GetCenter();
+			Math::Coord2DDbl coord = vstr->GetCenter() + ofst;
 			align = vstr->GetTextAlign();
 			if (align != currAlign)
 			{
@@ -883,7 +903,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 			NN<Media::StaticImage> simg;
 			if (vimg->GetImage(thisTimeMS).SetTo(simg))
 			{
-				dimg->DrawImagePt2(simg, bounds.min * scale);
+				dimg->DrawImagePt2(simg, (bounds.min + ofst) * scale);
 				if (imgTimeMS == 0)
 				{
 					imgTimeMS = thisTimeMS;
@@ -901,7 +921,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 		{
 			NN<Math::Geometry::Ellipse> ellipse = NN<Math::Geometry::Ellipse>::ConvertFrom(vec);
 			Math::RectAreaDbl bounds = ellipse->GetBounds();
-			bounds = bounds * scale;
+			bounds = (bounds + ofst) * scale;
 			dimg->DrawEllipse(bounds.min, bounds.GetSize(), dp, ob);
 		}
 		else

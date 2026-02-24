@@ -5,7 +5,10 @@
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
+#include "UI/GUIListView.h"
 #include "UI/GUIPictureBoxSimple.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 
 namespace SSWR
 {
@@ -19,8 +22,13 @@ namespace SSWR
 
 			NN<UI::GUIListBox> lbPages;
 			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpPreview;
 			NN<UI::GUIPictureBoxSimple> pbMain;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIListView> lvInfo;
 
+			static void __stdcall OnPagesSelChg(AnyType userObj);
 		public:
 			AVIRVectorDocumentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::VectorDocument> vdoc);
 			virtual ~AVIRVectorDocumentForm();

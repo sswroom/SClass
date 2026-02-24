@@ -97,6 +97,11 @@ namespace Math
 			return this->min != v.min || this->max != v.max;
 		}
 
+		Math::RectAreaDbl operator+(Math::Coord2DDbl v) const
+		{
+			return Math::RectAreaDbl(this->min + v, this->max + v);
+		}
+		
 		Math::RectAreaDbl operator*(Double v) const
 		{
 			return Math::RectAreaDbl(this->min * v, this->max * v);
