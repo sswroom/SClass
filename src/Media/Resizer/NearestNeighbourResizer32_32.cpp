@@ -130,7 +130,7 @@ Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::Proce
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 	{
 		return nullptr;
 	}

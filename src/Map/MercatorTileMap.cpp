@@ -398,7 +398,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UIntOS level, Mat
 	return nullptr;
 }
 
-Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format)
 {
 	UIntOS readSize;
 	UTF8Char url[1024];
@@ -452,17 +452,17 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
-		ImageType imgt = this->GetImageType();
-		switch (imgt)
+		TileFormat tileFormat = this->GetTileFormat();
+		switch (tileFormat)
 		{
-		case IT_JPG:
+		case TileFormat::JPG:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".jpg"));
 			break;
-		case IT_WEBP:
+		case TileFormat::WEBP:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".webp"));
 			break;
 		default:
-		case IT_PNG:
+		case TileFormat::PNG:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
@@ -474,7 +474,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 			NN<IO::StmData::FileData>::ConvertFrom(fd)->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
 			if (dt.CompareTo(currTime) > 0)
 			{
-				it.Set(imgt);
+				format.Set(tileFormat);
 				return fd;
 			}
 			else
@@ -491,23 +491,23 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 		sptru = Text::StrInt32(sptru, loadTileIdX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, tileId.y);
-		ImageType imgt = this->GetImageType();
-		switch (imgt)
+		TileFormat tileFormat = this->GetTileFormat();
+		switch (tileFormat)
 		{
-		case IT_JPG:
+		case TileFormat::JPG:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".jpg"));
 			break;
-		case IT_WEBP:
+		case TileFormat::WEBP:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".webp"));
 			break;
 		default:
-		case IT_PNG:
+		case TileFormat::PNG:
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
 		if (spkg->CreateStreamData({filePathU, (UIntOS)(sptru - filePathU)}).SetTo(fd))
 		{
-			it.Set(imgt);
+			format.Set(tileFormat);
 			return fd;
 		}
 	}
@@ -593,7 +593,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			it.Set(this->GetImageType());
+			format.Set(this->GetTileFormat());
 			return fd;
 		}
 		fd.Delete();

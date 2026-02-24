@@ -81,6 +81,7 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRVectorDocumentForm::~AVIRVectorDocumentForm()
 {
+	this->ClearChildren();
 	this->vdoc.Delete();
 }
 

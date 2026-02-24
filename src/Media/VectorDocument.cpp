@@ -55,7 +55,7 @@ NN<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double heig
 {
 	NN<Media::VectorGraph> graph;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASSNN(graph, Media::VectorGraph(this->srid, width, height, unit, this->refEng, color));
+	NEW_CLASSNN(graph, Media::VectorGraph(this->srid, Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, width), Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, height), this->refEng, color));
 	this->items.Add(graph);
 	return graph;
 }

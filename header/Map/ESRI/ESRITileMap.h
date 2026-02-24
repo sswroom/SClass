@@ -37,7 +37,7 @@ namespace Map
 			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Bool IsMercatorProj() const;
 			virtual UIntOS GetTileSize() const;
-			virtual ImageType GetImageType() const;
+			virtual TileFormat GetTileFormat() const;
 			virtual Bool CanQuery() const;
 			virtual Bool QueryInfos(Math::Coord2DDbl coord, UIntOS level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const;
 			virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
@@ -46,7 +46,7 @@ namespace Map
 			virtual Optional<Media::ImageList> LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
 			virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId);
 			virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId);
-			virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
+			virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format);
 		};
 	}
 }

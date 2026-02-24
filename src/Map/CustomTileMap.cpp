@@ -25,12 +25,12 @@ Text::CStringNN Map::CustomTileMap::GetName() const
 
 Map::TileMap::TileType Map::CustomTileMap::GetTileType() const
 {
-	return Map::TileMap::TT_CUSTOM;
+	return Map::TileMap::TileType::CUSTOM;
 }
 
-Map::TileMap::ImageType Map::CustomTileMap::GetImageType() const
+Map::TileMap::TileFormat Map::CustomTileMap::GetTileFormat() const
 {
-	return Map::TileMap::IT_PNG;
+	return Map::TileMap::TileFormat::PNG;
 }
 
 UIntOS Map::CustomTileMap::GetConcurrentCount() const

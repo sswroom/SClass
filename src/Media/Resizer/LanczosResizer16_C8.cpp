@@ -827,7 +827,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer16_C8::ProcessToNewPa
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 	{
 		return nullptr;
 	}

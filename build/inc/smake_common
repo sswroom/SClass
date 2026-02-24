@@ -2870,6 +2870,7 @@ Media/HTRecFile.h:
 @HTRecFile.o
 Media/ICCProfile.h:
 @ICCProfile.o
+Media/Image.h:
 Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
 Media/ImageCopy.h:

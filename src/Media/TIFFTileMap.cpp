@@ -26,7 +26,7 @@ Bool Media::TIFFTileMap::IsError() const
 
 Map::TileMap::TileType Media::TIFFTileMap::GetTileType() const
 {
-	return Map::TileMap::TT_TIFF;
+	return Map::TileMap::TileType::TIFF;
 }
 
 UIntOS Media::TIFFTileMap::GetMinLevel() const
@@ -81,9 +81,9 @@ UIntOS Media::TIFFTileMap::GetTileSize() const
 	return this->tileWidth;
 }
 
-Map::TileMap::ImageType Media::TIFFTileMap::GetImageType() const
+Map::TileMap::TileFormat Media::TIFFTileMap::GetTileFormat() const
 {
-	return Map::TileMap::ImageType::IT_JPG;
+	return Map::TileMap::TileFormat::JPG;
 }
 
 Bool Media::TIFFTileMap::CanQuery() const
@@ -118,7 +118,7 @@ Bool Media::TIFFTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS 
 	return false;
 }
 
-Optional<IO::StreamData> Media::TIFFTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Media::TIFFTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<Map::TileMap::TileFormat> format)
 {
 	///////////////////////////////
 	return nullptr;

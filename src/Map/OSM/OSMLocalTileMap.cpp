@@ -207,7 +207,7 @@ Bool Map::OSM::OSMLocalTileMap::IsError() const
 
 Map::TileMap::TileType Map::OSM::OSMLocalTileMap::GetTileType() const
 {
-	return Map::TileMap::TT_OSMLOCAL;
+	return Map::TileMap::TileType::OSMLOCAL;
 }
 
 UIntOS Map::OSM::OSMLocalTileMap::GetMinLevel() const
@@ -262,19 +262,19 @@ UIntOS Map::OSM::OSMLocalTileMap::GetTileSize() const
 	return this->tileWidth;
 }
 
-Map::TileMap::ImageType Map::OSM::OSMLocalTileMap::GetImageType() const
+Map::TileMap::TileFormat Map::OSM::OSMLocalTileMap::GetTileFormat() const
 {
 	if (this->fmt->Equals(UTF8STRC("webp")))
 	{
-		return IT_WEBP;
+		return Map::TileMap::TileFormat::WEBP;
 	}
 	else if (this->fmt->Equals(UTF8STRC("jpg")))
 	{
-		return IT_JPG;
+		return Map::TileMap::TileFormat::JPG;
 	}
 	else
 	{
-		return IT_PNG;
+		return Map::TileMap::TileFormat::PNG;
 	}
 }
 
@@ -334,10 +334,10 @@ UIntOS Map::OSM::OSMLocalTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDb
 
 Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
-	ImageType it;
+	TileFormat format;
 	NN<IO::StreamData> fd;
 	NN<IO::ParsedObject> pobj;
-	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, format).SetTo(fd))
 	{
 		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
@@ -397,7 +397,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 	return true;
 }
 
-Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -430,9 +430,9 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UIntOS lev
 			fd = yPkg->GetItemStmDataNew((UIntOS)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (!fd.IsNull())
 			{
-				if (it.IsNotNull())
+				if (format.IsNotNull())
 				{
-					it.SetNoCheck(this->GetImageType());
+					format.SetNoCheck(this->GetTileFormat());
 				}
 			}
 			if (yNeedDelete)

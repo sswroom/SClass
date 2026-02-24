@@ -1447,9 +1447,9 @@ NN<Media::RasterImage> Media::GTKDrawImage::Clone() const
 	return dimg;
 }
 
-Media::RasterImage::ImageType Media::GTKDrawImage::GetImageType() const
+Media::RasterImage::ImageClass Media::GTKDrawImage::GetImageClass() const
 {
-	return Media::RasterImage::ImageType::GUIImage;
+	return Media::RasterImage::ImageClass::GUIImage;
 }
 
 void Media::GTKDrawImage::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const

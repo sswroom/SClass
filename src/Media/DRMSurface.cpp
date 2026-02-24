@@ -1,10 +1,11 @@
 #include "Stdafx.h"
 #include "Media/DRMSurface.h"
-#include "Media/ImageCopyC.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageCopy_C.h"
+#include "Media/ImageUtil_C.h"
 #include <sys/mman.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
+#include <drm_mode.h>
 
 #include <stdio.h>
 #include <errno.h>
@@ -24,9 +25,9 @@ struct Media::DRMSurface::ClassData
 	UInt32 connId;
 };
 
-Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile *color, Double dpi)
+Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::ColorProfile> color, Double dpi)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->drmFd = fd;
 	this->clsData->hMon = hMon;
 	this->clsData->dataPtr = 0;
@@ -57,21 +58,21 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 				if (monIndex == cnt)
 				{
 					MemCopyNO(&this->clsData->modeInfo, &connector->modes[0], sizeof(this->clsData->modeInfo));
-					this->info->fourcc = 0;
-					this->info->ftype = Media::FT_NON_INTERLACE;
-					this->info->atype = Media::AT_NO_ALPHA;
-					this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-					this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-					this->info->storeBPP = 32;
-					this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
-					this->info->dispSize.x = connector->modes[0].hdisplay;
-					this->info->dispHeight = connector->modes[0].vdisplay;
-					this->info->storeSize = this->info->dispSize; //(UIntOS)this->clsData->dataBpl / (this->info->storeBPP >> 3);
-					this->info->byteSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
-					this->info->par2 = 1.0;
-					this->info->hdpi = dpi;
-					this->info->vdpi = dpi;
-					this->info->color->Set(color);
+					this->info.fourcc = 0;
+					this->info.ftype = Media::FT_NON_INTERLACE;
+					this->info.atype = Media::AT_IGNORE_ALPHA;
+					this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+					this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+					this->info.storeBPP = 32;
+					this->info.pf = Media::PixelFormatGetDef(0, this->info.storeBPP);
+					this->info.dispSize.x = connector->modes[0].hdisplay;
+					this->info.dispSize.y = connector->modes[0].vdisplay;
+					this->info.storeSize = this->info.dispSize; //(UIntOS)this->clsData->dataBpl / (this->info->storeBPP >> 3);
+					this->info.byteSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
+					this->info.par2 = 1.0;
+					this->info.hdpi = dpi;
+					this->info.vdpi = dpi;
+					this->info.color.Set(color);
 
 					this->clsData->connId = connector->connector_id;
 					if ((enc = drmModeGetEncoder(fd, connector->encoder_id)) != 0)
@@ -87,7 +88,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 		i++;
 	}
 	drmModeFreeResources(resources);
-	if (this->info->dispSize.x == 0 || this->clsData->crtcId == 0)
+	if (this->info.dispSize.x == 0 || this->clsData->crtcId == 0)
 	{
 		return;
 	}
@@ -97,8 +98,8 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 	drm_mode_destroy_dumb dreq;
 
 	MemClear(&creq, sizeof(drm_mode_create_dumb));
-	creq.width = (UInt32)this->info->dispSize.x;
-	creq.height = (UInt32)this->info->dispHeight;
+	creq.width = (UInt32)this->info.dispSize.x;
+	creq.height = (UInt32)this->info.dispSize.y;
 	creq.bpp = 32; // hard coding
 
 	if (drmIoctl(this->clsData->drmFd, DRM_IOCTL_MODE_CREATE_DUMB, &creq) < 0)
@@ -106,8 +107,8 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 		return;
 	}
 
-	this->info->storeWidth = (UIntOS)creq.pitch / (this->info->storeBPP >> 3);
-	this->info->byteSize = creq.size;
+	this->info.storeSize.x = (UIntOS)creq.pitch / (this->info.storeBPP >> 3);
+	this->info.byteSize = creq.size;
 	this->clsData->handle = creq.handle;
 
 	if (drmModeAddFB(fd, creq.width, creq.height, 32, (UInt8)creq.bpp, creq.pitch, creq.handle, &this->clsData->fbId))
@@ -129,7 +130,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 		return;
 	}
 
-	this->clsData->dataPtr = (UInt8*)mmap64(0, this->info->byteSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, (__off64_t)mreq.offset);
+	this->clsData->dataPtr = (UInt8*)mmap64(0, this->info.byteSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, (__off64_t)mreq.offset);
 
 	if (this->clsData->dataPtr == MAP_FAILED)
 	{
@@ -159,14 +160,14 @@ Media::DRMSurface::~DRMSurface()
 		}
 		drmModeFreeCrtc(this->clsData->oldCtrc);
 
-		munmap(this->clsData->dataPtr, this->info->byteSize);
+		munmap(this->clsData->dataPtr, this->info.byteSize);
 
 		drmModeRmFB(this->clsData->drmFd, this->clsData->fbId);
 		MemClear(&dreq, sizeof(dreq));
 		dreq.handle = this->clsData->handle;
 		drmIoctl(this->clsData->drmFd, DRM_IOCTL_MODE_DESTROY_DUMB, &dreq);
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Media::DRMSurface::IsError()
@@ -174,30 +175,30 @@ Bool Media::DRMSurface::IsError()
 	return this->clsData->dataPtr == 0;
 }
 
-Media::Image *Media::DRMSurface::Clone()
+NN<Media::RasterImage> Media::DRMSurface::Clone() const
 {
-	Media::DRMSurface *surface;
-	NEW_CLASS(surface, Media::DRMSurface(this->clsData->drmFd, this->clsData->hMon, this->info->color, this->info->hdpi));
+	NN<Media::DRMSurface> surface;
+	NEW_CLASSNN(surface, Media::DRMSurface(this->clsData->drmFd, this->clsData->hMon, this->info.color, this->info.hdpi));
 	return surface;
 }
 
-Media::Image::ImageType Media::DRMSurface::GetImageType()
+Media::RasterImage::ImageClass Media::DRMSurface::GetImageClass() const
 {
-	return Media::Image::IT_MONITORSURFACE;
+	return Media::RasterImage::ImageClass::MonitorSurface;
 }
 
-void Media::DRMSurface::GetImageData(UInt8 *destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown)
+void Media::DRMSurface::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	if (this->clsData->dataPtr)
 	{
-		UIntOS buffBpl = this->info->storeWidth * (this->info->storeBPP >> 3);
-		if (left == 0 && top == 0 && width == this->info->dispSize.x && height == this->info->dispHeight && buffBpl == destBpl && !upsideDown)
+		UIntOS buffBpl = this->info.storeSize.x * (this->info.storeBPP >> 3);
+		if (left == 0 && top == 0 && width == this->info.dispSize.x && height == this->info.dispSize.y && buffBpl == destBpl && !upsideDown)
 		{
-			MemCopyANC(destBuff, this->clsData->dataPtr, destBpl * height);
+			MemCopyANC(destBuff.Ptr(), this->clsData->dataPtr, destBpl * height);
 		}
 		else
 		{
-			ImageCopy_ImgCopyR((UInt8*)this->clsData->dataPtr + top * (IntOS)buffBpl + left * (Int32)(this->info->storeBPP >> 3), destBuff, width * (this->info->storeBPP >> 3), height, buffBpl, destBpl, upsideDown);
+			ImageCopy_ImgCopyR((UInt8*)this->clsData->dataPtr + top * (IntOS)buffBpl + left * (Int32)(this->info.storeBPP >> 3), destBuff.Ptr(), width * (this->info.storeBPP >> 3), height, buffBpl, destBpl, upsideDown);
 		}
 	}
 }
@@ -216,21 +217,25 @@ Bool Media::DRMSurface::DrawFromBuff()
 {
 	if (this->clsData->buffSurface)
 	{
-		this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispSize.x, this->info->dispHeight, this->clsData->dataBpl, false);
+		this->clsData->buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->dataBpl, false, Media::RotateType::None);
 		return true;
 	}
 	return false;
 }
 
-Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, IntOS destX, IntOS destY, UIntOS buffW, UIntOS buffH, Bool clearScn, Bool waitForVBlank)
+Bool Media::DRMSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> destTL, Math::Size2D<UIntOS> buffSize, Bool clearScn, Bool waitForVBlank)
 {
-	if (surface && surface->info->storeBPP == this->info->storeBPP)
+	if (surface->info.storeBPP == this->info.storeBPP)
 	{
-		IntOS destWidth = (IntOS)this->info->dispSize.x;
-		IntOS destHeight = (IntOS)this->info->dispHeight;
+		IntOS destWidth = (IntOS)this->info.dispSize.x;
+		IntOS destHeight = (IntOS)this->info.dispSize.y;
 		if (waitForVBlank) this->WaitForVBlank();
 		IntOS drawX = 0;
 		IntOS drawY = 0;
+		IntOS destX = destTL.x;
+		IntOS destY = destTL.y;
+		UIntOS buffW = buffSize.x;
+		UIntOS buffH = buffSize.y;
 		if (destX < 0)
 		{
 			drawX = -destX;
@@ -253,8 +258,8 @@ Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, IntOS de
 		}
 		if ((IntOS)buffW > 0 && (IntOS)buffH > 0)
 		{
-			surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((IntOS)this->info.storeBPP >> 3),
-				drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false);
+			surface->GetRasterData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((IntOS)this->info.storeBPP >> 3),
+				drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, Media::RotateType::None);
 
 			if (clearScn)
 			{
@@ -272,7 +277,7 @@ Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, IntOS de
 				}
 				if (destX + (IntOS)buffW < (IntOS)destWidth)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (IntOS)this->clsData->dataBpl + (destX + (IntOS)buffW) * (IntOS)(this->info->storeBPP >> 3), (UIntOS)destWidth - (UIntOS)destX - buffW, buffH, (UInt32)this->clsData->dataBpl, 0);
+					ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr + destY * (IntOS)this->clsData->dataBpl + (destX + (IntOS)buffW) * (IntOS)(this->info.storeBPP >> 3), (UIntOS)destWidth - (UIntOS)destX - buffW, buffH, (UInt32)this->clsData->dataBpl, 0);
 				}
 			}
 		}
@@ -285,13 +290,18 @@ Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, IntOS de
 	return false;
 }
 
-UInt8 *Media::DRMSurface::LockSurface(IntOS *lineAdd)
+UnsafeArrayOpt<UInt8> Media::DRMSurface::LockSurface(OutParam<IntOS> lineAdd)
 {
-	*lineAdd = (IntOS)this->clsData->dataBpl;
+	lineAdd.Set((IntOS)this->clsData->dataBpl);
 	return this->clsData->dataPtr;
 }
 
 void Media::DRMSurface::UnlockSurface()
+{
+
+}
+
+void Media::DRMSurface::SetSurfaceBugMode(Bool surfaceBugMode)
 {
 
 }

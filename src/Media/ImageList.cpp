@@ -102,7 +102,7 @@ void Media::ImageList::SetImageType(UIntOS index, ImageType imgType)
 void Media::ImageList::ToStaticImage(UIntOS index)
 {
 	NN<Media::RasterImage> img;
-	if (!this->imgList.GetItem(index).SetTo(img) || img->GetImageType() == Media::RasterImage::ImageType::Static)
+	if (!this->imgList.GetItem(index).SetTo(img) || img->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 		return;
 	NN<Media::StaticImage> simg = img->CreateStaticImage();
 	this->imgList.SetItem(index, simg);

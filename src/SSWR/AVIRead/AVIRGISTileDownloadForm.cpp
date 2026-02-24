@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folder
 		userMinLevel = tileMinLevel;
 	if (userMaxLevel > tileMaxLevel)
 		userMaxLevel = tileMaxLevel;
-	Map::TileMapFolderWriter writer(folderName, tileMap->GetImageType(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2));
+	Map::TileMapFolderWriter writer(folderName, tileMap->GetTileFormat(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2));
 	WriteTiles(writer, userMinLevel, userMaxLevel);
 }
 
@@ -208,7 +208,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	NN<Map::TileMapWriter> writer;
 	if (fileType == 1)
 	{
-		NEW_CLASSNN(writer, Map::TileMapZipWriter(fileName, tileMap->GetImageType(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
+		NEW_CLASSNN(writer, Map::TileMapZipWriter(fileName, tileMap->GetTileFormat(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
 	}
 	else if (fileType == 2)
 	{
@@ -343,7 +343,7 @@ Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UIntOS> minLevel
 UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType userObj)
 {
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
-	Map::TileMap::ImageType it;
+	Map::TileMap::TileFormat format;
 	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;
 	UInt64 fileSize;
@@ -362,7 +362,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 				j = 3;
 				while (fd == 0 && j-- > 0)
 				{
-					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, bounds, false, it).OrNull();
+					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, bounds, false, format).OrNull();
 				}
 				if (fd)
 				{
@@ -376,7 +376,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 						NN<Map::TileMapWriter> writer;
 						if (stat->writer.SetTo(writer))
 						{
-							writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UIntOS)fileSize), it);
+							writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UIntOS)fileSize), format);
 						}
 					}
 					DEL_CLASS(fd);

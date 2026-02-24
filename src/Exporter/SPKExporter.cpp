@@ -35,7 +35,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(NN<IO::Pa
 		{
 			NN<Map::TileMapLayer> tileMapLayer = NN<Map::TileMapLayer>::ConvertFrom(layer);
 			NN<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
-			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
+			if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 			{
 				return IO::FileExporter::SupportType::NormalStream;
 			}
@@ -81,7 +81,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			NN<Map::TileMapLayer> tileMapLayer = NN<Map::TileMapLayer>::ConvertFrom(layer);
 			NN<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
-			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
+			if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 			{
 				NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 				IO::SPackageFile *spkg;

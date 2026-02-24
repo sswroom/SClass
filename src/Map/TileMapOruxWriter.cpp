@@ -155,7 +155,7 @@ void Map::TileMapOruxWriter::AddX(Int32 x)
 {
 }
 
-void Map::TileMapOruxWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapOruxWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::TileFormat format)
 {
 	DB::SQLBuilder sql(this->db->GetSQLType(), this->db->IsAxisAware(), this->db->GetTzQhr());
 	sql.AppendCmdC(CSTR("insert into tiles (x, y, z, image) values ("));

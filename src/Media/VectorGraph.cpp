@@ -168,13 +168,13 @@ NN<Media::DrawBrush> Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Doubl
 	return dimg->NewBrushARGB(this->color);
 }
 
-Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile) : colorProfile(colorProfile)
+Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile) : colorProfile(colorProfile)
 {
 	this->size = Math::Size2DDbl(width, height);
-	this->unit = unit;
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
 	this->colorSess = colorSess;
+	this->hdpi = this->vdpi = 96.0;
 }
 
 Media::VectorGraph::~VectorGraph()
@@ -232,20 +232,22 @@ void Media::VectorGraph::SetAlphaType(Media::AlphaType atype)
 
 Double Media::VectorGraph::GetHDPI() const
 {
-	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, this->unit, 1);
+	return this->hdpi;
 }
 
 Double Media::VectorGraph::GetVDPI() const
 {
-	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, this->unit, 1);
+	return this->vdpi;
 }
 
 void Media::VectorGraph::SetHDPI(Double dpi)
 {
+	this->hdpi = dpi;
 }
 
 void Media::VectorGraph::SetVDPI(Double dpi)
 {
+	this->vdpi = dpi;
 }
 
 UnsafeArrayOpt<UInt8> Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
@@ -687,7 +689,7 @@ void Media::VectorGraph::CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, U
 
 Optional<Media::StaticImage> Media::VectorGraph::ToStaticImage() const
 {
-	return nullptr;
+	return CreateStaticImage();
 }
 
 UIntOS Media::VectorGraph::SavePng(NN<IO::SeekableStream> stm)
@@ -705,14 +707,60 @@ UIntOS Media::VectorGraph::SaveJPG(NN<IO::SeekableStream> stm)
 	return 0;
 }
 
+NN<Media::StaticImage> Media::VectorGraph::CreateStaticImage() const
+{
+	NN<Media::StaticImage> simg;
+	NN<Media::DrawImage> dimg;
+	if (this->refEng->CreateImage32(this->GetSize(), this->GetAlphaType()).SetTo(dimg))
+	{
+		dimg->SetHDPI(this->GetHDPI());
+		dimg->SetVDPI(this->GetVDPI());
+		this->DrawTo(dimg, nullptr);
+		if (dimg->ToStaticImage().SetTo(simg))
+		{
+			this->refEng->DeleteImage(dimg);
+			return simg;
+		}
+		else
+		{
+			this->refEng->DeleteImage(dimg);
+		}
+	}
+	NEW_CLASSNN(simg, Media::StaticImage(this->GetSize(), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, this->GetAlphaType(), Media::YCOFST_C_CENTER_LEFT));
+	return simg;
+}
+
+NN<Media::StaticImage> Media::VectorGraph::CreateSubImage(Math::RectArea<IntOS> area) const
+{
+	NN<Media::StaticImage> simg;
+	NN<Media::DrawImage> dimg;
+	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), this->GetAlphaType()).SetTo(dimg))
+	{
+		dimg->SetHDPI(this->GetHDPI());
+		dimg->SetVDPI(this->GetVDPI());
+		this->DrawTo(area.GetMin().ToDouble(), 1.0, dimg, nullptr);
+		if (dimg->ToStaticImage().SetTo(simg))
+		{
+			this->refEng->DeleteImage(dimg);
+			return simg;
+		}
+		else
+		{
+			this->refEng->DeleteImage(dimg);
+		}
+	}
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, this->GetAlphaType(), Media::YCOFST_C_CENTER_LEFT));
+	return simg;
+}
+
 Double Media::VectorGraph::GetVisibleWidthMM() const
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.x);
+	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_MILLIMETER, this->size.x / this->hdpi);
 }
 
 Double Media::VectorGraph::GetVisibleHeightMM() const
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.y);
+	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_MILLIMETER, this->size.y / this->vdpi);
 }
 
 UIntOS Media::VectorGraph::GetCount() const
@@ -730,13 +778,13 @@ Optional<Media::VectorGraph::VectorStyles> Media::VectorGraph::GetStyle(UIntOS i
 	return this->itemStyle.GetItem(index);
 }
 
-void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS)
+void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const
 {
 	Double scale = (UIntOS2Double(dimg->GetWidth()) / this->size.x + UIntOS2Double(dimg->GetHeight()) / this->size.y) * 0.5;
 	DrawTo(Math::Coord2DDbl(0, 0), scale, dimg, imgDurMS);
 }
 
-void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS)
+void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const
 {
 	UInt32 imgTimeMS = 0;
 	Double dpi = this->GetHDPI();

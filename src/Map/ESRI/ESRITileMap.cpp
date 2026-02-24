@@ -39,7 +39,7 @@ Bool Map::ESRI::ESRITileMap::IsError() const
 
 Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType() const
 {
-	return Map::TileMap::TT_ESRI;
+	return Map::TileMap::TileType::ESRI;
 }
 
 UIntOS Map::ESRI::ESRITileMap::GetMinLevel() const
@@ -115,9 +115,9 @@ UIntOS Map::ESRI::ESRITileMap::GetTileSize() const
 	return this->esriMap->TileGetWidth();
 }
 
-Map::TileMap::ImageType Map::ESRI::ESRITileMap::GetImageType() const
+Map::TileMap::TileFormat Map::ESRI::ESRITileMap::GetTileFormat() const
 {
-	return IT_PNG;
+	return Map::TileMap::TileFormat::PNG;
 }
 
 Bool Map::ESRI::ESRITileMap::CanQuery() const
@@ -261,7 +261,7 @@ Bool Map::ESRI::ESRITileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIn
 	return this->esriMap->TileGetURL(sb, level, tileId.x, tileId.y);
 }
 
-Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format)
 {
 	UTF8Char filePath[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -295,7 +295,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level,
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		it.Set(IT_PNG);
+		format.Set(TileFormat::PNG);
 		return fd;
 	}
 	DEL_CLASS(fd);
@@ -307,7 +307,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level,
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		it.Set(IT_PNG);
+		format.Set(TileFormat::PNG);
 		return fd;
 	}
 	DEL_CLASS(fd);

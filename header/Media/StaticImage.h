@@ -30,7 +30,7 @@ namespace Media
 		virtual ~StaticImage();
 
 		virtual NN<Media::RasterImage> Clone() const;
-		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		Bool ToB8G8R8A8();
@@ -41,12 +41,12 @@ namespace Media
 		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
 		Bool MultiplyColor(UInt32 color);
-		Bool Resize(Media::ImageResizer *resizer, Math::Size2D<UIntOS> newSize);
+		Bool Resize(NN<Media::ImageResizer> resizer, Math::Size2D<UIntOS> newSize);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(NN<Media::StaticImage> simg) const;
-		Double CalcAvgContrast(UIntOS *bgPxCnt) const;
+		Double CalcAvgContrast(OptOut<UIntOS> bgPxCnt) const;
 		Double CalcColorRate() const;
-		UInt8 *CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate);
+		UnsafeArrayOpt<UInt8> CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate);
 		Math::RectArea<UIntOS> CalcNearPixelRange(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate);
 		Data::ByteArray GetDataArray() const;
 

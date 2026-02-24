@@ -20,12 +20,12 @@ Text::CStringNN Map::GoogleMap::GoogleTileMap::GetName() const
 
 Map::TileMap::TileType Map::GoogleMap::GoogleTileMap::GetTileType() const
 {
-	return Map::TileMap::TT_GOOGLE;
+	return Map::TileMap::TileType::GOOGLE;
 }
 
-Map::TileMap::ImageType Map::GoogleMap::GoogleTileMap::GetImageType() const
+Map::TileMap::TileFormat Map::GoogleMap::GoogleTileMap::GetTileFormat() const
 {
-	return IT_PNG;
+	return Map::TileMap::TileFormat::PNG;
 }
 
 UIntOS Map::GoogleMap::GoogleTileMap::GetConcurrentCount() const

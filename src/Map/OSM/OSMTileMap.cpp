@@ -46,12 +46,12 @@ Text::CStringNN Map::OSM::OSMTileMap::GetName() const
 
 Map::TileMap::TileType Map::OSM::OSMTileMap::GetTileType() const
 {
-	return Map::TileMap::TT_OSM;
+	return Map::TileMap::TileType::OSM;
 }
 
-Map::TileMap::ImageType Map::OSM::OSMTileMap::GetImageType() const
+Map::TileMap::TileFormat Map::OSM::OSMTileMap::GetTileFormat() const
 {
-	return Map::TileMap::IT_PNG;
+	return Map::TileMap::TileFormat::PNG;
 }
 
 UIntOS Map::OSM::OSMTileMap::GetConcurrentCount() const

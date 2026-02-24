@@ -157,7 +157,7 @@ namespace Media
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
 
 		virtual NN<Media::RasterImage> Clone() const; ////////////////////////////////////
-		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 		virtual Int32 GetPixel32(IntOS x, IntOS y) const; ////////////////////////////////////
 

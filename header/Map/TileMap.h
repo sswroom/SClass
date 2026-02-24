@@ -14,26 +14,26 @@ namespace Map
 	class TileMap
 	{
 	public:
-		typedef enum
+		enum class TileFormat
 		{
-			IT_PNG,
-			IT_JPG,
-			IT_WEBP
-		} ImageType;
+			PNG,
+			JPG,
+			WEBP
+		};
 
-		typedef enum
+		enum class TileType
 		{
-			TT_OTHER,
-			TT_OSM,
-			TT_OSMLOCAL,
-			TT_ESRI,
-			TT_GOOGLE,
-			TT_TMS,
-			TT_WMTS,
-			TT_CUSTOM,
-			TT_BING,
-			TT_TIFF
-		} TileType;
+			OTHER,
+			OSM,
+			OSMLOCAL,
+			ESRI,
+			GOOGLE,
+			TMS,
+			WMTS,
+			CUSTOM,
+			BING,
+			TIFF
+		};
 	public:
 		virtual ~TileMap() {};
 
@@ -49,7 +49,7 @@ namespace Map
 		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Bool IsMercatorProj() const = 0;
 		virtual UIntOS GetTileSize() const = 0;
-		virtual ImageType GetImageType() const = 0;
+		virtual TileFormat GetTileFormat() const = 0;
 		virtual Bool CanQuery() const { return false; };
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, UIntOS level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
@@ -58,7 +58,7 @@ namespace Map
 		virtual Optional<Media::ImageList> LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly) = 0;
 		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UIntOS level, Math::Coord2D<Int32> tileId) = 0;
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UIntOS level, Math::Coord2D<Int32> tileId) = 0;
-		virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it) = 0;
+		virtual Optional<IO::StreamData> LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format) = 0;
 
 		virtual UIntOS GetScreenObjCnt() { return 0; };
 		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UIntOS index) { return nullptr; };

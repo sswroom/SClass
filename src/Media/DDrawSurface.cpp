@@ -20,7 +20,7 @@ struct Media::DDrawSurface::ClassData
 
 Media::DDrawSurface::DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surface, Optional<MonitorHandle> hMon, Bool needRelease, Media::RotateType rotateType)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->mgr = mgr;
 	this->clsData->lpDD = (LPDIRECTDRAW7)lpDD;
 	this->clsData->surface = (LPDIRECTDRAWSURFACE7)surface;
@@ -71,7 +71,7 @@ Media::DDrawSurface::~DDrawSurface()
 	{
 		this->clsData->clipper->Release();
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 NN<Media::RasterImage> Media::DDrawSurface::Clone() const

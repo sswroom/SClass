@@ -418,6 +418,15 @@ Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer2::GetNewVectorById(NN<Get
 	return vec;
 }
 
+Map::MapDrawLayer::FailReason Map::HKTrafficLayer2::GetFailReason() const
+{
+	return Map::MapDrawLayer::FailReason::IdNotFound;
+}
+
+void Map::HKTrafficLayer2::WaitForLoad(Data::Duration maxWaitTime)
+{
+}
+
 UIntOS Map::HKTrafficLayer2::GetGeomCol() const
 {
 	return INVALID_INDEX;

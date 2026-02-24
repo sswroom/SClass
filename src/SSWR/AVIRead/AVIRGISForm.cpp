@@ -414,7 +414,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 			{
 				NN<Map::TileMapLayer> layer = NN<Map::TileMapLayer>::ConvertFrom(lyr->layer);
 				NN<Map::TileMap> tileMap = layer->GetTileMap();
-				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
+				if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 				{
 					NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					canImport = osm->HasSPackageFile();
@@ -1388,7 +1388,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					NN<Map::TileMapLayer> layer = NN<Map::TileMapLayer>::ConvertFrom(lyr);
 					NN<Map::TileMap> tileMap = layer->GetTileMap();
-					if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
+					if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 					{
 						NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 						if (osm->HasSPackageFile())
@@ -1423,7 +1423,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					NN<Map::TileMapLayer> layer = NN<Map::TileMapLayer>::ConvertFrom(lyr);
 					NN<Map::TileMap> tileMap = layer->GetTileMap();
-					if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
+					if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 					{
 						NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 						if (osm->HasSPackageFile())

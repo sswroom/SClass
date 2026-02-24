@@ -567,7 +567,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerLR_C16::ProcessToNewP
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 		return nullptr;
 	Math::Size2D<UIntOS> targetSize = this->targetSize;
 	if (targetSize.x == 0)

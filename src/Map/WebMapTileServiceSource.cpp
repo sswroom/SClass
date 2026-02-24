@@ -226,15 +226,15 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 				}
 				if (resource->format->Equals(UTF8STRC("image/png")))
 				{
-					resource->imgType = Map::TileMap::ImageType::IT_PNG;
+					resource->tileFormat = Map::TileMap::TileFormat::PNG;
 				}
 				else if (resource->format->Equals(UTF8STRC("image/jpeg")))
 				{
-					resource->imgType = Map::TileMap::ImageType::IT_JPG;
+					resource->tileFormat = Map::TileMap::TileFormat::JPG;
 				}
 				else
 				{
-					resource->imgType = Map::TileMap::ImageType::IT_PNG;
+					resource->tileFormat = Map::TileMap::TileFormat::PNG;
 				}
 				layer->resourceURLs.Add(resource);
 			}
@@ -658,7 +658,7 @@ Bool Map::WebMapTileServiceSource::IsError() const
 
 Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType() const
 {
-	return Map::TileMap::TT_WMTS;
+	return Map::TileMap::TileType::WMTS;
 }
 
 UIntOS Map::WebMapTileServiceSource::GetMinLevel() const
@@ -766,12 +766,12 @@ UIntOS Map::WebMapTileServiceSource::GetTileSize() const
 	}
 }
 
-Map::TileMap::ImageType Map::WebMapTileServiceSource::GetImageType() const
+Map::TileMap::TileFormat Map::WebMapTileServiceSource::GetTileFormat() const
 {
 	NN<ResourceURL> currResource;
 	if (this->currResource.SetTo(currResource))
-		return currResource->imgType;
-	return IT_PNG;
+		return currResource->tileFormat;
+	return Map::TileMap::TileFormat::PNG;
 }
 
 Bool Map::WebMapTileServiceSource::CanQuery() const
@@ -887,10 +887,10 @@ UIntOS Map::WebMapTileServiceSource::GetTileImageIDs(UIntOS level, Math::RectAre
 
 Optional<Media::ImageList> Map::WebMapTileServiceSource::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
-	ImageType it;
+	Map::TileMap::TileFormat format;
 	NN<IO::StreamData> fd;
 	NN<IO::ParsedObject> pobj;
-	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, format).SetTo(fd))
 	{
 		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
@@ -954,7 +954,7 @@ Bool Map::WebMapTileServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> s
 	return false;
 }
 
-Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<Map::TileMap::TileFormat> format)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -1001,7 +1001,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
 		*sptru++ = '.';
-		sptru = GetExt(currResource->imgType).ConcatTo(sptru);
+		sptru = GetExt(currResource->tileFormat).ConcatTo(sptru);
 		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -1010,7 +1010,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
 			if (dt.CompareTo(currTime) > 0)
 			{
-				it.Set(currResource->imgType);
+				format.Set(currResource->tileFormat);
 				return fd.Ptr();
 			}
 			else
@@ -1079,7 +1079,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		it.Set(IT_PNG);
+		format.Set(Map::TileMap::TileFormat::PNG);
 		return fd.Ptr();
 	}
 	fd.Delete();
@@ -1290,15 +1290,15 @@ UIntOS Map::WebMapTileServiceSource::GetResourceInfoTypeNames(NN<Data::ArrayList
 	return resourceTypeNames->GetCount() - initCnt;
 }
 
-Text::CStringNN Map::WebMapTileServiceSource::GetExt(Map::TileMap::ImageType imgType)
+Text::CStringNN Map::WebMapTileServiceSource::GetExt(Map::TileMap::TileFormat format)
 {
-	switch (imgType)
+	switch (format)
 	{
-	case ImageType::IT_JPG:
+	case Map::TileMap::TileFormat::JPG:
 		return CSTR("jpg");
-	case ImageType::IT_PNG:
+	case Map::TileMap::TileFormat::PNG:
 		return CSTR("png");
-	case ImageType::IT_WEBP:
+	case Map::TileMap::TileFormat::WEBP:
 		return CSTR("webp");
 	default:
 		return CSTR("");

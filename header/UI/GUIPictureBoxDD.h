@@ -25,15 +25,15 @@ namespace UI
 		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> moveToNextHdlrs;
 		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> moveToPrevHdlrs;
 
-		UInt8 *bgBuff;
+		UnsafeArrayOpt<UInt8> bgBuff;
 		Math::Size2D<UIntOS> bgBuffSize;
 
 		Optional<Media::CS::CSConverter> csconv;
 		NN<Media::ColorManagerSess> colorSess;
 		Optional<Media::RasterImage> currImage;
 		Math::Size2D<UIntOS> currImageSize;
-		Media::ImageResizer *resizer;
-		UInt8 *imgBuff;
+		Optional<Media::ImageResizer> resizer;
+		UnsafeArrayOpt<UInt8> imgBuff;
 		Bool allowEnlarge;
 		Double zoomScale;
 		Math::Coord2DDbl zoomCenter;

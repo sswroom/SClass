@@ -18,7 +18,7 @@ void Map::TileMapSPKWriter::AddX(Int32 x)
 {
 }
 
-void Map::TileMapSPKWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
+void Map::TileMapSPKWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::TileFormat format)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -27,16 +27,16 @@ void Map::TileMapSPKWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteA
 	sptr = Text::StrInt32(sptr, x);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, y);
-	switch (imgType)
+	switch (format)
 	{
 	default:
-	case Map::TileMap::IT_PNG:
+	case Map::TileMap::TileFormat::PNG:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 		break;
-	case Map::TileMap::IT_WEBP:
+	case Map::TileMap::TileFormat::WEBP:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".webp"));
 		break;
-	case Map::TileMap::IT_JPG:
+	case Map::TileMap::TileFormat::JPG:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 		break;
 	}

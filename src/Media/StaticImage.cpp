@@ -52,9 +52,9 @@ NN<Media::RasterImage> Media::StaticImage::Clone() const
 	return img;
 }
 
-Media::RasterImage::ImageType Media::StaticImage::GetImageType() const
+Media::RasterImage::ImageClass Media::StaticImage::GetImageClass() const
 {
-	return Media::RasterImage::ImageType::Static;
+	return Media::RasterImage::ImageClass::StaticImage;
 }
 
 void Media::StaticImage::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const
@@ -1595,7 +1595,7 @@ Bool Media::StaticImage::MultiplyColor(UInt32 color)
 	return false;
 }
 
-Bool Media::StaticImage::Resize(Media::ImageResizer *resizer, Math::Size2D<UIntOS> newSize)
+Bool Media::StaticImage::Resize(NN<Media::ImageResizer> resizer, Math::Size2D<UIntOS> newSize)
 {
 	if (this->info.fourcc != 0)
 		return false;
@@ -1786,7 +1786,7 @@ Double Media::StaticImage::CalcPSNR(NN<Media::StaticImage> simg) const
 	}
 }
 
-Double Media::StaticImage::CalcAvgContrast(UIntOS *bgPxCnt) const
+Double Media::StaticImage::CalcAvgContrast(OptOut<UIntOS> bgPxCnt) const
 {
 	UIntOS i;
 	UIntOS j;
@@ -1832,10 +1832,7 @@ Double Media::StaticImage::CalcAvgContrast(UIntOS *bgPxCnt) const
 			}
 			ptr += dataBpl;
 		}
-		if (bgPxCnt)
-		{
-			*bgPxCnt = cnt;
-		}
+		bgPxCnt.Set(cnt);
 		return sum / UIntOS2Double(this->info.dispSize.x - 1) / UIntOS2Double(this->info.dispSize.y - 1) * 0.5;
 	}
 	return 0;
@@ -1900,7 +1897,7 @@ Double Media::StaticImage::CalcColorRate() const
 	return 0;
 }
 
-UInt8 *Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate)
+UnsafeArrayOpt<UInt8> Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate)
 {
 	if (this->info.pf == Media::PF_B8G8R8A8)
 	{
@@ -1930,18 +1927,18 @@ UInt8 *Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UIntOS> pxCoord, In
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 Math::RectArea<UIntOS> Media::StaticImage::CalcNearPixelRange(Math::Coord2D<UIntOS> pxCoord, Int32 maxRate)
 {
-	UInt8 *selMask = CreateNearPixelMask(pxCoord, maxRate);
-	if (selMask)
+	UnsafeArray<UInt8> selMask;
+	if (CreateNearPixelMask(pxCoord, maxRate).SetTo(selMask))
 	{
 		Math::Coord2D<UIntOS> min = pxCoord;
 		Math::Coord2D<UIntOS> max = pxCoord;
-		UInt8 *currPtr = selMask;
+		UnsafeArray<UInt8> currPtr = selMask;
 		UIntOS w = this->info.dispSize.x;
 		UIntOS h = this->info.dispSize.y;
 		UIntOS i = 0;
@@ -1975,7 +1972,7 @@ Math::RectArea<UIntOS> Media::StaticImage::CalcNearPixelRange(Math::Coord2D<UInt
 			}
 			i++;
 		}
-		MemFree(selMask);
+		MemFreeArr(selMask);
 		return Math::RectArea<UIntOS>(min.x, min.y, max.x - min.x + 1, max.y - min.y + 1);
 	}
 	else

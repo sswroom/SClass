@@ -13,14 +13,14 @@ namespace Media
 	private:
 		struct ClassData;
 
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 	public:
 		DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surface, Optional<MonitorHandle> hMon, Bool needRelease, Media::RotateType rotateType);
 		virtual ~DDrawSurface();
 
 		virtual NN<Media::RasterImage> Clone() const;
-		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		virtual void WaitForVBlank();

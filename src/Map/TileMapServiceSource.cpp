@@ -191,13 +191,13 @@ void Map::TileMapServiceSource::LoadXML()
 							{
 								SDEL_STRING(this->tileExt);
 								this->tileExt = avalue->Clone().Ptr();
-								this->imgType = IT_JPG;
+								this->tileFormat = Map::TileMap::TileFormat::JPG;
 							}
 							else if (avalue->Equals(UTF8STRC("png")))
 							{
 								SDEL_STRING(this->tileExt);
 								this->tileExt = avalue->Clone().Ptr();
-								this->imgType = IT_PNG;
+								this->tileFormat = Map::TileMap::TileFormat::PNG;
 							}
 #if defined(VERBOSE)
 							printf("found tileExt = %s, use = %s\r\n", avalue->v, STR_PTR(this->tileExt));
@@ -293,7 +293,7 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::TCPClientFactory> clif, 
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->concurrCnt = 2;
-	this->imgType = IT_PNG;
+	this->tileFormat = Map::TileMap::TileFormat::PNG;
 	this->LoadXML();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -334,7 +334,7 @@ Bool Map::TileMapServiceSource::IsError() const
 
 Map::TileMap::TileType Map::TileMapServiceSource::GetTileType() const
 {
-	return Map::TileMap::TT_TMS;
+	return Map::TileMap::TileType::TMS;
 }
 
 UIntOS Map::TileMapServiceSource::GetMinLevel() const
@@ -411,9 +411,9 @@ UIntOS Map::TileMapServiceSource::GetTileSize() const
 	return this->tileWidth;
 }
 
-Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
+Map::TileMap::TileFormat Map::TileMapServiceSource::GetTileFormat() const
 {
-	return this->imgType;
+	return this->tileFormat;
 }
 
 UIntOS Map::TileMapServiceSource::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
@@ -448,10 +448,10 @@ UIntOS Map::TileMapServiceSource::GetTileImageIDs(UIntOS level, Math::RectAreaDb
 
 Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UIntOS level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
-	ImageType it;
+	TileFormat format;
 	NN<IO::StreamData> fd;
 	NN<IO::ParsedObject> pobj;
-	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, format).SetTo(fd))
 	{
 		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
@@ -504,7 +504,7 @@ Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 	return false;
 }
 
-Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
+Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<TileFormat> format)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -551,10 +551,10 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS lev
 		currTime.AddDay(-7);
 		((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
 		if (dt.CompareTo(currTime) > 0)
-		{
-			it.Set(this->imgType);
-			return fd.Ptr();
-		}
+			{
+				format.Set(this->tileFormat);
+				return fd.Ptr();
+			}
 		else
 		{
 			hasTime = true;
@@ -622,7 +622,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS lev
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		it.Set(IT_PNG);
+		format.Set(Map::TileMap::TileFormat::PNG);
 		return fd.Ptr();
 	}
 	fd.Delete();

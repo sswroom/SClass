@@ -13,24 +13,27 @@
 
 void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
-	if (this->imgBuff && !this->currImage.IsNull() && this->IsSurfaceReady())
+	NN<Media::ImageResizer> resizer;
+	UnsafeArray<UInt8> imgBuff;
+	if (this->imgBuff.SetTo(imgBuff) && !this->currImage.IsNull() && this->IsSurfaceReady())
 	{
 		IntOS bpl;
 		if (this->drawHdlrs.GetCount() > 0)
 		{
-			if (this->bgBuff == 0 || this->bkBuffSize != this->bgBuffSize)
+			UnsafeArray<UInt8> bgBuff;
+			if (!this->bgBuff.SetTo(bgBuff) || this->bkBuffSize != this->bgBuffSize)
 			{
-				if (this->bgBuff)
+				if (this->bgBuff.SetTo(bgBuff))
 				{
-					MemFreeA(this->bgBuff);
+					MemFreeAArr(bgBuff);
 				}
 				this->bgBuffSize = this->bkBuffSize;
-				this->bgBuff = MemAllocA(UInt8, this->bgBuffSize.CalcArea() * 4);
+				this->bgBuff = bgBuff = MemAllocAArr(UInt8, this->bgBuffSize.CalcArea() * 4);
 			}
 
 			Math::RectAreaDbl srcRect;
 			Math::RectArea<IntOS> destRect;
-			ImageUtil_ImageColorFill32(this->bgBuff, this->bgBuffSize.x, this->bgBuffSize.y, this->bgBuffSize.x << 2, 0);
+			ImageUtil_ImageColorFill32(bgBuff.Ptr(), this->bgBuffSize.x, this->bgBuffSize.y, this->bgBuffSize.x << 2, 0);
 
 			if (this->mouseDowned)
 			{
@@ -92,13 +95,13 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 			{
 				CalDispRect(srcRect, destRect);
 			}
-			UInt8 *dptr = this->bgBuff;
+			UnsafeArray<UInt8> dptr = bgBuff;
 			Int32 iLeft = (Int32)srcRect.min.x;
 			Int32 iTop = (Int32)srcRect.min.y;
 			dptr = dptr + destRect.min.y * (IntOS)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
 			Math::Size2DDbl srcSize = srcRect.GetSize();
 			Math::Size2D<IntOS> destSize = destRect.GetSize();
-			resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)this->bgBuffSize.x << 2, (UIntOS)destSize.x, (UIntOS)destSize.y);
+			if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)this->bgBuffSize.x << 2, (UIntOS)destSize.x, (UIntOS)destSize.y);
 
 			this->DrawFromBG();
 		}
@@ -177,7 +180,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 				Math::Size2DDbl srcSize = srcRect.GetSize();
 				if (srcSize.x > 0 && srcSize.y > 0)
 				{
-					resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)bpl, (UIntOS)destRect.GetWidth(), (UIntOS)destRect.GetHeight());
+					if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)bpl, (UIntOS)destRect.GetWidth(), (UIntOS)destRect.GetHeight());
 				}
 
 				this->LockSurfaceEnd();
@@ -188,8 +191,8 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 
 void UI::GUIPictureBoxDD::CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<IntOS>> destRect)
 {
-	NN<Media::RasterImage> img;
-	if (!this->currImage.SetTo(img))
+	NN<Media::RasterImage> rimg;
+	if (!this->currImage.SetTo(rimg))
 	{
 		srcRect->min = Math::Coord2DDbl(0, 0);
 		srcRect->max = Math::Coord2DDbl(0, 0);
@@ -251,22 +254,22 @@ void UI::GUIPictureBoxDD::UpdateZoomRange()
 
 void UI::GUIPictureBoxDD::UpdateMinScale()
 {
-	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img))
+	NN<Media::RasterImage> rimg;
+	if (this->currImage.SetTo(rimg))
 	{
 		Double outZoomScale;
 		Double outW;
 	//	Double outH;
 		Double srcW = UIntOS2Double(this->currImageSize.x);
 		Double srcH = UIntOS2Double(this->currImageSize.y);
-		if (srcW * img->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+		if (srcW * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 		{
 			outW = UIntOS2Double(this->bkBuffSize.x);
 	//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
 		}
 		else
 		{
-			outW = UIntOS2Double(this->bkBuffSize.y) * img->info.par2 * srcW / srcH;
+			outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcW / srcH;
 	//		outH = IntOS2Double(this->surfaceSize.y);
 		}
 		outZoomScale = outW / srcW;
@@ -282,20 +285,20 @@ void UI::GUIPictureBoxDD::CreateResizer()
 {
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
 
-	SDEL_CLASS(this->resizer);
+	this->resizer.Delete();
 	Double refLuminance = 0;
-	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img))
+	NN<Media::RasterImage> rimg;
+	if (this->currImage.SetTo(rimg))
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(img->info.color.rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(rimg->info.color.rtransfer);
 	}
 	if (this->curr10Bit)
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASSOPT(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
 	}
 	else
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, refLuminance, this->GetPixelFormat()));
+		NEW_CLASSOPT(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, refLuminance, this->GetPixelFormat()));
 	}
 }
 
@@ -325,13 +328,14 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 
 void UI::GUIPictureBoxDD::DrawFromBG()
 {
+	UnsafeArray<UInt8> bgBuff;
 	IntOS bpl;
 	UnsafeArray<UInt8> dptr;
-	if (this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl).SetTo(dptr))
+	if (this->bgBuff.SetTo(bgBuff) && this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl).SetTo(dptr))
 	{
 		UIntOS i;
 		UIntOS j;
-		ImageCopy_ImgCopy(this->bgBuff, dptr.Ptr(), this->bgBuffSize.x << 2, this->bgBuffSize.y, (IntOS)this->bgBuffSize.x << 2, (IntOS)bpl);
+		ImageCopy_ImgCopy(bgBuff.Ptr(), dptr.Ptr(), this->bgBuffSize.x << 2, this->bgBuffSize.y, (IntOS)this->bgBuffSize.x << 2, (IntOS)bpl);
 		i = 0;
 		j = this->drawHdlrs.GetCount();
 		while (i < j)
@@ -348,7 +352,7 @@ void UI::GUIPictureBoxDD::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		if (this->bgBuff && this->drawHdlrs.GetCount() > 0)
+		if (this->bgBuff.NotNull() && this->drawHdlrs.GetCount() > 0)
 		{
 			DrawFromBG();
 		}
@@ -369,7 +373,7 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl
 	this->colorSess->AddHandler(*this);
 	this->enableLRGBLimit = false;
 
-	this->bgBuff = 0;
+	this->bgBuff = nullptr;
 	this->bgBuffSize = Math::Size2D<UIntOS>(0, 0);
 	this->allowEnlarge = allowEnlarge;
 	this->currImage = nullptr;
@@ -381,7 +385,7 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl
 	this->mouseDowned = false;
 	this->mouseDownPos = Math::Coord2D<IntOS>(0, 0);
 	this->curr10Bit = false;
-	this->resizer = 0;
+	this->resizer = nullptr;
 	this->zoomCenter = Math::Coord2DDbl(0, 0);
 	this->gzoomDown = false;
 
@@ -391,17 +395,19 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl
 
 UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 {
-	if (this->imgBuff)
+	UnsafeArray<UInt8> imgBuff;
+	if (this->imgBuff.SetTo(imgBuff))
 	{
-		MemFreeA(this->imgBuff);
-		this->imgBuff = 0;
+		MemFreeAArr(imgBuff);
+		this->imgBuff = nullptr;
 	}
 	this->csconv.Delete();
-	DEL_CLASS(this->resizer);
-	if (this->bgBuff)
+	this->resizer.Delete();
+	UnsafeArray<UInt8> bgBuff;
+	if (this->bgBuff.SetTo(bgBuff))
 	{
-		MemFreeA(this->bgBuff);
-		this->bgBuff = 0;
+		MemFreeAArr(bgBuff);
+		this->bgBuff = nullptr;
 	}
 	this->colorSess->RemoveHandler(*this);
 }
@@ -468,33 +474,34 @@ void UI::GUIPictureBoxDD::EnableLRGBLimit(Bool enable)
 
 void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool sameImg)
 {
+	UnsafeArray<UInt8> imgBuff;
 	Math::Size2D<UIntOS> oriSize = this->currImageSize;
 	this->currImage = currImage;
-	if (this->imgBuff)
+	if (this->imgBuff.SetTo(imgBuff))
 	{
-		MemFreeA(this->imgBuff);
-		this->imgBuff = 0;
+		MemFreeAArr(imgBuff);
+		this->imgBuff = nullptr;
 	}
 	this->csconv.Delete();
-	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img))
+	NN<Media::RasterImage> rimg;
+	if (this->currImage.SetTo(rimg))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		NN<Media::EXIFData> exif;
-		this->currImageSize = img->info.dispSize;
-		if (img->exif.SetTo(exif))
+		this->currImageSize = rimg->info.dispSize;
+		if (rimg->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 			if (rotType == Media::RotateType::CW_90)
 			{
-				this->currImageSize = img->info.dispSize.SwapXY();
+				this->currImageSize = rimg->info.dispSize.SwapXY();
 			}
 			else if (rotType == Media::RotateType::CW_180)
 			{
 			}
 			else if (rotType == Media::RotateType::CW_270)
 			{
-				this->currImageSize = img->info.dispSize.SwapXY();
+				this->currImageSize = rimg->info.dispSize.SwapXY();
 			}
 		}
 		if (!sameImg || oriSize != this->currImageSize)
@@ -505,51 +512,51 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 			this->UpdateZoomRange();
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(img->info.fourcc, img->info.storeBPP, img->info.pf, img->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, img->info.yuvType, this->colorSess.Ptr());
+		this->csconv = Media::CS::CSConverter::NewConverter(rimg->info.fourcc, rimg->info.storeBPP, rimg->info.pf, rimg->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, rimg->info.yuvType, this->colorSess.Ptr());
 		NN<Media::CS::CSConverter> csconv;
 		if (this->csconv.SetTo(csconv))
 		{
 			UnsafeArray<UInt8> pal;
-			if (img->pal.SetTo(pal))
+			if (rimg->pal.SetTo(pal))
 			{
 				csconv->SetPalette(pal);
 			}
-			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-			if (img->GetImageType() == Media::RasterImage::ImageType::Static)
+			this->imgBuff = imgBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
+			if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 			{
-				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(rimg)->data, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 			}
 			else
 			{
-				UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
-				img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-				csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, rimg->GetDataBpl() * rimg->info.storeSize.y);
+				rimg->GetRasterData(imgData, 0, 0, rimg->info.storeSize.x, rimg->info.dispSize.y, rimg->GetDataBpl(), rimg->IsUpsideDown(), rimg->info.rotateType);
+				csconv->ConvertV2(&imgData, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 				MemFreeAArr(imgData);
 			}
 			if (this->enableLRGBLimit)
 			{
-				LRGBLimiter_LimitImageLRGB(this->imgBuff, img->info.dispSize.x, img->info.dispSize.y);
+				LRGBLimiter_LimitImageLRGB(imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y);
 			}
 
 			if (rotType == Media::RotateType::CW_90)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW90(this->imgBuff, tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-				MemFreeA(this->imgBuff);
+				ImageUtil_Rotate64_CW90(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+				MemFreeAArr(imgBuff);
 				this->imgBuff = tmpBuff;
 			}
 			else if (rotType == Media::RotateType::CW_180)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW180(this->imgBuff, tmpBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
-				MemFreeA(this->imgBuff);
+				ImageUtil_Rotate64_CW180(imgBuff.Ptr(), tmpBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
+				MemFreeAArr(imgBuff);
 				this->imgBuff = tmpBuff;
 			}
 			else if (rotType == Media::RotateType::CW_270)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW270(this->imgBuff, tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-				MemFreeA(this->imgBuff);
+				ImageUtil_Rotate64_CW270(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+				MemFreeAArr(imgBuff);
 				this->imgBuff = tmpBuff;
 			}
 			this->UpdateSubSurface();
@@ -564,54 +571,55 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 
 void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
-	NN<Media::RasterImage> img;
+	NN<Media::RasterImage> rimg;
 	NN<Media::CS::CSConverter> csconv;
-	if (this->currImage.SetTo(img) && this->csconv.SetTo(csconv))
+	UnsafeArray<UInt8> thisImgBuff;
+	if (this->currImage.SetTo(rimg) && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		NN<Media::EXIFData> exif;
-		UInt8 *imgBuff;
-		if (img->exif.SetTo(exif))
+		UnsafeArray<UInt8> imgBuff;
+		if (rimg->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 		}
 		if (rotType == Media::RotateType::None)
 		{
-			imgBuff = this->imgBuff;
+			imgBuff = thisImgBuff;
 		}
 		else
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 		}
-		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
+		if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 		{
-			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(rimg)->data, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 		}
 		else
 		{
-			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
-			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, rimg->GetDataBpl() * rimg->info.storeSize.y);
+			rimg->GetRasterData(imgData, 0, 0, rimg->info.storeSize.x, rimg->info.dispSize.y, rimg->GetDataBpl(), rimg->IsUpsideDown(), rimg->info.rotateType);
+			csconv->ConvertV2(&imgData, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, img->info.dispSize.x, img->info.dispSize.y);
+			LRGBLimiter_LimitImageLRGB(imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y);
 		}
 		if (rotType == Media::RotateType::CW_90)
 		{
-			ImageUtil_Rotate64_CW90(imgBuff, this->imgBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW90(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		else if (rotType == Media::RotateType::CW_180)
 		{
-			ImageUtil_Rotate64_CW180(imgBuff, this->imgBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW180(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		else if (rotType == Media::RotateType::CW_270)
 		{
-			ImageUtil_Rotate64_CW270(imgBuff, this->imgBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW270(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		UpdateSubSurface();
 		DrawToScreen();
@@ -621,53 +629,54 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM
 void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<Media::CS::CSConverter> csconv;
-	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img) && this->csconv.SetTo(csconv))
+	NN<Media::RasterImage> rimg;
+	UnsafeArray<UInt8> thisImgBuff;
+	if (this->currImage.SetTo(rimg) && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
-		UInt8 *imgBuff;
+		UnsafeArray<UInt8> imgBuff;
 		NN<Media::EXIFData> exif;
-		if (img->exif.SetTo(exif))
+		if (rimg->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 		}
 		if (rotType == Media::RotateType::None)
 		{
-			imgBuff = this->imgBuff;
+			imgBuff = thisImgBuff;
 		}
 		else
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 		}
-		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
+		if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 		{
-			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(rimg)->data, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 		}
 		else
 		{
-			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.dispSize.y);
-			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (IntOS)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, rimg->GetDataBpl() * rimg->info.dispSize.y);
+			rimg->GetRasterData(imgData, 0, 0, rimg->info.storeSize.x, rimg->info.dispSize.y, rimg->GetDataBpl(), rimg->IsUpsideDown(), rimg->info.rotateType);
+			csconv->ConvertV2(&imgData, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
 			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, img->info.dispSize.x, img->info.dispSize.y);
+			LRGBLimiter_LimitImageLRGB(imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y);
 		}
 		if (rotType == Media::RotateType::CW_90)
 		{
-			ImageUtil_Rotate64_CW90(imgBuff, this->imgBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW90(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		else if (rotType == Media::RotateType::CW_180)
 		{
-			ImageUtil_Rotate64_CW180(imgBuff, this->imgBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW180(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		else if (rotType == Media::RotateType::CW_270)
 		{
-			ImageUtil_Rotate64_CW270(imgBuff, this->imgBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-			MemFreeA(imgBuff);
+			ImageUtil_Rotate64_CW270(imgBuff.Ptr(), thisImgBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+			MemFreeAArr(imgBuff);
 		}
 		UpdateSubSurface();
 		DrawToScreen();

@@ -43,11 +43,11 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NN<IO
 	{
 		NN<Map::TileMap> tileMap = NN<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
-		if (ttype == Map::TileMap::TT_OSMLOCAL)
+		if (ttype == Map::TileMap::TileType::OSMLOCAL)
 		{
 			return IO::FileExporter::SupportType::MultiFiles;
 		}
-		else if (ttype == Map::TileMap::TT_OSM)
+		else if (ttype == Map::TileMap::TileType::OSM)
 		{
 			NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 			if (osm->HasSPackageFile())
@@ -117,7 +117,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		*sptr = 0;
 	}
 
-	if (ttype == Map::TileMap::TT_OSMLOCAL)
+	if (ttype == Map::TileMap::TileType::OSMLOCAL)
 	{
 		DB::SQLiteFile *db;
 		s = Text::XML::ToNewXMLText(fileName2);
@@ -129,7 +129,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		if (!db->IsError())
 		{
 			Data::ArrayListT<Math::Coord2D<Int32>> imgIds;
-			Map::TileMap::ImageType it;
+			Map::TileMap::TileFormat format;
 			NN<IO::StreamData> fd;
 			DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 			db->ExecuteNonQuery(CSTR("CREATE TABLE android_metadata (locale TEXT)"));
@@ -253,7 +253,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 					while (j-- > 0)
 					{
 						Math::Coord2D<Int32> tileId = imgIds.GetItem(j);
-						if (osm->LoadTileImageData(level, tileId, bounds, true, it).SetTo(fd))
+						if (osm->LoadTileImageData(level, tileId, bounds, true, format).SetTo(fd))
 						{
 							UIntOS imgSize = (UIntOS)fd->GetDataSize();
 							Data::ByteBuffer imgBuff(imgSize);
@@ -296,7 +296,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		DEL_CLASS(db);
 		return succ;
 	}
-	else if (ttype == Map::TileMap::TT_OSM)
+	else if (ttype == Map::TileMap::TileType::OSM)
 	{
 		NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 		if (!osm->HasSPackageFile())

@@ -49,9 +49,9 @@ NN<Media::RasterImage> Media::MemorySurface::Clone() const
 	return surface;
 }
 
-Media::RasterImage::ImageType Media::MemorySurface::GetImageType() const
+Media::RasterImage::ImageClass Media::MemorySurface::GetImageClass() const
 {
-	return Media::RasterImage::ImageType::MonitorSurface;
+	return Media::RasterImage::ImageClass::MonitorSurface;
 }
 
 void Media::MemorySurface::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const

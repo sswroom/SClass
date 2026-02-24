@@ -29,7 +29,7 @@ namespace Map
 
 		virtual void BeginLevel(UIntOS level);
 		virtual void AddX(Int32 x);
-		virtual void AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType);
+		virtual void AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::TileFormat format);
 	};
 }
 #endif

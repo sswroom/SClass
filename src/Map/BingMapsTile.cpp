@@ -106,12 +106,12 @@ Text::CStringNN Map::BingMapsTile::GetName() const
 
 Map::TileMap::TileType Map::BingMapsTile::GetTileType() const
 {
-	return TT_BING;
+	return TileType::BING;
 }
 
-Map::TileMap::ImageType Map::BingMapsTile::GetImageType() const
+Map::TileMap::TileFormat Map::BingMapsTile::GetTileFormat() const
 {
-	return IT_PNG;
+	return TileFormat::PNG;
 }
 
 UIntOS Map::BingMapsTile::GetConcurrentCount() const

@@ -5,10 +5,11 @@
 #include "Math/Geometry/Vector2D.h"
 #include "Math/Unit/Distance.h"
 #include "Media/DrawEngine.h"
+#include "Media/Image.h"
 
 namespace Media
 {
-	class VectorGraph : public Media::DrawImage
+	class VectorGraph : public Media::DrawImage, public Media::Image
 	{
 	private:
 		class VectorPenStyle : public Media::DrawPen
@@ -80,7 +81,8 @@ namespace Media
 		Media::ColorProfile colorProfile;
 		UInt32 srid;
 		Math::Size2DDbl size;
-		Math::Unit::Distance::DistanceUnit unit;
+		Double hdpi;
+		Double vdpi;
 		Data::ArrayListNN<VectorPenStyle> penStyles;
 		Data::ArrayListNN<VectorFontStyle> fontStyles;
 		Data::ArrayListNN<VectorBrushStyle> brushStyles;
@@ -90,7 +92,7 @@ namespace Media
 		Media::DrawEngine::DrawPos align;
 		
 	public:
-		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile);
+		VectorGraph(UInt32 srid, Double visibleWidthPx, Double visibleHeightPx, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile);
 		virtual ~VectorGraph();
 
 		Math::Size2DDbl GetSizeDbl() const;
@@ -155,13 +157,17 @@ namespace Media
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
 
+		virtual Bool IsRaster() const { return false; }
+		virtual NN<Media::StaticImage> CreateStaticImage() const;
+		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
+
 		Double GetVisibleWidthMM() const;
 		Double GetVisibleHeightMM() const;
 		UIntOS GetCount() const;
 		Optional<Math::Geometry::Vector2D> GetItem(UIntOS index) const;
 		Optional<VectorStyles> GetStyle(UIntOS index) const;
-		void DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
-		void DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
+		void DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const;
+		void DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const;
 	};
 }
 #endif
