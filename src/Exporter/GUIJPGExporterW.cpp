@@ -49,7 +49,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	Gdiplus::Image*   image;
 	UInt8 *relBuff;
 
-	image = (Gdiplus::Image*)ToImage(pobj, &relBuff);
+	image = (Gdiplus::Image*)ToImage(pobj, relBuff).p;
 	if (image == 0)
 	{
 		return false;

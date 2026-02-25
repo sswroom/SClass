@@ -2270,7 +2270,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 		{
 			img->info.hdpi = UIntOS2Double(img->info.dispSize.x) * denv->img->GetHDPI() / (scnBR.x - scnTL.x);
 			img->info.vdpi = UIntOS2Double(img->info.dispSize.y) * denv->img->GetVDPI() / (scnBR.y - scnTL.y);
-			denv->img->DrawImagePt2(img, scnTL);
+			denv->img->DrawSImagePt(img, scnTL);
 		}
 		else
 		{
@@ -2295,7 +2295,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 					}
 					newImg->info.hdpi = denv->img->GetHDPI();
 					newImg->info.vdpi = denv->img->GetVDPI();
-					denv->img->DrawImagePt2(newImg, scnTL);
+					denv->img->DrawSImagePt(newImg, scnTL);
 					newImg.Delete();
 				}
 			}

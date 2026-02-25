@@ -124,9 +124,12 @@ namespace Media
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW, UIntOS buffSize) = 0;
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW, UIntOS buffSize) = 0;
 		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl) = 0;
-		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl) = 0;
-		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
+		virtual Bool DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
+		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl) = 0;
+		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
 		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad) = 0;
+		virtual void SetClip(Math::RectAreaDbl clipRect){};
+		virtual void ClearClip(){};
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern) = 0;
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color) = 0;
@@ -149,6 +152,7 @@ namespace Media
 		void MulImageAlpha(Double val);
 
 		virtual Optional<Media::StaticImage> ToStaticImage() const = 0;
+		virtual Optional<Media::RasterImage> AsRasterImage() = 0;
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm) = 0;
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm) = 0;
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm) = 0;

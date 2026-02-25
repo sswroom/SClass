@@ -91,6 +91,11 @@ namespace Math
 			return PADDPD(this->vals, PDoublex2SetA(v));
 		}
 
+		Double2D operator-() const
+		{
+			return Double2D(-this->x, -this->y);
+		}
+
 		Double2D operator-(Double2D v) const
 		{
 			return PSUBPD(this->vals, v.vals);

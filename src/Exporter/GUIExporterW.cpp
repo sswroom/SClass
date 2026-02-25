@@ -39,7 +39,7 @@ struct Exporter::GUIExporter::ClassData
 
 Exporter::GUIExporter::GUIExporter() : IO::FileExporter()
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	NEW_CLASS(data->gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
 	Gdiplus::GdiplusStartup((ULONG_PTR*)&data->gdiplusToken, data->gdiplusStartupInput, NULL);
@@ -47,10 +47,10 @@ Exporter::GUIExporter::GUIExporter() : IO::FileExporter()
 
 Exporter::GUIExporter::~GUIExporter()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	Gdiplus::GdiplusShutdown(data->gdiplusToken);
 	DEL_CLASS((Gdiplus::GdiplusStartupInput*)data->gdiplusStartupInput);
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
@@ -107,9 +107,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	}
 }
 
-void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
+AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8*> relBuff)
 {
-	*relBuff = 0;
+	relBuff.Set(0);
 	UnsafeArray<UInt8> nnpal;
 	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
@@ -255,7 +255,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	}
 }
 
-Int32 Exporter::GUIExporter::GetEncoderClsid(const WChar *format, void *clsid)
+Int32 Exporter::GUIExporter::GetEncoderClsid(UnsafeArray<const WChar> format, void *clsid)
 {
 	UINT  num = 0;          // number of image encoders
 	UINT  size = 0;         // size of the image encoder array in bytes

@@ -313,24 +313,17 @@ Media::GTKDrawFont::GTKDrawFont(Text::CStringNN fontName, Double fontHeight, Med
 	}
 }
 
-Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, IntOS fontSlant, IntOS fontWeight)
+Media::GTKDrawFont::GTKDrawFont(Optional<Text::String> fontName, Double fontHeight, IntOS fontSlant, IntOS fontWeight)
 {
-	if (fontName == 0)
+	NN<Text::String> nnFontName;
+	if (!fontName.SetTo(nnFontName))
 	{
 		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
 	else
 	{
-		this->fontName = fontName->Clone();
+		this->fontName = nnFontName->Clone();
 	}
-	this->fontHeight = fontHeight;
-	this->fontWeight = fontWeight;
-	this->fontSlant = fontSlant;
-}
-
-Media::GTKDrawFont::GTKDrawFont(NN<Text::String> fontName, Double fontHeight, IntOS fontSlant, IntOS fontWeight)
-{
-	this->fontName = fontName->Clone();
 	this->fontHeight = fontHeight;
 	this->fontWeight = fontWeight;
 	this->fontSlant = fontSlant;
@@ -1039,84 +1032,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	}
 }
 
-Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
-{
-	if (this->surface == 0)
-	{
-		NN<Media::DrawImage> dimg;
-		if (!this->eng->ConvImage(img, nullptr).SetTo(dimg))
-		{
-			return false;
-		}
-		this->DrawImagePt(dimg, tl);
-		this->eng->DeleteImage(dimg);
-		return true;
-	}
-	if (img->info.pf != Media::PF_B8G8R8A8)
-	{
-		img->ToB8G8R8A8();
-	}
-	if (img->info.storeBPP != 32)
-	{
-		return false;
-	}
-	cairo_surface_flush((cairo_surface_t*)this->surface);
-	UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-	IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
-	UnsafeArray<UInt8> simgPtr = img->data;
-	IntOS sbpl = (IntOS)img->info.storeSize.x * 4;
-
-	Int32 ixPos = Double2Int32(tl.x);
-	Int32 iyPos = Double2Int32(tl.y);
-	Int32 ixPos2 = ixPos + (Int32)img->info.dispSize.x;
-	Int32 iyPos2 = iyPos + (Int32)img->info.dispSize.y;
-	if ((IntOS)this->info.dispSize.x < ixPos2)
-	{
-		ixPos2 = (Int32)this->info.dispSize.x;
-	}
-	if (ixPos < 0)
-	{
-		simgPtr += -ixPos * 4;
-		ixPos = 0;
-	}
-
-	if ((IntOS)this->info.dispSize.y < iyPos2)
-	{
-		iyPos2 = (Int32)this->info.dispSize.y;
-	}
-	if (iyPos < 0)
-	{
-		simgPtr += -iyPos * sbpl;
-		iyPos = 0;
-	}
-	if (ixPos >= ixPos2 || iyPos >= iyPos2)
-	{
-		return true;
-	}
-
-	if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
-	{
-		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
-		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
-		return true;
-	}
-	else //////////////////////////////////////////
-	{
-		{
-			Sync::MutexUsage mutUsage(this->eng->iabMut);
-			this->eng->iab.SetColorSess(this->colorSess);
-			this->eng->iab.SetSourceProfile(img->info.color);
-			this->eng->iab.SetDestProfile(this->info.color);
-			this->eng->iab.SetOutputProfile(this->info.color);
-			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), img->info.atype);
-		}
-		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
-		return true;
-	}
-	return false;
-}
-
-Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::GTKDrawImage::DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	Media::GTKDrawImage *gimg = (GTKDrawImage*)img.Ptr();
 	if (gimg->surface == 0)
@@ -1216,9 +1132,174 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 	}
 }
 
+Bool Media::GTKDrawImage::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
+{
+	if (this->surface == 0)
+	{
+		NN<Media::DrawImage> dimg;
+		if (!this->eng->ConvImage(img, nullptr).SetTo(dimg))
+		{
+			return false;
+		}
+		this->DrawImagePt(dimg, tl);
+		this->eng->DeleteImage(dimg);
+		return true;
+	}
+	if (img->info.pf != Media::PF_B8G8R8A8)
+	{
+		img->ToB8G8R8A8();
+	}
+	if (img->info.storeBPP != 32)
+	{
+		return false;
+	}
+	cairo_surface_flush((cairo_surface_t*)this->surface);
+	UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+	IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+	UnsafeArray<UInt8> simgPtr = img->data;
+	IntOS sbpl = (IntOS)img->info.storeSize.x * 4;
+
+	Int32 ixPos = Double2Int32(tl.x);
+	Int32 iyPos = Double2Int32(tl.y);
+	Int32 ixPos2 = ixPos + (Int32)img->info.dispSize.x;
+	Int32 iyPos2 = iyPos + (Int32)img->info.dispSize.y;
+	if ((IntOS)this->info.dispSize.x < ixPos2)
+	{
+		ixPos2 = (Int32)this->info.dispSize.x;
+	}
+	if (ixPos < 0)
+	{
+		simgPtr += -ixPos * 4;
+		ixPos = 0;
+	}
+
+	if ((IntOS)this->info.dispSize.y < iyPos2)
+	{
+		iyPos2 = (Int32)this->info.dispSize.y;
+	}
+	if (iyPos < 0)
+	{
+		simgPtr += -iyPos * sbpl;
+		iyPos = 0;
+	}
+	if (ixPos >= ixPos2 || iyPos >= iyPos2)
+	{
+		return true;
+	}
+
+	if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
+	{
+		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
+		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+		return true;
+	}
+	else //////////////////////////////////////////
+	{
+		{
+			Sync::MutexUsage mutUsage(this->eng->iabMut);
+			this->eng->iab.SetColorSess(this->colorSess);
+			this->eng->iab.SetSourceProfile(img->info.color);
+			this->eng->iab.SetDestProfile(this->info.color);
+			this->eng->iab.SetOutputProfile(this->info.color);
+			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), img->info.atype);
+		}
+		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+		return true;
+	}
+	return false;
+}
+
+Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+{
+	if (this->surface == 0)
+	{
+		NN<Media::DrawImage> dimg;
+		if (!this->eng->ConvImage(img, nullptr).SetTo(dimg))
+		{
+			return false;
+		}
+		this->DrawImagePt2(dimg, destTL, srcTL, srcSize);
+		this->eng->DeleteImage(dimg);
+		return true;
+	}
+	else
+	{
+		img->ToB8G8R8A8();
+		if (this->info.storeBPP != 32)
+		{
+			return false;
+		}
+		cairo_surface_flush((cairo_surface_t*)this->surface);
+		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		UnsafeArray<UInt8> simgPtr = img->data;
+		IntOS sbpl = (IntOS)img->info.storeSize.x * 4;
+
+		IntOS ixPos = Double2Int32(destTL.x);
+		IntOS iyPos = Double2Int32(destTL.y);
+		IntOS ixPos2 = ixPos + (IntOS)srcSize.x;
+		IntOS iyPos2 = iyPos + (IntOS)srcSize.y;
+		if ((IntOS)this->info.dispSize.x < ixPos2)
+		{
+			ixPos2 = (IntOS)this->info.dispSize.x;
+		}
+		if (ixPos < 0)
+		{
+			simgPtr += -ixPos * 4;
+			ixPos = 0;
+		}
+
+		if ((IntOS)this->info.dispSize.y < iyPos2)
+		{
+			iyPos2 = (IntOS)this->info.dispSize.y;
+		}
+		if (iyPos < 0)
+		{
+			simgPtr += -iyPos * sbpl;
+			iyPos = 0;
+		}
+		if (ixPos >= ixPos2 || iyPos >= iyPos2)
+		{
+			return true;
+		}
+
+		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
+		{
+			ImageCopy_ImgCopy(simgPtr.Ptr() + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
+			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			return true;
+		}
+		else
+		{
+			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
+				this->eng->iab.SetSourceProfile(img->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), img->info.atype);
+			}
+			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			return true;
+		}
+		return false;
+	}
+}
+
 Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
 {
-	if (this->surface == 0 || this->info.storeBPP != 32)
+	if (quad.tl.y == quad.tr.y && quad.bl.y == quad.br.y && quad.tl.x == quad.bl.x && quad.tr.x == quad.br.x && quad.bl.y > quad.tl.y && quad.tr.x > quad.tl.x)
+	{
+		Double drawW = quad.tr.x - quad.tl.x;
+		Double drawH = quad.bl.y - quad.tl.y;
+		Double imgW = UIntOS2Double(img->info.dispSize.x);
+		Double imgH = UIntOS2Double(img->info.dispSize.y);
+		img->info.hdpi = this->info.hdpi * drawW / imgW;
+		img->info.vdpi = this->info.vdpi * drawH / imgH;
+		this->DrawSImagePt(img, quad.tl);
+		return true;
+	}
+	else if (this->surface == 0 || this->info.storeBPP != 32)
 	{
 		Math::Coord2DDbl points[5];
 		points[0] = quad.tl;
@@ -1242,6 +1323,18 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
+}
+
+void Media::GTKDrawImage::SetClip(Math::RectAreaDbl clipRect)
+{
+	printf("GTK: SetClip: rect: min=(%lf, %lf), max=(%lf, %lf), tl=(%lf, %lf)\r\n", clipRect.min.x, clipRect.min.y, clipRect.max.x, clipRect.max.y, IntOS2Double(this->tl.x), IntOS2Double(this->tl.y));
+	cairo_rectangle((cairo_t*)this->cr, clipRect.min.x + IntOS2Double(this->tl.x), clipRect.min.y + IntOS2Double(this->tl.y), clipRect.GetWidth(), clipRect.GetHeight());
+	cairo_clip((cairo_t*)this->cr);
+}
+
+void Media::GTKDrawImage::ClearClip()
+{
+	cairo_reset_clip((cairo_t*)this->cr);
 }
 
 NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
@@ -1360,6 +1453,11 @@ Optional<Media::StaticImage> Media::GTKDrawImage::ToStaticImage() const
 		return simg;
 	}
 	return nullptr;
+}
+
+Optional<Media::RasterImage> Media::GTKDrawImage::AsRasterImage()
+{
+	return *this;
 }
 
 UIntOS Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)

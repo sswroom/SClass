@@ -122,7 +122,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				{
 					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
 			}
 		}
 		if (this->thisMessage.SetTo(msg))
@@ -158,7 +158,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				{
 					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
 				if (currPos >= (IntOS)w)
 				{
 					this->lastMessage = this->thisMessage;

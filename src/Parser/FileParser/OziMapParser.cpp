@@ -201,10 +201,10 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					Data::ArrayListNN<Media::StaticImage> prevList;
 					Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, prevList));
-					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
+					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 					UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]));
-					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s.Ptr()));
+					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s));
 					s->Release();
 					lyr->AddVector2(vimg, (Text::PString*)0);
 				}

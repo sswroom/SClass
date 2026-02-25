@@ -314,7 +314,7 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 		if (this->dispImage.SetTo(shimg))
 		{
 			NN<Math::Geometry::Vector2D> vec;
-			NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
+			NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, this->dispBounds.GetSize(), false, this->dispImageURL, 0, 0));
 			return vec;
 		}
 		else
@@ -325,7 +325,7 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 	else if (this->lastId == id && this->lastImage.SetTo(shimg))
 	{
 		NN<Math::Geometry::Vector2D> vec;
-		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
+		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, this->lastBounds.GetSize(), false, this->lastImageURL, 0, 0));
 		return vec;
 	}
 	else

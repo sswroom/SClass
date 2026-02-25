@@ -300,7 +300,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			Media::SharedImage simg(nnimgList, prevList);
-			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, min, max, max - min, false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector2(vimg, (Text::String**)0);
 			return lyr;
 		}
@@ -422,7 +422,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));
-			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UIntOS2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UIntOS2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UIntOS2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UIntOS2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), Math::Coord2DDbl(xPxSize * UIntOS2Double(img->info.dispSize.x), yPxSize * UIntOS2Double(img->info.dispSize.y)), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector2(vimg, (Text::String**)0);
 			simg.Delete();
 			

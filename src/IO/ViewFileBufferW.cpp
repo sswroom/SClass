@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
+IO::ViewFileBuffer::ViewFileBuffer(UnsafeArray<const UTF8Char> fileName)
 {
 	SECURITY_ATTRIBUTES secAttr;
 	secAttr.nLength = sizeof(secAttr);

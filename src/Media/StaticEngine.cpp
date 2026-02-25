@@ -15,7 +15,7 @@
 Media::StaticEngine::StaticEngine(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
-	NEW_CLASSNN(this->iab32, Media::ABlend::AlphaBlend8_C8(0, false));
+	NEW_CLASSNN(this->iab32, Media::ABlend::AlphaBlend8_C8(nullptr, false));
 }
 
 Media::StaticEngine::~StaticEngine()
@@ -29,12 +29,12 @@ Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UIntO
 //	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 //	NEW_CLASS(simg, Media::StaticDrawImage(width, height, 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 //	return simg;
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileName)
 {
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
@@ -45,13 +45,13 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 		}
 	}
 
-	Optional<Media::StaticDrawImage> simg = 0;
+	Optional<Media::StaticDrawImage> simg = nullptr;
 	NN<Media::RasterImage> img;
 	if (imgList.SetTo(nnimgList))
 	{
 		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
-			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, 0));
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, nullptr));
 		}
 		imgList.Delete();
 	}
@@ -60,7 +60,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 
 Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WChar> fileName)
 {
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 	NN<Text::String> s = Text::String::NewNotNull(fileName);
 	{
@@ -73,13 +73,13 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WCh
 		}
 	}
 
-	Optional<Media::StaticDrawImage> simg = 0;
+	Optional<Media::StaticDrawImage> simg = nullptr;
 	if (imgList.SetTo(nnimgList))
 	{
 		NN<Media::RasterImage> img;
 		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
-			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, 0));
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, nullptr));
 		}
 		nnimgList.Delete();
 	}
@@ -88,7 +88,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WCh
 
 Optional<Media::DrawImage> Media::StaticEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
@@ -96,12 +96,12 @@ Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage>
 //	Media::StaticImage *simg = img->CreateStaticImage();
 //	simg->SetEngine(this);
 //	return simg;
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::DrawImage> Media::StaticEngine::CloneImage(NN<DrawImage> img)
 {
-	return this->ConvImage(NN<Media::StaticDrawImage>::ConvertFrom(img), 0);
+	return this->ConvImage(NN<Media::StaticDrawImage>::ConvertFrom(img), nullptr);
 }
 
 Bool Media::StaticEngine::DeleteImage(NN<DrawImage> img)
@@ -139,7 +139,7 @@ Media::StaticPen::StaticPen(UInt32 color, Double thick, UnsafeArrayOpt<const UIn
 	}
 	else
 	{
-		this->pattern = 0;
+		this->pattern = nullptr;
 		this->nPattern = 0;
 	}
 }
@@ -449,7 +449,7 @@ UIntOS Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("GIFTemp")));
 	imgList->AddImage(simg, 0);
-	Bool succ = exporter.ExportFile(stm, CSTR("Temp"), imgList, 0);
+	Bool succ = exporter.ExportFile(stm, CSTR("Temp"), imgList, nullptr);
 	imgList.Delete();
 	return succ?0:-1;
 }

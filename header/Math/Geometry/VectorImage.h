@@ -12,6 +12,7 @@ namespace Math
 		private:
 			NN<Media::SharedImage> img;
 			Optional<Text::String> srcAddr;
+			Math::RectAreaDbl srcRect;
 			Math::Coord2DDbl tl;
 			Math::Coord2DDbl br;
 			Math::Coord2DDbl size;
@@ -25,8 +26,6 @@ namespace Math
 			Int32 zIndex;
 			
 		public:
-			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd);
 			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 			virtual ~VectorImage();
@@ -70,6 +69,8 @@ namespace Math
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
 			Optional<Media::StaticImage> GetImage(OptOut<UInt32> imgTimeMS) const;
 			Optional<Media::StaticImage> GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
+			void SetSrcRect(Math::RectAreaDbl srcRect);
+			Math::RectAreaDbl GetSrcRect() const;
 
 			static NN<Math::Geometry::VectorImage> CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
 		};

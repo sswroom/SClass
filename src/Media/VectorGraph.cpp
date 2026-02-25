@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math_C.h"
 #include "Math/Geometry/Ellipse.h"
+#include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Math/Geometry/VectorString.h"
@@ -10,6 +11,7 @@
 #include "Media/SharedImage.h"
 #include "Media/StaticImage.h"
 #include "Media/VectorGraph.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
@@ -78,9 +80,9 @@ UIntOS Media::VectorGraph::VectorPenStyle::GetIndex()
 	return this->index;
 }
 
-NN<Media::DrawPen> Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI, NN<Media::DrawImage> dimg)
+NN<Media::DrawPen> Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double scale, NN<Media::DrawImage> dimg)
 {
-	Double thick = this->thick * dimg->GetHDPI() / oriDPI;
+	Double thick = this->thick * scale;
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
 }
 
@@ -136,7 +138,7 @@ UInt32 Media::VectorGraph::VectorFontStyle::GetCodePage()
 	return this->codePage;
 }
 
-NN<Media::DrawFont> Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, NN<Media::DrawImage> dimg)
+NN<Media::DrawFont> Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double scale, NN<Media::DrawImage> dimg)
 {
 	return dimg->NewFontPt(this->name->ToCString(), this->heightPt, this->fontStyle, this->codePage);
 }
@@ -315,12 +317,14 @@ Bool Media::VectorGraph::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS n
 
 Bool Media::VectorGraph::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	printf("VectorGraph.DrawPolygonI: Not supported\r\n");
 	/////////////////////////////////
 	return false;
 }
 
 Bool Media::VectorGraph::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UIntOS nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	printf("VectorGraph.DrawPolyPolygonI: Not supported\r\n");
 	/////////////////////////////////
 	return false;
 }
@@ -341,20 +345,63 @@ Bool Media::VectorGraph::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points
 
 Bool Media::VectorGraph::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	/////////////////////////////////
-	return false;
+	NN<Math::Geometry::LinearRing> lr;
+	NN<VectorStyles> style;
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, points, nPoints, nullptr, nullptr));
+	style = MemAllocNN(VectorStyles);
+	style->pen = (VectorPenStyle*)p.OrNull();
+	style->brush = (VectorBrushStyle*)b.OrNull();
+	style->font = nullptr;
+	this->items.Add(lr);
+	this->itemStyle.Add(style);
+	return true;
 }
 
 Bool Media::VectorGraph::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UIntOS nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	/////////////////////////////////
-	return false;
+	NN<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::LinearRing> lr;
+	NN<VectorStyles> style;
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
+	UIntOS i = 0;
+	UIntOS j = 0;
+	UIntOS k;
+	while (i < nPointCnt)
+	{
+		k = pointCnt[i] + j;
+		NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, &points[j], pointCnt[i], nullptr, nullptr));
+		pg->AddGeometry(lr);
+		j = k;
+		i++;
+	}
+	style = MemAllocNN(VectorStyles);
+	style->pen = (VectorPenStyle*)p.OrNull();
+	style->brush = (VectorBrushStyle*)b.OrNull();
+	style->font = nullptr;
+	this->items.Add(pg);
+	this->itemStyle.Add(style);
+	return true;
 }
 
 Bool Media::VectorGraph::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	/////////////////////////////////
-	return false;
+	NN<Math::Geometry::LinearRing> lr;
+	NN<VectorStyles> style;
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, 5, false, false));
+	UIntOS nPoints;
+	UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(nPoints);
+	points[0] = tl;
+	points[1] = Math::Coord2DDbl(tl.x + size.x, tl.y);
+	points[2] = Math::Coord2DDbl(tl.x + size.x, tl.y + size.y);
+	points[3] = Math::Coord2DDbl(tl.x, tl.y + size.y);
+	points[4] = tl;
+	style = MemAllocNN(VectorStyles);
+	style->pen = (VectorPenStyle*)p.OrNull();
+	style->brush = (VectorBrushStyle*)b.OrNull();
+	style->font = nullptr;
+	this->items.Add(lr);
+	this->itemStyle.Add(style);
+	return true;
 }
 
 Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
@@ -494,7 +541,8 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, nullptr);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi);
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, tl + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = nullptr;
 	style->brush = nullptr;
@@ -504,25 +552,7 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
-{
-	NN<VectorStyles> style;
-	NN<Math::Geometry::VectorImage> vimg;
-	NN<Media::ImageList> imgList;
-	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
-	imgList->AddImage(img->CreateStaticImage(), 0);
-	Media::SharedImage simg(imgList, nullptr);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UIntOS2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, Text::CString(nullptr), 0, 0));
-	style = MemAllocNN(VectorStyles);
-	style->pen = nullptr;
-	style->brush = nullptr;
-	style->font = nullptr;
-	this->items.Add(vimg);
-	this->itemStyle.Add(style);
-	return true;
-}
-
-Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::VectorGraph::DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	NN<VectorStyles> style;
 	NN<Media::StaticImage> stImg;
@@ -533,7 +563,48 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, nullptr);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi);
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, destTL + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
+	vimg->SetSrcRect(Math::RectAreaDbl(srcTL, srcTL + srcSize));
+	style = MemAllocNN(VectorStyles);
+	style->pen = nullptr;
+	style->brush = nullptr;
+	style->font = nullptr;
+	this->items.Add(vimg);
+	this->itemStyle.Add(style);
+	return true;
+}
+
+Bool Media::VectorGraph::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
+{
+	NN<VectorStyles> style;
+	NN<Math::Geometry::VectorImage> vimg;
+	NN<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
+	imgList->AddImage(img->CreateStaticImage(), 0);
+	Media::SharedImage simg(imgList, nullptr);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi);
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, tl + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
+	style = MemAllocNN(VectorStyles);
+	style->pen = nullptr;
+	style->brush = nullptr;
+	style->font = nullptr;
+	this->items.Add(vimg);
+	this->itemStyle.Add(style);
+	return true;
+}
+
+Bool Media::VectorGraph::DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+{
+	NN<VectorStyles> style;
+	NN<Math::Geometry::VectorImage> vimg;
+	NN<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
+	imgList->AddImage(img->CreateStaticImage(), 0);
+	Media::SharedImage simg(imgList, nullptr);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi);
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, destTL + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
+	vimg->SetSrcRect(Math::RectAreaDbl(srcTL, srcTL + srcSize));
 	style = MemAllocNN(VectorStyles);
 	style->pen = nullptr;
 	style->brush = nullptr;
@@ -545,6 +616,8 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 
 Bool Media::VectorGraph::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
 {
+	printf("VectorGraph.DrawImageQuad: Not supported\r\n");
+	/////////////////////////////////
 	return false;
 }
 
@@ -675,11 +748,13 @@ void Media::VectorGraph::SetTextAlign(Media::DrawEngine::DrawPos pos)
 
 void Media::VectorGraph::GetStringBound(UnsafeArray<Int32> pos, IntOS centX, IntOS centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
+	printf("VectorGraph.GetStringBound: Not supported\r\n");
 	////////////////////////////////////////
 }
 
 void Media::VectorGraph::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
+	printf("VectorGraph.GetStringBoundRot: Not supported\r\n");
 	////////////////////////////////////////
 }
 
@@ -690,6 +765,11 @@ void Media::VectorGraph::CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, U
 Optional<Media::StaticImage> Media::VectorGraph::ToStaticImage() const
 {
 	return CreateStaticImage();
+}
+
+Optional<Media::RasterImage> Media::VectorGraph::AsRasterImage()
+{
+	return nullptr;
 }
 
 UIntOS Media::VectorGraph::SavePng(NN<IO::SeekableStream> stm)
@@ -786,6 +866,8 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 
 void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const
 {
+	Optional<Media::Resizer::LanczosResizerRGB_C8> resizer = nullptr;
+	NN<Media::Resizer::LanczosResizerRGB_C8> nnresizer;
 	UInt32 imgTimeMS = 0;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
@@ -812,14 +894,14 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 	while (itFont.HasNext())
 	{
 		font = itFont.Next();
-		f = font->CreateDrawFont(dpi, dimg);
+		f = font->CreateDrawFont(scale, dimg);
 		dfonts.Add(f);
 	}
 	Data::ArrayIterator<NN<VectorPenStyle>> itPen = this->penStyles.Iterator();
 	while (itPen.HasNext())
 	{
 		pen = itPen.Next();
-		p = pen->CreateDrawPen(dpi, dimg);
+		p = pen->CreateDrawPen(scale, dimg);
 		dpens.Add(p);
 	}
 	Data::ArrayIterator<NN<VectorBrushStyle>> itBrush = this->brushStyles.Iterator();
@@ -889,6 +971,59 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 				}
 			}
 		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+		{
+			NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
+			UIntOS nPoint = pg->GetPointCount();
+			UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
+			UIntOS j = pg->GetCount();
+			UnsafeArray<UInt32> nPoints = MemAllocArr(UInt32, j);
+			UIntOS i = 0;
+			UnsafeArray<Math::Coord2DDbl> dpoints;
+			NN<Math::Geometry::LinearRing> lr;
+			UIntOS k = 0;
+			UIntOS l;
+			while (i < j)
+			{
+				if (pg->GetItem(i).SetTo(lr))
+				{
+					dpoints = lr->GetPointList(nPoint);
+					nPoints[i] = (UInt32)nPoint;
+					l = 0;;
+					while (l < nPoint)
+					{
+						points[k + l] = (dpoints[l] + ofst) * scale;
+						l++;
+					}
+					k += nPoint;
+				}
+				else
+				{
+					nPoints[i] = 0;
+				}
+				i++;
+			}
+			dimg->DrawPolyPolygon(points, nPoints, j, dp, ob);
+			MemFreeAArr(points);
+			MemFreeArr(nPoints);
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			NN<Math::Geometry::LinearRing> lr = NN<Math::Geometry::LinearRing>::ConvertFrom(vec);
+			UIntOS nPoints;
+			Math::Coord2DDbl *points;
+			UnsafeArray<Math::Coord2DDbl> dpoints;
+			dpoints = lr->GetPointList(nPoints);
+			points = MemAllocA(Math::Coord2DDbl, nPoints);
+			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
+			k = nPoints;
+			while (k-- > 0)
+			{
+				points[k] = (dpoints[k] + ofst) * dScale;
+			}
+			dimg->DrawPolygon(points, nPoints, dp, ob);
+			MemFreeA(points);
+		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			if (dp.SetTo(p))
@@ -951,7 +1086,34 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			NN<Media::StaticImage> simg;
 			if (vimg->GetImage(thisTimeMS).SetTo(simg))
 			{
-				dimg->DrawImagePt2(simg, (bounds.min + ofst) * scale);
+				Math::RectAreaDbl destRect = (bounds + ofst) * scale;
+				Math::RectAreaDbl srcRect = vimg->GetSrcRect();
+				IntOS drawW = Double2IntOS(destRect.max.x) - Double2IntOS(destRect.min.x);
+				IntOS drawH = Double2IntOS(destRect.max.y) - Double2IntOS(destRect.min.y);
+				Double imgW = srcRect.GetWidth();
+				Double imgH = srcRect.GetHeight();
+				if (drawW != Double2IntOS(imgW) || drawH != Double2IntOS(imgH))
+				{
+					if (!resizer.SetTo(nnresizer))
+					{
+						NEW_CLASSNN(nnresizer, Media::Resizer::LanczosResizerRGB_C8(4, 4, simg->info.color, dimg->GetColorProfile(), nullptr, simg->info.atype));
+						resizer = nnresizer;
+					}
+					nnresizer->SetTargetSize(Math::Size2D<UIntOS>((UIntOS)drawW, (UIntOS)drawH));
+					nnresizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
+					NN<Media::StaticImage> simg2;
+					if (nnresizer->ProcessToNewPartial(simg, srcRect.min, srcRect.GetSize()).SetTo(simg2))
+					{
+						dimg->DrawSImagePt(simg2, destRect.min);
+						simg2.Delete();
+					}
+				}
+				else
+				{
+					simg->info.hdpi = dimg->GetHDPI() * IntOS2Double(drawW) / imgW;
+					simg->info.vdpi = dimg->GetVDPI() * IntOS2Double(drawH) / imgH;
+					dimg->DrawSImagePt2(simg, destRect.min, srcRect.min, srcRect.GetSize());
+				}
 				if (imgTimeMS == 0)
 				{
 					imgTimeMS = thisTimeMS;
@@ -974,6 +1136,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 		}
 		else
 		{
+			printf("VectorGraph.DrawTo: Un-supported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 			///////////////////////////////////
 		}
 		i++;
@@ -998,4 +1161,10 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			dimg->DelFont(f);
 	}
 	imgDurMS.Set(imgTimeMS);
+	resizer.Delete();
+}
+
+NN<Media::DrawEngine> Media::VectorGraph::GetDrawEngine() const
+{
+	return this->refEng;
 }

@@ -4,7 +4,7 @@
 
 Int32 DB::MongoDB::initCnt = 0;
 
-DB::MongoDB::MongoDB(Text::CStringNN url, Text::CString database, IO::LogTool *log) : DB::ReadingDB(url)
+DB::MongoDB::MongoDB(Text::CStringNN url, Text::CString database, Optional<IO::LogTool> log) : DB::ReadingDB(url)
 {
 }
 

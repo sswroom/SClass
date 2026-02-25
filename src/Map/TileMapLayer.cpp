@@ -531,7 +531,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 			return nullptr;
 		}
 		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId).Or(sbuff);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -559,7 +559,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId).Or(sbuff);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else

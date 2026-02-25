@@ -372,7 +372,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 				resizer.Resize(nnsrcImg->data + (srcIX * 4) + (srcIY * (IntOS)(nnsrcImg->info.storeSize.x * 4)), (IntOS)nnsrcImg->info.storeSize.x * 4, srcSize.x, srcSize.y, srcPos.x - srcIX, srcPos.y - srcIY, drawImg->data, (IntOS)drawImg->info.storeSize.x * 4, sz.x, sz.y);
 				mutUsage.EndUse();
 				nnsrcImg.Delete();
-				img->DrawImagePt2(drawImg, tl);
+				img->DrawSImagePt(drawImg, tl);
 				drawImg.Delete();
 			}
 		}
@@ -391,7 +391,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 				resizer.Resize(nnsrcImg->data, (IntOS)nnsrcImg->info.storeSize.x * 4, UIntOS2Double(this->currSize.x), UIntOS2Double(this->currSize.y), 0, 0, drawImg->data, (IntOS)drawImg->info.storeSize.x * 4, sz.x, sz.y);
 				mutUsage.EndUse();
 				nnsrcImg.Delete();
-				img->DrawImagePt2(drawImg, tl);
+				img->DrawSImagePt(drawImg, tl);
 				drawImg.Delete();
 			}
 		}

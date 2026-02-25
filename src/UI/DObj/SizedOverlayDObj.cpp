@@ -133,7 +133,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		if (this->dispImg.SetTo(img))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
-			dimg->DrawImagePt2(img, tl + this->drawOfst);
+			dimg->DrawSImagePt(img, tl + this->drawOfst);
 		}
 	}
 }

@@ -4,6 +4,7 @@
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil_C.h"
 #include "Media/LRGBLimiter_C.h"
+#include "Media/VectorGraph.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
@@ -15,175 +16,143 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
 	NN<Media::ImageResizer> resizer;
 	UnsafeArray<UInt8> imgBuff;
-	if (this->imgBuff.SetTo(imgBuff) && !this->currImage.IsNull() && this->IsSurfaceReady())
+	NN<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		IntOS bpl;
-		if (this->drawHdlrs.GetCount() > 0)
+		Math::RectAreaDbl srcRect;
+		Math::RectArea<IntOS> destRect;
+
+		if (this->mouseDowned)
 		{
-			UnsafeArray<UInt8> bgBuff;
-			if (!this->bgBuff.SetTo(bgBuff) || this->bkBuffSize != this->bgBuffSize)
+			Math::Coord2DDbl oldCenter = this->zoomCenter;
+			this->zoomCenter += (this->mouseDownPos - this->mouseCurrPos).ToDouble() / this->zoomScale;
+			if (this->zoomScale != this->zoomMinScale)
 			{
-				if (this->bgBuff.SetTo(bgBuff))
-				{
-					MemFreeAArr(bgBuff);
-				}
-				this->bgBuffSize = this->bkBuffSize;
-				this->bgBuff = bgBuff = MemAllocAArr(UInt8, this->bgBuffSize.CalcArea() * 4);
-			}
-
-			Math::RectAreaDbl srcRect;
-			Math::RectArea<IntOS> destRect;
-			ImageUtil_ImageColorFill32(bgBuff.Ptr(), this->bgBuffSize.x, this->bgBuffSize.y, this->bgBuffSize.x << 2, 0);
-
-			if (this->mouseDowned)
-			{
-				Math::Coord2DDbl oldCenter = this->zoomCenter;
-				this->zoomCenter += (this->mouseDownPos - this->mouseCurrPos).ToDouble() / this->zoomScale;
-				if (this->zoomScale != this->zoomMinScale)
-				{
-					if (this->zoomCenter.x < this->zoomMinX)
-						this->zoomCenter.x = this->zoomMinX;
-					else if (this->zoomCenter.x > this->zoomMaxX)
-						this->zoomCenter.x = this->zoomMaxX;
-				}
-
-				if (this->zoomCenter.y < this->zoomMinY)
-					this->zoomCenter.y = this->zoomMinY;
-				else if (this->zoomCenter.y > this->zoomMaxY)
-					this->zoomCenter.y = this->zoomMaxY;
-				CalDispRect(srcRect, destRect);
-				this->zoomCenter = oldCenter;
-			}
-			else if (this->gzoomDown)
-			{
-				Math::Coord2DDbl oldCenter = this->zoomCenter;
-				Double oldScale = this->zoomScale;
-				Double oldMinX = this->zoomMinX;
-				Double oldMaxX = this->zoomMaxX;
-				Double oldMinY = this->zoomMinY;
-				Double oldMaxY = this->zoomMaxY;
-				this->zoomScale = this->zoomScale * UInt64_Double(this->gzoomCurrDist) / UInt64_Double(this->gzoomDownDist);
-				if (this->zoomScale < this->zoomMinScale)
-				{
-					this->zoomScale = this->zoomMinScale;
-				}
-				else if (this->zoomScale > 16)
-				{
-					this->zoomScale = 16.0;
-				}
-				this->UpdateZoomRange();
-
-				this->zoomCenter += (this->gzoomDownPos - this->gzoomCurrPos).ToDouble() / this->zoomScale;
 				if (this->zoomCenter.x < this->zoomMinX)
 					this->zoomCenter.x = this->zoomMinX;
 				else if (this->zoomCenter.x > this->zoomMaxX)
 					this->zoomCenter.x = this->zoomMaxX;
-
-				if (this->zoomCenter.y < this->zoomMinY)
-					this->zoomCenter.y = this->zoomMinY;
-				else if (this->zoomCenter.y > this->zoomMaxY)
-					this->zoomCenter.y = this->zoomMaxY;
-				CalDispRect(srcRect, destRect);
-				this->zoomCenter = oldCenter;
-				this->zoomScale = oldScale;
-				this->zoomMinX = oldMinX;
-				this->zoomMaxX = oldMaxX;
-				this->zoomMinY = oldMinY;
-				this->zoomMaxY = oldMaxY;
 			}
-			else
+
+			if (this->zoomCenter.y < this->zoomMinY)
+				this->zoomCenter.y = this->zoomMinY;
+			else if (this->zoomCenter.y > this->zoomMaxY)
+				this->zoomCenter.y = this->zoomMaxY;
+			CalDispRect(srcRect, destRect);
+			this->zoomCenter = oldCenter;
+		}
+		else if (this->gzoomDown)
+		{
+			Math::Coord2DDbl oldCenter = this->zoomCenter;
+			Double oldScale = this->zoomScale;
+			Double oldMinX = this->zoomMinX;
+			Double oldMaxX = this->zoomMaxX;
+			Double oldMinY = this->zoomMinY;
+			Double oldMaxY = this->zoomMaxY;
+			this->zoomScale = this->zoomScale * UInt64_Double(this->gzoomCurrDist) / UInt64_Double(this->gzoomDownDist);
+			if (this->zoomScale < this->zoomMinScale)
 			{
-				CalDispRect(srcRect, destRect);
+				this->zoomScale = this->zoomMinScale;
 			}
-			UnsafeArray<UInt8> dptr = bgBuff;
-			Int32 iLeft = (Int32)srcRect.min.x;
-			Int32 iTop = (Int32)srcRect.min.y;
-			dptr = dptr + destRect.min.y * (IntOS)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
-			Math::Size2DDbl srcSize = srcRect.GetSize();
-			Math::Size2D<IntOS> destSize = destRect.GetSize();
-			if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)this->bgBuffSize.x << 2, (UIntOS)destSize.x, (UIntOS)destSize.y);
+			else if (this->zoomScale > 16)
+			{
+				this->zoomScale = 16.0;
+			}
+			this->UpdateZoomRange();
 
-			this->DrawFromBG();
+			this->zoomCenter += (this->gzoomDownPos - this->gzoomCurrPos).ToDouble() / this->zoomScale;
+			if (this->zoomCenter.x < this->zoomMinX)
+				this->zoomCenter.x = this->zoomMinX;
+			else if (this->zoomCenter.x > this->zoomMaxX)
+				this->zoomCenter.x = this->zoomMaxX;
+
+			if (this->zoomCenter.y < this->zoomMinY)
+				this->zoomCenter.y = this->zoomMinY;
+			else if (this->zoomCenter.y > this->zoomMaxY)
+				this->zoomCenter.y = this->zoomMaxY;
+			CalDispRect(srcRect, destRect);
+			this->zoomCenter = oldCenter;
+			this->zoomScale = oldScale;
+			this->zoomMinX = oldMinX;
+			this->zoomMaxX = oldMaxX;
+			this->zoomMinY = oldMinY;
+			this->zoomMaxY = oldMaxY;
 		}
 		else
 		{
-			UnsafeArray<UInt8> dptr;
-			if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
+			CalDispRect(srcRect, destRect);
+		}
+		if (!this->IsSurfaceReady())
+			return;
+
+		IntOS bpl;
+		UnsafeArray<UInt8> dptr;
+		if (!img->IsRaster())
+		{
+			NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(img);
+			NN<Media::DrawEngine> deng = vimg->GetDrawEngine();
+			Double scale = IntOS2Double(destRect.GetWidth()) / srcRect.GetWidth();
+			NN<Media::DrawImage> dimg;
+			if (!Math::IsNAN(scale) && deng->CreateImage32(this->bkBuffSize, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(dimg))
 			{
-				Math::RectAreaDbl srcRect;
-				Math::RectArea<IntOS> destRect;
-				ImageUtil_ImageColorFill32(dptr.Ptr(), this->bkBuffSize.x, this->bkBuffSize.y, (UIntOS)bpl, 0);
-
-				if (this->mouseDowned)
+				//dimg->SetClip(destRect.ToDouble());
+				vimg->DrawTo(-srcRect.min + destRect.min.ToDouble() / scale, scale, dimg, nullptr);
+				//dimg->ClearClip();
+				if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
 				{
-					Math::Coord2DDbl oldCenter = this->zoomCenter;
-					this->zoomCenter += (this->mouseDownPos - this->mouseCurrPos).ToDouble() / this->zoomScale;
-					if (this->zoomScale != this->zoomMinScale)
+					NN<Media::RasterImage> rimg;
+					if (dimg->AsRasterImage().SetTo(rimg))
 					{
-						if (this->zoomCenter.x < this->zoomMinX)
-							this->zoomCenter.x = this->zoomMinX;
-						else if (this->zoomCenter.x > this->zoomMaxX)
-							this->zoomCenter.x = this->zoomMaxX;
+						rimg->GetRasterData(dptr, 0, 0, this->bkBuffSize.x, this->bkBuffSize.y, this->bkBuffSize.x << 2, false, Media::RotateType::None);
 					}
-
-					if (this->zoomCenter.y < this->zoomMinY)
-						this->zoomCenter.y = this->zoomMinY;
-					else if (this->zoomCenter.y > this->zoomMaxY)
-						this->zoomCenter.y = this->zoomMaxY;
-					CalDispRect(srcRect, destRect);
-					this->zoomCenter = oldCenter;
+					this->LockSurfaceEnd();
 				}
-				else if (this->gzoomDown)
+				deng->DeleteImage(dimg);
+			}
+		}
+		else if (this->imgBuff.SetTo(imgBuff) && !this->currImage.IsNull())
+		{
+			if (this->drawHdlrs.GetCount() > 0)
+			{
+				UnsafeArray<UInt8> bgBuff;
+				if (!this->bgBuff.SetTo(bgBuff) || this->bkBuffSize != this->bgBuffSize)
 				{
-					Math::Coord2DDbl oldCenter = this->zoomCenter;
-					Double oldScale = this->zoomScale;
-					Double oldMinX = this->zoomMinX;
-					Double oldMaxX = this->zoomMaxX;
-					Double oldMinY = this->zoomMinY;
-					Double oldMaxY = this->zoomMaxY;
-					this->zoomScale = this->zoomScale * UInt64_Double(this->gzoomCurrDist) / UInt64_Double(this->gzoomDownDist);
-					if (this->zoomScale < this->zoomMinScale)
+					if (this->bgBuff.SetTo(bgBuff))
 					{
-						this->zoomScale = this->zoomMinScale;
+						MemFreeAArr(bgBuff);
 					}
-					else if (this->zoomScale > 16)
-					{
-						this->zoomScale = 16.0;
-					}
-					this->UpdateZoomRange();
-
-					this->zoomCenter += (this->gzoomDownPos - this->gzoomCurrPos).ToDouble() / this->zoomScale;
-					if (this->zoomCenter.x < this->zoomMinX)
-						this->zoomCenter.x = this->zoomMinX;
-					else if (this->zoomCenter.x > this->zoomMaxX)
-						this->zoomCenter.x = this->zoomMaxX;
-
-					if (this->zoomCenter.y < this->zoomMinY)
-						this->zoomCenter.y = this->zoomMinY;
-					else if (this->zoomCenter.y > this->zoomMaxY)
-						this->zoomCenter.y = this->zoomMaxY;
-					CalDispRect(srcRect, destRect);
-					this->zoomCenter = oldCenter;
-					this->zoomScale = oldScale;
-					this->zoomMinX = oldMinX;
-					this->zoomMaxX = oldMaxX;
-					this->zoomMinY = oldMinY;
-					this->zoomMaxY = oldMaxY;
+					this->bgBuffSize = this->bkBuffSize;
+					this->bgBuff = bgBuff = MemAllocAArr(UInt8, this->bgBuffSize.CalcArea() * 4);
 				}
-				else
-				{
-					CalDispRect(srcRect, destRect);
-				}
+				ImageUtil_ImageColorFill32(bgBuff.Ptr(), this->bgBuffSize.x, this->bgBuffSize.y, this->bgBuffSize.x << 2, 0);
+
+				dptr = bgBuff;
 				Int32 iLeft = (Int32)srcRect.min.x;
 				Int32 iTop = (Int32)srcRect.min.y;
-				dptr = dptr + destRect.min.y * (IntOS)bpl + destRect.min.x * 4;
+				dptr = dptr + destRect.min.y * (IntOS)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
 				Math::Size2DDbl srcSize = srcRect.GetSize();
-				if (srcSize.x > 0 && srcSize.y > 0)
-				{
-					if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)bpl, (UIntOS)destRect.GetWidth(), (UIntOS)destRect.GetHeight());
-				}
+				Math::Size2D<IntOS> destSize = destRect.GetSize();
+				if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)this->bgBuffSize.x << 2, (UIntOS)destSize.x, (UIntOS)destSize.y);
 
-				this->LockSurfaceEnd();
+				this->DrawFromBG();
+			}
+			else
+			{
+				if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
+				{
+					ImageUtil_ImageColorFill32(dptr.Ptr(), this->bkBuffSize.x, this->bkBuffSize.y, (UIntOS)bpl, 0);
+
+					Int32 iLeft = (Int32)srcRect.min.x;
+					Int32 iTop = (Int32)srcRect.min.y;
+					dptr = dptr + destRect.min.y * (IntOS)bpl + destRect.min.x * 4;
+					Math::Size2DDbl srcSize = srcRect.GetSize();
+					if (srcSize.x > 0 && srcSize.y > 0)
+					{
+						if (this->resizer.SetTo(resizer)) resizer->Resize(imgBuff + iLeft * 8 + iTop * (IntOS)this->currImageSize.x * 8, (IntOS)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (IntOS)bpl, (UIntOS)destRect.GetWidth(), (UIntOS)destRect.GetHeight());
+					}
+
+					this->LockSurfaceEnd();
+				}
 			}
 		}
 	}
@@ -191,8 +160,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 
 void UI::GUIPictureBoxDD::CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<IntOS>> destRect)
 {
-	NN<Media::RasterImage> rimg;
-	if (!this->currImage.SetTo(rimg))
+	if (this->currImage.IsNull())
 	{
 		srcRect->min = Math::Coord2DDbl(0, 0);
 		srcRect->max = Math::Coord2DDbl(0, 0);
@@ -255,22 +223,38 @@ void UI::GUIPictureBoxDD::UpdateZoomRange()
 void UI::GUIPictureBoxDD::UpdateMinScale()
 {
 	NN<Media::RasterImage> rimg;
-	if (this->currImage.SetTo(rimg))
+	NN<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
 		Double outZoomScale;
 		Double outW;
 	//	Double outH;
 		Double srcW = UIntOS2Double(this->currImageSize.x);
 		Double srcH = UIntOS2Double(this->currImageSize.y);
-		if (srcW * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+		if (img->IsRaster())
 		{
-			outW = UIntOS2Double(this->bkBuffSize.x);
-	//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
+			rimg = NN<Media::RasterImage>::ConvertFrom(img);
+			if (srcW * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+			{
+				outW = UIntOS2Double(this->bkBuffSize.x);
+		//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
+			}
+			else
+			{
+				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcW / srcH;
+		//		outH = IntOS2Double(this->surfaceSize.y);
+			}
 		}
 		else
 		{
-			outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcW / srcH;
-	//		outH = IntOS2Double(this->surfaceSize.y);
+			if (srcW * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+			{
+				outW = UIntOS2Double(this->bkBuffSize.x);
+			}
+			else
+			{
+				outW = UIntOS2Double(this->bkBuffSize.y) * srcW / srcH;
+			}
 		}
 		outZoomScale = outW / srcW;
 		if (outZoomScale > 1.0)
@@ -287,10 +271,10 @@ void UI::GUIPictureBoxDD::CreateResizer()
 
 	this->resizer.Delete();
 	Double refLuminance = 0;
-	NN<Media::RasterImage> rimg;
-	if (this->currImage.SetTo(rimg))
+	NN<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(rimg->info.color.rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(NN<Media::RasterImage>::ConvertFrom(img)->info.color.rtransfer);
 	}
 	if (this->curr10Bit)
 	{
@@ -472,7 +456,7 @@ void UI::GUIPictureBoxDD::EnableLRGBLimit(Bool enable)
 	}
 }
 
-void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool sameImg)
+void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameImg)
 {
 	UnsafeArray<UInt8> imgBuff;
 	Math::Size2D<UIntOS> oriSize = this->currImageSize;
@@ -484,83 +468,100 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 	}
 	this->csconv.Delete();
 	NN<Media::RasterImage> rimg;
-	if (this->currImage.SetTo(rimg))
+	NN<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		Media::RotateType rotType = Media::RotateType::None;
-		NN<Media::EXIFData> exif;
-		this->currImageSize = rimg->info.dispSize;
-		if (rimg->exif.SetTo(exif))
+		if (img->IsRaster())
 		{
-			rotType = exif->GetRotateType();
-			if (rotType == Media::RotateType::CW_90)
+			rimg = NN<Media::RasterImage>::ConvertFrom(img);
+			Media::RotateType rotType = Media::RotateType::None;
+			NN<Media::EXIFData> exif;
+			this->currImageSize = rimg->info.dispSize;
+			if (rimg->exif.SetTo(exif))
 			{
-				this->currImageSize = rimg->info.dispSize.SwapXY();
+				rotType = exif->GetRotateType();
+				if (rotType == Media::RotateType::CW_90)
+				{
+					this->currImageSize = rimg->info.dispSize.SwapXY();
+				}
+				else if (rotType == Media::RotateType::CW_180)
+				{
+				}
+				else if (rotType == Media::RotateType::CW_270)
+				{
+					this->currImageSize = rimg->info.dispSize.SwapXY();
+				}
 			}
-			else if (rotType == Media::RotateType::CW_180)
+			if (!sameImg || oriSize != this->currImageSize)
 			{
+				this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
+				this->UpdateMinScale();
+				this->zoomScale = this->zoomMinScale;
+				this->UpdateZoomRange();
 			}
-			else if (rotType == Media::RotateType::CW_270)
+			Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
+			this->csconv = Media::CS::CSConverter::NewConverter(rimg->info.fourcc, rimg->info.storeBPP, rimg->info.pf, rimg->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, rimg->info.yuvType, this->colorSess.Ptr());
+			NN<Media::CS::CSConverter> csconv;
+			if (this->csconv.SetTo(csconv))
 			{
-				this->currImageSize = rimg->info.dispSize.SwapXY();
+				UnsafeArray<UInt8> pal;
+				if (rimg->pal.SetTo(pal))
+				{
+					csconv->SetPalette(pal);
+				}
+				this->imgBuff = imgBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
+				if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
+				{
+					csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(rimg)->data, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
+				}
+				else
+				{
+					UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, rimg->GetDataBpl() * rimg->info.storeSize.y);
+					rimg->GetRasterData(imgData, 0, 0, rimg->info.storeSize.x, rimg->info.dispSize.y, rimg->GetDataBpl(), rimg->IsUpsideDown(), rimg->info.rotateType);
+					csconv->ConvertV2(&imgData, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
+					MemFreeAArr(imgData);
+				}
+				if (this->enableLRGBLimit)
+				{
+					LRGBLimiter_LimitImageLRGB(imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y);
+				}
+
+				if (rotType == Media::RotateType::CW_90)
+				{
+					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW90(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+					MemFreeAArr(imgBuff);
+					this->imgBuff = tmpBuff;
+				}
+				else if (rotType == Media::RotateType::CW_180)
+				{
+					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW180(imgBuff.Ptr(), tmpBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
+					MemFreeAArr(imgBuff);
+					this->imgBuff = tmpBuff;
+				}
+				else if (rotType == Media::RotateType::CW_270)
+				{
+					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW270(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+					MemFreeAArr(imgBuff);
+					this->imgBuff = tmpBuff;
+				}
+				this->UpdateSubSurface();
+				DrawToScreen();
 			}
 		}
-		if (!sameImg || oriSize != this->currImageSize)
+		else
 		{
+			NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(img);
+			this->currImageSize = vimg->GetSize();
 			this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
 			this->UpdateMinScale();
 			this->zoomScale = this->zoomMinScale;
 			this->UpdateZoomRange();
-		}
-		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(rimg->info.fourcc, rimg->info.storeBPP, rimg->info.pf, rimg->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, rimg->info.yuvType, this->colorSess.Ptr());
-		NN<Media::CS::CSConverter> csconv;
-		if (this->csconv.SetTo(csconv))
-		{
-			UnsafeArray<UInt8> pal;
-			if (rimg->pal.SetTo(pal))
-			{
-				csconv->SetPalette(pal);
-			}
-			this->imgBuff = imgBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
-			if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
-			{
-				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(rimg)->data, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
-			}
-			else
-			{
-				UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, rimg->GetDataBpl() * rimg->info.storeSize.y);
-				rimg->GetRasterData(imgData, 0, 0, rimg->info.storeSize.x, rimg->info.dispSize.y, rimg->GetDataBpl(), rimg->IsUpsideDown(), rimg->info.rotateType);
-				csconv->ConvertV2(&imgData, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, rimg->info.storeSize.x, rimg->info.storeSize.y, (IntOS)rimg->info.dispSize.x << 3, rimg->info.ftype, rimg->info.ycOfst);
-				MemFreeAArr(imgData);
-			}
-			if (this->enableLRGBLimit)
-			{
-				LRGBLimiter_LimitImageLRGB(imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y);
-			}
-
-			if (rotType == Media::RotateType::CW_90)
-			{
-				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW90(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-				MemFreeAArr(imgBuff);
-				this->imgBuff = tmpBuff;
-			}
-			else if (rotType == Media::RotateType::CW_180)
-			{
-				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW180(imgBuff.Ptr(), tmpBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
-				MemFreeAArr(imgBuff);
-				this->imgBuff = tmpBuff;
-			}
-			else if (rotType == Media::RotateType::CW_270)
-			{
-				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-				ImageUtil_Rotate64_CW270(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
-				MemFreeAArr(imgBuff);
-				this->imgBuff = tmpBuff;
-			}
 			this->UpdateSubSurface();
 			DrawToScreen();
+
 		}
 	}
 	else
@@ -571,11 +572,13 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 
 void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
+	NN<Media::Image> img;
 	NN<Media::RasterImage> rimg;
 	NN<Media::CS::CSConverter> csconv;
 	UnsafeArray<UInt8> thisImgBuff;
-	if (this->currImage.SetTo(rimg) && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
+	if (this->currImage.SetTo(img) && img->IsRaster() && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
+		rimg = NN<Media::RasterImage>::ConvertFrom(img);
 		Media::RotateType rotType = Media::RotateType::None;
 		NN<Media::EXIFData> exif;
 		UnsafeArray<UInt8> imgBuff;
@@ -629,10 +632,12 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM
 void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<Media::CS::CSConverter> csconv;
+	NN<Media::Image> img;
 	NN<Media::RasterImage> rimg;
 	UnsafeArray<UInt8> thisImgBuff;
-	if (this->currImage.SetTo(rimg) && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
+	if (this->currImage.SetTo(img) && img->IsRaster() && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
+		rimg = NN<Media::RasterImage>::ConvertFrom(img);
 		Media::RotateType rotType = Media::RotateType::None;
 		UnsafeArray<UInt8> imgBuff;
 		NN<Media::EXIFData> exif;
@@ -1184,7 +1189,8 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
 
 void UI::GUIPictureBoxDD::ZoomToFit()
 {
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
 	if (this->currImage.SetTo(img))
 	{
 		this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
@@ -1192,15 +1198,30 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 		Double outW;
 	//	Double outH;
 		Math::Size2DDbl srcSize = this->currImageSize.ToDouble();
-		if (srcSize.x * img->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
+		if (img->IsRaster())
 		{
-			outW = UIntOS2Double(this->bkBuffSize.x);
-	//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
+			rimg = NN<Media::RasterImage>::ConvertFrom(img);
+			if (srcSize.x * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
+			{
+				outW = UIntOS2Double(this->bkBuffSize.x);
+		//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
+			}
+			else
+			{
+				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcSize.x / srcSize.y;
+		//		outH = IntOS2Double(this->surfaceH);
+			}
 		}
 		else
 		{
-			outW = UIntOS2Double(this->bkBuffSize.y) * img->info.par2 * srcSize.x / srcSize.y;
-	//		outH = IntOS2Double(this->surfaceH);
+			if (srcSize.x * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
+			{
+				outW = UIntOS2Double(this->bkBuffSize.x);
+			}
+			else
+			{
+				outW = UIntOS2Double(this->bkBuffSize.y) * srcSize.x / srcSize.y;
+			}
 		}
 		outZoomScale = outW / srcSize.x;
 		this->zoomScale = outZoomScale;

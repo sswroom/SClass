@@ -3,6 +3,7 @@
 #include "Data/ArrayListNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Math/Unit/Distance.h"
+#include "Media/ImageList.h"
 #include "Media/PrintDocument.h"
 #include "Media/VectorGraph.h"
 
@@ -48,6 +49,8 @@ namespace Media
 		UnsafeArrayOpt<const UTF8Char> GetCreator() const;
 		void SetProducer(UnsafeArrayOpt<const UTF8Char> producer);
 		UnsafeArrayOpt<const UTF8Char> GetProducer() const;
+
+		NN<Media::ImageList> CreateRaster() const;
 
 		virtual UIntOS GetCount() const;
 		virtual Optional<Media::VectorGraph> GetItem(UIntOS index) const;

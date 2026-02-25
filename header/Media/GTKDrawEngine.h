@@ -35,8 +35,7 @@ namespace Media
 		IntOS fontWeight;
 	public:
 		GTKDrawFont(Text::CStringNN fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
-		GTKDrawFont(Text::String *fontName, Double pxHeight, IntOS fontSlant, IntOS fontWeight);
-		GTKDrawFont(NN<Text::String> fontName, Double pxHeight, IntOS fontSlant, IntOS fontWeight);
+		GTKDrawFont(Optional<Text::String> fontName, Double pxHeight, IntOS fontSlant, IntOS fontWeight);
 		~GTKDrawFont();
 
 		void Init(void *cr);
@@ -131,10 +130,13 @@ namespace Media
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, UIntOS buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UIntOS buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UIntOS buffSize);
-		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl); ////////////////////////////////////
-		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl); ////////////////////////////////////
-		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); ////////////////////////////////////
+		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad);
+		virtual void SetClip(Math::RectAreaDbl clipRect);
+		virtual void ClearClip();
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
@@ -151,7 +153,8 @@ namespace Media
 		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY); ////////////////////////////////////
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const; ////////////////////////////////////
 
-		virtual Optional<Media::StaticImage> ToStaticImage() const; ////////////////////////////////////
+		virtual Optional<Media::StaticImage> ToStaticImage() const;
+		virtual Optional<Media::RasterImage> AsRasterImage();
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm); ////////////////////////////////////
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);

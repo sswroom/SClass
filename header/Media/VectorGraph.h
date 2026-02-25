@@ -28,7 +28,7 @@ namespace Media
 			virtual Double GetThick();
 			Bool IsSame(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
 			UIntOS GetIndex();
-			NN<Media::DrawPen> CreateDrawPen(Double oriDPI, NN<Media::DrawImage> dimg);
+			NN<Media::DrawPen> CreateDrawPen(Double scale, NN<Media::DrawImage> dimg);
 		};
 
 		class VectorFontStyle : public Media::DrawFont
@@ -50,7 +50,7 @@ namespace Media
 			NN<Text::String> GetName() const;
 			Media::DrawEngine::DrawFontStyle GetStyle();
 			UInt32 GetCodePage();
-			NN<Media::DrawFont> CreateDrawFont(Double oriDPI, NN<Media::DrawImage> dimg);
+			NN<Media::DrawFont> CreateDrawFont(Double scale, NN<Media::DrawImage> dimg);
 		};
 
 		class VectorBrushStyle : public Media::DrawBrush
@@ -133,8 +133,9 @@ namespace Media
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UIntOS buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UIntOS buffSize);
 		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); /////////////////////////////
+		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad);
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
@@ -153,6 +154,7 @@ namespace Media
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const;
 
 		virtual Optional<Media::StaticImage> ToStaticImage() const;
+		virtual Optional<Media::RasterImage> AsRasterImage();
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
@@ -168,6 +170,7 @@ namespace Media
 		Optional<VectorStyles> GetStyle(UIntOS index) const;
 		void DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const;
 		void DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const;
+		NN<Media::DrawEngine> GetDrawEngine() const;
 	};
 }
 #endif

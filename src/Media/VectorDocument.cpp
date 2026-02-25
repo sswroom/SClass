@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Media/StaticImage.h"
 #include "Media/VectorDocument.h"
 #include "Text/MyString.h"
 
@@ -23,7 +24,7 @@ Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Medi
 	this->currDoc = nullptr;
 	this->srid = srid;
 	this->refEng = refEng;
-	this->docName = Text::String::New(name).Ptr();
+	this->docName = Text::String::New(name);
 	this->author = nullptr;
 	this->subject = nullptr;
 	this->keywords = nullptr;
@@ -168,6 +169,20 @@ void Media::VectorDocument::SetProducer(UnsafeArrayOpt<const UTF8Char> producer)
 UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetProducer() const
 {
 	return this->producer;
+}
+
+NN<Media::ImageList> Media::VectorDocument::CreateRaster() const
+{
+	NN<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(OPTSTR_CSTR(this->docName).Or(CSTR("Untitled"))));
+	UIntOS i = 0;
+	UIntOS j = this->items.GetCount();
+	while (i < j)
+	{
+		imgList->AddImage(this->items.GetItemNoCheck(i)->CreateStaticImage(), 0);
+		i++;
+	}
+	return imgList;
 }
 
 UIntOS Media::VectorDocument::GetCount() const

@@ -8,9 +8,9 @@ namespace Media
 {
 	typedef struct
 	{
-		Sync::Event *evt;
-		Sync::Event *evtMain;
+		NN<Sync::Event> evt;
 		IntOS status; //0 = not running, 1 = idling, 2 = resizing, 3 = finish, 4 = to exit
+		NN<Sync::Event> evtMain;
 
 		UnsafeArray<UInt8> inPt;
 		UnsafeArray<UInt8> inPtCurr;
@@ -18,8 +18,8 @@ namespace Media
 		UIntOS width;
 		UIntOS height;
 		UIntOS tap;
-		IntOS *index;
-		Int64 *weight;
+		UnsafeArray<IntOS> index;
+		UnsafeArray<Int64> weight;
 		UIntOS sstep;
 		IntOS dstep;
 	} DI8THREADSTAT;
@@ -27,8 +27,8 @@ namespace Media
 	typedef struct
 	{
 		UIntOS length;
-		Int64 *weight;
-		IntOS *index;
+		UnsafeArrayOpt<Int64> weight;
+		UnsafeArrayOpt<IntOS> index;
 		UIntOS tap;
 	} DI8PARAMETER;
 
@@ -38,9 +38,9 @@ namespace Media
 	private:
 		DI8PARAMETER oddParam;
 		DI8PARAMETER evenParam;
-		DI8THREADSTAT *stats;
+		UnsafeArray<DI8THREADSTAT> stats;
 		UIntOS nCore;
-		Sync::Event *evtMain;
+		NN<Sync::Event> evtMain;
 		UIntOS fieldCnt;
 		UIntOS fieldSep;
 

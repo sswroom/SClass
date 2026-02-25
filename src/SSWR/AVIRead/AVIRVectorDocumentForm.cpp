@@ -1,6 +1,11 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRVectorDocumentForm.h"
 
+typedef enum
+{
+	MNU_RASTER = 100,
+} MenuItems;
+
 void __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRVectorDocumentForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVectorDocumentForm>();
@@ -32,6 +37,8 @@ void __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesSelChg(AnyType user
 		me->lvInfo->AddItem(CSTR("Item Count"), nullptr);
 		sptr = Text::StrUIntOS(sbuff, page->GetCount());
 		me->lvInfo->SetSubItem(6, 1, CSTRP(sbuff, sptr));
+
+		me->pbMain->SetImage(page, false);
 	}
 }
 
@@ -43,6 +50,7 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 	this->core = core;
 	this->vdoc = vdoc;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 
 	this->lbPages = ui->NewListBox(*this, false);
 	this->lbPages->SetRect(0, 0, 100, 100, false);
@@ -52,7 +60,7 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpPreview = this->tcMain->AddTabPage(CSTR("Preview"));
-	this->pbMain = ui->NewPictureBoxSimple(this->tpPreview, this->core->GetDrawEngine(), false);
+	this->pbMain = ui->NewPictureBoxDD(this->tpPreview, this->colorSess, true, true);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lvInfo = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 2);
@@ -60,6 +68,10 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 	this->lvInfo->AddColumn(CSTR("Name"), 150);
 	this->lvInfo->AddColumn(CSTR("Value"), 300);
 
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
+	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("File"));
+	mnu->AddItem(CSTR("Create Raster"), MNU_RASTER, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_R);
+	this->SetMenu(this->mnuMain);
 	UIntOS pageCnt = vdoc->GetCount();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -83,6 +95,19 @@ SSWR::AVIRead::AVIRVectorDocumentForm::~AVIRVectorDocumentForm()
 {
 	this->ClearChildren();
 	this->vdoc.Delete();
+}
+
+void SSWR::AVIRead::AVIRVectorDocumentForm::EventMenuClicked(UInt16 cmdId)
+{
+	switch (cmdId)
+	{
+	case MNU_RASTER:
+		{
+			NN<Media::ImageList> imgList = this->vdoc->CreateRaster();
+			this->core->OpenObject(imgList);
+		}
+		break;
+	}
 }
 
 void SSWR::AVIRead::AVIRVectorDocumentForm::OnMonitorChanged()

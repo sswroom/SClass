@@ -560,11 +560,13 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 	Double *work;
 	Double  sum;
 	Double  pos;
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
-	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = weight = MemAllocAArr(Int64, out->length * out->tap);
+	out->index = index = MemAllocAArr(IntOS, out->length * out->tap);
 
 	work = MemAlloc(Double, out->tap);
 
@@ -579,11 +581,11 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 		for(j = 0; j < out->tap; j++)
 		{
 			if(n < 0){
-				out->index[i * out->tap + j] = 0;
+				index[i * out->tap + j] = 0;
 			}else if((UIntOS)n >= source_length){
-				out->index[i * out->tap + j] = (IntOS)((source_length - 1) * indexSep);
+				index[i * out->tap + j] = (IntOS)((source_length - 1) * indexSep);
 			}else{
-				out->index[i * out->tap + j] = (IntOS)((UInt32)n * indexSep);
+				index[i * out->tap + j] = (IntOS)((UInt32)n * indexSep);
 			}
 			work[j] = lanczos3_weight(pos);
 			sum += work[j];
@@ -596,7 +598,7 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 		{
 			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
 			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
+			UInt16 *tmpPtr = (UInt16*)&weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -625,21 +627,21 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
 
 		if (stat->status == 2)
 		{
-			Deinterlace8_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 5)
 		{
 //			Deinterlace8_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
-			Deinterlace8_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 6)
 		{
 //			Deinterlace8_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
-			Deinterlace8_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
@@ -651,10 +653,10 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
 
 Media::Deinterlace8::Deinterlace8(UIntOS fieldCnt, UIntOS fieldSep)
 {
-	this->oddParam.index = 0;
-	this->oddParam.weight = 0;
-	this->evenParam.index = 0;
-	this->evenParam.weight = 0;
+	this->oddParam.index = nullptr;
+	this->oddParam.weight = nullptr;
+	this->evenParam.index = nullptr;
+	this->evenParam.weight = nullptr;
 	this->fieldCnt = 0;
 	this->fieldSep = 0;
 	Reinit(fieldCnt, fieldSep);
@@ -668,10 +670,10 @@ Media::Deinterlace8::Deinterlace8(UIntOS fieldCnt, UIntOS fieldSep)
 	this->stats = MemAlloc(DI8THREADSTAT, nCore);
 	UIntOS i = nCore;
 
-	NEW_CLASS(evtMain, Sync::Event());
+	NEW_CLASSNN(evtMain, Sync::Event());
 	while (i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].evtMain = this->evtMain;
 	}
@@ -713,23 +715,31 @@ Media::Deinterlace8::~Deinterlace8()
 	i = nCore;
 	while (i-- > 0)
 	{
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(this->stats);
-	if (this->oddParam.index)
+	this->evtMain.Delete();
+	MemFreeArr(this->stats);
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
+	if (this->oddParam.index.SetTo(index))
 	{
-		MemFreeA(this->oddParam.weight);
-		MemFreeA(this->oddParam.index);
-		this->oddParam.weight = 0;
-		this->oddParam.index = 0;
+		MemFreeAArr(this->oddParam.index);
+		this->oddParam.index = nullptr;
 	}
-	if (this->evenParam.index)
+	if (this->oddParam.weight.SetTo(weight))
 	{
-		MemFreeA(this->evenParam.weight);
-		MemFreeA(this->evenParam.index);
-		this->evenParam.weight = 0;
-		this->evenParam.index = 0;
+		MemFreeAArr(this->oddParam.weight);
+		this->oddParam.weight = nullptr;
+	}
+	if (this->evenParam.index.SetTo(index))
+	{
+		MemFreeAArr(this->evenParam.index);
+		this->evenParam.index = nullptr;
+	}
+	if (this->evenParam.weight.SetTo(weight))
+	{
+		MemFreeAArr(this->evenParam.weight);
+		this->evenParam.weight = nullptr;
 	}
 }
 
@@ -738,19 +748,27 @@ void Media::Deinterlace8::Reinit(UIntOS fieldCnt, UIntOS fieldSep)
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
 
-	if (this->oddParam.index)
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
+	if (this->oddParam.index.SetTo(index))
 	{
-		MemFreeA(this->oddParam.weight);
-		MemFreeA(this->oddParam.index);
-		this->oddParam.weight = 0;
-		this->oddParam.index = 0;
+		MemFreeAArr(this->oddParam.index);
+		this->oddParam.index = nullptr;
 	}
-	if (this->evenParam.index)
+	if (this->oddParam.weight.SetTo(weight))
 	{
-		MemFreeA(this->evenParam.weight);
-		MemFreeA(this->evenParam.index);
-		this->evenParam.weight = 0;
-		this->evenParam.index = 0;
+		MemFreeAArr(this->oddParam.weight);
+		this->oddParam.weight = nullptr;
+	}
+	if (this->evenParam.index.SetTo(index))
+	{
+		MemFreeAArr(this->evenParam.index);
+		this->evenParam.index = nullptr;
+	}
+	if (this->evenParam.weight.SetTo(weight))
+	{
+		MemFreeAArr(this->evenParam.weight);
+		this->evenParam.weight = nullptr;
 	}
 	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, oddParam, fieldSep, 0.25);
 	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, evenParam, fieldSep, -0.25);
@@ -760,92 +778,100 @@ void Media::Deinterlace8::Reinit(UIntOS fieldCnt, UIntOS fieldSep)
 
 void Media::Deinterlace8::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UIntOS width, IntOS dstep)
 {
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 	if (!bottomField)
 	{
-		UIntOS imgHeight = oddParam.length >> 1;
-
-		UIntOS thisLine;
-		UIntOS lastLine = imgHeight << 1;
-		UIntOS i = nCore;
-		while (i-- > 0)
+		if (this->oddParam.index.SetTo(index) && this->oddParam.weight.SetTo(weight))
 		{
-			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
-			stats[i].inPt = src;
-			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * (IntOS)thisLine;
-			stats[i].width = width;
-			stats[i].height = lastLine - thisLine;
-			stats[i].tap = oddParam.tap;
-			stats[i].index = oddParam.index + thisLine * oddParam.tap;
-			stats[i].weight = oddParam.weight + thisLine * oddParam.tap;
-			stats[i].sstep = this->fieldSep;
-			stats[i].dstep = dstep;
+			UIntOS imgHeight = oddParam.length >> 1;
 
-			stats[i].status = 5;
-			stats[i].evt->Set();
-			lastLine = thisLine;
-		}
-
-		while (true)
-		{
-			evtMain->Wait(100);
-			Bool allFin;
-			allFin = true;
-			i = nCore;
+			UIntOS thisLine;
+			UIntOS lastLine = imgHeight << 1;
+			UIntOS i = nCore;
 			while (i-- > 0)
 			{
-				if (stats[i].status == 5)
-				{
-					allFin = false;
-					break;
-				}
+				thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
+				stats[i].inPt = src;
+				stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
+				stats[i].outPt = dest + dstep * (IntOS)thisLine;
+				stats[i].width = width;
+				stats[i].height = lastLine - thisLine;
+				stats[i].tap = oddParam.tap;
+				stats[i].index = index + thisLine * oddParam.tap;
+				stats[i].weight = weight + thisLine * oddParam.tap;
+				stats[i].sstep = this->fieldSep;
+				stats[i].dstep = dstep;
+
+				stats[i].status = 5;
+				stats[i].evt->Set();
+				lastLine = thisLine;
 			}
-			if (allFin)
-				break;
+
+			while (true)
+			{
+				evtMain->Wait(100);
+				Bool allFin;
+				allFin = true;
+				i = nCore;
+				while (i-- > 0)
+				{
+					if (stats[i].status == 5)
+					{
+						allFin = false;
+						break;
+					}
+				}
+				if (allFin)
+					break;
+			}
 		}
 	}
 	else
 	{
-		UIntOS imgHeight = evenParam.length >> 1;
-
-		UIntOS thisLine;
-		UIntOS lastLine = imgHeight << 1;
-		UIntOS i = nCore;
-		while (i-- > 0)
+		if (this->evenParam.index.SetTo(index) && this->evenParam.weight.SetTo(weight))
 		{
-			thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
-			stats[i].inPt = src;
-			stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
-			stats[i].outPt = dest + dstep * (IntOS)thisLine;
-			stats[i].width = width;
-			stats[i].height = lastLine - thisLine;
-			stats[i].tap = evenParam.tap;
-			stats[i].index = evenParam.index + thisLine * evenParam.tap;
-			stats[i].weight = evenParam.weight + thisLine * evenParam.tap;
-			stats[i].sstep = this->fieldSep;
-			stats[i].dstep = dstep;
+			UIntOS imgHeight = evenParam.length >> 1;
 
-			stats[i].status = 6;
-			stats[i].evt->Set();
-			lastLine = thisLine;
-		}
-
-		while (true)
-		{
-			evtMain->Wait(100);
-			Bool allFin;
-			allFin = true;
-			i = nCore;
+			UIntOS thisLine;
+			UIntOS lastLine = imgHeight << 1;
+			UIntOS i = nCore;
 			while (i-- > 0)
 			{
-				if (stats[i].status == 6)
-				{
-					allFin = false;
-					break;
-				}
+				thisLine = MulDivUOS(imgHeight, i, nCore) * 2;
+				stats[i].inPt = src;
+				stats[i].inPtCurr = src + (this->fieldSep * thisLine >> 1);
+				stats[i].outPt = dest + dstep * (IntOS)thisLine;
+				stats[i].width = width;
+				stats[i].height = lastLine - thisLine;
+				stats[i].tap = evenParam.tap;
+				stats[i].index = index + thisLine * evenParam.tap;
+				stats[i].weight = weight + thisLine * evenParam.tap;
+				stats[i].sstep = this->fieldSep;
+				stats[i].dstep = dstep;
+
+				stats[i].status = 6;
+				stats[i].evt->Set();
+				lastLine = thisLine;
 			}
-			if (allFin)
-				break;
+
+			while (true)
+			{
+				evtMain->Wait(100);
+				Bool allFin;
+				allFin = true;
+				i = nCore;
+				while (i-- > 0)
+				{
+					if (stats[i].status == 6)
+					{
+						allFin = false;
+						break;
+					}
+				}
+				if (allFin)
+					break;
+			}
 		}
 	}
 }

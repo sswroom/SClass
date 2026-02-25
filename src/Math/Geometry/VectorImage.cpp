@@ -5,61 +5,18 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/StaticImage.h"
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
-{
-	this->img = img->Clone();
-	if (scnCoord)
-	{
-		this->tl = tl;
-		this->br = Math::Coord2DDbl(0, 0);
-		this->size = br;
-	}
-	else
-	{
-		this->size = Math::Coord2DDbl(0, 0);
-		this->tl = tl.Min(br);
-		this->br = tl.Max(br);
-	}
-	this->scnCoord = scnCoord;
-	this->hasHeight = false;
-	this->height = 0;
-	this->srcAddr = Text::String::CopyOrNull(srcAddr);
-	this->timeStart = timeStart;
-	this->timeEnd = timeEnd;
-	this->srcAlpha = -1;
-	this->hasZIndex = false;
-	this->zIndex = 0;
-}
-
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
-{
-	this->img = img->Clone();
-	if (scnCoord)
-	{
-		this->tl = tl;
-		this->br = Math::Coord2DDbl(0, 0);
-		this->size = br;
-	}
-	else
-	{
-		this->size = Math::Coord2DDbl(0, 0);
-		this->tl = tl.Min(br);
-		this->br = tl.Max(br);
-	}
-	this->scnCoord = scnCoord;
-	this->hasHeight = false;
-	this->height = 0;
-	this->srcAddr = Text::String::NewOrNull(srcAddr);
-	this->timeStart = timeStart;
-	this->timeEnd = timeEnd;
-	this->srcAlpha = -1;
-	this->hasZIndex = false;
-	this->zIndex = 0;
-}
-
 Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
+	NN<Media::StaticImage> simg;
+	if (img->GetImage(nullptr).SetTo(simg))
+	{
+		this->srcRect = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), simg->info.dispSize.ToDouble());
+	}
+	else
+	{
+		this->srcRect = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), size);
+	}
 	if (scnCoord)
 	{
 		this->tl = tl;
@@ -86,6 +43,15 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
+	NN<Media::StaticImage> simg;
+	if (img->GetImage(nullptr).SetTo(simg))
+	{
+		this->srcRect = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), simg->info.dispSize.ToDouble());
+	}
+	else
+	{
+		this->srcRect = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), size);
+	}
 	if (scnCoord)
 	{
 		this->tl = tl;
@@ -128,14 +94,7 @@ Math::Coord2DDbl Math::Geometry::VectorImage::GetCenter() const
 NN<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 {
 	NN<Math::Geometry::VectorImage> vimg;
-	if (this->scnCoord)
-	{
-		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
-	}
-	else
-	{
-		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
-	}
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
 	if (this->hasHeight)
 	{
 		vimg->SetHeight(this->height);
@@ -507,6 +466,16 @@ Optional<Media::StaticImage> Math::Geometry::VectorImage::GetImage(Double width,
 	if (height < 0)
 		height = -height;
 	return this->img->GetPrevImage(width, height, imgTimeMS);
+}
+
+void Math::Geometry::VectorImage::SetSrcRect(Math::RectAreaDbl srcRect)
+{
+	this->srcRect = srcRect;
+}
+
+Math::RectAreaDbl Math::Geometry::VectorImage::GetSrcRect() const
+{
+	return this->srcRect;
 }
 
 NN<Math::Geometry::VectorImage> Math::Geometry::VectorImage::CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr)

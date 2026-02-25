@@ -6,7 +6,8 @@
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
-#include "UI/GUIPictureBoxSimple.h"
+#include "UI/GUIPictureBoxDD.h"
+#include "UI/GUIPopupMenu.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 
@@ -19,20 +20,25 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::VectorDocument> vdoc;
+			NN<Media::ColorManagerSess> colorSess;
 
 			NN<UI::GUIListBox> lbPages;
 			NN<UI::GUIHSplitter> hspMain;
 			NN<UI::GUITabControl> tcMain;
 			NN<UI::GUITabPage> tpPreview;
-			NN<UI::GUIPictureBoxSimple> pbMain;
+			NN<UI::GUIPictureBoxDD> pbMain;
 			NN<UI::GUITabPage> tpInfo;
 			NN<UI::GUIListView> lvInfo;
+
+			NN<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIPopupMenu> mnuPage;
 
 			static void __stdcall OnPagesSelChg(AnyType userObj);
 		public:
 			AVIRVectorDocumentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::VectorDocument> vdoc);
 			virtual ~AVIRVectorDocumentForm();
 
+			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
 	}

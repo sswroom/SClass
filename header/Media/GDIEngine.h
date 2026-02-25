@@ -157,10 +157,13 @@ namespace Media
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UIntOS buffSize);
 		Bool DrawStringRotBW(Math::Coord2DDbl center, UnsafeArray<const WChar> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UIntOS buffSize);
 		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		Bool DrawImageRect(NN<DrawImage> img, IntOS tlx, IntOS tly, IntOS brx, IntOS bry);
 		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad);
+		virtual void SetClip(Math::RectAreaDbl clipRect);
+		virtual void ClearClip();
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
@@ -183,12 +186,13 @@ namespace Media
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const;
 
 		virtual Optional<Media::StaticImage> ToStaticImage() const;
+		virtual Optional<Media::RasterImage> AsRasterImage();
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
 
 		virtual NN<Media::RasterImage> Clone() const;
-		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		static void PolylineAccel(void *hdc, const Int32 *points, UIntOS nPoints, IntOS ofstX, IntOS ofstY, IntOS width, IntOS height);

@@ -480,7 +480,7 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 	gimg->SetColorSess(colorSess);
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
-	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
+	if (img->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 	{
 		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
 		if (simg->ToB8G8R8A8())
@@ -2020,102 +2020,7 @@ Bool Media::GDIImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	return true;
 }
 
-Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
-{
-	if (this->IsOffScreen() && img->GetImageType() == Media::RasterImage::ImageType::Static)
-	{
-		Media::StaticImage *simg = img.Ptr();
-		simg->ToB8G8R8A8();
-		if (simg->info.atype == Media::AT_IGNORE_ALPHA || simg->info.atype == Media::AT_ALPHA_ALL_FF)
-		{
-			Int32 x = Double2Int32(tl.x);
-			Int32 y = Double2Int32(tl.y);
-			Int32 sx = 0;
-			Int32 sy = 0;
-			IntOS w = simg->info.dispSize.x;
-			IntOS h = simg->info.dispSize.y;
-			IntOS bpl = this->size.x << 2;
-			if (x < 0)
-			{
-				w += x;
-				sx = -x;
-				x = 0;
-			}
-			if (y < 0)
-			{
-				h += y;
-				sy = -y;
-				y = 0;
-			}
-			if (x + w > (IntOS)this->size.x)
-			{
-				w = this->size.x - x;
-			}
-			if (y + h > (IntOS)this->size.y)
-			{
-				h = this->size.y - y;
-			}
-			if (w > 0 && h > 0)
-			{
-				ImageCopy_ImgCopy(simg->data.Ptr() + (sy * simg->info.storeSize.x << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->size.y - y - 1) * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, -(IntOS)this->size.x << 2);
-			}
-		}
-		else
-		{
-			IntOS w = (IntOS)simg->info.dispSize.x;
-			IntOS h = (IntOS)simg->info.dispSize.y;
-			UInt8 *dbits = (UInt8*)this->bmpBits;
-			UnsafeArray<UInt8> sbits = simg->data;
-			UIntOS dbpl = this->size.x << 2;
-			UIntOS sbpl = simg->info.storeSize.x << 2;
-
-			if (tl.x < 0)
-			{
-				w += Double2Int32(tl.x);
-				sbits -= Double2Int32(tl.x) << 2;
-				tl.x = 0;
-			}
-			if (tl.y < 0)
-			{
-				h += Double2Int32(tl.y);
-				sbits -= Double2Int32(tl.y) * sbpl;
-				tl.y = 0;
-			}
-
-			if (tl.x + w > this->size.x)
-			{
-				w = this->size.x - Double2Int32(tl.x);
-			}
-			if (tl.y + h > this->size.y)
-			{
-				h = this->size.y - Double2Int32(tl.y);
-			}
-			if (w > 0 && h > 0)
-			{
-				Sync::MutexUsage mutUsage(this->eng->iabMut);
-				this->eng->iab.SetColorSess(this->colorSess);
-				this->eng->iab.SetSourceProfile(simg->info.color);
-				this->eng->iab.SetDestProfile(this->info.color);
-				this->eng->iab.SetOutputProfile(this->info.color);
-				this->eng->iab.Blend(dbits + (this->size.y - Double2Int32(tl.y) - 1) * dbpl + (Double2Int32(tl.x) * 4), -(IntOS)dbpl, sbits, sbpl, w, h, simg->info.atype);
-			}
-		}
-		return true;
-	}
-	else
-	{
-		NN<Media::DrawImage> dimg;
-		if (this->eng->ConvImage(img, this->colorSess).SetTo(dimg))
-		{
-			DrawImagePt(dimg, tl);
-			this->eng->DeleteImage(dimg);
-			return true;
-		}
-		return false;
-	}
-}
-
-Bool Media::GDIImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::GDIImage::DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
 	if (this->hBmp == 0)
@@ -2257,6 +2162,269 @@ Bool Media::GDIImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, M
 	return true;
 }
 
+Bool Media::GDIImage::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
+{
+	if (this->IsOffScreen() && img->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
+	{
+		Media::StaticImage *simg = img.Ptr();
+		simg->ToB8G8R8A8();
+		if (simg->info.atype == Media::AT_IGNORE_ALPHA || simg->info.atype == Media::AT_ALPHA_ALL_FF)
+		{
+			Int32 x = Double2Int32(tl.x);
+			Int32 y = Double2Int32(tl.y);
+			Int32 sx = 0;
+			Int32 sy = 0;
+			IntOS w = simg->info.dispSize.x;
+			IntOS h = simg->info.dispSize.y;
+			IntOS bpl = this->size.x << 2;
+			if (x < 0)
+			{
+				w += x;
+				sx = -x;
+				x = 0;
+			}
+			if (y < 0)
+			{
+				h += y;
+				sy = -y;
+				y = 0;
+			}
+			if (x + w > (IntOS)this->size.x)
+			{
+				w = this->size.x - x;
+			}
+			if (y + h > (IntOS)this->size.y)
+			{
+				h = this->size.y - y;
+			}
+			if (w > 0 && h > 0)
+			{
+				ImageCopy_ImgCopy(simg->data.Ptr() + (sy * simg->info.storeSize.x << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->size.y - y - 1) * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, -(IntOS)this->size.x << 2);
+			}
+		}
+		else
+		{
+			IntOS w = (IntOS)simg->info.dispSize.x;
+			IntOS h = (IntOS)simg->info.dispSize.y;
+			UInt8 *dbits = (UInt8*)this->bmpBits;
+			UnsafeArray<UInt8> sbits = simg->data;
+			UIntOS dbpl = this->size.x << 2;
+			UIntOS sbpl = simg->info.storeSize.x << 2;
+
+			if (tl.x < 0)
+			{
+				w += Double2Int32(tl.x);
+				sbits -= Double2Int32(tl.x) << 2;
+				tl.x = 0;
+			}
+			if (tl.y < 0)
+			{
+				h += Double2Int32(tl.y);
+				sbits -= Double2Int32(tl.y) * sbpl;
+				tl.y = 0;
+			}
+
+			if (tl.x + w > this->size.x)
+			{
+				w = this->size.x - Double2Int32(tl.x);
+			}
+			if (tl.y + h > this->size.y)
+			{
+				h = this->size.y - Double2Int32(tl.y);
+			}
+			if (w > 0 && h > 0)
+			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
+				this->eng->iab.SetSourceProfile(simg->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dbits + (this->size.y - Double2Int32(tl.y) - 1) * dbpl + (Double2Int32(tl.x) * 4), -(IntOS)dbpl, sbits, sbpl, w, h, simg->info.atype);
+			}
+		}
+		return true;
+	}
+	else
+	{
+		NN<Media::DrawImage> dimg;
+		if (this->eng->ConvImage(img, this->colorSess).SetTo(dimg))
+		{
+			DrawImagePt(dimg, tl);
+			this->eng->DeleteImage(dimg);
+			return true;
+		}
+		return false;
+	}
+}
+
+Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+{
+	if (this->hBmp == 0)
+	{
+		Bool succ = false;
+		NN<Media::DrawImage> dimg;
+		if (this->eng->ConvImage(img, this->colorSess).SetTo(dimg))
+		{
+			succ = this->DrawImageRect(dimg, Double2IntOS(destTL.x), Double2IntOS(destTL.y), Double2IntOS(destTL.x + srcSize.x * this->info.hdpi / img->info.hdpi), Double2IntOS(destTL.y + srcSize.y * this->info.vdpi / img->info.vdpi));
+			this->eng->DeleteImage(dimg);
+		}
+		return succ;
+	}
+	if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
+	{
+		if (this->IsOffScreen())
+		{
+			Int32 x = Double2Int32(destTL.x);
+			Int32 y = Double2Int32(destTL.y);
+			Int32 sx = Double2Int32(srcTL.x);
+			Int32 sy = Double2Int32(srcTL.y);
+			IntOS w = Double2Int32(srcSize.x);
+			IntOS h = Double2Int32(srcSize.y);
+			IntOS bpl = this->size.x << 2;
+			if (x < 0)
+			{
+				w += x;
+				sx -= x;
+				x = 0;
+			}
+			if (y < 0)
+			{
+				h += y;
+				sy -= y;
+				y = 0;
+			}
+			if (x + w > (IntOS)this->size.x)
+			{
+				w = this->size.x - x;
+			}
+			if (y + h > (IntOS)this->size.y)
+			{
+				h = this->size.y - y;
+			}
+			if (w > 0 && h > 0)
+			{
+				img->GetRasterData(((UInt8*)this->bmpBits) + (this->size.y - h - y) * bpl + (x << 2), sx, sy, w, h, bpl, true, Media::RotateType::None);
+			}
+		}
+		else
+		{
+			NN<Media::GDIImage> image;
+			if (Optional<Media::GDIImage>::ConvertFrom(this->eng->ConvImage(img, nullptr)).SetTo(image))
+			{
+				BitBlt((HDC)this->hdcBmp, Double2Int32(destTL.x), Double2Int32(destTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), (HDC)image->hdcBmp, Double2Int32(srcTL.x), Double2Int32(srcTL.y), SRCCOPY);
+				this->eng->DeleteImage(image);
+			}
+		}
+	}
+	else
+	{
+#if !defined(_WIN32_WCE)
+		if (this->IsOffScreen())
+		{
+			Int32 x = Double2Int32(destTL.x);
+			Int32 y = Double2Int32(destTL.y);
+			Int32 sx = Double2Int32(srcTL.x);
+			Int32 sy = Double2Int32(srcTL.y);
+			IntOS w = Double2Int32(srcSize.x);
+			IntOS h = Double2Int32(srcSize.y);
+			UInt8 *dbits = (UInt8*)this->bmpBits;
+			UInt8 *sbits = (UInt8*)img->data.Ptr();
+			IntOS dbpl = this->size.x << 2;
+			IntOS sbpl = img->info.dispSize.x << 2;
+			IntOS sh = img->info.dispSize.y;
+
+			if (x < 0)
+			{
+				w += x;
+				sx -= x;
+				x = 0;
+			}
+			if (y < 0)
+			{
+				h += y;
+				sy -= y;
+				y = 0;
+			}
+			if (x + w > (IntOS)this->size.x)
+			{
+				w = this->size.x - x;
+			}
+			if (y + h > (IntOS)this->size.y)
+			{
+				h = this->size.y - y;
+			}
+			if (w > 0 && h > 0)
+			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
+				this->eng->iab.SetSourceProfile(img->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dbits + (this->size.y - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, img->info.atype);
+			}
+		}
+		else
+		{
+			NN<Media::GDIImage> image;
+			if (Optional<Media::GDIImage>::ConvertFrom(this->eng->ConvImage(img, nullptr)).SetTo(image))
+			{
+				if (img->info.atype == Media::AT_PREMUL_ALPHA)
+				{
+					BLENDFUNCTION bf;
+					bf.SourceConstantAlpha = 255;
+					bf.AlphaFormat = AC_SRC_ALPHA;
+					bf.BlendOp = AC_SRC_OVER;
+					bf.BlendFlags = 0;
+					AlphaBlend((HDC)this->hdcBmp, Double2Int32(destTL.x), Double2Int32(destTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), (HDC)image->hdcBmp, Double2Int32(srcTL.x), Double2Int32(srcTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), bf);
+				}
+				else
+				{
+					BLENDFUNCTION bf;
+					bf.SourceConstantAlpha = 255;
+					bf.AlphaFormat = AC_SRC_ALPHA;
+					bf.BlendOp = AC_SRC_OVER;
+					bf.BlendFlags = 0;
+					AlphaBlend((HDC)this->hdcBmp, Double2Int32(destTL.x), Double2Int32(destTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), (HDC)image->hdcBmp, Double2Int32(srcTL.x), Double2Int32(srcTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), bf);
+				}
+				this->eng->DeleteImage(image);
+			}
+		}
+#elif (!defined(_WIN32_WCE) || (_WIN32_WCE >= 0x0500))
+		NN<Media::DrawImage> image;
+		if (this->eng->ConvImage(img, nullptr).SetTo(image))
+		{
+			if (img->info.atype == Media::AT_PREMUL_ALPHA)
+			{
+				BLENDFUNCTION bf;
+				bf.SourceConstantAlpha = 255;
+				bf.AlphaFormat = AC_SRC_ALPHA;
+				bf.BlendOp = AC_SRC_OVER;
+				bf.BlendFlags = 0;
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(destTL.x), Double2Int32(destTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), (HDC)image->hdcBmp, Double2Int32(srcTL.x), Double2Int32(srcTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), bf);
+			}
+			else
+			{
+				BLENDFUNCTION bf;
+				bf.SourceConstantAlpha = 255;
+				bf.AlphaFormat = AC_SRC_ALPHA;
+				bf.BlendOp = AC_SRC_OVER;
+				bf.BlendFlags = 0;
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(destTL.x), Double2Int32(destTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), (HDC)image->hdcBmp, Double2Int32(srcTL.x), Double2Int32(srcTL.y), Double2Int32(srcSize.x), Double2Int32(srcSize.y), bf);
+			}
+			this->eng->DeleteImage(image);
+		}
+#else
+		NN<Media::DrawImage> image;
+		if (this->eng->ConvImage(img, nullptr).SetTo(image))
+		{
+			BitBlt((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), SRCCOPY);
+			this->eng->DeleteImage(image);
+		}
+#endif
+	}
+	return true;
+}
+
 Bool Media::GDIImage::DrawImageRect(NN<DrawImage> img, IntOS tlx, IntOS tly, IntOS brx, IntOS bry)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
@@ -2288,6 +2456,18 @@ Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilate
 		remapper.Remap(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
 		return true;
 	}
+}
+
+void Media::GDIImage::SetClip(Math::RectAreaDbl clipRect)
+{
+	HRGN hRgn = CreateRectRgn(Double2Int32(clipRect.min.x), Double2Int32(clipRect.min.y), Double2Int32(clipRect.max.x), Double2Int32(clipRect.max.y));
+	SelectClipRgn((HDC)this->hdcBmp, hRgn);
+	DeleteObject(hRgn);
+}
+
+void Media::GDIImage::ClearClip()
+{
+	SelectClipRgn((HDC)this->hdcBmp, 0);
 }
 
 NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
@@ -2710,6 +2890,11 @@ Optional<Media::StaticImage> Media::GDIImage::ToStaticImage() const
 	return CreateStaticImage();
 }
 
+Optional<Media::RasterImage> Media::GDIImage::AsRasterImage()
+{
+	return *this;
+}
+
 UIntOS Media::GDIImage::SavePng(NN<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
@@ -2869,9 +3054,9 @@ NN<Media::RasterImage> Media::GDIImage::Clone() const
 	return CreateStaticImage();
 }
 
-Media::RasterImage::ImageType Media::GDIImage::GetImageType() const
+Media::RasterImage::ImageClass Media::GDIImage::GetImageClass() const
 {
-	return Media::RasterImage::ImageType::GUIImage;
+	return Media::RasterImage::ImageClass::GUIImage;
 }
 
 void Media::GDIImage::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const
