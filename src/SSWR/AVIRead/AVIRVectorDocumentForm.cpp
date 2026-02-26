@@ -1,9 +1,13 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
+#include "Media/SVGWriter.h"
 #include "SSWR/AVIRead/AVIRVectorDocumentForm.h"
+#include "UI/GUIFileDialog.h"
 
 typedef enum
 {
 	MNU_RASTER = 100,
+	MNU_PAGE_SVG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesSelChg(AnyType userObj)
@@ -42,6 +46,13 @@ void __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesSelChg(AnyType user
 	}
 }
 
+UI::EventState __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesRightClickd(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
+{
+	NN<SSWR::AVIRead::AVIRVectorDocumentForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVectorDocumentForm>();
+	me->mnuPage->ShowMenu(me->lbPages, scnPos);
+	return UI::EventState::StopEvent;
+}
+
 SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::VectorDocument> vdoc) : UI::GUIForm(parent, 640, 480, ui), core(core)
 {
 	this->SetFont(nullptr, 8.25, false);
@@ -56,6 +67,7 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 	this->lbPages->SetRect(0, 0, 100, 100, false);
 	this->lbPages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPages->HandleSelectionChange(OnPagesSelChg, this);
+	this->lbPages->HandleRightClicked(OnPagesRightClickd, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -72,6 +84,10 @@ SSWR::AVIRead::AVIRVectorDocumentForm::AVIRVectorDocumentForm(Optional<UI::GUICl
 	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("File"));
 	mnu->AddItem(CSTR("Create Raster"), MNU_RASTER, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_R);
 	this->SetMenu(this->mnuMain);
+
+	NEW_CLASSNN(this->mnuPage, UI::GUIPopupMenu());
+	this->mnuPage->AddItem(CSTR("Save SVG"), MNU_PAGE_SVG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+
 	UIntOS pageCnt = vdoc->GetCount();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -95,6 +111,7 @@ SSWR::AVIRead::AVIRVectorDocumentForm::~AVIRVectorDocumentForm()
 {
 	this->ClearChildren();
 	this->vdoc.Delete();
+	this->mnuPage.Delete();
 }
 
 void SSWR::AVIRead::AVIRVectorDocumentForm::EventMenuClicked(UInt16 cmdId)
@@ -107,6 +124,23 @@ void SSWR::AVIRead::AVIRVectorDocumentForm::EventMenuClicked(UInt16 cmdId)
 			this->core->OpenObject(imgList);
 		}
 		break;
+	case MNU_PAGE_SVG:
+		{
+			UIntOS pageIndex = this->lbPages->GetSelectedItem().GetUIntOS();
+			NN<Media::VectorGraph> page;
+			if (this->vdoc->GetItem(pageIndex).SetTo(page))
+			{
+				NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"VectorDocumentSVG", true);
+				dlg->AddFilter(CSTR("*.svg"), CSTR("SVG File"));
+				if (dlg->ShowDialog(this->GetHandle()))
+				{
+					IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					Media::SVGWriter writer(fs, page->GetWidth(), page->GetHeight(), this->core->GetDrawEngine());
+					page->DrawTo(writer, nullptr);
+				}
+			}
+			break;
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 #ifndef _SM_EXPORTER_PNGEXPORTER
 #define _SM_EXPORTER_PNGEXPORTER
 #include "IO/FileExporter.h"
+#include "Media/StaticImage.h"
 
 namespace Exporter
 {
@@ -14,6 +15,7 @@ namespace Exporter
 		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff);
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
+		Bool ExportImage(NN<IO::SeekableStream> stm, NN<Media::StaticImage> img);
 	};
 }
 #endif

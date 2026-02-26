@@ -2980,6 +2980,8 @@ Media/StaticEngine.h:
 @StaticEngine.o
 Media/StaticImage.h:
 @StaticImage.o
+Media/SVGWriter.h:
+@SVGWriter.o
 Media/TIFFTileMap.h:
 @TIFFTileMap.o
 Media/TimedImageList.h:

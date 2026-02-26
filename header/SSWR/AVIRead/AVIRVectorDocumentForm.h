@@ -34,6 +34,7 @@ namespace SSWR
 			NN<UI::GUIPopupMenu> mnuPage;
 
 			static void __stdcall OnPagesSelChg(AnyType userObj);
+			static UI::EventState __stdcall OnPagesRightClickd(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn);
 		public:
 			AVIRVectorDocumentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::VectorDocument> vdoc);
 			virtual ~AVIRVectorDocumentForm();

@@ -1437,6 +1437,11 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::StaticImage> img;
 	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 		return false;
+	return ExportImage(stm, img);
+}
+
+Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::StaticImage> img)
+{
 	UInt8 *tmpBuff;
 	UInt8 *tmpBuff2;
 	UnsafeArray<UInt8> imgPtr1;
