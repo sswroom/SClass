@@ -39,6 +39,8 @@ namespace SSWR
 			AVIRGISExportImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Math::Coord2DDbl center, Double scale);
 			virtual ~AVIRGISExportImageForm();
 
+			void SetExportSize(Math::Size2D<UIntOS> size, Double dpi);
+
 			virtual void OnMonitorChanged();
 		};
 	}

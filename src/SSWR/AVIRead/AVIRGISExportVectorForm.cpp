@@ -139,6 +139,18 @@ SSWR::AVIRead::AVIRGISExportVectorForm::~AVIRGISExportVectorForm()
 {
 }
 
+void SSWR::AVIRead::AVIRGISExportVectorForm::SetExportSize(Math::Size2D<UIntOS> size, Double dpi)
+{
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	sptr = Text::StrUIntOS(sbuff, size.x);
+	this->txtDimensionW->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUIntOS(sbuff, size.y);
+	this->txtDimensionH->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, dpi);
+	this->txtDPI->SetText(CSTRP(sbuff, sptr));
+}
+
 void SSWR::AVIRead::AVIRGISExportVectorForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

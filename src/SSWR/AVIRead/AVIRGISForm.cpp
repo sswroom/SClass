@@ -1886,6 +1886,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			this->mapCtrl->PauseUpdate(true);
 			SSWR::AVIRead::AVIRGISExportImageForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
+			frm.SetExportSize(this->mapCtrl->GetSizeP(), this->mapCtrl->GetHDPI());
 			frm.ShowDialog(this);
 			this->mapCtrl->PauseUpdate(false);
 			break;
@@ -1894,6 +1895,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			this->mapCtrl->PauseUpdate(true);
 			SSWR::AVIRead::AVIRGISExportVectorForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
+			frm.SetExportSize(this->mapCtrl->GetSizeP(), this->mapCtrl->GetHDPI());
 			frm.ShowDialog(this);
 			this->mapCtrl->PauseUpdate(false);
 			break;
