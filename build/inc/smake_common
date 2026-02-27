@@ -2980,6 +2980,10 @@ Media/StaticEngine.h:
 @StaticEngine.o
 Media/StaticImage.h:
 @StaticImage.o
+Media/SVGCore.h:
+@SVGCore.o
+Media/SVGDocument.h:
+@SVGDocument.o
 Media/SVGWriter.h:
 @SVGWriter.o
 Media/TIFFTileMap.h:

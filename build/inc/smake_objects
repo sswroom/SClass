@@ -1241,6 +1241,8 @@ SOXRFilter.o: ../../src/Media/SOXRFilter.cpp
 !-lsoxr
 StaticEngine.o: ../../src/Media/StaticEngine.cpp
 StaticImage.o: ../../src/Media/StaticImage.cpp
+SVGCore.o: ../../src/Media/SVGCore.cpp
+SVGDocument.o: ../../src/Media/SVGDocument.cpp
 SVGWriter.o: ../../src/Media/SVGWriter.cpp
 TIFFTileMap.o: ../../src/Media/TIFFTileMap.cpp
 TimedImageList.o: ../../src/Media/TimedImageList.cpp

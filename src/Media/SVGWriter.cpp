@@ -15,75 +15,6 @@ void Media::SVGWriter::WriteBuffer()
 	}
 }
 
-void Media::SVGWriter::WritePenStyle(Optional<DrawPen> p)
-{
-	NN<SVGPen> pen;
-	if (Optional<SVGPen>::ConvertFrom(p).SetTo(pen))
-	{
-		this->sb.AppendC(UTF8STRC(" stroke=\"#"));
-		UInt32 col = pen->GetColor();
-		this->sb.AppendHex24(col & 0xffffff);
-		if ((col & 0xff000000) != 0xff000000)
-		{
-			this->sb.AppendC(UTF8STRC("\" stroke-opacity=\""));
-			this->sb.AppendDouble(((col >> 24) & 0xff) / 255.0);
-		}
-		this->sb.AppendC(UTF8STRC("\" stroke-width=\""));
-		this->sb.AppendDouble(pen->GetThick());
-		this->sb.AppendUTF8Char('\"');
-	}
-	else
-	{
-		this->sb.AppendC(UTF8STRC(" stroke=\"none\""));
-	}
-}
-
-void Media::SVGWriter::WriteBrushStyle(Optional<DrawBrush> b)
-{
-	NN<SVGBrush> brush;
-	if (Optional<SVGBrush>::ConvertFrom(b).SetTo(brush))
-	{
-		this->sb.AppendC(UTF8STRC(" fill=\"#"));
-		UInt32 col = brush->GetColor();
-		this->sb.AppendHex24(col & 0xffffff);
-		if ((col & 0xff000000) != 0xff000000)
-		{
-			this->sb.AppendC(UTF8STRC("\" fill-opacity=\""));
-			this->sb.AppendDouble(((col >> 24) & 0xff) / 255.0);
-		}
-		this->sb.AppendUTF8Char('\"');
-	}
-	else
-	{
-		this->sb.AppendC(UTF8STRC(" fill=\"none\""));
-	}
-}
-
-void Media::SVGWriter::WriteFontStyle(NN<SVGFont> font)
-{
-	this->sb.AppendC(UTF8STRC(" font-family=\""));
-	this->sb.Append(font->GetFontName());
-	this->sb.AppendC(UTF8STRC("\" font-size=\""));
-	this->sb.AppendDouble(font->GetFontSizePx());
-	this->sb.AppendUTF8Char('\"');
-	if ((font->GetStyle() & Media::DrawEngine::DFS_BOLD) != 0)
-	{
-		this->sb.AppendC(UTF8STRC(" font-weight=\"bold\""));
-	}
-	else
-	{
-		this->sb.AppendC(UTF8STRC(" font-weight=\"normal\""));
-	}
-	if ((font->GetStyle() & Media::DrawEngine::DFS_ITALIC) != 0)
-	{
-		this->sb.AppendC(UTF8STRC(" font-style=\"italic\""));
-	}
-	else
-	{
-		this->sb.AppendC(UTF8STRC(" font-style=\"normal\""));
-	}
-}
-
 Media::SVGWriter::SVGWriter(NN<IO::Stream> stm, UIntOS width, UIntOS height, NN<Media::DrawEngine> refEng) : color(Media::ColorProfile::CPT_SRGB)
 {
 	this->size = Math::Size2D<UIntOS>(width, height);
@@ -203,7 +134,7 @@ Bool Media::SVGWriter::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<D
 	this->sb.AppendC(UTF8STRC("\" y2=\""));
 	this->sb.AppendDouble(y2);
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
+	SVGCore::WritePenStyle(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -214,17 +145,21 @@ Bool Media::SVGWriter::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPo
 	this->sb.AppendC(UTF8STRC("<polyline points=\""));
 	if (nPoints > 0)
 	{
-		UIntOS i = 1;
+		UIntOS i = 2;
 		this->sb.AppendI32(points[0]);
+		this->sb.AppendUTF8Char(',');
+		this->sb.AppendI32(points[1]);
 		while (i < nPoints * 2)
 		{
 			this->sb.AppendUTF8Char(' ');
 			this->sb.AppendI32(points[i]);
-			i++;
+			this->sb.AppendUTF8Char(',');
+			this->sb.AppendI32(points[i + 1]);
+			i += 2;
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
+	SVGCore::WritePenStyle(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -235,18 +170,22 @@ Bool Media::SVGWriter::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoi
 	this->sb.AppendC(UTF8STRC("<polygon points=\""));
 	if (nPoints > 0)
 	{
-		UIntOS i = 1;
+		UIntOS i = 2;
 		this->sb.AppendI32(points[0]);
+		this->sb.AppendUTF8Char(',');
+		this->sb.AppendI32(points[1]);
 		while (i < nPoints * 2)
 		{
 			this->sb.AppendUTF8Char(' ');
 			this->sb.AppendI32(points[i]);
-			i++;
+			this->sb.AppendUTF8Char(',');
+			this->sb.AppendI32(points[i + 1]);
+			i += 2;
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -285,8 +224,8 @@ Bool Media::SVGWriter::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeA
 		i++;
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -311,7 +250,7 @@ Bool Media::SVGWriter::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, 
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
+	SVGCore::WritePenStyle(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -336,8 +275,8 @@ Bool Media::SVGWriter::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, U
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -376,8 +315,8 @@ Bool Media::SVGWriter::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> point
 		i++;
 	}
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -394,8 +333,8 @@ Bool Media::SVGWriter::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optio
 	this->sb.AppendC(UTF8STRC("\" height=\""));
 	this->sb.AppendDouble(size.y);
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -412,8 +351,8 @@ Bool Media::SVGWriter::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Op
 	this->sb.AppendC(UTF8STRC("\" ry=\""));
 	this->sb.AppendDouble(size.y / 2);
 	this->sb.AppendUTF8Char('\"');
-	this->WritePenStyle(p);
-	this->WriteBrushStyle(b);
+	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -426,8 +365,8 @@ Bool Media::SVGWriter::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(tl.y);
 	this->sb.AppendUTF8Char('\"');
-	this->WriteFontStyle(NN<SVGFont>::ConvertFrom(f));
-	this->WriteBrushStyle(b);
+	SVGCore::WriteFontStyle(this->sb, NN<SVGFont>::ConvertFrom(f));
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" >"));
 	NN<Text::String> s = Text::XML::ToNewXMLText(str->v);
 	this->sb.Append(s);
@@ -444,8 +383,8 @@ Bool Media::SVGWriter::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<D
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(tl.y);
 	this->sb.AppendUTF8Char('\"');
-	this->WriteFontStyle(NN<SVGFont>::ConvertFrom(f));
-	this->WriteBrushStyle(b);
+	SVGCore::WriteFontStyle(this->sb, NN<SVGFont>::ConvertFrom(f));
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" >"));
 	NN<Text::String> s = Text::XML::ToNewXMLText(str.v);
 	this->sb.Append(s);
@@ -468,8 +407,8 @@ Bool Media::SVGWriter::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN st
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(center.y);
 	this->sb.AppendUTF8Char('\"');
-	this->WriteFontStyle(font);
-	this->WriteBrushStyle(b);
+	SVGCore::WriteFontStyle(this->sb, font);
+	SVGCore::WriteBrushStyle(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" transform=\"rotate("));
 	this->sb.AppendDouble(angleDegreeACW);
 	this->sb.AppendC(UTF8STRC(" "));
@@ -629,23 +568,7 @@ void Media::SVGWriter::DelFont(NN<DrawFont> f)
 
 Math::Size2DDbl Media::SVGWriter::GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt)
 {
-	NN<Media::SVGFont> font = NN<Media::SVGFont>::ConvertFrom(fnt);
-	NN<Media::DrawImage> refImg;
-	Math::Size2DDbl size;
-	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>(1, 1), Media::AT_ALPHA).SetTo(refImg))
-	{
-		NN<Media::DrawFont> dfont = refImg->NewFontPx(font->GetFontName()->ToCString(), font->GetFontSizePx(), font->GetStyle(), 0);
-		size = refImg->GetTextSize(dfont, txt);
-		refImg->DelFont(dfont);
-		this->refEng->DeleteImage(refImg);
-	}
-	else
-	{
-		Double width = UIntOS2Double(txt.leng) * font->GetFontSizePx() * 0.6; // Approximate width
-		Double height = font->GetFontSizePx(); // Approximate height
-		size = Math::Size2DDbl(width, height);
-	}
-	return size;
+	return SVGCore::GetTextSize(this->refEng, NN<Media::SVGFont>::ConvertFrom(fnt), txt);
 }
 
 void Media::SVGWriter::SetTextAlign(Media::DrawEngine::DrawPos pos)
@@ -654,50 +577,14 @@ void Media::SVGWriter::SetTextAlign(Media::DrawEngine::DrawPos pos)
 
 void Media::SVGWriter::GetStringBound(UnsafeArray<Int32> pos, IntOS centX, IntOS centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
-	NN<Media::SVGFont> font = NN<Media::SVGFont>::ConvertFrom(f);
-	NN<Media::DrawImage> refImg;
-	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>(1, 1), Media::AT_ALPHA).SetTo(refImg))
-	{
-		NN<Media::DrawFont> dfont = refImg->NewFontPx(font->GetFontName()->ToCString(), font->GetFontSizePx(), font->GetStyle(), 0);
-		refImg->GetStringBound(pos, centX, centY, str, dfont, drawX, drawY);
-		refImg->DelFont(dfont);
-		this->refEng->DeleteImage(refImg);
-	}
-	else
-	{
-		Double width = UIntOS2Double(Text::StrCharCnt(str)) * font->GetFontSizePx() * 0.6; // Approximate width
-		Double height = font->GetFontSizePx(); // Approximate height
-		pos[0] = Double2Int32(IntOS2Double(centX) - width * 0.5);
-		pos[1] = Double2Int32(IntOS2Double(centY) - height * 0.5);
-		pos[2] = Double2Int32(IntOS2Double(centX) + width * 0.5);
-		pos[3] = Double2Int32(IntOS2Double(centY) + height * 0.5);
-		drawX.Set(centX - Double2Int32(width * 0.5));
-		drawY.Set(centY - Double2Int32(height * 0.5));
-	}
+	SVGCore::GetStringBound(this->refEng, pos, centX, centY, str, f, drawX, drawY);
 }
+
 void Media::SVGWriter::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY)
 {
-	NN<Media::SVGFont> font = NN<Media::SVGFont>::ConvertFrom(f);
-	NN<Media::DrawImage> refImg;
-	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>(1, 1), Media::AT_ALPHA).SetTo(refImg))
-	{
-		NN<Media::DrawFont> dfont = refImg->NewFontPx(font->GetFontName()->ToCString(), font->GetFontSizePx(), font->GetStyle(), 0);
-		refImg->GetStringBound(pos, Double2IntOS(centX), Double2IntOS(centY), str, dfont, drawX, drawY);
-		refImg->DelFont(dfont);
-		this->refEng->DeleteImage(refImg);
-	}
-	else
-	{
-		Double width = UIntOS2Double(Text::StrCharCnt(str)) * font->GetFontSizePx() * 0.6; // Approximate width
-		Double height = font->GetFontSizePx(); // Approximate height
-		pos[0] = Double2Int32(centX - width * 0.5);
-		pos[1] = Double2Int32(centY - height * 0.5);
-		pos[2] = Double2Int32(centX + width * 0.5);
-		pos[3] = Double2Int32(centY + height * 0.5);
-		drawX.Set(Double2IntOS(centX) - Double2Int32(width * 0.5));
-		drawY.Set(Double2IntOS(centY) - Double2Int32(height * 0.5));
-	}
+	SVGCore::GetStringBoundRot(this->refEng, pos, centX, centY, str, f, angleDegree, drawX, drawY);
 }
+
 void Media::SVGWriter::CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const
 {
 }
