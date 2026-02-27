@@ -1,27 +1,161 @@
-#ifndef _SM_MEDIA_SVGWRITER
-#define _SM_MEDIA_SVGWRITER
-#include "IO/Stream.h"
+#ifndef _SM_MEDIA_SVGDOCUMENT
+#define _SM_MEDIA_SVGDOCUMENT
+#include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Media/SVGCore.h"
-#include "Text/StringBuilderUTF8.h"
+#include "Text/String.h"
 
 namespace Media
 {
-	class SVGWriter : public DrawImage
+	class SVGDocument;
+
+	class SVGElement
 	{
 	private:
-		NN<Media::DrawEngine> refEng;
-		NN<IO::Stream> stm;
-		Text::StringBuilderUTF8 sb;
-		Math::Size2D<UIntOS> size;
-		Media::ColorProfile color;
+		Optional<Text::String> id;
 
-		void WriteBuffer();
+	protected:
+		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
+		{
+			NN<Text::String> s;
+			if (this->id.SetTo(s))
+			{
+				sb->AppendC(UTF8STRC(" id=\""));
+				sb->Append(s);
+				sb->AppendUTF8Char('\"');
+			}
+		}
 	public:
-		SVGWriter(NN<IO::Stream> stm, UIntOS width, UIntOS height, NN<Media::DrawEngine> refEng);
-		virtual ~SVGWriter();
+		SVGElement() { this->id = nullptr; }
+		virtual ~SVGElement() {}
 
-		virtual UIntOS GetWidth() const;
-		virtual UIntOS GetHeight() const;
+		void SetID(Text::CStringNN id)
+		{
+			OPTSTR_DEL(this->id);
+			this->id = Text::String::New(id);
+		}
+
+		Optional<Text::String> GetID() const
+		{
+			return this->id;
+		}
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+	};
+
+	class SVGLine : public SVGElement
+	{
+	private:
+		Math::Coord2DDbl pt1;
+		Math::Coord2DDbl pt2;
+		NN<DrawPen> pen;
+	public:
+		SVGLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
+		virtual ~SVGLine();
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGPolyline : public SVGElement
+	{
+	private:
+		Data::ArrayListA<Math::Coord2DDbl> points;
+		NN<DrawPen> pen;
+	public:
+		SVGPolyline(NN<DrawPen> pen);
+		virtual ~SVGPolyline();
+
+		void AddPoint(Math::Coord2DDbl pt);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGPolygon : public SVGElement
+	{
+	private:
+		Data::ArrayListA<Math::Coord2DDbl> points;
+		Optional<DrawPen> pen;
+		Optional<DrawBrush> brush;
+	public:
+		SVGPolygon(Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		virtual ~SVGPolygon();
+
+		void AddPoint(Math::Coord2DDbl pt);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGRect : public SVGElement
+	{
+	private:
+		Math::Coord2DDbl tl;
+		Math::Size2DDbl size;
+		Optional<DrawPen> pen;
+		Optional<DrawBrush> brush;
+	public:
+		SVGRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		virtual ~SVGRect();
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGEllipse : public SVGElement
+	{
+	private:
+		Math::Coord2DDbl center;
+		Math::Size2DDbl radius;
+		Optional<DrawPen> pen;
+		Optional<DrawBrush> brush;
+	public:
+		SVGEllipse(Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		virtual ~SVGEllipse();
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGText : public SVGElement
+	{
+	private:
+		Math::Coord2DDbl tl;
+		NN<Text::String> txt;
+		NN<DrawFont> font;
+		NN<DrawBrush> brush;
+		Double angleDegreeACW;
+		Math::Coord2DDbl rotateCenter;
+	public:
+		SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<DrawFont> font, NN<DrawBrush> brush);
+		virtual ~SVGText();
+
+		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGImage : public SVGElement
+	{
+	private:
+		Math::Coord2DDbl tl;
+		Math::Size2DDbl size;
+		NN<Text::String> href;
+	public:
+		SVGImage(Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
+		virtual ~SVGImage();
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGContainer : public SVGElement, public DrawImage
+	{
+	private:
+		Data::ArrayListNN<SVGElement> elements;
+		NN<SVGDocument> doc;
+	
+	protected:
+		NN<Media::DrawEngine> refEng;
+
+		void ToInnerString(NN<Text::StringBuilderUTF8> sb) const;
+	public:
+		SVGContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		virtual ~SVGContainer();
+
 		virtual Math::Size2D<UIntOS> GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
@@ -82,6 +216,35 @@ namespace Media
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
+	};
+
+	class SVGDocument : public SVGContainer
+	{
+	private:
+		UIntOS width;
+		UIntOS height;
+		Math::RectArea<IntOS> viewBox;
+		Data::ArrayListNN<SVGPen> pens;
+		Data::ArrayListNN<SVGBrush> brushes;
+		Data::ArrayListNN<SVGFont> fonts;
+
+	public:
+		SVGDocument(NN<Media::DrawEngine> refEng);
+		virtual ~SVGDocument();
+
+		virtual UIntOS GetWidth() const;
+		virtual UIntOS GetHeight() const;
+
+		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
+		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
+		virtual NN<DrawFont> NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // 72 dpi size
+		virtual NN<DrawFont> NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // Actual size
+		virtual NN<DrawFont> CloneFont(NN<DrawFont> f);
+
+		void SetSize(UIntOS width, UIntOS height);
+		void SetViewBox(Math::RectArea<IntOS> viewBox);
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif
