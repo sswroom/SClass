@@ -59,7 +59,6 @@ void Media::ImageResizer::CalOutputSize(NN<const Media::FrameInfo> srcInfo, Math
 	{
 		destInfo->dispSize = targetSize;
 		destInfo->storeSize = destInfo->dispSize;
-		destInfo->par2 = srcInfo->par2 * UIntOS2Double(srcInfo->dispSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetWidth()) * UIntOS2Double(destInfo->dispSize.GetWidth()) / UIntOS2Double(destInfo->dispSize.GetHeight());
 		destInfo->hdpi = srcInfo->hdpi * UIntOS2Double(targetSize.GetWidth()) / UIntOS2Double(srcInfo->dispSize.GetWidth());
 		destInfo->vdpi = srcInfo->vdpi * UIntOS2Double(targetSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetHeight());
 	}
@@ -76,24 +75,22 @@ void Media::ImageResizer::CalOutputSize(NN<const Media::FrameInfo> srcInfo, Math
 			destInfo->dispSize.y = (UIntOS)Double2Int32((Double)targetSize.GetWidth() * (Double)srcInfo->dispSize.GetHeight() / (Double)srcInfo->dispSize.GetWidth());
 		}
 		destInfo->storeSize = destInfo->dispSize;
-		destInfo->par2 = srcInfo->par2 * UIntOS2Double(srcInfo->dispSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetWidth()) * UIntOS2Double(destInfo->dispSize.GetWidth()) / UIntOS2Double(destInfo->dispSize.GetHeight());
 		destInfo->hdpi = srcInfo->hdpi * UIntOS2Double(targetSize.GetWidth()) / UIntOS2Double(srcInfo->dispSize.GetWidth());
 		destInfo->vdpi = srcInfo->vdpi * UIntOS2Double(targetSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetHeight());
 	}
 	else
 	{
-		if (UIntOS2Double(targetSize.GetWidth()) * UIntOS2Double(srcInfo->dispSize.GetHeight()) * srcInfo->par2 > UIntOS2Double(targetSize.GetHeight()) * UIntOS2Double(srcInfo->dispSize.GetWidth()))
+		if (UIntOS2Double(targetSize.GetWidth()) * UIntOS2Double(srcInfo->dispSize.GetHeight()) * srcInfo->CalcPAR() > UIntOS2Double(targetSize.GetHeight()) * UIntOS2Double(srcInfo->dispSize.GetWidth()))
 		{
 			destInfo->dispSize.y = targetSize.GetHeight();
-			destInfo->dispSize.x = (UIntOS)Double2Int32(UIntOS2Double(targetSize.GetHeight()) / srcInfo->par2 * UIntOS2Double(srcInfo->dispSize.GetWidth()) / UIntOS2Double(srcInfo->dispSize.GetHeight()));
+			destInfo->dispSize.x = (UIntOS)Double2Int32(UIntOS2Double(targetSize.GetHeight()) / srcInfo->CalcPAR() * UIntOS2Double(srcInfo->dispSize.GetWidth()) / UIntOS2Double(srcInfo->dispSize.GetHeight()));
 		}
 		else
 		{
 			destInfo->dispSize.x = targetSize.GetWidth();
-			destInfo->dispSize.y = (UIntOS)Double2Int32(UIntOS2Double(targetSize.GetWidth()) * UIntOS2Double(srcInfo->dispSize.GetHeight()) * srcInfo->par2 / UIntOS2Double(srcInfo->dispSize.GetWidth()));
+			destInfo->dispSize.y = (UIntOS)Double2Int32(UIntOS2Double(targetSize.GetWidth()) * UIntOS2Double(srcInfo->dispSize.GetHeight()) * srcInfo->CalcPAR() / UIntOS2Double(srcInfo->dispSize.GetWidth()));
 		}
 		destInfo->storeSize = destInfo->dispSize;
-		destInfo->par2 = srcInfo->par2 * UIntOS2Double(srcInfo->dispSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetWidth()) * UIntOS2Double(destInfo->dispSize.GetWidth()) / UIntOS2Double(destInfo->dispSize.GetHeight());
 		destInfo->hdpi = srcInfo->hdpi * UIntOS2Double(targetSize.GetWidth()) / UIntOS2Double(srcInfo->dispSize.GetWidth());
 		destInfo->vdpi = srcInfo->vdpi * UIntOS2Double(targetSize.GetHeight()) / UIntOS2Double(srcInfo->dispSize.GetHeight());
 	}

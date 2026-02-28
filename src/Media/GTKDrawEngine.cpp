@@ -417,6 +417,7 @@ Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr
 	this->info.hdpi = 96.0;
 	this->info.vdpi = 96.0;
 	this->colorSess = colorSess;
+	this->resizer = nullptr;
 }
 
 Media::GTKDrawImage::~GTKDrawImage()
@@ -426,6 +427,7 @@ Media::GTKDrawImage::~GTKDrawImage()
 		cairo_surface_destroy((cairo_surface_t*)this->surface);
 		cairo_destroy((cairo_t*)this->cr);
 	}
+	this->resizer.Delete();
 }
 
 UIntOS Media::GTKDrawImage::GetWidth() const
@@ -1211,15 +1213,48 @@ Bool Media::GTKDrawImage::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2D
 
 Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
+	NN<Media::Resizer::LanczosResizerRGB_C8> nnresizer;
+	Optional<StaticImage> tmpImg = nullptr;
+	Double destRight = destTL.x + srcSize.x * img->info.hdpi / this->info.hdpi;
+	Double destBottom = destTL.y + srcSize.y * img->info.vdpi / this->info.vdpi;
+	if (destRight < 0 || destBottom < 0 || destTL.x >= UIntOS2Double(this->info.dispSize.x) || destTL.y >= UIntOS2Double(this->info.dispSize.y))
+	{
+		return true;
+	}
+	IntOS drawW = Double2IntOS(destRight) - Double2IntOS(destTL.x);
+	IntOS drawH = Double2IntOS(destBottom) - Double2IntOS(destTL.y);
+	if (drawW <= 0 || drawH <= 0)
+	{
+		return true;
+	}
+	if ((UIntOS)drawW != img->info.dispSize.x || (UIntOS)drawH != img->info.dispSize.y)
+	{
+		if (!this->resizer.SetTo(nnresizer))
+		{
+			NEW_CLASSNN(nnresizer, Media::Resizer::LanczosResizerRGB_C8(4, 4, img->info.color, img->info.color, Optional<Media::ColorManagerSess>::ConvertFrom(this->colorSess), img->info.atype));
+			resizer = nnresizer;
+		}
+		nnresizer->SetTargetSize(Math::Size2D<UIntOS>((UIntOS)drawW, (UIntOS)drawH));
+		nnresizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
+		tmpImg = nnresizer->ProcessToNewPartial(img, srcTL, srcSize);
+		if (!tmpImg.SetTo(img))
+		{
+			return false;
+		}
+		srcTL = Math::Coord2DDbl(0, 0);
+		srcSize = Math::Size2DDbl(IntOS2Double(drawW), IntOS2Double(drawH));
+	}
 	if (this->surface == 0)
 	{
 		NN<Media::DrawImage> dimg;
 		if (!this->eng->ConvImage(img, nullptr).SetTo(dimg))
 		{
+			tmpImg.Delete();
 			return false;
 		}
 		this->DrawImagePt2(dimg, destTL, srcTL, srcSize);
 		this->eng->DeleteImage(dimg);
+		tmpImg.Delete();
 		return true;
 	}
 	else
@@ -1227,6 +1262,7 @@ Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl de
 		img->ToB8G8R8A8();
 		if (this->info.storeBPP != 32)
 		{
+			tmpImg.Delete();
 			return false;
 		}
 		cairo_surface_flush((cairo_surface_t*)this->surface);
@@ -1260,6 +1296,7 @@ Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl de
 		}
 		if (ixPos >= ixPos2 || iyPos >= iyPos2)
 		{
+			tmpImg.Delete();
 			return true;
 		}
 
@@ -1267,6 +1304,7 @@ Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl de
 		{
 			ImageCopy_ImgCopy(simgPtr.Ptr() + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UIntOS)(ixPos2 - ixPos) * 4, (UIntOS)(iyPos2 - iyPos), sbpl, dbpl);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			tmpImg.Delete();
 			return true;
 		}
 		else
@@ -1280,8 +1318,10 @@ Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl de
 				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2IntOS(srcTL.y) * sbpl + Double2IntOS(srcTL.x) * 4, sbpl, (UIntOS)(ixPos2 - ixPos), (UIntOS)(iyPos2 - iyPos), img->info.atype);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			tmpImg.Delete();
 			return true;
 		}
+		tmpImg.Delete();
 		return false;
 	}
 }

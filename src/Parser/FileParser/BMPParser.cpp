@@ -399,7 +399,6 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, uimgHeight), 0, bpp, pf, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 		outImg->info.hdpi = hdpi;
 		outImg->info.vdpi = vdpi;
-		outImg->info.par2 = hdpi / vdpi;
 		if (headerSize >= 124 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"DEBM")) //BITMAPV5HEADER
 		{
 			UInt32 imgDataSize = ReadUInt32(&hdr[126]);

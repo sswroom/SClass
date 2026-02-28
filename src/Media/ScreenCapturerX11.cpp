@@ -80,7 +80,6 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<Monit
 		info.dispSize = Math::Size2D<UIntOS>((UInt32)image->width, (UInt32)image->height);
 		info.storeSize = Math::Size2D<UIntOS>((UInt32)image->bytes_per_line / (info.storeBPP >> 3), (UInt32)image->height);
 		info.byteSize = info.storeSize.CalcArea() * (info.storeBPP >> 3);
-		info.par2 = 1.0;
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;
 		info.vdpi = info.hdpi;
 		NN<const Media::ColorHandler::RGBPARAM2> params = monColor->GetRGBParam();

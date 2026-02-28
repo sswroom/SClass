@@ -66,52 +66,52 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 		case 0: //Unspecified
 			break;
 		case 1: //1:1
-			info->par2 = 1;
+			info->SetPAR(1);
 			break;
 		case 2: //12:11
-			info->par2 = 0.91666666666666666666666666666667;
+			info->SetPAR(0.91666666666666666666666666666667);
 			break;
 		case 3: //10:11
-			info->par2 = 1.1;
+			info->SetPAR(1.1);
 			break;
 		case 4: //16:11
-			info->par2 = 0.6875;
+			info->SetPAR(0.6875);
 			break;
 		case 5: //40:33
-			info->par2 = 0.825;
+			info->SetPAR(0.825);
 			break;
 		case 6: //24:11
-			info->par2 = 0.45833333333333333333333333333333;
+			info->SetPAR(0.45833333333333333333333333333333);
 			break;
 		case 7: //20:11
-			info->par2 = 0.55;
+			info->SetPAR(0.55);
 			break;
 		case 8: //32:11
-			info->par2 = 0.34375;
+			info->SetPAR(0.34375);
 			break;
 		case 9: //80:33
-			info->par2 = 0.4125;
+			info->SetPAR(0.4125);
 			break;
 		case 10: //18:11
-			info->par2 = 0.61111111111111111111111111111111;
+			info->SetPAR(0.61111111111111111111111111111111);
 			break;
 		case 11: //15:11
-			info->par2 = 0.73333333333333333333333333333333;
+			info->SetPAR(0.73333333333333333333333333333333);
 			break;
 		case 12: //64:33
-			info->par2 = 0.515625;
+			info->SetPAR(0.515625);
 			break;
 		case 13: //160:99
-			info->par2 = 0.61875;
+			info->SetPAR(0.61875);
 			break;
 		case 14: //4:3
-			info->par2 = 0.75;
+			info->SetPAR(0.75);
 			break;
 		case 15: //3:2
-			info->par2 = 0.66666666666666666666666666666667;
+			info->SetPAR(0.66666666666666666666666666666667);
 			break;
 		case 16: //2:1
-			info->par2 = 0.5;
+			info->SetPAR(0.5);
 			break;
 		case 255:
 			sarWidth = 0;
@@ -120,7 +120,7 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 			reader->ReadBits(sarHeight, 16);
 			if (sarWidth != 0 && sarHeight != 0)
 			{
-				info->par2 = sarHeight / (Double)sarWidth;
+				info->SetPAR(sarHeight / (Double)sarWidth);
 			}
 			break;
 		}

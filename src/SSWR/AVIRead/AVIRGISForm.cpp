@@ -208,18 +208,19 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 					{
 						Double hsX;
 						Double hsY;
-						if (stimg->info.par2 > 1)
+						Double par = stimg->info.CalcPAR();
+						if (par > 1)
 						{
 							hsX = IntOS2Double(stimg->GetHotSpotX());
-							hsY = IntOS2Double(stimg->GetHotSpotY()) * stimg->info.par2;
+							hsY = IntOS2Double(stimg->GetHotSpotY()) * par;
 							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * stimg->info.par2;
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * par;
 						}
 						else
 						{
-							hsX = IntOS2Double(stimg->GetHotSpotX()) / stimg->info.par2;
+							hsX = IntOS2Double(stimg->GetHotSpotX()) / par;
 							hsY = IntOS2Double(stimg->GetHotSpotY());
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / par;
 							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
 						}
 						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - hsX, IntOS2Double(mousePos.y) - hsY));
@@ -227,14 +228,15 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 					}
 					else
 					{
-						if (stimg->info.par2 > 1)
+						Double par = stimg->info.CalcPAR();
+						if (par > 1)
 						{
 							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * stimg->info.par2;
+							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * par;
 						}
 						else
 						{
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / par;
 							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
 						}
 						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - calcImgW * 0.5, IntOS2Double(mousePos.y) - calcImgH * 0.5));

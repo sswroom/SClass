@@ -2293,8 +2293,8 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 					{
 						newImg->MultiplyAlpha(srcAlpha);
 					}
-					newImg->info.hdpi = denv->img->GetHDPI();
-					newImg->info.vdpi = denv->img->GetVDPI();
+					newImg->info.hdpi = denv->img->GetHDPI() / (scnBR.x - scnTL.x) * UIntOS2Double(newImg->info.dispSize.x);
+					newImg->info.vdpi = denv->img->GetVDPI() / (scnBR.y - scnTL.y) * UIntOS2Double(newImg->info.dispSize.y);
 					denv->img->DrawSImagePt(newImg, scnTL);
 					newImg.Delete();
 				}
@@ -2368,8 +2368,8 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 						NN<Media::DrawImage> dimg;
 						if (this->eng->ConvImage(newImg, this->colorSess).SetTo(dimg))
 						{
-							dimg->SetHDPI(denv->img->GetHDPI());
-							dimg->SetVDPI(denv->img->GetVDPI());
+							dimg->SetHDPI(denv->img->GetHDPI() / (cimgPt2.x - cimgPt.x) * UIntOS2Double(dimg->GetWidth()));
+							dimg->SetVDPI(denv->img->GetVDPI() / (cimgPt2.y - cimgPt.y) * UIntOS2Double(dimg->GetHeight()));
 							denv->img->DrawImagePt(dimg, scnTL);
 							this->eng->DeleteImage(dimg);
 						}

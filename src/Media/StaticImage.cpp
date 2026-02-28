@@ -17,7 +17,6 @@ Media::StaticImage::StaticImage(Math::Size2D<UIntOS> dispSize, UInt32 fourcc, UI
 
 Media::StaticImage::StaticImage(NN<const Media::FrameInfo> imgInfo) : Media::RasterImage(imgInfo->dispSize, imgInfo->storeSize, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
 {
-	this->info.par2 = imgInfo->par2;
 	this->info.hdpi = imgInfo->hdpi;
 	this->info.vdpi = imgInfo->vdpi;
 	this->info.ftype = imgInfo->ftype;

@@ -244,52 +244,52 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UIntOS spsSize, NN<Med
 				case 0: //Unspecified
 					break;
 				case 1: //1:1
-					frameInfo->par2 = 1;
+					frameInfo->SetPAR(1);
 					break;
 				case 2: //12:11
-					frameInfo->par2 = 0.91666666666666666666666666666667;
+					frameInfo->SetPAR(0.91666666666666666666666666666667);
 					break;
 				case 3: //10:11
-					frameInfo->par2 = 1.1;
+					frameInfo->SetPAR(1.1);
 					break;
 				case 4: //16:11
-					frameInfo->par2 = 0.6875;
+					frameInfo->SetPAR(0.6875);
 					break;
 				case 5: //40:33
-					frameInfo->par2 = 0.825;
+					frameInfo->SetPAR(0.825);
 					break;
 				case 6: //24:11
-					frameInfo->par2 = 0.45833333333333333333333333333333;
+					frameInfo->SetPAR(0.45833333333333333333333333333333);
 					break;
 				case 7: //20:11
-					frameInfo->par2 = 0.55;
+					frameInfo->SetPAR(0.55);
 					break;
 				case 8: //32:11
-					frameInfo->par2 = 0.34375;
+					frameInfo->SetPAR(0.34375);
 					break;
 				case 9: //80:33
-					frameInfo->par2 = 0.4125;
+					frameInfo->SetPAR(0.4125);
 					break;
 				case 10: //18:11
-					frameInfo->par2 = 0.61111111111111111111111111111111;
+					frameInfo->SetPAR(0.61111111111111111111111111111111);
 					break;
 				case 11: //15:11
-					frameInfo->par2 = 0.73333333333333333333333333333333;
+					frameInfo->SetPAR(0.73333333333333333333333333333333);
 					break;
 				case 12: //64:33
-					frameInfo->par2 = 0.515625;
+					frameInfo->SetPAR(0.515625);
 					break;
 				case 13: //160:99
-					frameInfo->par2 = 0.61875;
+					frameInfo->SetPAR(0.61875);
 					break;
 				case 14: //4:3
-					frameInfo->par2 = 0.75;
+					frameInfo->SetPAR(0.75);
 					break;
 				case 15: //3:2
-					frameInfo->par2 = 0.66666666666666666666666666666667;
+					frameInfo->SetPAR(0.66666666666666666666666666666667);
 					break;
 				case 16: //2:1
-					frameInfo->par2 = 0.5;
+					frameInfo->SetPAR(0.5);
 					break;
 				case 255:
 					sarWidth = 0;
@@ -298,7 +298,7 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UIntOS spsSize, NN<Med
 					reader.ReadBits(sarHeight, 16);
 					if (sarWidth != 0 && sarHeight != 0)
 					{
-						frameInfo->par2 = sarHeight / (Double)sarWidth;
+						frameInfo->SetPAR((Double)sarHeight / (Double)sarWidth);
 					}
 					break;
 				}

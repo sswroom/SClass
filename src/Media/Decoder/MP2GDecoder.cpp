@@ -25,9 +25,9 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, bitRate, true))
 		{
-			if (info.par2 != this->par)
+			if (info.CalcPAR() != this->par)
 			{
-				this->par = info.par2;
+				this->par = info.CalcPAR();
 				if (this->fcCb)
 				{
 					this->fcCb(Media::VideoSource::FC_PAR, this->frameCbData);
@@ -333,7 +333,7 @@ Media::Decoder::MP2GDecoder::MP2GDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	{
 		this->sourceVideo = 0;
 	}
-	this->par = info.par2;
+	this->par = info.CalcPAR();
 
 	this->hasBFrame = false;
 	this->lastFrameTime = 0;
@@ -410,6 +410,6 @@ Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPar
 			info->color.GetBTranParam()->Set(ttype, 2.2);
 		}
 	}
-	info->par2 = this->par;
+	info->SetPAR(this->par);
 	return succ;
 }

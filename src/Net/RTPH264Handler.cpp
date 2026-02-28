@@ -28,7 +28,6 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->frameInfo.storeBPP = 0;
 	this->frameInfo.pf = Media::PF_UNKNOWN;
 	this->frameInfo.byteSize = 0;
-	this->frameInfo.par2 = 1;
 	this->frameInfo.hdpi = 96;
 	this->frameInfo.ftype = Media::FT_NON_INTERLACE;
 	this->frameInfo.atype = Media::AT_IGNORE_ALPHA;

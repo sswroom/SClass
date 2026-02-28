@@ -95,7 +95,7 @@ Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
 	{
 		return false;
 	}
-	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
+	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.vdpi));
 	UIntOS wpl = (UIntOS)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
 	img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, wpl * 4, false, Media::RotateType::None);

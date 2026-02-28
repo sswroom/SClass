@@ -17,7 +17,6 @@ Media::MemorySurface::MemorySurface(Math::Size2D<UIntOS> size, UIntOS bitPerPixe
 	this->info.dispSize = size;
 	this->info.storeSize = size;
 	this->info.byteSize = this->info.storeSize.CalcArea() * (this->info.storeBPP >> 3);
-	this->info.par2 = 1.0;
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
 	NN<const Media::ColorProfile> colornn;

@@ -404,8 +404,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				info.storeBPP = bmih->biBitCount;
 				info.pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);
 				info.byteSize = bmih->biSizeImage;
-				info.par2 = arARV / (Double)arARH;
 				info.hdpi = 96;
+				info.SetPAR(arARV / (Double)arARH);
 				switch (ccFrameOrder)
 				{
 				case 0:

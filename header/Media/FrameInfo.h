@@ -111,7 +111,6 @@ namespace Media
 		UInt32 storeBPP;
 		PixelFormat pf;
 		UIntOS byteSize; //valid only if bpp = 0
-		Double par2; // def = 1;
 		Double hdpi;
 		Double vdpi;
 		FrameType ftype;
@@ -130,6 +129,8 @@ namespace Media
 		void Clear();
 		void Set(NN<const FrameInfo> info);
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		Double CalcPAR() const;
+		void SetPAR(Double par);
 	};
 
 	Text::CStringNN FrameTypeGetName(FrameType frameType);

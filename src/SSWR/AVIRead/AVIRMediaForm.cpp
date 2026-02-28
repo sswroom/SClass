@@ -551,13 +551,14 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				vSize.y = vSize.y << 1;
 			}
-			if (info.par2 > 1)
+			Double par = info.CalcPAR();
+			if (par > 1)
 			{
-				vSize.y = (UIntOS)Double2Int32(UIntOS2Double(vSize.y) * info.par2);
+				vSize.y = (UIntOS)Double2Int32(UIntOS2Double(vSize.y) * par);
 			}
 			else
 			{
-				vSize.x = (UIntOS)Double2Int32(UIntOS2Double(vSize.x) / info.par2);
+				vSize.x = (UIntOS)Double2Int32(UIntOS2Double(vSize.x) / par);
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);

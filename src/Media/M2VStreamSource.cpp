@@ -280,9 +280,9 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 
 					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, info, norm, denorm, bitRate, true))
 					{
-						if (info.par2 != me->par)
+						if (info.CalcPAR() != me->par)
 						{
-							me->par = info.par2;
+							me->par = info.CalcPAR();
 							if (me->fcCb)
 							{
 								me->fcCb(Media::VideoSource::FC_PAR, me->frameCbData);
@@ -478,7 +478,7 @@ Bool Media::M2VStreamSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UI
 	frameRateNorm.Set(this->frameRateNorm);
 	frameRateDenorm.Set(this->frameRateDenorm);
 	maxFrameSize.Set(this->maxFrameSize);
-	info->par2 = this->par;
+	info->SetPAR(this->par);
 	return true;
 }
 
@@ -627,7 +627,7 @@ void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UIntOS headerSize)
 {
 	UInt64 bitRate;
 	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, this->frameRateNorm, this->frameRateDenorm, bitRate, false);
-	this->par = this->info.par2;
+	this->par = this->info.CalcPAR();
 	this->bitRate = bitRate;
 }
 

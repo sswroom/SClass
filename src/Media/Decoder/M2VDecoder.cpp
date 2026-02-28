@@ -20,9 +20,9 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 
 		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, bitRate, true))
 		{
-			if (info.par2 != this->par)
+			if (info.CalcPAR() != this->par)
 			{
-				this->par = info.par2;
+				this->par = info.CalcPAR();
 				if (this->fcCb)
 				{
 					this->fcCb(Media::VideoSource::FC_PAR, this->frameCbData);
@@ -124,7 +124,7 @@ Media::Decoder::M2VDecoder::M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelea
 		this->sourceVideo = 0;
 		return;
 	}
-	this->par = info.par2;
+	this->par = info.CalcPAR();
 }
 
 Media::Decoder::M2VDecoder::~M2VDecoder()
@@ -210,7 +210,7 @@ Bool Media::Decoder::M2VDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPara
 
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	info->fourcc = ReadNUInt32((const UInt8*)"MPG2");
-	info->par2 = this->par;
+	info->SetPAR(this->par);
 
 	return true;
 }

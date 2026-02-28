@@ -1,7 +1,8 @@
-#ifndef _SM_MEDIA_GDIENGINE
-#define _SM_MEDIA_GDIENGINE
+#ifndef _SM_MEDIA_GTKDRAWENGINE
+#define _SM_MEDIA_GTKDRAWENGINE
 #include "Media/DrawEngine.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
 
@@ -89,6 +90,7 @@ namespace Media
 		void *cr; //cairo_t *
 		Math::Coord2D<IntOS> tl;
 		Optional<Media::ColorSess> colorSess;
+		Optional<Media::Resizer::LanczosResizerRGB_C8> resizer;
 
 	public:
 		GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess);

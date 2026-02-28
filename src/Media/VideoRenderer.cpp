@@ -31,7 +31,7 @@ void Media::VideoRenderer::CalDisplayRect(UIntOS srcWidth, UIntOS srcHeight, Dra
 	Double par;
 	if (this->forcePAR == 0)
 	{
-		par = this->videoInfo.par2 / this->monPAR;
+		par = this->videoInfo.CalcPAR() / this->monPAR;
 	}
 	else
 	{
@@ -74,7 +74,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 	}
 	if (tstat->me->forcePAR == 0)
 	{
-		par = tstat->me->videoInfo.par2 / tstat->me->monPAR;
+		par = tstat->me->videoInfo.CalcPAR() / tstat->me->monPAR;
 	}
 	else
 	{
@@ -1850,7 +1850,6 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	this->ignoreFrameTime = false;
 	this->forcePAR = 0;
 	this->monPAR = 1.0;
-	this->videoInfo.par2 = 1.0;
 	this->deintType = DT_FROM_VIDEO;
 	this->curr10Bit = false;
 	this->currSrcRefLuminance = 0;
@@ -2409,7 +2408,7 @@ void Media::VideoRenderer::GetStatus(NN<RendererStatus2> status)
 	}
 	else
 	{
-		status->par = this->videoInfo.par2 / this->monPAR;
+		status->par = this->videoInfo.CalcPAR() / this->monPAR;
 	}
 	UIntOS i;
 	status->format = this->videoInfo.fourcc;

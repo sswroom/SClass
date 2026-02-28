@@ -234,14 +234,14 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 		if (img->IsRaster())
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
-			if (srcW * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+			if (srcW * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 			{
 				outW = UIntOS2Double(this->bkBuffSize.x);
 		//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
 			}
 			else
 			{
-				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcW / srcH;
+				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.CalcPAR() * srcW / srcH;
 		//		outH = IntOS2Double(this->surfaceSize.y);
 			}
 		}
@@ -1201,14 +1201,14 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 		if (img->IsRaster())
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
-			if (srcSize.x * rimg->info.par2 * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
+			if (srcSize.x * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)
 			{
 				outW = UIntOS2Double(this->bkBuffSize.x);
 		//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
 			}
 			else
 			{
-				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.par2 * srcSize.x / srcSize.y;
+				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.CalcPAR() * srcSize.x / srcSize.y;
 		//		outH = IntOS2Double(this->surfaceH);
 			}
 		}

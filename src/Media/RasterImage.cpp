@@ -17,7 +17,6 @@ Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize)
 	this->info.storeBPP = 32;
 	this->info.pf = Media::PF_B8G8R8A8;
 	this->info.byteSize = dispSize.CalcArea() * 4;
-	this->info.par2 = 1;
 	this->info.hdpi = 96;
 	this->info.vdpi = 96;
 	this->info.color.SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
@@ -41,7 +40,6 @@ Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize, Math::Size2D<UInt
 	this->info.storeBPP = bpp;
 	this->info.pf = pf;
 	this->info.byteSize = maxSize;
-	this->info.par2 = 1;
 	this->info.hdpi = 96;
 	this->info.vdpi = 96;
 	this->info.color.Set(color);

@@ -123,7 +123,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteInt16(&buff[8], (Int16)img->info.dispSize.y);
 		buff[10] = 0xf7;
 		buff[11] = 0;
-		buff[12] = (UInt8)(Double2Int32(img->info.par2 * 64.0) - 15);
+		buff[12] = (UInt8)(Double2Int32(img->info.CalcPAR() * 64.0) - 15);
 		stm->Write(Data::ByteArrayR(buff, 13));
 
 		UInt8 *palBuff = MemAlloc(UInt8, 768);

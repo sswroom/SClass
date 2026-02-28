@@ -156,9 +156,8 @@ Bool Media::V4LVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UI
 	info->pf = Media::PF_UNKNOWN;
 	info->byteSize = 0;
 	info->rotateType = Media::RotateType::None;
-	info->par2 = 1;
-	info->hdpi = 72;
-	info->vdpi = 72;
+	info->hdpi = 96.0;
+	info->vdpi = 96.0;
 	switch (fmt.fmt.pix.field)
 	{
 	case V4L2_FIELD_ANY:
@@ -326,9 +325,8 @@ UIntOS Media::V4LVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtA
 				fmtArr[ret].info.storeBPP = 16;
 				fmtArr[ret].info.pf = Media::PF_UNKNOWN;
 				fmtArr[ret].info.byteSize = 0;
-				fmtArr[ret].info.par2 = 1;
-				fmtArr[ret].info.hdpi = 72;
-				fmtArr[ret].info.vdpi = 72;
+				fmtArr[ret].info.hdpi = 96.0;
+				fmtArr[ret].info.vdpi = 96.0;
 				fmtArr[ret].info.ftype = Media::FT_NON_INTERLACE;
 				fmtArr[ret].info.atype = Media::AT_IGNORE_ALPHA;
 				fmtArr[ret].info.color.SetCommonProfile(Media::ColorProfile::CPT_BT709);

@@ -474,13 +474,14 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UIntOS> w, OutParam<UIntOS> h)
 		{
 			vh = vh << 1;
 		}
-		if (info.par2 > 1)
+		Double par = info.CalcPAR();
+		if (par > 1)
 		{
-			vh = (UInt32)Double2Int32(UIntOS2Double(vh) * info.par2);
+			vh = (UInt32)Double2Int32(UIntOS2Double(vh) * par);
 		}
 		else
 		{
-			vw = (UInt32)Double2Int32(UIntOS2Double(vw) / info.par2);
+			vw = (UInt32)Double2Int32(UIntOS2Double(vw) / par);
 		}
 		w.Set(vw);
 		h.Set(vh);

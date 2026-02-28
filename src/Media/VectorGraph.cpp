@@ -541,7 +541,7 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, nullptr);
-	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * this->GetVDPI() / stImg->info.vdpi);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, tl + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = nullptr;
@@ -563,7 +563,7 @@ Bool Media::VectorGraph::DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, nullptr);
-	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, UIntOS2Double(stImg->info.dispSize.y) * this->GetVDPI() / stImg->info.vdpi);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, destTL + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
 	vimg->SetSrcRect(Math::RectAreaDbl(srcTL, srcTL + srcSize));
 	style = MemAllocNN(VectorStyles);
@@ -583,7 +583,7 @@ Bool Media::VectorGraph::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DD
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	Media::SharedImage simg(imgList, nullptr);
-	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * this->GetVDPI() / img->info.vdpi);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, tl + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = nullptr;
@@ -602,7 +602,7 @@ Bool Media::VectorGraph::DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	Media::SharedImage simg(imgList, nullptr);
-	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi);
+	Math::Size2DDbl imgSize = Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * this->GetVDPI() / img->info.vdpi);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, destTL + imgSize, imgSize, true, Text::CString(nullptr), 0, 0));
 	vimg->SetSrcRect(Math::RectAreaDbl(srcTL, srcTL + srcSize));
 	style = MemAllocNN(VectorStyles);
@@ -866,8 +866,8 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 
 void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS) const
 {
-	Optional<Media::Resizer::LanczosResizerRGB_C8> resizer = nullptr;
-	NN<Media::Resizer::LanczosResizerRGB_C8> nnresizer;
+//	Optional<Media::Resizer::LanczosResizerRGB_C8> resizer = nullptr;
+//	NN<Media::Resizer::LanczosResizerRGB_C8> nnresizer;
 	UInt32 imgTimeMS = 0;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
@@ -1092,28 +1092,9 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 				IntOS drawH = Double2IntOS(destRect.max.y) - Double2IntOS(destRect.min.y);
 				Double imgW = srcRect.GetWidth();
 				Double imgH = srcRect.GetHeight();
-				if (drawW != Double2IntOS(imgW) || drawH != Double2IntOS(imgH))
-				{
-					if (!resizer.SetTo(nnresizer))
-					{
-						NEW_CLASSNN(nnresizer, Media::Resizer::LanczosResizerRGB_C8(4, 4, simg->info.color, dimg->GetColorProfile(), nullptr, simg->info.atype));
-						resizer = nnresizer;
-					}
-					nnresizer->SetTargetSize(Math::Size2D<UIntOS>((UIntOS)drawW, (UIntOS)drawH));
-					nnresizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
-					NN<Media::StaticImage> simg2;
-					if (nnresizer->ProcessToNewPartial(simg, srcRect.min, srcRect.GetSize()).SetTo(simg2))
-					{
-						dimg->DrawSImagePt(simg2, destRect.min);
-						simg2.Delete();
-					}
-				}
-				else
-				{
-					simg->info.hdpi = dimg->GetHDPI() * IntOS2Double(drawW) / imgW;
-					simg->info.vdpi = dimg->GetVDPI() * IntOS2Double(drawH) / imgH;
-					dimg->DrawSImagePt2(simg, destRect.min, srcRect.min, srcRect.GetSize());
-				}
+				simg->info.hdpi = dimg->GetHDPI() * IntOS2Double(drawW) / imgW;
+				simg->info.vdpi = dimg->GetVDPI() * IntOS2Double(drawH) / imgH;
+				dimg->DrawSImagePt2(simg, destRect.min, srcRect.min, srcRect.GetSize());
 				if (imgTimeMS == 0)
 				{
 					imgTimeMS = thisTimeMS;
@@ -1161,7 +1142,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			dimg->DelFont(f);
 	}
 	imgDurMS.Set(imgTimeMS);
-	resizer.Delete();
+//	resizer.Delete();
 }
 
 NN<Media::DrawEngine> Media::VectorGraph::GetDrawEngine() const

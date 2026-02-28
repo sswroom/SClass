@@ -909,7 +909,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	Bool fullRange = false;
 	info->dispSize = Math::Size2D<UIntOS>(data->dispWidth, data->dispHeight);
 	info->storeSize = Math::Size2D<UIntOS>(data->storeWidth, data->storeHeight);
-	info->par2 = data->par;
+	info->SetPAR(data->par);
 	info->byteSize = 0;
 	switch (data->currFmt)
 	{

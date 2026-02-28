@@ -27,9 +27,8 @@ void Media::FrameInfo::Clear()
 	this->storeBPP = 0;
 	this->pf  = Media::PF_UNKNOWN;
 	this->byteSize = 0;
-	this->par2 = 1.0;
-	this->hdpi = 0;
-	this->vdpi = 0;
+	this->hdpi = 96.0;
+	this->vdpi = 96.0;
 	this->ftype = Media::FT_NON_INTERLACE;
 	this->atype = Media::AT_IGNORE_ALPHA;
 	this->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
@@ -45,7 +44,6 @@ void Media::FrameInfo::Set(NN<const FrameInfo> info)
 	this->storeBPP = info->storeBPP;
 	this->pf  = info->pf;
 	this->byteSize = info->byteSize;
-	this->par2 = info->par2;
 	this->hdpi = info->hdpi;
 	this->vdpi = info->vdpi;
 	this->ftype = info->ftype;
@@ -88,7 +86,7 @@ void Media::FrameInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUIntOS(this->byteSize);
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("Pixel Aspect Ratio = "));
-	Text::SBAppendF64(sb, this->par2);
+	Text::SBAppendF64(sb, this->CalcPAR());
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("H-DPI = "));
 	Text::SBAppendF64(sb, this->hdpi);
@@ -110,6 +108,16 @@ void Media::FrameInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\r\nColor Profile:\r\n"));
 	this->color.ToString(sb);
+}
+
+Double Media::FrameInfo::CalcPAR() const
+{
+	return this->vdpi / this->hdpi;
+}
+
+void Media::FrameInfo::SetPAR(Double par)
+{
+	this->vdpi = this->hdpi * par;
 }
 
 Text::CStringNN Media::FrameTypeGetName(FrameType frameType)

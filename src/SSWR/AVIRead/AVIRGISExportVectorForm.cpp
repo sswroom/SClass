@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportVectorForm::OnExportClicked(AnyType u
 	view->SetDPI(dpi, 96.0);
 	view->SetCenterXY(Math::Coord2DDbl(x, y));
 	view->SetMapScale(scale);
-	Map::DrawMapRenderer renderer(me->core->GetDrawEngine(), me->env, color, nullptr, Map::DrawMapRenderer::DrawType::DT_PIXELDRAW);
+	Map::DrawMapRenderer renderer(me->core->GetDrawEngine(), me->env, color, nullptr, Map::DrawMapRenderer::DrawType::DT_VECTORDRAW);
 	if (renderer.DrawMap(g, view, nullptr))
 	{
 		me->env->WaitForLoad(60000);

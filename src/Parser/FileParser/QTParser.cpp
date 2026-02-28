@@ -439,7 +439,6 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 		frInfo.storeBPP = 0;
 		frInfo.pf = Media::PF_UNKNOWN;
 		frInfo.byteSize = 0;
-		frInfo.par2 = 1;
 		frInfo.hdpi = 96;
 		frInfo.vdpi = 96;
 		frInfo.ftype = Media::FT_NON_INTERLACE;
@@ -640,8 +639,8 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 					}
 					else if (*(Int32*)&buff[atomOfst + 4] == *(Int32*)"pasp")
 					{
-						frInfo.par2 = ReadMUInt32(&buff[atomOfst + 8]) / (Double)ReadMUInt32(&buff[atomOfst + 12]);
-						frInfo.vdpi = frInfo.hdpi / frInfo.par2;
+						frInfo.SetPAR(ReadMUInt32(&buff[atomOfst + 8]) / (Double)ReadMUInt32(&buff[atomOfst + 12]));
+						frInfo.vdpi = frInfo.hdpi / frInfo.CalcPAR();
 					}
 					else if (*(Int32*)&buff[atomOfst + 4] == *(Int32*)"colr")
 					{

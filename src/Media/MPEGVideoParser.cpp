@@ -90,8 +90,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UIntOS frame
 	frameInfo->storeBPP = 0;
 	frameInfo->pf = Media::PF_UNKNOWN;
 	frameInfo->byteSize = 0;
-	frameInfo->par2 = 1; // def = 1;
 	frameInfo->hdpi = 96;
+	frameInfo->vdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
 	frameInfo->atype = Media::AT_IGNORE_ALPHA;
 	frameInfo->rotateType = Media::RotateType::None;
@@ -255,16 +255,16 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UIntOS frame
 		{
 		case 1:
 		default:
-			frameInfo->par2 = 1;
+			frameInfo->SetPAR(1);
 			break;
 		case 2:
-			frameInfo->par2 = 0.75 * horizontal_size / vertical_size;
+			frameInfo->SetPAR(0.75 * horizontal_size / vertical_size);
 			break;
 		case 3:
-			frameInfo->par2 = 0.5625 * horizontal_size / vertical_size;
+			frameInfo->SetPAR(0.5625 * horizontal_size / vertical_size);
 			break;
 		case 4:
-			frameInfo->par2 = 0.45248868778280542986425339366516 * horizontal_size / vertical_size;
+			frameInfo->SetPAR(0.45248868778280542986425339366516 * horizontal_size / vertical_size);
 			break;
 		}
 	}
@@ -274,76 +274,76 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UIntOS frame
 		{
 		case 1:
 		default:
-			frameInfo->par2 = 1;
+			frameInfo->SetPAR(1);
 			break;
 		case 2:
-			frameInfo->par2 = 0.6735;
+			frameInfo->SetPAR(0.6735);
 			break;
 		case 3: //16:9 625 line
-			frameInfo->par2 = 0.7031;
+			frameInfo->SetPAR(0.7031);
 			break;
 		case 4:
-			frameInfo->par2 = 0.7615;
+			frameInfo->SetPAR(0.7615);
 			break;
 		case 5:
-			frameInfo->par2 = 0.8055;
+			frameInfo->SetPAR(0.8055);
 			break;
 		case 6: //16:9 525line
-			frameInfo->par2 = 0.8437;
+			frameInfo->SetPAR(0.8437);
 			break;
 		case 7:
-			frameInfo->par2 = 0.8935;
+			frameInfo->SetPAR(0.8935);
 			break;
 		case 8: //CCIR601 625line
-			frameInfo->par2 = 0.9375;
+			frameInfo->SetPAR(0.9375);
 			break;
 		case 9:
-			frameInfo->par2 = 0.9815;
+			frameInfo->SetPAR(0.9815);
 			break;
 		case 10:
-			frameInfo->par2 = 1.0255;
+			frameInfo->SetPAR(1.0255);
 			break;
 		case 11:
-			frameInfo->par2 = 1.0695;
+			frameInfo->SetPAR(1.0695);
 			break;
 		case 12: //CCIR601 525line
-			frameInfo->par2 = 1.1250;
+			frameInfo->SetPAR(1.1250);
 			break;
 		case 13:
-			frameInfo->par2 = 1.1575;
+			frameInfo->SetPAR(1.1575);
 			break;
 		case 14:
-			frameInfo->par2 = 1.2015;
+			frameInfo->SetPAR(1.2015);
 			break;
 		}
 	}
 	switch (aspect_ratio_information)
 	{
 	case 1:
-		frameInfo->par2 = 1;
+		frameInfo->SetPAR(1);
 		break;
 	default:
 		if (horizontal_size == 352 && vertical_size == 240)
 		{
-			frameInfo->par2 = 0.75 * horizontal_size / vertical_size;
+			frameInfo->SetPAR(0.75 * horizontal_size / vertical_size);
 		}
 		else if (horizontal_size == 352 && vertical_size == 288)
 		{
-			frameInfo->par2 = 0.75 * horizontal_size / vertical_size;
+			frameInfo->SetPAR(0.75 * horizontal_size / vertical_size);
 		}
 		else
 		{
-			frameInfo->par2 = 1;
+			frameInfo->SetPAR(1);
 		}
 		break;
 	case 2:
-		frameInfo->par2 = 0.75 * horizontal_size / vertical_size;
+		frameInfo->SetPAR(0.75 * horizontal_size / vertical_size);
 		break;
 	case 3:
-		frameInfo->par2 = 0.5625 * horizontal_size / vertical_size;
+		frameInfo->SetPAR(0.5625 * horizontal_size / vertical_size);
 		break;
 	case 4:
-		frameInfo->par2 = 0.45248868778280542986425339366516 * horizontal_size / vertical_size;
+		frameInfo->SetPAR(0.45248868778280542986425339366516 * horizontal_size / vertical_size);
 		break;
 	}
 	fRateNorm.Set(frameRateNorm);

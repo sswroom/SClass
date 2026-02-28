@@ -79,7 +79,6 @@ Media::FBSurface::FBSurface(Optional<MonitorHandle> hMon, Optional<const Media::
 	this->info.storeSize.x = (UIntOS)this->clsData->finfo.line_length / (this->info.storeBPP >> 3);
 	this->info.storeSize.y = this->info.dispSize.y;
 	this->info.byteSize = this->info.storeSize.CalcArea() * (this->info.storeBPP >> 3);
-	this->info.par2 = 1.0;
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
 	this->info.rotateType = rotateType;

@@ -2658,9 +2658,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 //					filterMeth = chunkData[11];
 					interlaceMeth = chunkData[12];
 
-					info.par2 = 1.0;
-					info.hdpi = 72.0;
-					info.vdpi = 72.0;
+					info.hdpi = 96.0;
+					info.vdpi = 96.0;
 					info.fourcc = 0;
 					info.ftype = Media::FT_NON_INTERLACE;
 					info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
@@ -2680,22 +2679,21 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 					if (chunkData[8] == 1)
 					{
 						info.hdpi = 1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, 1.0 / ReadMInt32(&chunkData[0]));
-						info.par2 = info.hdpi * Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, 1.0 / ReadMInt32(&chunkData[4]));
-						info.vdpi = info.hdpi / info.par2;
+						info.vdpi = 1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, 1.0 / ReadMInt32(&chunkData[4]));
 					}
 					else if (chunkData[8] == 0)
 					{
 						Int32 hdpi = ReadMInt32(&chunkData[0]);
 						Int32 vdpi = ReadMInt32(&chunkData[4]);
-						info.par2 = hdpi / (Double)vdpi;
-						if (info.par2 > 1)
+						Double par = hdpi / (Double)vdpi;
+						if (par > 1)
 						{
-							info.vdpi = 300.0 / info.par2;
+							info.vdpi = 300.0 / par;
 							info.hdpi = 300.0;
 						}
 						else
 						{
-							info.hdpi = 300.0 * info.par2;
+							info.hdpi = 300.0 * par;
 							info.vdpi = 300.0;
 						}
 					}
