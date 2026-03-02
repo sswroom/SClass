@@ -731,11 +731,13 @@ Media::GDIImage::GDIImage(NN<GDIEngine> eng, Math::Coord2D<IntOS> tl, Math::Size
 	this->currFont = nullptr;
 	this->currPen = nullptr;
 	this->colorSess = nullptr;
+	this->resizer = nullptr;
 	SetBkMode((HDC)this->hdcBmp, TRANSPARENT);
 }
 
 Media::GDIImage::~GDIImage()
 {
+	this->resizer.Delete();
 }
 
 UIntOS Media::GDIImage::GetWidth() const
@@ -2259,6 +2261,37 @@ Bool Media::GDIImage::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl 
 
 Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
+	NN<Media::Resizer::LanczosResizerRGB_C8> nnresizer;
+	Optional<StaticImage> tmpImg = nullptr;
+	Double destRight = destTL.x + srcSize.x * img->info.hdpi / this->info.hdpi;
+	Double destBottom = destTL.y + srcSize.y * img->info.vdpi / this->info.vdpi;
+	if (destRight < 0 || destBottom < 0 || destTL.x >= UIntOS2Double(this->info.dispSize.x) || destTL.y >= UIntOS2Double(this->info.dispSize.y))
+	{
+		return true;
+	}
+	IntOS drawW = Double2IntOS(destRight) - Double2IntOS(destTL.x);
+	IntOS drawH = Double2IntOS(destBottom) - Double2IntOS(destTL.y);
+	if (drawW <= 0 || drawH <= 0)
+	{
+		return true;
+	}
+	if ((UIntOS)drawW != img->info.dispSize.x || (UIntOS)drawH != img->info.dispSize.y)
+	{
+		if (!this->resizer.SetTo(nnresizer))
+		{
+			NEW_CLASSNN(nnresizer, Media::Resizer::LanczosResizerRGB_C8(4, 4, img->info.color, img->info.color, Optional<Media::ColorManagerSess>::ConvertFrom(this->colorSess), img->info.atype));
+			resizer = nnresizer;
+		}
+		nnresizer->SetTargetSize(Math::Size2D<UIntOS>((UIntOS)drawW, (UIntOS)drawH));
+		nnresizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
+		tmpImg = nnresizer->ProcessToNewPartial(img, srcTL, srcSize);
+		if (!tmpImg.SetTo(img))
+		{
+			return false;
+		}
+		srcTL = Math::Coord2DDbl(0, 0);
+		srcSize = Math::Size2DDbl(IntOS2Double(drawW), IntOS2Double(drawH));
+	}
 	if (this->hBmp == 0)
 	{
 		Bool succ = false;
@@ -2268,6 +2301,7 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 			succ = this->DrawImageRect(dimg, Double2IntOS(destTL.x), Double2IntOS(destTL.y), Double2IntOS(destTL.x + srcSize.x * this->info.hdpi / img->info.hdpi), Double2IntOS(destTL.y + srcSize.y * this->info.vdpi / img->info.vdpi));
 			this->eng->DeleteImage(dimg);
 		}
+		tmpImg.Delete();
 		return succ;
 	}
 	if (img->info.pf != Media::PF_B8G8R8A8)
@@ -2276,6 +2310,7 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 	}
 	if (img->info.storeBPP != 32)
 	{
+		tmpImg.Delete();
 		return false;
 	}
 	if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
@@ -2368,7 +2403,7 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 				this->eng->iab.SetSourceProfile(img->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);
-				this->eng->iab.Blend(dbits + (this->size.y - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, img->info.atype);
+				this->eng->iab.Blend(dbits + (this->size.y - y - 1) * dbpl + (x * 4), -dbpl, sbits + sy * sbpl + (sx << 2), sbpl, w, h, img->info.atype);
 			}
 		}
 		else
@@ -2430,6 +2465,7 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 		}
 #endif
 	}
+	tmpImg.Delete();
 	return true;
 }
 

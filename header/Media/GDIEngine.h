@@ -2,6 +2,7 @@
 #define _SM_MEDIA_GDIENGINE
 #include "Media/DrawEngine.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -98,6 +99,7 @@ namespace Media
 	{
 	private:
 		NN<GDIEngine> eng;
+		Optional<Media::Resizer::LanczosResizerRGB_C8> resizer;
 		Math::Size2D<UIntOS> size;
 		UInt32 bitCount;
 		Media::DrawEngine::DrawPos strAlign;

@@ -167,7 +167,7 @@ Bool Media::DDrawSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Mat
 			rc.left -= info.rcMonitor.left;
 			rc.top -= info.rcMonitor.top;
 			rc.right -= info.rcMonitor.left;
-			rc.bottom -= info.rcMonitor.bottom;
+			rc.bottom -= info.rcMonitor.top;
 		}
 	}
 	else
