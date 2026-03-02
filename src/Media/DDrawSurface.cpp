@@ -50,7 +50,6 @@ Media::DDrawSurface::DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surfac
 	this->info.storeSize.x = (UIntOS)ddsd.lPitch / (this->info.storeBPP >> 3);
 	this->info.storeSize.y = ddsd.dwHeight;
 	this->info.byteSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
-	this->info.par2 = 1.0;
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
 	NN<const Media::ColorProfile> color;

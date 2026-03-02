@@ -142,8 +142,8 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, Ou
 				info->dispSize.x = (ULONG)format->bmiHeader.biWidth;
 				info->dispSize.y = (ULONG)format->bmiHeader.biHeight;
 				info->storeSize = info->dispSize;
-				info->par2 = 1;
 				info->hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
+				info->vdpi = info->hdpi;
 				info->color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 				info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 				info->ycOfst = Media::YCOFST_C_TOP_LEFT;
@@ -464,8 +464,8 @@ UIntOS Media::DShow::DShowVideoCapture::GetSupportedFormats(UnsafeArray<VideoFor
 				fmtArr[outCnt].info.pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
 				fmtArr[outCnt].info.byteSize = format->bmiHeader.biSizeImage;
 				fmtArr[outCnt].info.ftype = Media::FT_NON_INTERLACE;
-				fmtArr[outCnt].info.par2 = 1;
 				fmtArr[outCnt].info.hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
+				fmtArr[outCnt].info.vdpi = fmtArr[outCnt].info.hdpi;
 				fmtArr[outCnt].info.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 				fmtArr[outCnt].info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 				fmtArr[outCnt].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;

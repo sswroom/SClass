@@ -73,6 +73,7 @@ Media::VFVideoStream::VFVideoStream(NN<Media::VFMediaFile> mfile)
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info.hdpi = 96;
+	this->info.vdpi = 96;
 	Bool isNTSC = false;
 	//Bool isPAL = false;
 	if (this->frameRateScale == 1001 && this->frameRate == 24000)
@@ -95,16 +96,16 @@ Media::VFVideoStream::VFVideoStream(NN<Media::VFMediaFile> mfile)
 	{
 		if ((this->info.dispSize.x == 720 && this->info.dispSize.y == 480) || (this->info.dispSize.x == 704 && this->info.dispSize.y == 480))
 		{
-			this->info.par2 = 1/1.097222222222222222222;
+			this->info.SetPAR(1/1.097222222222222222222);
 		}
 		else
 		{
-			this->info.par2 = 1;
+			this->info.SetPAR(1);
 		}
 	}
 	else
 	{
-		this->info.par2 = 1; ////////////////////////
+		this->info.SetPAR(1); ////////////////////////
 	}
 	this->info.ftype = Media::FT_NON_INTERLACE;
 

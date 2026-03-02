@@ -199,8 +199,8 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NN<Media::FrameInfo
 	frameInfo->storeBPP = info.format->biBitCount;
 	frameInfo->pf = Media::PixelFormatGetDef(info.format->biCompression, info.format->biBitCount);
 	frameInfo->byteSize = info.format->biSizeImage;
-	frameInfo->par2 = 1;
 	frameInfo->hdpi = 96;
+	frameInfo->vdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
 	frameInfo->atype = Media::AT_IGNORE_ALPHA;
 	frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
@@ -209,21 +209,21 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NN<Media::FrameInfo
 
 	if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 240)
 	{
-		frameInfo->par2 = 1.1;
+		frameInfo->SetPAR(1.1);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
 	else if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 288)
 	{
-		frameInfo->par2 = 0.91666666666666666666666666666667;
+		frameInfo->SetPAR(0.91666666666666666666666666666667);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
 	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 480)
 	{
-		frameInfo->par2 = 1.1;
+		frameInfo->SetPAR(1.1);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
@@ -231,7 +231,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NN<Media::FrameInfo
 	}
 	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 576)
 	{
-		frameInfo->par2 = 0.91666666666666666666666666666667;
+		frameInfo->SetPAR(0.91666666666666666666666666666667);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
