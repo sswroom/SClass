@@ -2270,6 +2270,14 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 		}
 		return succ;
 	}
+	if (img->info.pf != Media::PF_B8G8R8A8)
+	{
+		img->ToB8G8R8A8();
+	}
+	if (img->info.storeBPP != 32)
+	{
+		return false;
+	}
 	if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
 	{
 		if (this->IsOffScreen())
