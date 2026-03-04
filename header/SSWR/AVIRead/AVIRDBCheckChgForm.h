@@ -49,6 +49,8 @@ namespace SSWR
 			NN<UI::GUIRadioButton> radDataConn;
 			NN<UI::GUIComboBox> cboDataConn;
 			NN<UI::GUIButton> btnDataFile;
+			NN<UI::GUILabel> lblDataSchema;
+			NN<UI::GUIComboBox> cboDataSchema;
 			NN<UI::GUILabel> lblDataTable;
 			NN<UI::GUIComboBox> cboDataTable;
 			NN<UI::GUILabel> lblKeyCol;
@@ -109,10 +111,12 @@ namespace SSWR
 			static void __stdcall OnAssignColClicked(AnyType userObj);
 			static void __stdcall OnDataConnSelChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDataConnCboSelChg(AnyType userObj);
+			static void __stdcall OnDataSchemaSelChg(AnyType userObj);
 			Optional<Text::String> GetNewText(UIntOS colIndex);
 			NN<Text::String> GetNewTextNN(UIntOS colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
 			Bool InitConn(NN<DB::ReadingDB> conn, Int8 connTz);
+			Bool InitSchema(Text::CString schema);
 			Bool GetColIndex(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
 			Bool IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable);
 			Bool CheckDataFile();
