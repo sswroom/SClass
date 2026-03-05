@@ -30,7 +30,7 @@ const Char *Data::DateTimeUtil::monthString[] = {"January", "February", "March",
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
 
-Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs)
+Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, UnsafeArray<Text::PString> dateStrs, DateOrder dateOrder)
 {
 	UInt32 vals[3];
 	vals[0] = 0;
@@ -49,7 +49,7 @@ Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, T
 	else if (vals[2] > 100 || dateStrs[2].leng >= 4)
 	{
 		t->year = (UInt16)vals[2];
-		if (vals[0] > 12)
+		if (vals[0] > 12 || dateOrder == DateOrder::DMY)
 		{
 			t->month = (UInt8)vals[1];
 			t->day = (UInt8)vals[0];
@@ -62,11 +62,17 @@ Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, T
 	}
 	else
 	{
-		if (vals[1] > 12)
+		if (vals[1] > 12 || dateOrder == DateOrder::MDY)
 		{
 			t->year = (((t->year / 100) * 100) + (Int32)vals[2]);
 			t->month = (UInt8)vals[0];
 			t->day = (UInt8)vals[1];
+		}
+		else if (dateOrder == DateOrder::DMY)
+		{
+			t->year = (((t->year / 100) * 100) + (Int32)vals[2]);
+			t->month = (UInt8)vals[1];
+			t->day = (UInt8)vals[0];
 		}
 		else
 		{
@@ -78,7 +84,7 @@ Bool Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, T
 	return true;
 }
 
-Bool Data::DateTimeUtil::TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec)
+Bool Data::DateTimeUtil::TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, UnsafeArray<Text::PString> timeStrs, OutParam<UInt32> nanosec)
 {
 	Text::PString strs[2];
 	UIntOS valTmp;
@@ -1422,6 +1428,17 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 
 Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
 {
+	if (defTzQhr <= -16 || defTzQhr >= 40)
+	{
+		return String2TimeValue(dateStr, tval, defTzQhr, DateOrder::MDY, outTzQhr, nanosec);
+	}
+	else
+	{
+		return String2TimeValue(dateStr, tval, defTzQhr, DateOrder::DMY, outTzQhr, nanosec);
+	}
+}
+Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, DateOrder dateOrder, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
+{
 	UTF8Char buff[64];
 	UTF8Char *longBuff = 0;
 	Text::PString strs2[5];
@@ -1435,9 +1452,9 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		while (dateStr.v[0] == ' ')
 			dateStr = dateStr.Substring(1);
 	}
-	if (dateStr.leng >= 64)
+	if (dateStr.leng >= 62)
 	{
-		longBuff = MemAlloc(UTF8Char, dateStr.leng + 1);
+		longBuff = MemAlloc(UTF8Char, dateStr.leng + 3);
 		dateStr.ConcatTo(longBuff);
 		strs[0] = {longBuff, dateStr.leng};
 	}
@@ -1456,7 +1473,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		Bool dateSucc = true;
 		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
-			if (!DateValueSetDate(tval, strs))
+			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
 				if (longBuff) MemFree(longBuff);
 				return false;
@@ -1464,7 +1481,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
-			if (!DateValueSetDate(tval, strs))
+			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
 				if (longBuff) MemFree(longBuff);
 				return false;
@@ -1472,7 +1489,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
-			if (!DateValueSetDate(tval, strs))
+			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
 				if (longBuff) MemFree(longBuff);
 				return false;
@@ -1527,7 +1544,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 			}
 			strs2[1].leng = i;
 		}
-		if (Text::StrSplitP(strs, 3, strs2[1], ':') == 3)
+		if ((i = Text::StrSplitP(strs, 3, strs2[1], ':')) == 3)
 		{
 			if (strs[2].v[strs[2].leng - 1] == 'Z')
 			{
@@ -1535,6 +1552,14 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 				strs[2].leng -= 1;
 				outTzQhr.Set(0);
 			}
+			TimeValueSetTime(tval, strs, nanosec);
+		}
+		else if (i == 2)
+		{
+			strs[2].v = &strs[1].v[strs[1].leng + 1];
+			strs[2].leng = 1;
+			strs[2].v[0] = '0';
+			strs[2].v[1] = 0;
 			TimeValueSetTime(tval, strs, nanosec);
 		}
 		else
@@ -1553,7 +1578,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 	{
 		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
-			if (!DateValueSetDate(tval, strs))
+			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
 				if (longBuff) MemFree(longBuff);
 				return false;
@@ -1565,7 +1590,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
-			if (!DateValueSetDate(tval, strs))
+			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
 				if (longBuff) MemFree(longBuff);
 				return false;
@@ -1725,7 +1750,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 					{
 						if (Text::StrSplitP(strs, 3, strs2[j], '/') == 3)
 						{
-							if (!DateValueSetDate(tval, strs))
+							if (!DateValueSetDate(tval, strs, dateOrder))
 							{
 								if (longBuff) MemFree(longBuff);
 								return false;
@@ -1734,7 +1759,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 					}
 					else if (Text::StrSplitP(strs, 3, strs2[j], '-') == 3)
 					{
-						if (!DateValueSetDate(tval, strs))
+						if (!DateValueSetDate(tval, strs, dateOrder))
 						{
 							if (longBuff) MemFree(longBuff);
 							return false;

@@ -32,6 +32,13 @@ namespace Data
 			UInt8 day;
 		};
 
+		enum class DateOrder
+		{
+			YMD,
+			DMY,
+			MDY
+		};
+
 		struct TimeValue : public DateValue
 		{
 			UInt8 hour;
@@ -45,8 +52,8 @@ namespace Data
 		static Int8 localTzQhr;
 		static Bool localTzValid;
 
-		static Bool DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs);
-		static Bool TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
+		static Bool DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, UnsafeArray<Text::PString> dateStrs, DateOrder dateOrder);
+		static Bool TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, UnsafeArray<Text::PString> timeStrs, OutParam<UInt32> nanosec);
 	public:
 		static Int64 Date2TotalDays(Int32 year, Int32 month, Int32 day);
 		static Int64 DateValue2TotalDays(NN<const DateValue> d);
@@ -60,6 +67,7 @@ namespace Data
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
 		static UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, UnsafeArray<const UTF8Char> pattern);
 		static Bool String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
+		static Bool String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, DateOrder dateOrder, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
 		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval);
 
 		static Bool IsYearLeap(IntOS year);
