@@ -253,16 +253,16 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 Optional<Media::DrawImage> Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 {
 	NN<Media::GTKDrawImage> dimg = NN<Media::GTKDrawImage>::ConvertFrom(img);
-	Math::Size2D<UIntOS> size = dimg->GetSize();
-	Media::AlphaType atype = dimg->GetAlphaType();
+	Math::Size2D<UIntOS> size = dimg->PixelGetSize();
+	Media::AlphaType atype = dimg->PixelGetAlphaType();
 	if (dimg->GetSurface())
 	{
 		NN<Media::GTKDrawImage> newImg;
 		Bool upsideDown;
 		UnsafeArray<UInt8> dptr;
-		if (Optional<GTKDrawImage>::ConvertFrom(this->CreateImage32(size, atype)).SetTo(newImg) && newImg->GetImgBits(upsideDown).SetTo(dptr))
+		if (Optional<GTKDrawImage>::ConvertFrom(this->CreateImage32(size, atype)).SetTo(newImg) && newImg->PixelGetBits(upsideDown).SetTo(dptr))
 		{
-			((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr.Ptr(), newImg->GetDataBpl(), size.x, size.y, upsideDown);
+			((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr.Ptr(), newImg->PixelGetBpl(), size.x, size.y, upsideDown);
 			newImg->SetHDPI(img->GetHDPI());
 			newImg->SetVDPI(img->GetVDPI());
 			return newImg;
@@ -430,24 +430,19 @@ Media::GTKDrawImage::~GTKDrawImage()
 	this->resizer.Delete();
 }
 
-UIntOS Media::GTKDrawImage::GetWidth() const
+Double Media::GTKDrawImage::GetWidth() const
 {
-	return this->info.dispSize.x;
+	return UIntOS2Double(this->info.dispSize.x);
 }
 
-UIntOS Media::GTKDrawImage::GetHeight() const
+Double Media::GTKDrawImage::GetHeight() const
 {
-	return this->info.dispSize.y;
+	return UIntOS2Double(this->info.dispSize.y);
 }
 
-Math::Size2D<UIntOS> Media::GTKDrawImage::GetSize() const
+Math::Size2DDbl Media::GTKDrawImage::GetSize() const
 {
-	return this->info.dispSize;
-}
-
-UInt32 Media::GTKDrawImage::GetBitCount() const
-{
-	return this->info.storeBPP;
+	return this->info.dispSize.ToDouble();
 }
 
 NN<const Media::ColorProfile> Media::GTKDrawImage::GetColorProfile() const
@@ -458,16 +453,6 @@ NN<const Media::ColorProfile> Media::GTKDrawImage::GetColorProfile() const
 void Media::GTKDrawImage::SetColorProfile(NN<const ColorProfile> color)
 {
 	this->info.color.Set(color);
-}
-
-Media::AlphaType Media::GTKDrawImage::GetAlphaType() const
-{
-	return this->info.atype;
-}
-
-void Media::GTKDrawImage::SetAlphaType(Media::AlphaType atype)
-{
-	this->info.atype = atype;
 }
 
 Double Media::GTKDrawImage::GetHDPI() const
@@ -490,34 +475,9 @@ void Media::GTKDrawImage::SetVDPI(Double dpi)
 	this->info.vdpi = dpi;
 }
 
-UnsafeArrayOpt<UInt8> Media::GTKDrawImage::GetImgBits(OutParam<Bool> revOrder)
-{
-	cairo_surface_flush((cairo_surface_t*)this->surface);
-	revOrder.Set(false);
-	return cairo_image_surface_get_data((cairo_surface_t*)this->surface);
-}
-
-void Media::GTKDrawImage::GetImgBitsEnd(Bool modified)
-{
-	if (modified)
-	{
-		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
-	}
-}
-
-UIntOS Media::GTKDrawImage::GetImgBpl() const
-{
-	return (this->info.storeSize.x * this->info.storeBPP) >> 3;
-}
-
 Optional<Media::EXIFData> Media::GTKDrawImage::GetEXIF() const
 {
 	return this->exif;
-}
-
-Media::PixelFormat Media::GTKDrawImage::GetPixelFormat() const
-{
-	return this->info.pf;
 }
 
 void Media::GTKDrawImage::SetColorSess(Optional<Media::ColorSess> colorSess)
@@ -950,11 +910,11 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		Bool revOrder;
 		UnsafeArray<UInt8> imgBits;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
+		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->PixelGetBits(revOrder).SetTo(imgBits))
 		{
-			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->info.dispSize.x, gimg->info.dispSize.y, gimg->PixelGetBpl(), 0xFF);
 			gimg->info.atype = Media::AT_ALPHA_ALL_FF;
-			gimg->GetImgBitsEnd(true);
+			gimg->PixelGetBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
 		cairo_translate((cairo_t*)this->cr, tl.x + IntOS2Double(this->tl.x), tl.y + IntOS2Double(this->tl.y));
@@ -1046,11 +1006,11 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destT
 		UnsafeArray<UInt8> imgBits;
 		Bool revOrder;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
+		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->PixelGetBits(revOrder).SetTo(imgBits))
 		{
-			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->info.dispSize.x, gimg->info.dispSize.y, gimg->PixelGetBpl(), 0xFF);
 			gimg->info.atype = Media::AT_ALPHA_ALL_FF;
-			gimg->GetImgBitsEnd(true);
+			gimg->PixelGetBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
 		cairo_rectangle((cairo_t*)this->cr, destTL.x + IntOS2Double(this->tl.x), destTL.y + IntOS2Double(this->tl.y), srcSize.x, srcSize.y);
@@ -1551,10 +1511,10 @@ UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 	}
 	Bool revOrder;
 	UnsafeArray<UInt8> imgPtr;
-	if (this->GetBitCount() == 32 && this->GetImgBits(revOrder).SetTo(imgPtr))
+	if (this->PixelGetBitCount() == 32 && this->PixelGetBits(revOrder).SetTo(imgPtr))
 	{
-		ImageUtil_ImageFillAlpha32(imgPtr.Ptr(), this->GetWidth(), this->GetHeight(), this->GetDataBpl(), 0xff);
-		this->GetImgBitsEnd(true);
+		ImageUtil_ImageFillAlpha32(imgPtr.Ptr(), this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), 0xff);
+		this->PixelGetBitsEnd(true);
 	}
 	GdkPixbuf *pixbuf;
 	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispSize.x, (gint)this->info.dispSize.y);
@@ -1595,9 +1555,63 @@ void Media::GTKDrawImage::GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left,
 	this->CopyBits(left, top, destBuff.Ptr(), destBpl, width, height, upsideDown);
 }
 
-Int32 Media::GTKDrawImage::GetPixel32(IntOS x, IntOS y) const
+Bool Media::GTKDrawImage::PixelSupported() const
 {
-	return 0;
+	return this->surface != 0;
+}
+
+UIntOS Media::GTKDrawImage::PixelGetWidth() const
+{
+	return this->info.dispSize.x;
+}
+
+UIntOS Media::GTKDrawImage::PixelGetHeight() const
+{
+	return this->info.dispSize.y;
+}
+
+UInt32 Media::GTKDrawImage::PixelGetBitCount() const
+{
+	return this->info.storeBPP;
+}
+
+Media::AlphaType Media::GTKDrawImage::PixelGetAlphaType() const
+{
+	return this->info.atype;
+}
+
+void Media::GTKDrawImage::PixelSetAlphaType(Media::AlphaType atype)
+{
+	this->info.atype = atype;
+}
+
+UnsafeArrayOpt<UInt8> Media::GTKDrawImage::PixelGetBits(OutParam<Bool> revOrder)
+{
+	if (this->surface == 0)
+	{
+		return nullptr;
+	}
+	cairo_surface_flush((cairo_surface_t*)this->surface);
+	revOrder.Set(false);
+	return cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+}
+
+void Media::GTKDrawImage::PixelGetBitsEnd(Bool modified)
+{
+	if (modified)
+	{
+		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+	}
+}
+
+UIntOS Media::GTKDrawImage::PixelGetBpl() const
+{
+	return (this->info.storeSize.x * this->info.storeBPP) >> 3;
+}
+
+Media::PixelFormat Media::GTKDrawImage::PixelGetFormat() const
+{
+	return this->info.pf;
 }
 
 void *Media::GTKDrawImage::GetSurface() const

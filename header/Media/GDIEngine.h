@@ -118,23 +118,16 @@ namespace Media
 		GDIImage(NN<GDIEngine> eng, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
 		virtual ~GDIImage();
 
-		virtual UIntOS GetWidth() const;
-		virtual UIntOS GetHeight() const;
-		virtual Math::Size2D<UIntOS> GetSize() const;
-		virtual UInt32 GetBitCount() const;
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+		virtual Math::Size2DDbl GetSize() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
 		virtual void SetColorProfile(NN<const ColorProfile> color);
-		virtual Media::AlphaType GetAlphaType() const;
-		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
 		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
-		virtual UnsafeArrayOpt<UInt8> GetImgBits(OutParam<Bool> revOrder);
-		virtual void GetImgBitsEnd(Bool modified);
-		virtual UIntOS GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
-		virtual Media::PixelFormat GetPixelFormat() const;
 		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen>);
@@ -186,6 +179,17 @@ namespace Media
 		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS>drawY);
 		void GetStringBoundRotW(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const WChar> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY);
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const;
+
+		virtual Bool PixelSupported() const;
+		virtual UIntOS PixelGetWidth() const;
+		virtual UIntOS PixelGetHeight() const;
+		virtual Media::AlphaType PixelGetAlphaType() const;
+		virtual void PixelSetAlphaType(Media::AlphaType atype);
+		virtual UInt32 PixelGetBitCount() const;
+		virtual UnsafeArrayOpt<UInt8> PixelGetBits(OutParam<Bool> revOrder);
+		virtual void PixelGetBitsEnd(Bool modified);
+		virtual UIntOS PixelGetBpl() const;
+		virtual Media::PixelFormat PixelGetFormat() const;
 
 		virtual Optional<Media::StaticImage> ToStaticImage() const;
 		virtual Optional<Media::RasterImage> AsRasterImage();

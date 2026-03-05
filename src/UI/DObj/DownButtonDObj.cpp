@@ -99,9 +99,9 @@ Bool UI::DObj::DownButtonDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 		if (!this->bmpClicked.SetTo(bmpChk))
 			return false;
 	}
-	if (this->dispTL.x + (IntOS)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->GetHeight() <= scnPos.y)
+	if (this->dispTL.x + (IntOS)bmpChk->PixelGetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->PixelGetHeight() <= scnPos.y)
 		return false;
-	return (bmpChk->GetPixel32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
+	return (bmpChk->PixelGet32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::DownButtonDObj::GetCursor()

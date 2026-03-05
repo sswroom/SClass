@@ -87,23 +87,16 @@ namespace Media
 	class DrawImage
 	{
 	public:
-		virtual UIntOS GetWidth() const = 0;
-		virtual UIntOS GetHeight() const = 0;
-		virtual Math::Size2D<UIntOS> GetSize() const = 0;
-		virtual UInt32 GetBitCount() const = 0;
+		virtual Double GetWidth() const = 0;
+		virtual Double GetHeight() const = 0;
+		virtual Math::Size2DDbl GetSize() const = 0;
 		virtual NN<const ColorProfile> GetColorProfile() const = 0;
 		virtual void SetColorProfile(NN<const ColorProfile> color) = 0;
-		virtual Media::AlphaType GetAlphaType() const = 0;
-		virtual void SetAlphaType(Media::AlphaType atype) = 0;
 		virtual Double GetHDPI() const = 0;
 		virtual Double GetVDPI() const = 0;
 		virtual void SetHDPI(Double dpi) = 0;
 		virtual void SetVDPI(Double dpi) = 0;
-		virtual UnsafeArrayOpt<UInt8> GetImgBits(OutParam<Bool> revOrder) = 0;
-		virtual void GetImgBitsEnd(Bool modified) = 0;
-		virtual UIntOS GetImgBpl() const = 0;
 		virtual Optional<Media::EXIFData> GetEXIF() const = 0;
-		virtual Media::PixelFormat GetPixelFormat() const = 0;
 		virtual void SetColorSess(Optional<Media::ColorSess> colorSess) = 0;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p) = 0;
@@ -130,6 +123,7 @@ namespace Media
 		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad) = 0;
 		virtual void SetClip(Math::RectAreaDbl clipRect){};
 		virtual void ClearClip(){};
+		Bool DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Text::HAlignment hAlign);
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern) = 0;
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color) = 0;
@@ -146,8 +140,18 @@ namespace Media
 		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY) = 0;
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const = 0;
 		
-		Bool DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Text::HAlignment hAlign);
-		UInt32 GetPixel32(IntOS x, IntOS y);
+		virtual Bool PixelSupported() const = 0;
+		virtual UIntOS PixelGetWidth() const = 0;
+		virtual UIntOS PixelGetHeight() const = 0;
+		virtual Media::AlphaType PixelGetAlphaType() const = 0;
+		virtual void PixelSetAlphaType(Media::AlphaType atype) = 0;
+		Math::Size2D<UIntOS> PixelGetSize() const;
+		virtual UInt32 PixelGetBitCount() const = 0;
+		virtual UnsafeArrayOpt<UInt8> PixelGetBits(OutParam<Bool> revOrder) = 0;
+		virtual void PixelGetBitsEnd(Bool modified) = 0;
+		virtual UIntOS PixelGetBpl() const = 0;
+		virtual Media::PixelFormat PixelGetFormat() const = 0;
+		UInt32 PixelGet32(IntOS x, IntOS y);
 		void SetImageAlpha(UInt8 alpha);
 		void MulImageAlpha(Double val);
 

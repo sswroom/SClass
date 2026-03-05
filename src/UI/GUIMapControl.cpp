@@ -721,7 +721,7 @@ void UI::GUIMapControl::UpdateMap()
 		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
 		NN<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
-		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), nullptr, b);
+		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize(), nullptr, b);
 		bgImg->DelBrush(b);
 		this->renderer->DrawMap(bgImg, this->view, imgDurMS);
 		t = clk.GetTimeDiff();

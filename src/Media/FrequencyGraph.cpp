@@ -155,9 +155,8 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		{
 			retImg = tmpImg.Ptr();
 			tmpImg->SetColorProfile(color);
-			sbpl = tmpImg->GetImgBpl();
 			b = tmpImg->NewBrushARGB(0xffffffff);
-			tmpImg->DrawRect(Math::Coord2DDbl(0, 0), tmpImg->GetSize().ToDouble(), nullptr, b);
+			tmpImg->DrawRect(Math::Coord2DDbl(0, 0), tmpImg->GetSize(), nullptr, b);
 			tmpImg->DelBrush(b);
 
 			minVal = minFreq[0];
@@ -190,8 +189,9 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 			Bool revOrder;
 			UnsafeArray<UInt8> bmpBits;
-			if (tmpImg->GetImgBits(revOrder).SetTo(bmpBits))
+			if (tmpImg->PixelGetBits(revOrder).SetTo(bmpBits))
 			{
+				sbpl = tmpImg->PixelGetBpl();
 				freqs = allFreqs;
 				if (revOrder)
 				{

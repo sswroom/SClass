@@ -398,7 +398,7 @@ Int32 Math::Geometry::VectorImage::GetZIndex() const
 	return this->zIndex;
 }
 
-Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UIntOS scnWidth, UIntOS scnHeight, Double hdpi, Double vdpi) const
+Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(Double scnWidth, Double scnHeight, Double hdpi, Double vdpi) const
 {
 	NN<Media::StaticImage> simg;
 	if (!this->img->GetImage(0).SetTo(simg))
@@ -422,17 +422,17 @@ Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UIntOS scnWidth, 
 	}
 	else if (this->size.y == 0)
 	{
-		sizeX = UIntOS2Double(scnWidth) * this->size.x;
-		sizeY = UIntOS2Double(scnWidth) * this->size.x * UIntOS2Double(simg->info.dispSize.y) / UIntOS2Double(simg->info.dispSize.x);
+		sizeX = scnWidth * this->size.x;
+		sizeY = scnWidth * this->size.x * UIntOS2Double(simg->info.dispSize.y) / UIntOS2Double(simg->info.dispSize.x);
 	}
 	else
 	{
-		sizeX = UIntOS2Double(scnWidth) * this->size.x;
-		sizeY = UIntOS2Double(scnHeight) * this->size.y;
+		sizeX = scnWidth * this->size.x;
+		sizeY = scnHeight * this->size.y;
 	}
 
-	scnX = UIntOS2Double(scnWidth) * this->tl.x - sizeX * this->br.x;
-	scnY = UIntOS2Double(scnHeight) * (1 - this->tl.y) - sizeY * (1 - this->br.y);
+	scnX = scnWidth * this->tl.x - sizeX * this->br.x;
+	scnY = scnHeight * (1 - this->tl.y) - sizeY * (1 - this->br.y);
 	return Math::RectAreaDbl(scnX, scnY, sizeX, sizeY);
 }
 

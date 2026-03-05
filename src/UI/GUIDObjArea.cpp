@@ -19,7 +19,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 				{
 					IntOS dbpl;
 					UnsafeArray<UInt8> destBuff;
-					if (me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl).SetTo(destBuff))
+					if (me->LockSurfaceBegin(currDrawImg->PixelGetWidth(), currDrawImg->PixelGetHeight(), dbpl).SetTo(destBuff))
 					{
 						UInt8 *tmpBuff = MemAlloc(UInt8, me->dispSize.CalcArea() << 2);
 						currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
@@ -120,7 +120,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 				{
 					IntOS dbpl;
 					UnsafeArray<UInt8> destBuff;
-					if (me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl).SetTo(destBuff))
+					if (me->LockSurfaceBegin(currDrawImg->PixelGetWidth(), currDrawImg->PixelGetHeight(), dbpl).SetTo(destBuff))
 					{
 						currDrawImg->CopyBits(0, 0, destBuff, (UIntOS)dbpl, me->dispSize.x, me->dispSize.y, false);
 						me->LockSurfaceEnd();

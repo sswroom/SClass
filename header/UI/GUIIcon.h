@@ -12,7 +12,7 @@ namespace UI
 	protected:
 		GUIIcon();
 	public:
-		GUIIcon(Media::DrawImage *img);
+		GUIIcon(NN<Media::DrawImage> img);
 		~GUIIcon();
 
 		void *GetHandle();

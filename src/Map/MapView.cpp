@@ -69,7 +69,7 @@ void Map::MapView::SetDestImage(NN<Media::DrawImage> img)
 	if (this->scnSize.GetWidth() != UIntOS2Double(img->GetWidth()) || this->scnSize.GetHeight() != UIntOS2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(img->GetSize().ToDouble(), this->GetCenter(), this->GetMapScale());
+		ChangeViewXY(img->GetSize(), this->GetCenter(), this->GetMapScale());
 	}
 }
 

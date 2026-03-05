@@ -2292,8 +2292,8 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 	if (!lyrs->img.SetTo(lyrImg))
 		return;
 	NN<Math::Geometry::Vector2D> vec;
-	UIntOS imgW;
-	UIntOS imgH;
+	Double imgW;
+	Double imgH;
 	UIntOS i;
 #ifdef NOSCH
 	IntOS j;
@@ -2304,7 +2304,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyr, nullptr, nullptr, lyrs->img, UIntOS2Double(lyrImg->GetWidth()) * 0.5, UIntOS2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, nullptr, nullptr, lyrs->img, lyrImg->GetWidth() * 0.5, lyrImg->GetHeight() * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2322,23 +2322,23 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 		imgH = lyrImg->GetHeight();
 		NN<Media::DrawImage> gimg2 = lyrImg;
 		NN<Media::DrawImage> gimg;
-		if (eng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)Double2IntOS(UIntOS2Double(imgW) * img->GetHDPI() / 96.0), (UIntOS)Double2IntOS(UIntOS2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType()).SetTo(gimg))
+		if (eng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)Double2IntOS(imgW * img->GetHDPI() / 96.0), (UIntOS)Double2IntOS(imgH * img->GetHDPI() / 96.0)), gimg2->PixelGetAlphaType()).SetTo(gimg))
 		{
 			Bool revOrder;
 			Bool revOrder2;
 			UnsafeArray<UInt8> bmpBits;
 			UnsafeArray<UInt8> bmpBits2;
-			if (gimg->GetImgBits(revOrder).SetTo(bmpBits) && gimg2->GetImgBits(revOrder2).SetTo(bmpBits2))
+			if (gimg->PixelGetBits(revOrder).SetTo(bmpBits) && gimg2->PixelGetBits(revOrder2).SetTo(bmpBits2))
 			{
-				nnresizer->Resize(bmpBits2, (IntOS)imgW << 2, UIntOS2Double(imgW), UIntOS2Double(imgH), 0, 0, bmpBits, Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UIntOS2Double(imgH) * img->GetHDPI() / 96.0));
-				gimg->GetImgBitsEnd(true);
-				gimg2->GetImgBitsEnd(false);
+				nnresizer->Resize(bmpBits2, (IntOS)lyrImg->PixelGetBpl(), imgW, imgH, 0, 0, bmpBits, Double2Int32(imgW * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(imgW * img->GetHDPI() / 96.0), (UInt32)Double2Int32(imgH * img->GetHDPI() / 96.0));
+				gimg->PixelGetBitsEnd(true);
+				gimg2->PixelGetBitsEnd(false);
 			}
 			dimg = gimg;
-			imgW = (UInt32)Double2Int32(UIntOS2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
-			imgH = (UInt32)Double2Int32(UIntOS2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
+			imgW = (imgW * img->GetHDPI() / 96.0) * 0.5;
+			imgH = (imgH * img->GetHDPI() / 96.0) * 0.5;
 	#ifndef NOSCH
-			sch->SetDrawType(lyr, nullptr, nullptr, dimg, UIntOS2Double(gimg->GetWidth()) * 0.5, UIntOS2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, nullptr, nullptr, dimg, gimg->GetWidth() * 0.5, gimg->GetHeight() * 0.5, isLayerEmpty);
 	#endif
 		}
 		else
@@ -2348,8 +2348,8 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 	}
 	else
 	{
-		imgW = lyrImg->GetWidth() >> 1;
-		imgH = lyrImg->GetHeight() >> 1;
+		imgW = lyrImg->GetWidth() * 0.5;
+		imgH = lyrImg->GetHeight() * 0.5;
 		dimg = lyrImg;
 	}
 
@@ -2401,8 +2401,8 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 
 	if (lyrs->img.SetTo(lyrImg))
 	{
-		imgWidth = lyrImg->GetWidth();
-		imgHeight = lyrImg->GetHeight();
+		imgWidth = lyrImg->PixelGetWidth();
+		imgHeight = lyrImg->PixelGetHeight();
 	}
 	else
 	{
@@ -3271,8 +3271,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 	UInt32 i;
 	UIntOS j;
 	Text::String *lastLbl = 0;
-	UIntOS scnWidth = img->GetWidth();
-	UIntOS scnHeight = img->GetHeight();
+	UIntOS scnWidth = img->PixelGetWidth();
+	UIntOS scnHeight = img->PixelGetHeight();
 	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	if (labelCnt)
@@ -4458,7 +4458,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 #endif
 
 	brush = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, brush);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize(), nullptr, brush);
 	img->DelBrush(brush);
 
 	myArrs = MemAllocArr(Optional<Data::ArrayListNN<MapFontStyle>>, this->nFont);

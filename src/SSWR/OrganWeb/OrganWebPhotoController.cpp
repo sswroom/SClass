@@ -654,15 +654,15 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UIntOS>(iWidth, iHeight), Media::AT_IGNORE_ALPHA).SetTo(gimg2))
 										{
 											gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
-											gimg2->SetAlphaType(Media::AT_ALPHA);
+											gimg2->PixelSetAlphaType(Media::AT_ALPHA);
 											{
 												Bool revOrder;
 												UnsafeArray<UInt8> bits;
 												UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
-												if (gimg2->GetImgBits(revOrder).SetTo(bits))
+												if (gimg2->PixelGetBits(revOrder).SetTo(bits))
 												{
 													ImageUtil_ColorReplace32(bits.Ptr(), iWidth, iHeight, col);
-													gimg2->GetImgBitsEnd(true);
+													gimg2->PixelGetBitsEnd(true);
 												}
 											}
 											gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));

@@ -193,24 +193,19 @@ Math::Size2DDbl Media::VectorGraph::GetSizeDbl() const
 	return this->size;
 }
 
-UIntOS Media::VectorGraph::GetWidth() const
+Double Media::VectorGraph::GetWidth() const
 {
-	return (UIntOS)Double2IntOS(this->size.x);
+	return this->size.x;
 }
 
-UIntOS Media::VectorGraph::GetHeight() const
+Double Media::VectorGraph::GetHeight() const
 {
-	return (UIntOS)Double2IntOS(this->size.y);
+	return this->size.y;
 }
 
-Math::Size2D<UIntOS> Media::VectorGraph::GetSize() const
+Math::Size2DDbl Media::VectorGraph::GetSize() const
 {
-	return Math::Size2D<UIntOS>::UIntOSFromDouble(this->size);
-}
-
-UInt32 Media::VectorGraph::GetBitCount() const
-{
-	return 32;
+	return this->size;
 }
 
 NN<const Media::ColorProfile> Media::VectorGraph::GetColorProfile() const
@@ -221,15 +216,6 @@ NN<const Media::ColorProfile> Media::VectorGraph::GetColorProfile() const
 void Media::VectorGraph::SetColorProfile(NN<const Media::ColorProfile> color)
 {
 	this->colorProfile.Set(color);
-}
-
-Media::AlphaType Media::VectorGraph::GetAlphaType() const
-{
-	return Media::AT_ALPHA;
-}
-
-void Media::VectorGraph::SetAlphaType(Media::AlphaType atype)
-{
 }
 
 Double Media::VectorGraph::GetHDPI() const
@@ -252,33 +238,14 @@ void Media::VectorGraph::SetVDPI(Double dpi)
 	this->vdpi = dpi;
 }
 
-UnsafeArrayOpt<UInt8> Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
-{
-	return nullptr;
-}
-
-void Media::VectorGraph::GetImgBitsEnd(Bool modified)
-{
-}
-
 Optional<Media::EXIFData> Media::VectorGraph::GetEXIF() const
 {
 	return nullptr;
 }
 
-Media::PixelFormat Media::VectorGraph::GetPixelFormat() const
-{
-	return Media::PF_UNKNOWN;
-}
-
 void Media::VectorGraph::SetColorSess(Optional<Media::ColorSess> colorSess)
 {
 	this->colorSess = colorSess;
-}
-
-UIntOS Media::VectorGraph::GetImgBpl() const
-{
-	return 0;
 }
 
 Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
@@ -791,7 +758,8 @@ NN<Media::StaticImage> Media::VectorGraph::CreateStaticImage() const
 {
 	NN<Media::StaticImage> simg;
 	NN<Media::DrawImage> dimg;
-	if (this->refEng->CreateImage32(this->GetSize(), this->GetAlphaType()).SetTo(dimg))
+	Math::Size2D<UIntOS> imgSize = Math::Size2D<UIntOS>((UIntOS)(this->size.x + 0.99), (UIntOS)(this->size.y + 0.99));
+	if (this->refEng->CreateImage32(imgSize, Media::AT_ALPHA).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI());
 		dimg->SetVDPI(this->GetVDPI());
@@ -806,7 +774,7 @@ NN<Media::StaticImage> Media::VectorGraph::CreateStaticImage() const
 			this->refEng->DeleteImage(dimg);
 		}
 	}
-	NEW_CLASSNN(simg, Media::StaticImage(this->GetSize(), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, this->GetAlphaType(), Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(simg, Media::StaticImage(imgSize, 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	return simg;
 }
 
@@ -814,7 +782,7 @@ NN<Media::StaticImage> Media::VectorGraph::CreateSubImage(Math::RectArea<IntOS> 
 {
 	NN<Media::StaticImage> simg;
 	NN<Media::DrawImage> dimg;
-	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), this->GetAlphaType()).SetTo(dimg))
+	if (this->refEng->CreateImage32(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), Media::AT_ALPHA).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI());
 		dimg->SetVDPI(this->GetVDPI());
@@ -829,7 +797,7 @@ NN<Media::StaticImage> Media::VectorGraph::CreateSubImage(Math::RectArea<IntOS> 
 			this->refEng->DeleteImage(dimg);
 		}
 	}
-	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, this->GetAlphaType(), Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	return simg;
 }
 

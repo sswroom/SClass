@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Exporter/PNGExporter.h"
+#include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "Media/StaticImage.h"
 #include "Media/SVGDocument.h"
@@ -167,7 +168,7 @@ void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGText::SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<DrawFont> font, NN<DrawBrush> brush)
+Media::SVGText::SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush)
 {
 	this->tl = tl;
 	this->txt = Text::String::New(txt);
@@ -268,9 +269,9 @@ Media::SVGContainer::~SVGContainer()
 	this->elements.DeleteAll();
 }
 
-Math::Size2D<UIntOS> Media::SVGContainer::GetSize() const
+Math::Size2DDbl Media::SVGContainer::GetSize() const
 {
-	return Math::Size2D<UIntOS>(this->GetWidth(), this->GetHeight());
+	return Math::Size2DDbl(this->GetWidth(), this->GetHeight());
 }
 
 UInt32 Media::SVGContainer::GetBitCount() const
@@ -322,7 +323,7 @@ void Media::SVGContainer::GetImgBitsEnd(Bool modified)
 
 UIntOS Media::SVGContainer::GetImgBpl() const
 {
-	return this->GetWidth() * 4;
+	return 0;
 }
 
 Optional<Media::EXIFData> Media::SVGContainer::GetEXIF() const
@@ -446,7 +447,7 @@ Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, 
 Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(tl, str, f, b));
+	NEW_CLASSNN(text, SVGText(tl, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
 	this->elements.Add(text);
 	return true;
 }
@@ -459,7 +460,7 @@ Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, NN<Text::String
 Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW)
 {
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(center, str, f, b));
+	NEW_CLASSNN(text, SVGText(center, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
 	text->SetRotate(angleDegreeACW, center);
 	this->elements.Add(text);
 	return true;
@@ -522,7 +523,7 @@ Bool Media::SVGContainer::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2D
 	sb.AppendC(UTF8STRC("data:image/png;base64,"));
 	Text::TextBinEnc::Base64Enc b64;
 	b64.EncodeBin(sb, memStm.GetBuff(), (UIntOS)memStm.GetLength());
-	NEW_CLASSNN(svgImg, SVGImage(tl, Math::Size2DDbl(img->info.dispSize.x * 96.0 / img->info.hdpi, img->info.dispSize.y * 96.0 / img->info.vdpi), sb.ToCString()));
+	NEW_CLASSNN(svgImg, SVGImage(tl, Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * 96.0 / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * 96.0 / img->info.vdpi), sb.ToCString()));
 	this->elements.Add(svgImg);
 	return true;
 }
@@ -634,6 +635,7 @@ Media::SVGDocument::SVGDocument(NN<Media::DrawEngine> refEng) : SVGContainer(ref
 {
 	this->width = 0;
 	this->height = 0;
+	this->unit = Math::Unit::Distance::DU_PIXEL;
 	this->viewBox = Math::RectArea<IntOS>(0, 0, 0, 0);
 }
 
@@ -644,14 +646,14 @@ Media::SVGDocument::~SVGDocument()
 	this->pens.DeleteAll();
 }
 
-UIntOS Media::SVGDocument::GetWidth() const
+Double Media::SVGDocument::GetWidth() const
 {
-	return this->width;
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_PIXEL, UIntOS2Double(this->width));
 }
 
-UIntOS Media::SVGDocument::GetHeight() const
+Double Media::SVGDocument::GetHeight() const
 {
-	return this->height;
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_PIXEL, UIntOS2Double(this->height));
 }
 
 NN<Media::DrawPen> Media::SVGDocument::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
@@ -721,10 +723,11 @@ NN<Media::DrawFont> Media::SVGDocument::CloneFont(NN<Media::DrawFont> f)
 	return f;
 }
 
-void Media::SVGDocument::SetSize(UIntOS width, UIntOS height)
+void Media::SVGDocument::SetSize(UIntOS width, UIntOS height, Math::Unit::Distance::DistanceUnit unit)
 {
 	this->width = width;
 	this->height = height;
+	this->unit = unit;
 }
 
 void Media::SVGDocument::SetViewBox(Math::RectArea<IntOS> viewBox)
@@ -740,13 +743,15 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	{
 		sb->AppendC(UTF8STRC(" width=\""));
 		sb->AppendUIntOS(this->width);
-		sb->AppendC(UTF8STRC("px\""));	
+		sb->Append(Math::Unit::Distance::GetUnitShortName(this->unit));
+		sb->AppendUTF8Char('\"');	
 	}
 	if (this->height > 0)
 	{
 		sb->AppendC(UTF8STRC(" height=\""));
 		sb->AppendUIntOS(this->height);
-		sb->AppendC(UTF8STRC("px\""));	
+		sb->Append(Math::Unit::Distance::GetUnitShortName(this->unit));
+		sb->AppendUTF8Char('\"');	
 	}
 	if (this->viewBox.GetWidth() > 0 && this->viewBox.GetHeight() > 0)
 	{
@@ -764,4 +769,160 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(">\n"));
 	this->ToInnerString(sb);
 	sb->AppendC(UTF8STRC("</svg>"));
+}
+
+Optional<Media::SVGDocument> Media::SVGDocument::ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng)
+{
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::XMLReader reader(encFact, fs, Text::XMLReader::PM_XML);
+	NN<Text::String> eleName;
+	if (reader.NextElementName().SetTo(eleName) && eleName->Equals(UTF8STRC("svg")))
+	{
+		return Media::SVGDocument::ParseReader(reader, refEng);
+	}
+	return nullptr;
+}
+
+Optional<Media::SVGDocument> Media::SVGDocument::ParseReader(NN<Text::XMLReader> reader, NN<Media::DrawEngine> refEng)
+{
+	if (!reader->GetElementName().Equals(UTF8STRC("svg")))
+	{
+		return nullptr;
+	}
+	NN<Media::SVGDocument> doc;
+	NEW_CLASSNN(doc, Media::SVGDocument(refEng));
+	UIntOS width = 0;
+	UIntOS height = 0;
+	Text::StringBuilderUTF8 sb;
+	Math::Unit::Distance::DistanceUnit unit = Math::Unit::Distance::DU_PIXEL;
+	UIntOS i = 0;
+	UIntOS j = reader->GetAttribCount();
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> name;
+	NN<Text::String> value;
+	while (i < j)
+	{
+		attr = reader->GetAttribNoCheck(i);
+		if (attr->name.SetTo(name) && attr->value.SetTo(value))
+		{
+			if (name->Equals(UTF8STRC("width")))
+			{
+				if (value->EndsWith(UTF8STRC("px")))
+				{
+					unit = Math::Unit::Distance::DU_PIXEL;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(width))
+					{
+						printf("SVGDocument: svg Invalid width (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else if (value->EndsWith(UTF8STRC("pt")))
+				{
+					unit = Math::Unit::Distance::DU_POINT;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(width))
+					{
+						printf("SVGDocument: svg Invalid width (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else if (value->EndsWith(UTF8STRC("mm")))
+				{
+					unit = Math::Unit::Distance::DU_MILLIMETER;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(width))
+					{
+						printf("SVGDocument: svg Invalid width (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else
+				{
+					unit = Math::Unit::Distance::DU_PIXEL;
+					if (!value->ToUIntOS(width))
+					{
+						printf("SVGDocument: svg Invalid width (%s)\r\n", value->v.Ptr());
+					}
+				}
+				if (width != 0 && height != 0)
+				{
+					doc->SetSize(width, height, unit);
+				}
+			}
+			else if (name->Equals(UTF8STRC("height")))
+			{
+				if (value->EndsWith(UTF8STRC("px")))
+				{
+					unit = Math::Unit::Distance::DU_PIXEL;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(height))
+					{
+						printf("SVGDocument: svg Invalid height (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else if (value->EndsWith(UTF8STRC("pt")))
+				{
+					unit = Math::Unit::Distance::DU_POINT;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(height))
+					{
+						printf("SVGDocument: svg Invalid height (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else if (value->EndsWith(UTF8STRC("mm")))
+				{
+					unit = Math::Unit::Distance::DU_MILLIMETER;
+					sb.ClearStr();
+					sb.AppendC(value->v, value->leng - 2);
+					if (!sb.ToUIntOS(height))
+					{
+						printf("SVGDocument: svg Invalid height (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else
+				{
+					unit = Math::Unit::Distance::DU_PIXEL;
+					if (!value->ToUIntOS(height))
+					{
+						printf("SVGDocument: svg Invalid height (%s)\r\n", value->v.Ptr());
+					}
+				}
+				if (width != 0 && height != 0)
+				{
+					doc->SetSize(width, height, unit);
+				}
+			}
+			else if (name->Equals(UTF8STRC("viewBox")))
+			{
+				Text::PString sarr[5];
+				IntOS vals[4];
+				sb.ClearStr();
+				sb.Append(value);
+				if (Text::StrSplitP(sarr, 5, sb, ' ') == 4)
+				{
+					if (sarr[0].ToIntOS(vals[0]) && sarr[1].ToIntOS(vals[1]) && sarr[2].ToIntOS(vals[2]) && sarr[3].ToIntOS(vals[3]))
+					{
+						doc->SetViewBox(Math::RectArea<IntOS>(vals[0], vals[1], vals[0] + vals[2], vals[1] + vals[3]));
+					}
+					else
+					{
+						printf("SVGDocument: svg Invalid viewBox (%s)\r\n", value->v.Ptr());
+					}
+				}
+				else
+				{
+					printf("SVGDocument: svg Invalid viewBox (%s)\r\n", value->v.Ptr());
+				}
+			}
+			else
+			{
+				printf("SVGDocument: svg Unknown attribute: %s\r\n", name->v.Ptr());
+			}
+		}
+		i++;
+	}
+	return doc;
 }

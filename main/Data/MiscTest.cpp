@@ -1008,13 +1008,13 @@ void __stdcall MTDrawThread(NN<Sync::Thread> thread)
 				sImg->info.atype = Media::AT_IGNORE_ALPHA;
 				if (status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 				{
-					dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UIntOS2Double((60 - dimg2->GetWidth()) >> 1), UIntOS2Double((60 - dimg2->GetHeight()) >> 1)));
+					dimg->DrawImagePt(dimg2, Math::Coord2DDbl((60 - dimg2->GetWidth()) * 0.5, (60 - dimg2->GetHeight()) * 0.5));
 					status->drawEng->DeleteImage(dimg2);
 				}
 			}
 			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 			{
-				dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UIntOS2Double((60 - dimg2->GetWidth()) >> 1), UIntOS2Double((60 - dimg2->GetHeight()) >> 1)));
+				dimg->DrawImagePt(dimg2, Math::Coord2DDbl((60 - dimg2->GetWidth()) * 0.5, (60 - dimg2->GetHeight()) * 0.5));
 				status->drawEng->DeleteImage(dimg2);
 			}
 		}

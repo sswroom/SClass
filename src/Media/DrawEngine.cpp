@@ -35,23 +35,67 @@ Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::C
 	}
 }
 
-UInt32 Media::DrawImage::GetPixel32(IntOS x, IntOS y)
+Bool Media::DrawImage::PixelSupported() const
 {
-	UIntOS width = this->GetWidth();
+	return false;
+}
+
+UIntOS Media::DrawImage::PixelGetWidth() const
+{
+	return 0;
+}
+
+UIntOS Media::DrawImage::PixelGetHeight() const
+{
+	return 0;
+}
+
+Math::Size2D<UIntOS> Media::DrawImage::PixelGetSize() const
+{
+	return Math::Size2D<UIntOS>(this->PixelGetWidth(), this->PixelGetHeight());
+}
+
+UInt32 Media::DrawImage::PixelGetBitCount() const
+{
+	return 0;
+}
+
+/*UnsafeArrayOpt<UInt8> Media::DrawImage::PixelGetBits(OutParam<Bool> revOrder)
+{
+	return nullptr;
+}*/
+
+void Media::DrawImage::PixelGetBitsEnd(Bool modified)
+{
+}
+
+UIntOS Media::DrawImage::PixelGetBpl() const
+{
+	return 0;
+}
+
+Media::PixelFormat Media::DrawImage::PixelGetFormat() const
+{
+	return Media::PF_UNKNOWN;
+}
+
+UInt32 Media::DrawImage::PixelGet32(IntOS x, IntOS y)
+{
+	UIntOS width = this->PixelGetWidth();
 	if (x < 0 || (UIntOS)x >= width)
 		return 0;
-	UIntOS height = this->GetHeight();
+	UIntOS height = this->PixelGetHeight();
 	if (y < 0 || (UIntOS)y >= height)
 		return 0;
 	Bool revOrder;
 	UnsafeArray<UInt8> bmpBits;
-	if (!this->GetImgBits(revOrder).SetTo(bmpBits))
+	if (!this->PixelGetBits(revOrder).SetTo(bmpBits))
 		return 0;
 	if (revOrder)
 	{
-		y = (IntOS)height - y;
+		y = (IntOS)height - y - 1;
 	}
-	UInt32 bitCount = this->GetBitCount();
+	UInt32 bitCount = this->PixelGetBitCount();
 	if (bitCount == 32)
 	{
 		return *(UInt32*)(((y * (IntOS)width + x) * 4) + bmpBits.Ptr());
@@ -70,9 +114,9 @@ void Media::DrawImage::SetImageAlpha(UInt8 alpha)
 {
 	Bool revOrder;
 	UnsafeArray<UInt8> bmpBits;
-	if (this->GetBitCount() == 32 && this->GetImgBits(revOrder).SetTo(bmpBits) && this->GetPixelFormat() == Media::PF_B8G8R8A8)
+	if (this->PixelGetBitCount() == 32 && this->PixelGetBits(revOrder).SetTo(bmpBits) && this->PixelGetFormat() == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageFillAlpha32(bmpBits.Ptr(), this->GetWidth(), this->GetHeight(), this->GetImgBpl(), alpha);
+		ImageUtil_ImageFillAlpha32(bmpBits.Ptr(), this->PixelGetWidth(), this->PixelGetHeight(), this->PixelGetBpl(), alpha);
 	}
 }
 
@@ -86,14 +130,13 @@ void Media::DrawImage::MulImageAlpha(Double val)
 		return;
 	}
 	
-	if (this->GetBitCount() == 32 && this->GetPixelFormat() == Media::PF_B8G8R8A8)
+	if (this->PixelGetBitCount() == 32 && this->PixelGetFormat() == Media::PF_B8G8R8A8)
 	{
 		Bool revOrder;
 		UnsafeArray<UInt8> bmpBits;
-		if (this->GetImgBits(revOrder).SetTo(bmpBits))
+		if (this->PixelGetBits(revOrder).SetTo(bmpBits))
 		{
-			ImageUtil_ImageAlphaMul32(bmpBits.Ptr(), this->GetWidth(), this->GetHeight(), this->GetImgBpl(), (UInt32)Double2Int32(val * 65536.0));
-
+			ImageUtil_ImageAlphaMul32(bmpBits.Ptr(), this->PixelGetWidth(), this->PixelGetHeight(), this->PixelGetBpl(), (UInt32)Double2Int32(val * 65536.0));
 		}
 	}
 }

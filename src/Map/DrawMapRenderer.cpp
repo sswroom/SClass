@@ -2252,17 +2252,13 @@ Bool Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 
 void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
 {
-	UIntOS imgW;
-	UIntOS imgH;
 	Math::Coord2DDbl cimgPt2;
 	Math::Coord2DDbl cimgPt;
 	Double dimgW;
 	Double dimgH;
 
-	imgW = denv->img->GetWidth();
-	imgH = denv->img->GetHeight();
-	dimgW = UIntOS2Double(imgW);
-	dimgH = UIntOS2Double(imgH);
+	dimgW = denv->img->GetWidth();
+	dimgH = denv->img->GetHeight();
 
 	if (scnTL.x < scnBR.x && scnTL.y < scnBR.y)
 	{

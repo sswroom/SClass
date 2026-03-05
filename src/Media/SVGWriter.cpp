@@ -15,16 +15,16 @@ void Media::SVGWriter::WriteBuffer()
 	}
 }
 
-Media::SVGWriter::SVGWriter(NN<IO::Stream> stm, UIntOS width, UIntOS height, NN<Media::DrawEngine> refEng) : color(Media::ColorProfile::CPT_SRGB)
+Media::SVGWriter::SVGWriter(NN<IO::Stream> stm, Double width, Double height, NN<Media::DrawEngine> refEng) : color(Media::ColorProfile::CPT_SRGB)
 {
-	this->size = Math::Size2D<UIntOS>(width, height);
+	this->size = Math::Size2DDbl(width, height);
 	this->stm = stm;
 	this->refEng = refEng;
 	this->sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"));
 	this->sb.AppendC(UTF8STRC("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\""));
-	this->sb.AppendUIntOS(width);
+	this->sb.AppendIntOS(Double2IntOS(width));
 	this->sb.AppendC(UTF8STRC("px\" height=\""));
-	this->sb.AppendUIntOS(height);
+	this->sb.AppendIntOS(Double2IntOS(height));
 	this->sb.AppendC(UTF8STRC("px\">\n"));
 }
 
@@ -38,17 +38,17 @@ Media::SVGWriter::~SVGWriter()
 	}
 }
 
-UIntOS Media::SVGWriter::GetWidth() const
+Double Media::SVGWriter::GetWidth() const
 {
 	return this->size.x;
 }
 
-UIntOS Media::SVGWriter::GetHeight() const
+Double Media::SVGWriter::GetHeight() const
 {
 	return this->size.y;
 }
 
-Math::Size2D<UIntOS> Media::SVGWriter::GetSize() const
+Math::Size2DDbl Media::SVGWriter::GetSize() const
 {
 	return this->size;
 }
@@ -95,28 +95,9 @@ void Media::SVGWriter::SetVDPI(Double dpi)
 {
 }
 
-UnsafeArrayOpt<UInt8> Media::SVGWriter::GetImgBits(OutParam<Bool> revOrder)
-{
-	return nullptr;
-}
-
-void Media::SVGWriter::GetImgBitsEnd(Bool modified)
-{
-}
-
-UIntOS Media::SVGWriter::GetImgBpl() const
-{
-	return 0;
-}
-
 Optional<Media::EXIFData> Media::SVGWriter::GetEXIF() const
 {
 	return nullptr;
-}
-
-Media::PixelFormat Media::SVGWriter::GetPixelFormat() const
-{
-	return Media::PF_R8G8B8A8;
 }
 
 void Media::SVGWriter::SetColorSess(Optional<Media::ColorSess> colorSess)

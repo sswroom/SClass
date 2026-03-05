@@ -215,11 +215,11 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 				Bool revOrder;
 				UnsafeArray<UInt8> imgPtr;
 				UnsafeArray<UInt8> dimgPtr;
-				if (dimg2->GetImgBits(revOrder).SetTo(imgPtr) && dimg->GetImgBits(revOrder).SetTo(dimgPtr))
+				if (dimg2->PixelGetBits(revOrder).SetTo(imgPtr) && dimg->PixelGetBits(revOrder).SetTo(dimgPtr))
 				{
 					resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimgPtr, this->imgSize * 4, this->imgSize, this->imgSize);
-					dimg2->GetImgBitsEnd(false);
-					dimg->GetImgBitsEnd(true);
+					dimg2->PixelGetBitsEnd(false);
+					dimg->PixelGetBitsEnd(true);
 				}
 				geng->DeleteImage(dimg2);
 			}

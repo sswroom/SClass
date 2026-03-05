@@ -150,9 +150,9 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 			NN<Media::DrawImage> bmpS1 = bmpUnclick;
 			NN<Media::DrawImage> bmpS2 = bmpClicked;
 			NN<Media::DrawImage> bmpTmp;
-			if (this->deng->CreateImage32(bmpS1->GetSize(), bmpS1->GetAlphaType()).SetTo(bmpTmp))
+			if (this->deng->CreateImage32(bmpS1->PixelGetSize(), bmpS1->PixelGetAlphaType()).SetTo(bmpTmp))
 			{
-				bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
+				bmpTmp->PixelSetAlphaType(bmpS1->PixelGetAlphaType());
 	#if defined(HAS_ASM32)
 				UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
 				UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
@@ -251,11 +251,11 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 				UnsafeArray<UInt8> ptrS1;
 				UnsafeArray<UInt8> ptrS2;
 				UnsafeArray<UInt8> ptrD;
-				if (bmpS1->GetImgBits(revOrder).SetTo(ptrS1) && bmpS2->GetImgBits(revOrder).SetTo(ptrS2) && bmpTmp->GetImgBits(revOrder).SetTo(ptrD))
+				if (bmpS1->PixelGetBits(revOrder).SetTo(ptrS1) && bmpS2->PixelGetBits(revOrder).SetTo(ptrS2) && bmpTmp->PixelGetBits(revOrder).SetTo(ptrD))
 				{
-					UIntOS lineBytes = bmpS1->GetWidth() * 4;
+					UIntOS lineBytes = bmpS1->PixelGetWidth() * 4;
 					UIntOS i;
-					UIntOS j = bmpS1->GetHeight();
+					UIntOS j = bmpS1->PixelGetHeight();
 					Double a1 = this->alpha;
 					Double a2 = 1 - this->alpha; 
 					while (j-- > 0)
@@ -266,9 +266,9 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 							*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
 						}
 					}
-					bmpTmp->GetImgBitsEnd(true);
-					bmpS2->GetImgBitsEnd(false);
-					bmpS1->GetImgBitsEnd(false);
+					bmpTmp->PixelGetBitsEnd(true);
+					bmpS2->PixelGetBitsEnd(false);
+					bmpS1->PixelGetBitsEnd(false);
 				}
 	#endif
 				dimg->DrawImagePt(bmpTmp, tl.ToDouble());
@@ -300,11 +300,11 @@ Bool UI::DObj::ButtonDObj::IsObject(Math::Coord2D<IntOS> scnPos)
 		if (!this->bmpClicked.SetTo(bmpChk))
 			return false;
 	}
-	if (this->dispTL.x + (IntOS)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->GetHeight() <= scnPos.y)
+	if (this->dispTL.x + (IntOS)bmpChk->PixelGetWidth() <= scnPos.x || this->dispTL.y + (IntOS)bmpChk->PixelGetHeight() <= scnPos.y)
 		return false;
 	if (this->rectMode)
 		return true;
-	return (bmpChk->GetPixel32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
+	return (bmpChk->PixelGet32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::ButtonDObj::GetCursor()

@@ -29,32 +29,32 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		return;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	UIntOS w = prevImage->GetWidth();
-	UIntOS h = prevImage->GetHeight();
+	Double w = prevImage->GetWidth();
+	Double h = prevImage->GetHeight();
 	Double dpi = prevImage->GetHDPI();
 
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	b = prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
-	prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UIntOS2Double(w), UIntOS2Double(h)), nullptr, b);
+	prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(w, h), nullptr, b);
 	prevImage->DelBrush(b);
 
 	UIntOS i;
 	UIntOS j;
-	Int32 t;
+	Double t;
 	NN<LineLayer> lyr;
 	i = 0;
 	j = this->lineLayers.GetCount();
 	while (i < j)
 	{
 		lyr = this->lineLayers.GetItemNoCheck(i);
-		t = Double2Int32(UIntOS2Double(lyr->thick) * dpi / 96.0);
+		t = lyr->thick * dpi / 96.0;
 		if (t <= 0)
 		{
 			t = 1;
 		}
 		p = prevImage->NewPenARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), lyr->color), t, lyr->pattern, lyr->nPattern);
-		prevImage->DrawLine(0, UIntOS2Double(h >> 1), UIntOS2Double(w), UIntOS2Double(h >> 1), p);
+		prevImage->DrawLine(0, h * 0.5, w, h * 0.5, p);
 		prevImage->DelPen(p);
 		i++;
 	}

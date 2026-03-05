@@ -21,10 +21,10 @@ void __stdcall SSWR::AVIRead::AVIRVectorDocumentForm::OnPagesSelChg(AnyType user
 	{
 		me->lvInfo->ClearItems();
 		me->lvInfo->AddItem(CSTR("Width(px)"), nullptr);
-		sptr = Text::StrUIntOS(sbuff, page->GetWidth());
+		sptr = Text::StrDouble(sbuff, page->GetWidth());
 		me->lvInfo->SetSubItem(0, 1, CSTRP(sbuff, sptr));
 		me->lvInfo->AddItem(CSTR("Height(px)"), nullptr);
-		sptr = Text::StrUIntOS(sbuff, page->GetHeight());
+		sptr = Text::StrDouble(sbuff, page->GetHeight());
 		me->lvInfo->SetSubItem(1, 1, CSTRP(sbuff, sptr));
 		me->lvInfo->AddItem(CSTR("Width(mm)"), nullptr);
 		sptr = Text::StrDouble(sbuff, page->GetVisibleWidthMM());

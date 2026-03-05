@@ -511,12 +511,12 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 Optional<Media::DrawImage> Media::GDIEngine::CloneImage(NN<Media::DrawImage> img)
 {
 	NN<Media::GDIImage> newImg;
-	if (Optional<Media::GDIImage>::ConvertFrom(this->CreateImage32(img->GetSize(), img->GetAlphaType())).SetTo(newImg))
+	if (Optional<Media::GDIImage>::ConvertFrom(this->CreateImage32(img->PixelGetSize(), img->PixelGetAlphaType())).SetTo(newImg))
 	{
 		newImg->info.Set(((Media::GDIImage*)img.Ptr())->info);
-		if (img->GetBitCount() == 32)
+		if (img->PixelGetBitCount() == 32)
 		{
-			MemCopyNO(newImg->bmpBits, ((Media::GDIImage*)img.Ptr())->bmpBits, newImg->GetWidth() * newImg->GetHeight() * 4);
+			MemCopyNO(newImg->bmpBits, ((Media::GDIImage*)img.Ptr())->bmpBits, newImg->PixelGetWidth() * newImg->PixelGetHeight() * 4);
 		}
 		else
 		{
@@ -740,24 +740,19 @@ Media::GDIImage::~GDIImage()
 	this->resizer.Delete();
 }
 
-UIntOS Media::GDIImage::GetWidth() const
+Double Media::GDIImage::GetWidth() const
 {
-	return this->size.x;
+	return UIntOS2Double(this->size.x);
 }
 
-UIntOS Media::GDIImage::GetHeight() const
+Double Media::GDIImage::GetHeight() const
 {
-	return this->size.y;
+	return UIntOS2Double(this->size.y);
 }
 
-Math::Size2D<UIntOS> Media::GDIImage::GetSize() const
+Math::Size2DDbl Media::GDIImage::GetSize() const
 {
-	return this->size;
-}
-
-UInt32 Media::GDIImage::GetBitCount() const
-{
-	return this->bitCount;	
+	return this->size.ToDouble();
 }
 
 NN<const Media::ColorProfile> Media::GDIImage::GetColorProfile() const
@@ -768,16 +763,6 @@ NN<const Media::ColorProfile> Media::GDIImage::GetColorProfile() const
 void Media::GDIImage::SetColorProfile(NN<const Media::ColorProfile> color)
 {
 	return this->info.color.Set(color);
-}
-
-Media::AlphaType Media::GDIImage::GetAlphaType() const
-{
-	return this->info.atype;
-}
-
-void Media::GDIImage::SetAlphaType(Media::AlphaType atype)
-{
-	this->info.atype = atype;
 }
 
 Double Media::GDIImage::GetHDPI() const
@@ -806,29 +791,9 @@ void Media::GDIImage::SetVDPI(Double dpi)
 	}
 }
 
-UnsafeArrayOpt<UInt8> Media::GDIImage::GetImgBits(OutParam<Bool> revOrder)
-{
-	revOrder.Set(true);
-	return (UInt8*)this->bmpBits;
-}
-
-void Media::GDIImage::GetImgBitsEnd(Bool modified)
-{
-}
-
-UIntOS Media::GDIImage::GetImgBpl() const
-{
-	return this->GetDataBpl();
-}
-
 Optional<Media::EXIFData> Media::GDIImage::GetEXIF() const
 {
 	return this->exif;
-}
-
-Media::PixelFormat Media::GDIImage::GetPixelFormat() const
-{
-	return this->info.pf;
 }
 
 void Media::GDIImage::SetColorSess(Optional<Media::ColorSess> colorSess)
@@ -2373,8 +2338,8 @@ Bool Media::GDIImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl destTL
 			UInt8 *dbits = (UInt8*)this->bmpBits;
 			UInt8 *sbits = (UInt8*)img->data.Ptr();
 			IntOS dbpl = this->size.x << 2;
-			IntOS sbpl = img->info.dispSize.x << 2;
-			IntOS sh = img->info.dispSize.y;
+			IntOS sbpl = (IntOS)img->info.dispSize.x << 2;
+			//IntOS sh = (IntOS)img->info.dispSize.y;
 
 			if (x < 0)
 			{
@@ -2928,6 +2893,57 @@ void Media::GDIImage::CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UInt
 		}
 	}
 }
+
+Bool Media::GDIImage::PixelSupported() const
+{
+	return this->bmpBits != 0;
+}
+
+UIntOS Media::GDIImage::PixelGetWidth() const
+{
+	return this->size.x;
+}
+
+UIntOS Media::GDIImage::PixelGetHeight() const
+{
+	return this->size.y;
+}
+
+Media::AlphaType Media::GDIImage::PixelGetAlphaType() const
+{
+	return this->info.atype;
+}
+
+void Media::GDIImage::PixelSetAlphaType(Media::AlphaType atype)
+{
+	this->info.atype = atype;
+}
+
+UInt32 Media::GDIImage::PixelGetBitCount() const
+{
+	return this->bitCount;	
+}
+
+UnsafeArrayOpt<UInt8> Media::GDIImage::PixelGetBits(OutParam<Bool> revOrder)
+{
+	revOrder.Set(true);
+	return (UInt8*)this->bmpBits;
+}
+
+void Media::GDIImage::PixelGetBitsEnd(Bool modified)
+{
+}
+
+UIntOS Media::GDIImage::PixelGetBpl() const
+{
+	return this->GetDataBpl();
+}
+
+Media::PixelFormat Media::GDIImage::PixelGetFormat() const
+{
+	return this->info.pf;
+}
+
 
 Optional<Media::StaticImage> Media::GDIImage::ToStaticImage() const
 {

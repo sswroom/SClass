@@ -2014,6 +2014,7 @@ AVIRGISEditImageForm.o: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
 AVIRGISEditPointForm.o: ../../src/SSWR/AVIRead/AVIRGISEditPointForm.cpp
 AVIRGISEditVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
 AVIRGISExportImageForm.o: ../../src/SSWR/AVIRead/AVIRGISExportImageForm.cpp
+AVIRGISExportTemplateForm.o: ../../src/SSWR/AVIRead/AVIRGISExportTemplateForm.cpp
 AVIRGISExportVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISExportVectorForm.cpp
 AVIRGISFontEditForm.o: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
 AVIRGISFontForm.o: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp

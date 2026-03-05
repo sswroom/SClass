@@ -9,10 +9,10 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 	if (this->bmpBkg.SetTo(bmpBkg))
 	{
 		NN<Media::DrawImage> bmpBuff;
-		Math::Size2D<UIntOS> scnSize = dimg->GetSize();
+		Math::Size2D<UIntOS> scnSize = dimg->PixelGetSize();
 		if (this->bmpBuff.SetTo(bmpBuff))
 		{
-			if (bmpBuff->GetWidth() != scnSize.x && bmpBuff->GetHeight() != scnSize.y)
+			if (bmpBuff->PixelGetWidth() != scnSize.x && bmpBuff->PixelGetHeight() != scnSize.y)
 			{
 				this->deng->DeleteImage(bmpBuff);
 				this->bmpBuff = nullptr;
@@ -53,7 +53,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 	else
 	{
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 		dimg->DelBrush(b);
 	}
 }

@@ -439,7 +439,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	{
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_ALPHA_ALL_FF);
 	}
-	else if (dimg->GetWidth() != newSize.x || dimg->GetHeight() != newSize.y)
+	else if ((UIntOS)Double2IntOS(dimg->GetWidth()) != newSize.x || (UIntOS)Double2IntOS(dimg->GetHeight()) != newSize.y)
 	{
 		this->pbChar->SetImageDImg(nullptr);
 		this->deng->DeleteImage(dimg);

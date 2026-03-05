@@ -1056,7 +1056,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
@@ -1411,7 +1411,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 			{
 				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 				b = dimg->NewBrushARGB(0xffffffff);
-				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 				dimg->DelBrush(b);
 				b = dimg->NewBrushARGB(0xff000000);
 				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
@@ -1675,7 +1675,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
@@ -1763,7 +1763,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			{
 				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 				b = dimg->NewBrushARGB(0xffffffff);
-				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 				dimg->DelBrush(b);
 				b = dimg->NewBrushARGB(0xff000000);
 				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);

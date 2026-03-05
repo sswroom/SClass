@@ -65,10 +65,10 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surfa
 		Sync::MutexUsage mutUsage(this->frameMut);
 		Bool revOrder;
 		UnsafeArray<UInt8> bits;
-		if (img->GetImgBits(revOrder).SetTo(bits))
+		if (img->PixelGetBits(revOrder).SetTo(bits))
 		{
-			surface->GetRasterData(bits, 0, 0, buffSize.x, buffSize.y, img->GetImgBpl(), revOrder, Media::RotateType::None);
-			img->GetImgBitsEnd(true);
+			surface->GetRasterData(bits, 0, 0, buffSize.x, buffSize.y, img->PixelGetBpl(), revOrder, Media::RotateType::None);
+			img->PixelGetBitsEnd(true);
 			this->shown = false;
 		}
 	}

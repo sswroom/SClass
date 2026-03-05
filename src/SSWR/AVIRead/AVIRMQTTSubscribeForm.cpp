@@ -321,7 +321,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
-		if (!this->dispImg.SetTo(gimg) || gimg->GetSize() != sz)
+		if (!this->dispImg.SetTo(gimg) || (UIntOS)gimg->GetWidth() != sz.x || (UIntOS)gimg->GetHeight() != sz.y)
 		{
 			if (this->dispImg.SetTo(gimg))
 			{

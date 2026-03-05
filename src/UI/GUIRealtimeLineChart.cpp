@@ -26,10 +26,11 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 	Double thisY;
 
 	this->valueChanged = false;
-	if (this->eng->CreateImage32(dimg->GetSize(), Media::AT_ALPHA_ALL_FF).SetTo(img))
+	Math::Size2D<UIntOS> imgSize = Math::Size2D<UIntOS>((UIntOS)(dimg->GetWidth()), (UIntOS)(dimg->GetHeight()));
+	if (this->eng->CreateImage32(imgSize, Media::AT_ALPHA_ALL_FF).SetTo(img))
 	{
 		b = img->NewBrushARGB(this->bgColor);
-		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize(), nullptr, b);
 		img->DelBrush(b);
 
 		Sync::MutexUsage mutUsage(this->chartMut);

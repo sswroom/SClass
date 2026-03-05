@@ -1658,7 +1658,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(AnyType userObj, NN<Medi
 	if (me->mapCurrImage.SetTo(img))
 	{
 		Math::Size2D<UIntOS> scnSize = me->mcMap->GetSizeP();
-		dimg->DrawImagePt(img, Math::Coord2DDbl(IntOS2Double(xOfst), IntOS2Double(yOfst + (IntOS)(scnSize.y - img->GetHeight()))));
+		dimg->DrawImagePt(img, Math::Coord2DDbl(IntOS2Double(xOfst), IntOS2Double(yOfst + (IntOS)(scnSize.y - img->PixelGetHeight()))));
 		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispSize.y, me->mapCurrImage->info.dispSize.x, me->mapCurrImage->info.dispSize.y, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }

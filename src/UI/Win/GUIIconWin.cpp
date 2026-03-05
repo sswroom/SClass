@@ -9,18 +9,18 @@ UI::GUIIcon::GUIIcon()
 	this->hand = 0;
 }
 
-UI::GUIIcon::GUIIcon(Media::DrawImage *img)
+UI::GUIIcon::GUIIcon(NN<Media::DrawImage> img)
 {
 	this->hand = 0;
-	if ((img->GetWidth() & 7) == 0 && (img->GetHeight() & 7) == 0)
+	if ((img->PixelGetWidth() & 7) == 0 && (img->PixelGetHeight() & 7) == 0)
 	{
 		void *pBits;
 		HDC hdcIcons = CreateCompatibleDC(GetDC(0));
 		HBITMAP hbmp;
 		BITMAPINFOHEADER bmpInfo;
 		bmpInfo.biSize = sizeof(BITMAPINFOHEADER);
-		bmpInfo.biWidth = (LONG)img->GetWidth();
-		bmpInfo.biHeight = (LONG)img->GetHeight();
+		bmpInfo.biWidth = (LONG)img->PixelGetWidth();
+		bmpInfo.biHeight = (LONG)img->PixelGetHeight();
 		bmpInfo.biPlanes = 1;
 		bmpInfo.biXPelsPerMeter = 96;
 		bmpInfo.biYPelsPerMeter = 96;
@@ -36,7 +36,7 @@ UI::GUIIcon::GUIIcon(Media::DrawImage *img)
 		icoInfo.xHotspot = 0;
 		icoInfo.yHotspot = 0;
 		icoInfo.hbmMask = hbmp;
-		icoInfo.hbmColor = (HBITMAP)((Media::GDIImage*)img)->hBmp;
+		icoInfo.hbmColor = (HBITMAP)NN<Media::GDIImage>::ConvertFrom(img)->hBmp;
 		this->hand = CreateIconIndirect(&icoInfo);
 		DeleteObject(hbmp);
 		DeleteDC(hdcIcons);

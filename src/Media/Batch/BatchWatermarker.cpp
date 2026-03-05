@@ -86,10 +86,10 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 						if (this->deng->CreateImage32(Math::Size2D<UIntOS>(iWidth, iHeight), Media::AT_ALPHA_ALL_FF).SetTo(gimg2))
 						{
 							gimg2->DrawString(Math::Coord2DDbl(0, 0), watermark, f, b);
-							gimg2->SetAlphaType(Media::AT_ALPHA);
+							gimg2->PixelSetAlphaType(Media::AT_ALPHA);
 							Bool revOrder;
 							UnsafeArray<UInt8> bmpBits;
-							if (gimg2->GetImgBits(revOrder).SetTo(bmpBits))
+							if (gimg2->PixelGetBits(revOrder).SetTo(bmpBits))
 							{
 								ImageUtil_ColorReplace32A(bmpBits.Ptr(), iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
 								if (revOrder)

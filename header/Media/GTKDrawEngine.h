@@ -96,23 +96,16 @@ namespace Media
 		GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess);
 		virtual ~GTKDrawImage();
 
-		virtual UIntOS GetWidth() const;
-		virtual UIntOS GetHeight() const;
-		virtual Math::Size2D<UIntOS> GetSize() const;
-		virtual UInt32 GetBitCount() const;
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+		virtual Math::Size2DDbl GetSize() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
 		virtual void SetColorProfile(NN<const ColorProfile> color);
-		virtual Media::AlphaType GetAlphaType() const;
-		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
 		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
-		virtual UnsafeArrayOpt<UInt8> GetImgBits(OutParam<Bool> upsideDown);
-		virtual void GetImgBitsEnd(Bool modified);
-		virtual UIntOS GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
-		virtual Media::PixelFormat GetPixelFormat() const;
 		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p); ////////////////////////////////////
@@ -164,7 +157,16 @@ namespace Media
 		virtual NN<Media::RasterImage> Clone() const; ////////////////////////////////////
 		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
-		virtual Int32 GetPixel32(IntOS x, IntOS y) const; ////////////////////////////////////
+		virtual Bool PixelSupported() const;
+		virtual UIntOS PixelGetWidth() const;
+		virtual UIntOS PixelGetHeight() const;
+		virtual Media::AlphaType PixelGetAlphaType() const;
+		virtual void PixelSetAlphaType(Media::AlphaType atype);
+		virtual UInt32 PixelGetBitCount() const;
+		virtual UnsafeArrayOpt<UInt8> PixelGetBits(OutParam<Bool> upsideDown);
+		virtual void PixelGetBitsEnd(Bool modified);
+		virtual UIntOS PixelGetBpl() const;
+		virtual Media::PixelFormat PixelGetFormat() const;
 
 		void *GetSurface() const;
 		void *GetCairo() const;

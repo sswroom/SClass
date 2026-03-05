@@ -73,12 +73,12 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 	NN<Media::DrawImage> prevImageD;
 	if (this->prevImageD.SetTo(prevImageD))
 	{
-		IntOS x = (rc.right - rc.left - (IntOS)prevImageD->GetWidth()) >> 1;
-		IntOS y = (rc.bottom - rc.top - (IntOS)prevImageD->GetHeight()) >> 1;
+		IntOS x = (rc.right - rc.left - (IntOS)prevImageD->PixelGetWidth()) >> 1;
+		IntOS y = (rc.bottom - rc.top - (IntOS)prevImageD->PixelGetHeight()) >> 1;
 
-		if (this->noBGColor || prevImageD->GetAlphaType() == Media::AT_IGNORE_ALPHA || prevImageD->GetAlphaType() == Media::AT_ALPHA_ALL_FF)
+		if (this->noBGColor || prevImageD->PixelGetAlphaType() == Media::AT_IGNORE_ALPHA || prevImageD->PixelGetAlphaType() == Media::AT_ALPHA_ALL_FF)
 		{
-			BitBlt(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, SRCCOPY);
+			BitBlt(ps.hdc, (int)x, (int)y, (int)prevImageD->PixelGetWidth(), (int)prevImageD->PixelGetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, SRCCOPY);
 		}
 		else
 		{
@@ -87,7 +87,7 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), bf);
+			AlphaBlend(ps.hdc, (int)x, (int)y, (int)prevImageD->PixelGetWidth(), (int)prevImageD->PixelGetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, (int)prevImageD->PixelGetWidth(), (int)prevImageD->PixelGetHeight(), bf);
 		}
 	}
 	else if (this->noBGColor)

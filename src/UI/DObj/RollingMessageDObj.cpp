@@ -99,12 +99,12 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			else if (msg->img.SetTo(img))
 			{
 				IntOS ofst = 0;
-				if (img->GetWidth() > this->size.x)
-					ofst = -(IntOS)(img->GetWidth() - this->size.x);
+				if (img->PixelGetWidth() > this->size.x)
+					ofst = -(IntOS)(img->PixelGetWidth() - this->size.x);
 
 				IntOS drawPos = ofst - lastPos;
 				IntOS srcPos = 0;
-				Math::Size2D<UIntOS> srcSize = img->GetSize();
+				Math::Size2D<UIntOS> srcSize = img->PixelGetSize();
 				if (drawPos < 0)
 				{
 					srcPos = -drawPos;
@@ -122,7 +122,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				{
 					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->PixelGetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
 			}
 		}
 		if (this->thisMessage.SetTo(msg))
@@ -134,13 +134,13 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			}
 			if (msg->img.SetTo(img))
 			{
-				UIntOS w = img->GetWidth();
+				UIntOS w = img->PixelGetWidth();
 				if (w < this->size.x)
 					w = this->size.x;
 
 				IntOS drawPos = (IntOS)this->size.x - currPos;
 				IntOS srcPos = 0;
-				Math::Size2D<UIntOS> srcSize = img->GetSize();
+				Math::Size2D<UIntOS> srcSize = img->PixelGetSize();
 				if (drawPos < 0)
 				{
 					srcPos = -drawPos;
@@ -158,7 +158,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				{
 					srcSize.x = this->size.x - (UIntOS)drawPos;
 				}
-				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt2(img, scnPos + Math::Coord2DDbl(IntOS2Double(drawPos), UIntOS2Double(this->size.y - img->PixelGetHeight()) * 0.5), Math::Coord2DDbl(IntOS2Double(srcPos), 0), srcSize.ToDouble());
 				if (currPos >= (IntOS)w)
 				{
 					this->lastMessage = this->thisMessage;

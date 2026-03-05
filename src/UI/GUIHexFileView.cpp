@@ -171,7 +171,7 @@ void UI::GUIHexFileView::EventTimerTick()
 void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 	dimg->DelBrush(b);
 	IntOS vPos = this->GetScrollVPos();
 	if (this->fileSize > 0)

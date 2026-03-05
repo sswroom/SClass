@@ -280,7 +280,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::
 	NN<Media::DrawPen> p;
 	NN<Media::DrawFont> f;
 	b = dimg->NewBrushARGB(0xffffffff);
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, b);
 	dimg->DelBrush(b);
 
 	p = dimg->NewPenARGB(0xff000000, 1, nullptr, 0);

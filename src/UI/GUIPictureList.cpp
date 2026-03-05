@@ -29,8 +29,8 @@ UI::GUIPictureList::~GUIPictureList()
 
 void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 {
-	UIntOS w = img->GetWidth();
-	UIntOS h = img->GetHeight();
+	Double w = img->GetWidth();
+	Double h = img->GetHeight();
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -42,7 +42,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawImage> gimg;
 	this->ClearBackground(img);
 
-	if (w <= this->iconSize.x + ICONPADDING)
+	if (w <= UIntOS2Double(this->iconSize.x) + ICONPADDING)
 	{
 		ofst = -(IntOS)currY;
 		i = 0;
@@ -60,7 +60,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 				if (this->imgList.GetItem(i).SetTo(gimg))
 				{
 					x = (IntOS)(w - gimg->GetWidth()) >> 1;
-					y = (IntOS)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
+					y = (IntOS)((UIntOS2Double(this->iconSize.y) + ICONPADDING - gimg->GetHeight()) * 0.5) + ofst;
 					gimg->SetHDPI(img->GetHDPI());
 					gimg->SetVDPI(img->GetVDPI());
 					img->DrawImagePt(gimg, Math::Coord2DDbl(IntOS2Double(x), IntOS2Double(y)));
@@ -76,7 +76,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 	}
 	else
 	{
-		iconPerRow = w / (this->iconSize.x + ICONPADDING);
+		iconPerRow = (UIntOS)(w / UIntOS2Double(this->iconSize.x + ICONPADDING));
 		ofst = -(IntOS)currY;
 		i = 0;
 		j = this->imgList.GetCount();
@@ -95,8 +95,8 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 					}
 					if (this->imgList.GetItem(i + k).SetTo(gimg))
 					{
-						x = (IntOS)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
-						y = (IntOS)((IntOS)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
+						x = (IntOS)(((UIntOS2Double(this->iconSize.x) + ICONPADDING - gimg->GetWidth()) * 0.5) + (UIntOS2Double(this->iconSize.x) + ICONPADDING) * UIntOS2Double(k));
+						y = (IntOS)(((UIntOS2Double(this->iconSize.y) + ICONPADDING - gimg->GetHeight()) * 0.5) + IntOS2Double(ofst));
 						gimg->SetHDPI(img->GetHDPI());
 						gimg->SetVDPI(img->GetVDPI());
 						img->DrawImagePt(gimg, Math::Coord2DDbl(IntOS2Double(x), IntOS2Double(y)));

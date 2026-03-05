@@ -2,8 +2,10 @@
 #define _SM_MEDIA_SVGDOCUMENT
 #include "Data/ArrayListA.hpp"
 #include "Data/ArrayListNN.hpp"
+#include "Math/Unit/Distance.h"
 #include "Media/SVGCore.h"
 #include "Text/String.h"
+#include "Text/XMLReader.h"
 
 namespace Media
 {
@@ -116,12 +118,12 @@ namespace Media
 	private:
 		Math::Coord2DDbl tl;
 		NN<Text::String> txt;
-		NN<DrawFont> font;
-		NN<DrawBrush> brush;
+		NN<SVGFont> font;
+		NN<SVGBrush> brush;
 		Double angleDegreeACW;
 		Math::Coord2DDbl rotateCenter;
 	public:
-		SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<DrawFont> font, NN<DrawBrush> brush);
+		SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush);
 		virtual ~SVGText();
 
 		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
@@ -156,7 +158,7 @@ namespace Media
 		SVGContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGContainer();
 
-		virtual Math::Size2D<UIntOS> GetSize() const;
+		virtual Math::Size2DDbl GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
 		virtual void SetColorProfile(NN<const ColorProfile> color);
@@ -211,6 +213,17 @@ namespace Media
 		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY);
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const;
 		
+		virtual Bool PixelSupported() const { return false; }
+		virtual UIntOS PixelGetWidth() const { return 0; }
+		virtual UIntOS PixelGetHeight() const { return 0; }
+		virtual Media::AlphaType PixelGetAlphaType() const { return Media::AT_IGNORE_ALPHA; }
+		virtual void PixelSetAlphaType(Media::AlphaType atype) {}
+		virtual UInt32 PixelGetBitCount() const { return 0; }
+		virtual UnsafeArrayOpt<UInt8> PixelGetBits(OutParam<Bool> revOrder) { return nullptr; }
+		virtual void PixelGetBitsEnd(Bool modified) {}
+		virtual UIntOS PixelGetBpl() const { return 0; }
+		virtual Media::PixelFormat PixelGetFormat() const { return Media::PF_UNKNOWN; }
+
 		virtual Optional<Media::StaticImage> ToStaticImage() const;
 		virtual Optional<Media::RasterImage> AsRasterImage();
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
@@ -223,6 +236,7 @@ namespace Media
 	private:
 		UIntOS width;
 		UIntOS height;
+		Math::Unit::Distance::DistanceUnit unit;
 		Math::RectArea<IntOS> viewBox;
 		Data::ArrayListNN<SVGPen> pens;
 		Data::ArrayListNN<SVGBrush> brushes;
@@ -232,8 +246,8 @@ namespace Media
 		SVGDocument(NN<Media::DrawEngine> refEng);
 		virtual ~SVGDocument();
 
-		virtual UIntOS GetWidth() const;
-		virtual UIntOS GetHeight() const;
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
@@ -241,10 +255,14 @@ namespace Media
 		virtual NN<DrawFont> NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // Actual size
 		virtual NN<DrawFont> CloneFont(NN<DrawFont> f);
 
-		void SetSize(UIntOS width, UIntOS height);
+		void SetSize(UIntOS width, UIntOS height, Math::Unit::Distance::DistanceUnit unit);
 		void SetViewBox(Math::RectArea<IntOS> viewBox);
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+
+		static Optional<SVGDocument> ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng);
+		static Optional<SVGDocument> ParseReader(NN<Text::XMLReader> reader, NN<Media::DrawEngine> refEng);
+		static Bool ParseContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 	};
 }
 #endif

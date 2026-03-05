@@ -434,7 +434,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NN<Media::DrawImage> img, NN<Media:
 	NN<Media::DrawBrush> b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize(), nullptr, b);
 	img->DelBrush(b);
 
 	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, nullptr, 0);
@@ -445,13 +445,13 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NN<Media::DrawImage> img, NN<Media:
 
 Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS lineStyle, NN<Media::ColorConv> colorConv)
 {
-	Math::Size2D<UIntOS> size = img->GetSize();
+	Math::Size2DDbl size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	if (lineStyle >= env->GetLineStyleCount())
 	{
 		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), size, nullptr, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(Math::Coord2DDbl(0, 0), CSTR("No line style"), f, b);
@@ -463,7 +463,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
-	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), size, nullptr, b);
 	img->DelBrush(b);
 
 	UInt32 color;
@@ -475,7 +475,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	while (env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 	{
 		p = img->NewPenARGB(colorConv->ConvRGB8(color), thick * dpi / 96.0, pattern, npattern);
-		img->DrawLine(0, UIntOS2Double(size.y >> 1), UIntOS2Double(size.x), UIntOS2Double(size.y >> 1), p);
+		img->DrawLine(0, size.y * 0.5, size.x, size.y * 0.5, p);
 		img->DelPen(p);
 	}
 	return true;
@@ -483,14 +483,14 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 
 Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UIntOS fontStyle, NN<Media::ColorConv> colorConv)
 {
-	Math::Size2D<UIntOS> size = img->GetSize();
+	Math::Size2DDbl size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	
 	if (fontStyle >= env->GetFontStyleCount())
 	{
 		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), size, nullptr, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(Math::Coord2DDbl(0, 0), CSTR("No font style"), f, b);
@@ -505,7 +505,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl refPos;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), size, nullptr, b);
 	img->DelBrush(b);
 
 	NN<Text::String> fontName;
@@ -525,7 +525,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 		}
 		f = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
-		refPos = (size.ToDouble() - sz) * 0.5;
+		refPos = (size - sz) * 0.5;
 		if (buffSize > 0)
 		{
 			b = img->NewBrushARGB(colorConv->ConvRGB8(buffColor));
@@ -551,7 +551,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NN<Media::DrawImage> img, NN<Media:
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize(), nullptr, b);
 	img->DelBrush(b);
 
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));

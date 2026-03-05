@@ -554,7 +554,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameIm
 		else
 		{
 			NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(img);
-			this->currImageSize = vimg->GetSize();
+			this->currImageSize = Math::Size2D<UIntOS>((UIntOS)vimg->GetWidth(), (UIntOS)vimg->GetHeight());
 			this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
 			this->UpdateMinScale();
 			this->zoomScale = this->zoomMinScale;

@@ -63,7 +63,7 @@ namespace Math
 			void SetZIndex(Int32 zIndex);
 			Bool HasZIndex() const;
 			Int32 GetZIndex() const;
-			Math::RectAreaDbl GetScreenBounds(UIntOS scnWidth, UIntOS scnHeight, Double hdpi, Double vdpi) const;
+			Math::RectAreaDbl GetScreenBounds(Double scnWidth, Double scnHeight, Double hdpi, Double vdpi) const;
 			Math::Size2DDbl GetVectorSize() const;
 			Bool IsScnCoord() const;
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);

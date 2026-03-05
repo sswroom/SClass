@@ -629,8 +629,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	UIntOS i;
 	UIntOS j;
-	UIntOS scnW = dimg->GetWidth();
-	UIntOS scnH = dimg->GetHeight();
+	Double scnW = dimg->GetWidth();
+	Double scnH = dimg->GetHeight();
 
 	barr[0] = dimg->NewBrushARGB(0xffc0c0c0);
 	barr[1] = dimg->NewBrushARGB(0xffff8080);
@@ -684,14 +684,14 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UIntOS>((UInt32)Double2Int32(UIntOS2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UIntOS2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_IGNORE_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-			dimg->DrawRect(Math::Coord2DDbl(0, IntOS2Double((IntOS)(i * itemTH - scrPos))), Math::Size2DDbl(UIntOS2Double(scnW), itemBH), nullptr, barr[status->setting.flags & 3]);
-			dimg->DrawRect(Math::Coord2DDbl(0, IntOS2Double((IntOS)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UIntOS2Double(scnW), itemTH - itemBH), nullptr, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, IntOS2Double((IntOS)(i * itemTH - scrPos))), Math::Size2DDbl(scnW, itemBH), nullptr, barr[status->setting.flags & 3]);
+			dimg->DrawRect(Math::Coord2DDbl(0, IntOS2Double((IntOS)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(scnW, itemTH - itemBH), nullptr, barr[4]);
 			NN<Media::DrawImage> previewImg2;
 			if (status->previewImg2.SetTo(previewImg2))
 			{
 				previewImg2->SetHDPI(dimg->GetHDPI());
 				previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(previewImg2, Math::Coord2DDbl(UIntOS2Double((scnW - previewImg2->GetWidth()) >> 1), IntOS2Double((IntOS)(i * itemTH - scrPos + ((itemH - previewImg2->GetHeight()) >> 1)))));
+				dimg->DrawImagePt(previewImg2, Math::Coord2DDbl((scnW - previewImg2->GetWidth()) * 0.5, IntOS2Double(i * itemTH - scrPos) + (((Double)itemH - previewImg2->GetHeight()) * 0.5)));
 			}
 			if (status->fileName.leng > 0)
 			{
@@ -699,14 +699,14 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 				sb.Append(status->fileName);
 				if ((strSz = dimg->GetTextSize(f, sb.ToCString())).HasArea())
 				{
-					dimg->DrawString(Math::Coord2DDbl((UIntOS2Double(scnW) - strSz.x) * 0.5, UIntOS2Double(i * itemTH - scrPos + itemH)), sb.ToCString(), f, b);
+					dimg->DrawString(Math::Coord2DDbl((scnW - strSz.x) * 0.5, IntOS2Double((IntOS)(i * itemTH - scrPos + itemH))), sb.ToCString(), f, b);
 				}
 			}
 			i++;
 		}
-		if ((j + 1) * itemTH - scrPos < scnH)
+		if ((j + 1) * itemTH - scrPos < (UIntOS)Double2IntOS(scnH))
 		{
-			dimg->DrawRect(Math::Coord2DDbl(0, UIntOS2Double((j + 1) * itemTH - scrPos)), Math::Size2DDbl(UIntOS2Double(scnW), UIntOS2Double(scnH) - UIntOS2Double((j + 1) * itemTH - scrPos)), nullptr, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, UIntOS2Double((j + 1) * itemTH - scrPos)), Math::Size2DDbl(scnW, scnH - UIntOS2Double((j + 1) * itemTH - scrPos)), nullptr, barr[4]);
 		}
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
@@ -1041,19 +1041,19 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRIma
 	NN<Media::DrawImage> destImg;
 	if (!img->previewImg.SetTo(srcImg) || !img->previewImg2.SetTo(destImg))
 		return;
-	UIntOS sWidth = srcImg->GetWidth();
-	UIntOS sHeight = srcImg->GetHeight();
-	UIntOS sbpl = srcImg->GetImgBpl();
+	UIntOS sWidth = srcImg->PixelGetWidth();
+	UIntOS sHeight = srcImg->PixelGetHeight();
+	UIntOS sbpl = srcImg->PixelGetBpl();
 	Bool srev;
 	UnsafeArray<UInt8> sptr;
-	UIntOS dWidth = destImg->GetWidth();
-	UIntOS dHeight = destImg->GetHeight();
-	UIntOS dbpl = destImg->GetImgBpl();
+	UIntOS dWidth = destImg->PixelGetWidth();
+	UIntOS dHeight = destImg->PixelGetHeight();
+	UIntOS dbpl = destImg->PixelGetBpl();
 	Bool drev;
 	UnsafeArray<UInt8> dptr;
-	if (!srcImg->GetImgBits(srev).SetTo(sptr) || !destImg->GetImgBits(drev).SetTo(dptr))
+	if (!srcImg->PixelGetBits(srev).SetTo(sptr) || !destImg->PixelGetBits(drev).SetTo(dptr))
 		return;
-	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * (UIntOS)sbpl);
+	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * sbpl);
 
 	UnsafeArrayOpt<Double> gammaParam;
 	UInt32 gammaCnt;
@@ -1069,14 +1069,14 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRIma
 		gammaCnt = 0;
 	}
 	Sync::MutexUsage mutUsage(this->filterMut);
-	this->filter.SetParameter((img->setting.brightness - 1.0) * img->setting.contrast, img->setting.contrast, img->setting.gamma, srcImg->GetColorProfile(), srcImg->GetBitCount(), srcImg->GetPixelFormat(), (img->setting.flags & 240) >> 4);
+	this->filter.SetParameter((img->setting.brightness - 1.0) * img->setting.contrast, img->setting.contrast, img->setting.gamma, srcImg->GetColorProfile(), srcImg->PixelGetBitCount(), srcImg->PixelGetFormat(), (img->setting.flags & 240) >> 4);
 	this->filter.SetGammaCorr(gammaParam, gammaCnt);
 	this->filter.ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl, srev ^ drev);
-	this->dispResizer->Resize(tmpBuff, (IntOS)sbpl, UIntOS2Double(sWidth), UIntOS2Double(sHeight), 0, 0, dptr, (IntOS)dbpl, dWidth, dHeight);
+	this->dispResizer->Resize(tmpBuff, (IntOS)sbpl, srcImg->GetWidth(), srcImg->GetHeight(), 0, 0, dptr, (IntOS)dbpl, dWidth, dHeight);
 	mutUsage.EndUse();
 	MemFreeA(tmpBuff);
-	srcImg->GetImgBitsEnd(false);
-	destImg->GetImgBitsEnd(true);
+	srcImg->PixelGetBitsEnd(false);
+	destImg->PixelGetBitsEnd(true);
 }
 
 void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(NN<SSWR::AVIRead::AVIRImageControl::ImageSetting> setting)

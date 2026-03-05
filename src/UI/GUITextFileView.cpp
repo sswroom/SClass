@@ -1198,7 +1198,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 	yPos = (UIntOS)this->GetScrollVPos();
 
 	NN<Media::DrawBrush> bgBrush = dimg->NewBrushARGB(this->bgColor);
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, bgBrush);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, bgBrush);
 	dimg->DelBrush(bgBrush);
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -1218,7 +1218,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 	this->fs->SeekFromBeginning(startOfst);
 	this->fs->Read(rbuff);
 
-	maxScnWidth = dimg->GetWidth() + xPos;
+	maxScnWidth = (UIntOS)Double2IntOS(dimg->GetWidth()) + xPos;
 	NN<Media::DrawFont> fnt;
 	if (!this->CreateDrawFont(dimg).SetTo(fnt))
 	{

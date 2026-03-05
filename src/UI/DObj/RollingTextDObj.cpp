@@ -51,12 +51,12 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 
 			Bool revOrder;
 			UnsafeArray<UInt8> bmpPtr;
-			if (dimg->GetImgBits(revOrder).SetTo(bmpPtr))
+			if (dimg->PixelGetBits(revOrder).SetTo(bmpPtr))
 			{
-				ImageUtil_ColorReplace32A2(bmpPtr.Ptr(), dimg->GetWidth(), dimg->GetHeight(), this->fontColor);
-				dimg->GetImgBitsEnd(true);
+				ImageUtil_ColorReplace32A2(bmpPtr.Ptr(), dimg->PixelGetWidth(), dimg->PixelGetHeight(), this->fontColor);
+				dimg->PixelGetBitsEnd(true);
 			}
-			dimg->SetAlphaType(Media::AT_ALPHA);
+			dimg->PixelSetAlphaType(Media::AT_ALPHA);
 	/*
 			UInt8 *imgPtr = (UInt8*)((Media::GDIImage*)this->dimg)->bmpBits;
 			Int32 c = this->fontColor;
@@ -245,12 +245,12 @@ Bool UI::DObj::RollingTextDObj::IsChanged()
 	NN<Media::DrawImage> dimg;
 	if (!this->dimg.SetTo(dimg))
 		return false;
-	if (dimg->GetHeight() <= this->size.y)
+	if (dimg->PixelGetHeight() <= this->size.y)
 		return false;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	Int64 t = currTime.DiffMS(this->startTime);
-	UIntOS h = dimg->GetHeight();
+	UIntOS h = dimg->PixelGetHeight();
 	IntOS currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
 	while (currPos >= (IntOS)h)
 	{
@@ -277,7 +277,7 @@ void UI::DObj::RollingTextDObj::DrawObject(NN<Media::DrawImage> dimg)
 	{
 		return;
 	}
-	UIntOS h = img->GetHeight();
+	UIntOS h = img->PixelGetHeight();
 	if (h <= this->size.y)
 	{
 		dimg->DrawImagePt(img, tl.ToDouble());

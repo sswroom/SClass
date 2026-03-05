@@ -64,12 +64,12 @@ public:
 
 	virtual Bool PrintPage(NN<Media::DrawImage> printPage) //return has more pages
 	{
-		UIntOS w = printPage->GetWidth();
-		UIntOS h = printPage->GetHeight();
+		Double w = printPage->GetWidth();
+		Double h = printPage->GetHeight();
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
 		NN<Media::DrawPen> p = printPage->NewPenARGB(0xff000000, 1, nullptr, 0);
-		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UIntOS2Double(w) - hdpi, UIntOS2Double(h) - vdpi), p, nullptr);
+		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(w - hdpi, h - vdpi), p, nullptr);
 		printPage->DelPen(p);
 
 		NN<Media::PrintDocument> doc;

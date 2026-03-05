@@ -12,17 +12,17 @@ namespace Media
 		NN<Media::DrawEngine> refEng;
 		NN<IO::Stream> stm;
 		Text::StringBuilderUTF8 sb;
-		Math::Size2D<UIntOS> size;
+		Math::Size2DDbl size;
 		Media::ColorProfile color;
 
 		void WriteBuffer();
 	public:
-		SVGWriter(NN<IO::Stream> stm, UIntOS width, UIntOS height, NN<Media::DrawEngine> refEng);
+		SVGWriter(NN<IO::Stream> stm, Double width, Double height, NN<Media::DrawEngine> refEng);
 		virtual ~SVGWriter();
 
-		virtual UIntOS GetWidth() const;
-		virtual UIntOS GetHeight() const;
-		virtual Math::Size2D<UIntOS> GetSize() const;
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+		virtual Math::Size2DDbl GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
 		virtual void SetColorProfile(NN<const ColorProfile> color);
@@ -32,11 +32,7 @@ namespace Media
 		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
-		virtual UnsafeArrayOpt<UInt8> GetImgBits(OutParam<Bool> revOrder);
-		virtual void GetImgBitsEnd(Bool modified);
-		virtual UIntOS GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
-		virtual Media::PixelFormat GetPixelFormat() const;
 		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p);
@@ -77,6 +73,17 @@ namespace Media
 		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY);
 		virtual void CopyBits(IntOS x, IntOS y, UnsafeArray<UInt8> imgPtr, UIntOS bpl, UIntOS width, UIntOS height, Bool upsideDown) const;
 		
+		virtual Bool PixelSupported() const { return false; }
+		virtual UIntOS PixelGetWidth() const { return 0; }
+		virtual UIntOS PixelGetHeight() const { return 0; }
+		virtual Media::AlphaType PixelGetAlphaType() const { return Media::AT_IGNORE_ALPHA; }
+		virtual void PixelSetAlphaType(Media::AlphaType atype) {}
+		virtual UInt32 PixelGetBitCount() const { return 0; }
+		virtual UnsafeArrayOpt<UInt8> PixelGetBits(OutParam<Bool> revOrder) { return nullptr; }
+		virtual void PixelGetBitsEnd(Bool modified) {}
+		virtual UIntOS PixelGetBpl() const { return 0; }
+		virtual Media::PixelFormat PixelGetFormat() const { return Media::PF_UNKNOWN; }
+
 		virtual Optional<Media::StaticImage> ToStaticImage() const;
 		virtual Optional<Media::RasterImage> AsRasterImage();
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);

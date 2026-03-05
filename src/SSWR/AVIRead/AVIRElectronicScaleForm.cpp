@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 			{
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF);
 			}
-			else if (img->GetWidth() != usz.x || img->GetHeight() != usz.y)
+			else if ((UIntOS)Double2IntOS(img->GetWidth()) != usz.x || (UIntOS)Double2IntOS(img->GetHeight()) != usz.y)
 			{
 				me->eng->DeleteImage(img);
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF);

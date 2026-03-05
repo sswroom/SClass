@@ -17,8 +17,8 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	UIntOS w = img->GetWidth();;
-	UIntOS h = img->GetHeight();
+	UIntOS w = img->PixelGetWidth();;
+	UIntOS h = img->PixelGetHeight();
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
 	UInt32 itemH = (UInt32)Double2Int32(22 * hdpi / ddpi);
