@@ -4,8 +4,60 @@
 #include "IO/MemoryStream.h"
 #include "Media/StaticImage.h"
 #include "Media/SVGDocument.h"
+#include "Text/CSSColor.h"
 #include "Text/XML.h"
 #include "Text/TextBinEnc/Base64Enc.h"
+
+void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
+{
+	NN<Text::String> s;
+	if (this->id.SetTo(s))
+	{
+		sb->AppendC(UTF8STRC(" id=\""));
+		sb->Append(s);
+		sb->AppendUTF8Char('\"');
+	}
+	if (this->lineCap != SVGLineCap::Default)
+	{
+		sb->AppendC(UTF8STRC(" stroke-linecap=\""));
+		switch (this->lineCap)
+		{
+		case SVGLineCap::Butt:
+			sb->AppendC(UTF8STRC("butt"));
+			break;
+		case SVGLineCap::Round:
+			sb->AppendC(UTF8STRC("round"));
+			break;
+		case SVGLineCap::Square:
+			sb->AppendC(UTF8STRC("square"));
+			break;
+		case SVGLineCap::Default:
+		default:
+			break;
+		}
+		sb->AppendUTF8Char('\"');
+	}
+	if (this->lineJoin != SVGLineJoin::Default)
+	{
+		sb->AppendC(UTF8STRC(" stroke-linejoin=\""));
+		switch (this->lineJoin)
+		{
+		case SVGLineJoin::Miter:
+			sb->AppendC(UTF8STRC("miter"));
+			break;
+		case SVGLineJoin::Round:
+			sb->AppendC(UTF8STRC("round"));
+			break;
+		case SVGLineJoin::Bevel:
+			sb->AppendC(UTF8STRC("bevel"));
+			break;
+		case SVGLineJoin::Default:
+		default:
+			break;
+		}
+		sb->AppendUTF8Char('\"');
+	}
+}
 
 Media::SVGLine::SVGLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen)
 {
@@ -242,6 +294,30 @@ void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 	NN<Text::String> s = Text::XML::ToNewAttrText(this->href->v);
 	sb->Append(s);
 	s->Release();
+	this->AppendEleAttr(sb);
+	sb->AppendC(UTF8STRC(" />"));
+}
+
+Media::SVGPath::SVGPath(NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush)
+{
+	this->d = d->Clone();
+	this->pen = pen;
+	this->brush = brush;
+}
+
+Media::SVGPath::~SVGPath()
+{
+	this->d->Release();
+}
+
+void Media::SVGPath::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("<path d="));
+	NN<Text::String> s = Text::XML::ToNewAttrText(this->d->v);
+	sb->Append(s);
+	s->Release();
+	SVGCore::WritePenStyle(sb, this->pen);
+	SVGCore::WriteBrushStyle(sb, this->brush);
 	this->AppendEleAttr(sb);
 	sb->AppendC(UTF8STRC(" />"));
 }
@@ -631,6 +707,70 @@ UIntOS Media::SVGContainer::SaveJPG(NN<IO::SeekableStream> stm)
 	return 0;
 }
 
+void Media::SVGContainer::AddElement(NN<SVGElement> ele)
+{
+	NN<Text::String> id;
+	this->elements.Add(ele);
+	if (ele->GetID().SetTo(id))
+	{
+		this->doc->RegisterId(id, ele);
+	}
+}
+
+Media::SVGDefs::SVGDefs(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(refEng, doc)
+{
+}
+
+Media::SVGDefs::~SVGDefs()
+{
+}
+
+Double Media::SVGDefs::GetWidth() const
+{
+	return this->doc->GetWidth();
+}
+
+Double Media::SVGDefs::GetHeight() const
+{
+	return this->doc->GetHeight();
+}
+
+void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("<defs"));
+	this->AppendEleAttr(sb);
+	sb->AppendC(UTF8STRC(">\n"));
+	this->ToInnerString(sb);
+	sb->AppendC(UTF8STRC("</defs>"));
+}
+
+Media::SVGGroup::SVGGroup(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(refEng, doc)
+{
+}
+
+Media::SVGGroup::~SVGGroup()
+{
+}
+
+Double Media::SVGGroup::GetWidth() const
+{
+	return this->doc->GetWidth();
+}
+
+Double Media::SVGGroup::GetHeight() const
+{
+	return this->doc->GetHeight();
+}
+
+void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("<g"));
+	this->AppendEleAttr(sb);
+	sb->AppendC(UTF8STRC(">\n"));
+	this->ToInnerString(sb);
+	sb->AppendC(UTF8STRC("</g>"));
+}
+
 Media::SVGDocument::SVGDocument(NN<Media::DrawEngine> refEng) : SVGContainer(refEng, *this)
 {
 	this->width = 0;
@@ -769,6 +909,11 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(">\n"));
 	this->ToInnerString(sb);
 	sb->AppendC(UTF8STRC("</svg>"));
+}
+
+void Media::SVGDocument::RegisterId(NN<Text::String> id, NN<SVGElement> ele)
+{
+	this->idMap.Put(id, ele);
 }
 
 Optional<Media::SVGDocument> Media::SVGDocument::ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng)
@@ -917,12 +1062,337 @@ Optional<Media::SVGDocument> Media::SVGDocument::ParseReader(NN<Text::XMLReader>
 					printf("SVGDocument: svg Invalid viewBox (%s)\r\n", value->v.Ptr());
 				}
 			}
+			else if (name->Equals(UTF8STRC("xmlns")))
+			{
+				if (!value->Equals(UTF8STRC("http://www.w3.org/2000/svg")))
+				{
+					printf("SVGDocument: svg Invalid xmlns (%s)\r\n", value->v.Ptr());
+				}
+			}
 			else
 			{
 				printf("SVGDocument: svg Unknown attribute: %s\r\n", name->v.Ptr());
 			}
 		}
+		else
+		{
+			printf("SVGDocument: svg Invalid attribute\r\n");
+		}
 		i++;
 	}
-	return doc;
+	if (reader->IsElementEmpty() || ParseContainer(doc, reader))
+	{
+		return doc;
+	}
+	doc.Delete();
+	return nullptr;
+}
+
+Bool Media::SVGDocument::ParseContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	NN<Text::String> eleName;
+	while (reader->NextElementName().SetTo(eleName))
+	{
+		if (eleName->Equals(UTF8STRC("line")))
+		{
+			if (!SVGDocument::ParseLine(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("polyline")))
+		{
+			if (!SVGDocument::ParsePolyline(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("polygon")))
+		{
+			if (!SVGDocument::ParsePolygon(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("rect")))
+		{
+			if (!SVGDocument::ParseRect(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("ellipse")))
+		{
+			if (!SVGDocument::ParseEllipse(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("text")))
+		{
+			if (!SVGDocument::ParseText(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("image")))
+		{
+			if (!SVGDocument::ParseImage(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("path")))
+		{
+			if (!SVGDocument::ParsePath(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("g")))
+		{
+			NN<SVGGroup> group;
+			NEW_CLASSNN(group, SVGGroup(container->GetDrawEngine(), container->GetDoc()));
+			ParseContainerAttr(group, reader);
+			if (!reader->IsElementEmpty() && !SVGDocument::ParseContainer(group, reader))
+			{
+				return false;
+			}
+			container->AddElement(group);
+		}
+		else if (eleName->Equals(UTF8STRC("defs")))
+		{
+			NN<SVGDefs> defs;
+			NEW_CLASSNN(defs, SVGDefs(container->GetDrawEngine(), container->GetDoc()));
+			ParseContainerAttr(defs, reader);
+			if (!reader->IsElementEmpty() && !SVGDocument::ParseContainer(defs, reader))
+			{
+				return false;
+			}
+			container->AddElement(defs);
+		}
+		else
+		{
+			printf("SVGDocument: Unknown element: %s\r\n", eleName->v.Ptr());
+			reader->SkipElement();
+		}
+	}
+	return true;
+}
+
+Bool Media::SVGDocument::ParseContainerAttr(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	UIntOS i;
+	UIntOS j;
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> name;
+	NN<Text::String> value;
+	i = 0;
+	j = reader->GetAttribCount();
+	while (i < j)
+	{
+		attr = reader->GetAttribNoCheck(i);
+		if (attr->name.SetTo(name) && attr->value.SetTo(value))
+		{
+			if (name->Equals(UTF8STRC("id")))
+			{
+				container->SetID(value->ToCString());
+			}
+			else if (name->Equals(UTF8STRC("stroke-linecap")))
+			{
+				if (value->Equals(UTF8STRC("butt")))
+				{
+					container->SetLineCap(SVGLineCap::Butt);
+				}
+				else if (value->Equals(UTF8STRC("round")))
+				{
+					container->SetLineCap(SVGLineCap::Round);
+				}
+				else if (value->Equals(UTF8STRC("square")))
+				{
+					container->SetLineCap(SVGLineCap::Square);
+				}
+				else
+				{
+					printf("SVGDocument: Invalid stroke-linecap value in (%s): %s\r\n", container->GetElementName().v.Ptr(), value->v.Ptr());
+					container->SetLineCap(SVGLineCap::Default);
+				}
+			}
+			else if (name->Equals(UTF8STRC("stroke-linejoin")))
+			{
+				if (value->Equals(UTF8STRC("miter")))
+				{
+					container->SetLineJoin(SVGLineJoin::Miter);
+				}
+				else if (value->Equals(UTF8STRC("round")))
+				{
+					container->SetLineJoin(SVGLineJoin::Round);
+				}
+				else if (value->Equals(UTF8STRC("bevel")))
+				{
+					container->SetLineJoin(SVGLineJoin::Bevel);
+				}
+				else
+				{
+					printf("SVGDocument: Invalid stroke-linejoin value in (%s): %s\r\n", container->GetElementName().v.Ptr(), value->v.Ptr());
+					container->SetLineJoin(SVGLineJoin::Default);
+				}
+			}
+			else
+			{
+				printf("SVGDocument: Unknown attribute in container (%s): %s\r\n", container->GetElementName().v.Ptr(),name->v.Ptr());
+			}
+		}
+		else
+		{
+			printf("SVGDocument: Invalid container attribute in (%s)\r\n", container->GetElementName().v.Ptr());
+		}
+		i++;
+	}
+	return true;
+}
+
+Bool Media::SVGDocument::ParseLine(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse line is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParsePolyline(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse polyline is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParsePolygon(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse polygon is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParseRect(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse rect is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParseEllipse(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse ellipse is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	NN<Text::String> s;
+	NN<Text::String> s2;
+	NN<Media::SVGPath> path;
+	Optional<Text::String> d = nullptr;
+	Optional<Text::String> fill = nullptr;
+	Optional<Text::String> stroke = nullptr;
+	SVGFillRule fillRule = SVGFillRule::Default;
+	Double strokeWidth = 0;
+	UIntOS i = 0;
+	UIntOS j = reader->GetAttribCount();
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> name;
+	NN<Text::String> value;
+	while (i < j)
+	{
+		attr = reader->GetAttribNoCheck(i);
+		if (attr->name.SetTo(name) && attr->value.SetTo(value))
+		{
+			if (name->Equals(UTF8STRC("d")))
+			{
+				d = value;
+			}
+			else if (name->Equals(UTF8STRC("fill")))
+			{
+				if (!value->Equals(UTF8STRC("none")))
+				{
+					fill = value;
+				}
+			}
+			else if (name->Equals(UTF8STRC("fill-rule")))
+			{
+				if (value->Equals(UTF8STRC("nonzero")))
+				{
+					fillRule = SVGFillRule::NonZero;
+				}
+				else if (value->Equals(UTF8STRC("evenodd")))
+				{
+					fillRule = SVGFillRule::EvenOdd;
+				}
+				else
+				{
+					printf("SVGDocument: Invalid fill-rule value in path: %s\r\n", value->v.Ptr());
+					fillRule = SVGFillRule::Default;
+				}
+			}
+			else if (name->Equals(UTF8STRC("stroke")))
+			{
+				stroke = value;
+			}
+			else if (name->Equals(UTF8STRC("stroke-width")))
+			{
+				if (!value->ToDouble(strokeWidth))
+				{
+					printf("SVGDocument: Invalid stroke-width value in path: %s\r\n", value->v.Ptr());
+					strokeWidth = 0;
+				}
+			}
+			else
+			{
+				printf("SVGDocument: Unknown attribute in path: %s\r\n", name->v.Ptr());
+			}
+		}
+		else
+		{
+			printf("SVGDocument: Invalid attribute in path\r\n");
+		}
+		i++;
+	}
+	if (d.SetTo(s))
+	{
+		Optional<DrawPen> pen = nullptr;
+		Optional<DrawBrush> brush = nullptr;
+		NN<SVGBrush> nnbrush;
+		if (stroke.SetTo(s2))
+		{
+			pen = container->NewPenARGB(Text::CSSColor::Parse(s2->ToCString()), strokeWidth, nullptr, 0);
+		}
+		if (fill.SetTo(s2))
+		{
+			nnbrush = NN<SVGBrush>::ConvertFrom(container->NewBrushARGB(Text::CSSColor::Parse(s2->ToCString())));
+			nnbrush->SetFillRule(fillRule);
+			brush = nnbrush;
+		}
+		NEW_CLASSNN(path, Media::SVGPath(s, pen, brush));
+		container->AddElement(path);
+	}
+	else
+	{
+		printf("SVGDocument: path is missing d attribute\r\n");
+	}
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse text is not supported\r\n");
+	reader->SkipElement();
+	return true;
+}
+
+Bool Media::SVGDocument::ParseImage(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+{
+	printf("SVGDocument: Parse image is not supported\r\n");
+	reader->SkipElement();
+	return true;
 }

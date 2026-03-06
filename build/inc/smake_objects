@@ -2365,6 +2365,7 @@ CharUtil.o: ../../src/Text/CharUtil.cpp
 ChineseInfo.o: ../../src/Text/ChineseInfo.cpp
 CodeProject.o: ../../src/Text/CodeProject.cpp
 CSSBuilder.o: ../../src/Text/CSSBuilder.cpp
+CSSColor.o: ../../src/Text/CSSColor.cpp
 Encoding.o: ../../src/Text/Encoding.cpp
 EncodingFactory.o: ../../src/Text/EncodingFactory.cpp
 HKSCSFix.o: ../../src/Text/HKSCSFix.cpp

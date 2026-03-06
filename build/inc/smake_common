@@ -4964,6 +4964,8 @@ Text/CodeProject.h:
 @CodeProject.o
 Text/CSSBuilder.h:
 @CSSBuilder.o
+Text/CSSColor.h:
+@CSSColor.o
 Text/CString.h:
 Text/CStringComparatorFast.h:
 Text/Encoding.h:

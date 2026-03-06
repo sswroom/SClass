@@ -3,41 +3,69 @@
 
 void Media::SVGCore::WritePenStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> p)
 {
+	NN<Text::String> colorName;
 	NN<SVGPen> pen;
 	if (Optional<SVGPen>::ConvertFrom(p).SetTo(pen))
 	{
-		sb->AppendC(UTF8STRC(" stroke=\"#"));
+		sb->AppendC(UTF8STRC(" stroke=\""));
 		UInt32 col = pen->GetColor();
-		sb->AppendHex24(col & 0xffffff);
+		if (pen->GetColorName().SetTo(colorName))
+		{
+			sb->Append(colorName);
+		}
+		else
+		{
+			sb->AppendUTF8Char('#');
+			sb->AppendHex24(col & 0xffffff);
+		}
+		sb->AppendUTF8Char('\"');
 		if ((col & 0xff000000) != 0xff000000)
 		{
-			sb->AppendC(UTF8STRC("\" stroke-opacity=\""));
+			sb->AppendC(UTF8STRC(" stroke-opacity=\""));
 			sb->AppendDouble(((col >> 24) & 0xff) / 255.0);
+			sb->AppendUTF8Char('\"');
 		}
-		sb->AppendC(UTF8STRC("\" stroke-width=\""));
-		sb->AppendDouble(pen->GetThick());
-		sb->AppendUTF8Char('\"');
-	}
-	else
-	{
-		sb->AppendC(UTF8STRC(" stroke=\"none\""));
+		if (pen->GetThick() > 0)
+		{
+			sb->AppendC(UTF8STRC(" stroke-width=\""));
+			sb->AppendDouble(pen->GetThick());
+			sb->AppendUTF8Char('\"');
+		}
 	}
 }
 
 void Media::SVGCore::WriteBrushStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> b)
 {
 	NN<SVGBrush> brush;
+	NN<Text::String> colorName;
 	if (Optional<SVGBrush>::ConvertFrom(b).SetTo(brush))
 	{
-		sb->AppendC(UTF8STRC(" fill=\"#"));
+		sb->AppendC(UTF8STRC(" fill=\""));
 		UInt32 col = brush->GetColor();
-		sb->AppendHex24(col & 0xffffff);
-		if ((col & 0xff000000) != 0xff000000)
+		if (brush->GetColorName().SetTo(colorName))
 		{
-			sb->AppendC(UTF8STRC("\" fill-opacity=\""));
-			sb->AppendDouble(((col >> 24) & 0xff) / 255.0);
+			sb->Append(colorName);
+		}
+		else
+		{
+			sb->AppendUTF8Char('#');
+			sb->AppendHex24(col & 0xffffff);
 		}
 		sb->AppendUTF8Char('\"');
+		if ((col & 0xff000000) != 0xff000000)
+		{
+			sb->AppendC(UTF8STRC(" fill-opacity=\""));
+			sb->AppendDouble(((col >> 24) & 0xff) / 255.0);
+			sb->AppendUTF8Char('\"');
+		}
+		if (brush->GetFillRule() == SVGFillRule::NonZero)
+		{
+			sb->AppendC(UTF8STRC(" fill-rule=\"nonzero\""));
+		}
+		else if (brush->GetFillRule() == SVGFillRule::EvenOdd)
+		{
+			sb->AppendC(UTF8STRC(" fill-rule=\"evenodd\""));
+		}
 	}
 	else
 	{

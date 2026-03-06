@@ -15,7 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnFiles(AnyType userObj
 		{
 			me->doc.Delete();
 			me->doc = doc;
-			return;	
+			me->txtTemplate->SetText(s->ToCString());
+			return;
 		}
 		i++;
 	}
@@ -110,6 +111,7 @@ SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI:
 	this->env = env;
 	this->center = center;
 	this->scale = scale;
+	this->doc = nullptr;
 
 	this->SetText(CSTR("Export with Template"));
 	this->SetFont(nullptr, 8.25, false);
@@ -136,7 +138,7 @@ SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI:
 	this->txtTemplate = ui->NewTextBox(*this, CSTR(""));
 	this->txtTemplate->SetRect(104, 100, 500, 23, false);
 	this->txtTemplate->SetReadOnly(true);
-	this->lblId = ui->NewLabel(*this, CSTR("ID"));
+	this->lblId = ui->NewLabel(*this, CSTR("Rect ID"));
 	this->lblId->SetRect(4, 124, 100, 23, false);
 	this->cboId = ui->NewComboBox(*this, false);
 	this->cboId->SetRect(104, 124, 150, 23, false);
@@ -155,6 +157,7 @@ SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI:
 
 SSWR::AVIRead::AVIRGISExportTemplateForm::~AVIRGISExportTemplateForm()
 {
+	this->doc.Delete();
 }
 
 void SSWR::AVIRead::AVIRGISExportTemplateForm::OnMonitorChanged()

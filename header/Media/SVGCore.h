@@ -4,28 +4,61 @@
 
 namespace Media
 {
+	enum class SVGLineJoin
+	{
+		Default,
+		Miter,
+		Round,
+		Bevel
+	};
+
+	enum class SVGLineCap
+	{
+		Default,
+		Butt,
+		Round,
+		Square
+	};
+
+	enum class SVGFillRule
+	{
+		Default,
+		NonZero,
+		EvenOdd
+	};
+
 	class SVGPen : public DrawPen
 	{
 	private:
 		Double thick;
 		UInt32 color;
+		Optional<Text::String> colorName;
 	public:
-		SVGPen(Double thick, UInt32 color) { this->thick = thick; this->color = color; }
-		virtual ~SVGPen(){};
+		SVGPen(Double thick, UInt32 color) { this->thick = thick; this->color = color; this->colorName = nullptr; }
+		virtual ~SVGPen(){ OPTSTR_DEL(this->colorName); };
 
 		virtual Double GetThick() override { return this->thick; }
 		UInt32 GetColor() { return this->color; }
+		Optional<Text::String> GetColorName() { return this->colorName; }
+		void SetColorName(Text::CStringNN colorName) { OPTSTR_DEL(this->colorName); this->colorName = Text::String::New(colorName); }
 	};
 
 	class SVGBrush : public DrawBrush
 	{
 	private:
 		UInt32 color;
+		Optional<Text::String> colorName;
+		SVGFillRule fillRule;
+
 	public:
-		SVGBrush(UInt32 color) { this->color = color; }
-		virtual ~SVGBrush(){};
+		SVGBrush(UInt32 color) { this->color = color; this->colorName = nullptr; this->fillRule = SVGFillRule::Default; }
+		virtual ~SVGBrush(){ OPTSTR_DEL(this->colorName); };
 
 		UInt32 GetColor() { return this->color; }
+		Optional<Text::String> GetColorName() { return this->colorName; }
+		SVGFillRule GetFillRule() { return this->fillRule; }
+		void SetFillRule(SVGFillRule fillRule) { this->fillRule = fillRule; }
+		void SetColorName(Text::CStringNN colorName) { OPTSTR_DEL(this->colorName); this->colorName = Text::String::New(colorName); }
 	};
 
 	class SVGFont : public DrawFont

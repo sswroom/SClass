@@ -17,19 +17,15 @@ namespace Media
 		Optional<Text::String> id;
 
 	protected:
-		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
-		{
-			NN<Text::String> s;
-			if (this->id.SetTo(s))
-			{
-				sb->AppendC(UTF8STRC(" id=\""));
-				sb->Append(s);
-				sb->AppendUTF8Char('\"');
-			}
-		}
+		SVGLineCap lineCap;
+		SVGLineJoin lineJoin;
+
+		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const;
 	public:
-		SVGElement() { this->id = nullptr; }
+		SVGElement() { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; }
 		virtual ~SVGElement() {}
+
+		virtual Text::CStringNN GetElementName() const = 0;
 
 		void SetID(Text::CStringNN id)
 		{
@@ -41,6 +37,18 @@ namespace Media
 		{
 			return this->id;
 		}
+
+		void SetLineCap(SVGLineCap lineCap)
+		{
+			this->lineCap = lineCap;
+		}
+
+		void SetLineJoin(SVGLineJoin lineJoin)
+		{
+			this->lineJoin = lineJoin;
+		}
+
+		virtual Bool IsContainer() const { return false; }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
 	};
@@ -55,6 +63,8 @@ namespace Media
 		SVGLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
 		virtual ~SVGLine();
 
+		virtual Text::CStringNN GetElementName() const { return CSTR("line"); }
+
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
@@ -66,6 +76,8 @@ namespace Media
 	public:
 		SVGPolyline(NN<DrawPen> pen);
 		virtual ~SVGPolyline();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("polyline"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
@@ -80,6 +92,8 @@ namespace Media
 	public:
 		SVGPolygon(Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGPolygon();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("polygon"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
@@ -96,6 +110,8 @@ namespace Media
 		SVGRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGRect();
 
+		virtual Text::CStringNN GetElementName() const { return CSTR("rect"); }
+
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
@@ -109,6 +125,8 @@ namespace Media
 	public:
 		SVGEllipse(Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGEllipse();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("ellipse"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
@@ -126,6 +144,8 @@ namespace Media
 		SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush);
 		virtual ~SVGText();
 
+		virtual Text::CStringNN GetElementName() const { return CSTR("text"); }
+
 		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
@@ -141,16 +161,31 @@ namespace Media
 		SVGImage(Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
 		virtual ~SVGImage();
 
+		virtual Text::CStringNN GetElementName() const { return CSTR("image"); }
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGPath : public SVGElement
+	{
+	private:
+		NN<Text::String> d;
+		Optional<DrawPen> pen;
+		Optional<DrawBrush> brush;
+	public:
+		SVGPath(NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		virtual ~SVGPath();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("path"); }
+
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class SVGContainer : public SVGElement, public DrawImage
 	{
-	private:
+	protected:
 		Data::ArrayListNN<SVGElement> elements;
 		NN<SVGDocument> doc;
-	
-	protected:
 		NN<Media::DrawEngine> refEng;
 
 		void ToInnerString(NN<Text::StringBuilderUTF8> sb) const;
@@ -229,6 +264,40 @@ namespace Media
 		virtual UIntOS SavePng(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
+
+		virtual Bool IsContainer() const { return true; }
+
+		void AddElement(NN<SVGElement> ele);
+		UIntOS GetElementCount() const;
+		Optional<SVGElement> GetElement(UIntOS index) const;
+		NN<Media::DrawEngine> GetDrawEngine() const { return this->refEng; }
+		NN<SVGDocument> GetDoc() const { return this->doc; }
+	};
+
+	class SVGDefs : public SVGContainer
+	{
+	public:
+		SVGDefs(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		virtual ~SVGDefs();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("defs"); }
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGGroup : public SVGContainer
+	{
+	public:
+		SVGGroup(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		virtual ~SVGGroup();
+
+		virtual Text::CStringNN GetElementName() const { return CSTR("g"); }
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class SVGDocument : public SVGContainer
@@ -241,11 +310,13 @@ namespace Media
 		Data::ArrayListNN<SVGPen> pens;
 		Data::ArrayListNN<SVGBrush> brushes;
 		Data::ArrayListNN<SVGFont> fonts;
+		Data::FastStringMapNN<SVGElement> idMap;
 
 	public:
 		SVGDocument(NN<Media::DrawEngine> refEng);
 		virtual ~SVGDocument();
 
+		virtual Text::CStringNN GetElementName() const { return CSTR("svg"); }
 		virtual Double GetWidth() const;
 		virtual Double GetHeight() const;
 
@@ -260,9 +331,20 @@ namespace Media
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
+		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
+
 		static Optional<SVGDocument> ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng);
 		static Optional<SVGDocument> ParseReader(NN<Text::XMLReader> reader, NN<Media::DrawEngine> refEng);
 		static Bool ParseContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseContainerAttr(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseLine(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParsePolyline(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParsePolygon(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseRect(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseEllipse(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParsePath(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseImage(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 	};
 }
 #endif
