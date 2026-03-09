@@ -30,6 +30,7 @@
 #include "Math/WKTReader.h"
 #include "Media/DrawEngineFactory.h"
 #include "Media/PaperSize.h"
+#include "Media/SVGDocument.h"
 #include "Net/HKOAPI.h"
 #include "Net/HTTPClient.h"
 #include "Net/NTPClient.h"
@@ -1333,9 +1334,26 @@ Int32 NANTest()
 	return 0;
 }
 
+Int32 SVGTest()
+{
+	Text::CStringNN svgFile = CSTR("/home/sswroom/ProgsHome/FileTest/SVG/templatetest.svg");
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+	Text::EncodingFactory encFact;
+	NN<Media::SVGDocument> svgDoc;
+	if (Media::SVGDocument::ParseFile(svgFile, encFact, deng).SetTo(svgDoc))
+	{
+		Text::StringBuilderUTF8 sb;
+		svgDoc->ToString(sb);
+		printf("%s\r\n", sb.v.Ptr());
+		svgDoc.Delete();
+	}
+	deng.Delete();
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 35;
+	UIntOS testType = 36;
 	switch (testType)
 	{
 	case 0:
@@ -1410,6 +1428,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return OUICSVConv();
 	case 35:
 		return NANTest();
+	case 36:
+		return SVGTest();
 	default:
 		return 0;
 	}

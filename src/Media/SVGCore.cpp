@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/SVGCore.h"
 
-void Media::SVGCore::WritePenStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> p)
+void Media::SVGCore::WriteAttrPen(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> p)
 {
 	NN<Text::String> colorName;
 	NN<SVGPen> pen;
@@ -34,7 +34,7 @@ void Media::SVGCore::WritePenStyle(NN<Text::StringBuilderUTF8> sb, Optional<Draw
 	}
 }
 
-void Media::SVGCore::WriteBrushStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> b)
+void Media::SVGCore::WriteAttrBrush(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> b)
 {
 	NN<SVGBrush> brush;
 	NN<Text::String> colorName;
@@ -73,7 +73,7 @@ void Media::SVGCore::WriteBrushStyle(NN<Text::StringBuilderUTF8> sb, Optional<Dr
 	}
 }
 
-void Media::SVGCore::WriteFontStyle(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font)
+void Media::SVGCore::WriteAttrFont(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font)
 {
 	sb->AppendC(UTF8STRC(" font-family=\""));
 	sb->Append(font->GetFontName());
@@ -96,6 +96,114 @@ void Media::SVGCore::WriteFontStyle(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> 
 	{
 		sb->AppendC(UTF8STRC(" font-style=\"normal\""));
 	}
+}
+
+Bool Media::SVGCore::WriteStylePen(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> p, Bool hasOtherStyle)
+{
+	NN<Text::String> colorName;
+	NN<SVGPen> pen;
+	if (Optional<SVGPen>::ConvertFrom(p).SetTo(pen))
+	{
+		if (hasOtherStyle)
+		{
+			sb->AppendUTF8Char(';');
+		}
+		sb->AppendC(UTF8STRC("stroke:"));
+		UInt32 col = pen->GetColor();
+		if (pen->GetColorName().SetTo(colorName))
+		{
+			sb->Append(colorName);
+		}
+		else
+		{
+			sb->AppendUTF8Char('#');
+			sb->AppendHex24(col & 0xffffff);
+		}
+		hasOtherStyle = true;
+		if ((col & 0xff000000) != 0xff000000)
+		{
+			sb->AppendC(UTF8STRC(";stroke-opacity:"));
+			sb->AppendDouble(((col >> 24) & 0xff) / 255.0);
+		}
+		if (pen->GetThick() > 0)
+		{
+			sb->AppendC(UTF8STRC(";stroke-width:"));
+			sb->AppendDouble(pen->GetThick());
+		}
+		return true;
+	}
+	return false;
+}
+
+Bool Media::SVGCore::WriteStyleBrush(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> b, Bool hasOtherStyle)
+{
+	NN<SVGBrush> brush;
+	NN<Text::String> colorName;
+	if (hasOtherStyle)
+	{
+		sb->AppendUTF8Char(';');
+	}
+	if (Optional<SVGBrush>::ConvertFrom(b).SetTo(brush))
+	{
+		sb->AppendC(UTF8STRC("fill:"));
+		UInt32 col = brush->GetColor();
+		if (brush->GetColorName().SetTo(colorName))
+		{
+			sb->Append(colorName);
+		}
+		else
+		{
+			sb->AppendUTF8Char('#');
+			sb->AppendHex24(col & 0xffffff);
+		}
+		if ((col & 0xff000000) != 0xff000000)
+		{
+			sb->AppendC(UTF8STRC(";fill-opacity:"));
+			sb->AppendDouble(((col >> 24) & 0xff) / 255.0);
+		}
+		if (brush->GetFillRule() == SVGFillRule::NonZero)
+		{
+			sb->AppendC(UTF8STRC(";fill-rule:nonzero"));
+		}
+		else if (brush->GetFillRule() == SVGFillRule::EvenOdd)
+		{
+			sb->AppendC(UTF8STRC(";fill-rule:evenodd"));
+		}
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("fill:none"));
+	}
+	return true;
+}
+
+Bool Media::SVGCore::WriteStyleFont(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font, Bool hasOtherStyle)
+{
+	if (hasOtherStyle)
+	{
+		sb->AppendUTF8Char(';');
+	}
+	sb->AppendC(UTF8STRC("font-family:"));
+	sb->Append(font->GetFontName());
+	sb->AppendC(UTF8STRC(";font-size:"));
+	sb->AppendDouble(font->GetFontSizePx());
+	if ((font->GetStyle() & Media::DrawEngine::DFS_BOLD) != 0)
+	{
+		sb->AppendC(UTF8STRC(";font-weight:bold"));
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC(";font-weight:normal"));
+	}
+	if ((font->GetStyle() & Media::DrawEngine::DFS_ITALIC) != 0)
+	{
+		sb->AppendC(UTF8STRC(";font-style:italic"));
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC(";font-style:normal"));
+	}
+	return true;
 }
 
 Math::Size2DDbl Media::SVGCore::GetTextSize(NN<Media::DrawEngine> deng, NN<SVGFont> font, Text::CStringNN txt)

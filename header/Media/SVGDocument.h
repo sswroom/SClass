@@ -13,17 +13,15 @@ namespace Media
 
 	class SVGElement
 	{
-	private:
-		Optional<Text::String> id;
-
 	protected:
+		Optional<Text::String> id;
 		SVGLineCap lineCap;
 		SVGLineJoin lineJoin;
 
 		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const;
 	public:
 		SVGElement() { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; }
-		virtual ~SVGElement() {}
+		virtual ~SVGElement() { OPTSTR_DEL(this->id);}
 
 		virtual Text::CStringNN GetElementName() const = 0;
 
@@ -105,7 +103,9 @@ namespace Media
 		Math::Coord2DDbl tl;
 		Math::Size2DDbl size;
 		Optional<DrawPen> pen;
+		Bool stylePen;
 		Optional<DrawBrush> brush;
+		Bool styleBrush;
 	public:
 		SVGRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGRect();
@@ -113,6 +113,7 @@ namespace Media
 		virtual Text::CStringNN GetElementName() const { return CSTR("rect"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		void SetStyle(Bool stylePen, Bool styleBrush);
 	};
 
 	class SVGEllipse : public SVGElement
@@ -187,6 +188,8 @@ namespace Media
 		Data::ArrayListNN<SVGElement> elements;
 		NN<SVGDocument> doc;
 		NN<Media::DrawEngine> refEng;
+		Optional<Text::String> inkscapeLabel;
+		Optional<Text::String> inkscapeGroupmode;
 
 		void ToInnerString(NN<Text::StringBuilderUTF8> sb) const;
 	public:
@@ -272,6 +275,8 @@ namespace Media
 		Optional<SVGElement> GetElement(UIntOS index) const;
 		NN<Media::DrawEngine> GetDrawEngine() const { return this->refEng; }
 		NN<SVGDocument> GetDoc() const { return this->doc; }
+		void SetInkscapeLabel(NN<Text::String> label);
+		void SetInkscapeGroupMode(NN<Text::String> groupMode);
 	};
 
 	class SVGDefs : public SVGContainer
@@ -300,11 +305,54 @@ namespace Media
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
+	class SVGUnknown : public SVGElement
+	{
+	private:
+		NN<Text::String> name;
+		Data::ArrayListStringNN attrNames;
+		Data::ArrayListStringNN attrValues;
+	public:
+		SVGUnknown(Text::CStringNN name);
+		virtual ~SVGUnknown();
+
+		virtual Text::CStringNN GetElementName() const;
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+
+		void AddAttr(Text::CStringNN name, Text::CStringNN value);
+	};
+
+	class SVGUnknownContainer : public SVGContainer
+	{
+	private:
+		NN<Text::String> name;
+		Data::ArrayListStringNN attrNames;
+		Data::ArrayListStringNN attrValues;
+
+	public:
+		SVGUnknownContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name);
+		virtual ~SVGUnknownContainer();
+
+		virtual Text::CStringNN GetElementName() const;
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+
+		void AddAttr(Text::CStringNN name, Text::CStringNN value);
+	};
+
 	class SVGDocument : public SVGContainer
 	{
 	private:
 		UIntOS width;
 		UIntOS height;
+		Bool xmlnsSvg;
+		Bool xmlnsInkscape;
+		Bool xmlnsSodipodi;
+		Optional<Text::String> version;
+		Optional<Text::String> inkscapeVersion;
+		Optional<Text::String> sodipodiDocname;
 		Math::Unit::Distance::DistanceUnit unit;
 		Math::RectArea<IntOS> viewBox;
 		Data::ArrayListNN<SVGPen> pens;
@@ -345,6 +393,8 @@ namespace Media
 		static Bool ParsePath(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseImage(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseUnknown(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseUnknownContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 	};
 }
 #endif

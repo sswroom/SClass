@@ -79,9 +79,12 @@ namespace Media
 	class SVGCore
 	{
 	public:
-		static void WritePenStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> pen);
-		static void WriteBrushStyle(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> brush);
-		static void WriteFontStyle(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font);
+		static void WriteAttrPen(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> pen);
+		static void WriteAttrBrush(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> brush);
+		static void WriteAttrFont(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font);
+		static Bool WriteStylePen(NN<Text::StringBuilderUTF8> sb, Optional<DrawPen> pen, Bool hasOtherStyle);
+		static Bool WriteStyleBrush(NN<Text::StringBuilderUTF8> sb, Optional<DrawBrush> brush, Bool hasOtherStyle);
+		static Bool WriteStyleFont(NN<Text::StringBuilderUTF8> sb, NN<SVGFont> font, Bool hasOtherStyle);
 		static Math::Size2DDbl GetTextSize(NN<Media::DrawEngine> deng, NN<SVGFont> font, Text::CStringNN txt);
 		static void GetStringBound(NN<Media::DrawEngine> deng, UnsafeArray<Int32> pos, IntOS centX, IntOS centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<IntOS> drawX, OutParam<IntOS> drawY);
 		static void GetStringBoundRot(NN<Media::DrawEngine> deng, UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<IntOS> drawX, OutParam<IntOS> drawY);
