@@ -115,7 +115,7 @@ Bool Media::SVGWriter::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<D
 	this->sb.AppendC(UTF8STRC("\" y2=\""));
 	this->sb.AppendDouble(y2);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteAttrPen(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -140,7 +140,7 @@ Bool Media::SVGWriter::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPo
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteAttrPen(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -165,8 +165,8 @@ Bool Media::SVGWriter::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoi
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -205,8 +205,8 @@ Bool Media::SVGWriter::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeA
 		i++;
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -231,7 +231,7 @@ Bool Media::SVGWriter::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, 
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
+	SVGCore::WriteAttrPen(this->sb, p);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -256,8 +256,8 @@ Bool Media::SVGWriter::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, U
 		}
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -296,8 +296,8 @@ Bool Media::SVGWriter::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> point
 		i++;
 	}
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -314,8 +314,8 @@ Bool Media::SVGWriter::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optio
 	this->sb.AppendC(UTF8STRC("\" height=\""));
 	this->sb.AppendDouble(size.y);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -332,8 +332,8 @@ Bool Media::SVGWriter::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Op
 	this->sb.AppendC(UTF8STRC("\" ry=\""));
 	this->sb.AppendDouble(size.y / 2);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WritePenStyle(this->sb, p);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrPen(this->sb, p);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
@@ -346,8 +346,8 @@ Bool Media::SVGWriter::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(tl.y);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WriteFontStyle(this->sb, NN<SVGFont>::ConvertFrom(f));
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrFont(this->sb, NN<SVGFont>::ConvertFrom(f));
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" >"));
 	NN<Text::String> s = Text::XML::ToNewXMLText(str->v);
 	this->sb.Append(s);
@@ -364,8 +364,8 @@ Bool Media::SVGWriter::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<D
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(tl.y);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WriteFontStyle(this->sb, NN<SVGFont>::ConvertFrom(f));
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrFont(this->sb, NN<SVGFont>::ConvertFrom(f));
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" >"));
 	NN<Text::String> s = Text::XML::ToNewXMLText(str.v);
 	this->sb.Append(s);
@@ -388,8 +388,8 @@ Bool Media::SVGWriter::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN st
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(center.y);
 	this->sb.AppendUTF8Char('\"');
-	SVGCore::WriteFontStyle(this->sb, font);
-	SVGCore::WriteBrushStyle(this->sb, b);
+	SVGCore::WriteAttrFont(this->sb, font);
+	SVGCore::WriteAttrBrush(this->sb, b);
 	this->sb.AppendC(UTF8STRC(" transform=\"rotate("));
 	this->sb.AppendDouble(angleDegreeACW);
 	this->sb.AppendC(UTF8STRC(" "));

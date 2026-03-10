@@ -10,20 +10,23 @@
 namespace Media
 {
 	class SVGDocument;
+	class SVGContainer;
 
 	class SVGElement
 	{
 	protected:
 		Optional<Text::String> id;
+		Optional<SVGContainer> parent;
 		SVGLineCap lineCap;
 		SVGLineJoin lineJoin;
 
 		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const;
 	public:
-		SVGElement() { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; }
+		SVGElement(Optional<SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; }
 		virtual ~SVGElement() { OPTSTR_DEL(this->id);}
 
 		virtual Text::CStringNN GetElementName() const = 0;
+		Optional<SVGContainer> GetParent() const { return this->parent; }
 
 		void SetID(Text::CStringNN id)
 		{
@@ -58,7 +61,7 @@ namespace Media
 		Math::Coord2DDbl pt2;
 		NN<DrawPen> pen;
 	public:
-		SVGLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
+		SVGLine(NN<SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
 		virtual ~SVGLine();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("line"); }
@@ -72,7 +75,7 @@ namespace Media
 		Data::ArrayListA<Math::Coord2DDbl> points;
 		NN<DrawPen> pen;
 	public:
-		SVGPolyline(NN<DrawPen> pen);
+		SVGPolyline(NN<SVGContainer> parent, NN<DrawPen> pen);
 		virtual ~SVGPolyline();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("polyline"); }
@@ -88,7 +91,7 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGPolygon(Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGPolygon(NN<SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGPolygon();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("polygon"); }
@@ -107,13 +110,18 @@ namespace Media
 		Optional<DrawBrush> brush;
 		Bool styleBrush;
 	public:
-		SVGRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGRect(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGRect();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("rect"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		void SetStyle(Bool stylePen, Bool styleBrush);
+		Double GetWidth() const { return this->size.x; }
+		Double GetHeight() const { return this->size.y; }
+		Math::Coord2DDbl GetTL() const { return this->tl; }
+		Math::Size2DDbl GetSize() const { return this->size; }
+		Math::RectAreaDbl GetRect() const { return Math::RectAreaDbl(this->tl, this->tl + this->size); }
 	};
 
 	class SVGEllipse : public SVGElement
@@ -124,7 +132,7 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGEllipse(Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGEllipse(NN<SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGEllipse();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("ellipse"); }
@@ -142,7 +150,7 @@ namespace Media
 		Double angleDegreeACW;
 		Math::Coord2DDbl rotateCenter;
 	public:
-		SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush);
+		SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush);
 		virtual ~SVGText();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("text"); }
@@ -159,7 +167,7 @@ namespace Media
 		Math::Size2DDbl size;
 		NN<Text::String> href;
 	public:
-		SVGImage(Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
+		SVGImage(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
 		virtual ~SVGImage();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("image"); }
@@ -174,7 +182,7 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGPath(NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGPath(NN<SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGPath();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("path"); }
@@ -190,12 +198,15 @@ namespace Media
 		NN<Media::DrawEngine> refEng;
 		Optional<Text::String> inkscapeLabel;
 		Optional<Text::String> inkscapeGroupmode;
+		Math::RectAreaDbl drawRect;
 
 		void ToInnerString(NN<Text::StringBuilderUTF8> sb) const;
 	public:
-		SVGContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGContainer(Optional<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGContainer();
 
+		virtual Double GetWidth() const;
+		virtual Double GetHeight() const;
 		virtual Math::Size2DDbl GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual NN<const ColorProfile> GetColorProfile() const;
@@ -273,36 +284,38 @@ namespace Media
 		void AddElement(NN<SVGElement> ele);
 		UIntOS GetElementCount() const;
 		Optional<SVGElement> GetElement(UIntOS index) const;
+		UIntOS FindElementName(Text::CStringNN name, NN<Data::ArrayListNN<SVGElement>> results) const;
+		void ClearElements();
 		NN<Media::DrawEngine> GetDrawEngine() const { return this->refEng; }
 		NN<SVGDocument> GetDoc() const { return this->doc; }
 		void SetInkscapeLabel(NN<Text::String> label);
 		void SetInkscapeGroupMode(NN<Text::String> groupMode);
+		void SetDrawRect(Math::RectAreaDbl drawRect);
 	};
 
 	class SVGDefs : public SVGContainer
 	{
 	public:
-		SVGDefs(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGDefs(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGDefs();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("defs"); }
-		virtual Double GetWidth() const;
-		virtual Double GetHeight() const;
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class SVGGroup : public SVGContainer
 	{
+	private:
+		Optional<Text::String> clipPath;
 	public:
-		SVGGroup(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGGroup(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGGroup();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("g"); }
-		virtual Double GetWidth() const;
-		virtual Double GetHeight() const;
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		void SetClipPath(Text::CStringNN clipPath);
 	};
 
 	class SVGUnknown : public SVGElement
@@ -312,7 +325,7 @@ namespace Media
 		Data::ArrayListStringNN attrNames;
 		Data::ArrayListStringNN attrValues;
 	public:
-		SVGUnknown(Text::CStringNN name);
+		SVGUnknown(NN<SVGContainer> parent, Text::CStringNN name);
 		virtual ~SVGUnknown();
 
 		virtual Text::CStringNN GetElementName() const;
@@ -330,12 +343,10 @@ namespace Media
 		Data::ArrayListStringNN attrValues;
 
 	public:
-		SVGUnknownContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name);
+		SVGUnknownContainer(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name);
 		virtual ~SVGUnknownContainer();
 
 		virtual Text::CStringNN GetElementName() const;
-		virtual Double GetWidth() const;
-		virtual Double GetHeight() const;
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
@@ -359,6 +370,8 @@ namespace Media
 		Data::ArrayListNN<SVGBrush> brushes;
 		Data::ArrayListNN<SVGFont> fonts;
 		Data::FastStringMapNN<SVGElement> idMap;
+		Double hDrawScale;
+		Double vDrawScale;
 
 	public:
 		SVGDocument(NN<Media::DrawEngine> refEng);
@@ -376,10 +389,14 @@ namespace Media
 
 		void SetSize(UIntOS width, UIntOS height, Math::Unit::Distance::DistanceUnit unit);
 		void SetViewBox(Math::RectArea<IntOS> viewBox);
+		Double GetHDrawScale();
+		Double GetVDrawScale();
+		Math::Coord2DDbl GetDrawScale();
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
+		Optional<SVGElement> GetElementById(Text::CStringNN id) const;
 
 		static Optional<SVGDocument> ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng);
 		static Optional<SVGDocument> ParseReader(NN<Text::XMLReader> reader, NN<Media::DrawEngine> refEng);

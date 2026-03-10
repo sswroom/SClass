@@ -1,6 +1,8 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
 #include "Map/DrawMapRenderer.h"
 #include "SSWR/AVIRead/AVIRGISExportTemplateForm.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
@@ -16,6 +18,28 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnFiles(AnyType userObj
 			me->doc.Delete();
 			me->doc = doc;
 			me->txtTemplate->SetText(s->ToCString());
+			me->cboId->ClearItems();
+			Data::ArrayListNN<Media::SVGElement> elements;
+			doc->FindElementName(CSTR("rect"), elements);
+			NN<Media::SVGRect> rect;
+			NN<Text::String> id;
+			i = 0;
+			UIntOS j = elements.GetCount();
+			Bool found = false;
+			while (i < j)
+			{
+				rect = NN<Media::SVGRect>::ConvertFrom(elements.GetItemNoCheck(i));
+				if (rect->GetID().SetTo(id))
+				{
+					me->cboId->AddItem(id, rect);
+					found = true;
+				}
+				i++;
+			}
+			if (found)
+			{
+				me->cboId->SetSelectedIndex(0);
+			}
 			return;
 		}
 		i++;
@@ -23,17 +47,63 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnFiles(AnyType userObj
 	me->ui->ShowMsgOK(CSTR("Error in loading SVG file"), CSTR("Export with Template"), me);
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnIdSelChg(AnyType userObj)
+{
+	NN<AVIRGISExportTemplateForm> me = userObj.GetNN<AVIRGISExportTemplateForm>();
+	NN<Media::SVGRect> rect;
+	NN<Media::SVGContainer> parent;
+	NN<Media::SVGDocument> doc;
+	if (!me->cboId->GetSelectedItem().GetOpt<Media::SVGRect>().SetTo(rect))
+	{
+		return;
+	}
+	if (!rect->GetParent().SetTo(parent))
+	{
+		me->txtDimensionW->SetText(CSTR("No Parent"));
+		me->txtDimensionH->SetText(CSTR(""));
+		return;
+	}
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	doc = parent->GetDoc();
+	sptr = Text::StrDouble(sbuff, rect->GetWidth() * doc->GetHDrawScale());
+	me->txtDimensionW->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, rect->GetHeight() * doc->GetVDrawScale());
+	me->txtDimensionH->SetText(CSTRP(sbuff, sptr));
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType userObj)
 {
-	//NN<AVIRGISExportTemplateForm> me = userObj.GetNN<AVIRGISExportTemplateForm>();
-	return;
-/*	Text::StringBuilderUTF8 sb;
+	NN<AVIRGISExportTemplateForm> me = userObj.GetNN<AVIRGISExportTemplateForm>();
+	NN<Media::SVGDocument> doc;
+	NN<Media::SVGRect> rect;
+	NN<Media::SVGContainer> parent;
+	NN<Media::SVGGroup> group;
+	NN<Text::String> id;
+	if (!me->doc.SetTo(doc))
+	{
+		me->ui->ShowMsgOK(CSTR("Please load a SVG file"), CSTR("Export with Template"), me);
+		return;
+	}
+	if (!me->cboId->GetSelectedItem().GetOpt<Media::SVGRect>().SetTo(rect))
+	{
+		me->ui->ShowMsgOK(CSTR("Please select a area"), CSTR("Export with Template"), me);
+		return;
+	}
+	if (!rect->GetParent().SetTo(parent))
+	{
+		me->ui->ShowMsgOK(CSTR("The selected area has no parent"), CSTR("Export with Template"), me);
+		return;
+	}
+	if (!rect->GetID().SetTo(id))
+	{
+		me->ui->ShowMsgOK(CSTR("The selected area has no ID"), CSTR("Export with Template"), me);
+		return;
+	}
+	Text::StringBuilderUTF8 sb;
 	Double x;
 	Double y;
 	Double scale;
-	Double w;
-	Double h;
-	Double dpi;
 	me->txtCenterX->GetText(sb);
 	if (!sb.ToDouble(x))
 	{
@@ -54,53 +124,50 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		me->ui->ShowMsgOK(CSTR("Please enter valid scale"), CSTR("Export with Template"), me);
 		return;
 	}
-	sb.ClearStr();
-	me->txtDimensionW->GetText(sb);
-	w = sb.ToDoubleOrNAN();
-	sb.ClearStr();
-	me->txtDimensionH->GetText(sb);
-	h = sb.ToDoubleOrNAN();
-	sb.ClearStr();
-	me->txtDPI->GetText(sb);
-	dpi = sb.ToDoubleOrNAN();
-	if (w <= 0 || h <= 0 || dpi <= 0 || Math::IsNAN(w) || Math::IsNAN(h) || Math::IsNAN(dpi))
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISExportTemplate", true);
+	dlg->AddFilter(CSTR("*.svg"), CSTR("SVG File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->ui->ShowMsgOK(CSTR("Please enter valid dimension and DPI"), CSTR("Export with Template"), me);
-		return;
+		NN<Media::SVGRect> clipRect;
+		NN<Media::SVGUnknownContainer> clipPath;
+		NEW_CLASSNN(clipPath, Media::SVGUnknownContainer(parent, doc->GetDrawEngine(), doc, CSTR("clipPath")));
+		sb.ClearStr();
+		sb.Append(id);
+		sb.Append(CSTR("Clip"));
+		clipPath->AddAttr(CSTR("id"), sb.ToCString());
+		NEW_CLASSNN(clipRect, Media::SVGRect(clipPath, rect->GetTL(), rect->GetSize(), nullptr, nullptr));
+		clipPath->AddElement(clipRect);
+		parent->AddElement(clipPath);
+		NEW_CLASSNN(group, Media::SVGGroup(parent, doc->GetDrawEngine(), doc));
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("url(#"));
+		sb.Append(id);
+		sb.AppendC(UTF8STRC("Clip)"));
+		group->SetClipPath(sb.ToCString());
+		group->SetDrawRect(rect->GetRect());
+		parent->AddElement(group);
+		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+		group->SetColorProfile(color);
+		NN<Map::MapView> view = me->env->CreateMapView(Math::Size2DDbl(group->GetWidth(), group->GetHeight()));
+		view->SetDPI(96.0, 96.0);
+		view->SetCenterXY(Math::Coord2DDbl(x, y));
+		view->SetMapScale(scale);
+		Map::DrawMapRenderer renderer(me->core->GetDrawEngine(), me->env, color, nullptr, Map::DrawMapRenderer::DrawType::DT_VECTORDRAW);
+		if (renderer.DrawMap(group, view, nullptr))
+		{
+			me->env->WaitForLoad(60000);
+			group->ClearElements();
+			renderer.DrawMap(group, view, nullptr);
+		}
+		view.Delete();
+		sb.ClearStr();
+		doc->ToString(sb);
+		{
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs.Write(sb.ToByteArray());
+		}
+		me->Close();
 	}
-	Math::Unit::Distance::DistanceUnit unit = (Math::Unit::Distance::DistanceUnit)me->cboDimensionUnit->GetSelectedItem().GetIntOS();
-	Double pxW;
-	Double pxH;
-	if (unit == Math::Unit::Distance::DU_PIXEL)
-	{
-		pxW = w;
-		pxH = h;
-	}
-	else
-	{
-		pxW = Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, w) * dpi / 96.0;
-		pxH = Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, h) * dpi / 96.0;
-	}
-	NN<Media::VectorDocument> doc;
-	NEW_CLASSNN(doc, Media::VectorDocument(me->env->GetSRID(), me->core->GetDrawEngine()));
-	NN<Media::VectorGraph> g = doc->AddGraph(pxW, pxH, Math::Unit::Distance::DU_PIXEL);
-	g->SetHDPI(dpi);
-	g->SetVDPI(dpi);
-	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	g->SetColorProfile(color);
-	NN<Map::MapView> view = me->env->CreateMapView(Math::Size2DDbl(pxW, pxH));
-	view->SetDPI(dpi, 96.0);
-	view->SetCenterXY(Math::Coord2DDbl(x, y));
-	view->SetMapScale(scale);
-	Map::DrawMapRenderer renderer(me->core->GetDrawEngine(), me->env, color, nullptr, Map::DrawMapRenderer::DrawType::DT_VECTORDRAW);
-	if (renderer.DrawMap(g, view, nullptr))
-	{
-		me->env->WaitForLoad(60000);
-		renderer.DrawMap(g, view, nullptr);
-	}
-	view.Delete();
-	me->core->OpenObject(doc);
-	me->Close();*/
 }
 
 SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Math::Coord2DDbl center, Double scale) : UI::GUIForm(parent, 640, 200, ui)
@@ -142,6 +209,7 @@ SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI:
 	this->lblId->SetRect(4, 124, 100, 23, false);
 	this->cboId = ui->NewComboBox(*this, false);
 	this->cboId->SetRect(104, 124, 150, 23, false);
+	this->cboId->HandleSelectionChange(OnIdSelChg, this);
 	this->lblDimension = ui->NewLabel(*this, CSTR("Dimension"));
 	this->lblDimension->SetRect(4, 148, 100, 23, false);
 	this->txtDimensionW = ui->NewTextBox(*this, CSTR("1024"));

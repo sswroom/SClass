@@ -59,7 +59,7 @@ void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Media::SVGLine::SVGLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen)
+Media::SVGLine::SVGLine(NN<SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen) : SVGElement(parent)
 {
 	this->pt1 = pt1;
 	this->pt2 = pt2;
@@ -85,7 +85,7 @@ void Media::SVGLine::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPolyline::SVGPolyline(NN<DrawPen> pen)
+Media::SVGPolyline::SVGPolyline(NN<SVGContainer> parent, NN<DrawPen> pen) : SVGElement(parent)
 {
 	this->pen = pen;
 }
@@ -123,7 +123,7 @@ void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPolygon::SVGPolygon(Optional<DrawPen> pen, Optional<DrawBrush> brush)
+Media::SVGPolygon::SVGPolygon(NN<SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->pen = pen;
 	this->brush = brush;
@@ -163,7 +163,7 @@ void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGRect::SVGRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush)
+Media::SVGRect::SVGRect(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->size = size;
@@ -217,7 +217,7 @@ void Media::SVGRect::SetStyle(Bool stylePen, Bool styleBrush)
 	this->styleBrush = styleBrush;
 }
 
-Media::SVGEllipse::SVGEllipse(Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush)
+Media::SVGEllipse::SVGEllipse(NN<SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->center = center;
 	this->radius = radius;
@@ -245,7 +245,7 @@ void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGText::SVGText(Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush)
+Media::SVGText::SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->txt = Text::String::New(txt);
@@ -293,7 +293,7 @@ void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("</text>"));
 }
 
-Media::SVGImage::SVGImage(Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href)
+Media::SVGImage::SVGImage(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->size = size;
@@ -323,7 +323,7 @@ void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPath::SVGPath(NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush)
+Media::SVGPath::SVGPath(NN<SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->d = d->Clone();
 	this->pen = pen;
@@ -359,12 +359,13 @@ void Media::SVGContainer::ToInnerString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Media::SVGContainer::SVGContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc)
+Media::SVGContainer::SVGContainer(Optional<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGElement(parent)
 {
 	this->refEng = refEng;
 	this->doc = doc;
 	this->inkscapeLabel = nullptr;
 	this->inkscapeGroupmode = nullptr;
+	this->drawRect = Math::RectAreaDbl(0, 0, 0, 0);
 }
 
 Media::SVGContainer::~SVGContainer()
@@ -372,6 +373,26 @@ Media::SVGContainer::~SVGContainer()
 	this->elements.DeleteAll();
 	OPTSTR_DEL(this->inkscapeLabel);
 	OPTSTR_DEL(this->inkscapeGroupmode);
+}
+
+Double Media::SVGContainer::GetWidth() const
+{
+	Double w = this->drawRect.GetWidth();
+	if (w > 0)
+	{
+		return w * this->doc->GetHDrawScale();
+	}
+	return this->doc->GetWidth();
+}
+
+Double Media::SVGContainer::GetHeight() const
+{
+	Double h = this->drawRect.GetHeight();
+	if (h > 0)
+	{
+		return h * this->doc->GetVDrawScale();
+	}
+	return this->doc->GetHeight();
 }
 
 Math::Size2DDbl Media::SVGContainer::GetSize() const
@@ -391,7 +412,7 @@ NN<const Media::ColorProfile> Media::SVGContainer::GetColorProfile() const
 
 void Media::SVGContainer::SetColorProfile(NN<const Media::ColorProfile> color)
 {
-	this->doc->SetColorProfile(color);
+	//this->doc->SetColorProfile(color);
 }
 Media::AlphaType Media::SVGContainer::GetAlphaType() const
 {
@@ -446,20 +467,22 @@ void Media::SVGContainer::SetColorSess(Optional<Media::ColorSess> colorSess)
 
 Bool Media::SVGContainer::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGLine> line;
-	NEW_CLASSNN(line, SVGLine(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2), p));
+	NEW_CLASSNN(line, SVGLine(*this, this->drawRect.min + Math::Coord2DDbl(x1, y1) / scale, this->drawRect.min + Math::Coord2DDbl(x2, y2) / scale, p));
 	this->elements.Add(line);
 	return true;
 }
 
 Bool Media::SVGContainer::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPoints, NN<DrawPen> p)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGPolyline> pl;
-	NEW_CLASSNN(pl, SVGPolyline(p));
+	NEW_CLASSNN(pl, SVGPolyline(*this, p));
 	UIntOS i = 0;
 	while (i < nPoints * 2)
 	{
-		pl->AddPoint(Math::Coord2DDbl(points[i], points[i + 1]));
+		pl->AddPoint(this->drawRect.min + Math::Coord2DDbl(points[i], points[i + 1]) / scale);
 		i += 2;
 	}
 	this->elements.Add(pl);
@@ -468,12 +491,13 @@ Bool Media::SVGContainer::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS 
 
 Bool Media::SVGContainer::DrawPolygonI(UnsafeArray<const Int32> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGPolygon> pg;
-	NEW_CLASSNN(pg, SVGPolygon(p, b));
+	NEW_CLASSNN(pg, SVGPolygon(*this, p, b));
 	UIntOS i = 0;
 	while (i < nPoints * 2)
 	{
-		pg->AddPoint(Math::Coord2DDbl(points[i], points[i + 1]));
+		pg->AddPoint(this->drawRect.min + Math::Coord2DDbl(points[i], points[i + 1]) / scale);
 		i += 2;
 	}
 	this->elements.Add(pg);
@@ -486,18 +510,34 @@ Bool Media::SVGContainer::DrawPolyPolygonI(UnsafeArray<const Int32> points, Unsa
 	{
 		return this->DrawPolygonI(points, pointCnt[0], p, b);
 	}
-	/////////////////////////////
-	return false;
+	UIntOS totalPoints = 0;
+	UIntOS i = 0;
+	while (i < nPointCnt)
+	{
+		totalPoints += pointCnt[i];
+		i++;
+	}
+	UnsafeArray<Math::Coord2DDbl> ptArr = MemAllocAArr(Math::Coord2DDbl, totalPoints);
+	i = 0;
+	while (i < totalPoints)
+	{
+		ptArr[i] = Math::Coord2DDbl(points[i * 2], points[i * 2 + 1]);
+		i++;
+	}
+	Bool ret = this->DrawPolyPolygon(ptArr, pointCnt, nPointCnt, p, b);
+	MemFreeAArr(ptArr);
+	return ret;
 }
 
 Bool Media::SVGContainer::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, NN<DrawPen> p)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGPolyline> pl;
-	NEW_CLASSNN(pl, SVGPolyline(p));
+	NEW_CLASSNN(pl, SVGPolyline(*this, p));
 	UIntOS i = 0;
 	while (i < nPoints)
 	{
-		pl->AddPoint(points[i]);
+		pl->AddPoint(this->drawRect.min + points[i] / scale);
 		i++;
 	}
 	this->elements.Add(pl);
@@ -506,12 +546,13 @@ Bool Media::SVGContainer::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> point
 
 Bool Media::SVGContainer::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UIntOS nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGPolygon> pg;
-	NEW_CLASSNN(pg, SVGPolygon(p, b));
+	NEW_CLASSNN(pg, SVGPolygon(*this, p, b));
 	UIntOS i = 0;
 	while (i < nPoints)
 	{
-		pg->AddPoint(points[i]);
+		pg->AddPoint(this->drawRect.min + points[i] / scale);
 		i++;
 	}
 	this->elements.Add(pg);
@@ -524,22 +565,55 @@ Bool Media::SVGContainer::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> po
 	{
 		return this->DrawPolygon(points, pointCnt[0], p, b);
 	}
-	/////////////////////////////
-	return false;
+	Double hscale = this->doc->GetHDrawScale();
+	Double vscale = this->doc->GetVDrawScale();
+	Text::StringBuilderUTF8 sb;
+	UIntOS i = 0;
+	UIntOS j = 0;
+	while (i < nPointCnt)
+	{
+		sb.AppendUTF8Char('M');
+		sb.AppendDouble(this->drawRect.min.x + points[j].x / hscale);
+		sb.AppendUTF8Char(',');
+		sb.AppendDouble(this->drawRect.min.y + points[j].y / vscale);
+		sb.AppendUTF8Char(' ');
+		j += 1;
+		UIntOS k = 1;
+		while (k < pointCnt[i])
+		{
+			sb.AppendUTF8Char('L');
+			sb.AppendDouble(this->drawRect.min.x + points[j].x / hscale);
+			sb.AppendUTF8Char(',');
+			sb.AppendDouble(this->drawRect.min.y + points[j].y / vscale);
+			sb.AppendUTF8Char(' ');
+			j += 1;
+			k++;
+		}
+		sb.AppendUTF8Char('Z');
+		i++;
+	}
+	NN<SVGPath> path;
+	NN<Text::String> d = Text::String::New(sb.ToCString());
+	NEW_CLASSNN(path, SVGPath(*this, d, p, b));
+	d->Release();
+	this->elements.Add(path);
+	return true;
 }
 
 Bool Media::SVGContainer::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGRect> rect;
-	NEW_CLASSNN(rect, SVGRect(tl, size, p, b));
+	NEW_CLASSNN(rect, SVGRect(*this, this->drawRect.min + tl / scale, size / scale, p, b));
 	this->elements.Add(rect);
 	return true;
 }
 
 Bool Media::SVGContainer::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGEllipse> ellipse;
-	NEW_CLASSNN(ellipse, SVGEllipse(tl + size * 0.5, size * 0.5, p, b));
+	NEW_CLASSNN(ellipse, SVGEllipse(*this, this->drawRect.min + tl / scale + size * 0.5 / scale, size * 0.5 / scale, p, b));
 	this->elements.Add(ellipse);
 	return true;
 }
@@ -551,8 +625,9 @@ Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, 
 
 Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(tl, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
+	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + tl / scale, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
 	this->elements.Add(text);
 	return true;
 }
@@ -564,9 +639,10 @@ Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, NN<Text::String
 
 Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW)
 {
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(center, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
-	text->SetRotate(angleDegreeACW, center);
+	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + center / scale, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
+	text->SetRotate(angleDegreeACW, this->drawRect.min + center / scale);
 	this->elements.Add(text);
 	return true;
 }
@@ -578,7 +654,8 @@ Bool Media::SVGContainer::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str,
 
 Bool Media::SVGContainer::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, UIntOS buffSize)
 {
-	return this->DrawString(tl, str, f, b);
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
+	return this->DrawString(tl / scale, str, f, b);
 }
 
 Bool Media::SVGContainer::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW, UIntOS buffSize)
@@ -623,12 +700,13 @@ Bool Media::SVGContainer::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2D
 	{
 		return false;
 	}
+	Math::Coord2DDbl scale = this->doc->GetDrawScale();
 	Text::StringBuilderUTF8 sb;
 	NN<SVGImage> svgImg;
 	sb.AppendC(UTF8STRC("data:image/png;base64,"));
 	Text::TextBinEnc::Base64Enc b64;
 	b64.EncodeBin(sb, memStm.GetBuff(), (UIntOS)memStm.GetLength());
-	NEW_CLASSNN(svgImg, SVGImage(tl, Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * 96.0 / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * 96.0 / img->info.vdpi), sb.ToCString()));
+	NEW_CLASSNN(svgImg, SVGImage(*this, this->drawRect.min + tl / scale, Math::Size2DDbl(UIntOS2Double(img->info.dispSize.x) * 96.0 / img->info.hdpi, UIntOS2Double(img->info.dispSize.y) * 96.0 / img->info.vdpi) / scale, sb.ToCString()));
 	this->elements.Add(svgImg);
 	return true;
 }
@@ -653,7 +731,7 @@ Bool Media::SVGContainer::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 
 NN<Media::DrawPen> Media::SVGContainer::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern)
 {
-	return this->doc->NewPenARGB(color, thick, pattern, nPattern);
+	return this->doc->NewPenARGB(color, thick / this->doc->GetHDrawScale(), pattern, nPattern);
 }
 
 NN<Media::DrawBrush> Media::SVGContainer::NewBrushARGB(UInt32 color)
@@ -663,12 +741,12 @@ NN<Media::DrawBrush> Media::SVGContainer::NewBrushARGB(UInt32 color)
 
 NN<Media::DrawFont> Media::SVGContainer::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	return this->doc->NewFontPt(name, ptSize, fontStyle, codePage);
+	return this->doc->NewFontPt(name, ptSize / this->doc->GetVDrawScale(), fontStyle, codePage);
 }
 
 NN<Media::DrawFont> Media::SVGContainer::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	return this->doc->NewFontPx(name, pxSize, fontStyle, codePage);
+	return this->doc->NewFontPx(name, pxSize / this->doc->GetVDrawScale(), fontStyle, codePage);
 }
 
 NN<Media::DrawFont> Media::SVGContainer::CloneFont(NN<Media::DrawFont> f)
@@ -751,6 +829,39 @@ UIntOS Media::SVGContainer::GetElementCount() const
 	return this->elements.GetCount();
 }
 
+Optional<Media::SVGElement> Media::SVGContainer::GetElement(UIntOS index) const
+{
+	return this->elements.GetItem(index);
+}
+
+UIntOS Media::SVGContainer::FindElementName(Text::CStringNN name, NN<Data::ArrayListNN<SVGElement>> results) const
+{
+	NN<SVGElement> ele;
+	UIntOS retCnt = 0;
+	UIntOS i = 0;
+	UIntOS j = this->elements.GetCount();
+	while (i < j)
+	{
+		ele = this->elements.GetItemNoCheck(i);
+		if (ele->GetElementName().Equals(name))
+		{
+			results->Add(ele);
+			retCnt++;
+		}
+		else if (ele->IsContainer())
+		{
+			retCnt += NN<SVGContainer>::ConvertFrom(ele)->FindElementName(name, results);
+		}
+		i++;
+	}
+	return retCnt;
+}
+
+void Media::SVGContainer::ClearElements()
+{
+	this->elements.DeleteAll();
+}
+
 void Media::SVGContainer::SetInkscapeLabel(NN<Text::String> label)
 {
 	OPTSTR_DEL(this->inkscapeLabel);
@@ -763,22 +874,17 @@ void Media::SVGContainer::SetInkscapeGroupMode(NN<Text::String> groupMode)
 	this->inkscapeGroupmode = groupMode->Clone();
 }
 
-Media::SVGDefs::SVGDefs(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(refEng, doc)
+void Media::SVGContainer::SetDrawRect(Math::RectAreaDbl drawRect)
+{
+	this->drawRect = drawRect;
+}
+
+Media::SVGDefs::SVGDefs(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
 {
 }
 
 Media::SVGDefs::~SVGDefs()
 {
-}
-
-Double Media::SVGDefs::GetWidth() const
-{
-	return this->doc->GetWidth();
-}
-
-Double Media::SVGDefs::GetHeight() const
-{
-	return this->doc->GetHeight();
 }
 
 void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb) const
@@ -795,28 +901,28 @@ void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("</defs>"));
 }
 
-Media::SVGGroup::SVGGroup(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(refEng, doc)
+Media::SVGGroup::SVGGroup(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
 {
+	this->clipPath = nullptr;
 }
 
 Media::SVGGroup::~SVGGroup()
 {
-}
-
-Double Media::SVGGroup::GetWidth() const
-{
-	return this->doc->GetWidth();
-}
-
-Double Media::SVGGroup::GetHeight() const
-{
-	return this->doc->GetHeight();
+	OPTSTR_DEL(this->clipPath);
 }
 
 void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
+	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("<g"));
 	this->AppendEleAttr(sb);
+	if (this->clipPath.SetTo(s))
+	{
+		sb->AppendC(UTF8STRC(" clip-path="));
+		s = Text::XML::ToNewAttrText(s->v);
+		sb->Append(s);
+		s->Release();
+	}
 	if (this->elements.GetCount() == 0)
 	{
 		sb->AppendC(UTF8STRC(" />"));
@@ -827,7 +933,13 @@ void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("</g>"));
 }
 
-Media::SVGUnknown::SVGUnknown(Text::CStringNN name)
+void Media::SVGGroup::SetClipPath(Text::CStringNN clipPath)
+{
+	OPTSTR_DEL(this->clipPath);
+	this->clipPath = Text::String::New(clipPath);
+}
+
+Media::SVGUnknown::SVGUnknown(NN<SVGContainer> parent, Text::CStringNN name) : SVGElement(parent)
 {
 	this->name = Text::String::New(name);
 }
@@ -870,7 +982,7 @@ void Media::SVGUnknown::AddAttr(Text::CStringNN name, Text::CStringNN value)
 	this->attrValues.Add(Text::String::New(value));
 }
 
-Media::SVGUnknownContainer::SVGUnknownContainer(NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name) : SVGContainer(refEng, doc)
+Media::SVGUnknownContainer::SVGUnknownContainer(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name) : SVGContainer(parent, refEng, doc)
 {
 	this->name = Text::String::New(name);
 }
@@ -885,16 +997,6 @@ Media::SVGUnknownContainer::~SVGUnknownContainer()
 Text::CStringNN Media::SVGUnknownContainer::GetElementName() const
 {
 	return this->name->ToCString();
-}
-
-Double Media::SVGUnknownContainer::GetWidth() const
-{
-	return this->doc->GetWidth();
-}
-
-Double Media::SVGUnknownContainer::GetHeight() const
-{
-	return this->doc->GetHeight();
 }
 
 void Media::SVGUnknownContainer::ToString(NN<Text::StringBuilderUTF8> sb) const
@@ -927,7 +1029,7 @@ void Media::SVGUnknownContainer::AddAttr(Text::CStringNN name, Text::CStringNN v
 	this->attrValues.Add(Text::String::New(value));
 }
 
-Media::SVGDocument::SVGDocument(NN<Media::DrawEngine> refEng) : SVGContainer(refEng, *this)
+Media::SVGDocument::SVGDocument(NN<Media::DrawEngine> refEng) : SVGContainer(nullptr, refEng, *this)
 {
 	this->width = 0;
 	this->height = 0;
@@ -939,6 +1041,8 @@ Media::SVGDocument::SVGDocument(NN<Media::DrawEngine> refEng) : SVGContainer(ref
 	this->version = nullptr;
 	this->inkscapeVersion = nullptr;
 	this->sodipodiDocname = nullptr;
+	this->hDrawScale = NAN;
+	this->vDrawScale = NAN;
 }
 
 Media::SVGDocument::~SVGDocument()
@@ -1033,11 +1137,52 @@ void Media::SVGDocument::SetSize(UIntOS width, UIntOS height, Math::Unit::Distan
 	this->width = width;
 	this->height = height;
 	this->unit = unit;
+	this->hDrawScale = NAN;
+	this->vDrawScale = NAN;
 }
 
 void Media::SVGDocument::SetViewBox(Math::RectArea<IntOS> viewBox)
 {
 	this->viewBox = viewBox;
+	this->hDrawScale = NAN;
+	this->vDrawScale = NAN;
+}
+
+Double Media::SVGDocument::GetHDrawScale()
+{
+	if (Math::IsNAN(this->hDrawScale))
+	{
+		if (this->viewBox.GetWidth() == 0)
+		{
+			this->hDrawScale = Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_PIXEL, 1.0);
+		}
+		else
+		{
+			this->hDrawScale = this->GetWidth() / IntOS2Double(this->viewBox.GetWidth());
+		}
+	}
+	return this->hDrawScale;
+}
+
+Double Media::SVGDocument::GetVDrawScale()
+{
+	if (Math::IsNAN(this->vDrawScale))
+	{
+		if (this->viewBox.GetHeight() == 0)
+		{
+			this->vDrawScale = Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_PIXEL, 1.0);
+		}
+		else
+		{
+			this->vDrawScale = this->GetHeight() / IntOS2Double(this->viewBox.GetHeight());
+		}
+	}
+	return this->vDrawScale;
+}
+
+Math::Coord2DDbl Media::SVGDocument::GetDrawScale()
+{
+	return Math::Coord2DDbl(this->GetHDrawScale(), this->GetVDrawScale());
 }
 
 void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
@@ -1048,13 +1193,6 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->version.SetTo(s))
 	{
 		sb->AppendC(UTF8STRC(" version="));
-		s = Text::XML::ToNewAttrText(s->v);
-		sb->Append(s);
-		s->Release();
-	}
-	if (this->id.SetTo(s))
-	{
-		sb->AppendC(UTF8STRC(" id="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
 		s->Release();
@@ -1120,6 +1258,11 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 void Media::SVGDocument::RegisterId(NN<Text::String> id, NN<SVGElement> ele)
 {
 	this->idMap.Put(id, ele);
+}
+
+Optional<Media::SVGElement> Media::SVGDocument::GetElementById(Text::CStringNN id) const
+{
+	return this->idMap.GetC(id);
 }
 
 Optional<Media::SVGDocument> Media::SVGDocument::ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng)
@@ -1411,7 +1554,7 @@ Bool Media::SVGDocument::ParseContainer(NN<SVGContainer> container, NN<Text::XML
 		else if (eleName->Equals(UTF8STRC("g")))
 		{
 			NN<SVGGroup> group;
-			NEW_CLASSNN(group, SVGGroup(container->GetDrawEngine(), container->GetDoc()));
+			NEW_CLASSNN(group, SVGGroup(container, container->GetDrawEngine(), container->GetDoc()));
 			ParseContainerAttr(group, reader);
 			if (!reader->IsElementEmpty() && !SVGDocument::ParseContainer(group, reader))
 			{
@@ -1422,7 +1565,7 @@ Bool Media::SVGDocument::ParseContainer(NN<SVGContainer> container, NN<Text::XML
 		else if (eleName->Equals(UTF8STRC("defs")))
 		{
 			NN<SVGDefs> defs;
-			NEW_CLASSNN(defs, SVGDefs(container->GetDrawEngine(), container->GetDoc()));
+			NEW_CLASSNN(defs, SVGDefs(container, container->GetDrawEngine(), container->GetDoc()));
 			ParseContainerAttr(defs, reader);
 			if (!reader->IsElementEmpty() && !SVGDocument::ParseContainer(defs, reader))
 			{
@@ -1727,7 +1870,7 @@ Bool Media::SVGDocument::ParseRect(NN<SVGContainer> container, NN<Text::XMLReade
 					printf("SVGDocument: stroke-dasharray is not supported in rect\r\n");
 				}
 			}
-			pen = container->NewPenARGB(Text::CSSColor::Parse(value->ToCString()), strokeWidth, nullptr, 0);
+			pen = container->NewPenARGB(Text::CSSColor::Parse(value->ToCString()), strokeWidth * container->GetDoc()->GetHDrawScale(), nullptr, 0);
 		}
 		if (fill.SetTo(value))
 		{
@@ -1740,7 +1883,7 @@ Bool Media::SVGDocument::ParseRect(NN<SVGContainer> container, NN<Text::XMLReade
 				brush = container->NewBrushARGB(Text::CSSColor::Parse(value->ToCString()));
 			}
 		}
-		NEW_CLASSNN(rect, Media::SVGRect(Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), pen, brush));
+		NEW_CLASSNN(rect, Media::SVGRect(container, Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), pen, brush));
 		rect->SetStyle(stylePen, styleBrush);
 		if (id.SetTo(value))
 		{
@@ -1840,7 +1983,7 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 		NN<SVGBrush> nnbrush;
 		if (stroke.SetTo(s2))
 		{
-			pen = container->NewPenARGB(Text::CSSColor::Parse(s2->ToCString()), strokeWidth, nullptr, 0);
+			pen = container->NewPenARGB(Text::CSSColor::Parse(s2->ToCString()), strokeWidth * container->GetDoc()->GetHDrawScale(), nullptr, 0);
 		}
 		if (fill.SetTo(s2))
 		{
@@ -1848,7 +1991,7 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 			nnbrush->SetFillRule(fillRule);
 			brush = nnbrush;
 		}
-		NEW_CLASSNN(path, Media::SVGPath(s, pen, brush));
+		NEW_CLASSNN(path, Media::SVGPath(container, s, pen, brush));
 		container->AddElement(path);
 	}
 	else
@@ -1880,7 +2023,7 @@ Bool Media::SVGDocument::ParseUnknown(NN<SVGContainer> container, NN<Text::XMLRe
 		return ParseUnknownContainer(container, reader);
 	}
 	NN<SVGUnknown> unknown;
-	NEW_CLASSNN(unknown, SVGUnknown(reader->GetElementName()));
+	NEW_CLASSNN(unknown, SVGUnknown(container, reader->GetElementName()));
 	UIntOS i = 0;
 	UIntOS j = reader->GetAttribCount();
 	NN<Text::XMLAttrib> attr;
@@ -1902,7 +2045,7 @@ Bool Media::SVGDocument::ParseUnknown(NN<SVGContainer> container, NN<Text::XMLRe
 Bool Media::SVGDocument::ParseUnknownContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader)
 {
 	NN<SVGUnknownContainer> unknown;
-	NEW_CLASSNN(unknown, SVGUnknownContainer(container->GetDrawEngine(), container->GetDoc(), reader->GetElementName()));
+	NEW_CLASSNN(unknown, SVGUnknownContainer(container, container->GetDrawEngine(), container->GetDoc(), reader->GetElementName()));
 	UIntOS i = 0;
 	UIntOS j = reader->GetAttribCount();
 	NN<Text::XMLAttrib> attr;

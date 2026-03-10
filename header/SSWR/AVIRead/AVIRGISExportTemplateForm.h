@@ -38,6 +38,7 @@ namespace SSWR
 			Double scale;
 
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
+			static void __stdcall OnIdSelChg(AnyType userObj);
 			static void __stdcall OnExportClicked(AnyType userObj);
 		public:
 			AVIRGISExportTemplateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Math::Coord2DDbl center, Double scale);
