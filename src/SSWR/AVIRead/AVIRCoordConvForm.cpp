@@ -463,6 +463,10 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboSrc->GetItem(i).GetIntOS();
 			srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
+		if (srcCoord.IsNull())
+		{
+			printf("AVIRCoordConvForm: Error in creating source coordinate system\r\n");
+		}
 	}
 
 	i = this->cboDest->GetSelectedIndex();
@@ -481,6 +485,10 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		{
 			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboDest->GetItem(i).GetIntOS();
 			destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
+		}
+		if (destCoord.IsNull())
+		{
+			printf("AVIRCoordConvForm: Error in creating dest coordinate system\r\n");
 		}
 	}
 

@@ -196,7 +196,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 				sb.AppendUTF8Char('R');
 				sb.AppendUIntOS(i);
 				sb.AppendUTF8Char('C');
-				sb.AppendUIntOS(i);
+				sb.AppendUIntOS(j);
 				sb.Append(CSTR("TileOffset"));
 				frame->AddUInt64(ofst, sb.ToCString(), idx % 0x10000000000LL);
 				sb.RemoveChars(10);

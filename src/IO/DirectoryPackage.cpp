@@ -451,6 +451,11 @@ Bool IO::DirectoryPackage::CopyTo(UIntOS index, Text::CStringNN destPath, Bool f
 
 Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CStringNN fileName) const
 {
+	UIntOS index = this->GetItemIndex(fileName);
+	if (index != INVALID_INDEX)
+	{
+		return this->GetItemStmDataNew(index);
+	}
 	return nullptr;
 }
 

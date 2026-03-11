@@ -168,6 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		}
 		me->Close();
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRGISExportTemplateForm::AVIRGISExportTemplateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Math::Coord2DDbl center, Double scale) : UI::GUIForm(parent, 640, 200, ui)

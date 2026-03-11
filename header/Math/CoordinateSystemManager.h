@@ -30,9 +30,10 @@ namespace Math
 			PCST_MACAU_GRID,
 			PCST_TWD67,
 			PCST_TWD97,
+			PCST_WEB_MERCATOR,
 
 			PCST_FIRST = PCST_HK80,
-			PCST_LAST = PCST_TWD97
+			PCST_LAST = PCST_WEB_MERCATOR
 		} ProjCoordSysType;
 
 		typedef struct

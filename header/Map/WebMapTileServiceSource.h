@@ -70,6 +70,7 @@ namespace Map
 			Math::RectAreaDbl wgs84Bounds;
 			Optional<Text::String> title;
 			Optional<Text::String> id;
+			Optional<Text::String> defStyle;
 			Data::ArrayListStringNN format;
 			Data::ArrayListStringNN infoFormat;
 			Data::ArrayListNN<TileMatrixSet> tileMatrixes;

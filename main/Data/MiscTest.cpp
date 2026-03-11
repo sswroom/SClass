@@ -1351,9 +1351,23 @@ Int32 SVGTest()
 	return 0;
 }
 
+Int32 PCSTTest()
+{
+	NN<Math::ProjectedCoordinateSystem> csys;
+	if (Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_WEB_MERCATOR).SetTo(csys))
+	{
+		csys.Delete();
+	}
+	else
+	{
+		printf("Error in creating coordinate system\r\n");
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 36;
+	UIntOS testType = 37;
 	switch (testType)
 	{
 	case 0:
@@ -1430,6 +1444,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return NANTest();
 	case 36:
 		return SVGTest();
+	case 37:
+		return PCSTTest();
 	default:
 		return 0;
 	}

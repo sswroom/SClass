@@ -91,6 +91,7 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 	NEW_CLASSNN(layer, TileLayer());
 	layer->title = nullptr;
 	layer->id = nullptr;
+	layer->defStyle = nullptr;
 	while (reader->NextElementName().SetTo(name))
 	{
 		if (name->Equals(UTF8STRC("ows:Title")))
@@ -145,8 +146,40 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 		}
 		else if (name->Equals(UTF8STRC("Style")))
 		{
-			//////////////////////////////////////////
-			reader->SkipElement();
+			Bool isDefault = false;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				NN<Text::XMLAttrib> attr = reader->GetAttribNoCheck(i);
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("isDefault")))
+				{
+					isDefault = Text::String::OrEmpty(attr->value)->Equals(UTF8STRC("true"));
+				}
+			}
+			if (isDefault)
+			{
+				while (reader->NextElementName().SetTo(name))
+				{
+					if (name->Equals(UTF8STRC("ows:Identifier")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						if (sb.GetLength() > 0)
+						{
+							OPTSTR_DEL(layer->defStyle);
+							layer->defStyle = Text::String::New(sb.ToCString());
+						}
+					}
+					else
+					{
+						reader->SkipElement();
+					}
+				}
+			}
+			else
+			{
+				reader->SkipElement();
+			}
 		}
 		else if (name->Equals(UTF8STRC("Format")))
 		{
@@ -363,7 +396,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 			reader->SkipElement();
 		}
 	}
-	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
+	if (set->id->leng > 0)
 	{
 		NN<Math::CoordinateSystem> csys;
 		if (Math::CoordinateSystemManager::CreateFromName(set->id->ToCString(), nullptr).SetTo(csys))
@@ -569,6 +602,7 @@ void __stdcall Map::WebMapTileServiceSource::ReleaseLayer(NN<TileLayer> layer)
 {
 	OPTSTR_DEL(layer->id);
 	OPTSTR_DEL(layer->title);
+	OPTSTR_DEL(layer->defStyle);
 	layer->tileMatrixes.FreeAll(ReleaseTileMatrixSet);
 	layer->format.FreeAll();
 	layer->infoFormat.FreeAll();
@@ -671,6 +705,10 @@ UIntOS Map::WebMapTileServiceSource::GetMaxLevel() const
 	NN<TileMatrixSet> currSet;
 	if (!this->currSet.SetTo(currSet))
 		return 0;
+	if (currSet->tiles.GetCount() == 0)
+	{
+		return 21;
+	}
 	return currSet->tiles.GetCount() - 1;
 }
 
@@ -781,10 +819,12 @@ Bool Map::WebMapTileServiceSource::CanQuery() const
 
 Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UIntOS level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UIntOS>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
+	NN<TileLayer> currLayer;
 	NN<TileMatrixDefSet> currDef;
 	NN<TileMatrixSet> currSet;
 	NN<ResourceURL> currResourceInfo;
-	if (!this->currResourceInfo.SetTo(currResourceInfo) || !this->currDef.SetTo(currDef) || !this->currSet.SetTo(currSet))
+	NN<Text::String> defStyle;
+	if (!this->currResourceInfo.SetTo(currResourceInfo) || !this->currDef.SetTo(currDef) || !this->currSet.SetTo(currSet) || !this->currLayer.SetTo(currLayer))
 		return false;
 
 	NN<TileMatrix> tileMatrix;
@@ -815,10 +855,17 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UIntOS lev
 	urlSb.ReplaceStr(UTF8STRC("{J}"), tmpBuff, (UIntOS)(tmpPtr - tmpBuff));
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrixSet}"), currSet->id->v, currSet->id->leng);
-	urlSb.ReplaceStr(UTF8STRC("{style}"), UTF8STRC(""));
+	if (currLayer->defStyle.SetTo(defStyle))
+	{
+		urlSb.ReplaceStr(UTF8STRC("{style}"), defStyle->v, defStyle->leng);
+	}
+	else
+	{
+		urlSb.ReplaceStr(UTF8STRC("{style}"), UTF8STRC(""));
+	}
 
 #if defined(VERBOSE)
-	printf("Info URL: %s\r\n", urlSb.ToString());
+	printf("Info URL: %s\r\n", urlSb.ToString().Ptr());
 #endif
 
 	Text::StringBuilderUTF8 sb;
@@ -846,7 +893,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UIntOS lev
 	else
 	{
 #if defined(VERBOSE)
-		printf("%s\r\n", sb.ToString());
+		printf("%s\r\n", sb.ToString().Ptr());
 #endif
 	}
 	return false;
@@ -917,7 +964,9 @@ UnsafeArrayOpt<UTF8Char> Map::WebMapTileServiceSource::GetTileImageURL(UnsafeArr
 	NN<TileMatrix> tileMatrix;
 	NN<ResourceURL> currResource;
 	NN<TileMatrixSet> currSet;
-	if (this->GetTileMatrix(level).SetTo(tileMatrix) && this->currResource.SetTo(currResource) && this->currSet.SetTo(currSet))
+	NN<TileLayer> currLayer;
+	NN<Text::String> defStyle;
+	if (this->GetTileMatrix(level).SetTo(tileMatrix) && this->currResource.SetTo(currResource) && this->currSet.SetTo(currSet) && this->currLayer.SetTo(currLayer))
 	{
 		sptrEnd = currResource->templateURL->ConcatTo(sbuff);
 		tmpPtr = Text::StrInt32(tmpBuff, tileId.x);
@@ -926,7 +975,14 @@ UnsafeArrayOpt<UTF8Char> Map::WebMapTileServiceSource::GetTileImageURL(UnsafeArr
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileRow}"), tmpBuff, (UIntOS)(tmpPtr - tmpBuff));
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileMatrixSet}"), currSet->id->v, currSet->id->leng);
-		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{style}"), UTF8STRC("generic"));
+		if (currLayer->defStyle.SetTo(defStyle))
+		{
+			sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{style}"), defStyle->v, defStyle->leng);
+		}
+		else
+		{
+			sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{style}"), UTF8STRC("generic"));
+		}
 		return sbuff;
 	}
 	return nullptr;
@@ -939,7 +995,9 @@ Bool Map::WebMapTileServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> s
 	NN<TileMatrix> tileMatrix;
 	NN<ResourceURL> currResource;
 	NN<TileMatrixSet> currSet;
-	if (this->GetTileMatrix(level).SetTo(tileMatrix) && this->currResource.SetTo(currResource) && this->currSet.SetTo(currSet))
+	NN<TileLayer> currLayer;
+	NN<Text::String> defStyle;
+	if (this->GetTileMatrix(level).SetTo(tileMatrix) && this->currResource.SetTo(currResource) && this->currSet.SetTo(currSet) && this->currLayer.SetTo(currLayer))
 	{
 		sb->Append(currResource->templateURL);
 		tmpPtr = Text::StrInt32(tmpBuff, tileId.x);
@@ -948,7 +1006,14 @@ Bool Map::WebMapTileServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> s
 		sb->ReplaceStr(UTF8STRC("{TileRow}"), tmpBuff, (UIntOS)(tmpPtr - tmpBuff));
 		sb->ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 		sb->ReplaceStr(UTF8STRC("{TileMatrixSet}"), currSet->id->v, currSet->id->leng);
-		sb->ReplaceStr(UTF8STRC("{style}"), UTF8STRC("generic"));
+		if (currLayer->defStyle.SetTo(defStyle))
+		{
+			sb->ReplaceStr(UTF8STRC("{style}"), defStyle->v, defStyle->leng);
+		}
+		else
+		{
+			sb->ReplaceStr(UTF8STRC("{style}"), UTF8STRC("generic"));
+		}
 		return true;
 	}
 	return false;
@@ -972,6 +1037,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 	NN<TileMatrixSet> currSet;
 	NN<ResourceURL> currResource;
 	NN<TileLayer> currLayer;
+	NN<Text::String> defStyle;
 	if (!this->GetTileMatrix(level).SetTo(tileMatrix) || !this->currDef.SetTo(currDef) || !this->currSet.SetTo(currSet) || !this->currResource.SetTo(currResource) || !this->currLayer.SetTo(currLayer) || !currDef->tiles.GetItem(level).SetTo(tileMatrixDef))
 		return nullptr;
 	Double x1 = tileId.x * tileMatrixDef->unitPerPixel * UIntOS2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
@@ -985,7 +1051,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 		return nullptr;
 
 #if defined(VERBOSE)
-	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
+	printf("Loading Tile %d %d %d\r\n", (UInt32)level, tileId.x, tileId.y);
 #endif
 
 	{
@@ -1035,10 +1101,17 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UIntOS 
 	urlSb.ReplaceStr(UTF8STRC("{TileRow}"), tmpBuff, (UIntOS)(tmpPtr - tmpBuff));
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrixSet}"), currSet->id->v, currSet->id->leng);
-	urlSb.ReplaceStr(UTF8STRC("{style}"), UTF8STRC(""));
+	if (currLayer->defStyle.SetTo(defStyle))
+	{
+		urlSb.ReplaceStr(UTF8STRC("{style}"), defStyle->v, defStyle->leng);
+	}
+	else
+	{
+		urlSb.ReplaceStr(UTF8STRC("{style}"), UTF8STRC(""));
+	}
 
 #if defined(VERBOSE)
-	printf("URL: %s\r\n", urlSb.ToString());
+	printf("URL: %s\r\n", urlSb.ToString().Ptr());
 #endif
 
 	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
@@ -1110,6 +1183,28 @@ Bool Map::WebMapTileServiceSource::SetMatrixSet(UIntOS index)
 	if (!this->currSet.SetTo(currSet))
 		return false;
 	this->currDef = matrixDef.GetNN(currSet->id);
+	if (currSet->tiles.GetCount() == 0)
+	{
+		NN<TileMatrixDefSet> currDef;
+		if (this->currDef.SetTo(currDef))
+		{
+			UIntOS i = 0;
+			UIntOS j = currDef->tiles.GetCount();
+			while (i < j)
+			{
+				NN<TileMatrixDef> tileDef = currDef->tiles.GetItemNoCheck(i);
+				NN<TileMatrix> tile = MemAllocNN(TileMatrix);
+				tile->id = tileDef->id->Clone();
+				tile->minRow = 0;
+				tile->maxRow = (Int32)tileDef->matrixHeight - 1;
+				tile->minCol = 0;
+				tile->maxCol = (Int32)tileDef->matrixWidth - 1;
+				currSet->tiles.Add(tile);
+
+				i++;
+			}
+		}
+	}
 	return true;
 }
 

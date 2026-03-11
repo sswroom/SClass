@@ -100,32 +100,41 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 				}
 
 				sb1.Append(sbSuffix.ToCString());
-				i = sb1.IndexOf('\t');
-				if (i != INVALID_INDEX)
+				i = INVALID_INDEX;
+				Bool match;
+				if (compareType == 0)
 				{
-					Bool match;
-					if (compareType == 0)
+					i = sb1.IndexOf('\t');
+					if (i != INVALID_INDEX)
 					{
 						match = sb1.Substring(i + 1).StartsWith(sb2.ToCString());
 					}
-					else if (compareType == 1)
+					else
 					{
-						match = sb1.IndexOf(sb2.ToCString()) != INVALID_INDEX;
+						match = sb1.StartsWith(sb2.ToCString());
+					}
+				}
+				else if (compareType == 1)
+				{
+					match = sb1.IndexOf(sb2.ToCString()) != INVALID_INDEX;
+				}
+				else
+				{
+					match = sb1.EndsWith(sb2.ToCString());
+				}
+				if (match != invert)
+				{
+					if (outTyp == 0)
+					{
+						writer.WriteLine(sb1.ToCString());
 					}
 					else
 					{
-						match = sb1.EndsWith(sb2.ToCString());
-					}
-					if (match != invert)
-					{
-						if (outTyp == 0)
+						if (i == INVALID_INDEX)
 						{
-							writer.WriteLine(sb1.ToCString());
+							i = sb1.IndexOf('\t');
 						}
-						else
-						{
-							writer.WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
-						}
+						writer.WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
 					}
 				}
 

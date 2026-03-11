@@ -182,8 +182,8 @@ Math::CoordinateSystemManager::GeographicCSysInfo Math::CoordinateSystemManager:
 	{4607, UTF8STRC("St. Vincent 1945"), "St_Vincent_1945", Math::EarthEllipsoid::EET_CLARKE1880R},
 	{3821, UTF8STRC("Taiwan_1967"), "Taiwan_1967", Math::EarthEllipsoid::EET_SAM1969},
 	{3824, UTF8STRC("Taiwan_1997"), "Taiwan_1997", Math::EarthEllipsoid::EET_GRS80},
-	{4326, UTF8STRC("WGS_1984"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84},
-	{4326, UTF8STRC("WGS 84"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84}
+	{4326, UTF8STRC("WGS 84"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84},
+	{4326, UTF8STRC("WGS_1984"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84}
 };
 
 Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::pcsysList[] = {
@@ -867,6 +867,8 @@ Text::CString Math::CoordinateSystemManager::ProjCoordSysTypeGetName(ProjCoordSy
 		return CSTR("Taiwan 1967 Grid");
 	case PCST_TWD97:
 		return CSTR("Taiwan 1997 Grid");
+	case PCST_WEB_MERCATOR:
+		return CSTR("WGS 84 / Pseudo-Mercator");
 	}
 	return nullptr;
 }
