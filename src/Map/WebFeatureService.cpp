@@ -5,6 +5,7 @@
 #include "Parser/FileParser/XMLParser.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
+//#define VERBOSE
 #include <stdio.h>
 
 void Map::WebFeatureService::LoadXML(Version version)
@@ -354,11 +355,20 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 		}
 		else
 		{
+#if defined(VERBOSE)
+			printf("WFS: Unsupported version: %s\r\n", version->v.Ptr());
+#endif
 			return nullptr;
 		}
 		IO::MemoryStream mstm;
+#if defined(VERBOSE)
+		printf("WFS: Loading from URL: %s\r\n", sb.ToString().Ptr());
+#endif
 		if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, sb.ToCString(), mstm, 104857600))
 		{
+#if defined(VERBOSE)
+			printf("WFS: Failed to load content from URL: %s\r\n", sb.v.Ptr());
+#endif
 			return nullptr;
 		}
 		mstm.SeekFromBeginning(0);
@@ -382,8 +392,23 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 				}
 			}
 			pobj.Delete();
+#if defined(VERBOSE)
+			printf("WFS: The loaded content is not a map layer\r\n");
+#endif
 			return nullptr;
 		}
+		else
+		{
+#if defined(VERBOSE)
+			printf("WFS: Error in parsing GML\r\n");
+#endif
+		}
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("WFS: No feature selected\r\n");
+#endif
 	}
 	return nullptr;
 }

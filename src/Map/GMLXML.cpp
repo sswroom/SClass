@@ -40,102 +40,145 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				}
 				Optional<Math::Geometry::Vector2D> vec = nullptr;
 				NN<Math::Geometry::Vector2D> nnvec;
-				while (reader->NextElementName().SetTo(nodeText))
+				if (!reader->IsElementEmpty())
 				{
-					if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
+					while (reader->NextElementName().SetTo(nodeText))
 					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POINT)
+						if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
 						{
-							while (!reader->NextElementName().IsNull())
+							if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POINT)
 							{
-								if (ParseGeometry(reader, env).SetTo(newVec))
+								while (!reader->NextElementName().IsNull())
 								{
-									vec.Delete();
-									vec = newVec;
-									if (newVec->HasZ())
-										layerType = Map::DRAW_LAYER_POINT3D;
-									else
-										layerType = Map::DRAW_LAYER_POINT;
+									if (ParseGeometry(reader, env).SetTo(newVec))
+									{
+										vec.Delete();
+										vec = newVec;
+										if (newVec->HasZ())
+											layerType = Map::DRAW_LAYER_POINT3D;
+										else
+											layerType = Map::DRAW_LAYER_POINT;
+									}
 								}
-							}
-						}
-						else
-						{
-							reader->SkipElement();
-						}
-					}
-					else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
-					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
-						{
-							layerType = Map::DRAW_LAYER_POLYGON;
-							while (!reader->NextElementName().IsNull())
-							{
-								if (ParseGeometry(reader, env).SetTo(newVec))
-								{
-									vec.Delete();
-									vec = newVec;
-								}
-							}
-						}
-					}
-					else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
-					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYLINE)
-						{
-							while (!reader->NextElementName().IsNull())
-							{
-								if (ParseGeometry(reader, env).SetTo(newVec))
-								{
-									vec.Delete();
-									vec = newVec;
-									if (newVec->HasZ())
-										layerType = Map::DRAW_LAYER_POLYLINE3D;
-									else
-										layerType = Map::DRAW_LAYER_POLYLINE;
-								}
-							}
-						}
-					}
-					else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")) || nodeText->EndsWith(UTF8STRC(":geometry")))
-					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_MIXED)
-						{
-							layerType = Map::DRAW_LAYER_MIXED;
-							while (!reader->NextElementName().IsNull())
-							{
-								if (ParseGeometry(reader, env).SetTo(newVec))
-								{
-									vec.Delete();
-									vec = newVec;
-								}
-							}
-						}
-					}
-					else if (nodeText->Equals(UTF8STRC("gml:boundedBy")))
-					{
-						reader->SkipElement();
-					}
-					else
-					{
-						UIntOS i = nodeText->IndexOf(':');
-						if (i != INVALID_INDEX)
-						{
-							nameList.Add(Text::StrCopyNew(reader->GetNodeTextNN()->v + i + 1).Ptr());
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								valList.Add(Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 							}
 							else
 							{
-								valList.Add(0);
+								reader->SkipElement();
 							}
 						}
-						else 
+						else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
+						{
+							if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
+							{
+								layerType = Map::DRAW_LAYER_POLYGON;
+								while (!reader->NextElementName().IsNull())
+								{
+									if (ParseGeometry(reader, env).SetTo(newVec))
+									{
+										vec.Delete();
+										vec = newVec;
+									}
+								}
+							}
+						}
+						else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
+						{
+							if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYLINE)
+							{
+								while (!reader->NextElementName().IsNull())
+								{
+									if (ParseGeometry(reader, env).SetTo(newVec))
+									{
+										vec.Delete();
+										vec = newVec;
+										if (newVec->HasZ())
+											layerType = Map::DRAW_LAYER_POLYLINE3D;
+										else
+											layerType = Map::DRAW_LAYER_POLYLINE;
+									}
+								}
+							}
+						}
+						else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")) || nodeText->EndsWith(UTF8STRC(":geometry")))
+						{
+							if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_MIXED)
+							{
+								layerType = Map::DRAW_LAYER_MIXED;
+								while (!reader->NextElementName().IsNull())
+								{
+									if (ParseGeometry(reader, env).SetTo(newVec))
+									{
+										vec.Delete();
+										vec = newVec;
+									}
+								}
+							}
+						}
+						else if (nodeText->Equals(UTF8STRC("gml:boundedBy")))
 						{
 							reader->SkipElement();
+						}
+						else
+						{
+							UIntOS i = nodeText->IndexOf(':');
+							if (i != INVALID_INDEX)
+							{
+								UnsafeArray<const UTF8Char> fieldName = Text::StrCopyNew(nodeText->v + i + 1);
+								NN<Text::String> value;
+								Bool found = false;
+								while (reader->ReadNext())
+								{
+									if (reader->GetNodeType() == Text::XMLNode::NodeType::Text)
+									{
+										value = reader->GetNodeTextNN();
+										if (value->IsWhitespace() || found)
+										{
+
+										}
+										else
+										{
+											nameList.Add(fieldName);
+											valList.Add(value->Clone().Ptr());
+											found = true;
+										}
+									}
+									else if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+									{
+										break;
+									}
+									else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+									{
+										nodeText = reader->GetNodeTextNN();
+										if (nodeText->StartsWith(UTF8STRC("gml:")))
+										{
+											if (layerType == Map::DRAW_LAYER_UNKNOWN)
+											{
+												layerType = Map::DRAW_LAYER_MIXED;
+											}
+											if (ParseGeometry(reader, env).SetTo(newVec))
+											{
+												vec.Delete();
+												vec = newVec;
+												Text::StrDelNew(fieldName);
+												found = true;
+											}
+										}
+										else
+										{
+											reader->SkipElement();
+										}
+									}
+								}
+								if (!found)
+								{
+									nameList.Add(fieldName);
+									valList.Add(0);
+								}
+							}
+							else 
+							{
+								reader->SkipElement();
+							}
 						}
 					}
 				}
@@ -161,6 +204,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 					}
 					else
 					{
+						printf("GMLXML: Invalid column count: %d, %d\r\n", (UInt32)colCnt, (UInt32)valList.GetCount());
 						vec.Delete();
 					}
 				}
