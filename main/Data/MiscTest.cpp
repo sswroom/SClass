@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "Data/TableData.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/MSSQLConn.h"
 #include "IO/BufferedOutputStream.h"
@@ -1365,9 +1366,138 @@ Int32 PCSTTest()
 	return 0;
 }
 
+struct MD5Entry
+{
+	NN<Text::String> fileName;
+	NN<Text::String> md5;
+};
+
+void __stdcall FreeMD5Entry(NN<MD5Entry> entry)
+{
+	entry->fileName->Release();
+	entry->md5->Release();
+	MemFreeNN(entry);
+}
+
+void LoadMD5(Text::CStringNN fileName, NN<Data::ArrayListNN<MD5Entry>> md5List)
+{
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		printf("Error in opening file: %s\r\n", fileName.v.Ptr());
+		return;
+	}
+	Text::UTF8Reader reader(fs);
+	Text::StringBuilderUTF8 sb;
+	while (reader.ReadLine(sb, 8192))
+	{
+		if (sb.leng > 32 && sb.v[32] == ' ')
+		{
+			NN<MD5Entry> entry = MemAllocNN(MD5Entry);
+			entry->md5 = Text::String::New(sb.v, 32);
+			entry->fileName = Text::String::New(sb.v + 33, sb.leng - 33);
+			md5List->Add(entry);
+		}
+		sb.ClearStr();
+	}
+}
+
+class MD5Comparator : public Data::Comparator<NN<MD5Entry>>
+{
+public:
+	virtual ~MD5Comparator() {}
+
+	virtual IntOS Compare(NN<MD5Entry> a, NN<MD5Entry> b) const
+	{
+		return a->fileName->CompareTo(b->fileName);
+	}
+};
+
+Optional<MD5Entry> MD5FindEntry(NN<Data::ArrayListNN<MD5Entry>> md5List, Text::CStringNN fileName)
+{
+	IntOS i = 0;
+	IntOS j = (IntOS)md5List->GetCount() - 1;
+	IntOS k;
+	NN<MD5Entry> entry;
+	IntOS l;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		entry = md5List->GetItemNoCheck((UIntOS)k);
+		l = entry->fileName->CompareTo(fileName);
+		if (l == 0)
+		{
+			return entry;
+		}
+		else if (l < 0)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			j = k - 1;
+		}
+	}
+	return nullptr;
+}
+
+Int32 MD5CompareTest()
+{
+	Text::CStringNN file1 = CSTR("/home/sswroom/Temp/20260313/YL_Ori.md5");
+	Text::CStringNN file2 = CSTR("/home/sswroom/Temp/20260313/YL_Server.md5");
+	Text::CStringNN diffFile = CSTR("/home/sswroom/Temp/20260313/YL_Diff.md5");
+	Data::ArrayListNN<MD5Entry> md5List1;
+	Data::ArrayListNN<MD5Entry> md5List2;
+	LoadMD5(file1, md5List1);
+	LoadMD5(file2, md5List2);
+	if (md5List1.GetCount() > 0 && md5List2.GetCount() > 0)
+	{
+		MD5Comparator comparator;
+		Data::Sort::ArtificialQuickSort::Sort<NN<MD5Entry>>(md5List1, comparator);
+		Data::Sort::ArtificialQuickSort::Sort<NN<MD5Entry>>(md5List2, comparator);
+		NN<MD5Entry> entry1;
+		NN<MD5Entry> entry2;
+		IO::FileStream fs(diffFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::StringBuilderUTF8 sbDiff;
+		UIntOS i = 0;
+		UIntOS j = md5List2.GetCount();
+		while (i < j)
+		{
+			entry2 = md5List2.GetItemNoCheck(i);
+			if (MD5FindEntry(md5List1, entry2->fileName->ToCString()).SetTo(entry1))
+			{
+				if (!entry1->md5->Equals(entry2->md5))
+				{
+					printf("MD5 mismatch: %s\r\n", entry1->fileName->v.Ptr());
+				}
+			}
+			else
+			{
+				sbDiff.Append(entry2->md5);
+				sbDiff.AppendUTF8Char(' ');
+				sbDiff.Append(entry2->fileName);
+				sbDiff.AppendC(UTF8STRC("\r\n"));
+				if (sbDiff.GetLength() > 65536)
+				{
+					fs.Write(sbDiff.ToByteArray());
+					sbDiff.ClearStr();
+				}
+			}
+			i++;
+		}
+		if (sbDiff.GetLength() > 0)
+		{
+			fs.Write(sbDiff.ToByteArray());
+		}
+	}
+	md5List1.FreeAll(FreeMD5Entry);
+	md5List2.FreeAll(FreeMD5Entry);
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 37;
+	UIntOS testType = 38;
 	switch (testType)
 	{
 	case 0:
@@ -1446,6 +1576,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return SVGTest();
 	case 37:
 		return PCSTTest();
+	case 38:
+		return MD5CompareTest();
 	default:
 		return 0;
 	}
