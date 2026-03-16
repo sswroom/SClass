@@ -151,6 +151,7 @@
 #include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "SSWR/AVIRead/AVIRMACManagerForm.h"
+#include "SSWR/AVIRead/AVIRMD5CompareForm.h"
 #include "SSWR/AVIRead/AVIRMDNSForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSTCPSimForm.h"
@@ -554,7 +555,8 @@ typedef enum
 	MNU_LB_TCP,
 	MNU_INVESTMENT,
 	MNU_GISSERVER,
-	MNU_VALGRINDLOG
+	MNU_VALGRINDLOG,
+	MNU_MD5COMPARE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -767,6 +769,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("JMeter Results"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Valgrind Log"), MNU_VALGRINDLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("MD5 Compare"), MNU_MD5COMPARE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3226,6 +3229,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRValgrindLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRValgrindLogForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MD5COMPARE:
+		{
+			NN<SSWR::AVIRead::AVIRMD5CompareForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMD5CompareForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

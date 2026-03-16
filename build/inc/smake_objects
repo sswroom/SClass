@@ -2109,6 +2109,7 @@ AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
 AVIRMACManagerForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
+AVIRMD5CompareForm.o: ../../src/SSWR/AVIRead/AVIRMD5CompareForm.cpp
 AVIRMDNSForm.o: ../../src/SSWR/AVIRead/AVIRMDNSForm.cpp
 AVIRMediaForm.o: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
 AVIRMIMEViewerForm.o: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp

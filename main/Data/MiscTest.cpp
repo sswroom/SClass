@@ -1443,9 +1443,9 @@ Optional<MD5Entry> MD5FindEntry(NN<Data::ArrayListNN<MD5Entry>> md5List, Text::C
 
 Int32 MD5CompareTest()
 {
-	Text::CStringNN file1 = CSTR("/home/sswroom/Temp/20260313/YL_Ori.md5");
-	Text::CStringNN file2 = CSTR("/home/sswroom/Temp/20260313/YL_Server.md5");
-	Text::CStringNN diffFile = CSTR("/home/sswroom/Temp/20260313/YL_Diff.md5");
+	Text::CStringNN file1 = CSTR("");
+	Text::CStringNN file2 = CSTR("");
+	Text::CStringNN diffFile = CSTR("");
 	Data::ArrayListNN<MD5Entry> md5List1;
 	Data::ArrayListNN<MD5Entry> md5List2;
 	LoadMD5(file1, md5List1);
