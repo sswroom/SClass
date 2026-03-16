@@ -2559,6 +2559,8 @@ Map/SHPUtil.h:
 @SHPUtil.o
 Map/SPDLayer.h:
 @SPDLayer.o
+Map/StmDataTileMap.h:
+@StmDataTileMap.o
 Map/TileMap.h:
 Map/TileMapFolderWriter.h:
 @TileMapFolderWriter.o
@@ -4071,6 +4073,8 @@ Parser/ObjParser/OSMMapParser.h:
 @OSMMapParser.o
 Parser/ObjParser/PKGMapParser.h:
 @PKGMapParser.o
+Parser/ObjParser/TPKXParser.h:
+@TPKXParser.o
 
 SSWR/ProcMonForm.h:
 @ProcMonForm.o

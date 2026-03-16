@@ -32,7 +32,8 @@ namespace Map
 			WMTS,
 			CUSTOM,
 			BING,
-			TIFF
+			TIFF,
+			StmData
 		};
 	public:
 		virtual ~TileMap() {};
