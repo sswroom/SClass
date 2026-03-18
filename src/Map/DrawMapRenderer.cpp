@@ -1525,7 +1525,10 @@ Bool Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 						}
 						else if (layerType == Map::DRAW_LAYER_IMAGE)
 						{
-							hasLoading = DrawImageLayer(denv, layer.layer) || hasLoading;
+							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
+							{
+								hasLoading = DrawImageLayer(denv, layer.layer) || hasLoading;
+							}
 						}
 					}
 				}

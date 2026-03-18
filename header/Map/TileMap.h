@@ -33,7 +33,8 @@ namespace Map
 			CUSTOM,
 			BING,
 			TIFF,
-			StmData
+			StmData,
+			OSMTemplate
 		};
 	public:
 		virtual ~TileMap() {};

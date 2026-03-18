@@ -294,7 +294,6 @@ UIntOS Map::OSM::OSMLocalTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDb
 	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(rect.max.x, level);
 	Int32 pixY1 = Map::OSM::OSMTileMap::Lat2TileY(rect.min.y, level);
 	Int32 pixY2 = Map::OSM::OSMTileMap::Lat2TileY(rect.max.y, level);
-	printf("pixX1 = %d, pixY1 = %d, pixX2 = %d, pixY2 = %d, level = %d\r\n", pixX1, pixY1, pixX2, pixY2, (UInt32)level);
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

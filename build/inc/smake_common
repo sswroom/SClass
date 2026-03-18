@@ -2627,6 +2627,8 @@ Map/OSM/OSMLocalTileMap.h:
 @OSMLocalTileMap.o
 Map/OSM/OSMParser.h:
 @OSMParser.o
+Map/OSM/OSMTemplateTileMap.h:
+@OSMTemplateTileMap.o
 Map/OSM/OSMTileMap.h:
 @OSMTileMap.o
 
@@ -4538,6 +4540,8 @@ SSWR/AVIRead/AVIROSMCacheForm.h:
 @AVIROSMCacheForm.o
 SSWR/AVIRead/AVIROSMTileBoundsForm.h:
 @AVIROSMTileBoundsForm.o
+SSWR/AVIRead/AVIROSMURLForm.h:
+@AVIROSMURLForm.o
 SSWR/AVIRead/AVIROTPForm.h:
 @AVIROTPForm.o
 SSWR/AVIRead/AVIRPackageForm.h:

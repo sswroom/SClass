@@ -180,6 +180,7 @@
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROSMTileBoundsForm.h"
+#include "SSWR/AVIRead/AVIROSMURLForm.h"
 #include "SSWR/AVIRead/AVIROTPForm.h"
 #include "SSWR/AVIRead/AVIRPaintCntForm.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
@@ -558,7 +559,8 @@ typedef enum
 	MNU_GISSERVER,
 	MNU_VALGRINDLOG,
 	MNU_MD5COMPARE,
-	MNU_OSM_TILE_BOUNDS
+	MNU_OSM_TILE_BOUNDS,
+	MNU_OSM_URL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -942,6 +944,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddSeperator();
 	mnu2->AddItem(CSTR("Local file (Dir)..."), MNU_OSM_LOCAL_DIR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Local file (File)..."), MNU_OSM_LOCAL_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("URL..."), MNU_OSM_URL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 //	mnu2->AddItem(CSTR("OSM Cache Server Test"), MNU_TEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3247,6 +3250,23 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<SSWR::AVIRead::AVIROSMTileBoundsForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMTileBoundsForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_OSM_URL:
+		{
+			NN<SSWR::AVIRead::AVIROSMURLForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMURLForm(nullptr, this->ui, this->core, this->core->GetTCPClientFactory(), this->ssl));
+			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				NN<Map::TileMap> tile;
+				if (frm->GetTileMap().SetTo(tile))
+				{
+					NN<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->core->OpenObject(layer);
+				}
+			}
+			frm.Delete();
 		}
 		break;
 	}

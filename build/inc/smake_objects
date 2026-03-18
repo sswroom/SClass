@@ -986,6 +986,7 @@ OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMData.o: ../../src/Map/OSM/OSMData.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
+OSMTemplateTileMap.o: ../../src/Map/OSM/OSMTemplateTileMap.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
 
 ArcGISCSys.o: ../../src/Math/ArcGISCSys.cpp
@@ -2143,6 +2144,7 @@ AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
 AVIROSMTileBoundsForm.o: ../../src/SSWR/AVIRead/AVIROSMTileBoundsForm.cpp
+AVIROSMURLForm.o: ../../src/SSWR/AVIRead/AVIROSMURLForm.cpp
 AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp

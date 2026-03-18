@@ -19,6 +19,8 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UIntOS minLevel, U
 	this->tileHeight = 256;
 	this->minLevel = minLevel;
 	this->maxLevel = maxLevel;
+	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
+		Math::Coord2DDbl(180, 85.051128779806592377796715521925));
 	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 }
 
@@ -99,8 +101,7 @@ UIntOS Map::MercatorTileMap::GetNearestLevel(Double scale) const
 
 Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
-		Math::Coord2DDbl(180, 85.051128779806592377796715521925)));
+	bounds.Set(this->bounds);
 	return true;
 }
 
@@ -124,15 +125,15 @@ UIntOS Map::MercatorTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rec
 	Int32 i;
 	Int32 j;
 	Double tmp;
-	Double max = 85.051128779806592377796715521925;
-	if (rect.min.y < -max)
-		rect.min.y = -max;
-	else if (rect.min.y > max)
-		rect.min.y = max;
-	if (rect.max.y < -max)
-		rect.max.y = -max;
-	else if (rect.max.y > max)
-		rect.max.y = max;
+	Math::RectAreaDbl bounds = this->bounds;
+	if (rect.min.y < bounds.min.y)
+		rect.min.y = bounds.min.y;
+	else if (rect.min.y > bounds.max.y)
+		rect.min.y = bounds.max.y;
+	if (rect.max.y < bounds.min.y)
+		rect.max.y = bounds.min.y;
+	else if (rect.max.y > bounds.max.y)
+		rect.max.y = bounds.max.y;
 	
 	if (rect.min.x == rect.max.x)
 		return 0;
@@ -154,6 +155,15 @@ UIntOS Map::MercatorTileMap::GetTileImageIDs(UIntOS level, Math::RectAreaDbl rec
 		rect.max.x -= 360;
 		rect.min.x -= 360;
 	}
+	if (rect.min.x < bounds.min.x)
+		rect.min.x = bounds.min.x;
+	else if (rect.min.x > bounds.max.x)
+		rect.min.x = bounds.max.x;
+	if (rect.max.x < bounds.min.x)
+		rect.max.x = bounds.min.x;
+	else if (rect.max.x > bounds.max.x)
+		rect.max.x = bounds.max.x;
+
 	Int32 pixX1 = Lon2TileX(rect.min.x, level);
 	Int32 pixX2 = Lon2TileX(rect.max.x, level);
 	Int32 pixY1 = Lat2TileY(rect.min.y, level);

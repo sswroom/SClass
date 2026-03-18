@@ -18,6 +18,7 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 		UIntOS minLevel;
 		UIntOS maxLevel;
+		Math::RectAreaDbl bounds;
 
 		UIntOS tileWidth;
 		UIntOS tileHeight;

@@ -52,6 +52,7 @@
 #include "SSWR/AVIRead/AVIRGooglePolylineForm.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
+#include "SSWR/AVIRead/AVIROSMURLForm.h"
 #include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
@@ -139,7 +140,8 @@ typedef enum
 	MNU_HK_WASTELESS,
 	MNU_HK_HKE_EV_CHARGING_EN,
 	MNU_HK_PARKING_VACANCY,
-	MNU_HK_GEODATA_WMS
+	MNU_HK_GEODATA_WMS,
+	MNU_OSM_URL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -794,6 +796,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu2->AddItem(CSTR("From &File"), MNU_MTK_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("From Google Polyline String"), MNU_GOOGLE_POLYLINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("From &File"), MNU_OPEN_FILE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
+	mnu->AddItem(CSTR("From &URL"), MNU_OSM_URL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_U);
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1911,6 +1914,21 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRGISExportTemplateForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
 			frm.ShowDialog(this);
 			this->mapCtrl->PauseUpdate(false);
+			break;
+		}
+	case MNU_OSM_URL:
+		{
+			SSWR::AVIRead::AVIROSMURLForm frm(nullptr, this->ui, this->core, this->core->GetTCPClientFactory(), this->ssl);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				NN<Map::TileMap> tile;
+				if (frm.GetTileMap().SetTo(tile))
+				{
+					NN<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->AddLayer(layer);
+				}
+			}
 			break;
 		}
 	}
