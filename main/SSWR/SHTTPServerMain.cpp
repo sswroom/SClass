@@ -10,6 +10,7 @@
 #include "Net/WebServer/HTTPFormParser.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebStandardHandler.h"
+#include "Parser/FullParserList.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 
@@ -21,6 +22,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
 	Text::CStringNN path;
+	Bool expandPackage = false;
 
 #if defined(DEBUGCON)
 	path = CSTR("/");
@@ -42,6 +44,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		port = 0;
 		Text::StrToUInt16(argv[1], port);
+
+		if (argc >= 3)
+		{
+			if (argv[2][0] == 't' || argv[2][0] == 'T' || argv[2][0] == 'y' || argv[2][0] == 'Y')
+			{
+				expandPackage = true;
+			}
+		}
 	}
 
 	sb.ClearStr();
@@ -52,6 +62,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::TCPClientFactory clif(sockf);
 	NN<Net::WebServer::WebStandardHandler> hdlr;
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
+	if (expandPackage)
+	{
+		Parser::FullParserList parsers;
+		NN<Net::WebServer::HTTPDirectoryHandler>::ConvertFrom(hdlr)->ExpandPackageFiles(parsers, CSTR("*.zip"));
+	}
 	NEW_CLASS(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!svr->IsError())
 	{

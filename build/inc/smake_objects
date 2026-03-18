@@ -2142,6 +2142,7 @@ AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
+AVIROSMTileBoundsForm.o: ../../src/SSWR/AVIRead/AVIROSMTileBoundsForm.cpp
 AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp

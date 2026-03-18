@@ -179,6 +179,7 @@
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
+#include "SSWR/AVIRead/AVIROSMTileBoundsForm.h"
 #include "SSWR/AVIRead/AVIROTPForm.h"
 #include "SSWR/AVIRead/AVIRPaintCntForm.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
@@ -556,7 +557,8 @@ typedef enum
 	MNU_INVESTMENT,
 	MNU_GISSERVER,
 	MNU_VALGRINDLOG,
-	MNU_MD5COMPARE
+	MNU_MD5COMPARE,
+	MNU_OSM_TILE_BOUNDS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -955,6 +957,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("SHPConv"), MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("GIS Server"), MNU_GISSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("OSM Tile Bounds"), MNU_OSM_TILE_BOUNDS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("Radio Scan"), MNU_RADIO_SCAN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3236,6 +3239,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRMD5CompareForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMD5CompareForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_OSM_TILE_BOUNDS:
+		{
+			NN<SSWR::AVIRead::AVIROSMTileBoundsForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMTileBoundsForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

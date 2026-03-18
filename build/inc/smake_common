@@ -4536,6 +4536,8 @@ SSWR/AVIRead/AVIROSMCacheCfgForm.h:
 @AVIROSMCacheCfgForm.o
 SSWR/AVIRead/AVIROSMCacheForm.h:
 @AVIROSMCacheForm.o
+SSWR/AVIRead/AVIROSMTileBoundsForm.h:
+@AVIROSMTileBoundsForm.o
 SSWR/AVIRead/AVIROTPForm.h:
 @AVIROTPForm.o
 SSWR/AVIRead/AVIRPackageForm.h:
