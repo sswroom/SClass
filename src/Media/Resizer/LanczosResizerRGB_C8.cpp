@@ -494,7 +494,7 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 		}
 		else if (ts->srcPF == Media::PF_B8G8R8)
 		{
-			LanczosResizerFunc_HorizontalFilterB8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr() + 262144, ts->swidth, ts->tmpbuff.Ptr());
+			LanczosResizerFunc_HorizontalFilterB8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr() + 262144, ts->swidth, ts->tmpbuff.Ptr());
 		}
 		else if (ts->srcPF == Media::PF_LE_R16G16B16)
 		{
