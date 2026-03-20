@@ -3435,13 +3435,13 @@ icbgra8pa_bgra8lop2:
 
 	mov eax,dword [rsi+4]
 	movzx rdx,al
-	movq xmm2,[rbx+rdx*8+4096]
+	movq xmm2,[rbp+rdx*8+4096]
 	movzx edx,ah
-	movq xmm0,[rbx+rdx*8+2048]
+	movq xmm0,[rbp+rdx*8+2048]
 	shr eax,16
 	paddsw xmm2,xmm0
 	movzx edx,al
-	movq xmm0,[rbx+rdx*8+0]
+	movq xmm0,[rbp+rdx*8+0]
 	paddsw xmm2,xmm0
 	punpcklqdq xmm1,xmm2
 	movzx edx,ah

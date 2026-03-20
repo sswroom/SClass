@@ -258,9 +258,13 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 	else
 	{
 		if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
+		{
 			LanczosResizerFunc_ImgCopyPal8_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 270336);
+		}
 		else if (this->srcPF == PF_B8G8R8)
+		{
 			LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
+		}
 		else if (this->srcPF == PF_LE_R16G16B16)
 		{
 			UnsafeArray<UInt8> rgbTable;
@@ -280,7 +284,9 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 			LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
 		else
+		{
 			LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
+		}
 #if defined(VERBOSE)
 	printf("LanczosResizerRGB_C8: Alpha = %x\r\n", ReadNInt32(&outPt[0]));
 #endif
