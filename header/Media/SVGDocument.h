@@ -19,10 +19,11 @@ namespace Media
 		Optional<SVGContainer> parent;
 		SVGLineCap lineCap;
 		SVGLineJoin lineJoin;
+		Bool spacePreserve;
 
 		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const;
 	public:
-		SVGElement(Optional<SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; }
+		SVGElement(Optional<SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; this->spacePreserve = false; }
 		virtual ~SVGElement() { OPTSTR_DEL(this->id);}
 
 		virtual Text::CStringNN GetElementName() const = 0;
@@ -47,6 +48,11 @@ namespace Media
 		void SetLineJoin(SVGLineJoin lineJoin)
 		{
 			this->lineJoin = lineJoin;
+		}
+
+		void SetSpacePreserve(Bool spacePreserve)
+		{
+			this->spacePreserve = spacePreserve;
 		}
 
 		virtual Bool IsContainer() const { return false; }
@@ -140,20 +146,68 @@ namespace Media
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
+	class SVGTextComponent
+	{
+	protected:
+		NN<Text::String> text;
+	public:
+		virtual ~SVGTextComponent() {}
+
+		NN<Text::String> GetText() const { return this->text; }
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+	};
+
+	class SVGStaticText : public SVGTextComponent
+	{
+	public:
+		SVGStaticText(Text::CStringNN text);
+		virtual ~SVGStaticText();
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class SVGTSpan : public SVGTextComponent
+	{
+	private:
+		Math::Coord2DDbl offset;
+		Bool stylePen;
+		Optional<DrawPen> pen;
+		Bool styleBrush;
+		Optional<DrawBrush> brush;
+		Bool styleFont;
+		Optional<SVGFont> font;
+		Optional<Text::String> id;
+		Optional<Text::String> sodipodiRole;
+	public:
+		SVGTSpan(Text::CStringNN text);
+		virtual ~SVGTSpan();
+
+		void SetOffset(Math::Coord2DDbl offset) { this->offset = offset; }
+		void SetPen(Bool inStyle, Optional<DrawPen> pen) { this->stylePen = inStyle; this->pen = pen; }
+		void SetBrush(Bool inStyle, Optional<DrawBrush> brush) { this->styleBrush = inStyle; this->brush = brush; }
+		void SetFont(Bool inStyle, Optional<SVGFont> font) { this->styleFont = inStyle; this->font = font; }
+		void SetID(Text::CStringNN id) { OPTSTR_DEL(this->id); this->id = Text::String::New(id); }
+		void SetSodipodiRole(Text::CStringNN sodipodiRole) { OPTSTR_DEL(this->sodipodiRole); this->sodipodiRole = Text::String::New(sodipodiRole); }
+
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
 	class SVGText : public SVGElement
 	{
 	private:
 		Math::Coord2DDbl tl;
-		NN<Text::String> txt;
+		Data::ArrayListNN<SVGTextComponent> components;
 		NN<SVGFont> font;
 		NN<SVGBrush> brush;
 		Double angleDegreeACW;
 		Math::Coord2DDbl rotateCenter;
 	public:
-		SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush);
+		SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component);
 		virtual ~SVGText();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("text"); }
+		void AddTextComponent(NN<SVGTextComponent> component);
 
 		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
 

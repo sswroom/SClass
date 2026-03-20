@@ -17,6 +17,10 @@ void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
 		sb->Append(s);
 		sb->AppendUTF8Char('\"');
 	}
+	if (this->spacePreserve)
+	{
+		sb->AppendC(UTF8STRC(" xml:space=\"preserve\""));
+	}
 	if (this->lineCap != SVGLineCap::Default)
 	{
 		sb->AppendC(UTF8STRC(" stroke-linecap=\""));
@@ -245,19 +249,126 @@ void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGText::SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, Text::CStringNN txt, NN<SVGFont> font, NN<SVGBrush> brush) : SVGElement(parent)
+Media::SVGStaticText::SVGStaticText(Text::CStringNN text) : SVGTextComponent()
+{
+	this->text = Text::String::New(text);
+}
+
+Media::SVGStaticText::~SVGStaticText()
+{
+	this->text->Release();
+}
+
+void Media::SVGStaticText::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	NN<Text::String> s = Text::XML::ToNewXMLText(this->text->v);
+	sb->Append(s);
+	s->Release();
+}
+
+Media::SVGTSpan::SVGTSpan(Text::CStringNN text) : SVGTextComponent()
+{
+	this->text = Text::String::New(text);
+	this->offset = Math::Coord2DDbl(NAN, NAN);
+	this->stylePen = false;
+	this->styleBrush = false;
+	this->styleFont = false;
+	this->pen = nullptr;
+	this->brush = nullptr;
+	this->font = nullptr;
+	this->id = nullptr;
+	this->sodipodiRole = nullptr;
+}
+
+Media::SVGTSpan::~SVGTSpan()
+{
+	OPTSTR_DEL(this->id);
+	OPTSTR_DEL(this->sodipodiRole);
+}
+
+void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("<tspan"));
+	NN<Text::String> s;
+	if (!Math::IsNAN(this->offset.x) && !Math::IsNAN(this->offset.y))
+	{
+		sb->AppendC(UTF8STRC("\r\n x=\""));
+		sb->AppendDouble(this->offset.x);
+		sb->AppendC(UTF8STRC("\"\r\n y=\""));
+		sb->AppendDouble(this->offset.y);
+		sb->AppendC(UTF8STRC("\""));
+	}
+	if (this->id.SetTo(s))
+	{
+		sb->AppendC(UTF8STRC(" id="));
+		s = Text::XML::ToNewAttrText(s->v);
+		sb->Append(s);
+		s->Release();
+	}
+	if (this->sodipodiRole.SetTo(s))
+	{
+		sb->AppendC(UTF8STRC(" sodipodi:role="));
+		s = Text::XML::ToNewAttrText(s->v);
+		sb->Append(s);
+		s->Release();
+	}
+
+	NN<SVGFont> font;
+	if ((this->stylePen && this->pen.NotNull()) || (this->styleBrush && this->brush.NotNull()) || (this->styleFont && this->font.NotNull()))
+	{
+		sb->AppendC(UTF8STRC(" style=\""));
+		Bool hasOtherStyle = false;
+		if (this->stylePen && this->pen.NotNull())
+		{
+			hasOtherStyle = SVGCore::WriteStylePen(sb, this->pen, hasOtherStyle) || hasOtherStyle;
+		}
+		if (this->styleBrush && this->brush.NotNull())
+		{
+			hasOtherStyle = SVGCore::WriteStyleBrush(sb, this->brush, hasOtherStyle) || hasOtherStyle;
+		}
+		if (this->styleFont && this->font.SetTo(font))
+		{
+			hasOtherStyle = SVGCore::WriteStyleFont(sb, font, hasOtherStyle) || hasOtherStyle;
+		}
+		sb->AppendUTF8Char('\"');
+	}
+	if (!this->stylePen && this->pen.NotNull())
+	{
+		SVGCore::WriteAttrPen(sb, this->pen);
+	}
+	if (!this->styleBrush && this->brush.NotNull())
+	{
+		SVGCore::WriteAttrBrush(sb, this->brush);
+	}
+	if (!this->styleFont && this->font.SetTo(font))
+	{
+		SVGCore::WriteAttrFont(sb, font);
+	}
+	sb->AppendC(UTF8STRC(" >"));
+	s = Text::XML::ToNewXMLText(this->text->v);
+	sb->Append(s);
+	s->Release();
+	sb->AppendC(UTF8STRC("</tspan>"));
+}
+
+Media::SVGText::SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component) : SVGElement(parent)
 {
 	this->tl = tl;
-	this->txt = Text::String::New(txt);
 	this->font = font;
 	this->brush = brush;
+	this->components.Add(component);
 	this->angleDegreeACW = 0.0;
 	this->rotateCenter = Math::Coord2DDbl(0, 0);
 }
 
 Media::SVGText::~SVGText()
 {
-	this->txt->Release();
+	this->components.DeleteAll();
+}
+
+void Media::SVGText::AddTextComponent(NN<SVGTextComponent> component)
+{
+	this->components.Add(component);
 }
 
 void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter)
@@ -287,9 +398,13 @@ void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb) const
 	SVGCore::WriteAttrBrush(sb, this->brush);
 	this->AppendEleAttr(sb);
 	sb->AppendC(UTF8STRC(" >"));
-	NN<Text::String> s = Text::XML::ToNewXMLText(this->txt->v);
-	sb->Append(s);
-	s->Release();
+	UIntOS i = 0;
+	UIntOS j = this->components.GetCount();
+	while (i < j)
+	{
+		this->components.GetItemNoCheck(i)->ToString(sb);
+		i++;
+	}
 	sb->AppendC(UTF8STRC("</text>"));
 }
 
@@ -626,8 +741,10 @@ Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, 
 Bool Media::SVGContainer::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	Math::Coord2DDbl scale = this->doc->GetDrawScale();
+	NN<SVGTextComponent> t;
+	NEW_CLASSNN(t, SVGStaticText(str));
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + tl / scale, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
+	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + tl / scale, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b), t));
 	this->elements.Add(text);
 	return true;
 }
@@ -640,8 +757,10 @@ Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, NN<Text::String
 Bool Media::SVGContainer::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW)
 {
 	Math::Coord2DDbl scale = this->doc->GetDrawScale();
+	NN<SVGTextComponent> t;
+	NEW_CLASSNN(t, SVGStaticText(str));
 	NN<SVGText> text;
-	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + center / scale, str, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b)));
+	NEW_CLASSNN(text, SVGText(*this, this->drawRect.min + center / scale, NN<SVGFont>::ConvertFrom(f), NN<SVGBrush>::ConvertFrom(b), t));
 	text->SetRotate(angleDegreeACW, this->drawRect.min + center / scale);
 	this->elements.Add(text);
 	return true;
@@ -2004,6 +2123,191 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 
 Bool Media::SVGDocument::ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader)
 {
+	UIntOS i = 0;
+	UIntOS j = reader->GetAttribCount();
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> name;
+	NN<Text::String> value;
+	Bool spacePreserve = false;
+	Optional<Text::String> id = nullptr;
+	Double x = NAN;
+	Double y = NAN;
+	Bool stylePen = false;
+	Bool styleBrush = false;
+	Bool styleFont = false;
+	Optional<Text::String> fill = nullptr;
+	Optional<Text::String> stroke = nullptr;
+	Double strokeWidth = NAN;
+	DrawEngine::DrawFontStyle fontStyle = DrawEngine::DFS_NORMAL;
+	Optional<Text::String> fontFamily = nullptr;
+	Optional<Text::String> fontVariant = nullptr;
+	Optional<Text::String> fontStretch = nullptr;
+	Optional<Text::String> inkscapeFont = nullptr;
+
+	while (i < j)
+	{
+		attr = reader->GetAttribNoCheck(i);
+		if (attr->name.SetTo(name) && attr->value.SetTo(value))
+		{
+			if (name->Equals(UTF8STRC("xml:space")) && value->Equals(UTF8STRC("preserve")))
+			{
+				spacePreserve = true;
+			}
+			else if (name->Equals(UTF8STRC("id")))
+			{
+				OPTSTR_DEL(id);
+				id = value->Clone();
+			}
+			else if (name->Equals(UTF8STRC("x")))
+			{
+				if (!value->ToDouble(x))
+				{
+					printf("SVGDocument: Invalid x value in text: %s\r\n", value->v.Ptr());
+					x = NAN;
+				}
+			}
+			else if (name->Equals(UTF8STRC("y")))
+			{
+				if (!value->ToDouble(y))
+				{
+					printf("SVGDocument: Invalid y value in text: %s\r\n", value->v.Ptr());
+					y = NAN;
+				}
+			}
+			else if (name->Equals(UTF8STRC("style")))
+			{
+				Text::PString sarr[2];
+				UIntOS i;
+				//font-size:11.2889px
+				//text-align:start
+				//writing-mode:lr-tb
+				//direction:ltr
+				//text-anchor:start
+				Text::StringBuilderUTF8 sb;
+				sb.Append(value);
+				sarr[1] = sb;
+				while (true)
+				{
+					i = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
+					if (sarr[0].StartsWith(UTF8STRC("xml:space:")))
+					{
+						sarr[0].SubstrTrim(10);
+						if (sarr[0].Substring(10).Equals(UTF8STRC("preserve")))
+						{
+							spacePreserve = true;
+						}
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("fill:")))
+					{
+						OPTSTR_DEL(fill);
+						sarr[0].SubstrTrim(5);
+						fill = Text::String::New(sarr[0].Substring(5).ToCString());
+						styleBrush = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("stroke:")))
+					{
+						OPTSTR_DEL(stroke);
+						sarr[0].SubstrTrim(7);
+						stroke = Text::String::New(sarr[0].Substring(7).ToCString());
+						stylePen = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("stroke-width:")))
+					{
+						sarr[0].SubstrTrim(13);
+						if (!sarr[0].Substring(13).ToDouble(strokeWidth))
+						{
+							printf("SVGDocument: Invalid stroke-width value in text style: %s\r\n", &sarr[0].v[13]);
+							strokeWidth = 0;
+						}
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("font-style:")))
+					{
+						sarr[0].SubstrTrim(11);
+						if (sarr[0].Substring(11).Equals(UTF8STRC("normal")))
+						{
+						}
+						else if (sarr[0].Substring(11).Equals(UTF8STRC("italic")))
+						{
+							fontStyle = (DrawEngine::DrawFontStyle)(fontStyle | DrawEngine::DFS_ITALIC);
+						}
+						else
+						{
+							printf("SVGDocument: Unknown font-style in text: %s\r\n", sarr[0].Substring(11).v.Ptr());
+						}
+						styleFont = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("font-weight:")))
+					{
+						sarr[0].SubstrTrim(12);
+						if (sarr[0].Substring(12).Equals(UTF8STRC("normal")))
+						{
+						}
+						else if (sarr[0].Substring(12).Equals(UTF8STRC("bold")))
+						{
+							fontStyle = (DrawEngine::DrawFontStyle)(fontStyle | DrawEngine::DFS_BOLD);
+						}
+						else
+						{
+							printf("SVGDocument: Unknown font-weight in text: %s\r\n", sarr[0].Substring(12).v.Ptr());
+						}
+						styleFont = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("font-family:")))
+					{
+						OPTSTR_DEL(fontFamily);
+						sarr[0].SubstrTrim(12);
+						fontFamily = Text::String::New(sarr[0].Substring(12).ToCString());
+						styleFont = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("font-variant:")))
+					{
+						OPTSTR_DEL(fontVariant);
+						sarr[0].SubstrTrim(13);
+						fontVariant = Text::String::New(sarr[0].Substring(13).ToCString());
+						styleFont = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("font-stretch:")))
+					{
+						OPTSTR_DEL(fontStretch);
+						sarr[0].SubstrTrim(13);
+						fontStretch = Text::String::New(sarr[0].Substring(13).ToCString());
+						styleFont = true;
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("-inkscape-font-specification:")))
+					{
+						OPTSTR_DEL(inkscapeFont);
+						sarr[0].SubstrTrim(29);
+						inkscapeFont = Text::String::New(sarr[0].Substring(29).ToCString());
+						styleFont = true;
+					}
+					else
+					{
+						printf("SVGDocument: Unknown style in text: %s\r\n", sarr[0].v.Ptr());
+					}
+					if (i != 2)
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				printf("SVGDocument: Unknown attribute in text: %s\r\n", name->v.Ptr());
+			}
+		}
+		else
+		{
+			printf("SVGDocument: Invalid attribute in text\r\n");
+		}
+		i++;
+	}
+	OPTSTR_DEL(id);
+	OPTSTR_DEL(fill);
+	OPTSTR_DEL(stroke);
+	OPTSTR_DEL(fontFamily);
+	OPTSTR_DEL(fontVariant);
+	OPTSTR_DEL(fontStretch);
+	OPTSTR_DEL(inkscapeFont);
 	printf("SVGDocument: Parse text is not supported\r\n");
 	reader->SkipElement();
 	return true;
