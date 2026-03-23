@@ -69,7 +69,7 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 void GUIListView_Toggled(GtkCellRendererToggle* self, gchar* path, gpointer user_data)
 {
 	UI::GUIListView *me = (UI::GUIListView*)user_data;
-	me->OnNotify(0x1234, path);
+	me->OnNotify(0x1234, (IntOS)path);
 }
 
 UI::GUIListView::GUIListView(NN<GUICore> ui, NN<GUIClientControl> parent, ListViewStyle lvstyle, UIntOS colCount) : UI::GUIControl(ui, parent)

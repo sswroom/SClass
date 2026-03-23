@@ -198,6 +198,10 @@ void UI::GUITreeView::EventDragItem(NN<UI::GUITreeView::TreeItem> dragItem, NN<T
 {
 }
 
+void UI::GUITreeView::EventItemCheckedChg(NN<TreeItem> item, Bool checked)
+{
+}
+
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj)
 {
 	ClassData *data = this->clsData;
@@ -318,6 +322,15 @@ Bool UI::GUITreeView::IsExpanded(NN<TreeItem> item)
 	Bool ret = gtk_tree_view_row_expanded((GtkTreeView*)data->treeView, path);
 	gtk_tree_path_free(path);
 	return ret;
+}
+
+Bool UI::GUITreeView::IsChecked(NN<TreeItem> item)
+{
+	return false;
+}
+
+void UI::GUITreeView::SetChecked(NN<TreeItem> item, Bool checked)
+{
 }
 
 void UI::GUITreeView::SetHasLines(Bool hasLines)
