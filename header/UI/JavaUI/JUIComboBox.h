@@ -36,7 +36,7 @@ namespace UI
 
 			virtual Math::Size2DDbl GetSize();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual void UpdatePos(Bool redraw);
 			virtual void SetTextSelection(UIntOS startPos, UIntOS endPos);
 		};

@@ -12,7 +12,7 @@ namespace UI
 		{
 		private:
 			Data::ArrayListNN<TreeItem> children;
-			void *hTreeItem;
+			AnyType hTreeItem;
 			AnyType itemObj;
 			NN<Text::String> txt;
 			Optional<TreeItem> parent;
@@ -26,8 +26,8 @@ namespace UI
 			void SetParent(Optional<TreeItem> parent);
 			Optional<TreeItem> GetParent();
 			AnyType GetItemObj();
-			void SetHItem(void *hTreeItem);
-			void *GetHItem();
+			void SetHItem(AnyType hTreeItem);
+			AnyType GetHItem();
 			void SetText(Text::CStringNN txt);
 			NN<Text::String> GetText() const;
 			UIntOS GetChildCount();
@@ -62,6 +62,7 @@ namespace UI
 		virtual IntOS EventBeginLabelEdit(NN<TreeItem> item);
 		virtual IntOS EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
+		virtual void EventItemCheckedChg(NN<TreeItem> item, Bool checked);
 
 		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj);
 		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj);
@@ -71,6 +72,8 @@ namespace UI
 		Optional<TreeItem> GetRootItem(UIntOS index);
 		void ExpandItem(NN<TreeItem> item);
 		Bool IsExpanded(NN<TreeItem> item);
+		Bool IsChecked(NN<TreeItem> item);
+		void SetChecked(NN<TreeItem> item, Bool checked);
 		void SetHasLines(Bool hasLines);
 		void SetHasCheckBox(Bool hasCheckBox);
 		void SetHasButtons(Bool hasButtons);
@@ -80,7 +83,7 @@ namespace UI
 		void BeginEdit(NN<TreeItem> item);
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj);
 		virtual void HandleRightClick(UI::UIEvent hdlr, AnyType userObj);

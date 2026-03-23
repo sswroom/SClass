@@ -32,7 +32,7 @@ namespace UI
 		void SetHandler(Optional<UI::DObj::DObjHandler> dobjHdlr);
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 	protected:
 		virtual void OnSurfaceCreated();

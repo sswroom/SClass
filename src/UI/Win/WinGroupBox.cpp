@@ -35,7 +35,7 @@ IntOS __stdcall UI::Win::WinGroupBox::GBWndProc(void *hWnd, UInt32 msg, UIntOS w
 		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
-			return ctrl->OnNotify(nmhdr->code, (void*)lParam);
+			return ctrl->OnNotify(nmhdr->code, lParam);
 		}
 		break;
 	case WM_ERASEBKGND:

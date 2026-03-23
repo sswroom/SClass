@@ -260,7 +260,7 @@ Text::CStringNN UI::GUICustomDraw::GetObjectClass() const
 	return CSTR("CustomDraw");
 }
 
-IntOS UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDraw::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

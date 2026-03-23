@@ -50,7 +50,7 @@ namespace UI
 		virtual ~GUITextView();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual void UpdateFont();
 		virtual IntOS GetScrollHPos();
 		virtual IntOS GetScrollVPos();

@@ -23,7 +23,7 @@ namespace UI
 			GTKPictureBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 			virtual ~GTKPictureBox();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		};
 	}
 }

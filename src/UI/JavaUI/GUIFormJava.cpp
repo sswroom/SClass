@@ -442,7 +442,7 @@ Text::CStringNN UI::GUIForm::GetObjectClass() const
 	return CSTR("WinForm");
 }
 
-IntOS UI::GUIForm::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIForm::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

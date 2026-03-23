@@ -116,7 +116,7 @@ void UI::JavaUI::JUIComboBox::SetArea(Double left, Double top, Double right, Dou
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-IntOS UI::JavaUI::JUIComboBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIComboBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

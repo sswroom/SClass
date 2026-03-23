@@ -148,7 +148,7 @@ void UI::GTK::GTKHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS 
 	this->OnSizeChanged(updateScn);
 }
 
-IntOS UI::GTK::GTKHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKHScrollBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

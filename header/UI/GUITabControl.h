@@ -33,7 +33,7 @@ namespace UI
 		virtual UnsafeArrayOpt<UTF8Char> GetTabPageName(UIntOS index, UnsafeArray<UTF8Char> buff) = 0;
 		virtual Math::RectArea<IntOS> GetTabPageRect() = 0;
 
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 		virtual void OnSizeChanged(Bool updateScn) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 	};

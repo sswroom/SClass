@@ -126,7 +126,7 @@ Text::CStringNN UI::GUIVideoBoxDD::GetObjectClass() const
 	return CSTR("VideoBoxDD");
 }
 
-IntOS UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIVideoBoxDD::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

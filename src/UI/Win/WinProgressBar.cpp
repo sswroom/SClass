@@ -29,7 +29,7 @@ UI::Win::WinProgressBar::~WinProgressBar()
 {
 }
 
-IntOS UI::Win::WinProgressBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinProgressBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

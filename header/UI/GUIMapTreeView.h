@@ -36,6 +36,7 @@ namespace UI
 		virtual IntOS EventBeginLabelEdit(NN<TreeItem> item);
 		virtual IntOS EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
+		virtual void EventItemCheckedChg(NN<TreeItem> item, Bool checked);
 		virtual Text::CStringNN GetObjectClass() const;
 
 		void SetDragHandler(TreeDragHandler dragHdlr, AnyType dragObj);

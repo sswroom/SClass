@@ -54,7 +54,7 @@ UI::GTK::GTKProgressBar::~GTKProgressBar()
 	g_source_remove((guint)this->timerId);
 }
 
-IntOS UI::GTK::GTKProgressBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKProgressBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

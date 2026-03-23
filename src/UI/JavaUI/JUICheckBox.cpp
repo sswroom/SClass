@@ -10,7 +10,7 @@ UI::JavaUI::JUICheckBox::~JUICheckBox()
 {
 }
 
-IntOS UI::JavaUI::JUICheckBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUICheckBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

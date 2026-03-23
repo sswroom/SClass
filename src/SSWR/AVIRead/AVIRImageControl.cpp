@@ -561,7 +561,7 @@ Text::CStringNN SSWR::AVIRead::AVIRImageControl::GetObjectClass() const
 	return CSTR("AVIRImageControl");
 }
 
-IntOS SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, void *lParam)
+IntOS SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

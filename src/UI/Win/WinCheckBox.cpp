@@ -21,7 +21,7 @@ UI::Win::WinCheckBox::~WinCheckBox()
 {
 }
 
-IntOS UI::Win::WinCheckBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinCheckBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

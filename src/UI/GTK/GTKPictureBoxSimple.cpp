@@ -82,7 +82,7 @@ UI::GTK::GTKPictureBoxSimple::~GTKPictureBoxSimple()
 	}
 }
 
-IntOS UI::GTK::GTKPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKPictureBoxSimple::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

@@ -49,7 +49,7 @@ void UI::GTK::GTKCheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 	gtk_list_store_set(data->listStore, &r->iter, 1, isChecked, -1);
 }
 
-IntOS UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	if (code == 0x1234)
 	{

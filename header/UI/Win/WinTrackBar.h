@@ -12,7 +12,7 @@ namespace UI
 			WinTrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UIntOS minVal, UIntOS maxVal, UIntOS currVal);
 			virtual ~WinTrackBar();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual void SetPos(UIntOS pos);
 			virtual void SetRange(UIntOS minVal, UIntOS maxVal);
 			virtual UIntOS GetPos();

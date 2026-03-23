@@ -292,7 +292,7 @@ IntOS UI::Win::WinListBox::GetItemHeight()
 	return tm.tmHeight;
 }
 
-IntOS UI::Win::WinListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

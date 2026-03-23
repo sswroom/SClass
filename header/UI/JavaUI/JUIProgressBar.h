@@ -15,7 +15,7 @@ namespace UI
 			JUIProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~JUIProgressBar();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 			virtual void ProgressStart(Text::CStringNN name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);

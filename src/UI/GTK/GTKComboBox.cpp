@@ -234,7 +234,7 @@ void UI::GTK::GTKComboBox::SetArea(Double left, Double top, Double right, Double
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-IntOS UI::GTK::GTKComboBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKComboBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

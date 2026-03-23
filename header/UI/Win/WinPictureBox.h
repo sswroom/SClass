@@ -21,7 +21,7 @@ namespace UI
 			WinPictureBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 			virtual ~WinPictureBox();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		};
 	}
 }

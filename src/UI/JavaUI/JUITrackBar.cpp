@@ -12,7 +12,7 @@ UI::JavaUI::JUITrackBar::~JUITrackBar()
 {
 }
 
-IntOS UI::JavaUI::JUITrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUITrackBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

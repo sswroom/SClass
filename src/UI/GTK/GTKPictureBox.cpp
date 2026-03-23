@@ -151,7 +151,7 @@ UI::GTK::GTKPictureBox::~GTKPictureBox()
 	this->tmpImage.Delete();
 }
 
-IntOS UI::GTK::GTKPictureBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKPictureBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

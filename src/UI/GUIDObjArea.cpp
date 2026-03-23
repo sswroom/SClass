@@ -223,7 +223,7 @@ Text::CStringNN UI::GUIDObjArea::GetObjectClass() const
 	return CSTR("DObjArea");
 }
 
-IntOS UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIDObjArea::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

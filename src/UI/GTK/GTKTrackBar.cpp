@@ -28,7 +28,7 @@ UI::GTK::GTKTrackBar::~GTKTrackBar()
 {
 }
 
-IntOS UI::GTK::GTKTrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTrackBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

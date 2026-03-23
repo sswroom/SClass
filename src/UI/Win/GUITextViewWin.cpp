@@ -328,7 +328,7 @@ IntOS __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
-			return ctrl->OnNotify(nmhdr->code, (void*)lParam);
+			return ctrl->OnNotify(nmhdr->code, lParam);
 		}
 		break;
 	case WM_TIMER:
@@ -595,7 +595,7 @@ Text::CStringNN UI::GUITextView::GetObjectClass() const
 	return CSTR("TextFileView");
 }
 
-IntOS UI::GUITextView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITextView::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

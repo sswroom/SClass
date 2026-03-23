@@ -40,7 +40,7 @@ namespace UI
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
 		virtual void OnDraw(NN<Media::DrawImage> img) = 0;

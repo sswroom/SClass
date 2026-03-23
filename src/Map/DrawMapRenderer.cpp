@@ -1337,7 +1337,7 @@ Bool Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 				Double scale = denv->view->GetMapScale();
 				if (denv->env->GetLayerProp(layer, group, i))
 				{
-					if (layer.minScale <= scale && layer.maxScale >= scale)
+					if (layer.minScale <= scale && layer.maxScale >= scale && (layer.flags & Map::MapEnv::SFLG_HIDELAYER) == 0)
 					{
 						Map::DrawLayerType layerType = layer.layer->GetLayerType();
 						layer.layer->SetDispSize(denv->dispSize, denv->img->GetHDPI());

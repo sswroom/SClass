@@ -49,6 +49,11 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 			ind->itemType = Map::MapEnv::IT_LAYER;
 			ind->item = item;
 			treeItem = this->InsertItem(treeItem, nullptr, name->ToCString().Substring(i + 1), ind);
+			NN<UI::GUITreeView::TreeItem> nntreeItem;
+			if (treeItem.SetTo(nntreeItem))
+			{
+				this->SetChecked(nntreeItem, (layer->flags & Map::MapEnv::SFLG_HIDELAYER) == 0);
+			}
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
@@ -111,6 +116,7 @@ UI::GUIMapTreeView::GUIMapTreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 	this->SetHasLines(true);
 	this->SetHasButtons(true);
 	//this->SetAutoFocus(true);
+	this->SetHasCheckBox(true);
 	UpdateTree();
 }
 
@@ -146,6 +152,25 @@ void UI::GUIMapTreeView::EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropI
 	if (this->dragHdlr.func)
 	{
 		this->dragHdlr.func(this->dragHdlr.userObj, dragItem->GetItemObj().GetNN<ItemIndex>(), dropItem->GetItemObj().GetNN<ItemIndex>());
+	}
+}
+
+
+void UI::GUIMapTreeView::EventItemCheckedChg(NN<TreeItem> item, Bool checked)
+{
+	NN<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
+	Map::MapEnv::LayerItem layer;
+	if (this->env->GetLayerProp(layer, ind->group, ind->index))
+	{
+		if (checked)
+		{
+			layer.flags = layer.flags & ~Map::MapEnv::SFLG_HIDELAYER;
+		}
+		else
+		{
+			layer.flags = layer.flags | Map::MapEnv::SFLG_HIDELAYER;
+		}
+		this->env->SetLayerProp(layer, ind->group, ind->index);
 	}
 }
 

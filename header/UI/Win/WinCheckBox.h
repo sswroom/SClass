@@ -14,7 +14,7 @@ namespace UI
 			WinCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
 			virtual ~WinCheckBox();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual Bool IsChecked();
 			virtual void SetChecked(Bool checked);
 		};

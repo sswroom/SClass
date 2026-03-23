@@ -34,7 +34,7 @@ void UI::JavaUI::JUIHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, Int
 {
 }
 
-IntOS UI::JavaUI::JUIHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIHScrollBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

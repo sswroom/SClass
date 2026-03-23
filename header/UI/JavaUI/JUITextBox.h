@@ -20,7 +20,7 @@ namespace UI
 			virtual void SetText(Text::CStringNN text);
 			virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 			void SetWordWrap(Bool wordWrap);
 			void SelectAll();

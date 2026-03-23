@@ -170,7 +170,7 @@ Math::RectArea<IntOS> UI::GTK::GTKTabControl::GetTabPageRect()
 	return Math::RectArea<IntOS>(0, btnH, (IntOS)sz.x - 2, (IntOS)sz.y - btnH - 2);
 }
 
-IntOS UI::GTK::GTKTabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTabControl::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

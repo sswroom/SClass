@@ -32,7 +32,7 @@ namespace UI
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 		void AddSample(Double *samples);
 		void SetLineColor(UIntOS lineId, UInt32 lineColor);

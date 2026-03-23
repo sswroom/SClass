@@ -22,7 +22,7 @@ Text::CStringNN UI::GUIGroupBox::GetObjectClass() const
 	return CSTR("GroupBox");
 }
 
-IntOS UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIGroupBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

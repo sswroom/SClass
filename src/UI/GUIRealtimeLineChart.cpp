@@ -160,7 +160,7 @@ Text::CStringNN UI::GUIRealtimeLineChart::GetObjectClass() const
 	return CSTR("RealtimeLineChart");
 }
 
-IntOS UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIRealtimeLineChart::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

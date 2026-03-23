@@ -100,7 +100,7 @@ IntOS UI::JavaUI::JUIListBox::GetItemHeight()
 	return 24;
 }
 
-IntOS UI::JavaUI::JUIListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

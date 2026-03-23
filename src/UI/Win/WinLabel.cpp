@@ -30,7 +30,7 @@ void UI::Win::WinLabel::SetText(Text::CStringNN text)
 	Text::StrDelNew(wptr);
 }
 
-IntOS UI::Win::WinLabel::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinLabel::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

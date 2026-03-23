@@ -67,7 +67,7 @@ namespace UI
 		virtual ~GUIPictureBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual void ChangeMonitor(Optional<MonitorHandle> hMon);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 

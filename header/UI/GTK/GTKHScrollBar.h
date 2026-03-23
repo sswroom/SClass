@@ -20,7 +20,7 @@ namespace UI
 			virtual UIntOS GetPos();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 			virtual void SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn);
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual void UpdatePos(Bool redraw);
 		};
 	}

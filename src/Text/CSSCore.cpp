@@ -100,6 +100,10 @@ UInt32 Text::CSSCore::ParseColor(Text::CStringNN colorStr)
 	{
 		return 0;
 	}
+	if (colorStr.EqualsICase(UTF8STRC("none")))
+	{
+		return 0;
+	}
 	if (colorStr.EqualsICase(UTF8STRC("Black")))
 	{
 		return StandardColorGetARGB32(StandardColor::Black);

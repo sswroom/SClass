@@ -38,7 +38,7 @@ void UI::GTK::GTKCheckBox::SetText(Text::CStringNN text)
 	g_list_free(children);
 }
 
-IntOS UI::GTK::GTKCheckBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKCheckBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

@@ -45,6 +45,7 @@ void UI::GUITreeView::TreeItem::AddChild(NN<UI::GUITreeView::TreeItem> child)
 	this->children.Add(child);
 	child->SetParent(this);
 }
+
 void UI::GUITreeView::TreeItem::SetParent(Optional<UI::GUITreeView::TreeItem> parent)
 {
 	this->parent = parent;
@@ -60,12 +61,12 @@ AnyType UI::GUITreeView::TreeItem::GetItemObj()
 	return this->itemObj;
 }
 
-void UI::GUITreeView::TreeItem::SetHItem(void *hTreeItem)
+void UI::GUITreeView::TreeItem::SetHItem(AnyType hTreeItem)
 {
 	this->hTreeItem = hTreeItem;
 }
 
-void *UI::GUITreeView::TreeItem::GetHItem()
+AnyType UI::GUITreeView::TreeItem::GetHItem()
 {
 	return this->hTreeItem;
 }
@@ -124,22 +125,22 @@ IntOS __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UIntOS wParam
 	case WM_LBUTTONUP:
 		if (me->draging && dragItem.Set(me->dragItem))
 		{
-			HTREEITEM Selected;
+			HTREEITEM selected;
 
 //			ImageList_DragLeave((HWND)me->hwnd);
 //			ImageList_EndDrag();
-			Selected = (HTREEITEM)SendMessage((HWND)me->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
-			SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)Selected);
+			selected = (HTREEITEM)SendMessage((HWND)me->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
+			SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)selected);
 			SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_DROPHILITE, 0);
 			me->ReleaseCapture();
 			ShowCursor(TRUE); 
 			me->draging = false;
-			if (Selected != dragItem->GetHItem())
+			if (selected != dragItem->GetHItem().p)
 			{
 				NN<TreeItem> dropItem;
 				TVITEMW itm;
 				itm.mask = TVIF_HANDLE | TVIF_PARAM;
-				itm.hItem = Selected;
+				itm.hItem = selected;
 				itm.lParam = 0;
 				SendMessage((HWND)me->hwnd.OrNull(), TVM_GETITEMW, 0, (LPARAM)&itm);
 				if (dropItem.Set((TreeItem*)itm.lParam))
@@ -226,6 +227,11 @@ void UI::GUITreeView::EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem
 
 }
 
+void UI::GUITreeView::EventItemCheckedChg(NN<TreeItem> item, Bool checked)
+{
+
+}
+
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<UI::GUITreeView::TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj)
 {
 	NN<TreeItem> item;
@@ -233,7 +239,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	TVINSERTSTRUCTW is;
 	if (parent.SetTo(nnparent))
 	{
-		is.hParent = (HTREEITEM)nnparent->GetHItem();
+		is.hParent = (HTREEITEM)nnparent->GetHItem().p;
 	}
 	else
 	{
@@ -241,7 +247,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	}
 	if (insertAfter.SetTo(item))
 	{
-		is.hInsertAfter = (HTREEITEM)item->GetHItem();
+		is.hInsertAfter = (HTREEITEM)item->GetHItem().p;
 	}
 	else
 	{
@@ -280,7 +286,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	TVINSERTSTRUCTW is;
 	if (parent.SetTo(nnparent))
 	{
-		is.hParent = (HTREEITEM)nnparent->GetHItem();
+		is.hParent = (HTREEITEM)nnparent->GetHItem().p;
 	}
 	else
 	{
@@ -288,7 +294,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	}
 	if (insertAfter.SetTo(item))
 	{
-		is.hInsertAfter = (HTREEITEM)item->GetHItem();
+		is.hInsertAfter = (HTREEITEM)item->GetHItem().p;
 	}
 	else
 	{
@@ -326,7 +332,7 @@ AnyType UI::GUITreeView::RemoveItem(NN<UI::GUITreeView::TreeItem> item)
 	if (i != INVALID_INDEX)
 	{
 		AnyType obj = item->GetItemObj();
-		SendMessage((HWND)hwnd.OrNull(), TVM_DELETEITEM, 0, (LPARAM)item->GetHItem());
+		SendMessage((HWND)hwnd.OrNull(), TVM_DELETEITEM, 0, (LPARAM)item->GetHItem().p);
 		this->treeItems.RemoveAt(i);
 		item.Delete();
 		return obj;
@@ -355,12 +361,22 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UIntOS index)
 
 void UI::GUITreeView::ExpandItem(NN<UI::GUITreeView::TreeItem> titem)
 {
-	SendMessage((HWND)this->hwnd.OrNull(), TVM_EXPAND, TVE_EXPAND, (LPARAM)titem->GetHItem());
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_EXPAND, TVE_EXPAND, (LPARAM)titem->GetHItem().p);
 }
 
 Bool UI::GUITreeView::IsExpanded(NN<UI::GUITreeView::TreeItem> titem)
 {
-	return (SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem(), TVIS_EXPANDED) & TVIS_EXPANDED) != 0;
+	return (SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem().p, TVIS_EXPANDED) & TVIS_EXPANDED) != 0;
+}
+
+Bool UI::GUITreeView::IsChecked(NN<TreeItem> titem)
+{
+	return SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem().p, TVIS_STATEIMAGEMASK) == 0x2000;
+}
+
+void UI::GUITreeView::SetChecked(NN<TreeItem> titem, Bool checked)
+{
+	TreeView_SetCheckState((HWND)this->hwnd.OrNull(), (HTREEITEM)titem->GetHItem().p, checked?TRUE:FALSE);
 }
 
 void UI::GUITreeView::SetHasLines(Bool hasLines)
@@ -475,8 +491,8 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 
 void UI::GUITreeView::BeginEdit(NN<TreeItem> item)
 {
-	SendMessage((HWND)this->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->GetHItem());
-	SendMessage((HWND)this->hwnd.OrNull(), TVM_EDITLABEL, 0, (LPARAM)item->GetHItem());
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->GetHItem().p);
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_EDITLABEL, 0, (LPARAM)item->GetHItem().p);
 }
 
 Text::CStringNN UI::GUITreeView::GetObjectClass() const
@@ -484,7 +500,7 @@ Text::CStringNN UI::GUITreeView::GetObjectClass() const
 	return CSTR("TreeView");
 }
 
-IntOS UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 {
 	NMTVDISPINFOW *info;
 	LPNMTREEVIEW lpnmtv;
@@ -542,9 +558,14 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
       	this->SetCapture();
 		this->draging = true;
 		return 0;
-//	case TVN_ITEMCHANGED:
-//		InvalidateRect((HWND)this->hwnd, 0, false);
-
+	case TVN_ITEMCHANGED:
+		{
+			NMTVITEMCHANGE *pnm = (NMTVITEMCHANGE*)lParam;
+			if (pnm->uChanged == TVIF_SELECTEDIMAGE)
+			{
+				this->EventItemCheckedChg(NN<TreeItem>::FromPtr((TreeItem*)pnm->lParam), pnm->uStateNew == 2);
+			}
+		}
 	case TVN_SELCHANGED:
 		this->EventSelectionChange();
 		return 0;

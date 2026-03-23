@@ -88,7 +88,7 @@ void UI::JavaUI::JUIButton::SetFont(Text::CString fontName, Double fontHeightPt,
 	}
 }
 
-IntOS UI::JavaUI::JUIButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIButton::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

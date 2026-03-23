@@ -75,7 +75,7 @@ Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-IntOS UI::Win::WinTextBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTextBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

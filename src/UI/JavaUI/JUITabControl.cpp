@@ -82,7 +82,7 @@ Math::RectArea<IntOS> UI::JavaUI::JUITabControl::GetTabPageRect()
 	return Math::RectArea<IntOS>(0, 0, 0, 0);
 }
 
-IntOS UI::JavaUI::JUITabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUITabControl::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

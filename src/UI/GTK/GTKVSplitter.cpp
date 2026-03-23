@@ -92,7 +92,7 @@ UI::GTK::GTKVSplitter::~GTKVSplitter()
 {
 }
 
-IntOS UI::GTK::GTKVSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKVSplitter::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

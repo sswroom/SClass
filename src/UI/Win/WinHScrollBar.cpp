@@ -183,7 +183,7 @@ void UI::Win::WinHScrollBar::SetAreaP(IntOS left, IntOS top, IntOS right, IntOS 
 	this->OnSizeChanged(updateScn);
 }
 
-IntOS UI::Win::WinHScrollBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinHScrollBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	if (code == WM_HSCROLL)
 	{

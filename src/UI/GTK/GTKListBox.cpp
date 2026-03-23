@@ -364,7 +364,7 @@ IntOS UI::GTK::GTKListBox::GetItemHeight()
 	return 24;
 }
 
-IntOS UI::GTK::GTKListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

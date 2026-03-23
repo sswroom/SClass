@@ -98,7 +98,7 @@ IntOS __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, 
 		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
-			return ctrl->OnNotify(nmhdr->code, (void *)lParam);
+			return ctrl->OnNotify(nmhdr->code, lParam);
 		}
 		return 0;
 	case WM_SIZE:
@@ -877,7 +877,7 @@ Text::CStringNN UI::GUIForm::GetObjectClass() const
 	return CSTR("WinForm");
 }
 
-IntOS UI::GUIForm::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIForm::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

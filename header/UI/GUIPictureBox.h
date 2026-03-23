@@ -28,7 +28,7 @@ namespace UI
 		GUIPictureBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 		virtual ~GUIPictureBox();
 
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual void OnSizeChanged(Bool updateScn);

@@ -255,7 +255,7 @@ UI::Win::WinHSplitter::~WinHSplitter()
 	}
 }
 
-IntOS UI::Win::WinHSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinHSplitter::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

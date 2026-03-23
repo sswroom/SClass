@@ -42,7 +42,7 @@ namespace UI
 		virtual ~GUIVideoBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
 		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);

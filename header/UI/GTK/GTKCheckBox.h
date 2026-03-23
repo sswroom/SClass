@@ -16,7 +16,7 @@ namespace UI
 			virtual ~GTKCheckBox();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual Bool IsChecked();
 			virtual void SetChecked(Bool checked);
 		};

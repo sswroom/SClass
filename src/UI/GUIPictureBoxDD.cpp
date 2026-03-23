@@ -401,7 +401,7 @@ Text::CStringNN UI::GUIPictureBoxDD::GetObjectClass() const
 	return CSTR("PictureBoxDD");
 }
 
-IntOS UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIPictureBoxDD::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

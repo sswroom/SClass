@@ -282,7 +282,7 @@ namespace UI
 		void ScrollTo(IntOS x, IntOS y);
 
 		virtual Text::CStringNN GetObjectClass() const = 0;
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual void OnPosChanged(Bool updateScn);
 		virtual void OnShow();

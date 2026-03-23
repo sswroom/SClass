@@ -23,7 +23,7 @@ namespace UI
 		virtual UIntOS GetPos() = 0;
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn) = 0;
 		virtual void SetAreaP(IntOS left, IntOS top, IntOS right, IntOS bottom, Bool updateScn) = 0;
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 		virtual void UpdatePos(Bool redraw) = 0;
 		
 		virtual Text::CStringNN GetObjectClass() const;

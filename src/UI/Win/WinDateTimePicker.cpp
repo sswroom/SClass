@@ -41,7 +41,7 @@ UI::Win::WinDateTimePicker::~WinDateTimePicker()
 	}
 }
 
-IntOS UI::Win::WinDateTimePicker::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinDateTimePicker::OnNotify(UInt32 code, IntOS lParam)
 {
 	Data::DateTime dt;
 	LPNMDATETIMECHANGE chg;

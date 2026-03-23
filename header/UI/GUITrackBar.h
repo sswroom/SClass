@@ -22,7 +22,7 @@ namespace UI
 		void EventScrolled(UIntOS scrollPos);
 		void HandleScrolled(ScrollEvent hdlr, AnyType userObj);
 
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 		virtual void SetPos(UIntOS pos) = 0;
 		virtual void SetRange(UIntOS minVal, UIntOS maxVal) = 0;
 		virtual UIntOS GetPos() = 0;

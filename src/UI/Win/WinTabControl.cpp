@@ -35,7 +35,7 @@ IntOS __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UIntOS
 		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
-			ctrl->OnNotify(nmhdr->code, (void*)lParam);
+			ctrl->OnNotify(nmhdr->code, lParam);
 		}
 		break;
 	case WM_ERASEBKGND:
@@ -223,7 +223,7 @@ Math::RectArea<IntOS> UI::Win::WinTabControl::GetTabPageRect()
 	return Math::RectArea<IntOS>(rc.left, rc.top, rcTc.right + rc.right - rc.left, rcTc.bottom + rc.bottom - rc.top);
 }
 
-IntOS UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTabControl::OnNotify(UInt32 code, IntOS lParam)
 {
 	UIntOS newIndex;
 	NN<UI::GUITabPage> tp;

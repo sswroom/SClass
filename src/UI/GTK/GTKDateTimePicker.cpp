@@ -20,7 +20,7 @@ UI::GTK::GTKDateTimePicker::~GTKDateTimePicker()
 	SDEL_TEXTC(this->format);
 }
 
-IntOS UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

@@ -20,7 +20,7 @@ namespace UI
 		virtual ~GUICalendar();
 
 		virtual Text::CStringNN GetObjectClass();
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 
 		void GetSelectedTime(NN<Data::DateTime> dt);
 		void HandleDateChange(DateChangedHandler hdlr, AnyType obj);

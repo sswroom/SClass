@@ -29,7 +29,7 @@ UI::Win::WinTrackBar::~WinTrackBar()
 {
 }
 
-IntOS UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinTrackBar::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

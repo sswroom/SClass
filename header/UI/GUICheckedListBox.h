@@ -14,7 +14,7 @@ namespace UI
 
 		virtual Bool GetItemChecked(UIntOS index) = 0;
 		virtual void SetItemChecked(UIntOS index, Bool isChecked) = 0;
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 	};
 }
 #endif

@@ -15,7 +15,7 @@ UI::JavaUI::JUIVSplitter::~JUIVSplitter()
 {
 }
 
-IntOS UI::JavaUI::JUIVSplitter::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUIVSplitter::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

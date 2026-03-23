@@ -24,7 +24,7 @@ namespace UI
 			WinPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~WinPictureBoxSimple();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual void SetImage(Optional<Media::StaticImage> currImage);
 			virtual void SetImageDImg(Optional<Media::DrawImage> img);
 		};

@@ -44,7 +44,7 @@ namespace UI
 			virtual Optional<Text::String> GetItemTextNew(UIntOS index);
 			virtual IntOS GetItemHeight();
 
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		};
 	}
 }

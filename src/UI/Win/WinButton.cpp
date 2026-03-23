@@ -86,7 +86,7 @@ void UI::Win::WinButton::SetFont(Text::CString fontName, Double fontHeightPt, Bo
 	InitFont();
 }
 
-IntOS UI::Win::WinButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinButton::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

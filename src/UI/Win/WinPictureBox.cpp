@@ -201,7 +201,7 @@ UI::Win::WinPictureBox::~WinPictureBox()
 	}
 }
 
-IntOS UI::Win::WinPictureBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinPictureBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

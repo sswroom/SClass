@@ -21,7 +21,7 @@ namespace UI
 		virtual Bool IsFormFocused();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual IntOS OnNotify(UInt32 code, void *lParam);
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual Optional<GUIClientControl> GetParent();
 
 		void SetCustObj(void *custObj);

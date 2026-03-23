@@ -128,7 +128,7 @@ IntOS __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UIntOS
 		ctrl = (UI::GUIControl*)(IntOS)GetWindowLongPtr(nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
-			ctrl->OnNotify(nmhdr->code, (void*)lParam);
+			ctrl->OnNotify(nmhdr->code, lParam);
 		}
 		break;
 	case WM_SIZE:

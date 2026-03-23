@@ -644,7 +644,7 @@ Text::CStringNN UI::GUIListView::GetObjectClass() const
 	return CSTR("ListView");
 }
 
-IntOS UI::GUIListView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUIListView::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

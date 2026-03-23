@@ -18,7 +18,7 @@ void UI::JavaUI::JUICheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 {
 }
 
-IntOS UI::JavaUI::JUICheckedListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::JavaUI::JUICheckedListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

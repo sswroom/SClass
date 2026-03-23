@@ -242,7 +242,7 @@ void UI::Win::WinComboBox::SetArea(Double left, Double top, Double right, Double
 	this->OnSizeChanged(updateScn);
 }
 
-IntOS UI::Win::WinComboBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinComboBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	switch (code)
 	{

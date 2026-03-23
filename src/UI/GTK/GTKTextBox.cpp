@@ -208,7 +208,7 @@ Bool UI::GTK::GTKTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-IntOS UI::GTK::GTKTextBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKTextBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

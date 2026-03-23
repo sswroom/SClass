@@ -21,7 +21,7 @@ namespace UI
 		void EventSelectedChange(Bool newState);
 		void HandleSelectedChange(SelectedChangeHandler hdlr, AnyType userObj);
 
-		virtual IntOS OnNotify(UInt32 code, void *lParam) = 0;
+		virtual IntOS OnNotify(UInt32 code, IntOS lParam) = 0;
 		virtual Bool IsSelected() = 0;
 		virtual void Select() = 0;
 	};

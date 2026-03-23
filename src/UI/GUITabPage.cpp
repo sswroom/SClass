@@ -43,7 +43,7 @@ Text::CStringNN UI::GUITabPage::GetObjectClass() const
 	return CSTR("TabPage");
 }
 
-IntOS UI::GUITabPage::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITabPage::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

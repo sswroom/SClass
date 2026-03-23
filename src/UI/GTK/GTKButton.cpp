@@ -116,7 +116,7 @@ void UI::GTK::GTKButton::SetFont(Text::CString fontName, Double fontHeightPt, Bo
 #endif
 }
 
-IntOS UI::GTK::GTKButton::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GTK::GTKButton::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

@@ -17,7 +17,7 @@ namespace UI
 			virtual ~JUILabel();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual IntOS OnNotify(UInt32 code, void *lParam);
+			virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 			virtual Bool HasTextColor();
 			virtual UInt32 GetTextColor();
 			virtual void SetTextColor(UInt32 textColor);

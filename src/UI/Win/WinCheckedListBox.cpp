@@ -23,7 +23,7 @@ void UI::Win::WinCheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 	ListView_SetCheckState((HWND)this->hwnd.OrNull(), index, isChecked?TRUE:FALSE);
 }
 
-IntOS UI::Win::WinCheckedListBox::OnNotify(UInt32 code, void *lParam)
+IntOS UI::Win::WinCheckedListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

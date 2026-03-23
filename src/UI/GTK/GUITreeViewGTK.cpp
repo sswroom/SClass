@@ -61,9 +61,9 @@ UI::GUITreeView::TreeItem::~TreeItem()
 		item.Delete();
 	}
 	this->txt->Release();
-	if (this->hTreeItem)
+	if (this->hTreeItem.p)
 	{
-		MemFree(this->hTreeItem);
+		MemFree(this->hTreeItem.p);
 	}
 }
 
@@ -87,12 +87,12 @@ AnyType UI::GUITreeView::TreeItem::GetItemObj()
 	return this->itemObj;
 }
 
-void UI::GUITreeView::TreeItem::SetHItem(void *hTreeItem)
+void UI::GUITreeView::TreeItem::SetHItem(AnyType hTreeItem)
 {
 	this->hTreeItem = hTreeItem;
 }
 
-void *UI::GUITreeView::TreeItem::GetHItem()
+AnyType UI::GUITreeView::TreeItem::GetHItem()
 {
 	return this->hTreeItem;
 }
@@ -206,12 +206,12 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeIte
 	GtkTreeIter *parentIter = 0;
 	if (parent.SetTo(nnparent))
 	{
-		parentIter = (GtkTreeIter*)nnparent->GetHItem();
+		parentIter = (GtkTreeIter*)nnparent->GetHItem().p;
 	}
 	GtkTreeIter *iter = MemAlloc(GtkTreeIter, 1);
 	if (insertAfter.SetTo(item))
 	{
-		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem();
+		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem().p;
 		gtk_tree_store_insert_after(data->treeStore, iter, parentIter, siblingIter);
 	}
 	else
@@ -241,12 +241,12 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	GtkTreeIter *parentIter = 0;
 	if (parent.SetTo(nnparent))
 	{
-		parentIter = (GtkTreeIter*)nnparent->GetHItem();
+		parentIter = (GtkTreeIter*)nnparent->GetHItem().p;
 	}
 	GtkTreeIter *iter = MemAlloc(GtkTreeIter, 1);
 	if (insertAfter.SetTo(item))
 	{
-		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem();
+		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem().p;
 		gtk_tree_store_insert_after(data->treeStore, iter, parentIter, siblingIter);
 	}
 	else
@@ -275,7 +275,7 @@ AnyType UI::GUITreeView::RemoveItem(NN<TreeItem> item)
 	if (i != INVALID_INDEX)
 	{
 		AnyType obj = item->GetItemObj();
-		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem());
+		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 		this->treeItems.RemoveAt(i);
 		item.Delete();
 		return obj;
@@ -306,7 +306,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UIntOS index)
 void UI::GUITreeView::ExpandItem(NN<TreeItem> item)
 {
 	ClassData *data = this->clsData;
-	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
+	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 	gtk_tree_view_expand_row((GtkTreeView*)data->treeView, path, false);
 	gtk_tree_path_free(path);
 }
@@ -314,7 +314,7 @@ void UI::GUITreeView::ExpandItem(NN<TreeItem> item)
 Bool UI::GUITreeView::IsExpanded(NN<TreeItem> item)
 {
 	ClassData *data = this->clsData;
-	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
+	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 	Bool ret = gtk_tree_view_row_expanded((GtkTreeView*)data->treeView, path);
 	gtk_tree_path_free(path);
 	return ret;
@@ -347,7 +347,7 @@ Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeV
 	{
 		if (item->GetChild(i).SetTo(child))
 		{
-			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)child->GetHItem());
+			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)child->GetHItem().p);
 			if (gtk_tree_path_compare(selPath, itemPath) == 0)
 			{
 				gtk_tree_path_free(itemPath);
@@ -379,7 +379,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 		while (i < j)
 		{
 			item = this->treeItems.GetItemNoCheck(i);
-			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
+			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 			if (gtk_tree_path_compare(selPath, itemPath) == 0)
 			{
 				gtk_tree_path_free(itemPath);
@@ -417,7 +417,7 @@ Text::CStringNN UI::GUITreeView::GetObjectClass() const
 	return CSTR("TreeView");
 }
 
-IntOS UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

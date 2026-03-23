@@ -284,7 +284,7 @@ Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
 	return CSTR("CustomDrawVScroll");
 }
 
-IntOS UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
+IntOS UI::GUICustomDrawVScroll::OnNotify(UInt32 code, IntOS lParam)
 {
 	return 0;
 }

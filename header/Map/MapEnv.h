@@ -39,7 +39,8 @@ namespace Map
 			SFLG_ROTATE = 8,
 			SFLG_TRIM = 16,
 			SFLG_CAPITAL = 32,
-			SFLG_HIDESHAPE = 64
+			SFLG_HIDESHAPE = 64,
+			SFLG_HIDELAYER = 128
 		} SettingFlag;
 
 		enum class FontType
