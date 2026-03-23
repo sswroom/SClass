@@ -525,7 +525,8 @@ NN<Media::DrawFont> Media::SVGWriter::CloneFont(NN<DrawFont> f)
 {
 	NN<Media::SVGFont> font;
 	NN<Media::SVGFont> srcFont = NN<Media::SVGFont>::ConvertFrom(f);
-	NEW_CLASSNN(font, Media::SVGFont(srcFont->GetFontName()->ToCString(), srcFont->GetFontSizePx(), srcFont->GetStyle()));
+	Optional<Text::String> fontName = srcFont->GetFontName();
+	NEW_CLASSNN(font, Media::SVGFont(Text::String::OrEmpty(fontName)->ToCString(), srcFont->GetFontSizePx(), srcFont->GetStyle()));
 	return font;
 }
 

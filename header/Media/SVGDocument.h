@@ -199,9 +199,17 @@ namespace Media
 		Math::Coord2DDbl tl;
 		Data::ArrayListNN<SVGTextComponent> components;
 		NN<SVGFont> font;
+		Bool styleFont;
 		NN<SVGBrush> brush;
+		Bool styleBrush;
+		Optional<SVGPen> pen;
+		Bool stylePen;
 		Double angleDegreeACW;
 		Math::Coord2DDbl rotateCenter;
+		Optional<Text::String> textAlign;
+		Optional<Text::String> textAnchor;
+		Optional<Text::String> writingMode;
+		Optional<Text::String> direction;
 	public:
 		SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component);
 		virtual ~SVGText();
@@ -210,6 +218,14 @@ namespace Media
 		void AddTextComponent(NN<SVGTextComponent> component);
 
 		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
+		void SetPen(Bool inStyle, Optional<SVGPen> pen) { this->stylePen = inStyle; this->pen = pen; }
+		void SetBrush(Bool inStyle, NN<SVGBrush> brush) { this->styleBrush = inStyle; this->brush = brush; }
+		void SetFont(Bool inStyle, NN<SVGFont> font) { this->styleFont = inStyle; this->font = font; }
+		void SetTextAlign(Text::CStringNN textAlign) { OPTSTR_DEL(this->textAlign); this->textAlign = Text::String::New(textAlign); }
+		void SetTextAnchor(Text::CStringNN textAnchor) { OPTSTR_DEL(this->textAnchor); this->textAnchor = Text::String::New(textAnchor); }
+		void SetWritingMode(Text::CStringNN writingMode) { OPTSTR_DEL(this->writingMode); this->writingMode = Text::String::New(writingMode); }
+		void SetDirection(Text::CStringNN direction) { OPTSTR_DEL(this->direction); this->direction = Text::String::New(direction); }
+		Optional<SVGPen> GetPen() const { return this->pen; }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
@@ -463,6 +479,7 @@ namespace Media
 		static Bool ParseEllipse(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParsePath(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Optional<SVGTSpan> ParseTSpan(NN<SVGContainer> container, NN<Text::XMLReader> reader, Double parentFontSize);
 		static Bool ParseImage(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseUnknown(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseUnknownContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader);

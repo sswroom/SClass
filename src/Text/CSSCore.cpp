@@ -1,9 +1,9 @@
 #include "Stdafx.h"
-#include "Text/CSSColor.h"
+#include "Text/CSSCore.h"
 #include "Text/StandardColor.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 Text::CSSColor::Parse(Text::CStringNN colorStr)
+UInt32 Text::CSSCore::ParseColor(Text::CStringNN colorStr)
 {
 	if (colorStr.StartsWith('#'))
 	{
@@ -676,5 +676,123 @@ UInt32 Text::CSSColor::Parse(Text::CStringNN colorStr)
 	{
 		printf("CSSColor: Unknown color name: %s\r\n", colorStr.v.Ptr());
 		return 0;
+	}
+}
+
+Double Text::CSSCore::FontSizeToPx(Text::CStringNN fontSizeStr, Double parentFontSizePx)
+{
+	if (Math::IsNAN(parentFontSizePx) || parentFontSizePx <= 0)
+	{
+		parentFontSizePx = 16;
+	}
+	if (fontSizeStr.EqualsICase(UTF8STRC("xx-small")))
+	{
+		return 9;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("x-small")))
+	{
+		return 10.5;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("small")))
+	{
+		return 13.5;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("medium")))
+	{
+		return 16;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("large")))
+	{
+		return 18;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("x-large")))
+	{
+		return 24;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("xx-large")))
+	{
+		return 32;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("xxx-large")))
+	{
+		return 48;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("smaller")))
+	{
+		return parentFontSizePx * 0.8;
+	}
+	else if (fontSizeStr.EqualsICase(UTF8STRC("larger")))
+	{
+		return parentFontSizePx * 1.2;
+	}
+	else if (fontSizeStr.EndsWith(UTF8STRC("px")))
+	{
+		Double v;
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(fontSizeStr.v, fontSizeStr.leng - 2);
+		if (sb.ToDouble(v))
+		{
+			return v;
+		}
+		else
+		{
+			printf("CSSCore: Invalid font size px: %s\r\n", fontSizeStr.v.Ptr());
+			return parentFontSizePx;
+		}
+	}
+	else if (fontSizeStr.EndsWith(UTF8STRC("rem")))
+	{
+		Double v;
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(fontSizeStr.v, fontSizeStr.leng - 3);
+		if (sb.ToDouble(v))
+		{
+			return 16 * v;
+		}
+		else
+		{
+			printf("CSSCore: Invalid font size rem: %s\r\n", fontSizeStr.v.Ptr());
+			return parentFontSizePx;
+		}
+	}
+	else if (fontSizeStr.EndsWith(UTF8STRC("em")))
+	{
+		Double v;
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(fontSizeStr.v, fontSizeStr.leng - 2);
+		if (sb.ToDouble(v))
+		{
+			return v * parentFontSizePx;
+		}
+		else
+		{
+			printf("CSSCore: Invalid font size em: %s\r\n", fontSizeStr.v.Ptr());
+			return parentFontSizePx;
+		}
+	}
+	else if (fontSizeStr.EndsWith(UTF8STRC("%")))
+	{
+		Double v;
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(fontSizeStr.v, fontSizeStr.leng - 1);
+		if (sb.ToDouble(v))
+		{
+			return v * parentFontSizePx / 100.0;
+		}
+		else
+		{
+			printf("CSSCore: Invalid font size %%: %s\r\n", fontSizeStr.v.Ptr());
+			return parentFontSizePx;
+		}
+	}
+	else
+	{
+		Double v;
+		if (fontSizeStr.ToDouble(v))
+		{
+			return v;
+		}
+		printf("CSSCore: Unknown font size unit: %s\r\n", fontSizeStr.v.Ptr());
+		return parentFontSizePx;
 	}
 }
