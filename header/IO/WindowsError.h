@@ -8,6 +8,7 @@ namespace IO
 	{
 	public:
 		static Text::CStringNN GetString(UInt32 errorCode);
+		static Text::CStringNN GetNotifyName(UInt32 code);
 	};
 }
 #endif

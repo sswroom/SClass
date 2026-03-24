@@ -23,6 +23,7 @@ namespace UI
 	private:
 		NN<Map::MapEnv> env;
 		Data::CallbackStorage<TreeDragHandler> dragHdlr;
+		Data::CallbackStorage<UI::UIEvent> itemCheckedChgHdlr;
 
 	private:
 		void RemoveItems();
@@ -45,6 +46,7 @@ namespace UI
 		void AddSubGroup(NN<UI::GUITreeView::TreeItem> item);
 		void RemoveItem(NN<UI::GUITreeView::TreeItem> item);
 		void ExpandColl(NN<ItemIndex> ind);
+		void HandleItemCheckedChg(UI::UIEvent hdlr, AnyType userObj);
 	};
 }
 #endif

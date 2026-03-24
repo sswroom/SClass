@@ -1437,3 +1437,184 @@ Text::CStringNN IO::WindowsError::GetString(UInt32 errorCode)
 		return CSTR("Unknown");
 	}
 }
+
+Text::CStringNN IO::WindowsError::GetNotifyName(UInt32 code)
+{
+	switch (code)
+	{
+	case 0xffffffff:
+		return CSTR("NM_OUTOFMEMORY");
+	case 0xfffffffe:
+		return CSTR("NM_CLICK");
+	case 0xfffffffd:
+		return CSTR("NM_DBLCLK");
+	case 0xfffffffc:
+		return CSTR("NM_RETURN");
+	case 0xfffffffb:
+		return CSTR("NM_RCLICK");
+	case 0xfffffffa:
+		return CSTR("NM_RDBLCLK");
+	case 0xfffffff9:
+		return CSTR("NM_SETFOCUS");
+	case 0xfffffff8:
+		return CSTR("NM_KILLFOCUS");
+	case 0xfffffff4:
+		return CSTR("NM_CUSTOMDRAW");
+	case 0xfffffff3:
+		return CSTR("NM_HOVER");
+	case 0xfffffff2:
+		return CSTR("NM_NCHITTEST");
+	case 0xfffffff1:
+		return CSTR("NM_KEYDOWN");
+	case 0xfffffff0:
+		return CSTR("NM_RELEASEDCAPTURE");
+	case 0xffffffef:
+		return CSTR("NM_SETCURSOR");
+	case 0xffffffee:
+		return CSTR("NM_CHAR");
+	case 0xffffffed:
+		return CSTR("NM_TOOLTIPSCREATED");
+	case 0xffffffec:
+		return CSTR("NM_LDOWN");
+	case 0xffffffeb:
+		return CSTR("NM_RDOWN");
+	case 0xffffffea:
+		return CSTR("NM_THEMECHANGED");
+	case 0xffffffe9:
+		return CSTR("NM_FONTCHANGED");
+	case 0xffffffe8:
+		return CSTR("NM_CUSTOMTEXT");
+	case 0U - 100U - 0:
+		return CSTR("LVN_ITEMCHANGING");
+	case 0U - 100U - 1:
+		return CSTR("LVN_ITEMCHANGED");
+	case 0U - 100U - 2:
+		return CSTR("LVN_INSERTITEM");
+	case 0U - 100U - 3:
+		return CSTR("LVN_DELETEITEM");
+	case 0U - 100U - 4:
+		return CSTR("LVN_DELETEALLITEMS");
+	case 0U - 100U - 5:
+		return CSTR("LVN_BEGINLABELEDITA");
+	case 0U - 100U - 6:
+		return CSTR("LVN_ENDLABELEDITA");
+	case 0U - 100U - 8:
+		return CSTR("LVN_COLUMNCLICK");
+	case 0U - 100U - 9:
+		return CSTR("LVN_BEGINDRAG");
+	case 0U - 100U - 11:
+		return CSTR("LVN_BEGINRDRAG");
+	case 0U - 100U - 13:
+		return CSTR("LVN_ODCACHEHINT");
+	case 0U - 100U - 14:
+		return CSTR("LVN_ITEMACTIVATE");
+	case 0U - 100U - 15:
+		return CSTR("LVN_ODSTATECHANGED");
+	case 0U - 100U - 21:
+		return CSTR("LVN_HOTTRACK");
+	case 0U - 100U - 50:
+		return CSTR("LVN_GETDISPINFOA");
+	case 0U - 100U - 51:
+		return CSTR("LVN_SETDISPINFOA");
+	case 0U - 100U - 52:
+		return CSTR("LVN_ODFINDITEMA");
+	case 0U - 100U - 55:
+		return CSTR("LVN_KEYDOWN");
+	case 0U - 100U - 56:
+		return CSTR("LVN_MARQUEEBEGIN");
+	case 0U - 100U - 57:
+		return CSTR("LVN_GETINFOTIPA");
+	case 0U - 100U - 58:
+		return CSTR("LVN_GETINFOTIPW");
+	case 0U - 100U - 62:
+		return CSTR("LVN_INCREMENTALSEARCHA");
+	case 0U - 100U - 63:
+		return CSTR("LVN_INCREMENTALSEARCHW");
+	case 0U - 100U - 64:
+		return CSTR("LVN_COLUMNDROPDOWN");
+	case 0U - 100U - 66:
+		return CSTR("LVN_COLUMNOVERFLOWCLICK");
+	case 0U - 100U - 75:
+		return CSTR("LVN_BEGINLABELEDITW");
+	case 0U - 100U - 76:
+		return CSTR("LVN_ENDLABELEDITW");
+	case 0U - 100U - 77:
+		return CSTR("LVN_GETDISPINFOW");
+	case 0U - 100U - 78:
+		return CSTR("LVN_SETDISPINFOW");
+	case 0U - 100U - 79:
+		return CSTR("LVN_ODFINDITEMW");
+	case 0U - 100U - 80:
+		return CSTR("LVN_BEGINSCROLL");
+	case 0U - 100U - 81:
+		return CSTR("LVN_ENDSCROLL");
+	case 0U - 100U - 84:
+		return CSTR("LVN_LINKCLICK");
+	case 0U - 100U - 87:
+		return CSTR("LVN_GETEMPTYMARKUP");
+	case 0U - 400U - 1:
+		return CSTR("TVN_SELCHANGINGA");
+	case 0U - 400U - 2:
+		return CSTR("TVN_SELCHANGEDA");
+	case 0U - 400U - 3:
+		return CSTR("TVN_GETDISPINFOA");
+	case 0U - 400U - 4:
+		return CSTR("TVN_SETDISPINFOA");
+	case 0U - 400U - 5:
+		return CSTR("TVN_ITEMEXPANDINGA");
+	case 0U - 400U - 6:
+		return CSTR("TVN_ITEMEXPANDEDA");
+	case 0U - 400U - 7:
+		return CSTR("TVN_BEGINDRAGA");
+	case 0U - 400U - 8:
+		return CSTR("TVN_BEGINRDRAGA");
+	case 0U - 400U - 9:
+		return CSTR("TVN_DELETEITEMA");
+	case 0U - 400U - 10:
+		return CSTR("TVN_BEGINLABELEDITA");
+	case 0U - 400U - 11:
+		return CSTR("TVN_ENDLABELEDITA");
+	case 0U - 400U - 12:
+		return CSTR("TVN_KEYDOWN");
+	case 0U - 400U - 13:
+		return CSTR("TVN_GETINFOTIPA");
+	case 0U - 400U - 14:
+		return CSTR("TVN_GETINFOTIPW");
+	case 0U - 400U - 15:
+		return CSTR("TVN_SINGLEEXPAND");
+	case 0U - 400U - 16:
+		return CSTR("TVN_ITEMCHANGINGA");
+	case 0U - 400U - 17:
+		return CSTR("TVN_ITEMCHANGINGW");
+	case 0U - 400U - 18:
+		return CSTR("TVN_ITEMCHANGEDA");
+	case 0U - 400U - 19:
+		return CSTR("TVN_ITEMCHANGEDW");
+	case 0U - 400U - 20:
+		return CSTR("TVN_ASYNCDRAW");
+	case 0U - 400U - 50:
+		return CSTR("TVN_SELCHANGINGW");
+	case 0U - 400U - 51:
+		return CSTR("TVN_SELCHANGEDW");
+	case 0U - 400U - 52:
+		return CSTR("TVN_GETDISPINFOW");
+	case 0U - 400U - 53:
+		return CSTR("TVN_SETDISPINFOW");
+	case 0U - 400U - 54:
+		return CSTR("TVN_ITEMEXPANDINGW");
+	case 0U - 400U - 55:
+		return CSTR("TVN_ITEMEXPANDEDW");
+	case 0U - 400U - 56:
+		return CSTR("TVN_BEGINDRAGW");
+	case 0U - 400U - 57:
+		return CSTR("TVN_BEGINRDRAGW");
+	case 0U - 400U - 58:
+		return CSTR("TVN_DELETEITEMW");
+	case 0U - 400U - 59:
+		return CSTR("TVN_BEGINLABELEDITW");
+	case 0U - 400U - 60:
+		return CSTR("TVN_ENDLABELEDITW");
+	default:
+		return CSTR("Unknown");
+	}
+}

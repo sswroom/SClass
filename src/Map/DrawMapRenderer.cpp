@@ -2193,7 +2193,7 @@ Bool Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 		NN<Media::StaticImage> simg;
 		if (vimg->IsScnCoord())
 		{
-			scnCoords = vimg->GetScreenBounds((UIntOS)denv->view->GetScnWidth(), (UIntOS)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
+			scnCoords = vimg->GetScreenBounds(denv->view->GetScnWidth(), denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
 			if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
 			{
 				DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());

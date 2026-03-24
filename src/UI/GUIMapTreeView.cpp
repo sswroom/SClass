@@ -112,6 +112,7 @@ void UI::GUIMapTreeView::UpdateTreeStatus(NN<UI::GUITreeView::TreeItem> item)
 UI::GUIMapTreeView::GUIMapTreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Map::MapEnv> env) : UI::GUITreeView(ui, parent)
 {
 	this->dragHdlr = 0;
+	this->itemCheckedChgHdlr = 0;
 	this->env = env;
 	this->SetHasLines(true);
 	this->SetHasButtons(true);
@@ -171,6 +172,10 @@ void UI::GUIMapTreeView::EventItemCheckedChg(NN<TreeItem> item, Bool checked)
 			layer.flags = layer.flags | Map::MapEnv::SFLG_HIDELAYER;
 		}
 		this->env->SetLayerProp(layer, ind->group, ind->index);
+		if (this->itemCheckedChgHdlr.func)
+		{
+			this->itemCheckedChgHdlr.func(this->itemCheckedChgHdlr.userObj);
+		}
 	}
 }
 
@@ -302,4 +307,10 @@ void UI::GUIMapTreeView::ExpandColl(NN<UI::GUIMapTreeView::ItemIndex> ind)
 			this->UpdateTree();
 		}
 	}
+}
+
+void UI::GUIMapTreeView::HandleItemCheckedChg(UI::UIEvent hdlr, AnyType userObj)
+{
+	this->itemCheckedChgHdlr.func = hdlr;
+	this->itemCheckedChgHdlr.userObj = userObj;
 }

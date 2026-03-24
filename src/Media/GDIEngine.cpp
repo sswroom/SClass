@@ -1575,11 +1575,11 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, UnsafeArray<const WChar>
 		}
 		if ((IntOS)gimg->GetHeight() - sheight < sy)
 		{
-			sheight = gimg->GetHeight() - sy;
+			sheight = gimg->PixelGetHeight() - sy;
 		}
 		if ((IntOS)gimg->GetWidth() - swidth < sx)
 		{
-			swidth = gimg->GetWidth() - sx;
+			swidth = gimg->PixelGetWidth() - sx;
 		}
 		if (dwidth + (IntOS)buffSize < swidth)
 		{

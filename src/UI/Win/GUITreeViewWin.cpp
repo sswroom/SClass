@@ -1,9 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/WindowsError.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "UI/GUITreeView.h"
 #include "UI/Win/WinCore.h"
+#include "WinDebug.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -13,7 +15,7 @@
 
 UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
 {
-	this->hTreeItem = hTreeItem;
+	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = nullptr;
 	this->txt = txt->Clone();
@@ -21,7 +23,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
 
 UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 {
-	this->hTreeItem = hTreeItem;
+	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = nullptr;
 	this->txt = Text::String::New(txt);
@@ -371,7 +373,7 @@ Bool UI::GUITreeView::IsExpanded(NN<UI::GUITreeView::TreeItem> titem)
 
 Bool UI::GUITreeView::IsChecked(NN<TreeItem> titem)
 {
-	return SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem().p, TVIS_STATEIMAGEMASK) == 0x2000;
+	return SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem().p, TVIS_STATEIMAGEMASK) == 0x1000;
 }
 
 void UI::GUITreeView::SetChecked(NN<TreeItem> titem, Bool checked)
@@ -506,6 +508,7 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 	LPNMTREEVIEW lpnmtv;
 	IntOS retVal;
 	NN<UI::GUITreeView::TreeItem> item;
+	printf("GUITreeView.OnNotify: Code = %x (%s)\r\n", code, IO::WindowsError::GetNotifyName(code).v.Ptr());
 	switch (code)
 	{
 	case NM_RCLICK:
@@ -558,20 +561,40 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
       	this->SetCapture();
 		this->draging = true;
 		return 0;
-	case TVN_ITEMCHANGED:
-		{
-			NMTVITEMCHANGE *pnm = (NMTVITEMCHANGE*)lParam;
-			if (pnm->uChanged == TVIF_SELECTEDIMAGE)
-			{
-				this->EventItemCheckedChg(NN<TreeItem>::FromPtr((TreeItem*)pnm->lParam), pnm->uStateNew == 2);
-			}
-		}
 	case TVN_SELCHANGED:
 		this->EventSelectionChange();
 		return 0;
 	case NM_DBLCLK:
 		this->EventDoubleClick();
 		return 0;
+	case NM_CLICK:
+		{
+			LPNMHDR lpnmh = (LPNMHDR)lParam;
+			TVHITTESTINFO ht = { 0 };
+			DWORD dwpos = GetMessagePos();
+
+			ht.pt.x = (Int16)LOWORD(dwpos);
+			ht.pt.y = (Int16)HIWORD(dwpos);
+			MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
+
+			TreeView_HitTest(lpnmh->hwndFrom, &ht);
+
+			if (TVHT_ONITEMSTATEICON & ht.flags)
+			{
+				NN<TreeItem> checkItem;
+				TVITEMW itm;
+				itm.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_STATE;
+				itm.hItem = ht.hItem;
+				itm.lParam = 0;
+				itm.iSelectedImage = 0;
+				SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMW, 0, (LPARAM)&itm);
+				if (checkItem.Set((TreeItem*)itm.lParam))
+				{
+					this->EventItemCheckedChg(checkItem, (itm.state & 0xf000) == 0x1000);
+				}
+			}
+		}
+		break;
 	case 0:
 	default:
 		break;
