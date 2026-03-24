@@ -94,6 +94,7 @@ namespace SSWR
 			static void __stdcall OnVAngleScrolled(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnHAngleScrolled(AnyType userObj, UIntOS newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnMapTreeItemCheckedChg(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(NN<UI::GUIForm> frm, Optional<UI::GUITreeView::TreeItem> item);

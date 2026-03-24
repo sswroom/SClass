@@ -553,6 +553,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapTreeItemCheckedChg(AnyType userObj)
+{
+	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
+	me->mapCtrl->UpdateMap();
+	me->mapCtrl->Redraw();
+}
+
 void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 {
 	UTF8Char sbuff[512];
@@ -771,6 +778,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->mapTree->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->mapTree->HandleRightClick(OnTreeRightClick, this);
 	this->mapTree->SetDragHandler(OnTreeDrag, this);
+	this->mapTree->HandleItemCheckedChg(OnMapTreeItemCheckedChg, this);
 	this->splitter = ui->NewHSplitter(*this, 3, false);
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->envRenderer, Map::DrawMapRenderer(core->GetDrawEngine(), env, color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));

@@ -508,7 +508,7 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 	LPNMTREEVIEW lpnmtv;
 	IntOS retVal;
 	NN<UI::GUITreeView::TreeItem> item;
-	printf("GUITreeView.OnNotify: Code = %x (%s)\r\n", code, IO::WindowsError::GetNotifyName(code).v.Ptr());
+//	printf("GUITreeView.OnNotify: Code = %x (%s)\r\n", code, IO::WindowsError::GetNotifyName(code).v.Ptr());
 	switch (code)
 	{
 	case NM_RCLICK:
@@ -566,7 +566,6 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 		return 0;
 	case NM_DBLCLK:
 		this->EventDoubleClick();
-		return 0;
 	case NM_CLICK:
 		{
 			LPNMHDR lpnmh = (LPNMHDR)lParam;
@@ -594,7 +593,7 @@ IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 				}
 			}
 		}
-		break;
+		return 0;
 	case 0:
 	default:
 		break;
