@@ -80,7 +80,7 @@ namespace Map
 		{
 			Data::ArrayListNN<MapItem> subitems;
 			NN<Text::String> groupName;
-			Bool groupHide;
+			Bool groupCollapsed;
 		};
 
 		typedef struct
@@ -189,13 +189,14 @@ namespace Map
 		UIntOS GetItemCount(Optional<GroupItem> group) const;
 		Optional<MapItem> GetItem(Optional<GroupItem> group, UIntOS index) const;
 		NN<Text::String> GetGroupName(NN<GroupItem> group) const;
+		Bool IsGroupCollapsed(NN<GroupItem> group) const;
+		void SetGroupCollapsed(NN<GroupItem> group, Bool collapsed);
 		void SetGroupName(NN<GroupItem> group, Text::CStringNN name);
-		void SetGroupHide(NN<GroupItem> group, Bool isHide);
-		Bool GetGroupHide(NN<GroupItem> group) const;
 		Bool GetLayerProp(NN<LayerItem> setting, Optional<GroupItem> group, UIntOS index) const;
 		Bool SetLayerProp(NN<LayerItem> setting, Optional<GroupItem> group, UIntOS index);
 		UIntOS GetNString() const;
 		void SetNString(UIntOS nStr);
+		Bool HasLayerHide(Optional<GroupItem> group) const;
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
 
 		UIntOS GetImageCnt() const;

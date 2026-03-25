@@ -710,7 +710,6 @@ NN<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem
 	NEW_CLASSNN(newG, Map::MapEnv::GroupItem());
 	newG->itemType = Map::MapEnv::IT_GROUP;
 	newG->groupName = subgroupName->Clone();
-	newG->groupHide = false;
 	NN<GroupItem> nngroup;
 	if (group.SetTo(nngroup))
 	{
@@ -730,7 +729,6 @@ NN<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem
 	NEW_CLASSNN(newG, Map::MapEnv::GroupItem());
 	newG->itemType = Map::MapEnv::IT_GROUP;
 	newG->groupName = Text::String::New(subgroupName);
-	newG->groupHide = false;
 	NN<GroupItem> nngroup;
 	if (group.SetTo(nngroup))
 	{
@@ -894,22 +892,22 @@ NN<Text::String> Map::MapEnv::GetGroupName(NN<Map::MapEnv::GroupItem> group) con
 	return group->groupName;
 }
 
+Bool Map::MapEnv::IsGroupCollapsed(NN<Map::MapEnv::GroupItem> group) const
+{
+	return group->groupCollapsed;
+}
+
+void Map::MapEnv::SetGroupCollapsed(NN<Map::MapEnv::GroupItem> group, Bool collapsed)
+{
+	Sync::MutexUsage mutUsage(this->mut);
+	group->groupCollapsed = collapsed;
+}
+
 void Map::MapEnv::SetGroupName(NN<Map::MapEnv::GroupItem> group, Text::CStringNN name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();
 	group->groupName = Text::String::New(name);
-}
-
-void Map::MapEnv::SetGroupHide(NN<Map::MapEnv::GroupItem> group, Bool isHide)
-{
-	Sync::MutexUsage mutUsage(this->mut);
-	group->groupHide = isHide;
-}
-
-Bool Map::MapEnv::GetGroupHide(NN<Map::MapEnv::GroupItem> group) const
-{
-	return group->groupHide;
 }
 
 Bool Map::MapEnv::GetLayerProp(NN<Map::MapEnv::LayerItem> setting, Optional<Map::MapEnv::GroupItem> group, UIntOS index) const
@@ -1086,6 +1084,42 @@ void Map::MapEnv::SetNString(UIntOS nStr)
 		return;
 	Sync::MutexUsage mutUsage(this->mut);
 	this->nStr = nStr;
+}
+
+Bool Map::MapEnv::HasLayerHide(Optional<GroupItem> group) const
+{
+	NN<const Data::ArrayListNN<Map::MapEnv::MapItem>> items;
+	NN<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
+	{
+		items = nngroup->subitems;
+	}
+	else
+	{
+		items = this->mapLayers;
+	}
+	NN<Map::MapEnv::MapItem> item;
+	UIntOS i = items->GetCount();
+	while (i-- > 0)
+	{
+		item = items->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
+		{
+			NN<Map::MapEnv::LayerItem> lyr = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
+			if ((lyr->flags & Map::MapEnv::SFLG_HIDELAYER) != 0)
+			{
+				return true;
+			}
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			if (this->HasLayerHide(NN<GroupItem>::ConvertFrom(item)))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 UIntOS Map::MapEnv::GetImageCnt() const

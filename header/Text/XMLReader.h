@@ -58,6 +58,7 @@ namespace Text
 		Optional<Text::String> GetNodeOriText() const;
 		Optional<Text::String> GetNamespace() const;
 		Text::CStringNN GetElementName() const;
+		Text::CStringNN GetElementNameWithNS() const;
 		UIntOS GetAttribCount() const;
 		NN<Text::XMLAttrib> GetAttribNoCheck(UIntOS index) const;
 		Optional<Text::XMLAttrib> GetAttrib(UIntOS index) const;

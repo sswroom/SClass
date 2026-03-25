@@ -48,7 +48,7 @@ namespace UI
 		Bool draging;
 		void *himgDrag;
 		TreeItem *dragItem;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 		static IntOS __stdcall TVWndProc(void *hWnd, UInt32 msg, UIntOS wParam, IntOS lParam);
 		void FreeItems();

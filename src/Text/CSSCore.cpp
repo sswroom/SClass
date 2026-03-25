@@ -683,6 +683,20 @@ UInt32 Text::CSSCore::ParseColor(Text::CStringNN colorStr)
 	}
 }
 
+UInt32 Text::CSSCore::ParseColor(Text::CStringNN colorStr, Double opacity)
+{
+	UInt32 v = ParseColor(colorStr);
+	if (opacity < 0)
+	{
+		opacity = 0;
+	}
+	else if (opacity > 1)
+	{
+		opacity = 1;
+	}
+	return ((UInt32)Double2Int32(opacity * 255) << 24) | (v & 0x00ffffff);
+}
+
 Double Text::CSSCore::FontSizeToPx(Text::CStringNN fontSizeStr, Double parentFontSizePx)
 {
 	if (Math::IsNAN(parentFontSizePx) || parentFontSizePx <= 0)

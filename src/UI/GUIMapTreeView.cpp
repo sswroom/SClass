@@ -74,13 +74,15 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 					AddTreeNode(nntreeItem, grp, i);
 					i++;
 				}
-				if (env->GetGroupHide(grp))
+				if (env->IsGroupCollapsed(grp))
 				{
 				}
 				else
 				{
 					this->ExpandItem(nntreeItem);
 				}
+				Bool hasHide = this->env->HasLayerHide(grp);
+				this->SetChecked(nntreeItem, !hasHide);
 			}
 		}
 	}
@@ -94,7 +96,7 @@ void UI::GUIMapTreeView::UpdateTreeStatus(NN<UI::GUITreeView::TreeItem> item)
 		NN<Map::MapEnv::MapItem> mitem;
 		if (ind->item.SetTo(mitem))
 		{
-			env->SetGroupHide(NN<Map::MapEnv::GroupItem>::ConvertFrom(mitem), !this->IsExpanded(item));
+			env->SetGroupCollapsed(NN<Map::MapEnv::GroupItem>::ConvertFrom(mitem), !this->IsExpanded(item));
 		}
 	}
 	if (ind->itemType != Map::MapEnv::IT_UNKNOWN)
@@ -222,6 +224,8 @@ void UI::GUIMapTreeView::UpdateTree()
 			i++;
 		}
 		this->ExpandItem(item);
+		Bool hideRoot = this->env->HasLayerHide(nullptr);
+		this->SetChecked(item, !hideRoot);
 	}
 }
 

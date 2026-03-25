@@ -1337,7 +1337,7 @@ Int32 NANTest()
 
 Int32 SVGTest()
 {
-	Text::CStringNN svgFile = CSTR("/home/sswroom/ProgsHome/FileTest/SVG/templatetest.svg");
+	Text::CStringNN svgFile = CSTR("");
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	Text::EncodingFactory encFact;
 	NN<Media::SVGDocument> svgDoc;
@@ -1345,7 +1345,7 @@ Int32 SVGTest()
 	{
 		Text::StringBuilderUTF8 sb;
 		svgDoc->ToString(sb);
-		printf("%s\r\n", sb.v.Ptr());
+//		printf("%s\r\n", sb.v.Ptr());
 		svgDoc.Delete();
 	}
 	deng.Delete();
@@ -1497,7 +1497,7 @@ Int32 MD5CompareTest()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 38;
+	UIntOS testType = 36;
 	switch (testType)
 	{
 	case 0:

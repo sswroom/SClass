@@ -5,10 +5,14 @@
 #include "UI/GUIClientControl.h"
 #include <gtk/gtk.h>
 
+#define ITEM_TOGGLE_CODE 0x12345678
+
 struct UI::GUITreeView::ClassData
 {
+	NN<UI::GUITreeView> me;
 	GtkTreeStore *treeStore;
 	GtkWidget *treeView;
+	GtkTreeViewColumn *chkCol;
 };
 
 void GUITreeView_SelChange(GtkTreeView *tree_view, gpointer user_data)
@@ -32,6 +36,20 @@ gboolean GUITreeView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 		}
 	}
 	return false;
+}
+
+void GUITreeView_OnItemToggled(GtkCellRendererToggle* renderer, gchar* path, UI::GUITreeView::ClassData* data)
+{
+	GtkTreeModel* model;
+	GtkTreeIter iter;
+	gboolean state;
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->treeView));
+	if (gtk_tree_model_get_iter_from_string(model, &iter, path))
+	{
+		gtk_tree_model_get(model, &iter, 0, &state, -1);
+		gtk_tree_store_set(GTK_TREE_STORE(model), &iter, 0, !state, -1);
+		data->me->OnNotify(ITEM_TOGGLE_CODE, (IntOS)&iter);
+	}
 }
 
 UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
@@ -129,13 +147,17 @@ void UI::GUITreeView::FreeItems()
 
 UI::GUITreeView::GUITreeView(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
+	data->me = *this;
 	this->autoFocus = false;
 	this->editing = false;
 	this->draging = false;
-	data->treeStore = gtk_tree_store_new(1, G_TYPE_STRING);
+	data->treeStore = gtk_tree_store_new(2, G_TYPE_BOOLEAN, G_TYPE_STRING);
 	data->treeView = gtk_tree_view_new_with_model(GTK_TREE_MODEL(data->treeStore));
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(data->treeView), false);
+
+	data->chkCol = gtk_tree_view_column_new();
+	gtk_tree_view_append_column(GTK_TREE_VIEW(data->treeView), data->chkCol);
 
 	GtkTreeViewColumn *col = gtk_tree_view_column_new();
 //	gtk_tree_view_column_set_title(col, "Temp");
@@ -143,7 +165,7 @@ UI::GUITreeView::GUITreeView(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : 
 
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_column_pack_start(col, renderer, TRUE);
-	gtk_tree_view_column_add_attribute(col, renderer, "text", 0);
+	gtk_tree_view_column_add_attribute(col, renderer, "text", 1);
 
 	this->clsData = data;
 	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
@@ -157,9 +179,9 @@ UI::GUITreeView::GUITreeView(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : 
 
 UI::GUITreeView::~GUITreeView()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	FreeItems();
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 void UI::GUITreeView::EventSelectionChange()
@@ -204,7 +226,7 @@ void UI::GUITreeView::EventItemCheckedChg(NN<TreeItem> item, Bool checked)
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<TreeItem> item;
 	NN<TreeItem> nnparent;
 	GtkTreeIter *parentIter = 0;
@@ -222,7 +244,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeIte
 	{
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
-	gtk_tree_store_set(data->treeStore, iter, 0, itemText->v.Ptr(), -1);
+	gtk_tree_store_set(data->treeStore, iter, 0, false, 1, itemText->v.Ptr(), -1);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 
@@ -239,7 +261,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeIte
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<TreeItem> item;
 	NN<TreeItem> nnparent;
 	GtkTreeIter *parentIter = 0;
@@ -257,7 +279,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	{
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
-	gtk_tree_store_set(data->treeStore, iter, 0, itemText.v.Ptr(), -1);
+	gtk_tree_store_set(data->treeStore, iter, 0, false, 1, itemText.v.Ptr(), -1);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 
@@ -274,7 +296,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 
 AnyType UI::GUITreeView::RemoveItem(NN<TreeItem> item)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
@@ -292,7 +314,7 @@ AnyType UI::GUITreeView::RemoveItem(NN<TreeItem> item)
 
 void UI::GUITreeView::ClearItems()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	gtk_tree_store_clear(data->treeStore);
 	FreeItems();
 }
@@ -309,7 +331,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UIntOS index)
 
 void UI::GUITreeView::ExpandItem(NN<TreeItem> item)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 	gtk_tree_view_expand_row((GtkTreeView*)data->treeView, path, false);
 	gtk_tree_path_free(path);
@@ -317,7 +339,7 @@ void UI::GUITreeView::ExpandItem(NN<TreeItem> item)
 
 Bool UI::GUITreeView::IsExpanded(NN<TreeItem> item)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
 	Bool ret = gtk_tree_view_row_expanded((GtkTreeView*)data->treeView, path);
 	gtk_tree_path_free(path);
@@ -326,21 +348,38 @@ Bool UI::GUITreeView::IsExpanded(NN<TreeItem> item)
 
 Bool UI::GUITreeView::IsChecked(NN<TreeItem> item)
 {
-	return false;
+	NN<ClassData> data = this->clsData;
+	gboolean checked;
+	gtk_tree_model_get((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p, 0, &checked, -1);
+	return checked;
 }
 
 void UI::GUITreeView::SetChecked(NN<TreeItem> item, Bool checked)
 {
+	NN<ClassData> data = this->clsData;
+	gtk_tree_store_set(data->treeStore, (GtkTreeIter*)item->GetHItem().p, 0, checked, -1);
 }
 
 void UI::GUITreeView::SetHasLines(Bool hasLines)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	gtk_tree_view_set_enable_tree_lines((GtkTreeView*)data->treeView, hasLines);
 }
 
 void UI::GUITreeView::SetHasCheckBox(Bool hasCheckBox)
 {
+	NN<ClassData> data = this->clsData;
+	if (hasCheckBox)
+	{
+		GtkCellRenderer *renderer = gtk_cell_renderer_toggle_new();
+		gtk_tree_view_column_pack_start(data->chkCol, renderer, false);
+		gtk_tree_view_column_add_attribute(data->chkCol, renderer, "active", 0);
+		g_signal_connect(renderer, "toggled", G_CALLBACK(GUITreeView_OnItemToggled), data.Ptr());
+	}
+	else
+	{
+		gtk_tree_view_column_clear(data->chkCol);
+	}
 }
 
 void UI::GUITreeView::SetHasButtons(Bool hasButtons)
@@ -351,7 +390,7 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 {
 }
 
-Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeView::ClassData *data, GtkTreePath *selPath, NN<UI::GUITreeView::TreeItem> item)
+Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchItemChild(NN<UI::GUITreeView::ClassData> data, GtkTreePath *selPath, NN<UI::GUITreeView::TreeItem> item)
 {
 	UIntOS i = item->GetChildCount();
 	GtkTreePath *itemPath;
@@ -366,7 +405,7 @@ Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeV
 				gtk_tree_path_free(itemPath);
 				return child;
 			}
-			if (GUITreeView_SearchChildSelected(data, selPath, child).SetTo(child))
+			if (GUITreeView_SearchItemChild(data, selPath, child).SetTo(child))
 			{
 				gtk_tree_path_free(itemPath);
 				return child;
@@ -377,38 +416,42 @@ Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeV
 	return nullptr;
 }
 
+Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchItem(NN<UI::GUITreeView::ClassData> data, GtkTreePath *selPath, NN<Data::ArrayListNN<UI::GUITreeView::TreeItem>> items)
+{
+	GtkTreePath *itemPath;
+	UIntOS i = 0;
+	UIntOS j = items->GetCount();
+	NN<UI::GUITreeView::TreeItem> item;
+	while (i < j)
+	{
+		item = items->GetItemNoCheck(i);
+		itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
+		if (gtk_tree_path_compare(selPath, itemPath) == 0)
+		{
+			gtk_tree_path_free(itemPath);
+			return item;
+		}
+		if (GUITreeView_SearchItemChild(data, selPath, item).SetTo(item))
+		{
+			gtk_tree_path_free(itemPath);
+			return item;
+		}
+		gtk_tree_path_free(itemPath);
+	}
+	return nullptr;
+}
+
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(sel, 0, &iter))
 	{
 		GtkTreePath *selPath = gtk_tree_model_get_path(GTK_TREE_MODEL(data->treeStore), &iter);
-		GtkTreePath *itemPath;
-		UIntOS i = 0;
-		UIntOS j = this->treeItems.GetCount();
-		NN<UI::GUITreeView::TreeItem> item;
-		while (i < j)
-		{
-			item = this->treeItems.GetItemNoCheck(i);
-			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem().p);
-			if (gtk_tree_path_compare(selPath, itemPath) == 0)
-			{
-				gtk_tree_path_free(itemPath);
-				gtk_tree_path_free(selPath);
-				return item;
-			}
-			if (GUITreeView_SearchChildSelected(data, selPath, item).SetTo(item))
-			{
-				gtk_tree_path_free(itemPath);
-				gtk_tree_path_free(selPath);
-				return item;
-			}
-			gtk_tree_path_free(itemPath);
-		}
+		Optional<TreeItem> item = GUITreeView_SearchItem(data, selPath, this->treeItems);
 		gtk_tree_path_free(selPath);
-		return nullptr;
+		return item;
 	}
 	else
 	{
@@ -432,6 +475,20 @@ Text::CStringNN UI::GUITreeView::GetObjectClass() const
 
 IntOS UI::GUITreeView::OnNotify(UInt32 code, IntOS lParam)
 {
+	if (code == ITEM_TOGGLE_CODE)
+	{
+		if (this->treeItems.GetCount() == 0)
+			return 0;
+		GtkTreeIter *iter = (GtkTreeIter*)lParam;
+		GtkTreePath *selPath = gtk_tree_model_get_path(GTK_TREE_MODEL(this->clsData->treeStore), iter);
+		Optional<TreeItem> item = GUITreeView_SearchItem(this->clsData, selPath, this->treeItems);
+		gtk_tree_path_free(selPath);
+		NN<TreeItem> nnitem;
+		if (item.SetTo(nnitem))
+		{
+			this->EventItemCheckedChg(nnitem, this->IsChecked(nnitem));
+		}
+	}
 	return 0;
 }
 

@@ -262,6 +262,19 @@ Text::CStringNN Text::XMLReader::GetElementName() const
 	}
 }
 
+Text::CStringNN Text::XMLReader::GetElementNameWithNS() const
+{
+	NN<Text::String> s;
+	if ((this->nt == Text::XMLNode::NodeType::Element || this->nt == Text::XMLNode::NodeType::ElementEnd) && this->nodeText.SetTo(s))
+	{
+		return s->ToCString();
+	}
+	else
+	{
+		return CSTR("");
+	}
+}
+
 UIntOS Text::XMLReader::GetAttribCount() const
 {
 	return this->attrList.GetCount();

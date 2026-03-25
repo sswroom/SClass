@@ -8,6 +8,7 @@ namespace Text
 	{
 	public:
 		static UInt32 ParseColor(Text::CStringNN colorStr);
+		static UInt32 ParseColor(Text::CStringNN colorStr, Double opacity);
 		static Double FontSizeToPx(Text::CStringNN fontSizeStr, Double parentFontSizePx);
 	};
 }
