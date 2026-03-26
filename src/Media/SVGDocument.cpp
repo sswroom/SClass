@@ -8,21 +8,27 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
 	if (this->id.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', level << 1);
 		sb->AppendC(UTF8STRC(" id=\""));
 		sb->Append(s);
 		sb->AppendUTF8Char('\"');
 	}
 	if (this->spacePreserve)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', level << 1);
 		sb->AppendC(UTF8STRC(" xml:space=\"preserve\""));
 	}
 	if (this->lineCap != SVGLineCap::Default)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', level << 1);
 		sb->AppendC(UTF8STRC(" stroke-linecap=\""));
 		switch (this->lineCap)
 		{
@@ -43,6 +49,8 @@ void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->lineJoin != SVGLineJoin::Default)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', level << 1);
 		sb->AppendC(UTF8STRC(" stroke-linejoin=\""));
 		switch (this->lineJoin)
 		{
@@ -63,6 +71,8 @@ void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->inkscapeLabel.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', level << 1);
 		sb->AppendC(UTF8STRC(" inkscape:label="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -90,18 +100,35 @@ Media::SVGLine::~SVGLine()
 {
 }
 
-void Media::SVGLine::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGLine::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<line x1=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<line"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" x1=\""));
 	sb->AppendDouble(this->pt1.x);
-	sb->AppendC(UTF8STRC("\" y1=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" y1=\""));
 	sb->AppendDouble(this->pt1.y);
-	sb->AppendC(UTF8STRC("\" x2=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" x2=\""));
 	sb->AppendDouble(this->pt2.x);
-	sb->AppendC(UTF8STRC("\" y2=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" y2=\""));
 	sb->AppendDouble(this->pt2.y);
+	sb->AppendUTF8Char('\"');
 	SVGCore::WriteAttrPen(sb, this->pen);
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -119,9 +146,16 @@ void Media::SVGPolyline::AddPoint(Math::Coord2DDbl pt)
 	this->points.Add(pt);
 }
 
-void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<polyline points=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<polyline"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" points=\""));
 	if (this->points.GetCount() > 0)
 	{
 		UIntOS i = 1;
@@ -139,7 +173,7 @@ void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	sb->AppendUTF8Char('\"');
 	SVGCore::WriteAttrPen(sb, this->pen);
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -158,9 +192,16 @@ void Media::SVGPolygon::AddPoint(Math::Coord2DDbl pt)
 	this->points.Add(pt);
 }
 
-void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<polygon points=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<polygon"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" points=\""));
 	if (this->points.GetCount() > 0)
 	{
 		UIntOS i = 1;
@@ -179,7 +220,7 @@ void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('\"');
 	SVGCore::WriteAttrPen(sb, this->pen);
 	SVGCore::WriteAttrBrush(sb, this->brush);
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -197,23 +238,43 @@ Media::SVGRect::~SVGRect()
 {
 }
 
-void Media::SVGRect::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGRect::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<rect x=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<rect"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" x=\""));
 	sb->AppendDouble(this->tl.x);
-	sb->AppendC(UTF8STRC("\" y=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" y=\""));
 	sb->AppendDouble(this->tl.y);
-	sb->AppendC(UTF8STRC("\" width=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" width=\""));
 	sb->AppendDouble(this->size.x);
-	sb->AppendC(UTF8STRC("\" height=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" height=\""));
 	sb->AppendDouble(this->size.y);
 	sb->AppendUTF8Char('\"');
 	if (this->insensitive)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" sodipodi:insensitive=\"true\""));
 	}
 	if (this->stylePen || this->styleBrush)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" style=\""));
 		Bool hasOtherStyle = false;
 		if (this->stylePen)
@@ -231,7 +292,7 @@ void Media::SVGRect::ToString(NN<Text::StringBuilderUTF8> sb) const
 		SVGCore::WriteAttrPen(sb, this->pen);
 		SVGCore::WriteAttrBrush(sb, this->brush);
 	}
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -253,19 +314,36 @@ Media::SVGEllipse::~SVGEllipse()
 {
 }
 
-void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<ellipse cx=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<ellipse"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" cx=\""));
 	sb->AppendDouble(this->center.x);
-	sb->AppendC(UTF8STRC("\" cy=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" cy=\""));
 	sb->AppendDouble(this->center.y);
-	sb->AppendC(UTF8STRC("\" rx=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" rx=\""));
 	sb->AppendDouble(this->radius.x);
-	sb->AppendC(UTF8STRC("\" ry=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" ry=\""));
 	sb->AppendDouble(this->radius.y);
+	sb->AppendUTF8Char('\"');
 	SVGCore::WriteAttrPen(sb, this->pen);
 	SVGCore::WriteAttrBrush(sb, this->brush);
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -279,7 +357,7 @@ Media::SVGStaticText::~SVGStaticText()
 	this->text->Release();
 }
 
-void Media::SVGStaticText::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGStaticText::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s = Text::XML::ToNewXMLText(this->text->v);
 	sb->Append(s);
@@ -307,20 +385,27 @@ Media::SVGTSpan::~SVGTSpan()
 	this->text->Release();
 }
 
-void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	sb->AppendC(UTF8STRC("<tspan"));
 	NN<Text::String> s;
 	if (!Math::IsNAN(this->offset.x) && !Math::IsNAN(this->offset.y))
 	{
-		sb->AppendC(UTF8STRC("\r\n x=\""));
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
+		sb->AppendC(UTF8STRC(" x=\""));
 		sb->AppendDouble(this->offset.x);
-		sb->AppendC(UTF8STRC("\"\r\n y=\""));
+		sb->AppendUTF8Char('\"');
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
+		sb->AppendC(UTF8STRC(" y=\""));
 		sb->AppendDouble(this->offset.y);
-		sb->AppendC(UTF8STRC("\""));
+		sb->AppendUTF8Char('\"');
 	}
 	if (this->id.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" id="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -329,6 +414,8 @@ void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->sodipodiRole.SetTo(s))
 	{
 		sb->AppendC(UTF8STRC(" sodipodi:role="));
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
 		s->Release();
@@ -337,6 +424,8 @@ void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb) const
 	NN<SVGFont> font;
 	if ((this->stylePen && this->pen.NotNull()) || (this->styleBrush && this->brush.NotNull()) || (this->styleFont && this->font.NotNull()))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" style=\""));
 		Bool hasOtherStyle = false;
 		if (this->stylePen && this->pen.NotNull())
@@ -434,22 +523,36 @@ void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCen
 	this->SetTransform(sb.ToCString());
 }
 
-void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
-	sb->AppendC(UTF8STRC("<text x=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<text"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" x=\""));
 	sb->AppendDouble(this->tl.x);
-	sb->AppendC(UTF8STRC("\" y=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" y=\""));
 	sb->AppendDouble(this->tl.y);
-	sb->AppendC(UTF8STRC("\""));
+	sb->AppendUTF8Char('\"');
 	if (this->transform.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" transform=\""));
 		sb->Append(s);
-		sb->AppendC(UTF8STRC("\""));
+		sb->AppendUTF8Char('\"');
 	}
 	if (this->insensitive)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" sodipodi:insensitive=\"true\""));
 	}
 	if (!this->styleFont)
@@ -466,20 +569,26 @@ void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (!Math::IsNAN(this->inkscapeTransformCenterX))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" inkscape:transform-center-x=\""));
 		sb->AppendDouble(this->inkscapeTransformCenterX);
 		sb->AppendUTF8Char('\"');
 	}
 	if (!Math::IsNAN(this->inkscapeTransformCenterY))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" inkscape:transform-center-y=\""));
 		sb->AppendDouble(this->inkscapeTransformCenterY);
 		sb->AppendUTF8Char('\"');
 	}
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	if (this->styleFont || this->styleBrush || (this->stylePen && this->pen.NotNull()))
 	{
 		NN<Text::String> s;
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" style=\""));
 		Bool hasOtherStyle = false;
 		if (this->styleFont)
@@ -551,7 +660,7 @@ void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UIntOS j = this->components.GetCount();
 	while (i < j)
 	{
-		this->components.GetItemNoCheck(i)->ToString(sb);
+		this->components.GetItemNoCheck(i)->ToString(sb, level + 1);
 		i++;
 	}
 	sb->AppendC(UTF8STRC("</text>"));
@@ -574,37 +683,62 @@ Media::SVGImage::~SVGImage()
 	OPTSTR_DEL(this->style);
 }
 
-void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<image x=\""));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<image"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" x=\""));
 	sb->AppendDouble(this->tl.x);
-	sb->AppendC(UTF8STRC("\" y=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" y=\""));
 	sb->AppendDouble(this->tl.y);
-	sb->AppendC(UTF8STRC("\" width=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" width=\""));
 	sb->AppendDouble(this->size.x);
-	sb->AppendC(UTF8STRC("\" height=\""));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" height=\""));
 	sb->AppendDouble(this->size.y);
-	sb->AppendC(UTF8STRC("\" xlink:href="));
+	sb->AppendUTF8Char('\"');
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" xlink:href="));
 	NN<Text::String> s = Text::XML::ToNewAttrText(this->href->v);
 	sb->Append(s);
 	s->Release();
 	if (this->insensitive)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" sodipodi:insensitive=\"true\""));
 	}
 	if (this->preserveAspectRatio.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" preserveAspectRatio=\""));
 		sb->Append(s);
 		sb->AppendUTF8Char('\"');
 	}
 	if (this->style.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" style=\""));
 		sb->Append(s);
 		sb->AppendUTF8Char('\"');
 	}
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
@@ -620,49 +754,66 @@ Media::SVGPath::~SVGPath()
 	this->d->Release();
 }
 
-void Media::SVGPath::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGPath::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<path d="));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendC(UTF8STRC("<path"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" d="));
 	NN<Text::String> s = Text::XML::ToNewAttrText(this->d->v);
 	sb->Append(s);
 	s->Release();
 	SVGCore::WriteAttrPen(sb, this->pen);
 	SVGCore::WriteAttrBrush(sb, this->brush);
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGTitle::SVGTitle(NN<SVGContainer> parent, Text::CStringNN title) : SVGElement(parent)
+Media::SVGTitle::SVGTitle(NN<SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title) : SVGElement(parent)
 {
+	this->eleName = Text::String::New(eleName);
 	this->title = Text::String::New(title);
 }
 
 Media::SVGTitle::~SVGTitle()
 {
+	this->eleName->Release();
 	this->title->Release();
 }
 
-void Media::SVGTitle::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGTitle::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
-	sb->AppendC(UTF8STRC("<title>"));
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
+	sb->AppendUTF8Char('<');
+	sb->Append(this->eleName);
+	sb->AppendUTF8Char('>');
 	NN<Text::String> s = Text::XML::ToNewXMLText(this->title->v);
 	sb->Append(s);
 	s->Release();
-	sb->AppendC(UTF8STRC("</title>"));
+	sb->AppendC(UTF8STRC("</"));
+	sb->Append(this->eleName);
+	sb->AppendUTF8Char('>');
 	if (!this->IsSpacePreserve())
 	{
 		sb->AppendUTF8Char('\n');
 	}
 }
 
-void Media::SVGContainer::ToInnerString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGContainer::ToInnerString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	Bool spacePreserve = this->IsSpacePreserve();
 	UIntOS i = 0;
 	UIntOS j = this->elements.GetCount();
 	while (i < j)
 	{
-		this->elements.GetItemNoCheck(i)->ToString(sb);
+		this->elements.GetItemNoCheck(i)->ToString(sb, level);
 		if (!spacePreserve)
 		{
 			sb->AppendUTF8Char('\n');
@@ -1200,10 +1351,14 @@ Media::SVGDefs::~SVGDefs()
 {
 }
 
-void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
 	sb->AppendC(UTF8STRC("<defs"));
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	if (this->elements.GetCount() == 0)
 	{
 		sb->AppendC(UTF8STRC(" />"));
@@ -1214,7 +1369,7 @@ void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb) const
 	{
 		sb->AppendUTF8Char('\n');
 	}
-	this->ToInnerString(sb);
+	this->ToInnerString(sb, level + 1);
 	sb->AppendC(UTF8STRC("</defs>"));
 }
 
@@ -1228,13 +1383,37 @@ Media::SVGGroup::~SVGGroup()
 	OPTSTR_DEL(this->clipPath);
 }
 
-void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
 	sb->AppendC(UTF8STRC("<g"));
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
+	if (this->inkscapeGroupmode.SetTo(s))
+	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
+		sb->AppendC(UTF8STRC(" inkscape:groupmode="));
+		s = Text::XML::ToNewAttrText(s->v);
+		sb->Append(s);
+		s->Release();
+	}
+	if (this->style.SetTo(s))
+	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
+		sb->AppendC(UTF8STRC(" style="));
+		s = Text::XML::ToNewAttrText(s->v);
+		sb->Append(s);
+		s->Release();
+	}
 	if (this->clipPath.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" clip-path="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -1247,7 +1426,7 @@ void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	sb->AppendUTF8Char('>');
 	if (!this->IsSpacePreserve()) sb->AppendUTF8Char('\n');
-	this->ToInnerString(sb);
+	this->ToInnerString(sb, level + 1);
 	sb->AppendC(UTF8STRC("</g>"));
 }
 
@@ -1274,15 +1453,21 @@ Text::CStringNN Media::SVGUnknown::GetElementName() const
 	return this->name->ToCString();
 }
 
-void Media::SVGUnknown::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGUnknown::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
 	sb->AppendC(UTF8STRC("<"));
 	sb->Append(this->name);
 	UIntOS i = 0;
 	UIntOS j = this->attrNames.GetCount();
 	while (i < j)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendUTF8Char(' ');
 		sb->Append(this->attrNames.GetItemNoCheck(i));
 		sb->AppendUTF8Char('=');
@@ -1317,15 +1502,21 @@ Text::CStringNN Media::SVGUnknownContainer::GetElementName() const
 	return this->name->ToCString();
 }
 
-void Media::SVGUnknownContainer::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGUnknownContainer::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
+	if (!this->IsSpacePreserve())
+	{
+		sb->AppendChar(' ', level << 1);
+	}
 	sb->AppendC(UTF8STRC("<"));
 	sb->Append(this->name);
 	UIntOS i = 0;
 	UIntOS j = this->attrNames.GetCount();
 	while (i < j)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendUTF8Char(' ');
 		sb->Append(this->attrNames.GetItemNoCheck(i));
 		sb->AppendUTF8Char('=');
@@ -1336,7 +1527,7 @@ void Media::SVGUnknownContainer::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	sb->AppendUTF8Char('>');
 	if (!this->IsSpacePreserve()) sb->AppendUTF8Char('\n');
-	this->ToInnerString(sb);
+	this->ToInnerString(sb, level + 1);
 	sb->AppendC(UTF8STRC("</"));
 	sb->Append(this->name);
 	sb->AppendUTF8Char('>');
@@ -1515,13 +1706,18 @@ void Media::SVGDocument::SetXMLNSXLink(Bool xmlnsXlink)
 	this->xmlnsXlink = xmlnsXlink;
 }
 
-void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"));
-	sb->AppendC(UTF8STRC("<svg xmlns=\"http://www.w3.org/2000/svg\""));
+	sb->AppendC(UTF8STRC("<svg"));
+	sb->AppendUTF8Char('\n');
+	sb->AppendChar(' ', (level + 1) << 1);
+	sb->AppendC(UTF8STRC(" xmlns=\"http://www.w3.org/2000/svg\""));
 	if (this->version.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" version="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -1529,6 +1725,8 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->width > 0)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" width=\""));
 		sb->AppendUIntOS(this->width);
 		sb->Append(Math::Unit::Distance::GetUnitShortName(this->unit));
@@ -1536,6 +1734,8 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->height > 0)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" height=\""));
 		sb->AppendUIntOS(this->height);
 		sb->Append(Math::Unit::Distance::GetUnitShortName(this->unit));
@@ -1543,6 +1743,8 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->viewBox.GetWidth() > 0 && this->viewBox.GetHeight() > 0)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" viewBox=\""));
 		sb->AppendIntOS(this->viewBox.min.x);
 		sb->AppendC(UTF8STRC(" "));
@@ -1555,6 +1757,8 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->inkscapeVersion.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" inkscape:version="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -1562,6 +1766,8 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->sodipodiDocname.SetTo(s))
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" sodipodi:docname="));
 		s = Text::XML::ToNewAttrText(s->v);
 		sb->Append(s);
@@ -1569,36 +1775,50 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 	if (this->xmlnsInkscape)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\""));
 	}
 	if (this->xmlnsSodipodi)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""));
 	}
 	if (this->xmlnsSvg)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:svg=\"http://www.w3.org/2000/svg\""));
 	}
 	if (this->xmlnsXlink)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:xlink=\"http://www.w3.org/1999/xlink\""));
 	}
 	if (this->xmlnsRdf)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""));
 	}
 	if (this->xmlnsCc)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:cc=\"http://creativecommons.org/ns#\""));
 	}
 	if (this->xmlnsDc)
 	{
+		sb->AppendUTF8Char('\n');
+		sb->AppendChar(' ', (level + 1) << 1);
 		sb->AppendC(UTF8STRC(" xmlns:dc=\"http://purl.org/dc/elements/1.1/\""));
 	}
-	this->AppendEleAttr(sb);
+	this->AppendEleAttr(sb, level + 1);
 	sb->AppendUTF8Char('>');
 	if (!this->IsSpacePreserve()) sb->AppendUTF8Char('\n');
-	this->ToInnerString(sb);
+	this->ToInnerString(sb, level + 1);
 	sb->AppendC(UTF8STRC("</svg>"));
 }
 
@@ -1984,7 +2204,14 @@ Bool Media::SVGDocument::ParseContainer(NN<SVGContainer> container, NN<Text::XML
 		}
 		else if (eleName->Equals(UTF8STRC("title")))
 		{
-			if (!SVGDocument::ParseTitle(container, reader))
+			if (!SVGDocument::ParseTitle(container, reader, CSTR("title")))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("dc:title")))
+		{
+			if (!SVGDocument::ParseTitle(container, reader, CSTR("dc:title")))
 			{
 				return false;
 			}
@@ -1997,6 +2224,27 @@ Bool Media::SVGDocument::ParseContainer(NN<SVGContainer> container, NN<Text::XML
 			}
 		}
 		else if (eleName->Equals(UTF8STRC("stop")))
+		{
+			if (!SVGDocument::ParseUnknown(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("metadata")))
+		{
+			if (!SVGDocument::ParseUnknown(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("rdf:RDF")))
+		{
+			if (!SVGDocument::ParseUnknown(container, reader))
+			{
+				return false;
+			}
+		}
+		else if (eleName->Equals(UTF8STRC("cc:Work")))
 		{
 			if (!SVGDocument::ParseUnknown(container, reader))
 			{
@@ -2401,6 +2649,8 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 	Optional<Text::String> stroke = nullptr;
 	SVGFillRule fillRule = SVGFillRule::Default;
 	Double strokeWidth = 0;
+	Double fillOpacity = 1.0;
+	Double strokeOpacity = 1.0;
 	UIntOS i = 0;
 	UIntOS j = reader->GetAttribCount();
 	NN<Text::XMLAttrib> attr;
@@ -2442,6 +2692,22 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 			{
 				stroke = value;
 			}
+			else if (name->Equals(UTF8STRC("stroke-opacity")))
+			{
+				if (!value->ToDouble(strokeOpacity))
+				{
+					printf("SVGDocument: Invalid stroke-opacity value in path: %s\r\n", value->v.Ptr());
+					strokeOpacity = 1.0;
+				}
+			}
+			else if (name->Equals(UTF8STRC("fill-opacity")))
+			{
+				if (!value->ToDouble(fillOpacity))
+				{
+					printf("SVGDocument: Invalid fill-opacity value in path: %s\r\n", value->v.Ptr());
+					fillOpacity = 1.0;
+				}
+			}
 			else if (name->Equals(UTF8STRC("stroke-width")))
 			{
 				if (!value->ToDouble(strokeWidth))
@@ -2468,11 +2734,11 @@ Bool Media::SVGDocument::ParsePath(NN<SVGContainer> container, NN<Text::XMLReade
 		NN<SVGBrush> nnbrush;
 		if (stroke.SetTo(s2))
 		{
-			pen = container->NewPenARGB(Text::CSSCore::ParseColor(s2->ToCString()), strokeWidth * container->GetDoc()->GetHDrawScale(), nullptr, 0);
+			pen = container->NewPenARGB(Text::CSSCore::ParseColor(s2->ToCString(), strokeOpacity), strokeWidth * container->GetDoc()->GetHDrawScale(), nullptr, 0);
 		}
 		if (fill.SetTo(s2))
 		{
-			nnbrush = NN<SVGBrush>::ConvertFrom(container->NewBrushARGB(Text::CSSCore::ParseColor(s2->ToCString())));
+			nnbrush = NN<SVGBrush>::ConvertFrom(container->NewBrushARGB(Text::CSSCore::ParseColor(s2->ToCString(), fillOpacity)));
 			nnbrush->SetFillRule(fillRule);
 			brush = nnbrush;
 		}
@@ -2868,7 +3134,7 @@ Bool Media::SVGDocument::ParseText(NN<SVGContainer> container, NN<Text::XMLReade
 			NN<SVGFont> nnfont;
 			NN<SVGText> text;
 			value = Text::String::OrEmpty(fill);
-			nnbrush = NN<SVGBrush>::ConvertFrom(container->NewBrushARGB(Text::CSSCore::ParseColor(value->ToCString())));
+			nnbrush = NN<SVGBrush>::ConvertFrom(container->NewBrushARGB(Text::CSSCore::ParseColor(value->ToCString(), fillOpacity)));
 			nnbrush->SetColorName(value->ToCString());
 			nnfont = NN<SVGFont>::ConvertFrom(container->NewFontPx(Text::String::OrEmpty(fontFamily)->ToCString(), fontSizePx, fontStyle, 0));
 			if (fontSize.SetTo(value))
@@ -2879,6 +3145,14 @@ Bool Media::SVGDocument::ParseText(NN<SVGContainer> container, NN<Text::XMLReade
 			{
 				nnfont->SetInkscapeFont(value->ToCString());
 			}
+			if (fontVariant.SetTo(value))
+			{
+				nnfont->SetFontVariant(value->ToCString());
+			}
+			if (fontStretch.SetTo(value))
+			{
+				nnfont->SetFontStretch(value->ToCString());
+			}
 			NEW_CLASSNN(text, Media::SVGText(container, Math::Coord2DDbl(x, y), nnfont, nnbrush, textComponents.GetItemNoCheck(0)));
 			text->SetSpacePreserve(spacePreserve);
 			if (id.SetTo(value))
@@ -2888,7 +3162,7 @@ Bool Media::SVGDocument::ParseText(NN<SVGContainer> container, NN<Text::XMLReade
 			if (stroke.SetTo(value))
 			{
 				Double strokeWidthPx = strokeWidth * container->GetDoc()->GetHDrawScale();
-				text->SetPen(stylePen, NN<SVGPen>::ConvertFrom(container->NewPenARGB(Text::CSSCore::ParseColor(value->ToCString()), strokeWidthPx, nullptr, 0)));
+				text->SetPen(stylePen, NN<SVGPen>::ConvertFrom(container->NewPenARGB(Text::CSSCore::ParseColor(value->ToCString(), strokeOpacity), strokeWidthPx, nullptr, 0)));
 			}
 			text->SetBrush(styleBrush, nnbrush);
 			text->SetFont(styleFont, nnfont);
@@ -2994,8 +3268,9 @@ Optional<Media::SVGTSpan> Media::SVGDocument::ParseTSpan(NN<SVGContainer> contai
 	Bool styleFont = false;
 	Optional<Text::String> fill = nullptr;
 	Optional<Text::String> stroke = nullptr;
-	Double fillOpacity = NAN;
+	Double fillOpacity = 1.0;
 	Double strokeWidth = NAN;
+	Double strokeOpacity = 1.0;
 	DrawEngine::DrawFontStyle fontStyle = DrawEngine::DFS_NORMAL;
 	Optional<Text::String> fontFamily = nullptr;
 	Optional<Text::String> fontVariant = nullptr;
@@ -3184,11 +3459,7 @@ Optional<Media::SVGTSpan> Media::SVGDocument::ParseTSpan(NN<SVGContainer> contai
 	if (fill.SetTo(value))
 	{
 		NN<SVGBrush> nnbrush;
-		UInt32 argb = Text::CSSCore::ParseColor(value->ToCString());
-		if (!Math::IsNAN(fillOpacity))
-		{
-			argb = (argb & 0x00FFFFFF) | ((UInt32)(fillOpacity * 255) << 24);
-		}
+		UInt32 argb = Text::CSSCore::ParseColor(value->ToCString(), fillOpacity);
 		NEW_CLASSNN(nnbrush, SVGBrush(argb));
 		nnbrush->SetColorName(value->ToCString());
 		tspan->SetBrush(styleBrush, nnbrush);
@@ -3197,7 +3468,7 @@ Optional<Media::SVGTSpan> Media::SVGDocument::ParseTSpan(NN<SVGContainer> contai
 	if (stroke.SetTo(value))
 	{
 		NN<SVGPen> nnpen;
-		NEW_CLASSNN(nnpen, SVGPen(strokeWidth * container->GetDoc()->GetHDrawScale(),Text::CSSCore::ParseColor(value->ToCString())));
+		NEW_CLASSNN(nnpen, SVGPen(strokeWidth * container->GetDoc()->GetHDrawScale(),Text::CSSCore::ParseColor(value->ToCString(), strokeOpacity)));
 		nnpen->SetColorName(value->ToCString());
 		tspan->SetPen(stylePen, nnpen);
 		stylePen = true;
@@ -3385,7 +3656,7 @@ Bool Media::SVGDocument::ParseImage(NN<SVGContainer> container, NN<Text::XMLRead
 	return true;
 }
 
-Bool Media::SVGDocument::ParseTitle(NN<SVGContainer> container, NN<Text::XMLReader> reader)
+Bool Media::SVGDocument::ParseTitle(NN<SVGContainer> container, NN<Text::XMLReader> reader, Text::CStringNN eleName)
 {
 	Optional<Text::String> id = nullptr;
 	UIntOS i = 0;
@@ -3424,7 +3695,7 @@ Bool Media::SVGDocument::ParseTitle(NN<SVGContainer> container, NN<Text::XMLRead
 	else
 	{
 		NN<SVGTitle> title;
-		NEW_CLASSNN(title, SVGTitle(container, sb.ToCString()));
+		NEW_CLASSNN(title, SVGTitle(container, eleName, sb.ToCString()));
 		if (id.SetTo(value))
 		{
 			title->SetID(value->ToCString());

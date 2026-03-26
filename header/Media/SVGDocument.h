@@ -22,7 +22,7 @@ namespace Media
 		SVGLineJoin lineJoin;
 		Bool spacePreserve;
 
-		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb) const;
+		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	public:
 		SVGElement(Optional<SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; this->spacePreserve = false; this->inkscapeLabel = nullptr; }
 		virtual ~SVGElement() { OPTSTR_DEL(this->id); OPTSTR_DEL(this->inkscapeLabel); }
@@ -70,7 +70,7 @@ namespace Media
 
 		virtual Bool IsContainer() const { return false; }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
 	};
 
 	class SVGLine : public SVGElement
@@ -85,7 +85,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("line"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGPolyline : public SVGElement
@@ -100,7 +100,7 @@ namespace Media
 		virtual Text::CStringNN GetElementName() const { return CSTR("polyline"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGPolygon : public SVGElement
@@ -116,7 +116,7 @@ namespace Media
 		virtual Text::CStringNN GetElementName() const { return CSTR("polygon"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGRect : public SVGElement
@@ -135,7 +135,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("rect"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		void SetStyle(Bool stylePen, Bool styleBrush);
 		void SetInsensitive(Bool insensitive) { this->insensitive = insensitive; }
 		Double GetWidth() const { return this->size.x; }
@@ -158,7 +158,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("ellipse"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGTextComponent
@@ -170,7 +170,7 @@ namespace Media
 
 		NN<Text::String> GetText() const { return this->text; }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
 	};
 
 	class SVGStaticText : public SVGTextComponent
@@ -179,7 +179,7 @@ namespace Media
 		SVGStaticText(Text::CStringNN text);
 		virtual ~SVGStaticText();
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGTSpan : public SVGTextComponent
@@ -205,7 +205,7 @@ namespace Media
 		void SetID(Text::CStringNN id) { OPTSTR_DEL(this->id); this->id = Text::String::New(id); }
 		void SetSodipodiRole(Text::CStringNN sodipodiRole) { OPTSTR_DEL(this->sodipodiRole); this->sodipodiRole = Text::String::New(sodipodiRole); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGText : public SVGElement
@@ -261,7 +261,7 @@ namespace Media
 		void SetInkscapeTransformCenter(Math::Coord2DDbl center) { this->inkscapeTransformCenterX = center.x; this->inkscapeTransformCenterY = center.y; }
 		Optional<SVGPen> GetPen() const { return this->pen; }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGImage : public SVGElement
@@ -282,7 +282,7 @@ namespace Media
 		void SetPreserveAspectRatio(Text::CStringNN preserveAspectRatio) { OPTSTR_DEL(this->preserveAspectRatio); this->preserveAspectRatio = Text::String::New(preserveAspectRatio); }
 		void SetStyle(Text::CStringNN style) { OPTSTR_DEL(this->style); this->style = Text::String::New(style); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGPath : public SVGElement
@@ -297,20 +297,21 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("path"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGTitle : public SVGElement
 	{
 	private:
+		NN<Text::String> eleName;
 		NN<Text::String> title;
 	public:
-		SVGTitle(NN<SVGContainer> parent, Text::CStringNN title);
+		SVGTitle(NN<SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title);
 		virtual ~SVGTitle();
 
-		virtual Text::CStringNN GetElementName() const { return CSTR("title"); }
+		virtual Text::CStringNN GetElementName() const { return this->eleName->ToCString(); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGContainer : public SVGElement, public DrawImage
@@ -323,7 +324,7 @@ namespace Media
 		Optional<Text::String> style;
 		Math::RectAreaDbl drawRect;
 
-		void ToInnerString(NN<Text::StringBuilderUTF8> sb) const;
+		void ToInnerString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	public:
 		SVGContainer(Optional<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGContainer();
@@ -424,7 +425,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("defs"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 	};
 
 	class SVGGroup : public SVGContainer
@@ -437,7 +438,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("g"); }
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		void SetClipPath(Text::CStringNN clipPath);
 	};
 
@@ -453,7 +454,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const;
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 
 		void AddAttr(Text::CStringNN name, Text::CStringNN value);
 	};
@@ -471,7 +472,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const;
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 
 		void AddAttr(Text::CStringNN name, Text::CStringNN value);
 	};
@@ -521,7 +522,8 @@ namespace Media
 		Math::Coord2DDbl GetDrawScale();
 		void SetXMLNSXLink(Bool xmlnsXlink);
 
-		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const { this->ToString(sb, 0); }
 
 		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
 		Optional<SVGElement> GetElementById(Text::CStringNN id) const;
@@ -539,7 +541,7 @@ namespace Media
 		static Bool ParseText(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Optional<SVGTSpan> ParseTSpan(NN<SVGContainer> container, NN<Text::XMLReader> reader, Double parentFontSize);
 		static Bool ParseImage(NN<SVGContainer> container, NN<Text::XMLReader> reader);
-		static Bool ParseTitle(NN<SVGContainer> container, NN<Text::XMLReader> reader);
+		static Bool ParseTitle(NN<SVGContainer> container, NN<Text::XMLReader> reader, Text::CStringNN eleName);
 		static Bool ParseUnknown(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 		static Bool ParseUnknownContainer(NN<SVGContainer> container, NN<Text::XMLReader> reader);
 	};

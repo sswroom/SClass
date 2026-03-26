@@ -1345,7 +1345,7 @@ Int32 SVGTest()
 	{
 		Text::StringBuilderUTF8 sb;
 		svgDoc->ToString(sb);
-//		printf("%s\r\n", sb.v.Ptr());
+		//printf("%s\r\n", sb.v.Ptr());
 		svgDoc.Delete();
 	}
 	deng.Delete();
