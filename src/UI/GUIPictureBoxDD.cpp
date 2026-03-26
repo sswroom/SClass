@@ -87,7 +87,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 
 		IntOS bpl;
 		UnsafeArray<UInt8> dptr;
-		if (!img->IsRaster())
+		if (img->GetImageType() == Media::ImageType::Vector)
 		{
 			NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(img);
 			NN<Media::DrawEngine> deng = vimg->GetDrawEngine();
@@ -109,6 +109,10 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 				}
 				deng->DeleteImage(dimg);
 			}
+		}
+		else if (img->GetImageType() == Media::ImageType::SVG)
+		{
+			///////////////////////////////////////////
 		}
 		else if (this->imgBuff.SetTo(imgBuff) && !this->currImage.IsNull())
 		{
@@ -231,7 +235,7 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 	//	Double outH;
 		Double srcW = UIntOS2Double(this->currImageSize.x);
 		Double srcH = UIntOS2Double(this->currImageSize.y);
-		if (img->IsRaster())
+		if (img->GetImageType() == Media::ImageType::Raster)
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
 			if (srcW * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
@@ -471,7 +475,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameIm
 	NN<Media::Image> img;
 	if (this->currImage.SetTo(img))
 	{
-		if (img->IsRaster())
+		if (img->GetImageType() == Media::ImageType::Raster)
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
 			Media::RotateType rotType = Media::RotateType::None;
@@ -576,7 +580,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM
 	NN<Media::RasterImage> rimg;
 	NN<Media::CS::CSConverter> csconv;
 	UnsafeArray<UInt8> thisImgBuff;
-	if (this->currImage.SetTo(img) && img->IsRaster() && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
+	if (this->currImage.SetTo(img) && img->GetImageType() == Media::ImageType::Raster && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
 		rimg = NN<Media::RasterImage>::ConvertFrom(img);
 		Media::RotateType rotType = Media::RotateType::None;
@@ -635,7 +639,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM
 	NN<Media::Image> img;
 	NN<Media::RasterImage> rimg;
 	UnsafeArray<UInt8> thisImgBuff;
-	if (this->currImage.SetTo(img) && img->IsRaster() && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
+	if (this->currImage.SetTo(img) && img->GetImageType() == Media::ImageType::Raster && this->csconv.SetTo(csconv) && this->imgBuff.SetTo(thisImgBuff))
 	{
 		rimg = NN<Media::RasterImage>::ConvertFrom(img);
 		Media::RotateType rotType = Media::RotateType::None;
@@ -1198,7 +1202,7 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 		Double outW;
 	//	Double outH;
 		Math::Size2DDbl srcSize = this->currImageSize.ToDouble();
-		if (img->IsRaster())
+		if (img->GetImageType() == Media::ImageType::Raster)
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
 			if (srcSize.x * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcSize.y)

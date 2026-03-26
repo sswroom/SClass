@@ -3,6 +3,7 @@
 #include "Data/ArrayListA.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Math/Unit/Distance.h"
+#include "Media/Image.h"
 #include "Media/SVGCore.h"
 #include "Text/String.h"
 #include "Text/XMLReader.h"
@@ -477,7 +478,7 @@ namespace Media
 		void AddAttr(Text::CStringNN name, Text::CStringNN value);
 	};
 
-	class SVGDocument : public SVGContainer
+	class SVGDocument : public SVGContainer, public Image
 	{
 	private:
 		UIntOS width;
@@ -527,6 +528,10 @@ namespace Media
 
 		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
 		Optional<SVGElement> GetElementById(Text::CStringNN id) const;
+
+		virtual ImageType GetImageType() const;
+		virtual NN<Media::StaticImage> CreateStaticImage() const;
+		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 
 		static Optional<SVGDocument> ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng);
 		static Optional<SVGDocument> ParseReader(NN<Text::XMLReader> reader, NN<Media::DrawEngine> refEng);

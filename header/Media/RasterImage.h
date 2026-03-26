@@ -44,7 +44,7 @@ namespace Media
 		IntOS GetHotSpotX() const;
 		IntOS GetHotSpotY() const;
 
-		virtual Bool IsRaster() const { return true; }
+		virtual Media::ImageType GetImageType() const { return Media::ImageType::Raster; }
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 		Optional<Media::EXIFData> SetEXIFData(Optional<Media::EXIFData> exif);

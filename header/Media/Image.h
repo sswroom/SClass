@@ -8,12 +8,18 @@
 namespace Media
 {
 	class StaticImage;
+	enum class ImageType
+	{
+		Raster,
+		Vector,
+		SVG
+	};
 	class Image
 	{
 	public:
 		virtual ~Image() {};
 
-		virtual Bool IsRaster() const = 0;
+		virtual ImageType GetImageType() const = 0;
 		virtual NN<Media::StaticImage> CreateStaticImage() const = 0;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const = 0;
 	};

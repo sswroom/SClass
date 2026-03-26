@@ -11,6 +11,7 @@
 #include "Map/OSM/OSMParser.h"
 #include "Math/Math_C.h"
 #include "Media/StaticImage.h"
+#include "Media/SVGDocument.h"
 #include "Media/Jasper/JasperXML.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -174,7 +175,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 							if (nodeText->EqualsICase(UTF8STRC("TRKPT")))
 							{
 								Map::GPSTrack::GPSRecord3 rec;
-								if (ParseGPXPoint(reader, &rec))
+								if (ParseGPXPoint(reader, rec))
 								{
 									track->AddRecord(rec);
 								}
@@ -932,10 +933,15 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		return Media::Jasper::JasperXML::ParseJasperReport(reader, fileName);
 	}
+	else if (nodeText->Equals(UTF8STRC("svg")))
+	{
+//		NN<Media::SVGDocument> svgDoc;
+//		if (Media::SVGDocument::ParseReader(reader,))
+	}
 	return nullptr;
 }
 
-Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
+Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, NN<Map::GPSTrack::GPSRecord3> rec)
 {
 	UIntOS i;
 	UIntOS j;

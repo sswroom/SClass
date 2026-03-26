@@ -163,7 +163,7 @@ namespace Media
 		virtual UIntOS SaveGIF(NN<IO::SeekableStream> stm);
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
 
-		virtual Bool IsRaster() const { return false; }
+		virtual Media::ImageType GetImageType() const { return Media::ImageType::Vector; }
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 

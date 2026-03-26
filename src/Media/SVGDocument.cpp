@@ -1832,6 +1832,29 @@ Optional<Media::SVGElement> Media::SVGDocument::GetElementById(Text::CStringNN i
 	return this->idMap.GetC(id);
 }
 
+Media::ImageType Media::SVGDocument::GetImageType() const
+{
+	return Media::ImageType::SVG;
+}
+
+NN<Media::StaticImage> Media::SVGDocument::CreateStaticImage() const
+{
+	Double w = this->GetWidth();
+	Double h = this->GetHeight();
+	NN<Media::StaticImage> simg;
+	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)w, (UIntOS)h), 0, 32, Media::PixelFormat::PF_B8G8R8A8, 0, srgb, Media::ColorProfile::YUVT_BT709, Media::AlphaType::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	return simg;
+}
+
+NN<Media::StaticImage> Media::SVGDocument::CreateSubImage(Math::RectArea<IntOS> area) const
+{
+	NN<Media::StaticImage> simg;
+	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PixelFormat::PF_B8G8R8A8, 0, srgb, Media::ColorProfile::YUVT_BT709, Media::AlphaType::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	return simg;
+}
+
 Optional<Media::SVGDocument> Media::SVGDocument::ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng)
 {
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
