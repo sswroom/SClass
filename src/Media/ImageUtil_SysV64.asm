@@ -4757,7 +4757,7 @@ _ImageUtil_ConvW16_B8G8R8A8:
 	mov r11,rbx
 	lea rax,[rdx*2]
 	sub r8,rax ;sbpl
-	lea rax,[rcx*4]
+	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
 	
 	align 16

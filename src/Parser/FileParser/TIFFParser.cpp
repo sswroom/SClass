@@ -24,6 +24,7 @@
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/ImageResizer.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/JPEGDecoder.h"
 #include "Media/StaticImage.h"
 #include "Media/TIFFTileMap.h"
@@ -34,6 +35,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
 //https://www.awaresystems.be/imaging/tiff/bigtiff.html
 
 Parser::FileParser::TIFFParser::TIFFParser()
@@ -389,6 +391,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		{
 			valid = false;
 		}
+#if defined(VERBOSE)
+		printf("TIFFParser: Image size = %d x %d, bpp = %d, nChannels = %d, photometricInterpretation = %d, compression = %d, planarConfiguration = %d, sampleFormat = %d, predictor = %d, PF = %s\r\n", imgWidth, imgHeight, bpp, (UInt32)nChannels, photometricInterpretation, compression, planarConfiguration, sampleFormat, predictor, Media::PixelFormatGetName(pf).v.Ptr());
+		if (tileMode)
+		{
+			printf("TIFFParser: Tile size = %d x %d, n = %lld\r\n", tileWidth, tileHeight, nStrip);
+		}
+#endif
 
 		if (compression == 1) // no compression
 		{
@@ -398,6 +407,247 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		}
 		else if (compression == 5) //LZW
 		{
+			if (tileMode)
+			{
+				UIntOS tileBuffBpl = (tileWidth * bpp * nChannels) >> 3;
+				UIntOS tileImgSize = tileBuffBpl * tileHeight;
+				if (photometricInterpretation == 1 || photometricInterpretation == 2)
+				{
+					if (nChannels == 1)
+					{
+						if (bpp == 1)
+						{
+							pf = Media::PF_PAL_W1;
+						}
+						else if (bpp == 2)
+						{
+							pf = Media::PF_PAL_W2;
+						}
+						else if (bpp == 4)
+						{
+							pf = Media::PF_PAL_W4;
+						}
+						else if (bpp == 8)
+						{
+							pf = Media::PF_PAL_W8;
+						}
+						else if (bpp == 16)
+						{
+							pf = Media::PF_LE_W16;
+						}
+					}
+					else if (nChannels == 2)
+					{
+						if (bpp == 16)
+						{
+							pf = Media::PF_W8A8;
+						}
+						else if (bpp == 32)
+						{
+							pf = Media::PF_LE_W16A16;
+						}
+					}
+				}
+				else
+				{
+					valid = false;
+				}
+				if (!valid)
+				{
+					printf("TIFFParser: Unsupported TIFF format for LZW compression in tile mode\r\n");
+				}
+				else
+				{
+#if defined(VERBOSE)
+					printf("TIFFParser: LZW Compression in tile mode\r\n");
+#endif
+					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+					if (nnexif->GetExifItem(34675).SetTo(item))
+					{
+						NN<Media::ICCProfile> icc;
+						if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
+						{
+							icc->GetRedTransferParam(color.GetRTranParam());
+							icc->GetGreenTransferParam(color.GetGTranParam());
+							icc->GetBlueTransferParam(color.GetBTranParam());
+							icc->GetColorPrimaries(color.GetPrimaries());
+							color.SetRAWICC(item->dataBuff.GetOpt<UInt8>().OrNull());
+							icc.Delete();
+						}
+					}
+#if defined(VERBOSE)
+					printf("TIFFParser: Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
+#endif
+					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+					Data::ByteArray imgData = img->GetDataArray();
+					UIntOS tileOfst;
+					UIntOS tileLeng;
+					UIntOS x;
+					UIntOS y;
+					UIntOS bpl = img->GetDataBpl();
+					UIntOS copyWidth;
+					UIntOS copyHeight = tileHeight;
+					UnsafeArray<UInt8> imgPal;
+					Data::ByteBuffer compBuff(stripLengs[0]);
+					Data::ByteBuffer tileBuff(tileImgSize);
+					UIntOS decSize;
+					Data::Compress::LZWDecompressor lzw;
+					x = 0;
+					y = 0;
+					i = 0;
+					while (i < nStrip)
+					{
+						if (nStrip == 1)
+						{
+							tileOfst = stripOfst;
+							tileLeng = stripLeng;
+						}
+						else
+						{
+							tileOfst = stripOfsts[i];
+							tileLeng = stripLengs[i];
+						}
+						if (compBuff.GetSize() < tileLeng)
+						{
+							compBuff.ChangeSizeAndClear(tileLeng);
+						}
+						if (fd->GetRealData(tileOfst, tileLeng, compBuff) == tileLeng)
+						{
+							//printf("InnerImage ofst = %d, leng = %d, jpgLeng = %d\r\n", jpgOfst, stripLengs[i], (UInt32)jpgLeng);
+							if (imgWidth - x < tileWidth)
+							{
+								copyWidth = imgWidth - x;
+							}
+							else
+							{
+								copyWidth = tileWidth;
+							}
+							
+							if (!lzw.Decompress(tileBuff, decSize, compBuff.SubArray(0, tileLeng)) || decSize != tileImgSize)
+							{
+								printf("TIFFParser: InnerImage Error in parsing inner lzw\r\n");
+							}
+							else
+							{
+								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (copyWidth * storeBPP >> 3), copyHeight, (IntOS)tileBuffBpl, (IntOS)bpl);
+							}
+						}
+						else
+						{
+							printf("TIFFParser: Error in reading tile data: %d, %d, ofst: %lld, len: %lld\r\n", (UInt32)x, (UInt32)y, tileOfst, tileLeng);
+						}
+						x += tileWidth;
+						if (x >= imgWidth)
+						{
+							y += tileHeight;
+							x = 0;
+							if (imgHeight - y < tileHeight)
+							{
+								copyHeight = imgHeight - y;
+							}
+						}
+						i++;
+					}
+					if (stripOfsts)
+					{
+						MemFree(stripOfsts);
+					}
+					if (stripLengs)
+					{
+						MemFree(stripLengs);
+					}
+					if (bpp <= 8 && img->pal.SetTo(imgPal))
+					{
+						UIntOS j;
+						if (photometricInterpretation == 3)
+						{
+							j = (UIntOS)1 << bpp;
+							i = 0;
+							UnsafeArray<UInt16> pal;
+							if (nnexif->GetExifUInt16(0x140).SetTo(pal))
+							{
+								while (i < j)
+								{
+									imgPal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+									imgPal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+									imgPal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+									imgPal[(i << 2) + 3] = 0xff;
+									i++;
+								}
+							}
+							else
+							{
+								while (i < j)
+								{
+									imgPal[i << 2] = 0;
+									imgPal[(i << 2) + 1] = 0;
+									imgPal[(i << 2) + 2] = 0;
+									imgPal[(i << 2) + 3] = 0xff;
+									i++;
+								}
+							}
+						}
+						else if (photometricInterpretation == 0) //whiteIsZero
+						{
+							UInt8 v;
+							i = (UIntOS)1 << bpp;
+							j = i - 1;
+							while (i-- > 0)
+							{
+								v = (UInt8)(i * 255 / j);
+								imgPal[i << 2] = v;
+								imgPal[(i << 2) + 1] = v;
+								imgPal[(i << 2) + 2] = v;
+								imgPal[(i << 2) + 3] = 0xff;
+							}
+		
+							imgData = img->GetDataArray();
+							i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
+							while (i-- > 0)
+							{
+								imgData[0] = (UInt8)(255 - imgData[0]);
+								imgData += 1;
+							}
+						}
+						else if (photometricInterpretation == 1) //blackIsZero
+						{
+							UInt8 v;
+							i = (UIntOS)1 << bpp;
+							j = i - 1;
+							while (i-- > 0)
+							{
+								v = (UInt8)(i * 255 / j);
+								imgPal[i << 2] = v;
+								imgPal[(i << 2) + 1] = v;
+								imgPal[(i << 2) + 2] = v;
+								imgPal[(i << 2) + 3] = 0xff;
+							}
+						}
+					}
+					else if (pf == Media::PF_LE_W16)
+					{
+						imgData = img->GetDataArray();
+						i = imgWidth * imgHeight;
+						while (i-- > 0)
+						{
+							WriteUInt16(&imgData[0], ReadMUInt16(&imgData[0]));
+							imgData += 2;
+						}
+					}
+					img->SetEXIFData(nnexif);
+					Double dpi;
+					if ((dpi = nnexif->GetHDPI()) != 0)
+					{
+						img->info.hdpi = dpi;
+					}
+					if ((dpi = nnexif->GetVDPI()) != 0)
+					{
+						img->info.vdpi = dpi;
+					}
+					imgList->AddImage(img, 1000);
+					processed = true;
+				}
+			}
 		}
 		else if (compression == 7) //JPEG
 		{
