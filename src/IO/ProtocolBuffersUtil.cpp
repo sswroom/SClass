@@ -161,7 +161,7 @@ Optional<IO::MemoryStream> IO::ProtocolBuffersUtil::DecompressBlob(Data::ByteArr
 
 Bool IO::ProtocolBuffersUtil::ParseOSMHeader(NN<IO::MemoryStream> blobStm, NN<Map::OSM::OSMData> osmData)
 {
-	UInt64 buffSize;
+	UIntOS buffSize;
 	UnsafeArray<UInt8> buff = blobStm->GetBuff(buffSize);
 	UIntOS ofst = 0;
 	UInt64 v;
@@ -250,7 +250,7 @@ Bool IO::ProtocolBuffersUtil::ParseOSMData(NN<IO::MemoryStream> blobStm, NN<Map:
 	Int64 latOffset = 0;
 	Int64 lonOffset = 0;
 //	Int64 dateGranularity = 1000;
-	UInt64 buffSize;
+	UIntOS buffSize;
 	UnsafeArray<UInt8> buff = blobStm->GetBuff(buffSize);
 	UIntOS ofst = 0;
 	UInt64 v;
