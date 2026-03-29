@@ -691,7 +691,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 			{
 				previewImg2->SetHDPI(dimg->GetHDPI());
 				previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(previewImg2, Math::Coord2DDbl((scnW - previewImg2->GetWidth()) * 0.5, IntOS2Double(i * itemTH - scrPos) + (((Double)itemH - previewImg2->GetHeight()) * 0.5)));
+				Math::Coord2DDbl imgPos = Math::Coord2DDbl((scnW - previewImg2->GetWidth()) * 0.5, IntOS2Double((IntOS)i * (Int32)itemTH - (Int32)scrPos) + (((Double)itemH - previewImg2->GetHeight()) * 0.5));
+				dimg->DrawImagePt(previewImg2, imgPos);
 			}
 			if (status->fileName.leng > 0)
 			{
