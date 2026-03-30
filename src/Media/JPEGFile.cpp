@@ -160,7 +160,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 					{
 						Optional<Media::ImageList> innerImgList;
 						NN<Media::ImageList> nnInnerImgList;
-						NN<Media::RasterImage> innerImg;
+						NN<Media::Image> innerImg;
 						{
 							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
 							innerImgList = Optional<Media::ImageList>::ConvertFrom(nnparsers->ParseFileType(mfd, IO::ParserType::ImageList));
@@ -171,7 +171,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 							i = 0;
 							while (i < k)
 							{
-								if (nnInnerImgList->GetImage(i, delay).SetTo(innerImg))
+								if (nnInnerImgList->GetImage2(i, delay).SetTo(innerImg))
 								{
 									imgList->AddImage(innerImg->CreateStaticImage(), delay);
 								}
@@ -186,13 +186,13 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 						UInt32 innerH = ReadUInt16(&tagBuff[blkOfst + 4]);
 						if (blkSize == innerW * innerH * 2 + 32)
 						{
-							imgList->SetThermoImage(Math::Size2D<UIntOS>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
+							imgList->SetThermoImage(Math::Size2D<UIntOS>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::ThermoType::FLIR);
 						}
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47 && parsers.SetTo(nnparsers))
 						{
 							Optional<Media::ImageList> innerImgList;
 							NN<Media::ImageList> nnInnerImgList;
-							NN<Media::RasterImage> innerImg;
+							NN<Media::Image> innerImg;
 							NN<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
@@ -204,7 +204,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 								i = 0;
 								while (i < k)
 								{
-									if (nnInnerImgList->GetImage(i, delay).SetTo(innerImg))
+									if (nnInnerImgList->GetImage2(i, delay).SetTo(innerImg))
 									{
 										stImg = innerImg->CreateStaticImage();
 										if (stImg->info.pf == Media::PF_LE_W16)
@@ -216,7 +216,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 												WriteInt16(&imgPtr[0], ReadMInt16(imgPtr));
 												imgPtr += 2;
 											}
-											imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
+											imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::ThermoType::FLIR);
 										}
 										imgList->AddImage(stImg, delay);
 									}

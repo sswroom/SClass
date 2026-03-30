@@ -38,8 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 		me->dispImage.Delete();
 		if (obj->IsImage() && me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
 		{
-			imgList->ToStaticImage(0);
-			me->pbImage->SetImage(imgList->GetImage(0, 0), false);
+			me->pbImage->SetImage(imgList->GetImage2(0, 0), false);
 			me->dispImage = imgList;
 		}
 		else

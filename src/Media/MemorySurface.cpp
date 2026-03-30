@@ -41,7 +41,7 @@ Bool Media::MemorySurface::IsError() const
 	return false;
 }
 
-NN<Media::RasterImage> Media::MemorySurface::Clone() const
+NN<Media::Image> Media::MemorySurface::Clone() const
 {
 	NN<Media::MemorySurface> surface;
 	NEW_CLASSNN(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));

@@ -83,7 +83,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 		NN<Media::ImageList> dispImg;
 		if (me->dispImg.SetTo(dispImg))
 		{
-			me->pbPreview->SetImage(dispImg->GetImage(0, 0), false);
+			me->pbPreview->SetImage(dispImg->GetImage2(0, 0), false);
 		}
 
 		Int32 timeAdj;

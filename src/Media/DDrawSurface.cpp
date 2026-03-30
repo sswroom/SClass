@@ -73,7 +73,7 @@ Media::DDrawSurface::~DDrawSurface()
 	MemFreeNN(this->clsData);
 }
 
-NN<Media::RasterImage> Media::DDrawSurface::Clone() const
+NN<Media::Image> Media::DDrawSurface::Clone() const
 {
 	NN<DDrawSurface> ret;
 	NEW_CLASSNN(ret, Media::DDrawSurface(this->clsData->mgr, this->clsData->lpDD, this->clsData->surface, this->clsData->hMon, false, this->info.rotateType));

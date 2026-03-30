@@ -240,7 +240,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 
 			Optional<Media::ImageList> optimgList;
 			NN<Media::ImageList> imgList;
-			NN<Media::RasterImage> rimg;
+			NN<Media::Image> img;
 			NN<Media::StaticImage> simg;
 			Optional<Media::StaticImage> lrimg;
 			NN<Media::StaticImage> lrimgnn;
@@ -251,9 +251,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 			}
 			if (optimgList.SetTo(imgList))
 			{
-				if (imgList->GetImage(0, 0).SetTo(rimg))
+				if (imgList->GetImage2(0, 0).SetTo(img))
 				{
-					simg = rimg->CreateStaticImage();
+					simg = img->CreateStaticImage();
 					optimgList.Delete();
 					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -511,7 +511,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 		NN<Media::ImageList> imgList;
 		Optional<Media::ImageList> optimgList;
-		NN<Media::RasterImage> rimg;
+		NN<Media::Image> img;
 		NN<Media::StaticImage> simg;
 		Optional<Media::StaticImage> lrimg;
 		NN<Media::StaticImage> lrimgnn;
@@ -522,9 +522,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 		}
 		if (optimgList.SetTo(imgList))
 		{
-			if (imgList->GetImage(0, 0).SetTo(rimg))
+			if (imgList->GetImage2(0, 0).SetTo(img))
 			{
-				simg = rimg->CreateStaticImage();
+				simg = img->CreateStaticImage();
 				optimgList.Delete();
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -816,7 +816,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 
 			Optional<Media::ImageList> optimgList;
 			NN<Media::ImageList> imgList;
-			NN<Media::RasterImage> rimg;
+			NN<Media::Image> img;
 			NN<Media::StaticImage> simg;
 			Optional<Media::StaticImage> lrimg;
 			NN<Media::StaticImage> lrimgnn;
@@ -827,9 +827,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 			}
 			if (optimgList.SetTo(imgList))
 			{
-				if (imgList->GetImage(0, 0).SetTo(rimg))
+				if (imgList->GetImage2(0, 0).SetTo(img))
 				{
-					simg = rimg->CreateStaticImage();
+					simg = img->CreateStaticImage();
 					optimgList.Delete();
 					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));

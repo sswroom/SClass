@@ -165,7 +165,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 
 	IO::MemoryReadingStream mstm(txt.v, txt.leng);
 	NN<IO::ParsedObject> pobj;
-	if (Parser::FileParser::XMLParser::ParseStream(encFact, mstm, CSTR("Temp.gml"), nullptr, nullptr, nullptr).SetTo(pobj))
+	if (Parser::FileParser::XMLParser::ParseStream(encFact, mstm, CSTR("Temp.gml"), nullptr, nullptr, nullptr, nullptr).SetTo(pobj))
 	{
 		if (pobj->GetParserType() == IO::ParserType::MapLayer)
 		{

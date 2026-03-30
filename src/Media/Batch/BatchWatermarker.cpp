@@ -64,7 +64,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 			NN<Media::DrawBrush> b = tmpImg->NewBrushARGB(0xffffffff);
 			NN<Media::DrawFont> f;
 
-			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, 0)).SetTo(simg))
 			{
 				fontSizePx = UIntOS2Double(simg->info.dispSize.x) / 12.0;
 

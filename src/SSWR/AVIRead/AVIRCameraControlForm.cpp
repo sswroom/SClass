@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	NN<Media::ImageList> previewImg;
 	if (me->previewMap.GetC(Text::CStringNN(file->fileName2, file->fileNameLen)).SetTo(previewImg))
 	{
-		me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
+		me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage2(0, 0)));
 		return;
 	}
 	IO::MemoryStream mstm;
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 		{
 			previewImg->ToStaticImage(0);
 			me->previewMap.PutC(Text::CStringNN(file->fileName2, file->fileNameLen), previewImg);
-			me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
+			me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage2(0, 0)));
 		}
 	}
 }

@@ -1379,40 +1379,44 @@ IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img))
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
+	if (!imgList->GetImage2(0, 0).SetTo(img))
 		return IO::FileExporter::SupportType::NotSupported;
-	if (img->info.fourcc != 0)
+	if (img->GetImageType() != Media::ImageType::Raster)
 		return IO::FileExporter::SupportType::NotSupported;
-	if (img->info.pf == Media::PF_B8G8R8)
+	rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.fourcc != 0)
+		return IO::FileExporter::SupportType::NotSupported;
+	if (rimg->info.pf == Media::PF_B8G8R8)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_B8G8R8A8)
+	if (rimg->info.pf == Media::PF_B8G8R8A8)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_LE_B16G16R16)
+	if (rimg->info.pf == Media::PF_LE_B16G16R16)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_LE_B16G16R16A16)
+	if (rimg->info.pf == Media::PF_LE_B16G16R16A16)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_LE_W16)
+	if (rimg->info.pf == Media::PF_LE_W16)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_LE_W16A16)
+	if (rimg->info.pf == Media::PF_LE_W16A16)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_1)
+	if (rimg->info.pf == Media::PF_PAL_1)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_2)
+	if (rimg->info.pf == Media::PF_PAL_2)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_4)
+	if (rimg->info.pf == Media::PF_PAL_4)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_8)
+	if (rimg->info.pf == Media::PF_PAL_8)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_W1)
+	if (rimg->info.pf == Media::PF_PAL_W1)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_W2)
+	if (rimg->info.pf == Media::PF_PAL_W2)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_W4)
+	if (rimg->info.pf == Media::PF_PAL_W4)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_PAL_W8)
+	if (rimg->info.pf == Media::PF_PAL_W8)
 		return IO::FileExporter::SupportType::NormalStream;
-	if (img->info.pf == Media::PF_W8A8)
+	if (rimg->info.pf == Media::PF_W8A8)
 		return IO::FileExporter::SupportType::NormalStream;
 	return IO::FileExporter::SupportType::NotSupported;
 }
@@ -1435,7 +1439,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	imgList->ToStaticImage(0);
 	NN<Media::StaticImage> img;
-	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 		return false;
 	return ExportImage(stm, img);
 }

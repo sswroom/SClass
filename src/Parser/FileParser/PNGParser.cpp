@@ -2096,7 +2096,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_LE_W16;
 			info->byteSize = info->storeSize.CalcArea() * 2;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 			{
 				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
@@ -2140,7 +2140,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_B8G8R8;
 			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 			{
 				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
@@ -2181,7 +2181,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_LE_B16G16R16;
 			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 			{
 				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
@@ -2388,7 +2388,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_W8A8;
 				info->byteSize = info->storeSize.CalcArea() * 2;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 				{
 					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
@@ -2434,7 +2434,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_LE_W16A16;
 				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 				{
 					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
@@ -2485,7 +2485,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_B8G8R8A8;
 				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 				{
 					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
@@ -2531,7 +2531,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_LE_B16G16R16A16;
 				info->byteSize = info->storeSize.CalcArea() * 8;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(lineAdd - 1, 0)).SetTo(simg))
 				{
 					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);

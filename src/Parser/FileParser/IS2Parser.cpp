@@ -102,21 +102,21 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						const UTF16Char *cameraModel = (const UTF16Char *)&currBuff[136];
 						const UTF16Char *cameraSN = (const UTF16Char *)&currBuff[200];
 						NN<Text::String> s = Text::String::NewNotNull(cameraBrand);
-						imgList->SetValueStr(Media::ImageList::VT_CAMERA_BRAND, s->ToCString());
+						imgList->SetValueStr(Media::ImageList::ValueType::CameraBrand, s->ToCString());
 						s->Release();
 						s = Text::String::NewNotNull(cameraModel);
-						imgList->SetValueStr(Media::ImageList::VT_CAMERA_MODEL, s->ToCString());
+						imgList->SetValueStr(Media::ImageList::ValueType::CameraModel, s->ToCString());
 						s->Release();
 						s = Text::String::NewNotNull(cameraSN);
-						imgList->SetValueStr(Media::ImageList::VT_CAMERA_SN, s->ToCString());
+						imgList->SetValueStr(Media::ImageList::ValueType::CameraSN, s->ToCString());
 						s->Release();
-						imgList->SetValueInt32(Media::ImageList::VT_IR_WIDTH, irWidth);
-						imgList->SetValueInt32(Media::ImageList::VT_IR_HEIGHT, irHeight);
-						imgList->SetValueInt32(Media::ImageList::VT_VISIBLE_WIDTH, visibleWidth);
-						imgList->SetValueInt32(Media::ImageList::VT_VISIBLE_HEIGHT, visibleHeight);
+						imgList->SetValueInt32(Media::ImageList::ValueType::IRWidth, irWidth);
+						imgList->SetValueInt32(Media::ImageList::ValueType::IRHeight, irHeight);
+						imgList->SetValueInt32(Media::ImageList::ValueType::VisibleWidth, visibleWidth);
+						imgList->SetValueInt32(Media::ImageList::ValueType::VisibleHeight, visibleHeight);
 						dt.SetValue(firmwareYear, firmwareMonth, firmwareDay, 0, 0, 0, 0, 0);
-						imgList->SetValueInt64(Media::ImageList::VT_FIRMWARE_DATE, dt.ToTicks());
-						imgList->SetValueInt32(Media::ImageList::VT_FIRMWARE_VERSION, ReadInt32(&currBuff[68]));
+						imgList->SetValueInt64(Media::ImageList::ValueType::FirmwareDate, dt.ToTicks());
+						imgList->SetValueInt32(Media::ImageList::ValueType::FirmwareVersion, ReadInt32(&currBuff[68]));
 					}
 					break;
 				case 0x42: //Capture Info
@@ -129,9 +129,9 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						captureTime.ToLocalTime();
 						captureTime.SetValue(ReadUInt16(&currBuff[22]), currBuff[21], currBuff[20], 0, 0, 0, 0);
 						captureTime.AddMS(ReadInt32(&currBuff[16]));
-						imgList->SetValueInt32(Media::ImageList::VT_CAPTURE_WIDTH, captureWidth);
-						imgList->SetValueInt32(Media::ImageList::VT_CAPTURE_HEIGHT, captureHeight);
-						imgList->SetValueInt64(Media::ImageList::VT_CAPTURE_DATE, captureTime.ToTicks());
+						imgList->SetValueInt32(Media::ImageList::ValueType::CaptureWidth, captureWidth);
+						imgList->SetValueInt32(Media::ImageList::ValueType::CaptureHeight, captureHeight);
+						imgList->SetValueInt64(Media::ImageList::ValueType::CaptureDate, captureTime.ToTicks());
 					}
 					break;
 				case 0x18: //Visible Image
@@ -160,7 +160,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 							dataPtr += 4;
 						}
 						j = imgList->AddImage(img, 0);
-						imgList->SetImageType(j, Media::ImageList::IT_VISIBLEIMAGE);
+						imgList->SetImageType(j, Media::ImageList::ImageType::VisibleImage);
 					}
 					break;
 				case 0x19: //IR Info
@@ -211,8 +211,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 							dataPtr += 2;
 						}
 						j = imgList->AddImage(img, 0);
-						imgList->SetImageType(j, Media::ImageList::IT_IRIMAGE);
-						imgList->SetThermoImage(Math::Size2D<UIntOS>(imageWidth, imageHeight), 16, currBuff.Arr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
+						imgList->SetImageType(j, Media::ImageList::ImageType::IRImage);
+						imgList->SetThermoImage(Math::Size2D<UIntOS>(imageWidth, imageHeight), 16, currBuff.Arr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::ThermoType::Unknown);
 					}
 					break;
 				case 0x22: //Output Image
@@ -241,7 +241,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 							dataPtr += 4;
 						}
 						j = imgList->AddImage(img, 0);
-						imgList->SetImageType(j, Media::ImageList::IT_OUTPUTIMAGE);
+						imgList->SetImageType(j, Media::ImageList::ImageType::OutputImage);
 					}
 					break;
 				}

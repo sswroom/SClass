@@ -87,7 +87,7 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 		k = imgList->GetCount();
 		while (j < k)
 		{
-			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(newImg))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(j, 0)).SetTo(newImg))
 			{
 				if (param->sizeType == 1)
 				{

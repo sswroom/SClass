@@ -63,11 +63,15 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (buff)
 	{
 		Optional<Media::RasterImage> srcImg = nullptr;
-		Media::ImageList *imgList;
+		NN<Media::ImageList> imgList;
+		NN<Media::Image> img;
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
-			imgList = (Media::ImageList*)pobj.Ptr();
-			srcImg = imgList->GetImage(0, 0);
+			imgList = NN<Media::ImageList>::ConvertFrom(pobj);
+			if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
+			{
+				srcImg = NN<Media::RasterImage>::ConvertFrom(img);
+			}
 		}
 		Media::JPEGFile::WriteJPGBuffer(stm, (const UInt8*)buff, buffSize, srcImg);
 		g_free(buff);

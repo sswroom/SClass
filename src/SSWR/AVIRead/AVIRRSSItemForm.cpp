@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 			imgList->ToStaticImage(0);
 			me->currImg.Delete();
 			me->currImg = imgList;
-			me->pbImage->SetImage(Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)));
+			me->pbImage->SetImage(Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)));
 		}
 		else
 		{

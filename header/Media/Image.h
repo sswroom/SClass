@@ -20,8 +20,10 @@ namespace Media
 		virtual ~Image() {};
 
 		virtual ImageType GetImageType() const = 0;
+		virtual NN<Media::Image> Clone() const = 0;
 		virtual NN<Media::StaticImage> CreateStaticImage() const = 0;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
 	};
 }
 #endif

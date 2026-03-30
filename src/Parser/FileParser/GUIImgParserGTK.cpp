@@ -191,7 +191,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 	}
 
 	NN<Media::StaticImage> img;
-	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() >= 1 && Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(img))
+	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() >= 1 && Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage2(0, 0)).SetTo(img))
 	{
 		Double minX;
 		Double minY;

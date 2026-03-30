@@ -366,7 +366,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 			NN<Media::ImageList> dispImage;
 			if (me->dispImage.SetTo(dispImage))
 			{
-				me->pbImg->SetImage(dispImage->GetImage(0, 0), false);
+				me->pbImg->SetImage(dispImage->GetImage2(0, 0), false);
 			}
 		}
 		else if (me->inputMode == IM_GROUP)
@@ -383,7 +383,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 				NN<Media::ImageList> dispImage;
 				if (me->dispImage.SetTo(dispImage))
 				{
-					me->pbImg->SetImage(dispImage->GetImage(0, 0), false);
+					me->pbImg->SetImage(dispImage->GetImage2(0, 0), false);
 				}
 				sp.Delete();
 			}
@@ -502,17 +502,19 @@ UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType use
 		{
 			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
 			pt2 = me->pbImg->Scn2ImagePos(rect[1]);
-			NN<Media::RasterImage> img;
+			NN<Media::Image> img;
+			NN<Media::RasterImage> rimg;
 			NN<Media::ImageList> dispImage;
-			if (me->dispImage.SetTo(dispImage) && dispImage->GetImage(0, 0).SetTo(img))
+			if (me->dispImage.SetTo(dispImage) && dispImage->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 			{
+				rimg = NN<Media::RasterImage>::ConvertFrom(img);
 				if (me->dispImageUF.SetTo(userFile))
 				{
-					me->env->UpdateUserFileCrop(userFile, pt1.x, pt1.y, UIntOS2Double(img->info.dispSize.x) - pt2.x, UIntOS2Double(img->info.dispSize.y) - pt2.y);
+					me->env->UpdateUserFileCrop(userFile, pt1.x, pt1.y, UIntOS2Double(rimg->info.dispSize.x) - pt2.x, UIntOS2Double(rimg->info.dispSize.y) - pt2.y);
 				}
 				else if (me->dispImageWF.SetTo(wfile))
 				{
-					me->env->UpdateWebFileCrop(wfile, pt1.x, pt1.y, UIntOS2Double(img->info.dispSize.x) - pt2.x, UIntOS2Double(img->info.dispSize.y) - pt2.y);
+					me->env->UpdateWebFileCrop(wfile, pt1.x, pt1.y, UIntOS2Double(rimg->info.dispSize.x) - pt2.x, UIntOS2Double(rimg->info.dispSize.y) - pt2.y);
 				}
 			}
 		}
@@ -548,13 +550,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UnsafeA
 		NN<WebFileInfo> wfile;
 		if (me->dispImageUF.SetTo(userFile))
 		{
-			NN<Media::RasterImage> img;
+			NN<Media::Image> img;
+			NN<Media::RasterImage> rimg;
 			if (userFile->cropLeft != 0 || userFile->cropTop != 0 || userFile->cropRight != 0 || userFile->cropBottom)
 			{
-				if (dispImage->GetImage(0, 0).SetTo(img))
+				if (dispImage->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 				{
+					rimg = NN<Media::RasterImage>::ConvertFrom(img);
 					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(userFile->cropLeft, userFile->cropTop));
-					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UIntOS2Double(img->info.dispSize.x) - userFile->cropRight, UIntOS2Double(img->info.dispSize.y) - userFile->cropBottom));
+					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UIntOS2Double(rimg->info.dispSize.x) - userFile->cropRight, UIntOS2Double(rimg->info.dispSize.y) - userFile->cropBottom));
 					if (pos2.x < 0 || pos1.x >= UIntOS2Double(w) || pos2.y < 0 || pos1.y >= UIntOS2Double(h))
 					{
 
@@ -575,13 +579,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UnsafeA
 		}
 		else if (me->dispImageWF.SetTo(wfile))
 		{
-			NN<Media::RasterImage> img;
+			NN<Media::Image> img;
+			NN<Media::RasterImage> rimg;
 			if (wfile->cropLeft != 0 || wfile->cropTop != 0 || wfile->cropRight != 0 || wfile->cropBottom)
 			{
-				if (dispImage->GetImage(0, 0).SetTo(img))
+				if (dispImage->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 				{
+					rimg = NN<Media::RasterImage>::ConvertFrom(img);
 					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(wfile->cropLeft, wfile->cropTop));
-					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UIntOS2Double(img->info.dispSize.x) - wfile->cropRight, UIntOS2Double(img->info.dispSize.y) - wfile->cropBottom));
+					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UIntOS2Double(rimg->info.dispSize.x) - wfile->cropRight, UIntOS2Double(rimg->info.dispSize.y) - wfile->cropBottom));
 					if (pos2.x < 0 || pos1.x >= UIntOS2Double(w) || pos2.y < 0 || pos1.y >= UIntOS2Double(h))
 					{
 
@@ -1621,7 +1627,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 					{
 						imgList->ToStaticImage(0);
 						NN<Media::StaticImage> img;
-						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 						{
 							Optional<Media::StaticImage> nimg;
 							img->ToB8G8R8A8();
@@ -1712,19 +1718,21 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<IntOS> *rect)
 		return false;
 	}
 
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
 	NN<Media::ImageList> dispImage;
-	if (!this->dispImage.SetTo(dispImage) || !dispImage->GetImage(0, 0).SetTo(img))
+	if (!this->dispImage.SetTo(dispImage) || !dispImage->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
 	{
 		return false;
 	}
-	if ((IntOS)img->info.dispSize.x * drawHeight > (IntOS)img->info.dispSize.y * drawWidth)
+	rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if ((IntOS)rimg->info.dispSize.x * drawHeight > (IntOS)rimg->info.dispSize.y * drawWidth)
 	{
-		drawHeight = MulDivOS(drawWidth, (IntOS)img->info.dispSize.y, (IntOS)img->info.dispSize.x);
+		drawHeight = MulDivOS(drawWidth, (IntOS)rimg->info.dispSize.y, (IntOS)rimg->info.dispSize.x);
 	}
 	else
 	{
-		drawWidth = MulDivOS(drawHeight, (IntOS)img->info.dispSize.x, (IntOS)img->info.dispSize.y);
+		drawWidth = MulDivOS(drawHeight, (IntOS)rimg->info.dispSize.x, (IntOS)rimg->info.dispSize.y);
 	}
 
 	if (this->dispImageDownPos.x < this->dispImageCurrPos.x)

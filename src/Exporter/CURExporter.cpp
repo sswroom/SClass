@@ -46,85 +46,89 @@ UIntOS Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	UIntOS j;
 	UIntOS imgSize;
 	UIntOS maskSize;
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
 	UIntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		if (!imgList->GetImage(i, 0).SetTo(img) || img->info.fourcc != 0)
+		if (!imgList->GetImage2(i, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
 		{
 			return 0;
 		}
-		if (img->info.dispSize.x <= 0 || img->info.dispSize.x > 256 || img->info.dispSize.y <= 0 || img->info.dispSize.y > 256)
+		rimg = NN<Media::RasterImage>::ConvertFrom(img);
+		if (rimg->info.fourcc != 0)
+			return 0;
+		if (rimg->info.dispSize.x <= 0 || rimg->info.dispSize.x > 256 || rimg->info.dispSize.y <= 0 || rimg->info.dispSize.y > 256)
 		{
 			return 0;
 		}
-		if (img->info.pf == Media::PF_B8G8R8A8)
+		if (rimg->info.pf == Media::PF_B8G8R8A8)
 		{
-			maskSize = (img->info.dispSize.x + 7) >> 3;
+			maskSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			imgSize = img->info.dispSize.x * 4;
-			retSize += 16 + 40 + (imgSize + maskSize) * img->info.dispSize.y;
+			imgSize = rimg->info.dispSize.x * 4;
+			retSize += 16 + 40 + (imgSize + maskSize) * rimg->info.dispSize.y;
 		}
-		else if (img->info.pf == Media::PF_B8G8R8A1)
+		else if (rimg->info.pf == Media::PF_B8G8R8A1)
 		{
-			imgSize = img->info.dispSize.x * 3;
+			imgSize = rimg->info.dispSize.x * 3;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info.dispSize.x + 7) >> 3;
+			maskSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + (imgSize + maskSize) * img->info.dispSize.y;
+			retSize += 16 + 40 + (imgSize + maskSize) * rimg->info.dispSize.y;
 		}
-		else if (img->info.pf == Media::PF_PAL_1_A1)
+		else if (rimg->info.pf == Media::PF_PAL_1_A1)
 		{
-			imgSize = (img->info.dispSize.x + 7) >> 3;
+			imgSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info.dispSize.x + 7) >> 3;
+			maskSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 8 + (imgSize + maskSize) * img->info.dispSize.y;
+			retSize += 16 + 40 + 8 + (imgSize + maskSize) * rimg->info.dispSize.y;
 		}
-		else if (img->info.pf == Media::PF_PAL_4_A1)
+		else if (rimg->info.pf == Media::PF_PAL_4_A1)
 		{
-			imgSize = (img->info.dispSize.x + 1) >> 1;
+			imgSize = (rimg->info.dispSize.x + 1) >> 1;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info.dispSize.x + 7) >> 3;
+			maskSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 64 + (imgSize + maskSize) * img->info.dispSize.y;
+			retSize += 16 + 40 + 64 + (imgSize + maskSize) * rimg->info.dispSize.y;
 		}
-		else if (img->info.pf == Media::PF_PAL_8_A1)
+		else if (rimg->info.pf == Media::PF_PAL_8_A1)
 		{
-			imgSize = img->info.dispSize.x;
+			imgSize = rimg->info.dispSize.x;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info.dispSize.x + 7) >> 3;
+			maskSize = (rimg->info.dispSize.x + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 1024 + (imgSize + maskSize) * img->info.dispSize.y;
+			retSize += 16 + 40 + 1024 + (imgSize + maskSize) * rimg->info.dispSize.y;
 		}
 		else
 		{
@@ -174,7 +178,7 @@ UIntOS Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 	while (i < j)
 	{
 		imgList->ToStaticImage(i);
-		if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(img))
+		if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, 0)).SetTo(img))
 		{
 			return 0;
 		}
@@ -688,7 +692,8 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
 	UIntOS i = imgList->GetCount();
 	if (i <= 0)
 	{
@@ -697,9 +702,10 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 	
 	while (i-- > 0)
 	{
-		if (imgList->GetImage(0, 0).SetTo(img))
+		if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 		{
-			if (!img->HasHotSpot() || !ImageSupported(img))
+			rimg = NN<Media::RasterImage>::ConvertFrom(img);
+			if (!rimg->HasHotSpot() || !ImageSupported(rimg))
 			{
 				return IO::FileExporter::SupportType::NotSupported;
 			}

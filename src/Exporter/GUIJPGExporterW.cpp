@@ -103,7 +103,11 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-		srcImg = imgList->GetImage(0, 0);
+		NN<Media::Image> img;
+		if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
+		{
+			srcImg = NN<Media::RasterImage>::ConvertFrom(img);
+		}
 	}
 	jpgBuff = mstm.GetBuff(jpgSize);
 	NN<Media::EXIFData> exif;

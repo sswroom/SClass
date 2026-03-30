@@ -999,14 +999,15 @@ void __stdcall MTDrawThread(NN<Sync::Thread> thread)
 	NN<MTDrawStatus> status = thread->GetUserObj().GetNN<MTDrawStatus>();
 	NN<Media::DrawImage> dimg;
 	NN<Media::DrawImage> dimg2;
-	NN<Media::RasterImage> sImg;
+	NN<Media::Image> img;
 	UIntOS cnt = 10000;
 	while (cnt-- > 0)
 	{
 		if (status->drawEng->CreateImage32(Math::Size2D<UIntOS>(60, 60), Media::AT_ALPHA).SetTo(dimg))
 		{
-			if (status->img1->GetImage(0, 0).SetTo(sImg))
+			if (status->img1->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 			{
+				NN<Media::RasterImage> sImg = NN<Media::RasterImage>::ConvertFrom(img);
 				sImg->info.atype = Media::AT_IGNORE_ALPHA;
 				if (status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 				{
@@ -1014,7 +1015,7 @@ void __stdcall MTDrawThread(NN<Sync::Thread> thread)
 					status->drawEng->DeleteImage(dimg2);
 				}
 			}
-			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
+			if (status->img2->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster && status->drawEng->ConvImage(NN<Media::RasterImage>::ConvertFrom(img), nullptr).SetTo(dimg2))
 			{
 				dimg->DrawImagePt(dimg2, Math::Coord2DDbl((60 - dimg2->GetWidth()) * 0.5, (60 - dimg2->GetHeight()) * 0.5));
 				status->drawEng->DeleteImage(dimg2);

@@ -119,7 +119,7 @@ Bool Media::FBSurface::IsError() const
 	return this->clsData->fd < 0;
 }
 
-NN<Media::RasterImage> Media::FBSurface::Clone() const
+NN<Media::Image> Media::FBSurface::Clone() const
 {
 	NN<Media::FBSurface> surface;
 	NEW_CLASSNN(surface, Media::FBSurface(this->clsData->hMon, this->info.color, this->info.hdpi, this->info.rotateType));

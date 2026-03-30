@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 		{
 			imgList->ToStaticImage(0);
 			NN<Media::StaticImage> img;
-			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 			{
 				me->currImg.Delete();
 				me->currImg = img;

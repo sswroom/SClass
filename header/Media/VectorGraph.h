@@ -29,6 +29,7 @@ namespace Media
 			Bool IsSame(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UIntOS nPattern);
 			UIntOS GetIndex();
 			NN<Media::DrawPen> CreateDrawPen(Double scale, NN<Media::DrawImage> dimg);
+			NN<VectorPenStyle> Clone() const;
 		};
 
 		class VectorFontStyle : public Media::DrawFont
@@ -51,6 +52,7 @@ namespace Media
 			Media::DrawEngine::DrawFontStyle GetStyle();
 			UInt32 GetCodePage();
 			NN<Media::DrawFont> CreateDrawFont(Double scale, NN<Media::DrawImage> dimg);
+			NN<VectorFontStyle> Clone() const;
 		};
 
 		class VectorBrushStyle : public Media::DrawBrush
@@ -66,6 +68,7 @@ namespace Media
 			Bool IsSame(UInt32 color);
 			UIntOS GetIndex();
 			NN<Media::DrawBrush> CreateDrawBrush(Double oriDPI, NN<Media::DrawImage> dimg);
+			NN<VectorBrushStyle> Clone() const;
 		};
 
 		typedef struct
@@ -164,8 +167,10 @@ namespace Media
 		virtual UIntOS SaveJPG(NN<IO::SeekableStream> stm);
 
 		virtual Media::ImageType GetImageType() const { return Media::ImageType::Vector; }
+		virtual NN<Media::Image> Clone() const;
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		Double GetVisibleWidthMM() const;
 		Double GetVisibleHeightMM() const;

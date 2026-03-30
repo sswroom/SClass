@@ -208,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 			{
 				me->imgIndex = 0;
 			}
-			Optional<Media::StaticImage> simg = Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(me->imgIndex, imgDurMS));
+			Optional<Media::StaticImage> simg = Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(me->imgIndex, imgDurMS));
 			me->imgTimeoutTick = currTimeTick + imgDurMS;
 			me->pbImage->SetImage(simg, true);
 		}
@@ -405,7 +405,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 		this->imgIndex = 0;
 		sptr = nnimgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
 		this->SetText(CSTRP(sbuff, sptr));
-		this->pbImage->SetImage(nnimgList->GetImage(0, imgDurMS), false);
+		this->pbImage->SetImage(nnimgList->GetImage2(0, imgDurMS), false);
 		if (imgDurMS != 0 && nnimgList->GetCount() > 1)
 		{
 			Data::DateTime dt;

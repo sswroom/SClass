@@ -80,16 +80,25 @@ void Media::SVGElement::AppendEleAttr(NN<Text::StringBuilderUTF8> sb, UIntOS lev
 	}
 }
 
+void Media::SVGElement::CloneElementAttrs(NN<const SVGElement> ele)
+{
+	this->id = Text::String::CopyOrNull(ele->id);
+	this->inkscapeLabel = Text::String::CopyOrNull(ele->inkscapeLabel);
+	this->lineCap = ele->lineCap;
+	this->lineJoin = ele->lineJoin;
+	this->spacePreserve = ele->spacePreserve;
+}
+
 Bool Media::SVGElement::IsSpacePreserve() const
 {
-	NN<SVGContainer> nnparent;
+	NN<const SVGContainer> nnparent;
 	if (this->spacePreserve) return true;
 	if (this->parent.SetTo(nnparent))
 		return nnparent->IsSpacePreserve();
 	return false;
 }
 
-Media::SVGLine::SVGLine(NN<SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen) : SVGElement(parent)
+Media::SVGLine::SVGLine(NN<const SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen) : SVGElement(parent)
 {
 	this->pt1 = pt1;
 	this->pt2 = pt2;
@@ -132,7 +141,15 @@ void Media::SVGLine::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) cons
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPolyline::SVGPolyline(NN<SVGContainer> parent, NN<DrawPen> pen) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGLine::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGLine> newLine;
+	NEW_CLASSNN(newLine, Media::SVGLine(newParent, this->pt1, this->pt2, newParent->GetDoc()->ClonePen(this->pen)));
+	newLine->CloneElementAttrs(*this);
+	return newLine;
+}
+
+Media::SVGPolyline::SVGPolyline(NN<const SVGContainer> parent, NN<DrawPen> pen) : SVGElement(parent)
 {
 	this->pen = pen;
 }
@@ -177,7 +194,21 @@ void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) 
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPolygon::SVGPolygon(NN<SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGPolyline::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGPolyline> newPolyline;
+	NEW_CLASSNN(newPolyline, Media::SVGPolyline(newParent, newParent->GetDoc()->ClonePen(this->pen)));
+	UIntOS i = 0;
+	while (i < this->points.GetCount())
+	{
+		newPolyline->AddPoint(this->points.GetItem(i));
+		i++;
+	}
+	newPolyline->CloneElementAttrs(*this);
+	return newPolyline;
+}
+
+Media::SVGPolygon::SVGPolygon(NN<const SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->pen = pen;
 	this->brush = brush;
@@ -224,7 +255,30 @@ void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) c
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGRect::SVGRect(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGPolygon::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGPolygon> newPolygon;
+	NN<DrawPen> nnPen;
+	Optional<DrawPen> newPen = nullptr;
+	NN<DrawBrush> nnBrush;
+	Optional<DrawBrush> newBrush = nullptr;
+	if (this->brush.SetTo(nnBrush))
+		newBrush = newParent->GetDoc()->CloneBrush(nnBrush);
+	if (this->pen.SetTo(nnPen))
+		newPen = newParent->GetDoc()->ClonePen(nnPen);
+
+	NEW_CLASSNN(newPolygon, Media::SVGPolygon(newParent, newPen, newBrush));
+	UIntOS i = 0;
+	while (i < this->points.GetCount())
+	{
+		newPolygon->AddPoint(this->points.GetItem(i));
+		i++;
+	}
+	newPolygon->CloneElementAttrs(*this);
+	return newPolygon;
+}
+
+Media::SVGRect::SVGRect(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->size = size;
@@ -296,13 +350,33 @@ void Media::SVGRect::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) cons
 	sb->AppendC(UTF8STRC(" />"));
 }
 
+NN<Media::SVGElement> Media::SVGRect::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGRect> newRect;
+	NN<DrawPen> nnPen;
+	Optional<DrawPen> newPen = nullptr;
+	NN<DrawBrush> nnBrush;
+	Optional<DrawBrush> newBrush = nullptr;
+	if (this->brush.SetTo(nnBrush))
+		newBrush = newParent->GetDoc()->CloneBrush(nnBrush);
+	if (this->pen.SetTo(nnPen))
+		newPen = newParent->GetDoc()->ClonePen(nnPen);
+
+	NEW_CLASSNN(newRect, Media::SVGRect(newParent, this->tl, this->size, newPen, newBrush));
+	newRect->styleBrush = this->styleBrush;
+	newRect->stylePen = this->stylePen;
+	newRect->insensitive = this->insensitive;
+	newRect->CloneElementAttrs(*this);
+	return newRect;
+}
+
 void Media::SVGRect::SetStyle(Bool stylePen, Bool styleBrush)
 {
 	this->stylePen = stylePen;
 	this->styleBrush = styleBrush;
 }
 
-Media::SVGEllipse::SVGEllipse(NN<SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
+Media::SVGEllipse::SVGEllipse(NN<const SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->center = center;
 	this->radius = radius;
@@ -347,6 +421,23 @@ void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) c
 	sb->AppendC(UTF8STRC(" />"));
 }
 
+NN<Media::SVGElement> Media::SVGEllipse::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGEllipse> newEllipse;
+	NN<DrawPen> nnPen;
+	Optional<DrawPen> newPen = nullptr;
+	NN<DrawBrush> nnBrush;
+	Optional<DrawBrush> newBrush = nullptr;
+	if (this->brush.SetTo(nnBrush))
+		newBrush = newParent->GetDoc()->CloneBrush(nnBrush);
+	if (this->pen.SetTo(nnPen))
+		newPen = newParent->GetDoc()->ClonePen(nnPen);
+
+	NEW_CLASSNN(newEllipse, Media::SVGEllipse(newParent, this->center, this->radius, newPen, newBrush));
+	newEllipse->CloneElementAttrs(*this);
+	return newEllipse;
+}
+
 Media::SVGStaticText::SVGStaticText(Text::CStringNN text) : SVGTextComponent()
 {
 	this->text = Text::String::New(text);
@@ -362,6 +453,13 @@ void Media::SVGStaticText::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level
 	NN<Text::String> s = Text::XML::ToNewXMLText(this->text->v);
 	sb->Append(s);
 	s->Release();
+}
+
+NN<Media::SVGTextComponent> Media::SVGStaticText::Clone(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGStaticText> newText;
+	NEW_CLASSNN(newText, Media::SVGStaticText(this->text->ToCString()));
+	return newText;
 }
 
 Media::SVGTSpan::SVGTSpan(Text::CStringNN text) : SVGTextComponent()
@@ -461,7 +559,29 @@ void Media::SVGTSpan::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) con
 	sb->AppendC(UTF8STRC("</tspan>"));
 }
 
-Media::SVGText::SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component) : SVGElement(parent)
+NN<Media::SVGTextComponent> Media::SVGTSpan::Clone(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGTSpan> newTSpan;
+	NEW_CLASSNN(newTSpan, Media::SVGTSpan(this->text->ToCString()));
+	newTSpan->offset = this->offset;
+	newTSpan->stylePen = this->stylePen;
+	newTSpan->styleBrush = this->styleBrush;
+	newTSpan->styleFont = this->styleFont;
+	NN<DrawPen> nnPen;
+	if (this->pen.SetTo(nnPen))
+		newTSpan->pen = newParent->GetDoc()->ClonePen(nnPen);
+	NN<DrawBrush> nnBrush;
+	if (this->brush.SetTo(nnBrush))
+		newTSpan->brush = newParent->GetDoc()->CloneBrush(nnBrush);
+	NN<SVGFont> nnFont;
+	if (this->font.SetTo(nnFont))
+		newTSpan->font = NN<SVGFont>::ConvertFrom(newParent->GetDoc()->CloneFont(nnFont));
+	newTSpan->id = Text::String::CopyOrNull(this->id);
+	newTSpan->sodipodiRole = Text::String::CopyOrNull(this->sodipodiRole);
+	return newTSpan;
+}
+
+Media::SVGText::SVGText(NN<const SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->font = font;
@@ -666,7 +786,46 @@ void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) cons
 	sb->AppendC(UTF8STRC("</text>"));
 }
 
-Media::SVGImage::SVGImage(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGText::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<SVGDocument> newDoc = newParent->GetDoc();
+	NN<SVGText> newText;
+	NN<SVGPen> nnPen;
+	Optional<SVGPen> newPen = nullptr;
+	NN<SVGBrush> newBrush = NN<SVGBrush>::ConvertFrom(newDoc->CloneBrush(this->brush));
+	NN<SVGFont> newFont = NN<SVGFont>::ConvertFrom(newDoc->CloneFont(this->font));
+	if (this->pen.SetTo(nnPen))
+		newPen = NN<SVGPen>::ConvertFrom(newParent->GetDoc()->ClonePen(nnPen));
+	NEW_CLASSNN(newText, Media::SVGText(newParent, this->tl, newFont, newBrush, this->components.GetItemNoCheck(0)->Clone(newParent)));
+	UIntOS i = 1;
+	while (i < this->components.GetCount())
+	{
+		newText->AddTextComponent(this->components.GetItemNoCheck(i)->Clone(newParent));
+		i++;
+	}
+	newText->styleFont = this->styleFont;
+	newText->styleBrush = this->styleBrush;
+	newText->stylePen = this->stylePen;
+	newText->insensitive = this->insensitive;
+	newText->textAlign = Text::String::CopyOrNull(this->textAlign);
+	newText->textAnchor = Text::String::CopyOrNull(this->textAnchor);
+	newText->writingMode = Text::String::CopyOrNull(this->writingMode);
+	newText->direction = Text::String::CopyOrNull(this->direction);
+	newText->transform = Text::String::CopyOrNull(this->transform);
+	newText->display = Text::String::CopyOrNull(this->display);
+	newText->lineHeight = Text::String::CopyOrNull(this->lineHeight);
+	newText->shapeInside = Text::String::CopyOrNull(this->shapeInside);
+	newText->whiteSpace = Text::String::CopyOrNull(this->whiteSpace);
+	newText->strokeDasharray = Text::String::CopyOrNull(this->strokeDasharray);
+	newText->shapePadding = Text::String::CopyOrNull(this->shapePadding);
+	newText->mixBlendMode = Text::String::CopyOrNull(this->mixBlendMode);
+	newText->inkscapeTransformCenterX = this->inkscapeTransformCenterX;
+	newText->inkscapeTransformCenterY = this->inkscapeTransformCenterY;
+	newText->CloneElementAttrs(*this);
+	return newText;
+}
+
+Media::SVGImage::SVGImage(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href) : SVGElement(parent)
 {
 	this->tl = tl;
 	this->size = size;
@@ -742,7 +901,18 @@ void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) con
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGPath::SVGPath(NN<SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGImage::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGImage> newImage;
+	NEW_CLASSNN(newImage, Media::SVGImage(newParent, this->tl, this->size, this->href->ToCString()));
+	newImage->insensitive = this->insensitive;
+	newImage->preserveAspectRatio = Text::String::CopyOrNull(this->preserveAspectRatio);
+	newImage->style = Text::String::CopyOrNull(this->style);
+	newImage->CloneElementAttrs(*this);
+	return newImage;
+}
+
+Media::SVGPath::SVGPath(NN<const SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush) : SVGElement(parent)
 {
 	this->d = d->Clone();
 	this->pen = pen;
@@ -773,7 +943,23 @@ void Media::SVGPath::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) cons
 	sb->AppendC(UTF8STRC(" />"));
 }
 
-Media::SVGTitle::SVGTitle(NN<SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title) : SVGElement(parent)
+NN<Media::SVGElement> Media::SVGPath::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGPath> newPath;
+	NN<DrawBrush> nnBrush;
+	Optional<DrawBrush> newBrush = nullptr;
+	NN<DrawPen> nnPen;
+	Optional<DrawPen> newPen = nullptr;
+	if (this->brush.SetTo(nnBrush))
+		newBrush = newParent->GetDoc()->CloneBrush(nnBrush);
+	if (this->pen.SetTo(nnPen))
+		newPen = newParent->GetDoc()->ClonePen(nnPen);
+	NEW_CLASSNN(newPath, Media::SVGPath(newParent, this->d->Clone(), newPen, newBrush));
+	newPath->CloneElementAttrs(*this);
+	return newPath;
+}
+
+Media::SVGTitle::SVGTitle(NN<const SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title) : SVGElement(parent)
 {
 	this->eleName = Text::String::New(eleName);
 	this->title = Text::String::New(title);
@@ -806,6 +992,14 @@ void Media::SVGTitle::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) con
 	}
 }
 
+NN<Media::SVGElement> Media::SVGTitle::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGTitle> newTitle;
+	NEW_CLASSNN(newTitle, Media::SVGTitle(newParent, this->eleName->ToCString(), this->title->ToCString()));
+	newTitle->CloneElementAttrs(*this);
+	return newTitle;
+}
+
 void Media::SVGContainer::ToInnerString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	Bool spacePreserve = this->IsSpacePreserve();
@@ -822,7 +1016,27 @@ void Media::SVGContainer::ToInnerString(NN<Text::StringBuilderUTF8> sb, UIntOS l
 	}
 }
 
-Media::SVGContainer::SVGContainer(Optional<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGElement(parent)
+void Media::SVGContainer::CloneElements(NN<const SVGContainer> fromContainer)
+{
+	UIntOS i = 0;
+	UIntOS j = fromContainer->elements.GetCount();
+	while (i < j)
+	{
+		this->elements.Add(fromContainer->elements.GetItemNoCheck(i)->CloneElement(*this));
+		i++;
+	}
+}
+
+void Media::SVGContainer::CloneContainerConts(NN<const SVGContainer> fromContainer)
+{
+	this->drawRect = fromContainer->drawRect;
+	this->inkscapeGroupmode = Text::String::CopyOrNull(fromContainer->inkscapeGroupmode);
+	this->style = Text::String::CopyOrNull(fromContainer->style);
+	this->CloneElementAttrs(fromContainer);
+	this->CloneElements(fromContainer);
+}
+
+Media::SVGContainer::SVGContainer(Optional<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGElement(parent)
 {
 	this->refEng = refEng;
 	this->doc = doc;
@@ -1343,7 +1557,7 @@ void Media::SVGContainer::SetDrawRect(Math::RectAreaDbl drawRect)
 	this->drawRect = drawRect;
 }
 
-Media::SVGDefs::SVGDefs(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
+Media::SVGDefs::SVGDefs(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
 {
 }
 
@@ -1373,7 +1587,15 @@ void Media::SVGDefs::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) cons
 	sb->AppendC(UTF8STRC("</defs>"));
 }
 
-Media::SVGGroup::SVGGroup(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
+NN<Media::SVGElement> Media::SVGDefs::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGDefs> newDefs;
+	NEW_CLASSNN(newDefs, Media::SVGDefs(newParent, this->refEng, newParent->GetDoc()));
+	newDefs->CloneContainerConts(*this);
+	return newDefs;
+}
+
+Media::SVGGroup::SVGGroup(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc) : SVGContainer(parent, refEng, doc)
 {
 	this->clipPath = nullptr;
 }
@@ -1430,13 +1652,22 @@ void Media::SVGGroup::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) con
 	sb->AppendC(UTF8STRC("</g>"));
 }
 
+NN<Media::SVGElement> Media::SVGGroup::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGGroup> newGroup;
+	NEW_CLASSNN(newGroup, Media::SVGGroup(newParent, this->refEng, newParent->GetDoc()));
+	newGroup->clipPath = Text::String::CopyOrNull(this->clipPath);
+	newGroup->CloneContainerConts(*this);
+	return newGroup;
+}
+
 void Media::SVGGroup::SetClipPath(Text::CStringNN clipPath)
 {
 	OPTSTR_DEL(this->clipPath);
 	this->clipPath = Text::String::New(clipPath);
 }
 
-Media::SVGUnknown::SVGUnknown(NN<SVGContainer> parent, Text::CStringNN name) : SVGElement(parent)
+Media::SVGUnknown::SVGUnknown(NN<const SVGContainer> parent, Text::CStringNN name) : SVGElement(parent)
 {
 	this->name = Text::String::New(name);
 }
@@ -1479,13 +1710,28 @@ void Media::SVGUnknown::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) c
 	sb->AppendC(UTF8STRC(" />"));
 }
 
+NN<Media::SVGElement> Media::SVGUnknown::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGUnknown> newUnknown;
+	NEW_CLASSNN(newUnknown, Media::SVGUnknown(newParent, this->name->ToCString()));
+	UIntOS i = 0;
+	UIntOS j = this->attrNames.GetCount();
+	while (i < j)
+	{
+		newUnknown->AddAttr(this->attrNames.GetItemNoCheck(i)->ToCString(), this->attrValues.GetItemNoCheck(i)->ToCString());
+		i++;
+	}
+	newUnknown->CloneElementAttrs(*this);
+	return newUnknown;
+}
+
 void Media::SVGUnknown::AddAttr(Text::CStringNN name, Text::CStringNN value)
 {
 	this->attrNames.Add(Text::String::New(name));
 	this->attrValues.Add(Text::String::New(value));
 }
 
-Media::SVGUnknownContainer::SVGUnknownContainer(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name) : SVGContainer(parent, refEng, doc)
+Media::SVGUnknownContainer::SVGUnknownContainer(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name) : SVGContainer(parent, refEng, doc)
 {
 	this->name = Text::String::New(name);
 }
@@ -1532,6 +1778,22 @@ void Media::SVGUnknownContainer::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS
 	sb->Append(this->name);
 	sb->AppendUTF8Char('>');
 	if (!this->IsSpacePreserve()) sb->AppendUTF8Char('\n');
+}
+
+NN<Media::SVGElement> Media::SVGUnknownContainer::CloneElement(NN<const SVGContainer> newParent) const
+{
+	NN<Media::SVGUnknownContainer> newUnknown;
+	NEW_CLASSNN(newUnknown, Media::SVGUnknownContainer(newParent, this->refEng, newParent->GetDoc(), this->name->ToCString()));
+	UIntOS i = 0;
+	UIntOS j = this->attrNames.GetCount();
+	while (i < j)
+	{
+		newUnknown->attrNames.Add(this->attrNames.GetItemNoCheck(i)->Clone());
+		newUnknown->attrValues.Add(this->attrValues.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	newUnknown->CloneContainerConts(*this);
+	return newUnknown;
 }
 
 void Media::SVGUnknownContainer::AddAttr(Text::CStringNN name, Text::CStringNN value)
@@ -1643,9 +1905,21 @@ NN<Media::DrawFont> Media::SVGDocument::NewFontPx(Text::CStringNN name, Double p
 	return font;
 }
 
+NN<Media::DrawPen> Media::SVGDocument::ClonePen(NN<DrawPen> p)
+{
+	NN<SVGPen> pen = NN<SVGPen>::ConvertFrom(p);
+	return this->NewPenARGB(pen->GetColor(), pen->GetThick() * this->GetHDrawScale(), nullptr, 0);
+}
+NN<Media::DrawBrush> Media::SVGDocument::CloneBrush(NN<DrawBrush> b)
+{
+	NN<SVGBrush> brush = NN<SVGBrush>::ConvertFrom(b);
+	return this->NewBrushARGB(brush->GetColor());
+}
+
 NN<Media::DrawFont> Media::SVGDocument::CloneFont(NN<Media::DrawFont> f)
 {
-	return f;
+	NN<SVGFont> font = NN<SVGFont>::ConvertFrom(f);
+	return this->NewFontPx(Text::String::OrEmpty(font->GetFontName())->ToCString(), font->GetFontSizePx(), font->GetStyle(), 0);
 }
 
 void Media::SVGDocument::SetSize(UIntOS width, UIntOS height, Math::Unit::Distance::DistanceUnit unit)
@@ -1822,6 +2096,11 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) 
 	sb->AppendC(UTF8STRC("</svg>"));
 }
 
+NN<Media::SVGElement> Media::SVGDocument::CloneElement(NN<const SVGContainer> newParent) const
+{
+	return NN<Media::SVGElement>::ConvertFrom(this->Clone());
+}
+
 void Media::SVGDocument::RegisterId(NN<Text::String> id, NN<SVGElement> ele)
 {
 	this->idMap.Put(id, ele);
@@ -1830,6 +2109,30 @@ void Media::SVGDocument::RegisterId(NN<Text::String> id, NN<SVGElement> ele)
 Optional<Media::SVGElement> Media::SVGDocument::GetElementById(Text::CStringNN id) const
 {
 	return this->idMap.GetC(id);
+}
+
+NN<Media::Image> Media::SVGDocument::Clone() const
+{
+	NN<SVGDocument> newDoc;
+	NEW_CLASSNN(newDoc, SVGDocument(this->refEng));
+	newDoc->width = this->width;
+	newDoc->height = this->height;
+	newDoc->unit = this->unit;
+	newDoc->viewBox = this->viewBox;
+	newDoc->xmlnsInkscape = this->xmlnsInkscape;
+	newDoc->xmlnsSvg = this->xmlnsSvg;
+	newDoc->xmlnsSodipodi = this->xmlnsSodipodi;
+	newDoc->xmlnsXlink = this->xmlnsXlink;
+	newDoc->xmlnsRdf = this->xmlnsRdf;
+	newDoc->xmlnsCc = this->xmlnsCc;
+	newDoc->xmlnsDc = this->xmlnsDc;
+	newDoc->version = Text::String::CopyOrNull(this->version);
+	newDoc->inkscapeVersion = Text::String::CopyOrNull(this->inkscapeVersion);
+	newDoc->sodipodiDocname = Text::String::CopyOrNull(this->sodipodiDocname);
+	newDoc->hDrawScale = this->hDrawScale;
+	newDoc->vDrawScale = this->vDrawScale;
+	newDoc->CloneContainerConts(*this);
+	return newDoc;
 }
 
 Media::ImageType Media::SVGDocument::GetImageType() const

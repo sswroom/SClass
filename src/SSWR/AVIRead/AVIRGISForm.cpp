@@ -23,6 +23,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/SharedImage.h"
+#include "Media/VectorGraph.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
@@ -202,49 +203,70 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Map::VectorLayer> lyr;
 				NN<Media::SharedImage> simg;
 				NN<Math::Geometry::VectorImage> vimg;
-				NN<Media::RasterImage> stimg;
-				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage(0, 0).SetTo(stimg))
+				NN<Media::Image> stimg;
+				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage2(0, 0).SetTo(stimg))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
-					Double calcImgW;
-					Double calcImgH;
-					if (stimg->HasHotSpot())
+					if (stimg->GetImageType() == Media::ImageType::Raster)
 					{
-						Double hsX;
-						Double hsY;
-						Double par = stimg->info.CalcPAR();
-						if (par > 1)
+						NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(stimg);
+						Double calcImgW;
+						Double calcImgH;
+						if (rimg->HasHotSpot())
 						{
-							hsX = IntOS2Double(stimg->GetHotSpotX());
-							hsY = IntOS2Double(stimg->GetHotSpotY()) * par;
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * par;
+							Double hsX;
+							Double hsY;
+							Double par = rimg->info.CalcPAR();
+							if (par > 1)
+							{
+								hsX = IntOS2Double(rimg->GetHotSpotX());
+								hsY = IntOS2Double(rimg->GetHotSpotY()) * par;
+								calcImgW = UIntOS2Double(rimg->info.dispSize.x);
+								calcImgH = UIntOS2Double(rimg->info.dispSize.y) * par;
+							}
+							else
+							{
+								hsX = IntOS2Double(rimg->GetHotSpotX()) / par;
+								hsY = IntOS2Double(rimg->GetHotSpotY());
+								calcImgW = UIntOS2Double(rimg->info.dispSize.x) / par;
+								calcImgH = UIntOS2Double(rimg->info.dispSize.y);
+							}
+							pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - hsX, IntOS2Double(mousePos.y) - hsY));
+							pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW - hsX, IntOS2Double(mousePos.y) + calcImgH - hsY));
 						}
 						else
 						{
-							hsX = IntOS2Double(stimg->GetHotSpotX()) / par;
-							hsY = IntOS2Double(stimg->GetHotSpotY());
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / par;
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
+							Double par = rimg->info.CalcPAR();
+							if (par > 1)
+							{
+								calcImgW = UIntOS2Double(rimg->info.dispSize.x);
+								calcImgH = UIntOS2Double(rimg->info.dispSize.y) * par;
+							}
+							else
+							{
+								calcImgW = UIntOS2Double(rimg->info.dispSize.x) / par;
+								calcImgH = UIntOS2Double(rimg->info.dispSize.y);
+							}
+							pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - calcImgW * 0.5, IntOS2Double(mousePos.y) - calcImgH * 0.5));
+							pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW * 0.5, IntOS2Double(mousePos.y) + calcImgH * 0.5));
 						}
-						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - hsX, IntOS2Double(mousePos.y) - hsY));
-						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW - hsX, IntOS2Double(mousePos.y) + calcImgH - hsY));
+					}
+					else if (stimg->GetImageType() == Media::ImageType::Vector)
+					{
+						NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(stimg);
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - vimg->GetWidth() * 0.5, IntOS2Double(mousePos.y) - vimg->GetHeight() * 0.5));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + vimg->GetWidth() * 0.5, IntOS2Double(mousePos.y) + vimg->GetHeight() * 0.5));
+					}
+					else if (stimg->GetImageType() == Media::ImageType::SVG)
+					{
+						NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(stimg);
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - svg->GetWidth() * 0.5, IntOS2Double(mousePos.y) - svg->GetHeight() * 0.5));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + svg->GetWidth() * 0.5, IntOS2Double(mousePos.y) + svg->GetHeight() * 0.5));
 					}
 					else
 					{
-						Double par = stimg->info.CalcPAR();
-						if (par > 1)
-						{
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x);
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y) * par;
-						}
-						else
-						{
-							calcImgW = UIntOS2Double(stimg->info.dispSize.x) / par;
-							calcImgH = UIntOS2Double(stimg->info.dispSize.y);
-						}
-						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - calcImgW * 0.5, IntOS2Double(mousePos.y) - calcImgH * 0.5));
-						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + calcImgW * 0.5, IntOS2Double(mousePos.y) + calcImgH * 0.5));
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) - 16, IntOS2Double(mousePos.y) - 16));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(IntOS2Double(mousePos.x) + 16, IntOS2Double(mousePos.y) + 16));
 					}
 					Data::ArrayListNN<Media::StaticImage> prevList;
 					Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList>::ConvertFrom(nnpobj), prevList, 640);

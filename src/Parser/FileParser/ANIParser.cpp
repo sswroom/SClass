@@ -35,6 +35,7 @@ IO::ParserType Parser::FileParser::ANIParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 riffHdr[24];
 	UInt32 aniSize;
 	Media::ImageList *imgList;
@@ -68,13 +69,13 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 				tmp = *(UInt32*)&buff[buffOfst];
 				if (tmp == *(UInt32*)"INAM")
 				{
-					Text::StrConcatC(sbuff, &buff[buffOfst + 8], *(UInt32*)&buff[buffOfst + 4]);
-					imgList->SetImageName(sbuff);
+					sptr = Text::StrConcatC(sbuff, &buff[buffOfst + 8], *(UInt32*)&buff[buffOfst + 4]);
+					imgList->SetValueStr(Media::ImageList::ValueType::DocumentName, CSTRP(sbuff, sptr));
 				}
 				else if (tmp == *(UInt32*)"IART")
 				{
-					Text::StrConcatC(sbuff, &buff[buffOfst + 8], *(UInt32*)&buff[buffOfst + 4]);
-					imgList->SetAuthor(sbuff);
+					sptr = Text::StrConcatC(sbuff, &buff[buffOfst + 8], *(UInt32*)&buff[buffOfst + 4]);
+					imgList->SetValueStr(Media::ImageList::ValueType::Author, CSTRP(sbuff, sptr));
 				}
 				buffOfst += *(UInt32*)&buff[buffOfst + 4] + 8;
 				if (buffOfst & 1)
@@ -102,10 +103,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 				tmp = *(UInt32*)&buff[0];
 				if (tmp == *(UInt32*)"icon")
 				{
-					NN<Media::RasterImage> img;
+					NN<Media::Image> img;
 					if (currImage.SetTo(nncurrImage))
 					{
-						if (nncurrImage->GetImage(0, 0).SetTo(img))
+						if (nncurrImage->GetImage2(0, 0).SetTo(img))
 						{
 							imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
 						}
@@ -125,8 +126,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 
 			if (currImage.SetTo(nncurrImage))
 			{
-				NN<Media::RasterImage> img;
-				if (nncurrImage->GetImage(0, 0).SetTo(img))
+				NN<Media::Image> img;
+				if (nncurrImage->GetImage2(0, 0).SetTo(img))
 				{
 					imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
 				}

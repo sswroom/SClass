@@ -92,7 +92,7 @@ Bool SSWR::AVIRead::AVIRSudokuImportForm::LoadImage(NN<Media::ImageList> imgList
 	Bool succ = false;
 	NN<Media::StaticImage> img;
 	imgList->ToStaticImage(0);
-	if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+	if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 	{
 		this->currImage = img;
 		imgList->RemoveImage(0, false);

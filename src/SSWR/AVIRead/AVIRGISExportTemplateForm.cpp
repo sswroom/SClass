@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnIdSelChg(AnyType user
 {
 	NN<AVIRGISExportTemplateForm> me = userObj.GetNN<AVIRGISExportTemplateForm>();
 	NN<Media::SVGRect> rect;
-	NN<Media::SVGContainer> parent;
+	NN<const Media::SVGContainer> parent;
 	NN<Media::SVGDocument> doc;
 	if (!me->cboId->GetSelectedItem().GetOpt<Media::SVGRect>().SetTo(rect))
 	{
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 	NN<AVIRGISExportTemplateForm> me = userObj.GetNN<AVIRGISExportTemplateForm>();
 	NN<Media::SVGDocument> doc;
 	NN<Media::SVGRect> rect;
-	NN<Media::SVGContainer> parent;
+	NN<const Media::SVGContainer> parent;
 	NN<Media::SVGGroup> group;
 	NN<Text::String> id;
 	if (!me->doc.SetTo(doc))
@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		clipPath->AddAttr(CSTR("id"), sb.ToCString());
 		NEW_CLASSNN(clipRect, Media::SVGRect(clipPath, rect->GetTL(), rect->GetSize(), nullptr, nullptr));
 		clipPath->AddElement(clipRect);
-		parent->AddElement(clipPath);
+		NN<Media::SVGContainer>::ConvertFrom(parent)->AddElement(clipPath);
 		NEW_CLASSNN(group, Media::SVGGroup(parent, doc->GetDrawEngine(), doc));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("url(#"));
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		sb.AppendC(UTF8STRC("Clip)"));
 		group->SetClipPath(sb.ToCString());
 		group->SetDrawRect(rect->GetRect());
-		parent->AddElement(group);
+		NN<Media::SVGContainer>::ConvertFrom(parent)->AddElement(group);
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		group->SetColorProfile(color);
 		NN<Map::MapView> view = me->env->CreateMapView(Math::Size2DDbl(group->GetWidth(), group->GetHeight()));

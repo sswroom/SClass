@@ -63,55 +63,56 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	UInt8 *vp8 = 0;
 	size_t vp8len;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img))
+	NN<Media::Image> img;
+	if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
 		return false;
-	if (img->info.pf == Media::PF_B8G8R8)
+	NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.pf == Media::PF_B8G8R8)
 	{
-		UIntOS bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
+		UIntOS bpl = rimg->GetDataBpl();
+		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGR(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGR(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGR(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGR(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		MemFree(buff);
 	}
-	else if (img->info.pf == Media::PF_R8G8B8)
+	else if (rimg->info.pf == Media::PF_R8G8B8)
 	{
-		UIntOS bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
+		UIntOS bpl = rimg->GetDataBpl();
+		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessRGB(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeRGB(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeRGB(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		MemFree(buff);
 	}
-	else if (img->info.pf == Media::PF_B8G8R8A8)
+	else if (rimg->info.pf == Media::PF_B8G8R8A8)
 	{
-		UIntOS bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
-		if (img->info.atype == Media::AT_IGNORE_ALPHA)
+		UIntOS bpl = rimg->GetDataBpl();
+		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
+		if (rimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);
-			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (IntOS)bpl, (IntOS)img->info.dispSize.x * 3);
+			UInt8 *imgBuff = MemAlloc(UInt8, rimg->info.dispSize.CalcArea() * 3);
+			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, (IntOS)bpl, (IntOS)rimg->info.dispSize.x * 3);
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, &vp8);
+				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, (float)quality, &vp8);
+				vp8len = WebPEncodeBGR(imgBuff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, (float)quality, &vp8);
 			}
 			MemFree(imgBuff);
 		}
@@ -119,11 +120,11 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		{
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGRA(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
+				vp8len = WebPEncodeLosslessBGRA(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGRA(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+				vp8len = WebPEncodeBGRA(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 			}
 		}
 		MemFree(buff);
@@ -151,14 +152,14 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		data.size = vp8len;
 		WebPMuxSetImage(mux, &data, 0);
 		UnsafeArray<const UInt8> icc;
-		if (img->info.color.GetRAWICC().SetTo(icc))
+		if (rimg->info.color.GetRAWICC().SetTo(icc))
 		{
 			data.bytes = icc.Ptr();
 			data.size = (size_t)ReadMUInt32(&icc[0]);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
 		}
 		NN<Media::EXIFData> exif;
-		if (img->exif.SetTo(exif))
+		if (rimg->exif.SetTo(exif))
 		{
 			UInt64 exifSize;
 			UInt64 endOfst;

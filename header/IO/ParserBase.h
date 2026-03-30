@@ -14,6 +14,10 @@ namespace Math
 {
 	class ArcGISPRJParser;
 }
+namespace Media
+{
+	class DrawEngine;
+}
 namespace Net
 {
 	class SocketFactory;
@@ -43,6 +47,7 @@ namespace IO
 		virtual void SetWebBrowser(Optional<Net::WebBrowser> browser) {};
 		virtual void SetMapManager(Optional<Map::MapManager> mapMgr) {};
 		virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact) {};
+		virtual void SetDrawEngine(Optional<Media::DrawEngine> deng) {};
 		virtual void SetProgressHandler(Optional<IO::ProgressHandler> progHdlr) {};
 		virtual void SetTCPClientFactory(NN<Net::TCPClientFactory> clif) {};
 		virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl) {};

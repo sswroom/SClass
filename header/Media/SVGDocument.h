@@ -18,18 +18,19 @@ namespace Media
 	protected:
 		Optional<Text::String> id;
 		Optional<Text::String> inkscapeLabel;
-		Optional<SVGContainer> parent;
+		Optional<const SVGContainer> parent;
 		SVGLineCap lineCap;
 		SVGLineJoin lineJoin;
 		Bool spacePreserve;
 
 		void AppendEleAttr(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		void CloneElementAttrs(NN<const SVGElement> ele);
 	public:
-		SVGElement(Optional<SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; this->spacePreserve = false; this->inkscapeLabel = nullptr; }
+		SVGElement(Optional<const SVGContainer> parent) { this->id = nullptr; this->lineCap = SVGLineCap::Default; this->lineJoin = SVGLineJoin::Default; this->parent = parent; this->spacePreserve = false; this->inkscapeLabel = nullptr; }
 		virtual ~SVGElement() { OPTSTR_DEL(this->id); OPTSTR_DEL(this->inkscapeLabel); }
 
 		virtual Text::CStringNN GetElementName() const = 0;
-		Optional<SVGContainer> GetParent() const { return this->parent; }
+		Optional<const SVGContainer> GetParent() const { return this->parent; }
 		Bool IsSpacePreserve() const;
 
 		void SetID(Text::CStringNN id)
@@ -72,6 +73,7 @@ namespace Media
 		virtual Bool IsContainer() const { return false; }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const = 0;
 	};
 
 	class SVGLine : public SVGElement
@@ -81,12 +83,13 @@ namespace Media
 		Math::Coord2DDbl pt2;
 		NN<DrawPen> pen;
 	public:
-		SVGLine(NN<SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
+		SVGLine(NN<const SVGContainer> parent, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, NN<DrawPen> pen);
 		virtual ~SVGLine();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("line"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGPolyline : public SVGElement
@@ -95,13 +98,14 @@ namespace Media
 		Data::ArrayListA<Math::Coord2DDbl> points;
 		NN<DrawPen> pen;
 	public:
-		SVGPolyline(NN<SVGContainer> parent, NN<DrawPen> pen);
+		SVGPolyline(NN<const SVGContainer> parent, NN<DrawPen> pen);
 		virtual ~SVGPolyline();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("polyline"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGPolygon : public SVGElement
@@ -111,13 +115,14 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGPolygon(NN<SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGPolygon(NN<const SVGContainer> parent, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGPolygon();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("polygon"); }
 
 		void AddPoint(Math::Coord2DDbl pt);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGRect : public SVGElement
@@ -131,12 +136,13 @@ namespace Media
 		Bool styleBrush;
 		Bool insensitive;
 	public:
-		SVGRect(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGRect(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGRect();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("rect"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 		void SetStyle(Bool stylePen, Bool styleBrush);
 		void SetInsensitive(Bool insensitive) { this->insensitive = insensitive; }
 		Double GetWidth() const { return this->size.x; }
@@ -154,12 +160,13 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGEllipse(NN<SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGEllipse(NN<const SVGContainer> parent, Math::Coord2DDbl center, Math::Size2DDbl radius, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGEllipse();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("ellipse"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGTextComponent
@@ -172,6 +179,7 @@ namespace Media
 		NN<Text::String> GetText() const { return this->text; }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
+		virtual NN<SVGTextComponent> Clone(NN<const SVGContainer> newParent) const = 0;
 	};
 
 	class SVGStaticText : public SVGTextComponent
@@ -181,6 +189,7 @@ namespace Media
 		virtual ~SVGStaticText();
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGTextComponent> Clone(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGTSpan : public SVGTextComponent
@@ -207,6 +216,7 @@ namespace Media
 		void SetSodipodiRole(Text::CStringNN sodipodiRole) { OPTSTR_DEL(this->sodipodiRole); this->sodipodiRole = Text::String::New(sodipodiRole); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGTextComponent> Clone(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGText : public SVGElement
@@ -236,7 +246,7 @@ namespace Media
 		Double inkscapeTransformCenterX;
 		Double inkscapeTransformCenterY;
 	public:
-		SVGText(NN<SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component);
+		SVGText(NN<const SVGContainer> parent, Math::Coord2DDbl tl, NN<SVGFont> font, NN<SVGBrush> brush, NN<SVGTextComponent> component);
 		virtual ~SVGText();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("text"); }
@@ -263,6 +273,7 @@ namespace Media
 		Optional<SVGPen> GetPen() const { return this->pen; }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGImage : public SVGElement
@@ -275,7 +286,7 @@ namespace Media
 		Optional<Text::String> preserveAspectRatio;
 		Optional<Text::String> style;
 	public:
-		SVGImage(NN<SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
+		SVGImage(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math::Size2DDbl size, Text::CStringNN href);
 		virtual ~SVGImage();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("image"); }
@@ -284,6 +295,7 @@ namespace Media
 		void SetStyle(Text::CStringNN style) { OPTSTR_DEL(this->style); this->style = Text::String::New(style); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGPath : public SVGElement
@@ -293,12 +305,13 @@ namespace Media
 		Optional<DrawPen> pen;
 		Optional<DrawBrush> brush;
 	public:
-		SVGPath(NN<SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush);
+		SVGPath(NN<const SVGContainer> parent, NN<Text::String> d, Optional<DrawPen> pen, Optional<DrawBrush> brush);
 		virtual ~SVGPath();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("path"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGTitle : public SVGElement
@@ -307,12 +320,13 @@ namespace Media
 		NN<Text::String> eleName;
 		NN<Text::String> title;
 	public:
-		SVGTitle(NN<SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title);
+		SVGTitle(NN<const SVGContainer> parent, Text::CStringNN eleName, Text::CStringNN title);
 		virtual ~SVGTitle();
 
 		virtual Text::CStringNN GetElementName() const { return this->eleName->ToCString(); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGContainer : public SVGElement, public DrawImage
@@ -326,8 +340,10 @@ namespace Media
 		Math::RectAreaDbl drawRect;
 
 		void ToInnerString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		void CloneElements(NN<const SVGContainer> fromContainer);
+		void CloneContainerConts(NN<const SVGContainer> fromContainer);
 	public:
-		SVGContainer(Optional<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGContainer(Optional<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGContainer();
 
 		virtual Double GetWidth() const;
@@ -421,12 +437,13 @@ namespace Media
 	class SVGDefs : public SVGContainer
 	{
 	public:
-		SVGDefs(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGDefs(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGDefs();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("defs"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 	};
 
 	class SVGGroup : public SVGContainer
@@ -434,12 +451,13 @@ namespace Media
 	private:
 		Optional<Text::String> clipPath;
 	public:
-		SVGGroup(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
+		SVGGroup(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc);
 		virtual ~SVGGroup();
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("g"); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 		void SetClipPath(Text::CStringNN clipPath);
 	};
 
@@ -450,12 +468,13 @@ namespace Media
 		Data::ArrayListStringNN attrNames;
 		Data::ArrayListStringNN attrValues;
 	public:
-		SVGUnknown(NN<SVGContainer> parent, Text::CStringNN name);
+		SVGUnknown(NN<const SVGContainer> parent, Text::CStringNN name);
 		virtual ~SVGUnknown();
 
 		virtual Text::CStringNN GetElementName() const;
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 
 		void AddAttr(Text::CStringNN name, Text::CStringNN value);
 	};
@@ -468,12 +487,13 @@ namespace Media
 		Data::ArrayListStringNN attrValues;
 
 	public:
-		SVGUnknownContainer(NN<SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name);
+		SVGUnknownContainer(NN<const SVGContainer> parent, NN<Media::DrawEngine> refEng, NN<SVGDocument> doc, Text::CStringNN name);
 		virtual ~SVGUnknownContainer();
 
 		virtual Text::CStringNN GetElementName() const;
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 
 		void AddAttr(Text::CStringNN name, Text::CStringNN value);
 	};
@@ -514,6 +534,8 @@ namespace Media
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
 		virtual NN<DrawFont> NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // 72 dpi size
 		virtual NN<DrawFont> NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // Actual size
+		NN<DrawPen> ClonePen(NN<DrawPen> p);
+		NN<DrawBrush> CloneBrush(NN<DrawBrush> b);
 		virtual NN<DrawFont> CloneFont(NN<DrawFont> f);
 
 		void SetSize(UIntOS width, UIntOS height, Math::Unit::Distance::DistanceUnit unit);
@@ -525,10 +547,12 @@ namespace Media
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const { this->ToString(sb, 0); }
+		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 
 		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
 		Optional<SVGElement> GetElementById(Text::CStringNN id) const;
 
+		virtual NN<Media::Image> Clone() const;
 		virtual ImageType GetImageType() const;
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;

@@ -33,12 +33,14 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(NN<Media::ImageList> imgList, 
 	UInt64 currSize;
 	UInt64 targetSize;
 	NN<Media::RasterImage> img;
+	NN<Media::Image> tmpImg;
 
 	sptr = fileId.ConcatTo(sbuff);
 	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".jpg"));
 
-	if (!imgList->GetImage(0, 0).SetTo(img))
+	if (!imgList->GetImage2(0, 0).SetTo(tmpImg) || tmpImg->GetImageType() != Media::ImageType::Raster)
 		return;
+	img = NN<Media::RasterImage>::ConvertFrom(tmpImg);
 	targetSize = (img->info.dispSize.CalcArea() * img->info.storeBPP >> 3) / this->sizePercent;
 
 	IO::MemoryStream mstm;

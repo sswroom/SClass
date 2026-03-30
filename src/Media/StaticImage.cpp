@@ -29,7 +29,7 @@ Media::StaticImage::~StaticImage()
 	MemFreeAArr(data);
 }
 
-NN<Media::RasterImage> Media::StaticImage::Clone() const
+NN<Media::Image> Media::StaticImage::Clone() const
 {
 	NN<Media::StaticImage> img;
 	NEW_CLASSNN(img, Media::StaticImage(this->info));

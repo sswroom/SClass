@@ -3109,7 +3109,7 @@ UIntOS Media::GDIImage::SaveJPG(NN<IO::SeekableStream> stm)
 #endif
 }
 
-NN<Media::RasterImage> Media::GDIImage::Clone() const
+NN<Media::Image> Media::GDIImage::Clone() const
 {
 	return CreateStaticImage();
 }

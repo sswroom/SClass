@@ -1398,7 +1398,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 										{
 											imgList->ToStaticImage(j);
 											NN<Media::StaticImage> img;
-											if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(img))
+											if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(j, 0)).SetTo(img))
 												img->MultiplyColor(nnstyle->iconColor);
 										}
 									}

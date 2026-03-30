@@ -13,41 +13,41 @@ namespace Media
 	class ImageList : public IO::ParsedObject
 	{
 	public:
-		typedef enum
+		enum class ImageType
 		{
-			IT_UNKNOWN,
-			IT_VISIBLEIMAGE,
-			IT_IRIMAGE,
-			IT_OUTPUTIMAGE
-		} ImageType;
+			Unknown,
+			VisibleImage,
+			IRImage,
+			OutputImage
+		};
 
-		typedef enum
+		enum class ValueType
 		{
-			VT_IR_WIDTH,
-			VT_IR_HEIGHT,
-			VT_VISIBLE_WIDTH,
-			VT_VISIBLE_HEIGHT,
-			VT_FIRMWARE_DATE,
-			VT_FIRMWARE_VERSION,
-			VT_CAMERA_BRAND,
-			VT_CAMERA_MODEL,
-			VT_CAMERA_SN,
-			VT_CAPTURE_DATE,
-			VT_CAPTURE_WIDTH,
-			VT_CAPTURE_HEIGHT
-		} ValueType;
+			IRWidth,
+			IRHeight,
+			VisibleWidth,
+			VisibleHeight,
+			FirmwareDate,
+			FirmwareVersion,
+			CameraBrand,
+			CameraModel,
+			CameraSN,
+			CaptureDate,
+			CaptureWidth,
+			CaptureHeight,
+			Author,
+			DocumentName
+		};
 
-		typedef enum
+		enum class ThermoType
 		{
-			TT_UNKNOWN,
-			TT_FLIR
-		} ThermoType;
+			Unknown,
+			FLIR
+		};
 	public:
-		Data::ArrayListNN<Media::RasterImage> imgList;
+		Data::ArrayListNN<Media::Image> imgList;
 		Data::ArrayListNative<ImageType> imgTypeList;
 		Data::ArrayListNative<UInt32> imgTimes;
-		UnsafeArrayOpt<const UTF8Char> author;
-		UnsafeArrayOpt<const UTF8Char> imgName;
 		Data::ArrayListNative<ValueType> valTypeI32;
 		Data::ArrayListNative<Int32> valI32;
 		Data::ArrayListNative<ValueType> valTypeI64;
@@ -57,7 +57,7 @@ namespace Media
 
 		Math::Size2D<UIntOS> thermoSize;
 		UIntOS thermoBPP;
-		UInt8 *thermoPtr;
+		UnsafeArrayOpt<UInt8> thermoPtr;
 		Double thermoEmissivity;
 		Double thermoTransmission;
 		Double thermoBKGTemp;
@@ -69,17 +69,15 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		UIntOS AddImage(NN<Media::RasterImage> img, UInt32 imageDelay);
-		void ReplaceImage(UIntOS index, NN<Media::RasterImage> img);
+		UIntOS AddImage(NN<Media::Image> img, UInt32 imageDelay);
+		void ReplaceImage(UIntOS index, NN<Media::Image> img);
 		Bool RemoveImage(UIntOS index, Bool toRelease);
 		UIntOS GetCount() const;
-		Optional<Media::RasterImage> GetImage(UIntOS index, OptOut<UInt32> imageDelay) const;
+		Optional<Media::Image> GetImage2(UIntOS index, OptOut<UInt32> imageDelay) const;
 		UInt32 GetImageDelay(UIntOS index) const;
 		ImageType GetImageType(UIntOS index) const;
 		void SetImageType(UIntOS index, ImageType imgType);
 		void ToStaticImage(UIntOS index);
-		void SetAuthor(UnsafeArray<const UTF8Char> name);
-		void SetImageName(UnsafeArrayOpt<const UTF8Char> imgName);
 
 		void SetThermoImage(Math::Size2D<UIntOS> thermoSize, UIntOS thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
 		Bool HasThermoImage() const;

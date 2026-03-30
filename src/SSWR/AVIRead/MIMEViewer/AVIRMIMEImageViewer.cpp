@@ -18,7 +18,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVI
 	NN<Media::ImageList> imgList;
 	if (this->imgList.SetTo(imgList))
 	{
-		this->pbContent->SetImage(imgList->GetImage(0, 0), false);
+		this->pbContent->SetImage(imgList->GetImage2(0, 0), false);
 	}
 }
 

@@ -1538,7 +1538,7 @@ UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 #endif
 }
 
-NN<Media::RasterImage> Media::GTKDrawImage::Clone() const
+NN<Media::Image> Media::GTKDrawImage::Clone() const
 {
 	NN<Media::GTKDrawImage> dimg;
 	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype, this->colorSess));

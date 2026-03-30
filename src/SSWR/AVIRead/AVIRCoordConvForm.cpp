@@ -391,25 +391,30 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Dat
 		NN<Media::ImageList> imgList;
 		if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 		{
-			NN<Media::RasterImage> img;
+			NN<Media::Image> img;
+			NN<Media::RasterImage> rimg;
 			NN<Media::EXIFData> exif;
-			if (imgList->GetImage(0, 0).SetTo(img) && img->exif.SetTo(exif) && exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
+			if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 			{
-				sb.ClearStr();
-				sb.Append(imgList->GetSourceNameObj());
-				j = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
-				if (j == INVALID_INDEX)
+				rimg = NN<Media::RasterImage>::ConvertFrom(img);
+				if (rimg->exif.SetTo(exif) && exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
 				{
-					me->nameList.Add(imgList->GetSourceNameObj()->Clone());
+					sb.ClearStr();
+					sb.Append(imgList->GetSourceNameObj());
+					j = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+					if (j == INVALID_INDEX)
+					{
+						me->nameList.Add(imgList->GetSourceNameObj()->Clone());
+					}
+					else
+					{
+						me->nameList.Add(Text::String::New(sb.ToCString().Substring(j + 1)));
+					}
+					me->xList.Add(lon);
+					me->yList.Add(lat);
+					me->zList.Add(altitude);
+					listUpdated = true;
 				}
-				else
-				{
-					me->nameList.Add(Text::String::New(sb.ToCString().Substring(j + 1)));
-				}
-				me->xList.Add(lon);
-				me->yList.Add(lat);
-				me->zList.Add(altitude);
-				listUpdated = true;
 			}
 			imgList.Delete();
 		}

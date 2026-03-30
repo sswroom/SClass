@@ -1555,11 +1555,12 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					valid = true;
 
 					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-					NN<Media::RasterImage> img;
-					if (imgList->GetImage(0, 0).SetTo(img))
+					NN<Media::Image> img;
+					if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 					{
+						NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
 						NN<Media::EXIFData> exif;
-						if (img->exif.SetTo(exif))
+						if (rimg->exif.SetTo(exif))
 						{
 							exif->GetPhotoDate(fileTime);
 							fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
@@ -3979,7 +3980,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 					while (i-- > 0)
 					{
 						imgList->ToStaticImage(i);
-						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg))
+						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, 0)).SetTo(simg))
 						{
 							if (nnuserFile->rotType == 1)
 							{
@@ -4255,7 +4256,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFil
 			while (i-- > 0)
 			{
 				imgList->ToStaticImage(i);
-				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg))
+				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, 0)).SetTo(simg))
 				{
 					if (userFile->rotType == 1)
 					{
@@ -5196,7 +5197,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 						nnimgList->ToStaticImage(0);
 						NN<Media::StaticImage> newImg;
 						NN<Media::StaticImage> simg;
-						if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(simg))
+						if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage2(0, 0)).SetTo(simg))
 						{
 							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{

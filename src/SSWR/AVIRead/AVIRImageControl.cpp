@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 				{
 					NN<Media::StaticImage> simg;
 					nnimgList->ToStaticImage(0);
-					if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(simg))
+					if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage2(0, 0)).SetTo(simg))
 					{
 						NN<Media::StaticImage> simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UIntOS)(sptr3 - sptr)), UTF8STRC(".png"));
@@ -957,7 +957,7 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(Text::CS
 	Optional<Media::StaticImage> outImg = nullptr;
 	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	if (this->imgMap.GetC(fileName).SetTo(status))
@@ -971,9 +971,9 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(Text::CS
 
 	if (imgList.SetTo(nnimgList))
 	{
-		if (nnimgList->GetImage(0, 0).SetTo(img))
+		if (nnimgList->GetImage2(0, 0).SetTo(img))
 		{
-			outImg = img->CreateStaticImage().Ptr();
+			outImg = img->CreateStaticImage();
 		}
 		nnimgList.Delete();
 	}
@@ -991,7 +991,7 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(Text:
 	Optional<Media::StaticImage> outImg = nullptr;
 	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	if (this->imgMap.GetC(fileName).SetTo(status))
@@ -1005,9 +1005,9 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(Text:
 
 	if (imgList.SetTo(nnimgList))
 	{
-		if (nnimgList->GetImage(0, 0).SetTo(img))
+		if (nnimgList->GetImage2(0, 0).SetTo(img))
 		{
-			outImg = img->CreateStaticImage().Ptr();
+			outImg = img->CreateStaticImage();
 		}
 		nnimgList.Delete();
 	}

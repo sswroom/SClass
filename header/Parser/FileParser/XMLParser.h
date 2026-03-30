@@ -18,6 +18,7 @@ namespace Parser
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Parser::ParserList> parsers;
 			Optional<Net::WebBrowser> browser;
+			Optional<Media::DrawEngine> deng;
 		public:
 			XMLParser();
 			virtual ~XMLParser();
@@ -27,11 +28,12 @@ namespace Parser
 			virtual void SetParserList(Optional<Parser::ParserList> parsers);
 			virtual void SetWebBrowser(Optional<Net::WebBrowser> browser);
 			virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact);
+			virtual void SetDrawEngine(Optional<Media::DrawEngine> deng);
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
-			static Optional<IO::ParsedObject> ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile);
+			static Optional<IO::ParsedObject> ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile, Optional<Media::DrawEngine> deng);
 		private:
 			static Bool ParseGPXPoint(NN<Text::XMLReader> reader, NN<Map::GPSTrack::GPSRecord3>rec);
 			static Bool ParseVSProjFile(NN<Text::XMLReader> reader, NN<Text::VSProjContainer> container);

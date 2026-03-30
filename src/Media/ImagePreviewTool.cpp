@@ -7,7 +7,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 {
 	NN<Media::StaticImage> img;
 	imgList->ToStaticImage(0);
-	if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) && (img->info.dispSize.x >= maxSize || img->info.dispSize.y >= maxSize))
+	if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img) && (img->info.dispSize.x >= maxSize || img->info.dispSize.y >= maxSize))
 	{
 		UIntOS currWidth = img->info.dispSize.x;
 		UIntOS currHeight = img->info.dispSize.y;

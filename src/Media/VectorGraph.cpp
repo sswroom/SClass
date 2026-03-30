@@ -86,6 +86,13 @@ NN<Media::DrawPen> Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double scal
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
 }
 
+NN<Media::VectorGraph::VectorPenStyle> Media::VectorGraph::VectorPenStyle::Clone() const
+{
+	NN<VectorPenStyle> newStyle;
+	NEW_CLASSNN(newStyle, VectorPenStyle(this->index, this->color, this->thick, this->pattern, this->nPattern));
+	return newStyle;
+}
+
 Media::VectorGraph::VectorFontStyle::VectorFontStyle(UIntOS index, Text::CStringNN name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	this->index = index;
@@ -143,6 +150,13 @@ NN<Media::DrawFont> Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double s
 	return dimg->NewFontPt(this->name->ToCString(), this->heightPt, this->fontStyle, this->codePage);
 }
 
+NN<Media::VectorGraph::VectorFontStyle> Media::VectorGraph::VectorFontStyle::Clone() const
+{
+	NN<VectorFontStyle> newStyle;
+	NEW_CLASSNN(newStyle, VectorFontStyle(this->index, this->name->ToCString(), this->heightPt, this->fontStyle, this->codePage));
+	return newStyle;
+}
+
 Media::VectorGraph::VectorBrushStyle::VectorBrushStyle(UIntOS index, UInt32 color)
 {
 	this->index = index;
@@ -168,6 +182,13 @@ UIntOS Media::VectorGraph::VectorBrushStyle::GetIndex()
 NN<Media::DrawBrush> Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double oriDPI, NN<Media::DrawImage> dimg)
 {
 	return dimg->NewBrushARGB(this->color);
+}
+
+NN<Media::VectorGraph::VectorBrushStyle> Media::VectorGraph::VectorBrushStyle::Clone() const
+{
+	NN<VectorBrushStyle> newStyle;
+	NEW_CLASSNN(newStyle, VectorBrushStyle(this->index, this->color));
+	return newStyle;
 }
 
 Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile) : colorProfile(colorProfile)
@@ -754,6 +775,83 @@ UIntOS Media::VectorGraph::SaveJPG(NN<IO::SeekableStream> stm)
 	return 0;
 }
 
+NN<Media::Image> Media::VectorGraph::Clone() const
+{
+	NN<Media::VectorGraph> newGraph;
+	NEW_CLASSNN(newGraph, Media::VectorGraph(this->srid, this->size.x, this->size.y, this->refEng, this->colorProfile));
+	newGraph->colorSess = this->colorSess;
+	newGraph->srid = this->srid;
+	newGraph->hdpi = this->hdpi;
+	newGraph->vdpi = this->vdpi;
+	newGraph->align = this->align;
+	UIntOS i;
+	UIntOS j;
+	i = 0;
+	j = this->penStyles.GetCount();
+	while (i < j)
+	{
+		newGraph->penStyles.Add(this->penStyles.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	i = 0;
+	j = this->fontStyles.GetCount();
+	while (i < j)	{
+		newGraph->fontStyles.Add(this->fontStyles.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	i = 0;
+	j = this->brushStyles.GetCount();
+	while (i < j)
+	{
+		newGraph->brushStyles.Add(this->brushStyles.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	i = 0;
+	j = this->items.GetCount();
+	while (i < j)
+	{
+		NN<VectorStyles> newStyle = MemAllocNN(VectorStyles);
+		NN<VectorStyles> oldStyle = this->itemStyle.GetItemNoCheck(i);
+		NN<VectorPenStyle> oldPen;
+		if (oldStyle->pen.SetTo(oldPen))
+		{
+			newStyle->pen = newGraph->penStyles.GetItemNoCheck(oldPen->GetIndex());
+		}
+		else
+		{
+			newStyle->pen = nullptr;
+		}
+		NN<VectorBrushStyle> oldBrush;
+		if (oldStyle->brush.SetTo(oldBrush))
+		{
+			newStyle->brush = newGraph->brushStyles.GetItemNoCheck(oldBrush->GetIndex());
+		}
+		else
+		{
+			newStyle->brush = nullptr;
+		}
+		NN<VectorFontStyle> oldFont;
+		if (oldStyle->font.SetTo(oldFont))
+		{
+			newStyle->font = newGraph->fontStyles.GetItemNoCheck(oldFont->GetIndex());
+		}
+		else
+		{
+			newStyle->font = nullptr;
+		}
+		newGraph->itemStyle.Add(newStyle);
+	}
+
+	i = 0;
+	j = this->items.GetCount();
+	while (i < j)
+	{
+		newGraph->items.Add(this->items.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	return newGraph;
+}
+
 NN<Media::StaticImage> Media::VectorGraph::CreateStaticImage() const
 {
 	NN<Media::StaticImage> simg;
@@ -799,6 +897,21 @@ NN<Media::StaticImage> Media::VectorGraph::CreateSubImage(Math::RectArea<IntOS> 
 	}
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, this->GetColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	return simg;
+}
+
+void Media::VectorGraph::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	this->colorProfile.ToString(sb);
+	sb->AppendC(UTF8STRC("\r\nSRID: "));
+	sb->AppendU32(this->srid);
+	sb->AppendC(UTF8STRC("\r\nSize: "));
+	sb->AppendDouble(this->size.x);
+	sb->AppendC(UTF8STRC(" x "));
+	sb->AppendDouble(this->size.y);
+	sb->AppendC(UTF8STRC("\r\nHDPI: "));
+	sb->AppendDouble(this->hdpi);
+	sb->AppendC(UTF8STRC("\r\nVDPI: "));
+	sb->AppendDouble(this->vdpi);
 }
 
 Double Media::VectorGraph::GetVisibleWidthMM() const

@@ -1158,12 +1158,12 @@ Optional<Media::StaticImage> Map::MapEnv::GetImage(UIntOS index, OptOut<UInt32> 
 					{
 						imgInfo->aniIndex = 0;
 					}
-					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(imgInfo->aniIndex, imgTimeMS));
+					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage2(imgInfo->aniIndex, imgTimeMS));
 					imgInfo->aniLastTimeTick = currTimeTick + (Int64)imgTimeMS;
 				}
 				else
 				{
-					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(imgInfo->aniIndex, 0));
+					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage2(imgInfo->aniIndex, 0));
 					imgTimeMS = (UInt32)(imgInfo->aniLastTimeTick - currTimeTick);
 				}
 				imgDurMS.Set(imgTimeMS);
@@ -1171,7 +1171,7 @@ Optional<Media::StaticImage> Map::MapEnv::GetImage(UIntOS index, OptOut<UInt32> 
 			}
 			else
 			{
-				return Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(index - imgInfo->index, imgDurMS));
+				return Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage2(index - imgInfo->index, imgDurMS));
 			}
 		}
 	}
@@ -1208,7 +1208,7 @@ IntOS Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 			{
 				UInt32 imgTime;
 				imgList->ToStaticImage(i);
-				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
+				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, imgTime)).SetTo(simg))
 					simg->ToB8G8R8A8();
 			}
 			if (imgInfo->isAni)
@@ -1252,7 +1252,7 @@ UIntOS Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgL
 	{
 		UInt32 imgTime;
 		imgList->ToStaticImage(i);
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, imgTime)).SetTo(simg))
 		{
 			simg->ToB8G8R8A8();
 			if (imgTime != 0)

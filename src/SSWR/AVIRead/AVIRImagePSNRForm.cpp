@@ -78,8 +78,8 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	{
 		nnimgList1->ToStaticImage(0);
 		nnimgList2->ToStaticImage(0);
-		if (Optional<Media::StaticImage>::ConvertFrom(nnimgList1->GetImage(0, 0)).SetTo(simg1) && 
-			Optional<Media::StaticImage>::ConvertFrom(nnimgList2->GetImage(0, 0)).SetTo(simg2) &&
+		if (Optional<Media::StaticImage>::ConvertFrom(nnimgList1->GetImage2(0, 0)).SetTo(simg1) && 
+			Optional<Media::StaticImage>::ConvertFrom(nnimgList2->GetImage2(0, 0)).SetTo(simg2) &&
 			simg1->info.storeSize.x == simg2->info.storeSize.x &&
 			simg1->info.dispSize.y == simg2->info.dispSize.y)
 		{

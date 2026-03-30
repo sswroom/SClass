@@ -22,7 +22,7 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 	{
 		NN<Media::StaticImage> simg;
 		imgList->ToStaticImage(0);
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(simg))
 		{
 			Bool succ = false;
 			if (pf == simg->info.pf)
@@ -59,7 +59,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 	{
 		NN<Media::StaticImage> simg;
 		imgList->ToStaticImage(0);
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(simg))
 		{
 			imgList->RemoveImage(0, false);
 			imgList.Delete();

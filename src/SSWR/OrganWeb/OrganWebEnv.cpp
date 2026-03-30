@@ -2242,11 +2242,12 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					valid = !mustHaveCamera;
 
 					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-					NN<Media::RasterImage> img;
-					if (imgList->GetImage(0, 0).SetTo(img))
+					NN<Media::Image> img;
+					if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
 					{
+						NN<Media::RasterImage> rasterImg = NN<Media::RasterImage>::ConvertFrom(img);
 						NN<Media::EXIFData> exif;
-						if (img->exif.SetTo(exif))
+						if (rasterImg->exif.SetTo(exif))
 						{
 							valid = true;
 							exif->GetPhotoDate(fileTime);

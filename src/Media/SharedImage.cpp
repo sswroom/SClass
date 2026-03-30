@@ -74,7 +74,7 @@ Optional<Media::StaticImage> Media::SharedImage::GetImage(OptOut<UInt32> imgTime
 	Int64 currTimeTick;
 	if (this->imgStatus->imgDelay == 0)
 	{
-		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage2(this->imgStatus->imgIndex, currDelay));
 		if (currDelay == 0)
 		{
 			imgTimeMS.Set(0);
@@ -93,7 +93,7 @@ Optional<Media::StaticImage> Media::SharedImage::GetImage(OptOut<UInt32> imgTime
 		{
 			this->imgStatus->imgIndex = 0;
 		}
-		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage2(this->imgStatus->imgIndex, currDelay));
 		this->imgStatus->lastTimeTick = currTimeTick;
 		this->imgStatus->imgDelay = currDelay;
 		imgTimeMS.Set(this->imgStatus->imgDelay);
@@ -101,7 +101,7 @@ Optional<Media::StaticImage> Media::SharedImage::GetImage(OptOut<UInt32> imgTime
 	}
 	else
 	{
-		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage2(this->imgStatus->imgIndex, currDelay));
 		imgTimeMS.Set((UInt32)(this->imgStatus->imgDelay - (UInt64)(currTimeTick - this->imgStatus->lastTimeTick)));
 		return img;
 	}
@@ -134,5 +134,5 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 	imgTimeMS.Set(0);
 	if (minImg.NotNull())
 		return minImg;
-	return Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(0, 0));
+	return Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage2(0, 0));
 }

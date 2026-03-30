@@ -106,7 +106,11 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-		srcImg = imgList->GetImage(0, 0);
+		NN<Media::Image> img;
+		if (imgList->GetImage2(0, 0).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
+		{
+			srcImg = NN<Media::RasterImage>::ConvertFrom(img);
+		}
 	}
 	pngBuff = mstm.GetBuff(pngSize);
 	if (srcImg.SetTo(nnsrcImg) && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)

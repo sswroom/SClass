@@ -32,7 +32,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg) && simg->info.fourcc != *(UInt32*)"LRGB")
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(i, 0)).SetTo(simg) && simg->info.fourcc != *(UInt32*)"LRGB")
 		{
 			Sync::MutexUsage mutUsage(this->mut);
 			if (this->csconv.IsNull() || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color.Equals(this->srcProfile))

@@ -276,7 +276,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 	mutUsage.EndUse();
 
 	NN<Media::StaticImage> img;
-	if (targetType != IO::ParserType::ImageList && nnimgList.Set(imgList) && imgList->GetCount() == 1 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+	if (targetType != IO::ParserType::ImageList && nnimgList.Set(imgList) && imgList->GetCount() == 1 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 	{
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;

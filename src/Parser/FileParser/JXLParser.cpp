@@ -366,7 +366,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				ParseBox(boxData, boxBuffer.SubArray(0, boxSize), ReadNUInt32(boxType));
 				boxSize = 0;
 			}
-			if (boxData.exif.SetTo(exif) && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+			if (boxData.exif.SetTo(exif) && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(simg))
 			{
 				simg->SetEXIFData(exif);
 				boxData.exif = nullptr;

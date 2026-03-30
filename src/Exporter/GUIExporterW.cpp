@@ -61,10 +61,14 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
+	if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
 		return IO::FileExporter::SupportType::NotSupported;
-	switch (img->info.pf)
+	rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.fourcc != 0)
+		return IO::FileExporter::SupportType::NotSupported;
+	switch (rimg->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
 		return IO::FileExporter::SupportType::NormalStream;
@@ -117,23 +121,27 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return 0;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
+	if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
+		return 0;
+	rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.fourcc != 0)
 		return 0;
 	Gdiplus::Bitmap *gimg;
-	Gdiplus::Rect rc(0, 0, (INT)img->info.dispSize.x, (INT)img->info.dispSize.y);
+	Gdiplus::Rect rc(0, 0, (INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y);
 	Gdiplus::BitmapData bd;
 	Gdiplus::ColorPalette *pal;
-	switch (img->info.pf)
+	switch (rimg->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat32bppARGB));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
-		if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat32bppARGB));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
+		if (rimg->info.atype == Media::AT_IGNORE_ALPHA || rimg->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppRGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+				rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -141,42 +149,42 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+				rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
 		return gimg;
 	case Media::PF_B8G8R8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat24bppRGB));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat24bppRGB));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat24bppRGB, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+			rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
 	case Media::PF_LE_R5G6B5:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat16bppRGB565));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat16bppRGB565));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat16bppRGB565, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+			rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
 	case Media::PF_PAL_8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat8bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat8bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat8bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+			rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
 		pal = (Gdiplus::ColorPalette*)MAlloc(1032);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 256;
-		if (img->pal.SetTo(nnpal))
+		if (rimg->pal.SetTo(nnpal))
 		{
 			MemCopyNO(pal->Entries, nnpal.Ptr(), 1024);
 		}
@@ -185,19 +193,19 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 
 		return gimg;
 	case Media::PF_PAL_4:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat4bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat4bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat4bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+			rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
 		pal = (Gdiplus::ColorPalette*)MAlloc(72);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 16;
-		if (img->pal.SetTo(nnpal))
+		if (rimg->pal.SetTo(nnpal))
 		{
 			MemCopyNO(pal->Entries, nnpal.Ptr(), 64);
 		}
@@ -206,19 +214,19 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 
 		return gimg;
 	case Media::PF_PAL_1:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat1bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat1bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
+			rimg->GetRasterData((UInt8*)bd.Scan0, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, (UIntOS)(IntOS)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
 		pal = (Gdiplus::ColorPalette*)MAlloc(16);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 2;
-		if (img->pal.SetTo(nnpal))
+		if (rimg->pal.SetTo(nnpal))
 		{
 			MemCopyNO(pal->Entries, nnpal.Ptr(), 8);
 		}

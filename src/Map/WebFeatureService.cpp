@@ -376,7 +376,7 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 		sb.Append(currFeature->title);
 		sb.AppendC(UTF8STRC(".gml"));
 		NN<IO::ParsedObject> pobj;
-		if (Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), nullptr, nullptr, nullptr).SetTo(pobj))
+		if (Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), nullptr, nullptr, nullptr, nullptr).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{

@@ -128,7 +128,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 			NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 			imgList->ToStaticImage(0);
 			NN<Media::StaticImage> simg;
-			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(simg))
 			{
 				if (stat->alpha > 0 && stat->alpha != 1)
 				{
@@ -188,7 +188,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 					imgList->ToStaticImage(0);
 					NN<Media::StaticImage> simg;
-					if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+					if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(simg))
 					{
 						if (stat->alpha > 0 && stat->alpha != 1)
 						{

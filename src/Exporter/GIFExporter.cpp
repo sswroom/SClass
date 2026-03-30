@@ -27,17 +27,21 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
+	NN<Media::Image> img;
+	NN<Media::RasterImage> rimg;
+	if (!imgList->GetImage2(0, 0).SetTo(img))
 		return IO::FileExporter::SupportType::NotSupported;
-	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
+	rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.fourcc != 0)
+		return IO::FileExporter::SupportType::NotSupported;
+	if (rimg->info.pf == Media::PF_PAL_8 || rimg->info.pf == Media::PF_PAL_W8)
 	{
-		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
+		if (rimg->info.atype == Media::AT_ALPHA_ALL_FF || rimg->info.atype == Media::AT_IGNORE_ALPHA)
 			return IO::FileExporter::SupportType::NormalStream;
 		IntOS i;
 		Bool found = false;
 		UnsafeArray<UInt8> pal;
-		if (img->pal.SetTo(pal))
+		if (rimg->pal.SetTo(pal))
 		{
 			i = 0;
 			while (i < 1024)
@@ -86,7 +90,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	NN<Media::RasterImage> img;
 	UnsafeArray<UInt8> pal;
-	if (!imgList->GetImage(0, 0).SetTo(img) || !img->pal.SetTo(pal))
+	if (!Optional<Media::RasterImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img) || !img->pal.SetTo(pal))
 		return false;
 	UIntOS transparentIndex = INVALID_INDEX;
 	UIntOS i;

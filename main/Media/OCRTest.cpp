@@ -107,7 +107,7 @@ void TestFile2(Text::CStringNN imgPath, Parser::ParserList *parsers, Media::ANPR
 	if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 	{
 		NN<Media::StaticImage> img;
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 			apnr->ParseImage(img);
 		imgList.Delete();
 	}

@@ -25,6 +25,7 @@ Parser::FileParser::XMLParser::XMLParser()
 	this->encFact = nullptr;
 	this->parsers = nullptr;
 	this->browser = nullptr;
+	this->deng = nullptr;
 }
 
 Parser::FileParser::XMLParser::~XMLParser()
@@ -54,6 +55,11 @@ void Parser::FileParser::XMLParser::SetWebBrowser(Optional<Net::WebBrowser> brow
 void Parser::FileParser::XMLParser::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	this->encFact = encFact;
+}
+
+void Parser::FileParser::XMLParser::SetDrawEngine(Optional<Media::DrawEngine> deng)
+{
+	this->deng = deng;
 }
 
 void Parser::FileParser::XMLParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
@@ -129,10 +135,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::St
 	}
 
 	IO::StreamDataStream stm(fd);
-	return ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
+	return ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile, this->deng);
 }
 
-Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile)
+Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile, Optional<Media::DrawEngine> deng)
 {
 	NN<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
@@ -935,8 +941,17 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("svg")))
 	{
-//		NN<Media::SVGDocument> svgDoc;
-//		if (Media::SVGDocument::ParseReader(reader,))
+		NN<Media::DrawEngine> eng;
+		NN<Media::SVGDocument> svgDoc;
+		
+		if (deng.SetTo(eng) && Media::SVGDocument::ParseReader(reader, eng).SetTo(svgDoc))
+		{
+//			NN<Media::ImageList> imgList;
+//			NEW_CLASSNN(imgList, Media::ImageList(fileName));
+//			imgList->AddImage(svgDoc, 0);
+//			return imgList;
+			svgDoc.Delete();
+		}
 	}
 	return nullptr;
 }

@@ -31,12 +31,13 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img))
+	NN<Media::Image> img;
+	if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
 		return IO::FileExporter::SupportType::NotSupported;
-	if (img->info.fourcc != 0)
+	NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+	if (rimg->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	switch (img->info.pf)
+	switch (rimg->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
 		return IO::FileExporter::SupportType::NormalStream;
@@ -96,7 +97,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 	}
 	imgList->ToStaticImage(0);
 	NN<Media::StaticImage> img;
-	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) || img->info.fourcc != 0)
+	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img) || img->info.fourcc != 0)
 	{
 		return 0;
 	}

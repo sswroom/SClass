@@ -19,7 +19,7 @@ namespace Media
 
 		Bool IsError() const;
 		
-		virtual NN<Media::RasterImage> Clone() const;
+		virtual NN<Media::Image> Clone() const;
 		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 

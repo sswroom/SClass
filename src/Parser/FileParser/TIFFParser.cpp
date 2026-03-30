@@ -478,7 +478,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 #if defined(VERBOSE)
 					printf("TIFFParser: Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
 #endif
-					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					Data::ByteArray imgData = img->GetDataArray();
 					UIntOS tileOfst;
 					UIntOS tileLeng;
@@ -2225,7 +2225,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		}
 	}
 
-	if (imgList->GetCount() >= 1 && targetType != IO::ParserType::ImageList && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+	if (imgList->GetCount() >= 1 && targetType != IO::ParserType::ImageList && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
 	{
 		Double minX;
 		Double minY;

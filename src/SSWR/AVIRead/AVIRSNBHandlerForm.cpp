@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	{
 		imgList->ToStaticImage(0);
 		me->simg = imgList;
-		me->pbImage->SetImage(Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)));
+		me->pbImage->SetImage(Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)));
 	}
 }
 

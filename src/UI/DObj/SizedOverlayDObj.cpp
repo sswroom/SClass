@@ -110,7 +110,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 			this->dispImg.Delete();
 			imgList->ToStaticImage(frameNum);
 			this->dispFrameNum = frameNum;
-			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(frameNum, 0)).SetTo(img))
 			{
 				if (!this->resizer->IsSupported(img->info))
 				{
