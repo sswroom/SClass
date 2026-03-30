@@ -32,6 +32,7 @@ namespace Parser
 		void SetSSLEngine(Optional<Net::SSLEngine> ssl);
 		void SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser);
 		void SetLogTool(Optional<IO::LogTool> log);
+		void SetDrawEngine(Optional<Media::DrawEngine> deng);
 		void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile);

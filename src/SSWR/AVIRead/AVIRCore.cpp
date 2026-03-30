@@ -84,6 +84,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	this->parsers->SetTCPClientFactory(this->clif);
 	this->parsers->SetSSLEngine(this->ssl);
 	this->parsers->SetLogTool(this->log);
+	this->parsers->SetDrawEngine(this->eng);
 	this->batchLyrs = nullptr;
 	this->batchCesiumTiles = nullptr;
 	this->batchLoad = false;

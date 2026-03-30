@@ -4,6 +4,7 @@
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil_C.h"
 #include "Media/LRGBLimiter_C.h"
+#include "Media/SVGDocument.h"
 #include "Media/VectorGraph.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
@@ -555,7 +556,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameIm
 				DrawToScreen();
 			}
 		}
-		else
+		else if (img->GetImageType() == Media::ImageType::Vector)
 		{
 			NN<Media::VectorGraph> vimg = NN<Media::VectorGraph>::ConvertFrom(img);
 			this->currImageSize = Math::Size2D<UIntOS>((UIntOS)vimg->GetWidth(), (UIntOS)vimg->GetHeight());
@@ -565,7 +566,17 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameIm
 			this->UpdateZoomRange();
 			this->UpdateSubSurface();
 			DrawToScreen();
-
+		}
+		else if (img->GetImageType() == Media::ImageType::SVG)
+		{
+			NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(img);
+			this->currImageSize = Math::Size2D<UIntOS>((UIntOS)svg->GetWidth(), (UIntOS)svg->GetHeight());
+			this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
+			this->UpdateMinScale();
+			this->zoomScale = this->zoomMinScale;
+			this->UpdateZoomRange();
+			this->UpdateSubSurface();
+			DrawToScreen();
 		}
 	}
 	else

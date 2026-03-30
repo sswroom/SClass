@@ -73,6 +73,7 @@ void Parser::FileParser::XMLParser::PrepareSelector(NN<IO::FileSelector> selecto
 		selector->AddFilter(CSTR("*.vcproj"), CSTR("VC Project File"));
 		selector->AddFilter(CSTR("*.gml"), CSTR("GML File"));
 		selector->AddFilter(CSTR("*.jrxml"), CSTR("Jasper Report File"));
+		selector->AddFilter(CSTR("*.svg"), CSTR("SVG File"));
 	}
 }
 
@@ -126,6 +127,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::St
 		valid = true;
 	}
 	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".JRXML")))
+	{
+		valid = true;
+	}
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UIntOS)(sptr - &sbuff[i]), UTF8STRC(".SVG")))
 	{
 		valid = true;
 	}
@@ -946,11 +951,11 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 		
 		if (deng.SetTo(eng) && Media::SVGDocument::ParseReader(reader, eng).SetTo(svgDoc))
 		{
-//			NN<Media::ImageList> imgList;
-//			NEW_CLASSNN(imgList, Media::ImageList(fileName));
-//			imgList->AddImage(svgDoc, 0);
-//			return imgList;
-			svgDoc.Delete();
+			NN<Media::ImageList> imgList;
+			NEW_CLASSNN(imgList, Media::ImageList(fileName));
+			imgList->AddImage(svgDoc, 0);
+			return imgList;
+//			svgDoc.Delete();
 		}
 	}
 	return nullptr;

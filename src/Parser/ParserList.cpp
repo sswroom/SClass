@@ -175,6 +175,28 @@ void Parser::ParserList::SetLogTool(Optional<IO::LogTool> log)
 	}
 }
 
+void Parser::ParserList::SetDrawEngine(Optional<Media::DrawEngine> deng)
+{
+	NN<IO::ParserBase> parser;
+	UIntOS i;
+	UIntOS j = this->filePArr.GetCount();
+	i = 0;
+	while (i < j)
+	{
+		parser = this->filePArr.GetItemNoCheck(i);
+		parser->SetDrawEngine(deng);
+		i++;
+	}
+	i = 0;
+	j = this->objPArr.GetCount();
+	while (i < j)
+	{
+		parser = this->objPArr.GetItemNoCheck(i);
+		parser->SetDrawEngine(deng);
+		i++;
+	}
+}
+
 void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	NN<IO::ParserBase> parser;
