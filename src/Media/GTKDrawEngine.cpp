@@ -408,7 +408,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess) : Media::RasterImage(size, Math::Size2D<UIntOS>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess) : Media::RasterImage(size, size, 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;

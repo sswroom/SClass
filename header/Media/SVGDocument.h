@@ -546,7 +546,8 @@ namespace Media
 		void SetXMLNSXLink(Bool xmlnsXlink);
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const;
-		void ToString(NN<Text::StringBuilderUTF8> sb) const { this->ToString(sb, 0); }
+		void ToSVG(NN<Text::StringBuilderUTF8> sb) const { this->ToString(sb, 0); }
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		virtual NN<SVGElement> CloneElement(NN<const SVGContainer> newParent) const;
 
 		void RegisterId(NN<Text::String> id, NN<SVGElement> ele);
@@ -554,6 +555,8 @@ namespace Media
 
 		virtual NN<Media::Image> Clone() const;
 		virtual ImageType GetImageType() const;
+		virtual Double GetVisibleWidthPx() const;
+		virtual Double GetVisibleHeightPx() const;
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 

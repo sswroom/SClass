@@ -2,7 +2,7 @@
 #define _SM_TEXT_REPORTBUILDER
 #include "Data/ArrayListArr.hpp"
 #include "Data/ChartPlotter.h"
-#include "Media/VectorDocument.h"
+#include "Media/ImageList.h"
 #include "Text/String.h"
 #include "Text/TextCommon.h"
 #include "Text/SpreadSheet/Workbook.h"
@@ -107,7 +107,7 @@ namespace Text
 		void SetColHAlign(UIntOS index, HAlignment hAlign);
 		Bool HasChart();
 		NN<Text::SpreadSheet::Workbook> CreateWorkbook();
-		NN<Media::VectorDocument> CreateVDoc(Int32 id, NN<Media::DrawEngine> deng);
+		NN<Media::ImageList> CreateVDoc(Int32 id, NN<Media::DrawEngine> deng);
 	};
 }
 #endif

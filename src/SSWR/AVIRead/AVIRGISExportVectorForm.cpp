@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Map/DrawMapRenderer.h"
-#include "Media/VectorDocument.h"
+#include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRGISExportVectorForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISExportVectorForm::OnExportClicked(AnyType userObj)
@@ -60,9 +60,9 @@ void __stdcall SSWR::AVIRead::AVIRGISExportVectorForm::OnExportClicked(AnyType u
 		pxW = Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, w) * dpi / 96.0;
 		pxH = Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, h) * dpi / 96.0;
 	}
-	NN<Media::VectorDocument> doc;
-	NEW_CLASSNN(doc, Media::VectorDocument(me->env->GetSRID(), me->core->GetDrawEngine()));
-	NN<Media::VectorGraph> g = doc->AddGraph(pxW, pxH, Math::Unit::Distance::DU_PIXEL);
+	NN<Media::ImageList> doc;
+	NEW_CLASSNN(doc, Media::ImageList(CSTR("Untitled")));
+	NN<Media::VectorGraph> g = doc->AddGraph(me->env->GetSRID(), me->core->GetDrawEngine(), pxW, pxH, Math::Unit::Distance::DU_PIXEL);
 	g->SetHDPI(dpi);
 	g->SetVDPI(dpi);
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);

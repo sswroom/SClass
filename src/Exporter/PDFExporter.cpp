@@ -4,7 +4,7 @@
 #include "IO/StreamWriter.h"
 #include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
-#include "Media/VectorDocument.h"
+#include "Media/ImageList.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -23,7 +23,7 @@ Int32 Exporter::PDFExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
-	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -43,12 +43,12 @@ Bool Exporter::PDFExporter::GetOutputName(IntOS index, UnsafeArray<UTF8Char> nam
 
 Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
-	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
 		return false;
 	}
-	NN<Media::VectorDocument> vdoc = NN<Media::VectorDocument>::ConvertFrom(pobj);
-	NN<Media::VectorGraph> g;
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::Image> img;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	IntOS i;
@@ -76,10 +76,10 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	objPos.Add(0);
 
 	i = 0;
-	j = vdoc->GetCount();
+	j = imgList->GetCount();
 	while (i < j)
 	{
-		if (vdoc->GetItem(i).SetTo(g))
+		if (imgList->GetImage2(i, nullptr).SetTo(img))
 		{
 			pageContentId = objPos.GetCount();
 			objPos.Add(0);
@@ -107,9 +107,9 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			sb.AppendIntOS(objPos.GetCount());
 			sb.AppendC(UTF8STRC(" 0 obj\r"));
 			sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
-			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
+			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_POINT, img->GetVisibleWidthPx())));
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
+			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_POINT, img->GetVisibleHeightPx())));
 			sb.AppendC(UTF8STRC("]\r"));
 			sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
 			sb.AppendC(UTF8STRC("/Contents "));
@@ -151,54 +151,54 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.AppendIntOS(infoId);
 	sb.AppendC(UTF8STRC(" 0 obj\r"));
 	sb.AppendC(UTF8STRC("<<\r"));
-	if (vdoc->GetDocName().SetTo(s))
+	if (imgList->GetValueStr(Media::ImageList::ValueType::DocumentName).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Title ("));
 		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetAuthor().NotNull())
+	if (imgList->GetValueStr(Media::ImageList::ValueType::Author).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Author ("));
-		sb.AppendSlow(vdoc->GetAuthor());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetSubject().NotNull())
+	if (imgList->GetValueStr(Media::ImageList::ValueType::Subject).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Subject ("));
-		sb.AppendSlow(vdoc->GetSubject());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetKeywords().NotNull())
+	if (imgList->GetValueStr(Media::ImageList::ValueType::Keywords).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Keywords ("));
-		sb.AppendSlow(vdoc->GetKeywords());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetCreator().NotNull())
+	if (imgList->GetValueStr(Media::ImageList::ValueType::Creator).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Creator ("));
-		sb.AppendSlow(vdoc->GetCreator());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetProducer().NotNull())
+	if (imgList->GetValueStr(Media::ImageList::ValueType::Producer).SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Producer ("));
-		sb.AppendSlow(vdoc->GetProducer());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetCreateTime())
+	if (imgList->GetValueInt64(Media::ImageList::ValueType::CreateTime))
 	{
 		sb.AppendC(UTF8STRC("/CreationDate (D:"));
-		dt.SetTicks(vdoc->GetCreateTime());
+		dt.SetTicks(imgList->GetValueInt64(Media::ImageList::ValueType::CreateTime));
 		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
 		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));
 	}
-	if (vdoc->GetModifyTime())
+	if (imgList->GetValueInt64(Media::ImageList::ValueType::ModifyTime))
 	{
 		sb.AppendC(UTF8STRC("/ModDate (D:"));
-		dt.SetTicks(vdoc->GetModifyTime());
+		dt.SetTicks(imgList->GetValueInt64(Media::ImageList::ValueType::ModifyTime));
 		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
 		sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));

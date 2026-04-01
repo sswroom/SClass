@@ -1151,6 +1151,7 @@ H264Parser.o: ../../src/Media/H264Parser.cpp
 H265Parser.o: ../../src/Media/H265Parser.cpp
 HTRecFile.o: ../../src/Media/HTRecFile.cpp
 ICCProfile.o: ../../src/Media/ICCProfile.cpp
+Image.o: ../../src/Media/Image.cpp
 ImageAlphaBlend.o: ../../src/Media/ImageAlphaBlend.cpp
 ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
@@ -1250,7 +1251,6 @@ TIFFTileMap.o: ../../src/Media/TIFFTileMap.cpp
 TimedImageList.o: ../../src/Media/TimedImageList.cpp
 V4LVideoCapture.o: ../../src/Media/V4LVideoCapture.cpp
 VCDMPGFile.o: ../../src/Media/VCDMPGFile.cpp
-VectorDocument.o: ../../src/Media/VectorDocument.cpp
 VectorGraph.o: ../../src/Media/VectorGraph.cpp
 VFAudioStream.o: ../../src/Media/VFAudioStream.cpp
 VFPManager.o: ../../src/Media/VFPManager.cpp
@@ -2239,7 +2239,6 @@ AVIRUserAgentParseForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentParseForm.cpp
 AVIRUserAgentSelForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
 AVIRValgrindLogForm.o: ../../src/SSWR/AVIRead/AVIRValgrindLogForm.cpp
 AVIRVBoxManagerForm.o: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
-AVIRVectorDocumentForm.o: ../../src/SSWR/AVIRead/AVIRVectorDocumentForm.cpp
 AVIRVideoCheckerForm.o: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 AVIRVideoInfoForm.o: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
 AVIRVoiceModemForm.o: ../../src/SSWR/AVIRead/AVIRVoiceModemForm.cpp

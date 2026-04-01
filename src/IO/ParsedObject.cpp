@@ -38,8 +38,6 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("CoordinateSystem");
 	case ParserType::CodeProject:
 		return CSTR("CodeProject");
-	case ParserType::VectorDocument:
-		return CSTR("VectorDocument");
 	case ParserType::LUT:
 		return CSTR("LUT");
 	case ParserType::FontRenderer:

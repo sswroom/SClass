@@ -2096,6 +2096,18 @@ void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) 
 	sb->AppendC(UTF8STRC("</svg>"));
 }
 
+void Media::SVGDocument::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->Append(CSTR("Width(px): "));
+	sb->AppendDouble(this->GetWidth());
+	sb->AppendC(UTF8STRC("\r\nHeight(px): "));
+	sb->AppendDouble(this->GetHeight());
+	sb->AppendC(UTF8STRC("\r\nWidth(mm): "));
+	sb->AppendDouble(Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(this->width)));
+	sb->AppendC(UTF8STRC("\r\nHeight(mm): "));
+	sb->AppendDouble(Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(this->height)));
+}
+
 NN<Media::SVGElement> Media::SVGDocument::CloneElement(NN<const SVGContainer> newParent) const
 {
 	return NN<Media::SVGElement>::ConvertFrom(this->Clone());
@@ -2138,6 +2150,16 @@ NN<Media::Image> Media::SVGDocument::Clone() const
 Media::ImageType Media::SVGDocument::GetImageType() const
 {
 	return Media::ImageType::SVG;
+}
+
+Double Media::SVGDocument::GetVisibleWidthPx() const
+{
+	return this->GetWidth();
+}
+
+Double Media::SVGDocument::GetVisibleHeightPx() const
+{
+	return this->GetHeight();
 }
 
 NN<Media::StaticImage> Media::SVGDocument::CreateStaticImage() const

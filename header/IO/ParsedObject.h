@@ -25,7 +25,6 @@ namespace IO
 		Playlist,
 		CoordinateSystem,
 		CodeProject,
-		VectorDocument,
 		LUT,
 		FontRenderer,
 		MIMEObject,

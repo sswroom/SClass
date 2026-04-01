@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-Media::StaticImage::StaticImage(Math::Size2D<UIntOS> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UIntOS maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::RasterImage(dispSize, Math::Size2D<UIntOS>(0, 0), fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticImage::StaticImage(Math::Size2D<UIntOS> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UIntOS maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::RasterImage(dispSize, dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->data = MemAllocAArr(UInt8, this->info.byteSize + 4);
 }

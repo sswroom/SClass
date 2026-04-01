@@ -44,6 +44,8 @@ namespace Media
 		IntOS GetHotSpotY() const;
 
 		virtual Media::ImageType GetImageType() const { return Media::ImageType::Raster; }
+		virtual Double GetVisibleWidthPx() const;
+		virtual Double GetVisibleHeightPx() const;
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;

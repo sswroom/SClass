@@ -5,6 +5,8 @@
 #include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
 
+//#define VERBOSE
+
 Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize)
 {
 	this->exif = nullptr;
@@ -48,7 +50,9 @@ Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize, Math::Size2D<UInt
 	this->info.ycOfst = ycOfst;
 	this->info.ftype = Media::FT_NON_INTERLACE;
 	this->info.rotateType = Media::RotateType::None;
-
+#if defined(VERBOSE)
+	printf("RasterImage: dispSize=%dx%d, storeSize=%dx%d, fourcc=%08x, bpp=%d, pf=%s, maxSize=%d\r\n", (UInt32)dispSize.x, (UInt32)dispSize.y, (UInt32)storeSize.x, (UInt32)storeSize.y, fourcc, bpp, Media::PixelFormatGetName(pf).v.Ptr(), (UInt32)maxSize);
+#endif
 	if (pf == Media::PF_PAL_1_A1)
 	{
 		this->info.storeSize = dispSize;
@@ -254,6 +258,16 @@ IntOS Media::RasterImage::GetHotSpotX() const
 IntOS Media::RasterImage::GetHotSpotY() const
 {
 	return this->hotSpotY;
+}
+
+Double Media::RasterImage::GetVisibleWidthPx() const
+{
+	return UIntOS2Double(this->info.dispSize.x);
+}
+
+Double Media::RasterImage::GetVisibleHeightPx() const
+{
+	return UIntOS2Double(this->info.dispSize.y);
 }
 
 NN<Media::StaticImage> Media::RasterImage::CreateStaticImage() const

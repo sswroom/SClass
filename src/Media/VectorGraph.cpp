@@ -852,6 +852,16 @@ NN<Media::Image> Media::VectorGraph::Clone() const
 	return newGraph;
 }
 
+Double Media::VectorGraph::GetVisibleWidthPx() const
+{
+	return this->size.x;
+}
+
+Double Media::VectorGraph::GetVisibleHeightPx() const
+{
+	return this->size.y;
+}
+
 NN<Media::StaticImage> Media::VectorGraph::CreateStaticImage() const
 {
 	NN<Media::StaticImage> simg;
@@ -904,14 +914,20 @@ void Media::VectorGraph::ToString(NN<Text::StringBuilderUTF8> sb) const
 	this->colorProfile.ToString(sb);
 	sb->AppendC(UTF8STRC("\r\nSRID: "));
 	sb->AppendU32(this->srid);
-	sb->AppendC(UTF8STRC("\r\nSize: "));
+	sb->AppendC(UTF8STRC("\r\nSize(px): "));
 	sb->AppendDouble(this->size.x);
 	sb->AppendC(UTF8STRC(" x "));
 	sb->AppendDouble(this->size.y);
+	sb->AppendC(UTF8STRC("\r\nSize(mm): "));
+	sb->AppendDouble(this->GetVisibleWidthMM());
+	sb->AppendC(UTF8STRC(" x "));
+	sb->AppendDouble(this->GetVisibleHeightMM());
 	sb->AppendC(UTF8STRC("\r\nHDPI: "));
 	sb->AppendDouble(this->hdpi);
 	sb->AppendC(UTF8STRC("\r\nVDPI: "));
 	sb->AppendDouble(this->vdpi);
+	sb->AppendC(UTF8STRC("\r\nItem Count: "));
+	sb->AppendUIntOS(this->items.GetCount());
 }
 
 Double Media::VectorGraph::GetVisibleWidthMM() const

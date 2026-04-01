@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "IO/FileStream.h"
 #include "Math/Math_C.h"
 #include "Media/ICCProfile.h"
 #include "Media/SVGDocument.h"
+#include "Media/SVGWriter.h"
 #include "Media/VectorGraph.h"
 #include "Media/CS/TransferFunc.h"
 #include "SSWR/AVIRead/AVIRFileRenameForm.h"
@@ -13,12 +15,14 @@
 #include "SSWR/AVIRead/AVIRImageResizeForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "UI/GUIFileDialog.h"
 
 typedef enum
 {
-	MNU_IMAGE_SAVE = 101,
-	MNU_IMAGE_RENAME,
+	MNU_FILE_SAVE = 101,
+	MNU_FILE_RENAME,
 	MNU_IMAGE_ENLARGE,
+	MNU_IMAGE_SVG,
 	MNU_FILTER_COLOR,
 	MNU_FILTER_32BIT,
 	MNU_FILTER_64BIT,
@@ -698,6 +702,9 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	if (this->currImg.SetTo(currImg))
 	{
 		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Type: "));
+		sb.Append(Media::ImageTypeGetName(currImg->GetImageType()));
+		sb.AppendC(UTF8STRC("\r\n"));
 		currImg->ToString(sb);
 		sb.AppendC(UTF8STRC("\r\nDelay: "));
 		sb.AppendU32(this->currImgDelay);
@@ -768,10 +775,12 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	
 	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
+	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("&Save"), MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("&Rename"), MNU_FILE_RENAME, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_M);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
-	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_RENAME, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_M);
 	mnu->AddItem(CSTR("&Allow Enlarge"), MNU_IMAGE_ENLARGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("&Save SVG"), MNU_IMAGE_SVG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Filter"));
 	mnu->AddItem(CSTR("&Color"), MNU_FILTER_COLOR, (UI::GUIMenu::KeyModifier)(UI::GUIMenu::KM_CONTROL | UI::GUIMenu::KM_SHIFT), UI::GUIControl::GK_C);
 	mnu->AddItem(CSTR("&Ghost Reduction"), MNU_FILTER_GR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -807,14 +816,14 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 {
 	switch (cmdId)
 	{
-	case MNU_IMAGE_SAVE:
+	case MNU_FILE_SAVE:
 		this->core->SaveData(*this, this->imgList, L"SaveImage");
 		break;
 	case MNU_IMAGE_ENLARGE:
 		this->allowEnlarge = !this->allowEnlarge;
 		this->pbImage->SetAllowEnlarge(this->allowEnlarge);
 		break;
-	case MNU_IMAGE_RENAME:
+	case MNU_FILE_RENAME:
 		{
 			SSWR::AVIRead::AVIRFileRenameForm frm(nullptr, this->ui, this->core, this->imgList->GetSourceNameObj());
 			if (frm.ShowDialog(this))
@@ -825,6 +834,52 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
 				this->SetText(CSTRP(sbuff, sptr));
 			}
+		}
+		break;
+	case MNU_IMAGE_SVG:
+		{
+			UIntOS selInd = this->lbImages->GetSelectedIndex();
+			NN<Media::Image> img;
+			if (this->imgList->GetImage2(selInd, 0).SetTo(img))
+			{
+				NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImageSVG", true);
+				dlg->AddFilter(CSTR("*.svg"), CSTR("SVG File"));
+				if (dlg->ShowDialog(this->GetHandle()))
+				{
+					IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (img->GetImageType() == Media::ImageType::Vector)
+					{
+						NN<Media::VectorGraph> page = NN<Media::VectorGraph>::ConvertFrom(img);
+						Media::SVGWriter writer(fs, page->GetWidth(), page->GetHeight(), this->core->GetDrawEngine());
+						page->DrawTo(writer, nullptr);
+					}
+					else if (img->GetImageType() == Media::ImageType::SVG)
+					{
+						NN<Media::SVGDocument> page = NN<Media::SVGDocument>::ConvertFrom(img);
+						Text::StringBuilderUTF8 sb;
+						page->ToSVG(sb);
+						fs.Write(sb.ToByteArray());
+					}
+					else if (img->GetImageType() == Media::ImageType::Raster)
+					{
+						NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+						if (rimg->GetImageClass() == Media::StaticImage::ImageClass::StaticImage)
+						{
+							NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(rimg);
+							Media::SVGWriter writer(fs, simg->GetVisibleWidthPx(), simg->GetVisibleHeightPx(), this->core->GetDrawEngine());
+							writer.DrawSImagePt(simg, Math::Coord2DDbl(0, 0));
+						}
+						else
+						{
+							NN<Media::StaticImage> simg = rimg->CreateStaticImage();
+							Media::SVGWriter writer(fs, simg->GetVisibleWidthPx(), simg->GetVisibleHeightPx(), this->core->GetDrawEngine());
+							writer.DrawSImagePt(simg, Math::Coord2DDbl(0, 0));
+							simg.Delete();
+						}
+					}
+				}
+			}
+			break;
 		}
 		break;
 	case MNU_FILTER_COLOR:

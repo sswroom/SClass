@@ -984,9 +984,9 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 	}
 }
 
-NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEngine> deng)
+NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEngine> deng)
 {
-	NN<Media::VectorDocument> doc;
+	NN<Media::ImageList> doc;
 	NN<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -1036,14 +1036,14 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 
 	lastRowType = RT_UNKNOWN;
 	sptr = Text::StrInt32(sbuff, id);
-	NEW_CLASSNN(doc, Media::VectorDocument(0, CSTRP(sbuff, sptr), deng));
+	NEW_CLASSNN(doc, Media::ImageList(CSTRP(sbuff, sptr)));
 	if (this->paperHori)
 	{
-		g = doc->AddGraph(paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);
+		g = doc->AddGraph(0, deng, paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
 	else
 	{
-		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
+		g = doc->AddGraph(0, deng, paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
 	f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
@@ -1508,7 +1508,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 			}
 			break;
 		}
-		g = doc->AddGraph(paperWidthMM, paperHeightMM, Math::Unit::Distance::DU_MILLIMETER);
+		g = doc->AddGraph(0, deng, paperWidthMM, paperHeightMM, Math::Unit::Distance::DU_MILLIMETER);
 		lastRowType = RT_UNKNOWN;
 	}
 	MemFree(colMinWidth);

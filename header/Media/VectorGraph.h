@@ -168,6 +168,8 @@ namespace Media
 
 		virtual Media::ImageType GetImageType() const { return Media::ImageType::Vector; }
 		virtual NN<Media::Image> Clone() const;
+		virtual Double GetVisibleWidthPx() const;
+		virtual Double GetVisibleHeightPx() const;
 		virtual NN<Media::StaticImage> CreateStaticImage() const;
 		virtual NN<Media::StaticImage> CreateSubImage(Math::RectArea<IntOS> area) const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;

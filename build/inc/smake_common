@@ -2875,6 +2875,7 @@ Media/HTRecFile.h:
 Media/ICCProfile.h:
 @ICCProfile.o
 Media/Image.h:
+@Image.o
 Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
 Media/ImageCopy.h:
@@ -2998,8 +2999,6 @@ Media/V4LVideoCapture.h:
 @V4LVideoCapture.o
 Media/VCDMPGFile.h:
 @VCDMPGFile.o
-Media/VectorDocument.h:
-@VectorDocument.o
 Media/VectorGraph.h:
 @VectorGraph.o
 Media/VideoCapturer.h:
@@ -4730,8 +4729,6 @@ SSWR/AVIRead/AVIRValgrindLogForm.h:
 @AVIRValgrindLogForm.o
 SSWR/AVIRead/AVIRVBoxManagerForm.h:
 @AVIRVBoxManagerForm.o
-SSWR/AVIRead/AVIRVectorDocumentForm.h:
-@AVIRVectorDocumentForm.o
 SSWR/AVIRead/AVIRVideoCheckerForm.h:
 @AVIRVideoCheckerForm.o
 SSWR/AVIRead/AVIRVideoInfoForm.h:

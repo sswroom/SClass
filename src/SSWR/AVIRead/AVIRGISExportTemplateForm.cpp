@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		}
 		view.Delete();
 		sb.ClearStr();
-		doc->ToString(sb);
+		doc->ToSVG(sb);
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(sb.ToByteArray());

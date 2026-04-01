@@ -32,7 +32,6 @@
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
 #include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
-#include "SSWR/AVIRead/AVIRVectorDocumentForm.h"
 #include "UI/GUIFileDialog.h"
 
 SSWR::AVIRead::AVIRCoreWin::AVIRCoreWin(NN<UI::GUICore> ui) : SSWR::AVIRead::AVIRCore(ui)
@@ -279,14 +278,6 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			tileList.Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
 			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(nullptr, this->ui, *this, tileList));
-			InitForm(frm);
-			frm->Show();
-		}
-		break;
-	case IO::ParserType::VectorDocument:
-		{
-			NN<SSWR::AVIRead::AVIRVectorDocumentForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVectorDocumentForm(nullptr, this->ui, *this, NN<Media::VectorDocument>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

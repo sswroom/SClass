@@ -1,19 +1,28 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/ByteTool_C.h"
+#include "IO/Path.h"
 #include "Math/Math_C.h"
+#include "Math/Unit/Distance.h"
 #include "Media/ImageList.h"
+#include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
+#include "Media/SVGDocument.h"
+#include "Media/VectorGraph.h"
 #include "Text/MyString.h"
 
 Media::ImageList::ImageList(NN<Text::String> name) : IO::ParsedObject(name)
 {
 	this->thermoPtr = nullptr;
+	this->printCurrGraph = 0;
+	this->printCurrDoc = nullptr;
 }
 
 Media::ImageList::ImageList(Text::CStringNN fileName) : IO::ParsedObject(fileName)
 {
 	this->thermoPtr = nullptr;
+	this->printCurrGraph = 0;
+	this->printCurrDoc = nullptr;
 }
 
 Media::ImageList::~ImageList()
@@ -33,6 +42,141 @@ Media::ImageList::~ImageList()
 	}
 }
 
+Bool Media::ImageList::BeginPrint(NN<PrintDocument> doc)
+{
+	NN<Media::Image> img;
+	Double width;
+	Double height;
+	NN<Text::String> docName;
+	this->printCurrGraph = 0;
+	this->printCurrDoc = doc;
+	if (!this->imgList.GetItem(this->printCurrGraph).SetTo(img))
+		return false;
+	if (this->GetValueStr(ValueType::DocumentName).SetTo(docName))
+		doc->SetDocName(docName->ToCString());
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(this->sourceName);
+		UIntOS i = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		doc->SetDocName(sb.ToCString().Substring(i + 1));
+	}
+	if (img->GetImageType() == Media::ImageType::Raster)
+	{
+		NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+		width = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(rimg->info.dispSize.x) * 96.0 / rimg->info.hdpi);
+		height = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(rimg->info.dispSize.y) * 96.0 / rimg->info.vdpi);
+	}
+	else if (img->GetImageType() == Media::ImageType::Vector)
+	{
+		NN<Media::VectorGraph> graph = NN<Media::VectorGraph>::ConvertFrom(img);
+		width = graph->GetVisibleWidthMM();
+		height = graph->GetVisibleHeightMM();
+	}
+	else if (img->GetImageType() == Media::ImageType::SVG)
+	{
+		NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(img);
+		width = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, svg->GetWidth());
+		height = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, svg->GetHeight());
+	}
+	else
+	{
+		return false;
+	}
+	if (width > height)
+	{
+		doc->SetNextPagePaperSizeMM(height, width);
+		doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Landscape);
+	}
+	else
+	{
+		doc->SetNextPagePaperSizeMM(width, height);
+		doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Portrait);
+	}
+	return true;
+}
+
+Bool Media::ImageList::PrintPage(NN<Media::DrawImage> printPage)
+{
+	NN<Media::Image> img;
+	Double width;
+	Double height;
+	NN<Media::PrintDocument> doc;
+	if (!this->printCurrDoc.SetTo(doc) || !this->imgList.GetItem(this->printCurrGraph).SetTo(img))
+		return false;
+	if (img->GetImageType() == Media::ImageType::Raster)
+	{
+		NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+		if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
+		{
+			NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(rimg);
+			printPage->DrawSImagePt(simg, Math::Coord2DDbl(0, 0));
+		}
+		else
+		{
+			NN<Media::StaticImage> simg = rimg->CreateStaticImage();
+			printPage->DrawSImagePt(simg, Math::Coord2DDbl(0, 0));
+			simg.Delete();
+		}
+	}
+	else if (img->GetImageType() == Media::ImageType::Vector)
+	{
+		NN<Media::VectorGraph> graph = NN<Media::VectorGraph>::ConvertFrom(img);
+		graph->DrawTo(printPage, 0);
+	}
+	else if (img->GetImageType() == Media::ImageType::SVG)
+	{
+		//NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(img);
+		//svg->DrawTo(printPage, 0);
+	}
+	else
+	{
+		return false;
+	}
+	this->printCurrGraph++;
+	if (!this->imgList.GetItem(this->printCurrGraph).SetTo(img))
+		return false;
+	if (img->GetImageType() == Media::ImageType::Raster)
+	{
+		NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+		width = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(rimg->info.dispSize.x) * 96.0 / rimg->info.hdpi);
+		height = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, UIntOS2Double(rimg->info.dispSize.y) * 96.0 / rimg->info.vdpi);
+	}
+	else if (img->GetImageType() == Media::ImageType::Vector)
+	{
+		NN<Media::VectorGraph> graph = NN<Media::VectorGraph>::ConvertFrom(img);
+		width = graph->GetVisibleWidthMM();
+		height = graph->GetVisibleHeightMM();
+	}
+	else if (img->GetImageType() == Media::ImageType::SVG)
+	{
+		NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(img);
+		width = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, svg->GetWidth());
+		height = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_MILLIMETER, svg->GetHeight());
+	}
+	else
+	{
+		return false;
+	}
+	if (width > height)
+	{
+		doc->SetNextPagePaperSizeMM(height, width);
+		doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Landscape);
+	}
+	else
+	{
+		doc->SetNextPagePaperSizeMM(width, height);
+		doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Portrait);
+	}
+	return true;
+}
+
+Bool Media::ImageList::EndPrint(NN<PrintDocument> doc)
+{
+	this->printCurrDoc = nullptr;
+	return true;
+}
+
 IO::ParserType Media::ImageList::GetParserType() const
 {
 	return IO::ParserType::ImageList;
@@ -43,6 +187,17 @@ UIntOS Media::ImageList::AddImage(NN<Media::Image> img, UInt32 imageDelay)
 	this->imgTimes.Add(imageDelay);
 	this->imgTypeList.Add(Media::ImageList::ImageType::Unknown);
 	return this->imgList.Add(img);
+}
+
+NN<Media::VectorGraph> Media::ImageList::AddGraph(UInt32 srid, NN<Media::DrawEngine> deng, Double width, Double height, Math::Unit::Distance::DistanceUnit unit)
+{
+	this->imgTimes.Add(0);
+	this->imgTypeList.Add(Media::ImageList::ImageType::Unknown);
+	NN<VectorGraph> graph;
+	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+	NEW_CLASSNN(graph, Media::VectorGraph(srid, Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, width), Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_PIXEL, height), deng, color));
+	this->imgList.Add(graph);
+	return graph;
 }
 
 void Media::ImageList::ReplaceImage(UIntOS index, NN<Media::Image> img)
@@ -193,10 +348,40 @@ void Media::ImageList::SetValueInt64(Media::ImageList::ValueType valType, Int64 
 	this->valTypeI64.Add(valType);
 }
 
+Int64 Media::ImageList::GetValueInt64(ValueType valType) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->valTypeI64.GetCount();
+	while (i < j)
+	{
+		if (this->valTypeI64.GetItem(i) == valType)
+		{
+			return this->valI64.GetItem(i);
+		}
+		i++;
+	}
+	return 0;
+}
+
 void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CStringNN val)
 {
 	this->valStr.Add(Text::String::New(val));
 	this->valTypeStr.Add(valType);
+}
+
+Optional<Text::String> Media::ImageList::GetValueStr(ValueType valType) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->valTypeStr.GetCount();
+	while (i < j)
+	{
+		if (this->valTypeStr.GetItem(i) == valType)
+		{
+			return this->valStr.GetItem(i);
+		}
+		i++;
+	}
+	return nullptr;
 }
 
 Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
@@ -346,6 +531,18 @@ Text::CStringNN Media::ImageList::ValueTypeGetName(Media::ImageList::ValueType v
 		return CSTR("Author");
 	case Media::ImageList::ValueType::DocumentName:
 		return CSTR("Document Name");
+	case Media::ImageList::ValueType::Subject:
+		return CSTR("Subject");
+	case Media::ImageList::ValueType::Keywords:
+		return CSTR("Keywords");
+	case Media::ImageList::ValueType::Creator:
+		return CSTR("Creator");
+	case Media::ImageList::ValueType::Producer:
+		return CSTR("Producer");
+	case Media::ImageList::ValueType::CreateTime:
+		return CSTR("Create Time");
+	case Media::ImageList::ValueType::ModifyTime:
+		return CSTR("Modify Time");
 	default:
 		return CSTR("Unknown");
 	}
