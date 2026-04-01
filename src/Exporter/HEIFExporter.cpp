@@ -248,7 +248,7 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		quality = 90;
 	}
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	NN<Media::RasterImage> nnimg;
+	NN<Media::Image> nnimg;
 	heif_context *ctx = heif_context_alloc();
 	heif_encoder* encoder;
 	heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
@@ -258,9 +258,9 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	UIntOS j = imgList->GetCount();
 	while (i < j)
 	{
-		if (imgList->GetImage(i, 0).SetTo(nnimg))
+		if (imgList->GetImage2(i, 0).SetTo(nnimg) && nnimg->GetImageType() == Media::ImageType::Raster)
 		{
-			heif_image *img = HEIFExporter_CreateImage(nnimg);
+			heif_image *img = HEIFExporter_CreateImage(NN<Media::RasterImage>::ConvertFrom(nnimg));
 			if (img)
 			{
 				heif_context_encode_image(ctx, img, encoder, 0, 0);
