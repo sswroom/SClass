@@ -1261,6 +1261,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->cboMethod->AddItem(CSTR("PATCH"), (void*)Net::WebUtil::RequestMethod::HTTP_PATCH);
 	this->cboMethod->AddItem(CSTR("DELETE"), (void*)Net::WebUtil::RequestMethod::HTTP_DELETE);
 	this->cboMethod->AddItem(CSTR("TRACE"), (void*)Net::WebUtil::RequestMethod::HTTP_TRACE);
+	this->cboMethod->AddItem(CSTR("OPTIONS"), (void*)Net::WebUtil::RequestMethod::HTTP_OPTIONS);
 	this->cboMethod->SetSelectedIndex(0);
 	this->chkOSClient = ui->NewCheckBox(this->pnlRequest, CSTR("OS Client"), false);
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);

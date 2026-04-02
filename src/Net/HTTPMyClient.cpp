@@ -863,8 +863,14 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
-
 	case Net::WebUtil::RequestMethod::HTTP_OPTIONS:
+		this->canWrite = false;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("OPTIONS "));
+		cptr = ptr2.ConcatTo(cptr);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+
 	case Net::WebUtil::RequestMethod::RTSP_DESCRIBE:
 	case Net::WebUtil::RequestMethod::RTSP_ANNOUNCE:
 	case Net::WebUtil::RequestMethod::RTSP_GET_PARAMETER:
