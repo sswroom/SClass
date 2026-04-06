@@ -79,6 +79,8 @@ namespace SSWR
 
 			NN<UI::GUITabPage> tpResponse;
 			NN<UI::GUIPanel> pnlResponse;
+			NN<UI::GUILabel> lblReqMethod;
+			NN<UI::GUITextBox> txtReqMethod;
 			NN<UI::GUILabel> lblReqURL;
 			NN<UI::GUITextBox> txtReqURL;
 			NN<UI::GUILabel> lblSvrIP;
@@ -147,6 +149,7 @@ namespace SSWR
 			UInt64 respDLSize;
 			UInt64 respULSize;
 			Int32 respStatus;
+			Net::WebUtil::RequestMethod respMeth;
 			Optional<Text::String> respReqURL;
 			Data::ArrayListStringNN respHeaders;
 			Sync::Mutex respMut;

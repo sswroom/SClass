@@ -109,6 +109,11 @@ Media::SVGLine::~SVGLine()
 {
 }
 
+void Media::SVGLine::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
+}
+
 void Media::SVGLine::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	if (!this->IsSpacePreserve())
@@ -161,6 +166,11 @@ Media::SVGPolyline::~SVGPolyline()
 void Media::SVGPolyline::AddPoint(Math::Coord2DDbl pt)
 {
 	this->points.Add(pt);
+}
+
+void Media::SVGPolyline::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
 }
 
 void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -221,6 +231,11 @@ Media::SVGPolygon::~SVGPolygon()
 void Media::SVGPolygon::AddPoint(Math::Coord2DDbl pt)
 {
 	this->points.Add(pt);
+}
+
+void Media::SVGPolygon::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
 }
 
 void Media::SVGPolygon::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -290,6 +305,11 @@ Media::SVGRect::SVGRect(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math
 
 Media::SVGRect::~SVGRect()
 {
+}
+
+void Media::SVGRect::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
 }
 
 void Media::SVGRect::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -386,6 +406,11 @@ Media::SVGEllipse::SVGEllipse(NN<const SVGContainer> parent, Math::Coord2DDbl ce
 
 Media::SVGEllipse::~SVGEllipse()
 {
+}
+
+void Media::SVGEllipse::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	//////////////////////////
 }
 
 void Media::SVGEllipse::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -643,6 +668,11 @@ void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCen
 	this->SetTransform(sb.ToCString());
 }
 
+void Media::SVGText::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
+}
+
 void Media::SVGText::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	NN<Text::String> s;
@@ -842,6 +872,11 @@ Media::SVGImage::~SVGImage()
 	OPTSTR_DEL(this->style);
 }
 
+void Media::SVGImage::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	//////////////////////////
+}
+
 void Media::SVGImage::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	if (!this->IsSpacePreserve())
@@ -924,6 +959,11 @@ Media::SVGPath::~SVGPath()
 	this->d->Release();
 }
 
+void Media::SVGPath::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	////////////////////////////////////////////////
+}
+
 void Media::SVGPath::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
 {
 	if (!this->IsSpacePreserve())
@@ -969,6 +1009,10 @@ Media::SVGTitle::~SVGTitle()
 {
 	this->eleName->Release();
 	this->title->Release();
+}
+
+void Media::SVGTitle::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
 }
 
 void Media::SVGTitle::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -1498,6 +1542,22 @@ UIntOS Media::SVGContainer::SaveJPG(NN<IO::SeekableStream> stm)
 	return 0;
 }
 
+void Media::SVGContainer::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	UIntOS i = 0;
+	UIntOS j = this->elements.GetCount();
+	NN<SVGElement> ele;
+	while (i < j)
+	{
+		ele = this->elements.GetItemNoCheck(i);
+		if (!ele->GetElementName().Equals(UTF8STRC("defs")))
+		{
+			ele->DrawElement(ofst, scale, dimg);
+		}
+		i++;
+	}
+}
+
 void Media::SVGContainer::AddElement(NN<SVGElement> ele)
 {
 	NN<Text::String> id;
@@ -1682,6 +1742,10 @@ Media::SVGUnknown::~SVGUnknown()
 Text::CStringNN Media::SVGUnknown::GetElementName() const
 {
 	return this->name->ToCString();
+}
+
+void Media::SVGUnknown::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
 }
 
 void Media::SVGUnknown::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const
@@ -2179,6 +2243,12 @@ NN<Media::StaticImage> Media::SVGDocument::CreateSubImage(Math::RectArea<IntOS> 
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)area.GetWidth(), (UIntOS)area.GetHeight()), 0, 32, Media::PixelFormat::PF_B8G8R8A8, 0, srgb, Media::ColorProfile::YUVT_BT709, Media::AlphaType::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	return simg;
 }
+
+void Media::SVGDocument::DrawTo(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
+{
+	Math::Coord2DDbl drawScale = this->GetDrawScale();
+	this->DrawElement(ofst, scale * drawScale, dimg);
+};
 
 Optional<Media::SVGDocument> Media::SVGDocument::ParseFile(Text::CStringNN fileName, NN<Text::EncodingFactory> encFact, NN<Media::DrawEngine> refEng)
 {

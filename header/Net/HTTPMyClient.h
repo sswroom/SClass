@@ -24,6 +24,7 @@ namespace Net
 		IO::MemoryStream reqMstm;
 		NN<Text::String> userAgent;
 		Data::ArrayListString reqHeaders;
+		Net::WebUtil::RequestMethod reqMethod;
 
 		Bool writing;
 

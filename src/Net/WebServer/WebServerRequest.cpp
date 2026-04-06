@@ -722,6 +722,11 @@ Bool Net::WebServer::WebServerRequest::HasData()
 		this->reqDataSize = (UIntOS)-1;
 		return true;
 	}
+	if (this->reqMeth == Net::WebUtil::RequestMethod::HTTP_HEAD)
+	{
+		this->reqDataSize = 0;
+		return true;
+	}
 	this->reqDataSize = (UIntOS)contLeng->ToUInt64();
 	if (this->reqDataSize > 0 && this->reqDataSize <= MAX_DATA_SIZE)
 		return true;

@@ -567,6 +567,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 	}
+	Net::WebUtil::RequestMethod reqMethod = req->GetReqMethod();
+	if (reqMethod == Net::WebUtil::RequestMethod::HTTP_OPTIONS)
+	{
+		this->AddResponseHeaders(req, resp);
+		resp->AddHeader(CSTR("Allow"), CSTR("OPTIONS, GET, HEAD"));
+		resp->AddContentLength(0);
+		return resp->Write(CSTR("").ToByteArray());
+	}
+	if (reqMethod != Net::WebUtil::RequestMethod::HTTP_GET && reqMethod != Net::WebUtil::RequestMethod::HTTP_HEAD && reqMethod != Net::WebUtil::RequestMethod::HTTP_POST)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
+	}
 	if (this->DoPackageRequest(req, resp, subReq))
 	{
 		return true;
@@ -575,6 +587,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	if (this->fileCache.Get(subReq).SetTo(cache))
 	{
+		if (reqMethod == Net::WebUtil::RequestMethod::HTTP_POST)
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
+		}
 		Sync::Interlocked::IncrementI32(this->fileCacheUsing);
 		mutUsage.EndUse();
 		if (this->statMap.SetTo(statMap) && this->statMut.SetTo(statMut))
@@ -603,6 +619,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				stat->updated = true;
 			}
 			statMutUsage.EndUse();
+		}
+		if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+		{
+			resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
 		}
 		resp->EnableWriteBuffer();
 		this->AddResponseHeaders(req, resp);
@@ -636,7 +656,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			}
 		}
 		resp->AddContentType(mime);
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, cache->buffSize, cache->buff);
+		if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+		{
+			resp->AddContentLength(cache->buffSize);
+			resp->Write(Data::ByteArrayR(buff, 0));
+		}
+		else
+		{
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, cache->buffSize, cache->buff);
+		}
 		Sync::Interlocked::DecrementI32(this->fileCacheUsing);
 		return true;
 	}
@@ -705,6 +733,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		pt = IO::Path::GetPathType(sb2.ToCString());
 		if (pt == IO::Path::PathType::File)
 		{
+			if (reqMethod == Net::WebUtil::RequestMethod::HTTP_POST)
+			{
+				return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
+			}
 			sb.ClearStr();
 			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sptr = sb.v;
@@ -733,6 +765,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				}
 			}
 
+			if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+			{
+				resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
+			}
 			resp->EnableWriteBuffer();
 			this->AddResponseHeaders(req, resp);
 			AddCacheHeader(resp);
@@ -750,7 +786,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				readSize = fs.Read(Data::ByteArray(cache->buff, (UIntOS)sizeLeft));
 				if (readSize == sizeLeft)
 				{
-					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
+					if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+					{
+						resp->AddContentLength(sizeLeft);
+					}
+					else
+					{
+						Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
+					}
 					Sync::MutexUsage mutUsage(this->fileCacheMut);
 					this->fileCache.Put(subReq, cache);
 					mutUsage.EndUse();
@@ -758,7 +801,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				else
 				{
 					resp->AddContentLength(sizeLeft);
-					resp->Write(Data::ByteArrayR(cache->buff, readSize));
+					if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+					{
+						resp->Write(Data::ByteArrayR(buff, 0));
+					}
+					else
+					{
+						resp->Write(Data::ByteArrayR(cache->buff, readSize));
+					}
 					MemFreeArr(cache->buff);
 					MemFreeNN(cache);
 				}
@@ -823,6 +873,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 					}
 				}
 
+				if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+				{
+					resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
+				}
 				resp->EnableWriteBuffer();
 				this->AddResponseHeaders(req, resp);
 				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
@@ -1146,7 +1200,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				}
 				sbOut.AppendC(UTF8STRC("</table></body></html>"));
 
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sbOut.GetLength(), sbOut.ToString());
+				if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+				{
+					resp->AddContentLength(sbOut.GetLength());
+					resp->Write(Data::ByteArrayR(buff, 0));
+				}
+				else
+				{
+					Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sbOut.GetLength(), sbOut.ToString());
+				}
 				return true;
 			}
 			else
@@ -1158,6 +1220,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	}
 	else if (pt == IO::Path::PathType::File)
 	{
+		if (reqMethod == Net::WebUtil::RequestMethod::HTTP_POST)
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
+		}
 		Text::StringBuilderUTF8 sb2;
 		UInt64 sizeLeft;
 		NN<Text::String> hdrVal;
@@ -1329,20 +1395,28 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 		{
 			UIntOS readSize;
 			readSize = fs.Read(BYTEARR(buff));
-			if (readSize == 0)
+			if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
 			{
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+				resp->AddContentLength(sizeLeft);
+				resp->Write(Data::ByteArrayR(buff, 0));
 			}
 			else
 			{
-				IO::MemoryStream mstm;
-				while (readSize > 0)
+				if (readSize == 0)
 				{
-					sizeLeft += mstm.Write(Data::ByteArrayR(buff, readSize));
-					readSize = fs.Read(BYTEARR(buff));
+					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 				}
-				mstm.SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
+				else
+				{
+					IO::MemoryStream mstm;
+					while (readSize > 0)
+					{
+						sizeLeft += mstm.Write(Data::ByteArrayR(buff, readSize));
+						readSize = fs.Read(BYTEARR(buff));
+					}
+					mstm.SeekFromBeginning(0);
+					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
+				}
 			}
 		}
 		else if (!partial && sizeLeft < this->fileCacheSize)
@@ -1355,7 +1429,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			readSize = fs.Read(Data::ByteArray(cache->buff, (UIntOS)sizeLeft));
 			if (readSize == sizeLeft)
 			{
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
+				if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+				{
+					resp->AddContentLength(sizeLeft);
+					resp->Write(Data::ByteArrayR(buff, 0));
+				}
+				else
+				{
+					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
+				}
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
 				if (this->fileCache.Put(subReq, cache).SetTo(cache))
 				{
@@ -1368,7 +1450,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			{
 				//this->SendContent(req, resp, mime.v, mime.len, readSize, cache->buff);
 				resp->AddContentLength(sizeLeft);
-				resp->Write(Data::ByteArrayR(cache->buff, readSize));
+				if (reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+				{
+					resp->Write(Data::ByteArrayR(buff, 0));
+				}
+				else
+				{
+					resp->Write(Data::ByteArrayR(cache->buff, readSize));
+				}
 				MemFreeArr(cache->buff);
 				MemFreeNN(cache);
 			}

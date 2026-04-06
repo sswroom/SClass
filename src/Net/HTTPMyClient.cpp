@@ -51,7 +51,10 @@ UIntOS Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 #ifdef SHOWDEBUG
 	printf("Read size = %d\r\n", (Int32)buff.GetSize());
 #endif
-
+	if (this->reqMethod == Net::WebUtil::RequestMethod::HTTP_HEAD)
+	{
+		return 0;
+	}
 	if (this->contEnc == 1)
 	{
 		UIntOS i;
@@ -449,6 +452,7 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	this->timeout = 120000;
 	this->userAgent = Text::String::New(nnuserAgent);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
+	this->reqMethod = Net::WebUtil::RequestMethod::Unknown;
 }
 
 Net::HTTPMyClient::~HTTPMyClient()
@@ -554,6 +558,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 
 	this->url->Release();
 	this->url = Text::String::New(url);
+	this->reqMethod = method;
 	if (url.StartsWith(UTF8STRC("http://")))
 	{
 		ptr1 = url.Substring(7);

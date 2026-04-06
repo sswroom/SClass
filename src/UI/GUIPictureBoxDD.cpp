@@ -113,6 +113,26 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 		}
 		else if (img->GetImageType() == Media::ImageType::SVG)
 		{
+			NN<Media::SVGDocument> svg = NN<Media::SVGDocument>::ConvertFrom(img);
+			NN<Media::DrawEngine> deng = svg->GetDrawEngine();
+			Math::Coord2DDbl scale = destRect.GetSize().ToDouble() / srcRect.GetSize();
+			NN<Media::DrawImage> dimg;
+			if (!Math::IsNAN(scale.x) && !Math::IsNAN(scale.y) && deng->CreateImage32(this->bkBuffSize, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(dimg))
+			{
+				//dimg->SetClip(destRect.ToDouble());
+				svg->DrawTo(-srcRect.min + destRect.min.ToDouble() / scale, scale, dimg);
+				//dimg->ClearClip();
+				if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
+				{
+					NN<Media::RasterImage> rimg;
+					if (dimg->AsRasterImage().SetTo(rimg))
+					{
+						rimg->GetRasterData(dptr, 0, 0, this->bkBuffSize.x, this->bkBuffSize.y, this->bkBuffSize.x << 2, false, Media::RotateType::None);
+					}
+					this->LockSurfaceEnd();
+				}
+				deng->DeleteImage(dimg);
+			}
 			///////////////////////////////////////////
 		}
 		else if (this->imgBuff.SetTo(imgBuff) && !this->currImage.IsNull())
