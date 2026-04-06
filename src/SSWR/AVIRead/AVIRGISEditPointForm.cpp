@@ -59,6 +59,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyTyp
 		me->lbObjects->AddItem(sb.ToCString(), (void*)(IntOS)id);
 		me->status = 0;
 		me->txtStatus->SetText(CSTR("View"));
+		me->navi->RedrawMap();
 	}
 	else if (me->status == 0)
 	{
@@ -220,6 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnDeleteClicked(AnyType user
 			me->navi->SetSelectedVector(nullptr);
 		}
 		me->UpdateList();
+		me->navi->RedrawMap();
 	}
 }
 
