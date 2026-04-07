@@ -23,6 +23,12 @@ namespace Data
 			AccountInterest
 		};
 
+		enum class PriceType
+		{
+			Asset,
+			Currency
+		};
+
 		struct TradeDetail
 		{
 			Data::Timestamp tranBeginDate;
@@ -42,25 +48,27 @@ namespace Data
 			Double refRate;
 		};
 
-		struct Currency
+		struct Price
+		{
+			PriceType type;
+			Double current;
+			Data::ArrayListTS tsList;
+			Data::ArrayListDbl valList;	
+		};
+
+		struct Currency : public Price
 		{
 			UInt32 c;
-			Double current;
 			Bool invert;
-			Data::ArrayListTS tsList;
-			Data::ArrayListDbl valList;
 			Data::ArrayListNN<TradeDetail> trades;
 		};
 
-		struct Asset
+		struct Asset : public Price
 		{
 			UIntOS index;
 			NN<Text::String> shortName;
 			NN<Text::String> fullName;
 			UInt32 currency;
-			Double current;
-			Data::ArrayListTS tsList;
-			Data::ArrayListDbl valList;
 			Data::ArrayListDbl divList;
 			Data::ArrayListNN<TradeDetail> trades;
 		};

@@ -25,6 +25,7 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 		return curr;
 	}
 	NEW_CLASSNN(curr, Currency());
+	curr->type = PriceType::Currency;
 	curr->c = c;
 	curr->current = 0;
 	curr->invert = false;
@@ -224,6 +225,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 				if (currency->leng == 3 && shortName->leng > 0 && fullName->leng > 0)
 				{
 					NEW_CLASSNN(ass, Asset());
+					ass->type = PriceType::Asset;
 					ass->index = this->assetList.GetCount();
 					ass->currency = CURRENCY(currency->v.Ptr());
 					ass->shortName = shortName;
@@ -732,6 +734,7 @@ Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text:
 {
 	NN<Asset> ass;
 	NEW_CLASSNN(ass, Asset());
+	ass->type = PriceType::Asset;
 	ass->index = this->assetList.GetCount();
 	ass->shortName = shortName->Clone();
 	ass->fullName = fullName->Clone();

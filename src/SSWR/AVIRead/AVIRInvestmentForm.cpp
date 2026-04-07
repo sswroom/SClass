@@ -74,6 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 	me->DisplayTransactions(mgr);
 	me->UpdateMonthly(mgr);
 	me->UpdateYearly(mgr);
+	me->UpdatePriceDate(mgr);
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyImportClicked(AnyType userObj)
@@ -148,6 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyHistUpdateClicked(An
 		if (mgr->UpdateCurrency(curr, ts, val))
 		{
 			me->DisplayCurrency(curr);
+			me->UpdatePriceTable(mgr);
 		}
 	}
 }
@@ -295,6 +297,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistUpdateClicked(AnyT
 		if (mgr->UpdateAsset(ass, ts, val, divVal))
 		{
 			me->DisplayAsset(ass);
+			me->UpdatePriceTable(mgr);
 		}
 	}
 }
@@ -454,6 +457,177 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlyGridSelChg(AnyType use
 	me->DisplayYearlyImg();
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceUpdateClicked(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::Price> price;
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->lvPrice->GetSelectedItem().GetOpt<Data::Invest::Price>().SetTo(price) && me->mgr.SetTo(mgr))
+	{
+		Data::Date date = Data::Date(me->cboPriceDate->GetSelectedItem().GetIntOS());
+		Int8 tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
+		Data::Timestamp ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
+		if (price->type == Data::Invest::PriceType::Currency)
+		{
+			NN<Data::Invest::Currency> curr = NN<Data::Invest::Currency>::ConvertFrom(price);
+			Double val;
+			Text::StringBuilderUTF8 sb;
+			me->txtPriceValue->GetText(sb);
+			if (!sb.ToDouble(val))
+			{
+				me->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, me);
+				return;
+			}
+			if (curr->invert)
+			{
+				val = 1 / val;
+			}
+			if (mgr->UpdateCurrency(curr, ts, val))
+			{
+				if (me->lbCurrency->GetSelectedItem().GetOpt<Data::Invest::Currency>() == curr)
+				{
+					me->DisplayCurrency(curr);
+				}
+				me->UpdatePriceTable(mgr);
+			}
+		}
+		else if (price->type == Data::Invest::PriceType::Asset)
+		{
+			NN<Data::Invest::Asset> ass = NN<Data::Invest::Asset>::ConvertFrom(price);
+			Double val;
+			Text::StringBuilderUTF8 sb;
+			me->txtPriceValue->GetText(sb);
+			if (!sb.ToDouble(val))
+			{
+				me->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, me);
+				return;
+			}
+			Double divVal;
+			sb.ClearStr();
+			me->txtPriceDiv->GetText(sb);
+			if (!sb.ToDouble(divVal))
+			{
+				me->ui->ShowMsgOK(CSTR("Please enter valid div"), TITLE, me);
+				return;
+			}
+			if (mgr->UpdateAsset(ass, ts, val, divVal))
+			{
+				if (me->lbAssets->GetSelectedItem().GetOpt<Data::Invest::Asset>() == ass)
+				{
+					me->DisplayAsset(ass);
+				}
+				me->UpdatePriceTable(mgr);
+			}
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceSelChg(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Data::Invest::Price> price;
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->lvPrice->GetSelectedItem().GetOpt<Data::Invest::Price>().SetTo(price) && me->mgr.SetTo(mgr))
+	{
+		Data::Date date = Data::Date(me->cboPriceDate->GetSelectedItem().GetIntOS());
+		Int8 tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
+		Data::Timestamp ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
+		if (price->type == Data::Invest::PriceType::Currency)
+		{
+			NN<Data::Invest::Currency> curr = NN<Data::Invest::Currency>::ConvertFrom(price);
+			UInt32 refC = mgr->GetRefCurrency();
+			if (curr->invert)
+			{
+				sptr = CURRENCYSTR(curr->c).ConcatTo(sbuff);
+				*sptr++ = '/';
+				sptr = CURRENCYSTR(refC).ConcatTo(sptr);
+			}
+			else
+			{
+				sptr = CURRENCYSTR(refC).ConcatTo(sbuff);
+				*sptr++ = '/';
+				sptr = CURRENCYSTR(curr->c).ConcatTo(sptr);
+			}
+			me->txtPriceItem->SetText(CSTRP(sbuff, sptr));
+			me->txtPriceDiv->SetText(CSTR("0"));
+			Double val;
+			IntOS i = curr->tsList.SortedIndexOf(ts);
+			if (i >= 0)
+			{
+				val = curr->valList.GetItem((UIntOS)i);
+				if (curr->invert)
+				{
+					val = 1 / val;
+				}
+				sptr = Text::StrDouble(sbuff, val);
+				me->txtPriceValue->SetText(CSTRP(sbuff, sptr));
+			}
+			else if (i < -1)
+			{
+				val = curr->valList.GetItem((UIntOS)(-i - 2));
+				if (curr->invert)
+				{
+					val = 1 / val;
+				}
+				sptr = Text::StrDouble(sbuff, val);
+				me->txtPriceValue->SetText(CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				me->txtPriceValue->SetText(CSTR(""));
+			}
+		}
+		else if (price->type == Data::Invest::PriceType::Asset)
+		{
+			NN<Data::Invest::Asset> ass = NN<Data::Invest::Asset>::ConvertFrom(price);
+			me->txtPriceItem->SetText(ass->shortName->ToCString());
+			IntOS i = ass->tsList.SortedIndexOf(ts);
+			if (i >= 0)
+			{
+				sptr = Text::StrDouble(sbuff, ass->valList.GetItem((UIntOS)i));
+				me->txtPriceValue->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, ass->divList.GetItem((UIntOS)i));
+				me->txtPriceDiv->SetText(CSTRP(sbuff, sptr));
+			}
+			else if (i < -1)
+			{
+				sptr = Text::StrDouble(sbuff, ass->valList.GetItem((UIntOS)(-i - 2)));
+				me->txtPriceValue->SetText(CSTRP(sbuff, sptr));
+				me->txtPriceDiv->SetText(CSTR("0"));
+			}
+			else
+			{
+				me->txtPriceValue->SetText(CSTR(""));
+				me->txtPriceDiv->SetText(CSTR(""));
+			}
+		}
+	}
+	else
+	{
+		me->txtPriceItem->SetText(CSTR(""));
+		me->txtPriceValue->SetText(CSTR(""));
+		me->txtPriceDiv->SetText(CSTR(""));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceDateSelChg(AnyType userObj)
+{
+	OnPriceSelChg(userObj);
+}
+
+UI::EventState __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceValueKeyDown(AnyType userObj, UInt32 osKey)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	if (UI::GUIControl::OSKey2GUIKey(osKey) == UI::GUIControl::GK_ENTER)
+	{
+		me->OnPriceUpdateClicked(userObj);
+		return UI::EventState::StopEvent;
+	}
+	return UI::EventState::ContinueEvent;
+}
+
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
 {
 	NN<Data::Invest::Currency> curr;
@@ -536,6 +710,123 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateYearly(NN<Data::Invest::Investment
 		startYear++;
 	}
 	this->DisplayYearly(mgr, tv.year);
+}
+
+void SSWR::AVIRead::AVIRInvestmentForm::UpdatePriceDate(NN<Data::Invest::InvestmentManager> mgr)
+{
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Data::Date today = Data::Date::Today();
+	Data::Date date = today.AddDay(-7);
+	this->cboPriceDate->ClearItems();
+	this->lvPrice->ClearAll();
+	this->lvPrice->AddColumn(CSTR("Item"), 200);
+	while (date < today)
+	{
+		Data::DateTimeUtil::Weekday wd = date.GetWeekday();
+		if (wd != Data::DateTimeUtil::Weekday::Saturday && wd != Data::DateTimeUtil::Weekday::Sunday)
+		{
+			sptr = date.ToString(sbuff, "yyyy-MM-dd");
+			this->lvPrice->AddColumn(CSTRP(sbuff, sptr), 80);
+			this->cboPriceDate->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)date.GetTotalDays());
+		}
+		date = date.AddDay(1);
+	}
+	this->cboPriceDate->SetSelectedIndex(this->cboPriceDate->GetCount() - 1);
+	this->UpdatePriceTable(mgr);
+}
+
+void SSWR::AVIRead::AVIRInvestmentForm::UpdatePriceTable(NN<Data::Invest::InvestmentManager> mgr)
+{
+	this->lvPrice->ClearItems();
+	Data::Date date;
+	Data::Date today = Data::Date::Today();
+	Data::DateTimeUtil::Weekday wd;
+	Int8 tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	UInt32 refC = mgr->GetRefCurrency();
+	Data::Timestamp ts;
+	IntOS si;
+	UIntOS i = 0;
+	UIntOS j = mgr->GetCurrencyCount();
+	while (i < j)
+	{
+		NN<Data::Invest::Currency> curr;
+		if (mgr->GetCurrencyInfo(i).SetTo(curr) && curr->c != refC)
+		{
+			if (curr->invert)
+			{
+				sptr = CURRENCYSTR(curr->c).ConcatTo(sbuff);
+				*sptr++ = '/';
+				sptr = CURRENCYSTR(refC).ConcatTo(sptr);
+			}
+			else
+			{
+				sptr = CURRENCYSTR(refC).ConcatTo(sbuff);
+				*sptr++ = '/';
+				sptr = CURRENCYSTR(curr->c).ConcatTo(sptr);
+			}
+			UIntOS k = this->lvPrice->AddItem(CSTRP(sbuff, sptr), curr);
+			UIntOS l = 1;
+			
+			date = today.AddDay(-7);
+			while (date < today)
+			{
+				wd = date.GetWeekday();
+				if (wd != Data::DateTimeUtil::Weekday::Saturday && wd != Data::DateTimeUtil::Weekday::Sunday)
+				{
+					ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
+					si = curr->tsList.SortedIndexOf(ts);
+					if (si >= 0)
+					{
+						Double val = curr->valList.GetItem((UIntOS)si);
+						if (curr->invert)
+						{
+							val = 1 / val;
+						}
+						sptr = Text::StrDouble(sbuff, val);
+						this->lvPrice->SetSubItem(k, l, CSTRP(sbuff, sptr));
+					}
+					l++;
+				}
+				date = date.AddDay(1);
+			}
+		}
+		i++;
+	}
+
+	NN<Data::Invest::Asset> ass;
+	i = 0;
+	j = mgr->GetAssetCount();
+	while (i < j)
+	{
+		if (mgr->GetAsset(i).SetTo(ass))
+		{
+			UIntOS k = this->lvPrice->AddItem(ass->shortName, ass);
+			UIntOS l = 1;
+			
+			date = today.AddDay(-7);
+			while (date < today)
+			{
+				wd = date.GetWeekday();
+				if (wd != Data::DateTimeUtil::Weekday::Saturday && wd != Data::DateTimeUtil::Weekday::Sunday)
+				{
+					ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
+					si = ass->tsList.SortedIndexOf(ts);
+					if (si >= 0)
+					{
+						Double val = ass->valList.GetItem((UIntOS)si);
+						sptr = Text::StrDouble(sbuff, val);
+						this->lvPrice->SetSubItem(k, l, CSTRP(sbuff, sptr));
+					}
+					l++;
+				}
+				date = date.AddDay(1);
+			}
+		}
+		i++;
+	}
 }
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currency> curr)
@@ -1910,6 +2201,38 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->txtRefCurrency = ui->NewTextBox(this->tpSettings, CSTR(""));
 	this->txtRefCurrency->SetRect(104, 28, 100, 23, false);
 	this->txtRefCurrency->SetReadOnly(true);
+
+	this->tpPrice = this->tcMain->AddTabPage(CSTR("Price"));
+	this->pnlPrice = ui->NewPanel(this->tpPrice);
+	this->pnlPrice->SetRect(0, 0, 100, 31, false);
+	this->pnlPrice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblPriceItem = ui->NewLabel(this->pnlPrice, CSTR("Item"));
+	this->lblPriceItem->SetRect(4, 4, 50, 23, false);
+	this->txtPriceItem = ui->NewTextBox(this->pnlPrice, CSTR(""));
+	this->txtPriceItem->SetRect(54, 4, 150, 23, false);
+	this->txtPriceItem->SetReadOnly(true);
+	this->lblPriceDate = ui->NewLabel(this->pnlPrice, CSTR("Date"));
+	this->lblPriceDate->SetRect(204, 4, 100, 23, false);
+	this->cboPriceDate = ui->NewComboBox(this->pnlPrice, false);
+	this->cboPriceDate->SetRect(304, 4, 100, 23, false);
+	this->cboPriceDate->HandleSelectionChange(OnPriceDateSelChg, this);
+	this->lblPriceValue = ui->NewLabel(this->pnlPrice, CSTR("Value"));
+	this->lblPriceValue->SetRect(404, 4, 100, 23, false);
+	this->txtPriceValue = ui->NewTextBox(this->pnlPrice, CSTR(""));
+	this->txtPriceValue->SetRect(504, 4, 80, 23, false);
+	this->txtPriceValue->HandleKeyDown(OnPriceValueKeyDown, this);
+	this->lblPriceDiv = ui->NewLabel(this->pnlPrice, CSTR("Div"));
+	this->lblPriceDiv->SetRect(584, 4, 100, 23, false);
+	this->txtPriceDiv = ui->NewTextBox(this->pnlPrice, CSTR(""));
+	this->txtPriceDiv->SetRect(684, 4, 80, 23, false);
+	this->btnPriceUpdate = ui->NewButton(this->pnlPrice, CSTR("Update"));
+	this->btnPriceUpdate->SetRect(764, 4, 75, 23, false);
+	this->btnPriceUpdate->HandleButtonClick(OnPriceUpdateClicked, this);
+	this->lvPrice = ui->NewListView(this->tpPrice, UI::ListViewStyle::Table, 6);
+	this->lvPrice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPrice->SetShowGrid(true);
+	this->lvPrice->SetFullRowSelect(true);
+	this->lvPrice->HandleSelChg(OnPriceSelChg, this);
 
 	NN<IO::Registry> reg;
 	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))

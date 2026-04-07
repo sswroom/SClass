@@ -141,6 +141,19 @@ namespace SSWR
 			NN<UI::GUILabel> lblRefCurrency;
 			NN<UI::GUITextBox> txtRefCurrency;
 
+			NN<UI::GUITabPage> tpPrice;
+			NN<UI::GUIPanel> pnlPrice;
+			NN<UI::GUILabel> lblPriceItem;
+			NN<UI::GUITextBox> txtPriceItem;
+			NN<UI::GUILabel> lblPriceDate;
+			NN<UI::GUIComboBox> cboPriceDate;
+			NN<UI::GUILabel> lblPriceValue;
+			NN<UI::GUITextBox> txtPriceValue;
+			NN<UI::GUILabel> lblPriceDiv;
+			NN<UI::GUITextBox> txtPriceDiv;
+			NN<UI::GUIButton> btnPriceUpdate;
+			NN<UI::GUIListView> lvPrice;
+
 			static void __stdcall OnDirClicked(AnyType userObj);
 			static void __stdcall OnCurrencyImportClicked(AnyType userObj);
 			static void __stdcall OnCurrencySelChg(AnyType userObj);
@@ -165,10 +178,16 @@ namespace SSWR
 			static void __stdcall OnYearlySelChg(AnyType userObj);
 			static void __stdcall OnYearlySizeChg(AnyType userObj);
 			static void __stdcall OnYearlyGridSelChg(AnyType userObj);
-		
+			static void __stdcall OnPriceUpdateClicked(AnyType userObj);
+			static void __stdcall OnPriceSelChg(AnyType userObj);
+			static void __stdcall OnPriceDateSelChg(AnyType userObj);
+			static UI::EventState __stdcall OnPriceValueKeyDown(AnyType userObj, UInt32 osKey);
+
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);
 			void UpdateMonthly(NN<Data::Invest::InvestmentManager> mgr);
 			void UpdateYearly(NN<Data::Invest::InvestmentManager> mgr);
+			void UpdatePriceDate(NN<Data::Invest::InvestmentManager> mgr);
+			void UpdatePriceTable(NN<Data::Invest::InvestmentManager> mgr);
 			void DisplayCurrency(NN<Data::Invest::Currency> curr);
 			void DisplayCurrencyImg(NN<Data::Invest::Currency> curr);
 			void DisplayAsset(NN<Data::Invest::Asset> ass);
