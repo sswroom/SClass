@@ -187,63 +187,63 @@ IO::ModemController::DialResult IO::Device::RockwellModemController::VoicePulseD
 	return this->SendDialCommand(sbuff, (UIntOS)(sptr - sbuff));
 }
 
-UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetVoiceTypeString(UnsafeArray<UTF8Char> buff, VoiceType voiceType)
+Text::CStringNN IO::Device::RockwellModemController::VoiceTypeGetName(VoiceType voiceType)
 {
 	switch (voiceType)
 	{
 	case VT_DATA:
-		return Text::StrConcatC(buff, UTF8STRC("Data Mode"));
+		return CSTR("Data Mode");
 	case VT_CLASS1FAX:
-		return Text::StrConcatC(buff, UTF8STRC("Class 1 fax"));
+		return CSTR("Class 1 fax");
 	case VT_CLASS2FAX:
-		return Text::StrConcatC(buff, UTF8STRC("Class 2 fax"));
+		return CSTR("Class 2 fax");
 	case VT_VOICE:
-		return Text::StrConcatC(buff, UTF8STRC("Voice/Audio Mode"));
+		return CSTR("Voice/Audio Mode");
 	default:
-		return Text::StrConcatC(buff, UTF8STRC("Unknown"));
+		return CSTR("Unknown");
 	}
 }
 
-UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetCallerIDTypeString(UnsafeArray<UTF8Char> buff, CallerIDType callerIDType)
+Text::CStringNN IO::Device::RockwellModemController::CallerIDTypeGetName(CallerIDType callerIDType)
 {
 	switch (callerIDType)
 	{
 	case CIDT_DISABLE:
-		return Text::StrConcatC(buff, UTF8STRC("Disable Caller ID"));
+		return CSTR("Disable Caller ID");
 	case CIDT_FORMATED:
-		return Text::StrConcatC(buff, UTF8STRC("Enable Caller ID with formatted data"));
+		return CSTR("Enable Caller ID with formatted data");
 	case CIDT_UNFORMATED:
-		return Text::StrConcatC(buff, UTF8STRC("Enable Caller ID with unformatted data"));
+		return CSTR("Enable Caller ID with unformatted data");
 	default:
-		return Text::StrConcatC(buff, UTF8STRC("Unknown"));
+		return CSTR("Unknown");
 	}
 }
 
-UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetVoiceLineTypeString(UnsafeArray<UTF8Char> buff, VoiceLineType voiceLineType)
+Text::CStringNN IO::Device::RockwellModemController::VoiceLineTypeGetName(VoiceLineType voiceLineType)
 {
 	switch (voiceLineType)
 	{
 	case VLT_PHONE_LINE:
-		return Text::StrConcatC(buff, UTF8STRC("Phone Line"));
+		return CSTR("Phone Line");
 	case VLT_HANDSET:
-		return Text::StrConcatC(buff, UTF8STRC("Handset"));
+		return CSTR("Handset");
 	case VLT_SPEAKER:
-		return Text::StrConcatC(buff, UTF8STRC("Speaker"));
+		return CSTR("Speaker");
 	case VLT_MICROPHONE:
-		return Text::StrConcatC(buff, UTF8STRC("Auxiliary Input device (Microphone)"));
+		return CSTR("Auxiliary Input device (Microphone)");
 	case VLT_INT_SPK:
-		return Text::StrConcatC(buff, UTF8STRC("Phone Line with internal speaker"));
+		return CSTR("Phone Line with internal speaker");
 	case VLT_EMULATION:
-		return Text::StrConcatC(buff, UTF8STRC("Telephone Emulation Mode"));
+		return CSTR("Telephone Emulation Mode");
 	case VLT_SPEAKERPHONE:
-		return Text::StrConcatC(buff, UTF8STRC("Speakerphone Mode"));
+		return CSTR("Speakerphone Mode");
 	case VLT_MUTE_HANDSET:
-		return Text::StrConcatC(buff, UTF8STRC("Mutes local handset"));
+		return CSTR("Mutes local handset");
 	case VLT_CALLER_ID_RELAY:
-		return Text::StrConcatC(buff, UTF8STRC("Caller ID relay"));
+		return CSTR("Caller ID relay");
 	case VLT_CODEC:
-		return Text::StrConcatC(buff, UTF8STRC("Sound Codec"));
+		return CSTR("Sound Codec");
 	default:
-		return Text::StrConcatC(buff, UTF8STRC("Unknown"));
+		return CSTR("Unknown");
 	}
 }

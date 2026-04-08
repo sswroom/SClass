@@ -19,7 +19,7 @@ void IO::SerialPortUtil::FillPortSelector(NN<UI::ItemSelector> selector, UIntOS 
 		currPort = ports.GetItem(i);
 		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-		sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
+		sptr = IO::SerialPort::SerialPortTypeGetName(portTypeList.GetItem(i)).ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		currIndex = selector->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)currPort);
 		if (currPort == defPort)

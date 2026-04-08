@@ -139,13 +139,14 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Optional<Data::ArrayListNative<SerialPortType>> portTypes)
 {
 	NN<IO::Registry> reg;
 	NN<IO::Registry> comreg;
 	Bool succ = false;
 	WChar wbuff[512];
 	WChar wbuff2[32];
+	NN<Data::ArrayListNative<SerialPortType>> nnportTypes;
 	if (IO::Registry::OpenLocalHardware().SetTo(reg))
 	{
 		if (reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM").SetTo(comreg))
@@ -160,47 +161,47 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, 
 					if (Text::StrStartsWith(wbuff2, L"COM"))
 					{
 						ports->Add(Text::StrToUIntOSW(&wbuff2[3]));
-						if (portTypes)
+						if (portTypes.SetTo(nnportTypes))
 						{
 							if (Text::StrStartsWith(wbuff, L"\\Device\\com0com"))
 							{
-								portTypes->Add(SPT_COM0COM);
+								nnportTypes->Add(SPT_COM0COM);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\Serial"))
 							{
-								portTypes->Add(SPT_SERIALPORT);
+								nnportTypes->Add(SPT_SERIALPORT);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\DWSerial"))
 							{
-								portTypes->Add(SPT_DWSERIAL);
+								nnportTypes->Add(SPT_DWSERIAL);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\BthModem"))
 							{
-								portTypes->Add(SPT_BLUETOOTH);
+								nnportTypes->Add(SPT_BLUETOOTH);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\USBSER"))
 							{
-								portTypes->Add(SPT_USBSERIAL);
+								nnportTypes->Add(SPT_USBSERIAL);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\Silabser"))
 							{
-								portTypes->Add(SPT_USBSERIAL);
+								nnportTypes->Add(SPT_USBSERIAL);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\QCUSB_COM"))
 							{
-								portTypes->Add(SPT_USBSERIAL);
+								nnportTypes->Add(SPT_USBSERIAL);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\ProlificSerial"))
 							{
-								portTypes->Add(SPT_USBSERIAL);
+								nnportTypes->Add(SPT_USBSERIAL);
 							}
 							else if (Text::StrStartsWith(wbuff, L"\\Device\\QUADPORTQuadSerial"))
 							{
-								portTypes->Add(SPT_USBSERIAL);
+								nnportTypes->Add(SPT_USBSERIAL);
 							}
 							else
 							{
-								portTypes->Add(SPT_UNKNOWN);
+								nnportTypes->Add(SPT_UNKNOWN);
 							}
 						}
 					}
@@ -215,7 +216,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, 
 	return succ;
 }
 
-Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
+Text::CStringNN IO::SerialPort::SerialPortTypeGetName(SerialPortType portType)
 {
 	switch (portType)
 	{

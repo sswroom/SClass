@@ -39,8 +39,8 @@ namespace IO
 
 		Bool InitStream();
 	public:
-		static Bool GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes);
-		static Text::CStringNN GetPortTypeName(SerialPortType portType);
+		static Bool GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Optional<Data::ArrayListNative<SerialPortType>> portTypes);
+		static Text::CStringNN SerialPortTypeGetName(SerialPortType portType);
 		static UIntOS GetPortWithType(Text::CStringNN portName);
 		static UIntOS GetUSBPort();
 		static UIntOS GetBTPort();

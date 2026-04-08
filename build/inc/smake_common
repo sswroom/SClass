@@ -81,12 +81,41 @@ test:
 
 console:
 @test
+@Adler32Speed
+@Adler32Test
 @AES128GCMTest
+@Base64Speed
+@Base64Test
+@Base64Test2
+@Base64Test3
+@CertRequestTest
+@CRC16_CCITTTest
+@CRC16RTest
+@CRC16Test
+@CRC32FileTest
+@CRC32RFileTest
+@CRC32RSpeed
+@CRC32Test
 @CSRTest
+@DJB2aSpeed
+@DJB2Speed
+@FNV1aSpeed
+@FNV1Speed
+@HMAC_SHA1Test
 @HOTPTest
 @JasyptEncryptorTest
+@MD5FileTest
+@MD5Speed
 @RC2Test
+@RIPEMD128Speed
+@RIPEMD128Test
+@RIPEMD160Speed
+@RIPEMD160Test
 @RSATest
+@SDBMSpeed
+@SHA1Speed
+@SHA1Test
+@SuperFastHashSpeed
 @X509Test
 @DataSciTest
 @DateTimeTest
@@ -104,8 +133,10 @@ console:
 @MySQLCheck
 @MySQLClientTest
 @TDSConnTest
+@PDFExporterTest
 @XLSXExporterTest
 @AM2315Test
+@BitWriterTest
 @BLEScanTest
 @BME280Test
 @BTListDevices
@@ -133,8 +164,11 @@ console:
 @SIDERunner
 @SIM7000Test
 @StackTraceTest
+@StreamReaderSpeed
+@StreamReaderTest
 @SystemInfoTest
 @TH10SBTest
+@VoiceModemTest
 @WatchdogDisable
 @WatchdogTest
 @WatchdogTest2
@@ -275,11 +309,68 @@ all:
 #@GUITest9
 
 #CryptoTest
+Adler32Speed:
+@Adler32Speed.o
+@ConsoleStartup.o
+Adler32Test:
+@Adler32Test.o
+@ConsoleStartup.o
 AES128GCMTest:
 @AES128GCMTest.o
 @ConsoleStartup.o
+Base64Speed:
+@Base64Speed.o
+@ConsoleStartup.o
+Base64Test:
+@Base64Test.o
+@ConsoleStartup.o
+Base64Test2:
+@Base64Test2.o
+@ConsoleStartup.o
+Base64Test3:
+@Base64Test3.o
+@ConsoleStartup.o
+CertRequestTest:
+@CertRequestTest.o
+@ConsoleStartup.o
+CRC16_CCITTTest:
+@CRC16_CCITTTest.o
+@ConsoleStartup.o
+CRC16RTest:
+@CRC16RTest.o
+@ConsoleStartup.o
+CRC16Test:
+@CRC16Test.o
+@ConsoleStartup.o
+CRC32FileTest:
+@CRC32FileTest.o
+@ConsoleStartup.o
+CRC32RFileTest:
+@CRC32RFileTest.o
+@ConsoleStartup.o
+CRC32RSpeed:
+@CRC32RSpeed.o
+@ConsoleStartup.o
+CRC32Test:
+@CRC32Test.o
+@ConsoleStartup.o
 CSRTest:
 @CSRTest.o
+@ConsoleStartup.o
+DJB2aSpeed:
+@DJB2aSpeed.o
+@ConsoleStartup.o
+DJB2Speed:
+@DJB2Speed.o
+@ConsoleStartup.o
+FNV1aSpeed:
+@FNV1aSpeed.o
+@ConsoleStartup.o
+FNV1Speed:
+@FNV1Speed.o
+@ConsoleStartup.o
+HMAC_SHA1Test:
+@HMAC_SHA1Test.o
 @ConsoleStartup.o
 HOTPTest:
 @HOTPTest.o
@@ -287,11 +378,41 @@ HOTPTest:
 JasyptEncryptorTest:
 @JasyptEncryptorTest.o
 @ConsoleStartup.o
+MD5FileTest:
+@MD5FileTest.o
+@ConsoleStartup.o
+MD5Speed:
+@MD5Speed.o
+@ConsoleStartup.o
 RC2Test:
 @RC2Test.o
 @ConsoleStartup.o
+RIPEMD128Speed:
+@RIPEMD128Speed.o
+@ConsoleStartup.o
+RIPEMD128Test:
+@RIPEMD128Test.o
+@ConsoleStartup.o
+RIPEMD160Speed:
+@RIPEMD160Speed.o
+@ConsoleStartup.o
+RIPEMD160Test:
+@RIPEMD160Test.o
+@ConsoleStartup.o
 RSATest:
 @RSATest.o
+@ConsoleStartup.o
+SDBMSpeed:
+@SDBMSpeed.o
+@ConsoleStartup.o
+SHA1Speed:
+@SHA1Speed.o
+@ConsoleStartup.o
+SHA1Test:
+@SHA1Test.o
+@ConsoleStartup.o
+SuperFastHashSpeed:
+@SuperFastHashSpeed.o
 @ConsoleStartup.o
 X509Test:
 @X509Test.o
@@ -350,6 +471,9 @@ TDSConnTest:
 @ConsoleStartup.o
 
 #Exporter
+PDFExporterTest:
+@PDFExporterTest.o
+@ConsoleStartup.o
 XLSXExporterTest:
 @XLSXExporterTest.o
 @ConsoleStartup.o
@@ -357,6 +481,9 @@ XLSXExporterTest:
 #IO
 AM2315Test:
 @AM2315Test.o
+@ConsoleStartup.o
+BitWriterTest:
+@BitWriterTest.o
 @ConsoleStartup.o
 BLEScanTest:
 @BLEScanTest.o
@@ -439,11 +566,20 @@ SIM7000Test:
 StackTraceTest:
 @StackTraceTest.o
 @ConsoleStartup.o
+StreamReaderSpeed:
+@StreamReaderSpeed.o
+@ConsoleStartup.o
+StreamReaderTest:
+@StreamReaderTest.o
+@ConsoleStartup.o
 SystemInfoTest:
 @SystemInfoTest.o
 @ConsoleStartup.o
 TH10SBTest:
 @TH10SBTest.o
+@ConsoleStartup.o
+VoiceModemTest:
+@VoiceModemTest.o
 @ConsoleStartup.o
 WatchdogDisable:
 @WatchdogDisable.o
@@ -1048,12 +1184,41 @@ GUITest9:
 @GUITest9.o
 @GUIStartup.o
 
+Adler32Speed.o: ../../main/CryptoTest/Adler32Speed.cpp
+Adler32Test.o: ../../main/CryptoTest/Adler32Test.cpp
 AES128GCMTest.o: ../../main/CryptoTest/AES128GCMTest.cpp
+Base64Speed.o: ../../main/CryptoTest/Base64Speed.cpp
+Base64Test.o: ../../main/CryptoTest/Base64Test.cpp
+Base64Test2.o: ../../main/CryptoTest/Base64Test2.cpp
+Base64Test3.o: ../../main/CryptoTest/Base64Test3.cpp
+CertRequestTest.o: ../../main/CryptoTest/CertRequestTest.cpp
+CRC16_CCITTTest.o: ../../main/CryptoTest/CRC16_CCITTTest.cpp
+CRC16RTest.o: ../../main/CryptoTest/CRC16RTest.cpp
+CRC16Test.o: ../../main/CryptoTest/CRC16Test.cpp
+CRC32FileTest.o: ../../main/CryptoTest/CRC32FileTest.cpp
+CRC32RFileTest.o: ../../main/CryptoTest/CRC32RFileTest.cpp
+CRC32RSpeed.o: ../../main/CryptoTest/CRC32RSpeed.cpp
+CRC32Test.o: ../../main/CryptoTest/CRC32Test.cpp
 CSRTest.o: ../../main/CryptoTest/CSRTest.cpp
+DJB2aSpeed.o: ../../main/CryptoTest/DJB2aSpeed.cpp
+DJB2Speed.o: ../../main/CryptoTest/DJB2Speed.cpp
+FNV1aSpeed.o: ../../main/CryptoTest/FNV1aSpeed.cpp
+FNV1Speed.o: ../../main/CryptoTest/FNV1Speed.cpp
+HMAC_SHA1Test.o: ../../main/CryptoTest/HMAC_SHA1Test.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
+MD5FileTest.o: ../../main/CryptoTest/MD5FileTest.cpp
+MD5Speed.o: ../../main/CryptoTest/MD5Speed.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
+RIPEMD128Speed.o: ../../main/CryptoTest/RIPEMD128Speed.cpp
+RIPEMD128Test.o: ../../main/CryptoTest/RIPEMD128Test.cpp
+RIPEMD160Speed.o: ../../main/CryptoTest/RIPEMD160Speed.cpp
+RIPEMD160Test.o: ../../main/CryptoTest/RIPEMD160Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
+SDBMSpeed.o: ../../main/CryptoTest/SDBMSpeed.cpp
+SHA1Speed.o: ../../main/CryptoTest/SHA1Speed.cpp
+SHA1Test.o: ../../main/CryptoTest/SHA1Test.cpp
+SuperFastHashSpeed.o: ../../main/CryptoTest/SuperFastHashSpeed.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DataSciTest.o: ../../main/Data/DataSciTest.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
@@ -1071,8 +1236,10 @@ MSSQLTest.o: ../../main/DB/MSSQLTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
 MySQLClientTest.o: ../../main/DB/MySQLClientTest.cpp
 TDSConnTest.o: ../../main/DB/TDSConnTest.cpp
+PDFExporterTest.o: ../../main/Exporter/PDFExporterTest.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
 AM2315Test.o: ../../main/IO/AM2315Test.cpp
+BitWriterTest.o: ../../main/IO/BitWriterTest.cpp
 BLEScanTest.o: ../../main/IO/BLEScanTest.cpp
 BME280Test.o: ../../main/IO/BME280Test.cpp
 BTListDevices.o: ../../main/IO/BTListDevices.cpp
@@ -1100,8 +1267,11 @@ SHT20Test.o: ../../main/IO/SHT20Test.cpp
 SIDERunnerMain.o: ../../main/IO/SIDERunnerMain.cpp
 SIM7000Test.o: ../../main/IO/SIM7000Test.cpp
 StackTraceTest.o: ../../main/IO/StackTraceTest.cpp
+StreamReaderSpeed.o: ../../main/IO/StreamReaderSpeed.cpp
+StreamReaderTest.o: ../../main/IO/StreamReaderTest.cpp
 SystemInfoTest.o: ../../main/IO/SystemInfoTest.cpp
 TH10SBTest.o: ../../main/IO/TH10SBTest.cpp
+VoiceModemTest.o: ../../main/IO/VoiceModemTest.cpp
 WatchdogDisable.o: ../../main/IO/WatchdogDisable.cpp
 WatchdogTest.o: ../../main/IO/WatchdogTest.cpp
 WatchdogTest2.o: ../../main/IO/WatchdogTest2.cpp
@@ -1472,6 +1642,8 @@ Crypto/Hash/SHA512.h:
 @SHA512.o
 @SHA512_CPP.o
 Crypto/Hash/SuperFastHash.h:
+@SuperFastHash.o
+@SuperFastHash_CPP.o
 Crypto/Token/JWSignature.h:
 @JWSignature.o
 Crypto/Token/JWTHandler.h:
@@ -1826,6 +1998,8 @@ Exporter/MEVExporter.h:
 @MEVExporter.o
 Exporter/OruxMapExporter.h:
 @OruxMapExporter.o
+Exporter/PDFExporter.h:
+@PDFExporter.o
 Exporter/PEMExporter.h:
 @PEMExporter.o
 Exporter/PLTExporter.h:

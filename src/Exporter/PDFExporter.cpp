@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::PDFExporter::GetOutputName(IntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+Bool Exporter::PDFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -51,17 +51,17 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::Image> img;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	IntOS i;
-	IntOS j;
-	IntOS pageContentId;
-	IntOS infoId;
+	UIntOS i;
+	UIntOS j;
+	UIntOS pageContentId;
+	UIntOS infoId;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	Data::ArrayListNative<Int64> objPos;
+	Data::ArrayListNative<UInt64> objPos;
 	Data::ArrayListNative<Int32> pageContent;
 	Data::ArrayListNative<Int32> pageList;
-	Int64 refPos;
-	Int64 currPos;
+	UInt64 refPos;
+	UInt64 currPos;
 	Data::DateTime dt;
 	NN<Text::String> s;
 	stm->Write(CSTR("%PDF-1.4\r").ToByteArray());
@@ -88,10 +88,10 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			//////////////////
 
 			sb2.ClearStr();
-			sb2.AppendIntOS(pageContentId);
+			sb2.AppendUIntOS(pageContentId);
 			sb2.AppendC(UTF8STRC(" 0 obj\r"));
 			sb2.AppendC(UTF8STRC("<</Length "));
-			sb2.AppendIntOS(sb.GetLength());
+			sb2.AppendUIntOS(sb.GetLength());
 			sb2.AppendC(UTF8STRC(">>\r"));
 			sb2.AppendC(UTF8STRC("stream\r"));
 			sb2.AppendSB(sb);
@@ -104,7 +104,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 			pageList.Add((Int32)objPos.GetCount());
 			sb.ClearStr();
-			sb.AppendIntOS(objPos.GetCount());
+			sb.AppendUIntOS(objPos.GetCount());
 			sb.AppendC(UTF8STRC(" 0 obj\r"));
 			sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
 			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_POINT, img->GetVisibleWidthPx())));
@@ -113,7 +113,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			sb.AppendC(UTF8STRC("]\r"));
 			sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
 			sb.AppendC(UTF8STRC("/Contents "));
-			sb.AppendIntOS(pageContentId);
+			sb.AppendUIntOS(pageContentId);
 			sb.AppendC(UTF8STRC(" 0 R\r"));
 			sb.AppendC(UTF8STRC(">>\r"));
 			sb.AppendC(UTF8STRC("endobj\r"));
@@ -138,7 +138,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i++;
 	}
 	sb.AppendC(UTF8STRC("] /Count "));
-	sb.AppendIntOS(pageList.GetCount());
+	sb.AppendUIntOS(pageList.GetCount());
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
@@ -148,7 +148,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	infoId = objPos.GetCount();
 	objPos.Add(currPos);
 	sb.ClearStr();
-	sb.AppendIntOS(infoId);
+	sb.AppendUIntOS(infoId);
 	sb.AppendC(UTF8STRC(" 0 obj\r"));
 	sb.AppendC(UTF8STRC("<<\r"));
 	if (imgList->GetValueStr(Media::ImageList::ValueType::DocumentName).SetTo(s))
@@ -213,19 +213,19 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("xref\r"));
 	sb.AppendC(UTF8STRC("0 "));
-	sb.AppendIntOS(objPos.GetCount());
+	sb.AppendUIntOS(objPos.GetCount());
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("0000000000 65535 f \r"));
 	i = 1;
 	while (i < j)
 	{
-		sptr = Text::StrInt64(sbuff, objPos.GetItem(i));
+		sptr = Text::StrUInt64(sbuff, objPos.GetItem(i));
 		if ((sptr - sbuff) >= 10)
 		{
 		}
 		else
 		{
-			sb.AppendChar('0', 10 - (sptr - sbuff));
+			sb.AppendChar('0', (UIntOS)(10 - (sptr - sbuff)));
 			sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" 00000 n \r"));
 		}
@@ -233,15 +233,15 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	sb.AppendC(UTF8STRC("trailer\r"));
 	sb.AppendC(UTF8STRC("<< /Size "));
-	sb.AppendIntOS(j);
+	sb.AppendUIntOS(j);
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("/Info "));
-	sb.AppendIntOS(infoId);
+	sb.AppendUIntOS(infoId);
 	sb.AppendC(UTF8STRC(" 0 R\r"));
 	sb.AppendC(UTF8STRC("/Root 1 0 R\r"));
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("startxref\r"));
-	sb.AppendI64(refPos);
+	sb.AppendU64(refPos);
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("%%EOF\r"));
 	stm->Write(sb.ToByteArray());

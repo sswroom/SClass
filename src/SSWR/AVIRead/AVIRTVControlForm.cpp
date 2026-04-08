@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	
 	{
 		Data::ArrayListNative<UIntOS> ports;
-		IO::SerialPort::GetAvailablePorts(ports, 0);
+		IO::SerialPort::GetAvailablePorts(ports, nullptr);
 		i = 0;
 		j = ports.GetCount();
 		while (i < j)

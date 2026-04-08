@@ -21,7 +21,7 @@ UIntOS Test::TestModem::ListPorts(NN<IO::Writer> writer)
 		sb.AppendC(UTF8STRC("Port "));
 		sb.AppendUIntOS(ports.GetItem(i));
 		sb.AppendC(UTF8STRC(" - "));
-		sb.Append(IO::SerialPort::GetPortTypeName(portTypes.GetItem(i)));
+		sb.Append(IO::SerialPort::SerialPortTypeGetName(portTypes.GetItem(i)));
 		writer->WriteLine(sb.ToCString());
 		i++;
 	}

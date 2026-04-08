@@ -178,10 +178,11 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Optional<Data::ArrayListNative<SerialPortType>> portTypes)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Data::ArrayListNative<SerialPortType>> nnportTypes;
 	NN<IO::Path::FindFileSession> sess;
 	if (IO::Path::FindFile(CSTR("/dev/tty*")).SetTo(sess))
 	{
@@ -190,20 +191,20 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, 
 			if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyS")))
 			{
 				ports->Add(1 + Text::StrToUIntOS(&sbuff[4]));
-				if (portTypes)
-					portTypes->Add(SPT_SERIALPORT);
+				if (portTypes.SetTo(nnportTypes))
+					nnportTypes->Add(SPT_SERIALPORT);
 			}
 			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyUSB")))
 			{
 				ports->Add(33 + Text::StrToUIntOS(&sbuff[6]));
-				if (portTypes)
-					portTypes->Add(SPT_USBSERIAL);
+				if (portTypes.SetTo(nnportTypes))
+					nnportTypes->Add(SPT_USBSERIAL);
 			}
 			else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ttyACM")))
 			{
 				ports->Add(65 + Text::StrToUIntOS(&sbuff[6]));
-				if (portTypes)
-					portTypes->Add(SPT_USBSERIAL);
+				if (portTypes.SetTo(nnportTypes))
+					nnportTypes->Add(SPT_USBSERIAL);
 			}
 		}
 		IO::Path::FindFileClose(sess);
@@ -213,15 +214,15 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, 
 		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
 			ports->Add(97 + Text::StrToUIntOS(&sbuff[6]));
-			if (portTypes)
-				portTypes->Add(SPT_BLUETOOTH);
+			if (portTypes.SetTo(nnportTypes))
+				nnportTypes->Add(SPT_BLUETOOTH);
 		}
 		IO::Path::FindFileClose(sess);
 	}
 	return true;
 }
 
-Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
+Text::CStringNN IO::SerialPort::SerialPortTypeGetName(SerialPortType portType)
 {
 	switch (portType)
 	{

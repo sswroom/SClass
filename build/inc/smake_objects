@@ -106,6 +106,8 @@ SHA256.o: ../../src/Crypto/Hash/SHA256.cpp
 SHA256_CPP.o: ../../src/Crypto/Hash/SHA256_CPP.cpp
 SHA384.o: ../../src/Crypto/Hash/SHA384.cpp
 SHA512.o: ../../src/Crypto/Hash/SHA512.cpp
+SuperFastHash.o: ../../src/Crypto/Hash/SuperFastHash.cpp
+SuperFastHash_CPP.o: ../../src/Crypto/Hash/SuperFastHash_CPP.cpp
 JWSignature.o: ../../src/Crypto/Token/JWSignature.cpp
 JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWToken.o: ../../src/Crypto/Token/JWToken.cpp
@@ -339,6 +341,7 @@ MD5Exporter.o: ../../src/Exporter/MD5Exporter.cpp
 MDBExporter.o: ../../src/Exporter/MDBExporter.cpp
 MEVExporter.o: ../../src/Exporter/MEVExporter.cpp
 OruxMapExporter.o: ../../src/Exporter/OruxMapExporter.cpp
+PDFExporter.o: ../../src/Exporter/PDFExporter.cpp
 PEMExporter.o: ../../src/Exporter/PEMExporter.cpp
 PLTExporter.o: ../../src/Exporter/PLTExporter.cpp
 PNGExporter.o: ../../src/Exporter/PNGExporter.cpp

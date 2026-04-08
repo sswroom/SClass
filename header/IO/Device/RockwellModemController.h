@@ -64,9 +64,9 @@ namespace IO
 			DialResult VoicePulseDial(UnsafeArray<const UTF8Char> phoneNum);
 
 		public:
-			static UnsafeArray<UTF8Char> GetVoiceTypeString(UnsafeArray<UTF8Char> buff, VoiceType voiceType);
-			static UnsafeArray<UTF8Char> GetCallerIDTypeString(UnsafeArray<UTF8Char> buff, CallerIDType callerIDType);
-			static UnsafeArray<UTF8Char> GetVoiceLineTypeString(UnsafeArray<UTF8Char> buff, VoiceLineType voiceLineType);
+			static Text::CStringNN VoiceTypeGetName(VoiceType voiceType);
+			static Text::CStringNN CallerIDTypeGetName(CallerIDType callerIDType);
+			static Text::CStringNN VoiceLineTypeGetName(VoiceLineType voiceLineType);
 		};
 	}
 }
