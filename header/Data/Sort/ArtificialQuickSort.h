@@ -31,7 +31,8 @@ namespace Data
 			{
 				AT_INT32,
 				AT_UINT32,
-				AT_STRUTF8
+				AT_STRUTF8,
+				AT_STRW
 			} ArrayType;
 		private:
 			UIntOS threadCnt;
@@ -47,6 +48,7 @@ namespace Data
 			void DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
 			void DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex);
 			void DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex);
+			void DoSortStrW(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<WChar>> arr, IntOS firstIndex, IntOS lastIndex);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			ArtificialQuickSort();
@@ -55,6 +57,7 @@ namespace Data
 			void SortInt32(UnsafeArray<Int32> arr, IntOS firstIndex, IntOS lastIndex);
 			void SortUInt32(UnsafeArray<UInt32> arr, IntOS firstIndex, IntOS lastIndex);
 			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, IntOS firstIndex, IntOS lastIndex);
+			void SortStrW(UnsafeArray<UnsafeArray<WChar>> arr, IntOS firstIndex, IntOS lastIndex);
 
 			template <class T> static void PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex);
 			template <class T> static void Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, IntOS firstIndex, IntOS lastIndex);

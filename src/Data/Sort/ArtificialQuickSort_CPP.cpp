@@ -3,6 +3,7 @@
 #include "Data/Comparable.h"
 #include "Data/Sort/InsertionSort_C.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 
 extern "C" void ArtificialQuickSort_PreSortInt32(Int32 *arr, IntOS left, IntOS right)
 {
@@ -95,6 +96,25 @@ extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, IntOS left, IntOS
 {
 	UTF8Char *temp = 0;
 	UTF8Char *temp2;
+
+	while (left < right)
+	{
+		temp = arr[left];
+		temp2 = arr[right];
+		if (Text::StrCompare(temp, temp2) > 0)
+		{
+			arr[left] = temp2;
+			arr[right] = temp;
+		}
+		left++;
+		right--;
+	}
+}
+
+extern "C" void ArtificialQuickSort_PreSortStrW(WChar **arr, IntOS left, IntOS right)
+{
+	WChar *temp = 0;
+	WChar *temp2;
 
 	while (left < right)
 	{
@@ -634,6 +654,90 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, IntOS firstIndex, In
 		else if (i <= 64)
 		{
 			InsertionSort_SortBStr(arr, left, right);
+			index--;
+		}
+		else
+		{
+			meja = arr[ (left + right) >> 1 ];
+			left1 = left;
+			right1 = right;
+			while (true)
+			{
+				while ( Text::StrCompare(arr[right1], meja) >= 0 )
+				{
+					if (--right1 < left1)
+						break;
+				}
+				while ( Text::StrCompare(arr[left1], meja) < 0 )
+				{
+					if (++left1 > right1)
+						break;
+				}
+				if (left1 > right1)
+					break;
+
+				temp = arr[right1];
+				arr[right1--] = arr[left1];
+				arr[left1++] = temp;
+			}
+			if (left1 == left)
+			{
+				arr[(left + right) >> 1] = arr[left];
+				arr[left] = meja;
+				levi[index] = left + 1;
+				desni[index] = right;
+			}
+			else
+			{
+				desni[index] = --left1;
+				right1++;
+				index++;
+				levi[index] = right1;
+				desni[index] = right;
+			}
+		}
+	}
+#if _OSINT_SIZE != 16
+	MemFree(levi);
+#endif
+}
+
+extern "C" void ArtificialQuickSort_SortStrW(WChar **arr, IntOS firstIndex, IntOS lastIndex)
+{
+#if _OSINT_SIZE == 16
+	IntOS levi[256];
+	IntOS desni[256];
+#else
+	IntOS *levi = MemAlloc(IntOS, 65536);
+	IntOS *desni = &levi[32768];
+#endif
+	IntOS index;
+	IntOS i;
+	IntOS left;
+	IntOS right;
+	WChar *meja;
+	IntOS left1;
+	IntOS right1;
+	WChar *temp;
+
+	ArtificialQuickSort_PreSortStrW(arr, firstIndex, lastIndex);
+
+	index = 0;
+	levi[index] = firstIndex;
+	desni[index] = lastIndex;
+
+	while ( index >= 0 )
+	{
+		left = levi[index];
+		right = desni[index];
+		i = right - left;
+		if (i <= 0)
+		{
+			index--;
+		}
+		else if (i <= 64)
+		{
+			InsertionSort_SortBStrW(arr, left, right);
 			index--;
 		}
 		else

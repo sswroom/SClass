@@ -236,6 +236,74 @@ extern "C" void BubbleSort_SortStrC(Char **arr, IntOS firstIndex, IntOS lastInde
 	}
 }*/
 
+extern "C" void BubbleSort_SortInt32Inv(Int32 *arr, IntOS firstIndex, IntOS lastIndex)
+{
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
+	Int32 *b;
+	Bool finished = false;
+	Int32 v1;
+	Int32 v2;
+	arr += firstIndex;
+	while (j-- > 0)
+	{
+		finished = true;
+		b = arr;
+		i = j + 1;
+		v1 = *b++;
+		while (i--)
+		{
+			v2 = *b++;
+			if (v1 < v2)
+			{
+				b[-2] = v2;
+				b[-1] = v1;
+				finished = false;
+			}
+			else
+			{
+				v1 = v2;
+			}
+		}
+		if (finished)
+			break;
+	}
+}
+
+extern "C" void BubbleSort_SortUInt32Inv(UInt32 *arr, IntOS firstIndex, IntOS lastIndex)
+{
+	IntOS j = lastIndex - firstIndex;
+	IntOS i;
+	UInt32 *b;
+	Bool finished = false;
+	UInt32 v1;
+	UInt32 v2;
+	arr += firstIndex;
+	while (j-- > 0)
+	{
+		finished = true;
+		b = arr;
+		i = j + 1;
+		v1 = *b++;
+		while (i--)
+		{
+			v2 = *b++;
+			if (v1 < v2)
+			{
+				b[-2] = v2;
+				b[-1] = v1;
+				finished = false;
+			}
+			else
+			{
+				v1 = v2;
+			}
+		}
+		if (finished)
+			break;
+	}
+}
+
 extern "C" void BubbleSort_SortInt64Inv(Int64 *arr, IntOS firstIndex, IntOS lastIndex)
 {
 	IntOS j = lastIndex - firstIndex;

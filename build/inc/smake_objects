@@ -195,6 +195,8 @@ BubbleSort_CPP.o: ../../src/Data/Sort/BubbleSort_CPP.cpp
 ByteCountingSort_CPP.o: ../../src/Data/Sort/ByteCountingSort_CPP.cpp
 InsertionSort.o: ../../src/Data/Sort/InsertionSort.cpp
 InsertionSort_CPP.o: ../../src/Data/Sort/InsertionSort_CPP.cpp
+PigeonholeSort.o: ../../src/Data/Sort/PigeonholeSort.cpp
+QuickBubbleSort.o: ../../src/Data/Sort/QuickBubbleSort.cpp
 
 ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp

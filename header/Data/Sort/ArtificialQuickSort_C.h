@@ -12,6 +12,7 @@ extern "C"
 	void ArtificialQuickSort_PreSortSingle(Single *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_PreSortDouble(Double *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_PreSortStr(UTF8Char **arr, IntOS firstIndex, IntOS lastIndex);
+	void ArtificialQuickSort_PreSortStrW(WChar **arr, IntOS firstIndex, IntOS lastIndex);
 
 	void ArtificialQuickSort_PreSortInt32Inv(Int32 *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_PreSortUInt32Inv(UInt32 *arr, IntOS firstIndex, IntOS lastIndex);
@@ -25,6 +26,7 @@ extern "C"
 	void ArtificialQuickSort_SortSingle(Single *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_SortDouble(Double *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_SortStr(UTF8Char **arr, IntOS firstIndex, IntOS lastIndex);
+	void ArtificialQuickSort_SortStrW(WChar **arr, IntOS firstIndex, IntOS lastIndex);
 
 	void ArtificialQuickSort_SortInt32Inv(Int32 *arr, IntOS firstIndex, IntOS lastIndex);
 	void ArtificialQuickSort_SortUInt32Inv(UInt32 *arr, IntOS firstIndex, IntOS lastIndex);

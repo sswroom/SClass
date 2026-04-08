@@ -7,6 +7,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 
 /*
 Bitonic Sort
@@ -291,12 +292,107 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(NN<ThreadStat> stat, UnsafeArray
 				right1 = right;
 				while (true)
 				{
-					while (Text::StrCompare(arr[right1], meja) >= 0)
+					while (Text::StrCompare(UnsafeArray<const UTF8Char>(arr[right1]), meja) >= 0)
 					{
 						if (--right1 < left1)
 							break;
 					}
-					while (Text::StrCompare(arr[left1], meja) < 0)
+					while (Text::StrCompare(UnsafeArray<const UTF8Char>(arr[left1]), meja) < 0)
+					{
+						if (++left1 > right1)
+							break;
+					}
+					if (left1 > right1)
+						break;
+
+					temp = arr[right1];
+					arr[right1--] = arr[left1];
+					arr[left1++] = temp;
+				}
+				if (left1 == left)
+				{
+					arr[(left + right) >> 1] = arr[left];
+					arr[left] = meja;
+					firstIndex = left + 1;
+					lastIndex = right;
+				}
+				else
+				{
+					lastIndex = --left1;
+					++right1;
+					if (right1 < right)
+					{
+						Sync::MutexUsage mutUsage(this->mut);
+						this->tasks[this->taskCnt * 2] = right1;
+						this->tasks[this->taskCnt * 2 + 1] = right;
+						this->taskCnt++;
+						mutUsage.EndUse();
+						if (stat->threadId + 1 < this->threadCnt)
+						{
+							if (this->threads[stat->threadId + 1].state == 1)
+							{
+								this->threads[stat->threadId + 1].evt->Set();
+							}
+						}
+					}
+				}
+			}
+		}
+
+		Bool found = false;
+		Sync::MutexUsage mutUsage(this->mut);
+		if (this->taskCnt > 0)
+		{
+			found = true;
+			firstIndex = this->tasks[this->taskCnt * 2 - 2];
+			lastIndex = this->tasks[this->taskCnt * 2 - 1];
+			this->taskCnt--;
+		}
+		mutUsage.EndUse();
+		if (!found)
+			return;
+	}
+}
+
+void Data::Sort::ArtificialQuickSort::DoSortStrW(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<WChar>> arr, IntOS firstIndex, IntOS lastIndex)
+{
+	IntOS i;
+	IntOS left;
+	IntOS right;
+	UnsafeArray<WChar> meja;
+	IntOS left1;
+	IntOS right1;
+	UnsafeArray<WChar> temp;
+
+	while (true)
+	{
+		while (firstIndex <= lastIndex)
+		{
+			left = firstIndex;
+			right = lastIndex;
+			i = right - left;
+			if (i < 0)
+			{
+				break;
+			}
+			else if (i <= 128)
+			{
+				InsertionSort_SortBStrW((WChar**)arr.Ptr(), left, right);
+				break;
+			}
+			else
+			{
+				meja = arr[ (left + right) >> 1 ];
+				left1 = left;
+				right1 = right;
+				while (true)
+				{
+					while (Text::StrCompare(UnsafeArray<const WChar>(arr[right1]), meja) >= 0)
+					{
+						if (--right1 < left1)
+							break;
+					}
+					while (Text::StrCompare(UnsafeArray<const WChar>(arr[left1]), meja) < 0)
 					{
 						if (++left1 > right1)
 							break;
@@ -448,6 +544,34 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(AnyType userObj)
 							break;
 						}
 						stat->me->DoSortStr(stat, UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(arr), firstIndex, lastIndex);
+					}
+					stat->state = 1;
+					stat->me->mainEvt.Set();
+				}
+				else if (stat->me->arrType == AT_STRW && stat->me->arr.SetTo(arr))
+				{
+					stat->state = 2;
+					while (stat->me->taskCnt > 0)
+					{
+						Sync::MutexUsage mutUsage(stat->me->mut);
+						if (stat->me->taskCnt > 0)
+						{
+							found = true;
+							firstIndex = stat->me->tasks[stat->me->taskCnt * 2 - 2];
+							lastIndex = stat->me->tasks[stat->me->taskCnt * 2 - 1];
+							stat->me->taskCnt--;
+						}
+						else
+						{
+							found = false;
+						}
+						mutUsage.EndUse();
+
+						if (!found)
+						{
+							break;
+						}
+						stat->me->DoSortStrW(stat, UnsafeArray<UnsafeArray<WChar>>::ConvertFrom(arr), firstIndex, lastIndex);
 					}
 					stat->state = 1;
 					stat->me->mainEvt.Set();
@@ -629,6 +753,52 @@ void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>>
 	this->arr = UnsafeArray<UInt8>::ConvertFrom(arr);
 	this->arrType = AT_STRUTF8;
 	ArtificialQuickSort_PreSortStr((UTF8Char**)arr.Ptr(), firstIndex, lastIndex);
+	Sync::MutexUsage mutUsage(this->mut);
+	this->tasks[0] = firstIndex;
+	this->tasks[1] = lastIndex;
+	this->taskCnt = 1;
+	mutUsage.EndUse();
+	this->threads[0].evt->Set();
+
+	while (true)
+	{
+		Bool found;
+		this->mainEvt.Wait(1000);
+		found = false;
+		if (this->taskCnt > 0)
+		{
+			found = true;
+		}
+		else
+		{
+			UIntOS i = this->threadCnt;
+			while (i-- > 0)
+			{
+				if (this->threads[i].state != 1)
+				{
+					found = true;
+					break;
+				}
+			}
+			if (this->taskCnt > 0)
+			{
+				found = true;
+			}
+		}
+
+		if (!found)
+		{
+			break;
+		}
+	}
+	this->arr = nullptr;
+}
+
+void Data::Sort::ArtificialQuickSort::SortStrW(UnsafeArray<UnsafeArray<WChar>> arr, IntOS firstIndex, IntOS lastIndex)
+{
+	this->arr = UnsafeArray<UInt8>::ConvertFrom(arr);
+	this->arrType = AT_STRW;
+	ArtificialQuickSort_PreSortStrW((WChar**)arr.Ptr(), firstIndex, lastIndex);
 	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;

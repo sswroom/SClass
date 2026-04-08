@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Comparable.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 
 extern "C" void InsertionSort_SortBInt32(Int32 *arr, IntOS left, IntOS right)
 {
@@ -54,6 +55,48 @@ extern "C" void InsertionSort_SortBStr(UTF8Char **arr, IntOS left, IntOS right)
 	UTF8Char *temp;
 	UTF8Char *temp1;
 	UTF8Char *temp2;
+	temp1 = arr[left];
+	i = left + 1;
+	while (i <= right)
+	{
+		temp2 = arr[i];
+		if ( Text::StrCompare(temp1, temp2) > 0)
+		{
+			j = left;
+			k = i - 1;
+			while (j <= k)
+			{
+				l = (j + k) >> 1;
+				temp = arr[l];
+				if (Text::StrCompare(temp, temp2) > 0)
+				{
+					k = l - 1;
+				}
+				else
+				{
+					j = l + 1;
+				}
+			}
+			MemCopyO(&arr[j + 1], &arr[j], (UIntOS)(i - j) * sizeof(arr[0]));
+			arr[j] = temp2;
+		}
+		else
+		{
+			temp1 = temp2;
+		}
+		i++;
+	}
+}
+
+extern "C" void InsertionSort_SortBStrW(WChar **arr, IntOS left, IntOS right)
+{
+	IntOS i;
+	IntOS j;
+	IntOS k;
+	IntOS l;
+	WChar *temp;
+	WChar *temp1;
+	WChar *temp2;
 	temp1 = arr[left];
 	i = left + 1;
 	while (i <= right)
@@ -264,6 +307,40 @@ extern "C" void InsertionSort_SortStr(UTF8Char **arr, IntOS left, IntOS right)
 	UTF8Char *temp;
 	UTF8Char *temp1;
 	UTF8Char *temp2;
+	temp1 = arr[left];
+	i = left + 1;
+	while (i <= right)
+	{
+		temp2 = arr[i];
+		if ( Text::StrCompare(temp1, temp2) > 0 )
+		{
+			arr[i] = temp1;
+			j = i - 1;
+			while (j > left)
+			{
+				temp = arr[j-1];
+				if ( Text::StrCompare(temp, temp2) > 0 )
+					arr[j--] = temp;
+				else
+					break;
+			}
+			arr[j] = temp2;
+		}
+		else
+		{
+			temp1 = temp2;
+		}
+		i++;
+	}
+}
+
+extern "C" void InsertionSort_SortStrW(WChar **arr, IntOS left, IntOS right)
+{
+	IntOS i;
+	IntOS j;
+	WChar *temp;
+	WChar *temp1;
+	WChar *temp2;
 	temp1 = arr[left];
 	i = left + 1;
 	while (i <= right)

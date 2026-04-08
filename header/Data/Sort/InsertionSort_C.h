@@ -5,6 +5,7 @@ extern "C"
 	// Binary Search for larger arr
 	void InsertionSort_SortBInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex);
 	void InsertionSort_SortBStr(UTF8Char **arr, IntOS firstIndex, IntOS lastIndex);
+	void InsertionSort_SortBStrW(WChar **arr, IntOS firstIndex, IntOS lastIndex);
 
 	// Sequencial Search for small arr
 	void InsertionSort_SortInt32(Int32 *arr, IntOS firstIndex, IntOS lastIndex);
@@ -13,6 +14,7 @@ extern "C"
 	void InsertionSort_SortSingle(Single *arr, IntOS firstIndex, IntOS lastIndex);
 	void InsertionSort_SortDouble(Double *arr, IntOS firstIndex, IntOS lastIndex);
 	void InsertionSort_SortStr(UTF8Char **arr, IntOS firstIndex, IntOS lastIndex);
+	void InsertionSort_SortStrW(WChar **arr, IntOS firstIndex, IntOS lastIndex);
 
 	void InsertionSort_SortInt32Inv(Int32 *arr, IntOS firstIndex, IntOS lastIndex);
 	void InsertionSort_SortUInt32Inv(UInt32 *arr, IntOS firstIndex, IntOS lastIndex);

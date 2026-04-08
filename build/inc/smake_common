@@ -121,9 +121,13 @@ console:
 @DateTimeTest
 @InflateTest
 @LLMTest
+@LZODecompressTest
 @MiscTest
 @NTPTime
+@SortComparableTest
 @SortSpeed
+@SortStrCSpeed
+@SortStrSpeed
 @CSVFileTest
 @DBDataFileTest
 @FileGDBTest
@@ -178,7 +182,13 @@ console:
 @ExecuteProcessTest
 @ExecuteProcess2
 @HiResClock
+@CalDistanceTest
+@CalPLDistanceTest
 @CesiumDownloader
+@CIPTest
+@CombineLayerTest
+@CSV2KMLTest
+@ESRITileTest
 @GISDistTest
 @MapSearchTest
 @OruxMapTest
@@ -431,14 +441,26 @@ InflateTest:
 LLMTest:
 @LLMTest.o
 @ConsoleStartup.o
+LZODecompressTest:
+@LZODecompressTest.o
+@ConsoleStartup.o
 MiscTest:
 @MiscTest.o
 @ConsoleStartup.o
 NTPTime:
 @NTPTimeMain.o
 @ConsoleStartup.o
+SortComparableTest:
+@SortComparableTest.o
+@ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
+@ConsoleStartup.o
+SortStrCSpeed:
+@SortStrCSpeed.o
+@ConsoleStartup.o
+SortStrSpeed:
+@SortStrSpeed.o
 @ConsoleStartup.o
 
 #DB
@@ -612,8 +634,26 @@ HiResClock:
 @ConsoleStartup.o
 
 #Map
+CalDistanceTest:
+@CalDistanceTest.o
+@ConsoleStartup.o
+CalPLDistanceTest:
+@CalPLDistanceTest.o
+@ConsoleStartup.o
 CesiumDownloader:
 @CesiumDownloaderTest.o
+@ConsoleStartup.o
+CIPTest:
+@CIPTest.o
+@ConsoleStartup.o
+CombineLayerTest:
+@CombineLayerTest.o
+@ConsoleStartup.o
+CSV2KMLTest:
+@CSV2KMLTest.o
+@ConsoleStartup.o
+ESRITileTest:
+@ESRITileTest.o
 @ConsoleStartup.o
 GISDistTest:
 @GISDistTest.o
@@ -1224,9 +1264,13 @@ DataSciTest.o: ../../main/Data/DataSciTest.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 InflateTest.o: ../../main/Data/InflateTest.cpp
 LLMTest.o: ../../main/Data/LLMTest.cpp
+LZODecompressTest.o: ../../main/Data/LZODecompressTest.cpp
 MiscTest.o: ../../main/Data/MiscTest.cpp
 NTPTimeMain.o: ../../main/Data/NTPTimeMain.cpp
+SortComparableTest.o: ../../main/Data/SortComparableTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
+SortStrCSpeed.o: ../../main/Data/SortStrCSpeed.cpp
+SortStrSpeed.o: ../../main/Data/SortStrSpeed.cpp
 CSVFileTest.o: ../../main/DB/CSVFileTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
@@ -1281,7 +1325,13 @@ ExceptionRecorderTest.o: ../../main/Manage/ExceptionRecorderTest.cpp
 ExecuteProcess.o: ../../main/Manage/ExecuteProcess.cpp
 ExecuteProcess2.o: ../../main/Manage/ExecuteProcess2.cpp
 HiResClockMain.o: ../../main/Manage/HiResClock.cpp
+CalDistanceTest.o: ../../main/Map/CalDistanceTest.cpp
+CalPLDistanceTest.o: ../../main/Map/CalPLDistanceTest.cpp
 CesiumDownloaderTest.o: ../../main/Map/CesiumDownloaderTest.cpp
+CIPTest.o: ../../main/Map/CIPTest.cpp
+CombineLayerTest.o: ../../main/Map/CombineLayerTest.cpp
+CSV2KMLTest.o: ../../main/Map/CSV2KMLTest.cpp
+ESRITileTest.o: ../../main/Map/ESRITileTest.cpp
 GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
@@ -1859,6 +1909,8 @@ Data/Sort/BitonicSort.h:
 @BitonicSort.o
 Data/Sort/BitonicSort_C.h:
 @BitonicSort_CPP.o
+Data/Sort/BubbleSort.h:
+@BubbleSort.o
 Data/Sort/BubbleSort_C.h:
 @BubbleSort_CPP.o
 Data/Sort/ByteCountingSort_C.h:
