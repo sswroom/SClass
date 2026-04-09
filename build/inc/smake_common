@@ -189,13 +189,23 @@ console:
 @CombineLayerTest
 @CSV2KMLTest
 @ESRITileTest
+@FindCellsTest
 @GISDistTest
 @MapSearchTest
 @OruxMapTest
 @SpeedLimitTest
+@BigFloatDivTest
+@BigFloatFactorialTest
+@BigFloatMulTest
+@BigFloatPITest
+@BigFloatSineTest
 @BigFloatTest
+@BigFloatTest2
+@BigIntAddTest
 @BigIntTest
+@FFTCalcTest
 @LanczosFilterTest
+@VapourPressureTest
 @AudioDeviceTest
 @DrawRotTest
 @GUIExportJPG
@@ -268,7 +278,9 @@ console:
 @SProcMonitor
 @SSerialViewer
 @STCPSpdCli
+@EventSpeed
 @EventTest
+@MutexSpeed
 @ThreadSleepusTest
 @ConcatStringSB
 @DocTest
@@ -655,6 +667,9 @@ CSV2KMLTest:
 ESRITileTest:
 @ESRITileTest.o
 @ConsoleStartup.o
+FindCellsTest:
+@FindCellsTest.o
+@ConsoleStartup.o
 GISDistTest:
 @GISDistTest.o
 @ConsoleStartup.o
@@ -669,14 +684,41 @@ SpeedLimitTest:
 @ConsoleStartup.o
 
 #Math
+BigFloatDivTest:
+@BigFloatDivTest.o
+@ConsoleStartup.o
+BigFloatFactorialTest:
+@BigFloatFactorialTest.o
+@ConsoleStartup.o
+BigFloatMulTest:
+@BigFloatMulTest.o
+@ConsoleStartup.o
+BigFloatPITest:
+@BigFloatPITest.o
+@ConsoleStartup.o
+BigFloatSineTest:
+@BigFloatSineTest.o
+@ConsoleStartup.o
 BigFloatTest:
 @BigFloatTest.o
+@ConsoleStartup.o
+BigFloatTest2:
+@BigFloatTest2.o
+@ConsoleStartup.o
+BigIntAddTest:
+@BigIntAddTest.o
 @ConsoleStartup.o
 BigIntTest:
 @BigIntTest.o
 @ConsoleStartup.o
+FFTCalcTest:
+@FFTCalcTest.o
+@ConsoleStartup.o
 LanczosFilterTest:
 @LanczosFilterTest.o
+@ConsoleStartup.o
+VapourPressureTest:
+@VapourPressureTest.o
 @ConsoleStartup.o
 
 #MCU
@@ -967,8 +1009,14 @@ STCPSpdCli:
 @ConsoleStartup.o
 
 #Sync
+EventSpeed:
+@EventSpeedMain.o
+@ConsoleStartup.o
 EventTest:
 @EventTest.o
+@ConsoleStartup.o
+MutexSpeed:
+@MutexSpeedMain.o
 @ConsoleStartup.o
 ThreadSleepusTest:
 @ThreadSleepusTest.o
@@ -1332,13 +1380,23 @@ CIPTest.o: ../../main/Map/CIPTest.cpp
 CombineLayerTest.o: ../../main/Map/CombineLayerTest.cpp
 CSV2KMLTest.o: ../../main/Map/CSV2KMLTest.cpp
 ESRITileTest.o: ../../main/Map/ESRITileTest.cpp
+FindCellsTest.o: ../../main/Map/FindCellsTest.cpp
 GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 SpeedLimitTest.o: ../../main/Map/SpeedLimitTest.cpp
+BigFloatDivTest.o: ../../main/Math/BigFloatDivTest.cpp
+BigFloatFactorialTest.o: ../../main/Math/BigFloatFactorialTest.cpp
+BigFloatMulTest.o: ../../main/Math/BigFloatMulTest.cpp
+BigFloatPITest.o: ../../main/Math/BigFloatPITest.cpp
+BigFloatSineTest.o: ../../main/Math/BigFloatSineTest.cpp
 BigFloatTest.o: ../../main/Math/BigFloatTest.cpp
+BigFloatTest2.o: ../../main/Math/BigFloatTest2.cpp
+BigIntAddTest.o: ../../main/Math/BigIntAddTest.cpp
 BigIntTest.o: ../../main/Math/BigIntTest.cpp
+FFTCalcTest.o: ../../main/Math/FFTCalcTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
+VapourPressureTest.o: ../../main/Math/VapourPressureTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
 MCU_Distance.o: ../../main/MCU/MCU_Distance.cpp
 MCU_GPIO.o: ../../main/MCU/MCU_GPIO.cpp
@@ -1432,7 +1490,9 @@ SOrganWebMain.o: ../../main/SSWR/SOrganWebMain.cpp
 SProcMonitorMain.o: ../../main/SSWR/SProcMonitorMain.cpp
 SSerialViewerMain.o: ../../main/SSWR/SSerialViewerMain.cpp
 STCPSpdCliMain.o: ../../main/SSWR/STCPSpdCliMain.cpp
+EventSpeedMain.o: ../../main/Sync/EventSpeedMain.cpp
 EventTest.o: ../../main/Sync/EventTest.cpp
+MutexSpeedMain.o: ../../main/Sync/MutexSpeedMain.cpp
 ThreadSleepusTest.o: ../../main/Sync/ThreadSleepusTest.cpp
 TestAdler32.o: ../../main/Test/Crypto/TestAdler32.cpp
 TestAES128.o: ../../main/Test/Crypto/TestAES128.cpp
@@ -2712,6 +2772,8 @@ Map/HKTrafficLayer.h:
 @HKTrafficLayer.o
 Map/HKTrafficLayer2.h:
 @HKTrafficLayer2.o
+Map/KMLGenerator.h:
+@KMLGenerator.o
 Map/KMLXML.h:
 @KMLXML.o
 Map/LayerTools.h:

@@ -6,10 +6,10 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-Bool Map::KMLGenerator::GenKMLPoints(IO::Stream *fs, Data::ArrayList<const UTF8Char*> *names, Data::ArrayList<Double> *lats, Data::ArrayList<Double> *lons)
+Bool Map::KMLGenerator::GenKMLPoints(NN<IO::Stream> fs, NN<Data::ArrayListStringNN> names, NN<Data::ArrayListNative<Double>> lats, NN<Data::ArrayListNative<Double>> lons)
 {
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (names->GetCount() != lats->GetCount())
 		return false;
 	if (lats->GetCount() != lons->GetCount())
@@ -28,15 +28,15 @@ Bool Map::KMLGenerator::GenKMLPoints(IO::Stream *fs, Data::ArrayList<const UTF8C
 	{
 		writer.WriteLine(CSTR("      <Placemark>"));
 		writer.Write(CSTR("        <name>"));
-		sptr = Text::XML::ToXMLText(buff, names->GetItem(i));
-		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
+		sptr = Text::XML::ToXMLText(buff, names->GetItemNoCheck(i)->v);
+		writer.Write(CSTRP(buff, sptr));
 		writer.WriteLine(CSTR("</name>"));
 		writer.Write(CSTR("        <Point><coordinates>"));
 		sptr = Text::StrDouble(buff, lons->GetItem(i));
-		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
+		writer.Write(CSTRP(buff, sptr));
 		writer.Write(CSTR(","));
 		sptr = Text::StrDouble(buff, lats->GetItem(i));
-		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
+		writer.Write(CSTRP(buff, sptr));
 		writer.WriteLine(CSTR(",0</coordinates></Point>"));
 		writer.WriteLine(CSTR("      </Placemark>"));
 		i++;

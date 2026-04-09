@@ -460,66 +460,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlyGridSelChg(AnyType use
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceUpdateClicked(AnyType userObj)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
-	NN<Data::Invest::Price> price;
-	NN<Data::Invest::InvestmentManager> mgr;
-	if (me->lvPrice->GetSelectedItem().GetOpt<Data::Invest::Price>().SetTo(price) && me->mgr.SetTo(mgr))
-	{
-		Data::Date date = Data::Date(me->cboPriceDate->GetSelectedItem().GetIntOS());
-		Int8 tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
-		Data::Timestamp ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
-		if (price->type == Data::Invest::PriceType::Currency)
-		{
-			NN<Data::Invest::Currency> curr = NN<Data::Invest::Currency>::ConvertFrom(price);
-			Double val;
-			Text::StringBuilderUTF8 sb;
-			me->txtPriceValue->GetText(sb);
-			if (!sb.ToDouble(val))
-			{
-				me->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, me);
-				return;
-			}
-			if (curr->invert)
-			{
-				val = 1 / val;
-			}
-			if (mgr->UpdateCurrency(curr, ts, val))
-			{
-				if (me->lbCurrency->GetSelectedItem().GetOpt<Data::Invest::Currency>() == curr)
-				{
-					me->DisplayCurrency(curr);
-				}
-				me->UpdatePriceTable(mgr);
-			}
-		}
-		else if (price->type == Data::Invest::PriceType::Asset)
-		{
-			NN<Data::Invest::Asset> ass = NN<Data::Invest::Asset>::ConvertFrom(price);
-			Double val;
-			Text::StringBuilderUTF8 sb;
-			me->txtPriceValue->GetText(sb);
-			if (!sb.ToDouble(val))
-			{
-				me->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, me);
-				return;
-			}
-			Double divVal;
-			sb.ClearStr();
-			me->txtPriceDiv->GetText(sb);
-			if (!sb.ToDouble(divVal))
-			{
-				me->ui->ShowMsgOK(CSTR("Please enter valid div"), TITLE, me);
-				return;
-			}
-			if (mgr->UpdateAsset(ass, ts, val, divVal))
-			{
-				if (me->lbAssets->GetSelectedItem().GetOpt<Data::Invest::Asset>() == ass)
-				{
-					me->DisplayAsset(ass);
-				}
-				me->UpdatePriceTable(mgr);
-			}
-		}
-	}
+	me->DoPriceUpdate();
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceSelChg(AnyType userObj)
@@ -622,7 +563,19 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceValueKeyDown(
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
 	if (UI::GUIControl::OSKey2GUIKey(osKey) == UI::GUIControl::GK_ENTER)
 	{
-		me->OnPriceUpdateClicked(userObj);
+		UIntOS i = me->lvPrice->GetSelectedIndex() + 1;
+		if (me->DoPriceUpdate())
+		{
+			if (i >= me->lvPrice->GetCount())
+			{
+				me->lvPrice->SetSelectedIndex(0);
+			}
+			else
+			{
+				me->lvPrice->SetSelectedIndex(i);
+				me->lvPrice->EnsureVisible(i);
+			}
+		}
 		return UI::EventState::StopEvent;
 	}
 	return UI::EventState::ContinueEvent;
@@ -1644,6 +1597,73 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearlyImg()
 		}
 		this->deng->DeleteImage(dimg);
 	}
+}
+
+Bool SSWR::AVIRead::AVIRInvestmentForm::DoPriceUpdate()
+{
+	NN<Data::Invest::Price> price;
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (this->lvPrice->GetSelectedItem().GetOpt<Data::Invest::Price>().SetTo(price) && this->mgr.SetTo(mgr))
+	{
+		Data::Date date = Data::Date(this->cboPriceDate->GetSelectedItem().GetIntOS());
+		Int8 tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
+		Data::Timestamp ts = Data::Timestamp(date.ToTicks(tzQhr), tzQhr);
+		if (price->type == Data::Invest::PriceType::Currency)
+		{
+			NN<Data::Invest::Currency> curr = NN<Data::Invest::Currency>::ConvertFrom(price);
+			Double val;
+			Text::StringBuilderUTF8 sb;
+			this->txtPriceValue->GetText(sb);
+			if (!sb.ToDouble(val))
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, this);
+				return false;
+			}
+			if (curr->invert)
+			{
+				val = 1 / val;
+			}
+			if (mgr->UpdateCurrency(curr, ts, val))
+			{
+				if (this->lbCurrency->GetSelectedItem().GetOpt<Data::Invest::Currency>() == curr)
+				{
+					this->DisplayCurrency(curr);
+				}
+				this->UpdatePriceTable(mgr);
+			}
+			return true;
+		}
+		else if (price->type == Data::Invest::PriceType::Asset)
+		{
+			NN<Data::Invest::Asset> ass = NN<Data::Invest::Asset>::ConvertFrom(price);
+			Double val;
+			Text::StringBuilderUTF8 sb;
+			this->txtPriceValue->GetText(sb);
+			if (!sb.ToDouble(val))
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, this);
+				return false;
+			}
+			Double divVal;
+			sb.ClearStr();
+			this->txtPriceDiv->GetText(sb);
+			if (!sb.ToDouble(divVal))
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid div"), TITLE, this);
+				return false;
+			}
+			if (mgr->UpdateAsset(ass, ts, val, divVal))
+			{
+				if (this->lbAssets->GetSelectedItem().GetOpt<Data::Invest::Asset>() == ass)
+				{
+					this->DisplayAsset(ass);
+				}
+				this->UpdatePriceTable(mgr);
+			}
+			return true;
+		}
+	}
+	return false;
 }
 
 Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView, Optional<UI::GUITextBox> txtAverage)

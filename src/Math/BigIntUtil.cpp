@@ -37,6 +37,7 @@ void Math::BigIntUtil::LSBAdd(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UI
 			while (destCnt-- > 0)
 			{
 				carry = MyADD_UOS(carry - 1, *destBuff, destBuff.Ptr());
+				carry = carry ^ 1;
 				destBuff++;
 			}
 		}

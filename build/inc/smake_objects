@@ -925,6 +925,7 @@ HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 HKTrafficLayer2.o: ../../src/Map/HKTrafficLayer2.cpp
+KMLGenerator.o: ../../src/Map/KMLGenerator.cpp
 KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp
