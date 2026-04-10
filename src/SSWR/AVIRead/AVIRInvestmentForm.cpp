@@ -561,22 +561,49 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceDateSelChg(AnyType user
 UI::EventState __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnPriceValueKeyDown(AnyType userObj, UInt32 osKey)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
-	if (UI::GUIControl::OSKey2GUIKey(osKey) == UI::GUIControl::GK_ENTER)
+	UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
+	if (key == UI::GUIControl::GK_ENTER)
 	{
-		UIntOS i = me->lvPrice->GetSelectedIndex() + 1;
+		UIntOS priceInd = me->lvPrice->GetSelectedIndex();
+		UIntOS dateInd = me->cboPriceDate->GetSelectedIndex();
 		if (me->DoPriceUpdate())
 		{
-			if (i >= me->lvPrice->GetCount())
+			if (dateInd < me->cboPriceDate->GetCount() - 1)
+			{
+				me->cboPriceDate->SetSelectedIndex(dateInd + 1);
+				me->lvPrice->SetSelectedIndex(priceInd);
+			}
+			else if (priceInd >= me->lvPrice->GetCount() - 1)
 			{
 				me->lvPrice->SetSelectedIndex(0);
 			}
 			else
 			{
-				me->lvPrice->SetSelectedIndex(i);
-				me->lvPrice->EnsureVisible(i);
+				me->lvPrice->SetSelectedIndex(priceInd + 1);
+				me->lvPrice->EnsureVisible(priceInd + 1);
 			}
 		}
 		return UI::EventState::StopEvent;
+	}
+	else if (key == UI::GUIControl::GK_UP)
+	{
+		UIntOS i = me->lvPrice->GetSelectedIndex();
+		if (i != INVALID_INDEX && i > 0)
+		{
+			me->lvPrice->SetSelectedIndex(i - 1);
+			me->lvPrice->EnsureVisible(i - 1);
+			return UI::EventState::StopEvent;
+		}
+	}
+	else if (key == UI::GUIControl::GK_DOWN)
+	{
+		UIntOS i = me->lvPrice->GetSelectedIndex();
+		if (i != INVALID_INDEX && i < me->lvPrice->GetCount() - 1)
+		{
+			me->lvPrice->SetSelectedIndex(i + 1);
+			me->lvPrice->EnsureVisible(i + 1);
+			return UI::EventState::StopEvent;
+		}
 	}
 	return UI::EventState::ContinueEvent;
 }
