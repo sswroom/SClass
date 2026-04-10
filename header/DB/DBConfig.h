@@ -9,7 +9,7 @@ namespace DB
 	class DBConfig
 	{
 	public:
-		static Optional<DB::DBTool> LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log);
+		static Optional<DB::DBTool> LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError = false);
 	};
 }
 #endif

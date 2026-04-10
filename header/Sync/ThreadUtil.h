@@ -36,6 +36,7 @@ namespace Sync
 		static void SetPriority(ThreadPriority priority);
 		//Max length = 15
 		static Bool SetName(Text::CStringNN name);
+		static AnyType GetCurrAddr();
 	};
 }
 #endif

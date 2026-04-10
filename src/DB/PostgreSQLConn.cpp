@@ -1287,11 +1287,11 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(IntOS status)
 	}
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;
@@ -1301,11 +1301,11 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverNam
 	return db;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;

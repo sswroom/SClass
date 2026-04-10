@@ -589,7 +589,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				Text::StrToUInt16(&server->v[i + 1], port);
 				server->TrimToLength(i);
 			}
-			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), uid->ToCString(), pwd->ToCString(), log, 0));
+			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), uid->ToCString(), pwd->ToCString(), log, nullptr));
 			if (!cli->IsConnected())
 			{
 				DEL_CLASS(cli);

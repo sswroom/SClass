@@ -4,7 +4,7 @@
 #include "DB/TDSConn.h"
 #include "Text/MyString.h"
 
-Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
+Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg, Bool continueOnConnError)
 {
 	Text::CStringNN nnuserName;
 	Text::CStringNN nnpassword;
@@ -12,7 +12,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	{
 		DB::TDSConn *conn;
 		NEW_CLASS(conn, DB::TDSConn(serverHost, port, encrypt, database, nnuserName, nnpassword, log, errMsg));
-		if (conn->IsConnected())
+		if (continueOnConnError || conn->IsConnected())
 			return conn;
 		DEL_CLASS(conn);
 		return nullptr;
@@ -95,14 +95,14 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		}
 		driverName->Release();
 		NEW_CLASS(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
-		if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
+		if (conn->GetConnError() == DB::ODBCConn::CE_NONE || (continueOnConnError && conn->GetConnError() == DB::ODBCConn::CE_CONNECT_ERR))
 		{
 			return conn;
 		}
 		else
 		{
 			NN<Text::StringBuilderUTF8> sb;
-			if (sb.Set(errMsg))
+			if (errMsg.SetTo(sb))
 			{
 				conn->GetLastErrorMsg(sb);
 			}
@@ -112,14 +112,14 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	}
 }
 
-Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(logPrefix);
 	sb.AppendC(UTF8STRC("Error in connecting to database: "));
 	NN<DB::DBTool> db;
 	NN<DB::DBConn> conn;
-	if (OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb).SetTo(conn))
+	if (OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, sb, continueOnConnError).SetTo(conn))
 	{
 		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;

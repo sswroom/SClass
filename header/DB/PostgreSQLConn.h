@@ -71,8 +71,8 @@ namespace DB
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
 		static Text::CString ExecStatusTypeGetName(IntOS status);
-		static Optional<DBTool> CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError = false);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError = false);
 	};
 }
 #endif

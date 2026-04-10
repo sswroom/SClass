@@ -454,7 +454,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 					sb.ClearStr();
-					ret = dasm.Disasm64(sbWriter, symbol, &rip, &rsp, &rbp, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
+					ret = dasm.Disasm64(sbWriter, symbol, rip, rsp, rbp, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 					this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 					if (!ret)
 						break;

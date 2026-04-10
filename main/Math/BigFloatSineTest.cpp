@@ -11,8 +11,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter *console;
 	NN<Math::BigFloat> val;
 	NN<Math::BigFloat> val2;
-	UInt32 i;
-	Bool neg = false;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 

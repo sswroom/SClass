@@ -2546,7 +2546,7 @@ Text::CStringNN Manage::DasmARM64::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt64> currInst, InOutParam<UInt64> currStack, InOutParam<UInt64> currFrame, NN<Data::ArrayListUInt64> callAddrs, NN<Data::ArrayListUInt64> jmpAddrs, OutParam<UInt64> blockStart, OutParam<UInt64> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -2557,9 +2557,9 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmARM64::DasmARM64_Regs));
-	sess.regs.PC = *currInst;
-	sess.regs.SP = *currStack;
-	sess.regs.LR = *currFrame;
+	sess.regs.PC = currInst.Get();
+	sess.regs.SP = currStack.Get();
+	sess.regs.LR = currFrame.Get();
 	sess.code = buff;
 //	sess.outStr = outStr;
 	sess.endType = Manage::DasmARM64::ET_NOT_END;
@@ -2568,7 +2568,8 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
 	sess.codeBuff = buff;
-	*blockStart = sess.regs.PC;
+	blockStart.Set(sess.regs.PC);
+	UInt64 startPC = sess.regs.PC;
 
 	while (true)
 	{
@@ -2669,7 +2670,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 		}
 		outStr.AppendSlow(sbuff);
 		writer->Write(outStr.ToCString());
-		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
+		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= startPC && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
 			UIntOS i;
 			UInt64 minAddr = (UInt64)(Int64)-1;
@@ -2685,10 +2686,10 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 			}
 			if (minAddr - sess.regs.PC > 0x1000)
 			{
-				*currInst = sess.retAddr;
-				*currStack = sess.regs.SP;
-				*currFrame = sess.regs.LR;
-				*blockEnd = sess.regs.PC;
+				currInst.Set(sess.retAddr);
+				currStack.Set(sess.regs.SP);
+				currFrame.Set(sess.regs.LR);
+				blockEnd.Set(sess.regs.PC);
 				MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 				return false;
 			}
@@ -2697,10 +2698,10 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::Address
 		}
 		else if (sess.endType != Manage::DasmARM64::ET_NOT_END)
 		{
-			*currInst = sess.retAddr;
-			*currStack = sess.regs.SP;
-			*currFrame = sess.regs.LR;
-			*blockEnd = sess.regs.PC;
+			currInst.Set(sess.retAddr);
+			currStack.Set(sess.regs.SP);
+			currFrame.Set(sess.regs.LR);
+			blockEnd.Set(sess.regs.PC);
 			MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 			return sess.endType != Manage::DasmARM64::ET_EXIT;
 		}
@@ -2726,16 +2727,16 @@ NN<Manage::DasmARM64::DasmARM64_Sess> Manage::DasmARM64::CreateSess(NN<Manage::D
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
-	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt64());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt64());
+	NEW_CLASSNN(sess->callAddrs, Data::ArrayListUInt64());
+	NEW_CLASSNN(sess->jmpAddrs, Data::ArrayListUInt64());
 	MemCopyNO(&sess->regs, regs.Ptr(), sizeof(Manage::DasmARM64::DasmARM64_Regs));
 	return sess;
 }
 
 void Manage::DasmARM64::DeleteSess(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 {
-	DEL_CLASS(sess->callAddrs);
-	DEL_CLASS(sess->jmpAddrs);
+	sess->callAddrs.Delete();
+	sess->jmpAddrs.Delete();
 	MemFreeNN(sess);
 }
 

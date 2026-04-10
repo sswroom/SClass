@@ -43,10 +43,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DB
 	this->connStr = 0;
 	this->connHand = 0;
 	this->envHand = 0;
-	this->dsn = 0;
-	this->uid = 0;
-	this->pwd = 0;
-	this->schema = 0;
+	this->dsn = nullptr;
+	this->uid = nullptr;
+	this->pwd = nullptr;
+	this->schema = nullptr;
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
@@ -60,10 +60,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 	this->lastStmtHand = 0;
 	this->log = log;
 	this->connStr = 0;
-	this->dsn = 0;
-	this->uid = 0;
-	this->pwd = 0;
-	this->schema = 0;
+	this->dsn = nullptr;
+	this->uid = nullptr;
+	this->pwd = nullptr;
+	this->schema = nullptr;
 	this->tzQhr = 0;
 	this->forceTz = false;
 	this->axisAware = false;
@@ -207,13 +207,13 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }
 
 /*DB::DBReader *DB::ODBCConn::ExecuteReader(const WChar *sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }*/
 
 void DB::ODBCConn::CloseReader(NN<DB::DBReader> r)
@@ -235,7 +235,7 @@ void DB::ODBCConn::Reconnect()
 
 Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::ODBCConn::Commit(NN<DB::DBTransaction> tran)
@@ -269,7 +269,7 @@ UnsafeArray<UTF8Char> DB::ODBCConn::ShowTablesCmd(UnsafeArray<UTF8Char> sbuff)
 Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }
 
 UIntOS DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
@@ -279,7 +279,7 @@ UIntOS DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 
 Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
@@ -332,15 +332,15 @@ UIntOS DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 
 Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	return 0;
+	return nullptr;
 }

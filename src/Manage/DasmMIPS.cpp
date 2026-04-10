@@ -77,7 +77,7 @@ UnsafeArrayOpt<UTF8Char> DasmMIPS_ParseReg8(NN<Manage::DasmMIPS::DasmMIPS_Sess> 
 	case 31:
 		return Text::StrConcatC(regName, UTF8STRC("$ra"));
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DasmMIPS_00(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
@@ -874,7 +874,7 @@ Text::CStringNN Manage::DasmMIPS::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt32> currInst, InOutParam<UInt32> currStack, InOutParam<UInt32> currFrame, NN<Data::ArrayListUInt32> callAddrs, NN<Data::ArrayListUInt32> jmpAddrs, OutParam<UInt32> blockStart, OutParam<UInt32> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -884,9 +884,9 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(DasmMIPS_Regs));
-	sess.regs.pc = *currInst;
-	sess.regs.sp = *currStack;
-	sess.regs.fp = *currFrame;
+	sess.regs.pc = currInst.Get();
+	sess.regs.sp = currStack.Get();
+	sess.regs.fp = currFrame.Get();
 	sess.code = buff;
 //	sess.outStr = outStr;
 	sess.endType = Manage::DasmMIPS::ET_NOT_END;
@@ -895,7 +895,8 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 	sess.code_0Hdlrs = (void**)this->codes_0;
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
-	*blockStart = (Int32)sess.regs.pc;
+	blockStart.Set(sess.regs.pc);
+	UInt32 startPC = sess.regs.pc;
 
 	while (true)
 	{
@@ -945,7 +946,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		}
 		outStr.AppendSlow(sbuff);
 		writer->Write(outStr.ToCString());
-		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.pc)
+		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= startPC && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
 			IntOS i;
 			UInt32 minAddr = 0xffffffff;
@@ -961,10 +962,10 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 			}
 			if (minAddr - sess.regs.pc > 0x1000)
 			{
-				*currInst = sess.retAddr;
-				*currStack = (Int32)sess.regs.sp;
-				*currFrame = (Int32)sess.regs.fp;
-				*blockEnd = (Int32)sess.regs.pc;
+				currInst.Set(sess.retAddr);
+				currStack.Set((Int32)sess.regs.sp);
+				currFrame.Set((Int32)sess.regs.fp);
+				blockEnd.Set((Int32)sess.regs.pc);
 				return false;
 			}
 			sess.regs.pc = minAddr;
@@ -972,10 +973,10 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		}
 		else if (sess.endType != Manage::DasmMIPS::ET_NOT_END)
 		{
-			*currInst = sess.retAddr;
-			*currStack = (Int32)sess.regs.sp;
-			*currFrame = (Int32)sess.regs.fp;
-			*blockEnd = (Int32)sess.regs.pc;
+			currInst.Set(sess.retAddr);
+			currStack.Set((Int32)sess.regs.sp);
+			currFrame.Set((Int32)sess.regs.fp);
+			blockEnd.Set((Int32)sess.regs.pc);
 			return sess.endType != Manage::DasmMIPS::ET_EXIT;
 		}
 //		sess.lastStatus = sess.thisStatus;
@@ -1000,16 +1001,16 @@ NN<Manage::DasmMIPS::DasmMIPS_Sess> Manage::DasmMIPS::CreateSess(NN<Manage::Dasm
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
-	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
+	NEW_CLASSNN(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASSNN(sess->jmpAddrs, Data::ArrayListUInt32());
 	MemCopyNO(&sess->regs, regs.Ptr(), sizeof(Manage::DasmMIPS::DasmMIPS_Regs));
 	return sess;
 }
 
 void Manage::DasmMIPS::DeleteSess(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
-	DEL_CLASS(sess->callAddrs);
-	DEL_CLASS(sess->jmpAddrs);
+	sess->callAddrs.Delete();
+	sess->jmpAddrs.Delete();
 	MemFreeNN(sess);
 }
 

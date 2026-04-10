@@ -824,8 +824,8 @@ Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> 
 		*outEsp = 0;
 	}
 
-	tmpSess.callAddrs = &callAddrs;
-	tmpSess.jmpAddrs = &jmpAddrs;
+	tmpSess.callAddrs = callAddrs;
+	tmpSess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&tmpSess.regs, &sess->regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 	tmpSess.regs.EIP = funcAddr;
 	tmpSess.regs.ESP = sess->regs.ESP - 4;
@@ -19188,7 +19188,7 @@ Text::CStringNN Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt32> currEip, InOutParam<UInt32> currEsp, InOutParam<UInt32> currEbp, NN<Data::ArrayListUInt32> callAddrs, NN<Data::ArrayListUInt32> jmpAddrs, OutParam<UInt32> blockStart, OutParam<UInt32> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19197,9 +19197,9 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
-	sess.regs.EIP = *currEip;
-	sess.regs.ESP = *currEsp;
-	sess.regs.EBP = *currEbp;
+	sess.regs.EIP = currEip.Get();
+	sess.regs.ESP = currEsp.Get();
+	sess.regs.EBP = currEbp.Get();
 //	sess.outStr = outStr;
 	sess.endType = Manage::DasmX86_32::ET_NOT_END;
 	sess.espOfst = 0;
@@ -19210,7 +19210,8 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 	sess.stabesp = sess.regs.ESP;
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
-	*blockStart = sess.regs.EIP;
+	blockStart.Set(sess.regs.EIP);
+	UInt32 startEIP = sess.regs.EIP;
 
 	while (true)
 	{
@@ -19263,7 +19264,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 		}
 		outStr.AppendSlow(sbuff);
 		writer->Write(outStr.ToCString());
-		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.EIP)
+		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= startEIP && (UInt32)sess.retAddr <= sess.regs.EIP)
 		{
 			UIntOS i;
 			UInt32 minAddr = 0xffffffff;
@@ -19279,10 +19280,10 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 			}
 			if (minAddr - sess.regs.EIP > 0x1000)
 			{
-				*currEip = sess.retAddr;
-				*currEsp = sess.regs.ESP;
-				*currEbp = sess.regs.EBP;
-				*blockEnd = sess.regs.EIP;
+				currEip.Set(sess.retAddr);
+				currEsp.Set(sess.regs.ESP);
+				currEbp.Set(sess.regs.EBP);
+				blockEnd.Set(sess.regs.EIP);
 				MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 				return false;
 			}
@@ -19291,10 +19292,10 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 		}
 		else if (sess.endType != Manage::DasmX86_32::ET_NOT_END)
 		{
-			*currEip = sess.retAddr;
-			*currEsp = sess.regs.ESP;
-			*currEbp = sess.regs.EBP;
-			*blockEnd = sess.regs.EIP;
+			currEip.Set(sess.retAddr);
+			currEsp.Set(sess.regs.ESP);
+			currEbp.Set(sess.regs.EBP);
+			blockEnd.Set(sess.regs.EIP);
 			MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 			return sess.endType != Manage::DasmX86_32::ET_EXIT;
 		}
@@ -19303,15 +19304,15 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::MemoryReader> memReader)
+Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt32> currEip, NN<Data::ArrayListUInt32> callAddrs, NN<Data::ArrayListUInt32> jmpAddrs, OutParam<UInt32> blockStart, OutParam<UInt32> blockEnd, NN<Manage::MemoryReader> memReader)
 {
 	UTF8Char sbuff[256];
-	UInt32 initIP = *currEip;
+	UInt32 initIP = currEip.Get();
 	DasmX86_32_Sess sess;
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemClear(&sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
-	sess.regs.EIP = *currEip;
+	sess.regs.EIP = currEip.Get();
 //	sess.outStr = outStr;
 	sess.endType = Manage::DasmX86_32::ET_NOT_END;
 	sess.espOfst = 0;
@@ -19321,7 +19322,7 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional
 	sess.codes0f = (void**)this->codes0f;
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
-	*blockStart = sess.regs.EIP;
+	blockStart.Set(sess.regs.EIP);
 
 	while (sess.memReader->ReadMemUInt8(sess.regs.EIP) == 0xe9)
 	{
@@ -19333,7 +19334,7 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional
 			break;
 		outStr->AppendSlow(sbuff);
 		sess.regs.EIP = sess.retAddr;
-		*blockStart = sess.retAddr;
+		blockStart.Set(sess.retAddr);
 		sess.endType = Manage::DasmX86_32::ET_NOT_END;
 	}
 
@@ -19375,8 +19376,8 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional
 		}
 		if (sess.endType != Manage::DasmX86_32::ET_NOT_END)
 		{
-			*currEip = sess.retAddr;
-			*blockEnd = sess.regs.EIP;
+			currEip.Set(sess.retAddr);
+			blockEnd.Set(sess.regs.EIP);
 			return true;
 		}
 		sess.lastStatus = sess.thisStatus;
@@ -19398,8 +19399,8 @@ NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<M
 {
 	NN<DasmX86_32_Sess> sess;
 	sess = MemAllocNN(DasmX86_32_Sess);
-	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
+	NEW_CLASSNN(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASSNN(sess->jmpAddrs, Data::ArrayListUInt32());
 	sess->regs.EIP = (UInt32)(IntOS)addr;
 	sess->regs.ESP = 0;
 	sess->regs.EBP = 0;
@@ -19424,8 +19425,8 @@ NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<M
 
 void Manage::DasmX86_32::EndDasm(NN<DasmX86_32_Sess> sess)
 {
-	DEL_CLASS(sess->callAddrs);
-	DEL_CLASS(sess->jmpAddrs);
+	sess->callAddrs.Delete();
+	sess->jmpAddrs.Delete();
 	MemFreeNN(sess);
 }
 

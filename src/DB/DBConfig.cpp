@@ -5,7 +5,7 @@
 #include "DB/SQLiteFile.h"
 #include "Net/SSHManager.h"
 
-Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log)
+Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError)
 {
 	Text::CStringNN logPrefix = CSTR("DB: ");
 	Text::CStringNN category = cfgCategory.OrEmpty();
@@ -65,7 +65,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 			log->LogMessage(CSTR("MSSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return nullptr;
 		}
-		if (!DB::MSSQLConn::CreateDBToolTCP(serverHost->ToCString(), port, sSSL && sSSL->Equals(UTF8STRC("1")), database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
+		if (!DB::MSSQLConn::CreateDBToolTCP(serverHost->ToCString(), port, sSSL && sSSL->Equals(UTF8STRC("1")), database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
 		{
 			log->LogMessage(CSTR("Error in connecting to MSSQL database"), IO::LogHandler::LogLevel::Error);
 			return nullptr;
@@ -149,7 +149,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 					return nullptr;
 				}
 				port = fwd->GetListenPort();
-				if (!DB::PostgreSQLConn::CreateDBTool(CSTR("127.0.0.1"), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
+				if (!DB::PostgreSQLConn::CreateDBTool(CSTR("127.0.0.1"), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
 				{
 					cli.Delete();
 					ssh.Delete();
@@ -165,7 +165,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 				return nullptr;
 			}
 		}
-		else if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
+		else if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
 		{
 			log->LogMessage(CSTR("Error in connecting to PostgreSQL database"), IO::LogHandler::LogLevel::Error);
 			return nullptr;

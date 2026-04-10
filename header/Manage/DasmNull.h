@@ -22,7 +22,7 @@ namespace Manage
 		virtual ~DasmNull();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs);
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::MemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm32(NN<IO::Writer> writer, NN<Manage::AddressResolver> addrResol, InOutParam<UInt32> currInst, InOutParam<UInt32> currStack, InOutParam<UInt32> currFrame, NN<Data::ArrayListUInt32> callAddrs, NN<Data::ArrayListUInt32> jmpAddrs, OutParam<UInt32> blockStart, OutParam<UInt32> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs();
 		virtual void FreeRegs(NN<Dasm_Regs> regs);
 	};

@@ -11,12 +11,12 @@ namespace DB
 	private:
 		static Bool inited;
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		Sync::Mutex cmdMut;
 		DB::SQLType sqlType;
 
 	public:
-		TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CStringNN userName, Text::CStringNN password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg);
+		TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CStringNN userName, Text::CStringNN password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg);
 		virtual ~TDSConn();
 
 		Bool IsConnected() const;

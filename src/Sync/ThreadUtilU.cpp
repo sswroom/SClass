@@ -227,3 +227,8 @@ Bool Sync::ThreadUtil::SetName(Text::CStringNN name)
 	return false;
 #endif
 }
+
+AnyType Sync::ThreadUtil::GetCurrAddr()
+{
+	return __builtin_extract_return_addr (__builtin_return_address (0));
+}

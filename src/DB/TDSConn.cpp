@@ -780,7 +780,7 @@ struct DB::TDSConn::ClassData
 	DBPROCESS* dbproc;
 	Int8 tzQhr;
 
-	Text::StringBuilderUTF8 *errMsg;
+	Optional<Text::StringBuilderUTF8> errMsg;
 	NN<IO::LogTool> log;
 	NN<Text::String> host;
 	NN<Text::String> username;
@@ -804,7 +804,7 @@ int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, 
 	return INT_CONTINUE;
 }
 
-DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CStringNN userName, Text::CStringNN password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
+DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CStringNN userName, Text::CStringNN password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg) : DBConn(serverHost)
 {
 	if (!inited)
 	{
@@ -814,7 +814,7 @@ DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text
 		inited = true;
 	}
 	this->sqlType = SQLType::MSSQL;
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->dbproc = 0;
 	this->clsData->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	Text::StringBuilderUTF8 sb;
@@ -851,7 +851,7 @@ DB::TDSConn::~TDSConn()
 	this->clsData->username->Release();
 	this->clsData->password->Release();
 	OPTSTR_DEL(this->clsData->database);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool DB::TDSConn::IsConnected() const
@@ -975,12 +975,13 @@ Bool DB::TDSConn::IsLastDataError()
 
 void DB::TDSConn::Reconnect()
 {
+	NN<Text::StringBuilderUTF8> errMsg;
 	this->Close();
 	LOGINREC *login = dblogin();
 	if (login == 0)
 	{
-		if (this->clsData->errMsg)
-			this->clsData->errMsg->AppendC(UTF8STRC("Error in allocating login structure"));
+		if (this->clsData->errMsg.SetTo(errMsg))
+			errMsg->AppendC(UTF8STRC("Error in allocating login structure"));
 		this->clsData->log->LogMessage(CSTR("TDS: Error in allocating login structure"), IO::LogHandler::LogLevel::Error);
 		return;
 	}
@@ -996,10 +997,10 @@ void DB::TDSConn::Reconnect()
 	dbloginfree(login);
 	if (this->clsData->dbproc == 0)
 	{
-		if (this->clsData->errMsg)
+		if (this->clsData->errMsg.SetTo(errMsg))
 		{
-			this->clsData->errMsg->AppendC(UTF8STRC("Error in connecting to "));
-			this->clsData->errMsg->Append(this->clsData->host);
+			errMsg->AppendC(UTF8STRC("Error in connecting to "));
+			errMsg->Append(this->clsData->host);
 		}
 		if (this->clsData->log->HasHandler())
 		{

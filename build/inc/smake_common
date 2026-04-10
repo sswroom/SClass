@@ -176,6 +176,9 @@ console:
 @WatchdogDisable
 @WatchdogTest
 @WatchdogTest2
+@Dasmx86_32Test
+@Dasmx86_32Test2
+@Dasmx86TextGen
 @ExceptionAccess
 @ExceptionDiv0
 @ExceptionRecorderTest
@@ -191,6 +194,11 @@ console:
 @ESRITileTest
 @FindCellsTest
 @GISDistTest
+@GoogleSearcherKeyTest
+@GoogleSearcherTest
+@GoogleStaticMapPriKTest
+@GoogleStaticMapTest
+@GoogleWSSearcherJSONTest
 @MapSearchTest
 @OruxMapTest
 @SpeedLimitTest
@@ -626,6 +634,15 @@ WatchdogTest2:
 @ConsoleStartup.o
 
 #Manage
+Dasmx86_32Test:
+@Dasmx86_32Test.o
+@ConsoleStartup.o
+Dasmx86_32Test2:
+@Dasmx86_32Test2.o
+@ConsoleStartup.o
+Dasmx86TextGen:
+@Dasmx86TextGenMain.o
+@ConsoleStartup.o
 ExceptionAccess:
 @ExceptionAccess.o
 @ConsoleStartup.o
@@ -672,6 +689,21 @@ FindCellsTest:
 @ConsoleStartup.o
 GISDistTest:
 @GISDistTest.o
+@ConsoleStartup.o
+GoogleSearcherKeyTest:
+@GoogleSearcherKeyTest.o
+@ConsoleStartup.o
+GoogleSearcherTest:
+@GoogleSearcherTest.o
+@ConsoleStartup.o
+GoogleStaticMapPriKTest:
+@GoogleStaticMapPriKTest.o
+@ConsoleStartup.o
+GoogleStaticMapTest:
+@GoogleStaticMapTest.o
+@ConsoleStartup.o
+GoogleWSSearcherJSONTest:
+@GoogleWSSearcherJSONTest.o
 @ConsoleStartup.o
 MapSearchTest:
 @MapSearchTest.o
@@ -1367,6 +1399,9 @@ VoiceModemTest.o: ../../main/IO/VoiceModemTest.cpp
 WatchdogDisable.o: ../../main/IO/WatchdogDisable.cpp
 WatchdogTest.o: ../../main/IO/WatchdogTest.cpp
 WatchdogTest2.o: ../../main/IO/WatchdogTest2.cpp
+Dasmx86_32Test.o: ../../main/Manage/Dasmx86_32Test.cpp
+Dasmx86_32Test2.o: ../../main/Manage/Dasmx86_32Test2.cpp
+Dasmx86TextGenMain.o: ../../main/Manage/Dasmx86TextGenMain.cpp
 ExceptionAccess.o: ../../main/Manage/ExceptionAccess.cpp
 ExceptionDiv0.o: ../../main/Manage/ExceptionDiv0.cpp
 ExceptionRecorderTest.o: ../../main/Manage/ExceptionRecorderTest.cpp
@@ -1382,6 +1417,11 @@ CSV2KMLTest.o: ../../main/Map/CSV2KMLTest.cpp
 ESRITileTest.o: ../../main/Map/ESRITileTest.cpp
 FindCellsTest.o: ../../main/Map/FindCellsTest.cpp
 GISDistTest.o: ../../main/Map/GISDistTest.cpp
+GoogleSearcherKeyTest.o: ../../main/Map/GoogleSearcherKeyTest.cpp
+GoogleSearcherTest.o: ../../main/Map/GoogleSearcherTest.cpp
+GoogleStaticMapPriKTest.o: ../../main/Map/GoogleStaticMapPriKTest.cpp
+GoogleStaticMapTest.o: ../../main/Map/GoogleStaticMapTest.cpp
+GoogleWSSearcherJSONTest.o: ../../main/Map/GoogleWSSearcherJSONTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 SpeedLimitTest.o: ../../main/Map/SpeedLimitTest.cpp

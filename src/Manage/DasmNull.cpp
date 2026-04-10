@@ -17,11 +17,11 @@ Text::CStringNN Manage::DasmNull::GetHeader(Bool fullRegs)
 	return CSTR("Code");
 }
 
-Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::MemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmNull::Disasm32(NN<IO::Writer> writer, NN<Manage::AddressResolver> addrResol, InOutParam<UInt32> currInst, InOutParam<UInt32> currStack, InOutParam<UInt32> currFrame, NN<Data::ArrayListUInt32> callAddrs, NN<Data::ArrayListUInt32> jmpAddrs, OutParam<UInt32> blockStart, OutParam<UInt32> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Unknown opcode "));
-	sb.AppendHexBuff((const UInt8*)(IntOS)*currInst, 16, ' ', Text::LineBreakType::None);
+	sb.AppendHexBuff((const UInt8*)(IntOS)currInst.Get(), 16, ' ', Text::LineBreakType::None);
 	sb.AppendC(UTF8STRC("\r\n"));
 	writer->Write(sb.ToCString());
 	return false;

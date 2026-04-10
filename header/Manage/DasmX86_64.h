@@ -88,8 +88,8 @@ namespace Manage
 		typedef struct
 		{
 			DasmX86_64_Regs regs;
-			Data::ArrayListUInt64 *callAddrs;
-			Data::ArrayListUInt64 *jmpAddrs;
+			NN<Data::ArrayListUInt64> callAddrs;
+			NN<Data::ArrayListUInt64> jmpAddrs;
 			//Text::StringBuilderW *outStr;
 			UnsafeArray<UTF8Char> sbuff;
 //			Bool isEnded;
@@ -126,8 +126,8 @@ namespace Manage
 		virtual ~DasmX86_64();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs); // true = succ
-		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::MemoryReader> memReader); // true = succ
+		virtual Bool Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt64> currRip, InOutParam<UInt64> currRsp, InOutParam<UInt64> currRbp, NN<Data::ArrayListUInt64> callAddrs, NN<Data::ArrayListUInt64> jmpAddrs, OutParam<UInt64> blockStart, OutParam<UInt64> blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs); // true = succ
+		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, InOutParam<UInt64> currRip, NN<Data::ArrayListUInt64> callAddrs, NN<Data::ArrayListUInt64> jmpAddrs, OutParam<UInt64> blockStart, OutParam<UInt64> blockEnd, NN<Manage::MemoryReader> memReader); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 

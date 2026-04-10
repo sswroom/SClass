@@ -93,21 +93,21 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			UInt32 currInst = (UInt32)context->GetInstAddr();
 			UInt32 currStack = (UInt32)context->GetStackAddr();
 			UInt32 currFrame = (UInt32)context->GetFrameAddr();
-			Data::ArrayListUInt32 *callAddrs;
-			Data::ArrayListUInt32 *jmpAddrs;
+			NN<Data::ArrayListUInt32> callAddrs;
+			NN<Data::ArrayListUInt32> jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 
-			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
+			NEW_CLASSNN(callAddrs, Data::ArrayListUInt32());
+			NEW_CLASSNN(jmpAddrs, Data::ArrayListUInt32());
 			Bool retVal = true;
 			writer->WriteLine();
 			writer->WriteLine(CSTR("Disassembly:"));
 
-			Data::ArrayListUInt32 *blkStarts;
-			Data::ArrayListUInt32 *blkEnds;
-			NEW_CLASS(blkStarts, Data::ArrayListUInt32());
-			NEW_CLASS(blkEnds, Data::ArrayListUInt32());
+			NN<Data::ArrayListUInt32> blkStarts;
+			NN<Data::ArrayListUInt32> blkEnds;
+			NEW_CLASSNN(blkStarts, Data::ArrayListUInt32());
+			NEW_CLASSNN(blkEnds, Data::ArrayListUInt32());
 
 			Bool fin = false;
 
@@ -155,7 +155,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				}
 
 				writer->WriteLine(dasm32->GetHeader(true));
-				retVal = dasm32->Disasm32(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
+				retVal = dasm32->Disasm32(writer, addrResol, currInst, currStack, currFrame, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 				if (!retVal)
 				{
 					break;
@@ -202,10 +202,10 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			}
 			dasm32->FreeRegs(regs);
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(callAddrs);
-			DEL_CLASS(jmpAddrs);
-			DEL_CLASS(blkStarts);
-			DEL_CLASS(blkEnds);
+			callAddrs.Delete();
+			jmpAddrs.Delete();
+			blkStarts.Delete();
+			blkEnds.Delete();
 		}
 		else if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_64)
 		{
@@ -215,21 +215,21 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			UInt64 currInst = context->GetInstAddr();
 			UInt64 currStack = context->GetStackAddr();
 			UInt64 currFrame = context->GetFrameAddr();;
-			Data::ArrayListUInt64 *callAddrs;
-			Data::ArrayListUInt64 *jmpAddrs;
+			NN<Data::ArrayListUInt64> callAddrs;
+			NN<Data::ArrayListUInt64> jmpAddrs;
 			UInt64 blockStart;
 			UInt64 blockEnd;
 
-			NEW_CLASS(callAddrs, Data::ArrayListUInt64());
-			NEW_CLASS(jmpAddrs, Data::ArrayListUInt64());
+			NEW_CLASSNN(callAddrs, Data::ArrayListUInt64());
+			NEW_CLASSNN(jmpAddrs, Data::ArrayListUInt64());
 			Bool retVal = true;
 			writer->WriteLine();
 			writer->WriteLine(CSTR("Disassembly:"));
 
-			Data::ArrayListUInt64 *blkStarts;
-			Data::ArrayListUInt64 *blkEnds;
-			NEW_CLASS(blkStarts, Data::ArrayListUInt64());
-			NEW_CLASS(blkEnds, Data::ArrayListUInt64());
+			NN<Data::ArrayListUInt64> blkStarts;
+			NN<Data::ArrayListUInt64> blkEnds;
+			NEW_CLASSNN(blkStarts, Data::ArrayListUInt64());
+			NEW_CLASSNN(blkEnds, Data::ArrayListUInt64());
 
 			Bool fin = false;
 
@@ -277,7 +277,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				}
 
 				writer->WriteLine(dasm64->GetHeader(true));
-				retVal = dasm64->Disasm64(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
+				retVal = dasm64->Disasm64(writer, addrResol, currInst, currStack, currFrame, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 				if (!retVal)
 				{
 					break;
@@ -324,10 +324,10 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			}
 			dasm64->FreeRegs(regs);
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(callAddrs);
-			DEL_CLASS(jmpAddrs);
-			DEL_CLASS(blkStarts);
-			DEL_CLASS(blkEnds);
+			callAddrs.Delete();
+			jmpAddrs.Delete();
+			blkStarts.Delete();
+			blkEnds.Delete();
 		}
 		dasm.Delete();
 	}
