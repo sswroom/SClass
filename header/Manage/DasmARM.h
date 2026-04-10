@@ -7,16 +7,7 @@ namespace Manage
 	class DasmARM : public Dasm32
 	{
 	public:
-		typedef enum
-		{
-			ET_NOT_END,
-			ET_FUNC_RET,
-			ET_JMP,
-			ET_INV_OP,
-			ET_EXIT
-		} EndType;
-
-		struct DasmARM_Regs : public Manage::Dasm::Dasm_Regs
+		struct Registers : public Manage::Dasm::Dasm_Regs
 		{
 			union 
 			{
@@ -44,10 +35,13 @@ namespace Manage
 			};
 		};
 
-		typedef struct
+		struct Session;
+		typedef Bool (CALLBACKFUNC DasmARM_Code)(NN<Session> sess);
+
+		struct Session
 		{
-			DasmARM_Regs regs;
-			UInt8 *code;
+			Registers regs;
+			UnsafeArray<UInt8> code;
 			UInt16 codeSegm;
 			NN<Data::ArrayListUInt32> callAddrs;
 			NN<Data::ArrayListUInt32> jmpAddrs;
@@ -57,21 +51,19 @@ namespace Manage
 			Int32 endStatus; //0 = not end, 1 = jmp out, 2 = exit program, 3 = func return
 			UInt16 endIP;
 			EndType endType;
-			UInt8 *codeBuff;
+			UnsafeArray<UInt8> codeBuff;
 			
 			Optional<Manage::AddressResolver> addrResol;
 			NN<Manage::MemoryReader> memReader;
 
-			void **codeHdlrs;
-			void **codeTHdlrs;
-			UTF8Char *outSPtr;
+			UnsafeArray<DasmARM_Code> codeHdlrs;
+			UnsafeArray<DasmARM_Code> codeTHdlrs;
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
-		} DasmARM_Sess;
+		};
 
-		typedef Bool (CALLBACKFUNC DasmARM_Code)(NN<DasmARM_Sess> sess);
 	private:
-		DasmARM_Code *codes;
-		DasmARM_Code *codesT;
+		UnsafeArray<DasmARM_Code> codes;
+		UnsafeArray<DasmARM_Code> codesT;
 	public:
 		DasmARM();
 		virtual ~DasmARM();
@@ -81,10 +73,10 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmARM_Sess> CreateSess(NN<DasmARM_Regs> regs, UInt8 *code, UInt16 codeSegm);
-		void DeleteSess(NN<DasmARM_Sess> sess);
+		NN<Session> CreateSess(NN<Registers> regs, UnsafeArray<UInt8> code, UInt16 codeSegm);
+		void DeleteSess(NN<Session> sess);
 
-		Bool DasmNext(NN<DasmARM_Sess> sess, UTF8Char *buff, UIntOS *outBuffSize); //True = succ
+		Bool DasmNext(NN<Session> sess, UnsafeArray<UTF8Char> buff, OutParam<UIntOS> outBuffSize); //True = succ
 	};
 }
 

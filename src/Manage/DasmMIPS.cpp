@@ -889,7 +889,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 	sess.regs.fp = currFrame.Get();
 	sess.code = buff;
 //	sess.outStr = outStr;
-	sess.endType = Manage::DasmMIPS::ET_NOT_END;
+	sess.endType = EndType::NotEnd;
 	sess.thisStatus = 0;
 	sess.codeHdlrs = (void**)this->codes;
 	sess.code_0Hdlrs = (void**)this->codes_0;
@@ -946,7 +946,7 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 		}
 		outStr.AppendSlow(sbuff);
 		writer->Write(outStr.ToCString());
-		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= startPC && (UInt32)sess.retAddr <= sess.regs.pc)
+		if (sess.endType == EndType::Jmp && (UInt32)sess.retAddr >= startPC && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
 			IntOS i;
 			UInt32 minAddr = 0xffffffff;
@@ -969,15 +969,15 @@ Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressR
 				return false;
 			}
 			sess.regs.pc = minAddr;
-			sess.endType = Manage::DasmMIPS::ET_NOT_END;
+			sess.endType = EndType::NotEnd;
 		}
-		else if (sess.endType != Manage::DasmMIPS::ET_NOT_END)
+		else if (sess.endType != EndType::NotEnd)
 		{
 			currInst.Set(sess.retAddr);
 			currStack.Set((Int32)sess.regs.sp);
 			currFrame.Set((Int32)sess.regs.fp);
 			blockEnd.Set((Int32)sess.regs.pc);
-			return sess.endType != Manage::DasmMIPS::ET_EXIT;
+			return sess.endType != EndType::Exit;
 		}
 //		sess.lastStatus = sess.thisStatus;
 		sess.thisStatus = 0;

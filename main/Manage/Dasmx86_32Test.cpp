@@ -22,8 +22,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASS(dasm, Manage::DasmX86_32());
 	NEW_CLASS(console, IO::ConsoleWriter());
 
-	void* addr = Sync::ThreadUtil::GetCurrAddr().p;
-	NN<Manage::DasmX86_32::DasmX86_32_Sess> sess = dasm->StartDasm(symbResol, addr, proc);
+	UnsafeArray<UInt8> addr = (UInt8*)Sync::ThreadUtil::GetCurrAddr().p;
+	NN<Manage::DasmX86_32::Session> sess = dasm->StartDasm(symbResol, addr, proc);
 	while (true)
 	{
 		sptr = Text::StrHexVal32(sbuff, (UInt32)dasm->SessGetCodeOffset(sess));
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		else
 		{
 			Manage::DasmX86_32::EndType et = dasm->SessGetEndType(sess);
-			if (et == Manage::DasmX86_32::ET_JMP)
+			if (et == Manage::DasmX86_32::EndType::Jmp)
 			{
 				if (dasm->SessContJmp(sess))
 				{

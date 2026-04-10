@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, NN<Data::ArrayListNN<ExeB16Addr>> parts, NN<Data::ArrayListInt32> partInd, NN<ExeB16Addr> startAddr, NN<Manage::DasmX86_16> dasm, UIntOS codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::Session> sess, NN<Data::ArrayListStringNN> codes, NN<Data::ArrayListNN<ExeB16Addr>> parts, NN<Data::ArrayListInt32> partInd, NN<ExeB16Addr> startAddr, NN<Manage::DasmX86_16> dasm, UIntOS codeSize)
 {
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 	if (!this->codesList.SetTo(codesList))
@@ -36,7 +36,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 			{
 				oriIP = 0x229;
 			}
-			Bool isSucc = dasm->DasmNext(sess, sptr, &buffSize);
+			Bool isSucc = dasm->DasmNext(sess, sptr, buffSize);
 			if (!isSucc)
 			{
 				UIntOS sizeLeft = codeSize - sess->regs.IP;
@@ -106,9 +106,9 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 
 void SSWR::AVIRead::AVIRExeForm::InitSess16()
 {
-	Manage::DasmX86_16::DasmX86_16_Regs regs;
+	Manage::DasmX86_16::Registers regs;
 	NN<Manage::DasmX86_16> dasm;
-	NN<Manage::DasmX86_16::DasmX86_16_Sess> sess;
+	NN<Manage::DasmX86_16::Session> sess;
 	NN<Data::ArrayListStringNN> codes;
 	NN<Data::ArrayListNN<ExeB16Addr>> parts;
 	NN<Data::ArrayListInt32> partInd;

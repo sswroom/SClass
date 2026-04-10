@@ -8,14 +8,14 @@ namespace Manage
 	class DasmNull : public Dasm32
 	{
 	public:
-		typedef enum
+		enum class EndType
 		{
-			ET_NOT_END,
-			ET_FUNC_RET,
-			ET_JMP,
-			ET_INV_OP,
-			ET_EXIT
-		} EndType;
+			NotEnd,
+			FuncRet,
+			Jmp,
+			InvalidOp,
+			Exit
+		};
 
 	public:
 		DasmNull();
@@ -26,6 +26,5 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs();
 		virtual void FreeRegs(NN<Dasm_Regs> regs);
 	};
-};
-
+}
 #endif

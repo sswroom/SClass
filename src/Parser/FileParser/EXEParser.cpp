@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 //	UInt32 minAlloc = (Int32)*(UInt16*)&hdr[10];
 	UInt32 relocOfst = *(UInt16*)&hdr[24];
 	
-	Manage::Dasm::DasmX86_16_Regs regs;
+	Manage::DasmX86_16::Registers regs;
 	regs.EAX = 0;
 	regs.ECX = (UInt16)(fileSize - hdrSize);
 	regs.EBX = (UInt16)((fileSize - hdrSize) >> 16);

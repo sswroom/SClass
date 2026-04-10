@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::COMParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	Manage::Dasm::DasmX86_16_Regs regs;
+	Manage::DasmX86_16::Registers regs;
 	regs.EAX = 0;
 	regs.ECX = (UInt16)fd->GetDataSize();
 	regs.EBX = 0;

@@ -11,18 +11,77 @@ namespace Manage
 	class DasmX86_32 : public Dasm32
 	{
 	public:
-		typedef enum
-		{
-			ET_NOT_END,
-			ET_FUNC_RET,
-			ET_JMP,
-			ET_INV_OP,
-			ET_EXIT
-		} EndType;
 
-		typedef struct
+		struct Registers : public Manage::Dasm::Dasm_Regs
 		{
-			DasmX86_32_Regs regs;
+			union
+			{
+				struct
+				{
+					UInt32 EAX;
+					UInt32 ECX;
+					UInt32 EDX;
+					UInt32 EBX;
+					UInt32 ESP;
+					UInt32 EBP;
+					UInt32 ESI;
+					UInt32 EDI;
+					UInt32 EIP;
+				};
+				struct
+				{
+					UInt32 regs[9];
+				};
+			};
+			UInt32 EFLAGS;
+			union
+			{
+				struct
+				{
+					UInt16 CS;
+					UInt16 SS;
+					UInt16 DS;
+					UInt16 ES;
+					UInt16 FS;
+					UInt16 GS;
+				};
+				struct
+				{
+					UInt16 segm[6];
+				};
+			};
+
+			union
+			{
+				struct
+				{
+					UInt32 DR0;
+					UInt32 DR1;
+					UInt32 DR2;
+					UInt32 DR3;
+					UInt32 DR6;
+					UInt32 DR7;
+				};
+				struct
+				{
+					UInt32 dbgreg[6];
+				};
+			};
+			struct
+			{
+				UInt8 floatBuff[80];
+				UInt16 CTRL;
+				UInt16 STAT;
+				UInt16 TAG;
+			};
+		};
+
+		struct Session;
+		typedef Bool (CALLBACKFUNC DasmX86_32_Code)(NN<Session> sess);
+
+		struct Session
+		{
+			Registers regs;
 			NN<Data::ArrayListUInt32> callAddrs;
 			NN<Data::ArrayListUInt32> jmpAddrs;
 			//Text::StringBuilderW *outStr;
@@ -40,18 +99,17 @@ namespace Manage
 			NN<Manage::MemoryReader> memReader;
 
 			UInt32 stabesp;
-			void **codes;
-			void **codes0f;
-			void **codes0f38;
-			void **codes0f3a;
-		} DasmX86_32_Sess;
+			UnsafeArray<DasmX86_32_Code> codes;
+			UnsafeArray<DasmX86_32_Code> codes0f;
+			UnsafeArray<DasmX86_32_Code> codes0f38;
+			UnsafeArray<DasmX86_32_Code> codes0f3a;
+		};
 
-		typedef Bool (CALLBACKFUNC DasmX86_32_Code)(NN<DasmX86_32_Sess> sess);
 	private:
-		DasmX86_32_Code *codes;
-		DasmX86_32_Code *codes0f;
-		DasmX86_32_Code *codes0f38;
-		DasmX86_32_Code *codes0f3a;
+		UnsafeArray<DasmX86_32_Code> codes;
+		UnsafeArray<DasmX86_32_Code> codes0f;
+		UnsafeArray<DasmX86_32_Code> codes0f38;
+		UnsafeArray<DasmX86_32_Code> codes0f3a;
 
 //		AddressNameFunc nameFunc;
 //		void *userObj;
@@ -65,12 +123,12 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmX86_32_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::MemoryReader> memReader);
-		void EndDasm(NN<DasmX86_32_Sess> sess);
-		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_32_Sess> sess, UnsafeArray<UTF8Char> buff);
-		IntOS SessGetCodeOffset(NN<DasmX86_32_Sess> sess);
-		EndType SessGetEndType(NN<DasmX86_32_Sess> sess);
-		Bool SessContJmp(NN<DasmX86_32_Sess> sess);
+		NN<Session> StartDasm(Optional<Manage::AddressResolver> addrResol, UnsafeArray<UInt8> addr, NN<Manage::MemoryReader> memReader);
+		void EndDasm(NN<Session> sess);
+		UnsafeArrayOpt<UTF8Char> DasmNext(NN<Session> sess, UnsafeArray<UTF8Char> buff);
+		IntOS SessGetCodeOffset(NN<Session> sess);
+		EndType SessGetEndType(NN<Session> sess);
+		Bool SessContJmp(NN<Session> sess);
 	};
 }
 

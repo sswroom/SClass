@@ -21,160 +21,17 @@ namespace Manage
 			RBD_64
 		} RegBitDepth;
 		
+		enum class EndType
+		{
+			NotEnd,
+			FuncRet,
+			Jmp,
+			InvalidOp,
+			Exit
+		};
+
 		struct Dasm_Regs
 		{
-		};
-
-		struct DasmX86_16_Regs : public Manage::Dasm::Dasm_Regs
-		{
-			union
-			{
-				struct
-				{
-					union
-					{
-						Int32 EAX;
-						UInt16 AX;
-						struct
-						{
-							UInt8 AL;
-							UInt8 AH;
-						};
-					};
-					union
-					{
-						Int32 ECX;
-						UInt16 CX;
-						struct
-						{
-							UInt8 CL;
-							UInt8 CH;
-						};
-					};
-					union
-					{
-						Int32 EDX;
-						UInt16 DX;
-						struct
-						{
-							UInt8 DL;
-							UInt8 DH;
-						};
-					};
-					union
-					{
-						Int32 EBX;
-						UInt16 BX;
-						struct
-						{
-							UInt8 BL;
-							UInt8 BH;
-						};
-					};
-					union
-					{
-						Int32 ESP;
-						UInt16 SP;
-					};
-					union
-					{
-						Int32 EBP;
-						UInt16 BP;
-					};
-					union
-					{
-						Int32 ESI;
-						UInt16 SI;
-					};
-					union
-					{
-						Int32 EDI;
-						UInt16 DI;
-					};
-					union
-					{
-						Int32 EFLAGS;
-						struct
-						{
-							int DF : 1;
-							int SF : 1;
-							int OF : 1;
-							int IF : 1;
-							int CF : 1;
-						};
-					};
-					UInt16 IP;
-					UInt16 CS;
-					UInt16 DS;
-					UInt16 ES;
-					UInt16 SS;
-				};
-				Int32 indexes[11];
-			};
-		};
-
-		struct DasmX86_32_Regs : public Manage::Dasm::Dasm_Regs
-		{
-			union
-			{
-				struct
-				{
-					UInt32 EAX;
-					UInt32 ECX;
-					UInt32 EDX;
-					UInt32 EBX;
-					UInt32 ESP;
-					UInt32 EBP;
-					UInt32 ESI;
-					UInt32 EDI;
-					UInt32 EIP;
-				};
-				struct
-				{
-					UInt32 regs[9];
-				};
-			};
-			UInt32 EFLAGS;
-			union
-			{
-				struct
-				{
-					UInt16 CS;
-					UInt16 SS;
-					UInt16 DS;
-					UInt16 ES;
-					UInt16 FS;
-					UInt16 GS;
-				};
-				struct
-				{
-					UInt16 segm[6];
-				};
-			};
-
-			union
-			{
-				struct
-				{
-					UInt32 DR0;
-					UInt32 DR1;
-					UInt32 DR2;
-					UInt32 DR3;
-					UInt32 DR6;
-					UInt32 DR7;
-				};
-				struct
-				{
-					UInt32 dbgreg[6];
-				};
-			};
-			struct
-			{
-				UInt8 floatBuff[80];
-				UInt16 CTRL;
-				UInt16 STAT;
-				UInt16 TAG;
-			};
 		};
 
 	public:

@@ -182,7 +182,7 @@ Bool IO::EXEFile::HasDOS() const
 	return this->envDOS != 0;
 }
 
-void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm)
+void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, Manage::DasmX86_16::Registers *b16Regs, UInt16 b16CodeSegm)
 {
 	if (this->envDOS == 0)
 	{
@@ -191,8 +191,8 @@ void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b1
 		this->envDOS->b16Codes = MemAlloc(UInt8, b16CodeLen);
 		this->envDOS->b16CodeLen = b16CodeLen;
 		this->envDOS->b16CodeSegm = b16CodeSegm;
-		this->envDOS->b16Regs = MemAlloc(Manage::Dasm::DasmX86_16_Regs, 1);
-		MemCopyNO(this->envDOS->b16Regs, b16Regs, sizeof(Manage::Dasm::DasmX86_16_Regs));
+		this->envDOS->b16Regs = MemAlloc(Manage::DasmX86_16::Registers, 1);
+		MemCopyNO(this->envDOS->b16Regs, b16Regs, sizeof(Manage::DasmX86_16::Registers));
 	}
 }
 
@@ -211,11 +211,11 @@ void IO::EXEFile::SetDOSHasPSP(Bool hasPSP)
 	this->envDOS->b16HasPSP = hasPSP;
 }
 
-void IO::EXEFile::GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const
+void IO::EXEFile::GetDOSInitRegs(Manage::DasmX86_16::Registers *regs) const
 {
 	if (this->envDOS == 0)
 		return;
-	MemCopyNO(regs, this->envDOS->b16Regs, sizeof(Manage::Dasm::DasmX86_16_Regs));
+	MemCopyNO(regs, this->envDOS->b16Regs, sizeof(Manage::DasmX86_16::Registers));
 }
 
 UInt16 IO::EXEFile::GetDOSCodeSegm() const

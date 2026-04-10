@@ -4,7 +4,7 @@
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "IO/ParsedObject.h"
-#include "Manage/DasmBase.h"
+#include "Manage/DasmX86_16.h"
 #include "Text/CString.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -88,7 +88,7 @@ namespace IO
 		{
 			UInt8 *b16Codes;
 			UIntOS b16CodeLen;
-			Manage::Dasm::DasmX86_16_Regs *b16Regs;
+			Manage::DasmX86_16::Registers *b16Regs;
 			Bool b16HasPSP;
 			UInt16 b16CodeSegm;
 		} ProgramEnvDOS;
@@ -145,10 +145,10 @@ namespace IO
 		Optional<Text::String> GetExportName(UIntOS index) const;
 
 		Bool HasDOS() const;
-		void AddDOSEnv(UIntOS b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
+		void AddDOSEnv(UIntOS b16CodeLen, Manage::DasmX86_16::Registers *b16Regs, UInt16 b16CodeSegm);
 		UInt8 *GetDOSCodePtr(OutParam<UIntOS> codeLen) const;
 		void SetDOSHasPSP(Bool hasPSP);
-		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const;
+		void GetDOSInitRegs(Manage::DasmX86_16::Registers *regs) const;
 		UInt16 GetDOSCodeSegm() const;
 
 		void AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UIntOS dataSize, UInt32 codePage, ResourceType rt);

@@ -8,15 +8,6 @@ namespace Manage
 	class DasmMIPS : public Dasm32
 	{
 	public:
-		typedef enum
-		{
-			ET_NOT_END,
-			ET_FUNC_RET,
-			ET_JMP,
-			ET_INV_OP,
-			ET_EXIT
-		} EndType;
-
 		struct DasmMIPS_Regs : public Dasm_Regs
 		{
 			union

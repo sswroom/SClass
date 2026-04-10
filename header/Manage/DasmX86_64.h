@@ -12,16 +12,7 @@ namespace Manage
 	class DasmX86_64 : public Dasm64
 	{
 	public:
-		typedef enum
-		{
-			ET_NOT_END,
-			ET_FUNC_RET,
-			ET_JMP,
-			ET_INV_OP,
-			ET_EXIT
-		} EndType;
-
-		struct DasmX86_64_Regs : public Manage::Dasm::Dasm_Regs
+		struct Registers : public Manage::Dasm::Dasm_Regs
 		{
 			union
 			{
@@ -85,9 +76,12 @@ namespace Manage
 			};
 		};
 
-		typedef struct
+		struct Session;
+		typedef Bool (CALLBACKFUNC DasmX86_64_Code)(NN<Session> sess);
+
+		struct Session
 		{
-			DasmX86_64_Regs regs;
+			Registers regs;
 			NN<Data::ArrayListUInt64> callAddrs;
 			NN<Data::ArrayListUInt64> jmpAddrs;
 			//Text::StringBuilderW *outStr;
@@ -106,18 +100,16 @@ namespace Manage
 			NN<Manage::MemoryReader> memReader;
 
 			UInt64 stabesp;
-			void **codes;
-			void **codes0f;
-			void **codes0f38;
-			void **codes0f3a;
-		} DasmX86_64_Sess;
-
-		typedef Bool (CALLBACKFUNC DasmX86_64_Code)(NN<DasmX86_64_Sess> sess);
+			UnsafeArray<DasmX86_64_Code> codes;
+			UnsafeArray<DasmX86_64_Code> codes0f;
+			UnsafeArray<DasmX86_64_Code> codes0f38;
+			UnsafeArray<DasmX86_64_Code> codes0f3a;
+		};
 	private:
-		DasmX86_64_Code *codes;
-		DasmX86_64_Code *codes0f;
-		DasmX86_64_Code *codes0f38;
-		DasmX86_64_Code *codes0f3a;
+		UnsafeArray<DasmX86_64_Code> codes;
+		UnsafeArray<DasmX86_64_Code> codes0f;
+		UnsafeArray<DasmX86_64_Code> codes0f38;
+		UnsafeArray<DasmX86_64_Code> codes0f3a;
 
 //		AddressNameFunc nameFunc;
 //		void *userObj;
@@ -131,12 +123,12 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmX86_64_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::MemoryReader> memReader);
-		void EndDasm(NN<DasmX86_64_Sess> sess);
-		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_64_Sess> sess, UnsafeArray<UTF8Char> buff);
-		IntOS SessGetCodeOffset(NN<DasmX86_64_Sess> sess);
-		EndType SessGetEndType(NN<DasmX86_64_Sess> sess);
-		Bool SessContJmp(NN<DasmX86_64_Sess> sess);
+		NN<Session> StartDasm(Optional<Manage::AddressResolver> addrResol, UnsafeArray<UInt8> addr, NN<Manage::MemoryReader> memReader);
+		void EndDasm(NN<Session> sess);
+		UnsafeArrayOpt<UTF8Char> DasmNext(NN<Session> sess, UnsafeArray<UTF8Char> buff);
+		IntOS SessGetCodeOffset(NN<Session> sess);
+		EndType SessGetEndType(NN<Session> sess);
+		Bool SessContJmp(NN<Session> sess);
 	};
 };
 

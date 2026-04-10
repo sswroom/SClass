@@ -416,7 +416,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				Manage::DasmX86_64 dasm;
 
 				Text::StringBuilderWriter sbWriter(sb);
-				Manage::DasmX86_64::DasmX86_64_Regs regs;
+				Manage::DasmX86_64::Registers regs;
 				context->GetRegs(regs);
 				callLev = 0;
 				while (true)
