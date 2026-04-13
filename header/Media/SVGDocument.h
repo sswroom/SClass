@@ -183,6 +183,7 @@ namespace Media
 		virtual ~SVGTextComponent() {}
 
 		NN<Text::String> GetText() const { return this->text; }
+		void SetText(Text::CStringNN text) { this->text->Release(); this->text = Text::String::New(text); }
 
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) const = 0;
 		virtual NN<SVGTextComponent> Clone(NN<const SVGContainer> newParent) const = 0;
@@ -257,6 +258,7 @@ namespace Media
 
 		virtual Text::CStringNN GetElementName() const { return CSTR("text"); }
 		void AddTextComponent(NN<SVGTextComponent> component);
+		void SetText(Text::CStringNN text);
 
 		void SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter);
 		void SetTransform(Text::CStringNN transform) { OPTSTR_DEL(this->transform); this->transform = Text::String::New(transform); }

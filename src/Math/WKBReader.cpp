@@ -489,6 +489,45 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			sizeUsed.Set(ofst);
 			return pg;
 		}
+	case 5: //MultiLineString
+		{
+			if (wkbLen < ofst + 4)
+				return nullptr;
+			else
+			{
+				UInt32 nLine = readUInt32(&wkb[ofst]);
+				ofst += 4;
+				UIntOS thisSize;
+				UIntOS i;
+				NN<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Polyline> pl;
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
+				i = 0;
+				while (i < nLine)
+				{
+					if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
+					{
+						pl.Delete();
+						return nullptr;
+					}
+					else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::LineString)
+					{
+						printf("WKBMultiLineString: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+						vec.Delete();
+						pl.Delete();
+						return nullptr;
+					}
+					else
+					{
+						pl->AddGeometry(NN<Math::Geometry::LineString>::ConvertFrom(vec));
+						ofst += thisSize;
+					}
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
+			}
+		}
 	case 6: //MultiPolygon
 	case 1006: //MultiPolygonZ
 	case 2006: //MultiPolygonM

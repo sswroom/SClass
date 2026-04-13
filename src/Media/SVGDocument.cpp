@@ -200,6 +200,7 @@ void Media::SVGPolyline::ToString(NN<Text::StringBuilderUTF8> sb, UIntOS level) 
 	}
 	sb->AppendUTF8Char('\"');
 	SVGCore::WriteAttrPen(sb, this->pen);
+	SVGCore::WriteAttrBrush(sb, nullptr);
 	this->AppendEleAttr(sb, level + 1);
 	sb->AppendC(UTF8STRC(" />"));
 }
@@ -301,6 +302,7 @@ Media::SVGRect::SVGRect(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math
 	this->brush = brush;
 	this->stylePen = false;
 	this->styleBrush = false;
+	this->insensitive = false;
 }
 
 Media::SVGRect::~SVGRect()
@@ -653,6 +655,22 @@ Media::SVGText::~SVGText()
 void Media::SVGText::AddTextComponent(NN<SVGTextComponent> component)
 {
 	this->components.Add(component);
+}
+
+void Media::SVGText::SetText(Text::CStringNN text)
+{
+	if (this->components.GetCount() == 1)
+	{
+		NN<SVGTextComponent> comp = this->components.GetItemNoCheck(0);
+		comp->SetText(text);
+	}
+	else
+	{
+		this->components.DeleteAll();
+		NN<SVGStaticText> newText;
+		NEW_CLASSNN(newText, SVGStaticText(text));
+		this->components.Add(newText);
+	}
 }
 
 void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter)
