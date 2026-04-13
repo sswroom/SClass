@@ -8,7 +8,7 @@ namespace Manage
 	class DasmMIPS : public Dasm32
 	{
 	public:
-		struct DasmMIPS_Regs : public Dasm_Regs
+		struct Registers : public Dasm_Regs
 		{
 			union
 			{
@@ -55,14 +55,17 @@ namespace Manage
 			};
 		};
 
-		typedef struct
+		struct Session;
+		typedef Bool (CALLBACKFUNC DasmMIPS_Code)(NN<Session> sess);
+
+		struct Session
 		{
-			DasmMIPS_Regs regs;
-			UInt8 *code;
+			Registers regs;
+			UnsafeArray<UInt8> code;
 			UInt16 codeSegm;
 			NN<Data::ArrayListUInt32> callAddrs;
 			NN<Data::ArrayListUInt32> jmpAddrs;
-			UTF8Char *sbuff;
+			UnsafeArray<UTF8Char>sbuff;
 			UInt32 retAddr;
 			Int32 thisStatus;
 			Int32 endStatus; //0 = not end, 1 = jmp out, 2 = exit program, 3 = func return
@@ -72,16 +75,15 @@ namespace Manage
 			Optional<Manage::AddressResolver> addrResol;
 			NN<Manage::MemoryReader> memReader;
 
-			void **codeHdlrs;
-			void **code_0Hdlrs;
-			UTF8Char *outSPtr;
+			UnsafeArray<DasmMIPS_Code> codeHdlrs;
+			UnsafeArray<DasmMIPS_Code> code_0Hdlrs;
+			UnsafeArray<UTF8Char> outSPtr;
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
-		} DasmMIPS_Sess;
+		};
 
-		typedef Bool (CALLBACKFUNC DasmMIPS_Code)(NN<DasmMIPS_Sess> sess);
 	private:
-		DasmMIPS_Code *codes;
-		DasmMIPS_Code *codes_0;
+		UnsafeArray<DasmMIPS_Code> codes;
+		UnsafeArray<DasmMIPS_Code> codes_0;
 	public:
 		DasmMIPS();
 		virtual ~DasmMIPS();
@@ -91,11 +93,11 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmMIPS_Sess> CreateSess(NN<DasmMIPS_Regs> regs, UInt8 *code, UInt16 codeSegm);
-		void DeleteSess(NN<DasmMIPS_Sess> sess);
+		NN<Session> CreateSess(NN<Registers> regs, UnsafeArray<UInt8> code, UInt16 codeSegm);
+		void DeleteSess(NN<Session> sess);
 
-		Bool DasmNext(NN<DasmMIPS_Sess> sess, UTF8Char *buff, IntOS *outBuffSize); //True = succ
+		Bool DasmNext(NN<Session> sess, UnsafeArray<UTF8Char> buff, OutParam<IntOS> outBuffSize); //True = succ
 	};
-};
+}
 
 #endif
