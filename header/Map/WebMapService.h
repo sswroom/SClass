@@ -75,6 +75,10 @@ namespace Map
 		void SetLayer(UIntOS index);
 		void SetMapImageType(UIntOS index);
 		void SetLayerCRS(UIntOS index);
+		void SetInfoType(Text::CStringNN name);
+		void SetLayer(Text::CStringNN name);
+		void SetMapImageType(Text::CStringNN name);
+		void SetLayerCRS(Text::CStringNN name);
 		UIntOS GetLayerNames(NN<Data::ArrayListStringNN> nameList) const;
 		UIntOS GetMapImageTypeNames(NN<Data::ArrayListStringNN> nameList) const;
 		UIntOS GetInfoTypeNames(NN<Data::ArrayListStringNN> nameList) const;
