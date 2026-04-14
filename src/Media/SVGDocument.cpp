@@ -1115,6 +1115,7 @@ Bool Media::SVGContainer::DrawLine(Double x1, Double y1, Double x2, Double y2, N
 	NN<SVGLine> line;
 	NEW_CLASSNN(line, SVGLine(*this, this->drawRect.min + Math::Coord2DDbl(x1, y1) / scale, this->drawRect.min + Math::Coord2DDbl(x2, y2) / scale, true));
 	line->SetPenStyle(p);
+	line->SetAttr(CSTR("fill"), CSTR("none"));
 	this->elements.Add(line);
 	return true;
 }
@@ -1131,6 +1132,7 @@ Bool Media::SVGContainer::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS 
 		i += 2;
 	}
 	pl->SetPenStyle(p);
+	pl->SetAttr(CSTR("fill"), CSTR("none"));
 	this->elements.Add(pl);
 	return true;
 }
@@ -1201,6 +1203,7 @@ Bool Media::SVGContainer::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> point
 		i++;
 	}
 	pl->SetPenStyle(p);
+	pl->SetAttr(CSTR("fill"), CSTR("none"));
 	this->elements.Add(pl);
 	return true;
 }

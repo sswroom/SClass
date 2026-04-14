@@ -558,7 +558,23 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 	NN<LayerInfo> layer;
 	NN<LayerCRS> currCRS;
 	if (!this->layers.GetItem(this->layer).SetTo(layer) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat) || !this->currCRS.SetTo(currCRS))
+	{
+#if defined(VERBOSE)
+		if (!this->layers.GetItem(this->layer).SetTo(layer))
+		{
+			printf("WMS: Layer not found\r\n");
+		}
+		if (!this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat))
+		{
+			printf("WMS: mapImageType not found\r\n");
+		}
+		if (!this->currCRS.SetTo(currCRS))
+		{
+			printf("WMS: currCRS not found\r\n");
+		}
+#endif
 		return nullptr;
+	}
 	if (currCRS->swapXY)
 	{
 		bounds.min = bounds.min.SwapXY();

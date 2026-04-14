@@ -41,6 +41,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					{
 						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, nullptr));
 						me->dispImageURL = Text::String::New(sb.ToCString());
+						me->dispLoaded = true;
 						mutUsage.ReplaceMutex(me->updMut);
 						UIntOS i = me->updHdlrs.GetCount();
 						while (i-- > 0)
@@ -196,7 +197,11 @@ UIntOS Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outA
 			outArr->Add(this->lastId);
 			return 1;
 		}
-		return 0;
+		else
+		{
+			outArr->Add(this->dispId);
+			return 1;
+		}
 	}
 }
 
