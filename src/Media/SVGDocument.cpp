@@ -776,6 +776,22 @@ void Media::SVGText::AddTextComponent(NN<SVGTextComponent> component)
 	this->components.Add(component);
 }
 
+void Media::SVGText::SetText(Text::CStringNN text)
+{
+	if (this->components.GetCount() == 1)
+	{
+		NN<SVGTextComponent> comp = this->components.GetItemNoCheck(0);
+		comp->SetText(text);
+	}
+	else
+	{
+		this->components.DeleteAll();
+		NN<SVGStaticText> newText;
+		NEW_CLASSNN(newText, SVGStaticText(text));
+		this->components.Add(newText);
+	}
+}
+
 void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCenter)
 {
 	Text::StringBuilderUTF8 sb;

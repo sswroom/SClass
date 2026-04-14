@@ -312,6 +312,7 @@ public:
 		case 19: //name
 		case 24: //regproc
 		case 25: //text
+		case 114: //json
 		case 194: //pg_node_tree
 		case 869: //inet
 		case 1009: //_text

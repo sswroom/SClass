@@ -769,6 +769,74 @@ void Map::WebMapService::SetLayerCRS(UIntOS index)
 	}
 }
 
+void Map::WebMapService::SetInfoType(Text::CStringNN name)
+{
+	UIntOS i = 0;
+	UIntOS j = this->infoTypeNames.GetCount();
+	while (i < j)
+	{
+		if (this->infoTypeNames.GetItemNoCheck(i)->Equals(name))
+		{
+			this->infoType = i;
+			return;
+		}
+		i++;
+	}
+}
+
+void Map::WebMapService::SetLayer(Text::CStringNN name)
+{
+	NN<LayerInfo> layer;
+	UIntOS i = 0;
+	UIntOS j = this->layers.GetCount();
+	while (i < j)
+	{
+		layer = this->layers.GetItemNoCheck(i);
+		if (layer->name->Equals(name))
+		{
+			this->SetLayer(i);
+			return;
+		}
+		i++;
+	}
+}
+
+void Map::WebMapService::SetMapImageType(Text::CStringNN name)
+{
+	UIntOS i = 0;
+	UIntOS j = this->mapImageTypeNames.GetCount();
+	while (i < j)
+	{
+		if (this->mapImageTypeNames.GetItemNoCheck(i)->Equals(name))
+		{
+			this->mapImageType = i;
+			return;
+		}
+		i++;
+	}
+}
+
+void Map::WebMapService::SetLayerCRS(Text::CStringNN name)
+{
+	NN<LayerInfo> layer;
+	if (this->layers.GetItem(this->layer).SetTo(layer))
+	{
+		NN<LayerCRS> crs;
+		UIntOS i = 0;
+		UIntOS j = layer->crsList.GetCount();
+		while (i < j)
+		{
+			crs = layer->crsList.GetItemNoCheck(i);
+			if (Text::String::OrEmpty(crs->name)->Equals(name))
+			{
+				this->SetLayerCRS(i);
+				return;
+			}
+			i++;
+		}
+	}
+}
+
 UIntOS Map::WebMapService::GetLayerNames(NN<Data::ArrayListStringNN> nameList) const
 {
 	UIntOS i = 0;
