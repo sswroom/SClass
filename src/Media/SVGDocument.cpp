@@ -117,7 +117,7 @@ void Media::SVGElement::SetAttr(Text::CStringNN name, Text::CStringNN value)
 		if (this->attr.GetC(CSTR("style")).IsNull())
 		{
 			this->attrNames.Add(Text::String::New(CSTR("style")));
-			this->attr.PutNN(Text::String::New(CSTR("style")), Text::String::NewEmpty());
+			this->attr.PutC(CSTR("style"), Text::String::NewEmpty());
 		}
 		if (value.leng > 0)
 		{
@@ -163,7 +163,7 @@ void Media::SVGElement::SetAttr(Text::CStringNN name, NN<Text::String> value)
 		if (this->attr.GetC(CSTR("style")).IsNull())
 		{
 			this->attrNames.Add(Text::String::New(CSTR("style")));
-			this->attr.PutNN(Text::String::New(CSTR("style")), Text::String::NewEmpty());
+			this->attr.PutC(CSTR("style"), Text::String::NewEmpty());
 		}
 		if (value->leng > 0)
 		{
@@ -346,13 +346,13 @@ Media::SVGLine::SVGLine(NN<const SVGContainer> parent, Math::Coord2DDbl pt1, Mat
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, pt1.x);
-		this->SetAttr(CSTR("x1"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("x1"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, pt1.y);
-		this->SetAttr(CSTR("y1"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("y1"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, pt2.x);
-		this->SetAttr(CSTR("x2"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("x2"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, pt2.y);
-		this->SetAttr(CSTR("y2"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("y2"), CSTRP(sbuff, sptr));
 	}
 }
 
@@ -523,13 +523,13 @@ Media::SVGRect::SVGRect(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Math
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, tl.x);
-		this->SetAttr(CSTR("x"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("x"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, tl.y);
-		this->SetAttr(CSTR("y"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("y"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, size.x);
-		this->SetAttr(CSTR("width"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("width"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, size.y);
-		this->SetAttr(CSTR("height"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("height"), CSTRP(sbuff, sptr));
 	}
 }
 
@@ -570,13 +570,13 @@ Media::SVGEllipse::SVGEllipse(NN<const SVGContainer> parent, Math::Coord2DDbl ce
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, center.x);
-		this->SetAttr(CSTR("cx"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("cx"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, center.y);
-		this->SetAttr(CSTR("cy"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("cy"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, radius.x);
-		this->SetAttr(CSTR("rx"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("rx"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, radius.y);
-		this->SetAttr(CSTR("ry"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("ry"), CSTRP(sbuff, sptr));
 	}
 }
 
@@ -760,9 +760,9 @@ Media::SVGText::SVGText(NN<const SVGContainer> parent, NN<SVGTextComponent> comp
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, tl.x);
-		this->SetAttr(CSTR("x"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("x"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, tl.y);
-		this->SetAttr(CSTR("y"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("y"), CSTRP(sbuff, sptr));
 	}
 }
 
@@ -852,13 +852,13 @@ Media::SVGImage::SVGImage(NN<const SVGContainer> parent, Math::Coord2DDbl tl, Ma
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, tl.x);
-		this->SetAttr(CSTR("x"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("x"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, tl.y);
-		this->SetAttr(CSTR("y"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("y"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, size.x);
-		this->SetAttr(CSTR("width"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("width"), CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, size.y);
-		this->SetAttr(CSTR("height"), Text::String::NewP(sbuff, sptr));
+		this->SetAttr(CSTR("height"), CSTRP(sbuff, sptr));
 		this->SetAttr(CSTR("xlink:href"), href);
 	}
 }

@@ -25,7 +25,7 @@ namespace Media
 		void CloneAttrs(NN<const SVGElement> ele);
 	public:
 		SVGElement(Optional<const SVGContainer> parent) { this->parent = parent; }
-		virtual ~SVGElement() { NNLIST_FREE_STRING(&this->attr); this->attrNames.FreeAll(); }
+		virtual ~SVGElement() { NNLIST_FREE_STRING(&this->attr); this->attrNames.FreeAll(); NNLIST_FREE_STRING(&this->style); }
 
 		virtual Text::CStringNN GetElementName() const = 0;
 		Optional<const SVGContainer> GetParent() const { return this->parent; }

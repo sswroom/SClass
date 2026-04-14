@@ -500,7 +500,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		return false;
 	}
 #if defined(VERBOSE)
-	printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+	printf("WebMapService: Query URL: %s\r\n", sb.v.Ptr());
 #endif
 
 	UInt8 dataBuff[2048];
@@ -619,7 +619,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 	}
 
 #if defined(VERBOSE)
-	printf("URL: %s\r\n", sb.ToString());
+	printf("URL: %s\r\n", sb.v.Ptr());
 #endif
 	UInt8 dataBuff[2048];
 	UIntOS readSize;
@@ -633,6 +633,9 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		{
 			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
+#if defined(VERBOSE)
+		printf("Read %d bytes, format: %s\r\n", (UInt32)mstm.GetLength(), imgFormat->v.Ptr());		
+#endif
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UIntOS)mstm.GetLength());
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))
 		{
@@ -782,6 +785,7 @@ void Map::WebMapService::SetInfoType(Text::CStringNN name)
 		}
 		i++;
 	}
+
 }
 
 void Map::WebMapService::SetLayer(Text::CStringNN name)
@@ -797,8 +801,12 @@ void Map::WebMapService::SetLayer(Text::CStringNN name)
 			this->SetLayer(i);
 			return;
 		}
+
 		i++;
 	}
+#if defined(VERBOSE)
+	printf("WMS: Layer not found: %s (%d)\r\n", name.v.Ptr(), (UInt32)name.leng);
+#endif
 }
 
 void Map::WebMapService::SetMapImageType(Text::CStringNN name)
