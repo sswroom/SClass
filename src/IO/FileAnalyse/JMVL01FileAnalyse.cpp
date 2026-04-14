@@ -25,6 +25,16 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 		return CSTR("LBS Multiple Base Station Extended Information Packet");
 	case 0x1A:
 		return CSTR("GPS Address Query Packet");
+	case 0x21:
+		return CSTR("Response to Online Command by Terminal");
+	case 0x22:
+		return CSTR("GPS location packet (UTC)");
+	case 0x26:
+		return CSTR("Alarm Data (UTC)");
+	case 0x28:
+		return CSTR("LBS Multi-base Extended Information Packet");
+	case 0x2A:
+		return CSTR("GPS Address Request Packet (UTC)");
 	case 0x80:
 		return CSTR("Command sent by server to the terminal");
 	case 0x8A:
@@ -33,8 +43,12 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 		return CSTR("Information transmission packet");
 	case 0x95:
 		return CSTR("Alarm packet");
+	case 0x97:
+		return CSTR("English Address Packet");
 	case 0xA0:
-		return CSTR("Location packet");
+		return CSTR("GPS Location Packet (UTC, 4G Base Station Data)");
+	case 0xA1:
+		return CSTR("LBS Multi-base Extended Information Packet (4G)");
 	case 0xA4:
 		return CSTR("Multi-fence alarm packet");
 	case 0XC3:
@@ -303,7 +317,58 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 	case 0x94: //Information transmission packet
 		{
 			UInt8 infoType = tagData[currOfst + 1];
-			frame->AddHex8(currOfst + 1, CSTR("Information Type"), infoType);
+			Text::CStringNN infoName = CSTR("Unknown");
+			switch (infoType)
+			{
+			case 0x00:
+				infoName = CSTR("External battery voltage");
+				break;
+			case 0x01:
+			case 0x02:
+			case 0x03:
+				infoName = CSTR("Custom");
+				break;
+			case 0x04:
+				infoName = CSTR("Terminal status synchronization");
+				break;
+			case 0x05:
+				infoName = CSTR("Door status");
+				break;
+			case 0x08:
+				infoName = CSTR("Self-check parameters");
+				break;
+			case 0x09:
+				infoName = CSTR("Information of visible satellites");
+				break;
+			case 0x0A:
+				infoName = CSTR("ICCID information");
+				break;
+			case 0x1B:
+				infoName = CSTR("RFID");
+				break;
+			}
+			frame->AddHex8Name(currOfst + 1, CSTR("Information Type"), infoType, infoName);
+			if (infoType == 4)
+			{
+				UIntOS fieldOfst = currOfst + 2;
+				UIntOS i;
+				UIntOS fieldEnd = currOfst + frameSize - 4;
+				while (fieldOfst < fieldEnd)
+				{
+					i = fieldOfst;
+					while (i < fieldEnd)
+					{
+						if (tagData[i] == ';')
+						{
+							i++;
+							break;
+						}
+						i++;
+					}
+					frame->AddStrC(fieldOfst, i - fieldOfst, CSTR("Information"), &tagData[fieldOfst]);
+					fieldOfst = i;
+				}
+			}
 			parsed = true;
 		}
 		break;
@@ -364,6 +429,187 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 		}
 		break;
 	case 0xA4: //Multi-fence alarm packet
+		{
+			Data::DateTime dt;
+			dt.SetValue((UInt16)(2000 + tagData[currOfst + 1]), tagData[currOfst + 2], tagData[currOfst + 3], tagData[currOfst + 4], tagData[currOfst + 5], tagData[currOfst + 6], 0, 0);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(currOfst + 1, 6, CSTR("Date Time"), CSTRP(sbuff, sptr));
+			frame->AddUInt(currOfst + 7, 1, CSTR("GPS information length"), (UIntOS)(tagData[currOfst + 7] >> 4));
+			frame->AddUInt(currOfst + 7, 1, CSTR("Number of Satellites used"), tagData[currOfst + 7] & 15);
+			Double lat = ReadMUInt32(&tagData[currOfst + 8]) / 1800000.0;
+			Double lon = ReadMUInt32(&tagData[currOfst + 12]) / 1800000.0;
+			if ((tagData[currOfst + 17] & 4) == 0)
+			{
+				lat = -lat;
+			}
+			if (tagData[currOfst + 17] & 8)
+			{
+				lon = -lon;
+			}
+			sptr = Text::StrDouble(sbuff, lat);
+			frame->AddField(currOfst + 8, 4, CSTR("Latitude"), CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, lon);
+			frame->AddField(currOfst + 12, 4, CSTR("Longitude"), CSTRP(sbuff, sptr));
+			frame->AddUInt(currOfst + 16, 1, CSTR("Speed (km/h)"), tagData[currOfst + 16]);
+			frame->AddUInt(currOfst + 17, 2, CSTR("Course"), ReadMUInt16(&tagData[currOfst + 17]) & 0x3FF);
+			frame->AddUInt(currOfst + 17, 1, CSTR("GPS differential positioning"), (tagData[currOfst + 17] & 0x20) >> 5);
+			frame->AddUInt(currOfst + 17, 1, CSTR("GPS having been positioning"), (tagData[currOfst + 17] & 0x10) >> 4);
+			frame->AddUInt(currOfst + 17, 1, CSTR("West Longitude"), (tagData[currOfst + 17] & 0x8) >> 3);
+			frame->AddUInt(currOfst + 17, 1, CSTR("North Latitude"), (tagData[currOfst + 17] & 0x4) >> 2);
+			frame->AddUInt(currOfst + 19, 1, CSTR("LBS length"), tagData[currOfst + 19]);
+			frame->AddUInt(currOfst + 20, 2, CSTR("MCC"), ReadMUInt16(&tagData[currOfst + 20]) & 0x7fff);
+			UIntOS i;
+			if (tagData[currOfst + 20] & 0x80)
+			{
+				frame->AddUInt(currOfst + 22, 2, CSTR("MNC"), ReadMUInt16(&tagData[currOfst + 22]));
+				i = currOfst + 24;
+			}
+			else
+			{
+				frame->AddUInt(currOfst + 22, 1, CSTR("MNC"), tagData[currOfst + 22]);
+				i = currOfst + 23;
+			}
+			frame->AddUInt(i, 4, CSTR("LAC"), ReadMUInt32(&tagData[i]));
+			frame->AddUInt64(i + 4, CSTR("Cell ID"), ReadMUInt64(&tagData[i + 4]));
+			i += 12;
+			frame->AddHex8(i, CSTR("Terminal information"), tagData[i]);
+			frame->AddBit(i, CSTR("Defense"), tagData[i], 0);
+			frame->AddBit(i, CSTR("ACC"), tagData[i], 1);
+			frame->AddBit(i, CSTR("Charging"), tagData[i], 2);
+			frame->AddUInt(i, 1, CSTR("Battery status"), (tagData[i] >> 3) & 7);
+			frame->AddBit(i, CSTR("Position fixed"), tagData[i], 6);
+			frame->AddBit(i, CSTR("Cut off fuel/power"), tagData[i], 7);
+			frame->AddUInt(i + 1, 1, CSTR("Voltage Level"), tagData[i + 1]);
+			frame->AddUInt(i + 2, 1, CSTR("GSM Signal Strength"), tagData[i + 2]);
+			UInt16 alarm = ReadMUInt16(&tagData[i + 3]) >> 4;
+			Text::CStringNN alarmName = CSTR("Unknown");
+			switch (alarm)
+			{
+			case 0x00:
+				alarmName = CSTR("Normal");
+				break;
+			case 0x01:
+				alarmName = CSTR("SOS alert");
+				break;
+			case 0x02:
+				alarmName = CSTR("Power cut alert");
+				break;
+			case 0x03:
+				alarmName = CSTR("Vibrating alert");
+				break;
+			case 0x04:
+				alarmName = CSTR("Entered fence alert");
+				break;
+			case 0x05:
+				alarmName = CSTR("Left fence alert");
+				break;
+			case 0x06:
+				alarmName = CSTR("Speed alert");
+				break;
+			case 0x09:
+				alarmName = CSTR("Tow/theft alert");
+				break;
+			case 0x0A:
+				alarmName = CSTR("Entered GPS blind spot alert");
+				break;
+			case 0x0B:
+				alarmName = CSTR("Left GPS blind spot alert");
+				break;
+			case 0x0C:
+				alarmName = CSTR("Powered on alert");
+				break;
+			case 0x0D:
+				alarmName = CSTR("GPS first fix alert");
+				break;
+			case 0x0E:
+				alarmName = CSTR("Low external battery alert");
+				break;
+			case 0x0F:
+				alarmName = CSTR("External battery low voltage protection alert");
+				break;
+			case 0x11:
+				alarmName = CSTR("Powered off alert");
+				break;
+			case 0x15:
+				alarmName = CSTR("Powered off due to low battery");
+				break;
+			case 0x19:
+				alarmName = CSTR("Low internal battery alert");
+				break;
+			case 0x29:
+				alarmName = CSTR("Harsh acceleration");
+				break;
+			case 0x2A:
+				alarmName = CSTR("Sharp left cornering alert");
+				break;
+			case 0x2B:
+				alarmName = CSTR("Sharp right cornering alert");
+				break;
+			case 0x2C:
+				alarmName = CSTR("Collision alert");
+				break;
+			case 0x2D:
+				alarmName = CSTR("Rollover alert");
+				break;
+			case 0x30:
+				alarmName = CSTR("Harsh braking");
+				break;
+			case 0x32:
+				alarmName = CSTR("Device unplugged alert");
+				break;
+			case 0xC5:
+				alarmName = CSTR("Engine is already turned on");
+				break;
+			case 0xC6:
+				alarmName = CSTR("Engine is already turned off");
+				break;
+			case 0xC7:
+				alarmName = CSTR("Driver has been driving extendedly");
+				break;
+			case 0xC8:
+				alarmName = CSTR("Extended driving of driver is already known");
+				break;
+			case 0xC9:
+				alarmName = CSTR("Idling alert");
+				break;
+			case 0xFE:
+				alarmName = CSTR("ACC ON");
+				break;
+			case 0xFF:
+				alarmName = CSTR("ACC OFF");
+				break;
+			case 0x0107:
+				alarmName = CSTR("4G/LTE jamming range entry alert");
+				break;
+			case 0x010A:
+				alarmName = CSTR("4G/LTE jamming range exit alert");
+				break;
+			case 0x010B:
+				alarmName = CSTR("GPS jamming range entry alert");
+				break;
+			case 0x010C:
+				alarmName = CSTR("GPS jamming range exit alert");
+				break;
+			}
+			frame->AddHex16Name(i + 3, CSTR("Alarm Type"), alarm, alarmName);
+			UInt8 lang = tagData[i + 4] & 15;
+			Text::CStringNN langName = CSTR("Unknown");
+			switch (lang)
+			{
+			case 0:
+				langName = CSTR("No response from the platform is required");
+				break;
+			case 1:
+				langName = CSTR("Chinese");
+				break;
+			case 2:
+				langName = CSTR("English");
+				break;
+			}
+			frame->AddUIntName(i + 4, 1, CSTR("Language"), lang, langName);
+			frame->AddUInt(i + 5, 1, CSTR("Fence No."), tagData[i + 5]);
+			parsed = true;
+		}
 		break;
 	case 0XC3: //WiFi information collection package
 		break;

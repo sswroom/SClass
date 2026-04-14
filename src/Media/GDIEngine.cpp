@@ -801,6 +801,11 @@ void Media::GDIImage::SetColorSess(Optional<Media::ColorSess> colorSess)
 	this->colorSess = colorSess;
 }
 
+Bool Media::GDIImage::IsPixelDraw() const
+{
+	return true;
+}
+
 Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
 	if (this->currPen != p.Ptr())

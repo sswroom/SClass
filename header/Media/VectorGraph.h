@@ -110,6 +110,7 @@ namespace Media
 		virtual void SetVDPI(Double dpi);
 		virtual Optional<Media::EXIFData> GetEXIF() const;
 		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
+		virtual Bool IsPixelDraw() const;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p);
 		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPoints, NN<DrawPen> p);

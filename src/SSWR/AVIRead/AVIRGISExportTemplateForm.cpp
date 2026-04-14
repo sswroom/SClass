@@ -134,8 +134,8 @@ void __stdcall SSWR::AVIRead::AVIRGISExportTemplateForm::OnExportClicked(AnyType
 		sb.ClearStr();
 		sb.Append(id);
 		sb.Append(CSTR("Clip"));
-		clipPath->AddAttr(CSTR("id"), sb.ToCString());
-		NEW_CLASSNN(clipRect, Media::SVGRect(clipPath, rect->GetTL(), rect->GetSize(), nullptr, nullptr));
+		clipPath->SetAttr(CSTR("id"), sb.ToCString());
+		NEW_CLASSNN(clipRect, Media::SVGRect(clipPath, rect->GetTL(), rect->GetSize(), true));
 		clipPath->AddElement(clipRect);
 		NN<Media::SVGContainer>::ConvertFrom(parent)->AddElement(clipPath);
 		NEW_CLASSNN(group, Media::SVGGroup(parent, doc->GetDrawEngine(), doc));

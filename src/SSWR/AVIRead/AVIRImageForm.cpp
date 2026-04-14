@@ -878,6 +878,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 						}
 					}
 				}
+				dlg.Delete();
 			}
 			break;
 		}

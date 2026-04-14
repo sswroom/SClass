@@ -485,6 +485,11 @@ void Media::GTKDrawImage::SetColorSess(Optional<Media::ColorSess> colorSess)
 	this->colorSess = colorSess;
 }
 
+Bool Media::GTKDrawImage::IsPixelDraw() const
+{
+	return this->surface != 0;
+}
+
 Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
 	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);

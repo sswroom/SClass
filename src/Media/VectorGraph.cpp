@@ -193,6 +193,7 @@ NN<Media::VectorGraph::VectorBrushStyle> Media::VectorGraph::VectorBrushStyle::C
 
 Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile) : colorProfile(colorProfile)
 {
+	this->srid = srid;
 	this->size = Math::Size2DDbl(width, height);
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
@@ -267,6 +268,11 @@ Optional<Media::EXIFData> Media::VectorGraph::GetEXIF() const
 void Media::VectorGraph::SetColorSess(Optional<Media::ColorSess> colorSess)
 {
 	this->colorSess = colorSess;
+}
+
+Bool Media::VectorGraph::IsPixelDraw() const
+{
+	return false;
 }
 
 Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
@@ -1185,13 +1191,24 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			{
 				Math::RectAreaDbl destRect = (bounds + ofst) * scale;
 				Math::RectAreaDbl srcRect = vimg->GetSrcRect();
-				IntOS drawW = Double2IntOS(destRect.max.x) - Double2IntOS(destRect.min.x);
-				IntOS drawH = Double2IntOS(destRect.max.y) - Double2IntOS(destRect.min.y);
 				Double imgW = srcRect.GetWidth();
 				Double imgH = srcRect.GetHeight();
-				simg->info.hdpi = dimg->GetHDPI() * IntOS2Double(drawW) / imgW;
-				simg->info.vdpi = dimg->GetVDPI() * IntOS2Double(drawH) / imgH;
-				dimg->DrawSImagePt2(simg, destRect.min, srcRect.min, srcRect.GetSize());
+				if (dimg->IsPixelDraw())
+				{
+					IntOS drawX = Double2IntOS(destRect.min.x);
+					IntOS drawY = Double2IntOS(destRect.min.y);
+					IntOS drawW = Double2IntOS(destRect.max.x) - drawX;
+					IntOS drawH = Double2IntOS(destRect.max.y) - drawY;
+					simg->info.hdpi = dimg->GetHDPI() * IntOS2Double(drawW) / imgW;
+					simg->info.vdpi = dimg->GetVDPI() * IntOS2Double(drawH) / imgH;
+					dimg->DrawSImagePt2(simg, Math::Coord2DDbl(IntOS2Double(drawX), IntOS2Double(drawY)), srcRect.min, srcRect.GetSize());
+				}
+				else
+				{
+					simg->info.hdpi = dimg->GetHDPI() * destRect.GetWidth() / imgW;
+					simg->info.vdpi = dimg->GetVDPI() * destRect.GetHeight() / imgH;
+					dimg->DrawSImagePt2(simg, destRect.min, srcRect.min, srcRect.GetSize());
+				}
 				if (imgTimeMS == 0)
 				{
 					imgTimeMS = thisTimeMS;

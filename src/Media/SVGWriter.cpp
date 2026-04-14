@@ -104,6 +104,11 @@ void Media::SVGWriter::SetColorSess(Optional<Media::ColorSess> colorSess)
 {
 }
 
+Bool Media::SVGWriter::IsPixelDraw() const
+{
+	return false;
+}
+
 Bool Media::SVGWriter::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
 	this->sb.AppendC(UTF8STRC("<line x1=\""));
@@ -463,13 +468,14 @@ Bool Media::SVGWriter::DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl
 	this->sb.AppendC(UTF8STRC("\" y=\""));
 	this->sb.AppendDouble(tl.y);
 	this->sb.AppendC(UTF8STRC("\" width=\""));
-	this->sb.AppendDouble(UIntOS2Double(img->info.dispSize.x) * 96.0 / img->info.hdpi);
+	this->sb.AppendDouble(UIntOS2Double(img->info.dispSize.x) * img->info.hdpi / 96.0);
 	this->sb.AppendC(UTF8STRC("\" height=\""));
-	this->sb.AppendDouble(UIntOS2Double(img->info.dispSize.y) * 96.0 / img->info.vdpi);
+	this->sb.AppendDouble(UIntOS2Double(img->info.dispSize.y) * img->info.vdpi / 96.0);
 	this->sb.AppendC(UTF8STRC("\" href=\"data:image/png;base64,"));
 	Text::TextBinEnc::Base64Enc b64;
 	b64.EncodeBin(sb, memStm.GetBuff(), (UIntOS)memStm.GetLength());
 	this->sb.AppendUTF8Char('\"');
+	this->sb.AppendC(UTF8STRC(" preserveAspectRatio=\"none\""));
 	this->sb.AppendC(UTF8STRC(" />\n"));
 	this->WriteBuffer();
 	return true;
