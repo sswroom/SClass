@@ -3066,6 +3066,8 @@ Math/Geometry/LineString.h:
 Math/Geometry/MultiCurve.h:
 @MultiCurve.o
 Math/Geometry/MultiGeometry.hpp:
+Math/Geometry/MultiPoint.h:
+@MultiPoint.o
 Math/Geometry/MultiPolygon.h:
 @MultiPolygon.o
 Math/Geometry/MultiSurface.h:

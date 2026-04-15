@@ -27,6 +27,7 @@ namespace DB
 		UInt32 citextOid;
 		UInt32 stgeometryOid;
 		Bool lastDataError;
+		Bool showViews;
 
 		Bool Connect();
 		void InitConnection();
@@ -64,6 +65,7 @@ namespace DB
 		Optional<Text::String> GetConnUID() const;
 		Optional<Text::String> GetConnPWD() const;
 		Bool ChangeDatabase(Text::CStringNN databaseName);
+		void SetShowViews(Bool showViews);
 
 		UInt32 GetGeometryOid() const;
 		UInt32 GetSTGeometryOid() const;

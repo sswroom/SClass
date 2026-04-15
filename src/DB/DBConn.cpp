@@ -756,6 +756,15 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 							else
 								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultiPolygon);
 						}
+						else if (s->Equals(UTF8STRC("MULTIPOINT")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultipointZ);
+							else if (dimension == 4)
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::MultipointZM);
+							else
+								col->SetColSize((UIntOS)DB::ColDef::GeometryType::Multipoint);
+						}
 						else
 						{
 							printf("DBConn Postgresql: Unsupported type %s\r\n", s->v.Ptr());

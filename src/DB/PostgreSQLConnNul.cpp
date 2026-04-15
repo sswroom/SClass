@@ -20,6 +20,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optiona
 	this->geometryOid = 0;
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
+	this->showViews = false;
 	this->Connect();
 }
 
@@ -35,6 +36,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CS
 	this->geometryOid = 0;
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
+	this->showViews = false;
 	this->Connect();
 }
 
@@ -282,6 +284,11 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CStringNN databaseName)
 	return false;
 }
 
+void DB::PostgreSQLConn::SetShowViews(Bool showViews)
+{
+	this->showViews = showViews;
+}
+
 Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(IntOS status)
 {
 	return CSTR("Unknown");
@@ -396,11 +403,11 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	}
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;
@@ -410,11 +417,11 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverNam
 	return db;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;

@@ -9,6 +9,7 @@
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiCurve.h"
+#include "Math/Geometry/MultiPoint.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Point.h"
@@ -66,6 +67,7 @@ namespace Map
 		void DrawPolygon(NN<Math::Geometry::Polygon> pg);
 		void DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc);
 		void DrawMultiCurve(NN<Math::Geometry::MultiCurve> mc);
+		void DrawMultiPoint(NN<Math::Geometry::MultiPoint> mp);
 		void DrawMultiPolygon(NN<Math::Geometry::MultiPolygon> mpg);
 		void DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms);
 		void DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp);

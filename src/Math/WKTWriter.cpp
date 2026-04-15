@@ -17,6 +17,58 @@ void Math::WKTWriter::SetLastError(Text::CStringNN lastError)
 	this->lastError = Text::String::New(lastError);
 }
 
+void Math::WKTWriter::AppendPoint(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Point> pt, Bool reverseAxis, Bool no3D)
+{
+	sb->AppendUTF8Char('(');
+	if (!no3D && pt->HasZ())
+	{
+		NN<Math::Geometry::PointZ> ptZ = NN<Math::Geometry::PointZ>::ConvertFrom(pt);
+		Math::Vector3 pos = ptZ->GetPos3D();
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(pos.GetZ(), DOUBLESIGFIG, Text::DoubleStyleC);
+		if (ptZ->HasM())
+		{
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(NN<Math::Geometry::PointZM>::ConvertFrom(ptZ)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+	}
+	else
+	{
+		Math::Coord2DDbl coord;
+		coord = pt->GetCenter();
+		if (reverseAxis)
+		{
+			sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+		if (!no3D && pt->HasM())
+		{
+			sb->AppendC(UTF8STRC(" NAN "));
+			sb->AppendDouble(NN<Math::Geometry::PointM>::ConvertFrom(pt)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
+		}
+	}
+	sb->AppendC(UTF8STRC(")"));
+}
+
 void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
@@ -286,6 +338,22 @@ void Math::WKTWriter::AppendMultiCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::
 	sb->AppendUTF8Char(')');
 }
 
+void Math::WKTWriter::AppendMultiPoint(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPoint> mp, Bool reverseAxis, Bool no3D)
+{
+	sb->AppendUTF8Char('(');
+	NN<Math::Geometry::Point> pt;
+	Data::ArrayIterator<NN<Math::Geometry::Point>> it = mp->Iterator();
+	Bool found = false;
+	while (it.HasNext())
+	{
+		if (found) sb->AppendUTF8Char(',');
+		pt = it.Next();
+		AppendPoint(sb, pt, reverseAxis, no3D);
+		found = true;
+	}
+	sb->AppendUTF8Char(')');
+}
+
 Bool Math::WKTWriter::AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::GeometryCollection> geoColl)
 {
 	sb->AppendUTF8Char('(');
@@ -326,55 +394,8 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 	switch (vec->GetVectorType())
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
-		sb->AppendC(UTF8STRC("POINT("));
-		if (vec->HasZ())
-		{
-			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
-			Math::Vector3 pos = pt->GetPos3D();
-			if (this->reverseAxis)
-			{
-				sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pos.GetZ(), DOUBLESIGFIG, Text::DoubleStyleC);
-			if (vec->HasM())
-			{
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-		}
-		else
-		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
-			Math::Coord2DDbl coord;
-			coord = pt->GetCenter();
-			if (this->reverseAxis)
-			{
-				sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-			if (vec->HasM())
-			{
-				sb->AppendC(UTF8STRC(" NAN "));
-				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
-			}
-		}
-		sb->AppendC(UTF8STRC(")"));
+		sb->AppendC(UTF8STRC("POINT"));
+		AppendPoint(sb, NN<Math::Geometry::Point>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("POLYGON"));
@@ -416,6 +437,9 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 		AppendMultiCurve(sb, NN<Math::Geometry::MultiCurve>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+		sb->AppendC(UTF8STRC("MULTIPOINT"));
+		AppendMultiPoint(sb, NN<Math::Geometry::MultiPoint>::ConvertFrom(vec), this->reverseAxis, this->no3D);
+		return true;
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:

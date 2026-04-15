@@ -790,6 +790,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optiona
 	this->geometryOid = 0;
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
+	this->showViews = false;
 	if (this->Connect()) this->InitConnection();
 }
 
@@ -808,6 +809,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CS
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
 	this->lastDataError = false;
+	this->showViews = false;
 	if (this->Connect()) this->InitConnection();
 }
 
@@ -1025,6 +1027,22 @@ UIntOS DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 		}
 		this->CloseReader(r);
 	}
+	if (this->showViews)
+	{
+		sql.Clear();
+		sql.AppendCmdC(CSTR("select viewname from pg_catalog.pg_views where schemaname = "));
+		sql.AppendStrC(schemaName);
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
+		{
+			while (r->ReadNext())
+			{
+				NN<Text::String> tabName;
+				if (r->GetNewStr(0).SetTo(tabName))
+					names->Add(tabName);
+			}
+			this->CloseReader(r);
+		}
+	}
 	return names->GetCount() - initCnt;
 }
 
@@ -1137,6 +1155,11 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CStringNN databaseName)
 		this->Reconnect();
 		return false;
 	}
+}
+
+void DB::PostgreSQLConn::SetShowViews(Bool showViews)
+{
+	this->showViews = showViews;
 }
 
 UInt32 DB::PostgreSQLConn::GetGeometryOid() const

@@ -110,6 +110,8 @@ void Map::MapScheduler::DrawVector(NN<Math::Geometry::Vector2D> vec)
 		this->DrawLinearRing(NN<Math::Geometry::LinearRing>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+		this->DrawMultiPoint(NN<Math::Geometry::MultiPoint>::ConvertFrom(vec));
+		break;
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
@@ -310,6 +312,15 @@ void Map::MapScheduler::DrawMultiCurve(NN<Math::Geometry::MultiCurve> mc)
 	while (it.HasNext())
 	{
 		this->DrawVector(it.Next());
+	}
+}
+
+void Map::MapScheduler::DrawMultiPoint(NN<Math::Geometry::MultiPoint> mp)
+{
+	Data::ArrayIterator<NN<Math::Geometry::Point>> it = mp->Iterator();
+	while (it.HasNext())
+	{
+		this->DrawPoint(it.Next());
 	}
 }
 

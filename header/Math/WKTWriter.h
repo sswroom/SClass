@@ -6,6 +6,7 @@
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiCurve.h"
+#include "Math/Geometry/MultiPoint.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
@@ -20,6 +21,7 @@ namespace Math
 		Bool no3D;
 
 		void SetLastError(Text::CStringNN lastError);
+		static void AppendPoint(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Point> pt, Bool reverseAxis, Bool no3D);
 		static void AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis, Bool no3D);
 		static void AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polygon> pg, Bool reverseAxis, Bool no3D);
 		static void AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polyline> pl, Bool reverseAxis, Bool no3D);
@@ -28,6 +30,7 @@ namespace Math
 		static void AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis, Bool no3D);
 		static void AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiSurface> ms, Bool reverseAxis, Bool no3D);
 		static void AppendMultiCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiCurve> mc, Bool reverseAxis, Bool no3D);
+		static void AppendMultiPoint(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPoint> mp, Bool reverseAxis, Bool no3D);
 		Bool AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::GeometryCollection> geoColl);
 	public:
 		WKTWriter();

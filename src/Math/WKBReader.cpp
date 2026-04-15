@@ -8,6 +8,7 @@
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiCurve.h"
+#include "Math/Geometry/MultiPoint.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/PointZ.h"
@@ -488,6 +489,43 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			}
 			sizeUsed.Set(ofst);
 			return pg;
+		}
+	case 4: //MultiPoint
+		if (wkbLen < ofst + 4)
+			return nullptr;
+		else
+		{
+			UInt32 nPoint = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UIntOS thisSize;
+			UIntOS i;
+			NN<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::MultiPoint> mpt;
+			NEW_CLASSNN(mpt, Math::Geometry::MultiPoint(srid));
+			i = 0;
+			while (i < nPoint)
+			{
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
+				{
+					mpt.Delete();
+					return nullptr;
+				}
+				else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Point)
+				{
+					printf("WKBMultipoint: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+					vec.Delete();
+					mpt.Delete();
+					return nullptr;
+				}
+				else
+				{
+					mpt->AddGeometry(NN<Math::Geometry::Point>::ConvertFrom(vec));
+					ofst += thisSize;
+				}
+				i++;
+			}
+			sizeUsed.Set(ofst);
+			return mpt;
 		}
 	case 5: //MultiLineString
 		{

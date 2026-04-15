@@ -510,6 +510,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		else
 		{
+			nncli->SetShowViews(true);
 			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
 			return nndb;
 		}

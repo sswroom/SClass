@@ -362,6 +362,7 @@ Media::SVGLine::~SVGLine()
 
 void Media::SVGLine::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGLine.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 
@@ -403,6 +404,7 @@ void Media::SVGPolyline::AddPoint(Math::Coord2DDbl pt)
 
 void Media::SVGPolyline::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGPolyline.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 
@@ -468,6 +470,7 @@ void Media::SVGPolygon::AddPoint(Math::Coord2DDbl pt)
 
 void Media::SVGPolygon::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGPolygon.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 
@@ -539,6 +542,7 @@ Media::SVGRect::~SVGRect()
 
 void Media::SVGRect::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGRect.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 
@@ -586,6 +590,7 @@ Media::SVGEllipse::~SVGEllipse()
 
 void Media::SVGEllipse::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGEllipse.DrawElement: not implemented\r\n");
 	//////////////////////////
 }
 
@@ -807,6 +812,7 @@ void Media::SVGText::SetRotate(Double angleDegreeACW, Math::Coord2DDbl rotateCen
 
 void Media::SVGText::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGText.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 
@@ -869,6 +875,7 @@ Media::SVGImage::~SVGImage()
 
 void Media::SVGImage::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	printf("SVGImage.DrawElement: not implemented\r\n");
 	//////////////////////////
 }
 
@@ -901,6 +908,11 @@ Media::SVGPath::~SVGPath()
 
 void Media::SVGPath::DrawElement(Math::Coord2DDbl ofst, Math::Size2DDbl scale, NN<Media::DrawImage> dimg)
 {
+	NN<Text::String> d;
+	if (!this->GetAttr(CSTR("d")).SetTo(d))
+		return;
+	//UnsafeArray<UTF8Char> sptr = d->v;
+	printf("SVGPath.DrawElement: not implemented\r\n");
 	////////////////////////////////////////////////
 }
 

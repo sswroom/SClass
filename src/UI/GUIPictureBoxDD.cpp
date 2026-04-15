@@ -120,6 +120,8 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 			if (!Math::IsNAN(scale.x) && !Math::IsNAN(scale.y) && deng->CreateImage32(this->bkBuffSize, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(dimg))
 			{
 				//dimg->SetClip(destRect.ToDouble());
+				NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
+				dimg->DrawRect(destRect.min.ToDouble(), destRect.GetSize().ToDouble(), nullptr, b);
 				svg->DrawTo(-srcRect.min + destRect.min.ToDouble() / scale, scale, dimg);
 				//dimg->ClearClip();
 				if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
