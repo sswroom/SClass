@@ -64,6 +64,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("SeleniumIDE");
 	case ParserType::CesiumTile:
 		return CSTR("CesiumTile");
+	case ParserType::DataRateCalc:
+		return CSTR("DataRateCalc");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

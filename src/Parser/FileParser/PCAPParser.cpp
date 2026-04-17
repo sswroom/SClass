@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
+#include "IO/DataRateCalc.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
 #include "Net/EthernetAnalyzer.h"
@@ -42,12 +43,15 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 	UInt32 origLen;
 	UInt32 linkType;
 	Net::EthernetAnalyzer *analyzer;
+	NN<IO::DataRateCalc> dataRate;
+	Data::DateTime dt;
 	UInt8 dataBuff[16];
 
 	if (ReadUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadUInt32(&hdr[20]);
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(dataRate, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 24;
 		while (currOfst + 16 < fileSize)
@@ -65,14 +69,27 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 			if (fd->GetRealData(currOfst + 16, inclLen, packetBuff) != inclLen)
 				break;
 			analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, packetBuff.Arr().Ptr(), origLen);
+			dt.SetSecond(ReadUInt32(&dataBuff[0]));
+			dt.SetNS(ReadUInt32(&dataBuff[4]) * 1000);
+			dataRate->AddData(dt, origLen);
 			currOfst += 16 + inclLen;
 		}
-		return analyzer;
+		if (targetType == IO::ParserType::DataRateCalc)
+		{
+			DEL_CLASS(analyzer);
+			return dataRate;
+		}
+		else
+		{
+			dataRate.Delete();
+			return analyzer;
+		}
 	}
 	else if (ReadMUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadMUInt32(&hdr[20]);
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(dataRate, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 24;
 		while (currOfst + 16 < fileSize)
@@ -90,9 +107,21 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 			if (fd->GetRealData(currOfst + 16, inclLen, packetBuff) != inclLen)
 				break;
 			analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, packetBuff.Arr().Ptr(), origLen);
+			dt.SetSecond(ReadMUInt32(&dataBuff[0]));
+			dt.SetNS(ReadMUInt32(&dataBuff[4]) * 1000);
+			dataRate->AddData(dt, origLen);
 			currOfst += 16 + inclLen;
 		}
-		return analyzer;
+		if (targetType == IO::ParserType::DataRateCalc)
+		{
+			DEL_CLASS(analyzer);
+			return dataRate;
+		}
+		else
+		{
+			dataRate.Delete();
+			return analyzer;
+		}
 	}
 	return nullptr;
 }

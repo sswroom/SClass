@@ -38,8 +38,9 @@ namespace IO
 		PDFDocument,
 		SeleniumIDE,
 		CesiumTile,
+		DataRateCalc,
 
-		LastType = CesiumTile
+		LastType = DataRateCalc
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

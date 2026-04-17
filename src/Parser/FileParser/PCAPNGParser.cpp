@@ -3,6 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
 #include "IO/BTScanLog.h"
+#include "IO/DataRateCalc.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
@@ -46,10 +47,12 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 	UInt32 inclLen;
 	UInt32 packetSize;
 	Int8 timeResol;
+	Int64 time;
 
 	Bool isBTLink = false;
 	IO::BTScanLog *scanLog;
 	Net::EthernetAnalyzer *analyzer;
+	NN<IO::DataRateCalc> dataRateCalc;
 	Data::DateTime dt;
 
 	if (ReadNInt32(&hdr[0]) != 0x0a0d0d0a)
@@ -63,6 +66,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
+		NEW_CLASSNN(dataRateCalc, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
@@ -127,13 +131,13 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 				ifId = ReadUInt32(&packetBuff[8]);
 				linkType = linkTypeList.GetItem(ifId);
 				inclLen = ReadUInt32(&packetBuff[20]);
+				Int64 ts = (((Int64)ReadInt32(&packetBuff[12])) << 32) | ReadUInt32(&packetBuff[16]);
 				if (linkType == 201)
 				{
 					if (inclLen > packetSize - 32)
 					{
 						break;
 					}
-					Int64 ts = (((Int64)ReadInt32(&packetBuff[12])) << 32) | ReadUInt32(&packetBuff[16]);
 					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, ts, resolList.GetItem(0));
 					scanLog->AddBTRAWPacket(dt.ToTicks(), Data::ByteArrayR(&packetBuff[28], inclLen));
 				}
@@ -143,6 +147,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, ts, resolList.GetItem(0));
+					dataRateCalc->AddData(dt, inclLen);
 					analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, &packetBuff[28], inclLen);
 				}
 			}
@@ -152,11 +158,19 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		if (isBTLink)
 		{
 			DEL_CLASS(analyzer);
+			dataRateCalc.Delete();
 			return scanLog;
+		}
+		else if (targetType == IO::ParserType::DataRateCalc)
+		{
+			DEL_CLASS(analyzer);
+			DEL_CLASS(scanLog);
+			return dataRateCalc;
 		}
 		else
 		{
 			DEL_CLASS(scanLog);
+			dataRateCalc.Delete();
 			return analyzer;
 		}
 	}
@@ -167,6 +181,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
+		NEW_CLASSNN(dataRateCalc, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
@@ -229,6 +244,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			else if (packetType == 6)
 			{
 				ifId = ReadMUInt32(&packetBuff[8]);
+				time = ReadMInt64(&packetBuff[12]);
 				linkType = linkTypeList.GetItem(ifId);
 				inclLen = ReadMUInt32(&packetBuff[20]);
 				if (linkType == 201)
@@ -237,7 +253,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
-					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, ReadMInt64(&packetBuff[12]), resolList.GetItem(0));
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, time, resolList.GetItem(0));
 					scanLog->AddBTRAWPacket(dt.ToTicks(), Data::ByteArrayR(&packetBuff[28], inclLen));
 				}
 				else
@@ -246,6 +262,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, time, resolList.GetItem(0));
+					dataRateCalc->AddData(dt, inclLen);
 					analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, &packetBuff[28], inclLen);
 				}
 			}
@@ -255,11 +273,18 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		if (isBTLink)
 		{
 			DEL_CLASS(analyzer);
+			dataRateCalc.Delete();
 			return scanLog;
 		}
-		else
+		else if (targetType == IO::ParserType::DataRateCalc)
+		{
+			DEL_CLASS(analyzer);
+			DEL_CLASS(scanLog);
+			return dataRateCalc;
+		}
 		{
 			DEL_CLASS(scanLog);
+			dataRateCalc.Delete();
 			return analyzer;
 		}
 	}

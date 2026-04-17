@@ -2237,6 +2237,8 @@ IO/CyclicLogBuffer.h:
 @CyclicLogBuffer.o
 IO/DataCaptureStream.h:
 @DataCaptureStream.o
+IO/DataRateCalc.h:
+@DataRateCalc.o
 IO/DebugTool.h:
 @DebugTool.o
 IO/DeviceDB.h:
@@ -4519,6 +4521,8 @@ SSWR/AVIRead/AVIRCustomTileMapForm.h:
 @AVIRCustomTileMapForm.o
 SSWR/AVIRead/AVIRDataModelForm.h:
 @AVIRDataModelForm.o
+SSWR/AVIRead/AVIRDataRateForm.h:
+@AVIRDataRateForm.o
 SSWR/AVIRead/AVIRDBAssignColumnForm.h:
 @AVIRDBAssignColumnForm.o
 SSWR/AVIRead/AVIRDBCheckChgForm.h:

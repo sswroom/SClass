@@ -10,6 +10,7 @@
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
 #include "SSWR/AVIRead/AVIRCoordSysForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
+#include "SSWR/AVIRead/AVIRDataRateForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
 #include "SSWR/AVIRead/AVIRExeForm.h"
@@ -278,6 +279,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			tileList.Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
 			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(nullptr, this->ui, *this, tileList));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParserType::DataRateCalc:
+		{
+			NN<SSWR::AVIRead::AVIRDataRateForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataRateForm(nullptr, this->ui, *this, NN<IO::DataRateCalc>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

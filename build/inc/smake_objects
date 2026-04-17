@@ -410,6 +410,7 @@ ConsoleWriterW.o: ../../src/IO/ConsoleWriterW.cpp
 CSVTableWriter.o: ../../src/IO/CSVTableWriter.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DataCaptureStream.o: ../../src/IO/DataCaptureStream.cpp
+DataRateCalc.o: ../../src/IO/DataRateCalc.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
 $`$(PKG-CONFIG) --cflags dbus-1`
 $`$(PKG-CONFIG) --cflags glib-2.0`
@@ -1976,6 +1977,7 @@ AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 AVIRCustomTileMapForm.o: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
 AVIRDataModelForm.o: ../../src/SSWR/AVIRead/AVIRDataModelForm.cpp
+AVIRDataRateForm.o: ../../src/SSWR/AVIRead/AVIRDataRateForm.cpp
 AVIRDBAssignColumnForm.o: ../../src/SSWR/AVIRead/AVIRDBAssignColumnForm.cpp
 AVIRDBCheckChgForm.o: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
