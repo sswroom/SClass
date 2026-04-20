@@ -1576,6 +1576,7 @@ NetBIOSScanner.o: ../../src/Net/NetBIOSScanner.cpp
 NetBIOSUtil.o: ../../src/Net/NetBIOSUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
 NTPServer.o: ../../src/Net/NTPServer.cpp
+OpenAIClient.o: ../../src/Net/OpenAIClient.cpp
 OpenSSLClient.o: ../../src/Net/OpenSSLClient.cpp
 OpenSSLCore.o: ../../src/Net/OpenSSLCore.cpp
 !-lssl
@@ -2149,6 +2150,7 @@ AVIROCRForm.o: ../../src/SSWR/AVIRead/AVIROCRForm.cpp
 AVIRODBCDSNForm.o: ../../src/SSWR/AVIRead/AVIRODBCDSNForm.cpp
 AVIRODBCStrForm.o: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
 AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
+AVIROpenAIForm.o: ../../src/SSWR/AVIRead/AVIROpenAIForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp

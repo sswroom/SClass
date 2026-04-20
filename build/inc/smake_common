@@ -3831,6 +3831,8 @@ Net/NTPClient.h:
 @NTPClient.o
 Net/NTPServer.h:
 @NTPServer.o
+Net/OpenAIClient.h:
+@OpenAIClient.o
 Net/PacketAnalyzer.h:
 @PacketAnalyzer.o
 Net/PacketAnalyzerBluetooth.h:
@@ -4865,6 +4867,8 @@ SSWR/AVIRead/AVIRODBCDSNForm.h:
 @AVIRODBCDSNForm.o
 SSWR/AVIRead/AVIRODBCStrForm.h:
 @AVIRODBCStrForm.o
+SSWR/AVIRead/AVIROpenAIForm.h:
+@AVIROpenAIForm.o
 SSWR/AVIRead/AVIROpenFileForm.h:
 @AVIROpenFileForm.o
 SSWR/AVIRead/AVIROSMCacheCfgForm.h:

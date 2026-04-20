@@ -1,5 +1,6 @@
 #ifndef _SM_NET_OPENSSLCLIENT
 #define _SM_NET_OPENSSLCLIENT
+#include "AnyType.h"
 #include "Net/SSLClient.h"
 
 namespace Net
@@ -8,11 +9,11 @@ namespace Net
 	{
 	protected:
 		struct ClassData;
-		struct ClassData *clsData;
+		struct NN<ClassData> clsData;
 
 		UInt32 GetLastErrorCode();
 	public:
-		OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, NN<Socket> s);
+		OpenSSLClient(NN<Net::SocketFactory> sockf, AnyType ssl, NN<Socket> s);
 		virtual ~OpenSSLClient();
 
 		virtual UIntOS Read(const Data::ByteArray &buff);

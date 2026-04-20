@@ -23,12 +23,22 @@ void __stdcall SSWR::AVIRead::AVIRDataRateForm::OnSaveClicked(AnyType userObj)
 		{
 			if (me->dataRate->GetItem(i).SetTo(stat))
 			{
+				if (lastTime != 0 && lastTime + 1 != stat->sec)
+				{
+					sptr = Data::Timestamp::FromEpochSec(lastTime + 1, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+					*sptr++ = ',';
+					*sptr++ = '0';
+					*sptr++ = '\r';
+					*sptr++ = '\n';
+					fs.Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
+				}
 				sptr = Data::Timestamp::FromEpochSec(stat->sec, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 				*sptr++ = ',';
 				sptr = Text::StrUInt64(sptr, stat->dataSize);
 				*sptr++ = '\r';
 				*sptr++ = '\n';
 				fs.Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
+				lastTime = stat->sec;
 			}
 			i++;
 		}

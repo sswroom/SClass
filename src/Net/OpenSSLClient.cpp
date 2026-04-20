@@ -26,10 +26,10 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, NN<Socket> s) : SSLClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, AnyType ssl, NN<Socket> s) : SSLClient(sockf, s)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	this->clsData->ssl = (SSL*)ssl;
+	this->clsData = MemAllocNN(ClassData);
+	this->clsData->ssl = (SSL*)ssl.p;
 	this->clsData->remoteCerts = nullptr;
 	this->clsData->shutdown = false;
 
@@ -83,7 +83,7 @@ Net::OpenSSLClient::~OpenSSLClient()
 		this->clsData->remoteCerts = nullptr;
 	}
 	SSL_free(this->clsData->ssl);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS Net::OpenSSLClient::Read(const Data::ByteArray &buff)
