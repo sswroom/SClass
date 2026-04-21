@@ -25,7 +25,7 @@ Net::OpenAIClient::OpenAIClient(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->apiURL);
 	sb.Append(CSTR("/models"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		sb.ClearStr();

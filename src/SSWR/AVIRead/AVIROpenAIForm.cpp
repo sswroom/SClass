@@ -40,6 +40,7 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnStartClicked(AnyType userObj)
 		if (cli->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in getting OpenAI info"), CSTR("OpenAI"), me);
+			cli.Delete();
 			return;
 		}
 		me->cli = cli;
