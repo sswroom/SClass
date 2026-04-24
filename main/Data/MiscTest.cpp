@@ -31,6 +31,7 @@
 #include "Math/WKTReader.h"
 #include "Media/DrawEngineFactory.h"
 #include "Media/PaperSize.h"
+#include "Media/Printer.h"
 #include "Media/SVGDocument.h"
 #include "Net/HKOAPI.h"
 #include "Net/HTTPClient.h"
@@ -48,6 +49,7 @@
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
+#include "Text/ReportBuilder.h"
 #include "Text/StringTool.h"
 #include "Text/TextWriteUtil.h"
 #include "Text/UTF8Reader.h"
@@ -1496,9 +1498,56 @@ Int32 MD5CompareTest()
 	return 0;
 }
 
+Int32 ReportBuilderTest()
+{
+	Text::CStringNN printerName = CSTR("PDF");
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+	NN<Text::ReportBuilder> report;
+	UnsafeArrayOpt<const UTF8Char> cols[4];
+	cols[0] = U8STR("Column 1");
+	cols[1] = U8STR("Column 2");
+	cols[2] = U8STR("Column 3");
+	cols[3] = U8STR("Column 4");
+	NEW_CLASSNN(report, Text::ReportBuilder(CSTR("Temp"), sizeof(cols) / sizeof(cols[0]), cols));
+	cols[0] = U8STR("Data 1");
+	cols[1] = U8STR("Data 2");
+	cols[2] = U8STR("Data 3");
+	cols[3] = U8STR("Data 4");
+	report->AddTableContent(cols);
+	report->AddTableContent(cols);
+	report->AddTableContent(cols);
+	report->AddTableContent(cols);
+	NN<Media::ImageList> doc = report->CreateVDoc(0, deng);
+	Media::Printer printer(printerName);
+	if (printer.IsError())
+	{
+		printf("PDF Printer not found\n");
+	}
+	else
+	{
+		printf("Start Print\n");
+		NN<Media::PrintDocument> pdoc;
+		if (printer.StartPrint(doc, deng).SetTo(pdoc))
+		{
+			printf("Wait for end\n");
+			pdoc->WaitForEnd();
+			printf("End Print\n");
+			printer.EndPrint(pdoc);
+		}
+		else
+		{
+			printf("Error in start printing\n");
+		}
+	}
+	doc.Delete();
+	report.Delete();
+	deng.Delete();
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 36;
+	UIntOS testType = 39;
 	switch (testType)
 	{
 	case 0:
@@ -1579,6 +1628,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return PCSTTest();
 	case 38:
 		return MD5CompareTest();
+	case 39:
+		return ReportBuilderTest();
 	default:
 		return 0;
 	}

@@ -991,9 +991,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
-	Double border = 10.0;
-	Double fontHeightMM = 3.0;
-	Double fontHeightPt = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_POINT, fontHeightMM);
+	Double borderPx = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, 10.0);;
+	Double fontHeightPx = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, 3.0);
+	Double fontHeightPt = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_POINT, 3.0);
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
@@ -1159,13 +1159,13 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 	totalColWidth = 0;
 	if (this->paperHori)
 	{
-		endY = paperSize.GetWidthMM() - border - fontHeightMM;
-		drawWidth = paperSize.GetHeightMM() - border * 2.0;
+		endY = g->GetHeight() - borderPx - fontHeightPx;
+		drawWidth = g->GetWidth() - borderPx * 2.0;
 	}
 	else
 	{
-		endY = paperSize.GetHeightMM() - border - fontHeightMM;
-		drawWidth = paperSize.GetWidthMM() - border * 2.0;
+		endY = g->GetHeight() - borderPx - fontHeightPx;
+		drawWidth = g->GetWidth() - borderPx * 2.0;
 	}
 
 	i = this->colCount;
@@ -1180,7 +1180,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		colSize[i] = colTotalWidth[i] * drawWidth / totalColWidth;
 	}
 
-	colPos[0] = border;
+	colPos[0] = borderPx;
 	i = 1;
 	j = this->colCount;
 	while (i < j)
@@ -1205,7 +1205,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		p = g->NewPenARGB(0xff000000, 0.2, nullptr, 0);
 
 		lastRight = false;
-		currY = border;
+		currY = borderPx;
 		i = 0;
 		j = this->preheaders.GetCount();
 		while (i < j)
@@ -1214,31 +1214,31 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			if (header->isRight)
 			{
 				if (!lastRight && i > 0)
-					currY -= fontHeightMM * 1.5;
-				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
-				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4, currY), header->value, f, b);
+					currY -= fontHeightPx * 1.5;
+				g->DrawString(Math::Coord2DDbl(borderPx + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx + drawWidth - headerW4, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
-					g->DrawLine(border + drawWidth - headerW4, currY + fontHeightMM, border + drawWidth, currY + fontHeightMM, p);
+					g->DrawLine(borderPx + drawWidth - headerW4, currY + fontHeightPx, borderPx + drawWidth, currY + fontHeightPx, p);
 				}
 			}
 			else
 			{
-				g->DrawString(Math::Coord2DDbl(border, currY), header->name, f, b);
-				g->DrawString(Math::Coord2DDbl(border + headerW1 + 0.5, currY), header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx + headerW1 + 0.5, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
-					g->DrawLine(border + headerW1 + 0.5, currY + fontHeightMM, border + headerW1 + 0.5 + headerW2, currY + fontHeightMM, p);
+					g->DrawLine(borderPx + headerW1 + 0.5, currY + fontHeightPx, borderPx + headerW1 + 0.5 + headerW2, currY + fontHeightPx, p);
 				}
 			}
 			lastRight = header->isRight;
 
-			currY += fontHeightMM * 1.5;
+			currY += fontHeightPx * 1.5;
 			i++;
 		}
 
-		g->DrawStringHAlign(Math::Coord2DDbl(border, currY), border + drawWidth, this->name->ToCString(), f, b, this->nameHAlign);
-		currY += fontHeightMM * 2;
+		g->DrawStringHAlign(Math::Coord2DDbl(borderPx, currY), borderPx + drawWidth, this->name->ToCString(), f, b, this->nameHAlign);
+		currY += fontHeightPx * 2;
 		lastRight = false;
 		i = 0;
 		j = this->headers.GetCount();
@@ -1248,29 +1248,29 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			if (header->isRight)
 			{
 				if (!lastRight && i > 0)
-					currY -= fontHeightMM * 1.5;
-				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
-				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4, currY), header->value, f, b);
+					currY -= fontHeightPx * 1.5;
+				g->DrawString(Math::Coord2DDbl(borderPx + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx + drawWidth - headerW4, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
-					g->DrawLine(border + drawWidth - headerW4, currY + fontHeightMM, border + drawWidth, currY + fontHeightMM, p);
+					g->DrawLine(borderPx + drawWidth - headerW4, currY + fontHeightPx, borderPx + drawWidth, currY + fontHeightPx, p);
 				}
 			}
 			else
 			{
-				g->DrawString(Math::Coord2DDbl(border, currY), header->name, f, b);
-				g->DrawString(Math::Coord2DDbl(border + headerW1 + 0.5, currY), header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(borderPx + headerW1 + 0.5, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
-					g->DrawLine(border + headerW1 + 0.5, currY + fontHeightMM, border + headerW1 + 0.5 + headerW2, currY + fontHeightMM, p);
+					g->DrawLine(borderPx + headerW1 + 0.5, currY + fontHeightPx, borderPx + headerW1 + 0.5 + headerW2, currY + fontHeightPx, p);
 				}
 			}
 			lastRight = header->isRight;
 
-			currY += fontHeightMM * 1.5;
+			currY += fontHeightPx * 1.5;
 			i++;
 		}
-		currY += fontHeightMM;
+		currY += fontHeightPx * 2;
 
 		if (l == 1 && this->chart)
 		{
@@ -1284,11 +1284,11 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			{
 				if (this->tableRowType.GetItem(m) != RT_HEADER)
 					break;
-				nextY = currY + fontHeightMM * 1.5;
+				nextY = currY + fontHeightPx * 1.5;
 				cols = this->tableContent.GetItemNoCheck(m);
 				if (this->tableBorders)
 				{
-					g->DrawLine(border + drawWidth, currY, border + drawWidth, nextY, p);
+					g->DrawLine(borderPx + drawWidth, currY, borderPx + drawWidth, nextY, p);
 				}
 				j = this->colCount;
 				i = j;
@@ -1322,7 +1322,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 						}
 						else
 						{
-							nextX = border + drawWidth;
+							nextX = borderPx + drawWidth;
 						}
 						if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 						{
@@ -1348,7 +1348,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			if (!this->tableBorders)
 			{
 				currY += 0.2;
-				g->DrawLine(border, currY, border + drawWidth, currY, p);
+				g->DrawLine(borderPx, currY, borderPx + drawWidth, currY, p);
 			}
 			if (currY > endY)
 			{
@@ -1357,15 +1357,15 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			while (k < l)
 			{
 				cols = this->tableContent.GetItemNoCheck(k);
-				nextY = currY + fontHeightMM * 1.5;
+				nextY = currY + fontHeightPx * 1.5;
 				currRowType = this->tableRowType.GetItem(k);
 				if (this->tableBorders)
 				{
-					g->DrawLine(border + drawWidth, currY, border + drawWidth, nextY, p);
+					g->DrawLine(borderPx + drawWidth, currY, borderPx + drawWidth, nextY, p);
 				}
 				else if (lastRowType == RT_CONTENT && currRowType == RT_SUMMARY)
 				{
-					g->DrawLine(border, currY, border + drawWidth, currY, p);
+					g->DrawLine(borderPx, currY, borderPx + drawWidth, currY, p);
 				}
 
 				j = this->colCount;
@@ -1402,7 +1402,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 							}
 							else
 							{
-								nextX = border + drawWidth;
+								nextX = borderPx + drawWidth;
 							}
 							if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 							{
@@ -1453,8 +1453,8 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 							NN<Media::DrawImage> dimg;
 							if (iconSt && iconSt->dimg.SetTo(dimg))
 							{
-								Double w = fontHeightMM * UIntOS2Double(dimg->GetWidth()) / UIntOS2Double(dimg->GetHeight());
-								Double dpi = UIntOS2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
+								Double w = fontHeightPx * UIntOS2Double(dimg->GetWidth()) / UIntOS2Double(dimg->GetHeight());
+								Double dpi = UIntOS2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_INCH, fontHeightPx);
 								dimg->SetHDPI(dpi);
 								dimg->SetVDPI(dpi);
 								g->DrawImagePt(dimg, Math::Coord2DDbl(colCurrX[icon->col], currY));
@@ -1476,12 +1476,12 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			}
 			if (this->tableBorders)
 			{
-				g->DrawLine(border, currY, border + drawWidth, currY, p);
+				g->DrawLine(borderPx, currY, borderPx + drawWidth, currY, p);
 			}
 			pageId++;
 			sptr = Text::StrInt32(sbuff, pageId);
 			sz = g->GetTextSize(f, CSTRP(sbuff, sptr));
-			g->DrawString(Math::Coord2DDbl(border + (drawWidth - sz.x) * 0.5, paperSize.GetHeightMM() - border), CSTRP(sbuff, sptr), f, b);
+			g->DrawString(Math::Coord2DDbl(borderPx + (drawWidth - sz.x) * 0.5, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperSize.GetHeightMM()) - borderPx), CSTRP(sbuff, sptr), f, b);
 		}
 
 		g->DelFont(f);
@@ -1504,7 +1504,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		{
 			if (this->chart)
 			{
-				this->chart->Plot(g, border, currY, drawWidth, paperHeightMM - border - currY);
+				this->chart->Plot(g, borderPx, currY, drawWidth, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperHeightMM) - borderPx - currY);
 			}
 			break;
 		}

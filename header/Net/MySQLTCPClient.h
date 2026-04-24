@@ -60,6 +60,7 @@ namespace Net
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		UIntOS cmdSeqNum;
+		Sync::Mutex readerMut;
 		Optional<MySQLTCPReader> cmdTCPReader;
 		Optional<MySQLTCPBinaryReader> cmdBinReader;
 		CmdResultType cmdResultType;
