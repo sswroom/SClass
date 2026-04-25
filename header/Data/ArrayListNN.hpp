@@ -63,6 +63,10 @@ namespace Data
 	template <class T> void ArrayListNN<T>::Init(UIntOS capacity)
 	{
 		this->objCnt = 0;
+		if (capacity < 1)
+		{
+			capacity = 1;
+		}
 		this->capacity = capacity;
 		this->arr = MemAllocArr(NN<T>, capacity);
 	}
