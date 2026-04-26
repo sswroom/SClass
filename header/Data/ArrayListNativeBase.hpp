@@ -45,10 +45,6 @@ namespace Data
 	template <class T> void ArrayListNativeBase<T>::Init(UIntOS capacity)
 	{
 		objCnt = 0;
-		if (capacity < 1)
-		{
-			capacity = 1;
-		}
 		this->capacity = capacity;
 		arr = MemAllocArr(T, capacity);
 	}
@@ -60,6 +56,10 @@ namespace Data
 
 	template <class T> ArrayListNativeBase<T>::ArrayListNativeBase(UIntOS capacity)
 	{
+		if (capacity < 1)
+		{
+			capacity = 1;
+		}
 		Init(capacity);
 	}
 
