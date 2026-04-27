@@ -6,6 +6,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Text/String.h"
 
 class Userfile
@@ -433,7 +434,7 @@ void TestBinaryRead(NN<DB::DBTool> db)
 	}
 }
 
-void TempTest(NN<Net::TCPClientFactory> clif, IO::Writer *console)
+void TempTest(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, IO::Writer *console)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;
@@ -445,7 +446,7 @@ void TempTest(NN<Net::TCPClientFactory> clif, IO::Writer *console)
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");
 	mysqlPWD = CSTR("organ");
-	if (Net::MySQLTCPClient::CreateDBTool(clif, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		NN<DB::DBReader> r;
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
@@ -481,8 +482,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(false);
 	Net::TCPClientFactory clif(sockf);
-	TempTest(clif, console);
-	if (Net::MySQLTCPClient::CreateDBTool(clif, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
+	TempTest(clif, ssl, console);
+	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		TestBinaryRead(db);
 		TextReadAll(db);

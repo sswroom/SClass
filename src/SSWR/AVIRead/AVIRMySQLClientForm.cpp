@@ -2,6 +2,7 @@
 #include "DB/ColDef.h"
 #include "IO/Path.h"
 #include "Math/Math_C.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
@@ -82,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 	}
 	
 	me->cliConnected = false;
-	NEW_CLASSNN(cli, Net::MySQLTCPClient(me->core->GetTCPClientFactory(), addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
+	NEW_CLASSNN(cli, Net::MySQLTCPClient(me->core->GetTCPClientFactory(), me->ssl, addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
 	if (cli->IsError())
 	{
 		sbUser.ClearStr();
@@ -270,6 +271,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("MySQL Client"));
 	this->SetFont(nullptr, 8.25, false);
 	this->cli = nullptr;
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -358,6 +360,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRMySQLClientForm::~AVIRMySQLClientForm()
 {
 	this->cli.Delete();
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRMySQLClientForm::OnMonitorChanged()

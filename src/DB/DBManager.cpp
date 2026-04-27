@@ -15,6 +15,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Net/MySQLTCPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -416,23 +417,26 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 		}
 		Net::MySQLTCPClient *cli = 0;
+		Optional<Net::SSLEngine> ssl = nullptr;
 		NN<Net::MySQLTCPClient> nncli;
 		NN<Text::String> uidStr;
 		NN<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
 		{
-			NEW_CLASS(cli, Net::MySQLTCPClient(clif, addr, port, uidStr, pwdStr, schema));
+			ssl = Net::SSLEngineFactory::Create(clif, false);
+			NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, uidStr, pwdStr, schema));
 		}
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
 		if (!nncli.Set(cli))
 		{
-
+			ssl.Delete();
 		}
 		else if (nncli->IsError())
 		{
 			nncli.Delete();
+			ssl.Delete();
 		}
 		else
 		{

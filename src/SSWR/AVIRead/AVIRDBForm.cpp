@@ -17,7 +17,7 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include "IO/ConsoleLogHandler.h"
 #endif

@@ -5,6 +5,7 @@
 #include "DB/DBTool.h"
 #include "IO/StreamData.h"
 #include "Media/MonitorMgr.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPClientFactory.h"
 
 namespace SSWR
@@ -78,6 +79,7 @@ namespace SSWR
 			ErrorType err;
 			NN<Net::SocketFactory> sockf;
 			NN<Net::TCPClientFactory> clif;
+			Optional<Net::SSLEngine> ssl;
 			Optional<DB::DBTool> db;
 			IO::LogTool log;
 			Media::MonitorMgr *monMgr;

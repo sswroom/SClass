@@ -5,6 +5,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "Net/MySQLUtil.h"
+#include "Net/SSLEngine.h"
 #include "Net/TCPClientFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -34,8 +35,17 @@ namespace Net
 			Authen,
 			Data
 		};
+
+		enum class MoreDataType
+		{
+			Unknown,
+			Caching_sha2_password,
+			PublicKey	
+		};
 	private:
 		NN<Net::TCPClientFactory> clif;
+		Optional<Net::SSLEngine> ssl;
+		Bool releaseSSL;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		Optional<Net::TCPClient> cli;
@@ -71,8 +81,8 @@ namespace Net
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
-		MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
-		MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database);
+		MySQLTCPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
+		MySQLTCPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -108,6 +118,7 @@ namespace Net
 		UIntOS GetAuthPluginData(UnsafeArray<UInt8> buff);
 		UInt32 GetServerCap() const;
 		UInt16 GetServerCS() const;
+		void SetReleaseSSL(Bool releaseSSL);
 
 		NN<const Net::SocketUtil::AddressInfo> GetConnAddr() const;
 		UInt16 GetConnPort() const;
@@ -116,8 +127,8 @@ namespace Net
 		NN<Text::String> GetConnPWD() const;
 
 		static UInt16 GetDefaultPort();
-		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Net/MySQLTCPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "Text/MyString.h"
 
@@ -31,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
 		return;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(clif, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
+	NEW_CLASS(conn, Net::MySQLTCPClient(clif, me->ssl, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);
@@ -39,6 +40,8 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 		return;
 	}
 	me->conn = conn;
+	me->ssl = nullptr;
+	conn->SetReleaseSSL(true);
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -55,6 +58,7 @@ SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->conn = nullptr;
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetNoResize(true);
 
@@ -93,6 +97,7 @@ SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRMySQLConnForm::~AVIRMySQLConnForm()
 {
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRMySQLConnForm::OnMonitorChanged()
@@ -100,7 +105,7 @@ void SSWR::AVIRead::AVIRMySQLConnForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Optional<DB::DBConn> SSWR::AVIRead::AVIRMySQLConnForm::GetDBConn()
+Optional<DB::DBConn> SSWR::AVIRead::AVIRMySQLConnForm::GetDBConn() const
 {
 	return this->conn;
 }

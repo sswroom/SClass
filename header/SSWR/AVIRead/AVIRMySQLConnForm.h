@@ -28,6 +28,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<DB::DBConn> conn;
+			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -37,7 +38,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Optional<DB::DBConn> GetDBConn();
+			Optional<DB::DBConn> GetDBConn() const;
 		};
 	}
 }

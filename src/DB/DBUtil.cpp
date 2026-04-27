@@ -2156,10 +2156,11 @@ UIntOS DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
 
 DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, InOutParam<UIntOS> colSize, InOutParam<UIntOS> colDP)
 {
-	UTF8Char typeName[64];
+	UTF8Char typeName[256];
 	UIntOS typeNameLen;
 	UIntOS i;
-	typeNameLen = (UIntOS)(Text::StrConcat(typeName, tName) - typeName);
+	typeNameLen = Text::StrCharCnt(tName);
+	Text::StrConcatC(typeName, tName, typeNameLen);
 
 	if (sqlType == DB::SQLType::MySQL)
 	{
@@ -2245,6 +2246,28 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				colSize.Set(5);
 				return DB::DBUtil::CT_UInt16;
 			}
+		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("time")))
+		{
+			if (typeName[4] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					colSize.Set(Text::StrToUInt32(&typeName[5]));
+					typeName[i] = ')';
+				}
+				else
+				{
+					colSize.Set(Text::StrToUInt32(&typeName[5]));
+				}
+			}
+			else
+			{
+				colSize.Set(0);
+			}
+			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
@@ -2350,6 +2373,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 			colSize.Set(1);
 			return DB::DBUtil::CT_Bool;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint unsigned")))
+		{
+			colSize.Set(1);
+			return DB::DBUtil::CT_Bool;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1)")))
 		{
 			colSize.Set(1);
@@ -2373,6 +2401,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geometry")))
 		{
 			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("mediumblob")))
+		{
+			colSize.Set(0xffffff);
+			return DB::DBUtil::CT_Binary;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("blob")))
 		{

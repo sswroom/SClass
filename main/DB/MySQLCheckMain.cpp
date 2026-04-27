@@ -161,7 +161,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::MySQLTCPClient(clif, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), nullptr));
+		Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
+		NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), nullptr));
 		if (cli->IsError())
 		{
 			console.WriteLine(CSTR("Error in connecting to MySQL server"));
@@ -198,7 +199,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			IO::LogWriter *writer;
 			NEW_CLASS(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
 
-			Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 			Net::Email::SMTPClient *smtp;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
@@ -221,9 +221,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				retNum = 8;
 			}
 			DEL_CLASS(smtp);
-			ssl.Delete();
 			DEL_CLASS(writer);
 		}
+		ssl.Delete();
 	}
 	cfg.Delete();
 	return retNum;

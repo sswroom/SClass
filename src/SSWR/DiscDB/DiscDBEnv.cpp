@@ -9,6 +9,7 @@
 #include "IO/Path.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/MD5Parser.h"
 #include "SSWR/DiscDB/DiscDBEnv.h"
 #include "Text/StringBuilderUTF8.h"
@@ -129,6 +130,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	this->db = nullptr;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -145,6 +147,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(str))
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif,
+				ssl,
 				str,
 				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))).Ptr(),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
@@ -238,6 +241,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		dvdVideo->dvdType->Release();
 		MemFreeNN(dvdVideo);
 	}
+	this->ssl.Delete();
 	this->clif.Delete();
 	this->sockf.Delete();
 }

@@ -91,7 +91,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(clif, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(clif, ssl, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
 			}
 			else if (cfg->GetValue(CSTR("DBDSN")).SetTo(s))
 			{

@@ -20,6 +20,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::MySQLTCPClient> cli;
+			Optional<Net::SSLEngine> ssl;
 			Bool cliConnected;
 
 			NN<UI::GUITabControl> tcMain;
