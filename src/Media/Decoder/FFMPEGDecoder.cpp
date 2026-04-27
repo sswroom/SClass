@@ -1114,6 +1114,14 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		break;
+#if VERSION_FROM(60, 16, 100) //2025-10-28
+	case AVCOL_TRC_V_LOG:
+	case AVCOL_TRC_EXT_NB:
+		info->color.rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		break;
+#endif
 	}
 	switch (data->colorPrimaries)
 	{
@@ -1162,7 +1170,11 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 #if VERSION_FROM(57, 64, 102) //2016-10-21
 	case AVCOL_PRI_JEDEC_P22:
 #endif
-		printf("Unsupported color primaries: %d\r\n", (UInt32)data->colorPrimaries);
+#if VERSION_FROM(60, 16, 100) //2025-10-28
+	case AVCOL_PRI_V_GAMUT:
+	case AVCOL_PRI_EXT_NB:
+#endif
+	printf("Unsupported color primaries: %d\r\n", (UInt32)data->colorPrimaries);
 	default:
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;

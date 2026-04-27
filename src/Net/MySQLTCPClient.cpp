@@ -21,7 +21,7 @@
 #define ROWBUFFCNT 4
 
 #include <stdio.h>
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
@@ -1416,7 +1416,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 			sb.ClearStr();
 			sb.AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
-			printf("MySQLTCP %d Received Buff:\r\n%s\r\n", cli->GetLocalPort(), sb.ToString());
+			printf("MySQLTCP %d Received Buff:\r\n%s\r\n", cli->GetLocalPort(), sb.v.Ptr());
 	#endif
 			buffSize += readSize;
 
@@ -1466,11 +1466,11 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 									me->axisAware = Net::MySQLUtil::IsAxisAware(svrVer->ToCString());
 									////////////////////////////////
 	#if defined(VERBOSE)
-									printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v);
+									printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v.Ptr());
 									printf("MySQLTCP %d Conn Id = %d\r\n", cli->GetLocalPort(), me->connId);
 									sb.ClearStr();
 									sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-									printf("MySQLTCP %d Auth Plugin Data = %s\r\n", cli->GetLocalPort(), sb.ToString());
+									printf("MySQLTCP %d Auth Plugin Data = %s\r\n", cli->GetLocalPort(), sb.v.Ptr());
 									printf("MySQLTCP %d Axis-Aware = %d\r\n", cli->GetLocalPort(), me->axisAware?1:0);
 									printf("MySQLTCP %d Axis-Aware = %d\r\n", cli->GetLocalPort(), me->axisAware?1:0);
 	#endif
@@ -1485,7 +1485,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								me->svrVer = svrVer = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 								me->axisAware = Net::MySQLUtil::IsAxisAware(svrVer->ToCString());
 	#if defined(VERBOSE)
-								printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v);
+								printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v.Ptr());
 								printf("MySQLTCP %d Axis-Aware = %d\r\n", cli->GetLocalPort(), me->axisAware?1:0);
 	#endif
 								if (ptrEnd - ptrCurr >= 15)
@@ -1535,7 +1535,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										printf("MySQLTCP %d status = 0x%x\r\n", cli->GetLocalPort(), me->connStatus);
 										sb.ClearStr();
 										sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-										printf("MySQLTCP %d auth plugin data = %s\r\n", cli->GetLocalPort(), sb.ToString());
+										printf("MySQLTCP %d auth plugin data = %s\r\n", cli->GetLocalPort(), sb.v.Ptr());
 										printf("MySQLTCP %d auth plugin name = %s\r\n", cli->GetLocalPort(), sbuff);
 	#endif
 									}
@@ -1546,7 +1546,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										printf("MySQLTCP %d Server Cap = 0x%x\r\n", cli->GetLocalPort(), me->svrCap);
 										sb.ClearStr();
 										sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-										printf("MySQLTCP %d auth plugin data = %s\r\n", cli->GetLocalPort(), sb.ToString());
+										printf("MySQLTCP %d auth plugin data = %s\r\n", cli->GetLocalPort(), sb.v.Ptr());
 	#endif
 									}
 									me->mode = ClientMode::Authen;
@@ -1663,6 +1663,29 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							printf("MySQLTCP %d login success\r\n", cli->GetLocalPort());
 	#endif
 						}
+						else if (buff[4] == 1)
+						{
+	#if defined(VERBOSE)
+							printf("MySQLTCP %d AuthMoreData\r\n", cli->GetLocalPort());
+	#endif
+							me->cmdSeqNum++;
+							if (buff[5] == 2)
+							{
+								printf("MySQLTCP %d request_public_key\r\n", cli->GetLocalPort());
+							}
+							else if (buff[5] == 3)
+							{
+	#if defined(VERBOSE)
+								printf("MySQLTCP %d fast_auth_success\r\n", cli->GetLocalPort());
+	#endif
+							}
+							else if (buff[5] == 4)
+							{
+	#if defined(VERBOSE)
+								printf("MySQLTCP %d perform_full_authentication\r\n", cli->GetLocalPort());
+	#endif
+							}
+						}
 						else if (buff[4] == 0xFE)
 						{
 							UIntOS nameLen = Text::StrCharCnt(&buff[5]);
@@ -1670,7 +1693,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							printf("MySQLTCP %d AuthSwitchRequest: plugin name = %s\r\n", cli->GetLocalPort(), &buff[5]);
 							Text::StringBuilderUTF8 sb;
 							sb.AppendHexBuff(&buff[6 + nameLen], readSize - 3 - nameLen, ' ', Text::LineBreakType::None);
-							printf("MySQLTCP %d AuthSwitchRequest: plugin data = %s\r\n", cli->GetLocalPort(), sb.ToString());
+							printf("MySQLTCP %d AuthSwitchRequest: plugin data = %s\r\n", cli->GetLocalPort(), sb.v.Ptr());
 	#endif
 							me->cmdSeqNum += 2;
 							me->authenType = Net::MySQLUtil::AuthenTypeParse(Text::CStringNN(&buff[5], nameLen));
@@ -2072,7 +2095,7 @@ void Net::MySQLTCPClient::SetLastError(Text::CStringNN errMsg)
 	{
 		port = 0;
 	}
-	printf("MySQLTCP %d Error: %s\r\n", port, sb.ToString());
+	printf("MySQLTCP %d Error: %s\r\n", port, sb.v.Ptr());
 #endif
 }
 
@@ -2305,7 +2328,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
-	printf("MySQLTCP %d Sent SQL: %s\r\n", cli->GetLocalPort(), sql.v);
+	printf("MySQLTCP %d Sent SQL: %s\r\n", cli->GetLocalPort(), sql.v.Ptr());
 #endif
 //	dt.SetCurrTimeUTC();
 //	startTime = dt.ToTicks();
@@ -2363,7 +2386,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
-	printf("MySQLTCP %d Sent Prepare Stmt: %s\r\n", cli->GetLocalPort(), sql.v);
+	printf("MySQLTCP %d Sent Prepare Stmt: %s\r\n", cli->GetLocalPort(), sql.v.Ptr());
 #endif
 //	dt.SetCurrTimeUTC();
 //	startTime = dt.ToTicks();
