@@ -1169,7 +1169,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 #endif
 #if VERSION_FROM(62, 16, 100) //2025-10-28
 	case AVCOL_PRI_V_GAMUT:
-		info->color.primaries.SetColorType(Media::ColorProfile::CT_VGAMUT)
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_VGAMUT);
 		break;
 	case AVCOL_PRI_EXT_NB:
 #endif
