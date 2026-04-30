@@ -1037,6 +1037,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 	lastRowType = RT_UNKNOWN;
 	sptr = Text::StrInt32(sbuff, id);
 	NEW_CLASSNN(doc, Media::ImageList(CSTRP(sbuff, sptr)));
+	doc->SetValueStr(Media::ImageList::ValueType::DocumentName, CSTRP(sbuff, sptr));
 	if (this->paperHori)
 	{
 		g = doc->AddGraph(0, deng, paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);

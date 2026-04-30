@@ -323,7 +323,7 @@ NN<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone() const
 
 Bool Manage::ThreadContextX86_64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	NN<Manage::DasmX86_64::DasmX86_64_Regs> r = NN<Manage::DasmX86_64::DasmX86_64_Regs>::ConvertFrom(regs);
+	NN<Manage::DasmX86_64::Registers> r = NN<Manage::DasmX86_64::Registers>::ConvertFrom(regs);
 	r->rax = ((CONTEXT_TYPE*)this->context)->Rax;
 	r->rdx = ((CONTEXT_TYPE*)this->context)->Rdx;
 	r->rcx = ((CONTEXT_TYPE*)this->context)->Rcx;

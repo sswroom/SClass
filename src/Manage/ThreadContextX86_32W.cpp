@@ -553,7 +553,7 @@ NN<Manage::ThreadContext> Manage::ThreadContextX86_32::Clone() const
 
 Bool Manage::ThreadContextX86_32::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	NN<Manage::DasmX86_32::DasmX86_32_Regs> r = NN<Manage::DasmX86_32::DasmX86_32_Regs>::ConvertFrom(regs);
+	NN<Manage::DasmX86_32::Registers> r = NN<Manage::DasmX86_32::Registers>::ConvertFrom(regs);
 #ifdef CONTEXT_VX86
 	r->EAX = (UInt32)((CONTEXT_TYPE*)this->context)->Rax;
 	r->EDX = (UInt32)((CONTEXT_TYPE*)this->context)->Rdx;
