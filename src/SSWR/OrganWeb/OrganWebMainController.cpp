@@ -1250,7 +1250,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 
 				writer.Write(CSTR("<img src="));
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
@@ -1375,7 +1375,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 
 				writer.Write(CSTR("<img src="));
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
@@ -1448,7 +1448,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 
 				writer.Write(CSTR("<img src="));
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
@@ -2314,7 +2314,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteLine(sb.ToCString());
 
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
@@ -2635,7 +2635,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteLine(sb.ToCString());
 
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);
@@ -2816,7 +2816,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					writer.WriteLine(sb.ToCString());
 
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendC(UTF8STRC("img/photo?id="));
 					sb.AppendI32(species->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(species->cateId);
@@ -3004,7 +3004,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					writer.WriteLine(sb.ToCString());
 
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendC(UTF8STRC("img/photo?id="));
 					sb.AppendI32(species->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(species->cateId);
@@ -3643,17 +3643,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
-{
-	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	me->sessMgr->DeleteSession(req, resp);
-	resp->RedirectURL(req, CSTR("/"), 0);
-	return true;
-}
-
 SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
@@ -3671,7 +3660,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer
 	this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
 	this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
 	this->AddService(CSTR("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
-	this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
 }
 
 SSWR::OrganWeb::OrganWebMainController::~OrganWebMainController()

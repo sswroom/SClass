@@ -1,9 +1,8 @@
 #include "Stdafx.h"
-#include "SSWR/OrganWeb/OrganWebBookController.h"
+#include "SSWR/OrganWeb/OrganWebAPIController.h"
 #include "SSWR/OrganWeb/OrganWebHandler.h"
 #include "SSWR/OrganWeb/OrganWebMainController.h"
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
-#include "SSWR/OrganWeb/OrganWebPOIController.h"
 
 Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
@@ -39,8 +38,7 @@ SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(NN<OrganWebEnv> env, UInt32 scn
 	NN<Net::WebServer::WebController> ctrl;
 	AddCtrl(OrganWebMainController(this->sessMgr, env, scnSize));
 	AddCtrl(OrganWebPhotoController(this->sessMgr, env, scnSize));
-	AddCtrl(OrganWebPOIController(this->sessMgr, env, scnSize));
-	AddCtrl(OrganWebBookController(this->sessMgr, env, scnSize));
+	AddCtrl(OrganWebAPIController(this->sessMgr, env, scnSize));
 }
 
 SSWR::OrganWeb::OrganWebHandler::~OrganWebHandler()

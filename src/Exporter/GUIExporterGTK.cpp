@@ -6,6 +6,8 @@
 #include "Text/MyString.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+//#define VERBOSE
+
 void GUIExporter_SetDPI(GdkPixbuf *pixbuf, Double hdpi, Double vdpi)
 {
 	UTF8Char sbuff[64];
@@ -88,17 +90,26 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 	relBuff.Set(nullptr);
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
+#ifdef VERBOSE
+		printf("GUIExporterGTK: obj is not ImageList\r\n");
+#endif
 		return 0;
 	}
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 	{
+#ifdef VERBOSE
+		printf("GUIExportGTK: more than 1 image is not supported\r\n");
+#endif
 		return 0;
 	}
 	imgList->ToStaticImage(0);
 	NN<Media::StaticImage> img;
 	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img) || img->info.fourcc != 0)
 	{
+#ifdef VERBOSE
+		printf("GUIExportGTK: invalid image fourcc\r\n");
+#endif
 		return 0;
 	}
 
@@ -174,6 +185,9 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 	case Media::PF_B8G8R8A1:
 	case Media::PF_UNKNOWN:
 	default:
+#ifdef VERBOSE
+		printf("GUIExporterGTK: Pixel format is not supported: %s\r\n", Media::PixelFormatGetName(img->info.pf).v.Ptr());
+#endif
 		return 0;
 	}
 }

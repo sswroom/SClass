@@ -10,15 +10,15 @@
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
 #include "Net/WebServer/HTTPServerUtil.h"
+#include "SSWR/OrganWeb/OrganWebAPIController.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
-#include "SSWR/OrganWeb/OrganWebPOIController.h"
 #include "Text/JSONUtil.h"
 #include "Text/JSText.h"
 #include "Text/UTF8Reader.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLang(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	NN<IO::ConfigFile> lang;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	if (me->env->LangGet(req).SetTo(lang))
@@ -36,9 +36,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NN<Net::WebServer:
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	NN<WebUserInfo> user;
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -48,6 +48,43 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NN<Net::WebSe
 	json.ObjectAddUInt64(CSTR("previewSize"), GetPreviewSize());
 	json.ObjectAddInt32(CSTR("pickObjType"), env.pickObjType);
 	json.ObjectAddArrayInt32(CSTR("pickObjs"), env.pickObjs);
+	NN<Data::ArrayListInt32> pickObjs;
+	if (env.pickObjType == PickObjType::POT_USERFILE && env.pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+	{
+		Data::ArrayListInt32 spIds;
+		json.ObjectBeginArray(CSTR("pickObjsCateId"));
+		Sync::RWMutexUsage mutUsage;
+		Sync::RWMutexUsage spMutUsage;
+		NN<UserFileInfo> userFile;
+		NN<SpeciesInfo> sp;
+		UIntOS i = 0;
+		UIntOS j = pickObjs->GetCount();
+		while (i < j)
+		{
+			if (me->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile))
+			{
+				spIds.Add(userFile->speciesId);
+				if (me->env->SpeciesGet(spMutUsage, userFile->speciesId).SetTo(sp))
+				{
+					json.ArrayAddInt32(sp->cateId);
+					spMutUsage.EndUse();
+				}
+				else
+				{
+					json.ArrayAddInt32(0);
+				}
+				mutUsage.EndUse();
+			}
+			else
+			{
+				spIds.Add(0);
+				json.ArrayAddInt32(0);
+			}
+			i++;
+		}
+		json.ArrayEnd();
+		json.ObjectAddArrayInt32(CSTR("pickObjsSpId"), spIds);
+	}
 	if (env.user.SetTo(user))
 	{
 		json.ObjectBeginObject(CSTR("user"));
@@ -63,9 +100,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NN<Net::WebSe
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLogin(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::CStringNN msg;
@@ -120,9 +157,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NN<Net::WebServer
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogout(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLogout(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -132,9 +169,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogout(NN<Net::WebServe
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcCateList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Sync::RWMutexUsage mutUsage;
@@ -162,9 +199,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcCate(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -207,9 +244,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NN<Net::WebServer:
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcYearList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
@@ -252,9 +289,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcDayList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -388,9 +425,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NN<Net::WebServ
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcDayDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	req->ParseHTTPForm();
@@ -510,9 +547,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NN<Net::WebSe
 
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookList(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Sync::RWMutexUsage mutUsage;
@@ -542,9 +579,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookSelect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookSelect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::CStringNN json;
@@ -579,9 +616,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookSelect(NN<Net::WebS
 	return me->ResponseJSON(req, resp, 0, json);
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookUnselect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookUnselect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -592,9 +629,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookUnselect(NN<Net::We
 	return me->ResponseJSON(req, resp, 0, CSTR("{}"));
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookAdd(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookAdd(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -650,9 +687,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookAdd(NN<Net::WebServ
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Sync::RWMutexUsage mutUsage;
@@ -712,9 +749,115 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NN<Net::WebS
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookPhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::CStringNN msg;
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		msg = CSTR("Access denied");
+	}
+	else
+	{
+		Int32 bookId;
+		Int32 fileId;
+		req->ParseHTTPForm();
+		if (!req->GetHTTPFormInt32(CSTR("bookId"), bookId))
+		{
+			msg = CSTR("Book Id is empty");
+		}
+		else if (!req->GetHTTPFormInt32(CSTR("fileId"), fileId))
+		{
+			msg = CSTR("File Id is empty");
+		}
+		else
+		{
+			Sync::RWMutexUsage mutUsage;
+			if (me->env->BookSetPhoto(mutUsage, bookId, fileId))
+			{
+				msg = CSTR("ok");
+			}
+			else
+			{
+				msg = CSTR("Error in setting book photo");
+			}
+		}
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddStr(CSTR("status"), msg);
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookPDF(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	if (req->GetQueryValueI32(CSTR("id"), id))
+	{
+		UTF8Char sbuff[512];
+		UnsafeArray<UTF8Char> sptr;
+		NN<BookInfo> book;
+		Sync::RWMutexUsage mutUsage;
+		if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
+			return true;
+		}
+		else if (!me->env->BookGet(mutUsage, id).SetTo(book))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+
+		sptr = me->env->BookGetPath(sbuff, book->id);
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		UInt64 fileLen = fs.GetLength();
+		if (fileLen <= 16)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+
+		}
+		mutUsage.EndUse();
+
+		resp->AddDefHeaders(req);
+		resp->AddContentType(CSTR("application/pdf"));
+		resp->AddContentLength(fileLen);
+		UIntOS readSize;
+		UInt64 sizeLeft = fileLen;
+		while (sizeLeft > 0)
+		{
+			readSize = fs.Read(BYTEARR(sbuff));
+			if (readSize <= 0)
+			{
+				break;
+			}
+
+			resp->Write(Data::ByteArrayR(sbuff, readSize));
+			sizeLeft -= readSize;
+		}
+		return true;
+	}
+	else
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpecies(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -866,9 +1009,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NN<Net::WebServ
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	req->ParseHTTPForm();
@@ -1017,9 +1160,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::Web
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoUpload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -1091,9 +1234,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoName(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -1119,9 +1262,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NN<Net::WebSe
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoPos(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoPos(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -1151,9 +1294,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoPos(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -1205,9 +1348,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NN<Net::WebSe
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUpdatePeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUpdatePeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -1226,9 +1369,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUpdatePeak(NN<Net::WebS
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
@@ -1253,9 +1396,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NN<Net::WebServe
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPublicPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	Sync::RWMutexUsage mutUsage;
 	NN<GroupInfo> poiGroup;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -1275,9 +1418,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NN<Net::WebSe
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Sync::RWMutexUsage mutUsage;
@@ -1305,9 +1448,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Sync::RWMutexUsage mutUsage;
@@ -1333,9 +1476,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NN<Net::WebS
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcDayPOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -1402,9 +1545,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NN<Net::WebServe
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcDatafilePOI(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NN<SSWR::OrganWeb::OrganWebPOIController> me = NN<SSWR::OrganWeb::OrganWebPOIController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -1475,7 +1618,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<GroupInfo> group, Int32 userId, NN<Data::ArrayListNN<GroupInfo>> groups, NN<Data::ArrayListNN<SpeciesInfo>> speciesList)
+void SSWR::OrganWeb::OrganWebAPIController::AddGroupPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<GroupInfo> group, Int32 userId, NN<Data::ArrayListNN<GroupInfo>> groups, NN<Data::ArrayListNN<SpeciesInfo>> speciesList)
 {
 	NN<SpeciesInfo> species;
 	NN<GroupInfo> subgroup;
@@ -1499,7 +1642,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NN<Sync::RWMutexUsage> m
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, Int32 userId, Bool publicGroup)
+void SSWR::OrganWeb::OrganWebAPIController::AddSpeciesPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, Int32 userId, Bool publicGroup)
 {
 	NN<UserFileInfo> file;
 	UIntOS k;
@@ -1526,7 +1669,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NN<Sync::RWMutexUsage>
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<UserFileInfo> file)
+void SSWR::OrganWeb::OrganWebAPIController::AddUserfilePOI(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<UserFileInfo> file)
 {
 	json->ArrayBeginObject();
 	json->ObjectAddInt32(CSTR("id"), file->id);
@@ -1547,7 +1690,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NN<Text::JSONBuilder>
 	json->ObjectEnd();
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<GroupInfo>> groups)
+void SSWR::OrganWeb::OrganWebAPIController::AddGroups(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<GroupInfo>> groups)
 {
 	NN<GroupInfo> group;
 	Data::ArrayIterator<NN<GroupInfo>> it = groups->Iterator();
@@ -1560,7 +1703,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NN<Text::JSONBuilder> json
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
+void SSWR::OrganWeb::OrganWebAPIController::AddGroup(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
 {
 	NN<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), group->id);
@@ -1593,7 +1736,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NN<Text::JSONBuilder> json,
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage)
+void SSWR::OrganWeb::OrganWebAPIController::AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage)
 {
 	NN<SpeciesInfo> species;
 	Data::ArrayIterator<NN<SpeciesInfo>> it = speciesList->Iterator();
@@ -1606,7 +1749,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NN<Text::JSONBuilder>
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NN<Text::JSONBuilder> json, NN<WebUserInfo> user)
+void SSWR::OrganWeb::OrganWebAPIController::AppendUser(NN<Text::JSONBuilder> json, NN<WebUserInfo> user)
 {
 	json->ObjectAddInt32(CSTR("id"), user->id);
 	json->ObjectAddInt32(CSTR("userType"), (Int32)user->userType);
@@ -1614,7 +1757,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NN<Text::JSONBuilder> jso
 	json->ObjectAddStr(CSTR("watermark"), user->watermark);
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
+void SSWR::OrganWeb::OrganWebAPIController::AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
 {
 	UIntOS i;
 	UIntOS j;
@@ -1679,7 +1822,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NN<Text::JSONBuilder> 
 	json->ArrayEnd();
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont)
+void SSWR::OrganWeb::OrganWebAPIController::AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont)
 {
 	IntOS startIndex;
 	IntOS endIndex;
@@ -1721,7 +1864,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NN<Text::JSONBuilder
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate)
+void SSWR::OrganWeb::OrganWebAPIController::AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
 	NN<GroupTypeInfo> grpType;
 	while (true)
@@ -1743,7 +1886,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendLocator(NN<Text::JSONBuilder> 
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
+Bool SSWR::OrganWeb::OrganWebAPIController::ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
 {
 	resp->EnableWriteBuffer();
 	resp->AddDefHeaders(req);
@@ -1752,7 +1895,7 @@ Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NN<Net::WebServer::WebR
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json);
 }
 
-SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
+SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/api/lang"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLang);
 	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);
@@ -1766,8 +1909,10 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/booklist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/api/bookselect"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookSelect);
 	this->AddService(CSTR("/api/bookunselect"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookUnselect);
-	this->AddService(CSTR("/api/bookadd"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookAdd);
+	this->AddService(CSTR("/api/bookadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookAdd);
 	this->AddService(CSTR("/api/bookdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookDetail);
+	this->AddService(CSTR("/api/bookphoto"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookPhoto);
+	this->AddService(CSTR("/api/bookpdf"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookPDF);
 	this->AddService(CSTR("/api/photodetail"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/photoname"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoName);
@@ -1782,7 +1927,7 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/datafilepoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcDatafilePOI);
 }
 
-SSWR::OrganWeb::OrganWebPOIController::~OrganWebPOIController()
+SSWR::OrganWeb::OrganWebAPIController::~OrganWebAPIController()
 {
 }
 

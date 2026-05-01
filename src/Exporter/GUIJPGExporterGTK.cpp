@@ -8,6 +8,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <wchar.h>
 
+//#define VERBOSE
+
 Exporter::GUIJPGExporter::GUIJPGExporter() : Exporter::GUIExporter()
 {
 }
@@ -35,9 +37,15 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char>
 Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 *tmpBuff;
+#ifdef VERBOSE
+	printf("GUIJPGExporter: begin export file\r\n");
+#endif
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, tmpBuff).p;
 	if (image == 0)
 	{
+#ifdef VERBOSE
+		printf("GUIJPGExporter: image is null\r\n");
+#endif
 		return false;
 	}
 	Char cbuff[32];
@@ -73,12 +81,18 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				srcImg = NN<Media::RasterImage>::ConvertFrom(img);
 			}
 		}
+#ifdef VERBOSE
+		printf("GUIJPGExporter: buffSize: %d\r\n", (int)buffSize);
+#endif
 		Media::JPEGFile::WriteJPGBuffer(stm, (const UInt8*)buff, buffSize, srcImg);
 		g_free(buff);
 		return true;
 	}
 	else
 	{
+#ifdef VERBOSE
+		printf("GUIJPGExporter: buff is null\r\n");
+#endif
 	}
 	return false;
 }

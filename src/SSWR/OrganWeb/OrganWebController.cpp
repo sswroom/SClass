@@ -296,7 +296,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 						{
 							writer->Write(CSTR("<img src="));
 							sb.ClearStr();
-							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendC(UTF8STRC("img/photo?id="));
 							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
@@ -319,7 +319,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 						{
 							writer->Write(CSTR("<img src="));
 							sb.ClearStr();
-							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendC(UTF8STRC("img/photo?id="));
 							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
@@ -342,7 +342,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 						{
 							writer->Write(CSTR("<img src="));
 							sb.ClearStr();
-							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendC(UTF8STRC("img/photo?id="));
 							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
@@ -508,7 +508,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 				{
 					writer->Write(CSTR("<img src="));
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendC(UTF8STRC("img/photo?id="));
 					sb.AppendI32(sp->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(sp->cateId);
@@ -531,7 +531,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 				{
 					writer->Write(CSTR("<img src="));
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendC(UTF8STRC("img/photo?id="));
 					sb.AppendI32(sp->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(sp->cateId);
@@ -554,7 +554,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 				{
 					writer->Write(CSTR("<img src="));
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendC(UTF8STRC("img/photo?id="));
 					sb.AppendI32(sp->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(sp->cateId);
@@ -729,7 +729,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 
 				writer->Write(CSTR("<img src="));
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendC(UTF8STRC("img/photo?id="));
 				sb.AppendI32(species->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(species->cateId);

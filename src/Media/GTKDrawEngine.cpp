@@ -20,6 +20,7 @@
 #include <gdk/gdk.h>
 #endif
 #include <stdio.h>
+//#define VERBOSE
 
 Media::GTKDrawEngine::GTKDrawEngine() : iab(nullptr, true)
 {
@@ -34,7 +35,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UInt
 	NN<Media::GTKDrawImage> dimg;
 	cairo_surface_t *surface;
 	cairo_t *cr;
-	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
+	surface = cairo_image_surface_create((atype == Media::AT_IGNORE_ALPHA|| atype == Media::AT_ALPHA_ALL_FF) ? CAIRO_FORMAT_RGB24 : CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
 	cr = cairo_create(surface);
 	if (atype == Media::AT_ALPHA)
 	{
@@ -217,7 +218,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 	{
 		return nullptr; 
 	}
-	NN<Media::GTKDrawImage> gimg;;
+	NN<Media::GTKDrawImage> gimg;
 	if (!Optional<Media::GTKDrawImage>::ConvertFrom(this->CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
 		return nullptr;
 	gimg->SetHDPI(img->info.hdpi);
@@ -1514,20 +1515,34 @@ UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 	{
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 	}
-	Bool revOrder;
-	UnsafeArray<UInt8> imgPtr;
-	if (this->PixelGetBitCount() == 32 && this->PixelGetBits(revOrder).SetTo(imgPtr))
+	NN<Media::GTKDrawImage> tmpImg;
+	Optional<GTKDrawImage> optImg = nullptr;
+	GdkPixbuf *pixbuf = 0;
+	if (this->PixelGetBitCount() == 32 && this->info.atype != Media::AT_IGNORE_ALPHA && this->info.atype != Media::AT_ALPHA_ALL_FF)
 	{
-		ImageUtil_ImageFillAlpha32(imgPtr.Ptr(), this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), 0xff);
-		this->PixelGetBitsEnd(true);
+		Media::AlphaType atype = this->info.atype;
+		this->info.atype = AT_IGNORE_ALPHA;
+		tmpImg = NN<GTKDrawImage>::ConvertFrom(this->Clone());
+		this->info.atype = atype;
+		pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)tmpImg->surface, 0, 0, (gint)tmpImg->info.dispSize.x, (gint)tmpImg->info.dispSize.y);
+		optImg = tmpImg;
 	}
-	GdkPixbuf *pixbuf;
-	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispSize.x, (gint)this->info.dispSize.y);
+	else
+	{
+		pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispSize.x, (gint)this->info.dispSize.y);
+
+	}
 	if (pixbuf == 0)
 	{
+#ifdef VERBOSE
+		printf("GTKDrawImage.SaveJPG: pixbuf is null\r\n");
+#endif
+		optImg.Delete();
 		return 0;
 	}
-	gdk_pixbuf_save_to_buffer(pixbuf, &buff, &buffSize, "jpeg", 0, (void*)0);
+	GError *err = 0;
+	gdk_pixbuf_save_to_buffer(pixbuf, &buff, &buffSize, "jpeg", &err, (void*)0);
+	optImg.Delete();
 	if (buff)
 	{
 		Media::JPEGFile::WriteJPGBuffer(stm, (const UInt8*)buff, buffSize, this);
@@ -1538,6 +1553,10 @@ UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 	else
 	{
 		g_object_unref(pixbuf);
+#ifdef VERBOSE
+		printf("GTKDrawImage.SaveJPG: error in save to buffer: %s\r\n", err->message);
+#endif
+		g_error_free(err);
 		return 0;
 	}
 #endif
@@ -1546,7 +1565,21 @@ UIntOS Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 NN<Media::Image> Media::GTKDrawImage::Clone() const
 {
 	NN<Media::GTKDrawImage> dimg;
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype, this->colorSess));
+	if (this->surface && Optional<GTKDrawImage>::ConvertFrom(this->eng->CreateImage32(this->info.dispSize, this->info.atype)).SetTo(dimg))
+	{
+		UInt8 *srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+		UInt8 *destData = cairo_image_surface_get_data((cairo_surface_t*)dimg->surface);
+		if (srcData && destData)
+		{
+			ImageCopy_ImgCopy(srcData, destData, this->info.dispSize.x * 4, this->info.dispSize.y, (IntOS)this->info.storeSize.x * 4, (IntOS)this->info.storeSize.x * 4);
+			cairo_surface_mark_dirty((cairo_surface_t*)dimg->surface);
+		}
+		return dimg;
+	}
+	else
+	{
+		NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype, this->colorSess));
+	}
 	return dimg;
 }
 

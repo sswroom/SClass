@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
 #include "Exporter/GUIJPGExporter.h"
+#include "Exporter/PNGExporter.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Media/ICCProfile.h"
@@ -623,6 +624,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
 					{
 						NN<Media::DrawImage> gimg;
+						simg->info.atype = Media::AT_IGNORE_ALPHA;
 						if (this->env->GetDrawEngine()->ConvImage(simg, nullptr).SetTo(gimg))
 						{
 							if ((imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
@@ -687,12 +689,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 							{
-								IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-								buff = mstm.GetBuff(buffSize);
-								fs.Write(Data::ByteArrayR(buff, buffSize));
-								if (userFile->prevUpdated)
+								if (mstm.GetLength() == 0)
 								{
-									this->env->UserFilePrevUpdated(mutUsage, userFile);
+									printf("Error in exporting to JPG WM: %d x %d %s\r\n", (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, Media::PixelFormatGetName(simg->info.pf).v.Ptr());
+								}
+								else
+								{
+									IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+									buff = mstm.GetBuff(buffSize);
+									fs.Write(Data::ByteArrayR(buff, buffSize));
+									if (userFile->prevUpdated)
+									{
+										this->env->UserFilePrevUpdated(mutUsage, userFile);
+									}
 								}
 							}
 
@@ -719,12 +728,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
-							IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							buff = mstm.GetBuff(buffSize);
-							fs.Write(Data::ByteArrayR(buff, buffSize));
-							if (userFile->prevUpdated)
+							if (mstm.GetLength() == 0)
 							{
-								this->env->UserFilePrevUpdated(mutUsage, userFile);
+								printf("Error in exporting to JPG: %d x %d %s\r\n", (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, Media::PixelFormatGetName(simg->info.pf).v.Ptr());
+							}
+							else
+							{
+								IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								buff = mstm.GetBuff(buffSize);
+								fs.Write(Data::ByteArrayR(buff, buffSize));
+								if (userFile->prevUpdated)
+								{
+									this->env->UserFilePrevUpdated(mutUsage, userFile);
+								}
 							}
 						}
 					}

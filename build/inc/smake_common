@@ -5206,8 +5206,8 @@ SSWR/OrganMgr/OrganUserEditForm.h:
 @OrganUserEditForm.o
 SSWR/OrganMgr/OrganUserForm.h:
 @OrganUserForm.o
-SSWR/OrganWeb/OrganWebBookController.h:
-@OrganWebBookController.o
+SSWR/OrganWeb/OrganWebAPIController.h:
+@OrganWebAPIController.o
 SSWR/OrganWeb/OrganWebCommon.h:
 SSWR/OrganWeb/OrganWebController.h:
 @OrganWebController.o
@@ -5219,8 +5219,6 @@ SSWR/OrganWeb/OrganWebMainController.h:
 @OrganWebMainController.o
 SSWR/OrganWeb/OrganWebPhotoController.h:
 @OrganWebPhotoController.o
-SSWR/OrganWeb/OrganWebPOIController.h:
-@OrganWebPOIController.o
 SSWR/OrganWeb/OrganWebSession.h:
 @OrganWebSession.o
 SSWR/SDNSProxy/SDNSProxyCore.h:
