@@ -3194,8 +3194,23 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Tex
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<GroupInfo> group;
-	if (!this->groupMap.Get(parentId).SetTo(group))
+	Optional<GroupInfo> parentGroup = nullptr;
+	NN<CategoryInfo> cate;
+	if (!this->cateMap.Get(cateId).SetTo(cate))
 		return 0;
+	if (parentId == 0)
+	{
+		parentGroup = nullptr;
+	}
+	else if (this->groupMap.Get(parentId).SetTo(group))
+	{
+		parentGroup = group;
+	}
+	else
+	{
+		return 0;
+	}
+
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
 		return 0;
@@ -3240,7 +3255,14 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Tex
 		newGroup->totalCount = (UIntOS)-1;
 		newGroup->photoSpObj = nullptr;
 		this->groupMap.Put(newGroup->id, newGroup);
-		group->groups.Add(newGroup);
+		if (parentGroup.SetTo(group))
+		{
+			group->groups.Add(newGroup);
+		}
+		else
+		{
+			cate->groups.Add(newGroup);
+		}
 
 		return newGroup->id;
 	}

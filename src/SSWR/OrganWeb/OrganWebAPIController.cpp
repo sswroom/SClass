@@ -1369,6 +1369,88 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUpdatePeak(NN<Net::WebS
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupTypes(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 cateId;
+	NN<CategoryInfo> cate;
+	Sync::RWMutexUsage mutUsage;
+	if (req->GetQueryValueI32(CSTR("cateId"), cateId) && me->env->CateGet(mutUsage, cateId).SetTo(cate))
+	{
+		NN<GroupTypeInfo> groupType;
+		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+		UIntOS i = 0;
+		UIntOS j = cate->groupTypes.GetCount();
+		while (i < j)
+		{
+			groupType = cate->groupTypes.GetItemNoCheck(i);
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), groupType->id);
+			json.ObjectAddStr(CSTR("chiName"), groupType->chiName);
+			json.ObjectAddStr(CSTR("engName"), groupType->engName);
+			json.ObjectEnd();
+			i++;
+		}
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupAdd(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 cateId;
+	Int32 parentId;
+	NN<Text::String> chiName;
+	NN<Text::String> engName;
+	NN<Text::String> descript;
+	Int32 groupType;
+	Int32 adminOnly;
+	if (req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("parentId"), parentId) &&
+		req->GetHTTPFormStr(CSTR("chiName")).SetTo(chiName) &&
+		req->GetHTTPFormStr(CSTR("engName")).SetTo(engName) &&
+		req->GetHTTPFormStr(CSTR("descript")).SetTo(descript) &&
+		req->GetHTTPFormInt32(CSTR("groupType"), groupType) &&
+		req->GetHTTPFormInt32(CSTR("adminOnly"), adminOnly))
+	{
+		Sync::RWMutexUsage mutUsage;
+		GroupFlags groupFlags = GF_NONE;
+		if (adminOnly)
+		{
+			groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
+		}
+		if (me->env->GroupAdd(mutUsage, engName->ToCString(), chiName->ToCString(), parentId, descript->ToCString(), groupType, cateId, groupFlags))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -1919,6 +2001,8 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/photopos"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoPos);
 	this->AddService(CSTR("/api/unfinpeak"), Net::WebUtil::RequestMethod::HTTP_GET, SvcUnfinPeak);
 	this->AddService(CSTR("/api/updatepeak"), Net::WebUtil::RequestMethod::HTTP_POST, SvcUpdatePeak);
+	this->AddService(CSTR("/api/grouptypes"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupTypes);
+	this->AddService(CSTR("/api/groupadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupAdd);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
