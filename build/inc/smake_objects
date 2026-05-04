@@ -1922,6 +1922,8 @@ PKGMapParser.o: ../../src/Parser/ObjParser/PKGMapParser.cpp
 TPKXParser.o: ../../src/Parser/ObjParser/TPKXParser.cpp
 
 ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
+AIDemoCore.o: ../../src/SSWR/AIDemo/AIDemoCore.cpp
+AIDemoHandler.o: ../../src/SSWR/AIDemo/AIDemoHandler.cpp
 AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
 AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp

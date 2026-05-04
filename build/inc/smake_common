@@ -262,6 +262,7 @@ console:
 @WiFiScan
 @ELFFuncTest
 @KMLParserTest
+@AIDemo
 @ArgsTest
 @AVIReadWeb
 @GPIOSigGen
@@ -934,6 +935,9 @@ KMLParserTest:
 @ConsoleStartup.o
 
 #SSWR
+AIDemo:
+@AIDemoMain.o
+@ConsoleStartup.o
 ArgsTest:
 @ArgsTestMain.o
 @ConsoleStartup.o
@@ -1494,6 +1498,7 @@ WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
 OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
 ELFFuncTest.o: ../../main/Parser/ELFFuncTest.cpp
 KMLParserTest.o: ../../main/Parser/KMLParserTest.cpp
+AIDemoMain.o: ../../main/SSWR/AIDemoMain.cpp
 ArgsTestMain.o: ../../main/SSWR/ArgsTestMain.cpp
 AVIReadWebMain.o: ../../main/SSWR/AVIReadWebMain.cpp
 AVIRMain.o: ../../main/SSWR/AVIRMain.cpp
@@ -4413,6 +4418,10 @@ Parser/ObjParser/TPKXParser.h:
 
 SSWR/ProcMonForm.h:
 @ProcMonForm.o
+SSWR/AIDemo/AIDemoCore.h:
+@AIDemoCore.o
+SSWR/AIDemo/AIDemoHandler.h:
+@AIDemoHandler.o
 SSWR/AVIRead/AVIRAboutForm.h:
 @AVIRAboutForm.o
 SSWR/AVIRead/AVIRAccelerometerForm.h:
