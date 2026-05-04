@@ -42,7 +42,7 @@ Bool __stdcall SSWR::AIDemo::AIDemoHandler::BotFunc(NN<Net::WebServer::WebReques
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddInt32(CSTR("status"), (Int32)result->GetStatusCode());
 	json.ObjectAddStr(CSTR("answer"), outputText);
-	UIntOS i = outputText->IndexOf(CSTR("```sql\n"));
+	UIntOS i = outputText->IndexOfICase(CSTR("```sql\n"));
 	if (i != INVALID_INDEX)
 	{
 		i += 7;
