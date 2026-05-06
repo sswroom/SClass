@@ -998,6 +998,58 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NN<DB::SQLBuilder> sql, Text::CString s
 		{
 			sql->AppendCmdC(CSTR(")"));
 		}
+		if (sqlType == DB::SQLType::PostgreSQL || sqlType == DB::SQLType::MySQL || sqlType == DB::SQLType::MSSQL)
+		{
+			NN<Text::String> name;
+			Data::ArrayIterator<NN<DB::ForeignKeyDef>> itFK = tabDef->FKIterator();
+			while (itFK.HasNext())
+			{
+				NN<DB::ForeignKeyDef> fk = itFK.Next();
+				sql->AppendCmdC(CSTR(", "));
+				if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
+				if (fk->GetName().SetTo(name))
+				{
+					sql->AppendCmdC(CSTR("CONSTRAINT "));
+					sql->AppendCol(name->v);
+					sql->AppendCmdC(CSTR(" "));
+				}
+				sql->AppendCmdC(CSTR("FOREIGN KEY ("));
+				NN<DB::ForeignKeyDef::ColMap> col;
+				UIntOS i = 0;
+				UIntOS j = fk->GetColCnt();
+				while (i < j)
+				{
+					if (fk->GetCol(i).SetTo(col))
+					{
+						if (i > 0)
+							sql->AppendCmdC(CSTR(", "));
+						sql->AppendCol(col->localCol->v);
+					}
+					i++;
+				}
+				sql->AppendCmdC(CSTR(") REFERENCES "));
+				if (fk->GetForeignSchema().SetTo(name) && name->leng > 0)
+				{
+					sql->AppendCol(name->v);
+					sql->AppendCmdC(CSTR("."));
+				}
+				sql->AppendCol(fk->GetForeignTable()->v);
+				sql->AppendCmdC(CSTR("("));
+				i = 0;
+				j = fk->GetColCnt();
+				while (i < j)
+				{
+					if (fk->GetCol(i).SetTo(col))
+					{
+						if (i > 0)
+							sql->AppendCmdC(CSTR(", "));
+						sql->AppendCol(col->foreignCol->v);
+					}
+					i++;
+				}
+				sql->AppendCmdC(CSTR(")"));
+			}
+		}
 	}
 	if (multiline) sql->AppendCmdC(CSTR("\r\n"));
 	sql->AppendCmdC(CSTR(")"));

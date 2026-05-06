@@ -10,6 +10,7 @@
 # NO_JXL := 1
 # NO_OPENCV := 1
 # NO_LIBPQ := 1
+# NO_PYTHON := 1
 # USE_FDEEP := 1
 # USE_AWS := 1
 
@@ -2070,6 +2071,8 @@ DB/DBTool.h:
 @DBTool.o
 DB/DBUtil.h:
 @DBUtil.o
+DB/ForeignKeyDef.h:
+@ForeignKeyDef.o
 DB/JavaDBUtil.h:
 @JavaDBUtil.o
 DB/JSONDB.h:
@@ -4416,6 +4419,14 @@ Parser/ObjParser/PKGMapParser.h:
 Parser/ObjParser/TPKXParser.h:
 @TPKXParser.o
 
+Python/PythonCore.h:
+@?(NO_PYTHON == 0)PythonCore.o
+@?(NO_PYTHON > 0)PythonCoreNull.o
+Python/PythonModule.h:
+@PythonModule.o
+Python/PythonObject.h:
+@PythonObject.o
+
 SSWR/ProcMonForm.h:
 @ProcMonForm.o
 SSWR/AIDemo/AIDemoCore.h:
@@ -4922,6 +4933,8 @@ SSWR/AVIRead/AVIRProxyServerForm.h:
 @AVIRProxyServerForm.o
 SSWR/AVIRead/AVIRPushServerForm.h:
 @AVIRPushServerForm.o
+SSWR/AVIRead/AVIRPythonForm.h:
+@AVIRPythonForm.o
 SSWR/AVIRead/AVIRRadioScanForm.h:
 @AVIRRadioScanForm.o
 SSWR/AVIRead/AVIRRAWMonitorForm.h:

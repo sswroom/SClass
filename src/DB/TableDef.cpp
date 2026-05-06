@@ -19,7 +19,6 @@ DB::TableDef::TableDef(Text::CString schemaName, Text::CStringNN tableName)
 
 DB::TableDef::~TableDef()
 {
-	UIntOS i;
 	OPTSTR_DEL(this->databaseName);
 	OPTSTR_DEL(this->schemaName);
 	this->tableName->Release();
@@ -27,11 +26,8 @@ DB::TableDef::~TableDef()
 	OPTSTR_DEL(this->charset);
 	SDEL_TEXT(this->attr);
 	SDEL_TEXT(this->comments);
-	i = this->cols.GetCount();
-	while (i-- > 0)
-	{
-		this->cols.RemoveAt(i).Delete();
-	}
+	this->cols.DeleteAll();
+	this->fkeys.DeleteAll();
 }
 
 Optional<Text::String> DB::TableDef::GetDatabaseName() const
@@ -121,6 +117,11 @@ Data::ArrayIterator<NN<DB::ColDef>> DB::TableDef::ColIterator() const
 	return this->cols.Iterator();
 }
 
+Data::ArrayIterator<NN<DB::ForeignKeyDef>> DB::TableDef::FKIterator() const
+{
+	return this->fkeys.Iterator();
+}
+
 NN<DB::TableDef> DB::TableDef::AddCol(NN<DB::ColDef> col)
 {
 	this->cols.Add(col);
@@ -179,6 +180,12 @@ NN<DB::TableDef> DB::TableDef::SetComments(UnsafeArrayOpt<const UTF8Char> commen
 NN<DB::TableDef> DB::TableDef::SetSQLType(DB::SQLType sqlType)
 {
 	this->sqlType = sqlType;
+	return *this;
+}
+
+NN<DB::TableDef> DB::TableDef::AddForeignKey(NN<ForeignKeyDef> fkey)
+{
+	this->fkeys.Add(fkey);
 	return *this;
 }
 
