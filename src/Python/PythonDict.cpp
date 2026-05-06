@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "Python/PythonDict.h"
-#include "Python/PythonModule.h"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -11,62 +10,54 @@ public:
 	PyObject *obj;
 };
 
-Python::PythonModule::PythonModule(AnyType module) : PythonObject(module)
+Python::PythonDict::PythonDict(AnyType dict) : PythonObject(dict)
 {
 }
 
-Python::PythonModule::~PythonModule()
+Python::PythonDict::~PythonDict()
 {
 }
 
-UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetName() const
+UnsafeArrayOpt<const UTF8Char> Python::PythonDict::GetKey(UIntOS index) const
 {
-	return (const UTF8Char*)PyModule_GetName(this->clsData->obj);
-}
-
-UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetFileName() const
-{
-	const UTF8Char *ret = (const UTF8Char*)PyModule_GetFilename(this->clsData->obj);
-	if (ret == 0)
+	Py_ssize_t pos = (Py_ssize_t)index;
+	PyObject *key;
+	if (PyDict_Next(this->clsData->obj, &pos, &key, nullptr))
 	{
-		PyErr_Clear();
-		return nullptr;
-	}
-	return ret;
-}
-
-Optional<Python::PythonDict> Python::PythonModule::GetDict() const
-{
-	PyObject *dict = PyModule_GetDict(this->clsData->obj);
-	if (dict)
-	{
-		Py_INCREF(dict);
-		NN<PythonDict> nndict;
-		NEW_CLASSNN(nndict, PythonDict(dict));
-		return nndict;
+		return (const UTF8Char*)PyUnicode_AsUTF8(key);
 	}
 	return nullptr;
 }
 
-Python::ObjectType Python::PythonModule::GetObjectType() const
+Optional<Python::PythonObject> Python::PythonDict::GetValue(UIntOS index) const
 {
-	return ObjectType::Module;
+	Py_ssize_t pos = (Py_ssize_t)index;
+	PyObject *value;
+	if (PyDict_Next(this->clsData->obj, &pos, nullptr, &value))
+	{
+		Py_INCREF(value);
+		return PythonObject::FromPtr(value);
+	}
+	return nullptr;
 }
 
-void Python::PythonModule::ToString(NN<Text::StringBuilderUTF8> sb) const
+Python::ObjectType Python::PythonDict::GetObjectType() const
 {
-	ToPythonString(sb);
+	return ObjectType::Dict;
+}
+
+void Python::PythonDict::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
 	sb->AppendUTF8Char('{');
-	PyObject *dict = PyModule_GetDict(this->clsData->obj);
 	Py_ssize_t pos = 0;
 	PyObject *key;
 	PyObject *value;
 	Bool first = true;
-	while (PyDict_Next(dict, &pos, &key, &value))
+	while (PyDict_Next(this->clsData->obj, &pos, &key, &value))
 	{
 		if (!first)
 		{
-			sb->Append(CSTR(",\r\n"));
+			sb->AppendUTF8Char(',');
 		}
 		first = false;
 		Py_ssize_t keySize;
@@ -100,6 +91,5 @@ void Python::PythonModule::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendC((const UTF8Char*)"<Non-String Key>", 16);
 		}
 	}
-	Py_DECREF(dict);
 	sb->AppendUTF8Char('}');
 }

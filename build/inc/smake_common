@@ -4422,10 +4422,20 @@ Parser/ObjParser/TPKXParser.h:
 Python/PythonCore.h:
 @?(NO_PYTHON == 0)PythonCore.o
 @?(NO_PYTHON > 0)PythonCoreNull.o
+Python/PythonDict.h:
+@PythonDict.o
+Python/PythonFloat.h:
+@PythonFloat.o
+Python/PythonFunction.h:
+@PythonFunction.o
 Python/PythonModule.h:
 @PythonModule.o
 Python/PythonObject.h:
 @PythonObject.o
+Python/PythonType.h:
+@PythonType.o
+Python/PythonUnicode.h:
+@PythonUnicode.o
 
 SSWR/ProcMonForm.h:
 @ProcMonForm.o

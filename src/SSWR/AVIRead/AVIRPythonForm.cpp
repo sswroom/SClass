@@ -1,5 +1,56 @@
 #include "Stdafx.h"
+#include "Python/PythonDict.h"
+#include "Python/PythonModule.h"
 #include "SSWR/AVIRead/AVIRPythonForm.h"
+
+void __stdcall SSWR::AVIRead::AVIRPythonForm::OnModuleClicked(AnyType userObj)
+{
+	NN<AVIRPythonForm> me = userObj.GetNN<AVIRPythonForm>();
+	Text::StringBuilderUTF8 sb;
+	me->txtModuleName->GetText(sb);
+	NN<Python::PythonModule> mod;
+	UnsafeArray<const UTF8Char> s;
+	if (sb.GetLength() > 0)
+	{
+		if (me->pyCore.ImportModule(sb.v).SetTo(mod))
+		{
+			me->pyModule.Delete();
+			me->pyModule = mod;
+			if (mod->GetFileName().SetTo(s))
+			{
+				me->txtModuleFile->SetText(Text::CStringNN::FromPtr(s));
+			}
+			else
+			{
+				me->txtModuleFile->SetText(CSTR("<Unknown>"));
+			}
+			me->lvModule->ClearItems();
+			NN<Python::PythonDict> dict;
+			if (mod->GetDict().SetTo(dict))
+			{
+				UnsafeArray<const UTF8Char> key;
+				UIntOS i = 0;
+				while (true)
+				{
+					if (!dict->GetKey(i).SetTo(key))
+						break;
+					me->lvModule->AddItem(Text::CStringNN::FromPtr(key), 0);
+					NN<Python::PythonObject> val;
+					if (dict->GetValue(i).SetTo(val))
+					{
+						sb.ClearStr();
+						val->ToString(sb);
+						me->lvModule->SetSubItem(i, 1, Python::ObjectTypeGetName(val->GetObjectType()));
+						me->lvModule->SetSubItem(i, 2, sb.ToCString());
+						val.Delete();
+					}
+					i++;
+				}
+				dict.Delete();
+			}
+		}
+	}
+}
 
 SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
@@ -7,6 +58,7 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 	this->SetText(CSTR("Python"));
 
 	this->core = core;
+	this->pyModule = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -37,6 +89,31 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 	this->txtCopyright = ui->NewTextBox(this->tpInfo, CSTR(""), true);
 	this->txtCopyright->SetRect(104, 100, 400, 192, false);
 	this->txtCopyright->SetReadOnly(true);
+
+	this->tpModule = this->tcMain->AddTabPage(CSTR("Module"));
+	this->pnlModule = ui->NewPanel(this->tpModule);
+	this->pnlModule->SetRect(0, 0, 100, 52, true);
+	this->pnlModule->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblModuleName = ui->NewLabel(this->pnlModule, CSTR("Module Name"));
+	this->lblModuleName->SetRect(4, 4, 100, 23, false);
+	this->txtModuleName = ui->NewTextBox(this->pnlModule, CSTR(""));
+	this->txtModuleName->SetRect(104, 4, 200, 23, false);
+	this->btnModule = ui->NewButton(this->pnlModule, CSTR("Load"));
+	this->btnModule->SetRect(304, 4, 75, 23, false);
+	this->btnModule->HandleButtonClick(OnModuleClicked, this);
+	this->lblModuleFile = ui->NewLabel(this->pnlModule, CSTR("File Name"));
+	this->lblModuleFile->SetRect(4, 28, 100, 23, false);
+	this->txtModuleFile = ui->NewTextBox(this->pnlModule, CSTR(""));
+	this->txtModuleFile->SetRect(104, 28, 400, 23, false);
+	this->txtModuleFile->SetReadOnly(true);
+	this->lvModule = ui->NewListView(this->tpModule, UI::ListViewStyle::Table, 3);
+	this->lvModule->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvModule->AddColumn(CSTR("Key"), 200);
+	this->lvModule->AddColumn(CSTR("Type"), 100);
+	this->lvModule->AddColumn(CSTR("Value"), 400);
+	this->lvModule->SetFullRowSelect(true);
+	this->lvModule->SetShowGrid(true);
+
 	UnsafeArray<const UTF8Char> s;
 	if (this->pyCore.GetVersion().SetTo(s))
 	{
@@ -62,6 +139,7 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRPythonForm::~AVIRPythonForm()
 {
+	this->pyModule.Delete();
 }
 
 void SSWR::AVIRead::AVIRPythonForm::OnMonitorChanged()

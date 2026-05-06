@@ -1926,10 +1926,25 @@ PythonCore.o: ../../src/Python/PythonCore.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 PythonCoreNull.o: ../../src/Python/PythonCoreNull.cpp
+PythonDict.o: ../../src/Python/PythonDict.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonFloat.o: ../../src/Python/PythonFloat.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonFunction.o: ../../src/Python/PythonFunction.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
 PythonModule.o: ../../src/Python/PythonModule.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 PythonObject.o: ../../src/Python/PythonObject.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonType.o: ../../src/Python/PythonType.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonUnicode.o: ../../src/Python/PythonUnicode.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 
