@@ -194,6 +194,7 @@
 #include "SSWR/AVIRead/AVIRProgramLinksForm.h"
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
+#include "SSWR/AVIRead/AVIRPythonForm.h"
 #include "SSWR/AVIRead/AVIRPushServerForm.h"
 #include "SSWR/AVIRead/AVIRRadioScanForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
@@ -562,7 +563,8 @@ typedef enum
 	MNU_MD5COMPARE,
 	MNU_OSM_TILE_BOUNDS,
 	MNU_OSM_URL,
-	MNU_OPENAI
+	MNU_OPENAI,
+	MNU_PYTHON
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -732,6 +734,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Timestamp"), MNU_TIMESTAMP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("VirtualBox Manager"), MNU_VBOX_MANAGER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Investment"), MNU_INVESTMENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Python"), MNU_PYTHON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("RAM Speed"), MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Thread Speed"), MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3278,6 +3281,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROpenAIForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
+		break;
+	case MNU_PYTHON:
+		{
+			NN<SSWR::AVIRead::AVIRPythonForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPythonForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
 	}
 }
 

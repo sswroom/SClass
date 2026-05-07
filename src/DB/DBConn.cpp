@@ -630,7 +630,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		}
 		this->CloseReader(r);
 
-		sql.Clear();
+/*		sql.Clear();
 		sql.AppendCmdC(CSTR("SELECT a.attname FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE i.indrelid = "));
 		if (schemaName.SetTo(nns) && nns.leng > 0)
 		{
@@ -659,7 +659,65 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				}
 			}
 			this->CloseReader(r);
+		}*/
+		sql.Clear();
+		sql.AppendCmdC(CSTR("SELECT tc.constraint_name, kcu.column_name, ccu.table_schema AS foreign_table_schema, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name, tc.constraint_type"));
+		sql.AppendCmdC(CSTR(" FROM information_schema.table_constraints AS tc"));
+		sql.AppendCmdC(CSTR(" JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema"));
+		sql.AppendCmdC(CSTR(" JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name"));
+		if (schemaName.SetTo(nns) && nns.leng > 0)
+		{
+			sql.AppendCmdC(CSTR(" WHERE tc.table_schema="));
+			sql.AppendStrC(nns);
+			sql.AppendCmdC(CSTR(" AND tc.table_name="));
+			sql.AppendStrC(tableName);
 		}
+		else
+		{
+			sql.AppendCmdC(CSTR(" WHERE tc.table_name="));
+			sql.AppendStrC(tableName);
+		}
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
+		{
+			Data::FastStringMapNN<DB::ForeignKeyDef> fkMap;
+			NN<DB::ForeignKeyDef> fk;
+			while (r->ReadNext())
+			{
+				NN<Text::String> colName = r->GetNewStrNN(1);
+				NN<Text::String> constraintType = r->GetNewStrNN(5);
+				DB::ColDef *col = 0;
+				col = colMap.GetNN(colName);
+				if (col)
+				{
+					if (constraintType->Equals(UTF8STRC("PRIMARY KEY")))
+					{
+						col->SetPK(true);
+					}
+					else if (constraintType->Equals(UTF8STRC("FOREIGN KEY")))
+					{
+						NN<Text::String> constName = r->GetNewStrNN(0);
+						NN<Text::String> foreignTableSchema = r->GetNewStrNN(2);
+						NN<Text::String> foreignTableName = r->GetNewStrNN(3);
+						if (!fkMap.GetNN(constName).SetTo(fk))
+						{
+							NEW_CLASSNN(fk, DB::ForeignKeyDef(constName, foreignTableSchema, foreignTableName));
+							fkMap.PutNN(constName, fk);
+							tab->AddForeignKey(fk);
+						}
+						NN<Text::String> foreignColName = r->GetNewStrNN(4);
+						fk->AddCol(colName, foreignColName);
+						constName->Release();
+						foreignTableSchema->Release();
+						foreignTableName->Release();
+						foreignColName->Release();
+					}
+				}
+				colName->Release();
+				constraintType->Release();
+			}
+			this->CloseReader(r);
+		}
+
 		if (hasGeometry && geometrySchema.SetTo(s))
 		{
 			if (s->Equals(CSTR("sde")))

@@ -217,6 +217,7 @@ DBReader.o: ../../src/DB/DBReader.cpp
 DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
+ForeignKeyDef.o: ../../src/DB/ForeignKeyDef.cpp
 JavaDBUtil.o: ../../src/DB/JavaDBUtil.cpp
 JSONDB.o: ../../src/DB/JSONDB.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
@@ -1921,6 +1922,38 @@ OSMMapParser.o: ../../src/Parser/ObjParser/OSMMapParser.cpp
 PKGMapParser.o: ../../src/Parser/ObjParser/PKGMapParser.cpp
 TPKXParser.o: ../../src/Parser/ObjParser/TPKXParser.cpp
 
+PythonBool.o: ../../src/Python/PythonBool.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonCore.o: ../../src/Python/PythonCore.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonCoreNull.o: ../../src/Python/PythonCoreNull.cpp
+PythonDict.o: ../../src/Python/PythonDict.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonFloat.o: ../../src/Python/PythonFloat.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonFunction.o: ../../src/Python/PythonFunction.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonList.o: ../../src/Python/PythonList.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonModule.o: ../../src/Python/PythonModule.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonObject.o: ../../src/Python/PythonObject.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonType.o: ../../src/Python/PythonType.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonUnicode.o: ../../src/Python/PythonUnicode.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+
 ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
 AIDemoCore.o: ../../src/SSWR/AIDemo/AIDemoCore.cpp
 AIDemoHandler.o: ../../src/SSWR/AIDemo/AIDemoHandler.cpp
@@ -2175,6 +2208,7 @@ AVIRProgramLinksForm.o: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
 AVIRProtoDecForm.o: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 AVIRProxyServerForm.o: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
 AVIRPushServerForm.o: ../../src/SSWR/AVIRead/AVIRPushServerForm.cpp
+AVIRPythonForm.o: ../../src/SSWR/AVIRead/AVIRPythonForm.cpp
 AVIRRadioScanForm.o: ../../src/SSWR/AVIRead/AVIRRadioScanForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
 AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp

@@ -2,6 +2,7 @@
 #define _SM_DB_TABLEDEF
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
+#include "DB/ForeignKeyDef.h"
 #include "Data/ArrayListNN.hpp"
 #include "Text/String.h"
 
@@ -22,6 +23,7 @@ namespace DB
 		SQLType sqlType;
 
 		Data::ArrayListNN<ColDef> cols;
+		Data::ArrayListNN<ForeignKeyDef> fkeys;
 
 	public:
 		TableDef(Text::CString schemaName, Text::CStringNN tableName);
@@ -40,6 +42,7 @@ namespace DB
 		Optional<DB::ColDef> GetSinglePKCol() const;
 		UIntOS CountPK() const;
 		Data::ArrayIterator<NN<DB::ColDef>> ColIterator() const;
+		Data::ArrayIterator<NN<DB::ForeignKeyDef>> FKIterator() const;
 
 		NN<TableDef> AddCol(NN<DB::ColDef> col);
 		NN<TableDef> SetDatabaseName(Text::CString databaseName);
@@ -50,6 +53,7 @@ namespace DB
 		NN<TableDef> SetAttr(UnsafeArrayOpt<const UTF8Char> attr);
 		NN<TableDef> SetComments(UnsafeArrayOpt<const UTF8Char> comments);
 		NN<TableDef> SetSQLType(SQLType sqlType);
+		NN<TableDef> AddForeignKey(NN<ForeignKeyDef> fkey);
 		
 		void ColFromReader(NN<DB::DBReader> r);
 		NN<TableDef> Clone() const;
