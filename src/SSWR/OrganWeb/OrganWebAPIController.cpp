@@ -209,8 +209,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcCate(NN<Net::WebServer:
 	NN<CategoryInfo> cate;
 	NN<GroupInfo> group;
 	NN<Text::String> cateName;
+	Int32 cateId;
 	NN<WebUserInfo> user;
-	if (req->GetQueryValue(CSTR("cateName")).SetTo(cateName) && me->env->CateGetByName(mutUsage, cateName).SetTo(cate))
+	if ((req->GetQueryValue(CSTR("cateName")).SetTo(cateName) && me->env->CateGetByName(mutUsage, cateName).SetTo(cate)) ||
+		(req->GetQueryValueI32(CSTR("id"), cateId) && me->env->CateGet(mutUsage, cateId).SetTo(cate)))
 	{
 		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if ((cate->flags & 1) && notAdmin)
@@ -1451,6 +1453,141 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupAdd(NN<Net::WebSer
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+	Int32 groupId;
+	Int32 cateId;
+	Bool isAdmin = false;
+	if (env.user.SetTo(user) && user->userType == UserType::Admin)
+	{
+		isAdmin = true;
+	}
+
+	if (!req->GetQueryValueI32(CSTR("id"), groupId) || !req->GetQueryValueI32(CSTR("cateId"), cateId))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	NN<GroupInfo> group;
+	Sync::RWMutexUsage groupMutUsage;
+	if (!me->env->GroupGet(groupMutUsage, groupId).SetTo(group) || group->cateId != cateId)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	else
+	{
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		json.ObjectBeginObject(CSTR("group"));
+		me->AddGroup(json, group);
+		json.ObjectEnd();
+		json.ObjectAddBool(CSTR("isPublic"), me->env->GroupIsPublic(groupMutUsage, group->id));
+		json.ObjectBeginArray(CSTR("locators"));
+		NN<GroupInfo> locator = group;
+		while (true)
+		{
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), locator->id);
+			json.ObjectAddInt32(CSTR("cateId"), locator->cateId);
+			json.ObjectAddInt32(CSTR("groupType"), locator->groupType);
+			json.ObjectAddStr(CSTR("engName"), locator->engName);
+			json.ObjectAddStr(CSTR("chiName"), locator->chiName);
+			json.ObjectEnd();
+			if (!me->env->GroupGet(groupMutUsage, locator->parentId).SetTo(locator))
+				break;
+		}
+		json.ArrayEnd();
+		UIntOS i = 0;
+		UIntOS j = group->species.GetCount();
+		Sync::RWMutexUsage mutUsage;
+		json.ObjectBeginArray(CSTR("childSpecies"));
+		while (i < j)
+		{
+			NN<SpeciesInfo> sp = group->species.GetItemNoCheck(i);
+			if (sp->files.GetCount() > 0)
+			{
+				if ((sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
+				{
+					me->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
+					me->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
+				}
+			}
+			else
+			{
+				if (sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
+				{
+					me->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
+					me->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UIntOS)-1, (UIntOS)-1);
+				}
+			}
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), sp->speciesId);
+			json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
+			json.ObjectAddInt32(CSTR("groupId"), sp->groupId);
+			json.ObjectAddStr(CSTR("sciName"), sp->sciName);
+			json.ObjectAddStr(CSTR("engName"), sp->engName);
+			json.ObjectAddStr(CSTR("chiName"), sp->chiName);
+			if (sp->photoId != 0)
+			{
+				json.ObjectAddInt32(CSTR("photoId"), sp->photoId);	
+			}
+			else if (sp->photoWId != 0)
+			{
+				json.ObjectAddInt32(CSTR("photoWId"), sp->photoWId);
+			}
+			else
+			{
+				json.ObjectAddStrOpt(CSTR("photo"), sp->photo);
+			}
+			json.ObjectEnd();
+			i++;
+		}
+		json.ArrayEnd();
+		json.ObjectBeginArray(CSTR("childGroups"));
+		NN<GroupInfo> childGroup;
+		NN<SpeciesInfo> photoSpObj;
+		i = 0;
+		j = group->groups.GetCount();
+		while (i < j)
+		{
+			childGroup = group->groups.GetItemNoCheck(i);
+			if ((childGroup->flags & 1) == 0 || isAdmin)
+			{
+				json.ArrayBeginObject();
+				json.ObjectAddInt32(CSTR("id"), childGroup->id);
+				json.ObjectAddInt32(CSTR("cateId"), childGroup->cateId);
+				json.ObjectAddStr(CSTR("engName"), childGroup->engName);
+				json.ObjectAddStr(CSTR("chiName"), childGroup->chiName);
+				json.ObjectAddUInt64(CSTR("myPhotoCount"), childGroup->myPhotoCount);
+				json.ObjectAddUInt64(CSTR("photoCount"), childGroup->photoCount);
+				json.ObjectAddUInt64(CSTR("totalCount"), childGroup->totalCount);
+				if (group->photoSpObj.SetTo(photoSpObj) && (!photoSpObj->photo.IsNull() || photoSpObj->photoId != 0 || photoSpObj->photoWId != 0))
+				{
+					json.ObjectAddInt32(CSTR("photoSpId"), photoSpObj->speciesId);
+					if (photoSpObj->photoId != 0)
+					{
+						json.ObjectAddInt32(CSTR("photoId"), photoSpObj->photoId);	
+					}
+					else if (photoSpObj->photoWId != 0)
+					{
+						json.ObjectAddInt32(CSTR("photoWId"), photoSpObj->photoWId);
+					}
+					else
+					{
+						json.ObjectAddStrOpt(CSTR("photo"), photoSpObj->photo);
+					}
+				}
+				json.ObjectEnd();
+			}
+			i++;
+		}
+		json.ArrayEnd();
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -2003,6 +2140,7 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/updatepeak"), Net::WebUtil::RequestMethod::HTTP_POST, SvcUpdatePeak);
 	this->AddService(CSTR("/api/grouptypes"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupTypes);
 	this->AddService(CSTR("/api/groupadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupAdd);
+	this->AddService(CSTR("/api/groupdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupDetail);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
