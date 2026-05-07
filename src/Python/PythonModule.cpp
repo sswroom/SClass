@@ -56,50 +56,52 @@ Python::ObjectType Python::PythonModule::GetObjectType() const
 void Python::PythonModule::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	ToPythonString(sb);
-	sb->AppendUTF8Char('{');
 	PyObject *dict = PyModule_GetDict(this->clsData->obj);
-	Py_ssize_t pos = 0;
-	PyObject *key;
-	PyObject *value;
-	Bool first = true;
-	while (PyDict_Next(dict, &pos, &key, &value))
+	if (dict)
 	{
-		if (!first)
+		sb->AppendUTF8Char('{');
+		Py_ssize_t pos = 0;
+		PyObject *key;
+		PyObject *value;
+		Bool first = true;
+		while (PyDict_Next(dict, &pos, &key, &value))
 		{
-			sb->Append(CSTR(",\r\n"));
-		}
-		first = false;
-		Py_ssize_t keySize;
-		const char *keyStr = PyUnicode_AsUTF8AndSize(key, &keySize);
-		if (keyStr)
-		{
-			sb->AppendC((const UTF8Char*)keyStr, (UIntOS)keySize);
-			sb->AppendUTF8Char(':');
-			PyObject *repr = PyObject_Repr(value);
-			if (repr)
+			if (!first)
 			{
-				Py_ssize_t valueSize;
-				const char *valueStr = PyUnicode_AsUTF8AndSize(repr, &valueSize);
-				if (valueStr)
+				sb->Append(CSTR(",\r\n"));
+			}
+			first = false;
+			Py_ssize_t keySize;
+			const char *keyStr = PyUnicode_AsUTF8AndSize(key, &keySize);
+			if (keyStr)
+			{
+				sb->AppendC((const UTF8Char*)keyStr, (UIntOS)keySize);
+				sb->AppendUTF8Char(':');
+				PyObject *repr = PyObject_Repr(value);
+				if (repr)
 				{
-					sb->AppendC((const UTF8Char*)valueStr, (UIntOS)valueSize);
+					Py_ssize_t valueSize;
+					const char *valueStr = PyUnicode_AsUTF8AndSize(repr, &valueSize);
+					if (valueStr)
+					{
+						sb->AppendC((const UTF8Char*)valueStr, (UIntOS)valueSize);
+					}
+					else
+					{
+						sb->AppendC((const UTF8Char*)"<Error>", 7);
+					}
+					Py_DECREF(repr);
 				}
 				else
 				{
 					sb->AppendC((const UTF8Char*)"<Error>", 7);
 				}
-				Py_DECREF(repr);
 			}
 			else
 			{
-				sb->AppendC((const UTF8Char*)"<Error>", 7);
+				sb->AppendC((const UTF8Char*)"<Non-String Key>", 16);
 			}
 		}
-		else
-		{
-			sb->AppendC((const UTF8Char*)"<Non-String Key>", 16);
-		}
+		sb->AppendUTF8Char('}');
 	}
-	Py_DECREF(dict);
-	sb->AppendUTF8Char('}');
 }

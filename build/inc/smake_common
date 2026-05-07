@@ -4419,6 +4419,8 @@ Parser/ObjParser/PKGMapParser.h:
 Parser/ObjParser/TPKXParser.h:
 @TPKXParser.o
 
+Python/PythonBool.h:
+@PythonBool.o
 Python/PythonCore.h:
 @?(NO_PYTHON == 0)PythonCore.o
 @?(NO_PYTHON > 0)PythonCoreNull.o
@@ -4428,6 +4430,8 @@ Python/PythonFloat.h:
 @PythonFloat.o
 Python/PythonFunction.h:
 @PythonFunction.o
+Python/PythonList.h:
+@PythonList.o
 Python/PythonModule.h:
 @PythonModule.o
 Python/PythonObject.h:

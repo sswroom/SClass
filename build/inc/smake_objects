@@ -1922,6 +1922,9 @@ OSMMapParser.o: ../../src/Parser/ObjParser/OSMMapParser.cpp
 PKGMapParser.o: ../../src/Parser/ObjParser/PKGMapParser.cpp
 TPKXParser.o: ../../src/Parser/ObjParser/TPKXParser.cpp
 
+PythonBool.o: ../../src/Python/PythonBool.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
 PythonCore.o: ../../src/Python/PythonCore.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
@@ -1933,6 +1936,9 @@ PythonFloat.o: ../../src/Python/PythonFloat.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 PythonFunction.o: ../../src/Python/PythonFunction.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonList.o: ../../src/Python/PythonList.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 PythonModule.o: ../../src/Python/PythonModule.cpp

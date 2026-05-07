@@ -26,7 +26,7 @@ Python::ObjectType Python::PythonFunction::GetObjectType() const
 void Python::PythonFunction::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	ToPythonString(sb);
-	PyObject *dict = PyFunction_GetKwDefaults(this->clsData->obj);
+	PyObject *dict = PyFunction_GetDefaults(this->clsData->obj);
 	if (dict)
 	{
 		sb->AppendUTF8Char('{');

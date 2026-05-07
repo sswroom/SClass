@@ -14,7 +14,9 @@ namespace Python
 		Module,
 		Dict,
 		Type,
-		Function
+		Function,
+		Boolean,
+		List
 	};
 
 	class PythonObject

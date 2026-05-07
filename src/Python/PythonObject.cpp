@@ -1,7 +1,9 @@
 #include "Stdafx.h"
+#include "Python/PythonBool.h"
 #include "Python/PythonDict.h"
 #include "Python/PythonFloat.h"
 #include "Python/PythonFunction.h"
+#include "Python/PythonList.h"
 #include "Python/PythonModule.h"
 #include "Python/PythonObject.h"
 #include "Python/PythonType.h"
@@ -126,6 +128,16 @@ Optional<Python::PythonObject> Python::PythonObject::FromPtr(AnyType obj)
 			NEW_CLASSNN(ret, PythonFunction(obj));
 			return ret;
 		}
+		else if (PyBool_Check((PyObject*)obj.p))
+		{
+			NEW_CLASSNN(ret, PythonBool(obj));
+			return ret;
+		}
+		else if (PyList_Check((PyObject*)obj.p))
+		{
+			NEW_CLASSNN(ret, PythonList(obj));
+			return ret;
+		}
 		else
 		{
 			PyObject *type = PyObject_Type((PyObject*)obj.p);
@@ -169,6 +181,10 @@ Text::CStringNN Python::ObjectTypeGetName(Python::ObjectType objType)
 		return CSTR("Type");
 	case Python::ObjectType::Function:
 		return CSTR("Function");
+	case Python::ObjectType::Boolean:
+		return CSTR("Bool");
+	case Python::ObjectType::List:
+		return CSTR("List");
 	case Python::ObjectType::Unknown:
 	default:
 		return CSTR("Unknown");
