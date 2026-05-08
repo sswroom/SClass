@@ -261,7 +261,7 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 		if (img->GetImageType() == Media::ImageType::Raster)
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
-			if (srcW * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) < UIntOS2Double(this->bkBuffSize.x) * srcH)
+			if (srcW * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 			{
 				outW = UIntOS2Double(this->bkBuffSize.x);
 		//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
@@ -274,7 +274,7 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 		}
 		else
 		{
-			if (srcW * UIntOS2Double(this->bkBuffSize.y) < UIntOS2Double(this->bkBuffSize.x) * srcH)
+			if (srcW * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 			{
 				outW = UIntOS2Double(this->bkBuffSize.x);
 			}
@@ -326,6 +326,10 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 	if (!me->currImage.IsNull())
 	{
 		me->UpdateMinScale();
+		if (me->zoomMinScale > me->zoomScale)
+		{
+			me->zoomScale = me->zoomMinScale;
+		}
 		me->UpdateZoomRange();
 	}
 	if (me->curr10Bit != new10Bit)

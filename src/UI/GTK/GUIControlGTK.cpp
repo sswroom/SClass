@@ -438,11 +438,13 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->lyPos2 = this->lyPos + outH * this->ddpi / this->hdpi;
 	}
 
-	UIntOS i = this->resizeHandlers.GetCount();
-	while (i-- > 0)
+	UIntOS i = 0;
+	UIntOS j = this->resizeHandlers.GetCount();
+	while (i < j)
 	{
 		Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
 		cb.func(cb.userObj);
+		i++;
 	}
 }
 

@@ -240,6 +240,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			data->me->OnSurfaceCreated();
 		}
 	}
+	data->me->OnSizeChanged(false);
 }
 
 void UI::GUIDDrawControl::GetDrawingRect(void *rc)
