@@ -325,8 +325,9 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 	}
 	if (!me->currImage.IsNull())
 	{
+		Bool minScale = (me->zoomScale <= me->zoomMinScale);
 		me->UpdateMinScale();
-		if (me->zoomMinScale > me->zoomScale)
+		if (minScale || me->zoomMinScale > me->zoomScale)
 		{
 			me->zoomScale = me->zoomMinScale;
 		}
