@@ -10,8 +10,11 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Math/CoordinateSystemConverter.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/MSGeography.h"
 #include "Math/WKTReader.h"
+#include "Math/WKTWriter.h"
 #include "SSWR/AVIRead/AVIRDBAssignColumnForm.h"
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "Text/UTF8Writer.h"
@@ -585,6 +588,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
+	Bool srConv = this->chkGeomConv->IsChecked();
 	Text::StringBuilderUTF8 sbSchema;
 	Text::CString dataSchema = nullptr;
 	if (this->cboDataSchema->GetCount() > 0)
@@ -631,6 +635,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
+	Optional<Math::CoordinateSystem> csysDB = nullptr;
+	Optional<Math::CoordinateSystem> csysSrc = nullptr;
+	NN<Math::CoordinateSystem> nncsysDB;
+	NN<Math::CoordinateSystem> nncsysSrc;
+	Text::StringBuilderUTF8 sb;
 	UIntOS keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUIntOS();
 	UIntOS keyDCol1;
 	UIntOS keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUIntOS();
@@ -767,39 +776,81 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 									rowData[i]->Release();
 									rowData[i] = 0;
 								}
-								else if (rowData[i]->leng == 0 && table->GetCol(i).SetTo(col))
+								else if (table->GetCol(i).SetTo(col))
 								{
-									switch (col->GetColType())
-																{
-									case DB::DBUtil::CT_VarUTF8Char:
-									case DB::DBUtil::CT_VarUTF16Char:
-									case DB::DBUtil::CT_VarUTF32Char:
-									case DB::DBUtil::CT_UTF8Char:
-									case DB::DBUtil::CT_UTF16Char:
-									case DB::DBUtil::CT_UTF32Char:
-									case DB::DBUtil::CT_Binary:
-										break;
-									case DB::DBUtil::CT_Date:
-									case DB::DBUtil::CT_DateTime:
-									case DB::DBUtil::CT_DateTimeTZ:
-									case DB::DBUtil::CT_Decimal:
-									case DB::DBUtil::CT_Double:
-									case DB::DBUtil::CT_Float:
-									case DB::DBUtil::CT_UInt16:
-									case DB::DBUtil::CT_Int16:
-									case DB::DBUtil::CT_UInt32:
-									case DB::DBUtil::CT_Int32:
-									case DB::DBUtil::CT_Byte:
-									case DB::DBUtil::CT_UInt64:
-									case DB::DBUtil::CT_Int64:
-									case DB::DBUtil::CT_Bool:
-									case DB::DBUtil::CT_Vector:
-									case DB::DBUtil::CT_UUID:
-									case DB::DBUtil::CT_Unknown:
-									default:
-										rowData[i]->Release();
-										rowData[i] = 0;
-										break;
+									if (rowData[i]->leng == 0)
+									{
+										switch (col->GetColType())
+										{
+										case DB::DBUtil::CT_VarUTF8Char:
+										case DB::DBUtil::CT_VarUTF16Char:
+										case DB::DBUtil::CT_VarUTF32Char:
+										case DB::DBUtil::CT_UTF8Char:
+										case DB::DBUtil::CT_UTF16Char:
+										case DB::DBUtil::CT_UTF32Char:
+										case DB::DBUtil::CT_Binary:
+											break;
+										case DB::DBUtil::CT_Vector:
+										case DB::DBUtil::CT_Date:
+										case DB::DBUtil::CT_DateTime:
+										case DB::DBUtil::CT_DateTimeTZ:
+										case DB::DBUtil::CT_Decimal:
+										case DB::DBUtil::CT_Double:
+										case DB::DBUtil::CT_Float:
+										case DB::DBUtil::CT_UInt16:
+										case DB::DBUtil::CT_Int16:
+										case DB::DBUtil::CT_UInt32:
+										case DB::DBUtil::CT_Int32:
+										case DB::DBUtil::CT_Byte:
+										case DB::DBUtil::CT_UInt64:
+										case DB::DBUtil::CT_Int64:
+										case DB::DBUtil::CT_Bool:
+										case DB::DBUtil::CT_UUID:
+										case DB::DBUtil::CT_Unknown:
+										default:
+											rowData[i]->Release();
+											rowData[i] = 0;
+											break;
+										}
+									}
+									else if (col->GetColType() == DB::DBUtil::CT_Vector && srConv)
+									{
+										NN<Math::Geometry::Vector2D> vec;
+										if (r->GetVector(k).SetTo(vec))
+										{
+											UInt32 srcSRID = vec->GetSRID();
+											UInt32 destSRID = col->GetGeometrySRID();
+											if (srcSRID != 0 && srcSRID != destSRID)
+											{
+												if (!csysDB.SetTo(nncsysDB))
+												{
+													nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+													csysDB = nncsysDB;
+												}
+												if (csysSrc.SetTo(nncsysSrc))
+												{
+													if (nncsysSrc->GetSRID() != srcSRID)
+													{
+														nncsysSrc.Delete();
+														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+														csysSrc = nncsysSrc;
+													}
+												}
+												else
+												{
+													nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+													csysSrc = nncsysSrc;
+												}
+												Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+												vec->Convert(csysConv);
+												sb.ClearStr();
+												Math::WKTWriter writer;
+												writer.ToText(sb, vec);
+												rowData[i]->Release();
+												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
+												vec.Delete();
+											}
+										}
 									}
 								}
 							}
@@ -1088,6 +1139,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	table.Delete();
 	srcDBCond.Delete();
 	dataDBCond.Delete();
+	csysSrc.Delete();
+	csysDB.Delete();
 	if (succ)
 	{
 		sptr = Text::StrUIntOS(sbuff, dataFileRowCnt);
@@ -1134,6 +1187,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	Optional<Data::QueryConditions> srcDBCond = nullptr;
 	Optional<Data::QueryConditions> dataDBCond = nullptr;
+	Bool srConv = this->chkGeomConv->IsChecked();
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
@@ -1159,7 +1213,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> col;
-	UInt32 srid = 0;
+	UInt32 dbSrid = 0;
+	Optional<Math::CoordinateSystem> csysDB = nullptr;
+	Optional<Math::CoordinateSystem> csysSrc = nullptr;
+	NN<Math::CoordinateSystem> nncsysDB;
+	NN<Math::CoordinateSystem> nncsysSrc;
+	Text::StringBuilderUTF8 sb;
 	if (dataConn->GetTableDef(dataSchema, sbTable.ToCString()).SetTo(table))
 	{
 		UIntOS i = table->GetColCnt();
@@ -1167,7 +1226,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		{
 			if (table->GetCol(i).SetTo(col) && col->GetColType() == DB::DBUtil::CT_Vector)
 			{
-				srid = col->GetGeometrySRID();
+				dbSrid = col->GetGeometrySRID();
 				break;
 			}
 		}
@@ -1224,18 +1283,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			case DB::DBUtil::CT_UUID:
 				break;
 			case DB::DBUtil::CT_Vector:
-				if (srid == 0)
+				if (dbSrid == 0)
 				{
-					srid = col->GetGeometrySRID();
+					dbSrid = col->GetGeometrySRID();
 				}
 				break;
 			}
 		}
 		i++;
 	}
-	if (srid == 0)
+	if (dbSrid == 0)
 	{
-		srid = SRID;
+		dbSrid = SRID;
 	}
 	UIntOS k;
 	UIntOS srcCnt;
@@ -1403,6 +1462,48 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									}
 								}
+								else if (table->GetCol(i).SetTo(col) && srConv)
+								{
+									if (col->GetColType() == DB::DBUtil::CT_Vector)
+									{
+										NN<Math::Geometry::Vector2D> vec;
+										if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
+										{
+											UInt32 srcSRID = vec->GetSRID();
+											UInt32 destSRID = col->GetGeometrySRID();
+											if (srcSRID != 0 && srcSRID != destSRID)
+											{
+												if (!csysDB.SetTo(nncsysDB))
+												{
+													nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+													csysDB = nncsysDB;
+												}
+												if (csysSrc.SetTo(nncsysSrc))
+												{
+													if (nncsysSrc->GetSRID() != srcSRID)
+													{
+														nncsysSrc.Delete();
+														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+														csysSrc = nncsysSrc;
+													}
+												}
+												else
+												{
+													nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+													csysSrc = nncsysSrc;
+												}
+												Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+												vec->Convert(csysConv);
+												sb.ClearStr();
+												Math::WKTWriter writer;
+												writer.ToText(sb, vec);
+												rowData[i]->Release();
+												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
+												vec.Delete();
+											}
+										}
+									}
+								}
 							}
 						}
 
@@ -1459,9 +1560,48 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						{
 							sql.AppendStr(0);
 						}
+						else if (col->GetColType() == DB::DBUtil::CT_Vector)
+						{
+							NN<Math::Geometry::Vector2D> vec;
+							if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
+							{
+								UInt32 srcSRID = vec->GetSRID();
+								UInt32 destSRID = col->GetGeometrySRID();
+								if (srcSRID != 0 && srcSRID != destSRID)
+								{
+									if (!csysDB.SetTo(nncsysDB))
+									{
+										nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+										csysDB = nncsysDB;
+									}
+									if (csysSrc.SetTo(nncsysSrc))
+									{
+										if (nncsysSrc->GetSRID() != srcSRID)
+										{
+											nncsysSrc.Delete();
+											nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+											csysSrc = nncsysSrc;
+										}
+									}
+									else
+									{
+										nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+										csysSrc = nncsysSrc;
+									}
+									Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+									vec->Convert(csysConv);
+								}
+								sql.AppendVector(vec);
+								vec.Delete();
+							}
+							else
+							{
+								AppendCol(sql, col, ops, this->connTz, dbSrid);
+							}
+						}
 						else
 						{
-							AppendCol(sql, col, ops, this->connTz, srid);
+							AppendCol(sql, col, ops, this->connTz, dbSrid);
 						}
 						OPTSTR_DEL(ops);
 					}
@@ -1661,7 +1801,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_Vector:
 										{
 											NN<Math::Geometry::Vector2D> vec2;;
-											Math::WKTReader reader(srid);
+											Math::WKTReader reader(dbSrid);
 											if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 											{
 											}
@@ -1873,7 +2013,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									NN<Math::Geometry::Vector2D> vec2;
 									if (r->GetVector(i).SetTo(vec1))
 									{
-										vec1->SetSRID(srid);
+										vec1->SetSRID(dbSrid);
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 										{
@@ -2036,7 +2176,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							{
 								if (colFound) sql.AppendCmdC(CSTR(", "));
 								colFound = true;
-								AppendCol(sql, col, rowData[i], this->connTz, srid);
+								AppendCol(sql, col, rowData[i], this->connTz, dbSrid);
 							}
 							i++;
 						}
@@ -2068,6 +2208,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	srcDBCond.Delete();
 	dataDBCond.Delete();
 	table.Delete();
+	csysSrc.Delete();
+	csysDB.Delete();
 	return succ;
 }
 
@@ -2330,7 +2472,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->txtSrcFilter = ui->NewTextBox(*this, CSTR(""));
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
-	this->grpData->SetRect(0, 72, 800, 264, false);
+	this->grpData->SetRect(0, 72, 800, 288, false);
 	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
 	this->chkNoHeader->SetRect(100, 0, 150, 23, false);
 	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
@@ -2375,48 +2517,52 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->cboNullCol->AddItem(CSTR("\"null\""), 0);
 	this->cboNullCol->AddItem(CSTR("No Null"), 0);
 	this->cboNullCol->SetSelectedIndex(0);
+	this->lblGeomCol = ui->NewLabel(this->grpData, CSTR("Geom Column"));
+	this->lblGeomCol->SetRect(0, 168, 100, 23, false);
+	this->chkGeomConv = ui->NewCheckBox(this->grpData, CSTR("SR Convert"), false);
+	this->chkGeomConv->SetRect(100, 168, 150, 23, false);
 	this->lblAssignCol = ui->NewLabel(this->grpData, CSTR("Assign Columns"));
-	this->lblAssignCol->SetRect(0, 168, 100, 23, false);
+	this->lblAssignCol->SetRect(0, 192, 100, 23, false);
 	this->btnAssignCol = ui->NewButton(this->grpData, CSTR("Assign"));
-	this->btnAssignCol->SetRect(100, 168, 75, 23, false);
+	this->btnAssignCol->SetRect(100, 192, 75, 23, false);
 	this->btnAssignCol->HandleButtonClick(OnAssignColClicked, this);
 	this->lblDataFilter = ui->NewLabel(this->grpData, CSTR("Data Filter"));
-	this->lblDataFilter->SetRect(0, 192, 100, 23, false);
+	this->lblDataFilter->SetRect(0, 216, 100, 23, false);
 	this->txtDataFilter = ui->NewTextBox(this->grpData, CSTR(""));
-	this->txtDataFilter->SetRect(100, 192, 200, 23, false);
+	this->txtDataFilter->SetRect(100, 216, 200, 23, false);
 	this->btnDataCheck = ui->NewButton(this->grpData, CSTR("Check"));
-	this->btnDataCheck->SetRect(100, 216, 75, 23, false);
+	this->btnDataCheck->SetRect(100, 240, 75, 23, false);
 	this->btnDataCheck->HandleButtonClick(OnDataCheckClk, this);
 	this->lblDataFileRow = ui->NewLabel(*this, CSTR("Data Rows"));
-	this->lblDataFileRow->SetRect(0, 336, 100, 23, false);
+	this->lblDataFileRow->SetRect(0, 360, 100, 23, false);
 	this->txtDataFileRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtDataFileRow->SetRect(100, 336, 200, 23, false);
+	this->txtDataFileRow->SetRect(100, 360, 200, 23, false);
 	this->txtDataFileRow->SetReadOnly(true);
 	this->lblNoChg = ui->NewLabel(*this, CSTR("No Changes"));
-	this->lblNoChg->SetRect(0, 360, 100, 23, false);
+	this->lblNoChg->SetRect(0, 384, 100, 23, false);
 	this->txtNoChg = ui->NewTextBox(*this, CSTR("0"));
-	this->txtNoChg->SetRect(100, 360, 200, 23, false);
+	this->txtNoChg->SetRect(100, 384, 200, 23, false);
 	this->txtNoChg->SetReadOnly(true);
 	this->lblUpdated = ui->NewLabel(*this, CSTR("Updated rows"));
-	this->lblUpdated->SetRect(0, 384, 100, 23, false);
+	this->lblUpdated->SetRect(0, 408, 100, 23, false);
 	this->txtUpdated = ui->NewTextBox(*this, CSTR("0"));
-	this->txtUpdated->SetRect(100, 384, 200, 23, false);
+	this->txtUpdated->SetRect(100, 408, 200, 23, false);
 	this->txtUpdated->SetReadOnly(true);
 	this->lblNewRow = ui->NewLabel(*this, CSTR("New rows"));
-	this->lblNewRow->SetRect(0, 408, 100, 23, false);
+	this->lblNewRow->SetRect(0, 432, 100, 23, false);
 	this->txtNewRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtNewRow->SetRect(100, 408, 200, 23, false);
+	this->txtNewRow->SetRect(100, 432, 200, 23, false);
 	this->txtNewRow->SetReadOnly(true);
 	this->lblDeletedRow = ui->NewLabel(*this, CSTR("Deleted rows"));
-	this->lblDeletedRow->SetRect(0, 432, 100, 23, false);
+	this->lblDeletedRow->SetRect(0, 456, 100, 23, false);
 	this->txtDeletedRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtDeletedRow->SetRect(100, 432, 200, 23, false);
+	this->txtDeletedRow->SetRect(100, 456, 200, 23, false);
 	this->txtDeletedRow->SetReadOnly(true);
 
 	this->lblDBType = ui->NewLabel(*this, CSTR("SQL Type"));
-	this->lblDBType->SetRect(0, 480, 100, 23, false);
+	this->lblDBType->SetRect(0, 504, 100, 23, false);
 	this->cboDBType = ui->NewComboBox(*this, false);
-	this->cboDBType->SetRect(100, 480, 200, 23, false);
+	this->cboDBType->SetRect(100, 504, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
@@ -2431,24 +2577,24 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	else
 		this->cboDBType->SetSelectedIndex(0);
 	this->chkAxisAware = ui->NewCheckBox(*this, CSTR("Axis-Aware (MySQL >=8)"), false);
-	this->chkAxisAware->SetRect(300, 480, 150, 23, false);
+	this->chkAxisAware->SetRect(300, 504, 150, 23, false);
 	this->chkMultiRow = ui->NewCheckBox(*this, CSTR("Multi-Row Insert"), true);
-	this->chkMultiRow->SetRect(100, 504, 150, 23, false);
+	this->chkMultiRow->SetRect(100, 528, 150, 23, false);
 	this->btnSQL = ui->NewButton(*this, CSTR("Generate SQL"));
-	this->btnSQL->SetRect(100, 528, 75, 23, false);
+	this->btnSQL->SetRect(100, 552, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 	this->btnExecute = ui->NewButton(*this, CSTR("Execute SQL"));
-	this->btnExecute->SetRect(180, 528, 75, 23, false);
+	this->btnExecute->SetRect(180, 552, 75, 23, false);
 	this->btnExecute->HandleButtonClick(OnExecuteClicked, this);
 	this->lblStatTime = ui->NewLabel(*this, CSTR("Time Used"));
-	this->lblStatTime->SetRect(0, 552, 100, 23, false);
+	this->lblStatTime->SetRect(0, 576, 100, 23, false);
 	this->txtStatTime = ui->NewTextBox(*this, CSTR(""));
-	this->txtStatTime->SetRect(100, 552, 150, 23 ,false);
+	this->txtStatTime->SetRect(100, 576, 150, 23 ,false);
 	this->txtStatTime->SetReadOnly(true);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
-	this->lblStatus->SetRect(0, 576, 100, 23, false);
+	this->lblStatus->SetRect(0, 600, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
-	this->txtStatus->SetRect(100, 576, 300, 23 ,false);
+	this->txtStatus->SetRect(100, 600, 300, 23 ,false);
 	this->txtStatus->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFiles, this);
