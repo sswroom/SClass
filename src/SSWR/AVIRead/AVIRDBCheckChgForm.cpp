@@ -1251,43 +1251,49 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	UIntOS dbCnt = table->GetColCnt();
 	while (i < dbCnt)
 	{
-		if (i == keyCol1 && keyCol2 == INVALID_INDEX && table->GetCol(i).SetTo(col))
+		if (table->GetCol(i).SetTo(col))
 		{
 			DB::DBUtil::ColType colType = col->GetColType();
-			switch (colType)
+			if (i == keyCol1 && keyCol2 == INVALID_INDEX)
 			{
-			case DB::DBUtil::CT_Bool:
-			case DB::DBUtil::CT_Byte:
-			case DB::DBUtil::CT_Int16:
-			case DB::DBUtil::CT_Int32:
-			case DB::DBUtil::CT_Int64:
-			case DB::DBUtil::CT_UInt16:
-			case DB::DBUtil::CT_UInt32:
-			case DB::DBUtil::CT_UInt64:
-				intKey = true;
-				break;
-			case DB::DBUtil::CT_Unknown:
-			case DB::DBUtil::CT_UTF8Char:
-			case DB::DBUtil::CT_UTF16Char:
-			case DB::DBUtil::CT_UTF32Char:
-			case DB::DBUtil::CT_VarUTF8Char:
-			case DB::DBUtil::CT_VarUTF16Char:
-			case DB::DBUtil::CT_VarUTF32Char:
-			case DB::DBUtil::CT_Date:
-			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_DateTimeTZ:
-			case DB::DBUtil::CT_Double:
-			case DB::DBUtil::CT_Float:
-			case DB::DBUtil::CT_Decimal:
-			case DB::DBUtil::CT_Binary:
-			case DB::DBUtil::CT_UUID:
-				break;
-			case DB::DBUtil::CT_Vector:
-				if (dbSrid == 0)
+				switch (colType)
 				{
-					dbSrid = col->GetGeometrySRID();
+				case DB::DBUtil::CT_Bool:
+				case DB::DBUtil::CT_Byte:
+				case DB::DBUtil::CT_Int16:
+				case DB::DBUtil::CT_Int32:
+				case DB::DBUtil::CT_Int64:
+				case DB::DBUtil::CT_UInt16:
+				case DB::DBUtil::CT_UInt32:
+				case DB::DBUtil::CT_UInt64:
+					intKey = true;
+					break;
+				case DB::DBUtil::CT_Unknown:
+				case DB::DBUtil::CT_UTF8Char:
+				case DB::DBUtil::CT_UTF16Char:
+				case DB::DBUtil::CT_UTF32Char:
+				case DB::DBUtil::CT_VarUTF8Char:
+				case DB::DBUtil::CT_VarUTF16Char:
+				case DB::DBUtil::CT_VarUTF32Char:
+				case DB::DBUtil::CT_Date:
+				case DB::DBUtil::CT_DateTime:
+				case DB::DBUtil::CT_DateTimeTZ:
+				case DB::DBUtil::CT_Double:
+				case DB::DBUtil::CT_Float:
+				case DB::DBUtil::CT_Decimal:
+				case DB::DBUtil::CT_Binary:
+				case DB::DBUtil::CT_UUID:
+				case DB::DBUtil::CT_Vector:
+					break;
 				}
-				break;
+			}
+			if (colType == DB::DBUtil::CT_Vector)
+			{
+				UInt32 srid = col->GetGeometrySRID();
+				if (srid != 0)
+				{
+					dbSrid = srid;
+				}
 			}
 		}
 		i++;
