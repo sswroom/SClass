@@ -148,6 +148,48 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 	}
 }
 
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos)
+{
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	me->mouseDown = true;
+	me->mouseDownPos = scnPos;
+	return UI::EventState::ContinueEvent;
+}
+
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos)
+{
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	if (me->mouseDown && me->mouseDownPos == scnPos)
+	{
+		me->mouseDown = false;
+		UIntOS recCnt;
+		UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
+		if (me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
+		{
+			Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
+			Double minDist = 9999999;
+			UIntOS minIndex = INVALID_INDEX;
+			while (recCnt-- > 0)
+			{
+				Math::Coord2DDbl diff = recs[recCnt].pos - mapPos;
+				Double dist = diff.x * diff.x + diff.y * diff.y;
+				if (dist < minDist)
+				{
+					minDist = dist;
+					minIndex = recCnt;
+				}
+			}
+			if (minIndex != INVALID_INDEX)
+			{
+				me->lbRecord->SetSelectedIndex(minIndex);
+			}
+		}
+		return UI::EventState::ContinueEvent;
+	}
+	me->mouseDown = false;
+	return UI::EventState::ContinueEvent;
+}
+
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
@@ -321,10 +363,13 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	{
 		this->cboName->SetSelectedIndex(0);
 	}
+	navi->HandleMapMouseLDown(OnMouseLDown, this);
+	navi->HandleMapMouseLUp(OnMouseLUp, this);
 }
 
 SSWR::AVIRead::AVIRGISReplayForm::~AVIRGISReplayForm()
 {
+	this->navi->UnhandleMapMouse(this);
 	this->StopThread();
 	this->mnuRecord.Delete();
 	FreeNames();

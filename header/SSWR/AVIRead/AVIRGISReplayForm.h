@@ -50,11 +50,15 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 			UIntOS currTrackId;
+			Bool mouseDown;
+			Math::Coord2D<IntOS> mouseDownPos;
 
 		private:
 			static UInt32 __stdcall AddressThread(AnyType userObj);
 			static void __stdcall OnCboNameChg(AnyType userObj);
 			static void __stdcall OnLbRecordChg(AnyType userObj);
+			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<IntOS> scnPos);
+			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<IntOS> scnPos);
 			static UI::EventState __stdcall OnLbRecordRClick(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn);
 			void FreeNames();
 
