@@ -455,6 +455,9 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	if (this->track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 	{
+		UIntOS minIndex = INVALID_INDEX;
+		Double minDist = 9999999;
+		Math::Coord2DDbl mapPos = this->navi->GetMapCenter();
 		Double dist = 0;
 		NN<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
 		NN<Math::Geometry::LineString> pl;
@@ -477,13 +480,30 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 			dt.SetInstant(recs[i].recTime);
 			sptr = dt.ToStringNoZone(sbuff);
 			this->lbRecord->AddItem(CSTRP(sbuff, sptr), 0);
+			if (this->navi->InMap(recs[i].pos))
+			{
+				Math::Coord2DDbl diff = recs[i].pos - mapPos;
+				Double d = diff.x * diff.x + diff.y * diff.y;
+				if (d < minDist)
+				{
+					minDist = d;
+					minIndex = i;
+				}
+			}
 			i++;
 		}
 		this->startMark = 0;
 		this->endMark = recCnt - 1;
 		if (recCnt > 0)
 		{
-			this->lbRecord->SetSelectedIndex(0);
+			if (minIndex != INVALID_INDEX)
+			{
+				this->lbRecord->SetSelectedIndex(minIndex);
+			}
+			else
+			{
+				this->lbRecord->SetSelectedIndex(0);
+			}
 
 			sbuff[0] = 0;
 			sptr = this->lbRecord->GetItemText(sbuff, this->startMark).Or(sbuff);

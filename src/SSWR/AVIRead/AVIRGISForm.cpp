@@ -2208,6 +2208,11 @@ Math::Coord2D<IntOS> SSWR::AVIRead::AVIRGISForm::MapXY2ScnXY(Math::Coord2DDbl ma
 	return this->mapCtrl->MapXY2ScnXY(mapPos);
 }
 
+Math::Coord2DDbl SSWR::AVIRead::AVIRGISForm::GetMapCenter() const
+{
+	return this->mapCtrl->GetMapCenter();
+}
+
 void SSWR::AVIRead::AVIRGISForm::SetMapCursor(UI::GUIControl::CursorType curType)
 {
 	if (this->currCursor != curType)

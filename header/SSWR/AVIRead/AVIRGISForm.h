@@ -130,6 +130,7 @@ namespace SSWR
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos);
 			virtual Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos);
+			virtual Math::Coord2DDbl GetMapCenter() const;
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
 			virtual void HandleMapMouseLDown(MouseEvent evt, AnyType userObj);
 			virtual void HandleMapMouseLUp(MouseEvent evt, AnyType userObj);
