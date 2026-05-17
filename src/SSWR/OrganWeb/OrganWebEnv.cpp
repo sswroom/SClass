@@ -3250,9 +3250,9 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Tex
 		newGroup->cateId = cateId;
 		newGroup->flags = flags;
 
-		newGroup->photoCount = (UIntOS)-1;
-		newGroup->myPhotoCount = (UIntOS)-1;
-		newGroup->totalCount = (UIntOS)-1;
+		newGroup->photoCount = (UIntOS)0;
+		newGroup->myPhotoCount = (UIntOS)0;
+		newGroup->totalCount = (UIntOS)0;
 		newGroup->photoSpObj = nullptr;
 		this->groupMap.Put(newGroup->id, newGroup);
 		if (parentGroup.SetTo(group))
