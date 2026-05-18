@@ -13,6 +13,8 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUIPictureBoxDD.h"
 
+//#define VERBOSE
+
 void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
 	NN<Media::ImageResizer> resizer;
@@ -258,17 +260,22 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 	//	Double outH;
 		Double srcW = UIntOS2Double(this->currImageSize.x);
 		Double srcH = UIntOS2Double(this->currImageSize.y);
+		Double par = 1.0;
 		if (img->GetImageType() == Media::ImageType::Raster)
 		{
 			rimg = NN<Media::RasterImage>::ConvertFrom(img);
-			if (srcW * rimg->info.CalcPAR() * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
+			par = rimg->info.CalcPAR();
+#if defined(VERBOSE)
+			printf("GUIPictureBoxDD::UpdateMinScale: hdpi=%lf, vdpi=%lf\r\n", rimg->info.hdpi, rimg->info.vdpi);
+#endif
+			if (srcW * par * UIntOS2Double(this->bkBuffSize.y) > UIntOS2Double(this->bkBuffSize.x) * srcH)
 			{
 				outW = UIntOS2Double(this->bkBuffSize.x);
 		//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
 			}
 			else
 			{
-				outW = UIntOS2Double(this->bkBuffSize.y) * rimg->info.CalcPAR() * srcW / srcH;
+				outW = UIntOS2Double(this->bkBuffSize.y) * par * srcW / srcH;
 		//		outH = IntOS2Double(this->surfaceSize.y);
 			}
 		}
@@ -284,6 +291,9 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 			}
 		}
 		outZoomScale = outW / srcW;
+#if defined(VERBOSE)
+		printf("GUIPictureBoxDD::UpdateMinScale: bkSize=%dx%d, srcSize=%lfx%lf, par=%lf, outW=%lf, zoomScale=%lf, outZoomScale=%lf\r\n", (UInt32)this->bkBuffSize.x, (UInt32)this->bkBuffSize.y, srcW, srcH, par, outW, this->zoomScale, outZoomScale);
+#endif
 		if (outZoomScale > 1.0)
 		{
 			outZoomScale = 1.0;

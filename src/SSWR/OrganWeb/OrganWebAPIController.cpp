@@ -1455,6 +1455,99 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupAdd(NN<Net::WebSer
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupModify(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	NN<Text::String> chiName;
+	NN<Text::String> engName;
+	NN<Text::String> descript;
+	Int32 groupType;
+	Int32 adminOnly;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormStr(CSTR("chiName")).SetTo(chiName) &&
+		req->GetHTTPFormStr(CSTR("engName")).SetTo(engName) &&
+		req->GetHTTPFormStr(CSTR("descript")).SetTo(descript) &&
+		req->GetHTTPFormInt32(CSTR("groupType"), groupType) &&
+		req->GetHTTPFormInt32(CSTR("adminOnly"), adminOnly))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		GroupFlags groupFlags = GF_NONE;
+		if (adminOnly)
+		{
+			groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
+		}
+		if (me->env->GroupModify(mutUsage, id, engName->ToCString(), chiName->ToCString(), descript->ToCString(), groupType, groupFlags))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDelete(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		if (me->env->GroupDelete(mutUsage, id))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -1796,6 +1889,238 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSearch(NN<Net::Web
 		}
 		json.ArrayEnd();
 		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesAdd(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 cateId;
+	Int32 groupId;
+	NN<Text::String> sciName;
+	NN<Text::String> engName;
+	NN<Text::String> chiName;
+	NN<Text::String> descript;
+	Int32 bookIgn;
+	if (req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("groupId"), groupId) &&
+		req->GetHTTPFormStr(CSTR("sciName")).SetTo(sciName) &&
+		req->GetHTTPFormStr(CSTR("engName")).SetTo(engName) &&
+		req->GetHTTPFormStr(CSTR("chiName")).SetTo(chiName) &&
+		req->GetHTTPFormStr(CSTR("descript")).SetTo(descript))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		if (!me->env->GroupGet(mutUsage, groupId).SetTo(group))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (group->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (!me->env->SpeciesGetByName(mutUsage, sciName).IsNull())
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Species already exist\"}"));
+		}
+		Text::StringBuilderUTF8 sb;
+		if (!req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) && bookIgn == 0 && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
+		{
+			Text::StringBuilderUTF8 msg;
+			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+			json.ObjectAddStr(CSTR("status"), CSTR("confirm"));
+			msg.AppendC(UTF8STRC("Species already exist in book: "));
+			msg.AppendC(sb.ToString(), sb.GetLength());
+			msg.AppendC(UTF8STRC(", continue?"));
+			json.ObjectAddStr(CSTR("message"), msg.ToCString());
+			return me->ResponseJSON(req, resp, 0, json.Build());
+		}
+
+		sb.ClearStr();
+		sb.Append(sciName);
+		sb.ToLower();
+		sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+		sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
+		Int32 spId = me->env->SpeciesAdd(mutUsage, engName->ToCString(), chiName->ToCString(), sciName->ToCString(), groupId, descript->ToCString(), sb.ToCString(), CSTR(""), cateId);
+		if (spId != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("{\"status\": \"ok\", \"id\": "));
+			sb.AppendI32(spId);
+			sb.AppendC(UTF8STRC("}"));
+			return me->ResponseJSON(req, resp, 0, sb.ToCString());
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Error adding species\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesModify(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	Int32 groupId;
+	NN<Text::String> sciName;
+	NN<Text::String> engName;
+	NN<Text::String> chiName;
+	NN<Text::String> descript;
+	Int32 bookIgn;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("groupId"), groupId) &&
+		req->GetHTTPFormStr(CSTR("sciName")).SetTo(sciName) &&
+		req->GetHTTPFormStr(CSTR("engName")).SetTo(engName) &&
+		req->GetHTTPFormStr(CSTR("chiName")).SetTo(chiName) &&
+		req->GetHTTPFormStr(CSTR("descript")).SetTo(descript))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		NN<SpeciesInfo> sp;
+		if (!me->env->GroupGet(mutUsage, groupId).SetTo(group))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (group->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(sp) || sp->groupId != groupId || sp->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		Bool nameChg = !sciName->Equals(sp->sciName);
+		if (nameChg && !me->env->SpeciesGetByName(mutUsage, sciName).IsNull())
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Species already exist\"}"));
+		}
+		Text::StringBuilderUTF8 sb;
+		if (nameChg && !req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) && bookIgn == 0 && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
+		{
+			Text::StringBuilderUTF8 msg;
+			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+			json.ObjectAddStr(CSTR("status"), CSTR("confirm"));
+			msg.AppendC(UTF8STRC("Species already exist in book: "));
+			msg.AppendC(sb.ToString(), sb.GetLength());
+			msg.AppendC(UTF8STRC(", continue?"));
+			json.ObjectAddStr(CSTR("message"), msg.ToCString());
+			return me->ResponseJSON(req, resp, 0, json.Build());
+		}
+
+		sb.ClearStr();
+		sb.Append(sciName);
+		sb.ToLower();
+		sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+		sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
+		if (me->env->SpeciesModify(mutUsage, id, engName->ToCString(), chiName->ToCString(), sciName->ToCString(), descript->ToCString(), sb.ToCString()))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Error modifying species\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDelete(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	Int32 groupId;
+	NN<Text::String> sciName;
+	NN<Text::String> engName;
+	NN<Text::String> chiName;
+	NN<Text::String> descript;
+	Int32 bookIgn;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("groupId"), groupId))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		NN<SpeciesInfo> sp;
+		if (!me->env->GroupGet(mutUsage, groupId).SetTo(group))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (group->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(sp) || sp->groupId != groupId || sp->cateId != cateId || sp->files.GetCount() > 0 || sp->books.GetCount() > 0 || sp->wfiles.GetCount() > 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (me->env->SpeciesDelete(mutUsage, id))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Error deleting species\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 	}
 }
 
@@ -2351,9 +2676,14 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/updatepeak"), Net::WebUtil::RequestMethod::HTTP_POST, SvcUpdatePeak);
 	this->AddService(CSTR("/api/grouptypes"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupTypes);
 	this->AddService(CSTR("/api/groupadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupAdd);
+	this->AddService(CSTR("/api/groupmodify"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupModify);
+	this->AddService(CSTR("/api/groupdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupDelete);
 	this->AddService(CSTR("/api/groupdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupDetail);
 	this->AddService(CSTR("/api/groupspecies"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupSpecies);
 	this->AddService(CSTR("/api/groupsearch"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupSearch);
+	this->AddService(CSTR("/api/speciesadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesAdd);
+	this->AddService(CSTR("/api/speciesmodify"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesModify);
+	this->AddService(CSTR("/api/speciesdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDelete);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);

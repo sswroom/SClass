@@ -21,7 +21,7 @@ UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadY8(UnsafeArray<UTF8Char> buff, 
 		ZXing::ByteArray s = result.bytes();
 		return Text::StrConcatC(buff, s.data(), (UIntOS)s.size());
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadImg(UnsafeArray<UTF8Char> buff, NN<const Media::RasterImage> simg) const
@@ -39,5 +39,5 @@ UnsafeArrayOpt<UTF8Char> Media::ZXingReader::ReadImg(UnsafeArray<UTF8Char> buff,
 		ZXing::ByteArray s = result.bytes();
 		return Text::StrConcatC(buff, s.data(), (UIntOS)s.size());
 	}
-	return 0;
+	return nullptr;
 }
