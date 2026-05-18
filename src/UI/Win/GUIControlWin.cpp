@@ -1594,6 +1594,8 @@ Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 	case UI::GUIControl::GK_OEM_7:
 		return CSTR("GK_OEM_7");
 #endif
+	case UI::GUIControl::GK_NUMPAD_ENTER:
+		return CSTR("GK_NUMPAD_ENTER");
 	case UI::GUIControl::GK_NONE:
 	default:
 		return CSTR("GK_NONE");

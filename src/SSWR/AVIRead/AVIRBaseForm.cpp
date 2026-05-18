@@ -140,6 +140,7 @@
 #include "SSWR/AVIRead/AVIRJSTextForm.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
 #include "SSWR/AVIRead/AVIRJWTParserForm.h"
+#include "SSWR/AVIRead/AVIRKeyTestForm.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
 #include "SSWR/AVIRead/AVIRLDAPExplorerForm.h"
 #include "SSWR/AVIRead/AVIRLineCounterForm.h"
@@ -564,7 +565,8 @@ typedef enum
 	MNU_OSM_TILE_BOUNDS,
 	MNU_OSM_URL,
 	MNU_OPENAI,
-	MNU_PYTHON
+	MNU_PYTHON,
+	MNU_KEYTEST
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -679,14 +681,16 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Process Info"), MNU_PROC_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Service Info"), MNU_SERVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Program LInks"), MNU_PROGRAM_LINKS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Clipboard Viewer"), MNU_CLIPBOARD_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Drag Drop Viewer"), MNU_DRAG_DROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Paint Counter"), MNU_PAINT_CNT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 #if defined(WIN32)
 	mnu->AddItem(CSTR("WMI Browser"), MNU_WMI, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 #endif
 	mnu->AddItem(CSTR("Chinese"), MNU_CHINESE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("GUI Event"), MNU_GUIEVENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("GUI"));
+	mnu2->AddItem(CSTR("Clipboard Viewer"), MNU_CLIPBOARD_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Drag Drop Viewer"), MNU_DRAG_DROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Paint Counter"), MNU_PAINT_CNT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("GUI Event"), MNU_GUIEVENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Key Test"), MNU_KEYTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Calculator"));
 	mnu2->AddItem(CSTR("Simple Calculator"), MNU_CALCULATOR1, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("COVID-19"), MNU_COVID19, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3286,6 +3290,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRPythonForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPythonForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_KEYTEST:
+		{
+			NN<SSWR::AVIRead::AVIRKeyTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRKeyTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

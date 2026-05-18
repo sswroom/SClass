@@ -201,7 +201,8 @@ namespace UI
 			GK_OEM_4,
 			GK_OEM_5,
 			GK_OEM_6,
-			GK_OEM_7
+			GK_OEM_7,
+			GK_NUMPAD_ENTER
 		} GUIKey;
 
 		typedef enum

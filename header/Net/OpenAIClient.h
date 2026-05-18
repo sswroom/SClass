@@ -77,16 +77,18 @@ namespace Net
 	private:
 		Text::CStringNN model;
 		Text::CString previousResponseId;
-		Text::CStringNN input;
+		Text::CStringNN userInput;
+		Text::CString systemInput;
 		Data::ArrayListStringNN fileList;
 		Data::ArrayListStringNN fileNameList;
 
 	public:
-		OpenAIResponse(Text::CStringNN model, Text::CStringNN input);
+		OpenAIResponse(Text::CStringNN model, Text::CStringNN userInput, Text::CString systemInput);
 		~OpenAIResponse();
 
 		Text::CStringNN GetModel() const;
-		Text::CStringNN GetInput() const;
+		Text::CStringNN GetUserInput() const;
+		Text::CString GetSystemInput() const;
 		void SetPreviousResponseId(Text::CStringNN responseId);
 		Bool AddFile(Text::CStringNN filePath);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;

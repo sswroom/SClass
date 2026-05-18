@@ -8,6 +8,8 @@
 #include "Text/JSText.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
+#define VERBOSE
+
 Net::OpenAIClient::OpenAIClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiURL, Text::CStringNN apiKey)
 {
 	this->clif = clif;
@@ -128,6 +130,9 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendChatCompletion(NN<OpenAIChatComplet
 	sb.ClearStr();
 	chat->ToJSON(sb);
 	cli->AddContentLength(sb.GetLength());
+#if defined(VERBOSE)
+	printf("OpenAIClient.SendChatCompletion: %s\n", sb.v.Ptr());
+#endif
 	if (!cli->Write(sb.ToByteArray()))
 	{
 		NEW_CLASSNN(ret, Net::OpenAIResult(0, CSTR("Error in sending data to server")));
@@ -168,6 +173,9 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendResponses(NN<OpenAIResponse> resp)
 	sb.ClearStr();
 	resp->ToJSON(sb);
 	cli->AddContentLength(sb.GetLength());
+#if defined(VERBOSE)
+	printf("OpenAIClient.SendResponses: %s\n", sb.v.Ptr());
+#endif
 	if (!cli->Write(sb.ToByteArray()))
 	{
 		NEW_CLASSNN(ret, Net::OpenAIResult(0, CSTR("Error in sending data to server")));
@@ -314,10 +322,11 @@ void Net::OpenAIChatCompletion::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	sb->Append(CSTR("]}"));
 }
 
-Net::OpenAIResponse::OpenAIResponse(Text::CStringNN model, Text::CStringNN input)
+Net::OpenAIResponse::OpenAIResponse(Text::CStringNN model, Text::CStringNN userInput, Text::CString systemInput)
 {
 	this->model = model;
-	this->input = input;
+	this->userInput = userInput;
+	this->systemInput = systemInput;
 	this->previousResponseId = nullptr;
 }
 
@@ -332,9 +341,14 @@ Text::CStringNN Net::OpenAIResponse::GetModel() const
 	return this->model;
 }
 
-Text::CStringNN Net::OpenAIResponse::GetInput() const
+Text::CStringNN Net::OpenAIResponse::GetUserInput() const
 {
-	return this->input;
+	return this->userInput;
+}
+
+Text::CString Net::OpenAIResponse::GetSystemInput() const
+{
+	return this->systemInput;
 }
 
 void Net::OpenAIResponse::SetPreviousResponseId(Text::CStringNN responseId)
@@ -366,14 +380,20 @@ Bool Net::OpenAIResponse::AddFile(Text::CStringNN filePath)
 
 void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 {
+	Text::CStringNN systemInput;
 	sb->Append(CSTR("{\"model\":"));
 	Text::JSText::ToJSTextDQuote(sb, this->model.v);
 	sb->Append(CSTR(",\"input\":"));
 	if (this->fileList.GetCount() > 0)
 	{
 		sb->AppendUTF8Char('[');
-		sb->Append(CSTR("{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":"));
-		Text::JSText::ToJSTextDQuote(sb, this->input.v);
+		if (this->systemInput.SetTo(systemInput))
+		{
+			sb->Append(CSTR("{\"role\":\"system\",\"type\":\"message\",\"content\":"));
+			Text::JSText::ToJSTextDQuote(sb, systemInput.v);
+		}
+		sb->Append(CSTR("{\"role\":\"user\",\"type\":\"message\",\"content\":[{\"type\":\"text\",\"text\":"));
+		Text::JSText::ToJSTextDQuote(sb, this->userInput.v);
 		sb->AppendUTF8Char('}');
 		UIntOS i = 0;
 		UIntOS j = this->fileList.GetCount();
@@ -391,7 +411,12 @@ void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	}
 	else
 	{
-		Text::JSText::ToJSTextDQuote(sb, this->input.v);
+		Text::JSText::ToJSTextDQuote(sb, this->userInput.v);
+		if (this->systemInput.SetTo(systemInput))
+		{
+			sb->Append(CSTR(",\"instructions\":"));
+			Text::JSText::ToJSTextDQuote(sb, systemInput.v);
+		}
 	}
 	Text::CStringNN prevId;
 	if (this->previousResponseId.SetTo(prevId))

@@ -2141,6 +2141,7 @@ AVIRJMeterLogForm.o: ../../src/SSWR/AVIRead/AVIRJMeterLogForm.cpp
 AVIRJSTextForm.o: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 AVIRJTT808ServerForm.o: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
 AVIRJWTParserForm.o: ../../src/SSWR/AVIRead/AVIRJWTParserForm.cpp
+AVIRKeyTestForm.o: ../../src/SSWR/AVIRead/AVIRKeyTestForm.cpp
 AVIRLDAPClientForm.o: ../../src/SSWR/AVIRead/AVIRLDAPClientForm.cpp
 AVIRLDAPExplorerForm.o: ../../src/SSWR/AVIRead/AVIRLDAPExplorerForm.cpp
 AVIRLineChartForm.o: ../../src/SSWR/AVIRead/AVIRLineChartForm.cpp

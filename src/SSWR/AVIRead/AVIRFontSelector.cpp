@@ -318,6 +318,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 	case UI::GUIControl::GK_OEM_5:
 	case UI::GUIControl::GK_OEM_6:
 	case UI::GUIControl::GK_OEM_7:
+	case UI::GUIControl::GK_NUMPAD_ENTER:
 	case UI::GUIControl::GK_NONE:
 	default:
 		break;

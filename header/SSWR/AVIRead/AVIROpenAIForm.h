@@ -7,6 +7,8 @@
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
 
@@ -25,11 +27,14 @@ namespace SSWR
 			NN<UI::GUIButton> btnStart;
 			NN<UI::GUILabel> lblModel;
 			NN<UI::GUIComboBox> cboModel;
-			NN<UI::GUIPanel> pnlQuestion;
-			NN<UI::GUIPanel> pnlQuestionFile;
-			NN<UI::GUITextBox> txtQuestion;
-			NN<UI::GUILabel> lblFiles;
-			NN<UI::GUILabel> lblFileNames;
+			NN<UI::GUITabControl> tcQuestion;
+			NN<UI::GUITabPage> tpSystem;
+			NN<UI::GUITextBox> txtSystem;
+			NN<UI::GUITabPage> tpUser;
+			NN<UI::GUIPanel> pnlUserFile;
+			NN<UI::GUITextBox> txtUser;
+			NN<UI::GUILabel> lblUserFiles;
+			NN<UI::GUILabel> lblUserFileNames;
 			NN<UI::GUIVSplitter> vspQuestion;
 			NN<UI::GUITextBox> txtAnswer;
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -39,7 +44,7 @@ namespace SSWR
 			Data::ArrayListStringNN fileList;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
-			static UI::EventState __stdcall OnQuestionKeyDown(AnyType userObj, UInt32 osKey);
+			static UI::EventState __stdcall OnUserKeyDown(AnyType userObj, UInt32 osKey);
 			static void __stdcall OnModelSelChg(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 		public:

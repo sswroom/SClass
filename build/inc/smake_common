@@ -4814,6 +4814,8 @@ SSWR/AVIRead/AVIRJTT808ServerForm.h:
 @AVIRJTT808ServerForm.o
 SSWR/AVIRead/AVIRJWTParserForm.h:
 @AVIRJWTParserForm.o
+SSWR/AVIRead/AVIRKeyTestForm.h:
+@AVIRKeyTestForm.o
 SSWR/AVIRead/AVIRLDAPClientForm.h:
 @AVIRLDAPClientForm.o
 SSWR/AVIRead/AVIRLDAPExplorerForm.h:

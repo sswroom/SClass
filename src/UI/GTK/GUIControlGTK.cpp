@@ -1097,6 +1097,8 @@ UInt32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)
 		return GDK_KEY_Num_Lock;
 	case UI::GUIControl::GK_SCROLLLOCK:
 		return GDK_KEY_Scroll_Lock;
+	case UI::GUIControl::GK_NUMPAD_ENTER:
+		return GDK_KEY_KP_Enter;
 	case UI::GUIControl::GK_OEM_1:
 	case UI::GUIControl::GK_OEM_PLUS:
 	case UI::GUIControl::GK_OEM_COMMA:
@@ -1265,25 +1267,38 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 	case GDK_KEY_Sleep:
 		return UI::GUIControl::GK_SLEEP;
 	case GDK_KEY_KP_0:
+	case GDK_KEY_KP_Insert:
 		return UI::GUIControl::GK_NUMPAD0;
 	case GDK_KEY_KP_1:
+	case GDK_KEY_KP_End:
 		return UI::GUIControl::GK_NUMPAD1;
 	case GDK_KEY_KP_2:
+	case GDK_KEY_KP_Down:
 		return UI::GUIControl::GK_NUMPAD2;
 	case GDK_KEY_KP_3:
+	case GDK_KEY_KP_Page_Down:
 		return UI::GUIControl::GK_NUMPAD3;
 	case GDK_KEY_KP_4:
+	case GDK_KEY_KP_Left:
 		return UI::GUIControl::GK_NUMPAD4;
 	case GDK_KEY_KP_5:
+	case GDK_KEY_KP_Begin:
 		return UI::GUIControl::GK_NUMPAD5;
 	case GDK_KEY_KP_6:
+	case GDK_KEY_KP_Right:
 		return UI::GUIControl::GK_NUMPAD6;
 	case GDK_KEY_KP_7:
+	case GDK_KEY_KP_Home:
 		return UI::GUIControl::GK_NUMPAD7;
 	case GDK_KEY_KP_8:
+	case GDK_KEY_KP_Up:
 		return UI::GUIControl::GK_NUMPAD8;
 	case GDK_KEY_KP_9:
+	case GDK_KEY_KP_Page_Up:
 		return UI::GUIControl::GK_NUMPAD9;
+	case GDK_KEY_KP_Decimal:
+	case GDK_KEY_KP_Delete:
+		return UI::GUIControl::GK_DECIMAL;
 	case GDK_KEY_KP_Multiply:
 		return UI::GUIControl::GK_MULTIPLY;
 	case GDK_KEY_KP_Add:
@@ -1292,10 +1307,10 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 		return UI::GUIControl::GK_SEPARATOR;
 	case GDK_KEY_KP_Subtract:
 		return UI::GUIControl::GK_SUBTRACT;
-	case GDK_KEY_KP_Decimal:
-		return UI::GUIControl::GK_DECIMAL;
 	case GDK_KEY_KP_Divide:
 		return UI::GUIControl::GK_DIVIDE;
+	case GDK_KEY_KP_Enter:
+		return UI::GUIControl::GK_NUMPAD_ENTER;
 	case GDK_KEY_F1:
 		return UI::GUIControl::GK_F1;
 	case GDK_KEY_F2:
@@ -1615,6 +1630,8 @@ Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 	case UI::GUIControl::GK_OEM_7:
 		return CSTR("GK_OEM_7");
 #endif
+	case UI::GUIControl::GK_NUMPAD_ENTER:
+		return CSTR("GK_NUMPAD_ENTER");
 	case UI::GUIControl::GK_NONE:
 	default:
 		return CSTR("GK_NONE");

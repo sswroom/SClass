@@ -61,20 +61,22 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnStartClicked(AnyType userObj)
 	}
 }
 
-UI::EventState __stdcall SSWR::AVIRead::AVIROpenAIForm::OnQuestionKeyDown(AnyType userObj, UInt32 osKey)
+UI::EventState __stdcall SSWR::AVIRead::AVIROpenAIForm::OnUserKeyDown(AnyType userObj, UInt32 osKey)
 {
 	NN<SSWR::AVIRead::AVIROpenAIForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenAIForm>();
 	UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
-	if (key == UI::GUIControl::GK_ENTER)
+	if ((key == UI::GUIControl::GK_ENTER) || (key == UI::GUIControl::GK_NUMPAD_ENTER))
 	{
 		NN<Net::OpenAIClient> cli;
 		if (me->cli.SetTo(cli))
 		{
-			Text::StringBuilderUTF8 sb;
-			me->txtQuestion->GetText(sb);
-			if (sb.GetLength() > 0)
+			Text::StringBuilderUTF8 sbUser;
+			me->txtUser->GetText(sbUser);
+			if (sbUser.GetLength() > 0)
 			{
-				Net::OpenAIResponse resp(cli->GetCurrModel(), sb.ToCString());
+				Text::StringBuilderUTF8 sbSystem;
+				me->txtSystem->GetText(sbSystem);
+				Net::OpenAIResponse resp(cli->GetCurrModel(), sbUser.ToCString(), sbSystem.GetLength() == 0 ? Text::CString(nullptr) : sbSystem.ToCString());
 				UIntOS i = 0;
 				UIntOS j = me->fileList.GetCount();
 				while (i < j)
@@ -87,11 +89,12 @@ UI::EventState __stdcall SSWR::AVIRead::AVIROpenAIForm::OnQuestionKeyDown(AnyTyp
 				me->txtAnswer->SetText(output->ToCString());
 				output->Release();
 				result.Delete();
-				me->txtQuestion->SetText(CSTR(""));
+				me->txtUser->SetText(CSTR(""));
 				me->fileList.FreeAll();
-				me->lblFileNames->SetText(CSTR("No File"));
+				me->lblUserFileNames->SetText(CSTR("No File"));
 			}
 		}
+		return UI::EventState::StopEvent;
 	}
 	return UI::EventState::ContinueEvent;
 }
@@ -127,15 +130,15 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnFiles(AnyType userObj, Data::Dat
 	{
 		if (me->fileList.GetCount() == 1)
 		{
-			me->lblFileNames->SetText(me->fileList.GetItemNoCheck(0)->ToCString());
+			me->lblUserFileNames->SetText(me->fileList.GetItemNoCheck(0)->ToCString());
 		}
 		else if (me->fileList.GetCount() > 1)
 		{
-			me->lblFileNames->SetText(Text::StringBuilderUTF8().AppendUIntOS(me->fileList.GetCount())->Append(CSTR(" Files"))->ToCString());
+			me->lblUserFileNames->SetText(Text::StringBuilderUTF8().AppendUIntOS(me->fileList.GetCount())->Append(CSTR(" Files"))->ToCString());
 		}
 		else
 		{
-			me->lblFileNames->SetText(CSTR("No File"));
+			me->lblUserFileNames->SetText(CSTR("No File"));
 		}
 	}
 }
@@ -169,20 +172,24 @@ SSWR::AVIRead::AVIROpenAIForm::AVIROpenAIForm(Optional<UI::GUIClientControl> par
 	this->cboModel = this->ui->NewComboBox(this->pnlControl, false);
 	this->cboModel->SetRect(104, 52, 200, 23, false);
 	this->cboModel->HandleSelectionChange(OnModelSelChg, this);
-	this->pnlQuestion = this->ui->NewPanel(*this);
-	this->pnlQuestion->SetRect(0, 0, 100, 100, false);
-	this->pnlQuestion->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->pnlQuestionFile = this->ui->NewPanel(this->pnlQuestion);
-	this->pnlQuestionFile->SetRect(0, 0, 100, 24, false);
-	this->pnlQuestionFile->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->txtQuestion = this->ui->NewTextBox(this->pnlQuestion, CSTR(""), true);
-	this->txtQuestion->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->txtQuestion->HandleKeyDown(OnQuestionKeyDown, this);
-	this->lblFiles = this->ui->NewLabel(this->pnlQuestionFile, CSTR("Files"));
-	this->lblFiles->SetRect(4, 4, 100, 24, false);
-	this->lblFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
-	this->lblFileNames = this->ui->NewLabel(this->pnlQuestionFile, CSTR("No File"));
-	this->lblFileNames->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcQuestion = this->ui->NewTabControl(*this);
+	this->tcQuestion->SetRect(0, 0, 100, 124, false);
+	this->tcQuestion->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->tpSystem = this->tcQuestion->AddTabPage(CSTR("System"));
+	this->txtSystem = this->ui->NewTextBox(this->tpSystem, CSTR(""), true);
+	this->txtSystem->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpUser = this->tcQuestion->AddTabPage(CSTR("User"));
+	this->pnlUserFile = this->ui->NewPanel(this->tpUser);
+	this->pnlUserFile->SetRect(0, 0, 100, 24, false);
+	this->pnlUserFile->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtUser = this->ui->NewTextBox(this->tpUser, CSTR(""), true);
+	this->txtUser->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtUser->HandleKeyDown(OnUserKeyDown, this);
+	this->lblUserFiles = this->ui->NewLabel(this->pnlUserFile, CSTR("Files"));
+	this->lblUserFiles->SetRect(4, 4, 100, 24, false);
+	this->lblUserFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblUserFileNames = this->ui->NewLabel(this->pnlUserFile, CSTR("No File"));
+	this->lblUserFileNames->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vspQuestion = this->ui->NewVSplitter(*this, 3, false);
 	this->txtAnswer = this->ui->NewTextBox(*this, CSTR(""), true);
 	this->txtAnswer->SetDockType(UI::GUIControl::DOCK_FILL);

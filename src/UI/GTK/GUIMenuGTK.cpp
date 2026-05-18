@@ -54,6 +54,7 @@ UnsafeArray<UTF8Char> UI::GUIMenu::ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, Key
 		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Clear]"));
 		break;
 	case UI::GUIControl::GK_ENTER:
+	case UI::GUIControl::GK_NUMPAD_ENTER:
 		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Enter]"));
 		break;
 	case UI::GUIControl::GK_SHIFT:
