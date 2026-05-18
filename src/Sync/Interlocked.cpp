@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 
 Int32 Sync::Interlocked::IncrementI32(NN<Int32> val)
 {

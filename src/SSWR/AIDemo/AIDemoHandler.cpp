@@ -36,7 +36,7 @@ Bool __stdcall SSWR::AIDemo::AIDemoHandler::BotFunc(NN<Net::WebServer::WebReques
 	sb.Append(CSTR(" query for this: \""));
 	sb.Append(question);
 	sb.AppendUTF8Char('\"');
-	Net::OpenAIResponse aiResp(cli->GetCurrModel(), sb.ToCString());
+	Net::OpenAIResponse aiResp(cli->GetCurrModel(), sb.ToCString(), nullptr);
 	NN<Net::OpenAIResult> result = cli->SendResponses(aiResp);
 	NN<Text::String> outputText = result->GetOutputText();
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);

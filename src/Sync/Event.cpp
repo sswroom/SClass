@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Sync/Event.h"
-#include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 #include "Sync/SimpleThread.h"
 
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__CYGWIN__)

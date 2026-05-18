@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/String.h"

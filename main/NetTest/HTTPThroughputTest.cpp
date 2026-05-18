@@ -5,6 +5,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include <stdio.h>

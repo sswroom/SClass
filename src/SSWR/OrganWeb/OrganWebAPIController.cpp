@@ -2079,11 +2079,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDelete(NN<Net::W
 	Int32 id;
 	Int32 cateId;
 	Int32 groupId;
-	NN<Text::String> sciName;
-	NN<Text::String> engName;
-	NN<Text::String> chiName;
-	NN<Text::String> descript;
-	Int32 bookIgn;
 	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
 		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
 		req->GetHTTPFormInt32(CSTR("groupId"), groupId))

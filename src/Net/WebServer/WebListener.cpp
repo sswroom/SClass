@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebConnection.h"
-#include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

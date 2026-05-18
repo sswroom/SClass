@@ -5321,6 +5321,7 @@ Sync/Event.h:
 @Event.o
 Sync/Interlocked.h:
 @Interlocked.o
+Sync/Interlocked_C.h:
 Sync/Mutex.h:
 @Mutex.o
 Sync/MutexUsage.h:
