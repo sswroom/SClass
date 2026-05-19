@@ -3,6 +3,8 @@
 
 UI::GUITextBox::GUITextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
+	this->acceptHdlr = nullptr;
+	this->acceptObj = nullptr;
 }
 
 UI::GUITextBox::~GUITextBox()
@@ -48,4 +50,10 @@ void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, AnyType userObj)
 void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, AnyType userObj)
 {
 	this->keyDownHdlrs.Add({hdlr, userObj});
+}
+
+void UI::GUITextBox::HandleAccept(UI::UIEvent hdlr, AnyType userObj)
+{
+	this->acceptHdlr = hdlr;
+	this->acceptObj = userObj;
 }

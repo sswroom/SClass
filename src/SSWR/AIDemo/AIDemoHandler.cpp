@@ -38,7 +38,7 @@ Bool __stdcall SSWR::AIDemo::AIDemoHandler::BotFunc(NN<Net::WebServer::WebReques
 	sb.AppendUTF8Char('\"');
 	Net::OpenAIResponse aiResp(cli->GetCurrModel(), sb.ToCString(), nullptr);
 	NN<Net::OpenAIResult> result = cli->SendResponses(aiResp);
-	NN<Text::String> outputText = result->GetOutputText();
+	NN<Text::String> outputText = result->GetOutputMessage();
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddInt32(CSTR("status"), (Int32)result->GetStatusCode());
 	json.ObjectAddStr(CSTR("answer"), outputText);
@@ -270,7 +270,6 @@ Bool __stdcall SSWR::AIDemo::AIDemoHandler::BotFunc(NN<Net::WebServer::WebReques
 			}
 		}
 	}
-	outputText->Release();
 	result.Delete();
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }

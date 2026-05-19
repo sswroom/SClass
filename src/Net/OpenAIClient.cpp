@@ -4,7 +4,6 @@
 #include "Net/HTTPClient.h"
 #include "Net/MIME.h"
 #include "Net/OpenAIClient.h"
-#include "Text/JSON.h"
 #include "Text/JSText.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
@@ -146,6 +145,9 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendChatCompletion(NN<OpenAIChatComplet
 		cli.Delete();
 		return ret;
 	}
+#if defined(VERBOSE)
+	printf("\n%s\n", sb.v.Ptr());
+#endif
 	UInt32 statusCode = (UInt32)cli->GetRespStatus();
 	cli.Delete();
 	NEW_CLASSNN(ret, Net::OpenAIResult(statusCode, sb.ToCString()));
@@ -189,6 +191,9 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendResponses(NN<OpenAIResponse> resp)
 		cli.Delete();
 		return ret;
 	}
+#if defined(VERBOSE)
+	printf("\n%s\n", sb.v.Ptr());
+#endif
 	UInt32 statusCode = (UInt32)cli->GetRespStatus();
 	cli.Delete();
 	NEW_CLASSNN(ret, Net::OpenAIResult(statusCode, sb.ToCString()));
@@ -427,15 +432,186 @@ void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('}');
 }
 
+Optional<Text::String> Net::OpenAIResult::GetJSONStr(Text::CStringNN name) const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (this->responseJSON.SetTo(jsonObj))
+	{
+		return jsonObj->GetValueString(name);
+	}
+	return nullptr;
+}
+
+Bool Net::OpenAIResult::GetJSONInt64(Text::CStringNN name, OutParam<Int64> value) const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (this->responseJSON.SetTo(jsonObj))
+	{
+		return jsonObj->GetValueAsInt64(name, value);
+	}
+	return false;
+}
+
+Bool Net::OpenAIResult::GetJSONBool(Text::CStringNN name) const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (this->responseJSON.SetTo(jsonObj))
+	{
+		return jsonObj->GetValueAsBool(name);
+	}
+	return false;
+}
+
+Double Net::OpenAIResult::GetJSONDoubleOrNAN(Text::CStringNN name) const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (this->responseJSON.SetTo(jsonObj))
+	{
+		return jsonObj->GetValueAsDoubleOrNAN(name);
+	}
+	return NAN;
+}
+
 Net::OpenAIResult::OpenAIResult(UInt32 statusCode, Text::CStringNN responseText)
 {
 	this->statusCode = statusCode;
 	this->responseText = Text::String::New(responseText);
+	this->responseJSON = Text::JSONBase::ParseJSONStr(responseText);
 }
 
 Net::OpenAIResult::~OpenAIResult()
 {
 	this->responseText->Release();
+	NN<Text::JSONBase> jsonObj;
+	if (this->responseJSON.SetTo(jsonObj))
+	{
+		jsonObj->EndUse();
+	}
+}
+
+Optional<Text::String> Net::OpenAIResult::GetID() const
+{
+	return this->GetJSONStr(CSTR("id"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetObject() const
+{
+	return this->GetJSONStr(CSTR("object"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetStatus() const
+{
+	return this->GetJSONStr(CSTR("status"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetModel() const
+{
+	return this->GetJSONStr(CSTR("model"));
+}
+
+Bool Net::OpenAIResult::GetCreatedAt(OutParam<Int64> createdAt) const
+{
+	return this->GetJSONInt64(CSTR("created_at"), createdAt);
+}
+
+Bool Net::OpenAIResult::GetCompletedAt(OutParam<Int64> completedAt) const
+{
+	return this->GetJSONInt64(CSTR("completed_at"), completedAt);
+}
+
+Optional<Text::String> Net::OpenAIResult::GetPreviousResponseId() const
+{
+	return this->GetJSONStr(CSTR("previous_response_id"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetInstructions() const
+{
+	return this->GetJSONStr(CSTR("instructions"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetError() const
+{
+	return this->GetJSONStr(CSTR("error"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetToolChoice() const
+{
+	return this->GetJSONStr(CSTR("tool_choice"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetTruncation() const
+{
+	return this->GetJSONStr(CSTR("truncation"));
+}
+
+Bool Net::OpenAIResult::IsParallelToolCalls() const
+{
+	return this->GetJSONBool(CSTR("parallel_tool_calls"));
+}
+
+Double Net::OpenAIResult::GetTopP() const
+{
+	return this->GetJSONDoubleOrNAN(CSTR("top_p"));
+}
+
+Double Net::OpenAIResult::GetPresencePenalty() const
+{
+	return this->GetJSONDoubleOrNAN(CSTR("presence_penalty"));
+}
+
+Double Net::OpenAIResult::GetFrequencyPenalty() const
+{
+	return this->GetJSONDoubleOrNAN(CSTR("frequency_penalty"));
+}
+
+Double Net::OpenAIResult::GetTopLogprobs() const
+{
+	return this->GetJSONDoubleOrNAN(CSTR("top_logprobs"));
+}
+
+Double Net::OpenAIResult::GetTemperature() const
+{
+	return this->GetJSONDoubleOrNAN(CSTR("temperature"));
+}
+
+Bool Net::OpenAIResult::GetInputTokens(OutParam<Int64> inputTokens) const
+{
+	return this->GetJSONInt64(CSTR("usage.input_tokens"), inputTokens);
+}
+
+Bool Net::OpenAIResult::GetOutputTokens(OutParam<Int64> outputTokens) const
+{
+	return this->GetJSONInt64(CSTR("usage.output_tokens"), outputTokens);
+}
+
+Bool Net::OpenAIResult::GetTotalTokens(OutParam<Int64> totalTokens) const
+{
+	return this->GetJSONInt64(CSTR("usage.total_tokens"), totalTokens);
+}
+
+Bool Net::OpenAIResult::GetInputCachedTokens(OutParam<Int64> inputCachedTokens) const
+{
+	return this->GetJSONInt64(CSTR("usage.input_tokens_details.cached_tokens"), inputCachedTokens);
+}
+
+Bool Net::OpenAIResult::GetOutputReasoningTokens(OutParam<Int64> outputReasoningTokens) const
+{
+	return this->GetJSONInt64(CSTR("usage.output_tokens_details.reasoning_tokens"), outputReasoningTokens);
+}
+
+Bool Net::OpenAIResult::IsStore() const
+{
+	return this->GetJSONBool(CSTR("store"));
+}
+
+Bool Net::OpenAIResult::IsBackground() const
+{
+	return this->GetJSONBool(CSTR("background"));
+}
+
+Optional<Text::String> Net::OpenAIResult::GetServiceTier() const
+{
+	return this->GetJSONStr(CSTR("service_tier"));
 }
 
 UInt32 Net::OpenAIResult::GetStatusCode() const
@@ -448,20 +624,67 @@ NN<Text::String> Net::OpenAIResult::GetResponseText() const
 	return this->responseText;
 }
 
-NN<Text::String> Net::OpenAIResult::GetOutputText() const
+Optional<Text::String> Net::OpenAIResult::GetOutputReasoning() const
 {
 	NN<Text::JSONBase> jsonObj;
-	if (!Text::JSONBase::ParseJSONStr(this->responseText->ToCString()).SetTo(jsonObj))
+	if (!this->responseJSON.SetTo(jsonObj))
 	{
-		return this->responseText->Clone();
+		return nullptr;
+	}
+
+	NN<Text::JSONArray> arr;
+	if (!jsonObj->GetValueArray(CSTR("output")).SetTo(arr))
+	{
+		return nullptr;
 	}
 	NN<Text::String> s;
-	if (jsonObj->GetValueNewString(CSTR("output[0].content[0].text")).SetTo(s))
+	UIntOS i = 0;
+	UIntOS j = arr->GetArrayLength();
+	while (i < j)
 	{
-		jsonObj->EndUse();
-		return s;
+		NN<Text::JSONObject> obj;
+		if (arr->GetArrayObject(i).SetTo(obj))
+		{
+			if (obj->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(CSTR("reasoning")))
+			{
+				return obj->GetValueString(CSTR("content[0].text"));
+			}
+		}
+		i++;
 	}
-	jsonObj->EndUse();
-	return this->responseText->Clone();
+	return nullptr;
 }
 
+NN<Text::String> Net::OpenAIResult::GetOutputMessage() const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (!this->responseJSON.SetTo(jsonObj))
+	{
+		return this->responseText;
+	}
+
+	NN<Text::JSONArray> arr;
+	if (!jsonObj->GetValueArray(CSTR("output")).SetTo(arr))
+	{
+		return this->responseText;
+	}
+	NN<Text::String> s;
+	UIntOS i = 0;
+	UIntOS j = arr->GetArrayLength();
+	while (i < j)
+	{
+		NN<Text::JSONObject> obj;
+		if (arr->GetArrayObject(i).SetTo(obj))
+		{
+			if (obj->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(CSTR("message")))
+			{
+				if (obj->GetValueString(CSTR("content[0].text")).SetTo(s))
+				{
+					return s;
+				}
+			}
+		}
+		i++;
+	}
+	return this->responseText;
+}

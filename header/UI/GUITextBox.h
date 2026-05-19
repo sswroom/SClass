@@ -6,9 +6,11 @@ namespace UI
 {
 	class GUITextBox : public GUIControl
 	{
-	private:
+	protected:
 		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> txtChgHdlrs;
 		Data::ArrayListObj<Data::CallbackStorage<UI::KeyEvent>> keyDownHdlrs;
+		UI::UIEvent acceptHdlr;
+		AnyType acceptObj;
 
 	public:
 		GUITextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
@@ -19,6 +21,7 @@ namespace UI
 		virtual UI::EventState EventKeyDown(UInt32 osKey);
 		virtual void HandleTextChanged(UI::UIEvent hdlr, AnyType userObj);
 		virtual void HandleKeyDown(UI::KeyEvent hdlr, AnyType userObj);
+		virtual void HandleAccept(UI::UIEvent hdlr, AnyType userObj);
 
 		virtual void SetReadOnly(Bool isReadOnly) = 0;
 		virtual void SetPasswordChar(UTF32Char c) = 0;

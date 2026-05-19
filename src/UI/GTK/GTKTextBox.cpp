@@ -102,15 +102,23 @@ UI::EventState UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 				ret = UI::EventState::StopEvent;
 			}
 		}
-		else if (key == UI::GUIControl::GK_ENTER)
+		else if (key == UI::GUIControl::GK_ENTER || key == UI::GUIControl::GK_NUMPAD_ENTER)
 		{
 			if (!this->multiLine)
 			{
-				NN<UI::GUIButton> btn;
-				if (this->GetRootForm().SetTo(rootForm) && rootForm->GetDefaultButton().SetTo(btn))
+				if (this->acceptHdlr)
 				{
-					btn->EventButtonClick();
+					this->acceptHdlr(this->acceptObj);
 					ret = UI::EventState::StopEvent;
+				}
+				else
+				{
+					NN<UI::GUIButton> btn;
+					if (this->GetRootForm().SetTo(rootForm) && rootForm->GetDefaultButton().SetTo(btn))
+					{
+						btn->EventButtonClick();
+						ret = UI::EventState::StopEvent;
+					}
 				}
 			}
 		}

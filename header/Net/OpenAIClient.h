@@ -1,6 +1,7 @@
 #ifndef _SM_NET_OPENAICLIENT
 #define _SM_NET_OPENAICLIENT
 #include "Net/SSLEngine.h"
+#include "Text/JSON.h"
 
 namespace Net
 {
@@ -99,13 +100,45 @@ namespace Net
 	private:
 		UInt32 statusCode;
 		NN<Text::String> responseText;
+		Optional<Text::JSONBase> responseJSON;
+
+		Optional<Text::String> GetJSONStr(Text::CStringNN name) const;
+		Bool GetJSONInt64(Text::CStringNN name, OutParam<Int64> value) const;
+		Bool GetJSONBool(Text::CStringNN name) const;
+		Double GetJSONDoubleOrNAN(Text::CStringNN name) const;
 	public:
 		OpenAIResult(UInt32 statusCode, Text::CStringNN responseText);
 		~OpenAIResult();
 
+		Optional<Text::String> GetID() const;
+		Optional<Text::String> GetObject() const;
+		Optional<Text::String> GetStatus() const;
+		Optional<Text::String> GetModel() const;
+		Bool GetCreatedAt(OutParam<Int64> createdAt) const;
+		Bool GetCompletedAt(OutParam<Int64> completedAt) const;
+		Optional<Text::String> GetPreviousResponseId() const;
+		Optional<Text::String> GetInstructions() const;
+		Optional<Text::String> GetError() const;
+		Optional<Text::String> GetToolChoice() const;
+		Optional<Text::String> GetTruncation() const;
+		Bool IsParallelToolCalls() const;
+		Double GetTopP() const;
+		Double GetPresencePenalty() const;
+		Double GetFrequencyPenalty() const;
+		Double GetTopLogprobs() const;
+		Double GetTemperature() const;
+		Bool GetInputTokens(OutParam<Int64> inputTokens) const;
+		Bool GetOutputTokens(OutParam<Int64> outputTokens) const;
+		Bool GetTotalTokens(OutParam<Int64> totalTokens) const;
+		Bool GetInputCachedTokens(OutParam<Int64> inputCachedTokens) const;
+		Bool GetOutputReasoningTokens(OutParam<Int64> outputReasoningTokens) const;
+		Bool IsStore() const;
+		Bool IsBackground() const;
+		Optional<Text::String> GetServiceTier() const;
 		UInt32 GetStatusCode() const;
 		NN<Text::String> GetResponseText() const;
-		NN<Text::String> GetOutputText() const;
+		Optional<Text::String> GetOutputReasoning() const;
+		NN<Text::String> GetOutputMessage() const;
 	};
 }
 #endif
