@@ -1938,7 +1938,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesAdd(NN<Net::WebS
 			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Species already exist\"}"));
 		}
 		Text::StringBuilderUTF8 sb;
-		if (!req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) && bookIgn == 0 && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
+		if ((!req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) || bookIgn == 0) && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
 		{
 			Text::StringBuilderUTF8 msg;
 			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -2031,7 +2031,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesModify(NN<Net::W
 			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Species already exist\"}"));
 		}
 		Text::StringBuilderUTF8 sb;
-		if (nameChg && !req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) && bookIgn == 0 && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
+		if (nameChg && (!req->GetHTTPFormInt32(CSTR("bookIgn"), bookIgn) || bookIgn == 0) && me->env->SpeciesBookIsExist(mutUsage, sciName->ToCString(), sb))
 		{
 			Text::StringBuilderUTF8 msg;
 			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
