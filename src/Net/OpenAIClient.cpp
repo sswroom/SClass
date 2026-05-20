@@ -7,7 +7,7 @@
 #include "Text/JSText.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-#define VERBOSE
+//#define VERBOSE
 
 Net::OpenAIClient::OpenAIClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiURL, Text::CStringNN apiKey)
 {
@@ -184,6 +184,61 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendResponses(NN<OpenAIResponse> resp)
 		cli.Delete();
 		return ret;
 	}
+	cli->EndRequest(nullptr, nullptr);
+	Text::CStringNN contentType;
+#if defined(VERBOSE)
+	if (cli->GetRespHeader(CSTR("Content-Type")).SetTo(contentType))
+	{
+		printf("OpenAIClient.SendResponses: Content-Type: %s\n", contentType.v.Ptr());
+	}
+	else
+	{
+		printf("OpenAIClient.SendResponses: Content-Type: null\n");
+	}
+#endif
+	if (cli->GetRespHeader(CSTR("Content-Type")).SetTo(contentType) && contentType.StartsWith(CSTR("text/event-stream")))
+	{
+		NEW_CLASSNN(ret, Net::OpenAIStreamResult(cli));
+		NN<Net::OpenAIStreamResult>::ConvertFrom(ret)->NextEvent();
+		return ret;
+	}
+	else
+	{
+		sb.ClearStr();
+		if (!cli->ReadAllContent(sb, 8192, 1048576))
+		{
+			NEW_CLASSNN(ret, Net::OpenAIResult(0, CSTR("Error in reading data from server")));
+			cli.Delete();
+			return ret;
+		}
+#if defined(VERBOSE)
+		printf("\n%s\n", sb.v.Ptr());
+#endif
+		UInt32 statusCode = (UInt32)cli->GetRespStatus();
+		cli.Delete();
+		NEW_CLASSNN(ret, Net::OpenAIResult(statusCode, sb.ToCString()));
+		return ret;
+	}
+}
+
+NN<Net::OpenAIResult> Net::OpenAIClient::GetResponseResult(Text::CStringNN responseId)
+{
+	NN<Net::OpenAIResult> ret;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(this->apiURL);
+	sb.Append(CSTR("/responses/"));
+	sb.Append(responseId);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->IsError())
+	{
+		NEW_CLASSNN(ret, Net::OpenAIResult(0, CSTR("Error in connecting to server")));
+		cli.Delete();
+		return ret;
+	}
+	sb.ClearStr();
+	sb.Append(CSTR("Bearer "));
+	sb.Append(this->apiKey);
+	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 	sb.ClearStr();
 	if (!cli->ReadAllContent(sb, 8192, 1048576))
 	{
@@ -333,6 +388,12 @@ Net::OpenAIResponse::OpenAIResponse(Text::CStringNN model, Text::CStringNN userI
 	this->userInput = userInput;
 	this->systemInput = systemInput;
 	this->previousResponseId = nullptr;
+	this->reasoningEffort = OpenAIReasoningEffort::Default;
+	this->maxTokens = 0;
+	this->temperature = NAN;
+	this->topP = NAN;
+	this->background = false;
+	this->stream = false;
 }
 
 Net::OpenAIResponse::~OpenAIResponse()
@@ -359,6 +420,36 @@ Text::CString Net::OpenAIResponse::GetSystemInput() const
 void Net::OpenAIResponse::SetPreviousResponseId(Text::CStringNN responseId)
 {
 	this->previousResponseId = responseId;
+}
+
+void Net::OpenAIResponse::SetReasoningEffort(OpenAIReasoningEffort effort)
+{
+	this->reasoningEffort = effort;
+}
+
+void Net::OpenAIResponse::SetMaxTokens(UIntOS maxTokens)
+{
+	this->maxTokens = maxTokens;
+}
+
+void Net::OpenAIResponse::SetTemperature(Double temperature)
+{
+	this->temperature = temperature;
+}
+
+void Net::OpenAIResponse::SetTopP(Double topP)
+{
+	this->topP = topP;
+}
+
+void Net::OpenAIResponse::SetBackground(Bool background)
+{
+	this->background = background;
+}
+
+void Net::OpenAIResponse::SetStream(Bool stream)
+{
+	this->stream = stream;
 }
 
 Bool Net::OpenAIResponse::AddFile(Text::CStringNN filePath)
@@ -388,6 +479,29 @@ void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	Text::CStringNN systemInput;
 	sb->Append(CSTR("{\"model\":"));
 	Text::JSText::ToJSTextDQuote(sb, this->model.v);
+	if (this->maxTokens > 0)
+	{
+		sb->Append(CSTR(",\"max_tokens\":"));
+		sb->AppendUIntOS(this->maxTokens);
+	}
+	if (!Math::IsNAN(this->temperature))
+	{
+		sb->Append(CSTR(",\"temperature\":"));
+		sb->AppendDouble(this->temperature);
+	}
+	if (!Math::IsNAN(this->topP))
+	{
+		sb->Append(CSTR(",\"top_p\":"));
+		sb->AppendDouble(this->topP);
+	}
+	if (this->background)
+	{
+		sb->Append(CSTR(",\"background\":true"));
+	}
+	if (this->stream)
+	{
+		sb->Append(CSTR(",\"stream\":true"));
+	}
 	sb->Append(CSTR(",\"input\":"));
 	if (this->fileList.GetCount() > 0)
 	{
@@ -428,6 +542,30 @@ void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	{
 		sb->Append(CSTR(",\"previous_response_id\":"));
 		Text::JSText::ToJSTextDQuote(sb, prevId.v);
+	}
+	if (this->reasoningEffort != OpenAIReasoningEffort::Default)
+	{
+		sb->Append(CSTR(",\"reasoning\":{\"effort\":\""));
+		switch (this->reasoningEffort)
+		{
+		case OpenAIReasoningEffort::None:
+			sb->Append(CSTR("none"));
+			break;
+		case OpenAIReasoningEffort::Low:
+			sb->Append(CSTR("low"));
+			break;
+		case OpenAIReasoningEffort::Medium:
+			sb->Append(CSTR("medium"));
+			break;
+		case OpenAIReasoningEffort::High:
+			sb->Append(CSTR("high"));
+			break;
+		case OpenAIReasoningEffort::Default:
+		default:
+			sb->Append(CSTR("default"));
+			break;
+		}
+		sb->Append(CSTR("\"}"));
 	}
 	sb->AppendUTF8Char('}');
 }
@@ -609,6 +747,15 @@ Bool Net::OpenAIResult::IsBackground() const
 	return this->GetJSONBool(CSTR("background"));
 }
 
+Bool Net::OpenAIResult::IsStream() const
+{
+	return false;
+}
+
+void Net::OpenAIResult::LockAccess(NN<Sync::MutexUsage> mutUsage)
+{
+}
+
 Optional<Text::String> Net::OpenAIResult::GetServiceTier() const
 {
 	return this->GetJSONStr(CSTR("service_tier"));
@@ -624,7 +771,7 @@ NN<Text::String> Net::OpenAIResult::GetResponseText() const
 	return this->responseText;
 }
 
-Optional<Text::String> Net::OpenAIResult::GetOutputReasoning() const
+Text::CString Net::OpenAIResult::GetOutputReasoning() const
 {
 	NN<Text::JSONBase> jsonObj;
 	if (!this->responseJSON.SetTo(jsonObj))
@@ -647,7 +794,8 @@ Optional<Text::String> Net::OpenAIResult::GetOutputReasoning() const
 		{
 			if (obj->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(CSTR("reasoning")))
 			{
-				return obj->GetValueString(CSTR("content[0].text"));
+				Optional<Text::String> s = obj->GetValueString(CSTR("content[0].text"));
+				return OPTSTR_CSTR(s);
 			}
 		}
 		i++;
@@ -655,18 +803,18 @@ Optional<Text::String> Net::OpenAIResult::GetOutputReasoning() const
 	return nullptr;
 }
 
-NN<Text::String> Net::OpenAIResult::GetOutputMessage() const
+Text::CStringNN Net::OpenAIResult::GetOutputMessage() const
 {
 	NN<Text::JSONBase> jsonObj;
 	if (!this->responseJSON.SetTo(jsonObj))
 	{
-		return this->responseText;
+		return this->responseText->ToCString();
 	}
 
 	NN<Text::JSONArray> arr;
 	if (!jsonObj->GetValueArray(CSTR("output")).SetTo(arr))
 	{
-		return this->responseText;
+		return this->responseText->ToCString();
 	}
 	NN<Text::String> s;
 	UIntOS i = 0;
@@ -680,11 +828,296 @@ NN<Text::String> Net::OpenAIResult::GetOutputMessage() const
 			{
 				if (obj->GetValueString(CSTR("content[0].text")).SetTo(s))
 				{
-					return s;
+					return s->ToCString();
 				}
 			}
 		}
 		i++;
 	}
-	return this->responseText;
+	return this->responseText->ToCString();
+}
+
+Bool Net::OpenAIResult::IsQueuedOrInProgress() const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (!this->responseJSON.SetTo(jsonObj))
+	{
+		return false;
+	}
+	NN<Text::String> s;
+	if (jsonObj->GetValueString(CSTR("status")).SetTo(s))
+	{
+		return s->Equals(CSTR("queued")) || s->Equals(CSTR("in_progress"));
+	}
+	return false;
+}
+
+Bool Net::OpenAIResult::IsQueued() const
+{
+	NN<Text::JSONBase> jsonObj;
+	if (!this->responseJSON.SetTo(jsonObj))
+	{
+		return false;
+	}
+	NN<Text::String> s;
+	if (jsonObj->GetValueString(CSTR("status")).SetTo(s))
+	{
+		return s->Equals(CSTR("queued"));
+	}
+	return false;
+}
+
+Net::OpenAIStreamResult::OpenAIStreamResult(NN<Net::HTTPClient> cli) : OpenAIResult(cli->GetRespStatus(), CSTR("")), reader(cli)
+{
+	this->cli = cli;
+	this->lastEvent = nullptr;
+	this->deltaType = 0;
+}
+
+Net::OpenAIStreamResult::~OpenAIStreamResult()
+{
+	this->cli.Delete();
+	OPTSTR_DEL(this->lastEvent);
+}
+
+Bool Net::OpenAIStreamResult::IsStream() const
+{
+	return true;
+}
+
+void Net::OpenAIStreamResult::LockAccess(NN<Sync::MutexUsage> mutUsage)
+{
+	mutUsage->ReplaceMutex(this->mut);
+}
+
+Text::CString Net::OpenAIStreamResult::GetOutputReasoning() const
+{
+	if (this->deltaType == 1)
+	{
+		return this->sbDelta.ToCString();
+	}
+	return this->OpenAIResult::GetOutputReasoning();
+}
+
+Text::CStringNN Net::OpenAIStreamResult::GetOutputMessage() const
+{
+	if (this->deltaType == 2)
+	{
+		return this->sbDelta.ToCString();
+	}
+	return this->OpenAIResult::GetOutputMessage();
+}
+
+Optional<Text::String> Net::OpenAIStreamResult::NextEvent()
+{
+/*
+	response.created
+	response.in_progress
+	response.output_item.added
+	response.content_part.added
+	response.reasoning_text.delta *
+	response.reasoning_text.done
+	response.content_part.done
+	response.output_item.done
+	response.output_item.added
+	response.content_part.added
+	response.output_text.delta *
+	response.output_text.done
+	response.content_part.done
+	response.output_item.done
+	response.completed
+*/
+	NN<Text::String> evt;
+	Text::StringBuilderUTF8 sb;
+	while (this->reader.ReadLine(sb, 65536))
+	{
+		if (sb.StartsWith(CSTR("event:")))
+		{
+			evt = Text::String::New(sb.ToCString().Substring(6).LTrim());
+			OPTSTR_DEL(this->lastEvent);
+			this->lastEvent = evt;
+		}
+		if (sb.StartsWith(CSTR("data:")))
+		{
+			if (this->lastEvent.SetTo(evt))
+			{
+#if defined(VERBOSE)
+				printf("OpenAIStreamResult.NextEvent: event=%s\n", evt->v.Ptr());
+#endif
+				NN<Text::JSONBase> json;
+				NN<Text::JSONBase> oldJson;
+				NN<Text::JSONObject> jsonObj;
+				NN<Text::JSONArray> jsonArr;
+				NN<Text::String> s;
+				if (Text::JSONBase::ParseJSONStr(sb.ToCString().Substring(5).LTrim()).SetTo(json))
+				{
+					if (evt->Equals(CSTR("response.created")))
+					{
+						// type = response.created
+						// response = {}
+						// sequence_number = 0
+						if (json->GetValueObject(CSTR("response")).SetTo(jsonObj))
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							if (this->responseJSON.SetTo(oldJson))
+							{
+								oldJson->EndUse();
+							}
+							jsonObj->BeginUse();
+							this->responseJSON = jsonObj;
+						}
+					}
+					else if (evt->Equals(CSTR("response.in_progress")))
+					{
+						// type = response.in_progress
+						// response = {}
+						// sequence_number = 0..n
+					}
+					else if (evt->Equals(CSTR("response.output_item.added")))
+					{
+						// type = response.output_item.added
+						// output_index = 0..n
+						// item = {}
+						// sequence_number = 0..n
+						if (json->GetValueString(CSTR("item.type")).SetTo(s))
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							this->sbDelta.ClearStr();
+							if (s->Equals(CSTR("reasoning")))
+							{
+								this->deltaType = 1;
+							}
+							else if (s->Equals(CSTR("message")))
+							{
+								this->deltaType = 2;
+							}
+							else
+							{
+								this->deltaType = 0;
+							}
+						}
+					}
+					else if (evt->Equals(CSTR("response.output_item.done")))
+					{
+						// type = response.output_item.done
+						// output_index = 0..n
+						// item = {}
+						// sequence_number = 0..n
+						if (this->responseJSON.SetTo(oldJson) && oldJson->GetValueArray(CSTR("output")).SetTo(jsonArr) && json->GetValueObject(CSTR("item")).SetTo(jsonObj))
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							jsonArr->AddArrayValue(jsonObj);
+							this->deltaType = 0;
+						}
+#if defined(VERBOSE)
+						else
+						{
+							printf("OpenAIStreamResult.NextEvent: unexpected json, event=response.output_item.done: json=%s\n", sb.ToCString().Substring(5).LTrim().v.Ptr());
+						}
+#endif
+					}
+					else if (evt->Equals(CSTR("response.reasoning_text.delta")))
+					{
+						// type = response.reasoning_text.delta
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// delta = "?"
+						// sequence_number = 0..n
+						Sync::MutexUsage mutUsage(this->mut);
+						if (json->GetValueString(CSTR("delta")).SetTo(s) && this->deltaType == 1)
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							this->sbDelta.Append(s);
+						}
+					}
+					else if (evt->Equals(CSTR("response.output_text.delta")))
+					{
+						// type = response.output_text.delta
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// delta = "?"
+						// logprobs = []
+						// sequence_number = 0..n
+						if (json->GetValueString(CSTR("delta")).SetTo(s) && this->deltaType == 2)
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							this->sbDelta.Append(s);
+						}
+					}
+					else if (evt->Equals(CSTR("response.content_part.added")))
+					{
+						// type = response.content_part.added
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// part = {}
+						// sequence_number = 0..n
+					}
+					else if (evt->Equals(CSTR("response.reasoning_text.done")))
+					{
+						// type = response.reasoning_text.done
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// text = "?"
+						// sequence_number = 0..n
+					}
+					else if (evt->Equals(CSTR("response.output_text.done")))
+					{
+						// type = response.output_text.done
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// text = "?"
+						// logprobs = []
+						// sequence_number = 0..n
+					}
+					else if (evt->Equals(CSTR("response.content_part.done")))
+					{
+						// type = response.content_part.done
+						// item_id = "???"
+						// output_index = 0..n
+						// content_index == 0..n
+						// part = {}
+						// sequence_number = 0..n
+					}
+					else if (evt->Equals(CSTR("response.completed")))
+					{
+						// type = response.completed
+						// response = {}
+						// sequence_number = 0..n
+						if (json->GetValueObject(CSTR("response")).SetTo(jsonObj))
+						{
+							Sync::MutexUsage mutUsage(this->mut);
+							if (this->responseJSON.SetTo(oldJson))
+							{
+								oldJson->EndUse();
+							}
+							jsonObj->BeginUse();
+							this->responseJSON = jsonObj;
+						}
+					}
+					else
+					{
+#if defined(VERBOSE)
+						printf("OpenAIStreamResult.NextEvent: unsupported, event=%s, data=%s\n", evt->v.Ptr(), sb.ToCString().Substring(5).LTrim().v.Ptr());
+#endif
+					}
+					json->EndUse();
+				}
+				return evt;
+			}
+			else
+			{
+#if defined(VERBOSE)
+				printf("OpenAIStreamResult.NextEvent: event type not found before data\n");
+#endif
+				return nullptr;
+			}
+		}
+		sb.ClearStr();
+	}
+	return nullptr;
 }

@@ -1,5 +1,6 @@
 BUILD_OS := WINDOWS
-INCLUDEPATH+=:../../ThirdParty/KSSample
+INCLUDEPATH += :../../ThirdParty/KSSample
+NO_PYTHON := 1
 
 WinDebug.h:
 

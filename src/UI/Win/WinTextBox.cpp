@@ -8,7 +8,47 @@
 #include <windows.h>
 #ifndef _WIN32_WCE
 #include <richedit.h>
+#include <commctrl.h>
 #endif
+#ifndef GWL_USERDATA
+#define GWL_USERDATA GWLP_USERDATA
+#endif
+
+#define WINTEXTBOX_ID 100
+
+LRESULT CALLBACK WinTextBox_SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	printf("WinTextBox_SubclassProc: uMsg = %d\r\n", uMsg);
+	switch (uMsg)
+	{
+	case WM_KEYDOWN:
+		{
+			NN<UI::Win::WinTextBox> me;
+			if (me.Set((UI::Win::WinTextBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA)))
+			{
+				return me->OnKeyDown(me, (UInt32)wParam) == UI::EventState::StopEvent?0:DefSubclassProc(hWnd, uMsg, wParam, lParam);
+			}
+		}
+		break;
+
+	case WM_NCDESTROY:
+		RemoveWindowSubclass(hWnd, WinTextBox_SubclassProc, uIdSubclass);
+		break;
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+UI::EventState __stdcall UI::Win::WinTextBox::OnKeyDown(AnyType userObj, UInt32 osKey)
+{
+	NN<WinTextBox> me = userObj.GetNN<WinTextBox>();
+	GUIKey key = OSKey2GUIKey(osKey);
+	if (me->acceptHdlr && (key == GUIKey::GK_ENTER || key == GUIKey::GK_NUMPAD_ENTER))
+	{
+		me->acceptHdlr(me->acceptObj);
+		return UI::EventState::StopEvent;
+	}
+	return UI::EventState::ContinueEvent;
+}
 
 UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
 {
@@ -18,6 +58,9 @@ UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	BOOL ret = SetWindowSubclass((HWND)this->hwnd.OrNull(), WinTextBox_SubclassProc, WINTEXTBOX_ID, 0);
+	printf("SetWindowSubclass: ret = %d\r\n", ret);
+	this->HandleKeyDown(OnKeyDown, this);
 }
 
 UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
@@ -32,6 +75,9 @@ UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 		style |= ES_WANTRETURN | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	BOOL ret = SetWindowSubclass((HWND)this->hwnd.OrNull(), WinTextBox_SubclassProc, WINTEXTBOX_ID, 0);
+	printf("SetWindowSubclass: ret = %d\r\n", ret);
+	this->HandleKeyDown(OnKeyDown, this);
 }
 
 UI::Win::WinTextBox::~WinTextBox()

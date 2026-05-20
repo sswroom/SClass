@@ -1932,6 +1932,7 @@ PythonCoreNull.o: ../../src/Python/PythonCoreNull.cpp
 PythonDict.o: ../../src/Python/PythonDict.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
+PythonDictNull.o: ../../src/Python/PythonDictNull.cpp
 PythonFloat.o: ../../src/Python/PythonFloat.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
@@ -1944,9 +1945,11 @@ $`$(PKG-CONFIG) --cflags python3-embed`
 PythonModule.o: ../../src/Python/PythonModule.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
+PythonModuleNull.o: ../../src/Python/PythonModuleNull.cpp
 PythonObject.o: ../../src/Python/PythonObject.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
+PythonObjectNull.o: ../../src/Python/PythonObjectNull.cpp
 PythonType.o: ../../src/Python/PythonType.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`

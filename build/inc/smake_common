@@ -1,27 +1,4 @@
 
-## optional.cfg
-# NO_MINIZ := 1
-# NO_HEIF := 1
-# NO_SSH2 := 1
-# NO_WEBP := 1
-# NO_OPENJP2 := 1
-# NO_ZXING := 1
-# NO_TDS := 1
-# NO_JXL := 1
-# NO_OPENCV := 1
-# NO_LIBPQ := 1
-# NO_PYTHON := 1
-# USE_FDEEP := 1
-# USE_AWS := 1
-
-INCLUDEPATH :=../../header
-CFLAGS += -I ../../header
-INCLUDEPATH +=:../../ThirdParty/miniz
-INCLUDEPATH +=:../../ThirdParty/miniz/_build
-INCLUDEPATH +=:../../ThirdParty/sqlite3
-INCLUDEPATH +=:../../ThirdParty/adl
-INCLUDEPATH +=:../../ThirdParty/webdriverxx/include
-
 mcu:
 @MCU_Console
 @MCU_Distance
@@ -4425,7 +4402,8 @@ Python/PythonCore.h:
 @?(NO_PYTHON == 0)PythonCore.o
 @?(NO_PYTHON > 0)PythonCoreNull.o
 Python/PythonDict.h:
-@PythonDict.o
+@?(NO_PYTHON == 0)PythonDict.o
+@?(NO_PYTHON > 0)PythonDictNull.o
 Python/PythonFloat.h:
 @PythonFloat.o
 Python/PythonFunction.h:
@@ -4433,9 +4411,11 @@ Python/PythonFunction.h:
 Python/PythonList.h:
 @PythonList.o
 Python/PythonModule.h:
-@PythonModule.o
+@?(NO_PYTHON == 0)PythonModule.o
+@?(NO_PYTHON > 0)PythonModuleNull.o
 Python/PythonObject.h:
-@PythonObject.o
+@?(NO_PYTHON == 0)PythonObject.o
+@?(NO_PYTHON > 0)PythonObjectNull.o
 Python/PythonType.h:
 @PythonType.o
 Python/PythonUnicode.h:

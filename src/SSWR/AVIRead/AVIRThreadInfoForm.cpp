@@ -327,7 +327,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				Manage::DasmX86_32 dasm;
 
 				Text::StringBuilderWriter sbWriter(sb);
-				Manage::DasmX86_32::DasmX86_32_Regs regs;
+				Manage::DasmX86_32::Registers regs;
 				context->GetRegs(regs);
 				callLev = 0;
 				while (true)
@@ -365,7 +365,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 					sb.ClearStr();
-					ret = dasm.Disasm32(sbWriter, symbol, &eip, &esp, &ebp, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
+					ret = dasm.Disasm32(sbWriter, symbol, eip, esp, ebp, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 					this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 					if (!ret)
 						break;

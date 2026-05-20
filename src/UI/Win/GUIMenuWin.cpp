@@ -410,6 +410,9 @@ UnsafeArray<UTF8Char> UI::GUIMenu::ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, Key
 	case UI::GUIControl::GK_OEM_7:
 		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[']"));
 		break;
+	case UI::GUIControl::GK_NUMPAD_ENTER:
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num Enter]"));
+		break;
 	case UI::GUIControl::GK_NONE:
 		break;
 	}

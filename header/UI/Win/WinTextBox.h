@@ -14,6 +14,8 @@ namespace UI
 			ClassData *clsData;
 
 		public:
+			static UI::EventState __stdcall OnKeyDown(AnyType userObj, UInt32 osKey);
+			
 			WinTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText);
 			WinTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~WinTextBox();

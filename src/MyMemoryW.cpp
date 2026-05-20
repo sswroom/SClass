@@ -11,6 +11,7 @@
 #include "IO/SimpleFileWriter.h"
 #include "Sync/Mutex.h"
 #include "Sync/Interlocked.h"
+#include "Sync/Interlocked_C.h"
 #include "Text/MyString.h"
 #include <windows.h>
 #if (defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__)) && !defined(_WIN32_WCE)

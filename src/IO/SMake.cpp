@@ -297,6 +297,15 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
+				if (this->messageWriter.SetTo(messageWriter))
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("Config "));
+					sb.Append(cfg->name);
+					sb.AppendC(UTF8STRC(" updated to "));
+					sb.Append(cfg->value);
+					messageWriter->WriteLine(sb.ToCString());
+				}
 			}
 			else
 			{
@@ -306,6 +315,15 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				AppendCfgItem(sb2, str2.ToCString());
 				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				this->cfgMap.PutNN(cfg->name, cfg);
+				if (this->messageWriter.SetTo(messageWriter))
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("Config "));
+					sb.Append(cfg->name);
+					sb.AppendC(UTF8STRC(" updated to "));
+					sb.Append(cfg->value);
+					messageWriter->WriteLine(sb.ToCString());
+				}
 			}
 		}
 		else if ((i = sb.IndexOf(UTF8STRC(":"))) != INVALID_INDEX)
@@ -329,6 +347,15 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 					this->cfgMap.PutNN(cfg->name, cfg);
+				}
+				if (this->messageWriter.SetTo(messageWriter))
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("Config "));
+					sb.Append(cfg->name);
+					sb.AppendC(UTF8STRC(" updated to "));
+					sb.Append(cfg->value);
+					messageWriter->WriteLine(sb.ToCString());
 				}
 			}
 			else

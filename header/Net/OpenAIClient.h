@@ -1,13 +1,25 @@
 #ifndef _SM_NET_OPENAICLIENT
 #define _SM_NET_OPENAICLIENT
+#include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
+#include "Sync/MutexUsage.h"
 #include "Text/JSON.h"
+#include "Text/UTF8Reader.h"
 
 namespace Net
 {
 	class OpenAIResult;
 	class OpenAIChatCompletion;
 	class OpenAIResponse;
+	enum class OpenAIReasoningEffort
+	{
+		Default,
+		None,
+		Low,
+		Medium,
+		High
+	};
+
 	class OpenAIClient
 	{
 	private:
@@ -28,6 +40,7 @@ namespace Net
 		Text::CStringNN GetCurrModel() const;
 		NN<OpenAIResult> SendChatCompletion(NN<OpenAIChatCompletion> chat);
 		NN<OpenAIResult> SendResponses(NN<OpenAIResponse> resp);
+		NN<OpenAIResult> GetResponseResult(Text::CStringNN responseId);
 	};
 
 	enum class OpenAIMessageRole
@@ -82,6 +95,12 @@ namespace Net
 		Text::CString systemInput;
 		Data::ArrayListStringNN fileList;
 		Data::ArrayListStringNN fileNameList;
+		OpenAIReasoningEffort reasoningEffort;
+		UIntOS maxTokens;
+		Double temperature;
+		Double topP;
+		Bool background;
+		Bool stream;
 
 	public:
 		OpenAIResponse(Text::CStringNN model, Text::CStringNN userInput, Text::CString systemInput);
@@ -91,13 +110,19 @@ namespace Net
 		Text::CStringNN GetUserInput() const;
 		Text::CString GetSystemInput() const;
 		void SetPreviousResponseId(Text::CStringNN responseId);
+		void SetReasoningEffort(OpenAIReasoningEffort effort);
+		void SetMaxTokens(UIntOS maxTokens);
+		void SetTemperature(Double temperature);
+		void SetTopP(Double topP);
+		void SetBackground(Bool background);
+		void SetStream(Bool stream);
 		Bool AddFile(Text::CStringNN filePath);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class OpenAIResult
 	{
-	private:
+	protected:
 		UInt32 statusCode;
 		NN<Text::String> responseText;
 		Optional<Text::JSONBase> responseJSON;
@@ -108,37 +133,61 @@ namespace Net
 		Double GetJSONDoubleOrNAN(Text::CStringNN name) const;
 	public:
 		OpenAIResult(UInt32 statusCode, Text::CStringNN responseText);
-		~OpenAIResult();
+		virtual ~OpenAIResult();
 
-		Optional<Text::String> GetID() const;
-		Optional<Text::String> GetObject() const;
-		Optional<Text::String> GetStatus() const;
-		Optional<Text::String> GetModel() const;
-		Bool GetCreatedAt(OutParam<Int64> createdAt) const;
-		Bool GetCompletedAt(OutParam<Int64> completedAt) const;
-		Optional<Text::String> GetPreviousResponseId() const;
-		Optional<Text::String> GetInstructions() const;
-		Optional<Text::String> GetError() const;
-		Optional<Text::String> GetToolChoice() const;
-		Optional<Text::String> GetTruncation() const;
-		Bool IsParallelToolCalls() const;
-		Double GetTopP() const;
-		Double GetPresencePenalty() const;
-		Double GetFrequencyPenalty() const;
-		Double GetTopLogprobs() const;
-		Double GetTemperature() const;
-		Bool GetInputTokens(OutParam<Int64> inputTokens) const;
-		Bool GetOutputTokens(OutParam<Int64> outputTokens) const;
-		Bool GetTotalTokens(OutParam<Int64> totalTokens) const;
-		Bool GetInputCachedTokens(OutParam<Int64> inputCachedTokens) const;
-		Bool GetOutputReasoningTokens(OutParam<Int64> outputReasoningTokens) const;
-		Bool IsStore() const;
-		Bool IsBackground() const;
-		Optional<Text::String> GetServiceTier() const;
-		UInt32 GetStatusCode() const;
+		virtual Optional<Text::String> GetID() const;
+		virtual Optional<Text::String> GetObject() const;
+		virtual Optional<Text::String> GetStatus() const;
+		virtual Optional<Text::String> GetModel() const;
+		virtual Bool GetCreatedAt(OutParam<Int64> createdAt) const;
+		virtual Bool GetCompletedAt(OutParam<Int64> completedAt) const;
+		virtual Optional<Text::String> GetPreviousResponseId() const;
+		virtual Optional<Text::String> GetInstructions() const;
+		virtual Optional<Text::String> GetError() const;
+		virtual Optional<Text::String> GetToolChoice() const;
+		virtual Optional<Text::String> GetTruncation() const;
+		virtual Bool IsParallelToolCalls() const;
+		virtual Double GetTopP() const;
+		virtual Double GetPresencePenalty() const;
+		virtual Double GetFrequencyPenalty() const;
+		virtual Double GetTopLogprobs() const;
+		virtual Double GetTemperature() const;
+		virtual Bool GetInputTokens(OutParam<Int64> inputTokens) const;
+		virtual Bool GetOutputTokens(OutParam<Int64> outputTokens) const;
+		virtual Bool GetTotalTokens(OutParam<Int64> totalTokens) const;
+		virtual Bool GetInputCachedTokens(OutParam<Int64> inputCachedTokens) const;
+		virtual Bool GetOutputReasoningTokens(OutParam<Int64> outputReasoningTokens) const;
+		virtual Bool IsStore() const;
+		virtual Bool IsBackground() const;
+		virtual Bool IsStream() const;
+		virtual void LockAccess(NN<Sync::MutexUsage> mutUsage);
+		virtual Optional<Text::String> GetServiceTier() const;
+		virtual UInt32 GetStatusCode() const;
 		NN<Text::String> GetResponseText() const;
-		Optional<Text::String> GetOutputReasoning() const;
-		NN<Text::String> GetOutputMessage() const;
+		virtual Text::CString GetOutputReasoning() const;
+		virtual Text::CStringNN GetOutputMessage() const;
+		Bool IsQueuedOrInProgress() const;
+		Bool IsQueued() const;
+	};
+	class OpenAIStreamResult : public OpenAIResult
+	{
+	private:
+		NN<Net::HTTPClient> cli;
+		Text::UTF8Reader reader;
+		Sync::Mutex mut;
+		Optional<Text::String> lastEvent;
+		Text::StringBuilderUTF8 sbDelta;
+		UIntOS deltaType;
+
+	public:
+		OpenAIStreamResult(NN<Net::HTTPClient> cli);
+		virtual ~OpenAIStreamResult();
+
+		virtual Bool IsStream() const;
+		virtual void LockAccess(NN<Sync::MutexUsage> mutUsage);
+		virtual Text::CString GetOutputReasoning() const;
+		virtual Text::CStringNN GetOutputMessage() const;
+		Optional<Text::String> NextEvent();
 	};
 }
 #endif

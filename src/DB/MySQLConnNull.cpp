@@ -47,7 +47,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 		}
 		return nullptr;
 	}
-	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, nullptr, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -84,7 +84,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 		}
 		return nullptr;
 	}
-	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, nullptr, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));

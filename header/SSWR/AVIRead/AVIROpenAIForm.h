@@ -2,7 +2,10 @@
 #define _SM_SSWR_AVIREAD_AVIROPENAIFORM
 #include "Net/OpenAIClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -21,10 +24,29 @@ namespace SSWR
 		class AVIROpenAIForm : public UI::GUIForm
 		{
 		private:
-			struct QAPair
+			struct QuestionInfo
 			{
 				NN<Text::String> question;
-				NN<Net::OpenAIResult> result;	
+				Optional<Text::String> systemPrompt;
+				Optional<Text::String> prevRespId;
+				Net::OpenAIReasoningEffort reasoning;
+				Data::ArrayListStringNN fileList;
+				UIntOS maxTokens;
+				Double temperature;
+				Double topP;
+				Bool background;
+				Bool stream;
+			};
+
+			struct QAPair
+			{
+				Double duration;
+				NN<Text::String> question;
+				NN<Net::OpenAIResult> result;
+				Bool finish;
+				Bool reasoningUpdated;
+				Bool messageUpdated;
+				Bool allUpdated;
 			};
 		private:
 			NN<UI::GUIPanel> pnlControl;
@@ -44,6 +66,18 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlInputParam;
 			NN<UI::GUILabel> lblInputPrevRespId;
 			NN<UI::GUITextBox> txtInputPrevRespId;
+			NN<UI::GUILabel> lblInputReasoning;
+			NN<UI::GUIComboBox> cboInputReasoning;
+			NN<UI::GUILabel> lblInputMaxTokens;
+			NN<UI::GUITextBox> txtInputMaxTokens;
+			NN<UI::GUILabel> lblInputTemperature;
+			NN<UI::GUITextBox> txtInputTemperature;
+			NN<UI::GUILabel> lblInputTopP;
+			NN<UI::GUITextBox> txtInputTopP;
+			NN<UI::GUILabel> lblInputBackground;
+			NN<UI::GUICheckBox> chkInputBackground;
+			NN<UI::GUILabel> lblInputStream;
+			NN<UI::GUICheckBox> chkInputStream;
 			NN<UI::GUIPanel> pnlInputFile;
 			NN<UI::GUITextBox> txtInput;
 			NN<UI::GUILabel> lblInputFiles;
@@ -69,7 +103,13 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Optional<Net::OpenAIClient> cli;
 			Data::ArrayListStringNN fileList;
+			Sync::Mutex qaListMut;
 			Data::ArrayListNN<QAPair> qaList;
+			Bool qaListUpdated;
+			Data::ArrayListNN<QuestionInfo> questionList;
+			Sync::Mutex questionListMut;
+			Sync::Thread workerThread;
+			Optional<QAPair> currQAPair;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static UI::EventState __stdcall OnUserKeyDown(AnyType userObj, UInt32 osKey);
@@ -77,7 +117,11 @@ namespace SSWR
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnQAPairSelChg(AnyType userObj);
 			static void __stdcall OnQAPairClearClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall WorkerThread(NN<Sync::Thread> userObj);
+			static void __stdcall FreeQuestionInfo(NN<QuestionInfo> qa);
 			static void __stdcall FreeQAPair(NN<QAPair> qa);
+			void DisplayQAPair(NN<QAPair> qa);
 		public:
 			AVIROpenAIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROpenAIForm();
