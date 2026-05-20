@@ -15,6 +15,7 @@ namespace UI
 			Bool noDispOff;
 			Optional<ControlHandle> focusWnd;
 			void *focusHAcc;
+			Bool focusWndButtons;
 			Optional<Media::MonitorMgr> monMgr;
 
 		public:
@@ -70,7 +71,7 @@ namespace UI
 			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd);
 			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent);
 
-			void SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc);
+			void SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc, Bool hasCtrlButtons);
 			Optional<InstanceHandle> GetHInst();
 
 			static IntOS MSGetWindowObj(Optional<ControlHandle> hWnd, IntOS index);

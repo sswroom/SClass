@@ -298,7 +298,7 @@ IntOS __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UIntOS wParam, 
 	case WM_SETFOCUS:
 		if (me.SetTo(nnme))
 		{
-			((UI::Win::WinCore*)nnme->ui.Ptr())->SetFocusWnd((ControlHandle*)hWnd, nnme->hAcc);
+			((UI::Win::WinCore*)nnme->ui.Ptr())->SetFocusWnd((ControlHandle*)hWnd, nnme->hAcc, nnme->okBtn.NotNull() || nnme->cancelBtn.NotNull());
 			nnme->OnFocus();
 		}
 		else
@@ -502,7 +502,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 	if (this->IsFormFocused())
 	{
-		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
+		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc, this->okBtn.NotNull() || this->cancelBtn.NotNull());
 	}
 }
 UI::GUIForm::GUIForm(NN<UI::GUICore> ui, Optional<ControlHandle> hWnd) : UI::GUIClientControl(ui, nullptr)

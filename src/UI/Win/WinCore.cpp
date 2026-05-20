@@ -40,6 +40,7 @@ UI::Win::WinCore::WinCore(Optional<InstanceHandle> hInst)
 	this->hInst = hInst;
 	this->focusWnd = nullptr;
 	this->focusHAcc = 0;
+	this->focusWndButtons = false;
 	this->noDispOff = false;
 	frmCnt = 0;
 	this->hasCommCtrl = false;
@@ -64,7 +65,7 @@ void UI::Win::WinCore::Run()
         }
 		else if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd.OrNull(), (HACCEL)this->focusHAcc, &msg) == 0)
 		{
-			if (!IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
+			if (!this->focusWndButtons || !IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
 			{
 				TranslateMessage(&msg); 
 				DispatchMessage(&msg); 
@@ -80,7 +81,7 @@ void UI::Win::WinCore::ProcessMessages()
 	{
 		if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd.OrNull(), (HACCEL)this->focusHAcc, &msg) == 0)
 		{
-			if (!IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
+			if (!this->focusWndButtons || !IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -164,7 +165,7 @@ void UI::Win::WinCore::UseDevice(Bool useSystem, Bool useDisplay)
 #endif
 }
 
-void UI::Win::WinCore::SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc)
+void UI::Win::WinCore::SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc, Bool hasCtrlButtons)
 {
 	this->focusWnd = hWnd;
 	this->focusHAcc = hAcc;

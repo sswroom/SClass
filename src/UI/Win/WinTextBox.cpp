@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "Text/StringBuilderW.h"
 #include "UI/Win/WinCore.h"
 #include "UI/Win/WinTextBox.h"
 
@@ -26,7 +27,7 @@ LRESULT CALLBACK WinTextBox_SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 			NN<UI::Win::WinTextBox> me;
 			if (me.Set((UI::Win::WinTextBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA)))
 			{
-				return me->OnKeyDown(me, (UInt32)wParam) == UI::EventState::StopEvent?0:DefSubclassProc(hWnd, uMsg, wParam, lParam);
+				return me->EventKeyDown((UInt32)wParam) == UI::EventState::StopEvent?0:DefSubclassProc(hWnd, uMsg, wParam, lParam);
 			}
 		}
 		break;
@@ -99,6 +100,51 @@ void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(txt.v);
 	SetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr());
 	Text::StrDelNew(wptr);
+}
+
+void UI::Win::WinTextBox::SetUnixText(Text::CStringNN text)
+{
+	Text::StringBuilderW sb;
+	UIntOS i = 0;
+	UIntOS j = 0;
+	while (i < text.leng)
+	{
+		if (text.v[i] == '\r')
+		{
+			if (j != i)
+			{
+				sb.AppendC(&text.v[j], i - j);
+			}
+			sb.AppendChar('\r', 1);
+			sb.AppendChar('\n', 1);
+			i++;
+			if (text.v[i] == '\n')
+			{
+				i++;
+			}
+			j = i;
+		}
+		else if (text.v[i] == '\n')
+		{
+			if (j != i)
+			{
+				sb.AppendC(&text.v[j], i - j);
+			}
+			sb.AppendChar('\r', 1);
+			sb.AppendChar('\n', 1);
+			i++;
+			j = i;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	if (j != i)
+	{
+		sb.AppendC(&text.v[j], i - j);
+	}
+	SetWindowTextW((HWND)hwnd.OrNull(), sb.ToString().Ptr());
 }
 
 UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff)

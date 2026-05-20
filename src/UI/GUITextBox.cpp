@@ -57,3 +57,8 @@ void UI::GUITextBox::HandleAccept(UI::UIEvent hdlr, AnyType userObj)
 	this->acceptHdlr = hdlr;
 	this->acceptObj = userObj;
 }
+
+void UI::GUITextBox::SetUnixText(Text::CStringNN text)
+{
+	this->SetText(text);
+}

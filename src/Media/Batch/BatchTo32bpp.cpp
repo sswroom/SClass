@@ -27,7 +27,7 @@ void Media::Batch::BatchTo32bpp::ImageOutput(NN<Media::ImageList> imgList, Text:
 	k = imgList->GetCount();
 	while (j < k)
 	{
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(newImg))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(j, 0)).SetTo(newImg))
 		{
 			newImg->ToB8G8R8A8();
 		}

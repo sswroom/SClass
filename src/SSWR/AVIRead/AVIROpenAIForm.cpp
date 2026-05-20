@@ -258,7 +258,7 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnTimerTick(AnyType userObj)
 			qa->messageUpdated = false;
 			Sync::MutexUsage mutUsage;
 			qa->result->LockAccess(mutUsage);
-			me->txtOutputMessage->SetText(qa->result->GetOutputMessage());
+			me->txtOutputMessage->SetUnixText(qa->result->GetOutputMessage());
 			me->tcResult->SetSelectedIndex(0);
 		}
 		if (qa->reasoningUpdated)
@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnTimerTick(AnyType userObj)
 			qa->reasoningUpdated = false;
 			Sync::MutexUsage mutUsage;
 			qa->result->LockAccess(mutUsage);
-			me->txtReasoning->SetText(qa->result->GetOutputReasoning().OrEmpty());
+			me->txtReasoning->SetUnixText(qa->result->GetOutputReasoning().OrEmpty());
 			me->tcResult->SetSelectedIndex(1);
 		}
 		if (qa->allUpdated)
@@ -439,7 +439,7 @@ void SSWR::AVIRead::AVIROpenAIForm::DisplayQAPair(NN<QAPair> qa)
 	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage;
 	qa->result->LockAccess(mutUsage);
-	this->txtOutputMessage->SetText(qa->result->GetOutputMessage());
+	this->txtOutputMessage->SetUnixText(qa->result->GetOutputMessage());
 	this->lvResultValues->ClearItems();
 	this->lvResultValues->AddItem(CSTR("question"), nullptr);
 	this->lvResultValues->SetSubItem(0, 1, qa->question->ToCString());
@@ -589,9 +589,9 @@ void SSWR::AVIRead::AVIROpenAIForm::DisplayQAPair(NN<QAPair> qa)
 	this->lvResultValues->AddItem(CSTR("serviceTier"), nullptr);
 	this->lvResultValues->SetSubItem(24, 1, qa->result->GetServiceTier().SetTo(s)?s->ToCString():CSTR("null"));
 
-	this->txtReasoning->SetText(qa->result->GetOutputReasoning().OrEmpty());
-	this->txtResultInstructions->SetText(qa->result->GetInstructions().SetTo(s)?s->ToCString():CSTR(""));
-	this->txtResultError->SetText(qa->result->GetError().SetTo(s)?s->ToCString():CSTR(""));
+	this->txtReasoning->SetUnixText(qa->result->GetOutputReasoning().OrEmpty());
+	this->txtResultInstructions->SetUnixText(qa->result->GetInstructions().SetTo(s)?s->ToCString():CSTR(""));
+	this->txtResultError->SetUnixText(qa->result->GetError().SetTo(s)?s->ToCString():CSTR(""));
 }
 
 SSWR::AVIRead::AVIROpenAIForm::AVIROpenAIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), workerThread(WorkerThread, this, CSTR("OpenAIWorker"))
