@@ -43,6 +43,7 @@ namespace SSWR
 				Double duration;
 				NN<Text::String> question;
 				NN<Net::OpenAIResult> result;
+				NN<Text::String> reqJSON;
 				Bool finish;
 				Bool reasoningUpdated;
 				Bool messageUpdated;
@@ -87,6 +88,9 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlQAPair;
 			NN<UI::GUIButton> btnQAPairClear;
 			NN<UI::GUIListBox> lbQAPair;
+			NN<UI::GUIPanel> pnlResultCtrl;
+			NN<UI::GUIButton> btnResultCopy;
+			NN<UI::GUILabel> lblResultCopyMsg;
 			NN<UI::GUIListView> lvResultValues;
 			NN<UI::GUITabControl> tcResult;
 			NN<UI::GUITabPage> tpOutputMessage;
@@ -97,6 +101,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtResultInstructions;
 			NN<UI::GUITabPage> tpResultError;
 			NN<UI::GUITextBox> txtResultError;
+			NN<UI::GUITabPage> tpResultReqJSON;
+			NN<UI::GUIPanel> pnlResultReqJSON;
+			NN<UI::GUICheckBox> chkResultReqJSONWF;
+			NN<UI::GUITextBox> txtResultReqJSON;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 
@@ -117,11 +125,14 @@ namespace SSWR
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnQAPairSelChg(AnyType userObj);
 			static void __stdcall OnQAPairClearClicked(AnyType userObj);
+			static void __stdcall OnResultReqJSONWFChg(AnyType userObj, Bool newState);
+			static void __stdcall OnResultCopyClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall WorkerThread(NN<Sync::Thread> userObj);
 			static void __stdcall FreeQuestionInfo(NN<QuestionInfo> qa);
 			static void __stdcall FreeQAPair(NN<QAPair> qa);
 			void DisplayQAPair(NN<QAPair> qa);
+			void DisplayQAPairReqJSON(NN<QAPair> qa, Bool wellFormat);
 		public:
 			AVIROpenAIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROpenAIForm();

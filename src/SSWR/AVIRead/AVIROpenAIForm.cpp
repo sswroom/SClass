@@ -3,6 +3,8 @@
 #include "Manage/HiResClock.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIROpenAIForm.h"
+#include "Text/JSText.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnStartClicked(AnyType userObj)
 {
@@ -162,6 +164,7 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnQAPairSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIROpenAIForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenAIForm>();
 	NN<QAPair> qa;
+	me->lblResultCopyMsg->SetText(CSTR(""));
 	if (me->lbQAPair->GetSelectedItem().GetOpt<QAPair>().SetTo(qa))
 	{
 		me->currQAPair = qa;
@@ -210,6 +213,33 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnQAPairClearClicked(AnyType userO
 		if (j > 0)
 		{
 			me->lbQAPair->SetSelectedIndex(j - 1);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnResultReqJSONWFChg(AnyType userObj, Bool newState)
+{
+	NN<SSWR::AVIRead::AVIROpenAIForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenAIForm>();
+	NN<QAPair> qa;
+	if (me->currQAPair.SetTo(qa))
+	{
+		me->DisplayQAPairReqJSON(qa, newState);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIROpenAIForm::OnResultCopyClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIROpenAIForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenAIForm>();
+	NN<QAPair> qa;
+	if (me->currQAPair.SetTo(qa))
+	{
+		if (UI::Clipboard::SetString(me->GetHandle(), qa->result->GetResponseText()->ToCString()))
+		{
+			me->lblResultCopyMsg->SetText(CSTR("Copied"));
+		}
+		else
+		{
+			me->lblResultCopyMsg->SetText(CSTR("Error in copying"));
 		}
 	}
 }
@@ -326,6 +356,9 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::WorkerThread(NN<Sync::Thread> thre
 				NN<QAPair> qa = MemAllocNN(QAPair);
 				qa->duration = clk.GetTimeDiff();
 				qa->question = question->question->Clone();
+				Text::StringBuilderUTF8 sb;
+				resp.ToJSON(sb);
+				qa->reqJSON = Text::String::New(sb.ToCString());
 				qa->result = result;
 				qa->messageUpdated = false;
 				qa->reasoningUpdated = false;
@@ -427,6 +460,7 @@ void __stdcall SSWR::AVIRead::AVIROpenAIForm::FreeQAPair(NN<QAPair> qa)
 {
 	qa->question->Release();
 	qa->result.Delete();
+	qa->reqJSON->Release();
 	MemFreeNN(qa);
 }
 
@@ -592,6 +626,21 @@ void SSWR::AVIRead::AVIROpenAIForm::DisplayQAPair(NN<QAPair> qa)
 	this->txtReasoning->SetUnixText(qa->result->GetOutputReasoning().OrEmpty());
 	this->txtResultInstructions->SetUnixText(qa->result->GetInstructions().SetTo(s)?s->ToCString():CSTR(""));
 	this->txtResultError->SetUnixText(qa->result->GetError().SetTo(s)?s->ToCString():CSTR(""));
+	this->DisplayQAPairReqJSON(qa, this->chkResultReqJSONWF->IsChecked());
+}
+
+void SSWR::AVIRead::AVIROpenAIForm::DisplayQAPairReqJSON(NN<QAPair> qa, Bool wellFormat)
+{
+	if (wellFormat)
+	{
+		Text::StringBuilderUTF8 sb;
+		Text::JSText::JSONWellFormat(qa->reqJSON->v, qa->reqJSON->leng, 0, sb);
+		this->txtResultReqJSON->SetText(sb.ToCString());
+	}
+	else
+	{
+		this->txtResultReqJSON->SetText(qa->reqJSON->ToCString());
+	}
 }
 
 SSWR::AVIRead::AVIROpenAIForm::AVIROpenAIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), workerThread(WorkerThread, this, CSTR("OpenAIWorker"))
@@ -695,6 +744,14 @@ SSWR::AVIRead::AVIROpenAIForm::AVIROpenAIForm(Optional<UI::GUIClientControl> par
 	this->lbQAPair->SetRect(0, 0, 100, 100, false);
 	this->lbQAPair->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbQAPair->HandleSelectionChange(OnQAPairSelChg, this);
+	this->pnlResultCtrl = this->ui->NewPanel(this->tpResult);
+	this->pnlResultCtrl->SetRect(0, 0, 100, 24, false);
+	this->pnlResultCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnResultCopy = this->ui->NewButton(this->pnlResultCtrl, CSTR("Copy Resp JSON"));
+	this->btnResultCopy->SetRect(4, 0, 150, 23, false);
+	this->btnResultCopy->HandleButtonClick(OnResultCopyClicked, this);
+	this->lblResultCopyMsg = this->ui->NewLabel(this->pnlResultCtrl, CSTR(""));
+	this->lblResultCopyMsg->SetRect(154, 0, 200, 23, false);
 	this->lvResultValues = this->ui->NewListView(this->tpResult, UI::ListViewStyle::Table, 2);
 	this->lvResultValues->SetRect(0, 0, 100, 150, false);
 	this->lvResultValues->SetShowGrid(true);
@@ -720,6 +777,16 @@ SSWR::AVIRead::AVIROpenAIForm::AVIROpenAIForm(Optional<UI::GUIClientControl> par
 	this->txtResultError = this->ui->NewTextBox(this->tpResultError, CSTR(""), true);
 	this->txtResultError->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtResultError->SetReadOnly(true);
+	this->tpResultReqJSON = this->tcResult->AddTabPage(CSTR("Req JSON"));
+	this->pnlResultReqJSON = this->ui->NewPanel(this->tpResultReqJSON);
+	this->pnlResultReqJSON->SetRect(0, 0, 100, 24, false);
+	this->pnlResultReqJSON->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->chkResultReqJSONWF = this->ui->NewCheckBox(this->pnlResultReqJSON, CSTR("Well Format"), true);
+	this->chkResultReqJSONWF->SetRect(4, 0, 100, 24, false);
+	this->chkResultReqJSONWF->HandleCheckedChange(OnResultReqJSONWFChg, this);
+	this->txtResultReqJSON = this->ui->NewTextBox(this->tpResultReqJSON, CSTR(""), true);
+	this->txtResultReqJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtResultReqJSON->SetReadOnly(true);
 	this->HandleDropFiles(OnFiles, this);
 	this->AddTimer(500, OnTimerTick, this);
 	this->workerThread.Start();

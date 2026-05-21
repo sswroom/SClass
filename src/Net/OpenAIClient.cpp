@@ -1091,6 +1091,10 @@ Optional<Text::String> Net::OpenAIStreamResult::NextEvent()
 						if (json->GetValueObject(CSTR("response")).SetTo(jsonObj))
 						{
 							Sync::MutexUsage mutUsage(this->mut);
+							Text::StringBuilderUTF8 sbTmp;
+							jsonObj->ToJSONStringWF(sbTmp, 0);
+							this->responseText->Release();
+							this->responseText = Text::String::New(sbTmp.ToCString());
 							if (this->responseJSON.SetTo(oldJson))
 							{
 								oldJson->EndUse();
