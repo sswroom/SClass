@@ -53,7 +53,7 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRe
 	}
 	else
 	{
-		env->pickObjType = PickObjType::POT_UNKNOWN;
+		env->pickObjType = PickObjType::Unknown;
 		env->pickObjs = nullptr;
 	}
 	return nullptr;
@@ -684,7 +684,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	UTF8Char sbuff2[64];
 	UnsafeArray<UTF8Char> sptr2;
 	NN<Data::ArrayListInt32> pickObjs;
-	if (env->pickObjType == POT_USERFILE && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0 && env->user.SetTo(user))
+	if (env->pickObjType == PickObjType::UserFile && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0 && env->user.SetTo(user))
 	{
 		currColumn = 0;
 		sb.ClearStr();
@@ -837,7 +837,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		writer->WriteLine(CSTR("</form>"));
 		writer->WriteLine(CSTR("<hr/>"));
 	}
-	else if (env->pickObjType == POT_SPECIES && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+	else if (env->pickObjType == PickObjType::Species && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<form name=\"pickfiles\" action="));
@@ -869,7 +869,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		writer->WriteLine(CSTR("</form>"));
 		writer->WriteLine(CSTR("<hr/>"));
 	}
-	else if (env->pickObjType == POT_GROUP && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+	else if (env->pickObjType == PickObjType::Group && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<form name=\"pickfiles\" action="));

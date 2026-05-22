@@ -47,11 +47,77 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebSe
 	json.ObjectAddBool(CSTR("isMobile"), env.isMobile);
 	json.ObjectAddInt32(CSTR("scnWidth"), (Int32)env.scnWidth);
 	json.ObjectAddUInt64(CSTR("previewSize"), GetPreviewSize());
-	json.ObjectAddInt32(CSTR("pickObjType"), env.pickObjType);
-	json.ObjectAddArrayInt32(CSTR("pickObjs"), env.pickObjs);
+	json.ObjectAddInt32(CSTR("pickObjType"), (Int32)env.pickObjType);
 	NN<Data::ArrayListInt32> pickObjs;
-	if (env.pickObjType == PickObjType::POT_USERFILE && env.pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+	if (env.pickObjType == PickObjType::Group && env.pickObjs.SetTo(pickObjs))
 	{
+		json.ObjectAddArrayInt32(CSTR("pickObjsGroupId"), pickObjs);
+		Data::ArrayListInt32 spIds;
+		Data::ArrayListInt32 cateIds;
+		Data::ArrayListInt32 fileIds;
+		UIntOS i = 0;
+		UIntOS j = pickObjs->GetCount();
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		NN<SpeciesInfo> sp;
+		while (i < j)
+		{
+			if (me->env->GroupGet(mutUsage, pickObjs->GetItem(i)).SetTo(group))
+			{
+				spIds.Add(group->photoSpecies);
+				cateIds.Add(group->cateId);
+				if (group->photoSpObj.SetTo(sp))
+				{
+					fileIds.Add(sp->photoId);
+				}
+				else
+				{
+					fileIds.Add(0);
+				}
+				mutUsage.EndUse();
+			}
+			else
+			{
+				spIds.Add(0);
+				cateIds.Add(0);
+				fileIds.Add(0);
+			}
+			i++;
+		}
+		json.ObjectAddArrayInt32(CSTR("pickObjsSpId"), spIds);
+		json.ObjectAddArrayInt32(CSTR("pickObjsCateId"), cateIds);
+		json.ObjectAddArrayInt32(CSTR("pickObjsFileId"), fileIds);
+	}
+	else if (env.pickObjType == PickObjType::Species && env.pickObjs.SetTo(pickObjs))
+	{
+		json.ObjectAddArrayInt32(CSTR("pickObjsSpId"), pickObjs);
+		Data::ArrayListInt32 cateIds;
+		Data::ArrayListInt32 fileIds;
+		UIntOS i = 0;
+		UIntOS j = pickObjs->GetCount();
+		Sync::RWMutexUsage mutUsage;
+		NN<SpeciesInfo> sp;
+		while (i < j)
+		{
+			if (me->env->SpeciesGet(mutUsage, pickObjs->GetItem(i)).SetTo(sp))
+			{
+				cateIds.Add(sp->cateId);
+				fileIds.Add(sp->photoId);
+				mutUsage.EndUse();
+			}
+			else
+			{
+				cateIds.Add(0);
+				fileIds.Add(0);
+			}
+			i++;
+		}
+		json.ObjectAddArrayInt32(CSTR("pickObjsCateId"), cateIds);
+		json.ObjectAddArrayInt32(CSTR("pickObjsFileId"), fileIds);
+	}
+	else if (env.pickObjType == PickObjType::UserFile && env.pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+	{
+		json.ObjectAddArrayInt32(CSTR("pickObjsFileId"), pickObjs);
 		Data::ArrayListInt32 spIds;
 		json.ObjectBeginArray(CSTR("pickObjsCateId"));
 		Sync::RWMutexUsage mutUsage;

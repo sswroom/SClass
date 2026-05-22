@@ -39,11 +39,11 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebSession::GetSess()
 	return this->sess;
 }
 
-void SSWR::OrganWeb::OrganWebSession::SetPickObjType(Int32 pickObjType)
+void SSWR::OrganWeb::OrganWebSession::SetPickObjType(PickObjType pickObjType)
 {
 	NN<Net::WebServer::WebSession> sess;
 	if (this->sess.SetTo(sess))
 	{
-		sess->SetValueInt32(CSTR("PickObjType"), pickObjType);
+		sess->SetValueInt32(CSTR("PickObjType"), (Int32)pickObjType);
 	}
 }
