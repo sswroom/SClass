@@ -830,7 +830,7 @@ DB::SQLType DB::PostgreSQLConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::PostgreSQLConn::GetConnType() const
 {
-	return DB::DBConn::CT_POSTGRESQL;
+	return DB::DBConn::ConnType::PostgreSQL;
 }
 
 Int8 DB::PostgreSQLConn::GetTzQhr() const

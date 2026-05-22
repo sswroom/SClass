@@ -27,6 +27,7 @@ namespace Map
 			UIntOS maxCnt;
 			UInt32 maxRowSize;
 			Optional<Data::QueryConditions> conditions;
+			Int8 tzQhr;
 
 			UIntOS indexCnt;
 			UIntOS indexNext;
@@ -34,7 +35,7 @@ namespace Map
 			
 			UIntOS GetFieldIndex(UIntOS colIndex);
 		public:
-			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize);
+			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize, Int8 tzQhr);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();

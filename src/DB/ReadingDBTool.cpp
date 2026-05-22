@@ -410,6 +410,11 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 			logMsg.AppendSB(this->lastErrMsg);
 			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
+		else
+		{
+			this->lastErrMsg.ClearStr();
+			this->db->GetLastErrorMsg(this->lastErrMsg);
+		}
 
 		readerFail += 1;
 		if (readerFail >= 2)
@@ -635,6 +640,10 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 
 UIntOS DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr)
 {
+	if (this->db->GetConnType() == DB::DBConn::ConnType::FileGDB)
+	{
+		return this->db->QueryTableNames(schemaName, arr);
+	}
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		UIntOS ret = 0;
@@ -954,7 +963,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 	}
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
-		if (this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
+		if (this->db->GetConnType() == DB::DBConn::ConnType::PostgreSQL)
 		{
 			if (NN<DB::PostgreSQLConn>::ConvertFrom(this->db)->ChangeDatabase(databaseName))
 			{

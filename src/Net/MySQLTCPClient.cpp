@@ -2372,7 +2372,7 @@ Bool Net::MySQLTCPClient::IsAxisAware() const
 
 DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType() const
 {
-	return DB::DBConn::CT_MYSQLTCP;
+	return DB::DBConn::ConnType::MySQLTCP;
 }
 
 Int8 Net::MySQLTCPClient::GetTzQhr() const
@@ -2453,7 +2453,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	NN<Net::TCPClient> cli;
 	if (this->cli.IsNull() || !this->recvRunning)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 	if (this->mode != ClientMode::Data)
@@ -2463,12 +2463,12 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 		{
 			if (this->cli.IsNull() || !this->recvRunning)
 			{
-				this->lastDataError = DE_CONN_ERROR;
+				this->lastDataError = DB::DBConn::DataError::ConnError;
 				return nullptr;
 			}
 			if (Data::Timestamp::Now().DiffMS(now) > 10000)
 			{
-				this->lastDataError = DE_CONN_ERROR;
+				this->lastDataError = DB::DBConn::DataError::ConnError;
 				return nullptr;
 			}
 			Sync::SimpleThread::Sleep(10);
@@ -2491,7 +2491,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 			reader.Delete();
 		}
 		MemFree(buff);
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 	MemFree(buff);
@@ -2512,10 +2512,10 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 			reader->EndData();
 			reader.Delete();
 		}
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 	return reader;
 }
 
@@ -2524,7 +2524,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	NN<Net::TCPClient> cli;
 	if (this->cli.IsNull() || !this->recvRunning)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 	if (this->mode != ClientMode::Data)
@@ -2534,12 +2534,12 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 		{
 			if (this->cli.IsNull() || !this->recvRunning)
 			{
-				this->lastDataError = DE_CONN_ERROR;
+				this->lastDataError = DB::DBConn::DataError::ConnError;
 				return nullptr;
 			}
 			if (Data::Timestamp::Now().DiffMS(now) > 10000)
 			{
-				this->lastDataError = DE_CONN_ERROR;
+				this->lastDataError = DB::DBConn::DataError::ConnError;
 				return nullptr;
 			}
 			Sync::SimpleThread::Sleep(10);
@@ -2559,7 +2559,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 		this->cmdBinReader = nullptr;
 		reader.Delete();
 		MemFree(buff);
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 	MemFree(buff);
@@ -2577,10 +2577,10 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 		this->cmdBinReader = nullptr;
 		reader->EndData();
 		reader.Delete();
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 	return reader;
 }
 
@@ -2631,7 +2631,7 @@ void Net::MySQLTCPClient::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool Net::MySQLTCPClient::IsLastDataError()
 {
-	return this->lastDataError == DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DB::DBConn::DataError::ExecSQLError;
 }
 
 void Net::MySQLTCPClient::Reconnect()

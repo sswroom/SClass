@@ -11,27 +11,28 @@ namespace DB
 	class DBConn : public DB::ReadingDB
 	{
 	public:
-		typedef enum
+		enum class ConnType
 		{
-			CT_UNKNOWN = 0,
-			CT_ODBC,
-			CT_MYSQL,
-			CT_SQLITE,
-			CT_WMIQUERY,
-			CT_OLEDB,
-			CT_MYSQLTCP,
-			CT_POSTGRESQL,
-			CT_TDSCONN
-		} ConnType;
+			Unknown = 0,
+			ODBC,
+			MySQL,
+			SQLite,
+			WMIQuery,
+			OLEDB,
+			MySQLTCP,
+			PostgreSQL,
+			TDSConn,
+			FileGDB
+		};
 
-		typedef enum
+		enum class DataError
 		{
-			DE_NO_ERROR,
-			DE_CONN_ERROR,
-			DE_NO_CONN,
-			DE_INIT_SQL_ERROR,
-			DE_EXEC_SQL_ERROR
-		} DataError;
+			NoError,
+			ConnError,
+			NoConn,
+			InitSQLError,
+			ExecSQLError
+		};
 
 	protected:
 		DataError lastDataError;

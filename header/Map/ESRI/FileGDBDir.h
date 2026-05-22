@@ -2,7 +2,8 @@
 #define _SM_MAP_ESRI_FILEGDBDIR
 #include "Data/FastStringMapNative.hpp"
 #include "Data/FastStringMapNN.hpp"
-#include "DB/ReadingDB.h"
+#include "DB/DBConn.h"
+#include "DB/DBReader.h"
 #include "IO/PackageFile.h"
 #include "Map/ESRI/FileGDBTable.h"
 #include "Map/ESRI/FileGDBUtil.h"
@@ -11,7 +12,7 @@ namespace Map
 {
 	namespace ESRI
 	{
-		class FileGDBDir : public DB::ReadingDB
+		class FileGDBDir : public DB::DBConn
 		{
 		private:
 			NN<IO::PackageFile> pkg;
@@ -19,8 +20,11 @@ namespace Map
 			Data::FastStringMapNN<FileGDBTable> tables;
 			Data::ArrayListStringNN tableNames;
 			NN<Math::ArcGISPRJParser> prjParser;
+			Int8 tzQhr;
+			Optional<Text::String> lastErrorMsg;
+			DB::SQLType sqlType;
 
-			FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser);
+			FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser, DB::SQLType sqlType);
 		public:
 			virtual ~FileGDBDir();
 
@@ -31,6 +35,20 @@ namespace Map
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
 			Bool IsError() const;
+
+			virtual DB::SQLType GetSQLType() const;
+			virtual ConnType GetConnType() const;
+			virtual Int8 GetTzQhr() const;
+			virtual void ForceTz(Int8 tzQhr);
+			virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
+			virtual void Close();
+			virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
+			virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
+			virtual Bool IsLastDataError();
+
+			virtual Optional<DB::DBTransaction> BeginTransaction();
+			virtual void Commit(NN<DB::DBTransaction> tran);
+			virtual void Rollback(NN<DB::DBTransaction> tran);
 
 			Optional<FileGDBTable> GetTable(Text::CStringNN name);
 

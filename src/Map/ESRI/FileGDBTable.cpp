@@ -13,6 +13,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	this->tableInfo = nullptr;
 	this->dataOfst = 0;
 	this->maxRowSize = 0;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	this->prjParser = prjParser;
 
 	NN<IO::StreamData> nngdbtablxFD;
@@ -90,6 +91,11 @@ NN<Text::String> Map::ESRI::FileGDBTable::GetFileName() const
 	return this->gdbtableFD->GetFullFileName();
 }
 
+void Map::ESRI::FileGDBTable::SetTZQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
+}
+
 Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions)
 {
 	NN<FileGDBTableInfo> tableInfo;
@@ -98,7 +104,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayL
 		return nullptr;
 	}
 	NN<Map::ESRI::FileGDBReader> reader;
-	NEW_CLASSNN(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));
+	NEW_CLASSNN(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize, this->tzQhr));
 	NN<IO::StreamData> fd;
 	if (this->gdbtablxFD.SetTo(fd))
 	{

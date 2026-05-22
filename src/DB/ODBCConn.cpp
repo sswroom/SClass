@@ -238,7 +238,7 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 	this->sqlType = DB::SQLType::Unknown;
 	envHand = hand;
 	connHand = hConn;
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 
 	UpdateConnInfo();
 
@@ -346,7 +346,7 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 	this->sqlType = DB::SQLType::Unknown;
 	envHand = hand;
 	connHand = hConn;
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 
 	UpdateConnInfo();
 	return true;
@@ -468,7 +468,7 @@ Bool DB::ODBCConn::IsAxisAware() const
 
 DB::DBConn::ConnType DB::ODBCConn::GetConnType() const
 {
-	return CT_ODBC;
+	return DB::DBConn::ConnType::ODBC;
 }
 
 Int8 DB::ODBCConn::GetTzQhr() const
@@ -524,7 +524,7 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->connHand == 0)
 	{
-		this->lastDataError = DE_NO_CONN;
+		this->lastDataError = DB::DBConn::DataError::NoConn;
 		return -2;
 	}
 	if (lastStmtHand)
@@ -540,7 +540,7 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, (SQLHANDLE)connHand, &hStmt);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::InitSQLError;
 		return -2;
 	}
 
@@ -555,7 +555,7 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	{
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return -2;
 	}
 
@@ -565,10 +565,10 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 //		this->LogSQLError(hStmt);
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return -2;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 
 	ret = SQLRowCount(hStmt, (SQLLEN*)&rowCnt);
 
@@ -635,7 +635,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->connHand == 0)
 	{
-		this->lastDataError = DE_NO_CONN;
+		this->lastDataError = DB::DBConn::DataError::NoConn;
 		return nullptr;
 	}
 	if (lastStmtHand)
@@ -650,7 +650,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, (SQLHANDLE)connHand, &hStmt);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::InitSQLError;
 		return nullptr;
 	}
 
@@ -665,7 +665,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	{
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
 
@@ -675,10 +675,10 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 //		this->LogSQLError(hStmt);
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 
 	NN<DB::ODBCReader> r;
 	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
@@ -950,7 +950,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	if (this->connHand == 0)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 	if (lastStmtHand)
@@ -964,7 +964,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, (SQLHANDLE)connHand, &hStmt);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::InitSQLError;
 		return nullptr;
 	}
 	ret = SQLTablesW(hStmt, 0, 0, 0, 0, 0, 0, (SQLWCHAR*)L"TABLE", SQL_NTS );
@@ -972,10 +972,10 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	{
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 
 	NN<DB::ODBCReader> r;
 	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));

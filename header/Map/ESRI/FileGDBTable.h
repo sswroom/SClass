@@ -17,6 +17,7 @@ namespace Map
 			UIntOS indexCnt;
 			UInt64 dataOfst;
 			UInt32 maxRowSize;
+			Int8 tzQhr;
 			Optional<FileGDBTableInfo> tableInfo;
 			NN<Math::ArcGISPRJParser> prjParser;
 		public:
@@ -26,6 +27,7 @@ namespace Map
 			Bool IsError();
 			NN<Text::String> GetName() const;
 			NN<Text::String> GetFileName() const;
+			void SetTZQhr(Int8 tzQhr);
 			Optional<DB::DBReader> OpenReader(Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions);	
 		};
 	}

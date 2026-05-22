@@ -125,7 +125,7 @@ Bool DB::MySQLConn::IsAxisAware() const
 
 DB::DBConn::ConnType DB::MySQLConn::GetConnType() const
 {
-	return DB::DBConn::CT_MYSQL;
+	return DB::DBConn::ConnType::MySQL;
 }
 
 Int8 DB::MySQLConn::GetTzQhr() const
@@ -167,14 +167,14 @@ IntOS DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return -2;
 	}
 
 	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v.Ptr(), (UInt32)sql.leng) == 0)
 	{
 		MYSQL_RES *result;
-		this->lastDataError = DE_NO_ERROR;
+		this->lastDataError = DB::DBConn::DataError::NoError;
 		result = mysql_use_result((MYSQL*)this->mysql);
 		if (result)
 		{
@@ -188,7 +188,7 @@ IntOS DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	}
 	else
 	{
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return -2;
 	}
 }
@@ -228,7 +228,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 
@@ -239,19 +239,19 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		if (result)
 		{
 			NN<DB::DBReader> r;
-			this->lastDataError = DE_NO_ERROR;
+			this->lastDataError = DB::DBConn::DataError::NoError;
 			NEW_CLASSNN(r, DB::MySQLReader((IntOS)mysql_affected_rows((MYSQL*)this->mysql), result));
 			return r;
 		}
 		else
 		{
-			this->lastDataError = DE_NO_ERROR;
+			this->lastDataError = DB::DBConn::DataError::NoError;
 			return nullptr;
 		}
 	}
 	else
 	{
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 		return nullptr;
 	}
 }
@@ -270,7 +270,7 @@ void DB::MySQLConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool DB::MySQLConn::IsLastDataError()
 {
-	return this->lastDataError != DE_NO_ERROR && this->lastDataError != DE_NO_CONN;
+	return this->lastDataError != DB::DBConn::DataError::NoError && this->lastDataError != DB::DBConn::DataError::NoConn;
 }
 
 void DB::MySQLConn::Reconnect()

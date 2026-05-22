@@ -76,7 +76,7 @@ DB::SQLType DB::SQLiteFile::GetSQLType() const
 
 DB::DBConn::ConnType DB::SQLiteFile::GetConnType() const
 {
-	return CT_SQLITE;
+	return DB::DBConn::ConnType::SQLite;
 }
 
 Int8 DB::SQLiteFile::GetTzQhr() const
@@ -116,11 +116,11 @@ IntOS DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 			if (sqlite3_step(stmt) == SQLITE_DONE)
 			{
 				chg = sqlite3_changes((sqlite3*)this->db.p);
-				this->lastDataError = DE_NO_ERROR;
+				this->lastDataError = DB::DBConn::DataError::NoError;
 			}
 			else
 			{
-				this->lastDataError = DE_EXEC_SQL_ERROR;
+				this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 				OPTSTR_DEL(this->lastErrMsg);
 				this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db.p));
 				chg = -2;
@@ -132,13 +132,13 @@ IntOS DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 		{
 			OPTSTR_DEL(this->lastErrMsg);
 			this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db.p));
-			this->lastDataError = DE_INIT_SQL_ERROR;
+			this->lastDataError = DB::DBConn::DataError::InitSQLError;
 			return -2;
 		}
 	}
 	else
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return -2;
 	}
 }
@@ -151,14 +151,14 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 		const char *tmp;
 		if (sqlite3_prepare_v2((sqlite3*)this->db.p, (const Char*)sql.v.Ptr(), (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
-			this->lastDataError = DE_NO_ERROR;
+			this->lastDataError = DB::DBConn::DataError::NoError;
 			NN<DB::SQLiteReader> r;
 			NEW_CLASSNN(r, DB::SQLiteReader(*this, stmt));
 			return r;
 		}
 		else
 		{
-			this->lastDataError = DE_EXEC_SQL_ERROR;
+			this->lastDataError = DB::DBConn::DataError::ExecSQLError;
 			OPTSTR_DEL(this->lastErrMsg);
 			this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db.p));
 			return nullptr;
@@ -166,7 +166,7 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 	}
 	else
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
 }
@@ -188,7 +188,7 @@ void DB::SQLiteFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool DB::SQLiteFile::IsLastDataError()
 {
-	return this->lastDataError == DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DB::DBConn::DataError::ExecSQLError;
 }
 
 void DB::SQLiteFile::Reconnect()

@@ -35,7 +35,7 @@ UIntOS Map::ESRI::FileGDBReader::GetFieldIndex(UIntOS colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize)
+Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize, Int8 tzQhr)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -59,6 +59,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<F
 	}
 	this->columnIndices = nullptr;
 	this->conditions = conditions;
+	this->tzQhr = tzQhr;
 	NN<Data::ArrayListStringNN> nncolumnNames;
 	NN<Data::ArrayListNative<UIntOS>> columnIndices;
 	if (columnNames.SetTo(nncolumnNames))

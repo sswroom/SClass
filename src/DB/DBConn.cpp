@@ -11,12 +11,12 @@
 
 DB::DBConn::DBConn(NN<Text::String> sourceName) : DB::ReadingDB(sourceName)
 {
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 }
 
 DB::DBConn::DBConn(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 {
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DB::DBConn::DataError::NoError;
 }
 
 DB::DBConn::~DBConn()

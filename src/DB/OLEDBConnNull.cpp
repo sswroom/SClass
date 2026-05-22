@@ -52,7 +52,7 @@ DB::SQLType DB::OLEDBConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const
 {
-	return DB::DBConn::CT_OLEDB;
+	return DB::DBConn::ConnType::OLEDB;
 }
 
 Int8 DB::OLEDBConn::GetTzQhr() const
@@ -82,7 +82,7 @@ void DB::OLEDBConn::Close()
 
 IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return -2;
 }
 
@@ -169,7 +169,7 @@ void DB::OLEDBConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool DB::OLEDBConn::IsLastDataError()
 {
-	return this->lastDataError == DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DB::DBConn::DataError::ExecSQLError;
 }
 
 void DB::OLEDBConn::Reconnect()
@@ -190,7 +190,7 @@ Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, T
 
 Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return nullptr;
 }
 

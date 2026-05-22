@@ -886,7 +886,7 @@ DB::SQLType DB::TDSConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::TDSConn::GetConnType() const
 {
-	return CT_TDSCONN;
+	return DB::DBConn::ConnType::TDSConn;
 }
 
 Int8 DB::TDSConn::GetTzQhr() const

@@ -41,7 +41,7 @@ DB::SQLType Win32::WMIQuery::GetSQLType() const
 
 DB::DBConn::ConnType Win32::WMIQuery::GetConnType() const
 {
-	return DB::DBConn::CT_WMIQUERY;
+	return DB::DBConn::ConnType::WMIQuery;
 }
 
 Int8 Win32::WMIQuery::GetTzQhr() const
@@ -64,25 +64,25 @@ void Win32::WMIQuery::Close()
 
 IntOS Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return -2;
 }
 
 IntOS Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return -2;
 }
 
 Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return nullptr;
 }
 
 Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> sqlCmd)
 {
-	this->lastDataError = DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return nullptr;
 }
 

@@ -14,6 +14,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Map/ESRI/FileGDBDir.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/SSLEngineFactory.h"
 #include "Text/MyStringW.h"
@@ -32,7 +33,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	NN<Text::String> nns;
 	switch (conn->GetConnType())
 	{
-	case DB::DBConn::CT_ODBC:
+	case DB::DBConn::ConnType::ODBC:
 		{
 			NN<DB::ODBCConn> odbc = NN<DB::ODBCConn>::ConvertFrom(conn);
 			if (s.Set(odbc->GetConnStr()))
@@ -65,7 +66,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return false;
 		}
 		break;
-	case DB::DBConn::CT_MYSQL:
+	case DB::DBConn::ConnType::MySQL:
 		{
 			NN<DB::MySQLConn> mysql = NN<DB::MySQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysql:Server="));
@@ -88,7 +89,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_SQLITE:
+	case DB::DBConn::ConnType::SQLite:
 		{
 			NN<DB::SQLiteFile> sqlite = NN<DB::SQLiteFile>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("sqlite:File="));
@@ -96,7 +97,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_WMIQUERY:
+	case DB::DBConn::ConnType::WMIQuery:
 		{
 			NN<Win32::WMIQuery> wmi = NN<Win32::WMIQuery>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("wmi:ns="));
@@ -107,7 +108,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_OLEDB:
+	case DB::DBConn::ConnType::OLEDB:
 		{
 			NN<DB::OLEDBConn> oledb = NN<DB::OLEDBConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("oledb:"));
@@ -118,7 +119,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_MYSQLTCP:
+	case DB::DBConn::ConnType::MySQLTCP:
 		{
 			UTF8Char sbuff[128];
 			UnsafeArray<UTF8Char> sptr;
@@ -141,7 +142,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_POSTGRESQL:
+	case DB::DBConn::ConnType::PostgreSQL:
 		{
 			UTF8Char sbuff[128];
 			UnsafeArray<UTF8Char> sptr;
@@ -163,7 +164,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_TDSCONN:
+	case DB::DBConn::ConnType::TDSConn:
 		{
 			UTF8Char sbuff[128];
 			UnsafeArray<UTF8Char> sptr;
@@ -184,7 +185,15 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::CT_UNKNOWN:
+	case DB::DBConn::ConnType::FileGDB:
+		{
+			NN<Map::ESRI::FileGDBDir> fgdb = NN<Map::ESRI::FileGDBDir>::ConvertFrom(conn);
+			connStr->AppendC(UTF8STRC("filegdb:"));
+			connStr->Append(fgdb->GetSourceNameObj());
+			return true;
+		}
+		break;
+	case DB::DBConn::ConnType::Unknown:
 		break;
 	}
 	return false;
