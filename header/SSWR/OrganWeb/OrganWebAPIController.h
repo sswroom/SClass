@@ -54,10 +54,12 @@ namespace SSWR
 			void AddSpeciesPOI(NN<Sync::RWMutexUsage> mutUsage, NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, Int32 userId, Bool publicGroup);
 			void AddUserfilePOI(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<UserFileInfo> file);
 			void AddGroups(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<GroupInfo>> groups);
-			void AddGroup(NN<Text::JSONBuilder> json, NN<GroupInfo> group);
+			void AppendGroupDispInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group);
+			void AppendGroupInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group);
 			void AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage);
 			static void AppendUser(NN<Text::JSONBuilder> json, NN<WebUserInfo> user);
-			void AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
+			void AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
+			void AppendSpeciesInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
 			void AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont);
 			void AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate);
 			static Bool ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json);
