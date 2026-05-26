@@ -533,7 +533,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 			}
 			if (db.SetTo(nndb))
 			{
-				NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetTCPClientFactory(), me->core->GetParserList());
+				NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetTCPClientFactory(), me->ssl, me->core->GetParserList());
 				me->dbList.Add(ctrl);
 				Text::StringBuilderUTF8 sb;
 				ctrl->GetConnName(sb);
@@ -1645,7 +1645,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetTCPClientFactory(), this->core->GetParserList()))
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()))
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<DB::DBManagerCtrl> ctrl;
@@ -1995,7 +1995,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(NN<DB::DBConn> conn)
 {
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
-	NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetTCPClientFactory(), this->core->GetParserList());
+	NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	ctrl->GetConnName(sb);

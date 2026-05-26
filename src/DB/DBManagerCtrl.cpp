@@ -2,11 +2,12 @@
 #include "DB/DBManager.h"
 #include "DB/DBManagerCtrl.h"
 
-DB::DBManagerCtrl::DBManagerCtrl(NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+DB::DBManagerCtrl::DBManagerCtrl(NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	this->log = log;
 	this->clif = clif;
 	this->parsers = parsers;
+	this->ssl = ssl;
 	this->connStr = nullptr;
 	this->db = nullptr;
 	this->status = ConnStatus::NotConnected;
@@ -28,7 +29,7 @@ Bool DB::DBManagerCtrl::Connect()
 	else if (this->connStr.SetTo(connStr))
 	{
 		this->db.Delete();
-		this->db = DB::DBManager::OpenConn(connStr->ToCString(), this->log, this->clif, this->parsers);
+		this->db = DB::DBManager::OpenConn(connStr->ToCString(), this->log, this->clif, this->ssl, this->parsers);
 		if (this->db.NotNull())
 		{
 			this->status = ConnStatus::Connected;
@@ -94,27 +95,27 @@ void DB::DBManagerCtrl::GetConnName(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	NN<DB::DBManagerCtrl> ctrl;
-	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, parsers));
+	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, ssl, parsers));
 	ctrl->connStr = connStr->Clone();
 	return ctrl;
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	NN<DB::DBManagerCtrl> ctrl;
-	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, parsers));
+	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, ssl, parsers));
 	ctrl->connStr = Text::String::New(connStr);
 	return ctrl;
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBManagerCtrl> ctrl;
-	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, parsers));
+	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, ssl, parsers));
 	if (DB::DBManager::GetConnStr(db, sb))
 	{
 		ctrl->connStr = Text::String::New(sb.ToCString());
@@ -124,11 +125,11 @@ NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<DB::DBTool> db, NN<IO::LogToo
 	return ctrl;
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, NN<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBManagerCtrl> ctrl;
-	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, parsers));
+	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, clif, ssl, parsers));
 	sb.AppendC(UTF8STRC("file:"));
 	sb.Append(filePath);
 	ctrl->connStr = Text::String::New(sb.ToCString());
