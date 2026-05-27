@@ -2,6 +2,7 @@
 #define _SM_SSWR_ORGANWEB_ORGANWEBCOMMON
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/Comparator.hpp"
 #include "Data/FastMapNN.hpp"
 #include "Data/Timestamp.h"
@@ -11,13 +12,13 @@ namespace SSWR
 {
 	namespace OrganWeb
 	{
-		typedef enum
+		enum class PickObjType
 		{
-			POT_UNKNOWN,
-			POT_USERFILE,
-			POT_GROUP,
-			POT_SPECIES
-		} PickObjType;
+			Unknown,
+			UserFile,
+			Group,
+			Species
+		};
 
 		typedef enum
 		{

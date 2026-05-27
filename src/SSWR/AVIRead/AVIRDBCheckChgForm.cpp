@@ -1635,6 +1635,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			NN<Text::String> id1;
 			Optional<Text::String> id2;
 			Data::ArrayListStringNN idList;
+			Data::ArrayListStringNN sqlList;
 			while (r->ReadNext())
 			{
 				sbId.ClearStr();
@@ -2088,13 +2089,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							sql.AppendCmdC(CSTR(" = "));
 							sql.AppendStr(id2);
 						}
-						if (!NextSQL(sql.ToCString(), sess))
-						{
-							id1->Release();
-							OPTSTR_DEL(id2);
-							succ = false;
-							break;
-						}
+						sqlList.Add(Text::String::New(sql.ToCString()));
 					}
 				}
 				else
@@ -2128,18 +2123,27 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						sql.AppendCmdC(CSTR(" = "));
 						sql.AppendStr(id2);
 					}
-					if (!NextSQL(sql.ToCString(), sess))
-					{
-						id1->Release();
-						OPTSTR_DEL(id2);
-						succ = false;
-						break;
-					}
+					sqlList.Add(Text::String::New(sql.ToCString()));
 				}
 				id1->Release();
 				OPTSTR_DEL(id2);
 			}
 			this->db->CloseReader(r);
+			if (succ)
+			{
+				UIntOS i = 0;
+				UIntOS j = sqlList.GetCount();
+				while (i < j)
+				{
+					if (!NextSQL(sqlList.GetItemNoCheck(i)->ToCString(), sess))
+					{
+						succ = false;
+						break;
+					}
+					i++;
+				}
+			}
+			sqlList.FreeAll();
 
 			if (succ)
 			{

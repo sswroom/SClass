@@ -1891,6 +1891,7 @@ Bool Media::EXIFData::RemoveLargest()
 		{
 			data->exifMap.RemoveAt(k);
 			FreeItem(item);
+			l--;
 		}
 		else
 		{

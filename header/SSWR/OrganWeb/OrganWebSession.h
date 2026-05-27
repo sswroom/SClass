@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_ORGANWEB_ORGANWEBSESSION
 #define _SM_SSWR_ORGANWEB_ORGANWEBSESSION
 #include "Net/WebServer/WebSession.h"
+#include "SSWR/OrganWeb/OrganWebCommon.h"
 
 namespace SSWR
 {
@@ -18,7 +19,7 @@ namespace SSWR
 			void Use(Optional<Net::WebServer::WebSession> sess);
 			void EndUse();
 			Optional<Net::WebServer::WebSession> GetSess();
-			void SetPickObjType(Int32 pickObjType);
+			void SetPickObjType(PickObjType pickObjType);
 		};
 	}
 }

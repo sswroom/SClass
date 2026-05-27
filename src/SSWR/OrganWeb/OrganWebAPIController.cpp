@@ -47,47 +47,87 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebSe
 	json.ObjectAddBool(CSTR("isMobile"), env.isMobile);
 	json.ObjectAddInt32(CSTR("scnWidth"), (Int32)env.scnWidth);
 	json.ObjectAddUInt64(CSTR("previewSize"), GetPreviewSize());
-	json.ObjectAddInt32(CSTR("pickObjType"), env.pickObjType);
-	json.ObjectAddArrayInt32(CSTR("pickObjs"), env.pickObjs);
-	NN<Data::ArrayListInt32> pickObjs;
-	if (env.pickObjType == PickObjType::POT_USERFILE && env.pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
-	{
-		Data::ArrayListInt32 spIds;
-		json.ObjectBeginArray(CSTR("pickObjsCateId"));
-		Sync::RWMutexUsage mutUsage;
-		Sync::RWMutexUsage spMutUsage;
-		NN<UserFileInfo> userFile;
-		NN<SpeciesInfo> sp;
-		UIntOS i = 0;
-		UIntOS j = pickObjs->GetCount();
-		while (i < j)
-		{
-			if (me->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile))
-			{
-				spIds.Add(userFile->speciesId);
-				if (me->env->SpeciesGet(spMutUsage, userFile->speciesId).SetTo(sp))
-				{
-					json.ArrayAddInt32(sp->cateId);
-					spMutUsage.EndUse();
-				}
-				else
-				{
-					json.ArrayAddInt32(0);
-				}
-				mutUsage.EndUse();
-			}
-			else
-			{
-				spIds.Add(0);
-				json.ArrayAddInt32(0);
-			}
-			i++;
-		}
-		json.ArrayEnd();
-		json.ObjectAddArrayInt32(CSTR("pickObjsSpId"), spIds);
-	}
+	json.ObjectAddInt32(CSTR("pickObjType"), (Int32)env.pickObjType);
 	if (env.user.SetTo(user))
 	{
+		NN<Data::ArrayListInt32> pickObjs;
+		if (env.pickObjType == PickObjType::Group && env.pickObjs.SetTo(pickObjs))
+		{
+			json.ObjectBeginArray(CSTR("pickObjsGroupId"));
+			UIntOS i = 0;
+			UIntOS j = pickObjs->GetCount();
+			Sync::RWMutexUsage mutUsage;
+			NN<GroupInfo> group;
+			while (i < j)
+			{
+				if (me->env->GroupGet(mutUsage, pickObjs->GetItem(i)).SetTo(group))
+				{
+					json.ArrayBeginObject();
+					me->AppendGroupDispInfo(json, group);
+					json.ObjectEnd();
+					mutUsage.EndUse();
+				}
+				i++;
+			}
+			json.ArrayEnd();
+		}
+		else if (env.pickObjType == PickObjType::Species && env.pickObjs.SetTo(pickObjs))
+		{
+			json.ObjectBeginArray(CSTR("pickObjsSpecies"));
+			UIntOS i = 0;
+			UIntOS j = pickObjs->GetCount();
+			Sync::RWMutexUsage mutUsage;
+			NN<SpeciesInfo> sp;
+			while (i < j)
+			{
+				if (me->env->SpeciesGet(mutUsage, pickObjs->GetItem(i)).SetTo(sp))
+				{
+					json.ArrayBeginObject();
+					me->AppendSpeciesDispInfo(json, sp, mutUsage);
+					json.ObjectEnd();
+					mutUsage.EndUse();
+				}
+				i++;
+			}
+			json.ArrayEnd();
+		}
+		else if (env.pickObjType == PickObjType::UserFile && env.pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
+		{
+			json.ObjectBeginArray(CSTR("pickObjsUserFile"));
+			Sync::RWMutexUsage mutUsage;
+			Sync::RWMutexUsage spMutUsage;
+			NN<UserFileInfo> userFile;
+			NN<SpeciesInfo> sp;
+			UIntOS i = 0;
+			UIntOS j = pickObjs->GetCount();
+			while (i < j)
+			{
+				if (me->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
+				{
+					json.ArrayBeginObject();
+					json.ObjectAddInt32(CSTR("id"), userFile->id);
+					json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
+					json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
+					json.ObjectAddInt32(CSTR("rotType"), userFile->rotType);
+					json.ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
+					if (userFile->webuserId == user->id)
+					{
+						json.ObjectAddStrOpt(CSTR("location"), userFile->location);
+					}
+					json.ObjectAddStrOpt(CSTR("descript"), userFile->descript);
+					if (userFile->webuserId == user->id)
+					{
+						json.ObjectAddStrOpt(CSTR("oriFileName"), userFile->oriFileName);
+					}
+					json.ObjectAddFloat64(CSTR("lat"), userFile->lat);
+					json.ObjectAddFloat64(CSTR("lon"), userFile->lon);
+					json.ObjectEnd();
+					mutUsage.EndUse();
+				}
+				i++;
+			}
+			json.ArrayEnd();
+		}
 		json.ObjectBeginObject(CSTR("user"));
 		AppendUser(json, user);
 		json.ObjectEnd();
@@ -234,7 +274,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcCate(NN<Net::WebServer:
 			if (!notAdmin || (group->totalCount > 0 && (group->flags & 1) == 0))
 			{
 				json.ArrayBeginObject();
-				me->AddGroup(json, group);
+				me->AppendGroupInfo(json, group);
 				json.ObjectEnd();
 			}
 			i++;
@@ -535,7 +575,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcDayDetail(NN<Net::WebSe
 				if (me->env->SpeciesGet(mutUsage, spList.GetItem(i)).SetTo(sp))
 				{
 					json.ArrayBeginObject();
-					me->AppendSpecies(json, sp, mutUsage);
+					me->AppendSpeciesInfo(json, sp, mutUsage);
 					json.ObjectEnd();
 				}
 				i++;
@@ -743,7 +783,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcBookDetail(NN<Net::WebS
 			{
 				json.ArrayBeginObject();
 				json.ObjectAddStr(CSTR("dispName"), bookSp->dispName);
-				me->AppendSpecies(json, species, mutUsage);
+				me->AppendSpeciesInfo(json, species, mutUsage);
 				json.ObjectEnd();
 			}
 			i++;
@@ -911,7 +951,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpecies(NN<Net::WebServ
 		json.ObjectEnd();
 
 		json.ObjectBeginObject(CSTR("species"));
-		me->AppendSpecies(json, species, mutUsage);
+		me->AppendSpeciesInfo(json, species, mutUsage);
 		json.ObjectBeginArray(CSTR("files"));
 		i = 0;
 		j = species->files.GetCount();
@@ -1585,7 +1625,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 	{
 		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginObject(CSTR("group"));
-		me->AddGroup(json, group);
+		me->AppendGroupInfo(json, group);
 		json.ObjectEnd();
 		json.ObjectAddBool(CSTR("isPublic"), me->env->GroupIsPublic(groupMutUsage, group->id));
 		json.ObjectBeginArray(CSTR("locators"));
@@ -1610,48 +1650,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 		while (i < j)
 		{
 			NN<SpeciesInfo> sp = group->species.GetItemNoCheck(i);
-			if (sp->files.GetCount() > 0)
-			{
-				if ((sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
-				{
-					me->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
-					me->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
-				}
-			}
-			else
-			{
-				if (sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
-				{
-					me->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
-					me->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UIntOS)-1, (UIntOS)-1);
-				}
-			}
 			json.ArrayBeginObject();
-			json.ObjectAddInt32(CSTR("id"), sp->speciesId);
-			json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-			json.ObjectAddInt32(CSTR("groupId"), sp->groupId);
-			json.ObjectAddStr(CSTR("sciName"), sp->sciName);
-			json.ObjectAddStr(CSTR("engName"), sp->engName);
-			json.ObjectAddStr(CSTR("chiName"), sp->chiName);
-			if (sp->photoId != 0)
-			{
-				json.ObjectAddInt32(CSTR("photoId"), sp->photoId);	
-			}
-			else if (sp->photoWId != 0)
-			{
-				json.ObjectAddInt32(CSTR("photoWId"), sp->photoWId);
-			}
-			else
-			{
-				json.ObjectAddStrOpt(CSTR("photo"), sp->photo);
-			}
+			me->AppendSpeciesDispInfo(json, sp, mutUsage);
 			json.ObjectEnd();
 			i++;
 		}
 		json.ArrayEnd();
 		json.ObjectBeginArray(CSTR("childGroups"));
 		NN<GroupInfo> childGroup;
-		NN<SpeciesInfo> photoSpObj;
 		i = 0;
 		j = group->groups.GetCount();
 		while (i < j)
@@ -1660,29 +1666,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 			if ((childGroup->flags & 1) == 0 || isAdmin)
 			{
 				json.ArrayBeginObject();
-				json.ObjectAddInt32(CSTR("id"), childGroup->id);
-				json.ObjectAddInt32(CSTR("cateId"), childGroup->cateId);
-				json.ObjectAddStr(CSTR("engName"), childGroup->engName);
-				json.ObjectAddStr(CSTR("chiName"), childGroup->chiName);
-				json.ObjectAddUInt64(CSTR("myPhotoCount"), childGroup->myPhotoCount);
-				json.ObjectAddUInt64(CSTR("photoCount"), childGroup->photoCount);
-				json.ObjectAddUInt64(CSTR("totalCount"), childGroup->totalCount);
-				if (childGroup->photoSpObj.SetTo(photoSpObj) && (!photoSpObj->photo.IsNull() || photoSpObj->photoId != 0 || photoSpObj->photoWId != 0))
-				{
-					json.ObjectAddInt32(CSTR("photoSpId"), photoSpObj->speciesId);
-					if (photoSpObj->photoId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoId"), photoSpObj->photoId);	
-					}
-					else if (photoSpObj->photoWId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoWId"), photoSpObj->photoWId);
-					}
-					else
-					{
-						json.ObjectAddStrOpt(CSTR("photo"), photoSpObj->photo);
-					}
-				}
+				me->AppendGroupDispInfo(json, childGroup);
 				json.ObjectEnd();
 			}
 			i++;
@@ -1826,25 +1810,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSearch(NN<Net::Web
 		{
 			sp = speciesObjs.GetItemNoCheck(i);
 			json.ArrayBeginObject();
-			json.ObjectAddInt32(CSTR("id"), sp->speciesId);
-			json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-			json.ObjectAddInt32(CSTR("groupId"), sp->groupId);
-			json.ObjectAddStr(CSTR("sciName"), sp->sciName);
-			json.ObjectAddStr(CSTR("engName"), sp->engName);
-			json.ObjectAddStr(CSTR("chiName"), sp->chiName);
-			if (sp->photoId != 0)
-			{
-				json.ObjectAddInt32(CSTR("photoId"), sp->photoId);	
-			}
-			else if (sp->photoWId != 0)
-			{
-				json.ObjectAddInt32(CSTR("photoWId"), sp->photoWId);
-			}
-			else
-			{
-				json.ObjectAddStrOpt(CSTR("photo"), sp->photo);
-			}
-			json.ObjectAddFloat64(CSTR("score"), speciesIndice.GetItem(i));
+			me->AppendSpeciesDispInfo(json, sp, groupMutUsage);
 			json.ObjectEnd();
 			i++;
 		}
@@ -1859,29 +1825,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSearch(NN<Net::Web
 			if ((group->flags & 1) == 0 || isAdmin)
 			{
 				json.ArrayBeginObject();
-				json.ObjectAddInt32(CSTR("id"), group->id);
-				json.ObjectAddInt32(CSTR("cateId"), group->cateId);
-				json.ObjectAddStr(CSTR("engName"), group->engName);
-				json.ObjectAddStr(CSTR("chiName"), group->chiName);
-				json.ObjectAddUInt64(CSTR("myPhotoCount"), group->myPhotoCount);
-				json.ObjectAddUInt64(CSTR("photoCount"), group->photoCount);
-				json.ObjectAddUInt64(CSTR("totalCount"), group->totalCount);
-				if (group->photoSpObj.SetTo(sp) && (!sp->photo.IsNull() || sp->photoId != 0 || sp->photoWId != 0))
-				{
-					json.ObjectAddInt32(CSTR("photoSpId"), sp->speciesId);
-					if (sp->photoId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoId"), sp->photoId);	
-					}
-					else if (sp->photoWId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoWId"), sp->photoWId);
-					}
-					else
-					{
-						json.ObjectAddStrOpt(CSTR("photo"), sp->photo);
-					}
-				}
+				me->AppendGroupDispInfo(json, group);
 				json.ObjectAddFloat64(CSTR("score"), groupIndice.GetItem(i));
 				json.ObjectEnd();
 			}
@@ -2448,32 +2392,28 @@ void SSWR::OrganWeb::OrganWebAPIController::AddGroups(NN<Text::JSONBuilder> json
 	{
 		group = it.Next();
 		json->ArrayBeginObject();
-		this->AddGroup(json, group);
+		this->AppendGroupInfo(json, group);
 		json->ObjectEnd();
 	}
 }
 
-void SSWR::OrganWeb::OrganWebAPIController::AddGroup(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
+void SSWR::OrganWeb::OrganWebAPIController::AppendGroupDispInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
 {
 	NN<Text::String> s;
+	NN<SpeciesInfo> photoSpObj;
 	json->ObjectAddInt32(CSTR("id"), group->id);
-	json->ObjectAddInt32(CSTR("parentId"), group->parentId);
+	json->ObjectAddInt32(CSTR("cateId"), group->cateId);
 	json->ObjectAddStr(CSTR("engName"), group->engName);
 	json->ObjectAddStr(CSTR("chiName"), group->chiName);
-	json->ObjectAddStr(CSTR("descript"), group->descript);
-	json->ObjectAddInt32(CSTR("cateId"), group->cateId);
-	json->ObjectAddInt64(CSTR("photoCount"), (Int64)group->photoCount);
-	json->ObjectAddInt64(CSTR("myPhotoCount"), (Int64)group->myPhotoCount);
-	json->ObjectAddInt64(CSTR("totalCount"), (Int64)group->totalCount);
-	json->ObjectAddInt32(CSTR("flags"), group->flags);
-	json->ObjectAddInt32(CSTR("groupType"), group->groupType);
-	NN<SpeciesInfo> photoSpObj;
-	if (group->photoSpObj.SetTo(photoSpObj))
+	json->ObjectAddUInt64(CSTR("myPhotoCount"), group->myPhotoCount);
+	json->ObjectAddUInt64(CSTR("photoCount"), group->photoCount);
+	json->ObjectAddUInt64(CSTR("totalCount"), group->totalCount);
+	if (group->photoSpObj.SetTo(photoSpObj) && (!photoSpObj->photo.IsNull() || photoSpObj->photoId != 0 || photoSpObj->photoWId != 0))
 	{
 		json->ObjectAddInt32(CSTR("photoSpId"), photoSpObj->speciesId);
 		if (photoSpObj->photoId != 0)
 		{
-			json->ObjectAddInt32(CSTR("photoId"), photoSpObj->photoId);
+			json->ObjectAddInt32(CSTR("photoId"), photoSpObj->photoId);	
 		}
 		else if (photoSpObj->photoWId != 0)
 		{
@@ -2486,6 +2426,15 @@ void SSWR::OrganWeb::OrganWebAPIController::AddGroup(NN<Text::JSONBuilder> json,
 	}
 }
 
+void SSWR::OrganWeb::OrganWebAPIController::AppendGroupInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
+{
+	AppendGroupDispInfo(json, group);
+	json->ObjectAddInt32(CSTR("flags"), group->flags);
+	json->ObjectAddStr(CSTR("descript"), group->descript);
+	json->ObjectAddInt32(CSTR("parentId"), group->parentId);
+	json->ObjectAddInt32(CSTR("groupType"), group->groupType);
+}
+
 void SSWR::OrganWeb::OrganWebAPIController::AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage)
 {
 	NN<SpeciesInfo> species;
@@ -2494,7 +2443,7 @@ void SSWR::OrganWeb::OrganWebAPIController::AddSpeciesList(NN<Text::JSONBuilder>
 	{
 		species = it.Next();
 		json->ArrayBeginObject();
-		AppendSpecies(json, species, mutUsage);
+		AppendSpeciesInfo(json, species, mutUsage);
 		json->ObjectEnd();
 	}
 }
@@ -2507,21 +2456,15 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendUser(NN<Text::JSONBuilder> jso
 	json->ObjectAddStr(CSTR("watermark"), user->watermark);
 }
 
-void SSWR::OrganWeb::OrganWebAPIController::AppendSpecies(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
+void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
 {
-	UIntOS i;
-	UIntOS j;
 	NN<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
+	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
 	json->ObjectAddStr(CSTR("sciName"), species->sciName);
 	json->ObjectAddStr(CSTR("chiName"), species->chiName);
 	json->ObjectAddStr(CSTR("engName"), species->engName);
-	json->ObjectAddStr(CSTR("descript"), species->descript);
-	json->ObjectAddStrOpt(CSTR("poiImg"), species->poiImg);
-	json->ObjectAddInt32(CSTR("flags"), species->flags);
-	json->ObjectAddStr(CSTR("idKey"), species->idKey);
-	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
 	if (species->files.GetCount() > 0)
 	{
 		if ((species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
@@ -2550,6 +2493,17 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpecies(NN<Text::JSONBuilder> 
 	{
 		json->ObjectAddStr(CSTR("photo"), s);
 	}
+}
+
+void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
+{
+	UIntOS i;
+	UIntOS j;
+	this->AppendSpeciesDispInfo(json, species, mutUsage);
+	json->ObjectAddStr(CSTR("descript"), species->descript);
+	json->ObjectAddStrOpt(CSTR("poiImg"), species->poiImg);
+	json->ObjectAddInt32(CSTR("flags"), species->flags);
+	json->ObjectAddStr(CSTR("idKey"), species->idKey);
 	json->ObjectBeginArray(CSTR("books"));
 	i = 0;
 	j = species->books.GetCount();

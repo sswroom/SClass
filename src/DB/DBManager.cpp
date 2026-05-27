@@ -199,12 +199,12 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	return false;
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
-	return OpenConn(connStr->ToCString(), log, clif, parsers);
+	return OpenConn(connStr->ToCString(), log, clif, ssl, parsers);
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	Optional<DB::DBTool> db;
 	NN<DB::DBTool> nndb;
@@ -426,13 +426,11 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 		}
 		Net::MySQLTCPClient *cli = 0;
-		Optional<Net::SSLEngine> ssl = nullptr;
 		NN<Net::MySQLTCPClient> nncli;
 		NN<Text::String> uidStr;
 		NN<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
 		{
-			ssl = Net::SSLEngineFactory::Create(clif, false);
 			NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, uidStr, pwdStr, schema));
 		}
 		SDEL_STRING(uid);
@@ -440,12 +438,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		SDEL_STRING(schema);
 		if (!nncli.Set(cli))
 		{
-			ssl.Delete();
 		}
 		else if (nncli->IsError())
 		{
 			nncli.Delete();
-			ssl.Delete();
 		}
 		else
 		{
@@ -849,7 +845,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -887,7 +883,7 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 			if (sarr[0].leng > 0)
 			{
-				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, clif, parsers));
+				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, clif, ssl, parsers));
 			}
 			if (cnt != 2)
 			{

@@ -840,7 +840,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			{
 				if (action->Equals(UTF8STRC("pickall")) && env.pickObjs.SetTo(pickObjs))
 				{
-					env.pickObjType = POT_USERFILE;
+					env.pickObjType = PickObjType::UserFile;
 					webSess.SetPickObjType(env.pickObjType);
 					pickObjs->Clear();
 					i = 0;
@@ -853,7 +853,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				}
 				else if (action->Equals(UTF8STRC("picksel")) && env.pickObjs.SetTo(pickObjs))
 				{
-					env.pickObjType = POT_USERFILE;
+					env.pickObjType = PickObjType::UserFile;
 					webSess.SetPickObjType(env.pickObjType);
 					pickObjs->Clear();
 					i = 0;
@@ -873,7 +873,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				}
 				else if (action->Equals(UTF8STRC("place")) && env.pickObjs.SetTo(pickObjs))
 				{
-					if (env.pickObjType == POT_USERFILE)
+					if (env.pickObjType == PickObjType::UserFile)
 					{
 						i = 0;
 						j = pickObjs->GetCount();
@@ -895,14 +895,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						}
 						if (pickObjs->GetCount() == 0)
 						{
-							env.pickObjType = POT_UNKNOWN;
+							env.pickObjType = PickObjType::Unknown;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
 				else if (action->Equals(UTF8STRC("placeall")) && env.pickObjs.SetTo(pickObjs))
 				{
-					if (env.pickObjType == POT_USERFILE)
+					if (env.pickObjType == PickObjType::UserFile)
 					{
 						i = 0;
 						j = pickObjs->GetCount();
@@ -918,14 +918,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						}
 						if (pickObjs->GetCount() == 0)
 						{
-							env.pickObjType = POT_UNKNOWN;
+							env.pickObjType = PickObjType::Unknown;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
 				else if (action->Equals(UTF8STRC("placemerge")) && env.pickObjs.SetTo(pickObjs))
 				{
-					if (env.pickObjType == POT_SPECIES)
+					if (env.pickObjType == PickObjType::Species)
 					{
 						i = 0;
 						j = pickObjs->GetCount();
@@ -947,7 +947,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						}
 						if (pickObjs->GetCount() == 0)
 						{
-							env.pickObjType = POT_UNKNOWN;
+							env.pickObjType = PickObjType::Unknown;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}

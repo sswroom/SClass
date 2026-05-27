@@ -19,12 +19,13 @@ namespace DB
 	private:
 		NN<IO::LogTool> log;
 		NN<Net::TCPClientFactory> clif;
+		Optional<Net::SSLEngine> ssl;
 		Optional<Parser::ParserList> parsers;
 		Optional<Text::String> connStr;
 		Optional<DB::ReadingDB> db;
 		ConnStatus status;
 
-		DBManagerCtrl(NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers);
+		DBManagerCtrl(NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers);
 	public:
 		~DBManagerCtrl();
 
@@ -35,10 +36,10 @@ namespace DB
 		Optional<DB::ReadingDB> GetDB();
 		void GetConnName(NN<Text::StringBuilderUTF8> sb);
 
-		static NN<DBManagerCtrl> Create(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers);
-		static NN<DBManagerCtrl> Create(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers);
-		static NN<DBManagerCtrl> Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers);
-		static NN<DBManagerCtrl> CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, NN<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers);
 	};
 }
 #endif
