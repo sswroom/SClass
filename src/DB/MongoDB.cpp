@@ -135,6 +135,15 @@ void DB::MongoDB::Reconnect()
 
 }
 
+Int8 DB::MongoDB::GetTzQhr() const
+{
+	return 0;
+}
+
+void DB::MongoDB::ForceTzQhr(Int8 tzQhr)
+{
+}
+
 UIntOS DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	bson_error_t error;

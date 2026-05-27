@@ -34,6 +34,7 @@ DB::CSVFile::CSVFile(NN<Text::String> fileName, UInt32 codePage) : DB::ReadingDB
 	this->noHeader = false;
 	this->nullIfEmpty = false;
 	this->indexCol = INVALID_INDEX;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(fileName), timeCols(4)
@@ -45,6 +46,7 @@ DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(
 	this->noHeader = false;
 	this->nullIfEmpty = false;
 	this->indexCol = INVALID_INDEX;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj()), timeCols(4)
@@ -56,6 +58,7 @@ DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingD
 	this->noHeader = false;
 	this->nullIfEmpty = false;
 	this->indexCol = INVALID_INDEX;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName()), timeCols(4)
@@ -67,6 +70,7 @@ DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd-
 	this->noHeader = false;
 	this->nullIfEmpty = false;
 	this->indexCol = INVALID_INDEX;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::CSVFile::~CSVFile()
@@ -100,7 +104,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
 		}
-		NEW_CLASSNN(r, DB::CSVReader(stm, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(stm, rdr, this->noHeader, this->nullIfEmpty, condition, this->tzQhr));
 		this->InitReader(r);
 		return r;
 	}
@@ -115,7 +119,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
 		}
-		NEW_CLASSNN(r, DB::CSVReader(nullptr, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(nullptr, rdr, this->noHeader, this->nullIfEmpty, condition, this->tzQhr));
 		this->InitReader(r);
 		return r;
 	}
@@ -131,7 +135,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(fs, codePage));
 		}
-		NEW_CLASSNN(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty, condition, this->tzQhr));
 		this->InitReader(r);
 		return r;
 	}
@@ -179,6 +183,16 @@ void DB::CSVFile::Reconnect()
 {
 }
 
+Int8 DB::CSVFile::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::CSVFile::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
+}
+
 void DB::CSVFile::SetNoHeader(Bool noHeader)
 {
 	this->noHeader = noHeader;
@@ -219,7 +233,7 @@ Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName,
 	return data;
 }
 
-DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition)
+DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition, Int8 tzQhr)
 {
 	this->stm = stm;
 	this->rdr = rdr;
@@ -230,6 +244,7 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 	this->indexCol = INVALID_INDEX;
 	this->row = MemAllocArr(UTF8Char, this->rowBuffSize);
 	this->cols = MemAllocArr(CSVColumn, 128);
+	this->tzQhr = tzQhr;
 	this->hdrs = MemAllocArr(Text::PString, 128);
 	this->condition = condition;
 
@@ -817,7 +832,7 @@ Data::Timestamp DB::CSVReader::GetTimestamp(UIntOS colIndex)
 	UTF8Char buff[60];
 	UnsafeArray<UTF8Char> sptr;
 	if (this->GetStr(colIndex, buff, sizeof(buff)).SetTo(sptr))
-		return Data::Timestamp(CSTRP(buff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(CSTRP(buff, sptr), this->tzQhr);
 	return nullptr;
 }
 

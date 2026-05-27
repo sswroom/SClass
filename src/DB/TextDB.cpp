@@ -267,6 +267,7 @@ public:
 DB::TextDB::TextDB(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 {
 	this->currDB = nullptr;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::TextDB::~TextDB()
@@ -366,6 +367,16 @@ void DB::TextDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 void DB::TextDB::Reconnect()
 {
 
+}
+
+Int8 DB::TextDB::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::TextDB::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 Bool DB::TextDB::AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList)

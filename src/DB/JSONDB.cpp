@@ -10,15 +10,17 @@ private:
 	NN<Text::JSONArray> data;
 	NN<DB::TableDef> tab;
 	Optional<Text::JSONObject> obj;
+	Int8 tzQhr;
 	UIntOS nextIndex;
 	UIntOS endOfst;
 public:
-	JSONDBReader(NN<DB::TableDef> tab, NN<Text::JSONArray> data, UIntOS ofst, UIntOS endOfst)
+	JSONDBReader(NN<DB::TableDef> tab, NN<Text::JSONArray> data, UIntOS ofst, UIntOS endOfst, Int8 tzQhr)
 	{
 		this->data = data;
 		this->tab = tab;
 		this->obj = nullptr;
 		this->nextIndex = ofst;
+		this->tzQhr = tzQhr;
 		this->endOfst = endOfst;
 	}
 
@@ -162,7 +164,7 @@ public:
 		NN<Text::String> s;
 		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
-			return Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+			return Data::Timestamp::FromStr(s->ToCString(), this->tzQhr);
 		}
 		return nullptr;
 	}
@@ -251,6 +253,7 @@ public:
 DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, NN<Text::JSONArray> data) : DB::ReadingDB(sourceName)
 {
 	this->layerName = Text::String::New(layerName);
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	this->data = data;
 	this->data->BeginUse();
 }
@@ -278,7 +281,7 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 			endOfst = this->data->GetArrayLength();
 		else
 			endOfst = ofst + maxCnt;
-		NEW_CLASSNN(r, JSONDBReader(tabDef, this->data, ofst, endOfst));
+		NEW_CLASSNN(r, JSONDBReader(tabDef, this->data, ofst, endOfst, this->tzQhr));
 		return r;
 	}
 	return nullptr;
@@ -359,4 +362,14 @@ void DB::JSONDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 void DB::JSONDB::Reconnect()
 {
+}
+
+Int8 DB::JSONDB::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::JSONDB::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }

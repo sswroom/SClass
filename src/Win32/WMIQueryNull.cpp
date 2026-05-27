@@ -16,12 +16,14 @@ Win32::WMIQuery::WMIQuery() : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(L"root\\WMI");
 	this->InitQuery(this->ns);
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 Win32::WMIQuery::WMIQuery(UnsafeArray<const WChar> ns) : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(ns);
 	this->InitQuery(this->ns);
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 Win32::WMIQuery::~WMIQuery()
@@ -42,15 +44,6 @@ DB::SQLType Win32::WMIQuery::GetSQLType() const
 DB::DBConn::ConnType Win32::WMIQuery::GetConnType() const
 {
 	return DB::DBConn::ConnType::WMIQuery;
-}
-
-Int8 Win32::WMIQuery::GetTzQhr() const
-{
-	return Data::DateTimeUtil::GetLocalTzQhr();
-}
-
-void Win32::WMIQuery::ForceTz(Int8 tzQhr)
-{
 }
 
 void Win32::WMIQuery::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -131,6 +124,16 @@ void Win32::WMIQuery::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 void Win32::WMIQuery::Reconnect()
 {
+}
+
+Int8 Win32::WMIQuery::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Win32::WMIQuery::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 UnsafeArray<const WChar> Win32::WMIQuery::GetNS()

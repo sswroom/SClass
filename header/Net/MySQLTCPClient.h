@@ -66,6 +66,7 @@ namespace Net
 		UInt16 svrCS;
 		UInt16 connStatus;
 		Optional<Text::String> lastError;
+		Int8 tzQhr;
 
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
@@ -88,8 +89,6 @@ namespace Net
 		virtual DB::SQLType GetSQLType() const;
 		virtual Bool IsAxisAware() const;
 		virtual DB::DBConn::ConnType GetConnType() const;
-		virtual Int8 GetTzQhr() const;
-		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
@@ -101,6 +100,8 @@ namespace Net
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
 		virtual void Commit(NN<DB::DBTransaction> tran);

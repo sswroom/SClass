@@ -62,7 +62,7 @@ namespace DB
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
-		virtual void ForceTz(Int8 tzQhr);
+		virtual void ForceTzQhr(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		void Dispose();

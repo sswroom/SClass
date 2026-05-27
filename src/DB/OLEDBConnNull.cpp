@@ -11,14 +11,16 @@ struct DB::OLEDBConn::ClassData
 {
 	NN<IO::LogTool> log;
 	UnsafeArrayOpt<const WChar> connStr;
+	Int8 tzQhr;
 };
 
 DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->log = log;
 	data->connStr = nullptr;
+	data->tzQhr = 0;
 }
 
 void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
@@ -31,7 +33,7 @@ void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
 
 DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->log = log;
 	data->connStr = Text::StrCopyNew(connStr);
@@ -42,7 +44,7 @@ DB::OLEDBConn::~OLEDBConn()
 {
 	UnsafeArray<const WChar> connStr;
 	if (this->clsData->connStr.SetTo(connStr)) Text::StrDelNew(connStr);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 DB::SQLType DB::OLEDBConn::GetSQLType() const
@@ -53,15 +55,6 @@ DB::SQLType DB::OLEDBConn::GetSQLType() const
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const
 {
 	return DB::DBConn::ConnType::OLEDB;
-}
-
-Int8 DB::OLEDBConn::GetTzQhr() const
-{
-	return 0;
-}
-
-void DB::OLEDBConn::ForceTz(Int8 tzQhr)
-{
 }
 
 void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -173,6 +166,15 @@ Bool DB::OLEDBConn::IsLastDataError()
 }
 
 void DB::OLEDBConn::Reconnect()
+{
+}
+
+Int8 DB::OLEDBConn::GetTzQhr() const
+{
+	return 0;
+}
+
+void DB::OLEDBConn::ForceTzQhr(Int8 tzQhr)
 {
 }
 

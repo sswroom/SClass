@@ -27,6 +27,7 @@ namespace Map
 			Bool IsError();
 			NN<Text::String> GetName() const;
 			NN<Text::String> GetFileName() const;
+			Int8 GetTzQhr() const;
 			void SetTZQhr(Int8 tzQhr);
 			Optional<DB::DBReader> OpenReader(Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions);	
 		};

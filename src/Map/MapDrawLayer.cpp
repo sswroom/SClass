@@ -55,6 +55,7 @@ Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Opt
 	this->iconSpotX = 0;
 	this->iconSpotY = 0;
 	this->flags = 0;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
@@ -70,6 +71,7 @@ Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text
 	this->iconSpotX = 0;
 	this->iconSpotY = 0;
 	this->flags = 0;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 Map::MapDrawLayer::~MapDrawLayer()
@@ -202,6 +204,16 @@ void Map::MapDrawLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 void Map::MapDrawLayer::Reconnect()
 {
+}
+
+Int8 Map::MapDrawLayer::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Map::MapDrawLayer::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 UIntOS Map::MapDrawLayer::GetNameCol() const
@@ -1127,7 +1139,7 @@ Data::Timestamp Map::MapLayerReader::GetTimestamp(UIntOS colIndex)
 	}
 	Text::StringBuilderUTF8 sb;
 	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
-		return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(sb.ToCString(), this->layer->GetTzQhr());
 	return nullptr;
 }
 

@@ -30,6 +30,7 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	colCnt = (UIntOS)(ReadUInt16(&buff[8]) >> 5) - 1;
 	rowCnt = ReadUInt32(&buff[4]);
 	this->cols = MemAllocArr(DBFCol, colCnt);
+	this->tzQhr = 0;
 	
 	currOfst = 32;
 	currColOfst = 1;
@@ -124,6 +125,16 @@ void DB::DBFFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 void DB::DBFFile::Reconnect()
 {
+}
+
+Int8 DB::DBFFile::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::DBFFile::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 Bool DB::DBFFile::IsError()
@@ -687,7 +698,7 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UIntOS colIndex)
 	buff[1] = currPtr[7];
 	buff[2] = 0;
 	tval.day = Text::StrToUInt8Ch(buff);
-	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), 0);
+	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), this->dbf->GetTzQhr());
 }
 
 Double DB::DBFReader::GetDblOrNAN(UIntOS colIndex)

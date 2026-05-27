@@ -581,6 +581,7 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 	this->time3TS = 0;
 	this->serialNo = nullptr;
 	this->testName = nullptr;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	if (stmData->GetRealData(0, 96, BYTEARR(buff)) != 96)
 	{
 		return;
@@ -729,9 +730,19 @@ void Media::HTRecFile::Reconnect()
 {
 }
 
+Int8 Media::HTRecFile::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Media::HTRecFile::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
+}
+
 Data::Timestamp Media::HTRecFile::GetDownloadTime()
 {
-	return Data::Timestamp(this->time1TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(this->time1TS * 1000, this->tzQhr);
 }
 
 Int32 Media::HTRecFile::GetAddress()
@@ -741,7 +752,7 @@ Int32 Media::HTRecFile::GetAddress()
 
 Data::Timestamp Media::HTRecFile::GetSettingTime()
 {
-	return Data::Timestamp(this->time2TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(this->time2TS * 1000, this->tzQhr);
 }
 
 UIntOS Media::HTRecFile::GetTotalRec()
@@ -776,7 +787,7 @@ Double Media::HTRecFile::GetHumiAlarmH()
 
 Data::Timestamp Media::HTRecFile::GetStartTime()
 {
-	return Data::Timestamp(this->time3TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(this->time3TS * 1000, this->tzQhr);
 }
 
 UIntOS Media::HTRecFile::GetRecCount()
@@ -802,7 +813,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetTestName(UnsafeArray<UTF8Char> sbu
 
 Data::Timestamp Media::HTRecFile::GetAdjStartTime()
 {
-	return Data::Timestamp(this->adjStTimeTicks, Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(this->adjStTimeTicks, this->tzQhr);
 }
 
 UInt32 Media::HTRecFile::GetAdjRecInterval()

@@ -66,6 +66,7 @@ namespace Media
 		Data::ByteBuffer recBuff;
 		Int64 adjStTimeTicks;
 		UInt32 adjRecInterval;
+		Int8 tzQhr;
 
 	public:
 		HTRecFile(NN<IO::StreamData> stmData);
@@ -77,6 +78,8 @@ namespace Media
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		Data::Timestamp GetDownloadTime();
 		Int32 GetAddress();

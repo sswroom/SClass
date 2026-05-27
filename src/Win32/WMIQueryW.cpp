@@ -14,7 +14,7 @@ Int32 Win32::WMIQuery::securityCnt = 0;
 void Win32::WMIQuery::InitQuery(UnsafeArray<const WChar> ns)
 {
 	this->pService = 0;
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DataError::NoError;
 	HRESULT ci = CoInitialize(NULL);
 	HRESULT hr;
 	if (securityCnt == 0)
@@ -52,12 +52,14 @@ void Win32::WMIQuery::InitQuery(UnsafeArray<const WChar> ns)
 Win32::WMIQuery::WMIQuery() : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(L"root\\WMI");
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	this->InitQuery(this->ns);
 }
 
 Win32::WMIQuery::WMIQuery(UnsafeArray<const WChar> ns) : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(ns);
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 	this->InitQuery(this->ns);
 }
 
@@ -79,16 +81,7 @@ DB::SQLType Win32::WMIQuery::GetSQLType() const
 
 DB::DBConn::ConnType Win32::WMIQuery::GetConnType() const
 {
-	return DB::DBConn::CT_WMIQUERY;
-}
-
-Int8 Win32::WMIQuery::GetTzQhr() const
-{
-	return Data::DateTimeUtil::GetLocalTzQhr();
-}
-
-void Win32::WMIQuery::ForceTz(Int8 tzQhr)
-{
+	return DB::DBConn::ConnType::WMIQuery;
 }
 
 void Win32::WMIQuery::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -117,7 +110,7 @@ IntOS Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 
 IntOS Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
-	this->lastDataError = DE_EXEC_SQL_ERROR;
+	this->lastDataError = DataError::ExecSQLError;
 	return -2;
 }
 
@@ -140,21 +133,21 @@ Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> 
 	SysFreeString(query);
 	if (SUCCEEDED(hr))
 	{
-		this->lastDataError = DE_NO_ERROR;
+		this->lastDataError = DataError::NoError;
 		NN<Win32::WMIReader> reader;
-		NEW_CLASSNN(reader, Win32::WMIReader(pEnum));
+		NEW_CLASSNN(reader, Win32::WMIReader(pEnum, this->tzQhr));
 		return reader;
 	}
 	else
 	{
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DataError::ExecSQLError;
 		return nullptr;
 	}
 }
 
 Bool Win32::WMIQuery::IsLastDataError()
 {
-	return this->lastDataError == DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DataError::ExecSQLError;
 }
 
 Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
@@ -234,6 +227,16 @@ void Win32::WMIQuery::Reconnect()
 {
 	this->Close();
 	this->InitQuery(this->ns);
+}
+
+Int8 Win32::WMIQuery::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Win32::WMIQuery::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 UnsafeArray<const WChar> Win32::WMIQuery::GetNS()

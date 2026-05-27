@@ -61,13 +61,15 @@ namespace Net
 		Sync::Event rowEvt;
 		Sync::Event nextRowEvt;
 		Sync::MutexUsage mutUsage;
+		Int8 tzQhr;
 	public:
-		MySQLTCPReader(NN<Sync::Mutex> mut)
+		MySQLTCPReader(NN<Sync::Mutex> mut, Int8 tzQhr)
 		{
 			this->mutUsage.ReplaceMutex(mut);
 			this->rowChanged = -1;
 			this->currRow = 0;
 			this->nextRow = 0;
+			this->tzQhr = tzQhr;
 			this->colCount = 0;
 			this->nextRowReady = false;
 		}
@@ -246,7 +248,7 @@ namespace Net
 			{
 				return Data::Timestamp(nullptr);
 			}
-			return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0);
+			return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0).ConvertTimeZoneQHR(this->tzQhr);
 		}
 
 		virtual Double GetDblOrNAN(UIntOS colIndex)
@@ -496,14 +498,16 @@ namespace Net
 		Sync::MutexUsage mutUsage;
 		UIntOS rowNum;
 		UInt32 stmtId;
+		Int8 tzQhr;
 	public:
-		MySQLTCPBinaryReader(NN<Sync::Mutex> mut)
+		MySQLTCPBinaryReader(NN<Sync::Mutex> mut, Int8 tzQhr)
 		{
 			this->mutUsage.ReplaceMutex(mut);
 			this->colTypes = 0;
 			this->rowChanged = -1;
 			this->currRow = 0;
 			this->rowNum = 0;
+			this->tzQhr = tzQhr;
 			UIntOS i = ROWBUFFCNT;
 			while (i-- > 0)
 			{
@@ -745,7 +749,7 @@ namespace Net
 					tval.hour = 0;
 					tval.minute = 0;
 					tval.second = 0;
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 7:
 					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
 					tval.month = this->currRow->rowBuff[col->ofst + 2];
@@ -753,7 +757,7 @@ namespace Net
 					tval.hour = this->currRow->rowBuff[col->ofst + 4];
 					tval.minute = this->currRow->rowBuff[col->ofst + 5];
 					tval.second = this->currRow->rowBuff[col->ofst + 6];
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 11:
 					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
 					tval.month = this->currRow->rowBuff[col->ofst + 2];
@@ -762,7 +766,7 @@ namespace Net
 					tval.minute = this->currRow->rowBuff[col->ofst + 5];
 					tval.second = this->currRow->rowBuff[col->ofst + 6];
 					microsec = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), microsec * 1000), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), microsec * 1000), this->tzQhr);
 				default:
 					//////////////////////////////////////
 					printf("Unknown binary date format\r\n");
@@ -2304,6 +2308,7 @@ Net::MySQLTCPClient::MySQLTCPClient(NN<Net::TCPClientFactory> clif, Optional<Net
 	this->cmdBinReader = nullptr;
 	this->cmdResultType = CmdResultType::Processing;
 	this->cli = nullptr;
+	this->tzQhr = 0;
 	this->Reconnect();
 }
 
@@ -2331,6 +2336,7 @@ Net::MySQLTCPClient::MySQLTCPClient(NN<Net::TCPClientFactory> clif, Optional<Net
 	this->cmdBinReader = nullptr;
 	this->cmdResultType = CmdResultType::Processing;
 	this->cli = nullptr;
+	this->tzQhr = 0;
 	this->Reconnect();
 }
 
@@ -2373,16 +2379,6 @@ Bool Net::MySQLTCPClient::IsAxisAware() const
 DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType() const
 {
 	return DB::DBConn::ConnType::MySQLTCP;
-}
-
-Int8 Net::MySQLTCPClient::GetTzQhr() const
-{
-	return 0;
-}
-
-void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
-{
-
 }
 
 void Net::MySQLTCPClient::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -2475,7 +2471,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 		}
 	}
 	NN<MySQLTCPReader> reader;
-	NEW_CLASSNN(reader, MySQLTCPReader(this->cmdMut));
+	NEW_CLASSNN(reader, MySQLTCPReader(this->cmdMut, this->tzQhr));
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
 	this->cmdTCPReader = reader;
@@ -2546,7 +2542,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 		}
 	}
 	NN<MySQLTCPBinaryReader> reader;
-	NEW_CLASSNN(reader, MySQLTCPBinaryReader(this->cmdMut));
+	NEW_CLASSNN(reader, MySQLTCPBinaryReader(this->cmdMut, this->tzQhr));
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
 	this->cmdBinReader = reader;
@@ -2662,6 +2658,16 @@ void Net::MySQLTCPClient::Reconnect()
 			Sync::SimpleThread::Sleep(1);
 		}
 	}
+}
+
+Int8 Net::MySQLTCPClient::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Net::MySQLTCPClient::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 Optional<DB::DBTransaction> Net::MySQLTCPClient::BeginTransaction()

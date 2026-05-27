@@ -28,7 +28,7 @@ namespace DB
 		static ProviderInfo providerInfo[];
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		ConnError connErr;
 
 	protected:
@@ -40,8 +40,6 @@ namespace DB
 
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
-		virtual Int8 GetTzQhr() const;
-		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual IntOS ExecuteNonQuery(Text::CStringNN sql);
@@ -49,6 +47,8 @@ namespace DB
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
@@ -70,10 +70,10 @@ namespace DB
 	private:
 		struct ClassData;
 
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 	public:
-		OLEDBReader(void *pIRowset, IntOS rowChanged);
+		OLEDBReader(void *pIRowset, IntOS rowChanged, Int8 tzQhr);
 		virtual ~OLEDBReader();
 
 		virtual Bool ReadNext();

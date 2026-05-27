@@ -49,6 +49,7 @@ struct DB::OLEDBConn::ClassData
 	IDBInitialize *pIDBInitialize;
 	IDBCreateSession *pSession;
 	ITransactionLocal *pITransactionLocal;
+	Int8 tzQhr;
 };
 
 struct DB::OLEDBReader::ClassData
@@ -66,13 +67,14 @@ struct DB::OLEDBReader::ClassData
 	UInt8 *dataBuff;
 	Bool rowValid;
 	IntOS rowChanged;
+	Int8 tzQhr;
 };
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
 
 DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->log = log;
 	data->ci = CoInitialize(NULL);
@@ -81,11 +83,12 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 	data->pSession = 0;
 	data->pITransactionLocal = 0;
 	data->connStr = nullptr;
+	data->tzQhr = 0;
 }
 
 void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	UnsafeArray<const WChar> nnconnStr;
 	if (data->connStr.SetTo(nnconnStr)) Text::StrDelNew(nnconnStr);
 	data->connStr = Text::StrCopyNew(connStr);
@@ -163,7 +166,7 @@ void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
 
 DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->log = log;
 	data->ci = CoInitialize(NULL);
@@ -177,7 +180,7 @@ DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) 
 
 DB::OLEDBConn::~OLEDBConn()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Abort(0, FALSE, FALSE); 
@@ -205,12 +208,12 @@ DB::OLEDBConn::~OLEDBConn()
 	}
 	UnsafeArray<const WChar> nnconnStr;
 	if (data->connStr.SetTo(nnconnStr)) Text::StrDelNew(nnconnStr);
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 DB::SQLType DB::OLEDBConn::GetSQLType() const
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	UnsafeArray<const WChar> nnconnStr;
 	if (data->connStr.SetTo(nnconnStr))
 	{
@@ -255,21 +258,12 @@ DB::SQLType DB::OLEDBConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const
 {
-	return DB::DBConn::CT_OLEDB;
-}
-
-Int8 DB::OLEDBConn::GetTzQhr() const
-{
-	return 0;
-}
-
-void DB::OLEDBConn::ForceTz(Int8 tzQhr)
-{
+	return DB::DBConn::ConnType::OLEDB;
 }
 
 void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	UnsafeArray<const WChar> nnconnStr;
 	if (data->connStr.SetTo(nnconnStr))
@@ -284,10 +278,10 @@ void DB::OLEDBConn::Close()
 
 IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pSession == 0)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DataError::ConnError;
 		return -2;
 	}
 	
@@ -297,7 +291,7 @@ IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 	hr = data->pSession->CreateSession(0, IID_IDBCreateCommand, (IUnknown**)&pIDBCreateCommand);
 	if (FAILED(hr))
 	{
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return -2;
 	}
 
@@ -305,7 +299,7 @@ IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 	if (FAILED(hr))
 	{
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return -2;
 	}
 
@@ -316,7 +310,7 @@ IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 		Text::StrDelNew(wptr);
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return -2;
 	}
 
@@ -354,10 +348,10 @@ IntOS DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 		}
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DataError::ExecSQLError;
 		return -2;
 	}
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DataError::NoError;
 	pICommandText->Release();
 	pIDBCreateCommand->Release();
 	return ret;
@@ -461,10 +455,19 @@ void DB::OLEDBConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool DB::OLEDBConn::IsLastDataError()
 {
-	return this->lastDataError == DE_EXEC_SQL_ERROR;
+	return this->lastDataError == DataError::ExecSQLError;
 }
 
 void DB::OLEDBConn::Reconnect()
+{
+}
+
+Int8 DB::OLEDBConn::GetTzQhr() const
+{
+	return 0;
+}
+
+void DB::OLEDBConn::ForceTzQhr(Int8 tzQhr)
 {
 }
 
@@ -472,7 +475,7 @@ UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 {
 	if (schemaName.leng != 0)
 		return 0;
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS initCnt = names->GetCount();
 	HRESULT hr;
 	UTF8Char sbuff[256];
@@ -497,7 +500,7 @@ UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 		{
 			UIntOS tableNameCol = 3;
 			DB::OLEDBReader *rdr;
-			NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1));
+			NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1, this->clsData->tzQhr));
 			i = rdr->ColCount();
 			while (i-- > 0)
 			{
@@ -533,10 +536,10 @@ Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, T
 
 Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pSession == 0)
 	{
-		this->lastDataError = DE_CONN_ERROR;
+		this->lastDataError = DataError::ConnError;
 		return nullptr;
 	}
 	
@@ -546,7 +549,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	hr = data->pSession->CreateSession(0, IID_IDBCreateCommand, (IUnknown**)&pIDBCreateCommand);
 	if (FAILED(hr))
 	{
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return nullptr;
 	}
 
@@ -554,7 +557,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	if (FAILED(hr))
 	{
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return nullptr;
 	}
 
@@ -565,7 +568,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 		Text::StrDelNew(wptr);
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_INIT_SQL_ERROR;
+		this->lastDataError = DataError::InitSQLError;
 		return nullptr;
 	}
 
@@ -604,15 +607,15 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 		}
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
-		this->lastDataError = DE_EXEC_SQL_ERROR;
+		this->lastDataError = DataError::ExecSQLError;
 		return nullptr;
 	}
 	pICommandText->Release();
 	pIDBCreateCommand->Release();
-	this->lastDataError = DE_NO_ERROR;
+	this->lastDataError = DataError::NoError;
 
 	NN<DB::DBReader> r;
-	NEW_CLASSNN(r, DB::OLEDBReader(pIRowset, rowChanged));
+	NEW_CLASSNN(r, DB::OLEDBReader(pIRowset, rowChanged, this->clsData->tzQhr));
 	return r;
 }
 
@@ -704,7 +707,7 @@ void DB::OLEDBConn::CloseReader(NN<DBReader> r)
 
 Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pITransactionLocal == 0)
 	{
 		data->pSession->QueryInterface(IID_ITransactionLocal, (void**)&data->pITransactionLocal);
@@ -716,7 +719,7 @@ Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 
 void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Commit(FALSE, XACTTC_SYNC_PHASEONE, 0);
@@ -727,7 +730,7 @@ void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)
 
 void DB::OLEDBConn::Rollback(NN<DB::DBTransaction> tran)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Abort(0, FALSE, FALSE); 
@@ -743,17 +746,18 @@ DB::OLEDBConn::ConnError DB::OLEDBConn::GetConnError()
 
 UnsafeArrayOpt<const WChar> DB::OLEDBConn::GetConnStr()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	return data->connStr;
 }
 
-DB::OLEDBReader::OLEDBReader(void *pIRowset, IntOS rowChanged)
+DB::OLEDBReader::OLEDBReader(void *pIRowset, IntOS rowChanged, Int8 tzQhr)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->rowChanged = rowChanged;
 	data->pIRowset = (IRowset*)pIRowset;
 	data->hRows = 0;
+	data->tzQhr = tzQhr;
 	data->rowCnt = 0;
 	data->nCols = 0;
 	data->dbColInfo = 0;
@@ -860,7 +864,7 @@ DB::OLEDBReader::~OLEDBReader()
 		this->clsData->dbColInfo = 0;
 	}
 	this->clsData->pIRowset->Release();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool DB::OLEDBReader::ReadNext()
@@ -914,7 +918,7 @@ IntOS DB::OLEDBReader::GetRowChanged()
 
 Int32 DB::OLEDBReader::GetInt32(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -994,7 +998,7 @@ Int32 DB::OLEDBReader::GetInt32(UIntOS colIndex)
 
 Int64 DB::OLEDBReader::GetInt64(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1074,7 +1078,7 @@ Int64 DB::OLEDBReader::GetInt64(UIntOS colIndex)
 
 UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1186,7 +1190,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 
 Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return false;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1306,7 +1310,7 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 
 Optional<Text::String> DB::OLEDBReader::GetNewStr(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1340,7 +1344,7 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UIntOS colIndex)
 
 UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1444,7 +1448,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 
 Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return Data::Timestamp(0);
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1490,7 +1494,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 			tval.hour = (UInt8)ReadUInt16(&val[6]);
 			tval.minute = (UInt8)ReadUInt16(&val[8]);
 			tval.second = (UInt8)ReadUInt16(&val[10]);
-			return Data::Timestamp::FromTimeValue(tval, (UInt32)ReadUInt16(&val[12]) * 1000000, 0);
+			return Data::Timestamp::FromTimeValue(tval, (UInt32)ReadUInt16(&val[12]) * 1000000, 0).ConvertTimeZoneQHR(this->clsData->tzQhr);
 		}
 		return Data::Timestamp(0);
 	case DBTYPE_NULL:
@@ -1501,7 +1505,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 
 Double DB::OLEDBReader::GetDblOrNAN(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return NAN;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1586,7 +1590,7 @@ Bool DB::OLEDBReader::GetBool(UIntOS colIndex)
 
 UIntOS DB::OLEDBReader::GetBinarySize(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
@@ -1595,7 +1599,7 @@ UIntOS DB::OLEDBReader::GetBinarySize(UIntOS colIndex)
 
 UIntOS DB::OLEDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1624,7 +1628,7 @@ Bool DB::OLEDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 
 UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 		return nullptr;
 	if (data->dbColInfo[colIndex].pwszName == 0)
@@ -1634,7 +1638,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UIntOS colIndex, UnsafeArray<U
 
 Bool DB::OLEDBReader::IsNull(UIntOS colIndex)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return true;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1643,7 +1647,7 @@ Bool DB::OLEDBReader::IsNull(UIntOS colIndex)
 
 DB::DBUtil::ColType DB::OLEDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 	{
 		colSize.Set(0);
@@ -1655,7 +1659,7 @@ DB::DBUtil::ColType DB::OLEDBReader::GetColType(UIntOS colIndex, OptOut<UIntOS> 
 
 Bool DB::OLEDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 	{
 		return false;

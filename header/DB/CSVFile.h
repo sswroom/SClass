@@ -22,6 +22,7 @@ namespace DB
 		Bool nullIfEmpty;
 		UIntOS indexCol;
 		Data::ArrayListNative<UIntOS> timeCols;
+		Int8 tzQhr;
 
 		void InitReader(NN<CSVReader> r);
 	public:
@@ -37,6 +38,8 @@ namespace DB
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 		void SetNoHeader(Bool noHeader);
 		void SetNullIfEmpty(Bool nullIfEmpty);
 		void SetIndexCol(UIntOS indexCol);
@@ -68,9 +71,10 @@ namespace DB
 		Bool nullIfEmpty;
 		UIntOS indexCol;
 		Optional<Data::QueryConditions> condition;
+		Int8 tzQhr;
 
 	public:
-		CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition);
+		CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition, Int8 tzQhr);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();

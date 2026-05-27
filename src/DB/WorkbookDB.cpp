@@ -12,13 +12,15 @@ private:
 	Optional<Text::SpreadSheet::Worksheet::RowData> row;
 	UIntOS currIndex;
 	UIntOS maxIndex;
+	Int8 tzQhr;
 public:
-	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, NN<DB::TableDef> tabDef, UIntOS initOfst, UIntOS maxOfst)
+	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, NN<DB::TableDef> tabDef, UIntOS initOfst, UIntOS maxOfst, Int8 tzQhr)
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
 		this->row = nullptr;
 		this->currIndex = initOfst;
+		this->tzQhr = tzQhr;
 		this->maxIndex = maxOfst;
 	}
 
@@ -124,7 +126,7 @@ public:
 		{
 			return nullptr;
 		}
-		return Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp::FromStr(cellValue->ToCString(), this->tzQhr);
 	}
 
 	virtual Double GetDblOrNAN(UIntOS colIndex)
@@ -242,6 +244,7 @@ public:
 DB::WorkbookDB::WorkbookDB(NN<Text::SpreadSheet::Workbook> wb) : DB::ReadingDB(wb->GetSourceNameObj())
 {
 	this->wb = wb;
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 DB::WorkbookDB::~WorkbookDB()
@@ -289,7 +292,7 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 			endOfst = sheet->GetCount();
 		}
 	}
-	NEW_CLASSNN(r, WorkbookReader(sheet, tabDef, dataOfst, endOfst));
+	NEW_CLASSNN(r, WorkbookReader(sheet, tabDef, dataOfst, endOfst, this->tzQhr));
 	return r;
 }
 
@@ -345,4 +348,14 @@ void DB::WorkbookDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 void DB::WorkbookDB::Reconnect()
 {
 
+}
+
+Int8 DB::WorkbookDB::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::WorkbookDB::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }

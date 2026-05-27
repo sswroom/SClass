@@ -19,10 +19,11 @@ namespace Win32
 		void *pObject;
 		void *fObject;
 		Bool isFirst;
+		Int8 tzQhr;
 
 		Data::ArrayListObj<WMIColumn*> *columns;
 	public:
-		WMIReader(void *pEnum);
+		WMIReader(void *pEnum, Int8 tzQhr);
 		virtual ~WMIReader();
 
 		virtual Bool ReadNext();

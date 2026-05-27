@@ -15,6 +15,7 @@ namespace Math
 		UIntOS rowCnt;
 		UIntOS rowSize;
 		Int32 fileType;
+		Int8 tzQhr;
 
 	public:
 		TSPFile(NN<IO::StreamData> fd);
@@ -26,6 +27,8 @@ namespace Math
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		UInt8 *GetRowPtr(UIntOS row) const;
 		UnsafeArray<UInt8> GetHdrPtr() const;

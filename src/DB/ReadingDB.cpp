@@ -20,11 +20,6 @@ UIntOS DB::ReadingDB::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 	return 0;
 }
 
-Int8 DB::ReadingDB::GetTzQhr() const
-{
-	return Data::DateTimeUtil::GetLocalTzQhr();
-}
-
 UIntOS DB::ReadingDB::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
 	return 0;

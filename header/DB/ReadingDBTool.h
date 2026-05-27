@@ -79,8 +79,9 @@ namespace DB
 		Bool IsDataError(UnsafeArrayOpt<const UTF8Char> errCode);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb);
 		NN<DB::DBConn> GetDBConn();
-		Int8 GetTzQhr() const;
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		virtual Bool IsDBTool() const;
 		

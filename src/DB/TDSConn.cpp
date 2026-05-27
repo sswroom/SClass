@@ -889,16 +889,6 @@ DB::DBConn::ConnType DB::TDSConn::GetConnType() const
 	return DB::DBConn::ConnType::TDSConn;
 }
 
-Int8 DB::TDSConn::GetTzQhr() const
-{
-	return this->clsData->tzQhr;
-}
-
-void DB::TDSConn::ForceTz(Int8 tzQhr)
-{
-	this->clsData->tzQhr = tzQhr;
-}
-
 void DB::TDSConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("TDS:"));
@@ -1012,6 +1002,16 @@ void DB::TDSConn::Reconnect()
 		return;
 	}
 	dbsetuserdata(this->clsData->dbproc, (BYTE*)this);
+}
+
+Int8 DB::TDSConn::GetTzQhr() const
+{
+	return this->clsData->tzQhr;
+}
+
+void DB::TDSConn::ForceTzQhr(Int8 tzQhr)
+{
+	this->clsData->tzQhr = tzQhr;
 }
 
 Optional<DB::DBTransaction> DB::TDSConn::BeginTransaction()

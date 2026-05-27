@@ -10,12 +10,11 @@
 #include <stdio.h>
 #endif
 
-Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser, DB::SQLType sqlType) : DB::DBConn(pkg->GetSourceNameObj())
+Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser) : DB::ReadingDB(pkg->GetSourceNameObj())
 {
 	this->pkg = pkg->Clone();
 	this->prjParser = prjParser;
 	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
-	this->sqlType = sqlType;
 	NN<FileGDBReader> reader;
 	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(nullptr, 0, 0, nullptr, nullptr)).SetTo(reader))
 	{
@@ -25,7 +24,6 @@ Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> syst
 	this->tableMap.PutNN(systemCatalog->GetName(), 1);
 	this->tables.PutNN(systemCatalog->GetName(), systemCatalog);
 	this->tableNames.Add(systemCatalog->GetName()->Clone());
-	this->lastErrorMsg = nullptr;
 	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	while (reader->ReadNext())
@@ -50,7 +48,6 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	this->prjParser.Delete();
 	this->pkg.Delete();
 	this->tableNames.FreeAll();
-	OPTSTR_DEL(this->lastErrorMsg);
 }
 
 UIntOS Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
@@ -116,26 +113,10 @@ void Map::ESRI::FileGDBDir::CloseReader(NN<DB::DBReader> r)
 
 void Map::ESRI::FileGDBDir::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	str->AppendOpt(this->lastErrorMsg);
 }
 
 void Map::ESRI::FileGDBDir::Reconnect()
 {
-}
-
-Bool Map::ESRI::FileGDBDir::IsError() const
-{
-	return this->tableMap.GetCount() == 0;
-}
-
-DB::SQLType Map::ESRI::FileGDBDir::GetSQLType() const
-{
-	return this->sqlType;
-}
-
-DB::DBConn::ConnType Map::ESRI::FileGDBDir::GetConnType() const
-{
-	return DB::DBConn::ConnType::FileGDB;
 }
 
 Int8 Map::ESRI::FileGDBDir::GetTzQhr() const
@@ -143,7 +124,7 @@ Int8 Map::ESRI::FileGDBDir::GetTzQhr() const
 	return this->tzQhr;
 }
 
-void Map::ESRI::FileGDBDir::ForceTz(Int8 tzQhr)
+void Map::ESRI::FileGDBDir::ForceTzQhr(Int8 tzQhr)
 {
 	this->tzQhr = tzQhr;
 	UIntOS i = this->tables.GetCount();
@@ -153,53 +134,9 @@ void Map::ESRI::FileGDBDir::ForceTz(Int8 tzQhr)
 	}
 }
 
-void Map::ESRI::FileGDBDir::GetConnName(NN<Text::StringBuilderUTF8> sb)
+Bool Map::ESRI::FileGDBDir::IsError() const
 {
-	sb->Append(this->pkg->GetSourceNameObj());
-}
-
-void Map::ESRI::FileGDBDir::Close()
-{
-}
-
-IntOS Map::ESRI::FileGDBDir::ExecuteNonQuery(Text::CStringNN sql)
-{
-	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("Support select SQL only: "));
-	sb.Append(sql);
-	OPTSTR_DEL(this->lastErrorMsg);
-	this->lastErrorMsg = Text::String::New(sb.ToCString());
-	this->lastDataError = DB::DBConn::DataError::ExecSQLError;
-	return 0;
-}
-
-Optional<DB::DBReader> Map::ESRI::FileGDBDir::ExecuteReader(Text::CStringNN sql)
-{
-	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("Unsupported SQL: "));
-	sb.Append(sql);
-	OPTSTR_DEL(this->lastErrorMsg);
-	this->lastErrorMsg = Text::String::New(sb.ToCString());
-	this->lastDataError = DB::DBConn::DataError::ExecSQLError;
-	return nullptr;
-}
-
-Bool Map::ESRI::FileGDBDir::IsLastDataError()
-{
-	return this->lastDataError == DB::DBConn::DataError::ExecSQLError;
-}
-
-Optional<DB::DBTransaction> Map::ESRI::FileGDBDir::BeginTransaction()
-{
-	return nullptr;
-}
-
-void Map::ESRI::FileGDBDir::Commit(NN<DB::DBTransaction> tran)
-{
-}
-
-void Map::ESRI::FileGDBDir::Rollback(NN<DB::DBTransaction> tran)
-{
+	return this->tableMap.GetCount() == 0;
 }
 
 Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name)
@@ -275,7 +212,7 @@ Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFil
 		return nullptr;
 	}
 	NN<FileGDBDir> dir;
-	NEW_CLASSNN(dir, FileGDBDir(pkg, table, prjParser, DB::SQLType::MySQL));
+	NEW_CLASSNN(dir, FileGDBDir(pkg, table, prjParser));
 	if (dir->IsError())
 	{
 		dir.Delete();

@@ -10,6 +10,7 @@ namespace DB
 	private:
 		NN<Text::String> layerName;
 		NN<Text::JSONArray> data;
+		Int8 tzQhr;
 	public:
 		JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, NN<Text::JSONArray> data);
 		virtual ~JSONDB();
@@ -20,6 +21,8 @@ namespace DB
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 	};
 }
 #endif

@@ -22,6 +22,7 @@ namespace DB
 		NN<Text::String> uid;
 		NN<Text::String> pwd;
 		NN<IO::LogTool> log;
+		Int8 tzQhr;
 
 		void Connect();
 
@@ -34,7 +35,7 @@ namespace DB
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
-		virtual void ForceTz(Int8 tzQhr);
+		virtual void ForceTzQhr(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
@@ -73,9 +74,10 @@ namespace DB
 		Char **row;
 		UInt32 *lengs;
 		WChar **names;
+		Int8 tzQhr;
 
 	public:
-		MySQLReader(IntOS rowChanged, void *result);
+		MySQLReader(IntOS rowChanged, void *result, Int8 tzQhr);
 		virtual ~MySQLReader();
 
 		virtual Bool ReadNext();

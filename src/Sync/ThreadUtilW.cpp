@@ -112,3 +112,8 @@ Bool Sync::ThreadUtil::SetName(Text::CStringNN name)
 	Text::StrDelNew(wName);
 	return hr == 0;
 }
+
+AnyType Sync::ThreadUtil::GetCurrAddr()
+{
+	return __builtin_extract_return_addr (__builtin_return_address (0));
+}

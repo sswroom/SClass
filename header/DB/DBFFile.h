@@ -30,6 +30,7 @@ namespace DB
 		UIntOS rowCnt;
 		UnsafeArray<DBFCol> cols;
 		NN<Text::String> name;
+		Int8 tzQhr;
 
 	public:
 		DBFFile(NN<IO::StreamData> stmData, UInt32 codePage);
@@ -41,6 +42,8 @@ namespace DB
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		Bool IsError();
 		UInt32 GetCodePage();

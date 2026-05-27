@@ -81,10 +81,10 @@ DB::DBConn::ConnType DB::SQLiteFile::GetConnType() const
 
 Int8 DB::SQLiteFile::GetTzQhr() const
 {
-	return 0;
+	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
-void DB::SQLiteFile::ForceTz(Int8 tzQhr)
+void DB::SQLiteFile::ForceTzQhr(Int8 tzQhr)
 {
 	
 }

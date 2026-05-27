@@ -91,6 +91,11 @@ NN<Text::String> Map::ESRI::FileGDBTable::GetFileName() const
 	return this->gdbtableFD->GetFullFileName();
 }
 
+Int8 Map::ESRI::FileGDBTable::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
 void Map::ESRI::FileGDBTable::SetTZQhr(Int8 tzQhr)
 {
 	this->tzQhr = tzQhr;

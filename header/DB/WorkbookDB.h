@@ -9,6 +9,7 @@ namespace DB
 	{
 	private:
 		NN<Text::SpreadSheet::Workbook> wb;
+		Int8 tzQhr;
 	public:
 		WorkbookDB(NN<Text::SpreadSheet::Workbook> wb);
 		virtual ~WorkbookDB();
@@ -19,6 +20,8 @@ namespace DB
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 	};
 }
 #endif

@@ -56,6 +56,7 @@ namespace Map
 		IntOS iconSpotX;
 		IntOS iconSpotY;
 		Int32 flags;
+		Int8 tzQhr;
 
 		static IntOS __stdcall ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2);
 	public:
@@ -139,6 +140,8 @@ namespace Map
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		virtual UIntOS GetNameCol() const;
 		virtual void SetNameCol(UIntOS nameCol);

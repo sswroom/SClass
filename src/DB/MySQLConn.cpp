@@ -65,6 +65,7 @@ DB::MySQLConn::MySQLConn(NN<Text::String> server, NN<Text::String> uid, NN<Text:
 	this->database = Text::String::CopyOrNull(database);
 	this->log = log;
 	this->axisAware = false;
+	this->tzQhr = 0;
 	Connect();
 }
 
@@ -81,6 +82,7 @@ DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CStringNN uid, Text::CStr
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->axisAware = false;
+	this->tzQhr = 0;
 	Connect();
 }
 
@@ -97,6 +99,7 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->axisAware = false;
+	this->tzQhr = 0;
 	Connect();
 }
 
@@ -130,11 +133,12 @@ DB::DBConn::ConnType DB::MySQLConn::GetConnType() const
 
 Int8 DB::MySQLConn::GetTzQhr() const
 {
-	return 0;
+	return this->tzQhr;
 }
 
-void DB::MySQLConn::ForceTz(Int8 tzQhr)
+void DB::MySQLConn::ForceTzQhr(Int8 tzQhr)
 {
+	this->tzQhr = tzQhr;
 }
 
 void DB::MySQLConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -240,7 +244,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		{
 			NN<DB::DBReader> r;
 			this->lastDataError = DB::DBConn::DataError::NoError;
-			NEW_CLASSNN(r, DB::MySQLReader((IntOS)mysql_affected_rows((MYSQL*)this->mysql), result));
+			NEW_CLASSNN(r, DB::MySQLReader((IntOS)mysql_affected_rows((MYSQL*)this->mysql), result, this->tzQhr));
 			return r;
 		}
 		else
@@ -460,12 +464,13 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	}
 }*/
 
-DB::MySQLReader::MySQLReader(IntOS rowChanged, void *result)
+DB::MySQLReader::MySQLReader(IntOS rowChanged, void *result, Int8 tzQhr)
 {
 	this->rowChanged = rowChanged;
 	this->result = result;
 	this->colCount = mysql_num_fields((MYSQL_RES *)result);
 	this->row = 0;
+	this->tzQhr = tzQhr;
 	this->lengs = 0;
 	this->names = MemAlloc(WChar *, this->colCount);
 	UIntOS i;
@@ -615,7 +620,7 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UIntOS colIndex)
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
-		return Data::Timestamp(Text::CStringNN::FromPtr(s), 0);
+		return Data::Timestamp(Text::CStringNN::FromPtr(s), 0).ConvertTimeZoneQHR(this->tzQhr);
 	}
 	else
 	{

@@ -1117,7 +1117,7 @@ Optional<Text::String> DB::ODBCConn::GetConnSchema()
 	return this->schema;
 }
 
-void DB::ODBCConn::ForceTz(Int8 tzQhr)
+void DB::ODBCConn::ForceTzQhr(Int8 tzQhr)
 {
 	this->forceTz = true;
 	this->tzQhr = tzQhr;

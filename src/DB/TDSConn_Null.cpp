@@ -42,16 +42,7 @@ DB::SQLType DB::TDSConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::TDSConn::GetConnType() const
 {
-	return CT_TDSCONN;
-}
-
-Int8 DB::TDSConn::GetTzQhr() const
-{
-	return Data::DateTimeUtil::GetLocalTzQhr();
-}
-
-void DB::TDSConn::ForceTz(Int8 tzQhr)
-{
+	return ConnType::TDSConn;
 }
 
 void DB::TDSConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -87,6 +78,15 @@ Bool DB::TDSConn::IsLastDataError()
 }
 
 void DB::TDSConn::Reconnect()
+{
+}
+
+Int8 DB::TDSConn::GetTzQhr() const
+{
+	return Data::DateTimeUtil::GetLocalTzQhr();
+}
+
+void DB::TDSConn::ForceTzQhr(Int8 tzQhr)
 {
 }
 

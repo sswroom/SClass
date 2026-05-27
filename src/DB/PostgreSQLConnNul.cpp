@@ -56,17 +56,7 @@ DB::SQLType DB::PostgreSQLConn::GetSQLType() const
 
 DB::DBConn::ConnType DB::PostgreSQLConn::GetConnType() const
 {
-	return DB::DBConn::CT_POSTGRESQL;
-}
-
-Int8 DB::PostgreSQLConn::GetTzQhr() const
-{
-	return this->tzQhr;
-}
-
-void DB::PostgreSQLConn::ForceTz(Int8 tzQhr)
-{
-	this->tzQhr = tzQhr;
+	return DB::DBConn::ConnType::PostgreSQL;
 }
 
 void DB::PostgreSQLConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
@@ -111,6 +101,16 @@ void DB::PostgreSQLConn::Reconnect()
 {
 	this->Close();
 	this->Connect();
+}
+
+Int8 DB::PostgreSQLConn::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void DB::PostgreSQLConn::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 Optional<DB::DBTransaction> DB::PostgreSQLConn::BeginTransaction()

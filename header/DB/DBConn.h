@@ -22,7 +22,7 @@ namespace DB
 			MySQLTCP,
 			PostgreSQL,
 			TDSConn,
-			FileGDB
+			SQLEngine
 		};
 
 		enum class DataError
@@ -44,8 +44,6 @@ namespace DB
 		virtual DB::SQLType GetSQLType() const = 0;
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const = 0;
-		virtual Int8 GetTzQhr() const = 0;
-		virtual void ForceTz(Int8 tzQhr) = 0;
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual void Close() = 0;
 		virtual IntOS ExecuteNonQuery(Text::CStringNN sql) = 0;

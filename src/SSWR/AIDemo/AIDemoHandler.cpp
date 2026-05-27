@@ -38,19 +38,19 @@ Bool __stdcall SSWR::AIDemo::AIDemoHandler::BotFunc(NN<Net::WebServer::WebReques
 	sb.AppendUTF8Char('\"');
 	Net::OpenAIResponse aiResp(cli->GetCurrModel(), sb.ToCString(), nullptr);
 	NN<Net::OpenAIResult> result = cli->SendResponses(aiResp);
-	NN<Text::String> outputText = result->GetOutputMessage();
+	Text::CStringNN outputText = result->GetOutputMessage();
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddInt32(CSTR("status"), (Int32)result->GetStatusCode());
 	json.ObjectAddStr(CSTR("answer"), outputText);
-	UIntOS i = outputText->IndexOfICase(CSTR("```sql\n"));
+	UIntOS i = outputText.IndexOfICase(CSTR("```sql\n"));
 	if (i != INVALID_INDEX)
 	{
 		i += 7;
-		UIntOS j = outputText->IndexOf(UTF8STRC("```"), i);
+		UIntOS j = outputText.IndexOf(UTF8STRC("```"), i);
 		if (j != INVALID_INDEX)
 		{
 			sb.ClearStr();
-			sb.AppendC(outputText->v + i, j - i);
+			sb.AppendC(outputText.v + i, j - i);
 			json.ObjectAddStr(CSTR("sql"), sb.ToCString());
 
 			if (sb.StartsWithICase(UTF8STRC("SELECT ")))

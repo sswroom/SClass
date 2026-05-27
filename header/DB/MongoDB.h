@@ -27,6 +27,8 @@ namespace DB
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		UIntOS GetDatabaseNames(NN<Data::ArrayListStringNN> names);
 		void FreeDatabaseNames(NN<Data::ArrayListStringNN> names);

@@ -38,8 +38,6 @@ namespace DB
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
-		virtual Int8 GetTzQhr() const;
-		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
@@ -49,6 +47,8 @@ namespace DB
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
 		virtual void Commit(NN<DB::DBTransaction> tran);

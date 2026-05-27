@@ -7,12 +7,13 @@
 #include "Win32/WMIReader.h"
 #include <wbemidl.h>
 
-Win32::WMIReader::WMIReader(void *pEnum)
+Win32::WMIReader::WMIReader(void *pEnum, Int8 tzQhr)
 {
 	this->pEnum = pEnum;
 	this->pObject = 0;
 	this->fObject = 0;
 	this->isFirst = false;
+	this->tzQhr = tzQhr;
 	NEW_CLASS(this->columns, Data::ArrayListObj<WMIColumn*>());
 
 	IWbemClassObject *pObject;
@@ -658,7 +659,7 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UIntOS colIndex)
 			case CIM_EMPTY:
 				break;
 			case CIM_DATETIME:
-				ret = Data::Timestamp::FromVariTime(V_DATE(&v));
+				ret = Data::Timestamp::FromVariTime(V_DATE(&v), this->tzQhr);
 				break;
 			}
 		}

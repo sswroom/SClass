@@ -20,6 +20,7 @@ namespace DB
 	private:
 		Data::FastStringMapNN<DBData> dbMap;
 		Optional<DBData> currDB;
+		Int8 tzQhr;
 	public:
 		TextDB(Text::CStringNN sourceName);
 		virtual ~TextDB();
@@ -30,6 +31,8 @@ namespace DB
 		virtual void CloseReader(NN<DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual Int8 GetTzQhr() const;
+		virtual void ForceTzQhr(Int8 tzQhr);
 
 		Bool AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList);
 		Bool AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UIntOS colCount);

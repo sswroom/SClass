@@ -510,6 +510,11 @@ namespace Data
 			return Data::Timestamp(TimeInstant::FromVariTime(variTime), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
+		static Timestamp FromVariTime(Double variTime, Int8 tzQhr)
+		{
+			return Data::Timestamp(TimeInstant::FromVariTime(variTime), tzQhr);
+		}
+
 		static Timestamp FromStr(Text::CStringNN s, Int8 defTZQhr)
 		{
 			Data::DateTimeUtil::TimeValue tv;

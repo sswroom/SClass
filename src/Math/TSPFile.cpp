@@ -14,6 +14,7 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 {
 	UInt8 hdr[8];
 	fd->GetRealData(0, 8, BYTEARR(hdr));
+	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 
 	if (*(Int64*)hdr == *(Int64*)"SmTS____")
 	{
@@ -146,6 +147,16 @@ void Math::TSPFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 void Math::TSPFile::Reconnect()
 {
+}
+
+Int8 Math::TSPFile::GetTzQhr() const
+{
+	return this->tzQhr;
+}
+
+void Math::TSPFile::ForceTzQhr(Int8 tzQhr)
+{
+	this->tzQhr = tzQhr;
 }
 
 UInt8 *Math::TSPFile::GetRowPtr(UIntOS row) const
@@ -388,7 +399,7 @@ Data::Timestamp Math::TSPReader::GetTimestamp(UIntOS colIndex)
 		return Data::Timestamp(nullptr);
 	if (colIndex == 2)
 	{
-		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), this->file->GetTzQhr());
 	}
 	return Data::Timestamp(nullptr);
 }

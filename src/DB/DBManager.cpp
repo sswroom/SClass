@@ -185,10 +185,10 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			return true;
 		}
 		break;
-	case DB::DBConn::ConnType::FileGDB:
+	case DB::DBConn::ConnType::SQLEngine:
 		{
 			NN<Map::ESRI::FileGDBDir> fgdb = NN<Map::ESRI::FileGDBDir>::ConvertFrom(conn);
-			connStr->AppendC(UTF8STRC("filegdb:"));
+			connStr->AppendC(UTF8STRC("sqlengine:"));
 			connStr->Append(fgdb->GetSourceNameObj());
 			return true;
 		}

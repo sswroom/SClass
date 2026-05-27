@@ -486,14 +486,19 @@ NN<DB::DBConn> DB::ReadingDBTool::GetDBConn()
 	return this->db;
 }
 
+void DB::ReadingDBTool::Reconnect()
+{
+	this->db->Reconnect();
+}
+
 Int8 DB::ReadingDBTool::GetTzQhr() const
 {
 	return this->db->GetTzQhr();
 }
 
-void DB::ReadingDBTool::Reconnect()
+void DB::ReadingDBTool::ForceTzQhr(Int8 tzQhr)
 {
-	this->db->Reconnect();
+	this->db->ForceTzQhr(tzQhr);
 }
 
 Bool DB::ReadingDBTool::IsDBTool() const
@@ -640,7 +645,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 
 UIntOS DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr)
 {
-	if (this->db->GetConnType() == DB::DBConn::ConnType::FileGDB)
+	if (this->db->GetConnType() == DB::DBConn::ConnType::SQLEngine)
 	{
 		return this->db->QueryTableNames(schemaName, arr);
 	}
