@@ -9,6 +9,45 @@
 #define ETL_FILE_SIGNATURE 0x6C662074
 #define ETL_BUFFER_HEADER_SIZE 64
 
+/**
+ * 0x0 Header size
+LogFileName=C:\Progs\PktMon.etl
+LoggerName=(null)
+CurrentTime=0
+BuffersRead=0
+LogFileMode=67174401
+
+ * 0x68 LogfileHeader.BufferSize
+ * 0x6C LogfileHeader.Version
+ * 0x70 LogfileHeader.ProviderVersion
+ * 0x74 LogfileHeader.NumberOfProcessors
+ * 0x78 LogfileHeader.EndTime
+ * 0x80 LogfileHeader.TimerResolution
+ * 0x84 LogfileHeader.MaximumFileSize
+ * 0x88 LogfileHeader.LogFileMode
+ * 0x8C LogfileHeader.BuffersWritten
+ * 0x90 LogfileHeader.StartBuffers
+ * 0x94 LogfileHeader.PointerSize
+ * 0x98 LogfileHeader.EventsLost
+ * 0x9C LogfileHeader.CpuSpeedInMHz
+LoggerName=(null)
+LogFileName=(null)
+ * 0xB0 LogfileHeader.TimeZone.Bias
+ * 0xB4 LogfileHeader.TimeZone.StandardName (WCHAR[32])
+ * 0xF4 LogfileHeader.TimeZone.StandardDate (SYSTEMTIME)
+ * 0x104 LogfileHeader.TimeZone.StandardBias
+ * 0x108 LogfileHeader.TimeZone.DaylightName (WCHAR[32])
+ * 0x148 LogfileHeader.TimeZone.DaylightDate (SYSTEMTIME)
+ * 0x158 LogfileHeader.TimeZone.DaylightBias
+ * 0x15C ?
+ * 0x160 LogfileHeader.BootTime
+ * 0x168 LogfileHeader.PerfFreq
+ * 0x170 LogfileHeader.StartTime
+ * 0x178 LogfileHeader.ReservedFlags
+ * 0x17C LogfileHeader.BuffersLost
+ * 
+ */
+
 void __stdcall IO::FileAnalyse::ETLFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::ETLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::ETLFileAnalyse>();
