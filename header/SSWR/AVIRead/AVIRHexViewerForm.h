@@ -54,6 +54,9 @@ namespace SSWR
 			NN<UI::GUITextBox> txtUInt32;
 			NN<UI::GUILabel> lblUInt64;
 			NN<UI::GUITextBox> txtUInt64;
+			NN<UI::GUILabel> lblDateTime;
+			NN<UI::GUITextBox> txtDateTime;
+			NN<UI::GUITextBox> txtDateTimeFormat;
 			NN<UI::GUIButton> btnFont;
 			NN<UI::GUIButton> btnNextUnk;
 			NN<UI::GUICheckBox> chkDynamicSize;

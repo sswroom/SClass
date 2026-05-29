@@ -680,6 +680,7 @@ DBF3FileAnalyse.o: ../../src/IO/FileAnalyse/DBF3FileAnalyse.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
+ETLFileAnalyse.o: ../../src/IO/FileAnalyse/ETLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FGDBFileAnalyse.o: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
 FileAnalyser.o: ../../src/IO/FileAnalyse/FileAnalyser.cpp

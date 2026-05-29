@@ -148,6 +148,99 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	sptr = Text::StrHexVal64V(Text::StrConcatC(sbuff, UTF8STRC("0x")), ofst);
 	me->txtOffset->SetText(CSTRP(sbuff, sptr));
 
+	Data::Timestamp maxTime = Data::Timestamp::Now();
+	Data::Timestamp minTime = maxTime.AddYear(-10);
+	Data::Timestamp ts;
+	Bool timeFound = false;
+	maxTime = maxTime.AddYear(10);
+	if (readSize >= 8)
+	{
+		Int64 val = bigEndian ? ReadMInt64(buff) : ReadInt64(buff);
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromEpochMS(val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("Epoch ms"));
+				timeFound = true;
+			}
+		}
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromEpochSec(val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("Epoch sec"));
+				timeFound = true;
+			}
+		}
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromEpochUS(val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("Epoch us"));
+				timeFound = true;
+			}
+		}
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromEpochNS(val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("Epoch ns"));
+				timeFound = true;
+			}
+		}
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromFILETIME(&val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("FILETIME"));
+				timeFound = true;
+			}
+		}
+		if (!timeFound)
+		{
+			ts = Data::Timestamp::FromDotNetTicks(val, Data::DateTimeUtil::GetLocalTzQhr());
+			if (ts >= minTime && ts <= maxTime)
+			{
+				sptr = ts.ToString(sbuff);
+				me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+				me->txtDateTimeFormat->SetText(CSTR("DotNetTicks"));
+				timeFound = true;
+			}
+		}
+	}
+	if (!timeFound && readSize >= 4)
+	{
+		UInt32 val = bigEndian ? ReadMUInt32(buff) : ReadUInt32(buff);
+		ts = Data::Timestamp::FromEpochSec(val, Data::DateTimeUtil::GetLocalTzQhr());
+		if (ts >= minTime && ts <= maxTime)
+		{
+			sptr = ts.ToString(sbuff);
+			me->txtDateTime->SetText(CSTRP(sbuff, sptr));
+			me->txtDateTimeFormat->SetText(CSTR("Epoch sec32"));
+			timeFound = true;
+		}
+	}
+	if (!timeFound)
+	{
+		me->txtDateTime->SetText(CSTR("-"));
+		me->txtDateTimeFormat->SetText(CSTR("-"));
+	}
+
 	Text::StringBuilderUTF8 sb;
 	if (me->hexView->GetFrameName(sb))
 	{
@@ -382,7 +475,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetRect(0, 0, 100, 200, false);
+	this->tcMain->SetRect(0, 0, 100, 232, false);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASSNN(this->hexView, UI::GUIHexFileView(ui, *this, this->core->GetDrawEngine(), nullptr));
 	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -456,16 +549,24 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 	this->txtUInt64 = ui->NewTextBox(this->tpValues, CSTR(""));
 	this->txtUInt64->SetRect(604, 100, 150, 23, false);
 	this->txtUInt64->SetReadOnly(true);
+	this->lblDateTime = ui->NewLabel(this->tpValues, CSTR("DateTime"));
+	this->lblDateTime->SetRect(4, 124, 100, 23, false);
+	this->txtDateTime = ui->NewTextBox(this->tpValues, CSTR(""));
+	this->txtDateTime->SetRect(104, 124, 200, 23, false);
+	this->txtDateTime->SetReadOnly(true);
+	this->txtDateTimeFormat = ui->NewTextBox(this->tpValues, CSTR(""));
+	this->txtDateTimeFormat->SetRect(304, 124, 150, 23, false);
+	this->txtDateTimeFormat->SetReadOnly(true);
 	this->btnFont = ui->NewButton(this->tpValues, CSTR("Sel Font"));
-	this->btnFont->SetRect(4, 124, 75, 23, false);
+	this->btnFont->SetRect(4, 148, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
 	this->btnNextUnk = ui->NewButton(this->tpValues, CSTR("Next Unknown"));
-	this->btnNextUnk->SetRect(84, 124, 75, 23, false);
+	this->btnNextUnk->SetRect(84, 148, 75, 23, false);
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
 	this->chkDynamicSize = ui->NewCheckBox(this->tpValues, CSTR("Dynamic Size"), false);
-	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
+	this->chkDynamicSize->SetRect(164, 148, 100, 23, false);
 	this->btnOpenFile = ui->NewButton(this->tpValues, CSTR("Open"));
-	this->btnOpenFile->SetRect(604, 124, 75, 23, false);
+	this->btnOpenFile->SetRect(604, 148, 75, 23, false);
 	this->btnOpenFile->HandleButtonClick(OnOpenFileClicked, this);
 
 	this->tpAnalyse = this->tcMain->AddTabPage(CSTR("Analyse"));

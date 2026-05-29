@@ -11,6 +11,7 @@ typedef enum
 	MNU_FILE_OPEN = 101,
 	MNU_EDIT_GOTO = 102,
 	MNU_EDIT_SEARCH = 103,
+	MNU_EDIT_COPY,
 	MNU_VIEW_FONT
 } MenuItems;
 
@@ -61,6 +62,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Edit"));
 	mnu->AddItem(CSTR("&GoTo..."), MNU_EDIT_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
 	mnu->AddItem(CSTR("&Search"), MNU_EDIT_SEARCH, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
+	mnu->AddItem(CSTR("&Copy"), MNU_EDIT_COPY, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_C);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&View"));
 	mnu->AddItem(CSTR("&Font..."), MNU_VIEW_FONT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
@@ -119,6 +121,9 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_EDIT_SEARCH:
 		this->OpenSearch(nullptr);
+		break;
+	case MNU_EDIT_COPY:
+		this->txtView->EventCopy();
 		break;
 	case MNU_VIEW_FONT:
 		{

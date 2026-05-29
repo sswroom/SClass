@@ -5,6 +5,7 @@
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
+#include "IO/FileAnalyse/ETLFileAnalyse.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
@@ -151,6 +152,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
 	}
+	else if (buffSize >= 0x440 && ReadUInt32(buff) == 0x400 && ReadUInt32(&buff[0x400]) < buffSize && ReadUInt16(&buff[0x404]) > 0)
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::ETLFileAnalyse(fd));
+	}
 	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UIntOS)buff[126] + 1) << 7) <= fd->GetDataSize() && (fd->GetDataSize() & 127) == 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
@@ -223,6 +228,7 @@ void IO::FileAnalyse::FileAnalyser::AddFilters(NN<IO::FileSelector> selector)
 	selector->AddFilter(CSTR("*.spk"), CSTR("SPackage file"));
 	selector->AddFilter(CSTR("*.dwg"), CSTR("AutoCAD Drawing file"));
 	selector->AddFilter(CSTR("*.zip"), CSTR("ZIP file"));
+	selector->AddFilter(CSTR("*.etl"), CSTR("ETL file"));
 	selector->AddFilter(CSTR("*.jar"), CSTR("JAR file"));
 	selector->AddFilter(CSTR("*.tif"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.tf8"), CSTR("TIFF file"));

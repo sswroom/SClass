@@ -2531,6 +2531,8 @@ IO/FileAnalyse/EBMLFileAnalyse.h:
 @EBMLFileAnalyse.o
 IO/FileAnalyse/EDIDFileAnalyse.h:
 @EDIDFileAnalyse.o
+IO/FileAnalyse/ETLFileAnalyse.h:
+@ETLFileAnalyse.o
 IO/FileAnalyse/EXEFileAnalyse.h:
 @EXEFileAnalyse.o
 IO/FileAnalyse/FGDBFileAnalyse.h:
