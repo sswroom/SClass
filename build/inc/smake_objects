@@ -1574,6 +1574,7 @@ MSGraphClient.o: ../../src/Net/MSGraphClient.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
+PostgreSQLTCPConn.o: ../../src/DB/PostgreSQLTCPConn.cpp
 NetBIOSScanner.o: ../../src/Net/NetBIOSScanner.cpp
 NetBIOSUtil.o: ../../src/Net/NetBIOSUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp

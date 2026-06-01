@@ -2060,6 +2060,8 @@ DB/MySQLMaintance.h:
 @MySQLMaintance.o
 DB/PageRequest.h:
 @PageRequest.o
+DB/PostgreSQLTCPConn.h:
+@PostgreSQLTCPConn.o
 DB/ReadingDB.h:
 @ReadingDB.o
 DB/ReadingDBTool.h:
