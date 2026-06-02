@@ -1018,6 +1018,22 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMapNative<Int32>> objList,
 	Int64 thisTime;
 	Int64 lastTime = 0;
 	Bool progGrp = true;
+	if (prog->name->EndsWith(UTF8STRC(".o")))
+	{
+		Data::ArrayListUInt64 objParsedProgs;
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(prog->srcFile)->ToCString(), nullptr, objParsedProgs, tmpSb))
+		{
+			return false;
+		}
+		this->fileTimeMap.Put(prog->srcFile, thisTime);
+		if (thisTime > lastTime)
+		{
+			lastTime = thisTime;
+		}
+		latestTime.Set(lastTime);
+		return true;
+	}
+
 	Data::ArrayIterator<NN<Text::String>> it = prog->subItems.Iterator();
 	while (it.HasNext())
 	{
@@ -1495,7 +1511,11 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 		sb.Append(cfg->value);
 	}
 	Bool skipLink = false;
-	if (!(dt2 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
+	if (prog->name->EndsWith(UTF8STRC(".o")))
+	{
+		skipLink = true;
+	}
+	else if (!(dt2 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
 	{
 		thisTime = dt2.ToTicks();
 		if (thisTime >= latestTime)
