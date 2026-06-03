@@ -23,11 +23,10 @@ namespace DB
 		{
 			return -1;
 		}
-		NN<IO::Stream> s = cli.Ptr();
 		Int32 totalRead = 0;
 		while (totalRead < (Int32)buffSize)
 		{
-			UIntOS readSize = s->Read(Data::ByteArray(buff.Ptr() + totalRead, buffSize - totalRead));
+			UIntOS readSize = cli->Read(Data::ByteArray(buff.Ptr() + totalRead, buffSize - totalRead));
 			if (readSize == 0)
 			{
 				return -1;
@@ -43,18 +42,17 @@ namespace DB
 		{
 			return false;
 		}
-		NN<IO::Stream> s = cli.Ptr();
 		
 		UInt32 packetLen = (UInt32)(dataLen + 4);
 		UInt8 packet[512];
 		packet[0] = msgType;
-		WriteMUInt32(packet + 1, packetLen);
+		WriteMInt32(packet + 1, packetLen);
 		if (dataLen > 0)
 		{
 			MemCopyO(packet + 5, data.Ptr(), dataLen);
 		}
 		
-		UIntOS written = s->Write(Data::ByteArray(packet, packetLen));
+		UIntOS written = cli->Write(Data::ByteArray(packet, packetLen));
 		return written == packetLen;
 	}
 
@@ -66,14 +64,14 @@ namespace DB
 		WriteMInt32(p.Ptr(), 80877103);
 		p += 4;
 		
-		p = Text::StrToUTF8Buff(p, CSTR("user"));
+		p = CSTR("user").ConcatTo(p);
 		*p++ = 0;
-		p = Text::StrToUTF8Buff(p, user);
+		p = user.ConcatTo(p);
 		*p++ = 0;
 		
-		p = Text::StrToUTF8Buff(p, CSTR("database"));
+		p = CSTR("database").ConcatTo(p);
 		*p++ = 0;
-		p = Text::StrToUTF8Buff(p, database);
+		p = database.ConcatTo(p);
 		*p++ = 0;
 		
 		*p++ = 0;
@@ -159,7 +157,7 @@ namespace DB
 			while (true)
 			{
 				UInt8 c;
-				if (this->readPacket( &c, 1) != 1)
+				if (this->readPacket(&c, 1) != 1)
 				{
 					return false;
 				}
@@ -167,7 +165,7 @@ namespace DB
 				{
 					break;
 				}
-				*p++ = Data::SetCharA(p, (*c));
+				*p++ = (UTF8Char)c;
 			}
 			colNames->Add(Text::String::New(nameBuff, (UIntOS)(p - nameBuff)));
 			
@@ -200,12 +198,12 @@ namespace DB
 		for (UIntOS i = 0; i < colCount; i++)
 		{
 			Int32 valLen;
-			if (this->readPacket( (UnsafeArray<UInt8>)&valLen, 4) != 4)
+			if (this->readPacket(UnsafeArray<UInt8>::FromPtr((UInt8*)&valLen), 4) != 4)
 			{
 				return false;
 			}
 			
-			valLen = ReadMInt32((UnsafeArray<UInt8>)&valLen);
+			valLen = ReadMInt32(UnsafeArray<UInt8>::FromPtr((UInt8*)&valLen));
 			if (valLen < 0)
 			{
 				values->Add(nullptr);

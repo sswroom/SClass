@@ -1,4 +1,4 @@
 CompileFlags:
   Add: [
-    "-I./heaader"
+    "--include-directory=./heaader"
   ]
