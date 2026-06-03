@@ -7,13 +7,13 @@ namespace DB
 {
 	namespace SQL
 	{
+		enum class CommandType
+		{
+			CreateTable,
+			ShowDatabases
+		};
 		class SQLCommand
 		{
-		public:
-			typedef enum
-			{
-				CT_CREATE_TABLE
-			} CommandType;
 		private:
 			static Bool IsPunctuation(UnsafeArray<const UTF8Char> s);
 		public:

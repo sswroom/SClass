@@ -218,7 +218,7 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 	{
 		return Text::StrConcat(sbuff, (const UTF8Char*)this->clsData);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)

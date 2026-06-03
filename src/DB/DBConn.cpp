@@ -289,7 +289,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		NN<DB::SQL::SQLCommand> cmd;
 		if (DB::SQL::SQLCommand::Parse(sb.ToString(), DB::SQLType::SQLite).SetTo(cmd))
 		{
-			if (cmd->GetCommandType() == DB::SQL::SQLCommand::CT_CREATE_TABLE)
+			if (cmd->GetCommandType() == DB::SQL::CommandType::CreateTable)
 			{
 				tab = NN<DB::SQL::CreateTableCommand>::ConvertFrom(cmd)->GetTableDef()->Clone().Ptr();
 			}

@@ -2090,8 +2090,20 @@ DB/WorkbookDB.h:
 @WorkbookDB.o
 DB/SQL/CreateTableCommand.h:
 @CreateTableCommand.o
+DB/SQL/ShowDatabasesCommand.h:
+@ShowDatabasesCommand.o
 DB/SQL/SQLCommand.h:
 @SQLCommand.o
+DB/SQL/SQLEmbeddedReader.h:
+@SQLEmbeddedReader.o
+DB/SQL/SQLEngine.h:
+@SQLEngine.o
+DB/SQL/SQLEngineDBTable.h:
+@SQLEngineDBTable.o
+DB/SQL/SQLEngineReader.h:
+DB/SQL/SQLEngineTable.h:
+DB/SQL/SQLStringReader.h:
+@SQLStringReader.o
 DB/SQL/SQLUtil.h:
 @SQLUtil.o
 

@@ -216,7 +216,7 @@ void DB::SQLBuilder::AppendTrim(Text::CStringNN val)
 
 void DB::SQLBuilder::AppendSQLCommand(NN<SQL::SQLCommand> cmd)
 {
-	if (cmd->GetCommandType() == SQL::SQLCommand::CT_CREATE_TABLE)
+	if (cmd->GetCommandType() == SQL::CommandType::CreateTable)
 	{
 		NN<SQL::CreateTableCommand> createCmd = NN<SQL::CreateTableCommand>::ConvertFrom(cmd);
 		NN<DB::TableDef> tableDef = createCmd->GetTableDef();

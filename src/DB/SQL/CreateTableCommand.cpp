@@ -20,9 +20,9 @@ DB::SQL::CreateTableCommand::~CreateTableCommand()
 	this->tableDef.Delete();
 }
 
-DB::SQL::SQLCommand::CommandType DB::SQL::CreateTableCommand::GetCommandType()
+DB::SQL::CommandType DB::SQL::CreateTableCommand::GetCommandType()
 {
-	return CT_CREATE_TABLE;
+	return DB::SQL::CommandType::CreateTable;
 }
 
 NN<DB::TableDef> DB::SQL::CreateTableCommand::GetTableDef()

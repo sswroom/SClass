@@ -17,11 +17,9 @@ namespace DB
 		Int32 cancelKey;
 	};
 
-	static Int32 readPacket(NN<PostgreSQLTCPConn> conn, UnsafeArray<UInt8> buff, UIntOS buffSize)
-	{
-		NN<ClassData> clsData = conn->clsData;
-		Optional<Net::TCPClient> cli;
-		if (!cli.SetTo(clsData->connCli))
+	Int32 PostgreSQLTCPConn::readPacket(UnsafeArray<UInt8> buff, UIntOS buffSize)
+	{		Optional<Net::TCPClient> cli;
+		if (!clsData->connCli.SetTo(cli))
 		{
 			return -1;
 		}
@@ -39,11 +37,9 @@ namespace DB
 		return totalRead;
 	}
 
-	static Bool sendPacket(NN<PostgreSQLTCPConn> conn, UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen)
-	{
-		NN<ClassData> clsData = conn->clsData;
-		Optional<Net::TCPClient> cli;
-		if (!cli.SetTo(clsData->connCli))
+	Bool PostgreSQLTCPConn::sendPacket(UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen)
+	{		Optional<Net::TCPClient> cli;
+		if (!clsData->connCli.SetTo(cli))
 		{
 			return false;
 		}
@@ -52,7 +48,7 @@ namespace DB
 		UInt32 packetLen = dataLen + 4;
 		UInt8 packet[512];
 		packet[0] = msgType;
-		Data::SetUInt32BE(packet + 1, packetLen);
+		WriteMUInt32(packet + 1, packetLen);
 		if (dataLen > 0)
 		{
 			MemCopy(packet + 5, data, dataLen);
@@ -62,48 +58,46 @@ namespace DB
 		return written == dataLen + 5;
 	}
 
-	static Bool sendStartupPacket(NN<PostgreSQLTCPConn> conn, Text::CStringNN user, Text::CStringNN database)
+	Bool PostgreSQLTCPConn::sendStartupPacket(Text::CStringNN user, Text::CStringNN database)
 	{
 		UInt8 packet[1024];
 		UnsafeArray<UInt8> p = packet + 8;
 		
-		Data::SetInt32BE(p.Ptr(), 80877103);
+		WriteMInt32(p.Ptr(), 80877103);
 		p += 4;
 		
-		p = Text::StrToUTF8Buff(p, CSTR("user"));
-		*p++ = 0;
-		p = Text::StrToUTF8Buff(p, user);
-		*p++ = 0;
+		MemCopy(p.Ptr(), "user", 5);
+		p += 5;
+		MemCopy(p.Ptr(), user.v.Ptr(), user.leng + 1);
+		p += user.leng + 1;
 		
-		p = Text::StrToUTF8Buff(p, CSTR("database"));
-		*p++ = 0;
-		p = Text::StrToUTF8Buff(p, database);
-		*p++ = 0;
+		MemCopy(p.Ptr(), "database", 9);
+		p += 9;
+		MemCopy(p.Ptr(), database.v.Ptr(), database.leng + 1);
+		p += database.leng + 1;
 		
 		*p++ = 0;
 		
 		UInt32 packetLen = (UInt32)(p - packet);
-		Data::SetInt32BE(packet, packetLen);
+		WriteMInt32(packet, packetLen);
 		
-		return sendPacket(conn, 0, packet, packetLen);
+		return this->sendPacket( 0, packet, packetLen);
 	}
 
-	static Bool parseAuthentication(NN<PostgreSQLTCPConn> conn)
-	{
-		NN<ClassData> clsData = conn->clsData;
-		UInt8 buff[8];
-		if (readPacket(conn, buff, 8) != 8)
+	Bool PostgreSQLTCPConn::parseAuthentication()
+	{		UInt8 buff[8];
+		if (this->readPacket( buff, 8) != 8)
 		{
 			return false;
 		}
 		
-		UInt32 len = Data::GetUInt32BE(buff + 4);
+		UInt32 len = ReadMUInt32(buff + 4);
 		if (len < 8)
 		{
 			return false;
 		}
 		
-		Int32 authType = Data::GetInt32BE(buff);
+		Int32 authType = ReadMInt32(buff);
 		switch (authType)
 		{
 			case 0:
@@ -114,7 +108,7 @@ namespace DB
 					return false;
 				}
 				UInt8 salt[4];
-				if (readPacket(conn, salt, 4) != 4)
+				if (this->readPacket( salt, 4) != 4)
 				{
 					return false;
 				}
@@ -125,41 +119,39 @@ namespace DB
 		return true;
 	}
 
-	static Bool parseBackendKeyData(NN<PostgreSQLTCPConn> conn)
-	{
-		NN<ClassData> clsData = conn->clsData;
-		UInt8 buff[12];
-		if (readPacket(conn, buff, 12) != 12)
+	Bool PostgreSQLTCPConn::parseBackendKeyData()
+	{		UInt8 buff[12];
+		if (this->readPacket( buff, 12) != 12)
 		{
 			return false;
 		}
 		
-		clsData->backendPID = Data::GetUInt32BE(buff + 4);
-		clsData->cancelKey = Data::GetInt32BE(buff + 8);
+		clsData->backendPID = ReadMUInt32(buff + 4);
+		clsData->cancelKey = ReadMInt32(buff + 8);
 		return true;
 	}
 
-	static Bool parseRowDescription(NN<PostgreSQLTCPConn> conn, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayList<UInt32>> types, NN<Data::ArrayList<Int32>> typeMods)
+	Bool PostgreSQLTCPConn::parseRowDescription(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
 	{
 		UInt8 buff[4];
-		if (readPacket(conn, buff, 4) != 4)
+		if (this->readPacket( buff, 4) != 4)
 		{
 			return false;
 		}
 		
-		UInt32 len = Data::GetUInt32BE(buff);
+		UInt32 len = ReadMUInt32(buff);
 		if (len < 4)
 		{
 			return false;
 		}
 		
 		UInt8 cntBuff[2];
-		if (readPacket(conn, cntBuff, 2) != 2)
+		if (this->readPacket( cntBuff, 2) != 2)
 		{
 			return false;
 		}
 		
-		Int16 colCount = Data::GetInt16BE(cntBuff);
+		Int16 colCount = ReadMInt16(cntBuff);
 		for (Int16 i = 0; i < colCount; i++)
 		{
 			UTF8Char nameBuff[256];
@@ -167,7 +159,7 @@ namespace DB
 			while (true)
 			{
 				UInt8 c;
-				if (readPacket(conn, &c, 1) != 1)
+				if (this->readPacket( &c, 1) != 1)
 				{
 					return false;
 				}
@@ -175,19 +167,19 @@ namespace DB
 				{
 					break;
 				}
-				*p++ = Data::SetCharA(p, Data::GetCharA(&c));
+				*p++ = Data::SetCharA(p, (*c));
 			}
 			colNames->Add(Text::String::New(nameBuff, (UIntOS)(p - nameBuff)));
 			
 			UInt8 typeInfo[12];
-			if (readPacket(conn, typeInfo, 12) != 12)
+			if (this->readPacket( typeInfo, 12) != 12)
 			{
 				return false;
 			}
-			types->Add(Data::GetUInt32BE(typeInfo));
-			typeMods->Add(Data::GetInt32BE(typeInfo + 4));
+			types->Add(ReadMUInt32(typeInfo));
+			typeMods->Add(ReadMInt32(typeInfo + 4));
 			
-			UInt16 fmtCode = Data::GetInt16BE(typeInfo + 8);
+			UInt16 fmtCode = ReadMInt16(typeInfo + 8);
 			if (fmtCode != 0)
 			{
 				return false;
@@ -197,10 +189,10 @@ namespace DB
 		return true;
 	}
 
-	static Bool parseDataRow(NN<PostgreSQLTCPConn> conn, UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths)
+	Bool PostgreSQLTCPConn::parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths)
 	{
 		UInt8 buff[4];
-		if (readPacket(conn, buff, 4) != 4)
+		if (this->readPacket( buff, 4) != 4)
 		{
 			return false;
 		}
@@ -208,12 +200,12 @@ namespace DB
 		for (UIntOS i = 0; i < colCount; i++)
 		{
 			Int32 valLen;
-			if (readPacket(conn, (UnsafeArray<UInt8>)&valLen, 4) != 4)
+			if (this->readPacket( (UnsafeArray<UInt8>)&valLen, 4) != 4)
 			{
 				return false;
 			}
 			
-			valLen = Data::GetInt32BE((UnsafeArray<UInt8>)&valLen);
+			valLen = ReadMInt32((UnsafeArray<UInt8>)&valLen);
 			if (valLen < 0)
 			{
 				values->Add(nullptr);
@@ -222,7 +214,7 @@ namespace DB
 			else if (valLen > 0)
 			{
 				UnsafeArray<UInt8> val = MemAllocArr(UInt8, valLen);
-				if (readPacket(conn, val, valLen) != valLen)
+				if (this->readPacket( val, valLen) != valLen)
 				{
 					MemFree(val);
 					return false;
@@ -240,17 +232,17 @@ namespace DB
 		return true;
 	}
 
-	static Bool parseCommandComplete(NN<PostgreSQLTCPConn> conn, OutParam<IntOS> rowChanged)
+	Bool PostgreSQLTCPConn::parseCommandComplete(OutParam<IntOS> rowChanged)
 	{
 		rowChanged.SetNoCheck(0);
 		
 		UInt8 buff[4];
-		if (readPacket(conn, buff, 4) != 4)
+		if (this->readPacket( buff, 4) != 4)
 		{
 			return false;
 		}
 		
-		UInt32 len = Data::GetUInt32BE(buff);
+		UInt32 len = ReadMUInt32(buff);
 		if (len < 5)
 		{
 			return false;
@@ -258,7 +250,7 @@ namespace DB
 		
 		UTF8Char cmdBuff[256];
 		UIntOS readSize = len - 4;
-		if (readPacket(conn, buff, readSize) != readSize)
+		if (this->readPacket( buff, readSize) != readSize)
 		{
 			return false;
 		}
@@ -287,17 +279,17 @@ namespace DB
 		return true;
 	}
 
-	static Bool parseErrorResponse(NN<PostgreSQLTCPConn> conn, NN<Text::StringBuilderUTF8> errMsg)
+	Bool PostgreSQLTCPConn::parseErrorResponse(NN<Text::StringBuilderUTF8> errMsg)
 	{
 		errMsg->Clear();
 		
 		UInt8 buff[4];
-		if (readPacket(conn, buff, 4) != 4)
+		if (this->readPacket( buff, 4) != 4)
 		{
 			return false;
 		}
 		
-		UInt32 len = Data::GetUInt32BE(buff);
+		UInt32 len = ReadMUInt32(buff);
 		if (len < 5)
 		{
 			return false;
@@ -305,7 +297,7 @@ namespace DB
 		
 		UIntOS readSize = len - 4;
 		UnsafeArray<UInt8> data = MemAllocArr(UInt8, readSize);
-		if (readPacket(conn, data, readSize) != readSize)
+		if (this->readPacket( data, readSize) != readSize)
 		{
 			MemFree(data);
 			return false;
@@ -508,10 +500,10 @@ namespace DB
 		UInt32 sqlLen = (UInt32)sql.v.GetLength();
 		UInt8* packet = MemAllocArr(UInt8, 5 + 1 + sqlLen + 4);
 		packet[0] = 'Q';
-		Data::SetInt32BE(packet + 1, sqlLen + 5);
+		WriteMInt32(packet + 1, sqlLen + 5);
 		packet[5] = stmtName;
 		MemCopy(packet + 6, sql.v.Ptr(), sqlLen);
-		Data::SetInt32BE(packet + 6 + sqlLen, formatCodes);
+		WriteMInt32(packet + 6 + sqlLen, formatCodes);
 		
 		if (!sendPacket(*this, 'Q', packet, 5 + 1 + sqlLen + 4))
 		{
@@ -532,17 +524,17 @@ namespace DB
 			switch (Data::GetCharA(buff))
 			{
 				case 'C':
-					if (!parseCommandComplete(*this, rowChanged))
+					if (!this->parseCommandComplete(, rowChanged))
 					{
 						return -2;
 					}
 					break;
 				case 'Z':
-					Data::SetInt32BE(buff + 4, Data::GetInt32BE(buff + 4));
+					WriteMInt32(buff + 4, ReadMInt32(buff + 4));
 					return rowChanged;
 				case 'E':
 					Text::StringBuilderUTF8 errMsg;
-					if (parseErrorResponse(*this, errMsg))
+					if (this->parseErrorResponse( errMsg))
 					{
 						lastDataError = true;
 						if (log->HasHandler())
@@ -576,10 +568,10 @@ namespace DB
 		UInt32 sqlLen = (UInt32)sql.v.GetLength();
 		UInt8* packet = MemAllocArr(UInt8, 5 + 1 + sqlLen + 4);
 		packet[0] = 'Q';
-		Data::SetInt32BE(packet + 1, sqlLen + 5);
+		WriteMInt32(packet + 1, sqlLen + 5);
 		packet[5] = stmtName;
 		MemCopy(packet + 6, sql.v.Ptr(), sqlLen);
-		Data::SetInt32BE(packet + 6 + sqlLen, formatCodes);
+		WriteMInt32(packet + 6 + sqlLen, formatCodes);
 		
 		if (!sendPacket(*this, 'Q', packet, 5 + 1 + sqlLen + 4))
 		{
@@ -606,29 +598,29 @@ namespace DB
 			switch (Data::GetCharA(buff))
 			{
 				case 'C':
-					if (!parseCommandComplete(*this, rowChanged))
+					if (!this->parseCommandComplete(, rowChanged))
 					{
 						return nullptr;
 					}
 					break;
 				case 'T':
-					if (!parseRowDescription(*this, colNames, types, typeMods))
+					if (!this->parseRowDescription( colNames, types, typeMods))
 					{
 						return nullptr;
 					}
 					break;
 				case 'D':
-					if (!parseDataRow(*this, (UIntOS)colNames.GetCount(), values, lengths))
+					if (!this->parseDataRow( (UIntOS)colNames.GetCount(), values, lengths))
 					{
 						return nullptr;
 					}
 					break;
 				case 'Z':
-					Data::SetInt32BE(buff + 4, Data::GetInt32BE(buff + 4));
+					WriteMInt32(buff + 4, ReadMInt32(buff + 4));
 					break;
 				case 'E':
 					Text::StringBuilderUTF8 errMsg;
-					if (parseErrorResponse(*this, errMsg))
+					if (this->parseErrorResponse( errMsg))
 					{
 						lastDataError = true;
 						if (log->HasHandler())
@@ -999,7 +991,7 @@ namespace DB
 			return 0;
 		}
 		
-		return Data::GetInt32BE(val);
+		return ReadMInt32(val);
 	}
 
 	Int64 PostgreSQLTCPReader::GetInt64(UIntOS colIndex)
@@ -1339,11 +1331,11 @@ namespace DB
 			case 21:
 				if (len == 2)
 				{
-					item->SetI16((Int16)Data::GetInt16BE(val));
+					item->SetI16((Int16)ReadMInt16(val));
 				}
 				else if (len == 4)
 				{
-					item->SetI16((Int16)Data::GetInt32BE(val));
+					item->SetI16((Int16)ReadMInt32(val));
 				}
 				else
 				{
@@ -1353,7 +1345,7 @@ namespace DB
 			case 23:
 				if (len == 4)
 				{
-					item->SetI32(Data::GetInt32BE(val));
+					item->SetI32(ReadMInt32(val));
 				}
 				else
 				{
@@ -1363,7 +1355,7 @@ namespace DB
 			case 700:
 				if (len == 4)
 				{
-					UInt32 intVal = Data::GetInt32BE(val);
+					UInt32 intVal = ReadMInt32(val);
 					Single floatVal = *(Single*)&intVal;
 					item->SetF64((Double)floatVal);
 				}

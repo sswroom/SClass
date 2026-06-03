@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/SharedReadingDB.h"
+#include "DB/SQL/SQLEngine.h"
 #include "IO/PackageFile.h"
 #include "IO/Path.h"
 #include "Map/FileGDBLayer.h"
@@ -131,5 +132,10 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		}
 	}
 	SDEL_CLASS(relObj);
-	return fgdb.Ptr();
+	NN<DB::SharedReadingDB> db;
+	NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
+	NN<DB::SQL::SQLEngine> sqlEng;
+	NEW_CLASSNN(sqlEng, DB::SQL::SQLEngine(DB::SQLType::MySQL, pobj->GetSourceNameObj()->ToCString()));
+	sqlEng->AddDatabase(db, nullptr, nullptr);
+	return sqlEng;
 }

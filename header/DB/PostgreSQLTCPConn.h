@@ -13,7 +13,7 @@ namespace DB
 {
 	class PostgreSQLTCPConn : public DB::DBConn
 	{
-	private:
+	protected:
 		struct ClassData;
 		NN<ClassData> clsData;
 
@@ -28,6 +28,15 @@ namespace DB
 
 		Bool Connect();
 		void InitConnection();
+		Int32 readPacket(UnsafeArray<UInt8> buff, UIntOS buffSize);
+		Bool sendPacket(UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen);
+		Bool parseAuthentication();
+		Bool parseBackendKeyData();
+		Bool sendStartupPacket(Text::CStringNN user, Text::CStringNN database);
+		Bool parseRowDescription(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
+		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths);
+		Bool parseCommandComplete(OutParam<IntOS> rowChanged);
+		Bool parseErrorResponse(NN<Text::StringBuilderUTF8> errMsg);
 
 	public:
 		PostgreSQLTCPConn(NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log);
@@ -85,6 +94,15 @@ namespace DB
 		UIntOS colCount;
 		UIntOS rowCount;
 		UIntOS currRow;
+		Int32 readPacket(UnsafeArray<UInt8> buff, UIntOS buffSize);
+		Bool sendPacket(UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen);
+		Bool parseAuthentication();
+		Bool parseBackendKeyData();
+		Bool sendStartupPacket(Text::CStringNN user, Text::CStringNN database);
+		Bool parseRowDescription(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
+		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths);
+		Bool parseCommandComplete(OutParam<IntOS> rowChanged);
+		Bool parseErrorResponse(NN<Text::StringBuilderUTF8> errMsg);
 
 	public:
 		PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UnsafeArray<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);

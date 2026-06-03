@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/SQL/CreateTableCommand.h"
+#include "DB/SQL/ShowDatabasesCommand.h"
 #include "DB/SQL/SQLCommand.h"
 #include "DB/SQL/SQLUtil.h"
 #include "Text/CharUtil.h"
@@ -407,6 +408,26 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		else
 		{
 			printf("SQLCommand: Unknown word after create: %s\r\n", sb.ToPtr());
+		}
+	}
+	else if (sb.EqualsICase(UTF8STRC("SHOW")) && sqlType == DB::SQLType::MySQL)
+	{
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.EqualsICase(UTF8STRC("DATABASES")))
+		{
+			NEW_CLASS(cmd, DB::SQL::ShowDatabasesCommand());
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.leng == 0)
+			{
+			}
+			else
+			{
+				printf("SQLCommand: Unknown word after show database: %s\r\n", sb.ToPtr());
+			}
+		}
+		else
+		{
+			printf("SQLCommand: Unknown word after show: %s\r\n", sb.ToPtr());
 		}
 	}
 	else

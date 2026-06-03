@@ -295,7 +295,12 @@ $-I /opt/local/include/freetds
 TextDB.o: ../../src/DB/TextDB.cpp
 WorkbookDB.o: ../../src/DB/WorkbookDB.cpp
 CreateTableCommand.o: ../../src/DB/SQL/CreateTableCommand.cpp
+ShowDatabasesCommand.o: ../../src/DB/SQL/ShowDatabasesCommand.cpp
 SQLCommand.o: ../../src/DB/SQL/SQLCommand.cpp
+SQLEmbeddedReader.o: ../../src/DB/SQL/SQLEmbeddedReader.cpp
+SQLEngine.o: ../../src/DB/SQL/SQLEngine.cpp
+SQLEngineDBTable.o: ../../src/DB/SQL/SQLEngineDBTable.cpp
+SQLStringReader.o: ../../src/DB/SQL/SQLStringReader.cpp
 SQLUtil.o: ../../src/DB/SQL/SQLUtil.cpp
 
 BMPExporter.o: ../../src/Exporter/BMPExporter.cpp
@@ -303,6 +308,7 @@ CIPExporter.o: ../../src/Exporter/CIPExporter.cpp
 CURExporter.o: ../../src/Exporter/CURExporter.cpp
 DBCSVExporter.o: ../../src/Exporter/DBCSVExporter.cpp
 DBExcelXMLExporter.o: ../../src/Exporter/DBExcelXMLExporter.cpp
+
 DBFExporter.o: ../../src/Exporter/DBFExporter.cpp
 DBHTMLExporter.o: ../../src/Exporter/DBHTMLExporter.cpp
 DBPListExporter.o: ../../src/Exporter/DBPListExporter.cpp
