@@ -3,12 +3,12 @@
         {
             "name": "Linux_x64",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz/**",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
-                "${workspaceFolder}/../SClass/ThirdParty/webdriverxx/include",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz/**",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
+                "${workspaceFolder}/ThirdParty/webdriverxx/include",
                 "/usr/include/**",
                 "/usr/lib/x86_64-linux-gnu/**",
                 "/usr/lib/jvm/java-17-openjdk-amd64/include",
@@ -23,11 +23,11 @@
         {
             "name": "RPi",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "/usr/include/**",
                 "/opt/vc/include/interface",
                 "/opt/vc/include"
@@ -41,11 +41,11 @@
         {
             "name": "MacOS",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "/opt/local/include/**"
             ],
             "defines": [
@@ -59,11 +59,11 @@
         {
             "name": "Android",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "~/android-ndk-r19c/sysroot/usr/include"
             ],
             "defines": [],
@@ -75,11 +75,11 @@
         {
             "name": "Arduino",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "~/arduino-1.8.8/hardware/tools/avr/avr/include"
             ],
             "defines": [],
@@ -91,11 +91,11 @@
         {
             "name": "Windows",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "C:/Program Files (x86)/Microsoft Visual Studio 9.0/VC/include"
             ],
             "defines": [],
@@ -107,11 +107,11 @@
         {
             "name": "Windows VS2022",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/include"
             ],
             "defines": [],
@@ -123,13 +123,13 @@
         {
             "name": "MingW32",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/header",
                 "C:/mingw64/x86_64-w64-mingw32/include",
-                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl"
+                "${workspaceFolder}/ThirdParty/baseclasses",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl"
             ],
             "defines": [
                 "UNICODE",
@@ -143,13 +143,13 @@
         {
             "name": "Cygwin",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/header",
                 "C:/cygwin64/usr/include/**",
-                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl"
+                "${workspaceFolder}/ThirdParty/baseclasses",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl"
             ],
             "defines": [
                 "UNICODE",
@@ -163,14 +163,14 @@
         {
             "name": "msys2",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/header",
                 "C:/msys64/usr/include",
                 "C:/msys64/mingw64/x86_64-w64-mingw32/include",
-                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl"
+                "${workspaceFolder}/ThirdParty/baseclasses",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl"
             ],
             "defines": [
                 "UNICODE",
@@ -185,14 +185,14 @@
         {
             "name": "Windows_cc_x64",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/header",
                 "/usr/x86_64-w64-mingw32/include/**",
                 "${workspaceFolder}/../ffmpeg-master-latest-win64-gpl-shared/include",
-                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl"
+                "${workspaceFolder}/ThirdParty/baseclasses",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl"
             ],
             "defines": [
                 "UNICODE",
@@ -206,11 +206,11 @@
         {
             "name": "Robustel",
             "includePath": [
-                "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
-                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
-                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/header",
+                "${workspaceFolder}/ThirdParty/miniz",
+                "${workspaceFolder}/ThirdParty/sqlite3",
+                "${workspaceFolder}/ThirdParty/KSSample",
+                "${workspaceFolder}/ThirdParty/adl",
                 "~/ROS-SDK-r5020-3.1.0/staging_dir/target-r5020/usr/include/**"
             ],
             "defines": [],

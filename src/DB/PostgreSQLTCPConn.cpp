@@ -18,12 +18,12 @@ namespace DB
 	};
 
 	Int32 PostgreSQLTCPConn::readPacket(UnsafeArray<UInt8> buff, UIntOS buffSize)
-	{		Optional<Net::TCPClient> cli;
-		if (!clsData->connCli.SetTo(cli))
+	{		NN<Net::TCPClient> cli;
+		if (!this->clsData->connCli.SetTo(cli))
 		{
 			return -1;
 		}
-		NN<IO::Stream> s = cli->GetStream();
+		NN<IO::Stream> s = cli.Ptr();
 		Int32 totalRead = 0;
 		while (totalRead < (Int32)buffSize)
 		{
@@ -38,50 +38,50 @@ namespace DB
 	}
 
 	Bool PostgreSQLTCPConn::sendPacket(UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen)
-	{		Optional<Net::TCPClient> cli;
-		if (!clsData->connCli.SetTo(cli))
+	{		NN<Net::TCPClient> cli;
+		if (!this->clsData->connCli.SetTo(cli))
 		{
 			return false;
 		}
-		NN<IO::Stream> s = cli->GetStream();
+		NN<IO::Stream> s = cli.Ptr();
 		
-		UInt32 packetLen = dataLen + 4;
+		UInt32 packetLen = (UInt32)(dataLen + 4);
 		UInt8 packet[512];
 		packet[0] = msgType;
 		WriteMUInt32(packet + 1, packetLen);
 		if (dataLen > 0)
 		{
-			MemCopy(packet + 5, data, dataLen);
+			MemCopyO(packet + 5, data.Ptr(), dataLen);
 		}
 		
-		UIntOS written = s->Write(Data::ByteArray(packet, dataLen + 5));
-		return written == dataLen + 5;
+		UIntOS written = s->Write(Data::ByteArray(packet, packetLen));
+		return written == packetLen;
 	}
 
 	Bool PostgreSQLTCPConn::sendStartupPacket(Text::CStringNN user, Text::CStringNN database)
 	{
 		UInt8 packet[1024];
-		UnsafeArray<UInt8> p = packet + 8;
+		UnsafeArray<UInt8> p = UnsafeArray<UInt8>::FromPtr(packet + 8);
 		
 		WriteMInt32(p.Ptr(), 80877103);
 		p += 4;
 		
-		MemCopy(p.Ptr(), "user", 5);
-		p += 5;
-		MemCopy(p.Ptr(), user.v.Ptr(), user.leng + 1);
-		p += user.leng + 1;
+		p = Text::StrToUTF8Buff(p, CSTR("user"));
+		*p++ = 0;
+		p = Text::StrToUTF8Buff(p, user);
+		*p++ = 0;
 		
-		MemCopy(p.Ptr(), "database", 9);
-		p += 9;
-		MemCopy(p.Ptr(), database.v.Ptr(), database.leng + 1);
-		p += database.leng + 1;
+		p = Text::StrToUTF8Buff(p, CSTR("database"));
+		*p++ = 0;
+		p = Text::StrToUTF8Buff(p, database);
+		*p++ = 0;
 		
 		*p++ = 0;
 		
-		UInt32 packetLen = (UInt32)(p - packet);
+		UInt32 packetLen = (UInt32)(p - UnsafeArray<UInt8>::FromPtr(packet));
 		WriteMInt32(packet, packetLen);
 		
-		return this->sendPacket( 0, packet, packetLen);
+		return this->sendPacket(0, UnsafeArray<UInt8>::FromPtr(packet), packetLen);
 	}
 
 	Bool PostgreSQLTCPConn::parseAuthentication()
@@ -189,7 +189,7 @@ namespace DB
 		return true;
 	}
 
-	Bool PostgreSQLTCPConn::parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths)
+	Bool PostgreSQLTCPConn::parseDataRow(UIntOS colCount, NN<Data::ArrayListObj<UnsafeArray<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths)
 	{
 		UInt8 buff[4];
 		if (this->readPacket( buff, 4) != 4)
@@ -581,10 +581,10 @@ namespace DB
 		MemFree(packet);
 		
 		Data::ArrayListStringNN colNames;
-		Data::ArrayList<UnsafeArray<UInt8>> values;
-		Data::ArrayList<UInt32> lengths;
-		Data::ArrayList<UInt32> types;
-		Data::ArrayList<Int32> typeMods;
+		Data::ArrayListObj<UnsafeArray<UInt8>> values;
+		Data::ArrayListNative<UInt32> lengths;
+		Data::ArrayListNative<UInt32> types;
+		Data::ArrayListNative<Int32> typeMods;
 		
 		IntOS rowChanged = 0;
 		while (true)
@@ -897,7 +897,7 @@ namespace DB
 		return db;
 	}
 
-	PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths, NN<Data::ArrayList<UInt32>> types, NN<Data::ArrayList<Int32>> typeMods)
+	PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArray<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
 	{
 		this->backendPID = backendPID;
 		this->cancelKey = cancelKey;
@@ -941,7 +941,7 @@ namespace DB
 
 	PostgreSQLTCPReader::~PostgreSQLTCPReader()
 	{
-		Data::ArrayList<UnsafeArray<UInt8>> values;
+		Data::ArrayListObj<UnsafeArray<UInt8>> values;
 		rowValues.Swap(values);
 		
 		Data::ArrayIterator<UnsafeArray<UInt8>> it = values.Iterator();
@@ -950,7 +950,7 @@ namespace DB
 			MemFree(it.Next());
 		}
 		
-		Data::ArrayList<UTF8Char*> names;
+		Data::ArrayListObj<UTF8Char*> names;
 		columnNames.Swap(names);
 		
 		Data::ArrayIterator<UTF8Char*> nameIt = names.Iterator();

@@ -34,7 +34,7 @@ namespace DB
 		Bool parseBackendKeyData();
 		Bool sendStartupPacket(Text::CStringNN user, Text::CStringNN database);
 		Bool parseRowDescription(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
-		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths);
+		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayListObj<UnsafeArray<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths);
 		Bool parseCommandComplete(OutParam<IntOS> rowChanged);
 		Bool parseErrorResponse(NN<Text::StringBuilderUTF8> errMsg);
 
@@ -100,7 +100,7 @@ namespace DB
 		Bool parseBackendKeyData();
 		Bool sendStartupPacket(Text::CStringNN user, Text::CStringNN database);
 		Bool parseRowDescription(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
-		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayList<UnsafeArray<UInt8>>> values, NN<Data::ArrayList<UInt32>> lengths);
+		Bool parseDataRow(UIntOS colCount, NN<Data::ArrayListObj<UnsafeArray<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths);
 		Bool parseCommandComplete(OutParam<IntOS> rowChanged);
 		Bool parseErrorResponse(NN<Text::StringBuilderUTF8> errMsg);
 
