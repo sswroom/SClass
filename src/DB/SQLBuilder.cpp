@@ -325,3 +325,8 @@ Bool DB::SQLBuilder::SupportSchema() const
 {
 	return this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::PostgreSQL;
 }
+
+NN<Text::StringBuilderUTF8> DB::SQLBuilder::GetStringBuilder()
+{
+	return this->sb;
+}

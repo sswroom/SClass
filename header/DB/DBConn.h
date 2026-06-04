@@ -22,7 +22,8 @@ namespace DB
 			MySQLTCP,
 			PostgreSQL,
 			TDSConn,
-			SQLEngine
+			SQLEngine,
+			PostgreSQLTCP
 		};
 
 		enum class DataError

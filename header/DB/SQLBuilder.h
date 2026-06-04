@@ -61,6 +61,7 @@ namespace DB
 		Data::ByteArrayR ToByteArray() const;
 		DB::SQLType GetSQLType() const;
 		Bool SupportSchema() const;
+		NN<Text::StringBuilderUTF8> GetStringBuilder();
 	};
 }
 #endif

@@ -1,4 +1,4 @@
 CompileFlags:
   Add: [
-    "--include-directory=./heaader"
+    "--include-directory=./header"
   ]
