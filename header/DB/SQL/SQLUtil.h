@@ -12,6 +12,7 @@ namespace DB
 		public:
 			static UnsafeArray<const UTF8Char> ParseNextWord(UnsafeArray<const UTF8Char> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 			static Optional<Data::VariItem> ParseValue(Text::CStringNN val, DB::SQLType sqlType);
+			static void ParseColumnWord(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 		};
 	}
 }

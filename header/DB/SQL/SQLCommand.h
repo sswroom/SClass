@@ -10,7 +10,8 @@ namespace DB
 		enum class CommandType
 		{
 			CreateTable,
-			ShowDatabases
+			ShowDatabases,
+			Use
 		};
 		class SQLCommand
 		{

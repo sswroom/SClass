@@ -7,6 +7,7 @@
 #include "DB/ODBCConn.h"
 #include "DB/OLEDBConn.h"
 #include "DB/PostgreSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "DB/SQLiteFile.h"
 #include "DB/TDSConn.h"
 #include "IO/DirectoryPackage.h"
@@ -148,6 +149,28 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 			UnsafeArray<UTF8Char> sptr;
 			NN<DB::PostgreSQLConn> psql = NN<DB::PostgreSQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("postgresql:Server="));
+			sptr = psql->GetConnServer()->ConcatTo(sbuff);
+			connStr->AppendP(sbuff, sptr);
+			connStr->AppendC(UTF8STRC(";Port="));
+			connStr->AppendU16(psql->GetConnPort());
+
+			connStr->AppendC(UTF8STRC(";Database="));
+			connStr->Append(psql->GetConnDB());
+
+			connStr->AppendC(UTF8STRC(";UID="));
+			connStr->AppendOpt(psql->GetConnUID());
+
+			connStr->AppendC(UTF8STRC(";PWD="));
+			connStr->AppendOpt(psql->GetConnPWD());
+			return true;
+		}
+		break;
+	case DB::DBConn::ConnType::PostgreSQLTCP:
+		{
+			UTF8Char sbuff[128];
+			UnsafeArray<UTF8Char> sptr;
+			NN<DB::PostgreSQLTCPConn> psql = NN<DB::PostgreSQLTCPConn>::ConvertFrom(conn);
+			connStr->AppendC(UTF8STRC("postgresqltcp:Server="));
 			sptr = psql->GetConnServer()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
 			connStr->AppendC(UTF8STRC(";Port="));

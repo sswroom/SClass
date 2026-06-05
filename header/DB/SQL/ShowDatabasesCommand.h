@@ -1,6 +1,5 @@
 #ifndef _SM_DB_SHOWDATABASESCOMMAND
 #define _SM_DB_SHOWDATABASESCOMMAND
-#include "DB/TableDef.h"
 #include "DB/SQL/SQLCommand.h"
 
 namespace DB

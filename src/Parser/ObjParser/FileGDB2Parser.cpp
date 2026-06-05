@@ -137,5 +137,6 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 	NN<DB::SQL::SQLEngine> sqlEng;
 	NEW_CLASSNN(sqlEng, DB::SQL::SQLEngine(DB::SQLType::MySQL, pobj->GetSourceNameObj()->ToCString()));
 	sqlEng->AddDatabase(db, nullptr, nullptr);
+	db->UnuseObject();
 	return sqlEng;
 }

@@ -2,8 +2,10 @@
 #include "DB/SQL/SQLCommand.h"
 #include "DB/SQL/SQLEmbeddedReader.h"
 #include "DB/SQL/SQLEngine.h"
+#include "DB/SQL/SQLEngineActionReader.h"
 #include "DB/SQL/SQLEngineDBTable.h"
 #include "DB/SQL/SQLStringReader.h"
+#include "DB/SQL/UseCommand.h"
 #include "IO/Path.h"
 
 #define VERBOSE
@@ -29,12 +31,22 @@ DB::SQL::SQLEngine::SQLEngine(DB::SQLType sqlType, Text::CStringNN sourceName) :
 		sb.TrimToLength(i);
 	}
 	this->dbName = Text::String::New(sb.ToCString());
+	this->currDB = this->dbName->Clone();
 }
 
 DB::SQL::SQLEngine::~SQLEngine()
 {
+	NN<Data::FastStringMapNN<SQLEngineTable>> table;
+	UIntOS i = this->tables.GetCount();
+	while (i-- > 0)
+	{
+		table = this->tables.GetItemNoCheck(i);
+		table->DeleteAll();
+		table.Delete();
+	}
 	OPTSTR_DEL(this->lastErrorMsg);
 	this->dbName->Release();
+	this->currDB->Release();
 }
 
 UIntOS DB::SQL::SQLEngine::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
@@ -54,7 +66,7 @@ UIntOS DB::SQL::SQLEngine::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 	return names->GetCount() - initCnt;
 }
 
-UIntOS DB::SQL::SQLEngine::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+UIntOS DB::SQL::SQLEngine::QueryTableNamesCurrDB(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	NN<Data::FastStringMapNN<SQLEngineTable>> tableMap;
 	if (this->tables.GetC(schemaName.OrEmpty()).SetTo(tableMap))
@@ -76,20 +88,242 @@ UIntOS DB::SQL::SQLEngine::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return 0;
 }
 
+UIntOS DB::SQL::SQLEngine::QueryTableNamesMySQL(Text::CStringNN dbName, Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+{
+	if (this->dbName->Equals(dbName))
+	{
+		return this->QueryTableNamesCurrDB(schemaName, names);
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("sys")))
+	{
+		UIntOS initCnt = names->GetCount();
+		names->Add(Text::String::New(CSTR("host_summary")));
+		names->Add(Text::String::New(CSTR("host_summary_by_file_io")));
+		names->Add(Text::String::New(CSTR("host_summary_by_file_io_type")));
+		names->Add(Text::String::New(CSTR("host_summary_by_stages")));
+		names->Add(Text::String::New(CSTR("host_summary_by_statement_latency")));
+		names->Add(Text::String::New(CSTR("host_summary_by_statement_type")));
+		names->Add(Text::String::New(CSTR("innodb_buffer_stats_by_schema")));
+		names->Add(Text::String::New(CSTR("innodb_buffer_stats_by_table")));
+		names->Add(Text::String::New(CSTR("innodb_lock_waits")));
+		names->Add(Text::String::New(CSTR("io_by_thread_by_latency")));
+		names->Add(Text::String::New(CSTR("io_global_by_file_by_bytes")));
+		names->Add(Text::String::New(CSTR("io_global_by_file_by_latency")));
+		names->Add(Text::String::New(CSTR("io_global_by_wait_by_bytes")));
+		names->Add(Text::String::New(CSTR("io_global_by_wait_by_latency")));
+		names->Add(Text::String::New(CSTR("latest_file_io")));
+		names->Add(Text::String::New(CSTR("memory_by_host_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("memory_by_thread_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("memory_by_user_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("memory_global_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("memory_global_total")));
+		names->Add(Text::String::New(CSTR("metrics")));
+		names->Add(Text::String::New(CSTR("processlist")));
+		names->Add(Text::String::New(CSTR("ps_check_lost_instrumentation")));
+		names->Add(Text::String::New(CSTR("schema_auto_increment_columns")));
+		names->Add(Text::String::New(CSTR("schema_index_statistics")));
+		names->Add(Text::String::New(CSTR("schema_object_overview")));
+		names->Add(Text::String::New(CSTR("schema_redundant_indexes")));
+		names->Add(Text::String::New(CSTR("schema_table_lock_waits")));
+		names->Add(Text::String::New(CSTR("schema_table_statistics")));
+		names->Add(Text::String::New(CSTR("schema_table_statistics_with_buffer")));
+		names->Add(Text::String::New(CSTR("schema_tables_with_full_table_scans")));
+		names->Add(Text::String::New(CSTR("schema_unused_indexes")));
+		names->Add(Text::String::New(CSTR("session")));
+		names->Add(Text::String::New(CSTR("session_ssl_status")));
+		names->Add(Text::String::New(CSTR("statement_analysis")));
+		names->Add(Text::String::New(CSTR("statements_with_errors_or_warnings")));
+		names->Add(Text::String::New(CSTR("statements_with_full_table_scans")));
+		names->Add(Text::String::New(CSTR("statements_with_runtimes_in_95th_percentile")));
+		names->Add(Text::String::New(CSTR("statements_with_sorting")));
+		names->Add(Text::String::New(CSTR("statements_with_temp_tables")));
+		names->Add(Text::String::New(CSTR("sys_config")));
+		names->Add(Text::String::New(CSTR("user_summary")));
+		names->Add(Text::String::New(CSTR("user_summary_by_file_io")));
+		names->Add(Text::String::New(CSTR("user_summary_by_file_io_type")));
+		names->Add(Text::String::New(CSTR("user_summary_by_stages")));
+		names->Add(Text::String::New(CSTR("user_summary_by_statement_latency")));
+		names->Add(Text::String::New(CSTR("user_summary_by_statement_type")));
+		names->Add(Text::String::New(CSTR("version")));
+		names->Add(Text::String::New(CSTR("wait_classes_global_by_avg_latency")));
+		names->Add(Text::String::New(CSTR("wait_classes_global_by_latency")));
+		names->Add(Text::String::New(CSTR("waits_by_host_by_latency")));
+		names->Add(Text::String::New(CSTR("waits_by_user_by_latency")));
+		names->Add(Text::String::New(CSTR("waits_global_by_latency")));
+		names->Add(Text::String::New(CSTR("x$host_summary")));
+		names->Add(Text::String::New(CSTR("x$host_summary_by_file_io")));
+		names->Add(Text::String::New(CSTR("x$host_summary_by_file_io_type")));
+		names->Add(Text::String::New(CSTR("x$host_summary_by_stages")));
+		names->Add(Text::String::New(CSTR("x$host_summary_by_statement_latency")));
+		names->Add(Text::String::New(CSTR("x$host_summary_by_statement_type")));
+		names->Add(Text::String::New(CSTR("x$innodb_buffer_stats_by_schema")));
+		names->Add(Text::String::New(CSTR("x$innodb_buffer_stats_by_table")));
+		names->Add(Text::String::New(CSTR("x$innodb_lock_waits")));
+		names->Add(Text::String::New(CSTR("x$io_by_thread_by_latency")));
+		names->Add(Text::String::New(CSTR("x$io_global_by_file_by_bytes")));
+		names->Add(Text::String::New(CSTR("x$io_global_by_file_by_latency")));
+		names->Add(Text::String::New(CSTR("x$io_global_by_wait_by_bytes")));
+		names->Add(Text::String::New(CSTR("x$io_global_by_wait_by_latency")));
+		names->Add(Text::String::New(CSTR("x$latest_file_io")));
+		names->Add(Text::String::New(CSTR("x$memory_by_host_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("x$memory_by_thread_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("x$memory_by_user_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("x$memory_global_by_current_bytes")));
+		names->Add(Text::String::New(CSTR("x$memory_global_total")));
+		names->Add(Text::String::New(CSTR("x$processlist")));
+		names->Add(Text::String::New(CSTR("x$ps_digest_95th_percentile_by_avg_us")));
+		names->Add(Text::String::New(CSTR("x$ps_digest_avg_latency_distribution")));
+		names->Add(Text::String::New(CSTR("x$ps_schema_table_statistics_io")));
+		names->Add(Text::String::New(CSTR("x$schema_flattened_keys")));
+		names->Add(Text::String::New(CSTR("x$schema_index_statistics")));
+		names->Add(Text::String::New(CSTR("x$schema_table_lock_waits")));
+		names->Add(Text::String::New(CSTR("x$schema_table_statistics")));
+		names->Add(Text::String::New(CSTR("x$schema_table_statistics_with_buffer")));
+		names->Add(Text::String::New(CSTR("x$schema_tables_with_full_table_scans")));
+		names->Add(Text::String::New(CSTR("x$session")));
+		names->Add(Text::String::New(CSTR("x$statement_analysis")));
+		names->Add(Text::String::New(CSTR("x$statements_with_errors_or_warnings")));
+		names->Add(Text::String::New(CSTR("x$statements_with_full_table_scans")));
+		names->Add(Text::String::New(CSTR("x$statements_with_runtimes_in_95th_percentile")));
+		names->Add(Text::String::New(CSTR("x$statements_with_sorting")));
+		names->Add(Text::String::New(CSTR("x$statements_with_temp_tables")));
+		names->Add(Text::String::New(CSTR("x$user_summary")));
+		names->Add(Text::String::New(CSTR("x$user_summary_by_file_io")));
+		names->Add(Text::String::New(CSTR("x$user_summary_by_file_io_type")));
+		names->Add(Text::String::New(CSTR("x$user_summary_by_stages")));
+		names->Add(Text::String::New(CSTR("x$user_summary_by_statement_latency")));
+		names->Add(Text::String::New(CSTR("x$user_summary_by_statement_type")));
+		names->Add(Text::String::New(CSTR("x$wait_classes_global_by_avg_latency")));
+		names->Add(Text::String::New(CSTR("x$wait_classes_global_by_latency")));
+		names->Add(Text::String::New(CSTR("x$waits_by_host_by_latency")));
+		names->Add(Text::String::New(CSTR("x$waits_by_user_by_latencyity")));
+		names->Add(Text::String::New(CSTR("x$waits_global_by_latency")));
+		return names->GetCount() - initCnt;
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("information_schema")))
+	{
+		UIntOS initCnt = names->GetCount();
+		names->Add(Text::String::New(CSTR("ADMINISTRABLE_ROLE_AUTHORIZATIONS")));
+		names->Add(Text::String::New(CSTR("APPLICABLE_ROLES")));
+		names->Add(Text::String::New(CSTR("CHARACTER_SETS")));
+		names->Add(Text::String::New(CSTR("CHECK_CONSTRAINTS")));
+		names->Add(Text::String::New(CSTR("COLLATIONS")));
+		names->Add(Text::String::New(CSTR("COLLATION_CHARACTER_SET_APPLICABILITY")));
+		names->Add(Text::String::New(CSTR("COLUMNS")));
+		names->Add(Text::String::New(CSTR("COLUMNS_EXTENSIONS")));
+		names->Add(Text::String::New(CSTR("COLUMN_PRIVILEGES")));
+		names->Add(Text::String::New(CSTR("COLUMN_STATISTICS")));
+		names->Add(Text::String::New(CSTR("ENABLED_ROLES")));
+		names->Add(Text::String::New(CSTR("ENGINES")));
+		names->Add(Text::String::New(CSTR("EVENTS")));
+		names->Add(Text::String::New(CSTR("FILES")));
+		names->Add(Text::String::New(CSTR("INNODB_BUFFER_PAGE")));
+		names->Add(Text::String::New(CSTR("INNODB_BUFFER_PAGE_LRU")));
+		names->Add(Text::String::New(CSTR("INNODB_BUFFER_POOL_STATS")));
+		names->Add(Text::String::New(CSTR("INNODB_CACHED_INDEXES")));
+		names->Add(Text::String::New(CSTR("INNODB_CMP")));
+		names->Add(Text::String::New(CSTR("INNODB_CMPMEM")));
+		names->Add(Text::String::New(CSTR("INNODB_CMPMEM_RESET")));
+		names->Add(Text::String::New(CSTR("INNODB_CMP_PER_INDEX")));
+		names->Add(Text::String::New(CSTR("INNODB_CMP_PER_INDEX_RESET")));
+		names->Add(Text::String::New(CSTR("INNODB_CMP_RESET")));
+		names->Add(Text::String::New(CSTR("INNODB_COLUMNS")));
+		names->Add(Text::String::New(CSTR("INNODB_DATAFILES")));
+		names->Add(Text::String::New(CSTR("INNODB_FIELDS")));
+		names->Add(Text::String::New(CSTR("INNODB_FOREIGN")));
+		names->Add(Text::String::New(CSTR("INNODB_FOREIGN_COLS")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_BEING_DELETED")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_CONFIG")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_DEFAULT_STOPWORD")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_DELETED")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_INDEX_CACHE")));
+		names->Add(Text::String::New(CSTR("INNODB_FT_INDEX_TABLE")));
+		names->Add(Text::String::New(CSTR("INNODB_INDEXES")));
+		names->Add(Text::String::New(CSTR("INNODB_METRICS")));
+		names->Add(Text::String::New(CSTR("INNODB_SESSION_TEMP_TABLESPACES")));
+		names->Add(Text::String::New(CSTR("INNODB_TABLES")));
+		names->Add(Text::String::New(CSTR("INNODB_TABLESPACES")));
+		names->Add(Text::String::New(CSTR("INNODB_TABLESPACES_BRIEF")));
+		names->Add(Text::String::New(CSTR("INNODB_TABLESTATS")));
+		names->Add(Text::String::New(CSTR("INNODB_TEMP_TABLE_INFO")));
+		names->Add(Text::String::New(CSTR("INNODB_TRX")));
+		names->Add(Text::String::New(CSTR("INNODB_VIRTUAL")));
+		names->Add(Text::String::New(CSTR("KEYWORDS")));
+		names->Add(Text::String::New(CSTR("KEY_COLUMN_USAGE")));
+		names->Add(Text::String::New(CSTR("OPTIMIZER_TRACE")));
+		names->Add(Text::String::New(CSTR("PARAMETERS")));
+		names->Add(Text::String::New(CSTR("PARTITIONS")));
+		names->Add(Text::String::New(CSTR("PLUGINS")));
+		names->Add(Text::String::New(CSTR("PROCESSLIST")));
+		names->Add(Text::String::New(CSTR("PROFILING")));
+		names->Add(Text::String::New(CSTR("REFERENTIAL_CONSTRAINTS")));
+		names->Add(Text::String::New(CSTR("RESOURCE_GROUPS")));
+		names->Add(Text::String::New(CSTR("ROLE_COLUMN_GRANTS")));
+		names->Add(Text::String::New(CSTR("ROLE_ROUTINE_GRANTS")));
+		names->Add(Text::String::New(CSTR("ROLE_TABLE_GRANTS")));
+		names->Add(Text::String::New(CSTR("ROUTINES")));
+		names->Add(Text::String::New(CSTR("SCHEMATA")));
+		names->Add(Text::String::New(CSTR("SCHEMATA_EXTENSIONS")));
+		names->Add(Text::String::New(CSTR("SCHEMA_PRIVILEGES")));
+		names->Add(Text::String::New(CSTR("STATISTICS")));
+		names->Add(Text::String::New(CSTR("ST_GEOMETRY_COLUMNS")));
+		names->Add(Text::String::New(CSTR("ST_SPATIAL_REFERENCE_SYSTEMS")));
+		names->Add(Text::String::New(CSTR("ST_UNITS_OF_MEASURE")));
+		names->Add(Text::String::New(CSTR("TABLES")));
+		names->Add(Text::String::New(CSTR("TABLESPACES_EXTENSIONS")));
+		names->Add(Text::String::New(CSTR("TABLES_EXTENSIONS")));
+		names->Add(Text::String::New(CSTR("TABLE_CONSTRAINTS")));
+		names->Add(Text::String::New(CSTR("TABLE_CONSTRAINTS_EXTENSIONS")));
+		names->Add(Text::String::New(CSTR("TABLE_PRIVILEGES")));
+		names->Add(Text::String::New(CSTR("TRIGGERS")));
+		names->Add(Text::String::New(CSTR("USER_ATTRIBUTES")));
+		names->Add(Text::String::New(CSTR("USER_PRIVILEGES")));
+		names->Add(Text::String::New(CSTR("VIEWS")));
+		names->Add(Text::String::New(CSTR("VIEW_ROUTINE_USAGE")));
+		names->Add(Text::String::New(CSTR("VIEW_TABLE_USAGE")));
+		return names->GetCount() - initCnt;
+	}
+	return 0;
+}
+
+UIntOS DB::SQL::SQLEngine::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
+{
+	if (this->sqlType == DB::SQLType::MySQL)
+	{
+		return this->QueryTableNamesMySQL(this->currDB->ToCString(), schemaName, names);
+	}
+	else if (this->currDB->Equals(this->dbName))
+	{
+		return this->QueryTableNamesCurrDB(schemaName, names);
+	}
+	return 0;
+}
+
 Optional<DB::DBReader> DB::SQL::SQLEngine::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<SQLEngineTable> table;
 	NN<Data::FastStringMapNN<SQLEngineTable>> tableMap;
-	if (this->tables.GetC(schemaName.OrEmpty()).SetTo(tableMap) && tableMap->GetC(tableName).SetTo(table))
+	if (this->currDB->Equals(this->dbName))
 	{
-		NN<DB::DBReader> r;
-		if (table->QueryTableData(colNames, dataOfst, maxCnt, ordering, condition).SetTo(r))
+		if (this->tables.GetC(schemaName.OrEmpty()).SetTo(tableMap) && tableMap->GetC(tableName).SetTo(table))
 		{
-			NN<SQLEngineReader> reader;
-			NEW_CLASSNN(reader, SQLEmbeddedReader(r, table));
-			return reader;
+			NN<DB::DBReader> r;
+			if (table->QueryTableData(colNames, dataOfst, maxCnt, ordering, condition).SetTo(r))
+			{
+				NN<SQLEngineReader> reader;
+				NEW_CLASSNN(reader, SQLEmbeddedReader(r, table));
+				return reader;
+			}
+			return nullptr;
 		}
-		return nullptr;
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("sys")))
+	{
+
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("information_schema")))
+	{
+
 	}
 	return nullptr;
 }
@@ -132,8 +366,10 @@ void DB::SQL::SQLEngine::ForceTzQhr(Int8 tzQhr)
 
 UIntOS DB::SQL::SQLEngine::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
-	arr->Add(this->sourceName->Clone());
-	return 1;
+	arr->Add(this->dbName->Clone());
+	arr->Add(Text::String::New(CSTR("sys")));
+	arr->Add(Text::String::New(CSTR("information_schema")));
+	return 3;
 }
 
 void DB::SQL::SQLEngine::ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr)
@@ -143,12 +379,30 @@ void DB::SQL::SQLEngine::ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr)
 
 Bool DB::SQL::SQLEngine::ChangeDatabase(Text::CStringNN databaseName)
 {
+	if (databaseName.Equals(this->dbName))
+	{
+		this->currDB->Release();
+		this->currDB = this->dbName->Clone();
+		return true;
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && databaseName.Equals(CSTR("sys")))
+	{
+		this->currDB->Release();
+		this->currDB = Text::String::New(CSTR("sys"));
+		return true;
+	}
+	else if (this->sqlType == DB::SQLType::MySQL && databaseName.Equals(CSTR("information_schema")))
+	{
+		this->currDB->Release();
+		this->currDB = Text::String::New(CSTR("information_schema"));
+		return true;
+	}
 	return false;
 }
 
 Optional<Text::String> DB::SQL::SQLEngine::GetCurrDBName()
 {
-	return this->dbName;
+	return this->currDB;
 }
 
 DB::SQLType DB::SQL::SQLEngine::GetSQLType() const
@@ -172,16 +426,14 @@ void DB::SQL::SQLEngine::Close()
 
 IntOS DB::SQL::SQLEngine::ExecuteNonQuery(Text::CStringNN sql)
 {
-	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("Support select SQL only: "));
-	sb.Append(sql);
-	OPTSTR_DEL(this->lastErrorMsg);
-	this->lastErrorMsg = Text::String::New(sb.ToCString());
-	this->lastDataError = DB::DBConn::DataError::ExecSQLError;
-#if defined(VERBOSE)
-	printf("Unsupported SQL: %s\r\n", sql.v.Ptr());
-#endif
-	return 0;
+	NN<DB::DBReader> r;
+	if (this->ExecuteReader(sql).SetTo(r))
+	{
+		IntOS rowAffected = NN<SQLEngineReader>::ConvertFrom(r)->GetRowChanged();
+		this->CloseReader(r);
+		return rowAffected;
+	}
+	return -1;
 }
 
 Optional<DB::DBReader> DB::SQL::SQLEngine::ExecuteReader(Text::CStringNN sql)
@@ -203,12 +455,42 @@ Optional<DB::DBReader> DB::SQL::SQLEngine::ExecuteReader(Text::CStringNN sql)
 	if (cmd->GetCommandType() == DB::SQL::CommandType::ShowDatabases)
 	{
 		Data::ArrayListStringNN names;
-		names.Add(Text::String::New(CSTR("Database")));
 		Data::ArrayListObj<Optional<Text::String>> values;
-		values.Add(this->dbName->Clone());
+		this->GetDatabaseNames(names);
+		UIntOS i = 0;
+		UIntOS j = names.GetCount();
+		while (i < j)
+		{
+			values.Add(names.GetItemNoCheck(i));
+			i++;
+		}
+		names.Clear();
+		names.Add(Text::String::New(CSTR("Database")));
 		NN<DB::SQL::SQLStringReader> reader;
 		NEW_CLASSNN(reader, DB::SQL::SQLStringReader(names, values));
+		cmd.Delete();
 		return reader;
+	}
+	else if (cmd->GetCommandType() == DB::SQL::CommandType::Use)
+	{
+		NN<DB::SQL::UseCommand> useCmd = NN<DB::SQL::UseCommand>::ConvertFrom(cmd);
+		if (this->ChangeDatabase(useCmd->GetDBName()->ToCString()))
+		{
+			cmd.Delete();
+			NN<DB::SQL::SQLEngineActionReader> reader;
+			NEW_CLASSNN(reader, DB::SQL::SQLEngineActionReader(0));
+			return reader;
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("SQL Error [1049] [42000]: Unknown database: '"));
+			sb.Append(useCmd->GetDBName());
+			sb.AppendC(UTF8STRC("'"));
+			OPTSTR_DEL(this->lastErrorMsg);
+			this->lastErrorMsg = Text::String::New(sb.ToCString());
+			this->lastDataError = DB::DBConn::DataError::ExecSQLError;
+		}
 	}
 	cmd.Delete();
 	Text::StringBuilderUTF8 sb;

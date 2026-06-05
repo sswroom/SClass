@@ -4,6 +4,7 @@
 #include "DB/SQL/ShowDatabasesCommand.h"
 #include "DB/SQL/SQLCommand.h"
 #include "DB/SQL/SQLUtil.h"
+#include "DB/SQL/UseCommand.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -428,6 +429,31 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		else
 		{
 			printf("SQLCommand: Unknown word after show: %s\r\n", sb.ToPtr());
+		}
+	}
+	else if (sb.EqualsICase(UTF8STRC("USE")))
+	{
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.GetLength() == 0)
+		{
+			printf("SQLCommand: Missing database name\r\n");
+		}
+		else if (IsPunctuation(sb.ToString()))
+		{
+			printf("SQLCommand: Expect database name, now is %s\r\n", sb.ToPtr());
+		}
+		else
+		{
+			SQLUtil::ParseColumnWord(sb, sqlType);
+			NEW_CLASS(cmd, DB::SQL::UseCommand(sb.ToCString()));
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.leng == 0)
+			{
+			}
+			else
+			{
+				printf("SQLCommand: Unknown word after use: %s\r\n", sb.ToPtr());
+			}
 		}
 	}
 	else

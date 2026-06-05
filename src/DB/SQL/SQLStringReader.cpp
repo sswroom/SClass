@@ -43,6 +43,16 @@ DB::SQL::SQLStringReader::SQLStringReader(NN<Data::ArrayListStringNN> colNames, 
 DB::SQL::SQLStringReader::~SQLStringReader()
 {
 	MemFreeArr(this->colSizes);
+	this->colNames.FreeAll();
+	NN<Text::String> s;
+	UIntOS i = this->values.GetCount();
+	while (i-- > 0)
+	{
+		if (this->values.GetItem(i).SetTo(s))
+		{
+			s->Release();
+		}
+	}
 }
 
 Bool DB::SQL::SQLStringReader::ReadNext()
@@ -58,7 +68,7 @@ UIntOS DB::SQL::SQLStringReader::ColCount()
 	return this->colNames.GetCount();
 }
 
-IntOS DB::SQL::SQLStringReader::GetRowChanged() //-1 = error
+IntOS DB::SQL::SQLStringReader::GetRowChanged()
 {
 	return 0;
 }

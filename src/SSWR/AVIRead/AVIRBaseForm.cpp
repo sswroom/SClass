@@ -148,6 +148,7 @@
 #include "SSWR/AVIRead/AVIRLogExtractForm.h"
 #include "SSWR/AVIRead/AVIRLogMergeForm.h"
 #include "SSWR/AVIRead/AVIRLogServerForm.h"
+#include "SSWR/AVIRead/AVIRLogZipperForm.h"
 #include "SSWR/AVIRead/AVIRLoraGWSimForm.h"
 #include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
@@ -566,7 +567,8 @@ typedef enum
 	MNU_OSM_URL,
 	MNU_OPENAI,
 	MNU_PYTHON,
-	MNU_KEYTEST
+	MNU_KEYTEST,
+	MNU_LOGZIPPER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -774,6 +776,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Log Merge"), MNU_LOGMERGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Log Backup"), MNU_LOG_BACKUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Log Zipper"), MNU_LOGZIPPER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Log Extract"), MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timed File Copy"), MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Log Analyse"));
@@ -3297,6 +3300,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRKeyTestForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRKeyTestForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_LOGZIPPER:
+		{
+			NN<SSWR::AVIRead::AVIRLogZipperForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogZipperForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
