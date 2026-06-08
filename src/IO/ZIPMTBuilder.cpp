@@ -9,11 +9,20 @@ void __stdcall IO::ZIPMTBuilder::ThreadProc(NN<Sync::Thread> thread)
 {
 	NN<IO::ZIPMTBuilder> me = thread->GetUserObj().GetNN<IO::ZIPMTBuilder>();
 	NN<FileTask> task;
+	NN<IO::SeekableStream> stm;
+	UnsafeArray<UInt8> fileBuff;
 	while (!thread->IsStopping())
 	{
 		if (me->taskList.Get().GetOpt<FileTask>().SetTo(task))
 		{
-			me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+			if (task->fileStm.SetTo(stm))
+			{
+				me->zip.AddFile(task->fileName->ToCString(), stm, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+			}
+			else if (task->fileBuff.SetTo(fileBuff))
+			{
+				me->zip.AddFile(task->fileName->ToCString(), fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+			}
 			FreeTask(task);
 			me->mainEvt.Set();
 		}
@@ -26,7 +35,14 @@ void __stdcall IO::ZIPMTBuilder::ThreadProc(NN<Sync::Thread> thread)
 	{
 		if (!me->taskList.Get().GetOpt<FileTask>().SetTo(task))
 			break;
-		me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+		if (task->fileStm.SetTo(stm))
+		{
+			me->zip.AddFile(task->fileName->ToCString(), stm, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+		}
+		else if (task->fileBuff.SetTo(fileBuff))
+		{
+			me->zip.AddFile(task->fileName->ToCString(), fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel, task->unixAttr);
+		}
 		FreeTask(task);
 	}
 	me->mainEvt.Set();
@@ -35,7 +51,16 @@ void __stdcall IO::ZIPMTBuilder::ThreadProc(NN<Sync::Thread> thread)
 void IO::ZIPMTBuilder::FreeTask(NN<FileTask> task)
 {
 	task->fileName->Release();
-	MemFree(task->fileBuff);
+	NN<IO::SeekableStream> stm;
+	UnsafeArray<UInt8> fileBuff;
+	if (task->fileBuff.SetTo(fileBuff))
+	{
+		MemFreeArr(fileBuff);
+	}
+	else if (task->fileStm.SetTo(stm))
+	{
+		stm.Delete();
+	}
 	MemFreeNN(task);
 }
 
@@ -90,23 +115,25 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 	MemFree(this->threads);
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)
 {
 	NN<FileTask> task = MemAllocNN(FileTask);
+	UnsafeArray<UInt8> fileBuff;
 	task->fileSize = (UIntOS)stm->GetLength();
-	task->fileBuff = MemAlloc(UInt8, (UIntOS)task->fileSize);
+	task->fileBuff = fileBuff = MemAllocArr(UInt8, (UIntOS)task->fileSize);
+	task->fileStm = nullptr;
 	stm->SeekFromBeginning(0);
 	UIntOS readSize;
 	UIntOS totalSize = 0;
 	while (totalSize < task->fileSize)
 	{
-		readSize = stm->Read(Data::ByteArray(&task->fileBuff[totalSize], task->fileSize - totalSize));
+		readSize = stm->Read(Data::ByteArray(&fileBuff[totalSize], task->fileSize - totalSize));
 		if (readSize == 0)
 		{
 #if defined(VERBOSE)
 			printf("Error in reading file from stream: file size = %lld, total read = %lld\r\n", (UInt64)task->fileSize, (UInt64)totalSize);
 #endif
-			MemFree(task->fileBuff);
+			MemFreeArr(fileBuff);
 			MemFreeNN(task);
 			return false;
 		}
@@ -122,21 +149,40 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> 
 	return true;
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)
 {
 	UIntOS readSize;
+	UnsafeArray<UInt8> fileBuff;
 	NN<FileTask> task = MemAllocNN(FileTask);
 	task->fileSize = (UIntOS)fd->GetDataSize();
-	task->fileBuff = MemAlloc(UInt8, (UIntOS)task->fileSize);
-	if ((readSize = fd->GetRealData(0, (UIntOS)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize))) != task->fileSize)
+	task->fileBuff = fileBuff = MemAllocArr(UInt8, (UIntOS)task->fileSize);
+	task->fileStm = nullptr;
+	if ((readSize = fd->GetRealData(0, (UIntOS)task->fileSize, Data::ByteArray(fileBuff, task->fileSize))) != task->fileSize)
 	{
 #if defined(VERBOSE)
 		printf("Error in reading file from file data: file size = %lld, total read = %lld, fileName = %s\r\n", (UInt64)task->fileSize, (UInt64)readSize, fileName.v.Ptr());
 #endif
-		MemFree(task->fileBuff);
+		MemFreeArr(fileBuff);
 		MemFreeNN(task);
 		return false;
 	}
+	task->fileName = Text::String::New(fileName);
+	task->lastModTime = lastModTime;
+	task->lastAccessTime = lastAccessTime;
+	task->createTime = createTime;
+	task->compLevel = compLevel;
+	task->unixAttr = unixAttr;
+	this->AddTask(task);
+	return true;
+}
+
+Bool IO::ZIPMTBuilder::AddFileOTF(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)
+{
+	NN<FileTask> task = MemAllocNN(FileTask);
+	task->fileSize = (UIntOS)stm->GetLength();
+	task->fileBuff = nullptr;
+	task->fileStm = stm;
+	stm->SeekFromBeginning(0);
 	task->fileName = Text::String::New(fileName);
 	task->lastModTime = lastModTime;
 	task->lastAccessTime = lastAccessTime;

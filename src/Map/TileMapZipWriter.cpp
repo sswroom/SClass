@@ -60,7 +60,7 @@ Map::TileMapZipWriter::~TileMapZipWriter()
 	json.ObjectAddStr(CSTR("profile"), CSTR("mercator"));
 	Text::CStringNN metadata = json.Build();
 	Data::Timestamp t = Data::Timestamp::UtcNow();
-	this->zip.AddFile(CSTR("metadata.json"), metadata.v, metadata.leng, t, t, t, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	this->zip.AddFile(CSTR("metadata.json"), metadata.v, metadata.leng, t, t, t, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 
 	this->name->Release();
 }
@@ -119,5 +119,5 @@ void Map::TileMapZipWriter::AddImage(UIntOS level, Int32 x, Int32 y, Data::ByteA
 		break;
 	}
 	Data::Timestamp t = Data::Timestamp::UtcNow();
-	this->zip.AddFile(CSTRP(sbuff, sptr), imgData.Arr(), imgData.GetSize(), t, t, t, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	this->zip.AddFile(CSTRP(sbuff, sptr), imgData.Arr(), imgData.GetSize(), t, t, t, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 }

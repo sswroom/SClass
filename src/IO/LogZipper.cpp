@@ -36,14 +36,15 @@ Bool IO::LogZipper::ZipDir(NN<IO::ZIPMTBuilder> zip, UnsafeArray<UTF8Char> fileP
 			}
 			else if (pt == IO::Path::PathType::File)
 			{
-				IO::FileStream rfs(CSTRP(filePath, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				NN<IO::FileStream> rfs;
+				NEW_CLASSNN(rfs, IO::FileStream(CSTRP(filePath, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				UInt32 unixAttr = IO::Path::GetFileUnixAttr(CSTRP(filePath, filePathEnd));
 				Data::Timestamp lastModTime = nullptr;
 				Data::Timestamp createTime = nullptr;
 				Data::Timestamp accessTime = nullptr;
-				rfs.GetFileTimes(createTime, accessTime, lastModTime);
+				rfs->GetFileTimes(createTime, accessTime, lastModTime);
 
-				if (!zip->AddFile(CSTRP(refPathStart, sptr), rfs, lastModTime, accessTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr))
+				if (!zip->AddFileOTF(CSTRP(refPathStart, sptr), rfs, lastModTime, accessTime, createTime, Data::Compress::Deflater::CompLevel::BestCompression, unixAttr))
 				{
 					succ = false;
 					break;

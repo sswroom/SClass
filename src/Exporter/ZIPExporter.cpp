@@ -92,7 +92,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UnsafeArray<
 				}
 				else if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
-					if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
+					if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Deflater::CompLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 					{
 						fd.Delete();
 						return false;
@@ -109,7 +109,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UnsafeArray<
 			}
 			else if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
-				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
+				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Deflater::CompLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 				{
 					fd.Delete();
 					return false;

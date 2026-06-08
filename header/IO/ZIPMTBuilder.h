@@ -21,20 +21,21 @@ namespace IO
 
 		struct ThreadStat
 		{
-			ZIPMTBuilder *me;
-			Sync::Event *evt;
+			NN<ZIPMTBuilder> me;
+			NN<Sync::Event> evt;
 			ThreadState status;
 		};
 
 		struct FileTask
 		{
 			NN<Text::String> fileName;
-			UInt8 *fileBuff;
+			UnsafeArrayOpt<UInt8> fileBuff;
+			Optional<IO::SeekableStream> fileStm;
 			UIntOS fileSize;
 			Data::Timestamp lastModTime;
 			Data::Timestamp lastAccessTime;
 			Data::Timestamp createTime;
-			Data::Compress::Inflate::CompressionLevel compLevel;
+			Data::Compress::Deflater::CompLevel compLevel;
 			UInt32 unixAttr;
 		};
 	private:
@@ -52,8 +53,10 @@ namespace IO
 		ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os);
 		~ZIPMTBuilder();
 
-		Bool AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
-		Bool AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr);
+		// Will delete stm after use
+		Bool AddFileOTF(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr);
 		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 		Bool AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 	};
