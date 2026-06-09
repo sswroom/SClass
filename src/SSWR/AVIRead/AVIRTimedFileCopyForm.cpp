@@ -137,7 +137,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, U
 								accTime = nullptr;
 								fs.GetFileTimes(createTime, accTime, modTime);
 								unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)));
-								succ = zip->AddFile(CSTRP(pathBase, UnsafeArray<const UTF8Char>(sptr)), fs, modTime, accTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
+								succ = zip->AddFile(CSTRP(pathBase, UnsafeArray<const UTF8Char>(sptr)), fs, modTime, accTime, createTime, Data::Compress::Deflater::CompLevel::BestCompression, unixAttr);
 
 /*								UInt8 *fileBuff;
 								UInt64 fileLeng = fs.GetLength();

@@ -3,6 +3,7 @@
 #include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ArrayListNN.hpp"
 #include "Data/Timestamp.h"
+#include "Data/Compress/Deflater.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/SeekableStream.h"
@@ -79,7 +80,8 @@ namespace IO
 		ZIPBuilder(NN<IO::SeekableStream> stm, ZIPOS os);
 		~ZIPBuilder();
 
-		Bool AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr);
 		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 		Bool AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 	};

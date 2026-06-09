@@ -18,11 +18,14 @@ namespace DB
 			Optional<Text::String> lastErrorMsg;
 			Data::FastStringMapNN<Data::FastStringMapNN<SQLEngineTable>> tables;
 			NN<Text::String> dbName;
+			NN<Text::String> currDB;
 		public:
 			SQLEngine(DB::SQLType sqlType, Text::CStringNN sourceName);
 			virtual ~SQLEngine();
 
 			virtual UIntOS QuerySchemaNames(NN<Data::ArrayListStringNN> names);
+			UIntOS QueryTableNamesCurrDB(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+			UIntOS QueryTableNamesMySQL(Text::CStringNN dbName, Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 			virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 			virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 			virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);

@@ -472,7 +472,7 @@ void DB::PostgreSQLTCPConn::Dispose()
 	DEL_CLASS(this);
 }
 
-IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
+	IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
 	NN<Net::TCPClient> cli;
@@ -481,18 +481,14 @@ IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
 		return -2;
 	}
 	
-	UInt8 stmtName = 0;
-	UInt8 formatCodes = 0;
-	
 	UInt32 sqlLen = (UInt32)sql.leng;
-	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 5 + 1 + sqlLen + 4);
+	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 6 + sqlLen);
 	packet[0] = 'Q';
-	WriteMInt32(&packet[1], sqlLen + 5);
-	packet[5] = stmtName;
+	WriteMInt32(&packet[1], 6 + sqlLen);
+	packet[5] = '\0';  // unnamed statement
 	sql.ConcatTo(&packet[6]);
-	WriteMInt32(&packet[6 + sqlLen], formatCodes);
 	
-	if (!this->SendPacket(cli, 'Q', packet, 5 + 1 + sqlLen + 4))
+	if (!this->SendPacket(cli, 'Q', packet, 6 + sqlLen))
 	{
 		MemFreeArr(packet);
 		return -2;
@@ -542,7 +538,7 @@ IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
 	return rowChanged;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
+	Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
 	NN<Net::TCPClient> cli;
@@ -551,18 +547,14 @@ Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 		return nullptr;
 	}
 	
-	UInt8 stmtName = 0;
-	UInt8 formatCodes = 0;
-	
 	UInt32 sqlLen = (UInt32)sql.leng;
-	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 5 + 1 + sqlLen + 4);
+	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 6 + sqlLen);
 	packet[0] = 'Q';
-	WriteMInt32(&packet[1], sqlLen + 5);
-	packet[5] = stmtName;
+	WriteMInt32(&packet[1], 6 + sqlLen);
+	packet[5] = '\0';  // unnamed statement
 	sql.ConcatTo(&packet[6]);
-	WriteMInt32(&packet[6 + sqlLen], formatCodes);
 	
-	if (!this->SendPacket(cli, 'Q', packet, 5 + 1 + sqlLen + 4))
+	if (!this->SendPacket(cli, 'Q', packet, 6 + sqlLen))
 	{
 		MemFreeArr(packet);
 		return nullptr;
@@ -574,8 +566,10 @@ Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 	Data::ArrayListNative<UInt32> lengths;
 	Data::ArrayListNative<UInt32> types;
 	Data::ArrayListNative<Int32> typeMods;
+	UnsafeArray<UInt8> val;
 	
 	IntOS rowChanged = 0;
+	Bool hasResult = false;
 	while (true)
 	{
 		UInt8 buff[5];
@@ -593,20 +587,33 @@ Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 				}
 				break;
 			case 'T':
+				hasResult = true;
 				if (!this->ParseRowDescription(cli, colNames, types, typeMods))
 				{
 					return nullptr;
 				}
 				break;
 			case 'D':
+				if (!hasResult)
+				{
+					return nullptr;
+				}
 				if (!this->ParseDataRow(cli, (UIntOS)colNames.GetCount(), values, lengths))
 				{
+					Data::ArrayIterator<UnsafeArrayOpt<UInt8>> it = values.Iterator();
+					while (it.HasNext())
+					{
+						if (it.Next().SetTo(val))
+						{
+							MemFreeArr(val);
+						}
+					}
 					return nullptr;
 				}
 				break;
 			case 'Z':
 				WriteMInt32(buff + 4, ReadMInt32(buff + 4));
-				break;
+				goto done_reading;
 			case 'E':
 				{
 					Text::StringBuilderUTF8 errMsg;
@@ -623,6 +630,19 @@ Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 			default:
 				break;
 		}
+	}
+	
+done_reading:
+	
+	if (!hasResult)
+	{
+		Data::ArrayListStringNN emptyNames;
+		Data::ArrayListObj<UnsafeArrayOpt<UInt8>> emptyValues;
+		Data::ArrayListNative<UInt32> emptyLengths;
+		Data::ArrayListNative<UInt32> emptyTypes;
+		Data::ArrayListNative<Int32> emptyTypeMods;
+		
+		return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, emptyNames, emptyValues, emptyLengths, emptyTypes, emptyTypeMods));
 	}
 	
 	return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, colNames, values, lengths, types, typeMods));
@@ -669,26 +689,35 @@ Optional<DB::DBTransaction> DB::PostgreSQLTCPConn::BeginTransaction()
 	{
 		return nullptr;
 	}
-	this->ExecuteNonQuery(CSTR("BEGIN"));
+	if (this->ExecuteNonQuery(CSTR("BEGIN")) < 0)
+	{
+		return nullptr;
+	}
 	this->isTran = true;
 	return (DB::DBTransaction*)-1;
 }
 
 void DB::PostgreSQLTCPConn::Commit(NN<DB::DBTransaction> tran)
 {
-	if (this->isTran)
+	if (this->isTran && this->ExecuteNonQuery(CSTR("COMMIT")) >= 0)
 	{
-		this->ExecuteNonQuery(CSTR("COMMIT"));
 		this->isTran = false;
+	}
+	else if (this->isTran)
+	{
+		this->Reconnect();
 	}
 }
 
 void DB::PostgreSQLTCPConn::Rollback(NN<DB::DBTransaction> tran)
 {
-	if (this->isTran)
+	if (this->isTran && this->ExecuteNonQuery(CSTR("ROLLBACK")) >= 0)
 	{
-		this->ExecuteNonQuery(CSTR("ROLLBACK"));
 		this->isTran = false;
+	}
+	else if (this->isTran)
+	{
+		this->Reconnect();
 	}
 }
 
@@ -841,7 +870,6 @@ Bool DB::PostgreSQLTCPConn::ChangeDatabase(Text::CStringNN databaseName)
 	{
 		this->database->Release();
 		this->database = oldDB;
-		this->Reconnect();
 		return false;
 	}
 }
@@ -1221,39 +1249,35 @@ DB::DBUtil::ColType DB::PostgreSQLTCPReader::DBType2ColType(UInt32 dbType)
 {
 	switch (dbType)
 	{
-		case 16:
-			return DB::DBUtil::CT_Bool;
-		case 17:
-			return DB::DBUtil::CT_Binary;
-		case 18:
-			return DB::DBUtil::CT_UTF32Char;
-		case 19:
-			return DB::DBUtil::CT_VarUTF32Char;
-		case 20:
-			return DB::DBUtil::CT_Int64;
-		case 21:
-			return DB::DBUtil::CT_Int16;
-		case 23:
-			return DB::DBUtil::CT_Int32;
-		case 25:
-			return DB::DBUtil::CT_VarUTF32Char;
-		case 700:
-			return DB::DBUtil::CT_Float;
-		case 701:
-			return DB::DBUtil::CT_Double;
-		case 1042:
-			return DB::DBUtil::CT_UTF32Char;
-		case 1043:
-			return DB::DBUtil::CT_VarUTF32Char;
-		case 1082:
-			return DB::DBUtil::CT_Date;
-		case 1114:
-		case 1184:
-			return DB::DBUtil::CT_DateTime;
-		case 2950:
-			return DB::DBUtil::CT_UUID;
-		default:
-			return DB::DBUtil::CT_Unknown;
+	case 16:
+		return DB::DBUtil::CT_Bool;
+	case 17:
+		return DB::DBUtil::CT_Binary;
+	case 18:
+		return DB::DBUtil::CT_UTF32Char;
+	case 19:
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 20:
+		return DB::DBUtil::CT_Int64;
+	case 21:
+		return DB::DBUtil::CT_Int16;
+	case 23:
+		return DB::DBUtil::CT_Int32;
+	case 25:
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 1042:
+		return DB::DBUtil::CT_UTF32Char;
+	case 1043:
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 1082:
+		return DB::DBUtil::CT_Date;
+	case 1114:
+	case 1184:
+		return DB::DBUtil::CT_DateTime;
+	case 2950:
+		return DB::DBUtil::CT_UUID;
+	default:
+		return DB::DBUtil::CT_Unknown;
 	}
 }
 
@@ -1276,101 +1300,107 @@ Bool DB::PostgreSQLTCPReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> it
 	
 	switch (dbType)
 	{
-		case 16:
-			item->SetBool(*val == 't');
-			break;
-		case 17:
-			item->SetByteArr(val, len);
-			break;
-		case 18:
-		case 19:
-		case 25:
-		case 1042:
-		case 1043:
-		case 1009:
+	case 16:
+		if (len >= 1 && val[0] == 't')
+		{
+			item->SetBool(true);
+		}
+		else
+		{
+			item->SetBool(false);
+		}
+		break;
+	case 17:
+		item->SetByteArr(val, len);
+		break;
+	case 18:
+	case 19:
+	case 25:
+	case 1042:
+	case 1043:
+		item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
+		break;
+	case 20:
+		if (len == 8)
+		{
+			item->SetI64(ReadMInt64(&val[0]));
+		}
+		else
+		{
+			item->SetI64(0);
+		}
+		break;
+	case 21:
+		if (len == 2)
+		{
+			item->SetI16(ReadMInt16(&val[0]));
+		}
+		else if (len == 4)
+		{
+			item->SetI16((Int16)ReadMInt32(&val[0]));
+		}
+		else
+		{
+			item->SetI16(0);
+		}
+		break;
+	case 23:
+		if (len == 4)
+		{
+			item->SetI32(ReadMInt32(&val[0]));
+		}
+		else
+		{
+			item->SetI32(0);
+		}
+		break;
+	case 700:
+		if (len == 4)
+		{
+			item->SetF64(ReadMFloat(&val[0]));
+		}
+		else
+		{
+			item->SetF64(0.0);
+		}
+		break;
+	case 701:
+		if (len == 8)
+		{
+			item->SetF64(ReadMDouble(&val[0]));
+		}
+		else
+		{
+			item->SetF64(0.0);
+		}
+		break;
+	case 1082:
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(val, len);
+			item->SetDate(Data::Date(sb.ToCString()));
+		}
+		break;
+	case 1114:
+	case 1184:
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(val, len);
+			item->SetDate(Data::Timestamp(sb.ToCString(), tzQhr));
+		}
+		break;
+	case 2950:
+		{
+			NN<Data::UUID> uuid;
+			NEW_CLASSNN(uuid, Data::UUID(Text::CStringNN(val, len)));
+			item->SetUUIDDirect(uuid);
+		}
+		break;
+	default:
+		{
 			item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
-			break;
-		case 20:
-			if (len == 8)
-			{
-				item->SetI64(ReadMInt64(&val[0]));
-			}
-			else
-			{
-				item->SetI64(0);
-			}
-			break;
-		case 21:
-			if (len == 2)
-			{
-				item->SetI16(ReadMInt16(&val[0]));
-			}
-			else if (len == 4)
-			{
-				item->SetI16((Int16)ReadMInt32(&val[0]));
-			}
-			else
-			{
-				item->SetI16(0);
-			}
-			break;
-		case 23:
-			if (len == 4)
-			{
-				item->SetI32(ReadMInt32(&val[0]));
-			}
-			else
-			{
-				item->SetI32(0);
-			}
-			break;
-		case 700:
-			if (len == 4)
-			{
-				item->SetF64(ReadMFloat(&val[0]));
-			}
-			else
-			{
-				item->SetF64(0.0);
-			}
-			break;
-		case 701:
-			if (len == 8)
-			{
-				item->SetF64(ReadMDouble(&val[0]));
-			}
-			else
-			{
-				item->SetF64(0.0);
-			}
-			break;
-		case 1082:
-			{
-				Text::StringBuilderUTF8 sb;
-				sb.AppendC(val, len);
-				item->SetDate(Data::Date(sb.ToCString()));
-			}
-			break;
-		case 1114:
-		case 1184:
-			{
-				Text::StringBuilderUTF8 sb;
-				sb.AppendC(val, len);
-				item->SetDate(Data::Timestamp(sb.ToCString(), tzQhr));
-			}
-			break;
-		case 2950:
-			{
-				NN<Data::UUID> uuid;
-				NEW_CLASSNN(uuid, Data::UUID(Text::CStringNN(val, len)));
-				item->SetUUIDDirect(uuid);
-			}
-			break;
-		default:
-			{
-				item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
-			}
-			break;
+		}
+		break;
 	}
 	
 	return true;

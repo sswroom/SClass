@@ -126,3 +126,31 @@ Optional<Data::VariItem> DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::S
 	}
 	return nullptr;
 }
+
+void DB::SQL::SQLUtil::ParseColumnWord(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+{
+	if (sqlType == DB::SQLType::MSSQL)
+	{
+		if (sb->StartsWith('[') && sb->EndsWith(']'))
+		{
+			sb->RemoveChars(1);
+			sb->SetSubstr(1);
+		}
+	}
+	else if (sqlType == DB::SQLType::MySQL)
+	{
+		if (sb->StartsWith('`') && sb->EndsWith('`'))
+		{
+			sb->RemoveChars(1);
+			sb->SetSubstr(1);
+		}
+	}
+	else if (sqlType == DB::SQLType::PostgreSQL)
+	{
+		if (sb->StartsWith('\"') && sb->EndsWith('\"'))
+		{
+			sb->RemoveChars(1);
+			sb->SetSubstr(1);
+		}
+	}
+}

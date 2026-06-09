@@ -11,7 +11,7 @@
 
 UIntOS PNGExporter_EstimateSize(const UInt8 *data, UIntOS dataSize, UInt8 *tmpBuff)
 {
-	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
+	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Deflater::CompLevel::BestSpeed);	
 }
 
 UIntOS PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<Crypto::Hash::CRC32R> crc)
@@ -1568,7 +1568,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
 		tmpBuff[30] = 0;
 
-		i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i > 0)
 		{
 			WriteMInt32(&tmpBuff[0], 23 + (Int32)i);
@@ -1656,7 +1656,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1687,7 +1687,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1718,7 +1718,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1750,7 +1750,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1785,7 +1785,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1815,7 +1815,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1852,7 +1852,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1904,7 +1904,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1956,7 +1956,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -2010,7 +2010,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -2066,7 +2066,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;

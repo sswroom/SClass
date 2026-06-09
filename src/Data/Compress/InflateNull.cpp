@@ -28,12 +28,12 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 UIntOS Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, Bool hasHeader)
 {
 	UInt8 *tmpBuff = MemAlloc(UInt8, srcBuffSize + 11);
-	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, CompressionLevel::BestCompression);
+	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, Deflater::CompLevel::BestCompression);
 	MemFree(tmpBuff);
 	return outSize;
 }
 
-UIntOS Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
+UIntOS Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, Deflater::CompLevel level)
 {
 	UIntOS compSize;
 	if (!Data::Compress::Deflater::CompressDirect(Data::ByteArray(destBuff, srcBuffSize), compSize, Data::ByteArrayR(srcBuff, srcBuffSize), (Data::Compress::Deflater::CompLevel)level, hasHeader))

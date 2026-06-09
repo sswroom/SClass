@@ -133,6 +133,7 @@ console:
 @GPSGPIOTest
 @GSMModemTest
 @JavaClassTest
+@LogZipper
 @MODBUSDevSim
 @MODBUSTest
 @NoiseSensorTest
@@ -547,6 +548,9 @@ GSMModemTest:
 @ConsoleStartup.o
 JavaClassTest:
 @JavaClassTest.o
+@ConsoleStartup.o
+LogZipper:
+@LogZipperMain.o
 @ConsoleStartup.o
 MODBUSDevSim:
 @MODBUSDevSimMain.o
@@ -1360,6 +1364,7 @@ GPIOServer.o: ../../main/IO/GPIOServer.cpp
 GPSGPIOTest.o: ../../main/IO/GPSGPIOTest.cpp
 GSMModemTest.o: ../../main/IO/GSMModemTest.cpp
 JavaClassTest.o: ../../main/IO/JavaClassTest.cpp
+LogZipperMain.o: ../../main/IO/LogZipperMain.cpp
 MODBUSDevSimMain.o: ../../main/IO/MODBUSDevSimMain.cpp
 MODBUSTest.o: ../../main/IO/MODBUSTest.cpp
 NoiseSensorTest.o: ../../main/IO/NoiseSensorTest.cpp
@@ -2098,6 +2103,8 @@ DB/SQL/SQLEmbeddedReader.h:
 @SQLEmbeddedReader.o
 DB/SQL/SQLEngine.h:
 @SQLEngine.o
+DB/SQL/SQLEngineActionReader.h:
+@SQLEngineActionReader.o
 DB/SQL/SQLEngineDBTable.h:
 @SQLEngineDBTable.o
 DB/SQL/SQLEngineReader.h:
@@ -2106,6 +2113,8 @@ DB/SQL/SQLStringReader.h:
 @SQLStringReader.o
 DB/SQL/SQLUtil.h:
 @SQLUtil.o
+DB/SQL/UseCommand.h:
+@UseCommand.o
 
 Exporter/BMPExporter.h:
 @BMPExporter.o
@@ -2310,6 +2319,8 @@ IO/LogTool.h:
 @LogTool.o
 IO/LogWriter.h:
 @LogWriter.o
+IO/LogZipper.h:
+@LogZipper.o
 IO/LoopFileLog.h:
 @LoopFileLog.o
 IO/MemFileBuffer.h:
@@ -4832,6 +4843,8 @@ SSWR/AVIRead/AVIRLogMergeForm.h:
 @AVIRLogMergeForm.o
 SSWR/AVIRead/AVIRLogServerForm.h:
 @AVIRLogServerForm.o
+SSWR/AVIRead/AVIRLogZipperForm.h:
+@AVIRLogZipperForm.o
 SSWR/AVIRead/AVIRLoraGWSimForm.h:
 @AVIRLoraGWSimForm.o
 SSWR/AVIRead/AVIRLoRaJSONForm.h:

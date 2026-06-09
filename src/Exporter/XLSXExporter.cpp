@@ -141,7 +141,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		zip->AddDir(CSTR("xl/"), ts, ts, ts, 0);
 		dirXl = true;
 	}
-	zip->AddFile(CSTR("xl/workbook.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("xl/workbook.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>"));
 
 	sb.ClearStr();
@@ -160,7 +160,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.Append(CSTR("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>"));
 	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>"));
 	zip->AddDir(CSTR("xl/theme/"), ts, ts, ts, 0);
-	zip->AddFile(CSTR("xl/theme/theme1.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("xl/theme/theme1.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	//sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/theme/theme1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.theme+xml\"/>"));
 
 	sb.ClearStr();
@@ -413,7 +413,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 	}
 	sb.AppendC(UTF8STRC("</styleSheet>"));
-	zip->AddFile(CSTR("xl/styles.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("xl/styles.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>"));
 
 	itSheet = workbook->Iterator();
@@ -747,7 +747,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			dirXlWs = true;
 		}
 		sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
-		zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+		zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 		sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 		sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 		sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"));
@@ -791,7 +791,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				zip->AddDir(CSTR("xl/worksheets/_rels/"), ts, ts, ts, 0);
 			}
 			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
-			zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+			zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 			sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 			sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
@@ -931,7 +931,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					zip->AddDir(CSTR("xl/drawings/"), ts, ts, ts, 0);
 				}
 				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
-				zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+				zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 				sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 				sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>"));
@@ -952,7 +952,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						zip->AddDir(CSTR("xl/drawings/_rels/"), ts, ts, ts, 0);
 					}
 					sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
-					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 					sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
@@ -1062,7 +1062,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						zip->AddDir(CSTR("xl/charts/"), ts, ts, ts, 0);
 					}
 					sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
-					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+					zip->AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 					sbContTypes.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>"));
@@ -1094,7 +1094,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			i++;
 		}
 		sb.AppendC(UTF8STRC("</sst>"));
-		zip->AddFile(CSTR("xl/sharedStrings.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+		zip->AddFile(CSTR("xl/sharedStrings.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 		sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/>"));
 	}
 
@@ -1110,7 +1110,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		zip->AddDir(CSTR("_rels/"), ts, ts, ts, 0);
 		dirRel = true;
 	}
-	zip->AddFile(CSTR("_rels/.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("_rels/.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 	sb.ClearStr();
@@ -1141,7 +1141,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		dirXlRel = true;
 		zip->AddDir(CSTR("xl/_rels/"), ts, ts, ts, 0);
 	}
-	zip->AddFile(CSTR("xl/_rels/workbook.xml.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("xl/_rels/workbook.xml.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
@@ -1228,7 +1228,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("</dc:title>"));
 	sb.AppendC(UTF8STRC("</cp:coreProperties>"));
 	zip->AddDir(CSTR("docProps/"), ts, ts, ts, 0);
-	zip->AddFile(CSTR("docProps/core.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("docProps/core.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package.core-properties+xml\"/>"));
 
 	sb.ClearStr();
@@ -1244,11 +1244,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("</Application>"));
 	sb.AppendC(UTF8STRC("<AppVersion>15.0000</AppVersion>"));
 	sb.AppendC(UTF8STRC("</Properties>"));
-	zip->AddFile(CSTR("docProps/app.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("docProps/app.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/>"));
 
 	sbContTypes.AppendC(UTF8STRC("\n</Types>"));
-	zip->AddFile(CSTR("[Content_Types].xml"), sbContTypes.ToString(), sbContTypes.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	zip->AddFile(CSTR("[Content_Types].xml"), sbContTypes.ToString(), sbContTypes.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 
 	DEL_CLASS(zip);
 	return true;

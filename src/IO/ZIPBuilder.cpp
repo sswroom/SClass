@@ -3,6 +3,8 @@
 #include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
 #include "Data/Compress/Inflate.h"
+#include "Data/Compress/Deflater.h"
+#include "IO/MemoryStream.h"
 #include "IO/ZIPBuilder.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
@@ -159,13 +161,13 @@ IO::ZIPBuilder::~ZIPBuilder()
 	}
 }
 
-Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UIntOS fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)
 {
 	UInt8 hdrBuff[512];
 	UIntOS hdrLen;
 	UInt8 *outBuff = MemAlloc(UInt8, fileSize + 32);
 	UIntOS compSize;
-	if (compLevel == Data::Compress::Inflate::CompressionLevel::NoCompression)
+	if (compLevel == Data::Compress::Deflater::CompLevel::NoCompression)
 	{
 		compSize = fileSize;
 	}
@@ -174,7 +176,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 		compSize = (UIntOS)Data::Compress::Inflate::Compress(fileContent.Ptr(), fileSize, outBuff, false, compLevel);
 		if (compSize == 0)
 		{
-			compLevel = Data::Compress::Inflate::CompressionLevel::NoCompression;
+			compLevel = Data::Compress::Deflater::CompLevel::NoCompression;
 			compSize = fileSize;
 		}
 	}
@@ -288,6 +290,159 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 		succ = writeSize == (hdrLen + compSize);
 	}
 	MemFree(outBuff);
+	return succ;
+}
+
+Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)
+{
+	UInt8 hdrBuff[512];
+	UIntOS hdrLen;
+	IO::MemoryStream mstm;
+	UInt64 fileSize = stm->GetLength();
+	UIntOS compSize;
+	UInt32 crcVal;
+	if (compLevel == Data::Compress::Deflater::CompLevel::NoCompression)
+	{
+		UInt64 totalSize = 0;
+		UIntOS readSize;
+		Data::ByteBuffer fileBuff(1048576);
+		Crypto::Hash::CRC32RIEEE crc;
+		stm->SeekFromBeginning(0);
+		while ((readSize = stm->Read(fileBuff)) != 0)
+		{
+			crc.Calc(fileBuff.Arr(), readSize);
+			totalSize += readSize;
+		}
+		crcVal = crc.GetValueU32();
+		stm->SeekFromBeginning(0);
+		compSize = fileSize;
+	}
+	else
+	{
+		Crypto::Hash::CRC32RIEEE crc;
+		Data::Compress::Deflater deflater(NN<IO::Stream>(stm), Optional<Crypto::Hash::HashAlgorithm>(crc), compLevel, false);
+		compSize = deflater.ReadToEnd(mstm, 1048576);
+		crcVal = crc.GetValueU32();
+		if (compSize == 0)
+		{
+			compLevel = Data::Compress::Deflater::CompLevel::NoCompression;
+			compSize = fileSize;
+			stm->SeekFromBeginning(0);
+		}
+		else
+		{
+			stm = mstm;
+			mstm.SeekFromBeginning(0);
+		}
+	}
+	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
+	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	hdrBuff[4] = 20; //Verison (2.0)
+	hdrBuff[5] = (UInt8)this->osType;
+	WriteUInt16(&hdrBuff[6], 0);
+	WriteUInt16(&hdrBuff[8], 0x8);
+	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteUInt32(&hdrBuff[14], crcVal);
+	WriteUInt32(&hdrBuff[18], (UInt32)compSize);
+	WriteUInt32(&hdrBuff[22], (UInt32)fileSize);
+	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
+	WriteUInt16(&hdrBuff[28], 0);
+	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
+	hdrLen = 30 + fileName.leng;
+	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
+	{
+		UIntOS len = 4;
+		WriteUInt16(&hdrBuff[hdrLen], 1);
+		if (fileSize >= 0xffffffffLL)
+		{
+			WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			len += 8;
+		}
+		if (compSize >= 0xffffffffLL)
+		{
+			if (compSize >= fileSize)
+			{
+				WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+			}
+			else
+			{
+				WriteUInt64(&hdrBuff[hdrLen + len], compSize);
+			}
+			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			len += 8;
+		}
+		WriteUInt16(&hdrBuff[28], len);
+		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		hdrLen += len;
+	}
+
+	NN<IO::ZIPBuilder::FileInfo> file;
+	Bool succ = false;
+	file = MemAllocNN(IO::ZIPBuilder::FileInfo);
+	file->fileName = Text::String::New(fileName);
+	file->fileModTime = lastModTime;
+	file->fileCreateTime = createTime;
+	file->fileAccessTime = lastAccessTime;
+	file->crcVal = crcVal;
+	file->uncompSize = fileSize;
+	file->compMeth = 8;
+	file->compSize = compSize;
+	if (this->osType == IO::ZIPOS::UNIX)
+	{
+		file->fileAttr = unixAttr << 16;
+	}
+	else if (unixAttr == 0)
+	{
+		file->fileAttr = 0;
+	}
+	else
+	{
+		if (unixAttr & 0x200)
+		{
+			file->fileAttr = 0;
+		}
+		else
+		{
+			file->fileAttr = 1;
+		}
+	}
+	Sync::MutexUsage mutUsage(this->mut);
+	file->fileOfst = this->currOfst;
+	this->files.Add(file);
+	if (compSize >= fileSize)
+	{
+		UInt64 writeSize;
+		WriteInt16(&hdrBuff[8], 0x0);
+		WriteInt32(&hdrBuff[18], (Int32)fileSize);
+		file->compMeth = 0;
+		file->compSize = fileSize;
+		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
+		writeSize += stm->ReadToEnd(this->stm, 1048576);
+		this->currOfst += writeSize;
+#if defined(VERBOSE)
+		if (writeSize != (hdrLen + fileSize))
+		{
+			printf("Error in writing file uncomp: hdrLen = %d, fileSize = %lld, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)fileSize, (UInt64)writeSize);
+		}
+#endif
+		succ = writeSize == (hdrLen + fileSize);
+	}
+	else
+	{
+		UInt64 writeSize;
+		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
+		writeSize += stm->ReadToEnd(this->stm, 1048576);
+		this->currOfst += writeSize;
+#if defined(VERBOSE)
+		if (writeSize != (hdrLen + compSize))
+		{
+			printf("Error in writing file uncomp: hdrLen = %d, fileSize = %lld, compSize = %lld, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)fileSize, (UInt64)compSize, (UInt64)writeSize);
+		}
+#endif
+		succ = writeSize == (hdrLen + compSize);
+	}
 	return succ;
 }
 
