@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/FastMapNative.hpp"
 #include "Data/StringMapNN.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/Path.h"
@@ -13,6 +14,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/OrganWeb/OrganWebAPIController.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
+#include "SSWR/OrganWeb/OrganWebSession.h"
 #include "Text/JSONUtil.h"
 #include "Text/JSText.h"
 #include "Text/UTF8Reader.h"
@@ -53,7 +55,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebSe
 		NN<Data::ArrayListInt32> pickObjs;
 		if (env.pickObjType == PickObjType::Group && env.pickObjs.SetTo(pickObjs))
 		{
-			json.ObjectBeginArray(CSTR("pickObjsGroupId"));
+			json.ObjectBeginArray(CSTR("pickObjsGroup"));
 			UIntOS i = 0;
 			UIntOS j = pickObjs->GetCount();
 			Sync::RWMutexUsage mutUsage;
@@ -2063,6 +2065,159 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDelete(NN<Net::W
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPick(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 groupId;
+	Int32 cateId;
+	Int32 pot;
+	NN<Text::String> ids;
+	if (!req->GetHTTPFormInt32(CSTR("id"), groupId) || !req->GetHTTPFormInt32(CSTR("cateId"), cateId) || !req->GetHTTPFormInt32(CSTR("pot"), pot) || !req->GetHTTPFormStr(CSTR("ids")).SetTo(ids) || ids->leng == 0)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	Data::Int32FastMapNative<Bool> idMap;
+	UIntOS i;
+	UIntOS j;
+	Text::StringBuilderUTF8 sb;
+	Text::PString sarr[2];
+	Int32 id;
+	sb.Append(ids);
+	sarr[1] = sb;
+	while (true)
+	{
+		i = Text::StrSplitP(sarr, 2, sarr[1], ',');
+		if (!sarr[0].ToInt32(id))
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		idMap.Put(id, true);
+		if (i != 2)
+			break;
+	}
+	if (idMap.GetCount() == 0)
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	NN<GroupInfo> group;
+	Sync::RWMutexUsage mutUsage;
+	NN<Data::ArrayListInt32> pickObjs;
+	if (!me->env->GroupGet(mutUsage, groupId).SetTo(group) || group->cateId != cateId || !env.pickObjs.SetTo(pickObjs))
+	{
+		mutUsage.EndUse();
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+	Bool succ = false;
+	if ((PickObjType)pot == PickObjType::Group && group->groups.GetCount() > 0)
+	{
+		env.pickObjType = PickObjType::Group;
+		webSess.SetPickObjType(env.pickObjType);
+		pickObjs->Clear();
+		i = 0;
+		j = group->groups.GetCount();
+		while (i < j)
+		{
+			id = group->groups.GetItemNoCheck(i)->id;
+			if (idMap.Get(id))
+			{
+				pickObjs->SortedInsert(id);
+			}
+			i++;
+		}
+		succ = true;
+	}
+	else if ((PickObjType)pot == PickObjType::Species && group->species.GetCount() > 0)
+	{
+		env.pickObjType = PickObjType::Species;
+		webSess.SetPickObjType(env.pickObjType);
+		pickObjs->Clear();
+		i = 0;
+		j = group->species.GetCount();
+		while (i < j)
+		{
+			id = group->species.GetItemNoCheck(i)->speciesId;
+			if (idMap.Get(id))
+			{
+				pickObjs->SortedInsert(id);
+			}
+			i++;
+		}
+		succ = true;
+	}
+	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\": \"ok\"}"):CSTR("{\"status\": \"failed\", \"message\": \"No child object to pick\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPickAll(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 groupId;
+	Int32 cateId;
+	if (!req->GetHTTPFormInt32(CSTR("id"), groupId) || !req->GetHTTPFormInt32(CSTR("cateId"), cateId))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	NN<GroupInfo> group;
+	Sync::RWMutexUsage mutUsage;
+	NN<Data::ArrayListInt32> pickObjs;
+	UIntOS i;
+	UIntOS j;
+	if (!me->env->GroupGet(mutUsage, groupId).SetTo(group) || group->cateId != cateId || !env.pickObjs.SetTo(pickObjs))
+	{
+		mutUsage.EndUse();
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+	Bool succ = false;
+	if (group->groups.GetCount() > 0)
+	{
+		env.pickObjType = PickObjType::Group;
+		webSess.SetPickObjType(env.pickObjType);
+		pickObjs->Clear();
+		i = 0;
+		j = group->groups.GetCount();
+		while (i < j)
+		{
+			pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
+			i++;
+		}
+		succ = true;
+	}
+	else if (group->species.GetCount() > 0)
+	{
+		env.pickObjType = PickObjType::Species;
+		webSess.SetPickObjType(env.pickObjType);
+		pickObjs->Clear();
+		i = 0;
+		j = group->species.GetCount();
+		while (i < j)
+		{
+			pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
+			i++;
+		}
+		succ = true;
+	}
+	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\": \"ok\"}"):CSTR("{\"status\": \"failed\", \"message\": \"No child object to pick\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -2633,6 +2788,8 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/speciesadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesAdd);
 	this->AddService(CSTR("/api/speciesmodify"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesModify);
 	this->AddService(CSTR("/api/speciesdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDelete);
+	this->AddService(CSTR("/api/pick"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPick);
+	this->AddService(CSTR("/api/pickall"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPickAll);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
