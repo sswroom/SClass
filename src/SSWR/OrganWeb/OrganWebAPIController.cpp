@@ -2218,6 +2218,182 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPickAll(NN<Net::WebServ
 	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\": \"ok\"}"):CSTR("{\"status\": \"failed\", \"message\": \"No child object to pick\"}"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupPlace(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 groupId;
+	Int32 cateId;
+	Int32 pot;
+	NN<Text::String> ids;
+	if (!req->GetHTTPFormInt32(CSTR("id"), groupId) || !req->GetHTTPFormInt32(CSTR("cateId"), cateId) || !req->GetHTTPFormInt32(CSTR("pot"), pot) || !req->GetHTTPFormStr(CSTR("ids")).SetTo(ids) || ids->leng == 0)
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	Data::Int32FastMapNative<Bool> idMap;
+	UIntOS i;
+	UIntOS j;
+	Text::StringBuilderUTF8 sb;
+	Text::PString sarr[2];
+	Int32 id;
+	sb.Append(ids);
+	sarr[1] = sb;
+	while (true)
+	{
+		i = Text::StrSplitP(sarr, 2, sarr[1], ',');
+		if (!sarr[0].ToInt32(id))
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		idMap.Put(id, true);
+		if (i != 2)
+			break;
+	}
+	if (idMap.GetCount() == 0)
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+
+	NN<GroupInfo> group;
+	Sync::RWMutexUsage mutUsage;
+	NN<Data::ArrayListInt32> pickObjs;
+	if (!me->env->GroupGet(mutUsage, groupId).SetTo(group) || group->cateId != cateId || !env.pickObjs.SetTo(pickObjs))
+	{
+		mutUsage.EndUse();
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+	Bool succ = false;
+	Int32 itemId;
+	if (env.pickObjType == PickObjType::Group && group->species.GetCount() == 0)
+	{
+		i = 0;
+		j = pickObjs->GetCount();
+		while (i < j)
+		{
+			itemId = pickObjs->GetItem(i);
+			if (idMap.Get(itemId) && me->env->GroupMove(mutUsage, itemId, groupId, cateId))
+			{
+				pickObjs->RemoveAt(i);
+				i--;
+			}
+			i++;
+		}
+		if (pickObjs->GetCount() == 0)
+		{
+			env.pickObjType = PickObjType::Unknown;
+			webSess.SetPickObjType(env.pickObjType);
+		}
+		succ = true;
+	}
+	else if (env.pickObjType == PickObjType::Species && group->groups.GetCount() == 0)
+	{
+		i = 0;
+		j = pickObjs->GetCount();
+		while (i < j)
+		{
+			itemId = pickObjs->GetItem(i);
+			if (idMap.Get(itemId) && me->env->SpeciesMove(mutUsage, itemId, groupId, cateId))
+			{
+				pickObjs->RemoveAt(i);
+				i--;
+			}
+			i++;
+		}
+		if (pickObjs->GetCount() == 0)
+		{
+			env.pickObjType = PickObjType::Unknown;
+			webSess.SetPickObjType(env.pickObjType);
+		}
+		succ = true;
+	}
+	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\": \"ok\"}"):CSTR("{\"status\": \"failed\", \"message\": \"Error moving objects\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupPlaceAll(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 groupId;
+	Int32 cateId;
+	if (!req->GetHTTPFormInt32(CSTR("id"), groupId) || !req->GetHTTPFormInt32(CSTR("cateId"), cateId))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	NN<GroupInfo> group;
+	Sync::RWMutexUsage mutUsage;
+	NN<Data::ArrayListInt32> pickObjs;
+	UIntOS i;
+	UIntOS j;
+	if (!me->env->GroupGet(mutUsage, groupId).SetTo(group) || group->cateId != cateId || !env.pickObjs.SetTo(pickObjs))
+	{
+		mutUsage.EndUse();
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+	Bool succ = false;
+	Int32 itemId;
+	if (env.pickObjType == PickObjType::Group && group->species.GetCount() == 0)
+	{
+		i = 0;
+		j = pickObjs->GetCount();
+		while (i < j)
+		{
+			itemId = pickObjs->GetItem(i);
+			if (me->env->GroupMove(mutUsage, itemId, groupId, cateId))
+			{
+				pickObjs->RemoveAt(i);
+				i--;
+			}
+			i++;
+		}
+		if (pickObjs->GetCount() == 0)
+		{
+			env.pickObjType = PickObjType::Unknown;
+			webSess.SetPickObjType(env.pickObjType);
+		}
+		succ = true;
+	}
+	else if (env.pickObjType == PickObjType::Species && group->groups.GetCount() == 0)
+	{
+		i = 0;
+		j = pickObjs->GetCount();
+		while (i < j)
+		{
+			itemId = pickObjs->GetItem(i);
+			if (me->env->SpeciesMove(mutUsage, itemId, groupId, cateId))
+			{
+				pickObjs->RemoveAt(i);
+				i--;
+			}
+			i++;
+		}
+		if (pickObjs->GetCount() == 0)
+		{
+			env.pickObjType = PickObjType::Unknown;
+			webSess.SetPickObjType(env.pickObjType);
+		}
+		succ = true;
+	}
+	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\": \"ok\"}"):CSTR("{\"status\": \"failed\", \"message\": \"Error moving objects\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcReload(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
