@@ -45,8 +45,8 @@ void Map::TileMapServiceSource::LoadXML()
 					sb.ClearStr();
 					if (reader.ReadNodeText(sb))
 					{
-						SDEL_STRING(this->title);
-						this->title = Text::String::New(sb.ToCString()).Ptr();
+						OPTSTR_DEL(this->title);
+						this->title = Text::String::New(sb.ToCString());
 #if defined(VERBOSE)
 						printf("Title = %s\r\n", this->title->v);
 #endif
@@ -189,14 +189,14 @@ void Map::TileMapServiceSource::LoadXML()
 						{
 							if (avalue->Equals(UTF8STRC("jpg")))
 							{
-								SDEL_STRING(this->tileExt);
-								this->tileExt = avalue->Clone().Ptr();
+								OPTSTR_DEL(this->tileExt);
+								this->tileExt = avalue->Clone();
 								this->tileFormat = Map::TileMap::TileFormat::JPG;
 							}
 							else if (avalue->Equals(UTF8STRC("png")))
 							{
-								SDEL_STRING(this->tileExt);
-								this->tileExt = avalue->Clone().Ptr();
+								OPTSTR_DEL(this->tileExt);
+								this->tileExt = avalue->Clone();
 								this->tileFormat = Map::TileMap::TileFormat::PNG;
 							}
 #if defined(VERBOSE)
@@ -287,8 +287,8 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::TCPClientFactory> clif, 
 	this->tmsURL = Text::String::New(tmsURL);
 	this->origin = Math::Coord2DDbl(0, 0);
 	this->csysOrigin = Math::Coord2DDbl(0, 0);
-	this->title = 0;
-	this->tileExt = 0;
+	this->title = nullptr;
+	this->tileExt = nullptr;
 	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->tileWidth = 256;
 	this->tileHeight = 256;
@@ -308,8 +308,8 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::TCPClientFactory> clif, 
 Map::TileMapServiceSource::~TileMapServiceSource()
 {
 	this->tmsURL->Release();
-	SDEL_STRING(this->title);
-	SDEL_STRING(this->tileExt);
+	OPTSTR_DEL(this->title);
+	OPTSTR_DEL(this->tileExt);
 	this->cacheDir->Release();
 	this->csys.Delete();
 	NN<TileLayer> layer;
@@ -324,7 +324,8 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 
 Text::CStringNN Map::TileMapServiceSource::GetName() const
 {
-	return this->title?this->title->ToCString():CSTR("Unknown");
+	NN<Text::String> s;
+	return this->title.SetTo(s)?s->ToCString():CSTR("Unknown");
 }
 
 Bool Map::TileMapServiceSource::IsError() const
@@ -481,7 +482,7 @@ UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<
 		*sbuff++ = '/';
 		sbuff = Text::StrInt32(sbuff, tileId.y);
 		*sbuff++ = '.';
-		sbuff = this->tileExt->ConcatTo(sbuff);
+		sbuff = Text::String::OrEmpty(this->tileExt)->ConcatTo(sbuff);
 		return sbuff;
 	}
 	return nullptr;
@@ -498,7 +499,7 @@ Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 		sb->AppendUTF8Char('/');
 		sb->AppendI32(tileId.y);
 		sb->AppendUTF8Char('.');
-		sb->Append(this->tileExt);
+		sb->AppendOpt(this->tileExt);
 		return true;
 	}
 	return false;
@@ -543,7 +544,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS lev
 	*sptru++ = IO::Path::PATH_SEPERATOR;
 	sptru = Text::StrInt32(sptru, tileId.y);
 	*sptru++ = '.';
-	sptru = this->tileExt->ConcatTo(sptru);
+	sptru = Text::String::OrEmpty(this->tileExt)->ConcatTo(sptru);
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
@@ -572,7 +573,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS lev
 	urlSb.AppendUTF8Char('/');
 	urlSb.AppendI32(tileId.y);
 	urlSb.AppendUTF8Char('.');
-	urlSb.Append(this->tileExt);
+	urlSb.AppendOpt(this->tileExt);
 
 #if defined(VERBOSE)
 	printf("Tile URL: %s\r\n", urlSb.ToString());

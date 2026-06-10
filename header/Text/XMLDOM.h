@@ -31,7 +31,7 @@ namespace Text
 	public:
 		Optional<Text::String> name;
 		Optional<Text::String> value;
-		Text::String *valueOri;
+		Optional<Text::String> valueOri;
 
 	protected:
 		Optional<Data::ArrayListNN<XMLNode>> childArr;

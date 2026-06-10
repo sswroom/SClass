@@ -41,8 +41,8 @@ namespace Text
 		typedef struct
 		{
 			UIntOS col;
-			Text::String *fileName;
-			Text::String *name;
+			Optional<Text::String> fileName;
+			Optional<Text::String> name;
 		} ColIcon;
 
 		typedef struct
@@ -62,7 +62,7 @@ namespace Text
 
 		struct TableCell
 		{
-			Text::String *val;
+			Optional<Text::String> val;
 			HAlignment hAlign;
 		};
 	private:

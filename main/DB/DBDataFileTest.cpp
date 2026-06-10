@@ -19,7 +19,7 @@ private:
 	Int32 id;
 	Data::Timestamp dtRecv;
 	Data::Timestamp dtData;
-	Text::String* lampno;
+	Optional<Text::String> lampno;
 	Int32 lightStatus;
 	Int32 faultStatus;
 	Int32 fault1Status;
@@ -32,16 +32,16 @@ private:
 	Int32 fault8Status;
 	Int32 fault9Status;
 	Int32 fault10Status;
-	Text::String* fault1Descr;
-	Text::String* fault2Descr;
-	Text::String* fault3Descr;
-	Text::String* fault4Descr;
-	Text::String* fault5Descr;
-	Text::String* fault6Descr;
-	Text::String* fault7Descr;
-	Text::String* fault8Descr;
-	Text::String* fault9Descr;
-	Text::String* fault10Descr;
+	Optional<Text::String> fault1Descr;
+	Optional<Text::String> fault2Descr;
+	Optional<Text::String> fault3Descr;
+	Optional<Text::String> fault4Descr;
+	Optional<Text::String> fault5Descr;
+	Optional<Text::String> fault6Descr;
+	Optional<Text::String> fault7Descr;
+	Optional<Text::String> fault8Descr;
+	Optional<Text::String> fault9Descr;
+	Optional<Text::String> fault10Descr;
 	Double val1;
 	Double val2;
 	Double val3;
@@ -73,8 +73,8 @@ public:
 	void SetDtRecv(const Data::Timestamp &dtRecv);
 	Data::Timestamp GetDtData();
 	void SetDtData(const Data::Timestamp &dtData);
-	Text::String* GetLampno();
-	void SetLampno(Text::String* lampno);
+	Optional<Text::String> GetLampno();
+	void SetLampno(Optional<Text::String> lampno);
 	Int32 GetLightStatus();
 	void SetLightStatus(Int32 lightStatus);
 	Int32 GetFaultStatus();
@@ -99,26 +99,26 @@ public:
 	void SetFault9Status(Int32 fault9Status);
 	Int32 GetFault10Status();
 	void SetFault10Status(Int32 fault10Status);
-	Text::String* GetFault1Descr();
-	void SetFault1Descr(Text::String* fault1Descr);
-	Text::String* GetFault2Descr();
-	void SetFault2Descr(Text::String* fault2Descr);
-	Text::String* GetFault3Descr();
-	void SetFault3Descr(Text::String* fault3Descr);
-	Text::String* GetFault4Descr();
-	void SetFault4Descr(Text::String* fault4Descr);
-	Text::String* GetFault5Descr();
-	void SetFault5Descr(Text::String* fault5Descr);
-	Text::String* GetFault6Descr();
-	void SetFault6Descr(Text::String* fault6Descr);
-	Text::String* GetFault7Descr();
-	void SetFault7Descr(Text::String* fault7Descr);
-	Text::String* GetFault8Descr();
-	void SetFault8Descr(Text::String* fault8Descr);
-	Text::String* GetFault9Descr();
-	void SetFault9Descr(Text::String* fault9Descr);
-	Text::String* GetFault10Descr();
-	void SetFault10Descr(Text::String* fault10Descr);
+	Optional<Text::String> GetFault1Descr();
+	void SetFault1Descr(Optional<Text::String> fault1Descr);
+	Optional<Text::String> GetFault2Descr();
+	void SetFault2Descr(Optional<Text::String> fault2Descr);
+	Optional<Text::String> GetFault3Descr();
+	void SetFault3Descr(Optional<Text::String> fault3Descr);
+	Optional<Text::String> GetFault4Descr();
+	void SetFault4Descr(Optional<Text::String> fault4Descr);
+	Optional<Text::String> GetFault5Descr();
+	void SetFault5Descr(Optional<Text::String> fault5Descr);
+	Optional<Text::String> GetFault6Descr();
+	void SetFault6Descr(Optional<Text::String> fault6Descr);
+	Optional<Text::String> GetFault7Descr();
+	void SetFault7Descr(Optional<Text::String> fault7Descr);
+	Optional<Text::String> GetFault8Descr();
+	void SetFault8Descr(Optional<Text::String> fault8Descr);
+	Optional<Text::String> GetFault9Descr();
+	void SetFault9Descr(Optional<Text::String> fault9Descr);
+	Optional<Text::String> GetFault10Descr();
+	void SetFault10Descr(Optional<Text::String> fault10Descr);
 	Double GetVal1();
 	void SetVal1(Double val1);
 	Double GetVal2();
@@ -168,7 +168,7 @@ LamppostData::LamppostData()
 	this->id = 0;
 	this->dtRecv = 0;
 	this->dtData = 0;
-	this->lampno = 0;
+	this->lampno = nullptr;
 	this->lightStatus = 0;
 	this->faultStatus = 0;
 	this->fault1Status = 0;
@@ -181,16 +181,16 @@ LamppostData::LamppostData()
 	this->fault8Status = 0;
 	this->fault9Status = 0;
 	this->fault10Status = 0;
-	this->fault1Descr = 0;
-	this->fault2Descr = 0;
-	this->fault3Descr = 0;
-	this->fault4Descr = 0;
-	this->fault5Descr = 0;
-	this->fault6Descr = 0;
-	this->fault7Descr = 0;
-	this->fault8Descr = 0;
-	this->fault9Descr = 0;
-	this->fault10Descr = 0;
+	this->fault1Descr = nullptr;
+	this->fault2Descr = nullptr;
+	this->fault3Descr = nullptr;
+	this->fault4Descr = nullptr;
+	this->fault5Descr = nullptr;
+	this->fault6Descr = nullptr;
+	this->fault7Descr = nullptr;
+	this->fault8Descr = nullptr;
+	this->fault9Descr = nullptr;
+	this->fault10Descr = nullptr;
 	this->val1 = 0;
 	this->val2 = 0;
 	this->val3 = 0;
@@ -215,17 +215,17 @@ LamppostData::LamppostData()
 
 LamppostData::~LamppostData()
 {
-	SDEL_STRING(this->lampno);
-	SDEL_STRING(this->fault1Descr);
-	SDEL_STRING(this->fault2Descr);
-	SDEL_STRING(this->fault3Descr);
-	SDEL_STRING(this->fault4Descr);
-	SDEL_STRING(this->fault5Descr);
-	SDEL_STRING(this->fault6Descr);
-	SDEL_STRING(this->fault7Descr);
-	SDEL_STRING(this->fault8Descr);
-	SDEL_STRING(this->fault9Descr);
-	SDEL_STRING(this->fault10Descr);
+	OPTSTR_DEL(this->lampno);
+	OPTSTR_DEL(this->fault1Descr);
+	OPTSTR_DEL(this->fault2Descr);
+	OPTSTR_DEL(this->fault3Descr);
+	OPTSTR_DEL(this->fault4Descr);
+	OPTSTR_DEL(this->fault5Descr);
+	OPTSTR_DEL(this->fault6Descr);
+	OPTSTR_DEL(this->fault7Descr);
+	OPTSTR_DEL(this->fault8Descr);
+	OPTSTR_DEL(this->fault9Descr);
+	OPTSTR_DEL(this->fault10Descr);
 }
 
 Int32 LamppostData::GetId()
@@ -258,15 +258,15 @@ void LamppostData::SetDtData(const Data::Timestamp &dtData)
 	this->dtData = dtData;
 }
 
-Text::String* LamppostData::GetLampno()
+Optional<Text::String> LamppostData::GetLampno()
 {
 	return this->lampno;
 }
 
-void LamppostData::SetLampno(Text::String* lampno)
+void LamppostData::SetLampno(Optional<Text::String> lampno)
 {
-	SDEL_STRING(this->lampno);
-	this->lampno = lampno?lampno->Clone().Ptr():0;
+	OPTSTR_DEL(this->lampno);
+	this->lampno = Text::String::CopyOrNull(lampno);
 }
 
 Int32 LamppostData::GetLightStatus()
@@ -389,114 +389,114 @@ void LamppostData::SetFault10Status(Int32 fault10Status)
 	this->fault10Status = fault10Status;
 }
 
-Text::String* LamppostData::GetFault1Descr()
+Optional<Text::String> LamppostData::GetFault1Descr()
 {
 	return this->fault1Descr;
 }
 
-void LamppostData::SetFault1Descr(Text::String* fault1Descr)
+void LamppostData::SetFault1Descr(Optional<Text::String> fault1Descr)
 {
-	SDEL_STRING(this->fault1Descr);
-	this->fault1Descr = fault1Descr?fault1Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault1Descr);
+	this->fault1Descr = Text::String::CopyOrNull(fault1Descr);
 }
 
-Text::String* LamppostData::GetFault2Descr()
+Optional<Text::String> LamppostData::GetFault2Descr()
 {
 	return this->fault2Descr;
 }
 
-void LamppostData::SetFault2Descr(Text::String* fault2Descr)
+void LamppostData::SetFault2Descr(Optional<Text::String> fault2Descr)
 {
-	SDEL_STRING(this->fault2Descr);
-	this->fault2Descr = fault2Descr?fault2Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault2Descr);
+	this->fault2Descr = Text::String::CopyOrNull(fault2Descr);
 }
 
-Text::String* LamppostData::GetFault3Descr()
+Optional<Text::String> LamppostData::GetFault3Descr()
 {
 	return this->fault3Descr;
 }
 
-void LamppostData::SetFault3Descr(Text::String* fault3Descr)
+void LamppostData::SetFault3Descr(Optional<Text::String> fault3Descr)
 {
-	SDEL_STRING(this->fault3Descr);
-	this->fault3Descr = fault3Descr?fault3Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault3Descr);
+	this->fault3Descr = Text::String::CopyOrNull(fault3Descr);
 }
 
-Text::String* LamppostData::GetFault4Descr()
+Optional<Text::String> LamppostData::GetFault4Descr()
 {
 	return this->fault4Descr;
 }
 
-void LamppostData::SetFault4Descr(Text::String* fault4Descr)
+void LamppostData::SetFault4Descr(Optional<Text::String> fault4Descr)
 {
-	SDEL_STRING(this->fault4Descr);
-	this->fault4Descr = fault4Descr?fault4Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault4Descr);
+	this->fault4Descr = Text::String::CopyOrNull(fault4Descr);
 }
 
-Text::String* LamppostData::GetFault5Descr()
+Optional<Text::String> LamppostData::GetFault5Descr()
 {
 	return this->fault5Descr;
 }
 
-void LamppostData::SetFault5Descr(Text::String* fault5Descr)
+void LamppostData::SetFault5Descr(Optional<Text::String> fault5Descr)
 {
-	SDEL_STRING(this->fault5Descr);
-	this->fault5Descr = fault5Descr?fault5Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault5Descr);
+	this->fault5Descr = Text::String::CopyOrNull(fault5Descr);
 }
 
-Text::String* LamppostData::GetFault6Descr()
+Optional<Text::String> LamppostData::GetFault6Descr()
 {
 	return this->fault6Descr;
 }
 
-void LamppostData::SetFault6Descr(Text::String* fault6Descr)
+void LamppostData::SetFault6Descr(Optional<Text::String> fault6Descr)
 {
-	SDEL_STRING(this->fault6Descr);
-	this->fault6Descr = fault6Descr?fault6Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault6Descr);
+	this->fault6Descr = Text::String::CopyOrNull(fault6Descr);
 }
 
-Text::String* LamppostData::GetFault7Descr()
+Optional<Text::String> LamppostData::GetFault7Descr()
 {
 	return this->fault7Descr;
 }
 
-void LamppostData::SetFault7Descr(Text::String* fault7Descr)
+void LamppostData::SetFault7Descr(Optional<Text::String> fault7Descr)
 {
-	SDEL_STRING(this->fault7Descr);
-	this->fault7Descr = fault7Descr?fault7Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault7Descr);
+	this->fault7Descr = Text::String::CopyOrNull(fault7Descr);
 }
 
-Text::String* LamppostData::GetFault8Descr()
+Optional<Text::String> LamppostData::GetFault8Descr()
 {
 	return this->fault8Descr;
 }
 
-void LamppostData::SetFault8Descr(Text::String* fault8Descr)
+void LamppostData::SetFault8Descr(Optional<Text::String> fault8Descr)
 {
-	SDEL_STRING(this->fault8Descr);
-	this->fault8Descr = fault8Descr?fault8Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault8Descr);
+	this->fault8Descr = Text::String::CopyOrNull(fault8Descr);
 }
 
-Text::String* LamppostData::GetFault9Descr()
+Optional<Text::String> LamppostData::GetFault9Descr()
 {
 	return this->fault9Descr;
 }
 
-void LamppostData::SetFault9Descr(Text::String* fault9Descr)
+void LamppostData::SetFault9Descr(Optional<Text::String> fault9Descr)
 {
-	SDEL_STRING(this->fault9Descr);
-	this->fault9Descr = fault9Descr?fault9Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault9Descr);
+	this->fault9Descr = Text::String::CopyOrNull(fault9Descr);
 }
 
-Text::String* LamppostData::GetFault10Descr()
+Optional<Text::String> LamppostData::GetFault10Descr()
 {
 	return this->fault10Descr;
 }
 
-void LamppostData::SetFault10Descr(Text::String* fault10Descr)
+void LamppostData::SetFault10Descr(Optional<Text::String> fault10Descr)
 {
-	SDEL_STRING(this->fault10Descr);
-	this->fault10Descr = fault10Descr?fault10Descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->fault10Descr);
+	this->fault10Descr = Text::String::CopyOrNull(fault10Descr);
 }
 
 Double LamppostData::GetVal1()
@@ -847,9 +847,9 @@ class CadRunway
 {
 private:
 	Int32 id;
-	Text::String* code;
-	Text::String* displayName;
-	Text::String* descr;
+	Optional<Text::String> code;
+	Optional<Text::String> displayName;
+	Optional<Text::String> descr;
 	Data::Timestamp dtCreate;
 	Data::Timestamp dtModify;
 	Int32 uidCreate;
@@ -862,12 +862,12 @@ public:
 
 	Int32 GetId() const;
 	void SetId(Int32 id);
-	Text::String* GetCode() const;
-	void SetCode(Text::String* code);
-	Text::String* GetDisplayName() const;
-	void SetDisplayName(Text::String* displayName);
-	Text::String* GetDescr() const;
-	void SetDescr(Text::String* descr);
+	Optional<Text::String> GetCode() const;
+	void SetCode(Optional<Text::String> code);
+	Optional<Text::String> GetDisplayName() const;
+	void SetDisplayName(Optional<Text::String> displayName);
+	Optional<Text::String> GetDescr() const;
+	void SetDescr(Optional<Text::String> descr);
 	Data::Timestamp GetDtCreate() const;
 	void SetDtCreate(const Data::Timestamp &dtCreate);
 	Data::Timestamp GetDtModify() const;
@@ -885,9 +885,9 @@ public:
 CadRunway::CadRunway()
 {
 	this->id = 0;
-	this->code = 0;
-	this->displayName = 0;
-	this->descr = 0;
+	this->code = nullptr;
+	this->displayName = nullptr;
+	this->descr = nullptr;
 	this->dtCreate = 0;
 	this->dtModify = 0;
 	this->uidCreate = 0;
@@ -897,9 +897,9 @@ CadRunway::CadRunway()
 
 CadRunway::~CadRunway()
 {
-	SDEL_STRING(this->code);
-	SDEL_STRING(this->displayName);
-	SDEL_STRING(this->descr);
+	OPTSTR_DEL(this->code);
+	OPTSTR_DEL(this->displayName);
+	OPTSTR_DEL(this->descr);
 }
 
 Int32 CadRunway::GetId() const
@@ -912,37 +912,37 @@ void CadRunway::SetId(Int32 id)
 	this->id = id;
 }
 
-Text::String* CadRunway::GetCode() const
+Optional<Text::String> CadRunway::GetCode() const
 {
 	return this->code;
 }
 
-void CadRunway::SetCode(Text::String* code)
+void CadRunway::SetCode(Optional<Text::String> code)
 {
-	SDEL_STRING(this->code);
-	this->code = code?code->Clone().Ptr():0;
+	OPTSTR_DEL(this->code);
+	this->code = Text::String::CopyOrNull(code);
 }
 
-Text::String* CadRunway::GetDisplayName() const
+Optional<Text::String> CadRunway::GetDisplayName() const
 {
 	return this->displayName;
 }
 
-void CadRunway::SetDisplayName(Text::String* displayName)
+void CadRunway::SetDisplayName(Optional<Text::String> displayName)
 {
-	SDEL_STRING(this->displayName);
-	this->displayName = displayName?displayName->Clone().Ptr():0;
+	OPTSTR_DEL(this->displayName);
+	this->displayName = Text::String::CopyOrNull(displayName);
 }
 
-Text::String* CadRunway::GetDescr() const
+Optional<Text::String> CadRunway::GetDescr() const
 {
 	return this->descr;
 }
 
-void CadRunway::SetDescr(Text::String* descr)
+void CadRunway::SetDescr(Optional<Text::String> descr)
 {
-	SDEL_STRING(this->descr);
-	this->descr = descr?descr->Clone().Ptr():0;
+	OPTSTR_DEL(this->descr);
+	this->descr = Text::String::CopyOrNull(descr);
 }
 
 Data::Timestamp CadRunway::GetDtCreate() const

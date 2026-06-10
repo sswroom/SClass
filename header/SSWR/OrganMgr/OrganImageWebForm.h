@@ -15,8 +15,8 @@ namespace SSWR
 		{
 		private:
 			NN<OrganEnv> env;
-			Text::String *srcURL;
-			Text::String *location;
+			Optional<Text::String> srcURL;
+			Optional<Text::String> location;
 
 			NN<UI::GUILabel> lblId;
 			NN<UI::GUITextBox> txtId;
@@ -39,8 +39,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Text::String *GetSrcURL();
-			Text::String *GetLocation();
+			Optional<Text::String> GetSrcURL();
+			Optional<Text::String> GetLocation();
 		};
 	}
 }

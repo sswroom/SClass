@@ -189,7 +189,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnDirChanged(AnyType userObj)
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	me->lastDirIndex = me->lbDir->GetSelectedIndex();
 	me->UpdateDir();
-	SDEL_STRING(me->initSelImg);
+	OPTSTR_DEL(me->initSelImg);
 	me->UpdateImgDir();
 }
 
@@ -227,8 +227,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(AnyType userObj)
 		if (me->lbDir->GetSelectedIndex() != INVALID_INDEX && me->lbDir->GetSelectedIndex() > 0)
 		{
 			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex()).p;
-			SDEL_STRING(me->initSelObj);
-			me->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
+			OPTSTR_DEL(me->initSelObj);
+			me->initSelObj = Text::String::CopyOrNull(groupO->GetEName());
             me->lbDir->SetSelectedIndex(me->lbDir->GetSelectedIndex() - 1);
 		}
 	}
@@ -307,7 +307,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(AnyType userObj)
 		me->UpdateSpBook();
 		if (me->tcMain->GetSelectedIndex() == 2 || me->tcMain->GetSelectedIndex() == 3)
 		{
-			SDEL_STRING(me->initSelImg);
+			OPTSTR_DEL(me->initSelImg);
 			me->UpdateImgDir();
 		}
 	}
@@ -416,8 +416,8 @@ UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType us
 				return UI::EventState::ContinueEvent;
 			NN<OrganGroup> go = me->lbDir->GetSelectedItem().GetNN<OrganGroup>();
 			me->env->SetGroupDefSp(go, imgItem);
-			SDEL_STRING(me->initSelImg);
-			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
+			OPTSTR_DEL(me->initSelImg);
+			me->initSelImg = Text::String::CopyOrNull(imgItem->GetDispName());
 			me->UpdateImgDir();
 		}
 		else
@@ -426,8 +426,8 @@ UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType us
 			if (imgItem->GetIsCoverPhoto())
 				return UI::EventState::ContinueEvent;
 			me->env->SetSpeciesImg(species, imgItem);
-			SDEL_STRING(me->initSelImg);
-			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
+			OPTSTR_DEL(me->initSelImg);
+			me->initSelImg = Text::String::CopyOrNull(imgItem->GetDispName());
 			me->UpdateImgDir();
 		}
 	}
@@ -642,6 +642,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(AnyType userObj)
 			NN<OrganImageItem> imgItem = me->lbImage->GetItem(index).GetNN<OrganImageItem>();
 			NN<UserFileInfo> userFile;
 			NN<WebFileInfo> wfile;
+			NN<Text::String> sURL;
 			if (imgItem->GetUserFile().SetTo(userFile))
 			{
 				OrganImageDetailForm frm(nullptr, me->GetUI(), me->env, userFile);
@@ -650,19 +651,18 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(AnyType userObj)
 					me->env->UpdateUserFileDesc(userFile, frm.GetDescript().Or(U8STR("")));
 				}
 			}
-			else if (imgItem->GetSrcURL() && imgItem->GetWebFile().SetTo(wfile))
+			else if (imgItem->GetSrcURL().SetTo(sURL) && imgItem->GetWebFile().SetTo(wfile))
 			{
 				OrganImageWebForm frm(nullptr, me->GetUI(), me->env, imgItem, wfile);
 				if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 				{
-					Text::String *sURL = frm.GetSrcURL();
-					Text::String *location = frm.GetLocation();
-					if (!Text::StringTool::Equals(wfile->srcUrl.Ptr(), sURL) || !Text::StringTool::Equals(wfile->location.Ptr(), location))
+					Optional<Text::String> location = frm.GetLocation();
+					if (!Text::StringTool::Equals(wfile->srcUrl, sURL) || !Text::StringTool::Equals(wfile->location, location))
 					{
 						NN<OrganGroupItem> item = me->lbObj->GetSelectedItem().GetNN<OrganGroupItem>();
-						me->env->UpdateSpeciesWebFile(NN<OrganSpecies>::ConvertFrom(item), wfile, sURL, location);
-						SDEL_STRING(me->initSelImg);
-						me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
+						me->env->UpdateSpeciesWebFile(NN<OrganSpecies>::ConvertFrom(item), wfile, sURL, Text::String::OrEmpty(location));
+						OPTSTR_DEL(me->initSelImg);
+						me->initSelImg = Text::String::CopyOrNull(imgItem->GetDispName());
 						me->UpdateImgDir();
 					}
 				}
@@ -858,8 +858,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 
 						if (succ)
 						{
-							SDEL_STRING(me->initSelImg);
-							me->initSelImg = Text::String::NewNotNullSlow(sbuff).Ptr();
+							OPTSTR_DEL(me->initSelImg);
+							me->initSelImg = Text::String::NewNotNullSlow(sbuff);
 							me->UpdateImgDir();
 						}
 					}
@@ -872,7 +872,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 					{
 						Bool chg = false;
 						Bool firstPhoto = me->lbImage->GetCount() == 0;
-						SDEL_STRING(me->initSelImg);
+						OPTSTR_DEL(me->initSelImg);
 						Text::PString sarr[2];
 						sarr[1] = sb;
 						printf("HDROP: %s\r\n", sb.ToPtr());
@@ -1242,7 +1242,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(AnyType userObj)
 		if (me->indexChanged)
 		{
 			me->indexChanged = false;
-			SDEL_STRING(me->initSelImg);
+			OPTSTR_DEL(me->initSelImg);
 			me->UpdateImgDir();
 		}
 	}
@@ -1432,7 +1432,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(AnyType userObj)
 			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
-		SDEL_STRING(me->initSelImg);
+		OPTSTR_DEL(me->initSelImg);
 		UIntOS i;
 		UIntOS j;
 		i = 0;
@@ -1797,8 +1797,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
             this->lbDir->RemoveItem(j);
 			grp = this->groupList.GetItemNoCheck(j);
 			this->groupList.RemoveAt(j);
-			SDEL_STRING(this->initSelObj);
-			this->initSelObj = Text::String::OrEmpty(grp->GetEName())->Clone().Ptr();
+			OPTSTR_DEL(this->initSelObj);
+			this->initSelObj = Text::String::CopyOrNull(grp->GetEName());
 			grp.Delete();
 		}
         this->lastSpeciesObj = 0;
@@ -1843,6 +1843,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			}
 
 			Data::Sort::ArtificialQuickSortFunc<NN<OrganGroupItem>>::Sort(this->groupItems, GroupCompare);
+			NN<Text::String> initSelObj;
 			i = 0;
 			j = this->groupItems.GetCount();
 			while (i < j)
@@ -1850,18 +1851,18 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 				item = this->groupItems.GetItemNoCheck(i);
 				sptr = item->GetItemName(sbuff);
 				k = this->lbObj->AddItem({sbuff, (UIntOS)(sptr - sbuff)}, item);
-				if (i > 0 && this->initSelObj)
+				if (i > 0 && this->initSelObj.SetTo(initSelObj))
 				{
 					if (this->inputMode == IM_SPECIES)
 					{
-						if (Text::StringTool::Equals(NN<OrganSpecies>::ConvertFrom(item)->GetSName(), this->initSelObj))
+						if (Text::StringTool::Equals(NN<OrganSpecies>::ConvertFrom(item)->GetSName(), initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
 					}
 					else if (this->inputMode == IM_GROUP)
 					{
-						if (Text::StringTool::Equals(NN<OrganGroup>::ConvertFrom(item)->GetEName(), this->initSelObj))
+						if (Text::StringTool::Equals(NN<OrganGroup>::ConvertFrom(item)->GetEName(), initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
@@ -1958,6 +1959,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		}
 
 		UIntOS initSel = 0;
+		NN<Text::String> initSelImg;
 		j = this->imgItems.GetCount();
 		if (showDef)
 		{
@@ -1965,8 +1967,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			while (i < j)
 			{
 				imgItem = this->imgItems.GetItemNoCheck(i);
-				this->lbImage->AddItem(imgItem->GetDispName()->ToCString(), imgItem);
-				if (this->initSelImg && Text::StringTool::Equals(imgItem->GetDispName(), this->initSelImg))
+				this->lbImage->AddItem(Text::String::OrEmpty(imgItem->GetDispName())->ToCString(), imgItem);
+				if (this->initSelImg.SetTo(initSelImg) && Text::StringTool::Equals(imgItem->GetDispName(), initSelImg))
 				{
 					initSel = i;
 				}
@@ -1982,7 +1984,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				if (imgItem->GetIsCoverPhoto())
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("*"));
-					if (this->initSelImg == 0)
+					if (this->initSelImg.IsNull())
 					{
 						initSel = i;
 					}
@@ -1991,7 +1993,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				{
 					sptr = sbuff;
 				}
-				sptr = imgItem->GetDispName()->ConcatTo(sptr);
+				sptr = Text::String::OrEmpty(imgItem->GetDispName())->ConcatTo(sptr);
 				ts = imgItem->GetPhotoDate();
 				if (ts != 0)
 				{
@@ -2032,8 +2034,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				}
 				else
 				{
-					Text::String *sURL = imgItem->GetSrcURL();
-					if (sURL)
+					NN<Text::String> sURL;
+					if (imgItem->GetSrcURL().SetTo(sURL))
 					{
 						sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 						sptr = sURL->ConcatTo(sptr);
@@ -2058,7 +2060,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 
 				this->lbImage->AddItem(CSTRP(sbuff, sptr), imgItem);
 
-				if (this->initSelImg && Text::StringTool::Equals(imgItem->GetDispName(), this->initSelImg))
+				if (this->initSelImg.SetTo(initSelImg) && Text::StringTool::Equals(imgItem->GetDispName(), initSelImg))
 				{
 					initSel = i;
 				}
@@ -2504,8 +2506,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->dispImageDown = false;
 
 	this->lastBmp = 0;
-	this->initSelObj = 0;
-	this->initSelImg = 0;
+	this->initSelObj = nullptr;
+	this->initSelImg = nullptr;
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
@@ -2828,8 +2830,8 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	}
 	this->mapRenderer.Delete();
 	this->mapEnv.Delete();
-	SDEL_STRING(this->initSelObj);
-	SDEL_STRING(this->initSelImg);
+	OPTSTR_DEL(this->initSelObj);
+	OPTSTR_DEL(this->initSelImg);
 	this->env->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->colorMgr->DeleteSess(this->colorSess);
 }
@@ -2853,8 +2855,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			OrganSearchForm frm(nullptr, this->ui, this->env);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SDEL_STRING(this->initSelObj);
-				this->initSelObj = frm.GetFoundStr()->Clone().Ptr();
+				OPTSTR_DEL(this->initSelObj);
+				this->initSelObj = frm.GetFoundStr()->Clone();
 				this->GoToDir(frm.GetFoundGroup(), frm.GetParentId());
 			}
 		}
@@ -3086,8 +3088,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			if (i != INVALID_INDEX && i > 0)
 			{
 				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i).p;
-				SDEL_STRING(this->initSelObj);
-				this->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
+				OPTSTR_DEL(this->initSelObj);
+				this->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone();
 				this->lbDir->SetSelectedIndex(i - 1);
 			}
 		}
@@ -3381,8 +3383,8 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, IntOS x, 
 
 							if (succ)
 							{
-								SDEL_STRING(this->initSelImg);
-								this->initSelImg = Text::String::NewNotNullSlow(sbuff).Ptr();
+								OPTSTR_DEL(this->initSelImg);
+								this->initSelImg = Text::String::NewNotNullSlow(sbuff);
 								this->UpdateImgDir();
 							}
 						}
@@ -3397,7 +3399,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, IntOS x, 
 				{
 					Bool firstPhoto = this->lbImage->GetCount() == 0;
 					Bool chg = false;
-					SDEL_STRING(this->initSelImg);
+					OPTSTR_DEL(this->initSelImg);
 
 					sb.ClearStr();
 					if (data->GetDataText(nns, sb))

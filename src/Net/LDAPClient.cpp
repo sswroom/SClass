@@ -258,7 +258,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UIntOS 
 						NN<Net::LDAPClient::SearchResItem> item;
 						item = MemAllocNN(Net::LDAPClient::SearchResItem);
 						item->type = Text::String::New(sb.ToCString());
-						item->value = Text::String::New(sb2.ToCString()).Ptr();
+						item->value = Text::String::New(sb2.ToCString());
 						items->Add(item);
 					}
 				}

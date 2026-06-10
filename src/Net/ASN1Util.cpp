@@ -341,7 +341,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 				PDUToString(&pdu[ofst + 1], &pdu[ofst + len], innerSb, level + 1, 0, names);
 				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendC(UTF8STRC(" {\r\n"));
-				sb->Append(&innerSb);
+				sb->Append(innerSb);
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
@@ -364,7 +364,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 				PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
 				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendC(UTF8STRC("{\r\n"));
-				sb->Append(&innerSb);
+				sb->Append(innerSb);
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}

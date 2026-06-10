@@ -27,15 +27,15 @@ namespace SSWR
 				WebFile
 			};
 		private:
-			Text::String *dispName;
+			Optional<Text::String> dispName;
 			Bool isCoverPhoto;
 			Data::Timestamp photoDate;
 		//	const WChar *photoLoc;
 			RotateType rotateType;
-			Text::String *fullName;
+			Optional<Text::String> fullName;
 			FileType fileType;
-			Text::String *srcURL;
-			Text::String *imgURL;
+			Optional<Text::String> srcURL;
+			Optional<Text::String> imgURL;
 			Optional<UserFileInfo> userFile;
 			Optional<WebFileInfo> webFile;
 			Int32 userId;
@@ -45,9 +45,9 @@ namespace SSWR
 			~OrganImageItem();
 
 			Int32 GetUserId() const;
-			void SetDispName(Text::String *dispName);
+			void SetDispName(Optional<Text::String> dispName);
 			void SetDispName(Text::CString dispName);
-			Text::String *GetDispName() const;
+			Optional<Text::String> GetDispName() const;
 			void SetIsCoverPhoto(Bool isCoverPhoto);
 			Bool GetIsCoverPhoto() const;
 			void SetPhotoDate(const Data::Timestamp &photoDate);
@@ -56,17 +56,17 @@ namespace SSWR
 		//	const WChar *GetPhotoLoc();
 			void SetRotateType(RotateType rotateType);
 			RotateType GetRotateType() const;
-			void SetFullName(Text::String *fullName);
+			void SetFullName(Optional<Text::String> fullName);
 			void SetFullName(Text::CString fullName);
-			Text::String *GetFullName() const;
+			Optional<Text::String> GetFullName() const;
 			void SetFileType(FileType fileType);
 			FileType GetFileType() const;
-			void SetSrcURL(Text::String *srcURL);
+			void SetSrcURL(Optional<Text::String> srcURL);
 			void SetSrcURL(Text::CString srcURL);
-			Text::String *GetSrcURL() const;
-			void SetImgURL(Text::String *imgURL);
+			Optional<Text::String> GetSrcURL() const;
+			void SetImgURL(Optional<Text::String> imgURL);
 			void SetImgURL(Text::CString imgURL);
-			Text::String *GetImgURL() const;
+			Optional<Text::String> GetImgURL() const;
 			void SetUserFile(Optional<UserFileInfo> userFile);
 			Optional<UserFileInfo> GetUserFile() const;
 			void SetWebFile(Optional<WebFileInfo> webFile);

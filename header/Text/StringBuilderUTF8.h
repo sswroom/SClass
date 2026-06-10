@@ -46,9 +46,9 @@ namespace Text
 			}
 		}
 
-		NN<StringBuilderUTF8> Append(Text::StringBase<UTF8Char> *s);
+		NN<StringBuilderUTF8> Append(NN<Text::StringBase<UTF8Char>> s);
+		NN<StringBuilderUTF8> Append(NN<Text::StringBase<const UTF8Char>> s);
 		NN<StringBuilderUTF8> Append(NN<Text::String> s);
-		NN<StringBuilderUTF8> Append(Text::StringBase<const UTF8Char> *s);
 		NN<StringBuilderUTF8> Append(const Text::StringBase<UTF8Char> &s);
 		NN<StringBuilderUTF8> Append(const Text::StringBase<const UTF8Char> &s);
 		NN<StringBuilderUTF8> AppendOpt(Optional<Text::String> s);
@@ -327,7 +327,7 @@ namespace Text
 
 		NN<StringBuilderUTF8> AppendSB(NN<Text::StringBuilderUTF8> sb)
 		{
-			return Append(sb.Ptr());
+			return Append(NN<Text::StringBase<UTF8Char>>(sb));
 		}
 
 		NN<StringBuilderUTF8> AppendHex8(UInt8 iVal)

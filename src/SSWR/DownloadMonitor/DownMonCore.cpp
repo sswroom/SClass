@@ -121,7 +121,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CStringNN fileName)
 	return valid;
 }
 
-void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath)
+void SSWR::DownloadMonitor::DownMonCore::ProcessDir(NN<Text::String> downPath, NN<Text::String> succPath, NN<Text::String> errPath)
 {
 	Bool downFound = false;;
 	UTF8Char sbuff[512];
@@ -472,40 +472,54 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	
-	this->downPath = 0;
-	this->succPath = 0;
-	this->errPath = 0;
-	this->ytPath = 0;
-	this->ffmpegPath = 0;
-	this->firefoxPath = 0;
-	this->listFile = 0;
+	this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp"));
+	this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck"));
+	this->errPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Err"));
+	this->ytPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Youtube"));
+	this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe"));
+	this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe"));
+	this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt"));
 	NN<IO::ConfigFile> cfg;
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("DownPath")).SetTo(s))
-			this->downPath = s->Clone().Ptr();
+		{
+			this->downPath->Release();
+			this->downPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("SuccPath")).SetTo(s))
-			this->succPath = s->Clone().Ptr();
+		{
+			this->succPath->Release();
+			this->succPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("ErrPath")).SetTo(s))
-			this->errPath = s->Clone().Ptr();
+		{
+			this->errPath->Release();
+			this->errPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("YTPath")).SetTo(s))
-			this->ytPath = s->Clone().Ptr();
+		{
+			this->ytPath->Release();
+			this->ytPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("FFMPEGPath")).SetTo(s))
-			this->ffmpegPath = s->Clone().Ptr();
+		{
+			this->ffmpegPath->Release();
+			this->ffmpegPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("FirefoxPath")).SetTo(s))
-			this->firefoxPath = s->Clone().Ptr();
+		{
+			this->firefoxPath->Release();
+			this->firefoxPath = s->Clone();
+		}
 		if (cfg->GetValue(CSTR("ListFile")).SetTo(s))
-			this->listFile = s->Clone().Ptr();
+		{
+			this->listFile->Release();
+			this->listFile = s->Clone();
+		}
 		cfg.Delete();
 	}
-	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp")).Ptr();
-	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck")).Ptr();
-	if (this->errPath == 0) this->errPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Err")).Ptr();
-	if (this->ytPath == 0) this->ytPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Youtube")).Ptr();
-	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe")).Ptr();
-	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe")).Ptr();
-	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt")).Ptr();
 	this->thread.Start();
 }
 
@@ -551,7 +565,7 @@ void SSWR::DownloadMonitor::DownMonCore::SetFileEndHandler(FileEndHandler hdlr, 
 	this->fileEndHdlr = hdlr;
 }
 
-Text::String *SSWR::DownloadMonitor::DownMonCore::GetListFile()
+NN<Text::String> SSWR::DownloadMonitor::DownMonCore::GetListFile()
 {
 	return this->listFile;
 }

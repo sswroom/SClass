@@ -6,13 +6,13 @@
 SSWR::OrganMgr::OrganImageItem::OrganImageItem(Int32 userId)
 {
 	this->userId = userId;
-	this->dispName = 0;
+	this->dispName = nullptr;
 	this->isCoverPhoto = false;
 	this->photoDate = 0;
 	this->rotateType = RotateType::None;
-	this->fullName = 0;
+	this->fullName = nullptr;
 	this->fileType = FileType::Unknown;
-	this->srcURL = 0;
+	this->srcURL = nullptr;
 	this->imgURL = nullptr;
 	this->userFile = nullptr;
 	this->webFile = nullptr;
@@ -20,10 +20,10 @@ SSWR::OrganMgr::OrganImageItem::OrganImageItem(Int32 userId)
 
 SSWR::OrganMgr::OrganImageItem::~OrganImageItem()
 {
-	SDEL_STRING(this->dispName);
-	SDEL_STRING(this->fullName);
-	SDEL_STRING(this->srcURL);
-	SDEL_STRING(this->imgURL);
+	OPTSTR_DEL(this->dispName);
+	OPTSTR_DEL(this->fullName);
+	OPTSTR_DEL(this->srcURL);
+	OPTSTR_DEL(this->imgURL);
 }
 
 Int32 SSWR::OrganMgr::OrganImageItem::GetUserId() const
@@ -31,20 +31,19 @@ Int32 SSWR::OrganMgr::OrganImageItem::GetUserId() const
 	return this->userId;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
+void SSWR::OrganMgr::OrganImageItem::SetDispName(Optional<Text::String> dispName)
 {
-	SDEL_STRING(this->dispName);
-	if (dispName) this->dispName = dispName->Clone().Ptr();
+	OPTSTR_DEL(this->dispName);
+	this->dispName = Text::String::CopyOrNull(dispName);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::CString dispName)
 {
-	SDEL_STRING(this->dispName);
-	Text::CStringNN nndispName;
-	if (dispName.SetTo(nndispName)) this->dispName = Text::String::New(nndispName).Ptr();
+	OPTSTR_DEL(this->dispName);
+	this->dispName = Text::String::NewOrNull(dispName);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName() const
+Optional<Text::String> SSWR::OrganMgr::OrganImageItem::GetDispName() const
 {
 	return this->dispName;
 }
@@ -79,20 +78,19 @@ SSWR::OrganMgr::OrganImageItem::RotateType SSWR::OrganMgr::OrganImageItem::GetRo
 	return this->rotateType;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
+void SSWR::OrganMgr::OrganImageItem::SetFullName(Optional<Text::String> fullName)
 {
-	SDEL_STRING(this->fullName);
-	if (fullName) this->fullName = fullName->Clone().Ptr();
+	OPTSTR_DEL(this->fullName);
+	this->fullName = Text::String::CopyOrNull(fullName);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::CString fullName)
 {
-	SDEL_STRING(this->fullName);
-	Text::CStringNN nnfullName;
-	if (fullName.SetTo(nnfullName)) this->fullName = Text::String::New(nnfullName).Ptr();
+	OPTSTR_DEL(this->fullName);
+	this->fullName = Text::String::NewOrNull(fullName);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName() const
+Optional<Text::String> SSWR::OrganMgr::OrganImageItem::GetFullName() const
 {
 	return this->fullName;
 }
@@ -107,35 +105,33 @@ SSWR::OrganMgr::OrganImageItem::FileType SSWR::OrganMgr::OrganImageItem::GetFile
 	return this->fileType;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
+void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Optional<Text::String> srcURL)
 {
-	SDEL_STRING(this->srcURL);
-	if (srcURL) this->srcURL = srcURL->Clone().Ptr();
+	OPTSTR_DEL(this->srcURL);
+	this->srcURL = Text::String::CopyOrNull(srcURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::CString srcURL)
 {
-	SDEL_STRING(this->srcURL);
-	Text::CStringNN nnsrcURL;
-	if (srcURL.SetTo(nnsrcURL)) this->srcURL = Text::String::New(nnsrcURL).Ptr();
+	OPTSTR_DEL(this->srcURL);
+	this->srcURL = Text::String::NewOrNull(srcURL);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
+Optional<Text::String> SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
 {
 	return this->srcURL;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
+void SSWR::OrganMgr::OrganImageItem::SetImgURL(Optional<Text::String> imgURL)
 {
-	SDEL_STRING(this->imgURL);
-	if (imgURL) this->imgURL = imgURL->Clone().Ptr();
+	OPTSTR_DEL(this->imgURL);
+	this->imgURL = Text::String::CopyOrNull(imgURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::CString imgURL)
 {
-	SDEL_STRING(this->imgURL);
-	Text::CStringNN nnimgURL;
-	if (imgURL.SetTo(nnimgURL)) this->imgURL = Text::String::New(nnimgURL).Ptr();
+	OPTSTR_DEL(this->imgURL);
+	this->imgURL = Text::String::NewOrNull(imgURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(Optional<UserFileInfo> userFile)
@@ -175,7 +171,7 @@ NN<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImageItem::Clone() const
 	return newItem;
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetImgURL() const
+Optional<Text::String> SSWR::OrganMgr::OrganImageItem::GetImgURL() const
 {
 	return this->imgURL;
 }

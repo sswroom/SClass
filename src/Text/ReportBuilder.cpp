@@ -51,11 +51,11 @@ Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UIntOS colCount, Unsafe
 		colWidthPts[i] = 0;
 		if (columns[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns);
 		}
 		else
 		{
-			cols[i].val = 0;
+			cols[i].val = nullptr;
 		}
 		cols[i].hAlign = Text::HAlignment::Unknown;
 		this->colTypes[i] = CT_STRING;
@@ -97,7 +97,7 @@ Text::ReportBuilder::~ReportBuilder()
 		i = this->colCount;
 		while (i-- > 0)
 		{
-			SDEL_STRING(cols[i].val);
+			OPTSTR_DEL(cols[i].val);
 		}
 		MemFreeArr(cols);
 	}
@@ -116,8 +116,8 @@ Text::ReportBuilder::~ReportBuilder()
 			while (j-- > 0)
 			{
 				icon = iconList->GetItemNoCheck(j);
-				SDEL_STRING(icon->fileName);
-				SDEL_STRING(icon->name);
+				OPTSTR_DEL(icon->fileName);
+				OPTSTR_DEL(icon->name);
 				MemFreeNN(icon);
 			}
 			iconList.Delete();
@@ -211,11 +211,11 @@ void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Ch
 	{
 		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns);
 		}
 		else
 		{
-			cols[i].val = 0;
+			cols[i].val = nullptr;
 		}
 		cols[i].hAlign = Text::HAlignment::Unknown;
 		i++;
@@ -235,11 +235,11 @@ void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8C
 	{
 		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns);
 		}
 		else
 		{
-			cols[i].val = 0;
+			cols[i].val = nullptr;
 		}
 		cols[i].hAlign = Text::HAlignment::Unknown;
 		i++;
@@ -259,11 +259,11 @@ void Text::ReportBuilder::AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8C
 	{
 		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns);
 		}
 		else
 		{
-			cols[i].val = 0;
+			cols[i].val = nullptr;
 		}
 		cols[i].hAlign = Text::HAlignment::Unknown;
 		i++;
@@ -289,25 +289,26 @@ void Text::ReportBuilder::AddIcon(UIntOS index, Text::CString fileName, Text::CS
 	icon = MemAllocNN(Text::ReportBuilder::ColIcon);
 	icon->col = index;
 	Text::CStringNN nns;
+	NN<Text::String> s;
 	if (fileName.SetTo(nns))
 	{
-		icon->fileName = Text::String::New(nns).Ptr();
+		icon->fileName = s = Text::String::New(nns);
 		if (IO::Path::PATH_SEPERATOR != '/')
 		{
-			icon->fileName->Replace('/', IO::Path::PATH_SEPERATOR);
+			s->Replace('/', IO::Path::PATH_SEPERATOR);
 		}
 	}
 	else
 	{
-		icon->fileName = 0;
+		icon->fileName = nullptr;
 	}
 	if (name.SetTo(nns))
 	{
-		icon->name = Text::String::New(nns).Ptr();
+		icon->name = Text::String::New(nns);
 	}
 	else
 	{
-		icon->name = 0;
+		icon->name = nullptr;
 	}
 	iconList->Add(icon);
 }
@@ -364,6 +365,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 	UnsafeArray<TableCell> cols;
 	NN<HeaderInfo> header;
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> s;
 	NN<ColURLLatLon> url;
 	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
 	NN<Text::ReportBuilder::ColIcon> icon;
@@ -557,9 +559,9 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				while (l < this->colCount)
 				{
 					NEW_CLASSNN(sbList[l], Text::StringBuilderUTF8());
-					if (cols[l].val)
+					if (cols[l].val.SetTo(s))
 					{
-						sbList[l]->Append(cols[l].val);
+						sbList[l]->Append(s);
 					}
 					l++;
 				}
@@ -572,7 +574,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					{
 						sbList[icon->col]->AppendC(UTF8STRC(", "));
 					}
-					sbList[icon->col]->Append(icon->name);
+					sbList[icon->col]->AppendOpt(icon->name);
 					l++;
 				}
 
@@ -593,19 +595,19 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				l = 0;
 				while (l < this->colCount)
 				{
-					if (cols[l].val)
+					if (cols[l].val.SetTo(s))
 					{
-						if (cols[l].val->Equals(ColumnMergeLeft.v, ColumnMergeLeft.leng))
+						if (s->Equals(ColumnMergeLeft.v, ColumnMergeLeft.leng))
 						{
 							ws->SetCellMergeLeft(k, l);
 						}
-						else if (cols[l].val->Equals(ColumnMergeUp.v, ColumnMergeUp.leng))
+						else if (s->Equals(ColumnMergeUp.v, ColumnMergeUp.leng))
 						{
 							ws->SetCellMergeUp(k, l);
 						}
 						else
 						{
-							ws->SetCellString(k, l, Text::String::OrEmpty(cols[l].val));
+							ws->SetCellString(k, l, s);
 						}
 						if (cols[l].hAlign != Text::HAlignment::Unknown)
 						{
@@ -620,19 +622,19 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				l = 0;
 				while (l < this->colCount)
 				{
-					if (cols[l].val)
+					if (cols[l].val.SetTo(s))
 					{
 						if (this->colTypes[l] == CT_DOUBLE)
 						{
-							ws->SetCellDouble(k, l, cols[l].val->ToDoubleOrNAN());
+							ws->SetCellDouble(k, l, s->ToDoubleOrNAN());
 						}
 						else if (this->colTypes[l] == CT_INT32)
 						{
-							ws->SetCellInt32(k, l, cols[l].val->ToInt32());
+							ws->SetCellInt32(k, l, s->ToInt32());
 						}
 						else
 						{
-							ws->SetCellString(k, l, Text::String::OrEmpty(cols[l].val));
+							ws->SetCellString(k, l, s);
 						}
 						if (cols[l].hAlign != Text::HAlignment::Unknown)
 						{
@@ -1021,6 +1023,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 	Int32 pageId = 0;
 	RowType lastRowType;
 	RowType currRowType;
+	NN<Text::String> s;
 
 	colMinWidth = MemAlloc(Double, this->colCount);
 	colTotalWidth = MemAlloc(Double, this->colCount);
@@ -1115,9 +1118,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		while (j-- > 0)
 		{
 			colCurrX[j] = 0;
-			if (cols[j].val)
+			if (cols[j].val.SetTo(s))
 			{
-				sz = g->GetTextSize(f, cols[j].val->ToCString());
+				sz = g->GetTextSize(f, s->ToCString());
 				colCurrX[j] = sz.x;
 			}
 		}
@@ -1128,14 +1131,14 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 			while (j-- > 0)
 			{
 				icon = iconList->GetItemNoCheck(j);
-				if (icon->fileName)
+				if (icon->fileName.SetTo(s))
 				{
-					iconSt = iconStatus.Get(icon->fileName);
+					iconSt = iconStatus.GetNN(s);
 					if (iconSt == 0)
 					{
 						iconSt = MemAlloc(IconStatus, 1);
-						iconSt->dimg = deng->LoadImage(icon->fileName->ToCString());
-						iconStatus.Put(icon->fileName, iconSt);
+						iconSt->dimg = deng->LoadImage(s->ToCString());
+						iconStatus.PutNN(s, iconSt);
 					}
 
 					if (iconSt->dimg.SetTo(dimg))
@@ -1295,7 +1298,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 				i = j;
 				while (i-- > 0)
 				{
-					if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+					if (cols[i].val.SetTo(s) && s->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 					{
 						if (this->tableBorders)
 						{
@@ -1304,12 +1307,12 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 							while (true)
 							{
 								cols2 = this->tableContent.GetItemNoCheck(n);
-								if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+								if (cols2[i].val.SetTo(s) && s->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 									n--;
 								else
 									break;
 							}
-							if (cols2[i].val == 0 || !cols2[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+							if (!cols2[i].val.SetTo(s) || !s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 							{
 								g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 							}
@@ -1325,11 +1328,11 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 						{
 							nextX = borderPx + drawWidth;
 						}
-						if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+						if (cols[i].val.SetTo(s) && s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 						{
 							while (i-- > 0)
 							{
-								if (!cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+								if (!cols[i].val.SetTo(s) || !s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 								{
 									break;
 								}
@@ -1340,7 +1343,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 							g->DrawLine(colPos[i], currY, nextX, currY, p);
 							g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 						}
-						g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
+						g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, Text::String::OrEmpty(cols[i].val)->ToCString(), f, b, cols[i].hAlign);
 					}
 				}
 				m++;
@@ -1373,9 +1376,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 				i = j;
 				while (i-- > 0)
 				{
-					if (cols[i].val)
+					if (cols[i].val.SetTo(s))
 					{
-						if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+						if (s->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 						{
 							if (this->tableBorders)
 							{
@@ -1384,12 +1387,12 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 								while (true)
 								{
 									cols2 = this->tableContent.GetItemNoCheck(n);
-									if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+									if (cols2[i].val.SetTo(s) && s->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 										n--;
 									else
 										break;
 								}
-								if (cols2[i].val == 0 || !cols2[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+								if (!cols2[i].val.SetTo(s) || !s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 								{
 									g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 								}
@@ -1405,11 +1408,11 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 							{
 								nextX = borderPx + drawWidth;
 							}
-							if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+							if (cols[i].val.SetTo(s) && s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 							{
 								while (i-- > 0)
 								{
-									if (!cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+									if (!cols[i].val.SetTo(s) || !s->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 									{
 										break;
 									}
@@ -1420,7 +1423,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 								g->DrawLine(colPos[i], currY, nextX, currY, p);
 								g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 							}
-							g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
+							g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, Text::String::OrEmpty(cols[i].val)->ToCString(), f, b, cols[i].hAlign);
 						}
 					}
 				}
@@ -1431,9 +1434,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 					j = this->colCount;
 					while (i < j)
 					{
-						if (cols[i].val)
+						if (cols[i].val.SetTo(s))
 						{
-							sz = g->GetTextSize(f, cols[i].val->ToCString());
+							sz = g->GetTextSize(f, s->ToCString());
 							colCurrX[i] = colPos[i] + sz.x;
 						}
 						else
@@ -1448,9 +1451,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 					while (i < j)
 					{
 						icon = iconList->GetItemNoCheck(i);
-						if (icon->fileName)
+						if (icon->fileName.SetTo(s))
 						{
-							iconSt = iconStatus.Get(icon->fileName);
+							iconSt = iconStatus.GetNN(s);
 							NN<Media::DrawImage> dimg;
 							if (iconSt && iconSt->dimg.SetTo(dimg))
 							{

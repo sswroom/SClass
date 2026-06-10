@@ -64,9 +64,9 @@ namespace Data
 		Bool SetFieldClearItem(AnyType obj, UIntOS index, NN<Data::VariItem> item);
 		Bool Equals(AnyType obj1, AnyType obj2);
 
-		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
-		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
-		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToCppClassHeader(NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToCppClassSource(Optional<Text::StringBase<UTF8Char>> clsPrefix, NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToJavaClass(NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb);
 
 		static Optional<Data::Class> ParseFromStr(Text::CStringNN str);
 		static Optional<Data::Class> ParseFromCpp(Text::CStringNN str);

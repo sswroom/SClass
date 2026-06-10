@@ -19,6 +19,7 @@ namespace DB
 			Data::FastStringMapNN<Data::FastStringMapNN<SQLEngineTable>> tables;
 			NN<Text::String> dbName;
 			NN<Text::String> currDB;
+			Optional<DBReader> EmptyStringReader(NN<Data::ArrayListStringNN> returnColNames, Optional<Data::ArrayListStringNN> reqColNames);
 		public:
 			SQLEngine(DB::SQLType sqlType, Text::CStringNN sourceName);
 			virtual ~SQLEngine();

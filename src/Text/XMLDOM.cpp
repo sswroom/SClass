@@ -13,7 +13,7 @@ Text::XMLAttrib::XMLAttrib(Text::CStringNN name, Text::CString value) : XMLNode(
 	NN<Text::String> nns;
 	this->name = nullptr;
 	this->value = nullptr;
-	this->valueOri = 0;
+	this->valueOri = nullptr;
 	if (name.leng > 0)
 	{
 		this->name = nns = Text::String::New(name.leng);
@@ -39,9 +39,9 @@ Bool Text::XMLAttrib::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->value.SetTo(nns))
 	{
 		sb->AppendUTF8Char('=');
-		if (this->valueOri)
+		if (this->valueOri.SetTo(nns))
 		{
-			sb->Append(this->valueOri);
+			sb->Append(nns);
 		}
 		else
 		{
@@ -58,7 +58,7 @@ Text::XMLNode::XMLNode(NodeType nt)
 	this->nt = nt;
 	this->name = nullptr;
 	this->value = nullptr;
-	this->valueOri = 0;
+	this->valueOri = nullptr;
 	this->attribArr = nullptr;
 	this->childArr = nullptr;
 }
@@ -73,7 +73,7 @@ Text::XMLNode::~XMLNode()
 
 	OPTSTR_DEL(this->name);
 	OPTSTR_DEL(this->value);
-	SDEL_STRING(this->valueOri);
+	OPTSTR_DEL(this->valueOri);
 	if (this->attribArr.SetTo(attribArr))
 	{
 		i = attribArr->GetCount();

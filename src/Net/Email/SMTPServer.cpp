@@ -12,8 +12,8 @@ void __stdcall Net::Email::SMTPServer::ClientReady(NN<Net::TCPClient> cli, AnyTy
 	MailStatus *cliStatus;
 	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
-	cliStatus->cliName = 0;
-	cliStatus->mailFrom = 0;
+	cliStatus->cliName = nullptr;
+	cliStatus->mailFrom = nullptr;
 	cliStatus->dataStm = 0;
 	cliStatus->dataMode = false;
 	cliStatus->loginMode = 0;
@@ -53,8 +53,8 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NN<Net::TCPClient> cli, AnyTy
 	{
 		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UIntOS i;
-		SDEL_STRING(cliStatus->cliName);
-		SDEL_STRING(cliStatus->mailFrom);
+		OPTSTR_DEL(cliStatus->cliName);
+		OPTSTR_DEL(cliStatus->mailFrom);
 		i = cliStatus->rcptTo.GetCount();
 		while (i-- > 0)
 		{
@@ -343,7 +343,7 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("DATA")))
 	{
-		if (cliStatus->cliName != 0 && cliStatus->mailFrom != 0 && cliStatus->rcptTo.GetCount() > 0)
+		if (cliStatus->cliName.NotNull() && cliStatus->mailFrom.NotNull() && cliStatus->rcptTo.GetCount() > 0)
 		{
 			cliStatus->dataMode = true;
 			cliStatus->lastLBT = Text::LineBreakType::None;
@@ -370,22 +370,24 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("HELO ")))
 	{
-		SDEL_STRING(cliStatus->cliName);
-		cliStatus->cliName = Text::String::New(&cmd[5], cmdLen - 5).Ptr();
+		NN<Text::String> s;
+		OPTSTR_DEL(cliStatus->cliName);
+		cliStatus->cliName = s = Text::String::New(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.Append(cliStatus->cliName);
+		sb.Append(s);
 		WriteMessage(cli, 250, sb.ToCString());
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("EHLO ")))
 	{
-		SDEL_STRING(cliStatus->cliName);
-		cliStatus->cliName = Text::String::New(&cmd[5], cmdLen - 5).Ptr();
+		NN<Text::String> s;
+		OPTSTR_DEL(cliStatus->cliName);
+		cliStatus->cliName = s = Text::String::New(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.Append(cliStatus->cliName);
+		sb.Append(s);
 		sb.AppendC(UTF8STRC("\r\nHELP"));
 		sb.AppendC(UTF8STRC("\r\n8BITMIME"));
 		if (this->connType == Net::Email::SMTPConn::ConnType::STARTTLS && !cli->IsSSL())
@@ -401,8 +403,8 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("MAIL FROM:")))
 	{
-		SDEL_STRING(cliStatus->mailFrom);
-		cliStatus->mailFrom = Text::String::New(cmd, cmdLen).Ptr();
+		OPTSTR_DEL(cliStatus->mailFrom);
+		cliStatus->mailFrom = Text::String::New(cmd, cmdLen);
 		WriteMessage(cli, 250, CSTR("Ok"));
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("RCPT TO:")))

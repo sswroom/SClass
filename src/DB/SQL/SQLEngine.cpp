@@ -10,6 +10,60 @@
 
 #define VERBOSE
 
+Optional<DB::DBReader> DB::SQL::SQLEngine::EmptyStringReader(NN<Data::ArrayListStringNN> returnColNames, Optional<Data::ArrayListStringNN> reqColNames)
+{
+	NN<Data::ArrayListStringNN> nncolNames;
+	if (reqColNames.SetTo(nncolNames))
+	{
+		Data::FastStringMapNative<Bool> colMap;
+		UIntOS i = 0;
+		UIntOS j = returnColNames->GetCount();
+		while (i < j)
+		{
+			colMap.PutNN(returnColNames->GetItemNoCheck(i), true);
+			i++;
+		}
+		i = 0;
+		j = nncolNames->GetCount();
+		while (i < j)
+		{
+			if (!colMap.Get(nncolNames->GetItemNoCheck(i)))
+			{
+				Text::StringBuilderUTF8 sb;
+				returnColNames->FreeAll();
+				sb.Append(CSTR("SQL Error [1054] [42S22]: Unknown column '"));
+				sb.Append(nncolNames->GetItemNoCheck(i));
+				sb.Append(CSTR("' in 'field list'"));
+				OPTSTR_DEL(this->lastErrorMsg);
+				this->lastErrorMsg = Text::String::New(sb.ToCString());
+				this->lastDataError = DB::DBConn::DataError::ExecSQLError;
+				returnColNames->FreeAll();
+				return nullptr;
+			}
+			i++;
+		}
+		returnColNames->FreeAll();
+
+		i = 0;
+		while (i < j)
+		{
+			returnColNames->Add(nncolNames->GetItemNoCheck(i)->Clone());
+			i++;
+		}
+		Data::ArrayListObj<Optional<Text::String>> vals;
+		NN<SQLEngineReader> reader;
+		NEW_CLASSNN(reader, SQLStringReader(nncolNames, vals));
+		return reader;
+	}
+	else
+	{
+		Data::ArrayListObj<Optional<Text::String>> vals;
+		NN<SQLEngineReader> reader;
+		NEW_CLASSNN(reader, SQLStringReader(returnColNames, vals));
+		return reader;
+	}
+}
+
 DB::SQL::SQLEngine::SQLEngine(DB::SQLType sqlType, Text::CStringNN sourceName) : DBConn(sourceName)
 {
 	this->sqlType = sqlType;
@@ -319,7 +373,514 @@ Optional<DB::DBReader> DB::SQL::SQLEngine::QueryTableData(Text::CString schemaNa
 	}
 	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("sys")))
 	{
-
+		if (tableName.Equals(CSTR("host_summary")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("statements")));
+			tableCols.Add(Text::String::New(CSTR("statement_latency")));
+			tableCols.Add(Text::String::New(CSTR("statement_avg_latency")));
+			tableCols.Add(Text::String::New(CSTR("table_scans")));
+			tableCols.Add(Text::String::New(CSTR("file_ios")));
+			tableCols.Add(Text::String::New(CSTR("file_io_latency")));
+			tableCols.Add(Text::String::New(CSTR("current_connections")));
+			tableCols.Add(Text::String::New(CSTR("total_connections")));
+			tableCols.Add(Text::String::New(CSTR("unique_users")));
+			tableCols.Add(Text::String::New(CSTR("current_memory")));
+			tableCols.Add(Text::String::New(CSTR("total_memory_allocated")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("host_summary_by_file_io")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("ios")));
+			tableCols.Add(Text::String::New(CSTR("io_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("host_summary_by_file_io_type")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("host_summary_by_stages")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("avg_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("host_summary_by_statement_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			tableCols.Add(Text::String::New(CSTR("lock_latency")));
+			tableCols.Add(Text::String::New(CSTR("cpu_latency")));
+			tableCols.Add(Text::String::New(CSTR("rows_sent")));
+			tableCols.Add(Text::String::New(CSTR("rows_examined")));
+			tableCols.Add(Text::String::New(CSTR("rows_affected")));
+			tableCols.Add(Text::String::New(CSTR("full_scans")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		/////////////////////////////
+		else if (tableName.Equals(CSTR("host_summary_by_statement_type")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("statement_type")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("innodb_buffer_stats_by_schema")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("schema_name")));
+			tableCols.Add(Text::String::New(CSTR("pool_size")));
+			tableCols.Add(Text::String::New(CSTR("free_buffers")));
+			tableCols.Add(Text::String::New(CSTR("database_pages")));
+			tableCols.Add(Text::String::New(CSTR("modified_pages")));
+			tableCols.Add(Text::String::New(CSTR("pages_read")));
+			tableCols.Add(Text::String::New(CSTR("pages_written")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("innodb_buffer_stats_by_table")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("schema_name")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("pool_size")));
+			tableCols.Add(Text::String::New(CSTR("free_buffers")));
+			tableCols.Add(Text::String::New(CSTR("database_pages")));
+			tableCols.Add(Text::String::New(CSTR("modified_pages")));
+			tableCols.Add(Text::String::New(CSTR("pages_read")));
+			tableCols.Add(Text::String::New(CSTR("pages_written")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("innodb_lock_waits")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("requesting_trx_id")));
+			tableCols.Add(Text::String::New(CSTR("requested_lock_id")));
+			tableCols.Add(Text::String::New(CSTR("blocking_trx_id")));
+			tableCols.Add(Text::String::New(CSTR("blocking_lock_id")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("io_by_thread_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("thread_id")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("io_global_by_file_by_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("io_global_by_file_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("io_global_by_wait_by_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("io_global_by_wait_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("latest_file_io")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("thread_id")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("file_name")));
+			tableCols.Add(Text::String::New(CSTR("latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("memory_by_host_by_current_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("current_bytes")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("memory_by_thread_by_current_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("thread_id")));
+			tableCols.Add(Text::String::New(CSTR("current_bytes")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("memory_by_user_by_current_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("current_bytes")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("memory_global_by_current_bytes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("current_bytes")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("memory_global_total")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("total_bytes")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("metrics")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("name")));
+			tableCols.Add(Text::String::New(CSTR("subsystem")));
+			tableCols.Add(Text::String::New(CSTR("count")));
+			tableCols.Add(Text::String::New(CSTR("avg_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("processlist")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("id")));
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("db")));
+			tableCols.Add(Text::String::New(CSTR("command")));
+			tableCols.Add(Text::String::New(CSTR("time")));
+			tableCols.Add(Text::String::New(CSTR("state")));
+			tableCols.Add(Text::String::New(CSTR("info")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("ps_check_lost_instrumentation")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("object_schema")));
+			tableCols.Add(Text::String::New(CSTR("object_name")));
+			tableCols.Add(Text::String::New(CSTR("object_type")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_auto_increment_columns")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("column_name")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_index_statistics")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("index_name")));
+			tableCols.Add(Text::String::New(CSTR("last_update")));
+			tableCols.Add(Text::String::New(CSTR("stat_name")));
+			tableCols.Add(Text::String::New(CSTR("stat_value")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_object_overview")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("object_type")));
+			tableCols.Add(Text::String::New(CSTR("object_schema")));
+			tableCols.Add(Text::String::New(CSTR("object_name")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_redundant_indexes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("index_name")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_table_lock_waits")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("object_schema")));
+			tableCols.Add(Text::String::New(CSTR("object_name")));
+			tableCols.Add(Text::String::New(CSTR("object_type")));
+			tableCols.Add(Text::String::New(CSTR("lock_type")));
+			tableCols.Add(Text::String::New(CSTR("lock_duration")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_table_statistics")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("rows_fetched")));
+			tableCols.Add(Text::String::New(CSTR("rows_inserted")));
+			tableCols.Add(Text::String::New(CSTR("rows_updated")));
+			tableCols.Add(Text::String::New(CSTR("rows_deleted")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_table_statistics_with_buffer")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("rows_fetched")));
+			tableCols.Add(Text::String::New(CSTR("rows_inserted")));
+			tableCols.Add(Text::String::New(CSTR("rows_updated")));
+			tableCols.Add(Text::String::New(CSTR("rows_deleted")));
+			tableCols.Add(Text::String::New(CSTR("fetch_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_tables_with_full_table_scans")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("full_table_scans")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("schema_unused_indexes")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("table_schema")));
+			tableCols.Add(Text::String::New(CSTR("table_name")));
+			tableCols.Add(Text::String::New(CSTR("index_name")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("session")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("thread_id")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("state")));
+			tableCols.Add(Text::String::New(CSTR("duration")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("session_ssl_status")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("thread_id")));
+			tableCols.Add(Text::String::New(CSTR("ssl_cipher")));
+			tableCols.Add(Text::String::New(CSTR("ssl_version")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		 else if (tableName.Equals(CSTR("session_status")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("variable_name")));
+			tableCols.Add(Text::String::New(CSTR("variable_value")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("session_variables")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("variable_name")));
+			tableCols.Add(Text::String::New(CSTR("variable_value")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		 else if (tableName.Equals(CSTR("statement_analysis")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("sample_user")));
+			tableCols.Add(Text::String::New(CSTR("sample_host")));
+			tableCols.Add(Text::String::New(CSTR("sample_db")));
+			tableCols.Add(Text::String::New(CSTR("avg_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("statements_with_errors_or_warnings")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("error_count")));
+			tableCols.Add(Text::String::New(CSTR("warning_count")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("statements_with_full_table_scans")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("full_table_scans")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("statements_with_runtimes_in_95th_percentile")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("avg_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("statements_with_sorting")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("sorts")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("statements_with_temp_tables")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("digest")));
+			tableCols.Add(Text::String::New(CSTR("temp_tables")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("sys_config")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("variable_name")));
+			tableCols.Add(Text::String::New(CSTR("variable_value")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("statements")));
+			tableCols.Add(Text::String::New(CSTR("statement_latency")));
+			tableCols.Add(Text::String::New(CSTR("statement_avg_latency")));
+			tableCols.Add(Text::String::New(CSTR("table_scans")));
+			tableCols.Add(Text::String::New(CSTR("file_ios")));
+			tableCols.Add(Text::String::New(CSTR("file_io_latency")));
+			tableCols.Add(Text::String::New(CSTR("current_connections")));
+			tableCols.Add(Text::String::New(CSTR("total_connections")));
+			tableCols.Add(Text::String::New(CSTR("unique_hosts")));
+			tableCols.Add(Text::String::New(CSTR("current_memory")));
+			tableCols.Add(Text::String::New(CSTR("total_memory_allocated")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary_by_file_io")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("ios")));
+			tableCols.Add(Text::String::New(CSTR("io_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary_by_file_io_type")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary_by_stages")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary_by_statement_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("user_summary_by_statement_type")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("statement_type")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("version")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("version")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("wait_classes_global_by_avg_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("avg_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("wait_classes_global_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("waits_by_host_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("host")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("waits_by_user_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("user")));
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
+		else if (tableName.Equals(CSTR("waits_global_by_latency")))
+		{
+			Data::ArrayListStringNN tableCols;
+			tableCols.Add(Text::String::New(CSTR("event_name")));
+			tableCols.Add(Text::String::New(CSTR("total")));
+			tableCols.Add(Text::String::New(CSTR("total_latency")));
+			tableCols.Add(Text::String::New(CSTR("max_latency")));
+			return this->EmptyStringReader(tableCols, colNames);
+		}
 	}
 	else if (this->sqlType == DB::SQLType::MySQL && this->currDB->Equals(CSTR("information_schema")))
 	{

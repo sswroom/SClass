@@ -32,12 +32,12 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganImages::GetItemTyp
 
 UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganImages::GetItemName(UnsafeArray<UTF8Char> buff) const
 {
-	return this->imgItem->GetDispName()->ConcatTo(buff);
+	return Text::String::OrEmpty(this->imgItem->GetDispName())->ConcatTo(buff);
 }
 
 UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganImages::GetEngName(UnsafeArray<UTF8Char> buff) const
 {
-	return this->imgItem->GetDispName()->ConcatTo(buff);
+	return Text::String::OrEmpty(this->imgItem->GetDispName())->ConcatTo(buff);
 }
 
 NN<SSWR::OrganMgr::OrganGroupItem> SSWR::OrganMgr::OrganImages::Clone() const

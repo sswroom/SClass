@@ -97,7 +97,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 
 	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
-	Text::String *fwdFor = 0;
+	NN<Text::String> s;
+	Optional<Text::String> fwdFor = nullptr;
 	UnsafeArrayOpt<const UTF8Char> fwdPrefix = nullptr;
 	UnsafeArrayOpt<const UTF8Char> fwdHost = nullptr;
 	UnsafeArrayOpt<const UTF8Char> fwdProto = nullptr;
@@ -167,9 +168,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 			}
 		}
 		sbHeader.ClearStr();
-		if (fwdFor)
+		if (fwdFor.SetTo(s))
 		{
-			sbHeader.Append(fwdFor);
+			sbHeader.Append(s);
 			sbHeader.AppendUTF8Char(',');
 		}
 		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr()).Or(buff);
@@ -184,12 +185,12 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	}
 	else
 	{
-		if (fwdFor)
+		if (fwdFor.SetTo(s))
 		{
-			cli->AddHeaderC(CSTR("X-Forwarded-For"), fwdFor->ToCString());
+			cli->AddHeaderC(CSTR("X-Forwarded-For"), s->ToCString());
 		}
 	}
-	SDEL_STRING(fwdFor);
+	OPTSTR_DEL(fwdFor);
 	SDEL_TEXT(fwdSsl);
 	SDEL_TEXT(fwdHost);
 	SDEL_TEXT(fwdPort);

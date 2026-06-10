@@ -800,7 +800,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassHeader(&hdr, 0, sb);
+				cls->ToCppClassHeader(hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				cls.Delete();
 			}
@@ -819,7 +819,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				hdr.leng = (UIntOS)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassSource(0, &hdr, 0, sb);
+				cls->ToCppClassSource(nullptr, hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				cls.Delete();
 			}

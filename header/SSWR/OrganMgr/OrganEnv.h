@@ -226,7 +226,7 @@ namespace SSWR
 			NN<Media::MonitorMgr> GetMonitorMgr();
 			ErrorType GetErrorType();
 			Text::CStringNN GetLang(Text::CStringNN name);
-			virtual Text::String *GetCacheDir() = 0;
+			virtual NN<Text::String> GetCacheDir() = 0;
 			virtual Text::CStringNN GetMapFont() = 0;
 
 			UIntOS GetCategories(NN<Data::ArrayListNN<Category>> categories);
@@ -248,7 +248,7 @@ namespace SSWR
 			virtual Bool DelSpecies(NN<OrganSpecies> sp) = 0;
 			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId) = 0;
 			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName) = 0;
-			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, Text::String *srcURL, Text::String *location) = 0;
+			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, NN<Text::String> srcURL, NN<Text::String> location) = 0;
 			Bool SetSpeciesImg(NN<OrganSpecies> sp, NN<OrganImageItem> img);
 			Bool SetSpeciesMapColor(NN<OrganSpecies> sp, UInt32 mapColor);
 			virtual Bool SaveSpecies(NN<OrganSpecies> sp) = 0;

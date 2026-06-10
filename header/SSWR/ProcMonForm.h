@@ -49,7 +49,7 @@ namespace SSWR
 		Data::ArrayListNN<ProgInfo> progList;
 		IO::LogTool log;
 		NN<UI::ListBoxLogger> logger;
-		Text::String *notifyCmd;
+		Optional<Text::String> notifyCmd;
 
 		void AddProg(Text::CStringNN progName, Text::CString progPath);
 		Bool SearchProcId(NN<ProgInfo> prog);

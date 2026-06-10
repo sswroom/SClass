@@ -22,17 +22,17 @@ namespace SSWR
 			Optional<DB::DBTool> db;
 			IO::LogTool log;
 			Optional<IO::ConfigFile> cfg;
-			Text::String *cfgImgDirBase;
-			Text::String *cfgDataPath;
-			Text::String *cfgCacheDir;
-			Text::String *cfgMapFont;
+			NN<Text::String> cfgImgDirBase;
+			NN<Text::String> cfgDataPath;
+			NN<Text::String> cfgCacheDir;
+			Optional<Text::String> cfgMapFont;
 
 		public:
 			OrganEnvDB();
 			virtual ~OrganEnvDB();
 
-			Text::String *GetDataDir();
-			virtual Text::String *GetCacheDir();
+			NN<Text::String> GetDataDir();
+			virtual NN<Text::String> GetCacheDir();
 			virtual Text::CStringNN GetMapFont();
 
 			virtual UIntOS GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
@@ -51,8 +51,8 @@ namespace SSWR
 			virtual Bool DelSpecies(NN<OrganSpecies> sp);
 			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId);
 			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName);
-			FileStatus AddSpeciesWebFileOld(NN<OrganSpecies> sp, Text::String *srcURL, Text::String *imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName);
-			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, Text::String *srcURL, Text::String *location);
+			FileStatus AddSpeciesWebFileOld(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName);
+			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, NN<Text::String> srcURL, NN<Text::String> location);
 			Bool UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> webFileName, UnsafeArray<const UTF8Char> srcURL);
 			virtual Bool SaveSpecies(NN<OrganSpecies> sp);
 			virtual Bool SaveGroup(NN<OrganGroup> grp);

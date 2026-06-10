@@ -37,6 +37,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	UTF8Char buff[256];
 	Int16 buffSize;
 	SQLRETURN ret;
+	NN<Text::String> connStr;
 	ret = SQLGetInfoA(connHand, SQL_DRIVER_NAME, (Char*)buff, sizeof(buff), &buffSize);
 	if (ret == SQL_SUCCESS || SQL_SUCCESS_WITH_INFO)
 	{
@@ -102,9 +103,9 @@ void DB::ODBCConn::UpdateConnInfo()
 		{
 		}
 	}
-	if (this->sqlType == DB::SQLType::Unknown)
+	if (this->sqlType == DB::SQLType::Unknown && this->connStr.SetTo(connStr))
 	{
-		if (this->connStr->IndexOfICase(UTF8STRC("DRIVER=MDBTOOLS;")) != INVALID_INDEX)
+		if (connStr->IndexOfICase(UTF8STRC("DRIVER=MDBTOOLS;")) != INVALID_INDEX)
 		{
 			this->sqlType = DB::SQLType::MDBTools;
 		}
@@ -150,7 +151,7 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 	this->connErr = CE_NONE;
 	this->envHand = 0;
 	this->connHand = 0;
-	SDEL_STRING(this->lastErrorMsg);
+	OPTSTR_DEL(this->lastErrorMsg);
 	if (!dsn.SetTo(nndsn))
 	{
 		this->connErr = CE_CONNECT_ERR;
@@ -258,9 +259,9 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 	SQLHANDLE hConn;
 	SQLRETURN ret;
 	int timeOut = 5;
-	SDEL_STRING(this->connStr);
-	this->connStr = connStr->Clone().Ptr();
-	SDEL_STRING(this->lastErrorMsg);
+	OPTSTR_DEL(this->connStr);
+	this->connStr = connStr->Clone();
+	OPTSTR_DEL(this->lastErrorMsg);
 
 	this->connErr = CE_NONE;
 	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hand);
@@ -367,8 +368,8 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DB
 	lastStmtHand = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
-	this->lastErrorMsg = 0;
-	this->connStr = 0;
+	this->lastErrorMsg = nullptr;
+	this->connStr = nullptr;
 	this->connHand = 0;
 	this->envHand = 0;
 	this->dsn = nullptr;
@@ -388,8 +389,8 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 	lastStmtHand = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
-	this->lastErrorMsg = 0;
-	this->connStr = 0;
+	this->lastErrorMsg = nullptr;
+	this->connStr = nullptr;
 	this->connHand = 0;
 	this->envHand = 0;
 	this->dsn = nullptr;
@@ -408,10 +409,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->connStr = 0;
+	this->connStr = nullptr;
 	this->connHand = 0;
 	this->connErr = CE_NOT_CONNECT;
-	this->lastErrorMsg = 0;
+	this->lastErrorMsg = nullptr;
 	this->envHand = 0;
 	this->enableDebug = false;
 	this->dsn = dsn->Clone().Ptr();
@@ -428,10 +429,10 @@ DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optiona
 DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->connStr = 0;
+	this->connStr = nullptr;
 	this->connHand = 0;
 	this->connErr = CE_NOT_CONNECT;
-	this->lastErrorMsg = 0;
+	this->lastErrorMsg = nullptr;
 	this->envHand = 0;
 	this->enableDebug = false;
 	this->dsn = Text::String::New(dsn);
@@ -452,8 +453,8 @@ DB::ODBCConn::~ODBCConn()
 	OPTSTR_DEL(this->uid);
 	OPTSTR_DEL(this->pwd);
 	OPTSTR_DEL(this->schema);
-	SDEL_STRING(this->lastErrorMsg);
-	SDEL_STRING(this->connStr);
+	OPTSTR_DEL(this->lastErrorMsg);
+	OPTSTR_DEL(this->connStr);
 }
 
 DB::SQLType DB::ODBCConn::GetSQLType() const
@@ -480,9 +481,9 @@ void DB::ODBCConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("ODBC:"));
-	if (this->connStr)
+	if (this->connStr.SetTo(s))
 	{
-		sb->Append(this->connStr);
+		sb->Append(s);
 	}
 	else if (this->dsn.SetTo(s))
 	{
@@ -532,7 +533,7 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 		SQLFreeHandle(SQL_HANDLE_STMT, lastStmtHand);
 		lastStmtHand = 0;
 	}
-	SDEL_STRING(this->lastErrorMsg);
+	OPTSTR_DEL(this->lastErrorMsg);
 
 	SQLHANDLE hStmt;
 	SQLRETURN ret;
@@ -643,7 +644,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 		SQLFreeHandle(SQL_HANDLE_STMT, lastStmtHand);
 		lastStmtHand = 0;
 	}
-	SDEL_STRING(this->lastErrorMsg);
+	OPTSTR_DEL(this->lastErrorMsg);
 	SQLHANDLE hStmt;
 	SQLRETURN ret;
 //	Int32 rowCnt = -1;
@@ -750,9 +751,10 @@ void DB::ODBCConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 	Int32 errCode;
 	SQLWCHAR msg[256];
 	Int16 msgSize;
-	if (this->lastErrorMsg)
+	NN<Text::String> s;
+	if (this->lastErrorMsg.SetTo(s))
 	{
-		str->Append(this->lastErrorMsg);
+		str->Append(s);
 		return;
 	}
 	if (this->lastStmtHand == 0)
@@ -838,9 +840,10 @@ void DB::ODBCConn::Reconnect()
 {
 	Close();
 	Int8 oldTzQhr = this->tzQhr;
-	if (this->connStr)
+	NN<Text::String> s;
+	if (this->connStr.SetTo(s))
 	{
-		NN<Text::String> connStr = this->connStr->Clone();
+		NN<Text::String> connStr = s->Clone();
 		Connect(connStr);
 		connStr->Release();
 	}
@@ -1092,7 +1095,7 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 	this->ShowSQLError((const UTF16Char*)state, (const UTF16Char*)errorMsg);
 }
 
-Text::String *DB::ODBCConn::GetConnStr()
+Optional<Text::String> DB::ODBCConn::GetConnStr()
 {
 	return this->connStr;
 }
@@ -1893,7 +1896,13 @@ Bool DB::ODBCReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		sb->Append((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData);
+		{
+			NN<Text::StringBuilderUTF8> colSb;
+			if (colSb.Set((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData))
+			{
+				sb->Append(NN<Text::StringBase<UTF8Char>>(colSb));
+			}
+		}
 		return true;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:

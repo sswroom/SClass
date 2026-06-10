@@ -7,12 +7,16 @@
 
 #define STRINGBUILDER_ALLOCLENG(leng) this->AllocLeng(leng)
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF8Char> *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NN<Text::StringBase<UTF8Char>> s)
 {
-	if (s == 0)
-	{
-		return *this;
-	}
+	STRINGBUILDER_ALLOCLENG(s->leng);
+	MemCopyNO(&this->v[this->leng], s->v.Ptr(), s->leng + 1);
+	this->leng += s->leng;
+	return *this;
+}
+
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NN<Text::StringBase<const UTF8Char>> s)
+{
 	if (s->leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s->leng);
@@ -24,18 +28,6 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NN<Text::String> s)
 {
-	STRINGBUILDER_ALLOCLENG(s->leng);
-	MemCopyNO(&this->v[this->leng], s->v.Ptr(), s->leng + 1);
-	this->leng += s->leng;
-	return *this;
-}
-
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<const UTF8Char> *s)
-{
-	if (s == 0)
-	{
-		return *this;
-	}
 	if (s->leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s->leng);

@@ -15,9 +15,9 @@ namespace Net
 
 		struct ObjectInfo
 		{
-			Text::String *objectName;
-			Text::String *typeName;
-			Text::String *typeVal;
+			NN<Text::String> objectName;
+			Optional<Text::String> typeName;
+			Optional<Text::String> typeVal;
 			UInt8 oid[32];
 			UIntOS oidLen;
 			Data::ArrayListStringNN valName;
@@ -40,7 +40,7 @@ namespace Net
 
 		static UIntOS CalcLineSpace(UnsafeArray<const UTF8Char> txt);
 		static void ModuleAppendOID(NN<ModuleInfo> module, NN<ObjectInfo> obj);
-		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<Text::String> s, NN<Text::StringBuilderUTF8> errMessage);
 		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);
 		Bool ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);

@@ -16,7 +16,7 @@ namespace Net
 			UInt16 recType;
 			UInt16 recClass;
 			UInt32 ttl;
-			Text::String *rd;
+			Optional<Text::String> rd;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 priority;
 			UInt16 weight;

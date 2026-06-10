@@ -63,16 +63,17 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArr
 	return newStrs;
 }
 
-UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::String **strs)
+UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Optional<Text::String> *strs)
 {
 	UIntOS i = this->strCnt;
 	UIntOS j = 0;
 	UIntOS k;
+	NN<Text::String> s;
 	while (i-- > 0)
 	{
-		if (strs[i])
+		if (strs[i].SetTo(s))
 		{
-			k = strs[i]->leng;
+			k = s->leng;
 			j += k + 1;
 			if (this->maxStrLen[i] < k)
 			{
@@ -88,10 +89,10 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::Str
 		k = 0;
 		while (k < i)
 		{
-			if (strs[k])
+			if (strs[k].SetTo(s))
 			{
 				newStrs[k] = UnsafeArray<const UTF8Char>(sptr);
-				sptr = strs[k]->ConcatTo(sptr) + 1;
+				sptr = s->ConcatTo(sptr) + 1;
 			}
 			else
 			{
@@ -261,7 +262,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(NN<Text::String>, 0);
 	this->cols = 0;
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 }
@@ -276,7 +277,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(NN<Text::String>, 0);
 	this->cols = 0;
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 }
@@ -292,7 +293,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(NN<Text::String>, strCnt);
 	this->cols = 0;
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -314,7 +315,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->thisStrLen = 0;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
 	this->cols = 0;
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -336,7 +337,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->thisStrLen = 0;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -361,7 +362,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->thisStrLen = 0;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -386,7 +387,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->thisStrLen = 0;
 	this->colNames = MemAllocArr(NN<Text::String>, this->strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, this->strCnt);
-	this->tableName = 0;
+	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = this->strCnt;
@@ -455,7 +456,7 @@ Map::VectorLayer::~VectorLayer()
 	{
 		MemFree(this->cols);
 	}
-	SDEL_STRING(this->tableName);
+	OPTSTR_DEL(this->tableName);
 }
 
 Map::DrawLayerType Map::VectorLayer::GetLayerType() const
@@ -691,22 +692,20 @@ Map::MapDrawLayer::FailReason Map::VectorLayer::GetFailReason() const
 	return Map::MapDrawLayer::FailReason::IdNotFound;
 }
 
-void Map::VectorLayer::SetTableName(Text::String *tableName)
+void Map::VectorLayer::SetTableName(Optional<Text::String> tableName)
 {
-	SDEL_STRING(this->tableName);
-	if (tableName)
-	{
-		this->tableName = tableName->Clone().Ptr();
-	}
+	OPTSTR_DEL(this->tableName);
+	this->tableName = Text::String::CopyOrNull(tableName);
 }
 
 UIntOS Map::VectorLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
-	if (this->tableName)
+	NN<Text::String> tableName;
+	if (this->tableName.SetTo(tableName))
 	{
-		names->Add(this->tableName->Clone());
+		names->Add(tableName->Clone());
 	}
 	else
 	{
@@ -769,7 +768,7 @@ Bool Map::VectorLayer::VectorValid(NN<Math::Geometry::Vector2D> vec)
 	return true;
 }
 
-Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, Text::String **strs)
+Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, Optional<Text::String> *strs)
 {
 	if (!this->VectorValid(vec))
 		return -1;

@@ -14,26 +14,26 @@ class Userfile
 private:
 	Int32 id;
 	Int32 filetype;
-	Text::String* orifilename;
+	Optional<Text::String> orifilename;
 	Data::Timestamp filetime;
 	Double lat;
 	Double lon;
 	Int32 webuserId;
 	Int32 speciesId;
 	Data::Timestamp capturetime;
-	Text::String* datafilename;
+	Optional<Text::String> datafilename;
 	Int32 crcval;
 	Int32 rottype;
-	Text::String* camera;
-	Text::String* descript;
+	Optional<Text::String> camera;
+	Optional<Text::String> descript;
 	Int32 loctype;
-	Text::String* camerasn;
+	Optional<Text::String> camerasn;
 	Int32 prevupdated;
 	Double cropleft;
 	Double croptop;
 	Double cropright;
 	Double cropbottom;
-	Text::String* location;
+	Optional<Text::String> location;
 
 public:
 	Userfile();
@@ -43,8 +43,8 @@ public:
 	void SetId(Int32 id);
 	Int32 GetFiletype();
 	void SetFiletype(Int32 filetype);
-	Text::String* GetOrifilename();
-	void SetOrifilename(Text::String* orifilename);
+	Optional<Text::String> GetOrifilename();
+	void SetOrifilename(Optional<Text::String> orifilename);
 	Data::Timestamp GetFiletime();
 	void SetFiletime(const Data::Timestamp &filetime);
 	Double GetLat();
@@ -57,20 +57,20 @@ public:
 	void SetSpeciesId(Int32 speciesId);
 	Data::Timestamp GetCapturetime();
 	void SetCapturetime(const Data::Timestamp &capturetime);
-	Text::String* GetDatafilename();
-	void SetDatafilename(Text::String* datafilename);
+	Optional<Text::String> GetDatafilename();
+	void SetDatafilename(Optional<Text::String> datafilename);
 	Int32 GetCrcval();
 	void SetCrcval(Int32 crcval);
 	Int32 GetRottype();
 	void SetRottype(Int32 rottype);
-	Text::String* GetCamera();
-	void SetCamera(Text::String* camera);
-	Text::String* GetDescript();
-	void SetDescript(Text::String* descript);
+	Optional<Text::String> GetCamera();
+	void SetCamera(Optional<Text::String> camera);
+	Optional<Text::String> GetDescript();
+	void SetDescript(Optional<Text::String> descript);
 	Int32 GetLoctype();
 	void SetLoctype(Int32 loctype);
-	Text::String* GetCamerasn();
-	void SetCamerasn(Text::String* camerasn);
+	Optional<Text::String> GetCamerasn();
+	void SetCamerasn(Optional<Text::String> camerasn);
 	Int32 GetPrevupdated();
 	void SetPrevupdated(Int32 prevupdated);
 	Double GetCropleft();
@@ -81,8 +81,8 @@ public:
 	void SetCropright(Double cropright);
 	Double GetCropbottom();
 	void SetCropbottom(Double cropbottom);
-	Text::String* GetLocation();
-	void SetLocation(Text::String* location);
+	Optional<Text::String> GetLocation();
+	void SetLocation(Optional<Text::String> location);
 
 	NN<Data::NamedClass<Userfile>> CreateClass();
 };
@@ -91,36 +91,36 @@ Userfile::Userfile()
 {
 	this->id = 0;
 	this->filetype = 0;
-	this->orifilename = 0;
+	this->orifilename = nullptr;
 	this->filetime = 0;
 	this->lat = 0;
 	this->lon = 0;
 	this->webuserId = 0;
 	this->speciesId = 0;
 	this->capturetime = 0;
-	this->datafilename = 0;
+	this->datafilename = nullptr;
 	this->crcval = 0;
 	this->rottype = 0;
-	this->camera = 0;
-	this->descript = 0;
+	this->camera = nullptr;
+	this->descript = nullptr;
 	this->loctype = 0;
-	this->camerasn = 0;
+	this->camerasn = nullptr;
 	this->prevupdated = 0;
 	this->cropleft = 0;
 	this->croptop = 0;
 	this->cropright = 0;
 	this->cropbottom = 0;
-	this->location = 0;
+	this->location = nullptr;
 }
 
 Userfile::~Userfile()
 {
-	SDEL_STRING(this->orifilename);
-	SDEL_STRING(this->datafilename);
-	SDEL_STRING(this->camera);
-	SDEL_STRING(this->descript);
-	SDEL_STRING(this->camerasn);
-	SDEL_STRING(this->location);
+	OPTSTR_DEL(this->orifilename);
+	OPTSTR_DEL(this->datafilename);
+	OPTSTR_DEL(this->camera);
+	OPTSTR_DEL(this->descript);
+	OPTSTR_DEL(this->camerasn);
+	OPTSTR_DEL(this->location);
 }
 
 Int32 Userfile::GetId()
@@ -143,15 +143,15 @@ void Userfile::SetFiletype(Int32 filetype)
 	this->filetype = filetype;
 }
 
-Text::String* Userfile::GetOrifilename()
+Optional<Text::String> Userfile::GetOrifilename()
 {
 	return this->orifilename;
 }
 
-void Userfile::SetOrifilename(Text::String* orifilename)
+void Userfile::SetOrifilename(Optional<Text::String> orifilename)
 {
-	SDEL_STRING(this->orifilename);
-	this->orifilename = orifilename?orifilename->Clone().Ptr():0;
+	OPTSTR_DEL(this->orifilename);
+	this->orifilename = Text::String::CopyOrNull(orifilename);
 }
 
 Data::Timestamp Userfile::GetFiletime()
@@ -214,15 +214,15 @@ void Userfile::SetCapturetime(const Data::Timestamp &capturetime)
 	this->capturetime = capturetime;
 }
 
-Text::String* Userfile::GetDatafilename()
+Optional<Text::String> Userfile::GetDatafilename()
 {
 	return this->datafilename;
 }
 
-void Userfile::SetDatafilename(Text::String* datafilename)
+void Userfile::SetDatafilename(Optional<Text::String> datafilename)
 {
-	SDEL_STRING(this->datafilename);
-	this->datafilename = datafilename?datafilename->Clone().Ptr():0;
+	OPTSTR_DEL(this->datafilename);
+	this->datafilename = Text::String::CopyOrNull(datafilename);
 }
 
 Int32 Userfile::GetCrcval()
@@ -245,26 +245,26 @@ void Userfile::SetRottype(Int32 rottype)
 	this->rottype = rottype;
 }
 
-Text::String* Userfile::GetCamera()
+Optional<Text::String> Userfile::GetCamera()
 {
 	return this->camera;
 }
 
-void Userfile::SetCamera(Text::String* camera)
+void Userfile::SetCamera(Optional<Text::String> camera)
 {
-	SDEL_STRING(this->camera);
-	this->camera = camera?camera->Clone().Ptr():0;
+	OPTSTR_DEL(this->camera);
+	this->camera = Text::String::CopyOrNull(camera);
 }
 
-Text::String* Userfile::GetDescript()
+Optional<Text::String> Userfile::GetDescript()
 {
 	return this->descript;
 }
 
-void Userfile::SetDescript(Text::String* descript)
+void Userfile::SetDescript(Optional<Text::String> descript)
 {
-	SDEL_STRING(this->descript);
-	this->descript = descript?descript->Clone().Ptr():0;
+	OPTSTR_DEL(this->descript);
+	this->descript = Text::String::CopyOrNull(descript);
 }
 
 Int32 Userfile::GetLoctype()
@@ -277,15 +277,15 @@ void Userfile::SetLoctype(Int32 loctype)
 	this->loctype = loctype;
 }
 
-Text::String* Userfile::GetCamerasn()
+Optional<Text::String> Userfile::GetCamerasn()
 {
 	return this->camerasn;
 }
 
-void Userfile::SetCamerasn(Text::String* camerasn)
+void Userfile::SetCamerasn(Optional<Text::String> camerasn)
 {
-	SDEL_STRING(this->camerasn);
-	this->camerasn = camerasn?camerasn->Clone().Ptr():0;
+	OPTSTR_DEL(this->camerasn);
+	this->camerasn = Text::String::CopyOrNull(camerasn);
 }
 
 Int32 Userfile::GetPrevupdated()
@@ -338,15 +338,15 @@ void Userfile::SetCropbottom(Double cropbottom)
 	this->cropbottom = cropbottom;
 }
 
-Text::String* Userfile::GetLocation()
+Optional<Text::String> Userfile::GetLocation()
 {
 	return this->location;
 }
 
-void Userfile::SetLocation(Text::String* location)
+void Userfile::SetLocation(Optional<Text::String> location)
 {
-	SDEL_STRING(this->location);
-	this->location = location?location->Clone().Ptr():0;
+	OPTSTR_DEL(this->location);
+	this->location = Text::String::CopyOrNull(location);
 }
 
 NN<Data::NamedClass<Userfile>> Userfile::CreateClass()

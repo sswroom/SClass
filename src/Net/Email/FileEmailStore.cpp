@@ -185,7 +185,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email = MemAllocNN(EmailInfo);
 	email->id = id;
 	email->remoteAddr = remoteAddr.Ptr()[0];
-	email->fromAddr = mail->mailFrom->Clone();
+	email->fromAddr = Text::String::OrEmpty(mail->mailFrom)->Clone();
 	email->recvTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	email->isDeleted = false;
 	email->fileSize = (UIntOS)mail->dataStm->GetLength();

@@ -230,6 +230,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 	UIntOS i;
 	NN<ProgInfo> prog;
 	NN<Text::String> progPath;
+	NN<Text::String> notifyCmd;
 	i = me->progList.GetCount();
 	while (i-- > 0)
 	{
@@ -264,10 +265,10 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 						sb.AppendUIntOS(prog->procId);
 						me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 						
-						if (me->notifyCmd)
+						if (me->notifyCmd.SetTo(notifyCmd))
 						{
 							sb.ClearStr();
-							sb.Append(me->notifyCmd);
+							sb.Append(notifyCmd);
 							sb.AppendC(UTF8STRC(" \"Prog "));
 							sb.Append(prog->progName);
 							sb.AppendC(UTF8STRC(" restarted\""));
@@ -330,7 +331,7 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 	this->txtProgPath->SetRect(104, 92, 600, 23, false);
 	this->txtProgPath->SetReadOnly(true);
 
-	this->notifyCmd = 0;
+	this->notifyCmd = nullptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Log"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -346,7 +347,7 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("NotifyCmd")).SetTo(s))
 		{
-			this->notifyCmd = s->Clone().Ptr();
+			this->notifyCmd = s->Clone();
 		}
 		cfg.Delete();
 	}
@@ -365,5 +366,5 @@ SSWR::ProcMonForm::~ProcMonForm()
 		MemFreeNN(prog);
 	}
 	this->logger.Delete();
-	SDEL_STRING(this->notifyCmd);
+	OPTSTR_DEL(this->notifyCmd);
 }

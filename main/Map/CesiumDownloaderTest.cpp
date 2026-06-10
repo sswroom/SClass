@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/Comparator.hpp"
-#include "Data/SyncArrayListObj.hpp"
+#include "Data/SyncArrayListNN.hpp"
 #include "Data/Compress/Inflater.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/ConsoleWriter.h"
@@ -36,15 +36,15 @@ private:
 
 	struct ThreadStatus
 	{
-		CesiumDownloader *me;
-		Sync::Event *evt;
+		NN<CesiumDownloader> me;
+		NN<Sync::Event> evt;
 		UInt64 totalDownload;
 		UInt64 totalUpload;
 		UInt64 totalContentSize;
 		UInt32 reqCnt;
 		UInt32 succCnt;
 		ThreadState state;
-		Text::String *currURL;
+		Optional<Text::String> currURL;
 	};
 private:
 	NN<Net::TCPClientFactory> clif;
@@ -52,13 +52,13 @@ private:
 	UIntOS threadCount;
 	Bool threadToStop;
 	Sync::Event mainEvt;
-	ThreadStatus *stats;
-	Data::SyncArrayListObj<Text::String*> urlList;
+	UnsafeArray<ThreadStatus> stats;
+	Data::SyncArrayListNN<Text::String> urlList;
 	Bool useComp;
 	Sync::Mutex filesMut;
 	Data::ArrayListObj<FileEntry*> filesList;
 
-	static void ParseJSONObj(NN<ThreadStatus> stat, Text::String *url, Optional<Text::JSONBase> optobj, NN<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSONObj(NN<ThreadStatus> stat, NN<Text::String> url, Optional<Text::JSONBase> optobj, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		NN<Text::JSONBase> obj;
 		if (!optobj.SetTo(obj) || obj->GetType() != Text::JSONType::Object)
@@ -94,7 +94,7 @@ private:
 		}
 	}
 
-	static void ParseJSON(NN<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NN<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSON(NN<ThreadStatus> stat, NN<Text::String> url, IO::MemoryStream *mstm, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		mstm->Write(Data::ByteArrayR(U8STR(""), 1));
 		UIntOS i;
@@ -107,7 +107,7 @@ private:
 		}
 	}
 
-	static void ProcURL(NN<ThreadStatus> stat, Text::String *url, NN<Text::StringBuilderUTF8> tmpSb)
+	static void ProcURL(NN<ThreadStatus> stat, NN<Text::String> url, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
@@ -190,25 +190,25 @@ private:
 	static UInt32 __stdcall ProcThread(AnyType userObj)
 	{
 		NN<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
-		Text::String *nextURL;
+		NN<Text::String> url;
 		{
 			Text::StringBuilderUTF8 sb;
 			Sync::Event evt;
-			stat->evt = &evt;
+			stat->evt = evt;
 			stat->state = ThreadState::Running;
 			stat->me->mainEvt.Set();
 			while (!stat->me->threadToStop)
 			{
-				if (stat->currURL)
+				if (stat->currURL.SetTo(url))
 				{
-					ProcURL(stat, stat->currURL, sb);
-					while ((nextURL = stat->me->urlList.RemoveLast()) != 0)
+					ProcURL(stat, url, sb);
+					while (stat->me->urlList.RemoveLast().SetTo(url))
 					{
-						stat->currURL->Release();
-						stat->currURL = nextURL;
-						ProcURL(stat, nextURL, sb);
+						OPTSTR_DEL(stat->currURL);
+						stat->currURL = url;
+						ProcURL(stat, url, sb);
 					}
-					SDEL_STRING(stat->currURL);
+					OPTSTR_DEL(stat->currURL);
 
 					stat->me->mainEvt.Set();
 				}
@@ -233,13 +233,13 @@ public:
 		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
-			this->stats[i].me = this;
+			this->stats[i].me = *this;
 			this->stats[i].totalDownload = 0;
 			this->stats[i].totalUpload = 0;
 			this->stats[i].totalContentSize = 0;
 			this->stats[i].reqCnt = 0;
 			this->stats[i].succCnt = 0;
-			this->stats[i].currURL = 0;
+			this->stats[i].currURL = nullptr;
 			this->stats[i].state = ThreadState::NotRunning;
 			Sync::ThreadUtil::Create(ProcThread, &this->stats[i]);
 		}
@@ -291,9 +291,9 @@ public:
 		i = this->urlList.GetCount();
 		while (i-- > 0)
 		{
-			this->urlList.GetItem(i)->Release();
+			this->urlList.GetItemNoCheck(i)->Release();
 		}
-		MemFree(this->stats);
+		MemFreeArr(this->stats);
 		this->ssl.Delete();
 
 		this->ClearFiles();
@@ -304,14 +304,14 @@ public:
 		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
-			if (this->stats[i].currURL == 0)
+			if (this->stats[i].currURL.IsNull())
 			{
-				this->stats[i].currURL = Text::String::New(url).Ptr();
+				this->stats[i].currURL = Text::String::New(url);
 				this->stats[i].evt->Set();
 				return;
 			}
 		}
-		this->urlList.Add(Text::String::New(url).Ptr());
+		this->urlList.Add(Text::String::New(url));
 	}
 
 	void WaitForIdle()
@@ -324,7 +324,7 @@ public:
 			i = this->threadCount;
 			while (i-- > 0)
 			{
-				if (this->stats[i].currURL != 0)
+				if (this->stats[i].currURL.NotNull())
 				{
 					found = true;
 				}

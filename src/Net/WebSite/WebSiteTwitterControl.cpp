@@ -36,11 +36,12 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	Int64 recTime;
 	Text::String *message;
 	NN<Text::String> nnmessage;
-	Text::String *imgURL;
+	Optional<Text::String> imgURL;
+	NN<Text::String> nnimgURL;
 	NN<Text::String> avalue;
 	conversationId = 0;
 	recTime = 0;
-	imgURL = 0;
+	imgURL = nullptr;
 	message = 0;
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
@@ -76,7 +77,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 				UIntOS pathLev = reader.GetPathLev();
 				conversationId = 0;
 				recTime = 0;
-				SDEL_STRING(imgURL);
+				OPTSTR_DEL(imgURL);
 				SDEL_STRING(message);
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
@@ -191,18 +192,18 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 							attr = reader.GetAttribNoCheck(i);
 							if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("data-image-url")) && attr->value.SetTo(avalue))
 							{
-								if (imgURL == 0)
+								if (!imgURL.SetTo(nnimgURL))
 								{
-									imgURL = avalue->Clone().Ptr();
+									imgURL = avalue->Clone();
 								}
 								else
 								{
 									sb.ClearStr();
-									sb.Append(imgURL);
+									sb.Append(nnimgURL);
 									sb.AppendUTF8Char(' ');
-									imgURL->Release();
+									nnimgURL->Release();
 									sb.Append(avalue);
-									imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+									imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 								}
 							}
 							i++;
@@ -223,7 +224,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					item->message = nnmessage;
 					item->imgURL = imgURL;
 					message = 0;
-					imgURL = 0;
+					imgURL = nullptr;
 					itemList->Add(item);
 					retCnt++;
 				}
@@ -282,7 +283,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #endif
 	}
 	SDEL_STRING(message);
-	SDEL_STRING(imgURL);
+	OPTSTR_DEL(imgURL);
 	cli.Delete();
 	return retCnt;
 }

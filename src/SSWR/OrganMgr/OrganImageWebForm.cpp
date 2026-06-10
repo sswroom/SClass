@@ -8,12 +8,12 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(AnyType userObj)
 	NN<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSourceURL->GetText(sb);
-	SDEL_STRING(me->srcURL);
+	OPTSTR_DEL(me->srcURL);
 	me->srcURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
 	me->txtLocation->GetText(sb);
-	SDEL_STRING(me->location);
+	OPTSTR_DEL(me->location);
 	me->location = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -30,19 +30,19 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientContr
 	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
-	this->srcURL = 0;
-	this->location = 0;
+	this->srcURL = nullptr;
+	this->location = nullptr;
 
 	this->SetText(this->env->GetLang(CSTR("ImageWebTitle")));
 
 	this->lblId = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebId")));
 	this->lblId->SetRect(0, 0, 100, 23, false);
-	this->txtId = ui->NewTextBox(*this, imgItem->GetDispName()->ToCString());
+	this->txtId = ui->NewTextBox(*this, Text::String::OrEmpty(imgItem->GetDispName())->ToCString());
 	this->txtId->SetRect(100, 0, 200, 23, false);
 	this->txtId->SetReadOnly(true);
 	this->lblFileName = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebFileName")));
 	this->lblFileName->SetRect(0, 24, 100, 23, false);
-	this->txtFileName = ui->NewTextBox(*this, imgItem->GetFullName()->ToCString());
+	this->txtFileName = ui->NewTextBox(*this, Text::String::OrEmpty(imgItem->GetFullName())->ToCString());
 	this->txtFileName->SetRect(100, 24, 680, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	this->lblImageURL = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebImageURL")));
@@ -82,8 +82,8 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientContr
 
 SSWR::OrganMgr::OrganImageWebForm::~OrganImageWebForm()
 {
-	SDEL_STRING(this->srcURL);
-	SDEL_STRING(this->location);
+	OPTSTR_DEL(this->srcURL);
+	OPTSTR_DEL(this->location);
 }
 
 void SSWR::OrganMgr::OrganImageWebForm::OnMonitorChanged()
@@ -91,12 +91,12 @@ void SSWR::OrganMgr::OrganImageWebForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::String *SSWR::OrganMgr::OrganImageWebForm::GetSrcURL()
+Optional<Text::String> SSWR::OrganMgr::OrganImageWebForm::GetSrcURL()
 {
 	return this->srcURL;
 }
 
-Text::String *SSWR::OrganMgr::OrganImageWebForm::GetLocation()
+Optional<Text::String> SSWR::OrganMgr::OrganImageWebForm::GetLocation()
 {
 	return this->location;
 }

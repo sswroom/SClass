@@ -167,6 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	NN<Net::DNSClient::RequestAnswer> ans;
+	NN<Text::String> s;
 	if (me->lbV4Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
@@ -179,9 +180,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(AnyType userObj)
 		me->txtV4AnsClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtV4AnsTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			me->txtV4AnsRD->SetText(ans->rd->ToCString());
+			me->txtV4AnsRD->SetText(s->ToCString());
 		}
 		else
 		{
@@ -250,6 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	NN<Net::DNSClient::RequestAnswer> ans;
+	NN<Text::String> s;
 	if (me->lbV6Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
@@ -262,9 +264,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(AnyType userObj)
 		me->txtV6AnsClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtV6AnsTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			me->txtV6AnsRD->SetText(ans->rd->ToCString());
+			me->txtV6AnsRD->SetText(s->ToCString());
 		}
 		else
 		{
@@ -333,6 +335,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	NN<Net::DNSClient::RequestAnswer> ans;
+	NN<Text::String> s;
 	if (me->lbOthAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
@@ -345,9 +348,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(AnyType userObj)
 		me->txtOthAnsClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtOthAnsTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			me->txtOthAnsRD->SetText(ans->rd->ToCString());
+			me->txtOthAnsRD->SetText(s->ToCString());
 		}
 		else
 		{
@@ -559,6 +562,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	NN<Net::DNSClient::RequestAnswer> ans;
+	NN<Text::String> s;
 	if (me->lbSAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
@@ -571,9 +575,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(AnyType userObj)
 		me->txtSAnsClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtSAnsTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			me->txtSAnsRD->SetText(ans->rd->ToCString());
+			me->txtSAnsRD->SetText(s->ToCString());
 		}
 		else
 		{

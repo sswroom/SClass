@@ -272,7 +272,7 @@ Bool Data::Class::Equals(AnyType obj1, AnyType obj2)
 	return true;
 }
 
-void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToCppClassHeader(NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("class "));
@@ -413,11 +413,12 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UIntOS t
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
 
-void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToCppClassSource(Optional<Text::StringBase<UTF8Char>> clsPrefix, NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
-	if (clsPrefix == 0)
+	NN<Text::StringBase<UTF8Char>> nnclsPrefix;
+	if (!clsPrefix.SetTo(nnclsPrefix))
 	{
-		clsPrefix = Text::String::NewEmpty().Ptr();
+		nnclsPrefix = Text::String::NewEmpty();
 	}
 	NN<Data::ArrayListNN<FieldInfo>> fieldList = this->fields;
 	NN<FieldInfo> field;
@@ -426,7 +427,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	UIntOS j;
 
 	sb->AppendChar('\t', tabLev);
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::"));
 	sb->Append(clsName);
@@ -472,7 +473,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("\r\n"));
 
 	sb->AppendChar('\t', tabLev);
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::~"));
 	sb->Append(clsName);
@@ -557,7 +558,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->AppendChar('\t', tabLev);
 			sb->Append(typeName);
 			sb->AppendUTF8Char(' ');
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Get"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -575,7 +576,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 			sb->AppendChar('\t', tabLev);
 			sb->AppendC(UTF8STRC("void "));
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -599,7 +600,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 			sb->AppendChar('\t', tabLev);
 			sb->AppendC(UTF8STRC("void "));
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -623,7 +624,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 			sb->AppendChar('\t', tabLev);
 			sb->AppendC(UTF8STRC("void "));
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -651,7 +652,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->AppendChar('\t', tabLev);
 			sb->Append(cppType);
 			sb->AppendUTF8Char(' ');
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Get"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -669,7 +670,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 			sb->AppendChar('\t', tabLev);
 			sb->AppendC(UTF8STRC("void "));
-			sb->Append(clsPrefix);
+			sb->Append(nnclsPrefix);
 			sb->Append(clsName);
 			sb->AppendC(UTF8STRC("::Set"));
 			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -702,7 +703,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 					sb->AppendChar('\t', tabLev);
 					sb->AppendC(UTF8STRC("void "));
-					sb->Append(clsPrefix);
+					sb->Append(nnclsPrefix);
 					sb->Append(clsName);
 					sb->AppendC(UTF8STRC("::Set"));
 					sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -741,7 +742,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 					sb->AppendChar('\t', tabLev);
 					sb->AppendC(UTF8STRC("void "));
-					sb->Append(clsPrefix);
+					sb->Append(nnclsPrefix);
 					sb->Append(clsName);
 					sb->AppendC(UTF8STRC("::Set"));
 					sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
@@ -833,22 +834,22 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("NN<Data::NamedClass<"));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">> "));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::CreateClass() const\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("NN<Data::NamedClass<"));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">> cls;\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("NEW_CLASSNN(cls, Data::NamedClass<"));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">(this));\r\n"));
 	i = 0;
@@ -894,14 +895,14 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("Bool "));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::FillFromDBReader(NN<DB::DBReader> r)\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("NN<Data::NamedClass<"));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">> cls = this->CreateClass();\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
@@ -916,7 +917,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("void "));
-	sb->Append(clsPrefix);
+	sb->Append(nnclsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::DBColList(NN<Data::ArrayListNN<Text::String>> colList)\r\n"));
 	sb->AppendChar('\t', tabLev);
@@ -936,7 +937,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
+void Data::Class::ToJavaClass(NN<Text::StringBase<UTF8Char>> clsName, UIntOS tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::StringMapNative<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;

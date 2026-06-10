@@ -151,8 +151,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 			{
 				Map::VectorLayer *lyr = 0;
 				UnsafeArrayOpt<const UTF8Char> tabHdrs[32];
-				Text::String *tabCols[32];
-				Text::String *tabVals[32];
+				Optional<Text::String> tabCols[32];
+				Optional<Text::String> tabVals[32];
 				UIntOS colCnt;
 				NN<Text::JSONArray> features = NN<Text::JSONArray>::ConvertFrom(jbase);
 				UIntOS i;
@@ -176,7 +176,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 						while (k < colCnt)
 						{
 							tabCols[k] = colNames.GetItem(k).OrNull();
-							tabHdrs[k] = UnsafeArray<const UTF8Char>(tabCols[k]->v);
+							tabHdrs[k] = OPTSTR_CSTR(tabCols[k]).v;
 							k++;
 						}
 						if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
@@ -203,13 +203,13 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 								k = 0;
 								while (k < colCnt)
 								{
-									if (NN<Text::JSONObject>::ConvertFrom(featProp)->GetObjectValue(tabCols[k]->ToCString()).SetTo(jbase) && jbase->GetType() == Text::JSONType::String)
+									if (NN<Text::JSONObject>::ConvertFrom(featProp)->GetObjectValue(Text::String::OrEmpty(tabCols[k])->ToCString()).SetTo(jbase) && jbase->GetType() == Text::JSONType::String)
 									{
-										tabVals[k] = NN<Text::JSONString>::ConvertFrom(jbase)->GetValue().Ptr();
+										tabVals[k] = NN<Text::JSONString>::ConvertFrom(jbase)->GetValue();
 									}
 									else
 									{
-										tabVals[k] = 0;
+										tabVals[k] = nullptr;
 									}
 									k++;
 								}

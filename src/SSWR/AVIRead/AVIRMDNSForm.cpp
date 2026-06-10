@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::DNSRecordRecv(AnyType userData, NN<c
 						me->svcUpdated = true;
 				}
 				sb.ClearStr();
-				sb.Append(ans->rd);
+				sb.AppendOpt(ans->rd);
 				svc->txtList.FreeAll();
 				sarr[1] = sb;
 				while (true)
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::DNSRecordRecv(AnyType userData, NN<c
 				else
 				{
 					NEW_CLASSNN(svc, ServiceInfo());
-					svc->instanceName = ans->rd->Clone();
+					svc->instanceName = Text::String::OrEmpty(ans->rd)->Clone();
 					svc->serviceName = ans->name->Clone();
 					svc->port = 0;
 					svc->ptrTTL = ans->ttl;
@@ -109,10 +109,10 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::DNSRecordRecv(AnyType userData, NN<c
 			else
 			{
 				Sync::MutexUsage mutUsage(me->ptrMut);
-				if (me->ptrMap.Get(ans->rd->ToCString()) == 0)
+				if (me->ptrMap.Get(Text::String::OrEmpty(ans->rd)->ToCString()) == 0)
 				{
-					me->ptrMap.Put(ans->rd->ToCString(), 1);
-					me->mdns->SendQuery(ans->rd->ToCString());
+					me->ptrMap.Put(Text::String::OrEmpty(ans->rd)->ToCString(), 1);
+					me->mdns->SendQuery(Text::String::OrEmpty(ans->rd)->ToCString());
 				}
 			}
 		}

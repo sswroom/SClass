@@ -117,6 +117,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 	j = status->GetDefineCount();
 	if (j > 0)
 	{
+		NN<Text::String> fileName;
 		Text::Cpp::CppParseStatus::DefineInfo defInfo;
 		i = 0;
 		sb->AppendC(UTF8STRC("Defines:\r\n"));
@@ -125,13 +126,13 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 			status->GetDefineInfo(i, defInfo);
 			sb->Append(defInfo.defineName);
 			sb->AppendC(UTF8STRC("\t"));
-			if (defInfo.fileName == 0)
+			if (!defInfo.fileName.SetTo(fileName))
 			{
 				sb->AppendC(UTF8STRC("By compiler\r\n"));
 			}
 			else
 			{
-				sb->Append(defInfo.fileName);
+				sb->Append(fileName);
 				sb->AppendC(UTF8STRC(" ("));
 				sb->AppendI32(defInfo.lineNum);
 				sb->AppendC(UTF8STRC(")\r\n"));

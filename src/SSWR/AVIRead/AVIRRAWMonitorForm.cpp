@@ -441,6 +441,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem().p;
+	NN<Text::String> s;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	if (ans)
@@ -463,9 +464,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(AnyType userObj)
 		me->txtMDNSClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtMDNSTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			me->txtMDNSResult->SetText(ans->rd->ToCString());
+			me->txtMDNSResult->SetText(s->ToCString());
 		}
 		else
 		{

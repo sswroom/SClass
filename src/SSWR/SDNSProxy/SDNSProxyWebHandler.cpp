@@ -136,10 +136,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(NN<SSWR::SDNSProxy
 				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
 				sbOut.AppendC(UTF8STRC("</td><td>"));
-				if (ans->rd)
-				{
-					sbOut.Append(ans->rd);
-				}
+				sbOut.AppendOpt(ans->rd);
 				sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 				i++;
 			}
@@ -237,10 +234,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(NN<SSWR::SDNSProxy
 				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
 				sbOut.AppendC(UTF8STRC("</td><td>"));
-				if (ans->rd)
-				{
-					sbOut.Append(ans->rd);
-				}
+				sbOut.AppendOpt(ans->rd);
 				sbOut.AppendC(UTF8STRC("</td><tr>\r\n"));
 				i++;
 			}
@@ -338,10 +332,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(NN<SSWR::SDNSProx
 				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
 				sbOut.AppendC(UTF8STRC("</td><td>"));
-				if (ans->rd)
-				{
-					sbOut.Append(ans->rd);
-				}
+				sbOut.AppendOpt(ans->rd);
 				sbOut.AppendC(UTF8STRC("</td><tr>\r\n"));
 				i++;
 			}

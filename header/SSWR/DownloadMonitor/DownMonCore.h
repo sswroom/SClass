@@ -56,13 +56,13 @@ namespace SSWR
 			FileEndHandler fileEndHdlr;
 			void *fileEndObj;
 
-			Text::String *downPath;
-			Text::String *succPath;
-			Text::String *errPath;
-			Text::String *ytPath;
-			Text::String *ffmpegPath;
-			Text::String *firefoxPath;
-			Text::String *listFile;
+			NN<Text::String> downPath;
+			NN<Text::String> succPath;
+			NN<Text::String> errPath;
+			NN<Text::String> ytPath;
+			NN<Text::String> ffmpegPath;
+			NN<Text::String> firefoxPath;
+			NN<Text::String> listFile;
 			Parser::ParserList *parsers;
 			Media::VideoChecker checker;
 
@@ -74,7 +74,7 @@ namespace SSWR
 			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
 			Bool ExtractZIP(Text::CStringNN zipFile, Text::CStringNN mp4File);
 			Bool VideoValid(Text::CStringNN fileName);
-			void ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath);
+			void ProcessDir(NN<Text::String> downPath, NN<Text::String> succPath, NN<Text::String> errPath);
 			static void __stdcall CheckThread(NN<Sync::Thread> thread);
 
 		public:
@@ -87,7 +87,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> GetSSLEngine();
 			CheckStatus GetCurrStatus();
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);
-			Text::String *GetListFile();
+			NN<Text::String> GetListFile();
 
 			static void __stdcall FileFree(NN<FileInfo> file);
 			Bool FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName);

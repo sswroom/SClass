@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 			if (i == 0)
 			{
 				sbClassName.v[0] = Text::CharUtil::ToUpper(sbClassName.v[0]);
-				cls->ToCppClassHeader(&sbClassName, 0, sb);
+				cls->ToCppClassHeader(sbClassName, 0, sb);
 				if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 				{
 					me->lblStatus->SetText(CSTR("Generated to clipboard"));
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 			else if (i == 1)
 			{
 				sbClassName.v[0] = Text::CharUtil::ToUpper(sbClassName.v[0]);
-				cls->ToCppClassSource(&sbPrefix, &sbClassName, 0, sb);
+				cls->ToCppClassSource(&sbPrefix, sbClassName, 0, sb);
 				if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 				{
 					me->lblStatus->SetText(CSTR("Generated to clipboard"));
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 			else if (i == 2)
 			{
 				sbClassName.v[0] = Text::CharUtil::ToUpper(sbClassName.v[0]);
-				cls->ToJavaClass(&sbClassName, 0, sb);
+				cls->ToJavaClass(sbClassName, 0, sb);
 				if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 				{
 					me->lblStatus->SetText(CSTR("Generated to clipboard"));

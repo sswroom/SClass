@@ -624,7 +624,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 		}
 		break;
 	default:
-		ans->rd = 0;
+		ans->rd = nullptr;
 		break;
 	}
 	index.Set(i + k + 10);
@@ -639,7 +639,7 @@ void Net::DNSClient::FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers)
 void __stdcall Net::DNSClient::FreeAnswer(NN<RequestAnswer> ans)
 {
 	ans->name->Release();;
-	SDEL_STRING(ans->rd);
+	OPTSTR_DEL(ans->rd);
 	MemFreeNN(ans);
 }
 

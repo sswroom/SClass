@@ -37,7 +37,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	case DB::DBConn::ConnType::ODBC:
 		{
 			NN<DB::ODBCConn> odbc = NN<DB::ODBCConn>::ConvertFrom(conn);
-			if (s.Set(odbc->GetConnStr()))
+			if (odbc->GetConnStr().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC("odbc:"));
 				connStr->Append(s);
@@ -236,10 +236,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		if (connStr.Substring(5).StartsWith(UTF8STRC("DSN=")))
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *dsn = 0;
-			Text::String *uid = 0;
-			Text::String *pwd = 0;
-			Text::String *schema = 0;
+			Optional<Text::String> dsn = nullptr;
+			Optional<Text::String> uid = nullptr;
+			Optional<Text::String> pwd = nullptr;
+			Optional<Text::String> schema = nullptr;
 			UIntOS cnt;
 			sb.Append(connStr.Substring(5));
 			Text::PString sarr[2];
@@ -249,23 +249,23 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 				if (sarr[0].StartsWithICase(UTF8STRC("DSN=")))
 				{
-					SDEL_STRING(dsn);
-					dsn = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+					OPTSTR_DEL(dsn);
+					dsn = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 				{
-					SDEL_STRING(uid);
-					uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+					OPTSTR_DEL(uid);
+					uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 				{
-					SDEL_STRING(pwd);
-					pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+					OPTSTR_DEL(pwd);
+					pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("SCHEMA=")))
 				{
-					SDEL_STRING(schema);
-					schema = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7).Ptr();
+					OPTSTR_DEL(schema);
+					schema = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
 				}
 				if (cnt != 2)
 				{
@@ -274,14 +274,14 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			NN<Text::String> s;
 			db = nullptr;
-			if (s.Set(dsn))
+			if (dsn.SetTo(s))
 			{
 				db = DB::ODBCConn::CreateDBTool(s, uid, pwd, schema, log, DBPREFIX).OrNull();
 			}
-			SDEL_STRING(dsn);
-			SDEL_STRING(uid);
-			SDEL_STRING(pwd);
-			SDEL_STRING(schema);
+			OPTSTR_DEL(dsn);
+			OPTSTR_DEL(uid);
+			OPTSTR_DEL(pwd);
+			OPTSTR_DEL(schema);
 			if (db.NotNull())
 			{
 				return db;
@@ -303,12 +303,12 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> nnserver;
-		Text::String *server = 0;
+		Optional<Text::String> server = nullptr;
 		Optional<Text::String> uid = nullptr;
 		NN<Text::String> nnuid;
 		Optional<Text::String> pwd = nullptr;
 		NN<Text::String> nnpwd;
-		Text::String *schema = 0;
+		Optional<Text::String> schema = nullptr;
 		UIntOS cnt;
 		sb.Append(connStr.Substring(6));
 		Text::PString sarr[2];
@@ -318,8 +318,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
 			{
-				SDEL_STRING(server);
-				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7).Ptr();
+				OPTSTR_DEL(server);
+				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
@@ -333,15 +333,15 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_STRING(schema);
-				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9).Ptr();
+				OPTSTR_DEL(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
 				break;
 			}
 		}
-		if (nnserver.Set(server) && uid.SetTo(nnuid) && pwd.SetTo(nnpwd))
+		if (server.SetTo(nnserver) && uid.SetTo(nnuid) && pwd.SetTo(nnpwd))
 		{
 			db = DB::MySQLConn::CreateDBTool(clif, nnserver, schema, nnuid, nnpwd, log, DBPREFIX);
 		}
@@ -350,10 +350,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			db = nullptr;
 		}
 		
-		SDEL_STRING(server);
+		OPTSTR_DEL(server);
 		OPTSTR_DEL(uid);
 		OPTSTR_DEL(pwd);
-		SDEL_STRING(schema);
+		OPTSTR_DEL(schema);
 		if (db.NotNull())
 		{
 			return db;
@@ -409,9 +409,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port = 0;
-		Text::String *uid = 0;
-		Text::String *pwd = 0;
-		Text::String *schema = 0;
+		Optional<Text::String> uid = nullptr;
+		Optional<Text::String> pwd = nullptr;
+		Optional<Text::String> schema = nullptr;
 		addr.addrType = Net::AddrType::Unknown;
 		UIntOS cnt;
 		sb.Append(connStr.Substring(9));
@@ -430,18 +430,18 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_STRING(uid);
-				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_STRING(pwd);
-				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_STRING(schema);
-				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9).Ptr();
+				OPTSTR_DEL(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -452,13 +452,13 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		NN<Net::MySQLTCPClient> nncli;
 		NN<Text::String> uidStr;
 		NN<Text::String> pwdStr;
-		if (uidStr.Set(uid) && pwdStr.Set(pwd))
+		if (uid.SetTo(uidStr) && pwd.SetTo(pwdStr))
 		{
 			NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, uidStr, pwdStr, schema));
 		}
-		SDEL_STRING(uid);
-		SDEL_STRING(pwd);
-		SDEL_STRING(schema);
+		OPTSTR_DEL(uid);
+		OPTSTR_DEL(pwd);
+		OPTSTR_DEL(schema);
 		if (!nncli.Set(cli))
 		{
 		}
@@ -475,11 +475,11 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	else if (connStr.StartsWith(UTF8STRC("postgresql:")))
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::String *server = 0;
+		Optional<Text::String> server = nullptr;
 		UInt16 port = 0;
-		Text::String *uid = 0;
-		Text::String *pwd = 0;
-		Text::String *schema = 0;
+		Optional<Text::String> uid = nullptr;
+		Optional<Text::String> pwd = nullptr;
+		Optional<Text::String> schema = nullptr;
 		UIntOS cnt;
 		sb.Append(connStr.Substring(11));
 		Text::PString sarr[2];
@@ -489,8 +489,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
 			{
-				SDEL_STRING(server);
-				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7).Ptr();
+				OPTSTR_DEL(server);
+				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{
@@ -498,18 +498,18 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_STRING(uid);
-				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_STRING(pwd);
-				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_STRING(schema);
-				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9).Ptr();
+				OPTSTR_DEL(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -520,7 +520,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		NN<DB::PostgreSQLConn> nncli;
 		NN<Text::String> serverStr;
 		NN<Text::String> schemaStr;
-		if (serverStr.Set(server) && schemaStr.Set(schema))
+		if (server.SetTo(serverStr) && schema.SetTo(schemaStr))
 		{
 			NEW_CLASS(cli, DB::PostgreSQLConn(serverStr, port, uid, pwd, schemaStr, log));
 		}
@@ -528,10 +528,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		{
 			cli = 0;
 		}
-		SDEL_STRING(server);
-		SDEL_STRING(uid);
-		SDEL_STRING(pwd);
-		SDEL_STRING(schema);
+		OPTSTR_DEL(server);
+		OPTSTR_DEL(uid);
+		OPTSTR_DEL(pwd);
+		OPTSTR_DEL(schema);
 		if (!nncli.Set(cli))
 		{
 
@@ -575,10 +575,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	else if (connStr.StartsWith(UTF8STRC("tds:")))
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::String *server = 0;
-		Text::String *uid = 0;
-		Text::String *pwd = 0;
-		Text::String *schema = 0;
+		Optional<Text::String> server = nullptr;
+		Optional<Text::String> uid = nullptr;
+		Optional<Text::String> pwd = nullptr;
+		Optional<Text::String> schema = nullptr;
 		UIntOS cnt;
 		sb.Append(connStr.Substring(4));
 		Text::PString sarr[2];
@@ -588,23 +588,23 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("HOST=")))
 			{
-				SDEL_STRING(server);
-				server = Text::String::New(sarr[0].v + 5, sarr[0].leng - 5).Ptr();
+				OPTSTR_DEL(server);
+				server = Text::String::New(sarr[0].v + 5, sarr[0].leng - 5);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_STRING(uid);
-				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_STRING(pwd);
-				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_STRING(schema);
-				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9).Ptr();
+				OPTSTR_DEL(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -614,25 +614,28 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		DB::TDSConn *cli = 0;
 		NN<DB::TDSConn> nncli;
 		UInt16 port = 1433;
-		if (server && uid && pwd)
+		NN<Text::String> serverStr;
+		NN<Text::String> uidStr;
+		NN<Text::String> pwdStr;
+		if (server.SetTo(serverStr) && uid.SetTo(uidStr) && pwd.SetTo(pwdStr))
 		{
-			UIntOS i = server->IndexOf(':');
+			UIntOS i = serverStr->IndexOf(':');
 			if (i >= 0)
 			{
-				Text::StrToUInt16(&server->v[i + 1], port);
-				server->TrimToLength(i);
+				Text::StrToUInt16(&serverStr->v[i + 1], port);
+				serverStr->TrimToLength(i);
 			}
-			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), uid->ToCString(), pwd->ToCString(), log, nullptr));
+			NEW_CLASS(cli, DB::TDSConn(serverStr->ToCString(), port, false, OPTSTR_CSTR(schema), uidStr->ToCString(), pwdStr->ToCString(), log, nullptr));
 			if (!cli->IsConnected())
 			{
 				DEL_CLASS(cli);
 				cli = 0;
 			}
 		}
-		SDEL_STRING(server);
-		SDEL_STRING(uid);
-		SDEL_STRING(pwd);
-		SDEL_STRING(schema);
+		OPTSTR_DEL(server);
+		OPTSTR_DEL(uid);
+		OPTSTR_DEL(pwd);
+		OPTSTR_DEL(schema);
 		if (nncli.Set(cli))
 		{
 			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));

@@ -152,8 +152,8 @@ namespace SSWR
 			Data::FastMapNN<UInt32, OrganSpImgLayer> mapImgLyrs;
 			UIntOS imgFontStyle;
 
-			Text::String *initSelObj;
-			Text::String *initSelImg;
+			Optional<Text::String> initSelObj;
+			Optional<Text::String> initSelImg;
 
 			Data::ArrayListNN<UserFileInfo> mapUFiles;
 			UserFileInfo *mapCurrFile;

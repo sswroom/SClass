@@ -86,6 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Text::CStringNN cstr;
+	NN<Text::String> s;
 	if (ans)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -104,11 +105,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 		me->txtAnsClass->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ans->ttl);
 		me->txtAnsTTL->SetText(CSTRP(sbuff, sptr));
-		if (ans->rd)
+		if (ans->rd.SetTo(s))
 		{
-			sb.ClearStr();
-			sb.Append(ans->rd);
-			me->txtAnsRD->SetText(sb.ToCString());
+			me->txtAnsRD->SetText(s->ToCString());
 		}
 		else
 		{

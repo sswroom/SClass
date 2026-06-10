@@ -144,7 +144,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 				if (!reader->IsElementEmpty())
 				{
 					Int32 elemType = 0;
-					Text::String *names[2] = {0, 0};
+					Optional<Text::String> names[2] = {nullptr, nullptr};
 					Optional<Text::String> kName;
 					Optional<Text::String> vName;
 					NN<Text::String> kNameStr;
@@ -173,7 +173,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 							{
 								if (kNameStr->Equals(UTF8STRC("name")))
 								{
-									SDEL_STRING(names[0]);
+									OPTSTR_DEL(names[0]);
 									names[0] = vNameStr->Clone().Ptr();
 								}
 								else if (kNameStr->StartsWith(UTF8STRC("name:")))
@@ -184,7 +184,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								}
 								else if (kNameStr->Equals(UTF8STRC("ele")))
 								{
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = vNameStr->Clone().Ptr();
 								}
 								else if (kNameStr->Equals(UTF8STRC("display")))
@@ -664,8 +664,8 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						NEW_CLASSNN(pt, Math::Geometry::Point(4326, lon, lat));
 						layers[elemType - 1]->AddVector2(pt, names);
 					}
-					SDEL_STRING(names[0]);
-					SDEL_STRING(names[1]);
+					OPTSTR_DEL(names[0]);
+					OPTSTR_DEL(names[1]);
 				}
 			}
 			else
@@ -676,7 +676,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 		else if (nodeText->Equals(UTF8STRC("way")))
 		{
 			Int32 elemType = 0;
-			Text::String *names[2] = {0, 0};
+			Optional<Text::String> names[2] = {nullptr, nullptr};
 			Optional<Text::String> kName;
 			Optional<Text::String> vName;
 			NN<Text::String> kNameStr;
@@ -735,7 +735,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 					{
 						if (kNameStr->Equals(UTF8STRC("name")))
 						{
-							SDEL_STRING(names[0]);
+							OPTSTR_DEL(names[0]);
 							names[0] = vNameStr->Clone().Ptr();
 						}
 						else if (kNameStr->StartsWith(UTF8STRC("name:")))
@@ -839,7 +839,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 6;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("School")).Ptr();
 								}
 							}
@@ -849,7 +849,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 7;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Parking")).Ptr();
 								}
 							}
@@ -859,7 +859,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Hospital")).Ptr();
 								}
 							}
@@ -869,7 +869,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 6;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("College")).Ptr();
 								}
 							}
@@ -879,7 +879,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("PlaceOfWorship")).Ptr();
 								}
 							}
@@ -889,7 +889,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("NursingHome")).Ptr();
 								}
 							}
@@ -899,7 +899,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("CommunityCentre")).Ptr();
 								}
 							}
@@ -909,7 +909,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 6;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("University")).Ptr();
 								}
 							}
@@ -932,7 +932,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Building")).Ptr();
 								}
 							}
@@ -942,7 +942,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("House")).Ptr();
 								}
 							}
@@ -952,7 +952,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("School")).Ptr();
 								}
 							}
@@ -962,7 +962,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Apartments")).Ptr();
 								}
 							}
@@ -972,7 +972,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Residential")).Ptr();
 								}
 							}
@@ -982,7 +982,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Unknown")).Ptr();
 								}
 							}
@@ -994,7 +994,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Service")).Ptr();
 								}
 							}
@@ -1003,7 +1003,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Secondary")).Ptr();
 								}
 							}
@@ -1012,7 +1012,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 17;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Footway")).Ptr();
 								}
 							}
@@ -1021,7 +1021,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Motorway")).Ptr();
 								}
 							}
@@ -1030,7 +1030,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("MotorwayLink")).Ptr();
 								}
 							}
@@ -1039,7 +1039,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Residential")).Ptr();
 								}
 							}
@@ -1048,7 +1048,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Tertiary")).Ptr();
 								}
 							}
@@ -1057,7 +1057,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 17;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Path")).Ptr();
 								}
 							}
@@ -1066,7 +1066,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Primary")).Ptr();
 								}
 							}
@@ -1075,7 +1075,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 17;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Steps")).Ptr();
 								}
 							}
@@ -1084,7 +1084,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 19;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Cycleway")).Ptr();
 								}
 							}
@@ -1093,7 +1093,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 17;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Pedestrian")).Ptr();
 								}
 							}
@@ -1102,7 +1102,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 16;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Pedestrian")).Ptr();
 								}
 							}
@@ -1115,7 +1115,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 10;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Reservoir")).Ptr();
 								}
 							}
@@ -1168,7 +1168,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 5;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Pitch")).Ptr();
 								}
 							}
@@ -1178,7 +1178,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("SwimmingPool")).Ptr();
 								}
 							}
@@ -1188,7 +1188,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 5;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Track")).Ptr();
 								}
 							}
@@ -1198,7 +1198,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 5;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Stadium")).Ptr();
 								}
 							}
@@ -1221,7 +1221,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("PowerSubStation")).Ptr();
 								}
 							}
@@ -1233,7 +1233,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 15;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Rail")).Ptr();
 								}
 							}
@@ -1246,7 +1246,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 22;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("GardenCentre")).Ptr();
 								}
 							}
@@ -1256,7 +1256,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 18;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Mall")).Ptr();
 								}
 							}
@@ -1268,7 +1268,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								if (elemType == 0)
 								{
 									elemType = 11;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Stream")).Ptr();
 								}
 							}
@@ -1278,7 +1278,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 0;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Weir")).Ptr();
 								}
 							}
@@ -1288,7 +1288,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 								{
 									elemType = 8;
 									isPG = true;
-									SDEL_STRING(names[1]);
+									OPTSTR_DEL(names[1]);
 									names[1] = Text::String::New(UTF8STRC("Riverbank")).Ptr();
 								}
 							}
@@ -1353,8 +1353,8 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 					layers[elemType - 1]->AddVector2(pl, names);
 				}
 			}
-			SDEL_STRING(names[0]);
-			SDEL_STRING(names[1]);
+			OPTSTR_DEL(names[0]);
+			OPTSTR_DEL(names[1]);
 		}
 		else if (nodeText->Equals(UTF8STRC("relation")))
 		{

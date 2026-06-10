@@ -211,9 +211,9 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 
 Text::MailCreator::MailCreator()
 {
-	this->from = 0;
-	this->replyTo = 0;
-	this->subject = 0;
+	this->from = nullptr;
+	this->replyTo = nullptr;
+	this->subject = nullptr;
 	this->content = nullptr;
 }
 
@@ -222,9 +222,9 @@ Text::MailCreator::~MailCreator()
 	UIntOS i;
 	NN<Text::MIMEObject> obj;
 
-	SDEL_STRING(this->from);
-	SDEL_STRING(this->replyTo);
-	SDEL_STRING(this->subject);
+	OPTSTR_DEL(this->from);
+	OPTSTR_DEL(this->replyTo);
+	OPTSTR_DEL(this->subject);
 	this->content.Delete();
 	i = this->attachName.GetCount();
 	while (i-- > 0)
@@ -239,7 +239,7 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 {
 	if (address == 0)
 	{
-		SDEL_STRING(this->from);
+		OPTSTR_DEL(this->from);
 	}
 	else
 	{
@@ -255,8 +255,8 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 		{
 			this->AppendStr(sb, address);
 		}
-		SDEL_STRING(this->from);
-		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		OPTSTR_DEL(this->from);
+		this->from = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -266,7 +266,7 @@ void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
 	Text::CStringNN nnaddress;
 	if (!address.SetTo(nnaddress) || nnaddress.leng == 0)
 	{
-		SDEL_STRING(this->from);
+		OPTSTR_DEL(this->from);
 	}
 	else
 	{
@@ -282,8 +282,8 @@ void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
 		{
 			this->AppendStr(sb, nnaddress);
 		}
-		SDEL_STRING(this->from);
-		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		OPTSTR_DEL(this->from);
+		this->from = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -291,7 +291,7 @@ void Text::MailCreator::SetReplyTo(const WChar *name, const WChar *address)
 {
 	if (address == 0)
 	{
-		SDEL_STRING(this->replyTo);
+		OPTSTR_DEL(this->replyTo);
 	}
 	else
 	{
@@ -307,8 +307,8 @@ void Text::MailCreator::SetReplyTo(const WChar *name, const WChar *address)
 		{
 			this->AppendStr(sb, address);
 		}
-		SDEL_STRING(this->replyTo);
-		this->replyTo = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		OPTSTR_DEL(this->replyTo);
+		this->replyTo = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -402,16 +402,16 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 {
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(sb, subj);
-	SDEL_STRING(this->subject);
-	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	OPTSTR_DEL(this->subject);
+	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
 }
 
 void Text::MailCreator::SetSubject(NN<Text::String> subj)
 {
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(sb, subj->ToCString());
-	SDEL_STRING(this->subject);
-	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	OPTSTR_DEL(this->subject);
+	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
 }
 
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htmlPath)
@@ -495,25 +495,26 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 {
 	NN<Text::MIMEObj::MailMessage> msg;
 	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
-	if (this->from)
+	NN<Text::String> s;
+	if (this->from.SetTo(s))
 	{
-		msg->AddHeader(CSTR("From"), this->from->ToCString());
+		msg->AddHeader(CSTR("From"), s->ToCString());
 	}
 	if (this->toVals.GetLength() > 0)
 	{
 		msg->AddHeader(CSTR("To"), this->toVals.ToCString());
 	}
-	if (this->replyTo)
+	if (this->replyTo.SetTo(s))
 	{
-		msg->AddHeader(CSTR("Reply-To"), this->replyTo->ToCString());
+		msg->AddHeader(CSTR("Reply-To"), s->ToCString());
 	}
 	if (this->ccVals.GetLength() > 0)
 	{
 		msg->AddHeader(CSTR("CC"), this->ccVals.ToCString());
 	}
-	if (this->subject)
+	if (this->subject.SetTo(s))
 	{
-		msg->AddHeader(CSTR("Subject"), this->subject->ToCString());
+		msg->AddHeader(CSTR("Subject"), s->ToCString());
 	}
 	if (this->attachName.GetCount() > 0)
 	{

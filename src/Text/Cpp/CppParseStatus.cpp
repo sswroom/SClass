@@ -104,7 +104,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 	{
 		if (defInfo->undefined)
 		{
-			defInfo->fileName = 0;
+			defInfo->fileName = nullptr;
 			defInfo->lineNum = 0;
 			OPTSTR_DEL(defInfo->defineVal);
 			OPTSTR_DEL(defInfo->defineParam);
@@ -121,7 +121,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 	{
 		defInfo = MemAllocNN(DefineInfo);
 		defInfo->defineName = Text::String::New(defName);
-		defInfo->fileName = 0;
+		defInfo->fileName = nullptr;
 		defInfo->lineNum = 0;
 		defInfo->defineVal = Text::String::NewOrNull(defVal);
 		defInfo->defineParam = nullptr;

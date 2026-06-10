@@ -964,7 +964,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	Data::ArrayListObj<Text::String*> typeNames;
+	Data::ArrayListObj<Optional<Text::String>> typeNames;
 	Text::StringBuilderUTF8 sbParam;
 	Text::StringBuilderUTF8 sbTmp;
 	UnsafeArray<const UInt8> ptr = this->constPool[typeIndex];
@@ -974,7 +974,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	UInt32 paramId;
 	UIntOS i;
 	UIntOS j;
-	Text::String *paramName;
+	NN<Text::String> paramName;
 	NN<MethodInfo> nnmethod;
 	if (method.SetTo(nnmethod))
 	{
@@ -984,11 +984,11 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 		{
 			if (this->GetConstName(sbuff, nnmethod->lvList.GetItemNoCheck(i)->nameIndex).SetTo(sptr))
 			{
-				typeNames.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr());
+				typeNames.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 			}
 			else
 			{
-				typeNames.Add(0);
+				typeNames.Add(nullptr);
 			}
 			i++;
 		}
@@ -1025,8 +1025,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 			this->AppendCodeClassName(sbParam, sbTmp.ToString(), importList, packageName);
 			sbParam.AppendUTF8Char(' ');
 			paramId = GetParamId(paramIndex, method);
-			paramName = typeNames.GetItem(paramId);
-			if (paramName)
+			if (typeNames.GetItem(paramId).SetTo(paramName))
 			{
 				sbParam.Append(paramName);
 			}
@@ -1043,8 +1042,8 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	i = typeNames.GetCount();
 	while (i-- > 0)
 	{
-		paramName = typeNames.GetItem(i);
-		SDEL_STRING(paramName);
+		Optional<Text::String> s = typeNames.GetItem(i);
+		OPTSTR_DEL(s);
 	}
 	if (ptr >= strEnd)
 	{

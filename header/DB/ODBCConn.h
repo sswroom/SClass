@@ -29,14 +29,14 @@ namespace DB
 		void *connHand;
 		void *lastStmtHand;
 		Int32 lastStmtState;
-		Text::String *lastErrorMsg;
+		Optional<Text::String> lastErrorMsg;
 		ConnError connErr;
 		Bool isTran;
 		Optional<Text::String> dsn;
 		Optional<Text::String> uid;
 		Optional<Text::String> pwd;
 		Optional<Text::String> schema;
-		Text::String *connStr;
+		Optional<Text::String> connStr;
 		NN<IO::LogTool> log;
 		Bool enableDebug;
 		Bool forceTz;
@@ -90,7 +90,7 @@ namespace DB
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);
 		void LogSQLError(void *hStmt);
 
-		Text::String *GetConnStr();
+		Optional<Text::String> GetConnStr();
 		Optional<Text::String> GetConnDSN();
 		Optional<Text::String> GetConnUID();
 		Optional<Text::String> GetConnPWD();

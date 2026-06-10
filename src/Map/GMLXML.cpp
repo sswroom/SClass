@@ -19,7 +19,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 	env.srid = 0;
 	UIntOS colCnt = 0;
 	Data::ArrayListArr<const UTF8Char> nameList;
-	Data::ArrayListObj<Text::String *> valList;
+	Data::ArrayListObj<Optional<Text::String>> valList;
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
@@ -32,7 +32,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 		{
 			while (reader->NextElementName().SetTo(nodeText))
 			{
-				Text::String *tableName = 0;
+				Optional<Text::String> tableName = nullptr;
 				i = nodeText->IndexOf(':');
 				if (i != INVALID_INDEX)
 				{
@@ -172,7 +172,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 								if (!found)
 								{
 									nameList.Add(fieldName);
-									valList.Add(0);
+									valList.Add(nullptr);
 								}
 							}
 							else 
@@ -198,7 +198,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 
 					if (colCnt == valList.GetCount())
 					{
-						UnsafeArray<Text::String*> scols;
+						UnsafeArray<Optional<Text::String>> scols;
 						scols = valList.Arr();
 						lyr->AddVector2(nnvec, scols.Ptr());
 					}
@@ -218,18 +218,20 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				i = valList.GetCount();
 				while (i-- > 0)
 				{
-					if (valList.GetItem(i))
+					NN<Text::String> s;
+					if (valList.GetItem(i).SetTo(s))
 					{
-						valList.GetItem(i)->Release();
+						s->Release();
 					}
 				}
 				valList.Clear();
 
-				if (lyr && tableName)
+				NN<Text::String> nntableName;
+				if (lyr && tableName.SetTo(nntableName))
 				{
-					lyr->SetTableName(tableName);
+					lyr->SetTableName(nntableName);
 				}
-				SDEL_STRING(tableName);
+				OPTSTR_DEL(tableName);
 			}
 		}
 		else

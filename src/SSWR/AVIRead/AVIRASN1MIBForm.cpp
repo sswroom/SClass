@@ -83,11 +83,11 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 			Net::ASN1Util::OIDToString(Data::ByteArrayR(obj->oid, obj->oidLen), sb);
 			this->lvObjects->SetSubItem(i, 1, sb.ToCString());
 		}
-		if (s.Set(obj->typeName))
+		if (obj->typeName.SetTo(s))
 		{
 			this->lvObjects->SetSubItem(i, 2, s);
 		}
-		if (s.Set(obj->typeVal))
+		if (obj->typeVal.SetTo(s))
 		{
 			this->lvObjects->SetSubItem(i, 3, s);
 		}

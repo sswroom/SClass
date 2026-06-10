@@ -10,10 +10,10 @@
 class AdsbMovementstatistics
 {
 private:
-	Text::String* uploadId;
-	Text::String* finalUploadId;
+	Optional<Text::String> uploadId;
+	Optional<Text::String> finalUploadId;
 	Data::Timestamp adsbDatetime;
-	Text::String* callsign;
+	Optional<Text::String> callsign;
 	Double latitude;
 	Double longitude;
 	Optional<Math::Geometry::Vector2D> geolocation;
@@ -30,27 +30,27 @@ private:
 	Double verticalRate;
 	Int32 category;
 	Int32 subgroup;
-	Text::String* aircraftType;
+	Optional<Text::String> aircraftType;
 	Data::Timestamp ataAtd;
-	Text::String* departure;
-	Text::String* destination;
-	Text::String* inOutbound;
-	Text::String* runway;
-	Text::String* serviceType;
-	Text::String* ioFlight;
+	Optional<Text::String> departure;
+	Optional<Text::String> destination;
+	Optional<Text::String> inOutbound;
+	Optional<Text::String> runway;
+	Optional<Text::String> serviceType;
+	Optional<Text::String> ioFlight;
 
 public:
 	AdsbMovementstatistics();
 	~AdsbMovementstatistics();
 
-	Text::String* GetUploadId() const;
-	void SetUploadId(Text::String* uploadId);
-	Text::String* GetFinalUploadId() const;
-	void SetFinalUploadId(Text::String* finalUploadId);
+	Optional<Text::String> GetUploadId() const;
+	void SetUploadId(Optional<Text::String> uploadId);
+	Optional<Text::String> GetFinalUploadId() const;
+	void SetFinalUploadId(Optional<Text::String> finalUploadId);
 	Data::Timestamp GetAdsbDatetime() const;
 	void SetAdsbDatetime(Data::Timestamp adsbDatetime);
-	Text::String* GetCallsign() const;
-	void SetCallsign(Text::String* callsign);
+	Optional<Text::String> GetCallsign() const;
+	void SetCallsign(Optional<Text::String> callsign);
 	Double GetLatitude() const;
 	void SetLatitude(Double latitude);
 	Double GetLongitude() const;
@@ -83,22 +83,22 @@ public:
 	void SetCategory(Int32 category);
 	Int32 GetSubgroup() const;
 	void SetSubgroup(Int32 subgroup);
-	Text::String* GetAircraftType() const;
-	void SetAircraftType(Text::String* aircraftType);
+	Optional<Text::String> GetAircraftType() const;
+	void SetAircraftType(Optional<Text::String> aircraftType);
 	Data::Timestamp GetAtaAtd() const;
 	void SetAtaAtd(Data::Timestamp ataAtd);
-	Text::String* GetDeparture() const;
-	void SetDeparture(Text::String* departure);
-	Text::String* GetDestination() const;
-	void SetDestination(Text::String* destination);
-	Text::String* GetInOutbound() const;
-	void SetInOutbound(Text::String* inOutbound);
-	Text::String* GetRunway() const;
-	void SetRunway(Text::String* runway);
-	Text::String* GetServiceType() const;
-	void SetServiceType(Text::String* serviceType);
-	Text::String* GetIoFlight() const;
-	void SetIoFlight(Text::String* ioFlight);
+	Optional<Text::String> GetDeparture() const;
+	void SetDeparture(Optional<Text::String> departure);
+	Optional<Text::String> GetDestination() const;
+	void SetDestination(Optional<Text::String> destination);
+	Optional<Text::String> GetInOutbound() const;
+	void SetInOutbound(Optional<Text::String> inOutbound);
+	Optional<Text::String> GetRunway() const;
+	void SetRunway(Optional<Text::String> runway);
+	Optional<Text::String> GetServiceType() const;
+	void SetServiceType(Optional<Text::String> serviceType);
+	Optional<Text::String> GetIoFlight() const;
+	void SetIoFlight(Optional<Text::String> ioFlight);
 
 	Data::NamedClass<AdsbMovementstatistics> *CreateClass() const;
 };
@@ -106,24 +106,24 @@ public:
 class FlightHoldingsPeriod
 {
 private:
-	Text::String* finalUploadId;
+	Optional<Text::String> finalUploadId;
 	Data::Timestamp beginTime;
 	Data::Timestamp endTime;
-	Text::String* visitedwaypoints;
+	Optional<Text::String> visitedwaypoints;
 	Int32 seqno;
 
 public:
 	FlightHoldingsPeriod();
 	~FlightHoldingsPeriod();
 
-	Text::String* GetFinalUploadId() const;
-	void SetFinalUploadId(Text::String* finalUploadId);
+	Optional<Text::String> GetFinalUploadId() const;
+	void SetFinalUploadId(Optional<Text::String> finalUploadId);
 	Data::Timestamp GetBeginTime() const;
 	void SetBeginTime(Data::Timestamp beginTime);
 	Data::Timestamp GetEndTime() const;
 	void SetEndTime(Data::Timestamp endTime);
-	Text::String* GetVisitedwaypoints() const;
-	void SetVisitedwaypoints(Text::String* visitedwaypoints);
+	Optional<Text::String> GetVisitedwaypoints() const;
+	void SetVisitedwaypoints(Optional<Text::String> visitedwaypoints);
 	Int32 GetSeqno() const;
 	void SetSeqno(Int32 seqno);
 
@@ -132,10 +132,10 @@ public:
 
 AdsbMovementstatistics::AdsbMovementstatistics()
 {
-	this->uploadId = 0;
-	this->finalUploadId = 0;
+	this->uploadId = nullptr;
+	this->finalUploadId = nullptr;
 	this->adsbDatetime = 0;
-	this->callsign = 0;
+	this->callsign = nullptr;
 	this->latitude = 0;
 	this->longitude = 0;
 	this->geolocation = nullptr;
@@ -152,51 +152,51 @@ AdsbMovementstatistics::AdsbMovementstatistics()
 	this->verticalRate = 0;
 	this->category = 0;
 	this->subgroup = 0;
-	this->aircraftType = 0;
+	this->aircraftType = nullptr;
 	this->ataAtd = 0;
-	this->departure = 0;
-	this->destination = 0;
-	this->inOutbound = 0;
-	this->runway = 0;
-	this->serviceType = 0;
-	this->ioFlight = 0;
+	this->departure = nullptr;
+	this->destination = nullptr;
+	this->inOutbound = nullptr;
+	this->runway = nullptr;
+	this->serviceType = nullptr;
+	this->ioFlight = nullptr;
 }
 
 AdsbMovementstatistics::~AdsbMovementstatistics()
 {
-	SDEL_STRING(this->uploadId);
-	SDEL_STRING(this->finalUploadId);
-	SDEL_STRING(this->callsign);
+	OPTSTR_DEL(this->uploadId);
+	OPTSTR_DEL(this->finalUploadId);
+	OPTSTR_DEL(this->callsign);
 	this->geolocation.Delete();
-	SDEL_STRING(this->aircraftType);
-	SDEL_STRING(this->departure);
-	SDEL_STRING(this->destination);
-	SDEL_STRING(this->inOutbound);
-	SDEL_STRING(this->runway);
-	SDEL_STRING(this->serviceType);
-	SDEL_STRING(this->ioFlight);
+	OPTSTR_DEL(this->aircraftType);
+	OPTSTR_DEL(this->departure);
+	OPTSTR_DEL(this->destination);
+	OPTSTR_DEL(this->inOutbound);
+	OPTSTR_DEL(this->runway);
+	OPTSTR_DEL(this->serviceType);
+	OPTSTR_DEL(this->ioFlight);
 }
 
-Text::String* AdsbMovementstatistics::GetUploadId() const
+Optional<Text::String> AdsbMovementstatistics::GetUploadId() const
 {
 	return this->uploadId;
 }
 
-void AdsbMovementstatistics::SetUploadId(Text::String* uploadId)
+void AdsbMovementstatistics::SetUploadId(Optional<Text::String> uploadId)
 {
-	SDEL_STRING(this->uploadId);
-	this->uploadId = uploadId?uploadId->Clone().Ptr():0;
+	OPTSTR_DEL(this->uploadId);
+	this->uploadId = Text::String::CopyOrNull(uploadId);
 }
 
-Text::String* AdsbMovementstatistics::GetFinalUploadId() const
+Optional<Text::String> AdsbMovementstatistics::GetFinalUploadId() const
 {
 	return this->finalUploadId;
 }
 
-void AdsbMovementstatistics::SetFinalUploadId(Text::String* finalUploadId)
+void AdsbMovementstatistics::SetFinalUploadId(Optional<Text::String> finalUploadId)
 {
-	SDEL_STRING(this->finalUploadId);
-	this->finalUploadId = finalUploadId?finalUploadId->Clone().Ptr():0;
+	OPTSTR_DEL(this->finalUploadId);
+	this->finalUploadId = Text::String::CopyOrNull(finalUploadId);
 }
 
 Data::Timestamp AdsbMovementstatistics::GetAdsbDatetime() const
@@ -209,15 +209,15 @@ void AdsbMovementstatistics::SetAdsbDatetime(Data::Timestamp adsbDatetime)
 	this->adsbDatetime = adsbDatetime;
 }
 
-Text::String* AdsbMovementstatistics::GetCallsign() const
+Optional<Text::String> AdsbMovementstatistics::GetCallsign() const
 {
 	return this->callsign;
 }
 
-void AdsbMovementstatistics::SetCallsign(Text::String* callsign)
+void AdsbMovementstatistics::SetCallsign(Optional<Text::String> callsign)
 {
-	SDEL_STRING(this->callsign);
-	this->callsign = callsign?callsign->Clone().Ptr():0;
+	OPTSTR_DEL(this->callsign);
+	this->callsign = Text::String::CopyOrNull(callsign);
 }
 
 Double AdsbMovementstatistics::GetLatitude() const
@@ -381,15 +381,15 @@ void AdsbMovementstatistics::SetSubgroup(Int32 subgroup)
 	this->subgroup = subgroup;
 }
 
-Text::String* AdsbMovementstatistics::GetAircraftType() const
+Optional<Text::String> AdsbMovementstatistics::GetAircraftType() const
 {
 	return this->aircraftType;
 }
 
-void AdsbMovementstatistics::SetAircraftType(Text::String* aircraftType)
+void AdsbMovementstatistics::SetAircraftType(Optional<Text::String> aircraftType)
 {
-	SDEL_STRING(this->aircraftType);
-	this->aircraftType = aircraftType?aircraftType->Clone().Ptr():0;
+	OPTSTR_DEL(this->aircraftType);
+	this->aircraftType = Text::String::CopyOrNull(aircraftType);
 }
 
 Data::Timestamp AdsbMovementstatistics::GetAtaAtd() const
@@ -402,70 +402,70 @@ void AdsbMovementstatistics::SetAtaAtd(Data::Timestamp ataAtd)
 	this->ataAtd = ataAtd;
 }
 
-Text::String* AdsbMovementstatistics::GetDeparture() const
+Optional<Text::String> AdsbMovementstatistics::GetDeparture() const
 {
 	return this->departure;
 }
 
-void AdsbMovementstatistics::SetDeparture(Text::String* departure)
+void AdsbMovementstatistics::SetDeparture(Optional<Text::String> departure)
 {
-	SDEL_STRING(this->departure);
-	this->departure = departure?departure->Clone().Ptr():0;
+	OPTSTR_DEL(this->departure);
+	this->departure = Text::String::CopyOrNull(departure);
 }
 
-Text::String* AdsbMovementstatistics::GetDestination() const
+Optional<Text::String> AdsbMovementstatistics::GetDestination() const
 {
 	return this->destination;
 }
 
-void AdsbMovementstatistics::SetDestination(Text::String* destination)
+void AdsbMovementstatistics::SetDestination(Optional<Text::String> destination)
 {
-	SDEL_STRING(this->destination);
-	this->destination = destination?destination->Clone().Ptr():0;
+	OPTSTR_DEL(this->destination);
+	this->destination = Text::String::CopyOrNull(destination);
 }
 
-Text::String* AdsbMovementstatistics::GetInOutbound() const
+Optional<Text::String> AdsbMovementstatistics::GetInOutbound() const
 {
 	return this->inOutbound;
 }
 
-void AdsbMovementstatistics::SetInOutbound(Text::String* inOutbound)
+void AdsbMovementstatistics::SetInOutbound(Optional<Text::String> inOutbound)
 {
-	SDEL_STRING(this->inOutbound);
-	this->inOutbound = inOutbound?inOutbound->Clone().Ptr():0;
+	OPTSTR_DEL(this->inOutbound);
+	this->inOutbound = Text::String::CopyOrNull(inOutbound);
 }
 
-Text::String* AdsbMovementstatistics::GetRunway() const
+Optional<Text::String> AdsbMovementstatistics::GetRunway() const
 {
 	return this->runway;
 }
 
-void AdsbMovementstatistics::SetRunway(Text::String* runway)
+void AdsbMovementstatistics::SetRunway(Optional<Text::String> runway)
 {
-	SDEL_STRING(this->runway);
-	this->runway = runway?runway->Clone().Ptr():0;
+	OPTSTR_DEL(this->runway);
+	this->runway = Text::String::CopyOrNull(runway);
 }
 
-Text::String* AdsbMovementstatistics::GetServiceType() const
+Optional<Text::String> AdsbMovementstatistics::GetServiceType() const
 {
 	return this->serviceType;
 }
 
-void AdsbMovementstatistics::SetServiceType(Text::String* serviceType)
+void AdsbMovementstatistics::SetServiceType(Optional<Text::String> serviceType)
 {
-	SDEL_STRING(this->serviceType);
-	this->serviceType = serviceType?serviceType->Clone().Ptr():0;
+	OPTSTR_DEL(this->serviceType);
+	this->serviceType = Text::String::CopyOrNull(serviceType);
 }
 
-Text::String* AdsbMovementstatistics::GetIoFlight() const
+Optional<Text::String> AdsbMovementstatistics::GetIoFlight() const
 {
 	return this->ioFlight;
 }
 
-void AdsbMovementstatistics::SetIoFlight(Text::String* ioFlight)
+void AdsbMovementstatistics::SetIoFlight(Optional<Text::String> ioFlight)
 {
-	SDEL_STRING(this->ioFlight);
-	this->ioFlight = ioFlight?ioFlight->Clone().Ptr():0;
+	OPTSTR_DEL(this->ioFlight);
+	this->ioFlight = Text::String::CopyOrNull(ioFlight);
 }
 
 Data::NamedClass<AdsbMovementstatistics> *AdsbMovementstatistics::CreateClass() const
@@ -505,28 +505,28 @@ Data::NamedClass<AdsbMovementstatistics> *AdsbMovementstatistics::CreateClass() 
 
 FlightHoldingsPeriod::FlightHoldingsPeriod()
 {
-	this->finalUploadId = 0;
+	this->finalUploadId = nullptr;
 	this->beginTime = 0;
 	this->endTime = 0;
-	this->visitedwaypoints = 0;
+	this->visitedwaypoints = nullptr;
 	this->seqno = 0;
 }
 
 FlightHoldingsPeriod::~FlightHoldingsPeriod()
 {
-	SDEL_STRING(this->finalUploadId);
-	SDEL_STRING(this->visitedwaypoints);
+	OPTSTR_DEL(this->finalUploadId);
+	OPTSTR_DEL(this->visitedwaypoints);
 }
 
-Text::String* FlightHoldingsPeriod::GetFinalUploadId() const
+Optional<Text::String> FlightHoldingsPeriod::GetFinalUploadId() const
 {
 	return this->finalUploadId;
 }
 
-void FlightHoldingsPeriod::SetFinalUploadId(Text::String* finalUploadId)
+void FlightHoldingsPeriod::SetFinalUploadId(Optional<Text::String> finalUploadId)
 {
-	SDEL_STRING(this->finalUploadId);
-	this->finalUploadId = finalUploadId?finalUploadId->Clone().Ptr():0;
+	OPTSTR_DEL(this->finalUploadId);
+	this->finalUploadId = Text::String::CopyOrNull(finalUploadId);
 }
 
 Data::Timestamp FlightHoldingsPeriod::GetBeginTime() const
@@ -549,15 +549,15 @@ void FlightHoldingsPeriod::SetEndTime(Data::Timestamp endTime)
 	this->endTime = endTime;
 }
 
-Text::String* FlightHoldingsPeriod::GetVisitedwaypoints() const
+Optional<Text::String> FlightHoldingsPeriod::GetVisitedwaypoints() const
 {
 	return this->visitedwaypoints;
 }
 
-void FlightHoldingsPeriod::SetVisitedwaypoints(Text::String* visitedwaypoints)
+void FlightHoldingsPeriod::SetVisitedwaypoints(Optional<Text::String> visitedwaypoints)
 {
-	SDEL_STRING(this->visitedwaypoints);
-	this->visitedwaypoints = visitedwaypoints?visitedwaypoints->Clone().Ptr():0;
+	OPTSTR_DEL(this->visitedwaypoints);
+	this->visitedwaypoints = Text::String::CopyOrNull(visitedwaypoints);
 }
 
 Int32 FlightHoldingsPeriod::GetSeqno() const

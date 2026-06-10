@@ -555,8 +555,8 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 						printf("COM_QUERY: query_text = %s\r\n", sql->v.Ptr());
 					#endif
 						
-						DB::DBReader *r = me->dbms->ExecuteReader(data->connId, sql->v, sql->leng);
-						if (r)
+						NN<DB::DBReader> r;
+						if (me->dbms->ExecuteReader(data->connId, sql->v, sql->leng).SetTo(r))
 						{
 							if (r->GetRowChanged() != -1)
 							{

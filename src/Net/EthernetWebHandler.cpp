@@ -311,10 +311,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(NN<EthernetWebHandler> me, N
 					sb.AppendC(UTF8STRC("</td><td>"));
 					sb.AppendU32(ans->ttl);
 					sb.AppendC(UTF8STRC("</td><td>"));
-					if (ans->rd)
-					{
-						sb.Append(ans->rd);
-					}
+					sb.AppendOpt(ans->rd);
 					sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 					i++;
 				}
@@ -424,10 +421,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(NN<EthernetWebHandler> me, N
 					sb.AppendC(UTF8STRC("</td><td>"));
 					sb.AppendU32(ans->ttl);
 					sb.AppendC(UTF8STRC("</td><td>"));
-					if (ans->rd)
-					{
-						sb.Append(ans->rd);
-					}
+					sb.AppendOpt(ans->rd);
 					sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 					i++;
 				}
@@ -537,10 +531,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(NN<EthernetWebHandler> me, 
 					sb.AppendC(UTF8STRC("</td><td>"));
 					sb.AppendU32(ans->ttl);
 					sb.AppendC(UTF8STRC("</td><td>"));
-					if (ans->rd)
-					{
-						sb.Append(ans->rd);
-					}
+					sb.AppendOpt(ans->rd);
 					sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 					i++;
 				}

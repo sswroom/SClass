@@ -24,9 +24,9 @@ namespace Map
 		UIntOS tileHeight;
 		Optional<Text::EncodingFactory> encFact;
 		TileFormat tileFormat;
-		Text::String *tileExt;
+		Optional<Text::String> tileExt;
 		NN<Text::String> tmsURL;
-		Text::String *title;
+		Optional<Text::String> title;
 		NN<Text::String> cacheDir;
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;

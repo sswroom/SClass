@@ -7,7 +7,7 @@
 struct DBMapLayer_NameArr
 {
 	Int64 currId;
-	Text::String **names;
+	UnsafeArray<Optional<Text::String>> names;
 };
 
 void Map::DBMapLayer::ClearDB()
@@ -42,10 +42,10 @@ Optional<Map::NameArray> Map::DBMapLayer::InitNameArr()
 		NN<DBMapLayer_NameArr> nameArr = MemAllocNN(DBMapLayer_NameArr);
 		nameArr->currId = 0;
 		i = tabDef->GetColCnt();
-		nameArr->names = MemAlloc(Text::String*, i);
+		nameArr->names = MemAllocArr(Optional<Text::String>, i);
 		while (i-- > 0)
 		{
-			nameArr->names[i] = 0;
+			nameArr->names[i] = nullptr;
 		}
 		return NN<Map::NameArray>::ConvertFrom(nameArr);
 	}
@@ -295,9 +295,9 @@ void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 		UIntOS i = tabDef->GetColCnt();
 		while (i-- > 0)
 		{
-			SDEL_STRING(narr->names[i]);
+			OPTSTR_DEL(narr->names[i]);
 		}
-		MemFree(narr->names);
+		MemFreeArr(narr->names);
 		MemFreeNN(narr);
 	}
 }
@@ -343,8 +343,8 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArr
 					UIntOS i = 0;
 					while (i < colCnt)
 					{
-						SDEL_STRING(narr->names[i]);
-						narr->names[i] = nnr->GetNewStr(i).OrNull();
+						OPTSTR_DEL(narr->names[i]);
+						narr->names[i] = nnr->GetNewStr(i);
 						i++;
 					}
 					narr->currId = id;
@@ -354,9 +354,10 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArr
 		}
 		if (narr->currId == id)
 		{
-			if (narr->names[strIndex])
+			NN<Text::String> s;
+			if (narr->names[strIndex].SetTo(s))
 			{
-				sb->Append(narr->names[strIndex]);
+				sb->Append(s);
 				return true;
 			}
 		}

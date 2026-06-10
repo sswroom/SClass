@@ -31,7 +31,7 @@ namespace Net
 		typedef struct
 		{
 			NN<Text::String> type;
-			Text::String *value;
+			NN<Text::String> value;
 		} SearchResItem;
 
 		typedef struct

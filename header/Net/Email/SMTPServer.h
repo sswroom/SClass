@@ -21,8 +21,8 @@ namespace Net
 			{
 				UInt8 buff[4096];
 				UIntOS buffSize;
-				Text::String *cliName;
-				Text::String *mailFrom;
+				Optional<Text::String> cliName;
+				Optional<Text::String> mailFrom;
 				Data::ArrayListNN<Text::String> rcptTo;
 				Bool dataMode;
 				Int32 loginMode;

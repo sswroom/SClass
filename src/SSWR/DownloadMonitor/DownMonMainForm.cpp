@@ -486,55 +486,52 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	UIntOS i;
-	NN<Text::String> listFile;
-	if (listFile.Set(this->core->GetListFile()))
+	NN<Text::String> listFile = this->core->GetListFile();
+	IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Reader reader(fs);
+	while (reader.ReadLine(sb, 4096))
 	{
-		IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(fs);
-		while (reader.ReadLine(sb, 4096))
+		if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 		{
-			if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
+			Int32 id = 0;
+			Int32 webType = 0;
+			id = ParseURL(sarr[0].ToCString(), webType);
+
+			if (id != 0)
 			{
-				Int32 id = 0;
-				Int32 webType = 0;
-				id = ParseURL(sarr[0].ToCString(), webType);
-
-				if (id != 0)
+				if (!Text::UTF8Util::ValidStr(sarr[1].v))
 				{
-					if (!Text::UTF8Util::ValidStr(sarr[1].v))
+					printf("Invalid char found, id = %d\r\n", id);
+					if (ctrl == 0)
 					{
-						printf("Invalid char found, id = %d\r\n", id);
-						if (ctrl == 0)
-						{
-							NEW_CLASS(encFact, Text::EncodingFactory());
-							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetTCPClientFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
-						}
-						sb2.ClearStr();
-						if (ctrl->GetVideoName(id, sb2))
-						{
-							printf("Name of id %d updated\r\n", id);
-							sarr[1] = sb2;
-							updated = true;
-						}
+						NEW_CLASS(encFact, Text::EncodingFactory());
+						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetTCPClientFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
 					}
-					NN<Text::String> s = Text::String::New(sarr[1].v, sarr[1].leng);
-					if (this->core->FileAdd(id, webType, s))
+					sb2.ClearStr();
+					if (ctrl->GetVideoName(id, sb2))
 					{
-						Sync::MutexUsage mutUsage;
-						NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
-						if (this->core->FileGet(id, webType, mutUsage).SetTo(file))
-						{
-							sptr = Text::StrInt32(UARR(sbuff), file->id);
-							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
-							this->lvFiles->SetSubItem(i, 1, file->fileName);
-						}
+						printf("Name of id %d updated\r\n", id);
+						sarr[1] = sb2;
+						updated = true;
 					}
-					s->Release();
 				}
+				NN<Text::String> s = Text::String::New(sarr[1].v, sarr[1].leng);
+				if (this->core->FileAdd(id, webType, s))
+				{
+					Sync::MutexUsage mutUsage;
+					NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+					if (this->core->FileGet(id, webType, mutUsage).SetTo(file))
+					{
+						sptr = Text::StrInt32(UARR(sbuff), file->id);
+						i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)((file->webType << 24) | file->id));
+						this->lvFiles->SetSubItem(i, 1, file->fileName);
+					}
+				}
+				s->Release();
 			}
-
-			sb.ClearStr();
 		}
+
+		sb.ClearStr();
 	}
 	ua->Release();
 	SDEL_CLASS(ctrl);
@@ -552,9 +549,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	UIntOS i;
 	UIntOS j;
 
-	NN<Text::String> listFile;
-	if (!listFile.Set(this->core->GetListFile()))
-		return;
+	NN<Text::String> listFile = this->core->GetListFile();
 	IO::FileStream fs(listFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(fs);
 	writer.WriteSignature();

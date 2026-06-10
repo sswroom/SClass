@@ -1067,15 +1067,16 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
+								NN<Text::String> valueOri;
 								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
 
 								len = enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
-								enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
-								attr->valueOri->v[len] = 0;
+								attr->valueOri = valueOri = Text::String::New(len);
+								enc->UTF8FromBytes(valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
+								valueOri->v[len] = 0;
 							}
 							else
 							{
@@ -1248,15 +1249,16 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
+								NN<Text::String> valueOri;
 								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
 
 								len = enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
-								enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
-								attr->valueOri->v[len] = 0;
+								attr->valueOri = valueOri = Text::String::New(len);
+								enc->UTF8FromBytes(valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
+								valueOri->v[len] = 0;
 							}
 							else
 							{
@@ -1291,15 +1293,16 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
+								NN<Text::String> valueOri;
 								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
 
 								len = enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
-								enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
-								attr->valueOri->v[len] = 0;
+								attr->valueOri = valueOri = Text::String::New(len);
+								enc->UTF8FromBytes(valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
+								valueOri->v[len] = 0;
 							}
 							else
 							{
@@ -1363,15 +1366,16 @@ Bool Text::XMLReader::ReadNext()
 							OPTSTR_DEL(attr->value);
 							if (this->enc.SetTo(enc) && !this->stmEnc)
 							{
+								NN<Text::String> valueOri;
 								UIntOS len = enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
 								attr->value = nns = Text::String::New(len);
 								enc->UTF8FromBytes(nns->v, sbText->ToString(), sbText->GetLength(), 0);
 								nns->v[len] = 0;
 
 								len = enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
-								enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
-								attr->valueOri->v[len] = 0;
+								attr->valueOri = valueOri = Text::String::New(len);
+								enc->UTF8FromBytes(valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
+								valueOri->v[len] = 0;
 							}
 							else
 							{

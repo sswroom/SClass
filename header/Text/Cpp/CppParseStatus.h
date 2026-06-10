@@ -22,7 +22,7 @@ namespace Text
 				NN<Text::String> defineName;
 				Optional<Text::String> defineVal;
 				Optional<Text::String> defineParam;
-				Text::String *fileName;
+				Optional<Text::String> fileName;
 				Int32 lineNum;
 				Bool undefined;
 			} DefineInfo;

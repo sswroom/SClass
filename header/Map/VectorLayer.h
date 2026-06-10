@@ -52,11 +52,11 @@ namespace Map
 		ColInfo *cols;
 		Double mapRate;
 		MixedData mixedData;
-		Text::String *tableName;
+		Optional<Text::String> tableName;
 
 	private:
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs);
-		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(Text::String **strs);
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(Optional<Text::String> *strs);
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(Text::PString *strs);
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(NN<Data::ArrayListStringNN> strs);
 		void UpdateMapRate();
@@ -92,13 +92,13 @@ namespace Map
 		virtual FailReason GetFailReason() const;
 		virtual void WaitForLoad(Data::Duration maxWaitTime) {};
 
-		void SetTableName(Text::String *tableName);
+		void SetTableName(Optional<Text::String> tableName);
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 		Bool VectorValid(NN<Math::Geometry::Vector2D> vec);
-		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, Text::String **strs); //-1 = fail
+		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, Optional<Text::String> *strs); //-1 = fail
 		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, Text::PString *strs); //-1 = fail
 		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs); //-1 = fail
 		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs); //-1 = fail
