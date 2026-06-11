@@ -95,7 +95,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	req->GetHeaderNames(hdrNames);
 	Data::ArrayIterator<NN<Text::String>> it;
 
-	Text::String *svrHost = 0;
+	Optional<Text::String> svrHost = nullptr;
 	UInt16 svrPort = 0;
 	NN<Text::String> s;
 	Optional<Text::String> fwdFor = nullptr;
@@ -162,9 +162,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 		}
 		if (fwdHost.IsNull())
 		{
-			if (svrHost)
+			NN<Text::String> nnsvrHost;
+			if (svrHost.SetTo(nnsvrHost))
 			{
-				cli->AddHeaderC(CSTR("X-Forwarded-Host"), svrHost->ToCString());
+				cli->AddHeaderC(CSTR("X-Forwarded-Host"), nnsvrHost->ToCString());
 			}
 		}
 		sbHeader.ClearStr();
@@ -196,7 +197,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	SDEL_TEXT(fwdPort);
 	SDEL_TEXT(fwdProto);
 	SDEL_TEXT(fwdPrefix);
-	SDEL_STRING(svrHost);
+	OPTSTR_DEL(svrHost);
 
 	UnsafeArray<const UInt8> reqData;
 	Text::PString sarr[2];

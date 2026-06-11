@@ -30,7 +30,6 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 void __stdcall LinuxProgControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 	signal(SIGINT, LinuxProgControl_OnSignal);
-	signal(SIGPIPE, LinuxProgControl_OnSignal);
 	signal(SIGTERM, LinuxProgControl_OnSignal);
 	pause();
 //	getchar();
@@ -74,7 +73,7 @@ Int32 main(int argc, char *argv[])
 {
 	Int32 ret;
 	LinuxProgControl conCtrl;
-	//signal(SIGCHLD, SIG_IGN);
+	signal(SIGPIPE, SIG_IGN);
 
 	Core::CoreStart();
 	LinuxProgControl_Create(conCtrl, (UIntOS)argc, (UnsafeArray<Char>*)argv);

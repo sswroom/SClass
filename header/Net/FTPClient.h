@@ -12,7 +12,7 @@ namespace Net
 	private:
 		const UTF8Char *userName;
 		const UTF8Char *password;
-		Text::String *host;
+		Optional<Text::String> host;
 		UInt16 port;
 		const UTF8Char *path;
 		UInt32 codePage;

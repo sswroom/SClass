@@ -491,21 +491,21 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->title);
+								OPTSTR_DEL(this->title);
 								this->title = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("description")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->description);
+								OPTSTR_DEL(this->description);
 								this->description = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("link")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->link);
+								OPTSTR_DEL(this->link);
 								this->link = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("ttl")))
@@ -518,28 +518,28 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->language);
+								OPTSTR_DEL(this->language);
 								this->language = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("webMaster")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->webMaster);
+								OPTSTR_DEL(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("copyright")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->copyright);
+								OPTSTR_DEL(this->copyright);
 								this->copyright = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("generator")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->generator);
+								OPTSTR_DEL(this->generator);
 								this->generator = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("pubDate")))
@@ -597,21 +597,21 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->title);
+								OPTSTR_DEL(this->title);
 								this->title = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("description")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->description);
+								OPTSTR_DEL(this->description);
 								this->description = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("link")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->link);
+								OPTSTR_DEL(this->link);
 								this->link = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("ttl")))
@@ -624,28 +624,28 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->language);
+								OPTSTR_DEL(this->language);
 								this->language = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("webMaster")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->webMaster);
+								OPTSTR_DEL(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("dc:rights")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->copyright);
+								OPTSTR_DEL(this->copyright);
 								this->copyright = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("generator")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->generator);
+								OPTSTR_DEL(this->generator);
 								this->generator = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("dc:date")))
@@ -698,14 +698,14 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 					{
 						sb.ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_STRING(this->title);
+						OPTSTR_DEL(this->title);
 						this->title = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("description")))
 					{
 						sb.ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_STRING(this->description);
+						OPTSTR_DEL(this->description);
 						this->description = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("link")))
@@ -731,7 +731,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								if (linkType == 2)
 								{
-									SDEL_STRING(this->link);
+									OPTSTR_DEL(this->link);
 									this->link = attr->value->Clone();
 								}
 							}
@@ -748,7 +748,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 					{
 						sb.ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_STRING(this->language);
+						OPTSTR_DEL(this->language);
 						this->language = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("author")))
@@ -765,7 +765,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 							{
 								sb.ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_STRING(this->webMaster);
+								OPTSTR_DEL(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
 							k++;
@@ -775,14 +775,14 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 					{
 						sb.ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_STRING(this->copyright);
+						OPTSTR_DEL(this->copyright);
 						this->copyright = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("generator")))
 					{
 						sb.ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_STRING(this->generator);
+						OPTSTR_DEL(this->generator);
 						this->generator = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("published")))

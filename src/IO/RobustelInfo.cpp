@@ -3,36 +3,36 @@
 #include "IO/RobustelStatus.h"
 #include "Text/MyString.h"
 
-Text::String *IO::RobustelInfo::GetIMEI()
+Optional<Text::String> IO::RobustelInfo::GetIMEI()
 {
 	return IO::RobustelStatus::GetStatus("cellular.status.imei");
 }
 
-Text::String *IO::RobustelInfo::GetCellID()
+Optional<Text::String> IO::RobustelInfo::GetCellID()
 {
 	return IO::RobustelStatus::GetStatus("cellular.status.cell_id");
 }
 
-Bool IO::RobustelInfo::GetRSSI(Int8 *val)
+Bool IO::RobustelInfo::GetRSSI(OutParam<Int8> val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int16 ival;
-	Text::String *s = IO::RobustelStatus::GetStatus("cellular.status.csq");
-	if (s)
+	NN<Text::String> s;
+	if (IO::RobustelStatus::GetStatus("cellular.status.csq").SetTo(s))
 	{
 		Bool succ = false;
 		UIntOS i = s->IndexOf('(');
-		if (s >= 0)
+		if (i != INVALID_INDEX)
 		{
 			sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 			i = Text::StrIndexOfC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("dBm"));
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
-				if (Text::StrToInt16(sbuff, &ival))
+				if (Text::StrToInt16(sbuff, ival))
 				{
-					*val = (Int8)ival;
+					val.Set((Int8)ival);
 				}
 				succ = true;
 			}
@@ -43,20 +43,20 @@ Bool IO::RobustelInfo::GetRSSI(Int8 *val)
 	return false;
 }
 
-Bool IO::RobustelInfo::GetRSRP(Int8 *val)
+Bool IO::RobustelInfo::GetRSRP(OutParam<Int8> val)
 {
-	Text::String *s = IO::RobustelStatus::GetStatus("cellular.status.rsrp");
 	Int16 ival;
-	if (s)
+	NN<Text::String> s;
+	if (IO::RobustelStatus::GetStatus("cellular.status.rsrp").SetTo(s))
 	{
 		Bool succ = false;
 		UIntOS i = s->IndexOf(UTF8STRC(" dB"));
 		if (i != INVALID_INDEX)
 		{
 			s->v[i] = 0;
-			if (s->ToInt16(&ival))
+			if (s->ToInt16(ival))
 			{
-				*val = (Int8)ival;
+				val.Set((Int8)ival);
 				succ = true;
 			}
 		}
@@ -66,20 +66,20 @@ Bool IO::RobustelInfo::GetRSRP(Int8 *val)
 	return false;
 }
 
-Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
+Bool IO::RobustelInfo::GetRSRQ(OutParam<Int8> val)
 {
-	Text::String *s = IO::RobustelStatus::GetStatus("cellular.status.rsrq");
 	Int16 ival;
-	if (s)
+	NN<Text::String> s;
+	if (IO::RobustelStatus::GetStatus("cellular.status.rsrq").SetTo(s))
 	{
 		Bool succ = false;
 		UIntOS i = s->IndexOf(UTF8STRC(" dB"));
 		if (i != INVALID_INDEX)
 		{
 			s->v[i] = 0;
-			if (s->ToInt16(&ival))
+			if (s->ToInt16(ival))
 			{
-				*val = (Int8)ival;
+				val.Set((Int8)ival);
 				succ = true;
 			}
 		}
@@ -89,21 +89,33 @@ Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
 	return false;
 }
 
-Bool IO::RobustelInfo::GetPosition(Double *lat, Double *lon)
+Bool IO::RobustelInfo::GetPosition(OutParam<Double> lat, OutParam<Double> lon)
 {
 	Bool succ = true;
-	Text::String *s;
-	s = IO::RobustelStatus::GetStatus("gps.latitude");
-	if (s == 0 || !s->ToDouble(lat))
+	NN<Text::String> s;
+	if (!IO::RobustelStatus::GetStatus("gps.latitude").SetTo(s))
 	{
 		succ = false;
 	}
-	SDEL_STRING(s);
-	s = IO::RobustelStatus::GetStatus("gps.longitude");
-	if (s == 0 || !s->ToDouble(lon))
+	else
+	{
+		if (!s->ToDouble(lat))
+		{
+			succ = false;
+		}
+		s->Release();
+	}
+	if (!IO::RobustelStatus::GetStatus("gps.longitude").SetTo(s))
 	{
 		succ = false;
 	}
-	SDEL_STRING(s);
+	else
+	{
+		if (!s->ToDouble(lon))
+		{
+			succ = false;
+		}
+		s->Release();
+	}
 	return succ;
 }

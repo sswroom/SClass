@@ -32,7 +32,6 @@ namespace DB
 		void AppendInt64(Int64 val);
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
-		void AppendStr(Text::String *val);
 		void AppendStr(Optional<Text::String> val);
 		void AppendStr(NN<Text::String> val);
 		void AppendStrC(Text::CString val);
@@ -46,6 +45,7 @@ namespace DB
 		void AppendBool(Bool val);
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
 		void AppendBinary(UnsafeArrayOpt<const UInt8> buff, UIntOS buffSize);
+		void AppendNull();
 
 		void AppendTableName(NN<DB::TableDef> table);
 		void AppendCol(UnsafeArray<const UTF8Char> val);

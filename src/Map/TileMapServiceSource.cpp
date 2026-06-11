@@ -200,7 +200,7 @@ void Map::TileMapServiceSource::LoadXML()
 								this->tileFormat = Map::TileMap::TileFormat::PNG;
 							}
 #if defined(VERBOSE)
-							printf("found tileExt = %s, use = %s\r\n", avalue->v, STR_PTR(this->tileExt));
+							printf("found tileExt = %s, use = %s\r\n", avalue->v, Text::String::OrEmpty(this->tileExt)->v.Ptr());
 #endif
 						}
 					}
@@ -213,7 +213,8 @@ void Map::TileMapServiceSource::LoadXML()
 						if (nodeText->Equals(UTF8STRC("TileSet")))
 						{
 							NN<TileLayer> lyr;
-							Text::String *href = 0;
+							Optional<Text::String> href = nullptr;
+							NN<Text::String> nnhref;
 							Double unitPerPixel= 0;
 							UIntOS order = INVALID_INDEX;
 
@@ -224,16 +225,16 @@ void Map::TileMapServiceSource::LoadXML()
 								aname = Text::String::OrEmpty(attr->name);
 								if (aname->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
 								{
-									SDEL_STRING(href);
-									href = avalue->Clone().Ptr();
+									OPTSTR_DEL(href);
+									href = avalue->Clone();
 #if defined(VERBOSE)
 									printf("tileHref = %s\r\n", href->v);
 #endif
 								}
 								else if (aname->Equals(UTF8STRC("profile")) && attr->value.SetTo(avalue))
 								{
-									SDEL_STRING(href);
-									href = avalue->Clone().Ptr();
+									OPTSTR_DEL(href);
+									href = avalue->Clone();
 #if defined(VERBOSE)
 									printf("tileProfile = %s\r\n", href->v);
 #endif
@@ -253,18 +254,18 @@ void Map::TileMapServiceSource::LoadXML()
 #endif
 								}
 							}
-							if (href && order != INVALID_INDEX && unitPerPixel != 0)
+							if (href.SetTo(nnhref) && order != INVALID_INDEX && unitPerPixel != 0)
 							{
 								lyr = MemAllocNN(TileLayer);
-								lyr->url = href->Clone();
+								lyr->url = nnhref->Clone();
 								lyr->unitPerPixel = unitPerPixel;
 								lyr->order = order;
 								this->layers.Add(lyr);
 #if defined(VERBOSE)
-								printf("Added Layer Cnt=%d, order=%d, upp=%lf, url=%s\r\n", (UInt32)this->layers.GetCount(), (UInt32)order, unitPerPixel, href->v);
+								printf("Added Layer Cnt=%d, order=%d, upp=%lf, url=%s\r\n", (UInt32)this->layers.GetCount(), (UInt32)order, unitPerPixel, nnhref->v.Ptr());
 #endif
 							}
-							SDEL_STRING(href);
+							OPTSTR_DEL(href);
 						}
 						reader.SkipElement();
 					}

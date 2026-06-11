@@ -13,7 +13,7 @@ namespace Media
 			UIntOS y;
 			UIntOS width;
 			UIntOS height;
-			Text::String *uuid;
+			Optional<Text::String> uuid;
 		public:
 			JasperReportElement();
 			~JasperReportElement();
@@ -22,12 +22,12 @@ namespace Media
 			void SetY(UIntOS y);
 			void SetWidth(UIntOS width);
 			void SetHeight(UIntOS height);
-			void SetUUID(Text::String *uuid);
+			void SetUUID(Optional<Text::String> uuid);
 			UIntOS GetX() const;
 			UIntOS GetY() const;
 			UIntOS GetWidth() const;
 			UIntOS GetHeight() const;
-			Text::String *GetUUID() const;
+			Optional<Text::String> GetUUID() const;
 		};
 	}
 }

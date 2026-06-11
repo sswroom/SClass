@@ -22,7 +22,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrUTF8(UnsafeArray<UTF8Char> sqlstr, Unsaf
 	UnsafeArray<const UTF8Char> val;
 	UTF8Char c;
 	if (!optval.SetTo(val))
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 
 	if (sqlType == DB::SQLType::MySQL)
 	{
@@ -751,7 +751,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeAr
 	UnsafeArray<const WChar> nnval;
 	UTF32Char c;
 	if (!val.SetTo(nnval))
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 
 	if (sqlType == DB::SQLType::MySQL)
 	{
@@ -1243,7 +1243,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Opti
 	UnsafeArray<UTF8Char> sptr;
 	NN<Data::DateTime> nnDat;
 	if (!dat.SetTo(nnDat))
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 	Data::DateTime dt(nnDat);
 	if (sqlType == DB::SQLType::Access)
 	{
@@ -1340,7 +1340,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBTS(UnsafeArray<UTF8Char> sqlstr, const Data
 {
 	UnsafeArray<UTF8Char> sptr;
 	if (ts.IsNull())
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 	if (sqlType == DB::SQLType::Access)
 	{
 		sptr = sqlstr;
@@ -1435,7 +1435,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDate(UnsafeArray<UTF8Char> sqlstr, const Da
 {
 	UnsafeArray<UTF8Char> sptr;
 	if (d.IsNull())
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 	if (sqlType == DB::SQLType::Access)
 	{
 		sptr = sqlstr;
@@ -1612,7 +1612,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArr
 	UnsafeArray<const UInt8> nnbuff;
 	if (!buff.SetTo(nnbuff))
 	{
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 	}
 	if (sqlType == DB::SQLType::MySQL || sqlType == DB::SQLType::SQLite)
 	{
@@ -1659,7 +1659,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
 	{
-		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+		return SDBNull(sqlstr, sqlType);
 	}
 	if (sqlType == DB::SQLType::MSSQL)
 	{
@@ -1915,6 +1915,16 @@ UIntOS DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 	{
 		return 0;
 	}
+}
+
+UnsafeArray<UTF8Char> DB::DBUtil::SDBNull(UnsafeArray<UTF8Char> sqlstr, SQLType sqlType)
+{
+	return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));	
+}
+
+UIntOS DB::DBUtil::SDBNullLeng(SQLType sqlType)
+{
+	return 4;
 }
 
 UnsafeArray<UTF8Char> DB::DBUtil::SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, DB::SQLType sqlType)

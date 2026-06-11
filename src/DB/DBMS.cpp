@@ -1832,7 +1832,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CStringNN p
 	UIntOS i;
 	Bool succ;
 	#if defined(VERBOSE)
-	printf("UserAdd %s/%s@%s\r\n", userName.v, password.v.Ptr(), host.v.Ptr());
+	printf("UserAdd %s/%s@%s\r\n", userName.v.Ptr(), password.v.Ptr(), host.v.Ptr());
 	#endif
 	Sync::MutexUsage mutUsage(this->loginMut);
 	if (!this->loginMap.GetC(userName).SetTo(login))

@@ -400,13 +400,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
-	if (data.GetSize() < 4)
+	NN<Text::String> notifyPwd;
+	if (data.GetSize() < 4 || !me->notifyPwd.SetTo(notifyPwd))
 		return;
 	if (data[0] == 'S' && data[1] == 'm' && data[2] == 'P' && data[3] == 'M')
 	{
 		if (data.GetSize() >= 25)
 		{
-			Text::CStringNN pwd = me->notifyPwd->ToCString();
+			Text::CStringNN pwd = notifyPwd->ToCString();
 			UInt32 crcVal;
 			{
 				Sync::MutexUsage mutUsage(me->notifyCRCMut);
@@ -813,7 +814,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				currMonth = dt.GetMonth();
 				currDay = dt.GetDay();
 
-				sptr = this->dataDir->ConcatTo(sbuff);
+				sptr = Text::String::OrEmpty(this->dataDir)->ConcatTo(sbuff);
 				sptr = dt.ToString(sptr, "yyyyMM");
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt64(sptr, dev->cliId);
@@ -876,7 +877,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	dt.ToUTCTime();
 	dt.SetTicks(photoTime);
 
-	sptr = this->dataDir->ConcatTo(sbuff);
+	sptr = Text::String::OrEmpty(this->dataDir)->ConcatTo(sbuff);
 	sptr = dt.ToString(sptr, "yyyyMM");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, cliId);
@@ -1156,11 +1157,11 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	this->ssl = Net::SSLEngineFactory::Create(clif, true);
 	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	this->deng = deng;
-	this->dataDir = 0;
+	this->dataDir = nullptr;
 	this->cliSvr = 0;
 	this->cliMgr = 0;
 	this->notifyUDP = 0;
-	this->notifyPwd = 0;
+	this->notifyPwd = nullptr;
 	this->dataUDP = 0;
 	this->dataCRC = 0;
 	this->db = nullptr;
@@ -1333,7 +1334,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 					{
 						this->listener->SetAccessLog(&this->log, IO::LogHandler::LogLevel::Command);
 						this->listener->SetRequestLog(this);
-						if (this->notifyPwd)
+						if (this->notifyPwd.NotNull())
 						{
 							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
 							if (this->notifyUDP->IsError())
@@ -1508,13 +1509,13 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	this->clif.Delete();
 	this->sockf.Delete();
 	this->deng.Delete();
-	SDEL_STRING(this->notifyPwd);
-	SDEL_STRING(this->dataDir);
+	OPTSTR_DEL(this->notifyPwd);
+	OPTSTR_DEL(this->dataDir);
 }
 
 Bool SSWR::SMonitor::SMonitorSvrCore::IsError()
 {
-	return this->cliSvr == 0 || this->db.IsNull() || this->listener == 0 || this->dataDir == 0 || this->notifyUDP == 0 || this->initErr;
+	return this->cliSvr == 0 || this->db.IsNull() || this->listener == 0 || this->dataDir.IsNull() || this->notifyUDP == 0 || this->initErr;
 }
 
 NN<Media::DrawEngine> SSWR::SMonitor::SMonitorSvrCore::GetDrawEngine()
@@ -2115,7 +2116,7 @@ UIntOS SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 	currTime = dt.ToTicks();
 	while (currTime < endTime)
 	{
-		sptr = this->dataDir->ConcatTo(sbuff);
+		sptr = Text::String::OrEmpty(this->dataDir)->ConcatTo(sbuff);
 		sptr = dt.ToString(sptr, "yyyyMM");
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrInt64(sptr, cliId);

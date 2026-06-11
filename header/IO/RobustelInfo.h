@@ -7,12 +7,12 @@ namespace IO
 	class RobustelInfo
 	{
 	public:
-		static Text::String *GetIMEI();
-		static Text::String *GetCellID();
-		static Bool GetRSSI(Int8 *val);
-		static Bool GetRSRP(Int8 *val);
-		static Bool GetRSRQ(Int8 *val);
-		static Bool GetPosition(Double *lat, Double *lon);
+		static Optional<Text::String> GetIMEI();
+		static Optional<Text::String> GetCellID();
+		static Bool GetRSSI(OutParam<Int8> val);
+		static Bool GetRSRP(OutParam<Int8> val);
+		static Bool GetRSRQ(OutParam<Int8> val);
+		static Bool GetPosition(OutParam<Double> lat, OutParam<Double> lon);
 	};
 }
 #endif

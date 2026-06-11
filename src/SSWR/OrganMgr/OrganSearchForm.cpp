@@ -36,7 +36,7 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> 
 	this->SetFont(nullptr, 10.5, false);
 	this->SetNoResize(true);
 	this->env = env;
-	this->foundStr = 0;
+	this->foundStr = nullptr;
 	this->foundGroup = 0;
 	this->parentId = 0;
 
@@ -60,7 +60,7 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> 
 
 SSWR::OrganMgr::OrganSearchForm::~OrganSearchForm()
 {
-	SDEL_STRING(this->foundStr);
+	OPTSTR_DEL(this->foundStr);
 }
 
 void SSWR::OrganMgr::OrganSearchForm::OnMonitorChanged()
@@ -70,7 +70,7 @@ void SSWR::OrganMgr::OrganSearchForm::OnMonitorChanged()
 
 NN<Text::String> SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
 {
-	return NN<Text::String>::FromPtr(this->foundStr);
+	return Text::String::OrEmpty(this->foundStr);
 }
 
 NN<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganSearchForm::GetFoundGroup()

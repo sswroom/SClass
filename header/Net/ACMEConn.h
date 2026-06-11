@@ -41,7 +41,7 @@ namespace Net
 			Optional<Text::String> orderURL;
 			Optional<Data::ArrayListStringNN> authURLs;
 			Optional<Text::String> finalizeURL;
-			Text::String *certificateURL;
+			Optional<Text::String> certificateURL;
 		};
 
 		struct Challenge

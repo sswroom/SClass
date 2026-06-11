@@ -23,10 +23,10 @@ namespace Net
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
-			Text::String *userAgent;
+			Optional<Text::String> userAgent;
 
 		public:
-			WebSite48IdolControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent);
+			WebSite48IdolControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSite48IdolControl();
 
 			IntOS GetTVPageItems(IntOS pageNo, NN<Data::ArrayListNN<ItemData>> itemList);

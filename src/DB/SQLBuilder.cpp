@@ -71,12 +71,6 @@ void DB::SQLBuilder::AppendUInt64(UInt64 val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBUInt64(this->sb.GetEndPtr(), val, this->sqlType));
 }
 
-void DB::SQLBuilder::AppendStr(Text::String *val)
-{
-	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->sqlType));
-	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), STR_PTR(val), this->sqlType));
-}
-
 void DB::SQLBuilder::AppendStr(Optional<Text::String> val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(OPTSTR_CSTR(val).v, this->sqlType));
@@ -162,6 +156,12 @@ void DB::SQLBuilder::AppendBinary(UnsafeArrayOpt<const UInt8> buff, UIntOS buffS
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->sqlType));
+}
+
+void DB::SQLBuilder::AppendNull()
+{
+	this->sb.AllocLeng(DB::DBUtil::SDBNullLeng(this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBNull(this->sb.GetEndPtr(), this->sqlType));
 }
 
 void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)

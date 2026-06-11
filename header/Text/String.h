@@ -80,12 +80,7 @@ namespace Text
 	};
 }
 
-#define STR_PTR(s) ((s)?UnsafeArrayOpt<const UTF8Char>(s->v):UnsafeArrayOpt<const UTF8Char>(nullptr))
-#define STR_PTRC(s) (s)?UnsafeArrayOpt<const UTF8Char>(s->v):UnsafeArrayOpt<const UTF8Char>(nullptr), (s)?s->leng:0
 #define STR_CSTR(s) ((s)?(s)->ToCString():Text::CString(nullptr, 0))
-#define STR_REL(s) (s->Release())
-#define SCOPY_STRING(s) ((s)?(s)->Clone().Ptr():0)
-#define SDEL_STRING(s) if (s) { (s)->Release(); s = 0; }
 #define OPTSTR_DEL(s) {Optional<Text::String> os = (s); if (!os.IsNull()) {os.OrNull()->Release(); s = nullptr;}}
 #define OPTSTR_CSTR(s) (s.IsNull()?Text::CString(nullptr, 0):s.OrNull()->ToCString())
 #endif

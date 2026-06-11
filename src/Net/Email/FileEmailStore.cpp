@@ -17,8 +17,8 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 	Data::ArrayListStringNN rcptList;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime recvTime;
-	Text::String *remoteIP = 0;
-	Text::String *fromAddr = 0;
+	Optional<Text::String> remoteIP = nullptr;
+	Optional<Text::String> fromAddr = nullptr;
 	recvTime.SetTicks(0);
 	
 	UIntOS i = 0;
@@ -44,8 +44,8 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 					l = value->IndexOf(' ', k + 1);
 					if (l != INVALID_INDEX)
 					{
-						SDEL_STRING(remoteIP);
-						remoteIP = Text::String::New(value->v + k + 1, l - k - 1).Ptr();
+						OPTSTR_DEL(remoteIP);
+						remoteIP = Text::String::New(value->v + k + 1, l - k - 1);
 					}
 				}
 			}
@@ -67,13 +67,15 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 			}
 			else if (name->EqualsICase(UTF8STRC("From")))
 			{
-				fromAddr = value->Clone().Ptr();
+				fromAddr = value->Clone();
 			}
 		}
 		i++;
 	}
 
-	if (fromAddr != 0 && remoteIP != 0 && recvTime.ToTicks() != 0 && rcptList.GetCount() > 0)
+	NN<Text::String> nnfromAddr;
+	NN<Text::String> nnremoteIP;
+	if (fromAddr.SetTo(nnfromAddr) && remoteIP.SetTo(nnremoteIP) && recvTime.ToTicks() != 0 && rcptList.GetCount() > 0)
 	{
 		Int64 id;
 		k = Text::StrIndexOfCharC(fileNameStart, (UIntOS)(filePathEnd - fileNameStart), '.');
@@ -83,8 +85,8 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 		NN<EmailInfo> email;
 		email = MemAllocNN(EmailInfo);
 		email->id = id;
-		Net::SocketUtil::SetAddrInfo(email->remoteAddr, remoteIP->ToCString());
-		email->fromAddr = fromAddr->Clone();
+		Net::SocketUtil::SetAddrInfo(email->remoteAddr, nnremoteIP->ToCString());
+		email->fromAddr = nnfromAddr->Clone();
 		email->recvTime = recvTime.ToTicks();
 		email->isDeleted = false;
 		email->fileSize = (UIntOS)fileSize;
@@ -106,8 +108,8 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 		mutUsage.ReplaceMutex(this->fileMut);
 		this->fileMap.Put(file->id, file);
 	}
-	SDEL_STRING(remoteIP);
-	SDEL_STRING(fromAddr);
+	OPTSTR_DEL(remoteIP);
+	OPTSTR_DEL(fromAddr);
 	rcptList.FreeAll();
 }
 

@@ -49,9 +49,9 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	Media::MediaFile *mf = 0;
 	UIntOS currTrack;
 	UIntOS maxTrack = 0;
-	Text::String *fileName = 0;
-	Text::String *artists[100];
-	Text::String *titles[100];
+	Optional<Text::String> fileName = nullptr;
+	Optional<Text::String> artists[100];
+	Optional<Text::String> titles[100];
 	UInt32 stmTime[100];
 	UInt32 lastTime;
 	UIntOS i;
@@ -63,8 +63,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	i = 100;
 	while (i-- > 0)
 	{
-		artists[i] = 0;
-		titles[i] = 0;
+		artists[i] = nullptr;
+		titles[i] = nullptr;
 		stmTime[i] = 0;
 	}
 	currTrack = 0;
@@ -77,32 +77,32 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 		if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("PERFORMER ")))
 		{
 			sptr2 = ReadString(sbuff2, &sbuff[10]);
-			if (artists[currTrack] != 0)
+			if (artists[currTrack].NotNull())
 			{
 				errorFound = true;
 				break;
 			}
-			artists[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
+			artists[currTrack] = Text::String::NewP(sbuff2, sptr2);
 		}
 		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TITLE ")))
 		{
 			sptr2 = ReadString(sbuff2, &sbuff[6]);
-			if (titles[currTrack] != 0)
+			if (titles[currTrack].NotNull())
 			{
 				errorFound = true;
 				break;
 			}
-			titles[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
+			titles[currTrack] = Text::String::NewP(sbuff2, sptr2);
 		}
 		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
 			sptr = ReadString(sbuff2, &sbuff[5]);
-			if (fileName != 0)
+			if (fileName.NotNull())
 			{
 				errorFound = true;
 				break;
 			}
-			fileName = Text::String::New(sbuff2, (UIntOS)(sptr - sbuff2)).Ptr();
+			fileName = Text::String::New(sbuff2, (UIntOS)(sptr - sbuff2));
 		}
 		else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("TRACK ")))
 		{
@@ -137,11 +137,13 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 		}
 	}
 
-	if (!errorFound && fileName)
+	NN<Text::String> nnfileName;
+	NN<Text::String> s;
+	if (!errorFound && fileName.SetTo(nnfileName))
 	{
 		NN<IO::ParsedObject> pobj;
 		sptr = fd->GetFullName()->ConcatTo(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
+		sptr = IO::Path::AppendPath(sbuff, sptr, nnfileName->ToCString());
 		IO::StmData::FileData data(CSTRP(sbuff, sptr), false);
 		if (parsers->ParseFile(data).SetTo(pobj))
 		{
@@ -161,15 +163,15 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 						break;
 					}
 					sptr = sbuff;
-					if (titles[i])
+					if (titles[i].SetTo(s))
 					{
-						sptr = titles[i]->ConcatTo(sptr);
+						sptr = s->ConcatTo(sptr);
 					}
 					else
 					{
 						sptr = Text::StrInt32(Text::StrConcatC(sptr, UTF8STRC("Track ")), (Int32)i);
 					}
-					chapters->AddChapter(stmTime[i], CSTRP(sbuff, sptr), artists[i]?artists[i]->ToCString():artists[0]->ToCString());
+					chapters->AddChapter(stmTime[i], CSTRP(sbuff, sptr), artists[i].SetTo(s)?s->ToCString():Text::String::OrEmpty(artists[0])->ToCString());
 
 					lastTime = stmTime[i];
 					i++;
@@ -182,12 +184,12 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 			}
 		}
 	}
-	SDEL_STRING(fileName);
+	OPTSTR_DEL(fileName);
 	i = 100;
 	while (i-- > 0)
 	{
-		SDEL_STRING(artists[i]);
-		SDEL_STRING(titles[i]);
+		OPTSTR_DEL(artists[i]);
+		OPTSTR_DEL(titles[i]);
 	}
 
 	return mf;

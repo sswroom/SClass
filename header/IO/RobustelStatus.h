@@ -7,7 +7,7 @@ namespace IO
 	class RobustelStatus
 	{
 	public:
-		static Text::String *GetStatus(const Char *name);
+		static Optional<Text::String> GetStatus(UnsafeArray<const Char> name);
 	};
 }
 #endif

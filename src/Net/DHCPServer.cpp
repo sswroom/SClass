@@ -84,16 +84,16 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			{
 				dev = MemAllocNN(DeviceStatus);
 				dev->hwAddr64 = hwAddr;
-				dev->hostName = 0;
-				dev->vendorClass = 0;
+				dev->hostName = nullptr;
+				dev->vendorClass = nullptr;
 				dev->updated = true;
 				if (sbHostName.GetLength() > 0)
 				{
-					dev->hostName = Text::String::New(sbHostName.ToCString()).Ptr();
+					dev->hostName = Text::String::New(sbHostName.ToCString());
 				}
 				if (sbVendorClass.GetLength() > 0)
 				{
-					dev->vendorClass = Text::String::New(sbVendorClass.ToCString()).Ptr();
+					dev->vendorClass = Text::String::New(sbVendorClass.ToCString());
 				}
 				if (reqIP == 0 || (reqIP & me->subnet) != (me->infIP & me->subnet))
 				{
@@ -339,8 +339,8 @@ Net::DHCPServer::~DHCPServer()
 		while (i-- > 0)
 		{
 			dev = this->devMap.GetItemNoCheck(i);
-			SDEL_STRING(dev->hostName);
-			SDEL_STRING(dev->vendorClass);
+			OPTSTR_DEL(dev->hostName);
+			OPTSTR_DEL(dev->vendorClass);
 			MemFreeNN(dev);
 		}
 		MemFree(this->devUsed);

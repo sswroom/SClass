@@ -9,7 +9,7 @@ namespace IO
 	{
 	protected:
 		void *sensor;
-		Text::String *name;
+		Optional<Text::String> name;
 
 	public:
 		SensorWin(void *sensor);

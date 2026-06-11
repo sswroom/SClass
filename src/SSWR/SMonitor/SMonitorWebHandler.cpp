@@ -42,7 +42,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(NN<SSWR::SMonitor:
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -66,7 +66,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 				}
 			}
 		}
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLine(CSTR("<body onload=\"document.getElementById('pwd').focus()\"><center>"));
@@ -84,7 +84,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 	else
 	{
 		Net::WebServer::WebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLine(CSTR("<body onload=\"window.setTimeout(new Function('document.location.replace(\\'index\\')'), 60000)\">"));
@@ -271,7 +271,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 		}
 	}
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -283,7 +283,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
@@ -324,7 +324,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.getElementById('user').focus()\">"));
@@ -348,7 +348,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 	writer->WriteLine(CSTR("</form>"));
 	writer->WriteLine(CSTR("</center></td></tr></table></body>"));
 	writer->WriteLine(CSTR("</html>"));
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -371,7 +371,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(NN<SSWR::SMonitor::
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -393,7 +393,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"window.setTimeout(new Function('document.location.reload()'), 60000)\">"));
@@ -528,7 +528,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -540,7 +540,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -598,7 +598,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.forms[0].devName.focus()\">"));
@@ -647,7 +647,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -659,7 +659,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -728,7 +728,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.forms[0].readingName0.focus()\">"));
@@ -788,7 +788,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -800,7 +800,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -869,7 +869,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.forms[0].digitalName0.focus()\">"));
@@ -912,7 +912,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -1461,7 +1461,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	Int32 userId = 0;
 	Int32 userType = 0;
 	UnsafeArray<UInt8> buff;
@@ -1483,7 +1483,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devList;
 	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	writer->WriteLine(CSTR("<script type=\"text/javascript\">"));
 	writer->WriteLine(CSTR("var clients = new Object();"));
@@ -1567,7 +1567,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 		sess->EndUse();
 	}
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -1806,7 +1806,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
@@ -1855,7 +1855,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.getElementById('password').focus()\">"));
@@ -1879,7 +1879,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -1891,7 +1891,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -1913,7 +1913,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 	UIntOS j;
 	me->core->UserGetList(userList);
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body>"));
@@ -1947,7 +1947,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -1959,7 +1959,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	NN<Net::WebServer::WebSession> sess;
@@ -1993,7 +1993,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.getElementById('username').focus()\">"));
@@ -2010,7 +2010,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -2022,7 +2022,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UTF8Char sbuff[64];
@@ -2092,7 +2092,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonit
 	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), 1, devList);
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.getElementById('username').focus()\">"));
@@ -2147,7 +2147,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonit
 	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
@@ -2157,7 +2157,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonit
 	return true;
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::Writer *writer)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(NN<IO::Writer> writer)
 {
 	writer->WriteLine(CSTR("<html><head><title>Monitor</title>"));
 	writer->WriteLine(CSTR("<style>"));
@@ -2167,12 +2167,12 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::Writer *
 	writer->WriteLine(CSTR("</style>"));
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(IO::Writer *writer)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(NN<IO::Writer> writer)
 {
 	writer->WriteLine(CSTR("</head>"));
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer, Optional<Net::WebServer::WebSession> sess)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(NN<IO::Writer> writer, Optional<Net::WebServer::WebSession> sess)
 {
 	Int32 userType = 0;
 	NN<Net::WebServer::WebSession> nnsess;
@@ -2203,63 +2203,65 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, NN<Text::String> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(NN<IO::Writer> writer, NN<Text::String> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt->v);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(NN<IO::Writer> writer, Text::CString txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt.OrEmpty().v);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, Text::String *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(NN<IO::Writer> writer, Optional<Text::String> txt)
 {
-	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(STR_PTR(txt));
+	NN<Text::String> s;
+	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt.SetTo(s) ? s->v : UnsafeArrayOpt<UTF8Char>(nullptr));
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, NN<Text::String> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(NN<IO::Writer> writer, NN<Text::String> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt->v);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt)
 {
 	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(UnsafeArrayOpt<const UTF8Char>(txt));
 	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, Text::String *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(NN<IO::Writer> writer, Optional<Text::String> txt)
 {
-	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(Optional<Text::String>(txt));
+	NN<Text::String> s;
+	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt.SetTo(s) ? s->v : UnsafeArrayOpt<UTF8Char>(nullptr));
 	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, NN<Text::String> txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(NN<IO::Writer> writer, NN<Text::String> txt)
 {
 	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
 	writer->Write(jsTxt->ToCString());

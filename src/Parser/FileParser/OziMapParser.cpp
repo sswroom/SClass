@@ -53,7 +53,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 {
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	Text::String *fileName = 0;
+	Optional<Text::String> fileName = nullptr;
+	NN<Text::String> nnfileName;
 	UnsafeArray<UTF8Char> tmpArr[6];
 	Map::VectorLayer *lyr = 0;
 	Bool valid;
@@ -75,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	}
 	if (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 	{
-		fileName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
+		fileName = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	}
 	else
 	{
@@ -172,12 +173,12 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 			valid = false;
 		}
 
-		if (valid)
+		if (valid && fileName.SetTo(nnfileName))
 		{
 			Optional<Media::ImageList> imgList = nullptr;
 			NN<Media::ImageList> nnimgList;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
+			sptr = IO::Path::AppendPath(sbuff, sptr, nnfileName->ToCString());
 			{
 				IO::StmData::FileData imgFd(CSTRP(sbuff, sptr), false);
 				imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(imgFd, IO::ParserType::ImageList));
@@ -216,6 +217,6 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 			MemFree(ptStatus);
 		}
 	}
-	SDEL_STRING(fileName);
+	OPTSTR_DEL(fileName);
 	return lyr;
 }

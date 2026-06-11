@@ -13,7 +13,7 @@ namespace Map
 		private:
 			NN<IO::PackageFile> pkgFile;
 			Optional<IO::PackageFile> rootPkg;
-			Text::String *name;
+			Optional<Text::String> name;
 			UIntOS minLevel;
 			UIntOS maxLevel;
 			NN<Text::String> fmt;

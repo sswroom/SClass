@@ -23,11 +23,8 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 
 Bool DB::ODBCConn::Connect(Text::CStringNN connStr)
 {
-	if (this->connStr)
-	{
-		this->connStr->Release();
-	}
-	this->connStr = Text::String::New(connStr).Ptr();
+	OPTSTR_DEL(this->connStr);
+	this->connStr = Text::String::New(connStr);
 	this->connErr = CE_NOT_CONNECT;
 	return false;
 }
@@ -39,8 +36,8 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DB
 	lastStmtHand = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
-	this->lastErrorMsg = 0;
-	this->connStr = 0;
+	this->lastErrorMsg = nullptr;
+	this->connStr = nullptr;
 	this->connHand = 0;
 	this->envHand = 0;
 	this->dsn = nullptr;
@@ -59,7 +56,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 	this->envHand = 0;
 	this->lastStmtHand = 0;
 	this->log = log;
-	this->connStr = 0;
+	this->connStr = nullptr;
 	this->dsn = nullptr;
 	this->uid = nullptr;
 	this->pwd = nullptr;
@@ -73,7 +70,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->connStr = 0;
+	this->connStr = nullptr;
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
 	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
@@ -89,7 +86,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd
 DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->connStr = 0;
+	this->connStr = nullptr;
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
 	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
@@ -135,7 +132,7 @@ DB::ODBCConn::~ODBCConn()
 	OPTSTR_DEL(this->dsn);
 	OPTSTR_DEL(this->uid);
 	OPTSTR_DEL(this->pwd);
-	SDEL_STRING(this->connStr);
+	OPTSTR_DEL(this->connStr);
 }
 
 DB::SQLType DB::ODBCConn::GetSQLType() const
@@ -150,7 +147,7 @@ Bool DB::ODBCConn::IsAxisAware() const
 
 DB::DBConn::ConnType DB::ODBCConn::GetConnType() const
 {
-	return CT_ODBC;
+	return ConnType::ODBC;
 }
 
 Int8 DB::ODBCConn::GetTzQhr() const
@@ -158,7 +155,7 @@ Int8 DB::ODBCConn::GetTzQhr() const
 	return this->tzQhr;
 }
 
-void DB::ODBCConn::ForceTz(Int8 tzQhr)
+void DB::ODBCConn::ForceTzQhr(Int8 tzQhr)
 {
 	this->forceTz = true;
 	this->tzQhr = tzQhr;
@@ -168,9 +165,9 @@ void DB::ODBCConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("ODBC:"));
-	if (this->connStr)
+	if (this->connStr.SetTo(s))
 	{
-		sb->Append(this->connStr);
+		sb->Append(s);
 	}
 	else if (this->dsn.SetTo(s))
 	{
@@ -194,7 +191,7 @@ void DB::ODBCConn::Dispose()
 
 IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 {
-	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return -2;
 }
 
@@ -206,7 +203,7 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 
 Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
-	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return nullptr;
 }
 
@@ -268,7 +265,7 @@ UnsafeArray<UTF8Char> DB::ODBCConn::ShowTablesCmd(UnsafeArray<UTF8Char> sbuff)
 
 Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
-	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
+	this->lastDataError = DB::DBConn::DataError::ConnError;
 	return nullptr;
 }
 
@@ -300,7 +297,7 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 {
 }
 
-Text::String *DB::ODBCConn::GetConnStr()
+Optional<Text::String> DB::ODBCConn::GetConnStr()
 {
 	return this->connStr;
 }

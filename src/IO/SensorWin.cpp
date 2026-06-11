@@ -10,13 +10,13 @@
 IO::SensorWin::SensorWin(void *sensor)
 {
 	BSTR sname;
-	this->name = 0;
+	this->name = nullptr;
 	this->sensor = sensor;
 	ISensor *pSensor = (ISensor*)this->sensor;
 	pSensor->SetEventSink(0);
 	if (SUCCEEDED(pSensor->GetFriendlyName(&sname)))
 	{
-		this->name = Text::String::NewNotNull(sname).Ptr();
+		this->name = Text::String::NewNotNull(sname);
 	}
 }
 
@@ -24,7 +24,7 @@ IO::SensorWin::~SensorWin()
 {
 	ISensor *pSensor = (ISensor*)this->sensor;
 	pSensor->Release();
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 }
 
 Text::CString IO::SensorWin::GetVendor()
@@ -34,7 +34,7 @@ Text::CString IO::SensorWin::GetVendor()
 
 Text::CString IO::SensorWin::GetName()
 {
-	return STR_CSTR(this->name);
+	return OPTSTR_CSTR(this->name);
 }
 
 Bool IO::SensorWin::EnableSensor()

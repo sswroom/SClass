@@ -7,12 +7,12 @@ Media::Jasper::JasperReportElement::JasperReportElement()
 	this->y = 0;
 	this->width = 0;
 	this->height = 0;
-	this->uuid = 0;
+	this->uuid = nullptr;
 }
 
 Media::Jasper::JasperReportElement::~JasperReportElement()
 {
-	SDEL_STRING(this->uuid);
+	OPTSTR_DEL(this->uuid);
 }
 
 void Media::Jasper::JasperReportElement::SetX(UIntOS x)
@@ -35,10 +35,10 @@ void Media::Jasper::JasperReportElement::SetHeight(UIntOS height)
 	this->height = height;
 }
 
-void Media::Jasper::JasperReportElement::SetUUID(Text::String *uuid)
+void Media::Jasper::JasperReportElement::SetUUID(Optional<Text::String> uuid)
 {
-	SDEL_STRING(this->uuid);
-	this->uuid = SCOPY_STRING(uuid);
+	OPTSTR_DEL(this->uuid);
+	this->uuid = Text::String::CopyOrNull(uuid);
 }
 
 UIntOS Media::Jasper::JasperReportElement::GetX() const
@@ -61,7 +61,7 @@ UIntOS Media::Jasper::JasperReportElement::GetHeight() const
 	return this->height;
 }
 
-Text::String *Media::Jasper::JasperReportElement::GetUUID() const
+Optional<Text::String> Media::Jasper::JasperReportElement::GetUUID() const
 {
 	return this->uuid;
 }

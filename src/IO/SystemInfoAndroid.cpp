@@ -11,26 +11,26 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *platformName;
+	Optional<Text::String> platformName;
 };
 
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
 	UIntOS i;
-	ClassData *data = MemAlloc(ClassData, 1);
-	data->platformName = 0;
+	NN<ClassData> data = MemAllocNN(ClassData);
+	data->platformName = nullptr;
 	this->clsData = data;
 
-	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/system/build.prop"));
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::UnixConfigFile::Parse(CSTR("/system/build.prop")).SetTo(cfg))
 	{
 		Text::PString u8arr[2];
 		Text::PString u8arr2[2];
 		sb.ClearStr();
 		Manage::Process::ExecuteProcess(CSTR("getprop"), sb);
 		u8arr[1] = sb;
-		NEW_CLASS(cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile());
 		while (1)
 		{
 			i = Text::StrSplitP(u8arr, 2, u8arr[1], '\n');
@@ -44,7 +44,7 @@ IO::SystemInfo::SystemInfo()
 					{
 						u8arr2[0].RemoveChars(1);
 						u8arr2[1].RemoveChars(1);
-						cfg->SetValue(nullptr, u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
+						cfg->SetValue(CSTR(""), u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
 					}
 				}
 			}
@@ -52,61 +52,57 @@ IO::SystemInfo::SystemInfo()
 				break;
 		}
 	}
-	if (cfg)
+	Optional<Text::String> brand = cfg->GetValue(CSTR("ro.product.brand"));
+	Optional<Text::String> model = cfg->GetValue(CSTR("ro.product.model"));
+	Optional<Text::String> nickname = cfg->GetValue(CSTR("ro.product.nickname"));
+	NN<Text::String> s;
+	NN<Text::String> s2;
+	sb.ClearStr();
+	if (nickname.SetTo(s))
 	{
-		Text::String *brand = cfg->GetValue(CSTR("ro.product.brand"));
-		Text::String *model = cfg->GetValue(CSTR("ro.product.model"));
-		Text::String *nickname = cfg->GetValue(CSTR("ro.product.nickname"));
-		sb.ClearStr();
-		if (nickname)
-		{
-			sb.Append(nickname);
-		}
-		else if (brand && model)
-		{
-			if (model->StartsWith(brand))
-			{
-				sb.Append(model);
-			}
-			else
-			{
-				sb.Append(brand);
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(model);
-			}
-		}
-		else if (model)
-		{
-			sb.Append(model);
-		}
-		data->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-		DEL_CLASS(cfg);
+		sb.Append(s);
 	}
-	else
+	else if (brand.SetTo(s) && model.SetTo(s2))
 	{
-		//wprintf(L"Error in loading /system/build.prop\r\n");
+		if (s2->StartsWith(s))
+		{
+			sb.Append(s2);
+		}
+		else
+		{
+			sb.Append(s);
+			sb.AppendC(UTF8STRC(" "));
+			sb.Append(s2);
+		}
 	}
+	else if (model.SetTo(s))
+	{
+		sb.Append(s);
+	}
+	data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+	cfg.Delete();
 }
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	MemFree(this->clsData);
+	OPTSTR_DEL(this->clsData->platformName);
+	MemFreeNN(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
 //	SystemData *data = (SystemData*)this->clsData;
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()
@@ -134,12 +130,12 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_TABLET;
 }
 
-UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 }
 

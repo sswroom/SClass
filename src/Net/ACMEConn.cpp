@@ -650,7 +650,7 @@ void Net::ACMEConn::OrderFree(NN<Order> order)
 		authURLs.Delete();
 	}
 	OPTSTR_DEL(order->finalizeURL);
-	SDEL_STRING(order->certificateURL);
+	OPTSTR_DEL(order->certificateURL);
 	MemFreeNN(order);
 }
 

@@ -15,7 +15,7 @@ namespace Text
 			Data::ArrayListStringNN includePaths;
 			Text::VSProject::VisualStudioVersion vsv;
 			Text::CodeProject::ProjectType pt;
-			Text::String *baseFile;
+			Optional<Text::String> baseFile;
 			
 			Bool InitVSEnv(Text::VSProject::VisualStudioVersion vsv);
 		public:

@@ -14,7 +14,7 @@ Media::AFilter::DTMFGenerator::DTMFGenerator(NN<AudioSource> sourceAudio) : Medi
 	this->tonesBreakSamples = 0;
 	this->tonesVol = 0;
 	this->tonesCurrSample = 0;
-	this->tonesVals = 0;
+	this->tonesVals = nullptr;
 
 	this->SetVolume(1.0);
 	this->SetTone(0);
@@ -22,7 +22,7 @@ Media::AFilter::DTMFGenerator::DTMFGenerator(NN<AudioSource> sourceAudio) : Medi
 
 Media::AFilter::DTMFGenerator::~DTMFGenerator()
 {
-	SDEL_STRING(this->tonesVals);
+	OPTSTR_DEL(this->tonesVals);
 }
 
 void Media::AFilter::DTMFGenerator::GetFormat(NN<AudioFormat> format)
@@ -62,13 +62,14 @@ UIntOS Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 		}
 
 		Sync::MutexUsage mutUsage(this->tonesMut);
-		if (this->tonesVals)
+		NN<Text::String> tonesVals;
+		if (this->tonesVals.SetTo(tonesVals))
 		{
 			UIntOS sampleCnt = readSize / this->format.align;
 			UIntOS sampleLeft;
 			UInt32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
 			UInt32 tonesStartOfst;
-			UIntOS tonesCnt = this->tonesVals->leng;
+			UIntOS tonesCnt = tonesVals->leng;
 			Int32 freq1;
 			Int32 freq2;
 			i = 0;
@@ -76,13 +77,12 @@ UIntOS Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 			{
 				if (tonesOfst >= tonesCnt)
 				{
-					this->tonesVals->Release();
-					this->tonesVals = 0;
+					OPTSTR_DEL(this->tonesVals);
 					break;
 				}
 
 				tonesStartOfst = tonesOfst * (this->tonesSignalSamples + this->tonesBreakSamples);
-				switch (this->tonesVals->v[tonesOfst])
+				switch (tonesVals->v[tonesOfst])
 				{
 				case '1':
 					freq1 = 697;
@@ -353,7 +353,7 @@ Bool Media::AFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 breakTime
 	}
 
 	Sync::MutexUsage mutUsage(this->tonesMut);
-	SDEL_STRING(this->tonesVals);
+	OPTSTR_DEL(this->tonesVals);
 	this->tonesVals = Text::String::New(tones, (UIntOS)(sptr - tones)).Ptr();
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;

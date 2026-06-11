@@ -38,19 +38,18 @@ namespace SSWR
 			static Bool __stdcall UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 			static Bool __stdcall UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 
-			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
-			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
-			static void __stdcall WriteMenu(IO::Writer *writer, Optional<Net::WebServer::WebSession> sess);
-			static void __stdcall WriteHTMLText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
-			static void __stdcall WriteHTMLText(IO::Writer *writer, NN<Text::String> txt);
-			static void __stdcall WriteHTMLText(IO::Writer *writer, Text::CString txt);
-			static void __stdcall WriteAttrText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
-			static void __stdcall WriteAttrText(IO::Writer *writer, Text::String *txt);
-			static void __stdcall WriteAttrText(IO::Writer *writer, NN<Text::String> txt);
-			static void __stdcall WriteJSText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
-			static void __stdcall WriteJSText(IO::Writer *writer, Text::String *txt);
-			static void __stdcall WriteJSText(IO::Writer *writer, NN<Text::String> txt);
-
+			static void __stdcall WriteHeaderBegin(NN<IO::Writer> writer);
+			static void __stdcall WriteHeaderEnd(NN<IO::Writer> writer);
+			static void __stdcall WriteMenu(NN<IO::Writer> writer, Optional<Net::WebServer::WebSession> sess);
+			static void __stdcall WriteHTMLText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt);
+			static void __stdcall WriteHTMLText(NN<IO::Writer> writer, NN<Text::String> txt);
+			static void __stdcall WriteHTMLText(NN<IO::Writer> writer, Text::CString txt);
+			static void __stdcall WriteAttrText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt);
+			static void __stdcall WriteAttrText(NN<IO::Writer> writer, Optional<Text::String> txt);
+			static void __stdcall WriteAttrText(NN<IO::Writer> writer, NN<Text::String> txt);
+			static void __stdcall WriteJSText(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> txt);
+			static void __stdcall WriteJSText(NN<IO::Writer> writer, Optional<Text::String> txt);
+			static void __stdcall WriteJSText(NN<IO::Writer> writer, NN<Text::String> txt);
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 		public:

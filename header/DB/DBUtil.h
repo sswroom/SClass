@@ -108,6 +108,8 @@ namespace DB
 		static UIntOS SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UIntOS size, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBVector(UnsafeArray<UTF8Char> sqlstr, Optional<Math::Geometry::Vector2D> vec, SQLType sqlType, Bool axisAware);
 		static UIntOS SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBNull(UnsafeArray<UTF8Char> sqlstr, SQLType sqlType);
+		static UIntOS SDBNullLeng(SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, SQLType sqlType);
 		static UIntOS SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName, SQLType sqlType);

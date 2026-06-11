@@ -306,8 +306,8 @@ UInt32 __stdcall Net::RTPCliChannel::PlayThread(AnyType userObj)
 
 void Net::RTPCliChannel::SetControlURL(Text::CStringNN url)
 {
-	SDEL_STRING(this->chData->controlURL);
-	this->chData->controlURL = Text::String::New(url).Ptr();
+	OPTSTR_DEL(this->chData->controlURL);
+	this->chData->controlURL = Text::String::New(url);
 }
 
 void Net::RTPCliChannel::SetPlayControl(Net::RTPController *playCtrl)
@@ -325,7 +325,7 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	this->chData->rtpUDP = 0;
 	this->chData->rtcpUDP = 0;
 	this->chData->userData = 0;
-	this->chData->controlURL = 0;
+	this->chData->controlURL = nullptr;
 	this->chData->playing = false;
 	this->chData->lastSeqNumHi = 0;
 	this->chData->lastSeqNumLo = 0;
@@ -375,7 +375,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 
 		DEL_CLASS(this->chData->rtpUDP);
 		SDEL_CLASS(this->chData->rtcpUDP);
-		SDEL_STRING(this->chData->controlURL);
+		OPTSTR_DEL(this->chData->controlURL);
 
 		i = this->chData->payloadMap.GetCount();
 		while (i-- > 0)
@@ -410,7 +410,7 @@ UnsafeArray<UTF8Char> Net::RTPCliChannel::GetTransportDesc(UnsafeArray<UTF8Char>
 	return sbuff;
 }
 
-Text::String *Net::RTPCliChannel::GetControlURL()
+Optional<Text::String> Net::RTPCliChannel::GetControlURL()
 {
 	return this->chData->controlURL;
 }

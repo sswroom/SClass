@@ -315,7 +315,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 			{
 				if (name->Equals(UTF8STRC("TileMatrixLimits")))
 				{
-					Text::String *id = 0;
+					Optional<Text::String> id = nullptr;
+					NN<Text::String> nnid;
 					Int32 minRow = 0x7fffffff;
 					Int32 maxRow = 0x7fffffff;
 					Int32 minCol = 0x7fffffff;
@@ -328,8 +329,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
-								SDEL_STRING(id);
-								id = Text::String::New(sb.ToCString()).Ptr();
+								OPTSTR_DEL(id);
+								id = Text::String::New(sb.ToCString());
 							}
 						}
 						else if (name->Equals(UTF8STRC("MinTileRow")))
@@ -373,17 +374,17 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 							reader->SkipElement();
 						}
 					}
-					if (id && minRow != 0x7fffffff && maxRow != 0x7fffffff && minCol != 0x7fffffff && maxCol != 0x7fffffff)
+					if (id.SetTo(nnid) && minRow != 0x7fffffff && maxRow != 0x7fffffff && minCol != 0x7fffffff && maxCol != 0x7fffffff)
 					{
 						NN<TileMatrix> tile = MemAllocNN(TileMatrix);
-						tile->id = id->Clone();
+						tile->id = nnid->Clone();
 						tile->minRow = minRow;
 						tile->maxRow = maxRow;
 						tile->minCol = minCol;
 						tile->maxCol = maxCol;
 						set->tiles.Add(tile);
 					}
-					SDEL_STRING(id);
+					OPTSTR_DEL(id);
 				}
 				else
 				{
@@ -418,7 +419,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 	NN<TileMatrixDefSet> set;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASSNN(set, TileMatrixDefSet());
-	set->id = 0;
+	set->id = nullptr;
 	set->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	NN<Text::String> name;
 	while (reader->NextElementName().SetTo(name))
@@ -429,8 +430,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 			reader->ReadNodeText(sb);
 			if (sb.GetLength() > 0)
 			{
-				SDEL_STRING(set->id);
-				set->id = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(set->id);
+				set->id = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (name->Equals(UTF8STRC("ows:SupportedCRS")))
@@ -445,7 +446,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 		}
 		else if (name->Equals(UTF8STRC("TileMatrix")))
 		{
-			Text::String *id = 0;
+			Optional<Text::String> id = nullptr;
+			NN<Text::String> nnid;
 			Double scaleDenom = 0;
 			Double topPos = -1;
 			Double leftPos = -1;
@@ -461,8 +463,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 					reader->ReadNodeText(sb);
 					if (sb.GetLength() > 0)
 					{
-						SDEL_STRING(id);
-						id = Text::String::New(sb.ToCString()).Ptr();
+						OPTSTR_DEL(id);
+						id = Text::String::New(sb.ToCString());
 					}
 				}
 				else if (name->Equals(UTF8STRC("ScaleDenominator")))
@@ -529,10 +531,10 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 					reader->SkipElement();
 				}
 			}
-			if (id && scaleDenom != 0 && topPos != -1 && leftPos != -1 && tileWidth != 0 && tileHeight != 0 && matrixWidth != 0 && matrixHeight != 0)
+			if (id.SetTo(nnid) && scaleDenom != 0 && topPos != -1 && leftPos != -1 && tileWidth != 0 && tileHeight != 0 && matrixWidth != 0 && matrixHeight != 0)
 			{
 				NN<TileMatrixDef> tile = MemAllocNN(TileMatrixDef);
-				tile->id = id->Clone();
+				tile->id = nnid->Clone();
 				tile->scaleDenom = scaleDenom;
 				tile->unitPerPixel = scaleDenom / 3571.428571;
 				tile->origin.x = leftPos;
@@ -543,14 +545,14 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 				tile->matrixHeight = matrixHeight;
 				set->tiles.Add(tile);
 			}
-			SDEL_STRING(id);
+			OPTSTR_DEL(id);
 		}
 		else
 		{
 			reader->SkipElement();
 		}
 	}
-	if (set->id && set->tiles.GetCount() > 0)
+	if (set->id.NotNull() && set->tiles.GetCount() > 0)
 	{
 		UIntOS i = 0;
 		UIntOS j = set->tiles.GetCount();
@@ -632,7 +634,7 @@ void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrixDef(NN<TileMatrixD
 
 void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set)
 {
-	set->id->Release();
+	OPTSTR_DEL(set->id);
 	set->csys.Delete();
 	set->tiles.FreeAll(ReleaseTileMatrixDef);
 	set.Delete();

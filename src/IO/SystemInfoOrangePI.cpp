@@ -10,25 +10,25 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *platformName;
+	Optional<Text::String> platformName;
 };
 
 IO::SystemInfo::SystemInfo()
 {
-	ClassData *data = MemAlloc(ClassData, 1);
-	data->platformName = 0;
+	NN<ClassData> data = MemAllocNN(ClassData);
+	data->platformName = nullptr;
 	this->clsData = data;
 	if (IO::Path::GetPathType(CSTR("/etc/OrangePi_Camera.conf")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/OrangePi_Camera.conf"));
-		if (cfg)
+		NN<IO::ConfigFile> cfg;
+		if (IO::UnixConfigFile::Parse(CSTR("/etc/OrangePi_Camera.conf")).SetTo(cfg))
 		{
-			Text::String *s = cfg->GetValue(CSTR("Platform:"));
-			if (s)
+			NN<Text::String> s;
+			if (cfg->GetValue(CSTR("Platform:")).SetTo(s))
 			{
-				data->platformName = Text::String::New(s->v, s->leng).Ptr();
+				data->platformName = Text::String::New(s->v, s->leng);
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 		}
 	}
 	else if (IO::Path::GetPathType(CSTR("/boot/orangepi/OrangePIH6.dtb")) == IO::Path::PathType::File)
@@ -43,22 +43,23 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	MemFree(this->clsData);
+	OPTSTR_DEL(this->clsData->platformName);
+	MemFreeNN(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()
@@ -86,12 +87,12 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_IOT_GATEWAY;
 }
 
-UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 }
 

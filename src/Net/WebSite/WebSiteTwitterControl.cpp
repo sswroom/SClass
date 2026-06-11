@@ -34,7 +34,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	NN<Text::XMLAttrib> attr;
 	Int64 conversationId;
 	Int64 recTime;
-	Text::String *message;
+	Optional<Text::String> message;
 	NN<Text::String> nnmessage;
 	Optional<Text::String> imgURL;
 	NN<Text::String> nnimgURL;
@@ -42,7 +42,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	conversationId = 0;
 	recTime = 0;
 	imgURL = nullptr;
-	message = 0;
+	message = nullptr;
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
@@ -78,7 +78,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 				conversationId = 0;
 				recTime = 0;
 				OPTSTR_DEL(imgURL);
-				SDEL_STRING(message);
+				OPTSTR_DEL(message);
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("small")) && reader.GetAttribCount() > 0)
@@ -170,8 +170,8 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 								}
 							}
 						}
-						SDEL_STRING(message);
-						message = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+						OPTSTR_DEL(message);
+						message = Text::String::New(sb.ToString(), sb.GetLength());
 					}
 				}
 			}
@@ -216,14 +216,14 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #if defined(VERBOSE)
 				printf("stream-item-footer found\r\n");
 #endif				
-				if (conversationId != 0 && recTime != 0 && nnmessage.Set(message))
+				if (conversationId != 0 && recTime != 0 && message.SetTo(nnmessage))
 				{
 					item = MemAllocNN(ItemData);
 					item->id = conversationId;
 					item->recTime = recTime;
 					item->message = nnmessage;
 					item->imgURL = imgURL;
-					message = 0;
+					message = nullptr;
 					imgURL = nullptr;
 					itemList->Add(item);
 					retCnt++;
@@ -282,7 +282,7 @@ UIntOS Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 		printf("Error found, errNo = %d\r\n", (Int32)reader.GetErrorCode());
 #endif
 	}
-	SDEL_STRING(message);
+	OPTSTR_DEL(message);
 	OPTSTR_DEL(imgURL);
 	cli.Delete();
 	return retCnt;

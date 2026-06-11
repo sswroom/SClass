@@ -33,7 +33,7 @@ namespace Net
 			Net::UDPServer *rtpUDP;
 			Net::UDPServer *rtcpUDP;
 			AnyType userData;
-			Text::String *controlURL;
+			Optional<Text::String> controlURL;
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
@@ -74,7 +74,7 @@ namespace Net
 
 		UInt16 GetPort();
 		UnsafeArray<UTF8Char> GetTransportDesc(UnsafeArray<UTF8Char> sbuff);
-		Text::String *GetControlURL();
+		Optional<Text::String> GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
 		Optional<Media::VideoSource> GetVideo(UIntOS index);

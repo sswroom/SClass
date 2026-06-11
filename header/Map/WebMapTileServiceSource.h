@@ -60,7 +60,7 @@ namespace Map
 
 		struct TileMatrixDefSet
 		{
-			Text::String *id;
+			Optional<Text::String> id;
 			NN<Math::CoordinateSystem> csys;
 			Data::ArrayListNN<TileMatrixDef> tiles;
 		};

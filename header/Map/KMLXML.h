@@ -20,13 +20,13 @@ namespace Map
 		{
 			UInt32 lineColor;
 			Double lineWidth;
-			Text::String *iconURL;
+			Optional<Text::String> iconURL;
 			Int32 iconSpotX;
 			Int32 iconSpotY;
 			UInt32 iconColor;
 			UInt32 fillColor;
 			Int32 flags;
-			Media::SharedImage *img;
+			Optional<Media::SharedImage> img;
 		};
 	public:
 		static Optional<Map::MapDrawLayer> ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile);

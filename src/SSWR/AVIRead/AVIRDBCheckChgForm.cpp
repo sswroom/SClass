@@ -648,8 +648,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UIntOS k;
 	UIntOS dbCnt;
 	UIntOS srcCnt;
-	Data::FastStringMapObj<Text::String**> csvData;
-	Text::String** rowData;
+	Data::FastStringMapObj<Optional<Text::String>*> csvData;
+	Optional<Text::String>* rowData;
 	NN<DB::ColDef> col;
 	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
@@ -753,12 +753,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							r->GetStr(keyDCol2, sbId);
 						}
 					}
-					rowData = MemAlloc(Text::String*, dbCnt);
+					rowData = MemAlloc(Optional<Text::String>, dbCnt);
 					i = 0;
 					while (i < dbCnt)
 					{
 						k = this->colInd.GetItem(i);
-						rowData[i] = 0;
+						rowData[i] = nullptr;
 						if (k != INVALID_INDEX)
 						{
 							if (k == TEXT_COL)
@@ -769,16 +769,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							{
 								rowData[i] = r->GetNewStr(k).OrNull();
 							}
-							if (rowData[i])
+							if (rowData[i].SetTo(s))
 							{
-								if (rowData[i]->Equals(nullStr.v, nullStr.leng))
+								if (s->Equals(nullStr.v, nullStr.leng))
 								{
-									rowData[i]->Release();
-									rowData[i] = 0;
+									s->Release();
+									rowData[i] = nullptr;
 								}
 								else if (table->GetCol(i).SetTo(col))
 								{
-									if (rowData[i]->leng == 0)
+									if (s->leng == 0)
 									{
 										switch (col->GetColType())
 										{
@@ -808,8 +808,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 										case DB::DBUtil::CT_UUID:
 										case DB::DBUtil::CT_Unknown:
 										default:
-											rowData[i]->Release();
-											rowData[i] = 0;
+											s->Release();
+											rowData[i] = nullptr;
 											break;
 										}
 									}
@@ -846,8 +846,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 												sb.ClearStr();
 												Math::WKTWriter writer;
 												writer.ToText(sb, vec);
-												rowData[i]->Release();
-												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
+												OPTSTR_DEL(rowData[i]);
+												rowData[i] = Text::String::New(sb.ToCString());
 												vec.Delete();
 											}
 										}
@@ -863,7 +863,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						i = dbCnt;
 						while (i-- > 0)
 						{
-							SDEL_STRING(rowData[i]);
+							OPTSTR_DEL(rowData[i]);
 						}
 						MemFree(rowData);
 
@@ -923,6 +923,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				id->Release();
 				if (rowData)
 				{
+					NN<Text::String> rowDataStr;
 					Bool diff = false;
 					i = 0;
 					while (i < dbCnt)
@@ -933,7 +934,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						}
 						else if (r->IsNull(i))
 						{
-							if (rowData[i] == 0)
+							if (rowData[i].IsNull())
 							{
 
 							}
@@ -943,7 +944,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								break;
 							}
 						}
-						else if (rowData[i] == 0)
+						else if (!rowData[i].SetTo(rowDataStr))
 						{
 							diff = true;
 							break;
@@ -959,7 +960,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_UTF16Char:
 							case DB::DBUtil::CT_UTF32Char:
 								id = r->GetNewStrNN(i);
-								if (!id->Equals(rowData[i]->v, rowData[i]->leng))
+								if (!id->Equals(rowDataStr->v, rowDataStr->leng))
 								{
 									diff = true;
 								}
@@ -968,7 +969,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Date:
 								{
 									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(rowDataStr->ToCString(), this->connTz).ToDate();
 									if (ts1.GetTotalDays() != ts2.GetTotalDays())
 									{
 										diff = true;
@@ -979,7 +980,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowDataStr->ToCString(), this->connTz);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										diff = true;
@@ -989,7 +990,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Float:
 								{
 									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = rowData[i]->ToDoubleOrNAN();
+									Double v2 = rowDataStr->ToDoubleOrNAN();
 									if (!Math::NearlyEquals(v1, v2, 0.000001))
 									{
 										diff = true;
@@ -1000,7 +1001,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Double:
 								{
 									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = rowData[i]->ToDoubleOrNAN();
+									Double v2 = rowDataStr->ToDoubleOrNAN();
 									if (!Math::NearlyEqualsDbl(v1, v2))
 									{
 										diff = true;
@@ -1014,7 +1015,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Byte:
 								{
 									Int32 v1 = r->GetInt32(i);
-									Int32 v2 = rowData[i]->ToInt32();
+									Int32 v2 = rowDataStr->ToInt32();
 									if (v1 != v2)
 									{
 										diff = true;
@@ -1025,7 +1026,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Int64:
 								{
 									Int64 v1 = r->GetInt64(i);
-									Int64 v2 = rowData[i]->ToInt64();
+									Int64 v2 = rowDataStr->ToInt64();
 									if (v1 != v2)
 									{
 										diff = true;
@@ -1035,7 +1036,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Bool:
 								{
 									Bool v1 = r->GetBool(i);
-									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
+									Bool v2 = rowDataStr->v[0] == 't' || rowDataStr->v[0] == 'T' || rowDataStr->ToInt32() != 0;
 									if (v1 != v2)
 									{
 										diff = true;
@@ -1050,7 +1051,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 										vec1->SetSRID(col->GetGeometrySRID());
 										NN<Math::Geometry::Vector2D> vec2;
 										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
+										if (!reader.ParseWKT(rowDataStr->v).SetTo(vec2))
 										{
 											diff = true;
 										}
@@ -1080,7 +1081,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 									Data::UUID uuid1;
 									Data::UUID uuid2;
 									r->GetUUID(i, uuid1);
-									uuid2.SetValue(rowData[i]->ToCString());
+									uuid2.SetValue(rowDataStr->ToCString());
 									if (!uuid1.Equals(uuid2))
 									{
 										diff = true;
@@ -1132,7 +1133,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		i = dbCnt;
 		while (i-- > 0)
 		{
-			SDEL_STRING(rowData[i]);
+			OPTSTR_DEL(rowData[i]);
 		}
 		MemFree(rowData);
 	}
@@ -1304,8 +1305,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	UIntOS k;
 	UIntOS srcCnt;
-	Data::FastStringMapObj<Text::String**> csvData;
-	Text::String** rowData;
+	Data::FastStringMapObj<Optional<Text::String>*> csvData;
+	Optional<Text::String>* rowData;
 	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
 	{
@@ -1407,14 +1408,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							r->GetStr(keyDCol2, sbId);
 						}
 					}
-					rowData = MemAlloc(Text::String*, dbCnt);
+					rowData = MemAlloc(Optional<Text::String>, dbCnt);
 					i = 0;
 					while (i < dbCnt)
 					{
 						k = this->colInd.GetItem(i);
 						if (k == INVALID_INDEX)
 						{
-							rowData[i] = 0;
+							rowData[i] = nullptr;
 						}
 						else
 						{
@@ -1426,14 +1427,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							{
 								rowData[i] = r->GetNewStr(this->colInd.GetItem(i)).OrNull();
 							}
-							if (rowData[i])
+							if (rowData[i].SetTo(s2))
 							{
-								if (rowData[i]->Equals(nullStr.v, nullStr.leng))
+								if (s2->Equals(nullStr.v, nullStr.leng))
 								{
-									rowData[i]->Release();
-									rowData[i] = 0;
+									s2->Release();
+									rowData[i] = nullptr;
 								}
-								else if (rowData[i]->leng == 0)
+								else if (s2->leng == 0)
 								{
 									switch (table->GetCol(i).SetTo(col)?col->GetColType():DB::DBUtil::CT_Unknown)
 									{
@@ -1463,8 +1464,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_UUID:
 									case DB::DBUtil::CT_Unknown:
 									default:
-										rowData[i]->Release();
-										rowData[i] = 0;
+										s2->Release();
+										rowData[i] = nullptr;
 										break;
 									}
 								}
@@ -1503,7 +1504,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 												sb.ClearStr();
 												Math::WKTWriter writer;
 												writer.ToText(sb, vec);
-												rowData[i]->Release();
+												s2->Release();
 												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
 												vec.Delete();
 											}
@@ -1522,7 +1523,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						i = dbCnt;
 						while (i-- > 0)
 						{
-							SDEL_STRING(rowData[i]);
+							OPTSTR_DEL(rowData[i]);
 						}
 						MemFree(rowData);
 					}
@@ -1564,7 +1565,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						ops = r->GetNewStr(this->colInd.GetItem(i));
 						if (ops.SetTo(s) && s->Equals(nullStr.v, nullStr.leng))
 						{
-							sql.AppendStr(0);
+							sql.AppendNull();
 						}
 						else if (col->GetColType() == DB::DBUtil::CT_Vector)
 						{
@@ -1673,7 +1674,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else if (r->IsNull(i))
 						{
-							if (rowData[i] == 0)
+							if (!rowData[i].SetTo(s2))
 							{
 
 							}
@@ -1703,7 +1704,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									case DB::DBUtil::CT_Date:
 										{
-											Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
+											Data::Date ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz).ToDate();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1720,7 +1721,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_DateTime:
 									case DB::DBUtil::CT_DateTimeTZ:
 										{
-											Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
+											Data::Timestamp ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz);
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1738,7 +1739,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_Float:
 									case DB::DBUtil::CT_Decimal:
 										{
-											Double v2 = rowData[i]->ToDoubleOrNAN();
+											Double v2 = s2->ToDoubleOrNAN();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1758,7 +1759,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_Int32:
 									case DB::DBUtil::CT_Byte:
 										{
-											Int32 v2 = rowData[i]->ToInt32();
+											Int32 v2 = s2->ToInt32();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1775,7 +1776,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_UInt64:
 									case DB::DBUtil::CT_Int64:
 										{
-											Int64 v2 = rowData[i]->ToInt64();
+											Int64 v2 = s2->ToInt64();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1791,7 +1792,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									case DB::DBUtil::CT_Bool:
 										{
-											Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
+											Bool v2 = s2->v[0] == 't' || s2->v[0] == 'T' || s2->ToInt32() != 0;
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1809,7 +1810,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											NN<Math::Geometry::Vector2D> vec2;;
 											Math::WKTReader reader(dbSrid);
-											if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
+											if (!reader.ParseWKT(s2->v).SetTo(vec2))
 											{
 											}
 											else
@@ -1834,7 +1835,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_UUID:
 										{
 											Data::UUID uuid2;
-											uuid2.SetValue(rowData[i]->ToCString());
+											uuid2.SetValue(s2->ToCString());
 										}
 										break;
 									case DB::DBUtil::CT_Unknown:
@@ -1844,7 +1845,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								}
 							}
 						}
-						else if (rowData[i] == 0)
+						else if (!rowData[i].SetTo(s2))
 						{
 							if (diff)
 							{
@@ -1857,7 +1858,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							if (table->GetCol(i).SetTo(col))
 								sql.AppendCol(col->GetColName()->v);
 							sql.AppendCmdC(CSTR(" = "));
-							sql.AppendStr(0);
+							sql.AppendNull();
 						}
 						else if (table->GetCol(i).SetTo(col))
 						{
@@ -1870,7 +1871,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_UTF16Char:
 							case DB::DBUtil::CT_UTF32Char:
 								s = r->GetNewStrNN(i);
-								if (!s->Equals(rowData[i]->v, rowData[i]->leng))
+								if (!s->Equals(s2->v, s2->leng))
 								{
 									if (diff)
 									{
@@ -1889,7 +1890,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Date:
 								{
 									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz).ToDate();
 									if (ts1.GetTotalDays() != ts2.GetTotalDays())
 									{
 										if (diff)
@@ -1910,7 +1911,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										if (diff)
@@ -1932,7 +1933,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Decimal:
 								{
 									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = rowData[i]->ToDoubleOrNAN();
+									Double v2 = s2->ToDoubleOrNAN();
 									if (!Math::NearlyEqualsDbl(v1, v2))
 									{
 										if (diff)
@@ -1956,7 +1957,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Byte:
 								{
 									Int32 v1 = r->GetInt32(i);
-									Int32 v2 = rowData[i]->ToInt32();
+									Int32 v2 = s2->ToInt32();
 									if (v1 != v2)
 									{
 										if (diff)
@@ -1977,7 +1978,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Int64:
 								{
 									Int64 v1 = r->GetInt64(i);
-									Int64 v2 = rowData[i]->ToInt64();
+									Int64 v2 = s2->ToInt64();
 									if (v1 != v2)
 									{
 										if (diff)
@@ -1997,7 +1998,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Bool:
 								{
 									Bool v1 = r->GetBool(i);
-									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
+									Bool v2 = s2->v[0] == 't' || s2->v[0] == 'T' || s2->ToInt32() != 0;
 									if (v1 != v2)
 									{
 										if (diff)
@@ -2022,7 +2023,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									{
 										vec1->SetSRID(dbSrid);
 										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
+										if (!reader.ParseWKT(s2->v).SetTo(vec2))
 										{
 										}
 										else
@@ -2054,7 +2055,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									Data::UUID uuid1;
 									Data::UUID uuid2;
 									r->GetUUID(i, uuid1);
-									uuid2.SetValue(rowData[i]->ToCString());
+									uuid2.SetValue(s2->ToCString());
 									if (!uuid1.Equals(uuid2))
 									{
 									}
@@ -2211,7 +2212,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		i = dbCnt;
 		while (i-- > 0)
 		{
-			SDEL_STRING(rowData[i]);
+			OPTSTR_DEL(rowData[i]);
 		}
 		MemFree(rowData);
 	}
@@ -2340,7 +2341,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 	NN<Text::String> nns;
 	if (!s.SetTo(nns))
 	{
-		sql->AppendStr(0);
+		sql->AppendNull();
 		return;
 	}
 

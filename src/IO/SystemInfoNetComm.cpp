@@ -10,8 +10,8 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *platformName;
-	Text::String *platformSN;
+	Optional<Text::String> platformName;
+	Optional<Text::String> platformSN;
 } SystemData;
 
 IO::SystemInfo::SystemInfo()
@@ -19,9 +19,9 @@ IO::SystemInfo::SystemInfo()
 	Text::StringBuilderUTF8 sb;
 	IntOS i;
 	Text::PString u8arr[2];
-	ClassData *data = MemAlloc(ClassData, 1);
-	data->platformName = 0;
-	data->platformSN = 0;
+	NN<ClassData> data = MemAllocNN(ClassData);
+	data->platformName = nullptr;
+	data->platformSN = nullptr;
 	this->clsData = data;
 
 	sb.ClearStr();
@@ -33,13 +33,13 @@ IO::SystemInfo::SystemInfo()
 		i = Text::StrSplitLineP(u8arr, 2, u8arr[1]);
 		if (u8arr[0].StartsWith(UTF8STRC("system.product.model ")))
 		{
-			SDEL_STRING(data->platformName);
-			data->platformName = Text::String::New(&u8arr[0].v[21], u8arr[0].leng - 21).Ptr();
+			OPTSTR_DEL(data->platformName);
+			data->platformName = Text::String::New(&u8arr[0].v[21], u8arr[0].leng - 21);
 		}
 		else if (u8arr[0].StartsWith(UTF8STRC("systeminfo.serialnumber ")))
 		{
-			SDEL_STRING(data->platformSN);
-			data->platformSN = Text::String::New(&u8arr[0].v[24], u8arr[0].leng - 24).Ptr();
+			OPTSTR_DEL(data->platformSN);
+			data->platformSN = Text::String::New(&u8arr[0].v[24], u8arr[0].leng - 24);
 		}
 
 		if (i != 2)
@@ -51,27 +51,29 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	SDEL_STRING(this->clsData->platformSN);
-	MemFree(this->clsData);
+	OPTSTR_DEL(this->clsData->platformName);
+	OPTSTR_DEL(this->clsData->platformSN);
+	MemFreeNN(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformSN)
+	NN<Text::String> s;
+	if (this->clsData->platformSN.SetTo(s))
 	{
-		return this->clsData->platformSN->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()
@@ -99,12 +101,12 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_IOT_GATEWAY;
 }
 
-UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 }
 

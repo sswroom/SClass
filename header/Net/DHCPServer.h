@@ -18,8 +18,8 @@ namespace Net
 			UInt32 assignedIP;
 			Int64 assignTime;
 			Bool updated;
-			Text::String *hostName;
-			Text::String *vendorClass;
+			Optional<Text::String> hostName;
+			Optional<Text::String> vendorClass;
 		} DeviceStatus;
 		
 	private:

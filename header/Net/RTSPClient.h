@@ -31,7 +31,7 @@ namespace Net
 			UIntOS reqReplySize;
 			Int32 reqReplyStatus;
 			Bool reqSuccess;
-			Text::String *reqStrs;
+			Optional<Text::String> reqStrs;
 
 			Bool threadRunning;
 			Bool threadToStop;

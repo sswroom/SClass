@@ -166,9 +166,9 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 	{
 	case 1: //CONNECT
 		{
-			Text::String *clientId = 0;
-			Text::String *userName = 0;
-			Text::String *password = 0;
+			Optional<Text::String> clientId = nullptr;
+			Optional<Text::String> userName = nullptr;
+			Optional<Text::String> password = nullptr;
 			NN<Text::String> nnclientId;
 			if (this->log->HasHandler())
 			{
@@ -221,7 +221,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 					sb.AppendC(UTF8STRC(", Will Message = "));
@@ -230,7 +230,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 				}
@@ -243,7 +243,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 					userName = Text::String::New(sb2.ToCString()).Ptr();
@@ -257,8 +257,8 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-						SDEL_STRING(clientId);
-						SDEL_STRING(userName);
+						OPTSTR_DEL(clientId);
+						OPTSTR_DEL(userName);
 						break;
 					}
 					UIntOS pwdSize = ReadMUInt16(&cmd[i]);
@@ -267,8 +267,8 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-						SDEL_STRING(clientId);
-						SDEL_STRING(userName);
+						OPTSTR_DEL(clientId);
+						OPTSTR_DEL(userName);
 						break;
 					}
 					sb2.ClearStr();
@@ -307,13 +307,13 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					sb.ClearStr();
 					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 					sb.ClearStr();
 					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 				}
@@ -322,7 +322,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					sb.ClearStr();
 					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
-						SDEL_STRING(clientId);
+						OPTSTR_DEL(clientId);
 						break;
 					}
 					userName = Text::String::New(sb.ToCString()).Ptr();
@@ -331,15 +331,15 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				{
 					if (cmdSize - i < 2)
 					{
-						SDEL_STRING(clientId);
-						SDEL_STRING(userName);
+						OPTSTR_DEL(clientId);
+						OPTSTR_DEL(userName);
 						break;
 					}
 					UIntOS pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
-						SDEL_STRING(clientId);
-						SDEL_STRING(userName);
+						OPTSTR_DEL(clientId);
+						OPTSTR_DEL(userName);
 						break;
 					}
 					sb.ClearStr();
@@ -350,7 +350,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				}
 			}
 			ConnectStatus cs;
-			if (nnclientId.Set(clientId))
+			if (clientId.SetTo(nnclientId))
 			{
 				if (this->connHdlr)
 				{
@@ -402,14 +402,14 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			{
 				data->connected = true;
 				OPTSTR_DEL(data->cliId);
-				data->cliId = clientId->Clone();
+				data->cliId = Text::String::OrEmpty(clientId)->Clone();
 			}
 
 			i = this->protoHdlr.BuildPacket(packet2, 0x20, 0, packet, 2, data->cliData);
 			sent = stm->Write(Data::ByteArrayR(packet2, i));
-			SDEL_STRING(clientId);
-			SDEL_STRING(userName);
-			SDEL_STRING(password);
+			OPTSTR_DEL(clientId);
+			OPTSTR_DEL(userName);
+			OPTSTR_DEL(password);
 			Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		}
 		break;

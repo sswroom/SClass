@@ -5,12 +5,12 @@ extern "C" {
 #include "librouter.h"
 }
 
-Text::String *IO::RobustelStatus::GetStatus(const Char *name)
+Optional<Text::String> IO::RobustelStatus::GetStatus(UnsafeArray<const Char> name)
 {
 	MemLock();
-	char *val = usi_get(name);
+	char *val = usi_get(name.Ptr());
 	MemUnlock();
-	Text::String *s = Text::String::NewOrNull((const UTF8Char*)val);
+	Optional<Text::String> s = Text::String::NewOrNull((const UTF8Char*)val);
 	if (val)
 	{
 		MemLock();

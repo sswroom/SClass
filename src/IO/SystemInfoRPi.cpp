@@ -12,16 +12,16 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *platformName;
-	Text::String *platformSN;
+	Optional<Text::String> platformName;
+	Optional<Text::String> platformSN;
 };
 
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
 	NN<ClassData> data = MemAllocNN(ClassData);
-	data->platformName = 0;
-	data->platformSN = 0;
+	data->platformName = nullptr;
+	data->platformSN = nullptr;
 	this->clsData = data;
 
 	{
@@ -52,27 +52,29 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	SDEL_STRING(this->clsData->platformSN);
+	OPTSTR_DEL(this->clsData->platformName);
+	OPTSTR_DEL(this->clsData->platformSN);
 	MemFreeNN(this->clsData);
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformSN)
+	NN<Text::String> s;
+	if (this->clsData->platformSN.SetTo(s))
 	{
-		return this->clsData->platformSN->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()

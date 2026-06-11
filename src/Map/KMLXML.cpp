@@ -36,8 +36,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 	while (ui-- > 0)
 	{
 		style = styleList->GetItemNoCheck(ui);
-		SDEL_STRING(style->iconURL);
-		SDEL_CLASS(style->img);
+		OPTSTR_DEL(style->iconURL);
+		style->img.Delete();
 		MemFreeNN(style);
 	}
 	return lyr;
@@ -249,13 +249,13 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			style = MemAllocNN(KMLStyle);
 			style->iconSpotX = -1;
 			style->iconSpotY = -1;
-			style->iconURL = 0;
+			style->iconURL = nullptr;
 			style->iconColor = 0;
 			style->lineColor = 0;
 			style->lineWidth = 0;
 			style->fillColor = 0;
 			style->flags = 0;
-			style->img = 0;
+			style->img = nullptr;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
@@ -315,8 +315,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 									reader->ReadNodeText(sb);
 									if (sb.GetLength() > 0)
 									{
-										SDEL_STRING(style->iconURL);
-										style->iconURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+										OPTSTR_DEL(style->iconURL);
+										style->iconURL = Text::String::New(sb.ToString(), sb.GetLength());
 									}
 								}
 								else
@@ -385,8 +385,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			}				
 			if (optStyle.SetTo(style))
 			{
-				SDEL_STRING(style->iconURL);
-				SDEL_CLASS(style->img);
+				OPTSTR_DEL(style->iconURL);
+				style->img.Delete();
 				MemFreeNN(style);
 				optStyle = nullptr;
 			}
@@ -397,13 +397,13 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			style = MemAllocNN(KMLStyle);
 			style->iconSpotX = -1;
 			style->iconSpotY = -1;
-			style->iconURL = 0;
+			style->iconURL = nullptr;
 			style->iconColor = 0;
 			style->lineColor = 0;
 			style->lineWidth = 0;
 			style->fillColor = 0;
 			style->flags = 0;
-			style->img = 0;
+			style->img = nullptr;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
@@ -438,24 +438,25 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							if (isNormal && sb.StartsWith(UTF8STRC("#")))
 							{
 								NN<KMLStyle> style2;
+								NN<Media::SharedImage> img;
 								if (styles->GetC(sb.ToCString().Substring(1)).SetTo(style2))
 								{
 									style->iconSpotX = style2->iconSpotX;
 									style->iconSpotY = style2->iconSpotY;
 									style->lineColor = style2->lineColor;
 									style->lineWidth = style2->lineWidth;
-									SDEL_STRING(style->iconURL);
-									style->iconURL = SCOPY_STRING(style2->iconURL);
+									OPTSTR_DEL(style->iconURL);
+									style->iconURL = Text::String::CopyOrNull(style2->iconURL);
 									style->fillColor = style2->fillColor;
 									style->flags = style2->flags;
-									SDEL_CLASS(style->img);
-									if (style2->img == 0)
+									style->img.Delete();
+									if (!style2->img.SetTo(img))
 									{
-										style->img = 0;
+										style->img = nullptr;
 									}
 									else
 									{
-										style->img = style2->img->Clone().Ptr();
+										style->img = img->Clone();
 									}
 								}
 							}
@@ -480,8 +481,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			}
 			if (optStyle.SetTo(style))
 			{
-				SDEL_STRING(style->iconURL);
-				SDEL_CLASS(style->img);
+				OPTSTR_DEL(style->iconURL);
+				style->img.Delete();
 				MemFreeNN(style);
 				optStyle = nullptr;
 			}
@@ -1365,25 +1366,26 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 				NN<Map::VectorLayer> lyr;
 				NN<Parser::ParserList> nnparsers;
 				NN<Net::WebBrowser> nnbrowser;
+				NN<Text::String> iconURL;
 				if (colValues.GetItem(0).SetTo(s))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->SetLabelVisible(true);
 					lyr->AddVector2(vec, colValues);
 
-					if (style.SetTo(nnstyle) && nnstyle->iconURL && parsers.SetTo(nnparsers))
+					if (style.SetTo(nnstyle) && nnstyle->iconURL.SetTo(iconURL) && parsers.SetTo(nnparsers))
 					{
-						if (nnstyle->img == 0)
+						if (nnstyle->img.IsNull())
 						{
 							Optional<IO::StreamData> fd = nullptr;
 							NN<IO::PackageFile> nnbasePF;
 							if (basePF.SetTo(nnbasePF))
 							{
-								fd = nnbasePF->OpenStreamData(nnstyle->iconURL->ToCString());
+								fd = nnbasePF->OpenStreamData(iconURL->ToCString());
 							}
 							if (fd.IsNull() && browser.SetTo(nnbrowser))
 							{
-								fd = nnbrowser->GetData(nnstyle->iconURL->ToCString(), false, nullptr);
+								fd = nnbrowser->GetData(iconURL->ToCString(), false, nullptr);
 							}
 							NN<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
@@ -1402,14 +1404,14 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 												img->MultiplyColor(nnstyle->iconColor);
 										}
 									}
-									NEW_CLASS(nnstyle->img, Media::SharedImage(imgList, nullptr));
+									NEW_CLASSOPT(nnstyle->img, Media::SharedImage(imgList, nullptr));
 								}
 								nnfd.Delete();
 							}
 						}
 						NN<Media::SharedImage> shimg;
 						NN<Media::StaticImage> img;
-						if (shimg.Set(nnstyle->img) && shimg->GetImage(0).SetTo(img))
+						if (nnstyle->img.SetTo(shimg) && shimg->GetImage(0).SetTo(img))
 						{
 							if (nnstyle->iconSpotX == -1 || nnstyle->iconSpotY == -1)
 							{

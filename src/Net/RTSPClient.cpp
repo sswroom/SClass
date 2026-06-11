@@ -120,19 +120,19 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 								}
 								else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Session: ")))
 								{
-									SDEL_STRING(cliData->reqStrs);
+									OPTSTR_DEL(cliData->reqStrs);
 									k = Text::StrIndexOfChar(&sbuff[9], ';');
 									if (k != INVALID_INDEX)
 									{
 										sbuff[9 + k] = 0;
 										sptr = &sbuff[9 + k];
 									}
-									cliData->reqStrs = Text::String::New(&sbuff[9], (UIntOS)(sptr - &sbuff[9])).Ptr();
+									cliData->reqStrs = Text::String::New(&sbuff[9], (UIntOS)(sptr - &sbuff[9]));
 								}
 								else if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Public: ")))
 								{
-									SDEL_STRING(cliData->reqStrs);
-									cliData->reqStrs = Text::String::New(&sbuff[8], (UIntOS)(sptr - &sbuff[8])).Ptr();
+									OPTSTR_DEL(cliData->reqStrs);
+									cliData->reqStrs = Text::String::New(&sbuff[8], (UIntOS)(sptr - &sbuff[8]));
 								}
 							}
 							if (cliData->reqReplySize == 0)
@@ -198,7 +198,7 @@ Int32 Net::RTSPClient::NextRequest()
 	}
 	this->cliData->reqReplySize = 0;
 	this->cliData->reqSuccess = false;
-	SDEL_STRING(this->cliData->reqStrs);
+	OPTSTR_DEL(this->cliData->reqStrs);
 	Int32 reply = this->cliData->nextSeq++;
 	return reply;
 }
@@ -244,7 +244,7 @@ Net::RTSPClient::RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host
 	this->cliData->threadToStop = false;
 	this->cliData->reqReply = 0;
 	this->cliData->reqReplySize = 0;
-	this->cliData->reqStrs = 0;
+	this->cliData->reqStrs = nullptr;
 	this->cliData->cli = nullptr;
 	this->cliData->host = Text::String::New(host);
 	this->cliData->port = port;
@@ -309,12 +309,13 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const U
 
 	Bool succ = this->WaitForReply();
 	Bool ret = false;
+	NN<Text::String> reqStrs;
 
 	if (succ && this->cliData->reqReplyStatus == 200)
 	{
-		if (this->cliData->reqStrs)
+		if (this->cliData->reqStrs.SetTo(reqStrs))
 		{
-			sptr = this->cliData->reqStrs->ConcatTo(sbuff);
+			sptr = reqStrs->ConcatTo(sbuff);
 			buffSize = Text::StrSplitTrimP(sarr, 10, {sbuff, (UIntOS)(sptr - sbuff)}, ',');
 			i = 0;
 			while (i < buffSize)
@@ -401,7 +402,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	if (succ && this->cliData->reqReplyStatus == 200)
 	{
-		ret = this->cliData->reqStrs->ConcatTo(sessIdOut);
+		ret = Text::String::OrEmpty(this->cliData->reqStrs)->ConcatTo(sessIdOut);
 	}
 	mutUsage.EndUse();
 	return ret;
@@ -566,7 +567,7 @@ Bool Net::RTSPClient::Init(NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel).SetTo(sptr))
+	if (this->SetupRTP(sbuff, Text::String::OrEmpty(rtpChannel->GetControlURL())->ToCString(), rtpChannel).SetTo(sptr))
 	{
 		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UIntOS)(sptr - sbuff)).Ptr());
 		return true;
@@ -576,7 +577,7 @@ Bool Net::RTSPClient::Init(NN<Net::RTPCliChannel> rtpChannel)
 
 Bool Net::RTSPClient::Play(NN<Net::RTPCliChannel> rtpChannel)
 {
-	return this->Play(rtpChannel->GetControlURL()->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
+	return this->Play(Text::String::OrEmpty(rtpChannel->GetControlURL())->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
 }
 
 Bool Net::RTSPClient::KeepAlive(NN<Net::RTPCliChannel> rtpChannel)
@@ -587,7 +588,7 @@ Bool Net::RTSPClient::KeepAlive(NN<Net::RTPCliChannel> rtpChannel)
 
 Bool Net::RTSPClient::StopPlay(NN<Net::RTPCliChannel> rtpChannel)
 {
-	return this->Close(rtpChannel->GetControlURL()->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
+	return this->Close(Text::String::OrEmpty(rtpChannel->GetControlURL())->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
 }
 
 Bool Net::RTSPClient::Deinit(NN<Net::RTPCliChannel> rtpChannel)

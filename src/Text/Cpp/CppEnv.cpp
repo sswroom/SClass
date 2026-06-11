@@ -143,7 +143,7 @@ Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 {
 	this->pt = Text::CodeProject::PROJT_VSPROJECT;
 	this->vsv = vsv;
-	this->baseFile = 0;
+	this->baseFile = nullptr;
 }
 
 Text::Cpp::CppEnv::CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> cfg)
@@ -184,7 +184,7 @@ Text::Cpp::CppEnv::~CppEnv()
 	{
 		OPTSTR_DEL(this->includePaths.GetItem(i));
 	}
-	SDEL_STRING(this->baseFile);
+	OPTSTR_DEL(this->baseFile);
 }
 
 void Text::Cpp::CppEnv::AddIncludePath(Text::CStringNN includePath)
@@ -197,6 +197,8 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetIncludeFilePath(UnsafeArray<UTF8C
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	UIntOS i;
+
+	NN<Text::String> baseFile;
 /*	if (includeFile.IndexOf(UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
 		i = 0;
@@ -214,9 +216,9 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetIncludeFilePath(UnsafeArray<UTF8C
 	while (it.HasNext())
 	{
 		s = it.Next();
-		if (this->baseFile)
+		if (this->baseFile.SetTo(baseFile))
 		{
-			sptr = this->baseFile->ConcatTo(buff);
+			sptr = baseFile->ConcatTo(buff);
 			sptr = IO::Path::AppendPath(buff, sptr, s->ToCString());
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}

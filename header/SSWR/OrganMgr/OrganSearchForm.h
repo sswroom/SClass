@@ -19,7 +19,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 			NN<OrganEnv> env;
-			Text::String *foundStr;
+			Optional<Text::String> foundStr;
 			OrganGroup *foundGroup;
 			Int32 parentId;
 			

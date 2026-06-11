@@ -195,17 +195,18 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		if (Text::StrCSVSplitP(sarr, 10, sbuff) == 9)
 		{
 			Data::Timestamp startTime = Data::Timestamp::FromStr(sarr[1].ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-			Text::String *lastTime = 0;
+			Optional<Text::String> lastTime = nullptr;
+			NN<Text::String> nnlastTime;
 			NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, nullptr));
 			track->SetTrackName(fd->GetShortName());
 			
 			while (true)
 			{
-				if (lastTime == 0 || !lastTime->Equals(sarr[1]))
+				if (!lastTime.SetTo(nnlastTime) || !nnlastTime->Equals(sarr[1]))
 				{
-					SDEL_STRING(lastTime);
-					lastTime = Text::String::New(sarr[1].ToCString()).Ptr();
-					rec.recTime = Data::Timestamp::FromStr(lastTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).inst;
+					OPTSTR_DEL(lastTime);
+					lastTime = nnlastTime = Text::String::New(sarr[1].ToCString());
+					rec.recTime = Data::Timestamp::FromStr(nnlastTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).inst;
 				}
 				else
 				{
@@ -235,7 +236,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 					break;
 				}
 			}
-			SDEL_STRING(lastTime);
+			OPTSTR_DEL(lastTime);
 			return track;		
 		}
 		else

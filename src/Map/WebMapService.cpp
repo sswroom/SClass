@@ -192,8 +192,8 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 		if (nodeName->Equals(UTF8STRC("Layer")))
 		{
 			Bool queryable = false;
-			Text::String *layerName = 0;
-			Text::String *layerTitle = 0;
+			Optional<Text::String> layerName = nullptr;
+			Optional<Text::String> layerTitle = nullptr;
 			NN<Text::String> nnlayerTitle;
 			Data::ArrayListNN<LayerCRS> layerCRS;
 			NN<LayerCRS> crs;
@@ -217,8 +217,8 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 					sb.ClearStr();
 					if (reader->ReadNodeText(sb))
 					{
-						SDEL_STRING(layerName);
-						layerName = Text::String::New(sb.ToCString()).Ptr();
+						OPTSTR_DEL(layerName);
+						layerName = Text::String::New(sb.ToCString());
 					}
 				}
 				else if (nodeName->Equals(UTF8STRC("Title")))
@@ -226,8 +226,8 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 					sb.ClearStr();
 					if (reader->ReadNodeText(sb))
 					{
-						SDEL_STRING(layerTitle);
-						layerTitle = Text::String::New(sb.ToCString()).Ptr();
+						OPTSTR_DEL(layerTitle);
+						layerTitle = Text::String::New(sb.ToCString());
 					}
 				}
 				else if (nodeName->Equals(UTF8STRC("BoundingBox")))
@@ -293,7 +293,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 				}
 			}
 			NN<Text::String> s;
-			if (s.Set(layerName) && nnlayerTitle.Set(layerTitle) && layerCRS.GetCount() > 0)
+			if (layerName.SetTo(s) && layerTitle.SetTo(nnlayerTitle) && layerCRS.GetCount() > 0)
 			{
 				NN<LayerInfo> layer;
 				NEW_CLASSNN(layer, LayerInfo());
@@ -305,8 +305,8 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 			}
 			else
 			{
-				SDEL_STRING(layerName);
-				SDEL_STRING(layerTitle);
+				OPTSTR_DEL(layerName);
+				OPTSTR_DEL(layerTitle);
 				i = layerCRS.GetCount();
 				while (i-- > 0)
 				{

@@ -16,8 +16,8 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *platformName;
-	Text::String *platformSN;
+	Optional<Text::String> platformName;
+	Optional<Text::String> platformSN;
 };
 
 Bool SystemInfo_ReadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> sb)
@@ -38,8 +38,8 @@ Bool SystemInfo_ReadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> s
 IO::SystemInfo::SystemInfo()
 {
 	NN<ClassData> info = MemAllocNN(ClassData);
-	info->platformName = 0;
-	info->platformSN = 0;
+	info->platformName = nullptr;
+	info->platformSN = nullptr;
 
 	Text::StringBuilderUTF8 sb;
 	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_vendor"), sb))
@@ -49,7 +49,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.RemoveChars(1);
 		}
-		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/sys_vendor"), sb))
 	{
@@ -58,18 +58,18 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.RemoveChars(1);
 		}
-		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 
 
 	sb.ClearStr();
 	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_serial"), sb))
 	{
-		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_serial"), sb))
 	{
-		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 
 	this->clsData = info;
@@ -77,25 +77,27 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	SDEL_STRING(this->clsData->platformSN);
+	OPTSTR_DEL(this->clsData->platformName);
+	OPTSTR_DEL(this->clsData->platformSN);
 	MemFreeNN(this->clsData);
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
 	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformSN)
+	NN<Text::String> s;
+	if (this->clsData->platformSN.SetTo(s))
 	{
-		return this->clsData->platformSN->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
 	return nullptr;
 }

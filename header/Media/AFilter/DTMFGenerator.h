@@ -24,7 +24,7 @@ namespace Media
 			UInt32 tonesBreakSamples;
 			Double tonesVol;
 			UInt32 tonesCurrSample;
-			Text::String *tonesVals;
+			Optional<Text::String> tonesVals;
 			
 		public:
 			DTMFGenerator(NN<AudioSource> sourceAudio);

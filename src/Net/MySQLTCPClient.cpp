@@ -43,7 +43,7 @@ namespace Net
 		typedef struct
 		{
 			NN<Text::String> name;
-			Text::String *defValues;
+			Optional<Text::String> defValues;
 			UInt32 colLen;
 			UInt16 charSet;
 			UInt16 flags;
@@ -55,8 +55,8 @@ namespace Net
 		Data::ArrayListObj<ColumnDef*> cols;
 		UIntOS colCount;
 		IntOS rowChanged;
-		Text::String **currRow;
-		Text::String **nextRow;
+		Optional<Text::String> *currRow;
+		Optional<Text::String> *nextRow;
 		Bool nextRowReady;
 		Sync::Event rowEvt;
 		Sync::Event nextRowEvt;
@@ -86,7 +86,7 @@ namespace Net
 			{
 				col = this->cols.GetItem(i);
 				col->name->Release();
-				SDEL_STRING(col->defValues);
+				OPTSTR_DEL(col->defValues);
 				MemFree(col); 
 			}
 		}
@@ -99,7 +99,7 @@ namespace Net
 				i = this->colCount;
 				while (i-- > 0)
 				{
-					SDEL_STRING(this->currRow[i]);
+					OPTSTR_DEL(this->currRow[i]);
 				}
 				MemFree(this->currRow);
 				this->currRow = 0;
@@ -133,6 +133,7 @@ namespace Net
 
 		virtual Int32 GetInt32(UIntOS colIndex)
 		{
+			NN<Text::String> s;
 			if (this->currRow == 0)
 			{
 				return 0;
@@ -141,11 +142,11 @@ namespace Net
 			{
 				return 0;
 			}
-			if (this->currRow[colIndex] == 0)
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return 0;
 			}
-			return Text::StrToInt32(this->currRow[colIndex]->v);
+			return Text::StrToInt32(s->v);
 		}
 
 		virtual Int64 GetInt64(UIntOS colIndex)
@@ -158,11 +159,12 @@ namespace Net
 			{
 				return 0;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return 0;
 			}
-			return Text::StrToInt64(this->currRow[colIndex]->v);
+			return Text::StrToInt64(s->v);
 		}
 
 		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
@@ -175,11 +177,12 @@ namespace Net
 			{
 				return nullptr;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
-			return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
+			return Text::StrUTF8_WChar(buff, s->v, 0);
 		}
 
 		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -192,11 +195,12 @@ namespace Net
 			{
 				return false;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return false;
 			}
-			sb->AppendC(this->currRow[colIndex]->v, this->currRow[colIndex]->leng);
+			sb->Append(s);
 			return true;
 		}
 
@@ -210,11 +214,12 @@ namespace Net
 			{
 				return nullptr;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
-			return this->currRow[colIndex]->Clone();
+			return s->Clone();
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
@@ -227,11 +232,12 @@ namespace Net
 			{
 				return nullptr;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
-			return this->currRow[colIndex]->ConcatToS(buff, buffSize);
+			return s->ConcatToS(buff, buffSize);
 		}
 
 		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
@@ -244,11 +250,12 @@ namespace Net
 			{
 				return Data::Timestamp(nullptr);
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return Data::Timestamp(nullptr);
 			}
-			return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0).ConvertTimeZoneQHR(this->tzQhr);
+			return Data::Timestamp(s->ToCString(), 0).ConvertTimeZoneQHR(this->tzQhr);
 		}
 
 		virtual Double GetDblOrNAN(UIntOS colIndex)
@@ -261,11 +268,12 @@ namespace Net
 			{
 				return NAN;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return NAN;
 			}
-			return Text::StrToDoubleOrNAN(this->currRow[colIndex]->v);
+			return Text::StrToDoubleOrNAN(s->v);
 		}
 
 		virtual Bool GetBool(UIntOS colIndex)
@@ -278,11 +286,12 @@ namespace Net
 			{
 				return false;
 			}
-			if (this->currRow[colIndex] == 0)
+			NN<Text::String> s;
+			if (!this->currRow[colIndex].SetTo(s))
 			{
 				return false;
 			}
-			return Text::StrToInt32(this->currRow[colIndex]->v) != 0;
+			return Text::StrToInt32(s->v) != 0;
 		}
 
 		virtual UIntOS GetBinarySize(UIntOS colIndex)
@@ -319,7 +328,7 @@ namespace Net
 			{
 				return true;
 			}
-			return this->currRow[colIndex] == 0;
+			return this->currRow[colIndex].IsNull();
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
@@ -395,7 +404,7 @@ namespace Net
 			col->flags = ReadUInt16(&colDef[7]);
 			col->decimals = colDef[9];
 			colDef += 12;
-			col->defValues = 0;
+			col->defValues = nullptr;
 			if (colDef < colEnd)
 			{
 				colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
@@ -410,7 +419,7 @@ namespace Net
 
 		void AddRowData(const UInt8 *rowData, UIntOS dataSize)
 		{
-			Text::String **row = MemAlloc(Text::String *, this->colCount);
+			Optional<Text::String> *row = MemAlloc(Optional<Text::String>, this->colCount);
 			UIntOS i = 0;
 			UIntOS j = this->colCount;
 			UInt64 v;
@@ -418,13 +427,13 @@ namespace Net
 			{
 				if (rowData[0] == 0xfb)
 				{
-					row[i] = 0;
+					row[i] = nullptr;
 					rowData++;
 				}
 				else
 				{
 					rowData = Net::MySQLUtil::ReadLenencInt(rowData, &v);
-					row[i] = Text::String::New(rowData, (UIntOS)v).Ptr();
+					row[i] = Text::String::New(rowData, (UIntOS)v);
 					rowData += v;
 				}
 				i++;
@@ -461,7 +470,7 @@ namespace Net
 		typedef struct
 		{
 			NN<Text::String> name;
-			Text::String *defValues;
+			Optional<Text::String> defValues;
 			UInt32 colLen;
 			UInt16 charSet;
 			UInt16 flags;
@@ -528,7 +537,7 @@ namespace Net
 			{
 				col = this->cols.GetItem(i);
 				col->name->Release();
-				SDEL_STRING(col->defValues);
+				OPTSTR_DEL(col->defValues);
 				MemFree(col); 
 			}
 			i = ROWBUFFCNT;
@@ -1143,7 +1152,7 @@ namespace Net
 			col->flags = ReadUInt16(&colDef[7]);
 			col->decimals = colDef[9];
 			colDef += 12;
-			col->defValues = 0;
+			col->defValues = nullptr;
 			if (colDef < colEnd)
 			{
 				colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog

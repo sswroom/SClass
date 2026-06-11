@@ -18,7 +18,7 @@ private:
 	struct ProgInfo
 	{
 		NN<Text::String> progName;
-		Text::String *progPath;
+		Optional<Text::String> progPath;
 		UIntOS procId;
 		Data::Timestamp lastSent;
 	};
@@ -60,7 +60,7 @@ private:
 	Bool SearchProcId(ProgInfo *prog)
 	{
 		NN<Text::String> progPath;
-		if (!progPath.Set(prog->progPath))
+		if (!prog->progPath.SetTo(progPath))
 			return false;
 
 		UTF8Char sbuff[512];
@@ -112,11 +112,11 @@ private:
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(nns, progPathLen));
-			prog->progPath = Text::String::NewP(sbuff, sptr).Ptr();
+			prog->progPath = Text::String::NewP(sbuff, sptr);
 		}
 		else
 		{
-			prog->progPath = 0;
+			prog->progPath = nullptr;
 		}
 		this->progList.Add(prog);
 
@@ -162,13 +162,14 @@ private:
 	static void __stdcall OnTimerTick(AnyType userObj)
 	{
 		NN<ProcMonitorCore> me = userObj.GetNN<ProcMonitorCore>();
+		NN<Text::String> progPath;
 		UIntOS i;
 		ProgInfo *prog;
 		i = me->progList.GetCount();
 		while (i-- > 0)
 		{
 			prog = me->progList.GetItem(i);
-			if (prog->progPath != 0)
+			if (prog->progPath.SetTo(progPath))
 			{
 				if (prog->procId != 0)
 				{
@@ -187,7 +188,7 @@ private:
 				{
 					if (!me->SearchProcId(prog))
 					{
-						Manage::Process proc(prog->progPath->v);
+						Manage::Process proc(progPath->v);
 						if (proc.IsRunning())
 						{
 							prog->procId = proc.GetProcId();
@@ -237,7 +238,7 @@ public:
 		while (i-- > 0)
 		{
 			prog = this->progList.GetItem(i);
-			SDEL_STRING(prog->progPath);
+			OPTSTR_DEL(prog->progPath);
 			prog->progName->Release();
 			MemFree(prog);
 		}

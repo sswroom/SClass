@@ -2230,7 +2230,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 		LocType locType = LocType::Unknown;
 		Int32 rotType = 0;
 		NN<UserFileInfo> userFile;
-		Text::String *camera = 0;
+		Optional<Text::String> camera = nullptr;
 		UInt32 crcVal = 0;
 
 		{
@@ -2277,16 +2277,16 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 									sb.Append(nncstr);
 									sb.AppendC(UTF8STRC(" "));
 									sb.Append(nncstr2);
-									camera = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+									camera = Text::String::New(sb.ToString(), sb.GetLength());
 								}
 							}
 							else if (cstr.SetTo(nncstr))
 							{
-								camera = Text::String::New(nncstr).Ptr();
+								camera = Text::String::New(nncstr);
 							}
 							else if (cstr2.SetTo(nncstr2))
 							{
-								camera = Text::String::New(nncstr2).Ptr();
+								camera = Text::String::New(nncstr2);
 							}
 							else if (mustHaveCamera)
 							{
@@ -2423,7 +2423,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					}
 					else
 					{
-						sql.AppendStr(0);
+						sql.AppendNull();
 					}
 					sql.AppendCmdC(CSTR(")"));
 					if (db->ExecuteNonQuery(sql.ToCString()) > 0)
@@ -2474,25 +2474,25 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					}
 					else
 					{
-						SDEL_STRING(camera);
+						OPTSTR_CSTR(camera);
 						return 0;
 					}
 				}
 				else
 				{
-					SDEL_STRING(camera);
+					OPTSTR_CSTR(camera);
 					return 0;
 				}
 			}
 			else
 			{
-				SDEL_STRING(camera);
+				OPTSTR_CSTR(camera);
 				return 0;
 			}
 		}
 		else
 		{
-			SDEL_STRING(camera);
+			OPTSTR_CSTR(camera);
 			return 0;
 		}
 	}
@@ -2629,7 +2629,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					}
 					else
 					{
-						sql.AppendStr(0);
+						sql.AppendNull();
 					}
 					sql.AppendCmdC(CSTR(")"));
 					if (db->ExecuteNonQuery(sql.ToCString()) > 0)

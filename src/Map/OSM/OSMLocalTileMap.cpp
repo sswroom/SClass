@@ -12,7 +12,7 @@
 Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 {
 	this->pkgFile = pkgFile;
-	this->name = 0;
+	this->name = nullptr;
 	this->rootPkg = nullptr;
 	this->minLevel = 0;
 	this->maxLevel = 0;
@@ -190,13 +190,14 @@ Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 	}
 	this->csys.Delete();
 	this->fmt->Release();
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 }
 
 Text::CStringNN Map::OSM::OSMLocalTileMap::GetName() const
 {
-	if (this->name)
-		return this->name->ToCString();
+	NN<Text::String> name;
+	if (this->name.SetTo(name))
+		return name->ToCString();
 	return CSTR("OSMLocalTileMap");
 }
 

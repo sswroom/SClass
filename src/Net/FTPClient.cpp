@@ -17,7 +17,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 	sptr = url.ConcatTo(sbuff);
 	this->userName = 0;
 	this->password = 0;
-	this->host = 0;
+	this->host = nullptr;
 	this->path = 0;
 	this->conn = 0;
 	this->cli2 = nullptr;
@@ -46,7 +46,8 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 					this->password = Text::StrCopyNew(nns).Ptr();
 				}
 			}
-			this->host = Text::String::New(host, (UIntOS)(sptr - host - 1)).Ptr();
+			NN<Text::String> nnhost;
+			this->host = nnhost = Text::String::New(host, (UIntOS)(sptr - host - 1));
 			if (port.SetTo(nns))
 			{
 				if (!Text::StrToUInt16(nns, this->port))
@@ -58,7 +59,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 			{
 				this->port = 21;
 			}
-			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, clif, this->codePage, timeout));
+			NEW_CLASS(this->conn, Net::FTPConn(nnhost->ToCString(), this->port, clif, this->codePage, timeout));
 			this->conn->SendUser(this->userName);
 			if (this->password)
 			{
@@ -136,7 +137,7 @@ Net::FTPClient::~FTPClient()
 	{
 		Text::StrDelNew(this->password);
 	}
-	SDEL_STRING(this->host);
+	OPTSTR_DEL(this->host);
 	if (this->path)
 	{
 		Text::StrDelNew(this->path);

@@ -1,34 +1,34 @@
 #include "Stdafx.h"
 #include "IO/RobustelInfo.h"
 
-Text::String *IO::RobustelInfo::GetIMEI()
+Optional<Text::String> IO::RobustelInfo::GetIMEI()
 {
-	return Text::String::New(UTF8STRC("1234567890123456")).Ptr();
+	return Text::String::New(UTF8STRC("1234567890123456"));
 }
 
-Text::String *IO::RobustelInfo::GetCellID()
+Optional<Text::String> IO::RobustelInfo::GetCellID()
 {
-	return Text::String::NewEmpty().Ptr();
+	return Text::String::NewEmpty();
 }
 
-Bool IO::RobustelInfo::GetRSSI(Int8 *val)
+Bool IO::RobustelInfo::GetRSSI(OutParam<Int8> val)
 {
 	return false;
 }
 
-Bool IO::RobustelInfo::GetRSRP(Int8 *val)
+Bool IO::RobustelInfo::GetRSRP(OutParam<Int8> val)
 {
 	return false;
 }
 
-Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
+Bool IO::RobustelInfo::GetRSRQ(OutParam<Int8> val)
 {
 	return false;
 }
 
-Bool IO::RobustelInfo::GetPosition(Double *lat, Double *lon)
+Bool IO::RobustelInfo::GetPosition(OutParam<Double> lat, OutParam<Double> lon)
 {
-	*lat = 0;
-	*lon = 0;
+	lat.Set(0);
+	lon.Set(0);
 	return true;
 }

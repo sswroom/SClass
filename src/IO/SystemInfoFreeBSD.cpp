@@ -24,8 +24,8 @@
 
 struct IO::SystemInfo::ClassData
 {
-	Text::String *cpuName;
-	Text::String *platformName;
+	Optional<Text::String> cpuName;
+	Optional<Text::String> platformName;
 };
 
 Bool SystemInfo_ReadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> sb)
@@ -45,8 +45,9 @@ Bool SystemInfo_ReadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> s
 
 IO::SystemInfo::SystemInfo()
 {
-	ClassData *info = MemAlloc(ClassData, 1);
-	info->platformName = 0;
+	NN<ClassData> info = MemAllocNN(ClassData);
+	info->platformName = nullptr;
+	info->cpuName = nullptr;
 
 	Text::StringBuilderUTF8 sb;
 	Char sbuff[1024];
@@ -70,20 +71,22 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SDEL_STRING(this->clsData->platformName);
-	MemFree(this->clsData);
+	OPTSTR_DEL(this->clsData->platformName);
+	OPTSTR_DEL(this->clsData->cpuName);
+	MemFreeNN(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData->platformName)
+	NN<Text::String> s;
+	if (this->clsData->platformName.SetTo(s))
 	{
-		return this->clsData->platformName->ConcatTo(sbuff);
+		return s->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
 #if defined(__APPLE__)
 	io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault,
@@ -167,12 +170,12 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_DESKTOP;
 }
 
-UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UIntOS retCnt = 0;
-	RAMInfo *ram;
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-	if (smbios)
+	NN<RAMInfo> ram;
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
 		IO::SMBIOS::MemoryDeviceInfo *mem;
@@ -190,7 +193,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
+					ram->deviceLocator = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -200,7 +203,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
+					ram->manufacturer = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -210,7 +213,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
+					ram->partNo = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -220,7 +223,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString()).Ptr();
+					ram->sn = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -238,15 +241,29 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 			}
 
 			smbios->FreeMemoryInfo(&memList);
-			DEL_CLASS(smbios);
+			smbios.Delete();
 			return retCnt;
 		}
-		DEL_CLASS(smbios);
+		smbios.Delete();
 	}
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
+	UIntOS i = ramList->GetCount();
+	while (i-- > 0)
+	{
+		NN<RAMInfo> ram;
+		if (ramList->GetItem(i).SetTo(ram))
+		{
+			OPTSTR_DEL(ram->deviceLocator);
+			OPTSTR_DEL(ram->manufacturer);
+			OPTSTR_DEL(ram->partNo);
+			OPTSTR_DEL(ram->sn);
+			MemFreeNN(ram);
+		}
+	}
+	ramList->Clear();
 }
 

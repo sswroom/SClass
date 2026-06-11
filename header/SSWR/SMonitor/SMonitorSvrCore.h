@@ -50,10 +50,10 @@ namespace SSWR
 			Crypto::Hash::HashCalc *dataCRC;
 			Sync::Mutex notifyCRCMut;
 			Crypto::Hash::CRC32RC notifyCRC;
-			Text::String *notifyPwd;
+			Optional<Text::String> notifyPwd;
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
-			Text::String *dataDir;
+			Optional<Text::String> dataDir;
 			NN<Media::DrawEngine> deng;
 			NN<Parser::ParserList> parsers;
 			Bool initErr;

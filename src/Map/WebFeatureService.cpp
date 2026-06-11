@@ -124,9 +124,9 @@ void Map::WebFeatureService::LoadXML(Version version)
 void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	Text::String *name = 0;
-	Text::String *title = 0;
-	Text::String *crs = 0;
+	Optional<Text::String> name = nullptr;
+	Optional<Text::String> title = nullptr;
+	Optional<Text::String> crs = nullptr;
 	Math::RectAreaDbl wgs84Bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
 	Bool hasTL = false;
 	Bool hasBR = false;
@@ -139,8 +139,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			sb.ClearStr();
 			if (reader->ReadNodeText(sb))
 			{
-				SDEL_STRING(name);
-				name = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(name);
+				name = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (nodeName->Equals(UTF8STRC("Title")) || nodeName->EndsWith(UTF8STRC(":Title")))
@@ -148,8 +148,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			sb.ClearStr();
 			if (reader->ReadNodeText(sb))
 			{
-				SDEL_STRING(title);
-				title = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(title);
+				title = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (nodeName->Equals(UTF8STRC("DefaultCRS")) || nodeName->EndsWith(UTF8STRC(":DefaultCRS")))
@@ -157,8 +157,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			sb.ClearStr();
 			if (reader->ReadNodeText(sb))
 			{
-				SDEL_STRING(crs);
-				crs = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(crs);
+				crs = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (nodeName->Equals(UTF8STRC("Keywords")) || nodeName->EndsWith(UTF8STRC(":Keywords")))
@@ -174,8 +174,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			sb.ClearStr();
 			if (reader->ReadNodeText(sb))
 			{
-				SDEL_STRING(crs);
-				crs = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(crs);
+				crs = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (nodeName->Equals(UTF8STRC("SRS")))
@@ -183,8 +183,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			sb.ClearStr();
 			if (reader->ReadNodeText(sb))
 			{
-				SDEL_STRING(crs);
-				crs = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(crs);
+				crs = Text::String::New(sb.ToCString());
 			}
 		}
 		else if (nodeName->EndsWith(UTF8STRC(":WGS84BoundingBox")))
@@ -259,7 +259,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 			reader->SkipElement();
 		}
 	}
-	if (name && title && crs && hasTL && hasBR)
+	if (name.NotNull() && title.NotNull() && crs.NotNull() && hasTL && hasBR)
 	{
 		NN<FeatureType> feature;
 		feature = MemAllocANN(FeatureType);
@@ -271,9 +271,9 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 	}
 	else
 	{
-		SDEL_STRING(name);
-		SDEL_STRING(title);
-		SDEL_STRING(crs);
+		OPTSTR_DEL(name);
+		OPTSTR_DEL(title);
+		OPTSTR_DEL(crs);
 	}
 }
 
