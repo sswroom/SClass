@@ -2966,6 +2966,8 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/speciesdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDelete);
 	this->AddService(CSTR("/api/pick"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPick);
 	this->AddService(CSTR("/api/pickall"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPickAll);
+	this->AddService(CSTR("/api/groupplace"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupPlace);
+	this->AddService(CSTR("/api/groupplaceall"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupPlaceAll);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
