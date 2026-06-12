@@ -40,6 +40,7 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 	UnsafeArray<const UTF8Char> valEnd = &val.v[val.leng];
 	UIntOS i = 0;
 	UIntOS j;
+	Text::StringBuilderUTF8 sbMsg;
 	while ((j = Text::StrIndexOfC(&val.v[i], (UIntOS)(valEnd - &val.v[i]), UTF8STRC("$("))) != INVALID_INDEX)
 	{
 		if (j > 0)
@@ -55,10 +56,33 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 			Text::StringBuilderUTF8 sbCmd;
 			sbCmd.AppendC(&val.v[i + 8], (UIntOS)j - 8);
 			i += j + 1;
-			Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
+			NN<IO::Writer> messageWriter;
+			if (this->messageWriter.SetTo(messageWriter))
+			{
+				sbMsg.ClearStr();
+				sbMsg.AppendC(UTF8STRC("AppendCfgItem: shell "));
+				sbMsg.Append(sbCmd);
+				messageWriter->WriteLine(sbMsg.ToCString());
+				Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
+				sbMsg.ClearStr();
+				sbMsg.AppendC(UTF8STRC("AppendCfgItem: return "));
+				sbMsg.AppendI32(ret);
+				messageWriter->WriteLine(sbMsg.ToCString());
+			}
+			else
+			{
+				Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
+			}
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
+			}
+			if (this->messageWriter.SetTo(messageWriter))
+			{
+				sbMsg.ClearStr();
+				sbMsg.AppendC(UTF8STRC("AppendCfgItem: result "));
+				sbMsg.Append(sb->ToCString());
+				messageWriter->WriteLine(sbMsg.ToCString());
 			}
 		}
 		else
@@ -99,6 +123,7 @@ void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN pa
 void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
 {
 	Text::CStringNN compileCfg = compileCfgC.OrEmpty();
+	Text::StringBuilderUTF8 sbMsg;
 	UIntOS i = compileCfg.IndexOf('`');
 	if (i != INVALID_INDEX)
 	{
@@ -119,10 +144,31 @@ void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileC
 			}
 			sb2.ClearStr();
 			AppendCfgItem(sb2, Text::CStringNN(compileCfg.v, (UIntOS)i));
-			Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
+			NN<IO::Writer> messageWriter;
+			if (this->messageWriter.SetTo(messageWriter))
+			{
+				Int32 ret = Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
+				sbMsg.ClearStr();
+				sbMsg.AppendC(UTF8STRC("AppendCfg: execute ("));
+				sbMsg.AppendI32(ret);
+				sbMsg.AppendC(UTF8STRC(") "));
+				sbMsg.Append(sb2);
+				messageWriter->WriteLine(sbMsg.ToCString());
+			}
+			else
+			{
+				Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
+			}
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
+			}
+			if (this->messageWriter.SetTo(messageWriter))
+			{
+				sbMsg.ClearStr();
+				sbMsg.AppendC(UTF8STRC("AppendCfg: result "));
+				sbMsg.Append(sb->ToCString());
+				messageWriter->WriteLine(sbMsg.ToCString());
 			}
 			compileCfg = compileCfg.Substring(i + 1);
 			i = compileCfg.IndexOf('`');
