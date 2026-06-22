@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_ANDROIDVIDEOCAPTURE
 #define _SM_MEDIA_ANDROIDVIDEOCAPTURE
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Media/VideoCapturer.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -27,13 +27,13 @@ namespace Media
 		void *device;
 		void *reader;
 
-		static UInt32 __stdcall PlayThread(void *userObj);
+		static UInt32 __stdcall PlayThread(AnyType userObj);
 	public:
-		AndroidVideoCapture(void *cameraMgr, const Char *cameraId);
+		AndroidVideoCapture(void *cameraMgr, UnsafeArray<const Char> cameraId);
 		virtual ~AndroidVideoCapture();
 		
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
-		virtual Text::CString GetFilterName();
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
+		virtual Text::CStringNN GetFilterName();
 		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 		virtual Bool Start();
@@ -41,7 +41,7 @@ namespace Media
 		virtual Bool IsRunning();
 
 		virtual void SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom);
-		virtual UIntOS GetSupportedFormats(VideoFormat *fmtArr, UIntOS maxCnt);
+		virtual UIntOS GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt);
 		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		virtual UIntOS GetDataSeekCount();
 	};
@@ -55,8 +55,8 @@ namespace Media
 		AndroidVideoCaptureMgr();
 		~AndroidVideoCaptureMgr();
 
-		UIntOS GetDeviceList(Data::ArrayList<UInt32> *devList);
-		UTF8Char *GetDeviceName(UTF8Char *buff, UIntOS devId);
+		UIntOS GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList);
+		UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devId);
 
 		Optional<Media::VideoCapturer> CreateDevice(UIntOS devId);
 	};

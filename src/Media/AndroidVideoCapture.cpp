@@ -50,7 +50,7 @@ void AndroidVideoCapture_OnSessClosed(void *context, ACameraCaptureSession *sess
 	
 }
 
-Media::AndroidVideoCapture::AndroidVideoCapture(void *cameraMgr, const Char *cameraId)
+Media::AndroidVideoCapture::AndroidVideoCapture(void *cameraMgr, UnsafeArray<const Char> cameraId)
 {
 	this->cameraMgr = cameraMgr;
 	this->cameraId = cameraId;
@@ -69,7 +69,7 @@ Media::AndroidVideoCapture::~AndroidVideoCapture()
 	this->Stop();
 }
 
-UTF8Char *Media::AndroidVideoCapture::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AndroidVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcat(buff, (const UTF8Char*)this->cameraId);
 }
@@ -214,7 +214,7 @@ void Media::AndroidVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32
 	this->camFourcc = fourcc;
 }
 
-UIntOS Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UIntOS maxCnt)
+UIntOS Media::AndroidVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt)
 {
 	ACameraMetadata *metadataObj;
 	if (ACAMERA_OK != ACameraManager_getCameraCharacteristics((ACameraManager*)this->cameraMgr, this->cameraId, &metadataObj))
@@ -391,7 +391,7 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 	}
 }
 
-UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -407,7 +407,7 @@ UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *dev
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS devId)
+UnsafeArrayOpt<UTF8Char> Media::AndroidVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -416,12 +416,12 @@ UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS de
 		{
 			return Text::StrConcat(buff, (const UTF8Char*)cameraIdList->cameraIds[devId]);
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
-Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
+Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{
@@ -432,9 +432,9 @@ Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 			NEW_CLASS(capture, Media::AndroidVideoCapture(this->cameraMgr, cameraIdList->cameraIds[devId]));
 			return capture;
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 #else
@@ -448,19 +448,19 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 
 }
 
-UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList)
 {
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS devId)
+UnsafeArrayOpt<UTF8Char> Media::AndroidVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devId)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 {
-	return 0;
+	return nullptr;
 }
 #endif
 

@@ -12,12 +12,12 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UIntOS nChar)
+Bool IO::ConsoleWriter::Write(Text::CStringNN str)
 {
 	return false;
 }
 
-Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UIntOS nChar)
+Bool IO::ConsoleWriter::WriteLine(Text::CStringNN str)
 {
 	return false;
 }
@@ -44,9 +44,9 @@ UIntOS IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UIntOS nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UIntOS nChar)
 {
-	return 0;
+	return nullptr;
 }
 
 void IO::ConsoleWriter::EnableCPFix(Bool isEnable)

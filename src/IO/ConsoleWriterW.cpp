@@ -59,44 +59,6 @@ IO::ConsoleWriter::~ConsoleWriter()
 #endif
 	DEL_CLASS(this->clsData);
 }
-/*
-Bool IO::ConsoleWriter::Write(const UTF8Char *str, UIntOS nChar)
-{
-	UIntOS strLen = Text::StrUTF8_WCharCnt(str, nChar);
-	WChar *wstr = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(wstr, str, nChar, 0);
-	wstr[strLen] = 0;
-	Bool ret = this->WriteW(wstr);
-	MemFree(wstr);
-	return ret;
-}
-
-Bool IO::ConsoleWriter::Write(const UTF8Char *str)
-{
-	const WChar *wstr = Text::StrToWCharNew(str);
-	Bool ret = this->WriteW(wstr);
-	Text::StrDelNew(wstr);
-	return ret;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UIntOS nChar)
-{
-	UIntOS strLen = Text::StrUTF8_WCharCnt(str, nChar);
-	WChar *wstr = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(wstr, str, nChar, 0);
-	wstr[strLen] = 0;
-	Bool ret = this->WriteLineW(wstr);
-	MemFree(wstr);
-	return ret;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
-{
-	const WChar *wstr = Text::StrToWCharNew(str);
-	Bool ret = this->WriteLineW(wstr);
-	Text::StrDelNew(wstr);
-	return ret;
-}*/
 
 Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 {

@@ -17,8 +17,8 @@ Net::WebServiceClient::WebServiceClient(NN<Net::SocketFactory> sockf, Optional<N
 	this->serviceAddr = Text::String::New(serviceAddr);
 	this->serviceName = Text::String::New(serviceName);
 	this->targetNS = Text::String::New(targetNS);
-	this->soapAction = 0;
-	this->responseVal = 0;
+	this->soapAction = nullptr;
+	this->responseVal = nullptr;
 }
 
 Net::WebServiceClient::~WebServiceClient()
@@ -52,10 +52,7 @@ void Net::WebServiceClient::AddParam(Text::CStringNN paramName, Text::CStringNN 
 void Net::WebServiceClient::SetSOAPAction(Text::CString soapAction)
 {
 	OPTSTR_DEL(this->soapAction);
-	if (soapAction.v)
-	{
-		this->soapAction = Text::String::New(soapAction);
-	}
+	this->soapAction = Text::String::NewOrNull(soapAction);
 }
 
 Bool Net::WebServiceClient::Request(RequestType rt)
@@ -64,9 +61,9 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	UIntOS i;
 	UIntOS j;
 	NN<ParamInfo> param;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (this->serviceName->leng > 64)
 		return false;
@@ -102,7 +99,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 			s->Release();
 			writer->Write(CSTR(">"));
 
-			s = Text::XML::ToNewXMLTextLite(param->val->v);
+			s = Text::XML::ToNewXMLTextLite(UnsafeArray<const UInt8>(param->val->v));
 			writer->Write(s->ToCString());
 			s->Release();
 			
@@ -140,7 +137,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		sptr = Text::StrUIntOS(sbuff, i);
 		cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 
-		cli->Write(buff, i);
+		cli->Write(Data::ByteArrayR(buff, i));
 
 		succ = false;
 		Int32 status = cli->GetRespStatus();
@@ -162,8 +159,8 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				{
 					Text::EncodingFactory encFact;
 					Text::XMLDocument *doc;
-					Text::XMLNode *node1;
-					Text::XMLNode *node2;
+					NN<Text::XMLNode> node1;
+					NN<Text::XMLNode> node2;
 					Text::StringBuilderUTF8 sb;
 					NEW_CLASS(doc, Text::XMLDocument());
 					if (doc->ParseBuff(encFact, buff, contLeng))
@@ -171,30 +168,26 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						i = doc->GetChildCnt();
 						while (i-- > 0)
 						{
-							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->Equals(UTF8STRC("soap:Envelope")))
+							if (doc->GetChild(i).SetTo(node1) && node1->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node1->name)->Equals(UTF8STRC("soap:Envelope")))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
-									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(UTF8STRC("soap:Body")))
+									if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->Equals(UTF8STRC("soap:Body")))
 									{
 										node1 = node2;
 										sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Response"));
 										i = node1->GetChildCnt();
 										while (i-- > 0)
 										{
-											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
+											if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Result"));
 												i = node1->GetChildCnt();
 												while (i-- > 0)
 												{
-													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
+													if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(sb);
@@ -216,7 +209,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 					}
 					DEL_CLASS(doc);
 				}
-				MemFree(buff);
+				MemFreeArr(buff);
 			}
 		}
 		mstm.Delete();
@@ -255,7 +248,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 			s->Release();
 			writer->Write(CSTR(">"));
 
-			s = Text::XML::ToNewXMLTextLite(param->val->v);
+			s = Text::XML::ToNewXMLTextLite(UnsafeArray<const UInt8>(param->val->v));
 			writer->Write(s->ToCString());
 			s->Release();
 			
@@ -280,7 +273,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		buff = mstm->GetBuff(i);
 		cli->AddContentLength(i);
 
-		cli->Write(buff, i);
+		cli->Write(Data::ByteArrayR(buff, i));
 
 		succ = false;
 		Int32 status = cli->GetRespStatus();
@@ -302,8 +295,8 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				{
 					Text::EncodingFactory encFact;
 					Text::XMLDocument *doc;
-					Text::XMLNode *node1;
-					Text::XMLNode *node2;
+					NN<Text::XMLNode> node1;
+					NN<Text::XMLNode> node2;
 					Text::StringBuilderUTF8 sb;
 					NEW_CLASS(doc, Text::XMLDocument());
 					if (doc->ParseBuff(encFact, buff, contLeng))
@@ -311,34 +304,30 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						i = doc->GetChildCnt();
 						while (i-- > 0)
 						{
-							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->EndsWithICase(UTF8STRC(":Envelope")))
+							if (doc->GetChild(i).SetTo(node1) && node1->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node1->name)->EndsWithICase(UTF8STRC(":Envelope")))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
-									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EndsWithICase(UTF8STRC(":Body")))
+									if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->EndsWithICase(UTF8STRC(":Body")))
 									{
 										node1 = node2;
 										sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Response"));
 										i = node1->GetChildCnt();
 										while (i-- > 0)
 										{
-											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
+											if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(this->serviceName->ConcatTo(sbuff), UTF8STRC("Result"));
 												i = node1->GetChildCnt();
 												while (i-- > 0)
 												{
-													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UIntOS)(sptr - sbuff)))
+													if (node1->GetChild(i).SetTo(node2) && node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->Equals(sbuff, (UIntOS)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(sb);
-														this->responseVal = Text::StrCopyNew(sb.ToString());
+														this->responseVal = Text::String::New(sb.ToCString());
 														succ = true;
 														break;
 													}
@@ -356,7 +345,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 					}
 					DEL_CLASS(doc);
 				}
-				MemFree(buff);
+				MemFreeArr(buff);
 			}
 		}
 		mstm.Delete();
@@ -367,7 +356,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	return false;
 }
 
-const UTF8Char *Net::WebServiceClient::GetResponseVal()
+Optional<Text::String> Net::WebServiceClient::GetResponseVal()
 {
 	return this->responseVal;
 }

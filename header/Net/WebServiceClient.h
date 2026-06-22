@@ -37,7 +37,7 @@ namespace Net
 		void AddParam(Text::CStringNN paramName, Text::CStringNN paramVal);
 		void SetSOAPAction(Text::CString soapAction);
 		Bool Request(RequestType rt);
-		const UTF8Char *GetResponseVal();
+		Optional<Text::String> GetResponseVal();
 	};
 }
 #endif
