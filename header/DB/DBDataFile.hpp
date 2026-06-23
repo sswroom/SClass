@@ -258,7 +258,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			{
 				Data::VariItem::ItemValue ival = item.GetItemValue();
 				m = WriteInt(this->recordBuff, m, ival.cstr.leng);
-				MemCopyNO(&this->recordBuff[m], ival.cstr.v, ival.cstr.leng);
+				MemCopyNO(&this->recordBuff[m], ival.cstr.v.Ptr(), ival.cstr.leng);
 				m += ival.cstr.leng;
 			}
 			break;

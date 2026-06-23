@@ -15,7 +15,7 @@ namespace Net
 				Int64 id;
 				Data::ArrayListStringNN rcptList;
 				NN<Text::String> fileName;
-				const UTF8Char *uid;
+				UnsafeArray<const UTF8Char> uid;
 			};
 		private:
 			Data::FastMapNN<Int64, FileInfo> fileMap;

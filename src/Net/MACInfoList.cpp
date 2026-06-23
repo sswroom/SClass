@@ -43,7 +43,7 @@ Net::MACInfoList::~MACInfoList()
 	while (i-- > 0)
 	{
 		entry = this->dataList.GetItemNoCheck(i);
-		if (entry->name) Text::StrDelNew(entry->name);
+		Text::StrDelNew(entry->name);
 		MemFreeNN(entry);
 	}
 }
@@ -134,7 +134,7 @@ UIntOS Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 	if (si >= 0)
 	{
 		entry = this->dataList.GetItemNoCheck((UIntOS)si);
-		if (entry->name) Text::StrDelNew(entry->name);
+		Text::StrDelNew(entry->name);
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
 		return (UIntOS)si;

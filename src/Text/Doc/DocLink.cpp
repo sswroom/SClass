@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "Text/Doc/DocLink.h"
 
-Text::Doc::DocLink::DocLink(const UTF8Char *url)
+Text::Doc::DocLink::DocLink(UnsafeArray<const UTF8Char> url)
 {
-	this->url = Text::StrCopyNew(url).Ptr();
+	this->url = Text::StrCopyNew(url);
 }
 
 Text::Doc::DocLink::~DocLink()
@@ -28,7 +28,7 @@ UIntOS Text::Doc::DocLink::Add(NN<Text::Doc::DocItem> item)
 	return this->items.Add(item);
 }
 
-const UTF8Char *Text::Doc::DocLink::GetLink()
+UnsafeArray<const UTF8Char> Text::Doc::DocLink::GetLink()
 {
 	return this->url;
 }

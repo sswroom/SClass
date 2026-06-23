@@ -197,7 +197,7 @@ IO::AndroidDB::AndroidInfo IO::AndroidDB::androids[] = {
 	{UTF8STRCPTR("vivo 1909"),       "vivo",        "V17 Pro",               "1909",         UTF8STRCPTR("SM6150")},
 };
 
-const IO::AndroidDB::AndroidInfo *IO::AndroidDB::GetAndroidInfo(Text::CStringNN androidId)
+Optional<const IO::AndroidDB::AndroidInfo> IO::AndroidDB::GetAndroidInfo(Text::CStringNN androidId)
 {
 	IntOS i = 0;
 	IntOS j = (sizeof(androids) / sizeof(androids[0])) - 1;
@@ -221,5 +221,5 @@ const IO::AndroidDB::AndroidInfo *IO::AndroidDB::GetAndroidInfo(Text::CStringNN 
 			return &androids[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }

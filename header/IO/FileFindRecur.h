@@ -11,12 +11,12 @@ namespace IO
 		typedef struct
 		{
 			Optional<IO::Path::FindFileSession> sess;
-			UTF8Char *buffPtr;
+			UnsafeArrayOpt<UTF8Char> buffPtr;
 		} FindRecurPart;
 
 	private:
-		Text::PString *srcStrs;
-		FindRecurPart *srchParts;
+		UnsafeArray<Text::PString> srcStrs;
+		UnsafeArray<FindRecurPart> srchParts;
 		UIntOS partCnt;
 		UnsafeArray<UTF8Char> srcBuff;
 		UTF8Char currBuff[2048];

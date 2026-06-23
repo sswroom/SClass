@@ -8,14 +8,14 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	Sync::SimpleThread::Sleep(10000);
+	UnsafeArray<UTF8Char> sptr;
+	Sync::ThreadUtil::SleepDur(10000);
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
 	while (true)
 	{
 		clk.Start();
-		Sync::SimpleThread::Sleep(1000);
+		Sync::ThreadUtil::SleepDur(1000);
 		sptr = Text::StrInt64(sbuff, clk.GetTimeDiffus());
 		console.Write(CSTR("Time used(us): "));
 		console.WriteLine(CSTRP(sbuff, sptr));

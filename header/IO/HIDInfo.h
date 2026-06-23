@@ -27,9 +27,9 @@ namespace IO
 		BusType GetBusType();
 		UInt16 GetVendorId();
 		UInt16 GetProductId();
-		Text::String *GetDevPath();
+		NN<Text::String> GetDevPath();
 
-		IO::Stream *OpenHID();
+		Optional<IO::Stream> OpenHID();
 
 		static IntOS GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList);
 	};

@@ -40,7 +40,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	this->blks = 0;
 	this->maxTextSize = 0;
 	this->lyrType = (Map::DrawLayerType)0;
-	this->layerName = Text::StrCopyNew(fname).Ptr();
+	this->layerName = Text::StrCopyNew(fname);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	{
@@ -144,11 +144,7 @@ Map::SPDLayer::~SPDLayer()
 		MemFree(blks);
 		blks = 0;
 	}
-	if (this->layerName)
-	{
-		Text::StrDelNew(this->layerName);
-		this->layerName = 0;
-	}
+	Text::StrDelNew(this->layerName);
 }
 
 Bool Map::SPDLayer::IsError() const

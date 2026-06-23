@@ -244,7 +244,7 @@ Int32 Media::AAudioRenderer::GetDeviceCount()
 	return 1;
 }
 
-UTF8Char *Media::AAudioRenderer::GetDeviceName(UTF8Char *buff, Int32 devNo)
+UnsafeArrayOpt<UTF8Char> Media::AAudioRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, Int32 devNo)
 {
 	return Text::StrInt32(buff, devNo);
 }
@@ -254,9 +254,10 @@ void Media::AAudioRenderer::OnEvent()
 	this->playEvt->Set();
 }
 
-Media::AAudioRenderer::AAudioRenderer(const UTF8Char *devName)
+Media::AAudioRenderer::AAudioRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
-	if (devName == 0)
+	UnsafeArray<const UTF8Char> nndevName;
+	if (!devName.SetTo(nndevName))
 	{
 		UTF8Char sbuff[16];
 		Text::StrInt32(sbuff, AAUDIO_UNSPECIFIED);
@@ -264,7 +265,7 @@ Media::AAudioRenderer::AAudioRenderer(const UTF8Char *devName)
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName);
+		this->devName = Text::StrCopyNew(nndevName);
 	}
 	this->audsrc = 0;
 	this->playing = false;
@@ -293,6 +294,7 @@ Media::AAudioRenderer::~AAudioRenderer()
 		AAudioStreamBuilder_delete(clsData->builder);
 	}
 	MemFree(clsData);
+	Text::StrDelNew(this->devName);
 }
 
 Bool Media::AAudioRenderer::IsError()
@@ -301,7 +303,7 @@ Bool Media::AAudioRenderer::IsError()
 	return clsData->builder == 0;
 }
 
-Bool Media::AAudioRenderer::BindAudio(Media::AudioSource *audsrc)
+Bool Media::AAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)
@@ -478,7 +480,7 @@ Bool Media::AAudioRenderer::BindAudio(Media::AudioSource *audsrc)
 	return true;
 }
 
-void Media::AAudioRenderer::AudioInit(Media::RefClock *clk)
+void Media::AAudioRenderer::AudioInit(NN<Media::RefClock> clk)
 {
 	if (playing)
 		return;
@@ -523,7 +525,7 @@ Bool Media::AAudioRenderer::IsPlaying()
 	return this->playing;
 }
 
-void Media::AAudioRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::AAudioRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

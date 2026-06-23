@@ -12,12 +12,12 @@
 void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
-	const UTF8Char *fileName;
+	UnsafeArray<const UTF8Char> fileName;
 	UIntOS fileNameLen;
-	const UTF8Char *mode;
-	const UTF8Char *endPtr;
-//	const UTF8Char *optName;
-//	const UTF8Char *optVal;
+	UnsafeArray<const UTF8Char> mode;
+	UnsafeArray<const UTF8Char> endPtr;
+//	UnsafeArrayOpt<const UTF8Char> optName;
+//	UnsafeArrayOpt<const UTF8Char> optVal;
 	UInt16 opcode;
 	UIntOS blkSize;
 	UIntOS i;

@@ -840,25 +840,23 @@ Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisco
 	return true;
 }
 
-Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF8Char *data)
+Bool Net::WebServer::WebConnection::SSESend(UnsafeArrayOpt<const UTF8Char> eventName, UnsafeArray<const UTF8Char> data)
 {
 	if (this->sseHdlr == 0)
 	{
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (eventName)
+	UnsafeArray<const UTF8Char> nneventName;
+	if (eventName.SetTo(nneventName))
 	{
 		sb.AppendC(UTF8STRC("event:"));
-		sb.AppendSlow(eventName);
+		sb.AppendSlow(nneventName);
 		sb.AppendLB(Text::LineBreakType::LF);
 	}
-	if (data)
-	{
-		sb.AppendC(UTF8STRC("data:"));
-		sb.AppendSlow(data);
-		sb.AppendLB(Text::LineBreakType::LF);
-	}
+	sb.AppendC(UTF8STRC("data:"));
+	sb.AppendSlow(data);
+	sb.AppendLB(Text::LineBreakType::LF);
 	sb.AppendLB(Text::LineBreakType::LF);
 	return this->cli->Write(sb.ToByteArray()) == sb.GetLength();
 }

@@ -41,19 +41,19 @@ UInt16 IO::HIDInfo::GetProductId()
 	return this->clsData->product;
 }
 
-Text::String *IO::HIDInfo::GetDevPath()
+NN<Text::String> IO::HIDInfo::GetDevPath()
 {
-	return this->clsData->devPath.Ptr();
+	return this->clsData->devPath;
 }
 
-IO::Stream *IO::HIDInfo::OpenHID()
+Optional<IO::Stream> IO::HIDInfo::OpenHID()
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(this->clsData->devPath, IO::FileMode::ReadWriteExisting, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(this->clsData->devPath, IO::FileMode::ReadWriteExisting, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
-		return 0;
+		fs.Delete();
+		return nullptr;
 	}
 	else
 	{

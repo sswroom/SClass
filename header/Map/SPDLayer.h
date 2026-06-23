@@ -27,7 +27,7 @@ namespace Map
 		Int64 maxId;
 		Map::DrawLayerType lyrType;
 //		Sync::Mutex mut;
-		const UTF8Char *layerName;
+		UnsafeArray<const UTF8Char> layerName;
 
 	public:
 		SPDLayer(Text::CStringNN layerName);

@@ -116,7 +116,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebSe
 	return true;
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, UnsafeArray<const UTF8Char> fileName)
 {
 	NN<CategoryInfo> cate;
 	NN<SpeciesInfo> sp;

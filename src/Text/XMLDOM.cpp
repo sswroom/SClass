@@ -716,9 +716,9 @@ Text::CStringNN Text::XMLNode::NodeTypeGetName(NodeType ntype)
 
 }
 
-UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStart, UTF8Char *xmlEnd)
+UnsafeArrayOpt<UTF8Char> Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UnsafeArray<UTF8Char> xmlStart, UnsafeArray<UTF8Char> xmlEnd)
 {
-	UTF8Char *currPtr;
+	UnsafeArray<UTF8Char> currPtr;
 	UTF8Char c;
 	NN<XMLNode> node;
 	Optional<XMLNode> optnode;
@@ -729,10 +729,13 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 	Bool lastSpace;
 	Bool lastEq;
 	UTF8Char quoted;
-	UTF8Char *xmlNameSt = 0;
-	UTF8Char *xmlNameEn = 0;
-	UTF8Char *xmlValSt = 0;
-	UTF8Char *xmlValEn;
+	UnsafeArrayOpt<UTF8Char> xmlNameSt = nullptr;
+	UnsafeArrayOpt<UTF8Char> xmlNameEn = nullptr;
+	UnsafeArrayOpt<UTF8Char> xmlValSt = nullptr;
+	UnsafeArray<UTF8Char> xmlValEn;
+	UnsafeArray<UTF8Char> nnxmlValSt;
+	UnsafeArray<UTF8Char> nnxmlNameSt;
+	UnsafeArray<UTF8Char> nnxmlNameEn;
 
 	if (*xmlStart == '<')
 	{
@@ -753,24 +756,24 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				}
 				if (quoted != 0)
 				{
-					if (c == quoted)
+					if (c == quoted && xmlValSt.SetTo(nnxmlValSt) && xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn))
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), nnxmlNameSt, (UIntOS)(nnxmlNameEn - nnxmlNameSt)))
 						{
 							OPTSTR_DEL(this->encoding);
-							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
-							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
+							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - nnxmlValSt));
+							Text::XML::ParseStr(nns, nnxmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), nnxmlNameSt, (UIntOS)(nnxmlNameEn - nnxmlNameSt)))
 						{
 							OPTSTR_DEL(this->version);
-							this->version = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
-							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
+							this->version = nns = Text::String::New((UIntOS)(xmlValEn - nnxmlValSt));
+							Text::XML::ParseStr(nns, nnxmlValSt, xmlValEn);
 						}
 
-						xmlNameSt = 0;
-						xmlValSt = 0;
+						xmlNameSt = nullptr;
+						xmlValSt = nullptr;
 						quoted = 0;
 						lastSpace = true;
 					}
@@ -779,7 +782,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 						if (lastSpace)
 						{
 							xmlValSt = currPtr;
-							xmlValEn = 0;
+							//xmlValEn = nullptr;
 							lastSpace = false;
 							lastEq = false;
 						}
@@ -795,7 +798,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					else
 					{
 						////////////////////////
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (c == '\'')
@@ -808,39 +811,39 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					else
 					{
 						////////////////////////
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
 				{
-					if (xmlValSt)
+					if (xmlValSt.SetTo(nnxmlValSt) && xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn))
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), nnxmlNameSt, (UIntOS)(nnxmlNameEn - nnxmlNameSt)))
 						{
 							OPTSTR_DEL(this->encoding);
-							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
-							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
+							this->encoding = nns = Text::String::New((UIntOS)(xmlValEn - nnxmlValSt));
+							Text::XML::ParseStr(nns, nnxmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UIntOS)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), nnxmlNameSt, (UIntOS)(nnxmlNameEn - nnxmlNameSt)))
 						{
 							OPTSTR_DEL(this->version);
-							this->version = nns = Text::String::New((UIntOS)(xmlValEn - xmlValSt));
-							Text::XML::ParseStr(nns, xmlValSt, xmlValEn);
+							this->version = nns = Text::String::New((UIntOS)(xmlValEn - nnxmlValSt));
+							Text::XML::ParseStr(nns, nnxmlValSt, xmlValEn);
 						}
 
-						xmlNameSt = 0;
-						xmlValSt = 0;
+						xmlNameSt = nullptr;
+						xmlValSt = nullptr;
 					}
 
 					lastSpace = true;
-					xmlNameSt = 0;
+					xmlNameSt = nullptr;
 				}
 				else if (c == '=')
 				{
-					if (xmlNameSt)
+					if (xmlNameSt.NotNull())
 					{
-						if (xmlNameEn == 0)
+						if (xmlNameEn.IsNull())
 						{
 							xmlNameEn = currPtr;
 						}
@@ -852,14 +855,14 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (quoted)
 					{
 						xmlValSt = currPtr;
-						xmlValEn = 0;
+						//xmlValEn = nullptr;
 					}
 					else
 					{
 						xmlNameSt = currPtr;
-						xmlNameEn = 0;
-						xmlValSt = 0;
-						xmlValEn = 0;
+						xmlNameEn = nullptr;
+						xmlValSt = nullptr;
+						//xmlValEn = nullptr;
 					}
 					lastSpace = false;
 					lastEq = false;
@@ -867,7 +870,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				else if (lastEq)
 				{
 					xmlValSt = currPtr;
-					xmlValEn = 0;
+					//xmlValEn = nullptr;
 					lastSpace = false;
 					lastEq = false;
 				}
@@ -947,24 +950,24 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				}
 
 				c = *currPtr;
-				if (!quoted && c == '/' && (optnode.NotNull() || xmlNameSt != 0))
+				if (!quoted && c == '/' && (optnode.NotNull() || xmlNameSt.SetTo(nnxmlNameSt)))
 				{
 					if (!optnode.SetTo(node))
 					{
 						NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
-						node->name = nns = Text::String::New((UIntOS)(currPtr - xmlNameSt));
-						Text::XML::ParseStr(nns, xmlNameSt, currPtr);
+						node->name = nns = Text::String::New((UIntOS)(currPtr - nnxmlNameSt));
+						Text::XML::ParseStr(nns, nnxmlNameSt, currPtr);
 					}
-					else if (xmlNameSt != 0)
+					else if (xmlNameSt.SetTo(nnxmlNameSt))
 					{
-						if (xmlValSt == 0)
+						if (!xmlNameEn.SetTo(nnxmlNameEn) || !xmlValSt.SetTo(nnxmlValSt))
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, currPtr), nullptr));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, currPtr), nullptr));
 							node->AddAttrib(attr);
 						}
 						else
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTRP(xmlValSt, currPtr)));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, nnxmlNameEn), CSTRP(nnxmlValSt, currPtr)));
 							node->AddAttrib(attr);
 						}
 					}
@@ -975,15 +978,15 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				}
 				if (quoted != 0 && optnode.SetTo(node))
 				{
-					if (c == quoted)
+					if (c == quoted && xmlValSt.SetTo(nnxmlValSt) && xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn))
 					{
 						xmlValEn = currPtr;
 
-						NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTRP(xmlValSt, xmlValEn)));
+						NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, nnxmlNameEn), CSTRP(nnxmlValSt, xmlValEn)));
 						node->AddAttrib(attr);
 
-						xmlNameSt = 0;
-						xmlValSt = 0;
+						xmlNameSt = nullptr;
+						xmlValSt = nullptr;
 						quoted = 0;
 						lastSpace = true;
 						lastEq = false;
@@ -993,7 +996,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 						if (lastSpace)
 						{
 							xmlValSt = currPtr;
-							xmlValEn = 0;
+							//xmlValEn = nullptr;
 							lastSpace = false;
 							lastEq = false;
 						}
@@ -1029,28 +1032,28 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				}
 				else if (c == ' ' || c == '\t' || c == '>' || c == '\r' || c == '\n')
 				{
-					if (xmlValSt && optnode.SetTo(node))
+					if (xmlValSt.SetTo(nnxmlValSt) && xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn) && optnode.SetTo(node))
 					{
 						xmlValEn = currPtr;
 
-						NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTRP(xmlValSt, xmlValEn)));
+						NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, nnxmlNameEn), CSTRP(nnxmlValSt, xmlValEn)));
 						node->AddAttrib(attr);
 
-						xmlNameSt = 0;
-						xmlValSt = 0;
+						xmlNameSt = nullptr;
+						xmlValSt = nullptr;
 					}
-					else if (xmlNameSt)
+					else if (xmlNameSt.SetTo(nnxmlNameSt))
 					{
-						xmlNameEn = currPtr;
+						xmlNameEn = nnxmlNameEn = currPtr;
 
 						if (!optnode.SetTo(node))
 						{
 							NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
-							node->name = nns = Text::String::New((UIntOS)(xmlNameEn - xmlNameSt));
-							Text::XML::ParseStr(nns, xmlNameSt, xmlNameEn);
+							node->name = nns = Text::String::New((UIntOS)(nnxmlNameEn - nnxmlNameSt));
+							Text::XML::ParseStr(nns, nnxmlNameSt, nnxmlNameEn);
 							optnode = node;
-							xmlNameSt = 0;
-							xmlValSt = 0;
+							xmlNameSt = nullptr;
+							xmlValSt = nullptr;
 						}
 					}
 
@@ -1058,11 +1061,11 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 
 					if (c == '>' && optnode.SetTo(node))
 					{
-						if (xmlNameSt)
+						if (xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn))
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), nullptr));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, nnxmlNameEn), nullptr));
 							node->AddAttrib(attr);
-							xmlNameSt = 0;
+							xmlNameSt = nullptr;
 						}
 
 						parentNode->AddChild(node);
@@ -1079,9 +1082,12 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 								}
 								return currPtr;
 							}
+							else if (ParseNode(node, currPtr, xmlEnd).SetTo(currPtr))
+							{
+							}
 							else
 							{
-								currPtr = ParseNode(node, currPtr, xmlEnd);
+								return nullptr;
 							}
 						}
 						return currPtr;
@@ -1089,14 +1095,14 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				}
 				else if (c == '=')
 				{
-					if (lastEq || xmlValSt)
+					if (lastEq || xmlValSt.SetTo(nnxmlValSt))
 					{
 						//////////////////////////
 						return xmlEnd;
 					}
-					else if (xmlNameSt)
+					else if (xmlNameSt.SetTo(nnxmlNameSt))
 					{
-						if (xmlNameEn == 0)
+						if (!xmlNameEn.SetTo(nnxmlNameEn))
 						{
 							xmlNameEn = currPtr;
 
@@ -1125,27 +1131,27 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					if (lastEq)
 					{
 						xmlValSt = currPtr;
-						xmlValEn = 0;
+						//xmlValEn = nullptr;
 					}
-					else if (xmlNameSt)
+					else if (xmlNameSt.SetTo(nnxmlNameSt) && xmlNameEn.SetTo(nnxmlNameEn))
 					{
 						if (optnode.SetTo(node))
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), nullptr));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(nnxmlNameSt, nnxmlNameEn), nullptr));
 							node->AddAttrib(attr);
 						}
 
 						xmlNameSt = currPtr;
-						xmlNameEn = 0;
-						xmlValSt = 0;
-						xmlValEn = 0;
+						xmlNameEn = nullptr;
+						xmlValSt = nullptr;
+						//xmlValEn = nullptr;
 					}
 					else
 					{
 						xmlNameSt = currPtr;
-						xmlNameEn = 0;
-						xmlValSt = 0;
-						xmlValEn = 0;
+						xmlNameEn = nullptr;
+						xmlValSt = nullptr;
+						//xmlValEn = nullptr;
 					}
 					lastSpace = false;
 					lastEq = false;
@@ -1153,7 +1159,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 				else if (lastEq)
 				{
 					xmlValSt = currPtr;
-					xmlValEn = 0;
+					//xmlValEn = nullptr;
 					lastSpace = false;
 					lastEq = false;
 				}
@@ -1183,17 +1189,18 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 
 Text::XMLDocument::XMLDocument() : XMLNode(Text::XMLNode::NodeType::Document)
 {
-	this->doc = 0;
+	this->doc = nullptr;
 	this->encoding = nullptr;
 	this->version = nullptr;
 }
 
 Text::XMLDocument::~XMLDocument()
 {
-	if (this->doc)
+	UnsafeArray<UTF8Char> doc;
+	if (this->doc.SetTo(doc))
 	{
-		MemFree(this->doc);
-		this->doc = 0;
+		MemFreeArr(doc);
+		this->doc = nullptr;
 	}
 	OPTSTR_DEL(this->encoding);
 	OPTSTR_DEL(this->version);
@@ -1203,7 +1210,7 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 {
 	UTF8Char sbuff[32];
 	UTF8Char *newDoc = 0;
-	UTF8Char *dest;
+	UnsafeArray<UTF8Char> dest;
 	const UInt8 *src;
 
 	if (size < 4)
@@ -1377,17 +1384,21 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 
 	if (newDoc)
 	{
-		if (doc)
+		UnsafeArray<UTF8Char> doc;
+		if (this->doc.SetTo(doc))
 		{
-			MemFree(doc);
+			MemFreeArr(doc);
 		}
-		UTF8Char *endPos;
-		doc = newDoc;
+		UnsafeArray<UTF8Char> endPos;
+		this->doc = doc = newDoc;
 		endPos = doc + docLeng;
 		dest = doc;
-		while (dest && dest < endPos)
+		while (dest < endPos)
 		{
-			dest = ParseNode(*this, dest, endPos);
+			if (!ParseNode(*this, dest, endPos).SetTo(dest))
+			{
+				break;
+			}
 		}
 		return true;
 	}

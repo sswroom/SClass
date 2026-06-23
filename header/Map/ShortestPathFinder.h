@@ -20,7 +20,7 @@ namespace Map
 			Double x;
 			Double y;
 			Double dist;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			Math::Polyline *pl;
 			Bool isReversed;
 		} NeighbourInfo;

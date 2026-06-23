@@ -136,7 +136,7 @@ namespace IO
 		virtual Bool DeleteItem(UIntOS index);
 		virtual void SetParent(Optional<IO::PackageFile> pkg);
 
-		void SetInfo(InfoType infoType, const UTF8Char *val);
+		void SetInfo(InfoType infoType, UnsafeArray<const UTF8Char> val);
 		void GetInfoText(NN<Text::StringBuilderUTF8> sb) const;
 		static Text::CStringNN InfoTypeGetName(InfoType infoType);
 	};

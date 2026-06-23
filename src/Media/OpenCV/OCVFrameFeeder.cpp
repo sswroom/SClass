@@ -22,7 +22,7 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, 
 		}
 		else
 		{
-			me->frameInput->NextFrame(frame, &me->info, imgData);
+			me->frameInput->NextFrame(frame, me->info, imgData);
 			me->thisSkip = me->frameSkip;
 		}
 		frame.Delete();

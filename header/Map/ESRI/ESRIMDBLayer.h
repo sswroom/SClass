@@ -26,7 +26,7 @@ namespace Map
 			NN<Text::String> tableName;
 
 		private:
-			Data::FastMapObj<Int32, const UTF8Char **> *ReadNameArr();
+			Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();
 
 			void Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName);
 		public:

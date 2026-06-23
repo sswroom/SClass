@@ -82,13 +82,13 @@ namespace Text
 	class XMLDocument : public XMLNode
 	{
 	private:
-		UTF8Char *doc;
+		UnsafeArrayOpt<UTF8Char> doc;
 		UIntOS docLeng;
 		Optional<Text::String> version;
 		Optional<Text::String> encoding;
 
 	private:
-		UTF8Char *ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStart, UTF8Char *xmlEnd);
+		UnsafeArrayOpt<UTF8Char> ParseNode(NN<XMLNode> parentNode, UnsafeArray<UTF8Char> xmlStart, UnsafeArray<UTF8Char> xmlEnd);
 	public:
 		XMLDocument();
 		virtual ~XMLDocument();

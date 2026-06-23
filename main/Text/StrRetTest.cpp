@@ -6,9 +6,9 @@
 
 #include <stdio.h>
 
-const UTF8Char *Func1()
+UnsafeArray<const UTF8Char> Func1()
 {
-	return (const UTF8Char*)"Func1";
+	return U8STR("Func1");
 }
 
 Text::CStringNN Func2()

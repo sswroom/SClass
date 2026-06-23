@@ -48,7 +48,7 @@ namespace Net
 			PacketBuff *packBuff; 
 			UIntOS packCnt;
 
-			Net::RTPController *playCtrl;
+			Optional<Net::RTPController> playCtrl;
 
 			Bool playing;
 			Bool playToStop;
@@ -65,10 +65,10 @@ namespace Net
 
 	private:
 		void SetControlURL(Text::CStringNN url);
-		void SetPlayControl(Net::RTPController *playCtrl);
+		void SetPlayControl(NN<Net::RTPController> playCtrl);
 
 		RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
-		RTPCliChannel(RTPCliChannel *ch);
+		RTPCliChannel(NN<RTPCliChannel> ch);
 	public:
 		~RTPCliChannel();
 

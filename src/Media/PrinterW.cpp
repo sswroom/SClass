@@ -228,13 +228,13 @@ UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sb
 	return Text::StrWChar_UTF8(sbuff, info[index].pName);
 }
 
-Media::Printer *Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
+Optional<Media::Printer> Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 {
 	LPPRINTPAGERANGE pPageRanges = NULL;
 	pPageRanges = (LPPRINTPAGERANGE) GlobalAlloc(GPTR, 10 * sizeof(PRINTPAGERANGE));
 	if (!pPageRanges)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Media::Printer *printer = 0;

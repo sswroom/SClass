@@ -249,8 +249,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	Bool https = false;
 
 	UIntOS i;
-	const UTF8Char *ptr1;
-	const UTF8Char *ptr2;
+	UnsafeArray<const UTF8Char> ptr1;
+	UnsafeArrayOpt<const UTF8Char> ptr2;
 	UnsafeArray<UTF8Char> ptrs[2];
 	UInt16 port;
 	UInt16 defPort;
@@ -279,7 +279,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		else
 		{
 			i = url.leng - 7;
-			ptr2 = 0;
+			ptr2 = nullptr;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
@@ -299,7 +299,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		else
 		{
 			i = url.leng - 8;
-			ptr2 = 0;
+			ptr2 = nullptr;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
@@ -414,12 +414,12 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		return false;
 	}
 
-	if (ptr2 == 0)
+	if (!ptr2.SetTo(ptr1))
 	{
-		ptr2 = (const UTF8Char*)"/";
+		ptr1 = (const UTF8Char*)"/";
 	}
 
-	UnsafeArray<const WChar> target = Text::StrToWCharNew(ptr2);
+	UnsafeArray<const WChar> target = Text::StrToWCharNew(ptr1);
 	UnsafeArray<const WChar> wmethod;
 	if (method == Net::WebUtil::RequestMethod::HTTP_POST)
 	{

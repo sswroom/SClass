@@ -10,7 +10,7 @@ namespace Text
 		{
 			UInt32 beginCode;
 			UInt32 endCode;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UIntOS nameLen;
 		};
 

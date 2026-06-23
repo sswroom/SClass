@@ -54,8 +54,8 @@ void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 		sbHost.ClearStr();
 		sbHost.AppendHexBuff(BYTEARR(hostKey), ':', Text::LineBreakType::None);	
 		me->txtHostKey->SetText(sbHost.ToCString());
-		const UTF8Char *csptr = ssh.GetBanner();
-		if (csptr)
+		UnsafeArray<const UTF8Char> csptr;
+		if (ssh.GetBanner().SetTo(csptr))
 		{
 			me->txtBanner->SetText(Text::CStringNN::FromPtr(csptr));
 		}
@@ -66,27 +66,27 @@ void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 		}
 		sbTmp.ClearStr();
 		sbTmp.Append(CSTR("KeyExchange: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::KeyExchange)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::KeyExchange).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nHostKey: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::HostKey)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::HostKey).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nCryptoClientToServer: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::CryptoClientToServer)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::CryptoClientToServer).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nCryptoServerToClient: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::CryptoServerToClient)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::CryptoServerToClient).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nMACClientToServer: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::MACClientToServer)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::MACClientToServer).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nMACServerToClient: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::MACServerToClient)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::MACServerToClient).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nCompressClientToServer: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::CompressClientToServer)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::CompressClientToServer).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nCompressServerToClient: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::CompressServerToClient)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::CompressServerToClient).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nLangClientToServer: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::LangClientToServer)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::LangClientToServer).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nLangServerToClient: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::LangServerToClient)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::LangServerToClient).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		sbTmp.Append(CSTR("\r\nSignatureAlgorithm: "));
-		if ((csptr = ssh.GetActiveAlgorithm(Net::SSHMethodType::SignatureAlgorithm)) != 0) sbTmp.AppendSlow(csptr);
+		if (ssh.GetActiveAlgorithm(Net::SSHMethodType::SignatureAlgorithm).SetTo(csptr)) sbTmp.AppendSlow(csptr);
 		me->txtDesc->SetText(sbTmp.ToCString());
 	}
 	authMeths.FreeAll();

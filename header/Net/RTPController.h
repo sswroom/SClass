@@ -16,7 +16,7 @@ namespace Net
 		virtual Bool StopPlay(NN<Net::RTPCliChannel> rtpChannel) = 0;
 		virtual Bool Deinit(NN<Net::RTPCliChannel> rtpChannel) = 0;
 
-		virtual Net::RTPController *Clone() const = 0;
+		virtual NN<Net::RTPController> Clone() const = 0;
 	};
 }
 #endif

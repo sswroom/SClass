@@ -184,7 +184,7 @@ void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryDa
 	NN<OfficeChartSeries> series;
 	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name.NotNull())
-		series->SetTitle(name, 0);
+		series->SetTitle(name, nullptr);
 	series->SetSmooth(false);
 	if (showMarker)
 	{
@@ -205,7 +205,7 @@ void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryDa
 	NN<OfficeChartSeries> series;
 	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name.leng > 0)
-		series->SetTitle(name, 0);
+		series->SetTitle(name, nullptr);
 	series->SetSmooth(false);
 	if (showMarker)
 	{

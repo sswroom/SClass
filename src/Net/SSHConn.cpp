@@ -102,13 +102,13 @@ Bool Net::SSHConn::GetHostKeySHA1(UnsafeArray<UInt8> buff)
 	return false;
 }
 
-const UTF8Char *Net::SSHConn::GetBanner()
+UnsafeArrayOpt<const UTF8Char> Net::SSHConn::GetBanner()
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return (const UTF8Char*)libssh2_session_banner_get(this->clsData->session);
 }
 
-const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
+UnsafeArrayOpt<const UTF8Char> Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return (const UTF8Char*)libssh2_session_methods(this->clsData->session, (int)method);

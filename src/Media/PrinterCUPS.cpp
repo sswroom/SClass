@@ -59,7 +59,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 
 	UTF8Char fileName[512];
 	UnsafeArray<UTF8Char> sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Int64 t;
 	UIntOS i;
 	Double paperWidth;
@@ -229,9 +229,9 @@ UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sb
 	return ret;
 }
 
-Media::Printer *Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
+Optional<Media::Printer> Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 {
-	return 0;
+	return nullptr;
 }
 
 Media::Printer::Printer(NN<Text::String> printerName)

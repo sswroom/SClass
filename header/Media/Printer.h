@@ -16,7 +16,7 @@ namespace Media
 	public:
 		static UIntOS GetPrinterCount();
 		static UnsafeArrayOpt<UTF8Char> GetPrinterName(UnsafeArray<UTF8Char> sbuff, UIntOS index);
-		static Printer *SelectPrinter(Optional<ControlHandle> hWnd);
+		static Optional<Printer> SelectPrinter(Optional<ControlHandle> hWnd);
 
 	private:
 		Printer(const WChar *printerName, UInt8 *devMode, UIntOS devModeSize);

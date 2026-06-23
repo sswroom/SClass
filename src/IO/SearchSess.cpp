@@ -4,34 +4,34 @@
 #include "IO/SearchSess.h"
 #include "IO/Path.h"
 
-IO::SearchSess::SearchSess(const UTF8Char *searchName)
+IO::SearchSess::SearchSess(UnsafeArray<const UTF8Char> searchName)
 {
 	UIntOS i;
-	UTF8Char *sptr;
-	NEW_CLASS(this->modTime, Data::DateTime());
-	this->nameBuff = MemAlloc(UTF8Char, 256);
+	UnsafeArray<UTF8Char> sptr;
+	this->nameBuff = MemAllocArr(UTF8Char, 256);
 	sptr = Text::StrConcat(this->nameBuff, searchName);
 	i = Text::StrLastIndexOfCharC(this->nameBuff, (UIntOS)(sptr - this->nameBuff), IO::Path::PATH_SEPERATOR);
 	this->nameStart = &this->nameBuff[i + 1];
-	this->sess = IO::Path::FindFile(this->nameBuff, (UIntOS)(sptr - this->nameBuff));
+	this->sess = IO::Path::FindFile(CSTRP(this->nameBuff, sptr));
 }
 
 IO::SearchSess::~SearchSess()
 {
-	if (this->sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (this->sess.SetTo(sess))
 	{
-		IO::Path::FindFileClose(this->sess);
+		IO::Path::FindFileClose(sess);
 	}
-	MemFree(this->nameBuff);
-	DEL_CLASS(this->modTime);
+	MemFreeArr(this->nameBuff);
 }
 
 Bool IO::SearchSess::NextFile()
 {
 	Bool ret;
-	if (this->sess == 0)
+	NN<IO::Path::FindFileSession> sess;
+	if (!this->sess.SetTo(sess))
 		return false;
-	while (ret = (IO::Path::FindNextFile(this->nameStart, this->sess, this->modTime, &this->pt, &this->fileSize) != 0))
+	while (ret = (IO::Path::FindNextFile(this->nameStart, sess, this->modTime, this->pt, this->fileSize).NotNull()))
 	{
 		if (this->nameStart[0] != '.')
 			break;
@@ -45,12 +45,12 @@ Bool IO::SearchSess::NextFile()
 	return ret;
 }
 
-const UTF8Char *IO::SearchSess::GetFileName()
+UnsafeArray<const UTF8Char> IO::SearchSess::GetFileName()
 {
 	return this->nameStart;
 }
 
-const UTF8Char *IO::SearchSess::GetFilePath()
+UnsafeArray<const UTF8Char> IO::SearchSess::GetFilePath()
 {
 	return this->nameBuff;
 }
@@ -65,7 +65,7 @@ Int64 IO::SearchSess::GetFileSize()
 	return this->fileSize;
 }
 
-Data::DateTime *IO::SearchSess::GetModTime()
+Data::Timestamp IO::SearchSess::GetModTime()
 {
 	return this->modTime;
 }

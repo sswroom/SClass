@@ -43,8 +43,8 @@ namespace Net
 		Optional<Net::TCPClient> GetTCPClient() const;
 
 		Bool GetHostKeySHA1(UnsafeArray<UInt8> buff); //20 bytes
-		const UTF8Char *GetBanner();
-		const UTF8Char *GetActiveAlgorithm(SSHMethodType method);
+		UnsafeArrayOpt<const UTF8Char> GetBanner();
+		UnsafeArrayOpt<const UTF8Char> GetActiveAlgorithm(SSHMethodType method);
 		Bool GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth);
 		Bool AuthPassword(Text::CStringNN userName, Text::CStringNN password);
 		Optional<SSHTCPChannel> RemoteConnect(Optional<Socket> sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort);

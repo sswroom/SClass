@@ -22,7 +22,7 @@ Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
 IntOS mcBreakPt = 0;
-const UTF8Char *mcLogFile = 0;
+UnsafeArrayOpt<const UTF8Char> mcLogFile = nullptr;
 Sync::MutexData mcMut;
 
 Int32 mcBlockId = 0;
@@ -55,17 +55,19 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
+void MemSetLogFile(UnsafeArrayOpt<const UTF8Char> logFile, UIntOS nameLen)
 {
-	if (mcLogFile)
+	UnsafeArray<const UTF8Char> s;
+	if (mcLogFile.SetTo(s))
 	{
-		free((void*)mcLogFile);
-		mcLogFile = 0;
+		free((void*)s.Ptr());
+		mcLogFile = nullptr;
 	}
-	if (logFile)
+	UnsafeArray<const UTF8Char> s2;
+	if (logFile.SetTo(s))
 	{
-		mcLogFile = (const UTF8Char*)malloc((nameLen + 1) * sizeof(UTF8Char));
-		Text::StrConcatC((UTF8Char*)mcLogFile, logFile, nameLen);
+		mcLogFile = s2 = (const UTF8Char*)malloc((nameLen + 1) * sizeof(UTF8Char));
+		Text::StrConcatC(UnsafeArray<UTF8Char>::ConvertFrom(s2), s, nameLen);
 	}
 }
 
@@ -260,10 +262,11 @@ void MemDeinit()
 	if (Sync::Interlocked::DecrementI32(mcInitCnt) == 0)
 	{
 		MemCheckError();
-		if (mcLogFile)
+		UnsafeArray<const UTF8Char> s;
+		if (mcLogFile.SetTo(s))
 		{
-			free((void*)mcLogFile);
-			mcLogFile = 0;
+			free((void*)s.Ptr());
+			mcLogFile = nullptr;
 		}
 		Sync::Mutex_Destroy(&mcMut);
 	}
@@ -271,9 +274,10 @@ void MemDeinit()
 
 IO::Writer *MemOpenWriter()
 {
-	if (mcLogFile)
+	UnsafeArray<const UTF8Char> s;
+	if (mcLogFile.SetTo(s))
 	{
-		return new IO::SimpleFileWriter(mcLogFile, IO::FileMode::Append, IO::FileShare::DenyNone);
+		return new IO::SimpleFileWriter(s, IO::FileMode::Append, IO::FileShare::DenyNone);
 	}
 	else
 	{

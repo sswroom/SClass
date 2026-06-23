@@ -410,7 +410,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 	return true;
 }
 
-UTF8Char *IO::GPIOPin::GetName(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrInt32(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }

@@ -59,36 +59,41 @@ void __stdcall ConsoleControl_SignalExit(NN<Core::ProgControl> progCtrl)
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
-	if (ctrl->argv == 0)
+	NN<Core::ConsoleControl> ctrl = NN<Core::ConsoleControl>::ConvertFrom(progCtrl);
+	UnsafeArray<UnsafeArray<UTF8Char>> uargv;
+	if (ctrl->argv.SetTo(uargv))
+	{
+		cmdCnt.Set(ctrl->argc);
+		return uargv;
+	}
+	else
 	{
 		Int32 argc;
 		IntOS i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-		ctrl->argv = MemAlloc(UTF8Char *, argc);
+		ctrl->argv = uargv = MemAllocArr(UnsafeArray<UTF8Char>, argc);
 		ctrl->argc = (UIntOS)(IntOS)argc;
 		i = argc;
 		while (i-- > 0)
 		{
-			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]);
+			uargv[i] = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrToUTF8New(argv[i]));
 		}
 		LocalFree(argv);
+		return uargv;
 	}
-	cmdCnt.Set(ctrl->argc);
-	return ctrl->argv;
 }
 
 void ConsoleControl_Create(Core::ConsoleControl *ctrl)
 {
 	ConsoleControl_self = ctrl;
 	ctrl->argc = 0;
-	ctrl->argv = 0;
+	ctrl->argv = nullptr;
 	ctrl->exited = false;
 	ctrl->ending = false;
 	ctrl->ended = false;
-	NEW_CLASS(ctrl->evt, Sync::Event(true));
+	NEW_CLASSNN(ctrl->evt, Sync::Event(true));
 	ctrl->WaitForExit = ConsoleControl_WaitForExit;
 	ctrl->GetCommandLines = ConsoleControl_GetCommandLines;
 	ctrl->SignalExit = ConsoleControl_SignalExit;
@@ -106,22 +111,23 @@ void ConsoleControl_Destroy(Core::ConsoleControl *ctrl)
 		ctrl->evt->Wait(100);
 	}
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, FALSE);
-	DEL_CLASS(ctrl->evt);
-	if (ctrl->argv)
+	ctrl->evt.Delete();
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
+	if (ctrl->argv.SetTo(argv))
 	{
 		IntOS i = ctrl->argc;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(ctrl->argv[i]);
+			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));
 		}
-		MemFree(ctrl->argv);
-		ctrl->argv = 0;
+		MemFreeArr(ctrl->argv);
+		ctrl->argv = nullptr;
 	}
 }
 
 Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
-	return 0;
+	return nullptr;
 }
 
 int main(array<System::String ^> ^args)

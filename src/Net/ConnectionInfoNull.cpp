@@ -26,19 +26,19 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	return false;
 }
 
-UTF8Char *Net::ConnectionInfo::GetName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *Net::ConnectionInfo::GetDescription(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDescription(UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *Net::ConnectionInfo::GetDNSSuffix(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDNSSuffix(UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 UInt32 Net::ConnectionInfo::GetIPAddress(UIntOS index)

@@ -10,7 +10,7 @@ struct IO::HIDInfo::ClassData
 
 };
 
-IO::HIDInfo::HIDInfo(ClassData *clsData)
+IO::HIDInfo::HIDInfo(NN<ClassData> clsData)
 {
 }
 
@@ -33,17 +33,17 @@ UInt16 IO::HIDInfo::GetProductId()
 	return 0;
 }
 
-Text::String *IO::HIDInfo::GetDevPath()
+NN<Text::String> IO::HIDInfo::GetDevPath()
 {
-	return Text::String::NewEmpty().Ptr();
+	return Text::String::NewEmpty();
 }
 
-IO::Stream *IO::HIDInfo::OpenHID()
+Optional<IO::Stream> IO::HIDInfo::OpenHID()
 {
-	return 0;
+	return nullptr;
 }
 
-IntOS IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
+IntOS IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 {
 	return 0;
 }

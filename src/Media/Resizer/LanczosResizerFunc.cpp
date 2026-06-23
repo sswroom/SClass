@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MyMemory.h"
 #include "Math/LanczosFilter.h"
 #include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerFunc.h"

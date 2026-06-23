@@ -9,7 +9,7 @@ namespace Map
 		Int32 lineType;
 		Int32 lineWidth;
 		UInt32 color;
-		UTF8Char *styles;
+		UnsafeArrayOpt<UTF8Char> styles;
 	} MapLineStyle;
 
 	typedef struct

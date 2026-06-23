@@ -73,7 +73,7 @@ Bool Net::WebServer::PrintLogWebResponse::ResponseSSE(Data::Duration timeout, SS
 	return this->resp->ResponseSSE(timeout, hdlr, userObj);
 }
 
-Bool Net::WebServer::PrintLogWebResponse::SSESend(const UTF8Char *eventName, const UTF8Char *data)
+Bool Net::WebServer::PrintLogWebResponse::SSESend(UnsafeArrayOpt<const UTF8Char> eventName, UnsafeArray<const UTF8Char> data)
 {
 	return this->resp->SSESend(eventName, data);
 }

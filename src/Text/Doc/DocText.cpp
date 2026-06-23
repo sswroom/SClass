@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "Text/Doc/DocText.h"
 
-Text::Doc::DocText::DocText(const UTF8Char *text)
+Text::Doc::DocText::DocText(UnsafeArray<const UTF8Char> text)
 {
-	this->text = Text::StrCopyNew(text).Ptr();
+	this->text = Text::StrCopyNew(text);
 }
 
 Text::Doc::DocText::~DocText()
@@ -24,7 +24,7 @@ UIntOS Text::Doc::DocText::Add(NN<Text::Doc::DocItem> item)
 	return (UIntOS)-1;
 }
 
-const UTF8Char *Text::Doc::DocText::GetText()
+UnsafeArray<const UTF8Char> Text::Doc::DocText::GetText()
 {
 	return this->text;
 }

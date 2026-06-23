@@ -1,6 +1,7 @@
 #ifndef _SM_NET_RTSPCLIENT
 #define _SM_NET_RTSPCLIENT
 #include "AnyType.h"
+#include "Data/ArrayListArr.hpp"
 #include "Net/RTPController.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/SDPFile.h"
@@ -44,16 +45,16 @@ namespace Net
 		Bool WaitForReply();
 		Bool SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 
-		RTSPClient(const RTSPClient *cli);
+		RTSPClient(NN<const RTSPClient> cli);
 	public:
 		RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~RTSPClient();
 
 
-		Bool GetOptions(Text::CStringNN url, Data::ArrayListObj<const UTF8Char *> *options);
+		Bool GetOptions(Text::CStringNN url, NN<Data::ArrayListArr<const UTF8Char>> options);
 		Net::SDPFile *GetMediaInfo(Text::CStringNN url);
 
-		static IO::ParsedObject *ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
+		static Optional<IO::ParsedObject> ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 
 	private:
 		UnsafeArrayOpt<UTF8Char> SetupRTP(UnsafeArray<UTF8Char> sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel);
@@ -68,7 +69,7 @@ namespace Net
 		virtual Bool StopPlay(NN<Net::RTPCliChannel> rtpChannel);
 		virtual Bool Deinit(NN<Net::RTPCliChannel> rtpChannel);
 
-		virtual Net::RTPController *Clone() const;
+		virtual NN<Net::RTPController> Clone() const;
 	};
 }
 #endif

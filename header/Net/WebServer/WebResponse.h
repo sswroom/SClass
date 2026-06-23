@@ -44,7 +44,7 @@ namespace Net
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj) = 0;
-			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
+			virtual Bool SSESend(UnsafeArrayOpt<const UTF8Char> eventName, UnsafeArray<const UTF8Char> data) = 0;
 			virtual Bool SwitchProtocol(Optional<ProtocolHandler> protoHdlr) = 0;
 			virtual Text::CStringNN GetRespHeaders() = 0;
 

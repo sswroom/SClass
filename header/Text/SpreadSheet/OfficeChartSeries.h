@@ -41,8 +41,8 @@ namespace Text
 			NN<WorkbookDataSource> GetCategoryData();
 			NN<WorkbookDataSource> GetValueData();
 			Optional<Text::String> GetTitle();
-			void SetTitle(Optional<Text::String> title, Text::String *dataSource);
-			void SetTitle(Text::CString title, const UTF8Char *dataSource);
+			void SetTitle(Optional<Text::String> title, Optional<Text::String> dataSource);
+			void SetTitle(Text::CString title, UnsafeArrayOpt<const UTF8Char> dataSource);
 			Bool IsSmooth();
 			void SetSmooth(Bool smooth);
 			Optional<OfficeShapeProp> GetShapeProp();

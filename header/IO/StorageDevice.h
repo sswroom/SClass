@@ -7,7 +7,7 @@ namespace IO
 	{
 	private:
 		void *hand;
-		UInt8 *storDesc;
+		UnsafeArrayOpt<UInt8> storDesc;
 
 		UInt8 lastEffect;
 
@@ -24,16 +24,16 @@ namespace IO
 		Bool IsError();
 		Bool IsRemovable();
 		Bool SupportCommandQueue();
-		UTF8Char *GetVendorID(UTF8Char *sbuff);
-		UTF8Char *GetProductID(UTF8Char *sbuff);
-		UTF8Char *GetProductRevision(UTF8Char *sbuff);
-		UTF8Char *GetSerialNumber(UTF8Char *sbuff);
-		Bool GetDiskGeometry(UInt64 *cylinder, UInt32 *trackPerCylinder, UInt32 *sectorPerTrack, UInt32 *bytesPerSector);
+		UnsafeArrayOpt<UTF8Char> GetVendorID(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetProductID(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetProductRevision(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetSerialNumber(UnsafeArray<UTF8Char> sbuff);
+		Bool GetDiskGeometry(OutParam<UInt64> cylinder, OutParam<UInt32> trackPerCylinder, OutParam<UInt32> sectorPerTrack, OutParam<UInt32> bytesPerSector);
 
-		Bool SMARTGetVersion(UInt8 *ver, UInt8 *rev, Bool *supportATAID, Bool *supportATAPIID, Bool *supportSMART);
-		Bool SMARTGetDiskID(UInt8 *idSector);
+		Bool SMARTGetVersion(OutParam<UInt8> ver, OutParam<UInt8> rev, OutParam<Bool> supportATAID, OutParam<Bool> supportATAPIID, OutParam<Bool> supportSMART);
+		Bool SMARTGetDiskID(UnsafeArray<UInt8> idSector);
 
-		UTF8Char *IDSectorGetSN(UTF8Char *sbuff, UInt8 *idSector);
+		UnsafeArray<UTF8Char> IDSectorGetSN(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UInt8> idSector);
 	};
 }
 

@@ -35,7 +35,7 @@ Int32 mcBusy = 0;
 IntOS mcBreakPt = 0;
 UIntOS mcBreakSize = 0;
 Sync::MutexData mcMut;
-const UTF8Char *mcLogFile = 0;
+UnsafeArrayOpt<const UTF8Char> mcLogFile = nullptr;
 
 void MemPtrChk(void *ptr)
 {
@@ -71,17 +71,19 @@ void MemSetBreakPoint(IntOS address, UIntOS size)
 	mcBreakSize = size;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
+void MemSetLogFile(UnsafeArrayOpt<const UTF8Char> logFile, UIntOS nameLen)
 {
-	if (mcLogFile)
+	UnsafeArray<const UTF8Char> s;
+	if (mcLogFile.SetTo(s))
 	{
-		HeapFree(mcIntHandle, 0, (void*)mcLogFile);
-		mcLogFile = 0;
+		HeapFree(mcIntHandle, 0, (void*)s.Ptr());
+		mcLogFile = nullptr;
 	}
-	if (logFile)
+	UnsafeArray<const UTF8Char> s2;
+	if (logFile.SetTo(s))
 	{
-		mcLogFile = (const UTF8Char*)HeapAlloc(mcIntHandle, 0, (nameLen + 1) * sizeof(UTF8Char));
-		Text::StrConcatC((UTF8Char*)mcLogFile, logFile, nameLen);
+		mcLogFile = s2 = (const UTF8Char*)HeapAlloc(mcIntHandle, 0, (nameLen + 1) * sizeof(UTF8Char));
+		Text::StrConcatC(UnsafeArray<UTF8Char>::ConvertFrom(s2), s, nameLen);
 	}
 }
 

@@ -4,7 +4,7 @@
 #include "IO/StmData/FileViewData.h"
 #include "Sync/MutexUsage.h"
 
-IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
+IO::StmData::FileViewData::FileViewData(UnsafeArray<const UTF8Char> fname)
 {
 	fdh = 0;
 	IO::ViewFileBuffer *file;
@@ -24,8 +24,8 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		fdh->objectCnt = 1;
 		fdh->fptr = (UInt8*)file->GetPointer().Ptr();
 		dataOffset = 0;
-		const UTF8Char* name2;
-		const UTF8Char *name;
+		UnsafeArray<const UTF8Char> name2;
+		UnsafeArray<const UTF8Char> name;
 		UnsafeArray<UTF8Char> dname;
 		name = name2 = fname;
 		while (*name++)
@@ -41,7 +41,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 }
 
 
-IO::StmData::FileViewData::FileViewData(const IO::StmData::FileViewData *fd, UInt64 offset, UInt64 length)
+IO::StmData::FileViewData::FileViewData(NN<const IO::StmData::FileViewData> fd, UInt64 offset, UInt64 length)
 {
 	dataOffset = offset + fd->dataOffset;
 	UInt64 endOffset = fd->dataOffset + fd->dataLength;
@@ -115,7 +115,7 @@ UnsafeArrayOpt<const UInt8> IO::StmData::FileViewData::GetPointer() const
 NN<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	NN<IO::StmData::FileViewData> data;
-	NEW_CLASSNN(data, IO::StmData::FileViewData(this, offset, length));
+	NEW_CLASSNN(data, IO::StmData::FileViewData(*this, offset, length));
 	return data;
 }
 

@@ -16,7 +16,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile)
+Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(UnsafeArray<const UTF8Char> videoFile, UnsafeArray<const UTF8Char> audioFile, UnsafeArray<const UTF8Char> outFile)
 {
 	UInt64 fileSize1 = IO::Path::GetFileSize(videoFile);
 	UInt64 fileSize2 = IO::Path::GetFileSize(audioFile);
@@ -51,7 +51,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 	}
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile)
+Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(UnsafeArray<const UTF8Char> videoFile, UnsafeArray<const UTF8Char> audioFile, UnsafeArray<const UTF8Char> outFile)
 {
 	UInt64 fileSize1 = IO::Path::GetFileSize(videoFile);
 	UInt64 fileSize2 = IO::Path::GetFileSize(audioFile);

@@ -3,12 +3,12 @@
 #include "SSWR/OrganMgr/OrganImages.h"
 #include "Text/MyString.h"
 
-SSWR::OrganMgr::OrganImages::OrganImages(NN<OrganImageItem> imgItem, const UTF8Char *srcImgDir)
+SSWR::OrganMgr::OrganImages::OrganImages(NN<OrganImageItem> imgItem, UnsafeArray<const UTF8Char> srcImgDir)
 {
 	this->imgItem = imgItem->Clone();
-	this->srcImgDir = Text::StrCopyNew(srcImgDir).Ptr();
+	this->srcImgDir = Text::StrCopyNew(srcImgDir);
 }
-
+	
 SSWR::OrganMgr::OrganImages::~OrganImages()
 {
 	this->imgItem.Delete();
@@ -20,7 +20,7 @@ NN<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImages::GetImgItem() con
 	return this->imgItem;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImages::GetSrcImgDir() const
+UnsafeArray<const UTF8Char> SSWR::OrganMgr::OrganImages::GetSrcImgDir() const
 {
 	return this->srcImgDir;
 }

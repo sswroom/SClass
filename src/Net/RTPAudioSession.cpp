@@ -6,35 +6,36 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UIntOS dataSize, void *userData)
+void __stdcall Net::RTPAudioSession::UDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
-	Net::RTPAudioSession *me = (Net::RTPAudioSession*)userData;
+	NN<Net::RTPAudioSession> me = userData.GetNN<Net::RTPAudioSession>();
+	UIntOS dataSize = data.GetSize();
 	if (dataSize < 12)
 		return;
-	Int32 v = buff[0] >> 6;
+	Int32 v = data[0] >> 6;
 	if (v != 2)
 		return;
-	if (buff[0] & 0x20) //padding
+	if (data[0] & 0x20) //padding
 	{
-		dataSize -= buff[dataSize - 1];
+		dataSize -= data[dataSize - 1];
 		if (dataSize < 12)
 			return;
 	}
 	if (me->readEvt)
 		me->readEvt->Set();
-	Bool extension = (buff[0] & 0x10) != 0;
-	Int32 csrcCnt = buff[0] & 15;
-	Bool marker = (buff[1] & 0x80) != 0;
-	Int32 payloadType = buff[1] & 0x7f;
-	Int32 seqNum = ReadMUInt16(&buff[2]);
-	UInt32 timestamp = ReadMUInt32(&buff[4]);
-	me->lastSSRC = ReadMUInt32(&buff[8]);
+	Bool extension = (data[0] & 0x10) != 0;
+	Int32 csrcCnt = data[0] & 15;
+	Bool marker = (data[1] & 0x80) != 0;
+	Int32 payloadType = data[1] & 0x7f;
+	Int32 seqNum = ReadMUInt16(&data[2]);
+	UInt32 timestamp = ReadMUInt32(&data[4]);
+	me->lastSSRC = ReadMUInt32(&data[8]);
 
 	if (me->started)
 	{
 		if (me->readBuff)
 		{
-			MemCopyNO(me->readBuff, &buff[12], dataSize - 12);
+			MemCopyNO(me->readBuff, &data[12], dataSize - 12);
 			me->readBuff = 0;
 			me->sizeRead = dataSize - 12;
 			me->readBuffEvt.Set();
@@ -42,15 +43,17 @@ void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo 
 	}
 }
 
-UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
+UInt32 __stdcall Net::RTPAudioSession::SendThread(AnyType userObj)
 {
 	UInt8 buff[512];
 	IntOS readSize;
 	Int32 seqId;
 	Int32 ts;
+	NN<Net::UDPServer> svr;
 
-	Net::RTPAudioSession *me = (Net::RTPAudioSession*)userObj;
+	NN<Net::RTPAudioSession> me = userObj.GetNN<Net::RTPAudioSession>();
 	me->outRunning = true;
+	if (me->svr.SetTo(svr))
 	{
 		Sync::Event evt;
 		Data::RandomOS random;
@@ -62,7 +65,7 @@ UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 			evt.Wait(1000);
 			if (me->outToStop)
 				break;
-			readSize = me->outAudio->ReadBlock(&buff[12], 160);
+			readSize = me->outAudio->ReadBlock(Data::ByteArray(&buff[12], 160));
 			if (readSize == 160)
 			{
 				buff[0] = 0x80;
@@ -70,7 +73,7 @@ UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 				WriteMInt16(&buff[2], seqId);
 				WriteMInt32(&buff[4], ts);
 				WriteMInt32(&buff[8], me->outSSRC);
-				me->svr->SendTo(&me->outAddr, me->outPort, buff, 172);
+				svr->SendTo(me->outAddr, me->outPort, buff, 172);
 				
 				seqId++;
 				ts += 160;
@@ -82,21 +85,25 @@ UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 	return 0;
 }
 
-Net::RTPAudioSession::RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log)
+Net::RTPAudioSession::RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->log = log;
-	this->svr = 0;
+	this->svr = nullptr;
 	this->format = 0;
 	this->readEvt = 0;
 	this->lastSSRC = 0;
 	this->readBuff = 0;
 	this->outRunning = false;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, UDPData, this, log, 0, Sync::ThreadUtil::GetThreadCnt(), false));
-	if (this->svr->IsError())
+	NN<Net::UDPServer> svr;
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, port, nullptr, UDPData, this, log, nullptr, Sync::ThreadUtil::GetThreadCnt(), false));
+	if (svr->IsError())
 	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
+		svr.Delete();
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
@@ -104,10 +111,7 @@ Net::RTPAudioSession::~RTPAudioSession()
 {
 	this->StopSend();
 	this->Stop();
-	if (svr)
-	{
-		DEL_CLASS(svr);
-	}
+	this->svr.Delete();
 	if (this->format)
 	{
 		DEL_CLASS(this->format);
@@ -116,7 +120,7 @@ Net::RTPAudioSession::~RTPAudioSession()
 
 Bool Net::RTPAudioSession::IsError()
 {
-	return svr == 0;
+	return svr.IsNull();
 }
 
 void Net::RTPAudioSession::SetAudioFormat(Net::RTPAudioSession::RTPAudioFormat afmt, Int32 frequency)
@@ -149,7 +153,7 @@ Bool Net::RTPAudioSession::StartSend(Media::AudioSource *audSrc, UInt32 destIP, 
 	}
 	this->outToStop = false;
 	this->outAudio = audSrc;
-	Net::SocketUtil::SetAddrInfoV4(&this->outAddr, destIP);
+	Net::SocketUtil::SetAddrInfoV4(this->outAddr, destIP);
 	this->outPort = destPort;
 	this->outSSRC = outSSRC;
 	Sync::ThreadUtil::Create(SendThread, this);
@@ -163,12 +167,12 @@ void Net::RTPAudioSession::StopSend()
 		this->outToStop = true;
 		while (this->outRunning)
 		{
-			Sync::SimpleThread::Sleep(10);
+			Sync::ThreadUtil::SleepDur(10);
 		}
 	}
 }
 
-UTF8Char *Net::RTPAudioSession::GetName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::RTPAudioSession::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcatC(buff, UTF8STRC("RTP Audio"));
 }
@@ -178,7 +182,7 @@ Bool Net::RTPAudioSession::CanSeek()
 	return false;
 }
 
-Int32 Net::RTPAudioSession::GetStreamTime()
+Data::Duration Net::RTPAudioSession::GetStreamTime()
 {
 	return 0;
 }
@@ -195,14 +199,14 @@ void Net::RTPAudioSession::GetFormat(Media::AudioFormat *format)
 	}
 }
 
-Int32 Net::RTPAudioSession::SeekToTime(Int32 time)
+Data::Duration Net::RTPAudioSession::SeekToTime(Data::Duration time)
 {
 	return 0;
 }
 
 Bool Net::RTPAudioSession::Start(Sync::Event *evt, Int32 blkSize)
 {
-	if (this->svr == 0)
+	if (this->svr.IsNull())
 		return false;
 	this->readEvt = evt;
 	this->started = true;

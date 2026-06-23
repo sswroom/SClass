@@ -6,7 +6,7 @@
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 
-Data::FastMapObj<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
+Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> >> Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
@@ -15,31 +15,31 @@ Data::FastMapObj<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr
 	this->currDB = currDB = this->conn->UseConn(mutUsage);
 	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
-		Data::FastMapObj<Int32, const UTF8Char **> *nameArr;
-		const UTF8Char **names;
+		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
 		UIntOS colCnt = this->colNames.GetCount();
 		UIntOS i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMapObj<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
-			names = MemAlloc(const UTF8Char *, colCnt);
+			names = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, colCnt);
 			i = 0;
 			while (i < colCnt)
 			{
 				if (i == this->shapeCol)
 				{
-					names[i] = 0;
+					names[i] = nullptr;
 				}
 				else if (r->GetStr(i, sbuff, sizeof(sbuff)).NotNull())
 				{
-					names[i] = Text::StrCopyNew(sbuff).Ptr();
+					names[i] = Text::StrCopyNew(sbuff);
 				}
 				else
 				{
-					names[i] = 0;
+					names[i] = nullptr;
 				}
 				i++;
 			}
@@ -54,7 +54,7 @@ Data::FastMapObj<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr
 	{
 		mutUsage.EndUse();
 		this->currDB = nullptr;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -215,7 +215,7 @@ UIntOS Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr,
 {
 	if (nameArr.IsNotNull())
 	{
-		nameArr.SetNoCheck((NameArray*)ReadNameArr());
+		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
 	UIntOS i = 0;
 	UIntOS j = this->objects.GetCount();
@@ -236,7 +236,7 @@ UIntOS Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outAr
 {
 	if (nameArr.IsNotNull())
 	{
-		nameArr.SetNoCheck((NameArray*)ReadNameArr());
+		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
 	UIntOS cnt = 0;
 	Math::RectAreaDbl minMax;
@@ -274,21 +274,24 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<NameArray> nnnameArr;
 	if (nameArr.SetTo(nnnameArr))
 	{
-		NN<Data::FastMapObj<Int32, const UTF8Char **>> names = NN<Data::FastMapObj<Int32, const UTF8Char **>>::ConvertFrom(nnnameArr);
+		NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names = NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nnnameArr);
 		UIntOS i = names->GetCount();
 		UIntOS colCnt = this->colNames.GetCount();
 		UIntOS j;
-		const UTF8Char **nameStrs;
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
+		UnsafeArray<const UTF8Char> nameStr;
 		while (i-- > 0)
 		{
-			nameStrs = names->GetItem(i);
-			j = colCnt;
-			while (j-- > 0)
+			if (names->GetItem(i).SetTo(nameStrs))
 			{
-				if (nameStrs[j])
-					Text::StrDelNew(nameStrs[j]);
+				j = colCnt;
+				while (j-- > 0)
+				{
+					if (nameStrs[j].SetTo(nameStr))
+						Text::StrDelNew(nameStr);
+				}
+				MemFreeArr(nameStrs);
 			}
-			MemFree(nameStrs);
 		}
 		names.Delete();
 	}
@@ -296,15 +299,16 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 
 Bool Map::ESRI::ESRIMDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UIntOS strIndex)
 {
-	NN<Data::FastMapObj<Int32, const UTF8Char **>> names;
-	if (!Optional<Data::FastMapObj<Int32, const UTF8Char **>>::ConvertFrom(nameArr).SetTo(names))
+	NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
+	if (!Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
-	const UTF8Char **nameStrs = names->Get((Int32)id);
-	if (nameStrs == 0)
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
+	UnsafeArray<const UTF8Char> nameStr;
+	if (!names->Get((Int32)id).SetTo(nameStrs))
 		return false;
-	if (nameStrs[strIndex] == 0)
+	if (!nameStrs[strIndex].SetTo(nameStr))
 		return false;
-	sb->AppendSlow(nameStrs[strIndex]);
+	sb->AppendSlow(nameStr);
 	return true;
 }
 

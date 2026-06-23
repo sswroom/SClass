@@ -8,12 +8,12 @@ namespace IO
 	public:
 		typedef struct
 		{
-			const UTF8Char *androidId;
+			UnsafeArray<const UTF8Char> androidId;
 			UIntOS androidIdLen;
-			const Char *brandName;
-			const Char *modelName;
-			const Char *modelNum;
-			const UTF8Char *cpuName;
+			UnsafeArray<const Char> brandName;
+			UnsafeArray<const Char> modelName;
+			UnsafeArray<const Char> modelNum;
+			UnsafeArray<const UTF8Char> cpuName;
 			UIntOS cpuNameLen;
 		} AndroidInfo;
 
@@ -21,7 +21,7 @@ namespace IO
 		static AndroidInfo androids[];
 
 	public:
-		static const AndroidInfo *GetAndroidInfo(Text::CStringNN androidId);
+		static Optional<const AndroidInfo> GetAndroidInfo(Text::CStringNN androidId);
 	};
 }
 #endif

@@ -218,7 +218,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			sb.Append(Manage::CPUVendor::GetBrandName(nncpuSpec->brand));
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendSlow((const UTF8Char*)nncpuSpec->name);
+			sb.AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(nncpuSpec->name));
 		}
 		else
 		{

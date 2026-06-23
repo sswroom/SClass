@@ -20,7 +20,8 @@ void IO::StorageDevice::InitDevice(WChar *devName)
 
 Bool IO::StorageDevice::GetStorDesc()
 {
-	if (this->storDesc)
+	UnsafeArray<UInt8> storDesc;
+	if (this->storDesc.NotNull())
 		return true;
 	UInt8 outBuff[512];
 	BOOL status;
@@ -35,8 +36,8 @@ Bool IO::StorageDevice::GetStorDesc()
 	{
 		return false;
     }
-	this->storDesc = MemAlloc(UInt8, returnedLength);
-	MemCopy(this->storDesc, outBuff, returnedLength);
+	this->storDesc = storDesc = MemAllocArr(UInt8, returnedLength);
+	MemCopyNO(&storDesc[0], outBuff, returnedLength);
 	return true;
 }
 
@@ -82,7 +83,7 @@ IO::StorageDevice::StorageDevice(Int32 devNo)
 {
 	Int32 currId = 0;
 	this->hand = 0;
-	this->storDesc = 0;
+	this->storDesc = nullptr;
 
 	HDEVINFO devInfo = SetupDiGetClassDevs((LPGUID)&DiskClassGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
 	if (devInfo)
@@ -130,10 +131,11 @@ IO::StorageDevice::~StorageDevice()
 		CloseHandle((HANDLE)hand);
 		this->hand = 0;
 	}
-	if (this->storDesc)
+	UnsafeArray<UInt8> storDesc;
+	if (this->storDesc.SetTo(storDesc))
 	{
-		MemFree(this->storDesc);
-		this->storDesc = 0;
+		MemFreeArr(storDesc);
+		this->storDesc = nullptr;
 	}
 }
 
@@ -145,70 +147,76 @@ Bool IO::StorageDevice::IsError()
 Bool IO::StorageDevice::IsRemovable()
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
 		return 0;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	return devDesc->RemovableMedia != 0;
 }
 
 Bool IO::StorageDevice::SupportCommandQueue()
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
 		return 0;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	return devDesc->CommandQueueing != 0;
 }
 
-WChar *IO::StorageDevice::GetVendorID(WChar *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::StorageDevice::GetVendorID(UnsafeArray<UTF8Char> sbuff)
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
-		return 0;
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
+		return nullptr;
 	Text::Encoding enc;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	if (devDesc->VendorIdOffset == 0)
-		return 0;
-	return enc.FromBytes(sbuff, &this->storDesc[devDesc->VendorIdOffset], -1, 0);
+		return nullptr;
+	return enc.UTF8FromBytes(sbuff, &storDesc[(UInt32)devDesc->VendorIdOffset], -1, 0);
 }
 
-WChar *IO::StorageDevice::GetProductID(WChar *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::StorageDevice::GetProductID(UnsafeArray<UTF8Char> sbuff)
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
-		return 0;
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
+		return nullptr;
 	Text::Encoding enc;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	if (devDesc->ProductIdOffset == 0)
-		return 0;
-	return enc.FromBytes(sbuff, &this->storDesc[devDesc->ProductIdOffset], -1, 0);
+		return nullptr;
+	return enc.UTF8FromBytes(sbuff, &storDesc[(UInt32)devDesc->ProductIdOffset], -1, 0);
 }
 
-WChar *IO::StorageDevice::GetProductRevision(WChar *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::StorageDevice::GetProductRevision(UnsafeArray<UTF8Char> sbuff)
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
-		return 0;
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
+		return nullptr;
 	Text::Encoding enc;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	if (devDesc->ProductRevisionOffset == 0)
-		return 0;
-	return enc.FromBytes(sbuff, &this->storDesc[devDesc->ProductRevisionOffset], -1, 0);
+		return nullptr;
+	return enc.UTF8FromBytes(sbuff, &storDesc[(UInt32)devDesc->ProductRevisionOffset], -1, 0);
 }
 
-WChar *IO::StorageDevice::GetSerialNumber(WChar *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::StorageDevice::GetSerialNumber(UnsafeArray<UTF8Char> sbuff)
 {
 	STORAGE_DEVICE_DESCRIPTOR *devDesc;
-	if (!this->GetStorDesc())
-		return 0;
+	UnsafeArray<UInt8> storDesc;
+	if (!this->GetStorDesc() || !this->storDesc.SetTo(storDesc))
+		return nullptr;
 	Text::Encoding enc;
-	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)this->storDesc;
+	devDesc = (STORAGE_DEVICE_DESCRIPTOR*)&storDesc[0];
 	if (devDesc->SerialNumberOffset == 0)
-		return 0;
-	return enc.FromBytes(sbuff, &this->storDesc[devDesc->SerialNumberOffset], -1, 0);
+		return nullptr;
+	return enc.UTF8FromBytes(sbuff, &storDesc[(UInt32)devDesc->SerialNumberOffset], -1, 0);
 }
 
-Bool IO::StorageDevice::GetDiskGeometry(UInt64 *cylinder, UInt32 *trackPerCylinder, UInt32 *sectorPerTrack, UInt32 *bytesPerSector)
+Bool IO::StorageDevice::GetDiskGeometry(OutParam<UInt64> cylinder, OutParam<UInt32> trackPerCylinder, OutParam<UInt32> sectorPerTrack, OutParam<UInt32> bytesPerSector)
 {
 	DISK_GEOMETRY geom;
 	BOOL status;
@@ -218,14 +226,14 @@ Bool IO::StorageDevice::GetDiskGeometry(UInt64 *cylinder, UInt32 *trackPerCylind
 	if (status == 0)
 		return false;
 
-	*cylinder = geom.Cylinders.QuadPart;
-	*trackPerCylinder = geom.TracksPerCylinder;
-	*sectorPerTrack = geom.SectorsPerTrack;
-	*bytesPerSector = geom.BytesPerSector;
+	cylinder.Set(geom.Cylinders.QuadPart);
+	trackPerCylinder.Set(geom.TracksPerCylinder);
+	sectorPerTrack.Set(geom.SectorsPerTrack);
+	bytesPerSector.Set(geom.BytesPerSector);
 	return true;
 }
 
-Bool IO::StorageDevice::SMARTGetVersion(UInt8 *ver, UInt8 *rev, Bool *supportATAID, Bool *supportATAPIID, Bool *supportSMART)
+Bool IO::StorageDevice::SMARTGetVersion(OutParam<UInt8> ver, OutParam<UInt8> rev, OutParam<Bool> supportATAID, OutParam<Bool> supportATAPIID, OutParam<Bool> supportSMART)
 {
 	GETVERSIONINPARAMS getVersionParams;
 	BOOL status;
@@ -235,15 +243,15 @@ Bool IO::StorageDevice::SMARTGetVersion(UInt8 *ver, UInt8 *rev, Bool *supportATA
 	status = DeviceIoControl((HANDLE)this->hand, SMART_GET_VERSION, 0, 0, &getVersionParams, sizeof(GETVERSIONINPARAMS), &returnedLength, NULL);
 	if (status == 0)
 		return false;
-	*ver = getVersionParams.bVersion;
-	*rev = getVersionParams.bRevision;
-	*supportATAID = (getVersionParams.fCapabilities & CAP_ATA_ID_CMD) != 0;
-	*supportATAPIID = (getVersionParams.fCapabilities & CAP_ATAPI_ID_CMD) != 0;
-	*supportSMART = (getVersionParams.fCapabilities & CAP_SMART_CMD) != 0;
+	ver.Set(getVersionParams.bVersion);
+	rev.Set(getVersionParams.bRevision);
+	supportATAID.Set((getVersionParams.fCapabilities & CAP_ATA_ID_CMD) != 0);
+	supportATAPIID.Set((getVersionParams.fCapabilities & CAP_ATAPI_ID_CMD) != 0);
+	supportSMART.Set((getVersionParams.fCapabilities & CAP_SMART_CMD) != 0);
 	return true;
 }
 
-Bool IO::StorageDevice::SMARTGetDiskID(UInt8 *idSector)
+Bool IO::StorageDevice::SMARTGetDiskID(UnsafeArray<UInt8> idSector)
 {
 	const IntOS buffSize = sizeof(SENDCMDOUTPARAMS) + IDENTIFY_BUFFER_SIZE;
 	UInt8 buff[buffSize];
@@ -256,7 +264,7 @@ Bool IO::StorageDevice::SMARTGetDiskID(UInt8 *idSector)
 
 	SENDCMDOUTPARAMS *outParams = (SENDCMDOUTPARAMS*)buff;
 	UInt8 *src  = outParams->bBuffer;
-	UInt16 *dest = (UInt16*)idSector;
+	UnsafeArray<UInt16> dest = UnsafeArray<UInt16>::ConvertFrom(idSector);
 	IntOS i = 256;
 	while (i-- > 0)
 	{
@@ -267,9 +275,9 @@ Bool IO::StorageDevice::SMARTGetDiskID(UInt8 *idSector)
 	return true;
 }
 
-WChar *IO::StorageDevice::IDSectorGetSN(WChar *sbuff, UInt8 *idSector)
+UnsafeArray<UTF8Char> IO::StorageDevice::IDSectorGetSN(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UInt8> idSector)
 {
 	Text::Encoding enc;
-	enc.FromBytes(sbuff, &idSector[20], 20, 0);
+	enc.UTF8FromBytes(sbuff, &idSector[20], 20, 0);
 	return Text::StrTrim(sbuff);
 }

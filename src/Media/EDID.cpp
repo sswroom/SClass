@@ -74,28 +74,29 @@ Bool Media::EDID::Parse(UnsafeArray<const UInt8> edidBuff, NN<Media::EDID::EDIDI
 void Media::EDID::ParseDescriptor(NN<EDIDInfo> info, const UInt8 *descriptor)
 {
 	IntOS i;
-	UTF8Char *sptr;
+	UnsafeArrayOpt<UTF8Char> sptrOpt;
+	UnsafeArray<UTF8Char> sptr;
 	const UInt8 *buffPtr;
 	UInt8 b;
 	if (descriptor[0] == 0 && descriptor[1] == 0)
 	{
 		if (descriptor[3] == 0xfc)
 		{
-			sptr = info->monitorName;
+			sptrOpt = info->monitorName;
 		}
 		else if (descriptor[3] == 0xfe)
 		{
-			sptr = info->monitorOther;
+			sptrOpt = info->monitorOther;
 		}
 		else if (descriptor[3] == 0xff)
 		{
-			sptr = info->monitorSN;
+			sptrOpt = info->monitorSN;
 		}
 		else
 		{
-			sptr = 0;
+			sptrOpt = nullptr;
 		}
-		if (sptr)
+		if (sptrOpt.SetTo(sptr))
 		{
 			i = 13;
 			buffPtr = &descriptor[5];

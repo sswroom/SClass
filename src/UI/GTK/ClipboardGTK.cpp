@@ -263,8 +263,8 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 				if (data)
 				{
 					ret = true;
-					const UTF8Char *csptr = (const UTF8Char*)gtk_selection_data_get_text(data);
-					if (csptr)
+					UnsafeArray<const UTF8Char> csptr;
+					if (csptr.Set((const UTF8Char*)gtk_selection_data_get_text(data)))
 					{
 						sb->AppendSlow(csptr);
 					}

@@ -34,7 +34,6 @@ IntOS Map::DBAssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)
 
 Map::DBAssistedRReverseGeocoder::DBAssistedRReverseGeocoder(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Optional<IO::Writer> errWriter)
 {
-	this->conn = 0;
 	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, nullptr, log, CSTR("MAPDB: "));
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
@@ -59,16 +58,16 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 {
 	DB::SQLBuilder *sql;
 	NN<DB::DBReader> r;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	IntOS i;
 	Int32 lang;
 	NN<DB::DBTool> conn;
 	if (!this->conn.SetTo(conn))
-		return 0;
+		return nullptr;
 
 	i = GetLangIndex(lcid);
 	if (i < 0)
-		return 0;
+		return nullptr;
 	lang = this->langMaps.GetItemNoCheck(i)->lang;
 	Int32 xind = Double2Int32(pos.x * 5000);
 	Int32 yind = Double2Int32(pos.y * 5000);
@@ -98,7 +97,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
-		if (sptr == 0 || buff[0] == 0)
+		if (sptr.IsNull() || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
@@ -131,7 +130,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 	else
 	{
 		DEL_CLASS(sql);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -139,16 +138,16 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 {
 	DB::SQLBuilder *sql;
 	NN<DB::DBReader> r;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	NN<DB::DBTool> conn;
 	IntOS i;
 	Int32 lang;
 	if (!this->conn.SetTo(conn))
-		return 0;
+		return nullptr;
 
 	i = GetLangIndex(lcid);
 	if (i < 0)
-		return 0;
+		return nullptr;
 	lang = this->langMaps.GetItemNoCheck(i)->lang;
 	Int32 xind = Double2Int32(pos.x * 5000);
 	Int32 yind = Double2Int32(pos.y * 5000);
@@ -177,7 +176,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
-		if (sptr == 0 || buff[0] == 0)
+		if (sptr.IsNull() || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
@@ -210,7 +209,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 	else
 	{
 		DEL_CLASS(sql);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -238,7 +237,7 @@ void Map::DBAssistedRReverseGeocoder::AddLangMap(Int32 lcid, Int32 lang)
 	}
 }
 
-Int32 Map::DBAssistedRReverseGeocoder::ToLang(const UTF8Char *name)
+Int32 Map::DBAssistedRReverseGeocoder::ToLang(UnsafeArray<const UTF8Char> name)
 {
 	Char sbuff[4];
 	IntOS i = 4;

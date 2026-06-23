@@ -11,9 +11,9 @@ namespace Math
 		typedef struct
 		{
 			UInt32 srid;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UIntOS nameLen;
-			const UTF8Char *projWKT;
+			UnsafeArray<const UTF8Char> projWKT;
 			UIntOS projWKTLen;
 		} CSysInfo;
 

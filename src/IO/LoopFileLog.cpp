@@ -32,7 +32,7 @@ IO::LoopFileLog::LoopFileLog(Text::CStringNN fileName, Int32 nFiles, LogType sty
 	this->logStyle = style;
 	this->nFiles = nFiles;
 	this->closed = false;
-	this->extName = 0;
+	this->extName = nullptr;
 
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -71,11 +71,12 @@ IO::LoopFileLog::LoopFileLog(Text::CStringNN fileName, Int32 nFiles, LogType sty
 
 IO::LoopFileLog::~LoopFileLog()
 {
+	UnsafeArray<const UTF8Char> extName;;
 	this->fileName->Release();
-	if (this->extName)
+	if (this->extName.SetTo(extName))
 	{
-		Text::StrDelNew(this->extName);
-		this->extName = 0;
+		Text::StrDelNew(extName);
+		this->extName = nullptr;
 	}
 
 	log.Delete();

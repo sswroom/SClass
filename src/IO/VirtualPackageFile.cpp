@@ -1148,7 +1148,7 @@ void IO::VirtualPackageFile::SetParent(Optional<IO::PackageFile> pkg)
 	}
 }
 
-void IO::VirtualPackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
+void IO::VirtualPackageFile::SetInfo(InfoType infoType, UnsafeArray<const UTF8Char> val)
 {
 	UnsafeArray<const UTF8Char> csptr;
 	if (this->infoMap.Put(infoType, Text::StrCopyNew(val)).SetTo(csptr))

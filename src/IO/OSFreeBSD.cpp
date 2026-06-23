@@ -4,15 +4,15 @@
 #include "Text/StringBuilderUTF8.h"
 
 
-UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("FreeBSD"));
 }
 
-UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 {
 	Text::StringBuilderUTF8 sb;
-	Manage::Process::ExecuteProcess((const UTF8Char*)"freebsd-version", &sb);
+	Manage::Process::ExecuteProcess(CSTR("freebsd-version"), sb);
 	while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 	{
 		sb.RemoveChars(1);

@@ -70,8 +70,8 @@ namespace SSWR
 			Data::FastMapNN<Int32, FileInfo> fileTypeMap;
 			Data::FastStringMapNN<FileInfo> fileNameMap;
 
-			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
-			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
+			Bool FFMPEGMux(UnsafeArray<const UTF8Char> videoFile, UnsafeArray<const UTF8Char> audioFile, UnsafeArray<const UTF8Char> outFile);
+			Bool FFMPEGMuxAAC(UnsafeArray<const UTF8Char> videoFile, UnsafeArray<const UTF8Char> audioFile, UnsafeArray<const UTF8Char> outFile);
 			Bool ExtractZIP(Text::CStringNN zipFile, Text::CStringNN mp4File);
 			Bool VideoValid(Text::CStringNN fileName);
 			void ProcessDir(NN<Text::String> downPath, NN<Text::String> succPath, NN<Text::String> errPath);

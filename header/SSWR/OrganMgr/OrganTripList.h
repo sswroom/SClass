@@ -72,8 +72,8 @@ namespace SSWR
 			IntOS GetLocIndex(Int32 locId);
 			Location *GetLocation(Int32 locId);
 			Data::ArrayListNN<Location> *GetLocSub(Int32 locId);
-			Bool UpdateLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
-			Bool AddLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
+			Bool UpdateLoc(Int32 locId, UnsafeArray<const UTF8Char> engName, UnsafeArray<const UTF8Char> chiName);
+			Bool AddLoc(Int32 locId, UnsafeArray<const UTF8Char> engName, UnsafeArray<const UTF8Char> chiName);
 			IntOS GetLocTypeIndex(Int32 lType);
 		};*/
 	}

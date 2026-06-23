@@ -9,15 +9,15 @@ namespace Media
 	{
 	private:
 		Media::AudioSource *audsrc;
-		const UTF8Char *devName;
+		UnsafeArray<const UTF8Char> devName;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
 		void *hand;
 		Sync::Event *playEvt;
-		Media::RefClock *clk;
+		NN<Media::RefClock> clk;
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 
 		UInt32 buffTime;
 
@@ -26,20 +26,20 @@ namespace Media
 		static Int32 GetCurrTime(void *hand);
 	public:
 		static Int32 GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, Int32 devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, Int32 devNo);
 		
 		void OnEvent();
 
-		OpenSLESRenderer(const UTF8Char *devName);
+		OpenSLESRenderer(UnsafeArrayOpt<const UTF8Char> devName);
 		virtual ~OpenSLESRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::AudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
+		virtual void AudioInit(NN<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();

@@ -9,16 +9,16 @@ namespace Text
 		class DocText : public DocItem
 		{
 		private:
-			const UTF8Char *text;
+			UnsafeArray<const UTF8Char> text;
 		public:
-			DocText(const UTF8Char *text);
+			DocText(UnsafeArray<const UTF8Char> text);
 			virtual ~DocText();
 
 			virtual DocItemType GetItemType();
 
 			virtual UIntOS Add(NN<DocItem> item);
 
-			const UTF8Char *GetText();
+			UnsafeArray<const UTF8Char> GetText();
 		};
 	}
 }

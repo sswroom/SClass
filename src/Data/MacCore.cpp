@@ -117,7 +117,7 @@ Data::MacString::~MacString()
 {
 }
 
-const UTF8Char *Data::MacString::Ptr() const
+UnsafeArrayOpt<const UTF8Char> Data::MacString::Ptr() const
 {
 	CFStringEncoding enc = CFStringGetFastestEncoding((CFStringRef)this->val);
 	if (enc == kCFStringEncodingASCII)

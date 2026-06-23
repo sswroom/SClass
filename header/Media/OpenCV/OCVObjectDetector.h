@@ -17,20 +17,20 @@ namespace Media
 				IntOS right;
 				IntOS bottom;
 			} ObjectRect;
-			typedef void (CALLBACKFUNC DetectResultFunc)(void *userObj, UIntOS objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
+			typedef void (CALLBACKFUNC DetectResultFunc)(AnyType userObj, UIntOS objCnt, UnsafeArrayOpt<const ObjectRect> objRects, NN<Media::FrameInfo> frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
 			
 		private:
 			void *cascade;
 			DetectResultFunc detectResultHdlr;
-			void *detectResultObj;
+			AnyType detectResultObj;
 		public:
-			OCVObjectDetector(const UTF8Char *path, const UTF8Char *dataFile);
+			OCVObjectDetector(UnsafeArray<const UTF8Char> path, UnsafeArray<const UTF8Char> dataFile);
 			~OCVObjectDetector();
 
 			Bool IsError();
-			void NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
+			void NextFrame(NN<Media::OpenCV::OCVFrame> frame, NN<Media::FrameInfo> frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
 
-			void HandleDetectResult(DetectResultFunc func, void *userObj);
+			void HandleDetectResult(DetectResultFunc func, AnyType userObj);
 		};
 	}
 }

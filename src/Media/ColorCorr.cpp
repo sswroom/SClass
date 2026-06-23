@@ -6,11 +6,11 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Media::ColorCorr::ColorCorr(UTF8Char *name)
+Media::ColorCorr::ColorCorr(UnsafeArray<UTF8Char> name)
 {
 	Int32 regVal;
 	WChar buff[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	radd = 0;
 	gadd = 0;
 	badd = 0;
@@ -31,26 +31,29 @@ Media::ColorCorr::ColorCorr(UTF8Char *name)
 
 	wptr = Text::StrConcat(buff, L"Color\\");
 	wptr = Text::StrUTF8_WChar(wptr, name, 0);
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
-	radd = reg->GetValueI32(L"RAdd") * 0.0001;
-	gadd = reg->GetValueI32(L"GAdd") * 0.0001;
-	badd = reg->GetValueI32(L"BAdd") * 0.0001;
-	regVal = reg->GetValueI32(L"RMul");
-	if (regVal) rmul = regVal * 0.0001;
-	regVal = reg->GetValueI32(L"GMul");
-	if (regVal) gmul = regVal * 0.0001;
-	regVal = reg->GetValueI32(L"BMul");
-	if (regVal) bmul = regVal * 0.0001;
-	regVal = reg->GetValueI32(L"RPow");
-	if (regVal) rpow = regVal * 0.0001;
-	regVal = reg->GetValueI32(L"GPow");
-	if (regVal) gpow = regVal * 0.0001;
-	regVal = reg->GetValueI32(L"BPow");
-	if (regVal) bpow = regVal * 0.0001;
-	rgamma = reg->GetValueI32(L"RGamma");
-	ggamma = reg->GetValueI32(L"GGamma");
-	bgamma = reg->GetValueI32(L"BGamma");
-	IO::Registry::CloseRegistry(reg);
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff).SetTo(reg))
+	{
+		radd = reg->GetValueI32(L"RAdd") * 0.0001;
+		gadd = reg->GetValueI32(L"GAdd") * 0.0001;
+		badd = reg->GetValueI32(L"BAdd") * 0.0001;
+		regVal = reg->GetValueI32(L"RMul");
+		if (regVal) rmul = regVal * 0.0001;
+		regVal = reg->GetValueI32(L"GMul");
+		if (regVal) gmul = regVal * 0.0001;
+		regVal = reg->GetValueI32(L"BMul");
+		if (regVal) bmul = regVal * 0.0001;
+		regVal = reg->GetValueI32(L"RPow");
+		if (regVal) rpow = regVal * 0.0001;
+		regVal = reg->GetValueI32(L"GPow");
+		if (regVal) gpow = regVal * 0.0001;
+		regVal = reg->GetValueI32(L"BPow");
+		if (regVal) bpow = regVal * 0.0001;
+		rgamma = reg->GetValueI32(L"RGamma");
+		ggamma = reg->GetValueI32(L"GGamma");
+		bgamma = reg->GetValueI32(L"BGamma");
+		IO::Registry::CloseRegistry(reg);
+	}
 }
 
 Media::ColorCorr::~ColorCorr()
@@ -69,26 +72,29 @@ Media::ColorCorr::~ColorCorr()
 	}
 }
 
-Int32 Media::ColorCorr::Save(UTF8Char *name)
+Int32 Media::ColorCorr::Save(UnsafeArray<UTF8Char> name)
 {
 	WChar buff[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	wptr = Text::StrConcat(buff, L"Color\\");
 	wptr = Text::StrUTF8_WChar(wptr, name, 0);
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
-	reg->SetValue(L"RAdd", (Int32)(radd * 10000));
-	reg->SetValue(L"GAdd", (Int32)(gadd * 10000));
-	reg->SetValue(L"BAdd", (Int32)(badd * 10000));
-	reg->SetValue(L"RMul", (Int32)(rmul * 10000));
-	reg->SetValue(L"GMul", (Int32)(gmul * 10000));
-	reg->SetValue(L"BMul", (Int32)(bmul * 10000));
-	reg->SetValue(L"RPow", (Int32)(rpow * 10000));
-	reg->SetValue(L"GPow", (Int32)(gpow * 10000));
-	reg->SetValue(L"BPow", (Int32)(bpow * 10000));
-	reg->SetValue(L"RGamma", rgamma);
-	reg->SetValue(L"GGamma", ggamma);
-	reg->SetValue(L"BGamma", bgamma);
-	IO::Registry::CloseRegistry(reg);
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff).SetTo(reg))
+	{
+		reg->SetValue(L"RAdd", (Int32)(radd * 10000));
+		reg->SetValue(L"GAdd", (Int32)(gadd * 10000));
+		reg->SetValue(L"BAdd", (Int32)(badd * 10000));
+		reg->SetValue(L"RMul", (Int32)(rmul * 10000));
+		reg->SetValue(L"GMul", (Int32)(gmul * 10000));
+		reg->SetValue(L"BMul", (Int32)(bmul * 10000));
+		reg->SetValue(L"RPow", (Int32)(rpow * 10000));
+		reg->SetValue(L"GPow", (Int32)(gpow * 10000));
+		reg->SetValue(L"BPow", (Int32)(bpow * 10000));
+		reg->SetValue(L"RGamma", rgamma);
+		reg->SetValue(L"GGamma", ggamma);
+		reg->SetValue(L"BGamma", bgamma);
+		IO::Registry::CloseRegistry(reg);
+	}
 	return 0;
 }
 

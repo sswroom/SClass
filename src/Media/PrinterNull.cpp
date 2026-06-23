@@ -7,21 +7,21 @@ UIntOS Media::Printer::GetPrinterCount()
 	return 0;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UIntOS index)
+UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UIntOS index)
 {
-	return 0;
+	return nullptr;
 }
 
-Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
+Optional<Media::Printer> Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 {
-	return 0;
+	return nullptr;
 }
 
 Media::Printer::Printer(NN<Text::String> printerName)
 {
 }
 
-Media::Printer::Printer(Text::CString printerName)
+Media::Printer::Printer(Text::CStringNN printerName)
 {
 }
 
@@ -34,17 +34,17 @@ Bool Media::Printer::IsError()
 	return true;
 }
 
-Bool Media::Printer::ShowPrintSettings(void *hWnd)
+Bool Media::Printer::ShowPrintSettings(Optional<ControlHandle> hWnd)
 {
 	return false;
 }
 
-Media::PrintDocument *Media::Printer::StartPrint(PrintHandler *hdlr, NN<Media::DrawEngine> eng)
+Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<PrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
-	return 0;
+	return nullptr;
 }
 
-void Media::Printer::EndPrint(PrintDocument *doc)
+void Media::Printer::EndPrint(NN<Media::PrintDocument> doc)
 {
 }
 

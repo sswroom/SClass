@@ -17,9 +17,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt32 pxSize;
 	Text::CStringNN srcFile;
 	Text::CStringNN destFile;
-	//UIntOS cmdCnt;
+	UIntOS cmdCnt;
 	Int32 ret = 1;
-	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 /*	if (cmdCnt != 4)
 	{
 		console.WriteLine(CSTR("Error in parameters, should be ImageResize [srcFile] [destFile] [size]");

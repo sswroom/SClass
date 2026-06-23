@@ -1440,7 +1440,8 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, DateOrder dateOrder, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
 {
 	UTF8Char buff[64];
-	UTF8Char *longBuff = 0;
+	UnsafeArrayOpt<UTF8Char> longBuff = nullptr;
+	UnsafeArray<UTF8Char> nnlongBuff;
 	Text::PString strs2[5];
 	Text::PString strs[3];
 	UIntOS nStrs;
@@ -1454,9 +1455,9 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 	}
 	if (dateStr.leng >= 62)
 	{
-		longBuff = MemAlloc(UTF8Char, dateStr.leng + 3);
-		dateStr.ConcatTo(longBuff);
-		strs[0] = {longBuff, dateStr.leng};
+		longBuff = nnlongBuff = MemAllocArr(UTF8Char, dateStr.leng + 3);
+		dateStr.ConcatTo(nnlongBuff);
+		strs[0] = {nnlongBuff, dateStr.leng};
 	}
 	else
 	{
@@ -1475,7 +1476,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
-				if (longBuff) MemFree(longBuff);
+				if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 				return false;
 			}
 		}
@@ -1483,7 +1484,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
-				if (longBuff) MemFree(longBuff);
+				if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 				return false;
 			}
 		}
@@ -1491,7 +1492,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
-				if (longBuff) MemFree(longBuff);
+				if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 				return false;
 			}
 		}
@@ -1580,7 +1581,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
-				if (longBuff) MemFree(longBuff);
+				if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 				return false;
 			}
 			tval->hour = 0;
@@ -1592,7 +1593,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		{
 			if (!DateValueSetDate(tval, strs, dateOrder))
 			{
-				if (longBuff) MemFree(longBuff);
+				if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 				return false;
 			}
 			tval->hour = 0;
@@ -1752,7 +1753,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 						{
 							if (!DateValueSetDate(tval, strs, dateOrder))
 							{
-								if (longBuff) MemFree(longBuff);
+								if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 								return false;
 							}
 						}
@@ -1761,7 +1762,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 					{
 						if (!DateValueSetDate(tval, strs, dateOrder))
 						{
-							if (longBuff) MemFree(longBuff);
+							if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 							return false;
 						}
 					}
@@ -1805,7 +1806,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 			}
 		}
 	}
-	if (longBuff) MemFree(longBuff);
+	if (longBuff.SetTo(nnlongBuff)) MemFreeArr(nnlongBuff);
 	return succ;
 }
 

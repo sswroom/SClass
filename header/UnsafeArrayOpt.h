@@ -1,6 +1,6 @@
 #ifndef _SM_UNSAFEARRAYOPT
 #define _SM_UNSAFEARRAYOPT
-#include "MyMemory.h"
+#include "MemTool.h"
 #include "UnsafeArray.h"
 
 template <typename T> struct UnsafeArrayOpt

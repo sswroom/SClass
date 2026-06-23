@@ -95,7 +95,7 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 		NEW_CLASSNN(file, FileInfo());
 		file->id = id;
 		file->fileName = Text::String::NewP(filePath, filePathEnd);
-		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 
 		Data::ArrayIterator<NN<Text::String>> it = rcptList.Iterator();
 		while (it.HasNext())
@@ -199,7 +199,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
@@ -277,7 +277,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));

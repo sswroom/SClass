@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
@@ -22,7 +21,7 @@ Manage::Process::Process()
 	this->procId = 0;
 	this->needRelease = false;
 }
-Manage::Process::Process(const WChar *cmdLine)
+Manage::Process::Process(UnsafeArray<const WChar> cmdLine)
 {
 	this->procId = 0;
 	this->needRelease = true;
@@ -52,7 +51,7 @@ Bool Manage::Process::Kill()
 	return false;
 }
 
-WChar *Manage::Process::GetFilename(WChar *buff)
+UnsafeArray<WChar> Manage::Process::GetFilename(UnsafeArray<WChar> buff)
 {
 	return buff;
 }
@@ -72,7 +71,7 @@ Bool Manage::Process::SetMemorySize(UIntOS minSize, UIntOS maxSize)
 	return false;
 }
 
-UIntOS Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UIntOS Manage::Process::GetThreadIds(NN<Data::ArrayListNative<UInt32>> threadList)
 {
 	return 0;
 }
@@ -83,28 +82,28 @@ void *Manage::Process::GetHandle()
 }
 
 
-UIntOS Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UIntOS Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList)
 {
 	return 0;
 }
 
-UIntOS Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
+UIntOS Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList)
 {
 	return 0;
 }
 
-UIntOS Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
+UIntOS Manage::Process::GetHeapLists(NN<Data::ArrayListNative<UInt32>> heapList)
 {
 	return 0;
 }
 
-UIntOS Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UIntOS maxCount)
+UIntOS Manage::Process::GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UIntOS maxCount)
 {
 	return 0;
 
 }
 
-void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
+void Manage::Process::FreeHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList)
 {
 }
 
@@ -113,17 +112,17 @@ Data::Timestamp Manage::Process::GetStartTime()
 	return Data::Timestamp(0);
 }
 
-Bool Manage::Process::GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize)
+Bool Manage::Process::GetWorkingSetSize(OptOut<UIntOS> minSize, OptOut<UIntOS> maxSize)
 {
 	return false;
 }
 
-Bool Manage::Process::GetMemoryInfo(UIntOS *pageFault, UIntOS *workingSetSize, UIntOS *pagedPoolUsage, UIntOS *nonPagedPoolUsage, UIntOS *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(OptOut<UIntOS> pageFault, OptOut<UIntOS> workingSetSize, OptOut<UIntOS> pagedPoolUsage, OptOut<UIntOS> nonPagedPoolUsage, OptOut<UIntOS> pageFileUsage)
 {
 	return false;
 }
 
-Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
+Bool Manage::Process::GetTimeInfo(OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> kernelTime, OptOut<Data::Timestamp> userTime)
 {
 	return false;
 }
@@ -200,43 +199,43 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-UIntOS Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UIntOS reqSize)
+UIntOS Manage::Process::ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UIntOS reqSize)
 {
 	const UInt8 *srcPtr = (const UInt8*)(UIntOS)addr;
-	MemCopyNO(buff, srcPtr, reqSize);
+	MemCopyNO(buff.Ptr(), srcPtr, reqSize);
 	return reqSize;
 }
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CString processName)
 {
-	return 0;
+	return nullptr;
 }
 
-Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArrayOpt<const WChar> processName)
 {
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, NN<FindProcSess> sess, NN<ProcessInfo> info)
 {
-	return 0;
+	return nullptr;
 }
 
-WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, NN<FindProcSess> sess, NN<ProcessInfo> info)
 {
-	return 0;
+	return nullptr;
 }
 
-void Manage::Process::FindProcessClose(FindProcSess *sess)
+void Manage::Process::FindProcessClose(NN<FindProcSess> sess)
 {
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
 {
 	return -1;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::StringBuilderUTF8> result)
 {
 	return -1;
 }
@@ -246,12 +245,12 @@ Bool Manage::Process::IsAlreadyStarted()
 	return false;
 }
 
-Bool Manage::Process::OpenPath(Text::CString path)
+Bool Manage::Process::OpenPath(Text::CStringNN path)
 {
 	return false;
 }
 
-Text::CString Manage::Process::GetPriorityName(ProcessPriority priority)
+Text::CStringNN Manage::Process::GetPriorityName(ProcessPriority priority)
 {
 	switch (priority)
 	{

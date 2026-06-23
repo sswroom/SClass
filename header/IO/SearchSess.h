@@ -8,23 +8,23 @@ namespace IO
 	class SearchSess
 	{
 	private:
-		UTF8Char *nameBuff;
-		UTF8Char *nameStart;
+		UnsafeArray<UTF8Char> nameBuff;
+		UnsafeArray<UTF8Char> nameStart;
 		IO::Path::PathType pt;
-		IO::Path::FindFileSession *sess;
+		Optional<IO::Path::FindFileSession> sess;
 		UInt64 fileSize;
-		Data::DateTime *modTime;
+		Data::Timestamp modTime;
 
 	public:
-		SearchSess(const UTF8Char *searchName);
+		SearchSess(UnsafeArray<const UTF8Char> searchName);
 		~SearchSess();
 
 		Bool NextFile();
-		const UTF8Char *GetFileName();
-		const UTF8Char *GetFilePath();
+		UnsafeArray<const UTF8Char> GetFileName();
+		UnsafeArray<const UTF8Char> GetFilePath();
 		IO::Path::PathType GetPathType();
 		Int64 GetFileSize();
-		Data::DateTime *GetModTime();
+		Data::Timestamp GetModTime();
 	};
 };
 #endif

@@ -824,6 +824,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	UIntOS i;
 	UIntOS j;
 	NN<Text::Cpp::CppParseStatus::FileParseStatus> fileStatus;
+	UnsafeArray<UTF8Char> lineBuffWS;
 	if (!status->GetFileStatus().SetTo(fileStatus))
 	{
 		return false;
@@ -838,9 +839,9 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	i = fileStatus->lineBuffSB.GetLength();
 	if (i > 0)
 	{
-		if (fileStatus->lineBuffWS)
+		if (fileStatus->lineBuffWS.SetTo(lineBuffWS))
 		{
-			j = (UIntOS)(fileStatus->lineBuffWS - fileStatus->lineBuffSB.ToPtr());
+			j = (UIntOS)(lineBuffWS - fileStatus->lineBuffSB.v);
 			fileStatus->lineBuffSB.AppendC(lineBuff, (UIntOS)(lineBuffEnd - lineBuff));
 			wordStart = fileStatus->lineBuffSB.v + j;
 		}
@@ -2290,7 +2291,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	}
 	else
 	{
-		fileStatus->lineBuffWS = wordStart.Ptr();
+		fileStatus->lineBuffWS = wordStart;
 	}
 	if (!parseStatus)
 	{

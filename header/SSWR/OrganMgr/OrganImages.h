@@ -12,15 +12,15 @@ namespace SSWR
 		{
 		private:
 			NN<OrganImageItem> imgItem;
-			const UTF8Char *srcImgDir;
+			UnsafeArray<const UTF8Char> srcImgDir;
 
 		public:
-			OrganImages(NN<OrganImageItem> imgItem, const UTF8Char *srcImgDir);
+			OrganImages(NN<OrganImageItem> imgItem, UnsafeArray<const UTF8Char> srcImgDir);
 			virtual ~OrganImages();
 
 			NN<OrganImageItem> GetImgItem() const;
-			const UTF8Char *GetSrcImgDir() const;
-
+			UnsafeArray<const UTF8Char> GetSrcImgDir() const;
+			
 			virtual ItemType GetItemType() const;
 			virtual UnsafeArray<UTF8Char> GetItemName(UnsafeArray<UTF8Char> buff) const;
 			virtual UnsafeArray<UTF8Char> GetEngName(UnsafeArray<UTF8Char> buff) const;

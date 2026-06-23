@@ -18,7 +18,7 @@ namespace IO
 		NN<Text::UTF8Writer> log;
 		NN<IO::FileStream> fileStm;
 		NN<Text::String> fileName;
-		const UTF8Char *extName;
+		UnsafeArrayOpt<const UTF8Char> extName;
 		Bool closed;
 
 		void SwapFiles();

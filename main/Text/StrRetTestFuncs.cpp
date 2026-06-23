@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Text/CString.h"
 
-const UTF8Char *Func1();
+UnsafeArray<const UTF8Char> Func1();
 Text::CStringNN Func2();
 Text::CStringNN Func2b();
 

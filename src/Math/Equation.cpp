@@ -3,11 +3,11 @@
 #include "Math/Equation.h"
 #include "Text/MyString.h"
 
-Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, IntOS nChars, UTF8Char **endPos)
+Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UnsafeArray<UTF8Char> equation, IntOS nChars, OptOut<UnsafeArray<UTF8Char>> endPos)
 {
 //	UTF8Char name[128];
-	UTF8Char *currPtr = equation;
-	UTF8Char *nextPtr;
+	UnsafeArray<UTF8Char> currPtr = equation;
+	UnsafeArray<UTF8Char> nextPtr;
 //	UTF8Char *nameStart;
 	UTF8Char c;
 	Int32 ret;
@@ -19,7 +19,7 @@ Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *e
 		c = *currPtr++;
 		if (c == '(')
 		{
-			ret = ParseEquation(equOut, currPtr, nChars, &nextPtr);
+			ret = ParseEquation(equOut, currPtr, nChars, nextPtr);
 			if (isName)
 			{
 				//////////////////////////////
@@ -36,8 +36,7 @@ Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *e
 		}
 		else if (c == ')')
 		{
-			if (endPos)
-				*endPos = currPtr;
+			endPos.Set(currPtr);
 			////////////////////////////////////
 			return 1;
 		}
@@ -78,18 +77,18 @@ Math::Equation::~Equation()
 	this->equationRight.DeleteAll();
 }
 
-UIntOS Math::Equation::AddEquation(UTF8Char *equation)
+UIntOS Math::Equation::AddEquation(UnsafeArray<UTF8Char> equation)
 {
-	UTF8Char *currPtr = equation;
-	UTF8Char *leftStart = currPtr;
-	UTF8Char *signStart = 0;
-	UTF8Char *rightStart = 0;
+	UnsafeArray<UTF8Char> currPtr = equation;
+	UnsafeArray<UTF8Char> leftStart = currPtr;
+	UnsafeArrayOpt<UTF8Char> signStart = nullptr;
+	UnsafeArrayOpt<UTF8Char> rightStart = nullptr;
 	UTF8Char c;
 	while ((c = *currPtr++) != 0)
 	{
 		if (c == '>' || c == '=' || c == '<')
 		{
-			if (signStart == 0)
+			if (signStart.IsNull())
 			{
 				signStart = currPtr - 1;
 				rightStart = currPtr;
@@ -108,7 +107,9 @@ UIntOS Math::Equation::AddEquation(UTF8Char *equation)
 		}
 	}
 
-	if (rightStart == 0)
+	UnsafeArray<UTF8Char> nnrightStart;
+	UnsafeArray<UTF8Char> nnsignStart;
+	if (!rightStart.SetTo(nnrightStart) || !signStart.SetTo(nnsignStart))
 	{
 		return INVALID_INDEX;
 	}
@@ -117,26 +118,26 @@ UIntOS Math::Equation::AddEquation(UTF8Char *equation)
 	NN<Data::ArrayListInt32> left;
 	NEW_CLASSNN(right, Data::ArrayListInt32());
 	NEW_CLASSNN(left, Data::ArrayListInt32());
-	if (ParseEquation(right, rightStart, currPtr - rightStart - 1, 0) != 0)
+	if (ParseEquation(right, nnrightStart, currPtr - nnrightStart - 1, 0) != 0)
 	{
 		right.Delete();
 		left.Delete();
 		return INVALID_INDEX;
 	}
-	if (ParseEquation(left, leftStart, signStart - leftStart, 0) != 0)
+	if (ParseEquation(left, leftStart, nnsignStart - leftStart, 0) != 0)
 	{
 		right.Delete();
 		left.Delete();
 		return INVALID_INDEX;
 	}
 	Int32 sign;
-	if (*signStart == '=')
+	if (*nnsignStart == '=')
 	{
 		sign = 0;
 	}
-	else if (*signStart == '>')
+	else if (*nnsignStart == '>')
 	{
-		if (signStart[1] == '=')
+		if (nnsignStart[1] == '=')
 		{
 			sign = 1;
 		}
@@ -145,9 +146,9 @@ UIntOS Math::Equation::AddEquation(UTF8Char *equation)
 			sign = 2;
 		}
 	}
-	else if (*signStart == '<')
+	else if (*nnsignStart == '<')
 	{
-		if (signStart[1] == '=')
+		if (nnsignStart[1] == '=')
 		{
 			sign = 3;
 		}
@@ -163,13 +164,13 @@ UIntOS Math::Equation::AddEquation(UTF8Char *equation)
 	return ret;
 }
 
-void Math::Equation::Solve(UTF8Char *variName, UTF8Char *outBuff)
+void Math::Equation::Solve(UnsafeArray<UTF8Char> variName, UnsafeArray<UTF8Char> outBuff)
 {
 	//////////////////////////////////////////////
 }
 
-UTF8Char *Math::Equation::GetEquationStr(UTF8Char *buff, Int32 index)
+UnsafeArrayOpt<UTF8Char> Math::Equation::GetEquationStr(UnsafeArray<UTF8Char> buff, Int32 index)
 {
 	//////////////////////////////////////////////
-	return 0;
+	return nullptr;
 }

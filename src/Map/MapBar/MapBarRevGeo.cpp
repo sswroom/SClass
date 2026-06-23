@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-Map::MapBar::MapBarRevGeo::MapBarRevGeo(NN<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
+Map::MapBar::MapBarRevGeo::MapBarRevGeo(NN<Net::SocketFactory> sockf, NN<IO::Writer> errWriter, NN<Map::MapBar::MapBarAdjuster> adjuster, Int32 imgWidth, Int32 imgHeight)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;
@@ -23,7 +23,7 @@ Map::MapBar::MapBarRevGeo::~MapBarRevGeo()
 {
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	Double srcPt[2];
 	Double destPt[2];
@@ -33,27 +33,27 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UIntOS buffSize,
 	return SearchNameAdjusted(buff, buffSize, destPt[0], destPt[1], lcid);
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	return SearchName(buff, buffSize, lat, lon, lcid);
 }
 
-UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UIntOS buffSize, Double adjLat, Double adjLon, Int32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double adjLat, Double adjLon, Int32 lcid)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<Net::HTTPClient> cli;
-	IO::MemoryStream mstm(UTF8STRC("Map.MapBar.MapBarRevGeo"));
+	IO::MemoryStream mstm;
 	IntOS readSize;
-	UInt8 *dataBbuff;
-	UInt8 *xmlBuff;
+	UnsafeArray<UInt8> dataBbuff;
+	UnsafeArray<UInt8>xmlBuff;
 	UIntOS buffSize;
 	IO::FileStream *fs;
 	Text::XMLDocument *xmlDoc;
-	Text::XMLNode *resultNode;
-	Text::XMLNode *node;
+	NN<Text::XMLNode> resultNode;
+	NN<Text::XMLNode> node;
 	Text::EncodingFactory encFact;
 
-	dataBbuff = MemAlloc(UInt8, 2048);
+	dataBbuff = MemAllocArr(UInt8, 2048);
 
 
 	sb.AppendC(UTF8STRC("http://geocode.mapbar.com/inverse/getInverseGeocoding.jsp?customer=2&detail=1&road=1&zoom=11&latlon="));
@@ -69,33 +69,30 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UIntOS b
 		sb.AppendC(UTF8STRC("&cn=1"));
 	}
 
-	cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-	while ((readSize = cli->Read(dataBbuff, 2048)) > 0)
+	cli = Net::HTTPClient::CreateConnect(sockf, nullptr, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	while ((readSize = cli->Read(Data::ByteArray(dataBbuff, 2048))) > 0)
 	{
-		mstm.Write(dataBbuff, readSize);
+		mstm.Write(Data::ByteArrayR(dataBbuff, readSize));
 	}
-	DEL_CLASS(cli);
-	xmlBuff = mstm.GetBuff(&buffSize);
+	cli.Delete();
+	xmlBuff = mstm.GetBuff(buffSize);
 	NEW_CLASS(fs, IO::FileStream(CSTR("MapBarRevGeo.xml"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	fs->Write(xmlBuff, buffSize);
+	fs->Write(Data::ByteArrayR(xmlBuff, buffSize));
 	DEL_CLASS(fs);
 
 	*buff = 0;
 	NEW_CLASS(xmlDoc, Text::XMLDocument());
-	xmlDoc->ParseBuff(&encFact, xmlBuff, buffSize);
-	resultNode = xmlDoc->SearchFirstNode(CSTR("/result"));
-	if (resultNode)
+	xmlDoc->ParseBuff(encFact, xmlBuff, buffSize);
+	if (xmlDoc->SearchFirstNode(CSTR("/result")).SetTo(resultNode))
 	{
-		node = resultNode->SearchFirstNode(CSTR("/nation"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/nation")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/province"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/province")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
@@ -109,56 +106,49 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UIntOS b
 			}
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/city"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/city")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/dist"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/dist")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/area"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/area")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/town"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/town")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/village"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/village")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/road/roadname"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/road/roadname")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(CSTR("/poi"));
-		if (node)
+		if (resultNode->SearchFirstNode(CSTR("/poi")).SetTo(node))
 		{
 			sb.ClearStr();
 			node->GetInnerText(sb);
@@ -171,6 +161,6 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UIntOS b
 	}
 	DEL_CLASS(xmlDoc);
 
-	MemFree(dataBbuff);
+	MemFreeArr(dataBbuff);
 	return buff;
 }

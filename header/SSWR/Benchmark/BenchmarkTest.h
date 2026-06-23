@@ -11,10 +11,10 @@ namespace SSWR
 		public:
 			typedef struct
 			{
-				const UTF8Char *deviceLocator;
-				const UTF8Char *manufacturer;
-				const UTF8Char *partNo;
-				const UTF8Char *sn;
+				UnsafeArray<const UTF8Char> deviceLocator;
+				UnsafeArray<const UTF8Char> manufacturer;
+				UnsafeArray<const UTF8Char> partNo;
+				UnsafeArray<const UTF8Char> sn;
 				Int64 defSpdMHz;
 				Int64 confSpdMHz;
 				Int32 dataWidth;
@@ -42,11 +42,11 @@ namespace SSWR
 			} MonitorInfo;
 			
 		private:
-			const UTF8Char *platformName;
-			const UTF8Char *cpuName;
-			const UTF8Char *cpuModel;
-			const UTF8Char *osDistro;
-			const UTF8Char *osVersion;
+			UnsafeArray<const UTF8Char> platformName;
+			UnsafeArray<const UTF8Char> cpuName;
+			UnsafeArray<const UTF8Char> cpuModel;
+			UnsafeArray<const UTF8Char> osDistro;
+			UnsafeArray<const UTF8Char> osVersion;
 			Int32 threadCnt;
 			Int64 progBuildTime;
 			Int64 testTime;

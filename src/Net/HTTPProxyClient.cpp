@@ -61,7 +61,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	UnsafeArray<UTF8Char> hostEnd;
 
 	UIntOS i;
-	const UTF8Char *ptr1;
+	UnsafeArray<const UTF8Char> ptr1;
 	Text::PString ptrs[2];
 	UnsafeArray<UTF8Char> cptr;
 	NN<Net::TCPClient> cli;
@@ -72,13 +72,13 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		i = Text::StrIndexOfCharC(ptr1, url.leng - 7, '/');
 		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, &ptr1[0], i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		else
 		{
 			i = url.leng - 7;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, &ptr1[0], i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		cptr = Text::StrConcatC(host, UTF8STRC("Host: "));

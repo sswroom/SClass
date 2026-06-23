@@ -382,10 +382,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					{
 						sbOut.Append(Manage::CPUVendor::GetBrandName(nncpu->brand));
 						sbOut.AppendC(UTF8STRC("</td><td>"));
-						if (nncpu->name)
-						{
-							sbOut.AppendSlow((const UTF8Char*)nncpu->name);
-						}
+						sbOut.AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(nncpu->name));
 						sbOut.AppendC(UTF8STRC("</td><td>"));
 						switch (nncpu->contextType)
 						{

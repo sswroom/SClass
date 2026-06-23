@@ -85,24 +85,24 @@ void MemTest2(UIntOS cnt)
 	}
 	else
 	{
-		UTF8Char *srcPtr = MemAllocA64(UTF8Char, cnt);
-		UTF8Char *destPtr = MemAllocA64(UTF8Char, cnt);
+		UnsafeArray<UTF8Char> srcPtr = MemAllocA64(UTF8Char, cnt);
+		UnsafeArray<UTF8Char> destPtr = MemAllocA64(UTF8Char, cnt);
 //		printf("1\r\n");
-		MemClearAC(srcPtr, cnt);
+		MemClearAC(srcPtr.Ptr(), cnt);
 //		printf("2\r\n");
-		memcpy(destPtr, srcPtr, cnt);
+		memcpy(destPtr.Ptr(), srcPtr.Ptr(), cnt);
 //		printf("3\r\n");
-		MemCopyNAC(destPtr, srcPtr, cnt);
+		MemCopyNAC(destPtr.Ptr(), srcPtr.Ptr(), cnt);
 //		printf("4\r\n");
-		MemCopyAC(destPtr, srcPtr, cnt);
+		MemCopyAC(destPtr.Ptr(), srcPtr.Ptr(), cnt);
 //		printf("5\r\n");
-		MemCopyNANC(destPtr, srcPtr, cnt);
+		MemCopyNANC(destPtr.Ptr(), srcPtr.Ptr(), cnt);
 //		printf("6\r\n");
-		MemCopyANC(destPtr, srcPtr, cnt);
+		MemCopyANC(destPtr.Ptr(), srcPtr.Ptr(), cnt);
 //		printf("7\r\n");
-		MemCopyNOShort(destPtr, srcPtr, cnt);
-		MemFreeA(srcPtr);
-		MemFreeA(destPtr);
+		MemCopyNOShort(destPtr.Ptr(), srcPtr.Ptr(), cnt);
+		MemFreeAArr(srcPtr);
+		MemFreeAArr(destPtr);
 	}
 }
 

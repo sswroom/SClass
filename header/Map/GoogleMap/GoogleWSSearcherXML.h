@@ -16,19 +16,19 @@ namespace Map
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			IO::Writer *errWriter;
+			NN<IO::Writer> errWriter;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
 			NN<Text::EncodingFactory> encFact;
 			Bool lastIsError;
 			
 		public:
-			GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NN<Text::EncodingFactory> encFact);
+			GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, NN<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherXML();
 
-			UTF8Char *SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw
-			virtual UTF8Char *SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
+			UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw
+			virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
+			virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
 		};
 	}
 }

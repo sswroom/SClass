@@ -5,7 +5,7 @@
 
 namespace Manage
 {
-	class ThreadContext
+	class 	ThreadContext
 	{
 	public:
 		enum class ContextType

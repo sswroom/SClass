@@ -58,7 +58,7 @@ namespace Data
 			Data::ReadonlyArray<UInt8> *byteArr;
 			NN<Math::Geometry::Vector2D> vector;
 			NN<Data::UUID> uuid;
-			struct { const UTF8Char *v; UIntOS leng; } cstr;
+			struct { UnsafeArray<const UTF8Char> v; UIntOS leng; } cstr;
 			UInt8 buff[16];
 
 #ifdef HAS_DEF_CONSTR

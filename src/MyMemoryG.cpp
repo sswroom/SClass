@@ -105,14 +105,14 @@ Int32 MemCheckError()
 	if (mcMemoryCnt)
 	{
 		UTF8Char buff[12];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Int32 cnt = mcMemoryCnt;
 		IO::ConsoleWriter writer;
 		sptr = Data::Timestamp::Now().ToString(buff, "HH:mm:ss");
 		writer.Write(CSTRP(buff, sptr));
 		writer.Write(CSTR(" Memory leaks occurs for "));
 		sptr = Text::StrInt32(buff, cnt);
-		writer.WriteStrC(buff, (UIntOS)(sptr - buff));
+		writer.Write(CSTRP(buff, sptr));
 		writer.WriteLine(CSTR(" times"));
 		found = true;
 	}

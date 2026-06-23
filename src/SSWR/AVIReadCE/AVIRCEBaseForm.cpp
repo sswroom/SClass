@@ -68,7 +68,7 @@ typedef enum
 	MNU_EXIT
 } MenuItems;
 
-void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, const UTF8Char **files, UIntOS nFiles)
+void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, Data::DataArray<UnsafeArray<const UTF8Char>> files)
 {
 	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
 	IO::Path::PathType pt;
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, con
 	Bool found = false;
 	me->core->BeginLoad();
 	IntOS i = 0;
-	while (i < nFiles)
+	while (i < files.GetCount())
 	{
 		UIntOS fileNameLen = Text::StrCharCnt(files[i]);
 		pt = IO::Path::GetPathType(Text::CStringNN(files[i], fileNameLen));
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, con
 		else if (pt == IO::Path::PathType::File)
 		{
 			IO::StmData::FileData fd({files[i], fileNameLen}, false);
-			if (!me->core->LoadData(fd, 0))
+			if (!me->core->LoadData(fd, nullptr))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.AppendSlow(files[i]);
@@ -282,7 +282,7 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PROC_INFO:
 		{
 			NN<SSWR::AVIReadCE::AVIRCEProcInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIReadCE::AVIRCEProcInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIReadCE::AVIRCEProcInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -291,7 +291,7 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_ABOUT:
 		{
-			SSWR::AVIReadCE::AVIRCEAboutForm dlg(0, this->ui);
+			SSWR::AVIReadCE::AVIRCEAboutForm dlg(nullptr, this->ui);
 			dlg.ShowDialog(this);
 		}
 		break;

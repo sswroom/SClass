@@ -9,15 +9,15 @@ namespace Media
 	{
 	private:
 		Media::AudioSource *audsrc;
-		const UTF8Char *devName;
+		UnsafeArray<const UTF8Char> devName;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
 		void *hand;
 		Sync::Event *playEvt;
-		Media::RefClock *clk;
+		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 
 		Int32 buffTime;
 
@@ -26,11 +26,11 @@ namespace Media
 		static Int32 GetCurrTime(void *hand);
 	public:
 		static Int32 GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, Int32 devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, Int32 devNo);
 		
 		void OnEvent();
 
-		AAudioRenderer(const UTF8Char *devName);
+		AAudioRenderer(UnsafeArrayOpt<const UTF8Char>devName);
 		virtual ~AAudioRenderer();
 
 		virtual Bool IsError();

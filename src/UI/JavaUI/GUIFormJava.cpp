@@ -29,7 +29,7 @@ extern "C"
 {
 	UI::GUIForm *me = (UI::GUIForm *)userData;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<const UTF8Char *> files;
+	Data::ArrayListArr<const UTF8Char> files;
 	sb.Append((const UTF8Char*)gtk_selection_data_get_data(data));
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
@@ -159,12 +159,12 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->exitOnClose = false;
 	this->isDialog = false;
 	this->dialogResult = DR_UNKNOWN;
-	this->okBtn = 0;
-	this->cancelBtn = 0;
+	this->okBtn = nullptr;
+	this->cancelBtn = nullptr;
 	this->closingHdlr = 0;
-	this->menu = 0;
+	this->menu = nullptr;
 	this->hAcc = 0;
-	this->hwnd = 0;
+	this->hwnd = nullptr;
 
 	NN<Java::JavaJFrame> frame;
 	NEW_CLASSNN(frame, Java::JavaJFrame());
@@ -175,7 +175,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 		NN<Java::JavaContainer> nncontainer;
 		NEW_CLASSNN(nncontainer, Java::JavaContainer(container));
 		this->container = nncontainer;
-		nncontainer->SetLayout(0);
+		nncontainer->SetLayout(nullptr);
 	}
 	jclass cls = jniEnv->FindClass("JFrameWindowListener");
 	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(J)V");
@@ -226,7 +226,7 @@ UI::GUIForm::~GUIForm()
 	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
 	{
 		frame.Delete();
-		this->hwnd = 0;
+		this->hwnd = nullptr;
 	}
 }
 

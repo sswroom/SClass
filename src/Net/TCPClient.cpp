@@ -77,7 +77,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 	this->timeout = 0;
 
 /*	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 
@@ -158,7 +158,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	IO::Console::PrintStrO((const UTF8Char*)"TCPClient connected\r\n");
 #endif
 /*	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = sockf->GetRemoteName(sbuff, s);
 	this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 	this->cliId = sockf->GenSocketId(s);
@@ -179,7 +179,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Optional<Socket> s) : IO
 		this->cliId = sockf->GenSocketId(nns);
 	/*
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = sockf->GetRemoteName(sbuff, s);
 		this->SetSourceName(sbuff, (UIntOS)(sptr - sbuff));*/
 	}

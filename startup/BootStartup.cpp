@@ -10,13 +10,14 @@ void __stdcall BootControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 
 Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
-	return 0;
+	return nullptr;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
+static UnsafeArray<UTF8Char> argv = UnsafeArray<UTF8Char>::ConvertFrom(U8STR("Boot"));
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall BootControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UIntOS> cmdCnt)
 {
 	cmdCnt.Set(1);
-	return (UTF8Char**)&"Boot";
+	return &argv;
 }
 
 void BootControl_Create(Core::ProgControl *ctrl)

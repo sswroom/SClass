@@ -41,7 +41,7 @@ namespace Data
 		MacString(CFStringRef val);
 		virtual ~MacString();
 
-		const UTF8Char *Ptr() const;
+		UnsafeArrayOpt<const UTF8Char> Ptr() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 

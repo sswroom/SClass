@@ -8,52 +8,52 @@
 #endif
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'/';
-const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*";
+UnsafeArray<const UTF8Char> IO::Path::ALL_FILES = U8STR("*");
 UIntOS IO::Path::ALL_FILES_LEN = 1;
 
-WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
+UnsafeArray<WChar> IO::Path::GetTempFileW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> fileName)
 {
-	return 0;
+	return buff;
 }
 
-Bool IO::Path::IsDirectoryExistW(const WChar *dir)
-{
-	return false;
-}
-
-Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
+Bool IO::Path::IsDirectoryExistW(UnsafeArray<const WChar> dir)
 {
 	return false;
 }
 
-Bool IO::Path::RemoveDirectoryW(const WChar *dir)
+Bool IO::Path::CreateDirectoryW(UnsafeArray<const WChar> dirInput)
 {
 	return false;
 }
 
-Bool IO::Path::DeleteFileW(const WChar *fileName)
+Bool IO::Path::RemoveDirectoryW(UnsafeArray<const WChar> dir)
 {
 	return false;
 }
 
-IntOS IO::Path::FileNameCompareW(const WChar *file1, const WChar *file2)
+Bool IO::Path::DeleteFileW(UnsafeArray<const WChar> fileName)
+{
+	return false;
+}
+
+IntOS IO::Path::FileNameCompareW(UnsafeArray<const WChar> file1, UnsafeArray<const WChar> file2)
 {
 	return Text::StrCompare(file1, file2);
 }
 
-WChar *IO::Path::GetFileDirectoryW(WChar *buff, const WChar *fileName)
+UnsafeArray<WChar> IO::Path::GetFileDirectoryW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> fileName)
 {
 	return Text::StrConcat(buff, fileName);
 }
 
-UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetProcessFileName(UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-WChar *IO::Path::GetProcessFileNameW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetProcessFileNameW(UnsafeArray<WChar> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
@@ -61,53 +61,55 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UIntOS extLen)
+UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UIntOS extLen)
 {
-	UTF8Char *oldExt = 0;
+	UnsafeArrayOpt<UTF8Char> oldExt = nullptr;
+	UnsafeArray<UTF8Char> nnoldExt;
 	UTF8Char c;
 	while ((c = *fileName++) != 0)
 	{
 		if (c == '\\' || c == '/')
 		{
-			oldExt = 0;
+			oldExt = nullptr;
 		}
 		else if (c == '.')
 		{
 			oldExt = fileName;
 		}
 	}
-	if (oldExt == 0)
+	if (!oldExt.SetTo(nnoldExt))
 	{
-		oldExt = fileName;
-		oldExt[-1] = '.';
+		nnoldExt = fileName;
+		nnoldExt[-1] = '.';
 	}
-	return Text::StrConcatC(oldExt, ext, extLen);
+	return Text::StrConcatC(nnoldExt, ext, extLen);
 }
 
-WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
+UnsafeArray<WChar> IO::Path::ReplaceExtW(UnsafeArray<WChar> fileName, UnsafeArray<const WChar> ext)
 {
-	WChar *oldExt = 0;
+	UnsafeArrayOpt<WChar> oldExt = nullptr;
+	UnsafeArray<WChar> nnoldExt;
 	WChar c;
 	while ((c = *fileName++) != 0)
 	{
 		if (c == '\\' || c == '/')
 		{
-			oldExt = 0;
+			oldExt = nullptr;
 		}
 		else if (c == '.')
 		{
 			oldExt = fileName;
 		}
 	}
-	if (oldExt == 0)
+	if (!oldExt.SetTo(nnoldExt))
 	{
-		oldExt = fileName;
-		oldExt[-1] = '.';
+		nnoldExt = fileName;
+		nnoldExt[-1] = '.';
 	}
-	return Text::StrConcat(oldExt, ext);
+	return Text::StrConcat(nnoldExt, ext);
 }
 
-WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
+UnsafeArray<WChar> IO::Path::GetFileExtW(UnsafeArray<WChar> fileBuff, UnsafeArray<const WChar> path)
 {
 	UIntOS i = Text::StrLastIndexOfChar(path, '/');
 	if (i != INVALID_INDEX)
@@ -125,7 +127,7 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
+UnsafeArray<WChar> IO::Path::AppendPathW(UnsafeArray<WChar> path, UnsafeArray<const WChar> toAppend)
 {
 	if (toAppend[0] == '/')
 		return Text::StrConcat(path, toAppend);
@@ -144,12 +146,12 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 		}
 		toAppend += 3;
 	}
-	i = Text::StrCharCnt(path);
+	i = Text::StrCharCnt(UnsafeArray<const WChar>(path));
 	path[i] = '/';
 	return Text::StrConcat(&path[i + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UIntOS toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> toAppend, UIntOS toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{
@@ -178,59 +180,60 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppe
 	return true;
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
+Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 {
-	return 0;
+	return nullptr;
 }
 
-IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
+Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar> path)
 {
-	return 0;
+	return nullptr;
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, NN<IO::Path::FindFileSession> session, OptOut<Data::Timestamp> modTime, OptOut<IO::Path::PathType> pt, OptOut<UInt64> fileSize)
 {
-	return 0;
+	return nullptr;
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArrayOpt<WChar> IO::Path::FindNextFileW(UnsafeArray<WChar> buff, NN<IO::Path::FindFileSession> session, OptOut<Data::Timestamp> modTime, OptOut<IO::Path::PathType> pt, OptOut<UInt64> fileSize)
 {
-	return 0;
+	return nullptr;
 }
 
-void IO::Path::FindFileClose(IO::Path::FindFileSession *session)
+void IO::Path::FindFileClose(NN<IO::Path::FindFileSession> session)
 {
 }
 
-IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
+IO::Path::PathType IO::Path::GetPathTypeW(UnsafeArray<const WChar> path)
 {
 	return IO::Path::PathType::Unknown;
 }
 
-Bool IO::Path::PathExists(const UTF8Char *path, UIntOS pathLen)
+Bool IO::Path::PathExists(UnsafeArray<const UTF8Char> path, UIntOS pathLen)
 {
 	return false;
 }
 
-Bool IO::Path::PathExistsW(const WChar *path)
+Bool IO::Path::PathExistsW(UnsafeArray<const WChar> path)
 {
 	return false;
 }
 
-WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
+UnsafeArray<WChar> IO::Path::GetFullPathW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> path)
 {
 	return Text::StrConcat(buff, path);
 }
 
-Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Char *searchPattern, UIntOS patternLen)
+Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UIntOS pathLen, UnsafeArray<const UTF8Char> searchPattern, UIntOS patternLen)
 {
 	UTF8Char sbuff[256];
 	UIntOS i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	const UTF8Char *fileName = &path[i + 1];
+	UnsafeArray<const UTF8Char> fileName = &path[i + 1];
 	Text::StrConcatC(sbuff, searchPattern, patternLen);
 	Bool isWC = false;
-	UTF8Char *patternStart = 0;
-	UTF8Char *currPattern = sbuff;
+	UnsafeArrayOpt<UTF8Char> patternStart = nullptr;
+	UnsafeArray<UTF8Char> nnpatternStart;
+	UnsafeArray<UTF8Char> currPattern = sbuff;
 	UTF8Char c;
 	while (true)
 	{
@@ -239,13 +242,13 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Cha
 		{
 			if (isWC)
 			{
-				if (patternStart == 0)
+				if (!patternStart.SetTo(nnpatternStart))
 					return true;
-				return Text::StrEndsWith(fileName, patternStart);
+				return Text::StrEndsWith(fileName, nnpatternStart);
 			}
-			else if (patternStart)
+			else if (patternStart.SetTo(nnpatternStart))
 			{
-				return Text::StrCompareICase(fileName, patternStart) == 0;
+				return Text::StrCompareICase(fileName, nnpatternStart) == 0;
 			}
 			else
 			{
@@ -256,22 +259,22 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Cha
 		{
 			if (isWC)
 			{
-				if (patternStart == 0)
+				if (!patternStart.SetTo(nnpatternStart))
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+				if ((i = Text::StrIndexOf(fileName, nnpatternStart)) == INVALID_INDEX)
 					return false;
-				fileName += i + currPattern - patternStart;
-				patternStart = 0;
+				fileName += i + (currPattern - nnpatternStart);
+				patternStart = nullptr;
 				isWC = false;
 			}
-			else if (patternStart)
+			else if (patternStart.SetTo(nnpatternStart))
 			{
 				*currPattern = 0;
-				if (!Text::StrStartsWithICase(fileName, patternStart))
+				if (!Text::StrStartsWithICase(fileName, nnpatternStart))
 					return false;
-				fileName += currPattern - patternStart;
-				patternStart = 0;
+				fileName += currPattern - nnpatternStart;
+				patternStart = nullptr;
 				isWC = false;
 			}
 			if (c == '?')
@@ -284,13 +287,13 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Cha
 			else
 			{
 				isWC = true;
-				patternStart = 0;
+				patternStart = nullptr;
 				currPattern++;
 			}
 		}
 		else
 		{
-			if (patternStart == 0)
+			if (patternStart.IsNull())
 			{
 				patternStart = currPattern;
 			}
@@ -299,7 +302,7 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UIntOS pathLen, const UTF8Cha
 	}
 }
 
-Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
+Bool IO::Path::FilePathMatchW(UnsafeArray<const WChar> path, UnsafeArray<const WChar> searchPattern)
 {
 	WChar wbuff[256];
 	UIntOS i = Text::StrLastIndexOfChar(path, '/');
@@ -336,7 +339,7 @@ Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfW(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -376,48 +379,48 @@ Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 	}
 }
 
-UInt64 IO::Path::GetFileSizeW(const WChar *path)
+UInt64 IO::Path::GetFileSizeW(UnsafeArray<const WChar> path)
 {
 	return 0;
 }
 
-WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetSystemProgramPathW(UnsafeArray<WChar> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-WChar *IO::Path::GetLocAppDataPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetLocAppDataPathW(UnsafeArray<WChar> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-WChar *IO::Path::GetOSPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetOSPathW(UnsafeArray<WChar> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 
-Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime)
+Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime)
 {
 	return false;
 }
 
-Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
+Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 {
 	return Data::Timestamp(0);
 }
 
-WChar *IO::Path::GetCurrDirectoryW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetCurrDirectoryW(UnsafeArray<WChar> buff)
 {
-	return 0;
+	return nullptr;
 }
 
-Bool IO::Path::SetCurrDirectoryW(const WChar *path)
+Bool IO::Path::SetCurrDirectoryW(UnsafeArray<const WChar> path)
 {
-	return 0;
+	return false;
 }
 
-Bool IO::Path::IsSearchPattern(const UTF8Char *path)
+Bool IO::Path::IsSearchPattern(UnsafeArray<const UTF8Char> path)
 {
 	Bool isSrch = false;
 	UTF8Char c;
@@ -432,7 +435,7 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UIntOS pathLen)
+UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> path, UIntOS pathLen)
 {
 	return Text::StrConcatC(sbuff, path, pathLen);
 }

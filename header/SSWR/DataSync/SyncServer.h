@@ -18,8 +18,8 @@ namespace SSWR
 			struct ServerInfo
 			{
 				Int32 serverId;
-				const UTF8Char *serverName;
-				Net::TCPClient *cli;
+				UnsafeArray<const UTF8Char> serverName;
+				Optional<Net::TCPClient> cli;
 				Bool isLocal;
 				Sync::Mutex mut;
 			};

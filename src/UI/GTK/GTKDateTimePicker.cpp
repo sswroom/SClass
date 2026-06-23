@@ -54,15 +54,22 @@ void UI::GTK::GTKDateTimePicker::SetValue(const Data::Timestamp &ts)
 void UI::GTK::GTKDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
-	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
-	dt->SetValue(Text::CStringNN::FromPtr(s));
+	UnsafeArray<const UTF8Char> s;
+	if (s.Set((const UTF8Char*)gtk_entry_buffer_get_text(buff)))
+	{
+		dt->SetValue(Text::CStringNN::FromPtr(s));
+	}
 }
 
 Data::Timestamp UI::GTK::GTKDateTimePicker::GetSelectedTime()
 {
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
-	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
-	return Data::Timestamp::FromStr(Text::CStringNN::FromPtr(s), Data::DateTimeUtil::GetLocalTzQhr());
+	UnsafeArray<const UTF8Char> s;
+	if (s.Set((const UTF8Char*)gtk_entry_buffer_get_text(buff)))
+	{
+		return Data::Timestamp::FromStr(Text::CStringNN::FromPtr(s), Data::DateTimeUtil::GetLocalTzQhr());
+	}
+	return Data::Timestamp(nullptr);
 }
 
 void UI::GTK::GTKDateTimePicker::SetFormat(const Char *format)

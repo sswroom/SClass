@@ -35,7 +35,7 @@ IO::SizeRotateFileLog::SizeRotateFileLog(Text::CStringNN fileName, UIntOS nFiles
 	UnsafeArray<UTF8Char> sptr;
 
 	this->fileName = Text::String::New(fileName);
-	this->extName = 0;
+	this->extName = nullptr;
 
 	sptr = Text::StrConcatC(fileName.ConcatTo(buff), UTF8STRC("0.log"));
 	NEW_CLASSNN(this->fileStm, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -69,10 +69,11 @@ IO::SizeRotateFileLog::SizeRotateFileLog(Text::CStringNN fileName, UIntOS nFiles
 IO::SizeRotateFileLog::~SizeRotateFileLog()
 {
 	fileName->Release();
-	if (this->extName)
+	UnsafeArray<const UTF8Char> extName;
+	if (this->extName.SetTo(extName))
 	{
-		Text::StrDelNew(this->extName);
-		this->extName = 0;
+		Text::StrDelNew(extName);
+		this->extName = nullptr;
 	}
 
 	log.Delete();

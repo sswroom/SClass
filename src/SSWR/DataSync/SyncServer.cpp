@@ -42,9 +42,9 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NN<Net::TCPClient> cli,
 			{
 				svrMutUsage.EndUse();
 				Sync::MutexUsage mutUsage(svr->mut);
-				if (svr->cli == cli.Ptr())
+				if (svr->cli == cli)
 				{
-					svr->cli = 0;
+					svr->cli = nullptr;
 				}
 				mutUsage.EndUse();
 			}
@@ -106,7 +106,7 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 	svrInfo->serverId = serverId;
 	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng).Ptr();
 	svrInfo->isLocal = true;
-	svrInfo->cli = 0;
+	svrInfo->cli = nullptr;
 	this->svrMap.Put(svrInfo->serverId, svrInfo);
 
 	Text::CStringNN nnsyncClients;

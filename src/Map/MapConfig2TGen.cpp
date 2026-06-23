@@ -4366,6 +4366,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngi
 	NN<MapLayerStyle> currLayer2;
 	Data::ArrayListNN<MapLayerStyle> poiArr;
 	NN<Data::ArrayListNN<MapLayerStyle>> drawList;
+	UnsafeArray<UTF8Char> styles;
 
 	if (minScale == 0)
 	{
@@ -4455,7 +4456,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngi
 					currLine->lineType = Text::StrToInt32(strs[2].v);
 					currLine->lineWidth = Text::StrToInt32(strs[3].v);
 					currLine->color = ToColor(strs[4].v);
-					currLine->styles = 0;
+					currLine->styles = nullptr;
 					thisLines->Add(currLine);
 				}
 				else
@@ -4471,8 +4472,8 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngi
 					currLine->lineType = Text::StrToInt32(strs[2].v);
 					currLine->lineWidth = Text::StrToInt32(strs[3].v);
 					currLine->color = ToColor(strs[4].v);
-					currLine->styles = MemAlloc(UTF8Char, (UIntOS)(sptr - strs[5].v));
-					Text::StrConcatC(currLine->styles, strs[5].v, (UIntOS)(sptr - strs[5].v - 1));
+					currLine->styles = styles = MemAllocArr(UTF8Char, (UIntOS)(sptr - strs[5].v));
+					Text::StrConcatC(styles, strs[5].v, (UIntOS)(sptr - strs[5].v - 1));
 					thisLines->Add(currLine);
 				}
 				break;
@@ -4720,6 +4721,7 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 	NN<Data::ArrayListNN<Map::MapLayerStyle>> drawList;
 	NN<Map::MapLayerStyle> currLyr;
 	NN<Media::DrawImage> img;
+	UnsafeArray<UTF8Char> styles;
 
 	if (this->lines.SetTo(lines))
 	{
@@ -4732,9 +4734,9 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 				while (j-- > 0)
 				{
 					currLine = thisLines->GetItemNoCheck(j);
-					if (currLine->styles)
+					if (currLine->styles.SetTo(styles))
 					{
-						MemFree(currLine->styles);
+						MemFreeArr(styles);
 					}
 					MemFreeNN(currLine);
 				}
@@ -4789,6 +4791,7 @@ Bool Map::MapConfig2TGen::IsError()
 Optional<Media::DrawPen> Map::MapConfig2TGen::CreatePen(NN<Media::DrawImage> img, UInt32 lineStyle, UIntOS lineLayer)
 {
 	UnsafeArray<Optional<Data::ArrayListNN<Map::MapLineStyle>>> lines;
+	UnsafeArray<UTF8Char> styles;
 	NN<Data::ArrayListNN<Map::MapLineStyle>> thisLines;
 	if (lineStyle >= this->nLine || !this->lines.SetTo(lines))
 	{
@@ -4808,14 +4811,14 @@ Optional<Media::DrawPen> Map::MapConfig2TGen::CreatePen(NN<Media::DrawImage> img
 	{
 		return img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, nullptr, 0);
 	}
-	else if (thisLine->lineType == 2)
+	else if (thisLine->lineType == 2 && thisLine->styles.SetTo(styles))
 	{
-		UInt8 *pattern = MemAlloc(UInt8, Text::StrCharCnt(thisLine->styles));
+		UnsafeArray<UInt8> pattern = MemAllocArr(UInt8, Text::StrCharCnt(UnsafeArray<const UTF8Char>(styles)));
 		Int32 currVal;
 		UnsafeArray<UTF8Char> currCh;
 		UInt32 i;
 
-		currCh = thisLine->styles;
+		currCh = styles;
 		currVal = 0;
 		i = 0;
 		while (true)
@@ -4843,7 +4846,7 @@ Optional<Media::DrawPen> Map::MapConfig2TGen::CreatePen(NN<Media::DrawImage> img
 			currCh++;
 		}
 		NN<Media::DrawPen> pen = img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, pattern, i);
-		MemFree(pattern);
+		MemFreeArr(pattern);
 		return pen;
 	}
 	return nullptr;

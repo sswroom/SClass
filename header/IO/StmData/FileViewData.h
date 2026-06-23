@@ -30,8 +30,8 @@ namespace IO
 			UInt64 dataLength;
 
 		public:
-			FileViewData(const FileViewData *fd, UInt64 offset, UInt64 length);
-			FileViewData(const UTF8Char *fileName);
+			FileViewData(NN<const FileViewData> fd, UInt64 offset, UInt64 length);
+			FileViewData(UnsafeArray<const UTF8Char> fileName);
 			virtual ~FileViewData();
 
 			virtual UIntOS GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer);

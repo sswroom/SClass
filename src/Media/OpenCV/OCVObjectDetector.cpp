@@ -14,7 +14,7 @@
 #include <opencv2/objdetect.hpp>
 #endif
 
-Media::OpenCV::OCVObjectDetector::OCVObjectDetector(const UTF8Char *path, const UTF8Char *dataFile)
+Media::OpenCV::OCVObjectDetector::OCVObjectDetector(UnsafeArray<const UTF8Char> path, UnsafeArray<const UTF8Char> dataFile)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -53,7 +53,7 @@ Bool Media::OpenCV::OCVObjectDetector::IsError()
 	return this->cascade == 0;
 }
 
-void Media::OpenCV::OCVObjectDetector::NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *info, UnsafeArray<UnsafeArray<UInt8>> imgData)
+void Media::OpenCV::OCVObjectDetector::NextFrame(NN<Media::OpenCV::OCVFrame> frame, NN<Media::FrameInfo> info, UnsafeArray<UnsafeArray<UInt8>> imgData)
 {
 	cv::Mat *fr = (cv::Mat*)frame->GetFrame();
 	if (this->cascade)
@@ -85,13 +85,13 @@ void Media::OpenCV::OCVObjectDetector::NextFrame(NN<Media::OpenCV::OCVFrame> fra
 			}
 			else
 			{
-				this->detectResultHdlr(this->detectResultObj, j, 0, info, imgData);
+				this->detectResultHdlr(this->detectResultObj, j, nullptr, info, imgData);
 			}
 		}
 	}
 }
 
-void Media::OpenCV::OCVObjectDetector::HandleDetectResult(DetectResultFunc func, void *userObj)
+void Media::OpenCV::OCVObjectDetector::HandleDetectResult(DetectResultFunc func, AnyType userObj)
 {
 	this->detectResultObj = userObj;
 	this->detectResultHdlr = func;

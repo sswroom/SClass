@@ -13,18 +13,18 @@ namespace Map
 		{
 		private:
 			NN<Net::SocketFactory> sockf;
-			IO::Writer *errWriter;
-			Map::MapBar::MapBarAdjuster *adjuster;
+			NN<IO::Writer> errWriter;
+			NN<Map::MapBar::MapBarAdjuster> adjuster;
 			Int32 imgWidth;
 			Int32 imgHeight;
 
 		public:
-			MapBarRevGeo(NN<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight);
+			MapBarRevGeo(NN<Net::SocketFactory> sockf, NN<IO::Writer> errWriter, NN<Map::MapBar::MapBarAdjuster> adjuster, Int32 imgWidth, Int32 imgHeight);
 			virtual ~MapBarRevGeo();
 
-			virtual UTF8Char *SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
-			UTF8Char *SearchNameAdjusted(UTF8Char *buff, UIntOS buffSize, Double adjLat, Double adjLon, Int32 lcid);
+			virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
+			virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid);
+			UnsafeArrayOpt<UTF8Char> SearchNameAdjusted(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double adjLat, Double adjLon, Int32 lcid);
 		};
 	}
 }

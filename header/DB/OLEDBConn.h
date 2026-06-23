@@ -62,7 +62,7 @@ namespace DB
 
 		ConnError GetConnError();
 		UnsafeArrayOpt<const WChar> GetConnStr();
-		static const ProviderInfo *GetProviderInfo(const UTF8Char *providerName);
+		//static Optional<const ProviderInfo> GetProviderInfo(UnsafeArray<const UTF8Char> providerName);
 	};
 
 	class OLEDBReader : public DB::DBReader

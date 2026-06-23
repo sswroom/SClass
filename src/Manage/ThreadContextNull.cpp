@@ -22,7 +22,7 @@ UIntOS Manage::ThreadContextX86_64::GetRegisterCnt() const
 
 UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_64::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
-	return 0;
+	return nullptr;
 }
 
 void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb) const
@@ -107,9 +107,9 @@ Bool Manage::ThreadContextX86_64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) cons
 	return false;
 }
 
-NN<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm() const
+Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm() const
 {
-	return 0;
+	return nullptr;
 }
 
 void *Manage::ThreadContextX86_64::GetContext() const

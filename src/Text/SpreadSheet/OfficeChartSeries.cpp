@@ -37,13 +37,13 @@ Optional<Text::String> Text::SpreadSheet::OfficeChartSeries::GetTitle()
 	return this->title;
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetTitle(Optional<Text::String> title, Text::String *dataSource)
+void Text::SpreadSheet::OfficeChartSeries::SetTitle(Optional<Text::String> title, Optional<Text::String> dataSource)
 {
 	OPTSTR_DEL(this->title);
 	this->title = Text::String::CopyOrNull(title);
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::CString title, const UTF8Char *dataSource)
+void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::CString title, UnsafeArrayOpt<const UTF8Char> dataSource)
 {
 	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);

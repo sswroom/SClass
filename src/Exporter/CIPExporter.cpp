@@ -335,11 +335,11 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								sb.ClearStr();
 								if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
 								{
-									strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
+									strRec->str = Text::StrCopyNewC(sb.v, sb.leng);
 								}
 								else
 								{
-									strRec->str = 0;
+									strRec->str = nullptr;
 								}
 								theBlk->records.Add(strRec);
 								strs.Add(strRec);
@@ -359,11 +359,11 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							sb.ClearStr();
 							if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
 							{
-								strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
+								strRec->str = Text::StrCopyNewC(sb.v, sb.leng);
 							}
 							else
 							{
-								strRec->str = 0;
+								strRec->str = nullptr;
 							}
 							theBlk->records.Add(strRec);
 							strs.Add(strRec);
@@ -407,6 +407,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i += 1;
 	}
 
+	UnsafeArray<const UTF8Char> str;
 	i = 0;
 	j = blks.GetCount();
 	while (i < j)
@@ -426,21 +427,21 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			*(Int32*)&buff[0] = theBlk->records.GetItemNoCheck(k)->recId;
 			strRec = theBlk->records.GetItemNoCheck(k);
-			if (strRec->str == 0)
+			if (!strRec->str.SetTo(str))
 			{
 				buff[4] = 0;
 				cib.Write(Data::ByteArrayR(buff, 5));
 			}
 			else
 			{
-				l = Text::StrCharCnt(strRec->str);
+				l = Text::StrCharCnt(str);
 				if (l > 127)
 				{
 					l = 127;
 				}
 				buff[4] = (UInt8)(l << 1);
 				cib.Write(Data::ByteArrayR(buff, 5));
-				cib.Write(Data::ByteArrayR((UInt8*)strRec->str, l << 1));
+				cib.Write(Data::ByteArrayR(str, l << 1));
 			}
 
 			stmPos += (UIntOS)buff[4] + 5;
@@ -456,9 +457,9 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	while (i-- > 0)
 	{
 		strRec = strs.GetItemNoCheck(i);
-		if (strRec->str)
+		if (strRec->str.SetTo(str))
 		{
-			Text::StrDelNew(strRec->str);
+			Text::StrDelNew(str);
 		}
 		MemFreeNN(strRec);
 	}

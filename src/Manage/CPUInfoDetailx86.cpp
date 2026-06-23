@@ -45,8 +45,8 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 	}
 	if (this->cpuModel.v.IsNull())
 	{
-		Manage::CPUDB::CPUSpecX86 *cpuSpec = Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId);
-		if (cpuSpec)
+		NN<Manage::CPUDB::CPUSpecX86> cpuSpec;
+		if (Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId).SetTo(cpuSpec))
 		{
 			this->cpuModel = {cpuSpec->partNum, cpuSpec->partNumLen};
 		}
@@ -65,8 +65,8 @@ Text::CString Manage::CPUInfoDetail::GetCPUModel()
 
 Int32 Manage::CPUInfoDetail::GetTCC()
 {
-	Manage::CPUDB::CPUSpecX86 *cpu = Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId);
-	if (cpu)
+	NN<Manage::CPUDB::CPUSpecX86> cpu;
+	if (Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId).SetTo(cpu))
 	{
 		return cpu->tcc;
 	}

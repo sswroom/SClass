@@ -30,10 +30,10 @@ namespace IO
 			Bool IsConnected();
 			Bool IsRemembered();
 			Bool IsAuthenticated();
-			void GetLastSeen(Data::DateTime *dt);
-			void GetLastUsed(Data::DateTime *dt);
+			void GetLastSeen(NN<Data::DateTime> dt);
+			void GetLastUsed(NN<Data::DateTime> dt);
 
-			Bool Pair(const UTF8Char *key);
+			Bool Pair(UnsafeArray<const UTF8Char> key);
 			Bool Unpair();
 
 			UIntOS QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList);

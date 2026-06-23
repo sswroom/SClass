@@ -13,9 +13,12 @@ struct Crypto::Cert::OpenSSLCert::ClassData
 Bool Crypto::Cert::OpenSSLCert::FromASN1_TIME(AnyType t, NN<Data::DateTime> dt)
 {
 	ASN1_TIME *asn1t = (ASN1_TIME *)t.p;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt16 year;
-	sptr = asn1t->data;
+	if (!sptr.Set(asn1t->data))
+	{
+		return false;
+	}
 	if (asn1t->type == V_ASN1_UTCTIME)
 	{
 		year = (UInt16)(2000 + (sptr[0] - 0x30) * 10 + (sptr[1] - 0x30));

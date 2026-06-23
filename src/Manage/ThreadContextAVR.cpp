@@ -14,20 +14,20 @@ Manage::ThreadContextAVR::~ThreadContextAVR()
 {
 }
 
-UIntOS Manage::ThreadContextAVR::GetRegisterCnt()
+UIntOS Manage::ThreadContextAVR::GetRegisterCnt() const
 {
 	return 0;
 }
 
-UTF8Char *Manage::ThreadContextAVR::GetRegister(UIntOS index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextAVR::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
-	return 0;
+	return nullptr;
 }
 
-void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb)
+void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
 	UIntOS i = 0;
@@ -36,7 +36,7 @@ void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb)
 
 	while (i < j)
 	{
-		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
+		if (this->GetRegister(i, sbuff, regBuff, bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
@@ -52,37 +52,37 @@ void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextAVR::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextAVR::GetType() const
 {
 	return Manage::ThreadContext::ContextType::AVR;
 }
 
-UIntOS Manage::ThreadContextAVR::GetThreadId()
+UIntOS Manage::ThreadContextAVR::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UIntOS Manage::ThreadContextAVR::GetProcessId()
+UIntOS Manage::ThreadContextAVR::GetProcessId() const
 {
 	return this->procId;
 }
 
-void *Manage::ThreadContextAVR::GetContext()
+void *Manage::ThreadContextAVR::GetContext() const
 {
 	return this->context;
 }
 
-UIntOS Manage::ThreadContextAVR::GetInstAddr()
+UIntOS Manage::ThreadContextAVR::GetInstAddr() const
 {
 	return 0;
 }
 
-UIntOS Manage::ThreadContextAVR::GetStackAddr()
+UIntOS Manage::ThreadContextAVR::GetStackAddr() const
 {
 	return 0;
 }
 
-UIntOS Manage::ThreadContextAVR::GetFrameAddr()
+UIntOS Manage::ThreadContextAVR::GetFrameAddr() const
 {
 	return 0;
 }
@@ -99,20 +99,20 @@ void Manage::ThreadContextAVR::SetFrameAddr(UIntOS frameAddr)
 {
 }
 
-Manage::ThreadContext *Manage::ThreadContextAVR::Clone()
+NN<Manage::ThreadContext> Manage::ThreadContextAVR::Clone() const
 {
-	Manage::ThreadContextAVR *cont;
-	NEW_CLASS(cont, Manage::ThreadContextAVR(this->procId, this->threadId, this->context));
+	NN<Manage::ThreadContextAVR> cont;
+	NEW_CLASSNN(cont, Manage::ThreadContextAVR(this->procId, this->threadId, this->context));
 	return cont;
 }
 
-Bool Manage::ThreadContextAVR::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextAVR::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
 	return false;
 }
 
-Manage::Dasm *Manage::ThreadContextAVR::CreateDasm()
+Optional<Manage::Dasm> Manage::ThreadContextAVR::CreateDasm() const
 {
-	return 0;
+	return nullptr;
 }
 

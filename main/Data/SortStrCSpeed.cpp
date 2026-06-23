@@ -29,8 +29,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	UnsafeArray<UnsafeArray<UTF8Char>> array1;
 	UnsafeArray<UnsafeArray<UTF8Char>> array2;
-	UTF8Char **array2p;
-	UTF8Char *arrBuff;
+	UnsafeArray<UTF8Char *> array2p;
+	UnsafeArray<UTF8Char> arrBuff;
 
 	UInt32 seed = 0;
 	UIntOS argc;
@@ -45,8 +45,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASS(sort, Data::Sort::ArtificialQuickSort());
 	array1 = MemAllocAArr(UnsafeArray<UTF8Char>, NUM_RECORD);
 	array2 = MemAllocAArr(UnsafeArray<UTF8Char>, NUM_RECORD);
-	array2p = MemAllocA(UTF8Char*, NUM_RECORD);
-	arrBuff = MemAlloc(UTF8Char, NUM_RECORD * 11);
+	array2p = MemAllocAArr(UTF8Char*, NUM_RECORD);
+	arrBuff = MemAllocArr(UTF8Char, NUM_RECORD * 11);
 
 	clk->Start();
 	Double t1;
@@ -121,9 +121,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	numberOfRec = 128;
 	while (numberOfRec <= NUM_RECORD)
 	{
-		MemCopyANC(array2p, array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
+		MemCopyANC(array2p.Ptr(), array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
 		clk->Start();
-		ArtificialQuickSort_SortStr(array2p, 0, (IntOS)numberOfRec - 1);
+		ArtificialQuickSort_SortStr(array2p.Ptr(), 0, (IntOS)numberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append(CSTR("AQuickSort 1 Thread N = "));
@@ -203,9 +203,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	numberOfRec = 16;
 	while (numberOfRec <= NUM_RECORD)
 	{
-		MemCopyANC(array2p, array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
+		MemCopyANC(array2p.Ptr(), array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
 		clk->Start();
-		InsertionSort_SortStr(array2p, 0, (IntOS)numberOfRec - 1);
+		InsertionSort_SortStr(array2p.Ptr(), 0, (IntOS)numberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append(CSTR("InsertSort 1 Thread N = "));
@@ -243,9 +243,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	numberOfRec = 16;
 	while (numberOfRec <= NUM_RECORD)
 	{
-		MemCopyANC(array2p, array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
+		MemCopyANC(array2p.Ptr(), array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
 		clk->Start();
-		InsertionSort_SortBStr(array2p, 0, (IntOS)numberOfRec - 1);
+		InsertionSort_SortBStr(array2p.Ptr(), 0, (IntOS)numberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append(CSTR("InsertSortB 1 Thread N = "));
@@ -283,9 +283,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	numberOfRec = 16;
 	while (numberOfRec <= NUM_RECORD)
 	{
-		MemCopyANC(array2p, array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
+		MemCopyANC(array2p.Ptr(), array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
 		clk->Start();
-		BubbleSort_SortStrC(array2p, 0, (IntOS)numberOfRec - 1);
+		BubbleSort_SortStrC(array2p.Ptr(), 0, (IntOS)numberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append(CSTR("BubbleSort 1 Thread N = "));
@@ -323,9 +323,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	numberOfRec = 16;
 	while (numberOfRec <= NUM_RECORD)
 	{
-		MemCopyANC(array2p, array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
+		MemCopyANC(array2p.Ptr(), array1.Ptr(), numberOfRec * sizeof(UnsafeArray<UTF8Char>));
 		clk->Start();
-		BitonicSort_SortStr(array2p, 0, (IntOS)numberOfRec - 1);
+		BitonicSort_SortStr(array2p.Ptr(), 0, (IntOS)numberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.Append(CSTR("BitonicSort 1 Thread N = "));
@@ -405,10 +405,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	DEL_CLASS(sort);
 	DEL_CLASS(clk);
 	DEL_CLASS(rand);
-	MemFree(arrBuff);
+	MemFreeArr(arrBuff);
 	MemFreeAArr(array1);
 	MemFreeAArr(array2);
-	MemFreeA(array2p);
+	MemFreeAArr(array2p);
 	return 0;
 }
 

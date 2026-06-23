@@ -38,8 +38,8 @@ private:
 			Sync::MutexUsage mutUsage(myHdlr->sseMut);
 			myHdlr->sseConns.Add(resp);
 			
-			resp->SSESend((const UTF8Char*)"INIT", 0);
-			resp->SSESend((const UTF8Char*)"Test", (const UTF8Char*)"ABC");
+			resp->SSESend(U8STR("INIT"), U8STR(""));
+			resp->SSESend(U8STR("Test"), U8STR("ABC"));
 			return true;
 		}
 		return false;

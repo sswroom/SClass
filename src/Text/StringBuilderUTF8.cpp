@@ -187,7 +187,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(UnsafeArray<const U
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIntOS repCnt)
 {
 	UTF8Char oc[6];
-	UTF8Char *buffEnd;
+	UnsafeArray<UTF8Char> buffEnd;
 	if (c < 0x80)
 	{
 		STRINGBUILDER_ALLOCLENG(repCnt);
@@ -208,7 +208,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIn
 		UInt16 b = ReadNUInt16(oc);
 		while (repCnt-- > 0)
 		{
-			WriteNUInt16(buffEnd, b);
+			WriteNUInt16(&buffEnd[0], b);
 			buffEnd += 2;
 		}
 	}
@@ -222,7 +222,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIn
 		UInt16 b = ReadNUInt16(oc);
 		while (repCnt-- > 0)
 		{
-			WriteNUInt16(buffEnd, b);
+			WriteNUInt16(&buffEnd[0], b);
 			buffEnd[2] = oc[2];
 			buffEnd += 3;
 		}
@@ -238,7 +238,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIn
 		UInt32 b = ReadNUInt32(oc);
 		while (repCnt-- > 0)
 		{
-			WriteNUInt32(buffEnd, b);
+			WriteNUInt32(&buffEnd[0], b);
 			buffEnd += 4;
 		}
 	}
@@ -254,7 +254,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIn
 		UInt32 b = ReadNUInt32(oc);
 		while (repCnt-- > 0)
 		{
-			WriteNUInt32(buffEnd, b);
+			WriteNUInt32(&buffEnd[0], b);
 			buffEnd[4] = oc[4];
 			buffEnd += 5;
 		}
@@ -273,8 +273,8 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UIn
 		UInt16 b2 = ReadNUInt16(&oc[4]);
 		while (repCnt-- > 0)
 		{
-			WriteNUInt32(buffEnd, b1);
-			WriteNUInt32(&buffEnd[4], b2);
+			WriteNUInt32(&buffEnd[0], b1);
+			WriteNUInt16(&buffEnd[4], b2);
 			buffEnd += 6;
 		}
 	}

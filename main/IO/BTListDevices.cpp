@@ -125,13 +125,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Seen: "));
-			btDev->GetLastSeen(&dt);
+			btDev->GetLastSeen(dt);
 			dt.ToLocalTime();
 			sb.AppendDateTime(dt);
 			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Used: "));
-			btDev->GetLastUsed(&dt);
+			btDev->GetLastUsed(dt);
 			dt.ToLocalTime();
 			sb.AppendDateTime(dt);
 			console.WriteLine(sb.ToCString());

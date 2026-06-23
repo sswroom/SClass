@@ -10,13 +10,13 @@ namespace Net
 	class FTPClient : public IO::Stream
 	{
 	private:
-		const UTF8Char *userName;
-		const UTF8Char *password;
+		UnsafeArrayOpt<const UTF8Char> userName;
+		UnsafeArrayOpt<const UTF8Char> password;
 		Optional<Text::String> host;
 		UInt16 port;
-		const UTF8Char *path;
+		UnsafeArrayOpt<const UTF8Char> path;
 		UInt32 codePage;
-		Net::FTPConn *conn;
+		Optional<Net::FTPConn> conn;
 		Optional<Net::TCPClient> cli2;
 
 	public:

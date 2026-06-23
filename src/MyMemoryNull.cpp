@@ -19,7 +19,7 @@ void MemPtrChk(void *ptr)
 
 void MemInit()
 {
-	if (Sync::Interlocked::Increment(&mcInitCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(mcInitCnt) == 1)
 	{
 		mcBusy = 0;
 		mcBreakPt = 0;
@@ -32,7 +32,7 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
+void MemSetLogFile(UnsafeArrayOpt<const UTF8Char> logFile, UIntOS nameLen)
 {
 }
 
@@ -56,7 +56,7 @@ void MemFree(void *p)
 
 void MemDeinit()
 {
-	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(mcInitCnt) == 0)
 	{
 		MemCheckError();
 		Sync::Mutex_Destroy(&mcMut);

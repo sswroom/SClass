@@ -22,17 +22,17 @@ namespace Map
 		};
 		struct MapInfo
 		{
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UIntOS nameLen;
-			const UTF8Char *region;
+			UnsafeArray<const UTF8Char> region;
 			UIntOS regionLen;
-			const UTF8Char *org;
+			UnsafeArray<const UTF8Char> org;
 			UIntOS orgLen;
 			MapType mapType;
 			UIntOS mapTypeParam; //TileMap = concurrent count, ESRI Map = SRID
-			const UTF8Char *url;
+			UnsafeArray<const UTF8Char> url;
 			UIntOS urlLen;
-			const UTF8Char *desc;
+			UnsafeArray<const UTF8Char> desc;
 			UIntOS descLen;
 			UIntOS minLevel;
 			UIntOS maxLevel;

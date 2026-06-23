@@ -25,7 +25,7 @@ class ProgressHandler : public IO::ProgressHandler
 private:
 	Sync::Mutex mut;
 	Optional<Text::String> name;
-	const UTF8Char *fileName;
+	UnsafeArrayOpt<const UTF8Char> fileName;
 	UInt64 currCount;
 	UInt64 lastCount;
 
@@ -66,10 +66,11 @@ private:
 				}
 				sb.AppendC(UTF8STRC("Bytes/s"));
 				Sync::MutexUsage mutUsage(me->mut);
-				if (me->fileName)
+				UnsafeArray<const UTF8Char> fileName;
+				if (me->fileName.SetTo(fileName))
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendSlow(me->fileName);
+					sb.AppendSlow(fileName);
 					sb.AppendC(UTF8STRC(")"));
 				}
 				mutUsage.EndUse();
@@ -85,7 +86,7 @@ public:
 		this->currCount = 0;
 		this->lastCount = 0;
 		this->name = nullptr;
-		this->fileName = 0;
+		this->fileName = nullptr;
 
 		this->threadRunning = false;
 		this->threadToStop = false;
@@ -107,7 +108,7 @@ public:
 		}
 		DEL_CLASS(this->evt);
 		OPTSTR_DEL(this->name);
-		this->fileName = 0;
+		this->fileName = nullptr;
 	}
 
 	virtual void ProgressStart(Text::CStringNN name, UInt64 count)
@@ -133,7 +134,7 @@ public:
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		OPTSTR_DEL(this->name);
-		this->fileName = 0;
+		this->fileName = nullptr;
 		mutUsage.EndUse();
 	}
 };

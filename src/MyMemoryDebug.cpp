@@ -64,7 +64,7 @@ void MemInit()
 	}
 }
 
-void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen)
+void MemSetLogFile(UnsafeArrayOpt<const UTF8Char> logFile, UIntOS nameLen)
 {
 }
 

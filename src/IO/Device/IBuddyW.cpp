@@ -1,11 +1,11 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
-#include "IO/IBuddy.h"
+#include "Text/MyStringW.h"
+#include "IO/Device/IBuddy.h"
 
 #include <windows.h>
 #include <setupapi.h>
 
-void IO::IBuddy::InitDevice(const UTF8Char *devName)
+void IO::Device::IBuddy::InitDevice(UnsafeArray<const UTF8Char> devName)
 {
 //	wprintf(L"%s\r\n", devName);
 	SECURITY_ATTRIBUTES attr;
@@ -13,13 +13,13 @@ void IO::IBuddy::InitDevice(const UTF8Char *devName)
 	attr.bInheritHandle = true;
 	attr.lpSecurityDescriptor = 0;
 
-	const WChar *wptr = Text::StrToWCharNew(devName);
-	this->hand = CreateFileW(wptr, 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(devName);
+	this->hand = CreateFileW(wptr.Ptr(), 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
 	Text::StrDelNew(wptr);
 	this->lastEffect = 0;
 }
 
-IntOS IO::IBuddy::GetNumDevice()
+UIntOS IO::Device::IBuddy::GetNumDevice()
 {
 	Int32 ret = 0;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
@@ -44,9 +44,9 @@ IntOS IO::IBuddy::GetNumDevice()
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
+						if (Text::StrIndexOfW(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
 						{
-							if (Text::StrIndexOf(&data2[2], L"mi_01") != INVALID_INDEX)
+							if (Text::StrIndexOfW(&data2[2], L"mi_01") != INVALID_INDEX)
 							{
 								ret++;
 							}
@@ -64,9 +64,9 @@ IntOS IO::IBuddy::GetNumDevice()
 	return ret;
 }
 
-IO::IBuddy::IBuddy(IntOS devNo)
+IO::Device::IBuddy::IBuddy(UIntOS devNo)
 {
-	IntOS currId = 0;
+	UIntOS currId = 0;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
 	this->hand = 0;
 	HDEVINFO devInfo = SetupDiGetClassDevs((GUID*)hidGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
@@ -90,13 +90,13 @@ IO::IBuddy::IBuddy(IntOS devNo)
 					*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
-						if (Text::StrIndexOf(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
+						if (Text::StrIndexOfW(&data2[2], L"vid_1130&pid_") != INVALID_INDEX)
 						{
-							if (Text::StrIndexOf(&data2[2], L"mi_01") != INVALID_INDEX)
+							if (Text::StrIndexOfW(&data2[2], L"mi_01") != INVALID_INDEX)
 							{
 								if (currId == devNo)
 								{
-									const UTF8Char *sptr = Text::StrToUTF8New(&data2[2]);
+									UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(&data2[2]);
 									InitDevice(sptr);
 									Text::StrDelNew(sptr);
 									break;
@@ -116,25 +116,25 @@ IO::IBuddy::IBuddy(IntOS devNo)
 	}
 }
 
-IO::IBuddy::~IBuddy()
+IO::Device::IBuddy::~IBuddy()
 {
 	if (this->hand)
 	{
 		if (lastEffect)
 		{
-			PlayEffect(IO::IBuddy::IBBE_OFF, IO::IBuddy::IBHDE_OFF, IO::IBuddy::IBHRE_OFF, IO::IBuddy::IBWE_OFF);
+			PlayEffect(IBuddy::IBBE_OFF, IBuddy::IBHDE_OFF, IBuddy::IBHRE_OFF, IBuddy::IBWE_OFF);
 		}
 		CloseHandle((HANDLE)hand);
 		this->hand = 0;
 	}
 }
 
-Bool IO::IBuddy::IsError()
+Bool IO::Device::IBuddy::IsError()
 {
 	return this->hand == 0;
 }
 
-void IO::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, IBuddyHeartEffect hre, IBuddyWingEffect we)
+void IO::Device::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, IBuddyHeartEffect hre, IBuddyWingEffect we)
 {
 	UInt8 effects = (UInt8)(be | hde | hre | we);
 	UInt8 buff[9];

@@ -18,7 +18,7 @@ namespace Net
 	struct SSLCipherSuite
 	{
 		UInt16 id;
-		const UTF8Char *name;
+		UnsafeArray<const UTF8Char> name;
 		UIntOS nameLen;
 	};
 

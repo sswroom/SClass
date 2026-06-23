@@ -28,65 +28,69 @@ UIntOS preferedHeight;
 Optional<Media::CS::CSConverter> csConv;
 Exporter::GUIJPGExporter *exporter;
 
-void __stdcall OnDetectResult(void *userObj, UIntOS objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
+void __stdcall OnDetectResult(AnyType userObj, UIntOS objCnt, UnsafeArrayOpt<const Media::OpenCV::OCVObjectDetector::ObjectRect> objRects, NN<Media::FrameInfo> frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
 {
-	IO::ConsoleWriter *console = (IO::ConsoleWriter*)userObj;
+	NN<IO::ConsoleWriter> console = userObj.GetNN<IO::ConsoleWriter>();
+	UnsafeArray<const Media::OpenCV::OCVObjectDetector::ObjectRect> nnobjRects;
 	UIntOS thisCnt = objCnt;
-	if (rangeLeft < rangeRight && rangeTop < rangeBottom)
+	if (objRects.SetTo(nnobjRects))
 	{
-		UIntOS i = 0;
-		thisCnt = 0;
-		while (i < objCnt)
+		if (rangeLeft < rangeRight && rangeTop < rangeBottom)
 		{
-			if (objRects[i].left <= rangeRight && objRects[i].right >= rangeLeft && objRects[i].top <= rangeBottom && objRects[i].bottom >= rangeTop)
-			{
-				thisCnt++;
-			}
-			i++;
-		}
-	}
-	if ((lastCnt < thisCnt))
-	{
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("People detected, cnt = "));
-		sb.AppendUIntOS(thisCnt);
-		console->WriteLine(sb.ToCString());
-
-		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
-		if (csConv.IsNull())
-		{
-			csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, nullptr);
-		}
-		if (exporter == 0)
-		{
-			NEW_CLASS(exporter, Exporter::GUIJPGExporter());
-		}
-		NN<Media::CS::CSConverter> nncsConv;
-		if (csConv.SetTo(nncsConv))
-		{
-			NN<Media::StaticImage> simg;
-			Data::DateTime dt;
-			UTF8Char sbuff[512];
-			UnsafeArray<UTF8Char> sptr;
-			NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_IGNORE_ALPHA, frInfo->ycOfst));
-			nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (IntOS)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
 			UIntOS i = 0;
+			thisCnt = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data.Ptr() + (IntOS)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UIntOS)(objRects[i].right - objRects[i].left), (UIntOS)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
+				if (nnobjRects[i].left <= rangeRight && nnobjRects[i].right >= rangeLeft && nnobjRects[i].top <= rangeBottom && nnobjRects[i].bottom >= rangeTop)
+				{
+					thisCnt++;
+				}
 				i++;
 			}
-			Media::ImageList imgList(CSTR("ImageCapture"));
-			imgList.AddImage(simg, 0);
+		}
+		if ((lastCnt < thisCnt))
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("People detected, cnt = "));
+			sb.AppendUIntOS(thisCnt);
+			console->WriteLine(sb.ToCString());
 
-			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("People_"));
-			dt.SetCurrTime();
-			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
-			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
-			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
-		}		
+			Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
+			if (csConv.IsNull())
+			{
+				csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, nullptr);
+			}
+			if (exporter == 0)
+			{
+				NEW_CLASS(exporter, Exporter::GUIJPGExporter());
+			}
+			NN<Media::CS::CSConverter> nncsConv;
+			if (csConv.SetTo(nncsConv))
+			{
+				NN<Media::StaticImage> simg;
+				Data::DateTime dt;
+				UTF8Char sbuff[512];
+				UnsafeArray<UTF8Char> sptr;
+				NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_IGNORE_ALPHA, frInfo->ycOfst));
+				nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (IntOS)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
+				UIntOS i = 0;
+				while (i < objCnt)
+				{
+					ImageUtil_DrawRectNA32(simg->data.Ptr() + (IntOS)frInfo->dispSize.x * 4 * nnobjRects[i].top + nnobjRects[i].left * 4, (UIntOS)(nnobjRects[i].right - nnobjRects[i].left), (UIntOS)(nnobjRects[i].bottom - nnobjRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
+					i++;
+				}
+				Media::ImageList imgList(CSTR("ImageCapture"));
+				imgList.AddImage(simg, 0);
+
+				sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("People_"));
+				dt.SetCurrTime();
+				sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
+				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
+			}		
+		}
 	}
 	lastCnt = thisCnt;
 }

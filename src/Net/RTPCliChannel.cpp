@@ -275,14 +275,16 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 UInt32 __stdcall Net::RTPCliChannel::PlayThread(AnyType userObj)
 {
 	NN<Net::RTPCliChannel> me = userObj.GetNN<Net::RTPCliChannel>();
+	NN<Net::RTPController> playCtrl;
+	if (me->chData->playCtrl.SetTo(playCtrl))
 	{
 		Data::DateTime dt;
 		Data::DateTime lastDt;
 
 		me->chData->playing = true;
-		if (me->chData->playCtrl->Init(me))
+		if (playCtrl->Init(me))
 		{
-			if (me->chData->playCtrl->Play(me))
+			if (playCtrl->Play(me))
 			{
 				lastDt.SetCurrTimeUTC();
 				while (!me->chData->playToStop)
@@ -291,13 +293,13 @@ UInt32 __stdcall Net::RTPCliChannel::PlayThread(AnyType userObj)
 					if (dt.DiffMS(lastDt) > 5000)
 					{
 						lastDt.SetCurrTimeUTC();
-						me->chData->playCtrl->KeepAlive(me);
+						playCtrl->KeepAlive(me);
 					}
 					me->chData->playEvt.Wait(5000);
 				}
-				me->chData->playCtrl->StopPlay(me);
+				playCtrl->StopPlay(me);
 			}
-			me->chData->playCtrl->Deinit(me);
+			playCtrl->Deinit(me);
 		}
 	}
 	me->chData->playing = false;
@@ -310,7 +312,7 @@ void Net::RTPCliChannel::SetControlURL(Text::CStringNN url)
 	this->chData->controlURL = Text::String::New(url);
 }
 
-void Net::RTPCliChannel::SetPlayControl(Net::RTPController *playCtrl)
+void Net::RTPCliChannel::SetPlayControl(NN<Net::RTPController> playCtrl)
 {
 	this->chData->playCtrl = playCtrl;
 }
@@ -359,7 +361,7 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, nullptr, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
 }
 
-Net::RTPCliChannel::RTPCliChannel(Net::RTPCliChannel *ch)
+Net::RTPCliChannel::RTPCliChannel(NN<Net::RTPCliChannel> ch)
 {
 	this->chData = ch->chData;
 	this->chData->useCnt++;
@@ -390,7 +392,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 		}
 		MemFree(this->chData->packBuff);
 
-		DEL_CLASS(this->chData->playCtrl);
+		this->chData->playCtrl.Delete();
 		DEL_CLASS(this->chData);
 	}
 }
@@ -452,7 +454,7 @@ Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UIntOS index)
 	}
 	Net::RTPVSource *vSrc;
 	NN<Net::RTPCliChannel> ch;
-	NEW_CLASSNN(ch, Net::RTPCliChannel(this));
+	NEW_CLASSNN(ch, Net::RTPCliChannel(*this));
 	NEW_CLASS(vSrc, Net::RTPVSource(ch, hdlr));
 	return vSrc;
 }

@@ -255,17 +255,18 @@ void Media::OpenSLESRenderer::OnEvent()
 	this->playEvt->Set();
 }
 
-Media::OpenSLESRenderer::OpenSLESRenderer(const UTF8Char *devName)
+Media::OpenSLESRenderer::OpenSLESRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
-	if (devName == 0)
+	UnsafeArray<const UTF8Char> nndevName;
+	if (!devName.SetTo(nndevName))
 	{
 		UTF8Char sbuff[16];
 		Text::StrInt32(sbuff, 0);
-		this->devName = Text::StrCopyNew(sbuff).Ptr();
+		this->devName = Text::StrCopyNew(sbuff);
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName).Ptr();
+		this->devName = Text::StrCopyNew(devName);
 	}
 	this->audsrc = 0;
 	this->playing = false;
@@ -285,6 +286,7 @@ Media::OpenSLESRenderer::~OpenSLESRenderer()
 	}
 	ClassData *clsData = (ClassData*)this->hand;
 	MemFree(clsData);
+	Text::StrDelNew(this->devName);
 }
 
 Bool Media::OpenSLESRenderer::IsError()
@@ -293,7 +295,7 @@ Bool Media::OpenSLESRenderer::IsError()
 	return clsData->builder == 0;
 }
 
-Bool Media::OpenSLESRenderer::BindAudio(Media::AudioSource *audsrc)
+Bool Media::OpenSLESRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)
@@ -470,7 +472,7 @@ Bool Media::OpenSLESRenderer::BindAudio(Media::AudioSource *audsrc)
 	return true;
 }
 
-void Media::OpenSLESRenderer::AudioInit(Media::RefClock *clk)
+void Media::OpenSLESRenderer::AudioInit(NN<Media::RefClock> clk)
 {
 	if (playing)
 		return;
@@ -515,7 +517,7 @@ Bool Media::OpenSLESRenderer::IsPlaying()
 	return this->playing;
 }
 
-void Media::OpenSLESRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::OpenSLESRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

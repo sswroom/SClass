@@ -227,7 +227,7 @@ Bool Net::RTSPClient::SendData(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	return succ;
 }
 
-Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
+Net::RTSPClient::RTSPClient(NN<const Net::RTSPClient> cli)
 {
 	this->cliData = cli->cliData;
 	this->cliData->useCnt++;
@@ -278,7 +278,7 @@ Net::RTSPClient::~RTSPClient()
 	}
 }
 
-Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const UTF8Char *> *options)
+Bool Net::RTSPClient::GetOptions(Text::CStringNN url, NN<Data::ArrayListArr<const UTF8Char>> options)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -320,7 +320,7 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const U
 			i = 0;
 			while (i < buffSize)
 			{
-				options->Add(Text::StrCopyNewC(sarr[i].v, sarr[i].leng).Ptr());
+				options->Add(Text::StrCopyNewC(sarr[i].v, sarr[i].leng));
 				i++;
 			}
 			ret = true;
@@ -408,7 +408,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
+Optional<IO::ParsedObject> Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -481,7 +481,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text
 	else
 	{
 		DEL_CLASS(cli);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -602,9 +602,9 @@ Bool Net::RTSPClient::Deinit(NN<Net::RTPCliChannel> rtpChannel)
 	return true;
 }
 
-Net::RTPController *Net::RTSPClient::Clone() const
+NN<Net::RTPController> Net::RTSPClient::Clone() const
 {
-	Net::RTSPClient *cli;
-	NEW_CLASS(cli, Net::RTSPClient(this));
+	NN<Net::RTSPClient> cli;
+	NEW_CLASSNN(cli, Net::RTSPClient(*this));
 	return cli;
 }

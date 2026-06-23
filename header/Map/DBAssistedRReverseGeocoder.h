@@ -1,11 +1,11 @@
 #ifndef _SM_MAP_DBASSISTEDRREVERSEGEOCODER
 #define _SM_MAP_DBASSISTEDRREVERSEGEOCODER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
+#include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
-#include "DB/DBTool.h"
-#include "Sync/Mutex.h"
 #include "Map/ReverseGeocoder.h"
+#include "Sync/Mutex.h"
 
 namespace Map
 {
@@ -36,7 +36,7 @@ namespace Map
 		void AddReverseGeocoder(NN<Map::ReverseGeocoder> revGeo);
 
 		void AddLangMap(Int32 lcid, Int32 lang);
-		Int32 ToLang(const UTF8Char *name);
+		Int32 ToLang(UnsafeArray<const UTF8Char> name);
 	};
 }
 #endif

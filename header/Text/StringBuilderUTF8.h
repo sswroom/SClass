@@ -86,10 +86,10 @@ namespace Text
 		{
 			UIntOS tlen = len1 + len2;
 			this->AllocLeng(tlen);
-			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNOShort(dptr, str1.Ptr(), len1);
+			UnsafeArray<UTF8Char> dptr = &this->v[this->leng];
+			MemCopyNOShort(dptr.Ptr(), str1.Ptr(), len1);
 			dptr += len1;
-			MemCopyNOShort(dptr, str2.Ptr(), len2);
+			MemCopyNOShort(dptr.Ptr(), str2.Ptr(), len2);
 			dptr += len2;
 			this->leng += tlen;
 			return NNTHIS;
@@ -117,10 +117,10 @@ namespace Text
 		{
 			UIntOS tlen = len1 + len2;
 			this->AllocLeng(tlen);
-			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNOShort(dptr, str1.Ptr(), len1);
+			UnsafeArray<UTF8Char> dptr = &this->v[this->leng];
+			MemCopyNOShort(dptr.Ptr(), str1.Ptr(), len1);
 			dptr += len1;
-			MemCopyNOShort(dptr, str2.Ptr(), len2);
+			MemCopyNOShort(dptr.Ptr(), str2.Ptr(), len2);
 			dptr += len2;
 			*dptr = 0;
 			this->leng += tlen;
@@ -416,7 +416,7 @@ namespace Text
 			if (seperator == 0)
 			{
 				this->AllocLeng((buffSize << 1) + lbCnt);
-				UTF8Char *buffEnd = &this->v[this->leng];
+				UnsafeArray<UTF8Char> buffEnd = &this->v[this->leng];
 				this->leng += (buffSize << 1) + lbCnt;
 				while (buffSize-- > 0)
 				{
@@ -448,7 +448,7 @@ namespace Text
 			else
 			{
 				this->AllocLeng(buffSize * 3 + lbCnt - 1 - lineCnt);
-				UTF8Char *buffEnd = &this->v[this->leng];
+				UnsafeArray<UTF8Char> buffEnd = &this->v[this->leng];
 				this->leng += buffSize * 3 + lbCnt - 1 - lineCnt;
 				while (buffSize-- > 0)
 				{
@@ -590,7 +590,7 @@ namespace Text
 			if (seperator == 0)
 			{
 				this->AllocLeng((buffSize << 1) + lbCnt);
-				UTF8Char *buffEnd = &this->v[this->leng];
+				UnsafeArray<UTF8Char> buffEnd = &this->v[this->leng];
 				this->leng += (buffSize << 1) + lbCnt;
 				while (buffSize-- > 0)
 				{
@@ -622,7 +622,7 @@ namespace Text
 			else
 			{
 				this->AllocLeng(buffSize * 3 + lbCnt - 1 - lineCnt);
-				UTF8Char *buffEnd = &this->v[this->leng];
+				UnsafeArray<UTF8Char> buffEnd = &this->v[this->leng];
 				this->leng += buffSize * 3 + lbCnt - 1 - lineCnt;
 				while (buffSize-- > 0)
 				{

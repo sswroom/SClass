@@ -15,8 +15,8 @@ namespace Net
 		} RTPAudioFormat;
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *svr;
-		IO::LogTool *log;
+		Optional<Net::UDPServer> svr;
+		NN<IO::LogTool> log;
 		Media::AudioFormat *format;
 		Bool started;
 		Sync::Mutex readMut;
@@ -38,10 +38,10 @@ namespace Net
 		Int32 outSSRC;
 
 	private:
-		static void __stdcall UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UIntOS dataSize, void *userData);
-		static UInt32 __stdcall SendThread(void *userObj);
+		static void __stdcall UDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
+		static UInt32 __stdcall SendThread(AnyType userObj);
 	public:
-		RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log);
+		RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, NN<IO::LogTool> log);
 		virtual ~RTPAudioSession();
 
 		Bool IsError();
@@ -49,7 +49,7 @@ namespace Net
 		Bool StartSend(Media::AudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC);
 		void StopSend();
 
-		virtual UTF8Char *GetName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual void GetFormat(Media::AudioFormat *format);

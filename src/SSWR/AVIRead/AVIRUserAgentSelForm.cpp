@@ -73,13 +73,13 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 					}
 					if (uaList[i].devName.SetTo(nns))
 					{
-						const IO::AndroidDB::AndroidInfo *android = IO::AndroidDB::GetAndroidInfo({nns, uaList[i].devNameLen});
-						if (android)
+						NN<const IO::AndroidDB::AndroidInfo> android;
+						if (IO::AndroidDB::GetAndroidInfo({nns, uaList[i].devNameLen}).SetTo(android))
 						{
 							sb.ClearStr();
-							sb.AppendSlow((const UTF8Char*)android->brandName);
+							sb.AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(android->brandName));
 							sb.AppendUTF8Char(' ');
-							sb.AppendSlow((const UTF8Char*)android->modelName);
+							sb.AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(android->modelName));
 							this->lvUserAgent->SetSubItem(k, 3, sb.ToCString());
 							this->lvUserAgent->SetSubItem(k, 4, {android->cpuName, android->cpuNameLen});
 							NN<const Manage::CPUDB::CPUSpec> cpu;

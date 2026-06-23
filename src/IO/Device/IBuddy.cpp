@@ -29,7 +29,7 @@ UIntOS IO::Device::IBuddy::GetNumDevice()
 
 IO::Device::IBuddy::IBuddy(UIntOS devNo)
 {
-	this->stm = 0;
+	this->stm = nullptr;
 	Data::ArrayListNN<IO::HIDInfo> hidList;
 	IO::HIDInfo::GetHIDList(hidList);
 	NN<IO::HIDInfo> hid;
@@ -54,26 +54,28 @@ IO::Device::IBuddy::IBuddy(UIntOS devNo)
 
 IO::Device::IBuddy::~IBuddy()
 {
-	if (this->stm)
+	NN<IO::Stream> stm;
+	if (this->stm.SetTo(stm))
 	{
 		if (lastEffect)
 		{
 			PlayEffect(IO::Device::IBuddy::IBBE_OFF, IO::Device::IBuddy::IBHDE_OFF, IO::Device::IBuddy::IBHRE_OFF, IO::Device::IBuddy::IBWE_OFF);
 		}
-		DEL_CLASS(this->stm);
-		this->stm = 0;
+		stm.Delete();
+		this->stm = nullptr;
 	}
 }
 
 Bool IO::Device::IBuddy::IsError()
 {
-	return this->stm == 0;
+	return this->stm.IsNull();
 }
 
 void IO::Device::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, IBuddyHeartEffect hre, IBuddyWingEffect we)
 {
 	UInt8 effects = (UInt8)(be | hde | hre | we);
 	UInt8 buff[9];
+	NN<IO::Stream> stm;
 	buff[0] = 0x00;
 	buff[1] = 0x55;
 	buff[2] = 0x53;
@@ -83,13 +85,13 @@ void IO::Device::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, I
 	buff[6] = 0x40;
 	buff[7] = 0x02;
 	buff[8] = (UInt8)(255 - effects);
-	if (this->stm)
+	if (this->stm.SetTo(stm))
 	{
 		UIntOS retryCnt;
 		retryCnt = 1;
 		while (retryCnt-- > 0)
 		{
-			UIntOS writeSize = this->stm->Write(Data::ByteArrayR(buff, 9));
+			UIntOS writeSize = stm->Write(Data::ByteArrayR(buff, 9));
 			if (writeSize == 9)
 				break;
 		}

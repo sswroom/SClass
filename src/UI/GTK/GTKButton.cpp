@@ -64,11 +64,11 @@ UI::GTK::GTKButton::~GTKButton()
 
 void UI::GTK::GTKButton::SetText(Text::CStringNN text)
 {
-	UTF8Char *cptr;
+	UnsafeArray<UTF8Char> cptr;
 	UTF8Char c;
 	Bool hasUL = false;
-	const UTF8Char *lbl = Text::StrCopyNewC(text.v, text.leng).Ptr();
-	cptr = (UTF8Char*)lbl;
+	UnsafeArray<const UTF8Char> lbl = Text::StrCopyNewC(text.v, text.leng);
+	cptr = UnsafeArray<UTF8Char>::ConvertFrom(lbl);
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '&')
@@ -81,7 +81,7 @@ void UI::GTK::GTKButton::SetText(Text::CStringNN text)
 	{
 		gtk_button_set_use_underline((GtkButton*)this->hwnd.OrNull(), TRUE);
 	}
-	gtk_button_set_label((GtkButton*)this->hwnd.OrNull(), (const Char*)lbl);
+	gtk_button_set_label((GtkButton*)this->hwnd.OrNull(), (const Char*)lbl.Ptr());
 	Text::StrDelNew(lbl);
 }
 

@@ -28,9 +28,9 @@ namespace Media
 		Int32 uncorrTab32Gamma;
 
 	public:
-		ColorCorr(UTF8Char *name);
+		ColorCorr(UnsafeArray<UTF8Char> name);
 		~ColorCorr();
-		Int32 Save(UTF8Char *name);
+		Int32 Save(UnsafeArray<UTF8Char> name);
 
 		Double GetRAdd();
 		Double GetRMul();

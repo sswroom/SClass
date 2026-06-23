@@ -11,9 +11,9 @@ namespace IO
 		private:
 			void *hand;
 			UInt8 lastEffect;
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 
-			void InitDevice(const UTF8Char *devName);
+			void InitDevice(UnsafeArray<const UTF8Char> devName);
 		public:
 			typedef enum
 			{

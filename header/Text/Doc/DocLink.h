@@ -9,16 +9,16 @@ namespace Text
 		class DocLink : public DocItem
 		{
 		private:
-			const UTF8Char *url;
+			UnsafeArray<const UTF8Char> url;
 		public:
-			DocLink(const UTF8Char *url);
+			DocLink(UnsafeArray<const UTF8Char> url);
 			virtual ~DocLink();
 
 			virtual DocItemType GetItemType();
 
 			virtual UIntOS Add(NN<DocItem> item);
 
-			const UTF8Char *GetLink();
+			UnsafeArray<const UTF8Char> GetLink();
 		};
 	}
 }

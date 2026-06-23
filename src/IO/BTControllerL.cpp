@@ -83,17 +83,17 @@ Bool IO::BTController::BTDevice::IsAuthenticated()
 	return false;
 }
 
-void IO::BTController::BTDevice::GetLastSeen(Data::DateTime *dt)
+void IO::BTController::BTDevice::GetLastSeen(NN<Data::DateTime> dt)
 {
 	dt->SetTicks(0);
 }
 
-void IO::BTController::BTDevice::GetLastUsed(Data::DateTime *dt)
+void IO::BTController::BTDevice::GetLastUsed(NN<Data::DateTime> dt)
 {
 	dt->SetTicks(0);
 }
 
-Bool IO::BTController::BTDevice::Pair(const UTF8Char *key)
+Bool IO::BTController::BTDevice::Pair(UnsafeArray<const UTF8Char> key)
 {
 	///////////////////////////////
 	return false;

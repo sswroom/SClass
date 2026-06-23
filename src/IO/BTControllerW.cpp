@@ -104,19 +104,19 @@ Bool IO::BTController::BTDevice::IsAuthenticated()
 	return dev->fAuthenticated != 0;
 }
 
-void IO::BTController::BTDevice::GetLastSeen(Data::DateTime *dt)
+void IO::BTController::BTDevice::GetLastSeen(NN<Data::DateTime> dt)
 {
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	dt->SetValueSYSTEMTIME(&dev->stLastSeen);
 }
 
-void IO::BTController::BTDevice::GetLastUsed(Data::DateTime *dt)
+void IO::BTController::BTDevice::GetLastUsed(NN<Data::DateTime> dt)
 {
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	dt->SetValueSYSTEMTIME(&dev->stLastUsed);
 }
 
-Bool IO::BTController::BTDevice::Pair(const UTF8Char *key)
+Bool IO::BTController::BTDevice::Pair(UnsafeArray<const UTF8Char> key)
 {
 	InternalData *me = (InternalData*)internalData;
 	BluetoothAuthenticateDeviceFunc AuthDev = (BluetoothAuthenticateDeviceFunc)me->lib->GetFunc("BluetoothAuthenticateDevice");

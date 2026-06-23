@@ -19,7 +19,7 @@ namespace Exporter
 		typedef struct
 		{
 			Int32 recId;
-			const UTF8Char *str;
+			UnsafeArrayOpt<const UTF8Char> str;
 		} CIPStrRecord;
 
 		typedef struct

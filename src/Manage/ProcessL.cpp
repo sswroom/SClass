@@ -63,7 +63,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 {
 	UTF8Char progName[512];
 	UnsafeArray<const UTF8Char> cptr = ccmdLine;
-	UTF8Char *args[10];
+	UnsafeArrayOpt<UTF8Char> args[10];
 	Int32 argc = 0;
 	Bool argStart = false;
 
@@ -72,7 +72,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 	UnsafeArray<UTF8Char> pptr = UARR(progName);
 	Bool isQuote = false;
 	UTF8Char c;
-	args[0] = pptr.Ptr();
+	args[0] = pptr;
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -94,7 +94,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 			if (argStart)
 			{
 				argc++;
-				args[argc] = pptr.Ptr();
+				args[argc] = pptr;
 				argStart = false;
 			}
 			*pptr++ = c;
@@ -105,7 +105,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 	{
 		progNameLen = (UIntOS)(pptr - progName);
 	}
-	args[++argc] = 0;
+	args[++argc] = nullptr;
 
 	pid_t pid = fork();
 	if (pid == 0)
@@ -128,12 +128,12 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 	this->needRelease = true;
 }
 
-Manage::Process::Process(const WChar *cmdLine)
+Manage::Process::Process(UnsafeArray<const WChar> cmdLine)
 {
 	UTF8Char progName[512];
 	UnsafeArray<const UTF8Char> ccmdLine = Text::StrToUTF8New(cmdLine);
 	UnsafeArray<const UTF8Char> cptr = ccmdLine;
-	UTF8Char *args[10];
+	UnsafeArrayOpt<UTF8Char> args[10];
 	Int32 argc = 0;
 	Bool argStart = false;
 
@@ -141,7 +141,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	UnsafeArray<UTF8Char> pptr = UARR(progName);
 	Bool isQuote = false;
 	UTF8Char c;
-	args[0] = pptr.Ptr();
+	args[0] = pptr;
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -163,7 +163,7 @@ Manage::Process::Process(const WChar *cmdLine)
 			if (argStart)
 			{
 				argc++;
-				args[argc] = pptr.Ptr();
+				args[argc] = pptr;
 				argStart = false;
 			}
 			*pptr++ = c;
@@ -174,7 +174,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	{
 		progNameLen = (UIntOS)(pptr - progName);
 	}
-	args[++argc] = 0;
+	args[++argc] = nullptr;
 
 	pid_t pid = fork();
 	if (pid == 0)
@@ -458,7 +458,7 @@ void *Manage::Process::GetHandle()
 
 typedef struct
 {
-	const UTF8Char *fileName;
+	UnsafeArray<const UTF8Char> fileName;
 	UIntOS addr;
 	UIntOS size;
 } ModuleInfoData;
@@ -741,7 +741,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	}
 }
 
-Bool Manage::Process::GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize)
+Bool Manage::Process::GetWorkingSetSize(OptOut<UIntOS> minSize, OptOut<UIntOS> maxSize)
 {
 	return false;
 }
@@ -1128,17 +1128,16 @@ void Manage::Process::FindProcessClose(NN<Manage::Process::FindProcSess> fpsess)
 Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
 {
 	UTF8Char progName[64];
-	UTF8Char *progBuff = 0;
+	UnsafeArrayOpt<UTF8Char> progBuff = nullptr;
 	UnsafeArray<const UTF8Char> cptr = cmd.v;
-	Data::ArrayListObj<UTF8Char *> args;
+	Data::ArrayListObj<UnsafeArrayOpt<UTF8Char>> args;
 	Bool argStart = false;
 
 	UIntOS cmdLen = cmd.leng;
 	UnsafeArray<UTF8Char> pptr;
 	if (cmdLen >= 64)
 	{
-		progBuff = MemAlloc(UTF8Char, cmdLen + 1);
-		pptr = progBuff;
+		progBuff = pptr = MemAllocArr(UTF8Char, cmdLen + 1);
 	}
 	else
 	{
@@ -1146,7 +1145,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	}
 	Bool isQuote = false;
 	UTF8Char c;
-	args.Add(pptr.Ptr());
+	args.Add(pptr);
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -1163,16 +1162,16 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 		{
 			if (argStart)
 			{
-				args.Add(pptr.Ptr());
+				args.Add(pptr);
 				argStart = false;
 			}
 			*pptr++ = c;
 		}
 	}
 	*pptr = 0;
-	args.Add(0);
+	args.Add(nullptr);
 	UIntOS argc;
-	UnsafeArray<UTF8Char*> arr = args.GetArr(argc);
+	UnsafeArray<UnsafeArrayOpt<UTF8Char>> arr = args.GetArr(argc);
 
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
@@ -1195,7 +1194,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	if (pid == 0)
 	{
 		dup2(fd, 1);
-		ret = execvp((Char*)arr[0], (Char**)arr.Ptr());
+		ret = execvp((Char*)arr[0].Ptr(), (Char**)arr.Ptr());
 		exit(ret);
 	}
 	int status = -1;
@@ -1222,9 +1221,10 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 //	printf("Process exited\r\n");
 	close(fd);
 	unlink((Char*)tmpFile);
-	if (progBuff)
+	UnsafeArray<UTF8Char> nnprogBuff;
+	if (progBuff.SetTo(nnprogBuff))
 	{
-		MemFree(progBuff);
+		MemFreeArr(nnprogBuff);
 	}
 	return ret;
 }

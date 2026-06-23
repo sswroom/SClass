@@ -6,17 +6,17 @@
 typedef struct
 {
 	GtkTreeIter iter;
-	void *data;
-	const UTF8Char *txt;
+	AnyType data;
+	NN<Text::String> txt;
 } MyRow;
 
 typedef struct
 {
 	GtkListStore *listStore;
 	GtkWidget *treeView;
-	IntOS colCnt;
+	UIntOS colCnt;
 	Double *colSizes;
-	Data::ArrayListObj<MyRow*> *rows;
+	Data::ArrayListNN<MyRow> *rows;
 	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
 } GUIListViewData;
@@ -32,8 +32,8 @@ UI::GTK::GTKCheckedListBox::~GTKCheckedListBox()
 Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UIntOS index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	MyRow *r = data->rows->GetItem(index);
-	if (r == 0)
+	NN<MyRow> r;
+	if (!data->rows->GetItem(index).SetTo(r))
 		return false;
 	gboolean ret = false;
 	gtk_tree_model_get((GtkTreeModel*)data->listStore, &r->iter, 1, &ret, -1);
@@ -43,8 +43,8 @@ Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UIntOS index)
 void UI::GTK::GTKCheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
-	MyRow *r = data->rows->GetItem(index);
-	if (r == 0)
+	NN<MyRow> r;
+	if (!data->rows->GetItem(index).SetTo(r))
 		return;
 	gtk_list_store_set(data->listStore, &r->iter, 1, isChecked, -1);
 }

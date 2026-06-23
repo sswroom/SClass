@@ -15,11 +15,11 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 	UnsafeArray<UTF8Char> nns;
 	UTF8Char c;
 	sptr = url.ConcatTo(sbuff);
-	this->userName = 0;
-	this->password = 0;
+	this->userName = nullptr;
+	this->password = nullptr;
 	this->host = nullptr;
-	this->path = 0;
-	this->conn = 0;
+	this->path = nullptr;
+	this->conn = nullptr;
 	this->cli2 = nullptr;
 	this->codePage = codePage;
 
@@ -32,18 +32,19 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 		if (c == '/')
 		{
 			this->path = Text::StrCopyNew(&sptr[-1]).Ptr();
+			UnsafeArray<const UTF8Char> nnuserName;
 			sptr[-1] = 0;
 			if (!userName.SetTo(nns))
 			{
-				this->userName = Text::StrCopyNewC(UTF8STRC("Annonymous")).Ptr();
-				this->password = 0;
+				this->userName = nnuserName = Text::StrCopyNewC(UTF8STRC("Annonymous"));
+				this->password = nullptr;
 			}
 			else
 			{
-				this->userName = Text::StrCopyNew(nns).Ptr();
+				this->userName = nnuserName = Text::StrCopyNew(nns);
 				if (password.SetTo(nns))
 				{
-					this->password = Text::StrCopyNew(nns).Ptr();
+					this->password = Text::StrCopyNew(nns);
 				}
 			}
 			NN<Text::String> nnhost;
@@ -59,25 +60,29 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 			{
 				this->port = 21;
 			}
-			NEW_CLASS(this->conn, Net::FTPConn(nnhost->ToCString(), this->port, clif, this->codePage, timeout));
-			this->conn->SendUser(this->userName);
-			if (this->password)
+			NN<Net::FTPConn> conn;
+			NEW_CLASSNN(conn, Net::FTPConn(nnhost->ToCString(), this->port, clif, this->codePage, timeout));
+			this->conn = conn;
+			conn->SendUser(nnuserName);
+			
+			if (this->password.SetTo(nnuserName))
 			{
-				this->conn->SendPassword(this->password);
+				conn->SendPassword(nnuserName);
 			}
-			if (this->conn->IsLogged())
+			UnsafeArray<const UTF8Char> nnpath;
+			if (conn->IsLogged() && this->path.SetTo(nnpath))
 			{
-				sptr = Text::StrConcat(sbuff, this->path);
+				sptr = Text::StrConcat(sbuff, nnpath);
 				UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '/');
 				Bool dirOk;
 				if (i == INVALID_INDEX || i == 0)
 				{
-					dirOk = this->conn->ChangeDirectory((const UTF8Char*)"/");
+					dirOk = conn->ChangeDirectory((const UTF8Char*)"/");
 				}
 				else
 				{
 					sbuff[i] = 0;
-					dirOk = this->conn->ChangeDirectory(sbuff);
+					dirOk = conn->ChangeDirectory(sbuff);
 				}
 
 				if (dirOk)
@@ -90,11 +95,11 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 //					this->conn->GetFileSize(&sbuff[i + 1], &fileSize);
 //					this->conn->GetFileModTime(&sbuff[i + 1], &dt);
 
-					this->conn->ToBinaryType();
-					if (this->conn->ChangePassiveMode(ip, port))
+					conn->ToBinaryType();
+					if (conn->ChangePassiveMode(ip, port))
 					{
 						this->cli2 = clif->Create(ip, port, timeout);
-						this->conn->GetFile(&sbuff[i + 1]);
+						conn->GetFile(&sbuff[i + 1]);
 					}
 				}
 			}
@@ -125,22 +130,20 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 
 Net::FTPClient::~FTPClient()
 {
-	if (this->conn)
+	UnsafeArray<const UTF8Char> nns;
+	this->conn.Delete();
+	if (this->userName.SetTo(nns))
 	{
-		DEL_CLASS(this->conn);
+		Text::StrDelNew(nns);
 	}
-	if (this->userName)
+	if (this->password.SetTo(nns))
 	{
-		Text::StrDelNew(this->userName);
-	}
-	if (this->password)
-	{
-		Text::StrDelNew(this->password);
+		Text::StrDelNew(nns);
 	}
 	OPTSTR_DEL(this->host);
-	if (this->path)
+	if (this->path.SetTo(nns))
 	{
-		Text::StrDelNew(this->path);
+		Text::StrDelNew(nns);
 	}
 }
 

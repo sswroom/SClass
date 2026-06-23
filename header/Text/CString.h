@@ -12,7 +12,7 @@ namespace
 
 #define CSTR(str) Text::CStringNN(UTF8STRC(str))
 #if defined(DEBUGNULL)
-#define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
+#define CSTRP(str, strEnd) Text::CStringNN::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
 #define CSTRP(str, strEnd) Text::CStringNN(str, (UIntOS)(strEnd - str))
 #endif
@@ -42,27 +42,15 @@ namespace Text
 			this->leng = leng;
 		}
 
-		static CString FromPtr(const UTF8Char *v)
+		static CString FromPtr(UnsafeArrayOpt<const UTF8Char> v)
 		{
 			UnsafeArray<const UTF8Char> nnv;
-			if (!nnv.Set(v))
+			if (!v.SetTo(nnv))
 			{
 				return CString(nullptr, 0);
 			}
 			return CString(nnv, Text::StrCharCnt(nnv));
 		}
-
-#if defined(DEBUGNULL)
-		static CString FromPtrD(const UTF8Char *str, const UTF8Char *strEnd, const Char *fileName, UInt32 lineNum)
-		{
-			if (strEnd == 0)
-			{
-				printf("CSTRP found null at %s (%d)\r\n", fileName, lineNum);
-				return nullptr;
-			}
-			return CString(str, (UIntOS)(strEnd - str));
-		}
-#endif
 
 /*		CString Substring(UIntOS index) const
 		{
@@ -212,5 +200,17 @@ namespace Text
 		*oriStr = 0;
 		return oriStr;
 	}
+#if defined(DEBUGNULL)
+	static CStringNN FromPtrD(UnsafeArray<const UTF8Char> str, UnsafeArrayOpt<const UTF8Char> strEnd, const Char *fileName, UInt32 lineNum)
+	{
+		UnsafeArray<const UTF8Char> nnstrEnd;
+		if (!strEnd.SetTo(nnstrEnd))
+		{
+			printf("CSTRP found null at %s (%d)\r\n", fileName, lineNum);
+			return CSTR("");
+		}
+		return CStringNN(str, (UIntOS)(nnstrEnd - str));
+	}
+#endif
 }
 #endif

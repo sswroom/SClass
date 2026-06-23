@@ -16,8 +16,8 @@ namespace IO
 		~SharedMemory();
 		UInt8 *GetPointer();
 
-		static Optional<IO::SharedMemory> Create(const UTF8Char *name, IntOS size);
-		static Optional<IO::SharedMemory> Open(const UTF8Char *name, IntOS size);
+		static Optional<IO::SharedMemory> Create(UnsafeArray<const UTF8Char> name, IntOS size);
+		static Optional<IO::SharedMemory> Open(UnsafeArray<const UTF8Char> name, IntOS size);
 	};
 }
 #endif

@@ -76,7 +76,7 @@ namespace Manage
 		Process(UIntOS procId, Bool controlRight);
 		Process();
 		Process(UnsafeArray<const UTF8Char> cmdLine);
-		Process(const WChar *cmdLine);
+		Process(UnsafeArray<const WChar> cmdLine);
 		virtual ~Process();
 
 		static UIntOS GetCurrProcId();
@@ -102,7 +102,7 @@ namespace Manage
 		UIntOS GetHandles(NN<Data::ArrayListNative<HandleInfo>> handleList);
 		Bool GetHandleDetail(Int32 id, OutParam<HandleType> handleType, NN<Text::StringBuilderUTF8> sbDetail);
 
-		Bool GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize);
+		Bool GetWorkingSetSize(OptOut<UIntOS> minSize, OptOut<UIntOS> maxSize);
 		Bool GetMemoryInfo(OptOut<UIntOS> pageFault, OptOut<UIntOS> workingSetSize, OptOut<UIntOS> pagedPoolUsage, OptOut<UIntOS> nonPagedPoolUsage, OptOut<UIntOS> pageFileUsage);
 		Bool GetTimeInfo(OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> kernelTime, OptOut<Data::Timestamp> userTime);
 		UInt32 GetGDIObjCount();

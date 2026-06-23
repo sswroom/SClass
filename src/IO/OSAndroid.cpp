@@ -5,24 +5,24 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("Android"));
 }
 
-UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 {
 	Text::StringBuilderUTF8 sb;
 	UIntOS i;
-	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/system/build.prop"));
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::UnixConfigFile::Parse(CSTR("/system/build.prop")).SetTo(cfg))
 	{
 		Text::PString u8arr[2];
 		Text::PString u8arr2[2];
 		sb.ClearStr();
 		Manage::Process::ExecuteProcess(CSTR("getprop"), sb);
 		u8arr[1] = sb;
-		NEW_CLASS(cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile());
 		while (1)
 		{
 			i = Text::StrSplitP(u8arr, 2, u8arr[1], '\n');
@@ -36,7 +36,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 					{
 						u8arr2[0].RemoveChars(1);
 						u8arr2[1].RemoveChars(1);
-						cfg->SetValue(nullptr,  u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
+						cfg->SetValue(CSTR(""),  u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
 					}
 				}
 			}
@@ -44,16 +44,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 				break;
 		}
 	}
-	if (cfg)
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
+	NN<Text::String> version;
+	if (cfg->GetValue(CSTR("ro.build.version.sdk")).SetTo(version))
 	{
-		UTF8Char *ret = 0;
-		Text::String *version = cfg->GetValue(CSTR("ro.build.version.sdk"));
-		if (version)
-		{
-			ret = version->ConcatTo(sbuff);
-		}
-		DEL_CLASS(cfg);
-		return ret;
+		ret = version->ConcatTo(sbuff);
 	}
-	return 0;
+	cfg.Delete();
+	return ret;
 }

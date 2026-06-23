@@ -94,7 +94,7 @@ namespace SSWR
 				Int32 userId;
 				Int32 userType; //0 = anonymous, 1 = admin, 2 = user
 				Sync::RWMutex mut;
-				const UTF8Char *userName;
+				UnsafeArray<const UTF8Char> userName;
 				UInt8 md5Pwd[16];
 				Data::FastMapNN<Int64, DeviceInfo> devMap;
 			};

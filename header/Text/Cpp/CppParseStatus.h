@@ -58,7 +58,7 @@ namespace Text
 				Data::ArrayListNative<Int32> ifValid;
 				Data::ArrayListNative<ParserMode> pastModes;
 				Text::StringBuilderUTF8 lineBuffSB;
-				UTF8Char *lineBuffWS;
+				UnsafeArrayOpt<UTF8Char> lineBuffWS;
 			} FileParseStatus;
 		private:
 			NN<Text::String> fileName;

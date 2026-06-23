@@ -69,11 +69,11 @@ void SvcUninstall(const WChar *svcName)
 void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ServiceManager svcMgr;
 	NN<Text::String> s = Text::String::NewNotNull(svcName);
 	NN<Text::String> sDesc = Text::String::NewNotNull(svcDesc);
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	if (svcMgr.ServiceCreate(s->ToCString(), sDesc->ToCString(), CSTRP(sbuff, sptr), IO::ServiceInfo::ServiceState::Active))
 	{
 		printf("Service installed successfully\n");
@@ -111,11 +111,11 @@ VOID WINAPI SvcCtrlHandler( DWORD dwCtrl )
 VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
 	UIntOS i;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), '\\');
 	if (i != INVALID_INDEX)
 	{

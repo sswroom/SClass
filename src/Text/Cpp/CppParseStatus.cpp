@@ -60,6 +60,7 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CStringNN fileName)
 	status->lineNum = 0;
 	status->lineStart = true;
 	status->modeStatus = 0;
+	status->lineBuffWS = nullptr;
 	return true;
 }
 

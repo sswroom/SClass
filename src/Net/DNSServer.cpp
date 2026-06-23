@@ -7,7 +7,7 @@ void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 {
 	NN<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UIntOS i;
 	UIntOS j;
 	Bool found;

@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/XMLDOM.h"
 
-Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NN<Text::EncodingFactory> encFact)
+Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, NN<Text::EncodingFactory> encFact)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -24,10 +24,10 @@ Map::GoogleMap::GoogleWSSearcherXML::~GoogleWSSearcherXML()
 {
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherXML::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Text::CString lang)
 {
 	UTF8Char url[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime currDt;
 	UInt8 databuff[2048];
 	Int32 i;
@@ -59,19 +59,19 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(Data::ByteArray(databuff, 2048))) > 0)
 		{
-			mstm.Write(databuff, readSize);
+			mstm.Write(Data::ByteArrayR(databuff, readSize));
 		}
 		if (status == 200)
 		{
 			Text::StringBuilderUTF8 sb;
-			UInt8 *xmlBuff = mstm.GetBuff(readSize);
+			UnsafeArray<UInt8> xmlBuff = mstm.GetBuff(readSize);
 			Text::XMLDocument doc;
 			if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
 			{
 				Bool succ = false;
-				Text::XMLNode **result;
+				UnsafeArray<NN<Text::XMLNode>> result;
 				UIntOS resultCnt;
-				result = doc.SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
+				result = doc.SearchNode(CSTR("/GeocodeResponse/status"), resultCnt);
 				if (resultCnt == 1)
 				{
 					result[0]->GetInnerXML(sb);
@@ -91,23 +91,17 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS
 					this->lastIsError = true;
 					errWriter->WriteLine(CSTR("Invalid google response content"));
 				}
-				if (result)
-				{
-					doc.ReleaseSearch(result);
-				}
+				doc.ReleaseSearch(result);
 				if (succ)
 				{
-					result = doc.SearchNode(CSTR("/GeocodeResponse/result[type='street_address']/formatted_address"), &resultCnt);
+					result = doc.SearchNode(CSTR("/GeocodeResponse/result[type='street_address']/formatted_address"), resultCnt);
 					if (resultCnt > 0)
 					{
 						sb.ClearStr();
 						result[0]->GetInnerXML(sb);
 						buff = Text::StrConcatS(buff, sb.ToString(), buffSize);
 					}
-					if (result)
-					{
-						doc.ReleaseSearch(result);
-					}
+					doc.ReleaseSearch(result);
 				}
 			}
 			else
@@ -121,7 +115,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS
 			sptr = Text::StrConcatC(url, UTF8STRC("Google "));
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-			errWriter->WriteLineC(url, (UIntOS)(sptr - url));
+			errWriter->WriteLine(CSTRP(url, sptr));
 			*buff = 0;
 		}
 	}
@@ -135,25 +129,25 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherXML::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
-		return 0;
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
+		return nullptr;
 	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherXML::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Double lat, Double lon, Int32 lcid)
 {
 	if (this->lastIsError)
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
-			return 0;
+			return nullptr;
 	}
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
-		return 0;
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
+		return nullptr;
 	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }

@@ -11,7 +11,7 @@ namespace Net
 		{
 			UInt64 rangeStart;
 			UInt64 rangeEnd;
-			const UTF8Char *name;
+			const UTF8Char *name; //UnsafeArray<UTF8Char>
 			UIntOS nameLen;
 		} MACEntry;
 

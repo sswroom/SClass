@@ -59,7 +59,7 @@ void MemPtrChk(void *ptr);
 void MemInit();
 void MemSetBreakPoint(IntOS address);
 void MemSetBreakPoint(IntOS address, UIntOS size);
-void MemSetLogFile(const UTF8Char *logFile, UIntOS nameLen);
+void MemSetLogFile(UnsafeArrayOpt<const UTF8Char> logFile, UIntOS nameLen);
 void MemLock();
 void MemUnlock();
 void *MAlloc(UIntOS size);

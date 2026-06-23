@@ -46,6 +46,7 @@
 #include "SSWR/AVIRead/AVIRDWQB30Form.h"
 #include "SSWR/AVIRead/AVIREDIDViewerForm.h"
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
+#include "SSWR/AVIRead/AVIREmailServerForm.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
@@ -108,7 +109,6 @@
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
-#include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
 #include "SSWR/AVIRead/AVIRStreamEchoForm.h"
@@ -133,10 +133,7 @@
 #include "SSWR/AVIRead/AVIRWifiCaptureForm.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
 #include "SSWR/SHPConv/SHPConvMainForm.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
 #include "UI/GUITextBox.h"
-#include "UI/MessageDialog.h"
 //#include "UtilUI/TextViewerForm.h"
 
 typedef enum
@@ -273,16 +270,16 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
+	NN<SSWR::AVIRead::AVIRBaseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBaseForm>();
 	IO::Path::PathType pt;
-	IO::StmData::FileData *fd;
-	IO::DirectoryPackage *pkg;
+	NN<IO::StmData::FileData> fd;
+	NN<IO::DirectoryPackage> pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
-	IntOS i = 0;
-	while (i < nFiles)
+	UIntOS i = 0;
+	while (i < files.GetCount())
 	{
 		pt = IO::Path::GetPathType(files[i]->ToCString());
 		if (pt == IO::Path::PathType::Directory)
@@ -313,13 +310,13 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 #endif
 			if (!valid)
 			{
-				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]->ToCString()));
-				Parser::ParserList *parsers = me->core->GetParserList();
+				NEW_CLASSNN(pkg, IO::DirectoryPackage(files[i]->ToCString()));
+				NN<Parser::ParserList> parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
-				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
-				if (pobj)
+				NN<IO::ParsedObject> pobj;
+				if (parsers->ParseObject(pkg).SetTo(pobj))
 				{
-					DEL_CLASS(pkg);
+					pkg.Delete();
 					me->core->OpenObject(pobj);
 				}
 				else
@@ -330,21 +327,21 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
-			if (!me->core->LoadData(fd, 0))
+			NEW_CLASSNN(fd, IO::StmData::FileData(files[i]->ToCString(), false));
+			if (!me->core->LoadData(fd, nullptr))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}
-			DEL_CLASS(fd);
+			fd.Delete();
 		}
 		i++;
 	}
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
@@ -367,12 +364,12 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	this->HandleDropFiles(FileHandler, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
+	NN<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu2;
 
 	//RegisterDragDrop(this->hWnd, this);
 
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("M&isc"));
 	mnu->AddItem(CSTR("Open &ODBC"), MNU_OPEN_ODBC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Open O&LE DB"), MNU_OLEDB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -543,8 +540,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[16];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Map::TileMap *tileMap;
 	Map::MapDrawLayer *mapLyr;
 
@@ -552,82 +549,83 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_ABOUT:
 		{
-			SSWR::AVIRead::AVIRAboutForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRAboutForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_OPEN_ODBC:
 		{
-			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRODBCStrForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SET_CODEPAGE:
 		{
-			SSWR::AVIRead::AVIRCodePageForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRCodePageForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SET_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			SSWR::AVIRead::AVIRColorSettingForm dlg(nullptr, this->ui, this->core, this->GetHMonitor());
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_GEN_IMAGE:
 		{
-			SSWR::AVIRead::AVIRGenImageForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRGenImageForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_CAP_DEV:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(nullptr, this->ui, this->core);
+			NN<Media::VideoCapturer> capture;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
-				Media::MediaFile *mf;
-				sptr = dlg.capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg.capture, 0);
+				NN<Media::MediaFile> mf;
+				sptr = capture->GetSourceName(sbuff).Or(sbuff);
+				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+				mf->AddSource(capture, 0);
 				this->core->OpenObject(mf);
 			}
 		}
 		break;
 	case MNU_MTK_GPS:
 		{
-			IO::SerialPort *port;
+			NN<IO::SerialPort> port;
 			IO::Device::MTKGPSNMEA *mtk;
-			Map::GPSTrack *trk;
+			NN<Map::GPSTrack> trk;
 
-			NEW_CLASS(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
+			NEW_CLASSNN(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
 			if (!port->IsError())
 			{
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, false));
 				if (mtk->IsMTKDevice())
 				{
-					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
+					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
 					if (mtk->ParseLog(trk))
 					{
 						core->OpenObject(trk);
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
-						DEL_CLASS(trk);
+						this->ui->ShowMsgOK(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
+						trk.Delete();
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
+					this->ui->ShowMsgOK(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 				DEL_CLASS(mtk);
-				DEL_CLASS(port);
+				port.Delete();
 			}
 		}
 		break;
 	case MNU_GSM_MODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false, nullptr, this->log);
 			frm.SetText(CSTR("Select GSM Modem"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{

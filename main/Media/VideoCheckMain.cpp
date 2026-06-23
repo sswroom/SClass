@@ -118,43 +118,44 @@ end:
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Media::Decoder::FFMPEGDecoder::Enable();
-	const UTF8Char *fileName = (const UTF8Char*)"test.mp4";
+	Text::CStringNN fileName = CSTR("test.mp4");
 //	return sample_decode((const Char*)fileName);
 	UIntOS argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
-		fileName = argv[1];
+		fileName = Text::CStringNN::FromPtr(argv[1]);
 	}
 
 	IO::ConsoleWriter *console;
 	Parser::ParserList *parsers;
 	Media::VideoChecker *checker;
-	IO::StmData::FileData *fd;
-	Media::MediaFile *mediaFile;
+	NN<IO::StmData::FileData> fd;
+	Optional<Media::MediaFile> mediaFile;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(parsers, Parser::FullParserList());
 	NEW_CLASS(checker, Media::VideoChecker(false));
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
+	NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
+	mediaFile = Optional<Media::MediaFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::MediaFile));
+	fd.Delete();
 
-	if (mediaFile)
+	NN<Media::MediaFile> nnmediaFile;
+	if (mediaFile.SetTo(nnmediaFile))
 	{
-		if (checker->IsValid(mediaFile))
+		if (checker->IsValid(nnmediaFile))
 		{
-			console->WriteLine(CSTR("Video file is valid");
+			console->WriteLine(CSTR("Video file is valid"));
 		}
 		else
 		{
-			console->WriteLine(CSTR("Video file is not valid");
+			console->WriteLine(CSTR("Video file is not valid"));
 		}
-		DEL_CLASS(mediaFile);
+		nnmediaFile.Delete();
 	}
 	else
 	{
-		console->WriteLine(CSTR("Error in parsing file");
+		console->WriteLine(CSTR("Error in parsing file"));
 	}
 	
 

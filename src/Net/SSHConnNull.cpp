@@ -40,14 +40,14 @@ Bool Net::SSHConn::GetHostKeySHA1(UnsafeArray<UInt8> buff)
 	return false;
 }
 
-const UTF8Char *Net::SSHConn::GetBanner()
+UnsafeArrayOpt<const UTF8Char> Net::SSHConn::GetBanner()
 {
-	return 0;
+	return nullptr;
 }
 
-const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
+UnsafeArrayOpt<const UTF8Char> Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth)
