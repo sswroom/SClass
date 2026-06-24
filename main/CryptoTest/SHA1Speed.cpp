@@ -10,7 +10,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::HiResClock *clk;
-	UInt8 *testBlock;
+	UnsafeArray<UInt8> testBlock;
 	UInt8 hashVal[32];
 	Double t;
 	IntOS i;
@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(hash, Crypto::Hash::SHA1());
-	testBlock = MemAlloc(UInt8, BLOCKSIZE);
+	testBlock = MemAllocArr(UInt8, BLOCKSIZE);
 	clk->Start();
 	i = REPCOUNT;
 	while (i-- > 0)
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	hash->GetValue(hashVal);
 	t = REPCOUNT / clk->GetTimeDiff();
-	MemFree(testBlock);
+	MemFreeArr(testBlock);
 	DEL_CLASS(hash);
 	DEL_CLASS(clk);
 	printf("Speed: %lf (MiB/s)\r\n", t);

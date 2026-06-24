@@ -393,10 +393,11 @@ void MemDeinit()
 	{
 		MemCheckError();
 		Sync::Mutex_Destroy(&mcMut);
-		if (mcLogFile)
+		UnsafeArray<const UTF8Char> s;
+		if (mcLogFile.SetTo(s))
 		{
-			HeapFree(mcIntHandle, 0, (void*)mcLogFile);
-			mcLogFile = 0;
+			HeapFree(mcIntHandle, 0, (void*)s.Ptr());
+			mcLogFile = nullptr;
 		}
 		HeapDestroy(mcHandle);
 		HeapDestroy(mcIntHandle);
@@ -406,9 +407,10 @@ void MemDeinit()
 
 IO::Writer *MemOpenWriter()
 {
-	if (mcLogFile)
+	UnsafeArray<const UTF8Char> s;
+	if (mcLogFile.SetTo(s))
 	{
-		return new IO::SimpleFileWriter(mcLogFile, IO::FileMode::Append, IO::FileShare::DenyNone);
+		return new IO::SimpleFileWriter(s, IO::FileMode::Append, IO::FileShare::DenyNone);
 	}
 	else
 	{

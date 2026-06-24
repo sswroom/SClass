@@ -13,23 +13,24 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::StmData::FileData> fd;
-	UInt8 *srcBuff = 0;
-	UInt8 *destBuff = 0;
+	UnsafeArrayOpt<UInt8> optsrcBuff = nullptr;
+	UnsafeArray<UInt8> srcBuff;
+	UnsafeArray<UInt8> destBuff;
 	UInt64 fileSize;
 	IO::ConsoleWriter console;
 	NEW_CLASSNN(fd, IO::StmData::FileData(CSTR("LZOBlock.dat"), false));
 	fileSize = fd->GetDataSize();
 	if (fileSize > 0)
 	{
-		srcBuff = MemAlloc(UInt8, fileSize);
+		optsrcBuff = srcBuff = MemAllocArr(UInt8, fileSize);
 		fd->GetRealData(0, fileSize, Data::ByteArray(srcBuff, fileSize));
 	}
-	if (srcBuff)
+	if (optsrcBuff.SetTo(srcBuff))
 	{
 		Data::Compress::LZODecompressor *decomp;
 		UInt64 decSize = 0;
 		Manage::HiResClock clk;
-		destBuff = MemAlloc(UInt8, fileSize * 3);
+		destBuff = MemAllocArr(UInt8, fileSize * 3);
 		NEW_CLASS(decomp, Data::Compress::LZODecompressor());
 		clk.Start();
 		if (decomp->Decompress(Data::ByteArray(destBuff, fileSize * 3), decSize, Data::ByteArrayR(srcBuff, fileSize)))
@@ -88,8 +89,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in decompressing"));
 		}
 		DEL_CLASS(decomp);
-		MemFree(destBuff);
-		MemFree(srcBuff);
+		MemFreeArr(destBuff);
+		MemFreeArr(srcBuff);
 	}
 	fd.Delete();
 	return 0;

@@ -272,7 +272,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 			ptr2 = &ptr1[i];
 		}
@@ -280,7 +280,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		{
 			i = url.leng - 7;
 			ptr2 = nullptr;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
@@ -292,7 +292,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 			ptr2 = &ptr1[i];
 		}
@@ -300,7 +300,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		{
 			i = url.leng - 8;
 			ptr2 = nullptr;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);

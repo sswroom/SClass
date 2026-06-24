@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
 #define _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
-#include "Data/ArrayListObj.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Sync/Mutex.h"
 
 namespace SSWR
@@ -11,15 +11,15 @@ namespace SSWR
 		{
 		private:
 			Sync::Mutex mut;
-			Data::ArrayListObj<UInt8*> dataList;
+			Data::ArrayListArr<UInt8> dataList;
 
 		public:
 			SyncClientDataMgr();
 			~SyncClientDataMgr();
 
-			void AddUserData(const UInt8 *data, UIntOS dataSize);
+			void AddUserData(UnsafeArray<const UInt8> data, UIntOS dataSize);
 			UIntOS GetCount();
-			const UInt8 *GetData(UIntOS index, UIntOS *dataSize);
+			UnsafeArrayOpt<const UInt8> GetData(UIntOS index, OutParam<UIntOS> dataSize);
 			void RemoveData(UIntOS cnt);
 		};
 	}

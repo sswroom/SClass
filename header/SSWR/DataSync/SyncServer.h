@@ -49,7 +49,7 @@ namespace SSWR
 			Bool Start();
 			Bool IsError();
 			UIntOS GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList);
-			void SendUserData(const UInt8 *dataBuff, UIntOS dataSize);
+			void SendUserData(UnsafeArray<const UInt8> dataBuff, UIntOS dataSize);
 
 			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
 			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);

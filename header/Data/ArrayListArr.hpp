@@ -46,6 +46,7 @@ namespace Data
 		UnsafeArrayOpt<T> Pop();
 		ArrayListArr<T> &operator =(const ArrayListArr<T> &v);
 		void Reverse();
+		void MemFreeAll();
 	};
 
 
@@ -438,6 +439,16 @@ namespace Data
 				j--;
 			}
 		}
+	}
+
+	template <class T> void ArrayListArr<T>::MemFreeAll()
+	{
+		UIntOS i = this->objCnt;
+		while (i-- > 0)
+		{
+			MemFreeArr(this->arr[i]);
+		}
+		this->Clear();
 	}
 }
 #endif

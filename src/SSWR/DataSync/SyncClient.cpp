@@ -109,8 +109,8 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(AnyType userObj)
 			while (i < j)
 			{
 				UIntOS dataSize;
-				const UInt8 *buff = me->dataMgr.GetData(i, &dataSize);
-				if (!me->SendUserData(buff, dataSize))
+				UnsafeArray<const UInt8> buff;
+				if (!me->dataMgr.GetData(i, dataSize).SetTo(buff) || !me->SendUserData(buff, dataSize))
 				{
 					break;
 				}
@@ -168,14 +168,14 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	return succ;
 }
 
-Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UIntOS dataSize)
+Bool SSWR::DataSync::SyncClient::SendUserData(UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
 	Bool succ = false;
 	UInt8 packetBuff[2048];
 	UIntOS len;
 	if (dataSize > 2038)
 	{
-		UInt8 *dataBuff = MemAlloc(UInt8, dataSize + 10);
+		UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, dataSize + 10);
 		len = this->protoHdlr.BuildPacket(dataBuff, 4, 0, data, dataSize, 0);
 		
 		Sync::MutexUsage mutUsage(this->cliMut);
@@ -184,7 +184,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UIntOS dataSize
 			succ = (this->cli->Write(Data::ByteArrayR(dataBuff, len)) == len);
 		}
 		mutUsage.EndUse();
-		MemFree(dataBuff);
+		MemFreeArr(dataBuff);
 	}
 	else
 	{
@@ -249,7 +249,7 @@ void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj,
 {
 }
 
-void SSWR::DataSync::SyncClient::AddUserData(const UInt8 *data, UIntOS dataSize)
+void SSWR::DataSync::SyncClient::AddUserData(UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
 	Crypto::Hash::CRC32RIEEE crc;
 	crc.CalcDirect(data, dataSize);

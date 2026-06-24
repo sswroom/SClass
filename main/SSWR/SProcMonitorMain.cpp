@@ -24,12 +24,12 @@ private:
 	};
 
 	IO::LogTool myLog;
-	Data::ArrayListObj<ProgInfo*> progList;
+	Data::ArrayListNN<ProgInfo> progList;
 	Net::OSSocketFactory sockf;
 	Net::UDPServer udp;
 	Crypto::Hash::CRC32RC crc;
 
-	void NotifyServer(ProgInfo *prog, UInt8 type)
+	void NotifyServer(NN<ProgInfo> prog, UInt8 type)
 	{
 		UInt8 buff[256];
 		Text::CStringNN host = CSTR("sswroom.no-ip.org");
@@ -57,7 +57,7 @@ private:
 		prog->lastSent = currTime;
 	}
 
-	Bool SearchProcId(ProgInfo *prog)
+	Bool SearchProcId(NN<ProgInfo> prog)
 	{
 		NN<Text::String> progPath;
 		if (!prog->progPath.SetTo(progPath))
@@ -102,8 +102,8 @@ private:
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		ProgInfo *prog;
-		prog = MemAlloc(ProgInfo, 1);
+		NN<ProgInfo> prog;
+		prog = MemAllocNN(ProgInfo);
 		prog->progName = Text::String::New(progName, progNameLen);
 		prog->procId = 0;
 		prog->lastSent = nullptr;
@@ -164,11 +164,11 @@ private:
 		NN<ProcMonitorCore> me = userObj.GetNN<ProcMonitorCore>();
 		NN<Text::String> progPath;
 		UIntOS i;
-		ProgInfo *prog;
+		NN<ProgInfo> prog;
 		i = me->progList.GetCount();
 		while (i-- > 0)
 		{
-			prog = me->progList.GetItem(i);
+			prog = me->progList.GetItemNoCheck(i);
 			if (prog->progPath.SetTo(progPath))
 			{
 				if (prog->procId != 0)
@@ -233,14 +233,14 @@ public:
 
 	~ProcMonitorCore()
 	{
-		ProgInfo *prog;
+		NN<ProgInfo> prog;
 		UIntOS i = this->progList.GetCount();
 		while (i-- > 0)
 		{
-			prog = this->progList.GetItem(i);
+			prog = this->progList.GetItemNoCheck(i);
 			OPTSTR_DEL(prog->progPath);
 			prog->progName->Release();
-			MemFree(prog);
+			MemFreeNN(prog);
 		}
 	}
 

@@ -66,8 +66,8 @@ namespace SSWR
 
 				Int64 photoTime;
 				UIntOS photoSize;
-				UInt8 *photoBuff;
-				UInt8 *photoBuffRecv;
+				UnsafeArrayOpt<UInt8> photoBuff;
+				UnsafeArrayOpt<UInt8> photoBuffRecv;
 				UIntOS photoPacketSize;
 				Int32 photoSeq;
 				UIntOS photoOfst;

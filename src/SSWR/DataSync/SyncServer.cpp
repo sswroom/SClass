@@ -185,7 +185,7 @@ UIntOS SSWR::DataSync::SyncServer::GetServerList(NN<Data::ArrayListNN<ServerInfo
 	return svrList->GetCount() - i;
 }
 
-void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UIntOS dataSize)
+void SSWR::DataSync::SyncServer::SendUserData(UnsafeArray<const UInt8> dataBuff, UIntOS dataSize)
 {
 	UIntOS i = this->syncCliList.GetCount();
 	while (i-- > 0)

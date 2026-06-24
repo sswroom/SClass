@@ -268,7 +268,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sockf = localSockf;
 	clif = localClif;
 	ssl = Net::SSLEngineFactory::Create(localClif, true);
-	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
+	UnsafeArray<ThreadStatus> threadStatus = MemAllocArr(ThreadStatus, threadCnt);
 	clk->Start();
 	i = threadCnt;
 	while (i-- > 0)
@@ -306,7 +306,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			maxRespTime = threadStatus[i].maxRespTime;
 		}
 	}
-	MemFree(threadStatus);
+	MemFreeArr(threadStatus);
 
 	if (kaConn)
 	{

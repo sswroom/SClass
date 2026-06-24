@@ -67,12 +67,12 @@ UInt32 __stdcall DispThread(AnyType userObj)
 
 UInt32 __stdcall ProcThread(AnyType userObj)
 {
-	UInt8 *sendBuff;
+	UnsafeArray<UInt8> sendBuff;
 	UIntOS sendSize;
 	UIntOS sendBuffSize = 9000;
 	Sync::Interlocked::IncrementU32(procRunning);
 	mainEvt->Set();
-	sendBuff = MemAlloc(UInt8, sendBuffSize);
+	sendBuff = MemAllocArr(UInt8, sendBuffSize);
 	while (!toStop)
 	{
 		Sync::MutexUsage mutUsage(cliMut);
@@ -95,7 +95,7 @@ UInt32 __stdcall ProcThread(AnyType userObj)
 			procEvt->Wait(1000);
 		}
 	}
-	MemFree(sendBuff);
+	MemFreeArr(sendBuff);
 	Sync::Interlocked::DecrementU32(procRunning);
 	mainEvt->Set();
 	return 0;

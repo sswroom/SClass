@@ -21,8 +21,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
-	UInt8 *sampleBuff;
-	Double *freq;
+	UnsafeArray<UInt8> sampleBuff;
+	UnsafeArray<Double> freq;
 	Math::FFTCalc *fft;
 	UIntOS n = 1;
 	UIntOS sampleCount;
@@ -33,16 +33,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASS(fft, Math::FFTCalc(sampleCount, Math::FFTCalc::WT_BLACKMANN_HARRIS));
 		t0 = clk.GetTimeDiff();
 
-		sampleBuff = MemAlloc(UInt8, sizeof(SAMPLETYPE) * sampleCount);
-		freq = MemAlloc(Double, sampleCount);
+		sampleBuff = MemAllocArr(UInt8, sizeof(SAMPLETYPE) * sampleCount);
+		freq = MemAllocArr(Double, sampleCount);
 		clk.Start();
-		MemClear(sampleBuff, sizeof(SAMPLETYPE) * sampleCount);
+		MemClear(&sampleBuff[0], sizeof(SAMPLETYPE) * sampleCount);
 		t1 = clk.GetTimeDiff();
 		clk.Start();
 		fft->ForwardBits(sampleBuff, freq, SAMPLETYPEI, 1, 1.0);
 		t2 = clk.GetTimeDiff();
-		MemFree(sampleBuff);
-		MemFree(freq);
+		MemFreeArr(sampleBuff);
+		MemFreeArr(freq);
 
 		sb.ClearStr();
 		sb.Append(CSTR("N = "));

@@ -534,23 +534,23 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	writer->WriteLine(sb.ToCString());
 #endif
 
-	UInt8 **tmpArr = MemAlloc(UInt8*, 1000);
+	UnsafeArray<UnsafeArray<UInt8>> tmpArr = MemAllocArr(UnsafeArray<UInt8>, 1000);
 	i = 1000;
 	while (i-- > 0)
 	{
-		tmpArr[i] = MemAllocA(UInt8, 16);
+		tmpArr[i] = MemAllocAArr(UInt8, 16);
 	}
 	i = 1000;
 	while (i-- > 0)
 	{
-		MemFreeA(tmpArr[i]);
+		MemFreeAArr(tmpArr[i]);
 	}
 
 	clk->Start();
 	i = 1000;
 	while (i-- > 0)
 	{
-		tmpArr[i] = MemAlloc(UInt8, 16);
+		tmpArr[i] = MemAllocArr(UInt8, 16);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -563,7 +563,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		MemFree(tmpArr[i]);
+		MemFreeArr(tmpArr[i]);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -576,7 +576,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		tmpArr[i] = MemAllocA(UInt8, 16);
+		tmpArr[i] = MemAllocAArr(UInt8, 16);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -589,7 +589,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		MemFreeA(tmpArr[i]);
+		MemFreeAArr(tmpArr[i]);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -598,7 +598,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	console->WriteLine(sb.ToCString());
 	writer->WriteLine(sb.ToCString());
 
-	MemFree(tmpArr);
+	MemFreeArr(tmpArr);
 
 //-------------------------------------------------------------------------------
 	console->WriteLine();

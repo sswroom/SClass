@@ -108,8 +108,8 @@ Optional<Media::VideoCapturer> OpenCapture(UIntOS defIndex)
 	videoCap->GetDeviceList(devList);
 	if (devList.GetCount())
 	{
-		Media::VideoCapturer::VideoFormat *formats;
-		formats = MemAlloc(Media::VideoCapturer::VideoFormat, 512);
+		UnsafeArray<Media::VideoCapturer::VideoFormat> formats;
+		formats = MemAllocArr(Media::VideoCapturer::VideoFormat, 512);
 		i = 0;
 		j = 512;
 		while (i < j)
@@ -155,7 +155,7 @@ Optional<Media::VideoCapturer> OpenCapture(UIntOS defIndex)
 			formats[i].info.DeinitFrameInfo();
 			i++;
 		}
-		MemFree(formats);
+		MemFreeArr(formats);
 	}
 	videoCap->FreeDeviceList(devList);
 	DEL_CLASS(videoCap);

@@ -56,7 +56,7 @@ private:
 	Data::SyncArrayListNN<Text::String> urlList;
 	Bool useComp;
 	Sync::Mutex filesMut;
-	Data::ArrayListObj<FileEntry*> filesList;
+	Data::ArrayListNN<FileEntry> filesList;
 
 	static void ParseJSONObj(NN<ThreadStatus> stat, NN<Text::String> url, Optional<Text::JSONBase> optobj, NN<Text::StringBuilderUTF8> tmpSb)
 	{
@@ -162,7 +162,7 @@ private:
 			}
 			stat->totalContentSize += mstm->GetLength();
 			Sync::MutexUsage mutUsage(stat->me->filesMut);
-			FileEntry *file = MemAlloc(FileEntry, 1);
+			NN<FileEntry> file = MemAllocNN(FileEntry);
 			file->url = url->Clone();
 			file->downloadSize = cli->GetTotalDownload();
 			file->contentSize = mstm->GetLength();
@@ -229,7 +229,7 @@ public:
 		this->threadCount = threadCount;
 		this->threadToStop = false;
 		this->useComp = useComp;
-		this->stats = MemAlloc(ThreadStatus, this->threadCount);
+		this->stats = MemAllocArr(ThreadStatus, this->threadCount);
 		UIntOS i = this->threadCount;
 		while (i-- > 0)
 		{
@@ -407,25 +407,25 @@ public:
 	{
 		Sync::MutexUsage mutUsage(this->filesMut);
 		UIntOS i = this->filesList.GetCount();
-		FileEntry *file;
+		NN<FileEntry> file;
 		while (i-- > 0)
 		{
-			file = this->filesList.GetItem(i);
+			file = this->filesList.GetItemNoCheck(i);
 			file->url->Release();
-			MemFree(file);
+			MemFreeNN(file);
 		}
 		this->filesList.Clear();
 	}
 
-	NN<const Data::ArrayListObj<FileEntry*>> GetFilesList()
+	NN<const Data::ArrayListNN<FileEntry>> GetFilesList()
 	{
 		return this->filesList;
 	}
 };
 
-class FilesComparator : public Data::Comparator<CesiumDownloader::FileEntry*>
+class FilesComparator : public Data::Comparator<NN<CesiumDownloader::FileEntry>>
 {
-	virtual IntOS Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b) const
+	virtual IntOS Compare(NN<CesiumDownloader::FileEntry> a, NN<CesiumDownloader::FileEntry> b) const
 	{
 		return a->url->CompareToFast(b->url->ToCString());
 	}
@@ -455,17 +455,17 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 	console->WriteLine(sb.ToCString());
 	downloader->ClearStat();
 	FilesComparator comparator;
-	Data::ArrayListObj<CesiumDownloader::FileEntry*> filesList;
+	Data::ArrayListNN<CesiumDownloader::FileEntry> filesList;
 	filesList.AddAll(downloader->GetFilesList());
-	Data::Sort::ArtificialQuickSort::Sort<CesiumDownloader::FileEntry*>(filesList, comparator);
+	Data::Sort::ArtificialQuickSort::Sort<NN<CesiumDownloader::FileEntry>>(filesList, comparator);
 	
 	IO::FileStream fs(CSTR("CesiumFiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	CesiumDownloader::FileEntry *file;
+	NN<CesiumDownloader::FileEntry> file;
 	UIntOS i = 0;
 	UIntOS j = filesList.GetCount();
 	while (i < j)
 	{
-		file = filesList.GetItem(i);
+		file = filesList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.Append(file->url);
 		sb.AppendUTF8Char('\t');

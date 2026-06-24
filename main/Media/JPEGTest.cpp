@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UIntOS fileLen;
 	if ((fileLen = (UIntOS)fd.GetDataSize()) > 0)
 	{
-		UInt8 *fileBuff = MemAlloc(UInt8, fileLen);
+		UnsafeArray<UInt8> fileBuff = MemAllocArr(UInt8, fileLen);
 		if (fd.GetRealData(0, fileLen, Data::ByteArray(fileBuff, fileLen)) != fileLen)
 		{
 			console.WriteLine(CSTR("Error in loading jpg file"));
@@ -64,7 +64,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 			}
 		}
-		MemFree(fileBuff);
+		MemFreeArr(fileBuff);
 	}
 	else
 	{

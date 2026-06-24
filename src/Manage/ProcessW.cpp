@@ -167,11 +167,11 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> cmdLine)
 	CloseHandle(procInfo.hThread);
 }
 
-Manage::Process::Process(const WChar *cmdLine)
+Manage::Process::Process(UnsafeArray<const WChar> cmdLine)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
-	const WChar *cptr = cmdLine;
+	UnsafeArray<const WChar> cptr = cmdLine;
 	WChar *pptr = progName;
 	Bool isQuote = false;
 	WChar c;
@@ -196,9 +196,9 @@ Manage::Process::Process(const WChar *cmdLine)
 	ZeroMemory(&startInfo, sizeof(startInfo));
 	startInfo.cb = sizeof(startInfo);
 #ifdef _WIN32_WCE
-	CreateProcessW(0, (LPWSTR)cmdLine, 0, 0, false, 0, 0, buff, &startInfo, &procInfo);
+	CreateProcessW(0, (LPWSTR)cmdLine.Ptr(), 0, 0, false, 0, 0, buff, &startInfo, &procInfo);
 #else
-	CreateProcessW(0, (LPWSTR)cmdLine, 0, 0, false, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
+	CreateProcessW(0, (LPWSTR)cmdLine.Ptr(), 0, 0, false, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
 #endif
 	this->handle = procInfo.hProcess;
 	this->procId = procInfo.dwProcessId;
@@ -907,12 +907,12 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	return true;
 }
 
-Bool Manage::Process::GetWorkingSetSize(UIntOS *minSize, UIntOS *maxSize)
+Bool Manage::Process::GetWorkingSetSize(OptOut<UIntOS> minSize, OptOut<UIntOS> maxSize)
 {
 #ifdef _WIN32_WCE
 	return false;
 #else
-	return GetProcessWorkingSetSize(this->handle, (PSIZE_T)minSize, (PSIZE_T)maxSize) != 0;
+	return GetProcessWorkingSetSize(this->handle, (PSIZE_T)minSize.Ptr(), (PSIZE_T)maxSize.Ptr()) != 0;
 #endif
 
 }

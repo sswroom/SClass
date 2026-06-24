@@ -30,20 +30,21 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		UIntOS i;
 		UIntOS j;
-		UInt8 *fileBuff = 0;
+		UnsafeArrayOpt<UInt8> optfileBuff = nullptr;
+		UnsafeArray<UInt8> fileBuff;
 		UIntOS fileSize = 0;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UIntOS)fs->GetLength();
 		if (fileSize > 0)
 		{
-			fileBuff = MemAlloc(UInt8, fileSize);
+			optfileBuff = fileBuff = MemAllocArr(UInt8, fileSize);
 			if (fs->Read(Data::ByteArray(fileBuff, fileSize)) != fileSize)
 			{
 				console->WriteLine(CSTR("Error in reading file"));
 				fileSize = 0;
-				MemFree(fileBuff);
-				fileBuff = 0;
+				MemFreeArr(fileBuff);
+				optfileBuff = nullptr;
 			}
 		}
 		else
@@ -52,7 +53,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		DEL_CLASS(fs);
 
-		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && fileBuff && fileSize > 0)
+		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && optfileBuff.SetTo(fileBuff) && fileSize > 0)
 		{
 			Text::CString mime = nullptr;
 			Text::CStringNN nnmime;
@@ -164,10 +165,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console->WriteLine(CSTR("Only support http url"));
 		}
-		if (fileBuff)
+		if (optfileBuff.SetTo(fileBuff))
 		{
-			MemFree(fileBuff);
-			fileBuff = 0;
+			MemFreeArr(fileBuff);
+			optfileBuff = nullptr;
 		}
 	}
 

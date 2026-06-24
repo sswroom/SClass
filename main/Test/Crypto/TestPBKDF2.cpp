@@ -9,12 +9,12 @@
 
 UnsafeArray<UTF8Char> Test(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> pwd, UIntOS pwdLen, UnsafeArray<const UTF8Char> salt, UIntOS saltLen, UIntOS cnt, UIntOS dkLen)
 {
-	UInt8 *dk = MemAlloc(UInt8, dkLen);
+	UnsafeArray<UInt8> dk = MemAllocArr(UInt8, dkLen);
 	Crypto::Hash::SHA1 sha1;
 	Crypto::Hash::HMAC hmac(sha1, pwd, pwdLen);
 	Crypto::PBKDF2::Calc(salt, saltLen, cnt, dkLen, hmac, dk);
 	sbuff = Text::StrHexBytes(sbuff, dk, dkLen, 0);
-	MemFree(dk);
+	MemFreeArr(dk);
 	return sbuff;
 }
 

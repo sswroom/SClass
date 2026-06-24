@@ -39,7 +39,7 @@ namespace SSWR
 
 			Bool SendLogin();
 			Bool SendKA();
-			Bool SendUserData(const UInt8 *data, UIntOS dataSize);
+			Bool SendUserData(UnsafeArray<const UInt8> data, UIntOS dataSize);
 		public:
 			SyncClient(NN<Net::SocketFactory> sockf, Int32 serverId, Text::CStringNN serverName, Text::CStringNN clientHost, UInt16 cliPort, Data::Duration timeout);
 			virtual ~SyncClient();
@@ -47,7 +47,7 @@ namespace SSWR
 			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize);
 			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UIntOS buffSize);
 
-			void AddUserData(const UInt8 *data, UIntOS dataSize);
+			void AddUserData(UnsafeArray<const UInt8> data, UIntOS dataSize);
 		};
 	}
 }

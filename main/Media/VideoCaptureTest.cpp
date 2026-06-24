@@ -143,7 +143,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
 				UIntOS frameMaxSize;
-				Media::VideoCapturer::VideoFormat *formats;
+				UnsafeArray<Media::VideoCapturer::VideoFormat> formats;
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 
 				console->WriteLine();
@@ -154,7 +154,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 
 				console->WriteLine(CSTR("Supported Formats:"));
-				formats = MemAlloc(Media::VideoCapturer::VideoFormat, 128);
+				formats = MemAllocArr(Media::VideoCapturer::VideoFormat, 128);
 				i = 0;
 				j = 128;
 				while (i < j)
@@ -254,7 +254,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					formats[i].info.DeinitFrameInfo();
 					i++;
 				}
-				MemFree(formats);
+				MemFreeArr(formats);
 
 
 				console->WriteLine();

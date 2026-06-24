@@ -187,6 +187,8 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thr
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
+	UnsafeArray<UInt8> photoBuff;
+	UnsafeArray<UInt8> photoBuffRecv;
 	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devInfo;
 	if (data.GetSize() >= 6 && data[0] == 'S' && data[1] == 'm')
 	{
@@ -229,21 +231,21 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 					if (me->DevGetOrAdd(clientId).SetTo(dev))
 					{
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
-						if (dev->photoBuff)
+						if (dev->photoBuff.SetTo(photoBuff))
 						{
-							MemFree(dev->photoBuff);
+							MemFreeArr(photoBuff);
 						}
-						if (dev->photoBuffRecv)
+						if (dev->photoBuffRecv.SetTo(photoBuffRecv))
 						{
-							MemFree(dev->photoBuffRecv);
+							MemFreeArr(photoBuffRecv);
 						}
 						dev->photoTime = ReadInt64(&data[12]);
 						dev->photoSize = ReadUInt32(&data[20]);
 						dev->photoFmt = ReadInt32(&data[24]);
 						dev->photoPacketSize = ReadUInt32(&data[28]);
-						dev->photoBuff = MemAlloc(UInt8, dev->photoSize);
-						dev->photoBuffRecv = MemAlloc(UInt8, (dev->photoSize / dev->photoPacketSize) + 1);
-						MemClear(dev->photoBuffRecv, (dev->photoSize / dev->photoPacketSize) + 1);
+						dev->photoBuff = photoBuff = MemAllocArr(UInt8, dev->photoSize);
+						dev->photoBuffRecv = photoBuffRecv = MemAllocArr(UInt8, (dev->photoSize / dev->photoPacketSize) + 1);
+						MemClear(&photoBuffRecv[0], (dev->photoSize / dev->photoPacketSize) + 1);
 						dev->photoOfst = 0;
 						dev->photoSeq = 0;
 						mutUsage.EndUse();
@@ -261,7 +263,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 						Int64 photoTime = ReadInt64(&data[12]);
 						UInt32 seq = ReadUInt32(&data[20]);
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
-						if (dev->photoBuff && dev->photoTime == photoTime)
+						if (dev->photoBuff.SetTo(photoBuff) && dev->photoBuffRecv.SetTo(photoBuffRecv) && dev->photoTime == photoTime)
 						{
 							UIntOS currOfst = seq * dev->photoPacketSize;
 							UIntOS currSize = dev->photoPacketSize;
@@ -271,8 +273,8 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 							}
 							if (currOfst < dev->photoSize && currSize == data.GetSize() - 26)
 							{
-								MemCopyNO(&dev->photoBuff[currOfst], &data[24], data.GetSize() - 26);
-								dev->photoBuffRecv[seq] = 1;
+								MemCopyNO(&photoBuff[currOfst], &data[24], data.GetSize() - 26);
+								photoBuffRecv[seq] = 1;
 								me->log.LogMessage(CSTR("Received photo packet, success"), IO::LogHandler::LogLevel::Raw);
 							}
 							else
@@ -301,7 +303,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 						Bool succ = false;
 						Int64 photoTime = ReadInt64(&data[12]);
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
-						if (dev->photoBuff && dev->photoTime == photoTime)
+						if (dev->photoBuff.SetTo(photoBuff) && dev->photoBuffRecv.SetTo(photoBuffRecv) && dev->photoTime == photoTime)
 						{
 							UIntOS i = dev->photoSize / dev->photoPacketSize;
 							if (i * dev->photoPacketSize < dev->photoSize)
@@ -311,7 +313,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 							succ = true;
 							while (i-- > 0)
 							{
-								if (dev->photoBuffRecv[i] == 0)
+								if (photoBuffRecv[i] == 0)
 								{
 									succ = false;
 									me->UDPSendPhotoPacket(addr, port, photoTime, (UInt32)i);
@@ -319,11 +321,11 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 							}
 							if (succ)
 							{
-								me->SavePhoto(clientId, dev->photoTime, dev->photoFmt, dev->photoBuff, dev->photoSize);
-								MemFree(dev->photoBuff);
-								dev->photoBuff = 0;
-								MemFree(dev->photoBuffRecv);
-								dev->photoBuffRecv = 0;
+								me->SavePhoto(clientId, dev->photoTime, dev->photoFmt, photoBuff, dev->photoSize);
+								MemFreeArr(photoBuff);
+								dev->photoBuff = nullptr;
+								MemFreeArr(photoBuffRecv);
+								dev->photoBuffRecv = nullptr;
 							}
 							succ = true;
 						}
@@ -442,6 +444,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 {
 	NN<DeviceInfo> dev;
 	NN<DeviceInfo> sdev;
+	UnsafeArray<UInt8> photoBuff;
 	NN<ClientStatus> status = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
 	{
@@ -539,14 +542,14 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 			if (status->dev.SetTo(dev))
 			{
 				Sync::RWMutexUsage mutUsage(dev->mut, true);
-				if (dev->photoBuff)
+				if (dev->photoBuff.SetTo(photoBuff))
 				{
-					MemFree(dev->photoBuff);
+					MemFreeArr(photoBuff);
 				}
 				dev->photoTime = ReadInt64(&cmd[0]);
 				dev->photoSize = ReadUInt32(&cmd[8]);
 				dev->photoFmt = ReadInt32(&cmd[12]);
-				dev->photoBuff = MemAlloc(UInt8, dev->photoSize);
+				dev->photoBuff = MemAllocArr(UInt8, dev->photoSize);
 				dev->photoOfst = 0;
 				dev->photoSeq = 0;
 			}
@@ -558,11 +561,11 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 			if (status->dev.SetTo(dev))
 			{
 				Sync::RWMutexUsage mutUsage(dev->mut, true);
-				if (dev->photoBuff && dev->photoTime == ReadInt64(&cmd[0]) && dev->photoSeq == ReadInt32(&cmd[8]))
+				if (dev->photoBuff.SetTo(photoBuff) && dev->photoTime == ReadInt64(&cmd[0]) && dev->photoSeq == ReadInt32(&cmd[8]))
 				{
 					if ((dev->photoOfst + cmdSize - 12) <= dev->photoSize)
 					{
-						MemCopyNO(&dev->photoBuff[dev->photoOfst], &cmd[12], cmdSize - 12);
+						MemCopyNO(&photoBuff[dev->photoOfst], &cmd[12], cmdSize - 12);
 						dev->photoOfst += cmdSize - 12;
 						dev->photoSeq++;
 					}
@@ -577,11 +580,11 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 			{
 				Bool succ = false;
 				Sync::RWMutexUsage mutUsage(dev->mut, true);
-				if (dev->photoBuff && dev->photoTime == ReadInt64(&cmd[0]) && dev->photoOfst == dev->photoSize)
+				if (dev->photoBuff.SetTo(photoBuff) && dev->photoTime == ReadInt64(&cmd[0]) && dev->photoOfst == dev->photoSize)
 				{
-					this->SavePhoto(status->cliId, dev->photoTime, dev->photoFmt, dev->photoBuff, dev->photoSize);
-					MemFree(dev->photoBuff);
-					dev->photoBuff = 0;
+					this->SavePhoto(status->cliId, dev->photoTime, dev->photoFmt, photoBuff, dev->photoSize);
+					MemFreeArr(photoBuff);
+					dev->photoBuff = nullptr;
 					succ = true;
 				}
 				mutUsage.EndUse();
@@ -869,7 +872,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UIntOS photoSize)
+void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UnsafeArray<UInt8> photoBuff, UIntOS photoSize)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1068,7 +1071,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			WriteInt64(dev->readings[39].status, r->GetInt64(91));
 			dev->readings[39].reading = r->GetDblOr(92, 0);
 			dev->stm = 0;
-			dev->photoBuff = 0;
+			dev->photoBuff = nullptr;
 			dev->photoOfst = 0;
 			dev->photoSeq = 0;
 			dev->photoSize = 0;
@@ -1491,9 +1494,10 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 			mstm = dev->imgCaches.GetItemNoCheck(j);
 			mstm.Delete();
 		}
-		if (dev->photoBuff)
+		UnsafeArray<UInt8> photoBuff;
+		if (dev->photoBuff.SetTo(photoBuff))
 		{
-			MemFree(dev->photoBuff);
+			MemFreeArr(photoBuff);
 		}
 		dev.Delete();
 	}
@@ -1596,7 +1600,7 @@ Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSv
 		{
 			dev->digitalNames[i] = nullptr;
 		}
-		dev->photoBuff = 0;
+		dev->photoBuff = nullptr;
 		dev->photoOfst = 0;
 		dev->photoSeq = 0;
 		dev->photoSize = 0;

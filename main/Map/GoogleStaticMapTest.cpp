@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Net::SocketFactory> sockf;
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
-	UInt8 *imgBuff;
+	UnsafeArray<UInt8> imgBuff;
 	Map::GoogleMap::GoogleStaticMap *map;
 	UIntOS retSize;
 	IO::FileStream *stm;
@@ -22,7 +22,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, false);
 
-	imgBuff = MemAlloc(UInt8, 10485760);
+	imgBuff = MemAllocArr(UInt8, 10485760);
 	NEW_CLASS(map, Map::GoogleMap::GoogleStaticMap(clif, ssl, gooKey, nullptr, nullptr));
 	retSize = map->GetMap(imgBuff, 22.4, 114.2, 100000, Math::Size2D<UIntOS>(1024, 768), CSTR("en-us"), 0, 0, 0);
 	if (retSize)
@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		DEL_CLASS(stm);
 	}
 	DEL_CLASS(map);
-	MemFree(imgBuff);
+	MemFreeArr(imgBuff);
 	ssl.Delete();
 	clif.Delete();
 	sockf.Delete();

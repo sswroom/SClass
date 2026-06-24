@@ -102,7 +102,7 @@ namespace SSWR
 			void UDPSendSetOutput(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh);
 
 			void SaveDatas();
-			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UIntOS photoSize);
+			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UnsafeArray<UInt8> photoBuff, UIntOS photoSize);
 
 			void LoadData();
 			Optional<DB::DBTool> UseDB(NN<Sync::MutexUsage> mut);

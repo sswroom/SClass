@@ -13,12 +13,12 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UInt8 *buff2;
+	UnsafeArray<UInt8> buff2;
 	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/OruxMapsImages.db");
 //	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/Hiking20240804.gpx");
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;
-	UInt8 *srcBuff;
+	UnsafeArray<UInt8> srcBuff;
 	UIntOS srcSize2 = 0;
 	UIntOS srcSize3 = 0;
 	IO::ConsoleWriter console;
@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		dstm.ReadToEnd(srcStm, 65536);
 	}
 	{
-		srcBuff = MemAlloc(UInt8, (UIntOS)oriStm.GetLength());
+		srcBuff = MemAllocArr(UInt8, (UIntOS)oriStm.GetLength());
 		if (Data::Compress::Deflater::CompressDirect(Data::ByteArray(srcBuff, (UIntOS)oriStm.GetLength()), srcSize2, oriStm.GetArray(), Data::Compress::Deflater::CompLevel::BestCompression, true))
 		{
 			console.WriteLine(CSTR("Deflater CompressDirect success"));
@@ -45,7 +45,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Deflater CompressDirect failed"));
 		}
-		MemFree(srcBuff);
+		MemFreeArr(srcBuff);
 	}
 	{
 		IO::MemoryStream tmpStm;
@@ -119,7 +119,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine(CSTR("Inflate decompress failed"));
 	}
 
-	buff2 = MemAlloc(UInt8, (UIntOS)oriStm.GetLength() * 2);
+	buff2 = MemAllocArr(UInt8, (UIntOS)oriStm.GetLength() * 2);
 	{
 		if (Data::Compress::Inflater::DecompressDirect(Data::ByteArray(buff2, (UIntOS)oriStm.GetLength() * 2), buffSize2, srcStm.GetArray(), true))
 		{
@@ -134,7 +134,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console.WriteLine(CSTR("Inflater decompressDirect failed"));
 	}
-	MemFree(buff2);
+	MemFreeArr(buff2);
 	return 0;
 }
 

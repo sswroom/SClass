@@ -8,14 +8,14 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UInt64 flen;
 	
 	IO::FileStream fs(CSTR("test.json"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	flen = fs.GetLength();
 	if (flen > 0)
 	{
-		buff = MemAlloc(UInt8, (UIntOS)flen + 1);
+		buff = MemAllocArr(UInt8, (UIntOS)flen + 1);
 		fs.Read(Data::ByteArray(buff, (UIntOS)flen));
 		buff[flen] = 0;
 		NN<Text::JSONBase> obj;
@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(sb.ToCString());
 			obj->EndUse();
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	return 0;
 }
