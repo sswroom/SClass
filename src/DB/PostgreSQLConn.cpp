@@ -583,19 +583,26 @@ public:
 		}
 		case 17: //bytea
 		{
-			const UTF8Char *val = (const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex);
-			if (val[0] == '\\' && val[1] == 'x')
+			UnsafeArray<const UTF8Char> val;
+			if (val.Set((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)))
 			{
-				UIntOS len = Text::StrCharCnt(val);
-				UInt8 *buff = MemAlloc(UInt8, (len >> 1) - 1);
-				len = Text::StrHex2Bytes(val + 2, buff);
-				item->SetByteArr(buff, len);
-				MemFree(buff);
-				return true;
+				if (val[0] == '\\' && val[1] == 'x')
+				{
+					UIntOS len = Text::StrCharCnt(val);
+					UInt8 *buff = MemAlloc(UInt8, (len >> 1) - 1);
+					len = Text::StrHex2Bytes(val + 2, buff);
+					item->SetByteArr(buff, len);
+					MemFree(buff);
+					return true;
+				}
+				else
+				{
+					item->SetByteArr(val, (UIntOS)PQgetlength(this->res, this->currrow, (int)colIndex));
+				}
 			}
 			else
 			{
-				item->SetByteArr(val, (UIntOS)PQgetlength(this->res, this->currrow, (int)colIndex));
+				item->SetNull();
 			}
 			return true;
 		}

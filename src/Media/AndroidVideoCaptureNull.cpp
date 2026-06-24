@@ -19,17 +19,17 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 
 }
 
-UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UIntOS Media::AndroidVideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList)
 {
 	return 0;
 }
 
-UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UIntOS devId)
+UnsafeArrayOpt<UTF8Char> Media::AndroidVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devId)
 {
-	return 0;
+	return nullptr;
 }
 
-Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
+Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UIntOS devId)
 {
-	return 0;
+	return nullptr;
 }

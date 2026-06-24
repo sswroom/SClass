@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIMAGEUPLOADERFORM
 #define _SM_SSWR_AVIREAD_AVIRIMAGEUPLOADERFORM
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"

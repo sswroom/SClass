@@ -132,8 +132,8 @@ UnsafeArrayOpt<const UTF8Char> Data::MacString::Ptr() const
 
 void Data::MacString::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	const UTF8Char *s = this->Ptr();
-	if (s)
+	UnsafeArray<const UTF8Char> s;
+	if (this->Ptr().SetTo(s))
 	{
 		Text::JSText::ToJSTextDQuote(sb, s);
 	}

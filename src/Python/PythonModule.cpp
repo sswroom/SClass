@@ -26,13 +26,13 @@ UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetName() const
 
 UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetFileName() const
 {
-	const UTF8Char *ret = (const UTF8Char*)PyModule_GetFilename(this->clsData->obj);
-	if (ret == 0)
+	UnsafeArray<const Char> ret;
+	if (!ret.Set(PyModule_GetFilename(this->clsData->obj)))
 	{
 		PyErr_Clear();
 		return nullptr;
 	}
-	return ret;
+	return UnsafeArray<const UTF8Char>::ConvertFrom(ret);
 }
 
 Optional<Python::PythonDict> Python::PythonModule::GetDict() const

@@ -177,7 +177,7 @@ Media::MMALVideoCapture::~MMALVideoCapture()
 	MemFree(info);
 }
 
-UTF8Char *Media::MMALVideoCapture::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::MMALVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcatC(buff, UTF8STRC("Broadcom VC Camera"));
 }

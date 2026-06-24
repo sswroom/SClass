@@ -37,7 +37,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 {
 	IO::VirtualPackageFile *pf;
 	UTF8Char sbuff[9];
-	UTF8Char *namePtr;
+	UnsafeArray<UTF8Char> namePtr;
 	UInt32 fileCnt;
 	UInt32 i;
 	UInt32 ofst;

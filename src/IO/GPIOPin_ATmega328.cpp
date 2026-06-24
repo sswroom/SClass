@@ -3,19 +3,9 @@
 #include "IO/GPIOPin.h"
 #include "Text/MyString.h"
 
-#include <avr/io.h>
-/*#define PINB (*(volatile UInt8*)0x23)
-#define DDRB (*(volatile UInt8*)0x24)
-#define PORTB (*(volatile UInt8*)0x25)
-#define PINC (*(volatile UInt8*)0x26)
-#define DDRC (*(volatile UInt8*)0x27)
-#define PORTC (*(volatile UInt8*)0x28)
-#define PIND (*(volatile UInt8*)0x29)
-#define DDRD (*(volatile UInt8*)0x2A)
-#define PORTD (*(volatile UInt8*)0x2B)*/
-
-IO::GPIOPin::GPIOPin(IntOS pinNum)
+IO::GPIOPin::GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum)
 {
+	this->gpio = gpio;
 	this->pinNum = pinNum;
 }
 
@@ -25,167 +15,65 @@ IO::GPIOPin::~GPIOPin()
 
 Bool IO::GPIOPin::IsError()
 {
-	return this->pinNum < 0 || this->pinNum >= 23;
+	return this->gpio->IsError();
 }
 
 Bool IO::GPIOPin::IsPinHigh()
 {
-	if (this->pinNum < 0)
-	{
-		return false;
-	}
-	else if (this->pinNum < 8)
-	{
-		return (PINB & (1 << this->pinNum)) != 0;
-	}
-	else if (this->pinNum < 15)
-	{
-		return (PINC & (1 << (this->pinNum - 8))) != 0;
-	}
-	else if (this->pinNum < 23)
-	{
-		return (PIND & (1 << (this->pinNum - 15))) != 0;
-	}
-	else
-	{
-		return false;
-	}
+	return this->gpio->IsPinHigh(this->pinNum);
+}
+
+Bool IO::GPIOPin::IsPinOutput()
+{
+	return this->gpio->IsPinOutput(this->pinNum);
 }
 
 void IO::GPIOPin::SetPinOutput(Bool isOutput)
 {
-	if (isOutput)
-	{
-		if (this->pinNum < 0)
-		{
-		}
-		else if (this->pinNum < 8)
-		{
-			DDRB |= (1 << this->pinNum);
-		}
-		else if (this->pinNum < 15)
-		{
-			DDRC |= (1 << (this->pinNum - 8));
-		}
-		else if (this->pinNum < 23)
-		{
-			DDRD |= (1 << (this->pinNum - 15));
-		}
-		else
-		{
-		}
-	}
-	else
-	{
-		if (this->pinNum < 0)
-		{
-		}
-		else if (this->pinNum < 8)
-		{
-			DDRB &= ~(1 << this->pinNum);
-		}
-		else if (this->pinNum < 15)
-		{
-			DDRC &= ~(1 << (this->pinNum - 8));
-		}
-		else if (this->pinNum < 23)
-		{
-			DDRD &= ~(1 << (this->pinNum - 15));
-		}
-		else
-		{
-		}
-	}
+	this->gpio->SetPinOutput(this->pinNum, isOutput);
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
 {
-	if (isHigh)
-	{
-		if (this->pinNum < 0)
-		{
-		}
-		else if (this->pinNum < 8)
-		{
-			PORTB |= (1 << this->pinNum);
-		}
-		else if (this->pinNum < 15)
-		{
-			PORTC |= (1 << (this->pinNum - 8));
-		}
-		else if (this->pinNum < 23)
-		{
-			PORTD |= (1 << (this->pinNum - 15));
-		}
-		else
-		{
-		}
-	}
-	else
-	{
-		if (this->pinNum < 0)
-		{
-		}
-		else if (this->pinNum < 8)
-		{
-			PORTB &= ~(1 << this->pinNum);
-		}
-		else if (this->pinNum < 15)
-		{
-			PORTC &= ~(1 << (this->pinNum - 8));
-		}
-		else if (this->pinNum < 23)
-		{
-			PORTD &= ~(1 << (this->pinNum - 15));
-		}
-		else
-		{
-		}
-	}
+	this->gpio->SetPinState(this->pinNum, isHigh);
 }
 
 Bool IO::GPIOPin::SetPullType(PullType pt)
 {
+	return this->gpio->SetPullType(this->pinNum, pt);
 }
 
 UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
 {
-	return Text::StrIntOS(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
+	return Text::StrUIntOS(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)
 {
+	this->gpio->SetEventOnHigh(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnLow(Bool enable)
 {
+	this->gpio->SetEventOnLow(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnRaise(Bool enable)
 {
+	this->gpio->SetEventOnRaise(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnFall(Bool enable)
 {
+	this->gpio->SetEventOnFall(this->pinNum, enable);
 }
 
 Bool IO::GPIOPin::HasEvent()
 {
+	return this->gpio->HasEvent(this->pinNum);
 }
 
 void IO::GPIOPin::ClearEvent()
 {
+	this->gpio->ClearEvent(this->pinNum);
 }
-
-IntOS IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
-{
-	IntOS i = 0;
-	IntOS j = 23;
-	while (i < j)
-	{
-		pinList->Add((Int32)i);
-		i++;
-	}
-	return j;
-}
-

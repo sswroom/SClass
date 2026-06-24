@@ -36,7 +36,7 @@ Bool Power_ReadIntFile(Text::CStringNN filePath, OutParam<Int32> val)
 	return succ;
 }
 
-Bool Power_ReadStrFile(Text::CStringNN filePath, UTF8Char *val, UIntOS maxCharCnt)
+Bool Power_ReadStrFile(Text::CStringNN filePath, UnsafeArray<UTF8Char> val, UIntOS maxCharCnt)
 {
 	UIntOS readSize;
 	Bool succ = false;

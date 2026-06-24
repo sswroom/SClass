@@ -325,7 +325,7 @@ void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<X
 	int searchType;
 	Data::ArrayListArr<UTF8Char> reqArr;
 	Data::ArrayListNN<XMLNode> currPathArr;
-	UTF8Char *src;
+	UnsafeArray<UTF8Char> src;
 	path.ConcatTo(myPath);
 
 	src = myPath;
@@ -1209,7 +1209,8 @@ Text::XMLDocument::~XMLDocument()
 Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UIntOS size)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *newDoc = 0;
+	UnsafeArrayOpt<UTF8Char> optnewDoc = nullptr;
+	UnsafeArray<UTF8Char> newDoc;
 	UnsafeArray<UTF8Char> dest;
 	const UInt8 *src;
 
@@ -1221,23 +1222,26 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 	{
 		Text::Encoding enc(1201);
 		this->docLeng = enc.CountUTF8Chars(buff + 2, size - 2);
-		newDoc = MemAlloc(UTF8Char, this->docLeng);
+		newDoc = MemAllocArr(UTF8Char, this->docLeng);
 		enc.UTF8FromBytes(newDoc, buff + 2, size - 2, 0);
 		newDoc[this->docLeng] = 0;
+		optnewDoc = newDoc;
 	}
 	else if (buff[0] == 0xff && buff[1] == 0xfe)
 	{
 		Text::Encoding enc(1200);
 		this->docLeng = enc.CountUTF8Chars(buff + 2, size - 2);
-		newDoc = MemAlloc(UTF8Char, this->docLeng);
+		newDoc = MemAllocArr(UTF8Char, this->docLeng);
 		enc.UTF8FromBytes(newDoc, buff + 2, size - 2, 0);
 		newDoc[this->docLeng] = 0;
+		optnewDoc = newDoc;
 	}
 	else if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
 	{
 		this->docLeng = size - 3;
-		newDoc = MemAlloc(UTF8Char, docLeng + 1);
+		newDoc = MemAllocArr(UTF8Char, docLeng + 1);
 		Text::StrConcatC(newDoc, &buff[3], size - 3);
+		optnewDoc = newDoc;
 	}
 	else if (buff[0] == '<' && buff[1] == '?' && buff[2] == 'x' && buff[3] == 'm' && buff[4] == 'l' && buff[5] == ' ')
 	{
@@ -1273,8 +1277,9 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 						*dest = 0;
 						Text::Encoding enc(encFact->GetCodePage(CSTRP(sbuff, dest)));
 						docLeng = enc.CountUTF8Chars(buff, size);
-						newDoc = MemAlloc(UTF8Char, docLeng + 1);
+						newDoc = MemAllocArr(UTF8Char, docLeng + 1);
 						enc.UTF8FromBytes(newDoc, buff, size, 0);
+						optnewDoc = newDoc;
 						break;
 					}
 
@@ -1318,8 +1323,9 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 						*dest = 0;
 						Text::Encoding enc(encFact->GetCodePage(CSTRP(sbuff, dest)));
 						this->docLeng = enc.CountUTF8Chars(buff, size);
-						newDoc = MemAlloc(UTF8Char, docLeng + 1);
+						newDoc = MemAllocArr(UTF8Char, docLeng + 1);
 						enc.UTF8FromBytes(newDoc, buff, size, 0);
+						optnewDoc = newDoc;
 						break;
 					}
 					attName = 0;
@@ -1366,23 +1372,25 @@ Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray
 			}
 			currPos++;
 		}
-		if (newDoc == 0)
+		if (optnewDoc.IsNull())
 		{
 			Text::Encoding enc;
 			this->docLeng = enc.CountUTF8Chars(buff, size);
-			newDoc = MemAlloc(UTF8Char, docLeng + 1);
+			newDoc = MemAllocArr(UTF8Char, docLeng + 1);
 			enc.UTF8FromBytes(newDoc, buff, size, 0);
+			optnewDoc = newDoc;
 		}
 	}
 	else
 	{
 		Text::Encoding enc;
 		this->docLeng = enc.CountUTF8Chars(buff, size);
-		newDoc = MemAlloc(UTF8Char, docLeng + 1);
+		newDoc = MemAllocArr(UTF8Char, docLeng + 1);
 		enc.UTF8FromBytes(newDoc, buff, size, 0);
+		optnewDoc = newDoc;
 	}
 
-	if (newDoc)
+	if (optnewDoc.SetTo(newDoc))
 	{
 		UnsafeArray<UTF8Char> doc;
 		if (this->doc.SetTo(doc))

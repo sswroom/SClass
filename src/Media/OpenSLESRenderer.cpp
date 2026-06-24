@@ -26,14 +26,14 @@ typedef struct
 	me->OnEvent();
 }*/
 
-UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(void *obj)
+UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(AnyType obj)
 {
-	Media::OpenSLESRenderer *me = (Media::OpenSLESRenderer *)obj;
+	NN<Media::OpenSLESRenderer> me = obj.GetNN<Media::OpenSLESRenderer>();
 	Media::AudioFormat af;
 	Sync::Event *evt;
 	Int32 i;
 	Int32 refStart;
-	Int32 audStartTime;	
+	Data::Duration audStartTime;	
 	IntOS buffLeng = BUFFLENG;
 	IntOS minLeng;
 	Int32 thisT;
@@ -42,20 +42,26 @@ UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(void *obj)
 	NEW_CLASS(evt, Sync::Event());
 
 	me->threadInit = true;
-	me->audsrc->GetFormat(&af);
+	NN<Media::AudioSource> audsrc;
+	if (!me->audsrc.SetTo(audsrc))
+	{
+		DEL_CLASS(evt);
+		return 0;
+	}
+	audsrc->GetFormat(af);
 	if (me->buffTime)
 	{
 		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
 	}
 	i = 4;
-	audStartTime = me->audsrc->GetCurrTime();
-	minLeng = me->audsrc->GetMinBlockSize();
+	audStartTime = audsrc->GetCurrTime();
+	minLeng = audsrc->GetMinBlockSize();
 	if (minLeng > buffLeng)
 		buffLeng = minLeng;
 
 	me->clk->Start(audStartTime);
 	me->playing = true;
-	me->audsrc->Start(evt, (Int32)buffLeng);
+	audsrc->Start(evt, (Int32)buffLeng);
 
 /*	int err;
 	err = snd_pcm_reset((snd_pcm_t*)me->hand);
@@ -245,7 +251,7 @@ Int32 Media::OpenSLESRenderer::GetDeviceCount()
 	return 1;
 }
 
-UTF8Char *Media::OpenSLESRenderer::GetDeviceName(UTF8Char *buff, Int32 devNo)
+UnsafeArrayOpt<UTF8Char> Media::OpenSLESRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, Int32 devNo)
 {
 	return Text::StrInt32(buff, devNo);
 }
@@ -266,9 +272,9 @@ Media::OpenSLESRenderer::OpenSLESRenderer(UnsafeArrayOpt<const UTF8Char> devName
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName);
+		this->devName = Text::StrCopyNew(nndevName);
 	}
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
@@ -280,9 +286,9 @@ Media::OpenSLESRenderer::OpenSLESRenderer(UnsafeArrayOpt<const UTF8Char> devName
 
 Media::OpenSLESRenderer::~OpenSLESRenderer()
 {
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
-		BindAudio(0);
+		BindAudio(nullptr);
 	}
 	ClassData *clsData = (ClassData*)this->hand;
 	MemFree(clsData);
@@ -302,17 +308,18 @@ Bool Media::OpenSLESRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	{
 		Stop();
 	}
-	if (this->audsrc)
+	NN<Media::AudioSource> nnaudsrc;
+	if (this->audsrc.NotNull())
 	{
 /*		snd_pcm_close((snd_pcm_t*)this->hand);*/
-		this->audsrc = 0;
+		this->audsrc = nullptr;
 		this->hand = 0;
 		DEL_CLASS(playEvt);
 	}
-	if (audsrc == 0)
+	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
-	audsrc->GetFormat(&fmt);
+	nnaudsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != 3)
 	{
 		return false;
@@ -472,11 +479,11 @@ Bool Media::OpenSLESRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	return true;
 }
 
-void Media::OpenSLESRenderer::AudioInit(NN<Media::RefClock> clk)
+void Media::OpenSLESRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -485,7 +492,7 @@ void Media::OpenSLESRenderer::Start()
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	threadInit = false;
 	stopPlay = false;
@@ -498,13 +505,14 @@ void Media::OpenSLESRenderer::Start()
 
 void Media::OpenSLESRenderer::Stop()
 {
+	NN<Media::AudioSource> audsrc;
 	stopPlay = true;
 	if (!playing)
 		return;
 	playEvt->Set();
-	if (this->audsrc)
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	while (playing)
 	{

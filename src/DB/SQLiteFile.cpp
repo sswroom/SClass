@@ -547,8 +547,8 @@ Bool DB::SQLiteReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 
 UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
-	const UTF8Char *outp = (const UTF8Char*)sqlite3_column_text((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
-	if (outp == 0)
+	UnsafeArray<const UTF8Char> outp;
+	if (!outp.Set(sqlite3_column_text((sqlite3_stmt*)this->hStmt.p, (int)colIndex)))
 		return nullptr;
 	else
 		return Text::StrConcatS(buff, outp, buffSize);

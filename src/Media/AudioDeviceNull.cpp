@@ -8,20 +8,20 @@ UIntOS Media::AudioDevice::GetDeviceCount()
 	return 0;
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UIntOS devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
-	return 0;
+	return nullptr;
 }
 
-Media::AudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
-	Media::AudioRenderer *renderer = 0;
+	Optional<Media::AudioRenderer> renderer = nullptr;
 	return renderer;
 }
 
 Media::AudioDevice::AudioDevice()
 {
-	this->currRenderer = 0;
+	this->currRenderer = nullptr;
 }
 
 Media::AudioDevice::~AudioDevice()
@@ -29,54 +29,46 @@ Media::AudioDevice::~AudioDevice()
 	this->ClearDevices();
 }
 
-Bool Media::AudioDevice::AddDevice(Text::CString devName)
+Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
-	Media::AudioRenderer *renderer;
 	Bool ret = false;
 	return ret;
 }
 
 void Media::AudioDevice::ClearDevices()
 {
-	UIntOS i;
-	Media::AudioRenderer *renderer;
-
-	BindAudio(0);
-	i = this->rendererList.GetCount();
-	while (i-- > 0)
-	{
-		renderer = this->rendererList.GetItem(i);
-		DEL_CLASS(renderer);
-	}
-	this->rendererList.Clear();
+	BindAudio(nullptr);
+	this->rendererList.DeleteAll();
 }
 
-Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
+Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	IntOS i;
 	IntOS j;
-	Media::AudioRenderer *renderer;
+	NN<Media::AudioRenderer> renderer;
+	NN<Media::AudioRenderer> currRenderer;
+	NN<Media::AudioSource> nnaudsrc;
 	if (this->rendererList.GetCount() == 0)
 	{
-		renderer = 0;
+		return nullptr;
 	}
-	if (this->currRenderer)
+	if (this->currRenderer.SetTo(currRenderer))
 	{
-		this->currRenderer->BindAudio(0);
-		this->currRenderer = 0;
+		currRenderer->BindAudio(nullptr);
+		this->currRenderer = nullptr;
 	}
-	if (audsrc == 0)
-		return 0;
+	if (!audsrc.SetTo(nnaudsrc))
+		return nullptr;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
 	{
-		renderer = this->rendererList.GetItem(i);
-		if (renderer->BindAudio(audsrc))
+		renderer = this->rendererList.GetItemNoCheck(i);
+		if (renderer->BindAudio(nnaudsrc))
 		{
 			if (renderer->IsError())
 			{
-				renderer->BindAudio(0);
+				renderer->BindAudio(nullptr);
 			}
 			else
 			{

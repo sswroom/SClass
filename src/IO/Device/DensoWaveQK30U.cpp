@@ -14,12 +14,12 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 {
 	NN<IO::Device::DensoWaveQK30U> me = userObj.GetNN<IO::Device::DensoWaveQK30U>();
 	UInt8 buff[256];
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	UIntOS recvSize;
 	UIntOS i;
 	Bool found;
 	me->recvRunning = true;
-	sbuff = MemAlloc(UTF8Char, RECVBUFFSIZE + 1);
+	sbuff = MemAllocArr(UTF8Char, RECVBUFFSIZE + 1);
 	while (!me->recvToStop)
 	{
 		recvSize = me->stm->Read(BYTEARR(buff));
@@ -84,7 +84,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 			mutUsage.EndUse();
 		}
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	me->recvRunning = false;
 	return 0;
 }

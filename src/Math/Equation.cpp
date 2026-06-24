@@ -8,7 +8,7 @@ Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UnsafeArray
 //	UTF8Char name[128];
 	UnsafeArray<UTF8Char> currPtr = equation;
 	UnsafeArray<UTF8Char> nextPtr;
-//	UTF8Char *nameStart;
+//	UnsafeArray<UTF8Char> nameStart;
 	UTF8Char c;
 	Int32 ret;
 	//Bool isDigit = false;

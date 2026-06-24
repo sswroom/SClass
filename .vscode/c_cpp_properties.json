@@ -64,7 +64,7 @@
                 "${workspaceFolder}/ThirdParty/sqlite3",
                 "${workspaceFolder}/ThirdParty/KSSample",
                 "${workspaceFolder}/ThirdParty/adl",
-                "~/android-ndk-r19c/sysroot/usr/include"
+                "~/Android/Sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

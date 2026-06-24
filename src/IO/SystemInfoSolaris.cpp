@@ -1,48 +1,48 @@
 #include "Stdafx.h"
 #include "Manage/CPUInfo.h"
 #include "IO/FileStream.h"
+#include "IO/SMBIOSUtil.h"
 #include "IO/StreamReader.h"
 #include "IO/SystemInfo.h"
 #include "Manage/Process.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Win32/SMBIOS.h"
 #include <sys/types.h>
 #include <sys/processor.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-} SystemInfoData;
+	UnsafeArrayOpt<const UTF8Char> platformName;
+};
 
 IO::SystemInfo::SystemInfo()
 {
-	SystemInfoData *info = MemAlloc(SystemInfoData, 1);
-	info->platformName = 0;
+	NN<ClassData> info = MemAllocNN(ClassData);
+	info->platformName = nullptr;
 	this->clsData = info;
 }
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemInfoData *info = (SystemInfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	SDEL_TEXT(info->platformName);
 	MemFree(info);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	SystemInfoData *info = (SystemInfoData*)this->clsData;
-	if (info->platformName)
+	NN<ClassData> info = this->clsData;
+	UnsafeArra<const UTF8Char> platformName;
+	if (info->platformName.SetTo(platformName))
 	{
-		return Text::StrConcat(sbuff, info->platformName);
+		return Text::StrConcat(sbuff, platformName);
 	}
 	return 0;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	SystemInfoData *data = (SystemInfoData*)this->clsData;
-	return 0;
+	return nullptr;
 }
 
 Int64 IO::SystemInfo::GetTotalMemSize()
@@ -60,65 +60,56 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_DESKTOP;
 }
 
-UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UIntOS retCnt = 0;
-	RAMInfo *ram;
-	WChar wbuff[128];
-	Win32::SMBIOS *smbios = Win32::SMBIOS::GetSMBIOS();
-	if (smbios)
+	NN<RAMInfo> ram;
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
-		Data::ArrayList<Win32::SMBIOS::MemoryDeviceInfo *> memList;
-		Win32::SMBIOS::MemoryDeviceInfo *mem;
-		Text::StringBuilderUTF8 sb;
-		smbios->GetMemoryInfo(&memList);
+		Data::ArrayListNN<IO::SMBIOS::MemoryDeviceInfo> memList;
+		NN<IO::SMBIOS::MemoryDeviceInfo> mem;
+		UnsafeArray<const UTF8Char> s;
+		smbios->GetMemoryInfo(memList);
 		if (memList.GetCount() > 0)
 		{
 			UIntOS i = 0;
 			UIntOS j = memList.GetCount();
 			while (i < j)
 			{
-				mem = memList.GetItem(i);
-				ram = MemAlloc(RAMInfo, 1);
-				if (mem->deviceLocator)
+				mem = memList.GetItemNoCheck(i);
+				ram = MemAllocNN(RAMInfo);
+				if (mem->deviceLocator.SetTo(s))
 				{
-					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
+					ram->deviceLocator = Text::String::NewSlow(s);
 				}
 				else
 				{
-					ram->deviceLocator = 0;
+					ram->deviceLocator = nullptr;
 				}
-				if (mem->manufacturer)
+				if (mem->manufacturer.SetTo(s))
 				{
-					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
+					ram->manufacturer = Text::String::NewSlow(s);
 				}
 				else
 				{
-					ram->manufacturer = 0;
+					ram->manufacturer = nullptr;
 				}
-				if (mem->partNo)
+				if (mem->partNo.SetTo(s))
 				{
-					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
+					ram->partNo = Text::String::NewSlow(s);
 				}
 				else
 				{
-					ram->partNo = 0;
+					ram->partNo = nullptr;
 				}
-				if (mem->sn)
+				if (mem->sn.SetTo(s))
 				{
-					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString()).Ptr();
+					ram->sn = Text::String::NewSlow(s);
 				}
 				else
 				{
-					ram->sn = 0;
+					ram->sn = nullptr;
 				}
 				ram->defSpdMHz = mem->maxSpeedMTs;
 				ram->confSpdMHz = mem->confSpeedMTs;
@@ -131,16 +122,17 @@ UIntOS IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				i++;
 			}
 
-			smbios->FreeMemoryInfo(&memList);
-			DEL_CLASS(smbios);
+			smbios->FreeMemoryInfo(memList);
+			smbios.Delete();
 			return retCnt;
 		}
-		DEL_CLASS(smbios);
+		smbios.Delete();
 	}
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
+	ramList->MemFreeAll();
 }
 

@@ -23,7 +23,7 @@ typedef struct
 #else
 typedef struct
 {
-	const UTF8Char *cpuName;
+	UnsafeArray<const UTF8Char> cpuName;
 } InfoData;
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <sys/types.h>

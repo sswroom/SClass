@@ -8,21 +8,21 @@ namespace Media
 	class OpenSLESRenderer : public AudioRenderer
 	{
 	private:
-		Media::AudioSource *audsrc;
+		Optional<Media::AudioSource> audsrc;
 		UnsafeArray<const UTF8Char> devName;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
 		void *hand;
 		Sync::Event *playEvt;
-		NN<Media::RefClock> clk;
+		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
 
 		UInt32 buffTime;
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
-		static UInt32 __stdcall PlayThread(void *obj);
+		static UInt32 __stdcall PlayThread(AnyType obj);
 		static Int32 GetCurrTime(void *hand);
 	public:
 		static Int32 GetDeviceCount();
@@ -35,7 +35,7 @@ namespace Media
 
 		virtual Bool IsError();
 		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
-		virtual void AudioInit(NN<Media::RefClock> clk);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();

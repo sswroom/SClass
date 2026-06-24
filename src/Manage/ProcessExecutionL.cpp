@@ -20,17 +20,16 @@ UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	clsData->out[1] = 0;
 	this->clsData = clsData;
 	UTF8Char progName[64];
-	UTF8Char *progBuff = 0;
+	UnsafeArrayOpt<UTF8Char> progBuff = nullptr;
 	UnsafeArray<const UTF8Char> cptr = cmdLine.v;
-	Data::ArrayListObj<UTF8Char *> args;
+	Data::ArrayListObj<UnsafeArrayOpt<UTF8Char>> args;
 	Bool argStart = false;
 
 	UIntOS cmdLen = cmdLine.leng;
-	UTF8Char *pptr;
+	UnsafeArray<UTF8Char> pptr;
 	if (cmdLen >= 64)
 	{
-		progBuff = MemAlloc(UTF8Char, cmdLen + 1);
-		pptr = progBuff;
+		progBuff = pptr = MemAllocArr(UTF8Char, cmdLen + 1);
 	}
 	else
 	{
@@ -62,8 +61,8 @@ UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 		}
 	}
 	*pptr = 0;
-	args.Add(0);
-	UTF8Char **arr = args.Arr().Ptr();
+	args.Add(nullptr);
+	UnsafeArray<UnsafeArrayOpt<UTF8Char>> arr = args.Arr();
 
 	if (pipe(clsData->in) != 0)
 	{
@@ -83,7 +82,7 @@ UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	{
 		dup2(clsData->in[0], STDIN_FILENO);
 		dup2(clsData->out[1], STDOUT_FILENO);
-		ret = execvp((Char*)arr[0], (Char**)arr);
+		ret = execvp((Char*)arr[0].Ptr(), (Char**)arr.Ptr());
 		exit(ret);
 	}
 	return (UIntOS)pid;

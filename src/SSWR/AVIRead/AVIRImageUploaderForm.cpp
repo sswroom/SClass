@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj,
 {
 	NN<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UIntOS i = 0;
 	UIntOS fileCnt = files.GetCount();
 	UIntOS j;

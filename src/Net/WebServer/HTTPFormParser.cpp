@@ -21,7 +21,8 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 		UIntOS buffSize;
 		UnsafeArray<const UInt8> buff;
 		UInt8 *tmpBuff = 0;
-		UTF8Char *tmpBuff2 = 0;
+		UnsafeArrayOpt<UTF8Char> tmpBuff2 = nullptr;
+		UnsafeArray<UTF8Char> nntmpBuff2;
 		IntOS tmpBuffSize = 0;
 		IntOS tmpBuffSize2 = 0;
 		UnsafeArray<UTF8Char> sptr;
@@ -57,15 +58,15 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 					tmpBuff = MemAlloc(UInt8, tmpBuffSize);
 				}
 				size1 = formEnc.Decrypt(&buff[j], (Int32)(k - j), tmpBuff);
-				if (tmpBuffSize2 < size1 + 1)
+				if (tmpBuffSize2 < size1 + 1 || !tmpBuff2.SetTo(nntmpBuff2))
 				{
-					if (tmpBuff2)
-						MemFree(tmpBuff2);
+					if (tmpBuff2.SetTo(nntmpBuff2))
+						MemFreeArr(nntmpBuff2);
 					tmpBuffSize2 = size1 + 1025;
-					tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
+					tmpBuff2 = nntmpBuff2 = MemAllocArr(UTF8Char, tmpBuffSize2);
 				}
-				sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-				l = this->strNames.SortedInsert(Text::StrCopyNewC(tmpBuff2, (UIntOS)(sptr - tmpBuff2)));
+				sptr = enc.UTF8FromBytes(nntmpBuff2, tmpBuff, size1, size2);
+				l = this->strNames.SortedInsert(Text::StrCopyNewC(nntmpBuff2, (UIntOS)(sptr - nntmpBuff2)));
 				if (k < i)
 				{
 					if (i - k - 1 > tmpBuffSize)
@@ -76,15 +77,15 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 						tmpBuff = MemAlloc(UInt8, tmpBuffSize);
 					}
 					size1 = formEnc.Decrypt(&buff[k + 1], (Int32)(i - k - 1), tmpBuff);
-					if (tmpBuffSize2 < size1 + 1)
+					if (tmpBuffSize2 < size1 + 1 || !tmpBuff2.SetTo(nntmpBuff2))
 					{
-						if (tmpBuff2)
-							MemFree(tmpBuff2);
+						if (tmpBuff2.SetTo(nntmpBuff2))
+							MemFreeArr(nntmpBuff2);
 						tmpBuffSize2 = size1 + 1025;
-						tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
+						tmpBuff2 = nntmpBuff2 = MemAllocArr(UTF8Char, tmpBuffSize2);
 					}
-					sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-					this->strValues.Insert(l, Text::StrCopyNewC(tmpBuff2, (UIntOS)(sptr - tmpBuff2)));
+					sptr = enc.UTF8FromBytes(nntmpBuff2, tmpBuff, size1, size2);
+					this->strValues.Insert(l, Text::StrCopyNewC(nntmpBuff2, (UIntOS)(sptr - nntmpBuff2)));
 				}
 				else
 				{
@@ -99,8 +100,8 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> re
 		}
 		if (tmpBuff)
 			MemFree(tmpBuff);
-		if (tmpBuff2)
-			MemFree(tmpBuff2);
+		if (tmpBuff2.SetTo(nntmpBuff2))
+			MemFreeArr(nntmpBuff2);
 	}
 	else if (Text::StrStartsWithC(sb.ToString(), sb.GetLength(), UTF8STRC("multipart/form-data")))
 	{

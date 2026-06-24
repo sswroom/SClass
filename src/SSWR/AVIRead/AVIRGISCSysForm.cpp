@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 	else if (me->radProj->IsSelected())
 	{
 		UIntOS i = me->cboProj->GetSelectedIndex();
-		if (i != INVALID_INDEX)
+		UnsafeArray<const UTF8Char> projName;
+		if (i != INVALID_INDEX && me->cboProj->GetItem(i).GetArrayOpt<const UTF8Char>().SetTo(projName))
 		{
-			const UTF8Char *projName = me->cboProj->GetItem(i).GetOpt<const UTF8Char>().OrNull();
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
 			if (me->outCSys.NotNull())
 			{

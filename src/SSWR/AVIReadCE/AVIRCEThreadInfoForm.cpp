@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(AnyType userO
 	Optional<Text::String> st = me->stacks.GetItem(i);
 	Optional<Text::String> sMem = me->stacksMem.GetItem(i);
 	UIntOS slen;
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	Text::PString sline[2];
 	Text::PString sarr[10];
 	Bool hasNext;
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(AnyType userO
 	if (st.SetTo(s))
 	{
 		slen = s->leng;
-		sbuff = MemAlloc(UTF8Char, slen + 1);
+		sbuff = MemAllocArr(UTF8Char, slen + 1);
 		s->ConcatTo(sbuff);
 		sline[1].v = sbuff;
 		sline[1].leng = slen;
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(AnyType userO
 			if (!hasNext)
 				break;
 		}
-		MemFree(sbuff);
+		MemFreeArr(sbuff);
 	}
 }
 
@@ -221,14 +221,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			UInt8 buff[256];
 			UIntOS buffSize;
 			Bool ret;
-			Data::ArrayListUInt32 *callAddrs;
-			Data::ArrayListUInt32 *jmpAddrs;
+			NN<Data::ArrayListUInt32> callAddrs;
+			NN<Data::ArrayListUInt32> jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 			Text::StringBuilderUTF8 sb;
 
-			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
+			NEW_CLASSNN(callAddrs, Data::ArrayListUInt32());
+			NEW_CLASSNN(jmpAddrs, Data::ArrayListUInt32());
 			eip = (UInt32)context->GetInstAddr();
 			esp = (UInt32)context->GetStackAddr();
 			ebp = (UInt32)context->GetFrameAddr();
@@ -277,7 +277,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 				Text::StringBuilderWriter writer(sb);
 				Manage::DasmX86_32::Dasm_Regs regs;
 				((Manage::ThreadContextX86_32*)context)->GetRegs(regs);
-				ret = dasm->Disasm32(writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
+				ret = dasm->Disasm32(writer, symbol, eip, esp, ebp, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 				this->stacks.Add(Text::String::New(sb.ToCString()));
 				if (!ret)
 					break;
@@ -286,8 +286,8 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			}
 			
 			DEL_CLASS(dasm);
-			DEL_CLASS(jmpAddrs);
-			DEL_CLASS(callAddrs);
+			jmpAddrs.Delete();
+			callAddrs.Delete();
 		}
 #endif
 
@@ -306,7 +306,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			while (i < j)
 			{
 				sbuff[0] = 0;
-				sptr = context->GetRegister(i, sbuff, buff, &bitCnt).Or(sbuff);
+				sptr = context->GetRegister(i, sbuff, buff, bitCnt).Or(sbuff);
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0, 0);
 				if (bitCnt == 8)
 				{

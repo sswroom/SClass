@@ -18,21 +18,25 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UIntOS nChar)
+Bool IO::ConsoleWriter::Write(Text::CStringNN str)
 {
+	UIntOS nChar = str.leng;
+	UnsafeArray<const UTF8Char> s = str.v;
 	while (nChar > 0)
 	{
-		SerialPort_Write(*str++);
+		SerialPort_Write(*s++);
 		nChar--;
 	}
 	return true;
 }
 
-Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UIntOS nChar)
+Bool IO::ConsoleWriter::WriteLine(Text::CStringNN str)
 {
+	UIntOS nChar = str.leng;
+	UnsafeArray<const UTF8Char> s = str.v;
 	while (nChar > 0)
 	{
-		SerialPort_Write(*str++);
+		SerialPort_Write(*s++);
 		nChar--;
 	}
 	SerialPort_Write(13);
@@ -47,7 +51,11 @@ Bool IO::ConsoleWriter::WriteLine()
 	return true;
 }
 
-void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
+void IO::ConsoleWriter::SetBGColor(Text::StandardColor bgColor)
+{
+}
+
+void IO::ConsoleWriter::SetTextColor(Text::StandardColor fgColor)
 {
 }
 
@@ -60,9 +68,9 @@ UIntOS IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UIntOS nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UIntOS nChar)
 {
-	return 0;
+	return nullptr;
 }
 
 void IO::ConsoleWriter::EnableCPFix(Bool isEnable)

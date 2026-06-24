@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -7,67 +7,57 @@
 #include <stdio.h>
 #undef GetModuleFileName
 
-Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
+Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 {
-	IntOS i;
-	IntOS j;
-	IntOS baseAddr;
-	UInt32 size;
+	UIntOS i;
+	UIntOS j;
+	UIntOS baseAddr;
+	UIntOS size;
 	UTF8Char sbuff[512];
-	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->modBaseAddrs, Data::ArrayListInt64());
-	NEW_CLASS(this->modSizes, Data::ArrayListInt32());
+	UnsafeArray<UTF8Char> sptr;
 	this->proc = proc;
 
-	Data::ArrayList<Manage::ModuleInfo*> *modList;
-	NEW_CLASS(modList, Data::ArrayList<Manage::ModuleInfo*>());
+	Data::ArrayListNN<Manage::ModuleInfo> modList;
 	this->proc->GetModules(modList);
 	i = 0;
-	j = modList->GetCount();
+	j = modList.GetCount();
 	while (i < j)
 	{
-		Manage::ModuleInfo *mod;
-		mod = modList->GetItem(i);
+		NN<Manage::ModuleInfo> mod;
+		mod = modList.GetItemNoCheck(i);
 
-		mod->GetModuleFileName(sbuff);
-		this->modNames->Add(Text::StrCopyNew(sbuff));
-		mod->GetModuleAddress(&baseAddr, &size);
-		this->modBaseAddrs->Add(baseAddr);
-		this->modSizes->Add(size);
+		sptr = mod->GetModuleFileName(sbuff);
+		this->modNames.Add(Text::String::NewP(sbuff, sptr));
+		mod->GetModuleAddress(baseAddr, size);
+		this->modBaseAddrs.Add(baseAddr);
+		this->modSizes.Add(size);
 
-		DEL_CLASS(mod);
+		mod.Delete();
 		i++;
 	}
-	DEL_CLASS(modList);
+	modList.DeleteAll();
 }
 
 Manage::SymbolResolver::~SymbolResolver()
 {
-	DEL_CLASS(this->modSizes);
-	DEL_CLASS(this->modBaseAddrs);
-	IntOS i = this->modNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->modNames->GetItem(i));
-	}
-	DEL_CLASS(this->modNames);
+	this->modNames.FreeAll();
 }
 
-UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
+UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address)
 {
 	UIntOS i;
 	UIntOS j;
 	Bool found = false;
-	const UTF8Char *name;
+	NN<Text::String> name;
 
-	i = this->modNames->GetCount();
+	i = this->modNames.GetCount();
 	while (i-- > 0)
 	{
-		if (((UInt64)address) >= (UInt64)this->modBaseAddrs->GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs->GetItem(i) + this->modSizes->GetItem(i)))
+		if (((UInt64)address) >= (UInt64)this->modBaseAddrs.GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs.GetItem(i) + this->modSizes.GetItem(i)))
 		{
-			name = this->modNames->GetItem(i);
-			j = Text::StrLastIndexOfChar(name, '\\');
-			buff = Text::StrConcat(buff, &name[j + 1]);
+			name = this->modNames.GetItemNoCheck(i);
+			j = name->LastIndexOf('\\');
+			buff = name->Substring(j + 1).ConcatTo(buff);
 			found = true;
 			break;
 		}
@@ -75,17 +65,17 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 
 	if (found)
 	{
-		if (address != this->modBaseAddrs->GetItem(i))
+		if (address != this->modBaseAddrs.GetItem(i))
 		{
 			buff = Text::StrConcatC(buff, UTF8STRC("+0x"));
-			buff = Text::StrHexVal32(buff, (UInt32)address - (UInt32)this->modBaseAddrs->GetItem(i));
+			buff = Text::StrHexVal32(buff, (UInt32)address - (UInt32)this->modBaseAddrs.GetItem(i));
 		}
 	}
 
 	if (!found)
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -95,20 +85,20 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 
 UIntOS Manage::SymbolResolver::GetModuleCount()
 {
-	return this->modNames->GetCount();
+	return this->modNames.GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(UIntOS index)
+Optional<Text::String> Manage::SymbolResolver::GetModuleName(UIntOS index)
 {
-	return this->modNames->GetItem(index);
+	return this->modNames.GetItem(index);
 }
 
 UInt64 Manage::SymbolResolver::GetModuleAddr(UIntOS index)
 {
-	return this->modBaseAddrs->GetItem(index);
+	return this->modBaseAddrs.GetItem(index);
 }
 
-UInt32 Manage::SymbolResolver::GetModuleSize(UIntOS index)
+UInt64 Manage::SymbolResolver::GetModuleSize(UIntOS index)
 {
-	return this->modSizes->GetItem(index);
+	return this->modSizes.GetItem(index);
 }

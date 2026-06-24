@@ -2847,8 +2847,8 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 	denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
 	////////////////////////////////
-	UTF8Char *lbl = sbuff;
-	UTF8Char *nextPos = lbl;
+	UnsafeArray<UTF8Char> lbl = sbuff;
+	UnsafeArray<UTF8Char> nextPos = lbl;
 	UTF8Char nextChar = *lbl;
 	Double angle;
 	Double cosAngle;
@@ -3530,8 +3530,8 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 	denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
 	////////////////////////////////
-	UTF8Char *lbl = sbuff;
-	UTF8Char *nextPos = lbl;
+	UnsafeArray<UTF8Char> lbl = sbuff;
+	UnsafeArray<UTF8Char> nextPos = lbl;
 	UTF8Char nextChar = *lbl;
 	Double angle;
 	Int32 angleDegree;

@@ -60,7 +60,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 				}
 				else
 				{
-					const UTF8Char *name = Text::StrCopyNew(sbuff).Ptr();
+					UnsafeArray<const UTF8Char> name = Text::StrCopyNew(sbuff);
 					nameIndex.Insert((UIntOS)~si, name);
 					nameSizes.Insert((UIntOS)~si, colDef.GetColSize());
 					nameDPs.Insert((UIntOS)~si, colDef.GetColDP());

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListArr.hpp"
 #include "IO/FileStream.h"
 #include "Net/UserAgentDB.h"
 #include "Net/WebSite/WebSite48IdolControl.h"
@@ -159,9 +160,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 	UnsafeArray<const UTF8Char> url;
 	UIntOS urlLen;
 	Text::PString sarr[2];
-	Data::ArrayListObj<const UTF8Char *> urlStrList;
+	Data::ArrayListArr<const UTF8Char> urlStrList;
 	Data::ArrayListNative<UIntOS> urlLenList;
-	Data::ArrayListObj<const UTF8Char *> descList;
+	Data::ArrayListArr<const UTF8Char> descList;
 	UI::Clipboard clipboard(me->GetHandle());
 	clipboard.GetDataFormats(formats);
 	i = formats.GetCount();
@@ -177,7 +178,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 
 	if (fmtId != (UInt32)-1)
 	{
-		const UTF8Char *desc;
+		UnsafeArrayOpt<const UTF8Char> desc;
+		UnsafeArray<const UTF8Char> nndesc;
 		Text::StringBuilderUTF8 sb;
 		if (clipboard.GetDataText(fmtId, sb))
 		{
@@ -187,12 +189,12 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 				i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 				if (i == 2 && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<div class=\"post-thumb\">")) != INVALID_INDEX)
 				{
-					desc = 0;
+					desc = nullptr;
 					i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 					j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<img class=\"lazyload\" "));
 					if (i == 2 && j != INVALID_INDEX)
 					{
-						UTF8Char *linePtr = &sarr[0].v[j + 22];
+						UnsafeArray<UTF8Char> linePtr = &sarr[0].v[j + 22];
 						j = Text::StrIndexOf(linePtr, (const UTF8Char*)"alt=\"");
 						if (j != INVALID_INDEX)
 						{
@@ -201,24 +203,24 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 							if (j != INVALID_INDEX)
 							{
 								linePtr[j] = 0;
-								desc = linePtr;
+								desc = UnsafeArray<const UTF8Char>(linePtr);
 							}
 						}
 					}
-					if (desc)
+					if (desc.SetTo(nndesc))
 					{
 						i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 						j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<a href=\""));
 						if (i == 2 && j != INVALID_INDEX)
 						{
-							UTF8Char *linePtr = &sarr[0].v[j + 9];
+							UnsafeArray<UTF8Char> linePtr = &sarr[0].v[j + 9];
 							j = Text::StrIndexOfChar(linePtr, '\"');
 							if (j != INVALID_INDEX)
 							{
 								linePtr[j] = 0;
 								urlStrList.Add(linePtr);
 								urlLenList.Add(j);
-								descList.Add(desc);
+								descList.Add(nndesc);
 							}
 						}
 					}
@@ -237,9 +239,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 				i = urlStrList.GetCount();
 				while (i-- > 0)
 				{
-					url = urlStrList.GetItem(i);
+					url = urlStrList.GetItemNoCheck(i);
 					urlLen = urlLenList.GetItem(i);
-					desc = descList.GetItem(i);
+					nndesc = descList.GetItemNoCheck(i);
 
 					id = 0;
 					webType = 0;
@@ -247,7 +249,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 
 					if (id != 0)
 					{
-						NN<Text::String> s = Text::String::NewNotNullSlow(desc);
+						NN<Text::String> s = Text::String::NewNotNullSlow(nndesc);
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;

@@ -12,7 +12,7 @@
 #pragma warning( disable : 4311 4312)
 #endif
 
-static const UTF8Char *DasmX86_32_Segms[] = {(const UTF8Char*)"cs:", (const UTF8Char*)"ds:", (const UTF8Char*)"es:", (const UTF8Char*)"fs:", (const UTF8Char*)"gs:", (const UTF8Char*)"ss:"};
+static UnsafeArray<const UTF8Char> DasmX86_32_Segms[] = {U8STR("cs:"), U8STR("ds:"), U8STR("es:"), U8STR("fs:"), U8STR("gs:"), U8STR("ss:")};
 
 Bool DasmX86_32_IsEndFunc(UnsafeArray<const UTF8Char> funcName)
 {

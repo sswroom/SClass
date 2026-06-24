@@ -173,7 +173,7 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Doubl
 	UIntOS eastZone;
 	UIntOS northZone;
 	
-	const UTF8Char *letters = (const UTF8Char*)"ABCDEFGHJKLMNPQRSTUVWXYZ";
+	UnsafeArray<const UTF8Char> letters = U8STR("ABCDEFGHJKLMNPQRSTUVWXYZ");
 	UTF8Char ch;
 	
 	UIntOS i;

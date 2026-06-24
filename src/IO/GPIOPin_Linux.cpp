@@ -1,37 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/FileStream.h"
 #include "IO/GPIOPin.h"
-#include "IO/Path.h"
-#include "IO/StreamReader.h"
+#include "IO/PhysicalMem.h"
+#include "Sync/Interlocked.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
-#include "Text/UTF8Reader.h"
-
-Bool GPIOPin_EchoFile(Text::CStringNN fileName, Text::CStringNN msg)
-{
-	IO::FileStream fs(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	if (fs.IsError())
-	{
-		return false;
-	}
-	fs.Write(msg.ToByteArray());
-	return true;
-}
 
 IO::GPIOPin::GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum)
 {
 	this->pinNum = pinNum;
-
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
-	{
-		UTF8Char sbuff2[12];
-		UnsafeArray<UTF8Char> sptr2;
-		sptr2 = Text::StrInt32(sbuff2, this->pinNum);
-		GPIOPin_EchoFile(CSTR("/sys/class/gpio/export"), CSTRP(sbuff2, sptr2));
-	}
+	this->gpio = gpio;
 }
 
 IO::GPIOPin::~GPIOPin()
@@ -40,74 +18,32 @@ IO::GPIOPin::~GPIOPin()
 
 Bool IO::GPIOPin::IsError()
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory;
+	return this->gpio->IsError();
 }
 
 Bool IO::GPIOPin::IsPinHigh()
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
-
-	Bool isHigh = false;
-	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	if (!fs.IsError())
-	{
-		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(sbuff, 120).NotNull())
-		{
-			isHigh = Text::StrToInt32(sbuff) != 0;
-		}
-	}
-
-	return isHigh;
+	return this->gpio->IsPinHigh(this->pinNum);
 }
 
 Bool IO::GPIOPin::IsPinOutput()
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
-
-	Bool isOutput = false;
-	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	if (!fs.IsError())
-	{
-		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(sbuff, 120).SetTo(sptr))
-		{
-			isOutput = Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("out"));
-		}
-	}
-	return isOutput;
+	return this->gpio->IsPinOutput(this->pinNum);
 }
 
 void IO::GPIOPin::SetPinOutput(Bool isOutput)
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
-	GPIOPin_EchoFile(CSTRP(sbuff, sptr), isOutput?CSTR("out"):CSTR("in"));
+	this->gpio->SetPinOutput(this->pinNum, isOutput);
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
 {
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
-	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
-	GPIOPin_EchoFile(CSTRP(sbuff, sptr), isHigh?CSTR("1"):CSTR("0"));
+	this->gpio->SetPinState(this->pinNum, isHigh);
 }
 
 Bool IO::GPIOPin::SetPullType(PullType pt)
 {
-	return false;
+	return this->gpio->SetPullType(this->pinNum, pt);
 }
 
 UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
@@ -117,25 +53,30 @@ UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)
 {
+	this->gpio->SetEventOnHigh(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnLow(Bool enable)
 {
+	this->gpio->SetEventOnLow(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnRaise(Bool enable)
 {
+	this->gpio->SetEventOnRaise(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnFall(Bool enable)
 {
+	this->gpio->SetEventOnFall(this->pinNum, enable);
 }
 
 Bool IO::GPIOPin::HasEvent()
 {
-	return false;
+	return this->gpio->HasEvent(this->pinNum);
 }
 
 void IO::GPIOPin::ClearEvent()
 {
+	this->gpio->ClearEvent(this->pinNum);
 }

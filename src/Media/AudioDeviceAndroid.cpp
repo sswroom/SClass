@@ -9,50 +9,42 @@ UIntOS Media::AudioDevice::GetDeviceCount()
 	return Media::OpenSLESRenderer::GetDeviceCount();
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UIntOS devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo)
 {
 	return Media::OpenSLESRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("OpenSLES: ")), devNo);
 }
 
-Media::AudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
-	Media::AudioRenderer *renderer = 0;
+	Optional<Media::AudioRenderer> renderer = nullptr;
 	if (devName.StartsWith(UTF8STRC("OpenSLES: ")))
 	{
-		NEW_CLASS(renderer, Media::OpenSLESRenderer(devName.v + 10));
+		NEW_CLASSOPT(renderer, Media::OpenSLESRenderer(devName.v + 10));
 	}
 	return renderer;
 }
 
 Media::AudioDevice::AudioDevice()
 {
-	this->currRenderer = 0;
+	this->currRenderer = nullptr;
 }
 
 Media::AudioDevice::~AudioDevice()
 {
-	IntOS i;
-	Media::AudioRenderer *renderer;
-
-	BindAudio(0);
-	i = this->rendererList.GetCount();
-	while (i-- > 0)
-	{
-		renderer = this->rendererList.GetItem(i);
-		DEL_CLASS(renderer);
-	}
+	BindAudio(nullptr);
+	this->rendererList.DeleteAll();
 }
 
-Bool Media::AudioDevice::AddDevice(Text::CString devName)
+Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
-	Media::AudioRenderer *renderer;
+	NN<Media::AudioRenderer> renderer;
 	Bool ret = false;
 	if (devName.StartsWith(UTF8STRC("OpenSLES: ")))
 	{
-		NEW_CLASS(renderer, Media::OpenSLESRenderer(devName.v + 6));
+		NEW_CLASSNN(renderer, Media::OpenSLESRenderer(devName.v + 6));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
@@ -64,41 +56,41 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 }
 
 
-Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
+Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::AudioSource> audsrc)
 {
-	IntOS i;
-	IntOS j;
-	Media::AudioRenderer *renderer;
+	UIntOS i;
+	UIntOS j;
+	NN<Media::AudioRenderer> renderer;
+	NN<Media::AudioSource> nnaudsrc;
 	if (this->rendererList.GetCount() == 0)
 	{
-		NEW_CLASS(renderer, Media::OpenSLESRenderer(0));
+		NEW_CLASSNN(renderer, Media::OpenSLESRenderer(nullptr));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
 			this->rendererList.Add(renderer);
 		}
-		renderer = 0;
 	}
-	if (this->currRenderer)
+	if (this->currRenderer.SetTo(renderer))
 	{
-		this->currRenderer->BindAudio(0);
-		this->currRenderer = 0;
+		renderer->BindAudio(nullptr);
+		this->currRenderer = nullptr;
 	}
-	if (audsrc == 0)
-		return 0;
+	if (!audsrc.SetTo(nnaudsrc))
+		return nullptr;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
 	{
-		renderer = this->rendererList.GetItem(i);
+		renderer = this->rendererList.GetItemNoCheck(i);
 		if (renderer->BindAudio(audsrc))
 		{
 			if (renderer->IsError())
 			{
-				renderer->BindAudio(0);
+				renderer->BindAudio(nullptr);
 			}
 			else
 			{

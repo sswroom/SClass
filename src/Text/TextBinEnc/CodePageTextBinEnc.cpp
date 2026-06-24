@@ -16,11 +16,11 @@ Text::TextBinEnc::CodePageTextBinEnc::~CodePageTextBinEnc()
 UIntOS Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const
 {
 	UIntOS size = this->enc->CountUTF8Chars(dataBuff, buffSize);
-	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
+	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, size + 1);
 	this->enc->UTF8FromBytes(sbuff, dataBuff, buffSize, 0);
 	sbuff[size] = 0;
 	sb->AppendC(sbuff, size);
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return size;
 }
 

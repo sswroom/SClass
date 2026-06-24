@@ -1,12 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/GPIOPin.h"
-#include <wiringPi.h>
+#include "IO/PhysicalMem.h"
+#include "Sync/Interlocked.h"
+#include "Sync/ThreadUtil.h"
+#include "Text/MyString.h"
 
-IO::GPIOPin::GPIOPin(IntOS pinNum)
+IO::GPIOPin::GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum)
 {
 	this->pinNum = pinNum;
-	wiringPiSetup();
+	this->gpio = gpio;
 }
 
 IO::GPIOPin::~GPIOPin()
@@ -15,21 +18,65 @@ IO::GPIOPin::~GPIOPin()
 
 Bool IO::GPIOPin::IsError()
 {
-	return false;
+	return this->gpio->IsError();
 }
 
 Bool IO::GPIOPin::IsPinHigh()
 {
-	return digitalRead(this->pinNum) == HIGH;
+	return this->gpio->IsPinHigh(this->pinNum);
+}
+
+Bool IO::GPIOPin::IsPinOutput()
+{
+	return this->gpio->IsPinOutput(this->pinNum);
 }
 
 void IO::GPIOPin::SetPinOutput(Bool isOutput)
 {
-	pinMode( this->pinNum, (isOutput?OUTPUT:INPUT) );
+	this->gpio->SetPinOutput(this->pinNum, isOutput);
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
 {
-	digitalWrite(this->pinNum, (isHigh?HIGH:LOW) );
+	this->gpio->SetPinState(this->pinNum, isHigh);
 }
 
+Bool IO::GPIOPin::SetPullType(PullType pt)
+{
+	return this->gpio->SetPullType(this->pinNum, pt);
+}
+
+UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
+{
+	return Text::StrInt32(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
+}
+
+void IO::GPIOPin::SetEventOnHigh(Bool enable)
+{
+	this->gpio->SetEventOnHigh(this->pinNum, enable);
+}
+
+void IO::GPIOPin::SetEventOnLow(Bool enable)
+{
+	this->gpio->SetEventOnLow(this->pinNum, enable);
+}
+
+void IO::GPIOPin::SetEventOnRaise(Bool enable)
+{
+	this->gpio->SetEventOnRaise(this->pinNum, enable);
+}
+
+void IO::GPIOPin::SetEventOnFall(Bool enable)
+{
+	this->gpio->SetEventOnFall(this->pinNum, enable);
+}
+
+Bool IO::GPIOPin::HasEvent()
+{
+	return this->gpio->HasEvent(this->pinNum);
+}
+
+void IO::GPIOPin::ClearEvent()
+{
+	this->gpio->ClearEvent(this->pinNum);
+}

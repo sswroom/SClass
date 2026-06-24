@@ -522,7 +522,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 
 				if (progHdr.GetSize() > 0)
 				{
-					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
+					UnsafeArray<const UTF8Char> name = &progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 24]);
 					if (Text::StrEquals(name, (const UTF8Char*)".dynsym") || Text::StrEquals(name, (const UTF8Char*)".symtab"))
 					{
@@ -893,7 +893,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 
 				if (progHdr.GetSize() > 0)
 				{
-					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
+					UnsafeArray<const UTF8Char> name = &progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 40]);
 					Bool exportFunc = false;
 					Bool symbolSec = false;

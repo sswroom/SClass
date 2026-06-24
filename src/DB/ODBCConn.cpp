@@ -603,8 +603,8 @@ IntOS DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	#if _WCHAR_SIZE == 2
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)sql, SQL_NTS);
 	#else
-	const UTF8Char *csptr = Text::StrToUTF8New(sql);
-	ret = SQLPrepareA(hStmt, (SQLCHAR*)csptr, SQL_NTS);
+	UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(sql);
+	ret = SQLPrepareA(hStmt, (SQLCHAR*)csptr.Ptr(), SQL_NTS);
 	Text::StrDelNew(csptr);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
@@ -711,8 +711,8 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	#if _WCHAR_SIZE == 2
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)sql, SQL_NTS);
 	#else
-	const UTF8Char *csptr = Text::StrToUTF8New(sql);
-	ret = SQLPrepare(hStmt, (SQLCHAR*)csptr, SQL_NTS);
+	UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(sql);
+	ret = SQLPrepare(hStmt, (SQLCHAR*)csptr.Ptr(), SQL_NTS);
 	Text::StrDelNew(csptr);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)

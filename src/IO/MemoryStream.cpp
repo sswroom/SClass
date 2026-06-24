@@ -27,7 +27,7 @@ IO::MemoryStream::MemoryStream(UIntOS capacity) : IO::SeekableStream(CSTR("Memor
 	currPtr = 0;
 }
 
-/*IO::MemoryStream::MemoryStream(UInt8 *buff, UIntOS buffSize, const UTF8Char *dbg, UIntOS dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
+/*IO::MemoryStream::MemoryStream(UnsafeArray<UInt8> buff, UIntOS buffSize, UnsafeArray<const UTF8Char> dbg, UIntOS dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	this->capacity = 0;
 	this->currSize = buffSize;

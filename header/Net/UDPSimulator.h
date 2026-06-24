@@ -12,13 +12,13 @@ namespace Net
 		typedef Bool (CALLBACKFUNC UDPPacketHdlr)(UInt32 ip, UInt16 port, UnsafeArray<UInt8> buff, IntOS dataSize, AnyType userData, NN<Data::DateTime> recvTime); //return true to continue
 
 	private:
-		Text::String *logFileName;
-		Text::String *rawFileName;
+		NN<Text::String> logFileName;
+		NN<Text::String> rawFileName;
 		UDPPacketHdlr hdlr;
-		void *userObj;
+		AnyType userObj;
 
 	public:
-		UDPSimulator(Text::CString logFileName, Text::CString rawFileName, UDPPacketHdlr hdlr, void *userObj);
+		UDPSimulator(Text::CStringNN logFileName, Text::CStringNN rawFileName, UDPPacketHdlr hdlr, AnyType userObj);
 		~UDPSimulator();
 
 		void Run();

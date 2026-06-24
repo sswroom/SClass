@@ -185,8 +185,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem().p;
-	if (ip)
+	UnsafeArray<const UTF8Char> ip;
+	if (me->lbMulticastCommon->GetSelectedItem().GetArrayOpt<const UTF8Char>().SetTo(ip))
 	{
 		me->txtMulticastCurr->SetText({ip, Text::StrCharCnt(ip)});
 	}

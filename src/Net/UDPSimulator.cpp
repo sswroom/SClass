@@ -6,7 +6,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/UDPSimulator.h"
 
-Net::UDPSimulator::UDPSimulator(Text::CString logFileName, Text::CString rawFileName, UDPPacketHdlr hdlr, void *userObj)
+Net::UDPSimulator::UDPSimulator(Text::CStringNN logFileName, Text::CStringNN rawFileName, UDPPacketHdlr hdlr, AnyType userObj)
 {
 	this->logFileName = Text::String::New(logFileName);
 	this->rawFileName = Text::String::New(rawFileName);
@@ -23,24 +23,24 @@ Net::UDPSimulator::~UDPSimulator()
 void Net::UDPSimulator::Run()
 {
 	UTF8Char sbuff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[3];
 	UInt8 buff[4096];
 	UIntOS i;
 	UIntOS j;
 	UIntOS byteSize;
-	Data::DateTime *dt;
+	NN<Data::DateTime> dt;
 	UInt32 ip;
 	UInt16 port;
-	IO::FileStream *logFS;
-	IO::FileStream *rawFS;
-	IO::StreamReader *reader;
+	NN<IO::FileStream> logFS;
+	NN<IO::FileStream> rawFS;
+	NN<IO::StreamReader> reader;
 
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(logFS, IO::FileStream(this->logFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, IO::StreamReader(logFS, 65001));
-	NEW_CLASS(rawFS, IO::FileStream(this->rawFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	while ((sptr = reader->ReadLine(sbuff, 2048)) != 0)
+	NEW_CLASSNN(dt, Data::DateTime());
+	NEW_CLASSNN(logFS, IO::FileStream(this->logFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(reader, IO::StreamReader(logFS, 65001));
+	NEW_CLASSNN(rawFS, IO::FileStream(this->rawFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	while (reader->ReadLine(sbuff, 2048).SetTo(sptr))
 	{
 		if (Text::StrSplitP(sarr, 3, {sbuff, (UIntOS)(sptr - sbuff)}, '\t') == 2)
 		{
@@ -66,12 +66,12 @@ void Net::UDPSimulator::Run()
 						sarr[2].leng = i;
 						port = (UInt16)Text::StrToInt32(&sarr[2].v[i + 1]);
 					}
-					ip = Net::SocketUtil::GetIPAddr(sarr[2].v, sarr[2].leng);
+					ip = Net::SocketUtil::GetIPAddr(sarr[2].ToCString());
 
 					dt->ToLocalTime();
-					dt->SetValue(sarr[0].v, sarr[0].leng);
+					dt->SetValue(sarr[0].ToCString());
 
-					if (rawFS->Read(buff, byteSize) != byteSize)
+					if (rawFS->Read(Data::ByteArray(buff, byteSize)) != byteSize)
 					{
 						break;
 					}
@@ -81,8 +81,8 @@ void Net::UDPSimulator::Run()
 			}
 		}
 	}
-	DEL_CLASS(rawFS);
-	DEL_CLASS(reader);
-	DEL_CLASS(logFS);
-	DEL_CLASS(dt);
+	rawFS.Delete();
+	reader.Delete();
+	logFS.Delete();
+	dt.Delete();
 }

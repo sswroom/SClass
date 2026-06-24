@@ -6,224 +6,77 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-// MTK MT7620
-#define IO_BASE_ADDR 0x10000000
-#define BLOCKSIZE 4096
-
-typedef struct
-{
-	IO::PhysicalMem *mem;
-	volatile UInt32 *memPtr;
-} ClassData;
-
-IO::GPIOPin::GPIOPin(IntOS pinNum)
+IO::GPIOPin::GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum)
 {
 	this->pinNum = pinNum;
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR + 0x600, BLOCKSIZE));
-	clsData->memPtr = (volatile UInt32 *)clsData->mem->GetPointer();
-	this->clsData = clsData;
+	this->gpio = gpio;
 }
 
 IO::GPIOPin::~GPIOPin()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	MemFree(clsData);
 }
 
 Bool IO::GPIOPin::IsError()
 {
-	return ((ClassData*)this->clsData)->mem->IsError();
+	return this->gpio->IsError();
 }
 
 Bool IO::GPIOPin::IsPinHigh()
 {
-	if (this->pinNum < 24)
-	{
-		return (((ClassData*)this->clsData)->memPtr[8] & (1 << this->pinNum)) != 0;
-	}
-	else if (this->pinNum < 40)
-	{
-		return (((ClassData*)this->clsData)->memPtr[18] & (1 << (this->pinNum - 24))) != 0;
-	}
-	else if (this->pinNum < 72)
-	{
-		return (((ClassData*)this->clsData)->memPtr[28] & (1 << (this->pinNum - 40))) != 0;
-	}
-	else if (this->pinNum == 72)
-	{
-		return (((ClassData*)this->clsData)->memPtr[38] & 1) != 0;
-	}
-	else
-	{
-		return false;
-	}
-	
+	return this->gpio->IsPinHigh(this->pinNum);
 }
 
 Bool IO::GPIOPin::IsPinOutput()
 {
-	if (this->pinNum < 24)
-	{
-		return (((ClassData*)this->clsData)->memPtr[9] & (1 << this->pinNum)) != 0;
-	}
-	else if (this->pinNum < 40)
-	{
-		return (((ClassData*)this->clsData)->memPtr[19] & (1 << (this->pinNum - 24))) != 0;
-	}
-	else if (this->pinNum < 72)
-	{
-		return (((ClassData*)this->clsData)->memPtr[29] & (1 << (this->pinNum - 40))) != 0;
-	}
-	else if (this->pinNum == 72)
-	{
-		return (((ClassData*)this->clsData)->memPtr[39] & 1) != 0;
-	}
-	else
-	{
-		return false;
-	}
+	return this->gpio->IsPinOutput(this->pinNum);
 }
 
 void IO::GPIOPin::SetPinOutput(Bool isOutput)
 {
-	if (isOutput)
-	{
-		if (this->pinNum < 24)
-		{
-			((ClassData*)this->clsData)->memPtr[9] |= (1 << this->pinNum);
-		}
-		else if (this->pinNum < 40)
-		{
-			((ClassData*)this->clsData)->memPtr[19] |= (1 << (this->pinNum - 24));
-		}
-		else if (this->pinNum < 72)
-		{
-			((ClassData*)this->clsData)->memPtr[29] |= (1 << (this->pinNum - 40));
-		}
-		else if (this->pinNum == 72)
-		{
-			((ClassData*)this->clsData)->memPtr[39] |= 1;
-		}
-		else
-		{
-		}
-	}
-	else
-	{
-		if (this->pinNum < 24)
-		{
-			((ClassData*)this->clsData)->memPtr[9] &= ~(1 << this->pinNum);
-		}
-		else if (this->pinNum < 40)
-		{
-			((ClassData*)this->clsData)->memPtr[19] &= ~(1 << (this->pinNum - 24));
-		}
-		else if (this->pinNum < 72)
-		{
-			((ClassData*)this->clsData)->memPtr[29] &= ~(1 << (this->pinNum - 40));
-		}
-		else if (this->pinNum == 72)
-		{
-			((ClassData*)this->clsData)->memPtr[39] &= ~1;
-		}
-		else
-		{
-		}
-	}
+	this->gpio->SetPinOutput(this->pinNum, isOutput);
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
 {
-	if (isHigh)
-	{
-		if (this->pinNum < 24)
-		{
-			((ClassData*)this->clsData)->memPtr[11] |= (1 << this->pinNum);
-		}
-		else if (this->pinNum < 40)
-		{
-			((ClassData*)this->clsData)->memPtr[21] |= (1 << (this->pinNum - 24));
-		}
-		else if (this->pinNum < 72)
-		{
-			((ClassData*)this->clsData)->memPtr[31] |= (1 << (this->pinNum - 40));
-		}
-		else if (this->pinNum == 72)
-		{
-			((ClassData*)this->clsData)->memPtr[41] |= 1;
-		}
-		else
-		{
-		}
-	}
-	else
-	{
-		if (this->pinNum < 24)
-		{
-			((ClassData*)this->clsData)->memPtr[12] |= (1 << this->pinNum);
-		}
-		else if (this->pinNum < 40)
-		{
-			((ClassData*)this->clsData)->memPtr[22] |= (1 << (this->pinNum - 24));
-		}
-		else if (this->pinNum < 72)
-		{
-			((ClassData*)this->clsData)->memPtr[32] |= (1 << (this->pinNum - 40));
-		}
-		else if (this->pinNum == 72)
-		{
-			((ClassData*)this->clsData)->memPtr[42] |= 1;
-		}
-		else
-		{
-		}
-	}
+	this->gpio->SetPinState(this->pinNum, isHigh);
 }
 
 Bool IO::GPIOPin::SetPullType(PullType pt)
 {
-	return false;
+	return this->gpio->SetPullType(this->pinNum, pt);
 }
 
-UTF8Char *IO::GPIOPin::GetName(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::GPIOPin::GetName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrInt32(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)
 {
+	this->gpio->SetEventOnHigh(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnLow(Bool enable)
 {
+	this->gpio->SetEventOnLow(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnRaise(Bool enable)
 {
+	this->gpio->SetEventOnRaise(this->pinNum, enable);
 }
 
 void IO::GPIOPin::SetEventOnFall(Bool enable)
 {
+	this->gpio->SetEventOnFall(this->pinNum, enable);
 }
 
 Bool IO::GPIOPin::HasEvent()
 {
+	return this->gpio->HasEvent(this->pinNum);
 }
 
 void IO::GPIOPin::ClearEvent()
 {
-}
-
-IntOS IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
-{
-	IntOS i = 0;
-	IntOS j = 73;
-	while (i < j)
-	{
-		pinList->Add((Int32)i);
-		i++;
-	}
-	return j;
+	this->gpio->ClearEvent(this->pinNum);
 }

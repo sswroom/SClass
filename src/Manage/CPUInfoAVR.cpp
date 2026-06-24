@@ -49,7 +49,7 @@ UIntOS Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UIntOS index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 0 || index >= this->infoCnt)
 		return false;
@@ -64,70 +64,70 @@ Bool Manage::CPUInfo::GetInfoName(UIntOS index, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UIntOS index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoValue(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
 
-UIntOS Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
+UIntOS Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	return false;
 }
 
-void Manage::CPUInfo::GetFeatureFlags(Int32 *flag1, Int32 *flag2)
+void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2)
 {
-	*flag1 = 0;
-	*flag2 = 0;
+	flag1.Set(0);
+	flag2.Set(0);
 }
 
-UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData)
 	{
 		return Text::StrConcat(sbuff, (const UTF8Char*)this->clsData);
 	}
-	return 0;
+	return nullptr;
 }
 
-Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTurboRatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
+Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
 	return false;
 }
 
-const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
+Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UIntOS index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UIntOS index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureName(UIntOS index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UIntOS index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UIntOS index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UIntOS index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb)
 {
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb)
 {
 }

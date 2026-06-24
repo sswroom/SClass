@@ -203,9 +203,9 @@ IntOS DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 		return -2;
 
 	IntOS sqlLen;
-	const UTF8Char *sqlBuff = Text::StrToUTF8New(sql);
+	UnsafeArray<const UTF8Char> sqlBuff = Text::StrToUTF8New(sql);
 	sqlLen = Text::StrCharCnt(sqlBuff);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sqlBuff, (Int32)sqlLen) == 0)
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sqlBuff.Ptr(), (Int32)sqlLen) == 0)
 	{
 		MYSQL_RES *result;
 		result = mysql_use_result((MYSQL*)this->mysql);
@@ -268,8 +268,11 @@ void DB::MySQLConn::CloseReader(NN<DB::DBReader> r)
 
 void DB::MySQLConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
-	str->AppendSlow(errMsg);
+	UnsafeArray<const Char> errMsg;
+	if (errMsg.Set(mysql_error((MYSQL*)this->mysql)))
+	{
+		str->AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(errMsg));
+	}
 }
 
 Bool DB::MySQLConn::IsLastDataError()
@@ -617,10 +620,10 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UIntOS colIndex)
 		return Data::Timestamp(nullptr);
 	if (colIndex >= this->colCount)
 		return Data::Timestamp(nullptr);
-	if (((MYSQL_ROW)this->row)[colIndex])
+	UnsafeArray<const Char> s;
+	if (s.Set(((MYSQL_ROW)this->row)[colIndex]))
 	{
-		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
-		return Data::Timestamp(Text::CStringNN::FromPtr(s), 0).ConvertTimeZoneQHR(this->tzQhr);
+		return Data::Timestamp(Text::CStringNN::FromPtr(UnsafeArray<const UTF8Char>::ConvertFrom(s)), 0).ConvertTimeZoneQHR(this->tzQhr);
 	}
 	else
 	{
