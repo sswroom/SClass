@@ -254,7 +254,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 			{
 				if (!me->SearchProcId(prog))
 				{
-					Manage::Process proc(progPath->v);
+					Manage::Process proc(UnsafeArray<const UTF8Char>(progPath->v));
 					if (proc.IsRunning())
 					{
 						prog->procId = proc.GetProcId();
