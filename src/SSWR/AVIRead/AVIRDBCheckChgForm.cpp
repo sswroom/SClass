@@ -589,6 +589,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		return false;
 	}
 	Bool srConv = this->chkGeomConv->IsChecked();
+	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
 	Text::StringBuilderUTF8 sbSchema;
 	Text::CString dataSchema = nullptr;
 	if (this->cboDataSchema->GetCount() > 0)
@@ -818,6 +819,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 										NN<Math::Geometry::Vector2D> vec;
 										if (r->GetVector(k).SetTo(vec))
 										{
+											if (vec->HasCurve() && simpleShape)
+											{
+												NN<Math::Geometry::Vector2D> vec2;
+												if (vec->ToSimpleShape().SetTo(vec2))
+												{
+													vec.Delete();
+													vec = vec2;
+												}
+											}
 											UInt32 srcSRID = vec->GetSRID();
 											UInt32 destSRID = col->GetGeometrySRID();
 											if (srcSRID != 0 && srcSRID != destSRID)
@@ -1189,6 +1199,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Optional<Data::QueryConditions> srcDBCond = nullptr;
 	Optional<Data::QueryConditions> dataDBCond = nullptr;
 	Bool srConv = this->chkGeomConv->IsChecked();
+	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
@@ -1476,6 +1487,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										NN<Math::Geometry::Vector2D> vec;
 										if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
 										{
+											if (vec->HasCurve() && simpleShape)
+											{
+												NN<Math::Geometry::Vector2D> vec2;
+												if (vec->ToSimpleShape().SetTo(vec2))
+												{
+													vec.Delete();
+													vec = vec2;
+												}
+											}
 											UInt32 srcSRID = vec->GetSRID();
 											UInt32 destSRID = col->GetGeometrySRID();
 											if (srcSRID != 0 && srcSRID != destSRID)
@@ -1572,6 +1592,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							NN<Math::Geometry::Vector2D> vec;
 							if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
 							{
+								if (vec->HasCurve() && simpleShape)
+								{
+									NN<Math::Geometry::Vector2D> vec2;
+									if (vec->ToSimpleShape().SetTo(vec2))
+									{
+										vec.Delete();
+										vec = vec2;
+									}
+								}
 								UInt32 srcSRID = vec->GetSRID();
 								UInt32 destSRID = col->GetGeometrySRID();
 								if (srcSRID != 0 && srcSRID != destSRID)
@@ -2532,6 +2561,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->lblGeomCol->SetRect(0, 168, 100, 23, false);
 	this->chkGeomConv = ui->NewCheckBox(this->grpData, CSTR("SR Convert"), false);
 	this->chkGeomConv->SetRect(100, 168, 150, 23, false);
+	this->chkGeomSimpleShape = ui->NewCheckBox(this->grpData, CSTR("Simple Shape"), false);
+	this->chkGeomSimpleShape->SetRect(250, 168, 150, 23, false);
 	this->lblAssignCol = ui->NewLabel(this->grpData, CSTR("Assign Columns"));
 	this->lblAssignCol->SetRect(0, 192, 100, 23, false);
 	this->btnAssignCol = ui->NewButton(this->grpData, CSTR("Assign"));

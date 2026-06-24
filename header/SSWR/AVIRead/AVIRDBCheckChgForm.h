@@ -60,6 +60,7 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboNullCol;
 			NN<UI::GUILabel> lblGeomCol;
 			NN<UI::GUICheckBox> chkGeomConv;
+			NN<UI::GUICheckBox> chkGeomSimpleShape;
 			NN<UI::GUILabel> lblAssignCol;
 			NN<UI::GUIButton> btnAssignCol;
 			NN<UI::GUILabel> lblDataFilter;
