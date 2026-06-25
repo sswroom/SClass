@@ -117,6 +117,39 @@ Math::Coord2DDbl Math::Geometry::LinearRing::GetDisplayCenter() const
 	return Math::Coord2DDbl(x, pt.y);
 }
 
+Bool Math::Geometry::LinearRing::FixError()
+{
+	if (this->pointArr[0] != this->pointArr[this->nPoint - 1])
+	{
+		UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, this->nPoint + 1);
+		MemCopyNO(newArr.Ptr(), this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * this->nPoint);
+		newArr[this->nPoint] = newArr[0];
+		MemFreeAArr(this->pointArr);
+		this->pointArr = newArr;
+		UnsafeArray<Double> nnArr;
+		UnsafeArray<Double> nnNewArr;
+		if (this->zArr.SetTo(nnArr))
+		{
+			nnNewArr = MemAllocArr(Double, this->nPoint + 1);
+			MemCopyNO(nnNewArr.Ptr(), nnArr.Ptr(), sizeof(Double) * this->nPoint);
+			nnNewArr[this->nPoint] = nnNewArr[0];
+			MemFreeArr(nnArr);
+			this->zArr = nnNewArr;
+		}
+		if (this->mArr.SetTo(nnArr))
+		{
+			nnNewArr = MemAllocArr(Double, this->nPoint + 1);
+			MemCopyNO(nnNewArr.Ptr(), nnArr.Ptr(), sizeof(Double) * this->nPoint);
+			nnNewArr[this->nPoint] = nnNewArr[0];
+			MemFreeArr(nnArr);
+			this->mArr = nnNewArr;
+		}
+		this->nPoint++;
+		return true;
+	}
+	return false;
+}
+
 Bool Math::Geometry::LinearRing::IsOpen() const
 {
 	return this->pointArr[0] != this->pointArr[this->nPoint - 1];

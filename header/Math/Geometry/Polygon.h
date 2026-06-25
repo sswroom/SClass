@@ -19,6 +19,7 @@ namespace Math
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual Bool FixError();
 //			Bool HasJunction() const;
 //			void SplitByJunction(NN<Data::ArrayListNN<Math::Geometry::Polygon>> results);
 			NN<Math::Geometry::MultiPolygon> CreateMultiPolygon() const;

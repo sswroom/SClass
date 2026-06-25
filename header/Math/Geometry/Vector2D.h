@@ -72,6 +72,7 @@ namespace Math
 			virtual Math::Coord2DDbl GetDisplayCenter() const = 0;
 			virtual Bool HasCurve() const { return false; }
 			virtual Optional<Vector2D> ToSimpleShape() const { return this->Clone(); }
+			virtual Bool FixError() { return false; }
 			Bool Contains(NN<Math::Geometry::Vector2D> vec) const;
 
 			UInt32 GetSRID() const { return this->srid; }

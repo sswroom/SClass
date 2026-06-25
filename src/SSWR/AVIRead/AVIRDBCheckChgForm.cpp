@@ -215,6 +215,15 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
+	Text::CString schema = nullptr;
+	Text::StringBuilderUTF8 sbSchema;
+	if (me->cboDataSchema->GetCount() > 0)
+	{
+		if (me->cboDataSchema->GetText(sbSchema))
+		{
+			schema = sbSchema.ToCString();
+		}
+	}
 	Text::StringBuilderUTF8 sbTable;
 	if (!me->cboDataTable->GetText(sbTable))
 	{
@@ -226,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 	{
 		return;
 	}
-	me->GetColIndex(me->colInd, table, nullptr, sbTable.ToCString());
+	me->GetColIndex(me->colInd, table, schema, sbTable.ToCString());
 	table.Delete();
 }
 
@@ -299,6 +308,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnCboSelChg(AnyType us
 		me->relDataFile.Delete();
 		me->cboNullCol->SetSelectedIndex(3);
 		me->dataConn = me->dbMgr->OpenDataSource(me->cboDataConn->GetSelectedIndex());
+		me->dataFileNoHeader = false;
 		NN<DB::ReadingDB> conn;
 		if (me->dataConn.SetTo(conn))
 		{
@@ -413,6 +423,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 co
 {
 	this->connTz = connTz;
 	this->dataConn = conn;
+	this->dataFileNoHeader = false;
 	Data::ArrayListStringNN schemaNames;
 	Optional<Text::String> schemaName = nullptr;
 	conn->QuerySchemaNames(schemaNames);
@@ -590,6 +601,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	Bool srConv = this->chkGeomConv->IsChecked();
 	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
+	Bool fixError = this->chkGeomFixError->IsChecked();
 	Text::StringBuilderUTF8 sbSchema;
 	Text::CString dataSchema = nullptr;
 	if (this->cboDataSchema->GetCount() > 0)
@@ -684,7 +696,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	{
 		if (dbCnt != srcCnt)
 		{
-			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Column Count does not match, dbCnt = "));
+			sb.AppendUIntOS(dbCnt);
+			sb.AppendC(UTF8STRC(", srcCnt = "));
+			sb.AppendUIntOS(srcCnt);
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 			dataConn->CloseReader(r);
 			table.Delete();
 			srcDBCond.Delete();
@@ -814,52 +831,70 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 											break;
 										}
 									}
-									else if (col->GetColType() == DB::DBUtil::CT_Vector && srConv)
+									else if (col->GetColType() == DB::DBUtil::CT_Vector && (srConv || simpleShape || fixError))
 									{
 										NN<Math::Geometry::Vector2D> vec;
 										if (r->GetVector(k).SetTo(vec))
 										{
+											Bool updated = false;
 											if (vec->HasCurve() && simpleShape)
 											{
 												NN<Math::Geometry::Vector2D> vec2;
+//												printf("Found curve\n");
 												if (vec->ToSimpleShape().SetTo(vec2))
 												{
+//													printf("Converted to simple shape: %s\n", Math::Geometry::Vector2D::VectorTypeGetName(vec2->GetVectorType()).v.Ptr());
 													vec.Delete();
 													vec = vec2;
+													updated = true;
 												}
 											}
-											UInt32 srcSRID = vec->GetSRID();
-											UInt32 destSRID = col->GetGeometrySRID();
-											if (srcSRID != 0 && srcSRID != destSRID)
+											if (fixError)
 											{
-												if (!csysDB.SetTo(nncsysDB))
+												if (vec->FixError())
 												{
-													nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-													csysDB = nncsysDB;
+													updated = true;
 												}
-												if (csysSrc.SetTo(nncsysSrc))
+											}
+											if (srConv)
+											{
+												UInt32 srcSRID = vec->GetSRID();
+												UInt32 destSRID = col->GetGeometrySRID();
+												if (srcSRID != 0 && srcSRID != destSRID)
 												{
-													if (nncsysSrc->GetSRID() != srcSRID)
+													if (!csysDB.SetTo(nncsysDB))
 													{
-														nncsysSrc.Delete();
+														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+														csysDB = nncsysDB;
+													}
+													if (csysSrc.SetTo(nncsysSrc))
+													{
+														if (nncsysSrc->GetSRID() != srcSRID)
+														{
+															nncsysSrc.Delete();
+															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+															csysSrc = nncsysSrc;
+														}
+													}
+													else
+													{
 														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 														csysSrc = nncsysSrc;
 													}
+													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+													vec->Convert(csysConv);
+													updated = true;
 												}
-												else
-												{
-													nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-													csysSrc = nncsysSrc;
-												}
-												Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-												vec->Convert(csysConv);
+											}
+											if (updated)
+											{
 												sb.ClearStr();
 												Math::WKTWriter writer;
 												writer.ToText(sb, vec);
 												OPTSTR_DEL(rowData[i]);
 												rowData[i] = Text::String::New(sb.ToCString());
-												vec.Delete();
 											}
+											vec.Delete();
 										}
 									}
 								}
@@ -1200,6 +1235,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Optional<Data::QueryConditions> dataDBCond = nullptr;
 	Bool srConv = this->chkGeomConv->IsChecked();
 	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
+	Bool fixError = this->chkGeomFixError->IsChecked();
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
@@ -1480,13 +1516,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									}
 								}
-								else if (table->GetCol(i).SetTo(col) && srConv)
+								else if (table->GetCol(i).SetTo(col) && (srConv || simpleShape || fixError))
 								{
 									if (col->GetColType() == DB::DBUtil::CT_Vector)
 									{
 										NN<Math::Geometry::Vector2D> vec;
 										if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
 										{
+											Bool updated = false;
 											if (vec->HasCurve() && simpleShape)
 											{
 												NN<Math::Geometry::Vector2D> vec2;
@@ -1494,40 +1531,55 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 												{
 													vec.Delete();
 													vec = vec2;
+													updated = true;
 												}
 											}
-											UInt32 srcSRID = vec->GetSRID();
-											UInt32 destSRID = col->GetGeometrySRID();
-											if (srcSRID != 0 && srcSRID != destSRID)
+											if (fixError)
 											{
-												if (!csysDB.SetTo(nncsysDB))
+												if (vec->FixError())
 												{
-													nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-													csysDB = nncsysDB;
+													updated = true;
 												}
-												if (csysSrc.SetTo(nncsysSrc))
+											}
+											if (srConv)
+											{
+												UInt32 srcSRID = vec->GetSRID();
+												UInt32 destSRID = col->GetGeometrySRID();
+												if (srcSRID != 0 && srcSRID != destSRID)
 												{
-													if (nncsysSrc->GetSRID() != srcSRID)
+													if (!csysDB.SetTo(nncsysDB))
 													{
-														nncsysSrc.Delete();
+														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+														csysDB = nncsysDB;
+													}
+													if (csysSrc.SetTo(nncsysSrc))
+													{
+														if (nncsysSrc->GetSRID() != srcSRID)
+														{
+															nncsysSrc.Delete();
+															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+															csysSrc = nncsysSrc;
+														}
+													}
+													else
+													{
 														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 														csysSrc = nncsysSrc;
 													}
+													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+													vec->Convert(csysConv);
+													updated = true;
 												}
-												else
-												{
-													nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-													csysSrc = nncsysSrc;
-												}
-												Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-												vec->Convert(csysConv);
+											}
+											if (updated)
+											{
 												sb.ClearStr();
 												Math::WKTWriter writer;
 												writer.ToText(sb, vec);
 												s2->Release();
 												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
-												vec.Delete();
 											}
+											vec.Delete();
 										}
 									}
 								}
@@ -1601,31 +1653,38 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										vec = vec2;
 									}
 								}
-								UInt32 srcSRID = vec->GetSRID();
-								UInt32 destSRID = col->GetGeometrySRID();
-								if (srcSRID != 0 && srcSRID != destSRID)
+								if (fixError)
 								{
-									if (!csysDB.SetTo(nncsysDB))
+									vec->FixError();
+								}
+								if (srConv)
+								{
+									UInt32 srcSRID = vec->GetSRID();
+									UInt32 destSRID = col->GetGeometrySRID();
+									if (srcSRID != 0 && srcSRID != destSRID)
 									{
-										nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-										csysDB = nncsysDB;
-									}
-									if (csysSrc.SetTo(nncsysSrc))
-									{
-										if (nncsysSrc->GetSRID() != srcSRID)
+										if (!csysDB.SetTo(nncsysDB))
 										{
-											nncsysSrc.Delete();
+											nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+											csysDB = nncsysDB;
+										}
+										if (csysSrc.SetTo(nncsysSrc))
+										{
+											if (nncsysSrc->GetSRID() != srcSRID)
+											{
+												nncsysSrc.Delete();
+												nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+												csysSrc = nncsysSrc;
+											}
+										}
+										else
+										{
 											nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 											csysSrc = nncsysSrc;
 										}
+										Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+										vec->Convert(csysConv);
 									}
-									else
-									{
-										nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-										csysSrc = nncsysSrc;
-									}
-									Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-									vec->Convert(csysConv);
 								}
 								sql.AppendVector(vec);
 								vec.Delete();
@@ -2560,9 +2619,11 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->lblGeomCol = ui->NewLabel(this->grpData, CSTR("Geom Column"));
 	this->lblGeomCol->SetRect(0, 168, 100, 23, false);
 	this->chkGeomConv = ui->NewCheckBox(this->grpData, CSTR("SR Convert"), false);
-	this->chkGeomConv->SetRect(100, 168, 150, 23, false);
+	this->chkGeomConv->SetRect(100, 168, 120, 23, false);
 	this->chkGeomSimpleShape = ui->NewCheckBox(this->grpData, CSTR("Simple Shape"), false);
-	this->chkGeomSimpleShape->SetRect(250, 168, 150, 23, false);
+	this->chkGeomSimpleShape->SetRect(220, 168, 120, 23, false);
+	this->chkGeomFixError = ui->NewCheckBox(this->grpData, CSTR("Fix Error"), false);
+	this->chkGeomFixError->SetRect(340, 168, 120, 23, false);
 	this->lblAssignCol = ui->NewLabel(this->grpData, CSTR("Assign Columns"));
 	this->lblAssignCol->SetRect(0, 192, 100, 23, false);
 	this->btnAssignCol = ui->NewButton(this->grpData, CSTR("Assign"));

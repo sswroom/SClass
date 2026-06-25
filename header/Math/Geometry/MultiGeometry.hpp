@@ -385,6 +385,23 @@ namespace Math
 					return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
 				}
 			}
+
+			virtual Bool FixError()
+			{
+				Bool updated = false;
+				UIntOS i = 0;
+				UIntOS j = this->geometries.GetCount();
+				while (i < j)
+				{
+					if (this->geometries.GetItemNoCheck(i)->FixError())
+					{
+						updated = true;
+					}
+					i++;
+				}
+				return updated;
+			}
+
 		};
 	}
 }

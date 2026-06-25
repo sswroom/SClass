@@ -19,6 +19,7 @@ namespace Math
 			virtual Double CalArea() const;
 			virtual Bool HasArea() const;
 			virtual Math::Coord2DDbl GetDisplayCenter() const;
+			virtual Bool FixError();
 			Bool IsOpen() const;
 			Bool IsClose() const;
 

@@ -75,6 +75,28 @@ Bool Math::Geometry::Polygon::InsideOrTouch(Math::Coord2DDbl coord) const
 	return (insideCnt & 1) != 0;
 }
 
+Bool Math::Geometry::Polygon::FixError()
+{
+	Bool updated = false;
+	NN<Math::Geometry::LinearRing> lr;
+	UIntOS i = this->geometries.GetCount();
+	while (i-- > 0)
+	{
+		lr = this->geometries.GetItemNoCheck(i);
+		if (lr->FixError())
+		{
+			updated = true;
+		}
+		if (lr->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing && lr->GetPointCount() < 4)
+		{
+			this->geometries.RemoveAt(i);
+			lr.Delete();
+			updated = true;
+		}
+	}
+	return updated;
+}
+
 /*Bool Math::Geometry::Polygon::HasJunction() const
 {
 	UIntOS i;
