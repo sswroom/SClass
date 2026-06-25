@@ -19,7 +19,7 @@ struct IO::GPIOControl::ClassData
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR, BLOCKSIZE));
 	clsData->gpioPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x600);
 	clsData->sysCtlPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x000);
@@ -29,7 +29,7 @@ IO::GPIOControl::GPIOControl()
 IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -585,7 +585,7 @@ Text::CString GPIOControl_Func2[] = {
 	CSTR("Unknown"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 {
 /*	if (pinNum >= 73 || pinState > 8)
 	{

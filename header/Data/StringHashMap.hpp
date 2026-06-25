@@ -10,7 +10,7 @@ namespace Data
 	template <typename T> struct HashNodeItem
 	{
 		UInt32 cnt;
-		Text::String *str;
+		Optional<Text::String> str;
 		T val;
 		UInt32 hash;
 	};
@@ -18,35 +18,35 @@ namespace Data
 	template <typename T> struct HashNodeLayer
 	{
 		UIntOS capacity;
-		HashNodeLayer<T> *parentLayer;
-		HashNodeLayer<T> *nextLayer;
+		Optional<HashNodeLayer<T>> parentLayer;
+		Optional<HashNodeLayer<T>> nextLayer;
 		HashNodeItem<T> items[1];
 	};
 
-	template <class T> class StringHashMap : public DataMap<Text::String*, T>
+	template <class T> class StringHashMap : public DataMap<NN<Text::String>, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;
-		HashNodeLayer<T> *rootNode;
+		Optional<HashNodeLayer<T>> rootNode;
 
 	protected:
-		void ReleaseNode(HashNodeLayer<T> *layer, UIntOS index);
-		void CreateNextLayer(HashNodeLayer<T> *layer);
+		void ReleaseNode(NN<HashNodeLayer<T>> layer, UIntOS index);
+		void CreateNextLayer(NN<HashNodeLayer<T>> layer);
 
-		virtual UInt32 CalHash(Text::String *key);
+		virtual UInt32 CalHash(NN<Text::String> key);
 	public:
 		StringHashMap();
 		virtual ~StringHashMap();
 
-		virtual T Put(Text::String *key, T val);
-		virtual T Get(Text::String *key);
-		virtual T Remove(Text::String *key);
+		virtual T Put(NN<Text::String> key, T val);
+		virtual T Get(NN<Text::String> key);
+		virtual T Remove(NN<Text::String> key);
 		virtual Bool IsEmpty();
-		virtual T *ToArray(UIntOS *objCnt);
+		virtual UnsafeArray<T> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
-	template <class T> void StringHashMap<T>::ReleaseNode(HashNodeLayer<T> *layer, UIntOS index)
+	template <class T> void StringHashMap<T>::ReleaseNode(NN<HashNodeLayer<T>> layer, UIntOS index)
 	{
 		layer->items[index].str->Release();
 		layer->items[index].str = 0;
@@ -63,21 +63,21 @@ namespace Data
 		}
 	}
 
-	template <class T> void StringHashMap<T>::CreateNextLayer(HashNodeLayer<T> *layer)
+	template <class T> void StringHashMap<T>::CreateNextLayer(NN<HashNodeLayer<T>> layer)
 	{
-		layer->nextLayer = (HashNodeLayer<T>*)MAlloc(sizeof(HashNodeLayer<T>) + sizeof(HashNodeItem<T>) * ((layer->capacity << 1) - 1));
+		layer->nextLayer = NN<HashNodeLayer<T>>::FromPtr((HashNodeLayer<T>*)MAlloc(sizeof(HashNodeLayer<T>) + sizeof(HashNodeItem<T>) * ((layer->capacity << 1) - 1)));
 		layer->nextLayer->capacity = layer->capacity << 1;
 		layer->nextLayer->nextLayer = 0;
 		layer->nextLayer->parentLayer = layer;
 		UIntOS i = layer->nextLayer->capacity;
 		while (i-- > 0)
 		{
-			layer->nextLayer->items[i].str = 0;
+			layer->nextLayer->items[i].str = nullptr;
 		}
 	}
 
 
-	template <class T> UInt32 StringHashMap<T>::CalHash(Text::String *key)
+	template <class T> UInt32 StringHashMap<T>::CalHash(NN<Text::String> key)
 	{
 		return this->crc.CalcDirect(key->v, key->leng);
 	}
@@ -99,21 +99,21 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringHashMap<T>::Put(Text::String *key, T val)
+	template <class T> T StringHashMap<T>::Put(NN<Text::String> key, T val)
 	{
 		UInt32 hash = this->CalHash(key);
 		UIntOS index;
-		HashNodeLayer<T> *currLayer;
-		if (this->rootNode == 0)
+		NN<HashNodeLayer<T>> currLayer;
+		if (!this->rootNode.SetTo(currLayer))
 		{
-			this->rootNode = MemAlloc(HashNodeLayer<T>, 1);
-			this->rootNode->capacity = 1;
-			this->rootNode->nextLayer = 0;
-			this->rootNode->parentLayer = 0;
-			this->rootNode->items[0].cnt = 1;
-			this->rootNode->items[0].str = key->Clone();
-			this->rootNode->items[0].val = val;
-			this->rootNode->items[0].hash = hash;
+			this->rootNode = currLayer = MemAllocNN(HashNodeLayer<T>);
+			currLayer->capacity = 1;
+			currLayer->nextLayer = 0;
+			currLayer->parentLayer = 0;
+			currLayer->items[0].cnt = 1;
+			currLayer->items[0].str = key->Clone();
+			currLayer->items[0].val = val;
+			currLayer->items[0].hash = hash;
 			return 0;
 		}
 		IntOS i;
@@ -121,7 +121,7 @@ namespace Data
 		index = 0;
 		while (true)
 		{
-			if (currLayer->items[index].str == 0)
+			if (currLayer->items[index].str.IsNull())
 			{
 				currLayer->items[index].cnt = 1;
 				currLayer->items[index].str = key->Clone();
@@ -171,16 +171,17 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringHashMap<T>::Get(Text::String *key)
+	template <class T> T StringHashMap<T>::Get(NN<Text::String> key)
 	{
-		if (this->rootNode == 0 || this->rootNode->items[0].str == 0)
+		NN<HashNodeLayer<T>> rootNode;
+		if (!this->rootNode.SetTo(rootNode) || rootNode->items[0].str.IsNull())
 		{
 			return 0;
 		}
 		UInt32 hash = this->CalHash(key);
 		UIntOS index = 0;
 		IntOS i;
-		HashNodeLayer<T> *currLayer = this->rootNode;
+		NN<HashNodeLayer<T>> currLayer = rootNode;
 		while (true)
 		{
 			if (currLayer->items[index].str == 0)
@@ -220,7 +221,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringHashMap<T>::Remove(Text::String *key)
+	template <class T> T StringHashMap<T>::Remove(NN<Text::String> key)
 	{
 		/////////////////////////////
 		return 0;
@@ -231,7 +232,7 @@ namespace Data
 		return this->rootNode == 0 || this->rootNode->items[0].str == 0;
 	}
 
-	template <class T> T *StringHashMap<T>::ToArray(UIntOS *objCnt)
+	template <class T> UnsafeArray<T> StringHashMap<T>::ToArray(OutParam<UIntOS> objCnt)
 	{
 		//////////////////////////////
 		return 0;

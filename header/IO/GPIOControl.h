@@ -12,7 +12,7 @@ namespace IO
 		typedef void (CALLBACKFUNC InterruptHandler)(AnyType userObj);	
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		GPIOControl();
 		~GPIOControl();

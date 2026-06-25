@@ -11,7 +11,7 @@ namespace DB
 	private:
 		NN<DB::DBReader> reader;
 		NN<Data::NamedClass<T>> cls;
-		UIntOS *colIndex;
+		UnsafeArrayOpt<UIntOS> colIndex;
 
 	public:
 		DBClassReader(NN<DB::DBReader> reader, NN<Data::NamedClass<T>> cls);
@@ -28,7 +28,7 @@ namespace DB
 	{
 		this->reader = reader;
 		this->cls = cls;
-		this->colIndex = 0;
+		this->colIndex = nullptr;
 
 		UTF8Char sbuff[256];
 		UTF8Char sbuff2[256];
@@ -62,32 +62,35 @@ namespace DB
 			return;
 		}
 
-		this->colIndex = MemAlloc(UIntOS, j);
+		UnsafeArray<UIntOS> colIndex;
+		this->colIndex = colIndex = MemAllocArr(UIntOS, j);
 		i = 0;
 		while (i < j)
 		{
-			this->colIndex[i] = colMap2.Get(cls->GetFieldName(i).OrNull());
+			colIndex[i] = colMap2.Get(cls->GetFieldName(i).OrNull());
 			i++;
 		}
 	}
 
 	template <class T> DBClassReader<T>::~DBClassReader()
 	{
-		if (this->colIndex)
+		UnsafeArray<UIntOS> colIndex;
+		if (this->colIndex.SetTo(colIndex))
 		{
-			MemFree(this->colIndex);
-			this->colIndex = 0;
+			MemFreeArr(colIndex);
+			this->colIndex = nullptr;
 		}
 	}
 
 	template <class T> Bool DBClassReader<T>::IsError()
 	{
-		return this->colIndex == 0;
+		return this->colIndex.IsNull();
 	}
 
 	template <class T> Optional<T> DBClassReader<T>::ReadNext()
 	{
-		if (this->reader->ReadNext())
+		UnsafeArray<UIntOS> colIndex;
+		if (this->colIndex.SetTo(colIndex) && this->reader->ReadNext())
 		{
 			NN<T> o = this->cls->CreateObject();
 			Data::VariItem item;
@@ -95,7 +98,7 @@ namespace DB
 			UIntOS j = this->cls->GetFieldCount();
 			while (i < j)
 			{
-				this->reader->GetVariItem(this->colIndex[i], item);
+				this->reader->GetVariItem(colIndex[i], item);
 				this->cls->SetFieldClearItem(o, i, item);
 				i++;
 			}
@@ -106,14 +109,15 @@ namespace DB
 
 	template <class T> Bool DBClassReader<T>::ReadNext(NN<T> obj)
 	{
-		if (this->reader->ReadNext())
+		UnsafeArray<UIntOS> colIndex;
+		if (this->colIndex.SetTo(colIndex) && this->reader->ReadNext())
 		{
 			Data::VariItem item;
 			UIntOS i = 0;
 			UIntOS j = this->cls->GetFieldCount();
 			while (i < j)
 			{
-				this->reader->GetVariItem(this->colIndex[i], item);
+				this->reader->GetVariItem(colIndex[i], item);
 				this->cls->SetFieldClearItem(obj, i, item);
 				i++;
 			}
@@ -124,7 +128,7 @@ namespace DB
 
 	template <class T> Bool DBClassReader<T>::ReadAll(NN<Data::ArrayListNN<T>> outList)
 	{
-		if (this->colIndex)
+		if (this->colIndex.NotNull())
 		{
 			NN<T> o;
 			while (this->ReadNext().SetTo(o))

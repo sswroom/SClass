@@ -18,7 +18,7 @@ struct IO::GPIOControl::ClassData
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR + 0x200000, BLOCKSIZE));
 	clsData->memPtr = (volatile UInt32 *)clsData->mem->GetPointer();
 	this->clsData = clsData;
@@ -27,7 +27,7 @@ IO::GPIOControl::GPIOControl()
 IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()

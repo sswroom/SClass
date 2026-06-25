@@ -11,41 +11,41 @@ namespace Data
 	{
 		Int32 nodeCnt;
 		Int32 maxLev;
-		BTreeWNode<T> *parNode;
-		BTreeWNode<T> *leftNode;
-		BTreeWNode<T> *rightNode;
+		Optional<BTreeWNode<T>> parNode;
+		Optional<BTreeWNode<T>> leftNode;
+		Optional<BTreeWNode<T>> rightNode;
 		T nodeVal;
 		UInt32 nodeHash;
 		WChar nodeStr[1];
 	};
 
-	template <class T> class BTreeWMap : public DataMap<const WChar*, T>
+	template <class T> class BTreeWMap : public DataMap<UnsafeArray<const WChar>, T>
 	{
 	protected:
 		NN<Crypto::Hash::CRC32R> crc;
-		BTreeWNode<T> *rootNode;
+		Optional<BTreeWNode<T>> rootNode;
 
 	protected:
-		void OptimizeNode(BTreeWNode<T> *node);
-		void ReleaseNodeTree(BTreeWNode<T> *node);
-		BTreeWNode<T> *NewNode(const WChar *key, UInt32 hash, T val);
-		virtual T PutNode(BTreeWNode<T> *node, const WChar *key, UInt32 hash, T val);
-		BTreeWNode<T> *RemoveNode(BTreeWNode<T> *node);
-		void FillArr(T **arr, BTreeWNode<T> *node);
-		virtual UInt32 CalHash(const WChar *key);
+		void OptimizeNode(NN<BTreeWNode<T>> node);
+		void ReleaseNodeTree(NN<BTreeWNode<T>> node);
+		NN<BTreeWNode<T>> NewNode(UnsafeArray<const WChar> key, UInt32 hash, T val);
+		virtual T PutNode(NN<BTreeWNode<T>> node, UnsafeArray<const WChar> key, UInt32 hash, T val);
+		Optional<BTreeWNode<T>> RemoveNode(NN<BTreeWNode<T>> node);
+		void FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeWNode<T>> node);
+		virtual UInt32 CalHash(UnsafeArray<const WChar> key);
 	public:
 		BTreeWMap();
 		virtual ~BTreeWMap();
 
-		virtual T Put(const WChar *key, T val);
-		virtual T Get(const WChar *key);
-		virtual T Remove(const WChar *key);
+		virtual T Put(UnsafeArray<const WChar> key, T val);
+		virtual T Get(UnsafeArray<const WChar> key);
+		virtual T Remove(UnsafeArray<const WChar> key);
 		virtual Bool IsEmpty();
-		virtual T *ToArray(UIntOS *objCnt);
+		virtual UnsafeArray<T> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
-	template <class T> void BTreeWMap<T>::OptimizeNode(BTreeWNode<T> *node)
+	template <class T> void BTreeWMap<T>::OptimizeNode(NN<BTreeWNode<T>> node)
 	{
 		Int32 leftLev;
 		Int32 rightLev;
@@ -75,7 +75,7 @@ namespace Data
 		}
 	}
 
-	template <class T> void BTreeWMap<T>::ReleaseNodeTree(BTreeWNode<T> *node)
+	template <class T> void BTreeWMap<T>::ReleaseNodeTree(NN<BTreeWNode<T>> node)
 	{
 		if (node->leftNode)
 		{
@@ -85,13 +85,13 @@ namespace Data
 		{
 			ReleaseNodeTree(node->rightNode);
 		}
-		MemFree(node);
+		MemFreeNN(node);
 	}
 
-	template <class T> BTreeWNode<T> *BTreeWMap<T>::NewNode(const WChar *key, UInt32 hash, T val)
+	template <class T> NN<BTreeWNode<T>> BTreeWMap<T>::NewNode(UnsafeArray<const WChar> key, UInt32 hash, T val)
 	{
 		IntOS cnt = Text::StrCharCnt(key);
-		BTreeWNode<T> *node = (BTreeWNode<T> *)MAlloc(sizeof(BTreeWNode<T>) + sizeof(WChar) * cnt);
+		NN<BTreeWNode<T>> node = NN<BTreeWNode<T>>::FromPtr((BTreeWNode<T>*)MAlloc(sizeof(BTreeWNode<T>) + sizeof(WChar) * cnt));
 		node->nodeCnt = 0;
 		node->parNode = 0;
 		node->leftNode = 0;
@@ -103,9 +103,9 @@ namespace Data
 		return node;
 	}
 
-	template <class T> T BTreeWMap<T>::PutNode(BTreeWNode<T> *node, const WChar *key, UInt32 hash, T val)
+	template <class T> T BTreeWMap<T>::PutNode(NN<BTreeWNode<T>> node, UnsafeArray<const WChar> key, UInt32 hash, T val)
 	{
-		BTreeWNode<T> *tmpNode;
+		NN<BTreeWNode<T>> tmpNode;
 		T retVal;
 		IntOS i;
 		if (node->nodeHash == hash)
@@ -223,31 +223,32 @@ namespace Data
 
 	}
 
-	template <class T> BTreeWNode<T> *BTreeWMap<T>::RemoveNode(BTreeWNode<T> *node)
+	template <class T> Optional<BTreeWNode<T>> BTreeWMap<T>::RemoveNode(NN<BTreeWNode<T>> node)
 	{
-		BTreeWNode<T> *parNode = node->parNode;
-		while (parNode)
+		Optional<BTreeWNode<T>> parNode = node->parNode;
+		NN<BTreeWNode<T>> nnparNode;
+		while (parNode.SetTo(nnparNode))
 		{
-			parNode->nodeCnt--;
-			parNode = parNode->parNode;
+			nnparNode->nodeCnt--;
+			parNode = nnparNode->parNode;
 		}
 		if (node->leftNode == 0 && node->rightNode == 0)
 		{
-			MemFree(node);
+			MemFreeNN(node);
 			return 0;
 		}
 		else if (node->leftNode == 0)
 		{
 			BTreeWNode<T> *outNode = node->rightNode;
 			outNode->parNode = node->parNode;
-			MemFree(node);
+			MemFreeNN(node);
 			return outNode;
 		}
 		else if (node->rightNode == 0)
 		{
 			BTreeWNode<T> *outNode = node->leftNode;
 			outNode->parNode = node->parNode;
-			MemFree(node);
+			MemFreeNN(node);
 			return outNode;
 		}
 
@@ -339,20 +340,20 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 BTreeWMap<T>::CalHash(const WChar *key)
+	template <class T> UInt32 BTreeWMap<T>::CalHash(UnsafeArray<const WChar> key)
 	{
 		IntOS charCnt = Text::StrCharCnt(key);
 		this->crc->Clear();
-		this->crc->Calc((const UInt8*)key, charCnt * sizeof(WChar));
+		this->crc->Calc(UnsafeArray<const UInt8>::ConvertFrom(key), charCnt * sizeof(WChar));
 		UInt8 hash[4];
 		this->crc->GetValue(hash);
 		return ReadMUInt32(hash);
 	}
 
-	template <class T> void BTreeWMap<T>::FillArr(T **arr, BTreeWNode<T> *node)
+	template <class T> void BTreeWMap<T>::FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeWNode<T>> node)
 	{
-		if (node == 0)
-			return;
+		NN<BTreeWNode<T>> node2;
+		if (node->leftNode.)
 		FillArr(arr, node->leftNode);
 		**arr = node->nodeVal;
 		++*arr;
@@ -375,7 +376,7 @@ namespace Data
 		this->crc.Delete();
 	}
 
-	template <class T> T BTreeWMap<T>::Put(const WChar *key, T val)
+	template <class T> T BTreeWMap<T>::Put(UnsafeArray<const WChar> key, T val)
 	{
 		UInt32 hash = CalHash(key);
 		if (this->rootNode == 0)
@@ -391,10 +392,10 @@ namespace Data
 		}
 	}
 
-	template <class T> T BTreeWMap<T>::Get(const WChar *key)
+	template <class T> T BTreeWMap<T>::Get(UnsafeArray<const WChar> key)
 	{
 		UInt32 hash = CalHash(key);
-		BTreeWNode<T> *node = this->rootNode;
+		Optional<BTreeWNode<T>> node = this->rootNode;
 		while (node)
 		{
 			IntOS i;
@@ -426,7 +427,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeWMap<T>::Remove(const WChar *key)
+	template <class T> T BTreeWMap<T>::Remove(UnsafeArray<const WChar> key)
 	{
 		if (this->rootNode == 0)
 			return 0;
@@ -489,17 +490,17 @@ namespace Data
 		return this->rootNode == 0;
 	}
 
-	template <class T> T *BTreeWMap<T>::ToArray(UIntOS *objCnt)
+	template <class T> UnsafeArray<T> BTreeWMap<T>::ToArray(OutParam<UIntOS> objCnt)
 	{
 		UIntOS cnt = 0;
 		if (this->rootNode)
 		{
 			cnt = this->rootNode->nodeCnt + 1;
 		}
-		T *outArr = MemAlloc(T, cnt);
-		T *tmpArr = outArr;
-		FillArr(&tmpArr, this->rootNode);
-		*objCnt = cnt;
+		UnsafeArray<T> outArr = MemAllocArr(T, cnt);
+		UnsafeArray<T> tmpArr = outArr;
+		FillArr(tmpArr, this->rootNode);
+		objCnt.Set(cnt);
 		return outArr;
 	}
 
@@ -511,6 +512,6 @@ namespace Data
 			this->rootNode = 0;
 		}
 	}
-};
+}
 
 #endif

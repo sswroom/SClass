@@ -56,7 +56,7 @@ void GPIOControl_GetPortNum(UInt16 pinNum, IntOS *portNum, IntOS *index)
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(GPIO_BASE_MAP, 0x4000));
 	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
 	this->clsData = clsData;
@@ -65,7 +65,7 @@ IO::GPIOControl::GPIOControl()
 IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -200,7 +200,7 @@ void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-static Text::CString GPIOControl_Func2[] = {
+static Text::CStringNN GPIOControl_Func2[] = {
 	//PortB
 	CSTR("UART2_TX"),
 	CSTR("UART2_RX"),
@@ -325,7 +325,7 @@ static Text::CString GPIOControl_Func2[] = {
 	CSTR("MIC_DATA"),
 };
 
-static Text::CString GPIOControl_Func3[] = {
+static Text::CStringNN GPIOControl_Func3[] = {
 	//PortB
 	CSTR("Reserved"),
 	CSTR("Reserved"),
@@ -450,7 +450,7 @@ static Text::CString GPIOControl_Func3[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func4[] = {
+static Text::CStringNN GPIOControl_Func4[] = {
 	//PortB
 	CSTR("JTAG_MS0"),
 	CSTR("JTAG_CK0"),
@@ -575,7 +575,7 @@ static Text::CString GPIOControl_Func4[] = {
 	CSTR("jtdi_k"),
 };
 
-static Text::CString GPIOControl_Func5[] = {
+static Text::CStringNN GPIOControl_Func5[] = {
 	//PortB
 	CSTR("Reserved"),
 	CSTR("SIM_PWREN"),
@@ -700,7 +700,7 @@ static Text::CString GPIOControl_Func5[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func6[] = {
+static Text::CStringNN GPIOControl_Func6[] = {
 	//PortB
 	CSTR("PB_EINT0"),
 	CSTR("PB_EINT1"),
@@ -825,7 +825,7 @@ static Text::CString GPIOControl_Func6[] = {
 	CSTR("PH_EINT11"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

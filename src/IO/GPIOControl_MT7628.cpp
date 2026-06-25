@@ -17,7 +17,7 @@ struct IO::GPIOControl::ClassData
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR, BLOCKSIZE));
 	clsData->gpioPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x600);
 	clsData->sysCtlPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x000);
@@ -27,7 +27,7 @@ IO::GPIOControl::GPIOControl()
 IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -322,7 +322,7 @@ void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-static Text::CString GPIOControl_Func0[] = {
+static Text::CStringNN GPIOControl_Func0[] = {
 	CSTR("i2ssdi"),
 	CSTR("i2ssdo"),
 	CSTR("i2sws"),
@@ -376,7 +376,7 @@ static Text::CString GPIOControl_Func0[] = {
 	CSTR("rxd1"),
 };
 
-static Text::CString GPIOControl_Func2[] = {
+static Text::CStringNN GPIOControl_Func2[] = {
 	CSTR("pcmdrx"),
 	CSTR("pcmdtx"),
 	CSTR("pcmclk"),
@@ -430,7 +430,7 @@ static Text::CString GPIOControl_Func2[] = {
 	CSTR("pwm_ch1"),
 };
 
-static Text::CString GPIOControl_Func3[] = {
+static Text::CStringNN GPIOControl_Func3[] = {
 	CSTR("antsel[5]"),
 	CSTR("antsel[4]"),
 	CSTR("antsel[3]"),
@@ -484,7 +484,7 @@ static Text::CString GPIOControl_Func3[] = {
 	CSTR("antsel[0]"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 {
 	if (pinNum >= 47)
 	{

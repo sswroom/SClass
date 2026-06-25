@@ -1,16 +1,17 @@
 #ifndef _SM_DATA_SYNCARRAYMAP
 #define _SM_DATA_SYNCARRAYMAP
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayMap.hpp"
-#include "Data/SortableArrayList.hpp"
+#include "Data/SortableArrayListNative.hpp"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 
 namespace Data
 {
-	template <class T, class V> class SyncArrayMap : public IMap<T, V>
+	template <class T, class V> class SyncArrayMap : public DataMap<T, V>
 	{
 	protected:
-		Data::SortableArrayList<T> *keys;
+		NN<Data::SortableArrayList<T>> keys;
 		Data::ArrayList<V> vals;
 		Sync::Mutex mut;
 
@@ -25,11 +26,11 @@ namespace Data
 		void PutAll(SyncArrayMap<T,V> *map);
 		IntOS GetIndex(T key);
 
-		UIntOS GetValues(Data::ArrayList<V> *values);
-		UIntOS GetKeys(Data::ArrayList<T> *keys);
+		UIntOS GetValues(NN<Data::ArrayListObj<V>> values);
+		UIntOS GetKeys(NN<Data::ArrayListNative<T>> keys);
 		UIntOS GetCount();
 		virtual Bool IsEmpty();
-		virtual V *ToArray(UIntOS *objCnt);
+		virtual UnsafeArray<V> ToArray(OutParam<UIntOS> objCnt);
 		virtual void Clear();
 	};
 
@@ -120,13 +121,13 @@ namespace Data
 		return this->keys->SortedIndexOf(key);
 	}
 
-	template <class T, class V> UIntOS SyncArrayMap<T, V>::GetValues(Data::ArrayList<V> *values)
+	template <class T, class V> UIntOS SyncArrayMap<T, V>::GetValues(NN<Data::ArrayListObj<V>> values)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return values->AddRange(this->vals);
 	}
 
-	template <class T, class V> UIntOS SyncArrayMap<T, V>::GetKeys(Data::ArrayList<T> *keys)
+	template <class T, class V> UIntOS SyncArrayMap<T, V>::GetKeys(NN<Data::ArrayListNative<T>> keys)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return keys->AddRange(this->keys);
@@ -142,14 +143,14 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> V *SyncArrayMap<T, V>::ToArray(UIntOS *objCnt)
+	template <class T, class V> UnsafeArray<V> SyncArrayMap<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		UIntOS cnt;
-		V *arr = this->vals.GetArray(&cnt);
-		V *outArr = MemAlloc(V, cnt);
-		MemCopyNO(outArr, arr, sizeof(V) * cnt);
-		*objCnt = cnt;
+		UnsafeArray<V> arr = this->vals.GetArray(cnt);
+		UnsafeArray<V>outArr = MemAllocArr(V, cnt);
+		MemCopyNO(&outArr[0], &arr[0], sizeof(V) * cnt);
+		objCnt.Set(cnt);
 		return outArr;
 	}
 

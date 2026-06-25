@@ -201,7 +201,7 @@ namespace Data
 	template <class T, class V> UnsafeArray<Optional<V>> FastMapNN<T, V>::ToArray(OutParam<UIntOS> objCnt)
 	{
 		UIntOS cnt = this->values.GetCount();
-		UnsafeArray<Optional<V>> outArr = MemAlloc(Optional<V>, cnt);
+		UnsafeArray<Optional<V>> outArr = MemAllocArr(Optional<V>, cnt);
 		objCnt.Set(cnt);
 		while (cnt-- > 0)
 		{

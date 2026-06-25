@@ -9,7 +9,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-UIntOS PNGExporter_EstimateSize(const UInt8 *data, UIntOS dataSize, UInt8 *tmpBuff)
+UIntOS PNGExporter_EstimateSize(UnsafeArray<const UInt8> data, UIntOS dataSize, UnsafeArray<UInt8> tmpBuff)
 {
 	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Deflater::CompLevel::BestSpeed);	
 }
@@ -20,8 +20,8 @@ UIntOS PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<C
 	if (!img->pal.SetTo(palPtr))
 		return 0;
 	UIntOS colorCnt = (UIntOS)1 << img->info.storeBPP;
-	UInt8 *tmpBuff = MemAlloc(UInt8, colorCnt * 3 + 12);
-	UInt8 *tmpPtr;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, colorCnt * 3 + 12);
+	UnsafeArray<UInt8> tmpPtr;
 	UIntOS i;
 	WriteMUInt32(&tmpBuff[0], (UInt32)(colorCnt * 3));
 	*(Int32*)&tmpBuff[4] = *(Int32*)"PLTE";
@@ -39,7 +39,7 @@ UIntOS PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<C
 	crc->Calc(&tmpBuff[4], colorCnt * 3 + 4);
 	crc->GetValue(&tmpBuff[colorCnt * 3 + 8]);
 	stm->Write(Data::ByteArrayR(tmpBuff, colorCnt * 3 + 12));
-	MemFree(tmpBuff);
+	MemFreeArr(tmpBuff);
 	return colorCnt * 3 + 12;
 }
 
@@ -69,7 +69,7 @@ UInt8 PNGExporter_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-void PNGExporter_FilterByte(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -77,12 +77,12 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx;
 	UInt8 thisPx;
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx = tmpBuff[1] = lineStart[1];
 	i = 1;
@@ -124,7 +124,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -218,13 +218,13 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
-void PNGExporter_FilterByte2(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte2(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -232,12 +232,12 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx[2];
 	UInt8 thisPx[2];
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx[0] = tmpBuff[1] = lineStart[1];
 	lastPx[1] = tmpBuff[2] = lineStart[2];
@@ -283,7 +283,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -393,13 +393,13 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
-void PNGExporter_FilterByte3(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte3(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -407,12 +407,12 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx[3];
 	UInt8 thisPx[3];
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx[0] = tmpBuff[1] = lineStart[1];
 	lastPx[1] = tmpBuff[2] = lineStart[2];
@@ -462,7 +462,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -588,13 +588,13 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
-void PNGExporter_FilterByte4(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte4(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -602,12 +602,12 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx[4];
 	UInt8 thisPx[4];
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx[0] = tmpBuff[1] = lineStart[1];
 	lastPx[1] = tmpBuff[2] = lineStart[2];
@@ -661,7 +661,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -803,13 +803,13 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
-void PNGExporter_FilterByte6(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte6(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -817,12 +817,12 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx[6];
 	UInt8 thisPx[6];
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx[0] = tmpBuff[1] = lineStart[1];
 	lastPx[1] = tmpBuff[2] = lineStart[2];
@@ -884,7 +884,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -1058,13 +1058,13 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
-void PNGExporter_FilterByte8(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
+void PNGExporter_FilterByte8(UnsafeArray<UInt8> imgBuff, UIntOS lineByteCnt, UIntOS height)
 {
 	UIntOS oriHeight = height;
 	UIntOS i;
@@ -1072,12 +1072,12 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 	UIntOS compSize[5];
 	UInt8 lastPx[8];
 	UInt8 thisPx[8];
-	UInt8 *lastLineStart = 0;
-	UInt8 *lineStart = imgBuff;
-	UInt8 *tmpBuff = MemAlloc(UInt8, lineByteCnt + 1);
-	UInt8 *tmpBuff2 = MemAlloc(UInt8, lineByteCnt + 12);
-	UInt8 *newBuff = MemAlloc(UInt8, (lineByteCnt + 1) * height);
-	UInt8 *outBuff = newBuff;
+	UnsafeArray<UInt8> lineStart = imgBuff;
+	UnsafeArray<UInt8> lastLineStart = lineStart;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, lineByteCnt + 1);
+	UnsafeArray<UInt8> tmpBuff2 = MemAllocArr(UInt8, lineByteCnt + 12);
+	UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, (lineByteCnt + 1) * height);
+	UnsafeArray<UInt8> outBuff = newBuff;
 	tmpBuff[0] = 1;
 	lastPx[0] = tmpBuff[1] = lineStart[1];
 	lastPx[1] = tmpBuff[2] = lineStart[2];
@@ -1147,7 +1147,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		if (j == 0)
 		{
-			MemCopyNO(outBuff, lineStart, lineByteCnt + 1);
+			MemCopyNO(&outBuff[0], &lineStart[0], lineByteCnt + 1);
 		}
 		else if (j == 1)
 		{
@@ -1353,10 +1353,10 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UIntOS lineByteCnt, UIntOS height)
 		}
 		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
-	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
-	MemFree(newBuff);
-	MemFree(tmpBuff);
-	MemFree(tmpBuff2);
+	MemCopyNO(&imgBuff[0], &newBuff[0], (lineByteCnt + 1) * oriHeight);
+	MemFreeArr(newBuff);
+	MemFreeArr(tmpBuff);
+	MemFreeArr(tmpBuff2);
 }
 
 Exporter::PNGExporter::PNGExporter()
@@ -1446,10 +1446,10 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::StaticImage> img)
 {
-	UInt8 *tmpBuff;
-	UInt8 *tmpBuff2;
+	UnsafeArray<UInt8> tmpBuff;
+	UnsafeArray<UInt8> tmpBuff2;
 	UnsafeArray<UInt8> imgPtr1;
-	UInt8 *imgPtr2;
+	UnsafeArray<UInt8> imgPtr2;
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -1563,7 +1563,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 	if (img->info.color.GetRAWICC().SetTo(iccBuff))
 	{
 		UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
-		tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
+		tmpBuff = MemAllocArr(UInt8, iccSize + 35 + 11);
 		*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
 		Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
 		tmpBuff[30] = 0;
@@ -1577,7 +1577,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			crc.GetValue(&tmpBuff[31 + i]);
 			stm->Write(Data::ByteArrayR(tmpBuff, 35 + i));
 		}
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 	}
 	else
 	{
@@ -1642,7 +1642,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W1:
 		k = ((img->info.dispSize.x + 7) >> 3);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1650,11 +1650,11 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
+			MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 3;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1666,14 +1666,14 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_PAL_2:
 		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W2:
 		k = ((img->info.dispSize.x + 3) >> 2);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1681,11 +1681,11 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
+			MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 2;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1697,14 +1697,14 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_PAL_4:
 		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W4:
 		k = ((img->info.dispSize.x + 1) >> 1);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1712,11 +1712,11 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
+			MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 1;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1728,14 +1728,14 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_PAL_8:
 		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W8:
 		k = img->info.dispSize.x;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1743,12 +1743,12 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
+			MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x;
 		}
 		PNGExporter_FilterByte(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1760,12 +1760,12 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_LE_W16:
 		k = img->info.dispSize.x << 1;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1783,7 +1783,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 1;
 		}
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1795,12 +1795,12 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_W8A8:
 		k = img->info.dispSize.x << 1;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1808,12 +1808,12 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1.Ptr(), j << 1);
+			MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), j << 1);
 			imgPtr1 += img->info.storeSize.x << 1;
 			imgPtr2 += img->info.dispSize.x << 1;
 		}
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1825,12 +1825,12 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_LE_W16A16:
 		k = img->info.dispSize.x << 2;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		i = img->info.dispSize.y;
@@ -1850,7 +1850,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 2;
 		}
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1862,13 +1862,13 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_R8G8B8:
 	case Media::PF_B8G8R8:
 		k = img->info.dispSize.x * 3;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		if (img->info.pf == Media::PF_R8G8B8)
@@ -1878,7 +1878,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			{
 				j = img->info.dispSize.x;
 				*imgPtr2++ = 0;
-				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 3);
+				MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), img->info.dispSize.x * 3);
 				imgPtr2 += img->info.dispSize.x * 3;
 				imgPtr1 += img->info.storeSize.x * 3;
 			}
@@ -1902,7 +1902,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			}
 		}
 		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1914,13 +1914,13 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_R8G8B8A8:
 	case Media::PF_B8G8R8A8:
 		k = img->info.dispSize.x << 2;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		if (img->info.pf == Media::PF_R8G8B8A8)
@@ -1929,7 +1929,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			while (i-- > 0)
 			{
 				*imgPtr2++ = 0;
-				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 4);
+				MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), img->info.dispSize.x * 4);
 				imgPtr2 += img->info.dispSize.x * 4;
 				imgPtr1 += img->info.storeSize.x * 4;
 			}
@@ -1954,7 +1954,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			}
 		}
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -1966,13 +1966,13 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_LE_R16G16B16:
 	case Media::PF_LE_B16G16R16:
 		k = img->info.dispSize.x * 6;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		if (img->info.pf == Media::PF_LE_R16G16B16)
@@ -1981,7 +1981,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			while (i-- > 0)
 			{
 				*imgPtr2++ = 0;
-				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 6);
+				MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), img->info.dispSize.x * 6);
 				imgPtr2 += img->info.dispSize.x * 6;
 				imgPtr1 += img->info.storeSize.x * 6;
 			}
@@ -2008,7 +2008,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			}
 		}
 		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -2020,13 +2020,13 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_B16G16R16A16:
 		k = img->info.dispSize.x << 3;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
+		tmpBuff = MemAllocArr(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
 		if (img->info.pf == Media::PF_LE_R16G16B16A16)
@@ -2035,7 +2035,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			while (i-- > 0)
 			{
 				*imgPtr2++ = 0;
-				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 8);
+				MemCopyNO(imgPtr2.Ptr(), imgPtr1.Ptr(), img->info.dispSize.x * 8);
 				imgPtr2 += img->info.dispSize.x * 8;
 				imgPtr1 += img->info.storeSize.x * 8;
 			}
@@ -2064,7 +2064,7 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 			}
 		}
 		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispSize.y);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
+		tmpBuff2 = MemAllocArr(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
 		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Deflater::CompLevel::BestCompression);
 		if (i < 0)
@@ -2076,8 +2076,8 @@ Bool Exporter::PNGExporter::ExportImage(NN<IO::SeekableStream> stm, NN<Media::St
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
 		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
-		MemFree(tmpBuff2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff2);
+		MemFreeArr(tmpBuff);
 		break;
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_R5G6B5:

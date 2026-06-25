@@ -140,7 +140,7 @@ namespace Data
 	{
 		UIntOS cnt;
 		UnsafeArray<V> arr = this->vals.GetArr(cnt);
-		UnsafeArray<V> outArr = MemAlloc(V, cnt);
+		UnsafeArray<V> outArr = MemAllocArr(V, cnt);
 		outArr.CopyFromNO(arr, cnt);
 		objCnt.Set(cnt);
 		return outArr;

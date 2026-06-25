@@ -22,7 +22,7 @@ struct IO::GPIOControl::ClassData
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(GPIOA_BASE, 0x4000));
 	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
 	NEW_CLASS(clsData->memC, IO::PhysicalMem(GPIOC_BASE, 0x4000));
@@ -34,7 +34,7 @@ IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
 	DEL_CLASS(this->clsData->memC);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -184,7 +184,7 @@ void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

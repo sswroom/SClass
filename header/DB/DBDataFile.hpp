@@ -14,13 +14,13 @@ namespace DB
 	{
 	private:
 		NN<IO::FileStream> fs;
-		IO::BufferedOutputStream *cstm;
+		Optional<IO::BufferedOutputStream> cstm;
 		NN<Data::NamedClass<T>> cls;
-		UInt8 *recordBuff;
-		Data::VariItem::ItemType *colTypes;
+		UnsafeArrayOpt<UInt8> recordBuff;
+		UnsafeArrayOpt<Data::VariItem::ItemType> colTypes;
 
-		static UIntOS ReadInt(const UInt8 *buff, UIntOS ofst, UIntOS *outVal);
-		static UIntOS WriteInt(UInt8 *buff, UIntOS ofst, UIntOS val);
+		static UIntOS ReadInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<UIntOS> outVal);
+		static UIntOS WriteInt(UnsafeArray<UInt8> buff, UIntOS ofst, UIntOS val);
 
 		DBDataFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, Bool append);
 		~DBDataFile();
@@ -34,7 +34,7 @@ namespace DB
 	};
 }
 
-template <class T> UIntOS DB::DBDataFile<T>::ReadInt(const UInt8 *buff, UIntOS ofst, UIntOS *outVal)
+template <class T> UIntOS DB::DBDataFile<T>::ReadInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<UIntOS> outVal)
 {
 	UIntOS val = 0;
 	UInt8 v;
@@ -48,13 +48,13 @@ template <class T> UIntOS DB::DBDataFile<T>::ReadInt(const UInt8 *buff, UIntOS o
 		}
 		else
 		{
-			*outVal = (val << 7) | v;
+			outVal.Set((val << 7) | v);
 			return ofst;
 		}
 	}
 }
 
-template <class T> UIntOS DB::DBDataFile<T>::WriteInt(UInt8 *buff, UIntOS ofst, UIntOS val)
+template <class T> UIntOS DB::DBDataFile<T>::WriteInt(UnsafeArray<UInt8> buff, UIntOS ofst, UIntOS val)
 {
 	if (val < 0x80) // 00 - 7f
 	{
@@ -118,52 +118,56 @@ template <class T> UIntOS DB::DBDataFile<T>::WriteInt(UInt8 *buff, UIntOS ofst, 
 template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, Bool append)
 {
 	this->cls = cls;
-	this->recordBuff = 0;
-	this->colTypes = 0;
-	this->cstm = 0;
+	this->recordBuff = nullptr;
+	this->colTypes = nullptr;
+	this->cstm = nullptr;
 	IO::FileMode fileMode = append?IO::FileMode::Append:IO::FileMode::Create;
 	NEW_CLASSNN(this->fs, IO::FileStream(fileName, fileMode, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (this->fs->IsError())
 	{
 		return;
 	}
+	UnsafeArray<UInt8> recordBuff;
+	UnsafeArray<Data::VariItem::ItemType> colTypes;
 	UIntOS k = 0;
 	UIntOS l = cls->GetFieldCount();
-	this->recordBuff = MemAlloc(UInt8, 65536);
-	this->colTypes = MemAlloc(Data::VariItem::ItemType, l);
+	this->recordBuff = recordBuff = MemAllocArr(UInt8, 65536);
+	this->colTypes = colTypes = MemAllocArr(Data::VariItem::ItemType, l);
 	if (this->fs->GetPosition() == 0)
 	{
-		this->recordBuff[0] = 'S';
-		this->recordBuff[1] = 'M';
-		this->recordBuff[2] = 'D';
-		this->recordBuff[3] = 'f';
+		recordBuff[0] = 'S';
+		recordBuff[1] = 'M';
+		recordBuff[2] = 'D';
+		recordBuff[3] = 'f';
 		while (k < l)
 		{
-			this->recordBuff[k + 4] = (UInt8)(this->colTypes[k] = cls->GetFieldType(k));
+			recordBuff[k + 4] = (UInt8)(colTypes[k] = cls->GetFieldType(k));
 			k++;
 		}
-		this->recordBuff[l + 4] = 0xff;
-		this->fs->Write(Data::ByteArrayR(this->recordBuff, l + 5));
+		recordBuff[l + 4] = 0xff;
+		this->fs->Write(Data::ByteArrayR(recordBuff, l + 5));
 	}
 	else
 	{
 		while (k < l)
 		{
-			this->colTypes[k] = cls->GetFieldType(k);
+			colTypes[k] = cls->GetFieldType(k);
 			k++;
 		}
 	}
-	NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->fs, 32768));
+	NEW_CLASSOPT(this->cstm, IO::BufferedOutputStream(this->fs, 32768));
 }
 
 template <class T> DB::DBDataFile<T>::~DBDataFile()
 {
-	SDEL_CLASS(this->cstm);
+	this->cstm.Delete();
 	this->fs.Delete();
-	if (this->recordBuff)
-		MemFree(this->recordBuff);
-	if (this->colTypes)
-		MemFree(this->colTypes);
+	UnsafeArray<UInt8> recordBuff;
+	if (this->recordBuff.SetTo(recordBuff))
+		MemFreeArr(recordBuff);
+	UnsafeArray<Data::VariItem::ItemType> colTypes;
+	if (this->colTypes.SetTo(colTypes))
+		MemFreeArr(colTypes);
 }
 
 template <class T> Bool DB::DBDataFile<T>::IsError()
@@ -173,7 +177,10 @@ template <class T> Bool DB::DBDataFile<T>::IsError()
 
 template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 {
-	if (this->cstm == 0)
+	UnsafeArray<UInt8> recordBuff;
+	UnsafeArray<Data::VariItem::ItemType> colTypes;
+	NN<IO::BufferedOutputStream> cstm;
+	if (!this->cstm.SetTo(cstm) || !this->recordBuff.SetTo(recordBuff) || !this->colTypes.SetTo(colTypes))
 	{
 		return;
 	}
@@ -190,113 +197,113 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		switch (colTypes[k])
 		{
 		case Data::VariItem::ItemType::F32:
-			WriteFloat(&this->recordBuff[m], item.GetItemValue().f32);
+			WriteFloat(&recordBuff[m], item.GetItemValue().f32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::F64:
-			WriteDouble(&this->recordBuff[m], item.GetItemValue().f64);
+			WriteDouble(&recordBuff[m], item.GetItemValue().f64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::I8:
-			this->recordBuff[m] = (UInt8)item.GetItemValue().i8;
+			recordBuff[m] = (UInt8)item.GetItemValue().i8;
 			m += 1;
 			break;
 		case Data::VariItem::ItemType::U8:
-			this->recordBuff[m] = item.GetItemValue().u8;
+			recordBuff[m] = item.GetItemValue().u8;
 			m += 1;
 			break;
 		case Data::VariItem::ItemType::I16:
-			WriteInt16(&this->recordBuff[m], item.GetItemValue().i16);
+			WriteInt16(&recordBuff[m], item.GetItemValue().i16);
 			m += 2;
 			break;
 		case Data::VariItem::ItemType::U16:
-			WriteUInt16(&this->recordBuff[m], item.GetItemValue().u16);
+			WriteUInt16(&recordBuff[m], item.GetItemValue().u16);
 			m += 2;
 			break;
 		case Data::VariItem::ItemType::NI32:
 		case Data::VariItem::ItemType::I32:
-			WriteInt32(&this->recordBuff[m], item.GetItemValue().i32);
+			WriteInt32(&recordBuff[m], item.GetItemValue().i32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::U32:
-			WriteUInt32(&this->recordBuff[m], item.GetItemValue().u32);
+			WriteUInt32(&recordBuff[m], item.GetItemValue().u32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::I64:
-			WriteInt64(&this->recordBuff[m], item.GetItemValue().i64);
+			WriteInt64(&recordBuff[m], item.GetItemValue().i64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::U64:
-			WriteUInt64(&this->recordBuff[m], item.GetItemValue().u64);
+			WriteUInt64(&recordBuff[m], item.GetItemValue().u64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::BOOL:
-			this->recordBuff[m] = item.GetItemValue().boolean?1:0;
+			recordBuff[m] = item.GetItemValue().boolean?1:0;
 			m += 1;
 			break;
 		case Data::VariItem::ItemType::Str:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				this->recordBuff[m] = 0xff;
+				recordBuff[m] = 0xff;
 				m += 1;
 			}
 			else
 			{
 				Text::String *s = item.GetItemValue().str;
-				m = WriteInt(this->recordBuff, m, s->leng);
-				MemCopyNO(&this->recordBuff[m], s->v.Ptr(), s->leng);
+				m = WriteInt(recordBuff, m, s->leng);
+				MemCopyNO(&recordBuff[m], s->v.Ptr(), s->leng);
 				m += s->leng;
 			}
 			break;
 		case Data::VariItem::ItemType::CStr:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				this->recordBuff[m] = 0xff;
+				recordBuff[m] = 0xff;
 				m += 1;
 			}
 			else
 			{
 				Data::VariItem::ItemValue ival = item.GetItemValue();
-				m = WriteInt(this->recordBuff, m, ival.cstr.leng);
-				MemCopyNO(&this->recordBuff[m], ival.cstr.v.Ptr(), ival.cstr.leng);
+				m = WriteInt(recordBuff, m, ival.cstr.leng);
+				MemCopyNO(&recordBuff[m], ival.cstr.v.Ptr(), ival.cstr.leng);
 				m += ival.cstr.leng;
 			}
 			break;
 		case Data::VariItem::ItemType::Timestamp:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&this->recordBuff[m], -1);
+				WriteInt64(&recordBuff[m], -1);
 				m += 8;
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().ts.ToTicks());
+				WriteInt64(&recordBuff[m], item.GetItemValue().ts.ToTicks());
 				m += 8;
 			}
 			break;
 		case Data::VariItem::ItemType::Date:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&this->recordBuff[m], -1);
+				WriteInt64(&recordBuff[m], -1);
 				m += 8;
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ToTicks());
+				WriteInt64(&recordBuff[m], item.GetItemValue().date.ToTicks());
 				m += 8;
 			}
 			break;
 		case Data::VariItem::ItemType::ByteArr:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				this->recordBuff[m] = 0xff;
+				recordBuff[m] = 0xff;
 				m += 1;
 			}
 			else
 			{
 				Data::ReadonlyArray<UInt8> *arr = item.GetItemValue().byteArr;
-				m = WriteInt(this->recordBuff, m, arr->GetCount());
-				MemCopyNO(&this->recordBuff[m], arr->GetArray(), arr->GetCount());
+				m = WriteInt(recordBuff, m, arr->GetCount());
+				MemCopyNO(&recordBuff[m], arr->GetArray(), arr->GetCount());
 				m += arr->GetCount();
 			}
 			break;
@@ -306,21 +313,21 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		case Data::VariItem::ItemType::UUID:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&this->recordBuff[m], -1);
-				WriteInt64(&this->recordBuff[m + 8], -1);
+				WriteInt64(&recordBuff[m], -1);
+				WriteInt64(&recordBuff[m + 8], -1);
 				m += 16;
 			}
 			else
 			{
 				NN<Data::UUID> uuid = item.GetItemValue().uuid;
-				uuid->GetValue(&this->recordBuff[m]);
+				uuid->GetValue(&recordBuff[m]);
 				m += 16;
 			}
 			break;
 		case Data::VariItem::ItemType::Null:
 		case Data::VariItem::ItemType::Unknown:
 		default:
-			this->recordBuff[m] = 0xff;
+			recordBuff[m] = 0xff;
 			m += 1;
 			break;
 		}
@@ -329,29 +336,29 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 	m -= 6;
 	if (m < 0x80) // 00 - 7f
 	{
-		this->recordBuff[5] = (UInt8)m;
-		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[5], m + 1));
+		recordBuff[5] = (UInt8)m;
+		cstm->Write(Data::ByteArrayR(&recordBuff[5], m + 1));
 	}
 	else if (m <= 0x3F7F)
 	{
-		this->recordBuff[4] = (UInt8)(0x80 | (m >> 7));
-		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[4], m + 2));
+		recordBuff[4] = (UInt8)(0x80 | (m >> 7));
+		recordBuff[5] = (UInt8)(m & 0x7F);
+		cstm->Write(Data::ByteArrayR(&recordBuff[4], m + 2));
 	}
 	else if (m <= 0x1FBFFF)
 	{
-		this->recordBuff[3] = (UInt8)(0x80 | (m >> 14));
-		this->recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
-		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[3], m + 3));
+		recordBuff[3] = (UInt8)(0x80 | (m >> 14));
+		recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
+		recordBuff[5] = (UInt8)(m & 0x7F);
+		cstm->Write(Data::ByteArrayR(&recordBuff[3], m + 3));
 	}
 	else
 	{
-		this->recordBuff[2] = (UInt8)(0x80 | (m >> 21));
-		this->recordBuff[3] = (UInt8)(0x80 | ((m >> 14) & 0x7F));
-		this->recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
-		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[2], m + 4));
+		recordBuff[2] = (UInt8)(0x80 | (m >> 21));
+		recordBuff[3] = (UInt8)(0x80 | ((m >> 14) & 0x7F));
+		recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
+		recordBuff[5] = (UInt8)(m & 0x7F);
+		cstm->Write(Data::ByteArrayR(&recordBuff[2], m + 4));
 	}
 }
 
@@ -365,7 +372,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 	}
 	Data::VariItem item;
 	Bool succ = false;
-	UInt8 *buff = MemAlloc(UInt8, maxBuffSize);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, maxBuffSize);
 	UIntOS buffSize;
 	UIntOS k;
 	UIntOS l = cls->GetFieldCount();
@@ -373,7 +380,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 	UIntOS m2;
 	UIntOS m3;
 	UIntOS rowSize;
-	Data::VariItem::ItemType *colTypes = MemAlloc(Data::VariItem::ItemType, l);
+	UnsafeArray<Data::VariItem::ItemType> colTypes = MemAllocArr(Data::VariItem::ItemType, l);
 	buffSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (buff[0] == 'S' && buff[1] == 'M' && buff[2] == 'D' && buff[3] == 'f')
 	{
@@ -405,7 +412,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 					}
 					else if (m != buffSize)
 					{
-						MemCopyNO(buff, &buff[m], buffSize - m);
+						MemCopyO(&buff[0], &buff[m], buffSize - m);
 						buffSize -= m;
 						m = 0;
 					}
@@ -421,7 +428,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 					}
 					buffSize += m2;
 				}
-				m2 = ReadInt(buff, m, &rowSize);
+				m2 = ReadInt(buff, m, rowSize);
 				while (m2 + rowSize > buffSize)
 				{
 					if (m == 0)
@@ -429,7 +436,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 					}
 					else if (m != buffSize)
 					{
-						MemCopyNO(buff, &buff[m], buffSize - m);
+						MemCopyO(&buff[0], &buff[m], buffSize - m);
 						buffSize -= m;
 						m2 -= m;
 						m = 0;
@@ -525,7 +532,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							}
 							else
 							{
-								m2 = ReadInt(buff, m2, &m3);
+								m2 = ReadInt(buff, m2, m3);
 								NN<Text::String> s = Text::String::New(&buff[m2], m3);
 								item.SetStr(s);
 								s->Release();
@@ -568,7 +575,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							}
 							else
 							{
-								m2 = ReadInt(buff, m2, &m3);
+								m2 = ReadInt(buff, m2, m3);
 								item.SetByteArr(&buff[m2], m3);
 								cls->SetFieldClearItem(obj, k, item);
 								m2 += m3;
@@ -599,8 +606,8 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 			}
 		}
 	}
-	MemFree(buff);
-	MemFree(colTypes);
+	MemFreeArr(buff);
+	MemFreeArr(colTypes);
 	return succ;
 }
 

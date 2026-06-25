@@ -585,10 +585,10 @@ FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *des
 {
 	while (count >= (UIntOS)sizeof(UIntOS))
 	{
-		*(UIntOS*)destBuff = (*(UIntOS*)srcBuff1) ^ (*(UIntOS*)srcBuff2);
-		srcBuff1 += sizeof(UIntOS);
-		srcBuff2 += sizeof(UIntOS);
-		destBuff += sizeof(UIntOS);
+		*(UIntOS*)&destBuff[0] = (*(UIntOS*)&srcBuff1[0]) ^ (*(UIntOS*)&srcBuff2[0]);
+		srcBuff1 += (UIntOS)sizeof(UIntOS);
+		srcBuff2 += (UIntOS)sizeof(UIntOS);
+		destBuff += (UIntOS)sizeof(UIntOS);
 		count -= sizeof(UIntOS);
 	}
 	while (count > 0)

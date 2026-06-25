@@ -59,7 +59,7 @@ void GPIOControl_GetPortNum(UInt16 pinNum, IntOS *portNum, IntOS *index)
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(GPIO_BASE_MAP, 0x4000));
 	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
 	NEW_CLASS(clsData->memL, IO::PhysicalMem(GPIOL_BASE_MAP, 0x4000));
@@ -71,7 +71,7 @@ IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
 	DEL_CLASS(this->clsData->memL);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -248,7 +248,7 @@ void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-static Text::CString GPIOControl_Func2[] = {
+static Text::CStringNN GPIOControl_Func2[] = {
 	//PortC
 	CSTR("NAND_WE"),
 	CSTR("NAND_ALE"),
@@ -363,7 +363,7 @@ static Text::CString GPIOControl_Func2[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func3[] = {
+static Text::CStringNN GPIOControl_Func3[] = {
 	//PortC
 	CSTR("Reserved"),
 	CSTR("SDC2_DS"),
@@ -478,7 +478,7 @@ static Text::CString GPIOControl_Func3[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func4[] = {
+static Text::CStringNN GPIOControl_Func4[] = {
 	//PortC
 	CSTR("SPI0_CLK"),
 	CSTR("Reserved"),
@@ -593,7 +593,7 @@ static Text::CString GPIOControl_Func4[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func5[] = {
+static Text::CStringNN GPIOControl_Func5[] = {
 	//PortC
 	CSTR("Reserved"),
 	CSTR("Reserved"),
@@ -708,7 +708,7 @@ static Text::CString GPIOControl_Func5[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_Func6[] = {
+static Text::CStringNN GPIOControl_Func6[] = {
 	//PortC
 	CSTR("Reserved"),
 	CSTR("Reserved"),
@@ -823,7 +823,7 @@ static Text::CString GPIOControl_Func6[] = {
 	CSTR("S_PM_EINT4"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinMode)
 {
 	if (pinMode == 0)
 	{

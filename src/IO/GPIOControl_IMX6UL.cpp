@@ -17,7 +17,7 @@ struct IO::GPIOControl::ClassData
 
 IO::GPIOControl::GPIOControl()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR, BLOCKSIZE));
 	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
 	clsData->sysCtlPtr = (volatile UInt32 *)clsData->mem->GetPointer();
@@ -27,7 +27,7 @@ IO::GPIOControl::GPIOControl()
 IO::GPIOControl::~GPIOControl()
 {
 	DEL_CLASS(this->clsData->mem);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
@@ -358,7 +358,7 @@ void IO::GPIOControl::ClearEvent(UIntOS pinNum)
 {
 }
 
-Text::CString GPIOControl_Func0[] = {
+Text::CStringNN GPIOControl_Func0[] = {
 	CSTR("GPO0"),
 	CSTR("I2C_SD"),
 	CSTR("I2C_SCLK"),
@@ -441,7 +441,7 @@ Text::CString GPIOControl_Func0[] = {
 	CSTR("WLAN_LED_N"),
 };
 
-Text::CString GPIOControl_Func1[] = {
+Text::CStringNN GPIOControl_Func1[] = {
 	CSTR("Unknown"),
 	CSTR("Input"),
 	CSTR("Input"),
@@ -524,7 +524,7 @@ Text::CString GPIOControl_Func1[] = {
 	CSTR("Input"),
 };
 
-Text::CString GPIOControl_Func2[] = {
+Text::CStringNN GPIOControl_Func2[] = {
 	CSTR("Unknown"),
 	CSTR("Input"),
 	CSTR("Input"),
@@ -607,7 +607,7 @@ Text::CString GPIOControl_Func2[] = {
 	CSTR("Unknown"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 {
 	if (pinNum >= 73 || pinState > 8)
 	{
@@ -633,7 +633,7 @@ Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 	{
 		if (pinNum >= 7 && pinNum <= 14)
 		{
-			static Text::CString pinName3[] = {
+			static Text::CStringNN pinName3[] = {
 				CSTR("I2SCLK"),
 				CSTR("I2SWS"),
 				CSTR("I2SSDO"),
@@ -643,7 +643,7 @@ Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 				CSTR("CTS_N"),
 				CSTR("RXD"),
 			};
-			static Text::CString pinName4[] = {
+			static Text::CStringNN pinName4[] = {
 				CSTR("Input"),
 				CSTR("Input"),
 				CSTR("Input"),
@@ -653,7 +653,7 @@ Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 				CSTR("PCMDRX"),
 				CSTR("PCMDTX"),
 			};
-			static Text::CString pinName5[] = {
+			static Text::CStringNN pinName5[] = {
 				CSTR("RTS_N"),
 				CSTR("TXD"),
 				CSTR("CTS_N"),
@@ -663,7 +663,7 @@ Text::CString IO::GPIOControl::PinModeGetName(UIntOS pinNum, UIntOS pinState)
 				CSTR("Input"),
 				CSTR("Input"),
 			};
-			static Text::CString pinName6[] = {
+			static Text::CStringNN pinName6[] = {
 				CSTR("I2SCLK"),
 				CSTR("I2SWS"),
 				CSTR("I2SSDO"),
